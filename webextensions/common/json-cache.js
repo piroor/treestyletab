@@ -108,8 +108,6 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
       idMap: idMap,
       dirty: options.dirty
     });
-    if (!tab.$TST.parent) // process only root tabs
-      fixupTreeCollapsedStateRestoredFromCache(tab, false);
     TabsStore.updateIndexesForTab(tab);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   });
@@ -142,20 +140,16 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
-}
 
-function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
-  if (shouldCollapse) {
+  if (tab.$TST.collapsed ||
+      (parentTab &&
+       (parentTab.$TST.collapsed ||
+        parentTab.$TST.subtreeCollapsed))) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
   else {
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
-  }
-  if (!shouldCollapse)
-    shouldCollapse = tab.$TST.subtreeCollapsed;
-  for (const child of tab.$TST.children) {
-    fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
   }
 }
