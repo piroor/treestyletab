@@ -4,6 +4,7 @@
    * Restore collapsed state of subtree more stably with large number of tabs.
    * Optimize startup process with cached data.
    * Show throbber while waiting on group tabs.
+   * Reduce freezing while updating contents of group tabs.
  - 2.8.4 (2019.3.12)
    * Context menu on blank area in the sidebar came back. (regression on recent versions)
    * Context menu commands work again on Firefox ESR60. (regression on recent versions)
