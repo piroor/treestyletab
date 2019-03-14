@@ -361,7 +361,7 @@ async function tryGroupNewTabs() {
 
     let newRootTabs = Tab.collectRootTabs(tabs)
       .filter(tab => !tab.$TST.isGroupTab);
-    if (newRootTabs.length < 2) // never group single tab!
+    if (newRootTabs.length <= 0)
       return;
 
     const newRootTabsFromPinned = newRootTabs.filter(tab => tab.$TST.hasPinnedOpener);
