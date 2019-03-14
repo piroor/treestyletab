@@ -138,10 +138,13 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       code:            `window.updateTree && window.updateTree()`,
     }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleUnloadedError));
 
+  const firstChild = groupTab.$TST.firstChild;
+  if (!firstChild) // the tab can be closed while waiting...
+    return;
+
   if (changedInfo.includes('title')) {
     let newTitle;
     if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const firstChild = groupTab.$TST.firstChild;
       newTitle = browser.i18n.getMessage('groupTab_label', firstChild.title);
     }
     else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
