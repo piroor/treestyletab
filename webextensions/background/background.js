@@ -64,6 +64,7 @@ export async function init() {
 
   Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
+  Migration.notifyNewFeatures(); // open new tab now, instead of the end of initialization, because the sidebar may fail to track tabs.onCreated for the tab while its initializing process.
   configs.grantedRemovingTabIds = []; // clear!
   MetricsData.add('init: Migration.migrateLegacyConfigs, Migration.migrateConfigs');
 
@@ -144,7 +145,6 @@ export async function init() {
     }).catch(ApiTabs.createErrorSuppressor());
   }
 
-  Migration.notifyNewFeatures();
   log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
 }
 
