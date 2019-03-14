@@ -10,9 +10,19 @@ export function is(expected, actual, message = '') {
       JSON.stringify(expected) === JSON.stringify(actual))
     return;
   const error = new Error(`AssertionError: ${message || 'unexpected value'}`);
-  error.name      = 'AssertionError';
-  error.expected  = JSON.stringify(expected, null, 2);
-  error.actual    = JSON.stringify(actual, null, 2);
+  error.name     = 'AssertionError';
+  error.expected = JSON.stringify(expected, null, 2);
+  error.actual   = JSON.stringify(actual, null, 2);
+  throw error;
+}
+
+export function isNot(expectedNot, actual, message = '') {
+  if (expectedNot !== actual ||
+      JSON.stringify(expectedNot) !== JSON.stringify(actual))
+    return;
+  const error = new Error(`AssertionError: ${message || 'unexpected same value'}`);
+  error.name   = 'AssertionError';
+  error.actual = JSON.stringify(actual, null, 2);
   throw error;
 }
 

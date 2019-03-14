@@ -6,9 +6,10 @@
 'use strict';
 
 import {
-  wait
+  wait,
+  configs
 } from '/common/common.js';
-import { is /*, ok, ng*/ } from '/tests/assert.js';
+import { is, isNot /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
 import * as Constants from '/common/constants.js';
@@ -32,12 +33,16 @@ export async function testInheritContainerFromAutoAttachedParent() {
     autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_CHILD
   });
 
+  // wait until timeout the special timer which prevents grouping of new tabs
+  await wait(configs.autoGroupNewTabsDelayOnNewWindow);
+
   const parent = await browser.tabs.create({
     windowId: win.id,
     cookieStoreId: 'firefox-container-1'
   });
+  let originalTab;
   const newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.tabs.create({
+    originalTab = await browser.tabs.create({
       windowId:      win.id,
       cookieStoreId: 'firefox-default'
     });
@@ -51,7 +56,9 @@ export async function testInheritContainerFromAutoAttachedParent() {
     newTabsCount:    newTabs.length,
     newTabParent:    newTabs.length > 0 && newTabs[0].openerTabId,
     newTabContainer: newTabs.length > 0 && newTabs[0].cookieStoreId
-  }, 'a new tab implicitly attached to the active tab must inherit the contianer of the old active tab.');
+  }, 'a new tab implicitly attached to the active tab must inherit the contianer of the old active tab, and there must not be any needless group tab to group the original tab and the reopened tab.');
+  isNot(originalTab.id, newTabs[0].id,
+        'the new tab must be reopened');
 }
 
 export async function testDoNotInheritContainerFromExplicitParent() {
