@@ -12,6 +12,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -65,6 +66,7 @@ export function signatureFromTabsCache(cache) {
 }
 
 export async function restoreTabsFromCacheInternal(params) {
+  MetricsData.add('restoreTabsFromCacheInternal: start');
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset  = params.offset || 0;
   const tabs    = params.tabs.slice(offset);
@@ -123,6 +125,7 @@ export async function restoreTabsFromCacheInternal(params) {
     if (!params.insertionPoint)
       insertionPoint.detach();
   }
+  MetricsData.add('restoreTabsFromCacheInternal: DOM tree restoration finished');
 
   log('restoreTabsFromCacheInternal: post process ', { tabElements, tabs });
   if (tabElements.length != tabs.length) {
@@ -131,12 +134,14 @@ export async function restoreTabsFromCacheInternal(params) {
     return [];
   }
   try {
-    const parent = container.parentNode;
-    parent.removeChild(container); // remove from DOM tree to optimize
-    await fixupTabsRestoredFromCache(tabElements, tabs, {
-      dirty: params.shouldUpdate
+    await MetricsData.addAsync('restoreTabsFromCacheInternal: fixing restored DOM tree', async () => {
+      const parent = container.parentNode;
+      parent.removeChild(container); // remove from DOM tree to optimize
+      await fixupTabsRestoredFromCache(tabElements, tabs, {
+        dirty: params.shouldUpdate
+      });
+      parent.appendChild(container);
     });
-    parent.appendChild(container);
   }
   catch(e) {
     log(String(e), e.stack);
@@ -155,6 +160,7 @@ function dumpCache(cache) {
 }
 
 async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
+  MetricsData.add('fixupTabsRestoredFromCache: start');
   if (tabElements.length != tabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${tabElements.length}, tabs.Tab=${tabs.length}`);
   log('fixupTabsRestoredFromCache start ', { elements: tabElements.map(tabElement => tabElement.id), tabs });
@@ -170,6 +176,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
   });
+  MetricsData.add('fixupTabsRestoredFromCache: step 1 finished');
   // step 2: restore information of tabElements
   for (const tabElement of tabElements) {
     const tab = tabElement.apiTab;
@@ -177,4 +184,5 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     if (options.shouldUpdate)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
+  MetricsData.add('fixupTabsRestoredFromCache: step 2 finished');
 }

@@ -48,28 +48,31 @@ export function startTracking() {
 }
 
 export async function getEffectiveWindowCache(options = {}) {
-  MetricsData.add('getEffectiveWindowCache start');
+  MetricsData.add('getEffectiveWindowCache: start');
   log('getEffectiveWindowCache: start');
   cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
   let cache;
   let cachedSignature;
   let actualSignature;
   await Promise.all([
-    MetricsData.addAsync('getEffectiveWindowCache main', async () => {
+    MetricsData.addAsync('getEffectiveWindowCache: main', async () => {
       const tabs = options.tabs || await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
       mLastWindowCacheOwner = tabs[tabs.length - 1];
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      [cache, tabsDirty, collapsedDirty] = await Promise.all([
-        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
-        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-      ]);
+      await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', async () => {
+        [cache, tabsDirty, collapsedDirty] = await Promise.all([
+          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+        ]);
+      });
       cachedSignature = cache && cache.signature;
       log(`getEffectiveWindowCache: got from the owner `, mLastWindowCacheOwner, {
         cachedSignature, cache, tabsDirty, collapsedDirty
       });
+      MetricsData.add('getEffectiveWindowCache: starting to test validity of the cache');
       if (cache &&
           cache.tabs &&
           cachedSignature &&
@@ -81,6 +84,7 @@ export async function getEffectiveWindowCache(options = {}) {
         cache = cachedSignature = null;
         clearWindowCache();
       }
+      MetricsData.add('getEffectiveWindowCache: validity check: signature passed.');
       if (options.ignorePinnedTabs &&
           cache &&
           cache.tabbar &&
@@ -89,7 +93,7 @@ export async function getEffectiveWindowCache(options = {}) {
         cache.tabbar.contents = DOMCache.trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
         cachedSignature       = DOMCache.trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
       }
-      MetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
+      MetricsData.add('getEffectiveWindowCache: validity check: starting detailed verification. ' + JSON.stringify({
         cache: !!cache,
         version: cache && cache.version
       }));
@@ -99,17 +103,20 @@ export async function getEffectiveWindowCache(options = {}) {
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
         cache.signature = cachedSignature;
+        MetricsData.add('getEffectiveWindowCache: validity check: version passed.');
       }
       else {
         log('getEffectiveWindowCache: invalid cache ', cache);
         cache = null;
+        MetricsData.add('getEffectiveWindowCache: validity check: version failed.');
       }
     }),
-    MetricsData.addAsync('getEffectiveWindowCache getWindowSignature', async () => {
+    MetricsData.addAsync('getEffectiveWindowCache: getWindowSignature', async () => {
       actualSignature = await DOMCache.getWindowSignature(options.tabs || mTargetWindow);
     })
   ]);
 
+  MetricsData.add('getEffectiveWindowCache: validity check: matching actual signature of got cache');
   const signatureMatched = DOMCache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
@@ -122,13 +129,13 @@ export async function getEffectiveWindowCache(options = {}) {
     clearWindowCache();
     cache = null;
     log('getEffectiveWindowCache: failed');
-    MetricsData.add('getEffectiveWindowCache fail');
+    MetricsData.add('getEffectiveWindowCache: validity check: actual signature failed.');
   }
   else {
     cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(part => !!part).length;
     cache.actualSignature = actualSignature;
     log('getEffectiveWindowCache: success ');
-    MetricsData.add('getEffectiveWindowCache success');
+    MetricsData.add('getEffectiveWindowCache: validity check: actual signature passed.');
   }
 
   return cache;
@@ -143,18 +150,22 @@ export async function restoreTabsFromCache(cache, params = {}) {
     mTabBar.setAttribute('style', cache.style);
   }
 
-  const restored = (await DOMCache.restoreTabsFromCacheInternal({
-    windowId:     mTargetWindow,
-    tabs:         params.tabs,
-    offset:       offset,
-    cache:        cache.contents,
-    shouldUpdate: cache.tabsDirty
-  })).length > 0;
+  const restored = await MetricsData.addAsync('restoreTabsFromCache: restoring internally', async () => {
+    return (await DOMCache.restoreTabsFromCacheInternal({
+      windowId:     mTargetWindow,
+      tabs:         params.tabs,
+      offset:       offset,
+      cache:        cache.contents,
+      shouldUpdate: cache.tabsDirty
+    })).length > 0;
+  });
 
   if (restored) {
     try {
+      MetricsData.add('restoreTabsFromCache: updating restored tabs: start');
       SidebarTabs.updateAll();
       onRestored.dispatch();
+      MetricsData.add('restoreTabsFromCache: updating restored tabs: done');
     }
     catch(e) {
       log(String(e), e.stack);
