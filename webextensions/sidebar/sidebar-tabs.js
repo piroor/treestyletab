@@ -626,7 +626,11 @@ export function applyStatesToElement(tab) {
     if (classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
       classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
+}
 
+export function applyCollapseExpandStateToElement(tab) {
+  const tabElement = tab.$TST.element;
+  const classList = tabElement.classList;
   const parent = tab.$TST.parent;
   if (parent &&
       (parent.$TST.collapsed ||

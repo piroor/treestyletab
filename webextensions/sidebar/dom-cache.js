@@ -181,6 +181,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   for (const tabElement of tabElements) {
     const tab = tabElement.apiTab;
     SidebarTabs.applyStatesToElement(tab);
+    SidebarTabs.applyCollapseExpandStateToElement(tab);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
