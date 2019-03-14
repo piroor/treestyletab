@@ -33,7 +33,7 @@ export function activate() {
 }
 
 export async function restoreWindowFromEffectiveWindowCache(windowId, options = {}) {
-  MetricsData.add('restoreWindowFromEffectiveWindowCache start');
+  MetricsData.add('restoreWindowFromEffectiveWindowCache: start');
   log(`restoreWindowFromEffectiveWindowCache for ${windowId} start`);
   const owner = options.owner || getWindowCacheOwner(windowId);
   if (!owner) {
@@ -42,15 +42,17 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
   const tabs = options.tabs || await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
-  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
+  if (configs.debug)
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
-  let [actualSignature, cache, ...permanentStates] = await Promise.all([
+  let [actualSignature, cache, ...permanentStates] = await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: reading signature, window cache, and permanent states', Promise.all([
     JSONCache.getWindowSignature(tabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS),
     ...tabs.map(tab => tab.$TST.getPermanentStates())
-  ]);
+  ]));
+  MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: start');
   let cachedSignature = cache && cache.signature;
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
     owner, cachedSignature, cache
@@ -66,6 +68,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     });
     cache = cachedSignature = null;
     clearWindowCache(windowId);
+    MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: signature failed.');
+  }
+  else {
+    MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: signature passed.');
   }
   if (options.ignorePinnedTabs &&
       cache &&
@@ -74,6 +80,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     cache.tabs      = JSONCache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
     cachedSignature = JSONCache.trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
+  MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: matching actual signature of got cache');
   const signatureMatched = JSONCache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
@@ -86,18 +93,19 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       !signatureMatched) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
     clearWindowCache(owner);
-    MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
+    MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: actual signature failed.');
     return false;
   }
+  MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: actual signature passed.');
   cache.offset = actualSignature.length - cachedSignature.length;
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
-  const restored = await restoreTabsFromCache(windowId, { cache, tabs, permanentStates });
+  const restored = await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: restoreTabsFromCache', restoreTabsFromCache(windowId, { cache, tabs, permanentStates }));
   if (restored)
-    MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} success`);
+    MetricsData.add(`restoreWindowFromEffectiveWindowCache: window ${windowId} succeeded`);
   else
-    MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} fail`);
+    MetricsData.add(`restoreWindowFromEffectiveWindowCache: window ${windowId} failed`);
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restored = ${restored}`);
   return restored;

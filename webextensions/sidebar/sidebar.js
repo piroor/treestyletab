@@ -128,12 +128,10 @@ export async function init() {
   const promisedScrollPosition = browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
   const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
-  await MetricsData.addAsync('waitUntilBackgroundIsReady and waiting for promisedAllTabsTracked', async () => {
-    await Promise.all([
-      waitUntilBackgroundIsReady(),
-      promisedAllTabsTracked
-    ]);
-  });
+  await MetricsData.addAsync('waitUntilBackgroundIsReady and waiting for promisedAllTabsTracked', Promise.all([
+    waitUntilBackgroundIsReady(),
+    promisedAllTabsTracked
+  ]));
 
   let cachedContents;
   let restoredFromCache;
@@ -148,9 +146,7 @@ export async function init() {
           cachedContents = await SidebarCache.getEffectiveWindowCache({ tabs: nativeTabs });
         })
       ]);
-      await MetricsData.addAsync('parallel initialization: main: rebuildAll', async () => {
-        restoredFromCache = await rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar);
-      });
+      restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
       ApiTabsListener.startListen();
 
       browser.runtime.connect({

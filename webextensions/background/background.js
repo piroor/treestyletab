@@ -53,38 +53,40 @@ export const onTreeCompletelyAttached = new EventListenerManager();
 let mInitialized = false;
 
 export async function init() {
-  MetricsData.add('init start');
+  MetricsData.add('init: start');
   window.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
   SidebarStatus.startWatchOpenState();
 
   await configs.$loaded;
-  MetricsData.add('configs.$loaded');
+  MetricsData.add('init: configs.$loaded');
 
   Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
   configs.grantedRemovingTabIds = []; // clear!
-  MetricsData.add('Migration.migrateLegacyConfigs, Migration.migrateConfigs');
+  MetricsData.add('init: Migration.migrateLegacyConfigs, Migration.migrateConfigs');
 
   updatePanelUrl();
 
-  await MetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, ContextualIdentities.init', Promise.all([
+  await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored and ContextualIdentities.init', Promise.all([
     waitUntilCompletelyRestored(),
     ContextualIdentities.init()
   ]));
-  const restoredFromCache = await rebuildAll();
-  MetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
-  await TreeStructure.loadTreeStructure(restoredFromCache);
-  MetricsData.add('TreeStructure.loadTreeStructure done');
+  const restoredFromCache = await await MetricsData.addAsync('init: rebuildAll', async () => {
+    return rebuildAll();
+  });
+  await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', async () => {
+    return TreeStructure.loadTreeStructure(restoredFromCache);
+  });
 
   Migration.migrateLegacyTreeStructure();
-  MetricsData.add('Migration.migrateLegacyTreeStructure');
+  MetricsData.add('init: Migration.migrateLegacyTreeStructure');
 
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
-  MetricsData.add('started listening');
+  MetricsData.add('init: started listening');
 
   TabContextMenu.init().then(() => {
     ContextMenu.refreshItems();
@@ -101,7 +103,7 @@ export async function init() {
       }
     });
   });
-  MetricsData.add('started initializing of context menu');
+  MetricsData.add('init: started initializing of context menu');
 
   Permissions.clearRequest();
 
@@ -122,8 +124,9 @@ export async function init() {
     }
   }
 
-  await TSTAPI.initAsBackend();
-  MetricsData.add('TSTAPI.initAsBackend');
+  await MetricsData.addAsync('init: initializing API for other addons', async () => {
+    return TSTAPI.initAsBackend();
+  });
 
   mInitialized = true;
   onReady.dispatch();
@@ -185,13 +188,14 @@ function destroy() {
 }
 
 async function rebuildAll() {
-  const windows = await browser.windows.getAll({
+  const windows = await 
+  await MetricsData.addAsync('rebuildAll: getting all tabs across windows', browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
-  }).catch(ApiTabs.createErrorHandler());
+  }).catch(ApiTabs.createErrorHandler()));
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
-    await MetricsData.addAsync(`rebuild window ${window.id}`, async () => {
+    await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
       const trackedWindow = TabsStore.windows.get(window.id);
       if (!trackedWindow)
         Window.init(window.id);
@@ -199,18 +203,16 @@ async function rebuildAll() {
       for (const tab of window.tabs) {
         TabIdFixer.fixTab(tab);
         Tab.track(tab);
+        tryStartHandleAccelKeyOnTab(tab);
       }
       try {
         if (configs.useCachedTree) {
           log(`trying to restore window ${window.id} from cache`);
-          restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
+          restoredFromCache[window.id] = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
-          });
+          }));
           log(`window ${window.id}: restored from cache?: `, restoredFromCache[window.id]);
-          for (const tab of Tab.getAllTabs(window.id, { iterator: true })) {
-            tryStartHandleAccelKeyOnTab(tab);
-          }
           if (restoredFromCache[window.id])
             return;
         }

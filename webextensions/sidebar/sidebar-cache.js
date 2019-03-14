@@ -61,13 +61,11 @@ export async function getEffectiveWindowCache(options = {}) {
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', async () => {
-        [cache, tabsDirty, collapsedDirty] = await Promise.all([
-          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
-          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-          getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-        ]);
-      });
+      [cache, tabsDirty, collapsedDirty] = await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+      ]));
       cachedSignature = cache && cache.signature;
       log(`getEffectiveWindowCache: got from the owner `, mLastWindowCacheOwner, {
         cachedSignature, cache, tabsDirty, collapsedDirty
@@ -150,15 +148,13 @@ export async function restoreTabsFromCache(cache, params = {}) {
     mTabBar.setAttribute('style', cache.style);
   }
 
-  const restored = await MetricsData.addAsync('restoreTabsFromCache: restoring internally', async () => {
-    return (await DOMCache.restoreTabsFromCacheInternal({
-      windowId:     mTargetWindow,
-      tabs:         params.tabs,
-      offset:       offset,
-      cache:        cache.contents,
-      shouldUpdate: cache.tabsDirty
-    })).length > 0;
-  });
+  const restored = (await MetricsData.addAsync('restoreTabsFromCache: restoring internally', DOMCache.restoreTabsFromCacheInternal({
+    windowId:     mTargetWindow,
+    tabs:         params.tabs,
+    offset:       offset,
+    cache:        cache.contents,
+    shouldUpdate: cache.tabsDirty
+  }))).length > 0;
 
   if (restored) {
     try {

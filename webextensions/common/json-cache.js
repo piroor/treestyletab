@@ -7,12 +7,14 @@
 
 import {
   log as internalLogger,
-  dumpTab
+  dumpTab,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from './Tab.js';
 
@@ -54,6 +56,7 @@ export function signatureFromTabsCache(cache) {
 }
 
 export async function restoreTabsFromCacheInternal(params) {
+  MetricsData.add('restoreTabsFromCacheInternal: start');
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset = params.offset || 0;
   const window = TabsStore.windows.get(params.windowId);
@@ -69,20 +72,22 @@ export async function restoreTabsFromCacheInternal(params) {
     return [];
   }
   try {
-    await fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache, {
+    await MetricsData.addAsync('rebuildAll: fixupTabsRestoredFromCache', fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache, {
       dirty: params.shouldUpdate
-    });
+    }));
   }
   catch(e) {
     log(String(e), e.stack);
     throw e;
   }
   log('restoreTabsFromCacheInternal: done');
-  Tab.dumpAll();
+  if (configs.debug)
+    Tab.dumpAll();
   return tabs;
 }
 
 async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, options = {}) {
+  MetricsData.add('fixupTabsRestoredFromCache: start');
   if (tabs.length != cachedTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
   log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(dumpTab), cachedTabs });
@@ -96,6 +101,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
     idMap.set(oldId, tab);
     return tab;
   });
+  MetricsData.add('fixupTabsRestoredFromCache: step 1 done.');
   // step 2: restore information of tabs
   tabs.forEach((tab, index) => {
     fixupTabRestoredFromCache(tab, permanentStates[index], cachedTabs[index], {
@@ -107,6 +113,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
     TabsStore.updateIndexesForTab(tab);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   });
+  MetricsData.add('fixupTabsRestoredFromCache: step 2 done.');
 }
 
 function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}) {
