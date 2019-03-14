@@ -631,16 +631,16 @@ export function applyStatesToElement(tab) {
   if (parent &&
       (parent.$TST.collapsed ||
        parent.$TST.subtreeCollapsed)) {
-    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED))
       classList.add(Constants.kTAB_STATE_COLLAPSED);
+    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
       classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
-    }
   }
   else {
-    if (classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+    if (classList.contains(Constants.kTAB_STATE_COLLAPSED))
       classList.remove(Constants.kTAB_STATE_COLLAPSED);
+    if (classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
       classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
-    }
   }
 }
 
