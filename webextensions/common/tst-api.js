@@ -626,7 +626,7 @@ export async function doProgressively(tabs, task, interval) {
   for (const tab of tabs) {
     results.push(task(tab));
     if (interval && (Date.now() - lastStartAt >= interval)) {
-      await wait(10);
+      await wait(50);
       lastStartAt = Date.now();
     }
   }
