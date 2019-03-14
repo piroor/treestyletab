@@ -181,7 +181,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   for (const tabElement of tabElements) {
     const tab = tabElement.apiTab;
     SidebarTabs.applyStatesToElement(tab);
-    if (options.shouldUpdate)
+    if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
   MetricsData.add('fixupTabsRestoredFromCache: step 2 finished');
