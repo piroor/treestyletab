@@ -3,6 +3,8 @@
  - master/HEAD
    * Restore collapsed state of subtree more stably with large number of tabs.
    * Optimize startup process with cached data.
+   * Prevent to move restored tabs to a place impossible to be placed. This sometimes produced permanently broken tree which was unfixable even if you disable the cache.
+   * Prevent to open needless group tab when a new blank tab is reopened with a container inherited from the active tab.
    * Show throbber while waiting on group tabs.
    * Reduce freezing while updating contents of group tabs.
  - 2.8.4 (2019.3.12)
