@@ -108,8 +108,6 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
       idMap: idMap,
       dirty: options.dirty
     });
-    TabsStore.updateIndexesForTab(tab);
-    TabsUpdate.updateTab(tab, tab, { forceApply: true });
   });
   MetricsData.add('fixupTabsRestoredFromCache: step 2 done.');
 }
@@ -152,4 +150,8 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
+
+  TabsStore.updateIndexesForTab(tab);
+  if (options.dirty)
+    TabsUpdate.updateTab(tab, tab, { forceApply: true });
 }
