@@ -193,6 +193,16 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     ancestors:    ancestors.map(dumpTab).join(', '),
     children:     children.map(dumpTab).join(', ')
   });
+
+  // clear wrong positioning information
+  if (tab.pinned ||
+      (insertBefore && insertBefore.pinned))
+    insertBefore = null;
+  const nextOfInsertAfter = insertAfter && insertAfter.$TST.nextTab;
+  if (nextOfInsertAfter &&
+      nextOfInsertAfter.pinned)
+    insertAfter = null;
+
   let attached = false;
   const active = tab.active;
   for (const ancestor of ancestors) {
