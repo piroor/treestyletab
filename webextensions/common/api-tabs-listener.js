@@ -502,6 +502,8 @@ async function onNewTabTracked(tab) {
 
     // tab can be changed while creating!
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
+    if (!renewedTab)
+      throw new Error(`tab ${tab.id} is closed while tracking`);
     const changedProps = {};
     for (const key of Object.keys(renewedTab)) {
       if (tab[key] != renewedTab[key])
