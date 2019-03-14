@@ -713,7 +713,7 @@ export default class Tab {
   }
 
   async getPermanentStates() {
-    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.createErrorHandler());
+    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.handleMissingTabError);
     return states || [];
   }
 
