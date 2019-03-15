@@ -646,7 +646,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
 
   const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event));
-  dragData.individualOnOutside = !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
   if (!dragData.tab) {
     log('onDragStart: canceled / no dragged tab from drag data');
     return;
