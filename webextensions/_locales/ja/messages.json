@@ -287,7 +287,7 @@
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する（※新しいタブが独立したタブとして開かれた場合、直前までアクティブだったタブのコンテナーは継承しません）" },
 
 
   "config_treeBehavior_caption": { "message": "ツリーの挙動" },
