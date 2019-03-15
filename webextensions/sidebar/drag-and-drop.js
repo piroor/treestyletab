@@ -1024,7 +1024,7 @@ function onDrop(event) {
 }
 onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
-function onDragEnd(event) {
+async function onDragEnd(event) {
   log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs });
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
@@ -1081,9 +1081,15 @@ function onDragEnd(event) {
     return;
   }
 
+  const duplicate  = EventUtils.isAccelKeyPressed(event);
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
+  if (!duplicate) {
+    await await Tree.detachTabsFromTree(detachTabs, {
+      inRemote: true
+    });
+  }
   Tree.openNewWindowFromTabs(detachTabs, {
-    duplicate: EventUtils.isAccelKeyPressed(event),
+    duplicate,
     left:      event.screenX,
     top:       event.screenY,
     inRemote:  true
