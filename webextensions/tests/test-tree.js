@@ -26,11 +26,6 @@ export async function teardown() {
 
 
 export async function testAutoFixupForHiddenTabs() {
-  // tabs.hide() and tabs.show() are available on Firefox 61 and later
-  const browserInfo = await browser.runtime.getBrowserInfo();
-  if (parseInt(browserInfo.version.split('.')) < 61)
-    return;
-
   await Utils.setConfigs({
     fixupTreeOnTabVisibilityChanged: true,
     inheritContextualIdentityToNewChildTab: false,

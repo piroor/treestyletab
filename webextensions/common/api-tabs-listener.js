@@ -67,17 +67,9 @@ export function startListen() {
 
   browser.tabs.onActivated.addListener(onActivated);
 
-  let hasOnUpdated = false;
-  try {
-    if (typeof targetWindow === 'number') {
+  if (typeof targetWindow === 'number')
       browser.tabs.onUpdated.addListener(onUpdated, { windowId: targetWindow });
-      hasOnUpdated = true;
-    }
-  }
-  catch (_error) {
-    /* browser.tabs.onUpdated filter not supported (Firefox 60 or earlier) */
-  }
-  if (!hasOnUpdated)
+  else
     browser.tabs.onUpdated.addListener(onUpdated);
 
   browser.tabs.onHighlighted.addListener(onHighlighted);
@@ -124,8 +116,6 @@ function warnTabDestroyedWhileWaiting(tabId, tab) {
 }
 
 
-const mLastClosedWhileActiveResolvers = new Map(); // used only on Firefox 64 and older
-
 async function onActivated(activeInfo) {
   const targetWindow = TabsStore.getWindow();
   if (targetWindow && activeInfo.windowId != targetWindow)
@@ -140,7 +130,7 @@ async function onActivated(activeInfo) {
   try {
     const window = Window.init(activeInfo.windowId);
 
-    let byInternalOperation = window.internalFocusCount > 0;
+    const byInternalOperation = window.internalFocusCount > 0;
     if (byInternalOperation)
       window.internalFocusCount--;
     const silently = window.internalSilentlyFocusCount > 0;
@@ -161,31 +151,7 @@ async function onActivated(activeInfo) {
 
     log('tabs.onActivated: ', newActiveTab);
     const oldActiveTabs = TabsInternalOperation.setTabActive(newActiveTab);
-
-    let byActiveTabRemove = !activeInfo.previousTabId;
-    if (!('successorTabId' in newActiveTab)) { // on Firefox 64 or older
-      byActiveTabRemove = mLastClosedWhileActiveResolvers.has(window.id);
-      log('byActiveTabRemove = ', byActiveTabRemove);
-      if (byActiveTabRemove) {
-        window.tryingReforcusForClosingActiveTabCount++;
-        mLastClosedWhileActiveResolvers.get(window.id)();
-        delete mLastClosedWhileActiveResolvers.delete(window.id);
-        const focusRedirected = await window.focusRedirectedForClosingActiveTab;
-        delete window.focusRedirectedForClosingActiveTab;
-        if (window.tryingReforcusForClosingActiveTabCount > 0) // reduce count even if not redirected
-          window.tryingReforcusForClosingActiveTabCount--;
-        log('focusRedirected: ', focusRedirected);
-        if (focusRedirected) {
-          onCompleted();
-          return;
-        }
-      }
-      else if (window.tryingReforcusForClosingActiveTabCount > 0) { // treat as "redirected unintentional tab focus"
-        window.tryingReforcusForClosingActiveTabCount--;
-        byActiveTabRemove  = true;
-        byInternalOperation = false;
-      }
-    }
+    const byActiveTabRemove = !activeInfo.previousTabId;
 
     if (!TabsStore.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
@@ -585,13 +551,6 @@ async function onRemoved(tabId, removeInfo) {
 
     Tab.onStateChanged.dispatch(oldTab);
 
-    if (oldTab.active &&
-        !('successorTabId' in oldTab)) { // on Firefox 64 or older
-      const resolver = oldTab.$TST.fetchClosedWhileActiveResolver();
-      if (resolver)
-        mLastClosedWhileActiveResolvers.set(window.id, resolver);
-    }
-
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
     }));
@@ -667,13 +626,6 @@ async function onMoved(tabId, moveInfo) {
       warnTabDestroyedWhileWaiting(tabId, movedTab);
       return;
     }
-
-    // Old versions of Firefox (ex. ESR60) doesn't open a new tab at the
-    // position it should be placed at, instead they are moved immediately
-    // after tabs.onCreated. Then TST is still processing the newly opened
-    // tab, so we need to wait completion of the handling of the new tab.
-    if (!movedTab.$TST.openedCompletely)
-      await movedTab.$TST.opened;
 
     let oldPreviousTab = movedTab.$TST.previousTab;
     let oldNextTab     = movedTab.$TST.nextTab;
@@ -850,7 +802,6 @@ async function onDetached(tabId, detachInfo) {
 async function onWindowRemoved(windowId) {
   mTabsHighlightedTimers.delete(windowId);
   mLastHighlightedCount.delete(windowId);
-  mLastClosedWhileActiveResolvers.delete(windowId); // used only on Firefox 64 and older
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)

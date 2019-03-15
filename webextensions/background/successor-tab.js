@@ -24,21 +24,6 @@ function log(...args) {
 
 const mTabsToBeUpdated = new Set();
 
-// activate only on Firefox 65 and later
-if (typeof browser.tabs.moveInSuccession == 'function') {
-  Tab.onActivated.addListener(onActivated);
-  Tab.onCreating.addListener(onCreating);
-  Tab.onCreated.addListener(onCreated);
-  Tab.onRemoving.addListener(onRemoving);
-  Tab.onRemoved.addListener(onRemoved);
-  Tab.onMoved.addListener(onMoved);
-  Tab.onAttached.addListener(onAttached);
-  Tab.onDetached.addListener(onDetached);
-
-  Tree.onAttached.addListener(onTreeAttached);
-  Tree.onDetached.addListener(onTreeDetached);
-  Tree.onSubtreeCollapsedStateChanging.addListener(onSubtreeCollapsedStateChanging);
-}
 
 function setSuccessor(tabId, successorTabId = -1) {
   const tab          = Tab.get(tabId);
@@ -149,8 +134,7 @@ async function tryClearOwnerSuccessor(tab) {
   clearSuccessor(tab.id);
 }
 
-
-async function onActivated(tab, info = {}) {
+Tab.onActivated.addListener(async (tab, info = {}) => {
   update(tab.id);
   if (info.previousTabId) {
     const previousTab = Tab.get(info.previousTabId);
@@ -169,9 +153,9 @@ async function onActivated(tab, info = {}) {
     }
     update(info.previousTabId);
   }
-}
+});
 
-function onCreating(tab, info = {}) {
+Tab.onCreating.addListener((tab, info = {}) => {
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
       !configs.simulateSelectOwnerOnClose ||
       !info.activeTab)
@@ -201,15 +185,15 @@ function onCreating(tab, info = {}) {
     window.lastRelatedTabs.set(tab.openerTabId, tab.id);
     log(`set lastRelatedTab for ${tab.openerTabId}: ${dumpTab(tab)}`);
   });
-}
+});
 
-function onCreated(tab, _info = {}) {
+Tab.onCreated.addListener((tab, _info = {}) => {
   const activeTab = Tab.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
-}
+});
 
-function onRemoving(tab, removeInfo = {}) {
+Tab.onRemoving.addListener((tab, removeInfo = {}) => {
   if (removeInfo.isWindowClosing)
     return;
 
@@ -222,9 +206,9 @@ function onRemoving(tab, removeInfo = {}) {
   if (lastRelatedTab &&
       !lastRelatedTab.active)
     tryClearOwnerSuccessor(lastRelatedTab);
-}
+});
 
-function onRemoved(tab, info = {}) {
+Tab.onRemoved.addListener((tab, info = {}) => {
   const activeTab = Tab.getActiveTab(info.windowId);
   if (activeTab && !info.isWindowClosing)
     update(activeTab.id);
@@ -234,9 +218,9 @@ function onRemoved(tab, info = {}) {
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
   if (window.lastRelatedTabs)
     window.lastRelatedTabs.clear();
-}
+});
 
-function onMoved(tab, info = {}) {
+Tab.onMoved.addListener((tab, info = {}) => {
   const activeTab = Tab.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
@@ -247,15 +231,15 @@ function onMoved(tab, info = {}) {
     if (window.lastRelatedTabs)
       window.lastRelatedTabs.clear();
   }
-}
+});
 
-function onAttached(_tab, info = {}) {
+Tab.onAttached.addListener((_tab, info = {}) => {
   const activeTab = Tab.getActiveTab(info.newWindowId);
   if (activeTab)
     update(activeTab.id);
-}
+});
 
-function onDetached(_tab, info = {}) {
+Tab.onDetached.addListener((_tab, info = {}) => {
   const activeTab = Tab.getActiveTab(info.oldWindowId);
   if (activeTab)
     update(activeTab.id);
@@ -266,23 +250,22 @@ function onDetached(_tab, info = {}) {
     if (window.lastRelatedTabs)
       window.lastRelatedTabs.clear();
   }
-}
+});
 
-
-function onTreeAttached(child, _info = {}) {
+Tree.onAttached.addListener((child, _info = {}) => {
   const activeTab = Tab.getActiveTab(child.windowId);
   if (activeTab)
     update(activeTab.id);
-}
+});
 
-function onTreeDetached(child, _info = {}) {
+Tree.onDetached.addListener((child, _info = {}) => {
   const activeTab = Tab.getActiveTab(child.windowId);
   if (activeTab)
     update(activeTab.id);
-}
+});
 
-function onSubtreeCollapsedStateChanging(tab, _info = {}) {
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
   const activeTab = Tab.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
-}
+});

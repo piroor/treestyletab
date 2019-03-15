@@ -45,20 +45,6 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  if (tab.active &&
-      typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSiblingTab || tab.$TST.nextTab;
-    Tree.tryMoveFocusFromClosingActiveTab(tab, {
-      wasActive: tab.active,
-      params: {
-        active:          tab.active,
-        nextTab:         nextTab,
-        nextTabUrl:      nextTab && nextTab.url,
-        nextIsDiscarded: nextTab && nextTab.discarded
-      }
-    });
-  }
-
   if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
     return;
   log('Tabs.onRemoving: granted to close ', dumpTab(tab));
@@ -225,17 +211,6 @@ browser.windows.onRemoved.addListener(windowId  => {
 
 
 Tab.onDetached.addListener((tab, info = {}) => {
-  if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-    if (Tree.shouldApplyTreeBehavior(info)) {
-      Tree.tryMoveFocusFromClosingActiveTabNow(tab, {
-        ignoredTabs: tab.$TST.descendants
-      });
-      return;
-    }
-
-    Tree.tryMoveFocusFromClosingActiveTab(tab);
-  }
-
   log('Tabs.onDetached ', dumpTab(tab));
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)

@@ -33,7 +33,6 @@ import Window from '/common/Window.js';
 
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
-import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import './browser-action-menu.js';
 import './successor-tab.js';
@@ -89,21 +88,7 @@ export async function init() {
   onBuilt.dispatch();
   MetricsData.add('init: started listening');
 
-  TabContextMenu.init().then(() => {
-    ContextMenu.refreshItems();
-    configs.$addObserver(key => {
-      switch (key) {
-        case 'style':
-          updatePanelUrl();
-          break;
-
-        default:
-          if (key.indexOf('context_') == 0)
-            ContextMenu.refreshItems();
-          break;
-      }
-    });
-  });
+  TabContextMenu.init();
   MetricsData.add('init: started initializing of context menu');
 
   Permissions.clearRequest();
@@ -512,19 +497,24 @@ Tree.onDetached.addListener(async (tab, detachInfo) => {
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
 // This section should be removed and define those context-fill icons
-// statically on manifest.json after Firefox ESR66 (or 67) is released.
+// statically on manifest.json on future versions of Firefox.
 // See also: https://github.com/piroor/treestyletab/issues/2053
-async function applyThemeColorToIcon() {
-  const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
-  if (configs.applyThemeColorToIcon &&
-      parseInt(browserInfo.version.split('.')[0]) >= 62) {
+function applyThemeColorToIcon() {
+  if (configs.applyThemeColorToIcon) {
     const icons = { path: browser.runtime.getManifest().variable_color_icons };
     browser.browserAction.setIcon(icons);
     browser.sidebarAction.setIcon(icons);
   }
 }
-configs.$addObserver(key => {
-  if (key == 'applyThemeColorToIcon')
-    applyThemeColorToIcon();
-});
 configs.$loaded.then(applyThemeColorToIcon);
+
+configs.$addObserver(key => {
+  switch (key) {
+    case 'style':
+      updatePanelUrl();
+      break;
+    case 'applyThemeColorToIcon':
+      applyThemeColorToIcon();
+      break;
+  }
+});

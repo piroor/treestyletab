@@ -299,8 +299,6 @@ function onMouseDown(event) {
 
     if (event.button == 0 &&
         tab) {
-      const results = await DragAndDrop.legacyStartMultiDrag(tab, mousedown.detail.closebox);
-      if (results.some(result => result.result !== false)) {
         log('onMouseDown expired');
         mousedown.expired = true;
         onMessage({
@@ -308,7 +306,6 @@ function onMouseDown(event) {
           windowId: mTargetWindow,
           button:   event.button
         });
-      }
     }
   }, configs.longPressDuration);
 }

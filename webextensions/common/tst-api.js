@@ -610,13 +610,7 @@ async function getTabsFromWrongIds(ids, sender) {
   }));
   log('=> ', tabs);
 
-  let flattenTabs;
-  if (typeof Array.prototype.flat !== 'function') // Firefox 61 or older
-    flattenTabs = tabs.reduce((acc, val) => acc.concat(val), []);
-  else
-    flattenTabs = tabs.flat();
-
-  return flattenTabs.filter(tab => !!tab);
+  return tabs.flat().filter(tab => !!tab);
 }
 
 export async function doProgressively(tabs, task, interval) {

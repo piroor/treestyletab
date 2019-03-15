@@ -87,19 +87,9 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
       if (configs.requestingPermissionsNatively)
         return;
 
-      // Following code will throw error on Firefox 60 and earlier (but not on Firefox ESR 60)
-      // due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-      // Also must not have used await before calling browser.permissions.request or it will throw an error.
-      let granted;
-      try {
-        configs.requestingPermissionsNatively = permissions;
-        granted = await browser.permissions.request(permissions).catch(ApiTabs.createErrorHandler());
-      }
-      catch (_error) {
-      }
-      finally {
-        configs.requestingPermissionsNatively = null;
-      }
+      configs.requestingPermissionsNatively = permissions;
+      let granted = await browser.permissions.request(permissions).catch(ApiTabs.createErrorHandler());
+      configs.requestingPermissionsNatively = null;
 
       if (granted === undefined)
         granted = await isGranted(permissions);

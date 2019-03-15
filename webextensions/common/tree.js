@@ -52,7 +52,6 @@ import * as SidebarStatus from './sidebar-status.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as TabsMove from './tabs-move.js';
-import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
 
@@ -840,172 +839,6 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
 
 // operate tabs based on tree information
 
-/*
-These functions are not used on Firefox 65 and later. We should remove
-them after Firefox 64 and older versions are completely outdated.
-
- * By https://bugzilla.mozilla.org/show_bug.cgi?id=1366290 when the
-   current tab is closed, Firefox notifies tabs.onTabRemoved at first
-   and tabs.onActivated at later.
- * Basically the next (right) tab will be active when the current tab
-   is closed, except the closed tab was the last tab.
-   * If the closed current tab was the last tab, then the previous tab
-     is active.
- * However, if the tab has "owner", it will be active instead of the
-   right tab if `browser.tabs.selectOwnerOnClose` == `true`.
-   * The owner tab must be one of preceding tabs, because Firefox never
-     open tab leftside (by default).
-     So, if the next (right) tab is active, it definitely caused by
-     the closing of the current tab - except "switch to tab" command
-     from the location bar.
-     https://bugzilla.mozilla.org/show_bug.cgi?id=1405262
-     https://github.com/piroor/treestyletab/issues/1409
-
-So, if I ignore the bug 1405262 / issue #1409 case, "the next (right)
-tab is active after the current (active) tab is closed" means that the
-focus move is unintentional and TST can override it.
-*/
-export function tryMoveFocusFromClosingActiveTab(tab, options = {}) {
-  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
-    return;
-  log('tryMoveFocusFromClosingActiveTab', tab.id, options);
-  if (!options.wasActive && !tab.active) {
-    log(' => not active tab');
-    return;
-  }
-  const window = TabsStore.windows.get(tab.windowId);
-  window.focusRedirectedForClosingActiveTab = tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options);
-}
-async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = {}) {
-  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
-    return false;
-  log('tryMoveFocusFromClosingActiveTabOnFocusRedirected ', tab.id, options);
-
-  // The tab can be closed while we waiting.
-  // Thus we need to get tabs related to tab at first.
-  const params      = getTryMoveFocusFromClosingActiveTabNowParams(tab, options.params);
-  const nextTab     = tab.$TST.nextTab;
-  const previousTab = tab.$TST.previousTab;
-
-  await tab.$TST.closedWhileActive;
-  log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
-
-  const oldSuccessor = Tab.getActiveTab(tab.windowId);
-  const nextOfOldSuccessor = oldSuccessor && oldSuccessor.$TST.nextTab;
-  if (oldSuccessor != nextTab &&
-      (oldSuccessor != previousTab ||
-       (nextOfOldSuccessor &&
-        nextOfOldSuccessor != tab))) {
-    // possibly it is active by browser.tabs.selectOwnerOnClose
-    log('=> the tab seems active intentionally: ', {
-      oldSuccessor,
-      nextOfOldSuccessor,
-      previousTab,
-      nextTab
-    });
-    return false;
-  }
-  return tryMoveFocusFromClosingActiveTabNow(tab, { params });
-}
-function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
-  const parentTab = tab.$TST.parent;
-  const params = {
-    active:                   tab.active,
-    pinned:                   tab.pinned,
-    parentTab,
-    firstChildTab:            tab.$TST.firstChild,
-    firstChildTabOfParent:    parentTab && parentTab.$TST.firstChild,
-    lastChildTabOfParent:     parentTab && parentTab.$TST.lastChild,
-    nearestVisiblePrecedingTab: tab.$TST.nearestVisiblePrecedingTab,
-    preDetectedSuccessor:     tab.$TST.findSuccessor(),
-    serializedTab:            TSTAPI.serializeTab(tab),
-    closeParentBehavior:      getCloseParentBehaviorForTab(tab, { parentTab })
-  };
-  if (overrideParams)
-    return Object.assign({}, params, overrideParams);
-  return params;
-}
-
-export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
-  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
-    return false;
-  const params = options.params || getTryMoveFocusFromClosingActiveTabNowParams(tab);
-  if (options.ignoredTabs)
-    params.ignoredTabs = options.ignoredTabs;
-  const {
-    active,
-    nextTab, nextTabUrl, nextIsDiscarded,
-    parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
-    nearestVisiblePrecedingTab, preDetectedSuccessor,
-    serializedTab, closeParentBehavior
-  } = params;
-  let {
-    ignoredTabs
-  } = params;
-
-  log('tryMoveFocusFromClosingActiveTabNow ', params);
-  if (!active) {
-    log(' => not active tab');
-    return false;
-  }
-
-  const results = await TSTAPI.sendMessage({
-    type:   TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
-    tab:    serializedTab,
-    window: tab.windowId,
-    windowId: tab.windowId
-  });
-  if (results.some(result => result && result.result)) // canceled
-    return false;
-
-  let successor = null;
-  if (firstChildTab &&
-      (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
-       closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
-    successor = firstChildTab;
-  log('focus to first child?: ', !!successor);
-
-  ignoredTabs = ignoredTabs || [];
-  if (parentTab) {
-    log(`tab=${dumpTab(tab)}, parent=${dumpTab(parentTab)}, successor=${dumpTab(successor)}, lastChildTabOfParent=${dumpTab(lastChildTabOfParent)}, nearestVisiblePrecedingTab=${dumpTab(nearestVisiblePrecedingTab)}`);
-    if (!successor && tab == lastChildTabOfParent) {
-      if (tab == firstChildTabOfParent) { // this is the really last child
-        successor = parentTab;
-        log('focus to parent?: ', !!successor);
-      }
-      else {
-        successor = nearestVisiblePrecedingTab;
-        log('focus to visible preceding?: ', !!successor);
-      }
-    }
-    if (successor && ignoredTabs.includes(successor))
-      successor = parentTab.$TST.findSuccessor({ ignoredTabs });
-  }
-  else if (!successor) {
-    successor = preDetectedSuccessor;
-    log('focus to parentTab.$TST.findSuccessor()?: ', !!successor);
-  }
-  if (successor && ignoredTabs.includes(successor)) {
-    successor = successor.$TST.findSuccessor({ ignoredTabs });
-    log('focus to successor.$TST.findSuccessor() again?: ', !!successor);
-  }
-
-  if (!successor ||
-      successor.hidden ||
-      successor.active)
-    return false;
-
-  if (nextTab.active &&
-      nextIsDiscarded) {
-    log('reserve to discard accidentally restored tab ', nextTab.id, nextTabUrl || nextTab.url);
-    nextTab.$TST.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.url;
-  }
-
-  log('focus to: ', successor.id);
-  await TabsInternalOperation.activateTab(successor);
-  return true;
-}
-
 export function getCloseParentBehaviorForTab(tab, options = {}) {
   if (!options.asIndividualTab &&
       tab.$TST.subtreeCollapsed &&
@@ -1294,14 +1127,6 @@ export async function moveTabs(tabs, options = {}) {
         toIndex--;
       log(' => ', toIndex);
       if (isAcrossWindows) {
-        if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-          for (const tab of tabs) {
-            if (!tab.active)
-              continue;
-            await tryMoveFocusFromClosingActiveTabNow(tab, { ignoredTabs: tabs });
-            break;
-          }
-        }
         movedTabs = await ApiTabs.safeMoveAcrossWindows(movedTabIds, {
           windowId: destinationWindowId,
           index:    toIndex

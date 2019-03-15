@@ -111,22 +111,6 @@ export function isCapturingForDragging() {
   return mCapturingForDragging;
 }
 
-// for backward compatibility with Multiple Tab Handler 2.x on Firefox ESR60
-export async function legacyStartMultiDrag(tab, isClosebox) {
-  const windowId = TabsStore.getWindow();
-  const results = await TSTAPI.sendMessage({
-    type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
-    tab:    TSTAPI.serializeTab(tab),
-    window: windowId,
-    windowId,
-    startOnClosebox: isClosebox
-  });
-  if (results.every(result => result && result.result !== false)) {
-    mReadyToCaptureMouseEvents = true;
-  }
-  return results;
-}
-
 export function endMultiDrag(tab, coordinates) {
   const serializedTab = tab && TSTAPI.serializeTab(tab);
   if (mCapturingForDragging) {

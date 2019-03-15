@@ -216,7 +216,7 @@
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
   "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する" },
-  "config_applyThemeColorToIcon_label_info": { "message": "（※Firefox 62以降で、「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
+  "config_applyThemeColorToIcon_label_info": { "message": "（※「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },
@@ -357,7 +357,7 @@
   "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },
 
   "config_simulateCloseTabByDblclick_label": { "message": "ダブルクリックでタブを閉じる（※Firefox組み込みの機能である\"browser.tabs.closeTabByDblclick\"=\"true\"の再現）" },
-  "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefox 63以降での組み込みの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
+  "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefoxの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },

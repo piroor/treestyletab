@@ -75,13 +75,8 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
   let tabs = await Utils.createTabs({
     A: { index: 1, active: false },
     B: { index: 2, openerTabId: 'A', active: false },
-    // We need to setup D before C, because tabs opened with "index" and
-    // "openerTabId" are unexpectedly placed just after the parent tab
-    // instead the location specified with "index", on Firefox ESR60.
-    // After Firefox ESR60 become out ouf support, we should relocate
-    // the definition of D after C for readability.
-    D: { index: 3, openerTabId: 'A', active: false },
     C: { index: 3, openerTabId: 'B', active: false },
+    D: { index: 3, openerTabId: 'A', active: false },
     E: { index: 5, active: false }
   }, { windowId: win.id });
   // deactivate the effect of the "browser.tabs.selectOwnerOnClose"

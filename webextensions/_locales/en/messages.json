@@ -220,7 +220,7 @@
   "config_animation_label": { "message": "Enable animation effects" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_applyThemeColorToIcon_label": { "message": "Apply theme color to the toolbar button" },
-  "config_applyThemeColorToIcon_label_info": { "message": "(*You need to set \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\" on Firefox 62 or later)" },
+  "config_applyThemeColorToIcon_label_info": { "message": "(*You need to set \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\")" },
 
 
   "config_context_caption": { "message": "Context Menu" },
@@ -361,7 +361,7 @@
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
   "config_simulateCloseTabByDblclick_label": { "message": "Close tab by double click (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
-  "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" on Firefox 63 and later)" },
+  "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },

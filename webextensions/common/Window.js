@@ -43,7 +43,6 @@ export default class Window {
       this.doingIntelligentlyCollapseExpandCount =
       this.internalFocusCount =
       this.internalSilentlyFocusCount =
-      this.tryingReforcusForClosingActiveTabCount = // used only on Firefox 64 and older
       this.duplicatingTabsCount = 0;
 
     this.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;

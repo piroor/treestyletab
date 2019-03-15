@@ -62,11 +62,6 @@ export async function testInheritContainerFromAutoAttachedParent() {
 }
 
 export async function testDoNotInheritContainerFromExplicitParent() {
-  // Firefox 60 always inherits cookieStoreId of the opener tab.
-  const browserInfo = await browser.runtime.getBrowserInfo();
-  if (parseInt(browserInfo.version.split('.')) < 61)
-    return;
-
   await Utils.setConfigs({
     inheritContextualIdentityToNewChildTab: true
   });
