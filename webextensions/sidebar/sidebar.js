@@ -409,7 +409,6 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
-    // update tab based on current status
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);

@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Officially drop support for Firefox ESR60, and all 2.8.x versions are now marked as unsupported for ESR60.
    * Dragging of a parent tab now always move whole tree when it is dropped inside sidebar area, even if you configure TST to detach/drop only the dragged individual tab.
    * Dragged multiselected tabs or individual tab are now safely detached from the original tree, when dragged tabs are going to be detached to a new window.
    * Add preview images for some options.
