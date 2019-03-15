@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Dragging of a parent tab now always move whole tree when it is dropped inside sidebar area, even if you configure TST to detach/drop only the dragged individual tab.
+   * Dragged multiselected tabs or individual tab are now safely detached from the original tree, when dragged tabs are going to be detached to a new window.
+   * Add preview images for some options.
  - 2.8.5 (2019.3.14)
    * Restore collapsed state of subtree more stably with large number of tabs.
    * Optimize startup process with cached data.
