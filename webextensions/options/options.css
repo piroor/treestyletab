@@ -62,8 +62,35 @@ label input[type="checkbox"] ~ img {
   margin-bottom: 0.15em;
 }
 
-select {
-  max-width: 30em;
+.preview-image {
+  background: no-repeat;
+  background-size: contain;
+  box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.45);
+  display: inline-block;
+  height: 125px /*83px*/;
+  margin-left: 0.5em;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 1.5em;
+  transition: opacity 0.25s ease-out;
+  width: 120px /*80px*/;
+}
+.has-preview-image:hover .preview-image {
+  opacity: 1;
+}
+.has-preview-image[data-value="0"] .preview-image {
+  background-image: url("as-independent.png");
+}
+.has-preview-image[data-value="1"] .preview-image {
+  background-image: url("as-child.png");
+}
+.has-preview-image[data-value="2"] .preview-image {
+  background-image: url("as-sibling.png");
+}
+.has-preview-image[data-value="3"] .preview-image {
+  background-image: url("as-next-sibling.png");
 }
 
 

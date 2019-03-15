@@ -273,6 +273,35 @@ window.addEventListener('DOMContentLoaded', () => {
       checkbox.addEventListener('change', onChangeMasterChacekbox);
     }
 
+    for (const previewImage of document.querySelectorAll('select ~ .preview-image')) {
+      const container = previewImage.parentNode;
+      container.classList.add('has-preview-image');
+      const select = container.querySelector('select');
+      container.dataset.value = select.dataset.value = select.value;
+      container.addEventListener('mouseover', event => {
+        if (event.target != select &&
+            select.contains(event.target))
+          return;
+        const rect = select.getBoundingClientRect();
+        previewImage.style.left = `${rect.left}px`;
+        previewImage.style.top  = `${rect.bottom + 5}px`;
+      });
+      select.addEventListener('change', () => {
+        container.dataset.value = select.dataset.value = select.value;
+      });
+      select.addEventListener('mouseover', event => {
+        if (event.target == select)
+          return;
+        container.dataset.value = select.dataset.value = event.target.value;
+        const rect = select.getBoundingClientRect();
+        previewImage.style.left = `${rect.left}px`;
+        previewImage.style.top  = `${rect.top - 5 - previewImage.offsetHeight}px`;
+      });
+      select.addEventListener('mouseout', () => {
+        container.dataset.value = select.dataset.value = select.value;
+      });
+    }
+
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');
     onConfigChanged('successorTabControlLevel');
