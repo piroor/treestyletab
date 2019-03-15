@@ -166,18 +166,16 @@ function setDragData(dragData) {
 
 /* helpers */
 
-function getDragDataFromOneTab(tab, options = {}) {
+function getDragDataFromOneTab(tab) {
   if (!tab)
     return {
       tab:      null,
       tabs:     [],
       windowId: null
     };
-
-  const draggedTabs = options.shouldIgnoreDescendants ? [tab] : getDraggedTabsFromOneTab(tab);
   return {
     tab:      tab,
-    tabs:     draggedTabs,
+    tabs:     getDraggedTabsFromOneTab(tab),
     windowId: tab.windowId
   };
 }
@@ -192,7 +190,8 @@ function sanitizeDragData(dragData) {
   return {
     tab:      dragData.tab && dragData.tab.$TST.sanitized,
     tabs:     dragData.tabs.map(tab => tab && tab.$TST.sanitized),
-    windowId: dragData.windowId
+    windowId: dragData.windowId,
+    individualOnOutside: dragData.individualOnOutside
   };
 }
 
@@ -644,12 +643,10 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const behavior = 'behavior' in options ? options.behavior :
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
-  const shouldIgnoreDescendants = !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
   const allowBookmark           = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
 
-  const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event), {
-    shouldIgnoreDescendants
-  });
+  const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event));
+  dragData.individualOnOutside = !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
   if (!dragData.tab) {
     log('onDragStart: canceled / no dragged tab from drag data');
     return;
@@ -716,8 +713,11 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   for (const draggedTab of dragData.tabs) {
     draggedTab.$TST.addState(Constants.kTAB_STATE_DRAGGING);
     TabsStore.addDraggingTab(draggedTab);
+    if (!dragData.individualOnOutside ||
+        mozUrl.length == 0) {
     mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
     urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
+    }
   }
   if (allowBookmark) {
     log('set kTYPE_X_MOZ_URL');
@@ -1081,7 +1081,8 @@ function onDragEnd(event) {
     return;
   }
 
-  Tree.openNewWindowFromTabs(dragData.tabs, {
+  const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
+  Tree.openNewWindowFromTabs(detachTabs, {
     duplicate: EventUtils.isAccelKeyPressed(event),
     left:      event.screenX,
     top:       event.screenY,
