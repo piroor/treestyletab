@@ -643,7 +643,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const behavior = 'behavior' in options ? options.behavior :
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
-  const allowBookmark           = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
+  const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
 
   const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event));
   dragData.individualOnOutside = !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
@@ -715,8 +715,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     TabsStore.addDraggingTab(draggedTab);
     if (!dragData.individualOnOutside ||
         mozUrl.length == 0) {
-    mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
-    urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
+      mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
+      urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
     }
   }
   if (allowBookmark) {
