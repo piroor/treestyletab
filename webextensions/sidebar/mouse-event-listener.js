@@ -299,13 +299,13 @@ function onMouseDown(event) {
 
     if (event.button == 0 &&
         tab) {
-        log('onMouseDown expired');
-        mousedown.expired = true;
-        onMessage({
-          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
-          windowId: mTargetWindow,
-          button:   event.button
-        });
+      log('onMouseDown expired');
+      mousedown.expired = true;
+      onMessage({
+        type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
+        windowId: mTargetWindow,
+        button:   event.button
+      });
     }
   }, configs.longPressDuration);
 }

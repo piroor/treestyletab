@@ -68,7 +68,7 @@ export function startListen() {
   browser.tabs.onActivated.addListener(onActivated);
 
   if (typeof targetWindow === 'number')
-      browser.tabs.onUpdated.addListener(onUpdated, { windowId: targetWindow });
+    browser.tabs.onUpdated.addListener(onUpdated, { windowId: targetWindow });
   else
     browser.tabs.onUpdated.addListener(onUpdated);
 
