@@ -410,6 +410,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
+    SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
   }
