@@ -48,6 +48,7 @@ export default class Tab {
     this.id  = tab.id;
 
     this.element = null;
+    this.classList = null;
     this.promisedElement = new Promise((resolve, _reject) => {
       this._promisedElementResolver = resolve;
     });
@@ -113,6 +114,7 @@ export default class Tab {
       delete this.element.$TST;
       delete this.element.apiTab;
       delete this.element;
+      delete this.classList;
     }
     delete this;
     delete this.tab;
@@ -132,6 +134,7 @@ export default class Tab {
 
   bindElement(element) {
     this.element = element;
+    this.classList = element.classList;
     setTimeout(() => { // wait until initialization processes are completed
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
@@ -141,6 +144,11 @@ export default class Tab {
       }
       Tab.onElementBound.dispatch(this.tab);
     }, 0);
+  }
+
+  unbindElement() {
+    this.element = null;
+    this.classList = null;
   }
 
   startMoving() {
@@ -652,8 +660,8 @@ export default class Tab {
   //===================================================================
 
   async addState(state, options = {}) {
-    if (this.element)
-      this.element.classList.add(state);
+    if (this.classList)
+      this.classList.add(state);
     if (this.states)
       this.states.add(state);
 
@@ -682,8 +690,8 @@ export default class Tab {
   }
 
   async removeState(state, options = {}) {
-    if (this.element)
-      this.element.classList.remove(state);
+    if (this.classList)
+      this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
 

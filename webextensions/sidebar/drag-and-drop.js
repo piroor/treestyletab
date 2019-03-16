@@ -447,7 +447,7 @@ export function clearDraggingTabsState() {
 
 export function clearDraggingState() {
   const window = TabsStore.windows.get(TabsStore.getWindow());
-  window.element.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  window.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }
@@ -715,7 +715,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dt.setDragImage(options.tab.$TST.element, event.clientX - tabRect.left, event.clientY - tabRect.top);
   }
 
-  TabsStore.windows.get(TabsStore.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  TabsStore.windows.get(TabsStore.getWindow()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   // The drag operation can be canceled by something, then
@@ -847,7 +847,7 @@ function onDragEnter(event) {
         info.dragData.tabs.some(tab => tab.id == enteredTab.id)
       );
     }
-    TabsStore.windows.get(TabsStore.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
+    TabsStore.windows.get(TabsStore.getWindow()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
     document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   }
   catch(_e) {

@@ -706,9 +706,9 @@ Tab.onHighlightedTabsChanged.addListener(windowId => {
   if (!window || !window.element || !allHighlightedTabs)
     return;
   if (allHighlightedTabs.size > 1)
-    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   else
-    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
 });
 
 

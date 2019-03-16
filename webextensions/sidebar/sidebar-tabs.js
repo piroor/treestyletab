@@ -453,7 +453,7 @@ Window.onInitialized.addListener(windowId => {
   container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
   container.$TST = TabsStore.windows.get(windowId);
-  container.$TST.element = container;
+  container.$TST.bindElement(container);
 });
 
 Tab.onInitialized.addListener((tab, info) => {
@@ -472,7 +472,7 @@ Tab.onInitialized.addListener((tab, info) => {
   tabElement.$TST = tab.$TST;
   tabElement.apiTab = tab;
 
-  tabElement.classList.add('tab');
+  tab.$TST.classList.add('tab');
   tab.$TST.setAttribute('id', id);
   tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
   tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
@@ -563,7 +563,7 @@ const IGNORE_CLASS_STATES = new Set([
 
 export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
-  const classList = tabElement.classList;
+  const classList = tab.$TST.classList;
 
   for (const state of classList) {
     if (IGNORE_CLASS_STATES.has(state) ||
@@ -629,8 +629,7 @@ export function applyStatesToElement(tab) {
 }
 
 export function applyCollapseExpandStateToElement(tab) {
-  const tabElement = tab.$TST.element;
-  const classList = tabElement.classList;
+  const classList = tab.$TST.classList;
   const parent = tab.$TST.parent;
   if (parent &&
       (parent.$TST.collapsed ||

@@ -32,6 +32,7 @@ export default class Window {
     this.order = [];
 
     this.element = null;
+    this.classList = null;
 
     this.internalMovingTabs  = new Set();
     this.alreadyMovedTabs    = new Set();
@@ -75,11 +76,22 @@ export default class Window {
       if (element.parentNode && !element.hasChildNodes())
         element.parentNode.removeChild(element);
       delete this.element;
+      delete this.classList;
     }
 
     delete this.tabs;
     delete this.order;
     delete this.id;
+  }
+
+  bindElement(element) {
+    this.element = element;
+    this.classList = element.classList;
+  }
+
+  unbindElement() {
+    this.element = null;
+    this.classList = null;
   }
 
   getOrderedTabs(startId, endId, tabs) {
