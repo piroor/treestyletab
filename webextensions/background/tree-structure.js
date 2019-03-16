@@ -268,10 +268,13 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   }
 
-  if (options.canCollapse || options.bulk) {
+  const subtreeCollapsed = states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  if ((options.canCollapse || options.bulk) &&
+      tab.$TST.subtreeCollapsed != subtreeCollapsed) {
     Tree.collapseExpandSubtree(tab, {
       broadcast: true,
-      collapsed: states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED)
+      collapsed: subtreeCollapsed,
+      justNow:   true
     });
   }
   browser.runtime.sendMessage({
