@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.8.6 (2019.3.16)
    * Officially drop support for Firefox ESR60, and all 2.8.x versions are now marked as unsupported for ESR60.
    * Fix unexpectedly visible (expanded) tabs under logically collapsed tree on the startup session restoration.
    * Dragging of a parent tab now always move whole tree when it is dropped inside sidebar area, even if you configure TST to detach/drop only the dragged individual tab.
@@ -39,6 +40,7 @@
    * Tree strucutre is correctly maintained when new tab is opened at middle of existing tree. (regression on 2.8.0)
    * Update shortcut config menu items on the toolbar button, following to changes on 2.8.0.
  - 2.8.0 (2019.3.5)
+   * Drop support for Firefox ESR60.
    * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
    * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
