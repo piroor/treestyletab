@@ -11,12 +11,17 @@ import {
 import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/sidebar-status', ...args);
 }
 
+export const onResponse = new EventListenerManager();
+
 let mOpenState;
+const mReceivers = new Map();
 const mFocusState = new Map();
 
 export function isOpen(windowId) {
@@ -29,6 +34,21 @@ export function isWatchingOpenState() {
 
 export function hasFocus(windowId) {
   return mFocusState.has(windowId)
+}
+
+export function sendMessage(message) {
+  if (!mOpenState)
+    throw new Error('not initialized yet');
+
+  if (message.windowId) {
+    mOpenState.get(message.windowId).postMessage(message);
+    return;
+  }
+
+  // broadcast
+  for (const port of mOpenState.values()) {
+    port.postMessage(message);
+  }
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
@@ -56,7 +76,10 @@ export function startWatchOpenState() {
     if (!matcher.test(port.name))
       return;
     const windowId = parseInt(port.name.replace(matcher, ''));
-    mOpenState.set(windowId, true);
+    mOpenState.set(windowId, port);
+    const receiver = message => onResponse.dispatch(windowId, message);
+    port.onMessage.addListener(receiver);
+    mReceivers.set(windowId, receiver);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
       window: windowId,
@@ -64,6 +87,8 @@ export function startWatchOpenState() {
     });
     port.onDisconnect.addListener(_message => {
       mOpenState.delete(windowId);
+      port.onMessage.removeListener(receiver);
+      mReceivers.delete(windowId);
       mFocusState.delete(windowId);
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,

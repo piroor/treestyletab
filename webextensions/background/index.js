@@ -11,6 +11,7 @@ import {
 
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
@@ -44,3 +45,4 @@ window.log = log;
 window.gMetricsData = MetricsData;
 window.Tab = Tab;
 window.TabsStore = TabsStore;
+window.SidebarStatus = SidebarStatus;

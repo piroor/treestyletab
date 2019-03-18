@@ -57,6 +57,7 @@ export const onReady   = new EventListenerManager();
 let mStyle;
 let mTargetWindow = null;
 let mInitialized = false;
+let mConnectionPort = null;
 
 const mTabBar                     = document.querySelector('#tabbar');
 const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
@@ -144,9 +145,10 @@ export async function init() {
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
       ApiTabsListener.startListen();
 
-      browser.runtime.connect({
+      mConnectionPort = browser.runtime.connect({
         name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${mTargetWindow}`
       });
+      mConnectionPort.onMessage.addListener(onConnectionMessage);
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       else
@@ -1057,5 +1059,13 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
       return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
+  }
+}
+
+function onConnectionMessage(message) {
+  switch (message.type) {
+    case 'echo': // for testing
+      mConnectionPort.postMessage(message);
+      break;
   }
 }
