@@ -254,6 +254,7 @@ export const configs = new Configs({
     'common/tst-api': false,
     'common/unique-id': false,
     'common/user-operation-blocker': false,
+    'sidebar/background': false,
     'sidebar/collapse-expand': false,
     'sidebar/color': false,
     'sidebar/dom-cache': false,
