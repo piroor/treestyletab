@@ -20,7 +20,7 @@ import * as TabsOpen from '/common/tabs-open.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Sidebar from '/common/sidebar.js';
 import * as Commands from '/common/commands.js';
 import * as Permissions from '/common/permissions.js';
 
@@ -87,7 +87,7 @@ function onToolbarButtonClick(tab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (SidebarStatus.isOpen(tab.windowId))
+  if (Sidebar.isOpen(tab.windowId))
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();

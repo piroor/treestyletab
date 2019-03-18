@@ -19,7 +19,7 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
-import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -36,7 +36,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     return;
 
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
-  if (!SidebarStatus.isOpen(tab.windowId) &&
+  if (!Sidebar.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       tab.$TST.subtreeCollapsed)
     Tree.collapseExpandSubtree(tab, {

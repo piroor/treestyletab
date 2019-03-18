@@ -19,7 +19,7 @@ import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
-import * as SidebarStatus from './sidebar-status.js';
+import * as Sidebar from './sidebar.js';
 
 import Tab from './Tab.js';
 
@@ -126,7 +126,7 @@ export async function bookmarkTree(root, options = {}) {
     tabs.shift();
 
   const tab = tabs[0];
-  if (SidebarStatus.isOpen(tab.windowId)) {
+  if (Sidebar.isOpen(tab.windowId)) {
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
@@ -653,7 +653,7 @@ export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && tab.$TST.multiselected)
     return bookmarkTabs(Tab.getSelectedTabs(tab.windowId));
 
-  if (SidebarStatus.isOpen(tab.windowId)) {
+  if (Sidebar.isOpen(tab.windowId)) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
@@ -675,7 +675,7 @@ export async function bookmarkTab(tab, options = {}) {
 export async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
-  if (SidebarStatus.isOpen(tabs[0].windowId)) {
+  if (Sidebar.isOpen(tabs[0].windowId)) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,

@@ -243,7 +243,7 @@ export const configs = new Configs({
     'common/json-cache': false,
     'common/migration': false,
     'common/permissions': false,
-    'common/sidebar-status': false,
+    'common/sidebar': false,
     'common/tabs-group': false,
     'common/tabs-internal-operation': false,
     'common/tabs-move': false,

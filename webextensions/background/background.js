@@ -24,7 +24,7 @@ import * as Tree from '/common/tree.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Sidebar from '/common/sidebar.js';
 import * as Commands from '/common/commands.js';
 import * as Migration from '/common/migration.js';
 
@@ -56,7 +56,7 @@ export async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
-  SidebarStatus.startWatchOpenState();
+  Sidebar.startWatchOpenState();
 
   await configs.$loaded;
   MetricsData.add('init: configs.$loaded');
@@ -121,7 +121,7 @@ export async function init() {
 
   // notify that the master process is ready.
   for (const window of TabsStore.windows.values()) {
-    if (SidebarStatus.isOpen(window.id))
+    if (Sidebar.isOpen(window.id))
       continue;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
@@ -398,8 +398,8 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
   if (!granted ||
       /^(about|chrome|resource):/.test(tabs[0].url) ||
       (!options.showInTab &&
-       SidebarStatus.isOpen(options.windowId) &&
-       SidebarStatus.hasFocus(options.windowId)))
+       Sidebar.isOpen(options.windowId) &&
+       Sidebar.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       tabIds:   tabs.map(tab => tab.id),
