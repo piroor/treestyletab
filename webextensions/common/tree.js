@@ -96,7 +96,6 @@ export async function attachTabTo(child, parent, options = {}) {
     forceExpand:      options.forceExpand,
     dontExpand:       options.dontExpand,
     delayedMove:      options.delayedMove,
-    inBackground:         options.inBackground,
     broadcast:        options.broadcast,
     broadcasted:      options.broadcasted,
     stack:            `${new Error().stack}\n${options.stack || ''}`
@@ -188,24 +187,21 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   }));
 
-  if (options.broadcast) {
-    browser.runtime.sendMessage({
-      type:             Constants.kCOMMAND_ATTACH_TAB_TO,
-      windowId:         child.windowId,
-      childId:          child.id,
-      parentId:         parent.id,
-      insertAt:         options.insertAt,
-      insertBeforeId:   options.insertBefore && options.insertBefore.id,
-      insertAfterId:    options.insertAfter && options.insertAfter.id,
-      dontMove:         !!options.dontMove,
-      dontUpdateIndent: !!options.dontUpdateIndent,
-      forceExpand:      !!options.forceExpand,
-      dontExpand:       !!options.dontExpand,
-      justNow:          !!options.justNow,
-      broadcasted:      !!options.broadcast,
-      stack:            new Error().stack
-    }).catch(ApiTabs.createErrorSuppressor());
-  }
+  Sidebar.sendMessage({
+    type:             Constants.kCOMMAND_ATTACH_TAB_TO,
+    windowId:         child.windowId,
+    childId:          child.id,
+    parentId:         parent.id,
+    insertAt:         options.insertAt,
+    insertBeforeId:   options.insertBefore && options.insertBefore.id,
+    insertAfterId:    options.insertAfter && options.insertAfter.id,
+    dontMove:         !!options.dontMove,
+    dontUpdateIndent: !!options.dontUpdateIndent,
+    forceExpand:      !!options.forceExpand,
+    dontExpand:       !!options.dontExpand,
+    justNow:          !!options.justNow,
+    stack:            new Error().stack
+  });
 
   return moved;
 }
@@ -321,15 +317,12 @@ export function detachTab(child, options = {}) {
     oldParentTab: parent
   });
 
-  if (options.inBackground || options.broadcast) {
-    browser.runtime.sendMessage({
-      type:        Constants.kCOMMAND_DETACH_TAB,
-      windowId:    child.windowId,
-      tabId:       child.id,
-      broadcasted: !!options.broadcast,
-      stack:       new Error().stack
-    }).catch(ApiTabs.createErrorSuppressor());
-  }
+  Sidebar.sendMessage({
+    type:        Constants.kCOMMAND_DETACH_TAB,
+    windowId:    child.windowId,
+    tabId:       child.id,
+    stack:       new Error().stack
+  });
 }
 
 export async function detachTabsFromTree(tabs, options = {}) {
@@ -450,13 +443,11 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       log(' => kNEWTAB_OPEN_AS_ORPHAN');
       detachTab(tab, {
-        inBackground:  options.inBackground,
         broadcast: options.broadcast
       });
       if (tab.$TST.nextTab)
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
-          delayedMove: true,
-          inBackground: options.inBackground
+          delayedMove: true
         });
       return false;
 
@@ -466,7 +457,6 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         dontMove:    options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
         forceExpand: true,
         delayedMove: true,
-        inBackground:    options.inBackground,
         broadcast:   options.broadcast
       });
 
@@ -476,19 +466,16 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       if (parent) {
         await attachTabTo(tab, parent, {
           delayedMove: true,
-          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         return true;
       }
       else {
         detachTab(tab, {
-          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
-          delayedMove: true,
-          inBackground: options.inBackground
+          delayedMove: true
         });
       }
     };
@@ -504,25 +491,21 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           insertBefore: nextSibling,
           insertAfter:  baseTab.$TST.lastDescendant || baseTab,
           delayedMove:  true,
-          inBackground:     options.inBackground,
           broadcast:    options.broadcast
         });
       }
       else {
         detachTab(tab, {
-          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         if (nextSibling)
           return TabsMove.moveTabBefore(tab, nextSibling, {
             delayedMove: true,
-            inBackground:  options.inBackground,
             broadcast: options.broadcast
           });
         else
           return TabsMove.moveTabAfter(tab, baseTab.$TST.lastDescendant, {
             delayedMove: true,
-            inBackground:  options.inBackground,
             broadcast: options.broadcast
           });
       }
@@ -601,23 +584,21 @@ export async function collapseExpandSubtree(tab, params = {}) {
   params.collapsed = !!params.collapsed;
   if (!tab || !TabsStore.ensureLivingTab(tab))
     return;
-  const remoteParams = {
-    type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
-    windowId:        tab.windowId,
-    tabId:           tab.id,
-    collapsed:       params.collapsed,
-    manualOperation: !!params.manualOperation,
-    justNow:         !!params.justNow,
-    broadcasted:     !!params.broadcast,
-    stack:           new Error().stack
-  };
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
     return;
   params.stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await Promise.all([
     collapseExpandSubtreeInternal(tab, params),
-    params.broadcast && browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor())
+    Sidebar.sendMessage({
+      type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+      windowId:        tab.windowId,
+      tabId:           tab.id,
+      collapsed:       params.collapsed,
+      manualOperation: !!params.manualOperation,
+      justNow:         !!params.justNow,
+      stack:           new Error().stack
+    })
   ]);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
 }
@@ -744,17 +725,15 @@ export async function collapseExpandTab(tab, params = {}) {
 
   Tab.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
 
-  if (params.broadcast && !params.broadcasted) {
-    browser.runtime.sendMessage({
-      type:      Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE,
-      windowId:  tab.windowId,
-      tabId:     tab.id,
-      justNow:   params.justNow,
-      collapsed: params.collapsed,
-      stack:     stack,
-      byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
-    }).catch(ApiTabs.createErrorSuppressor());
-  }
+  Sidebar.sendMessage({
+    type:      Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE,
+    windowId:  tab.windowId,
+    tabId:     tab.id,
+    justNow:   params.justNow,
+    collapsed: params.collapsed,
+    stack,
+    byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
+  });
 }
 
 export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
@@ -980,22 +959,6 @@ export async function moveTabs(tabs, options = {}) {
   const isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
   options.insertAfter = options.insertAfter || Tab.getLastTab(destinationWindowId);
-
-  if (options.inBackground) {
-    const response = await browser.runtime.sendMessage(Object.assign({}, options, {
-      type:                Constants.kCOMMAND_MOVE_TABS,
-      windowId:            windowId,
-      tabIds:              tabs.map(tab => tab.id),
-      insertBefore:        null,
-      insertAfter:         null,
-      insertBeforeId:      options.insertBefore && options.insertBefore.id,
-      insertAfterId:       options.insertAfter && options.insertAfter.id,
-      duplicate:           !!options.duplicate,
-      destinationWindowId: destinationWindowId,
-      inBackground:            false
-    })).catch(ApiTabs.createErrorHandler());
-    return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
-  }
 
   let movedTabs = tabs;
   const structure = getTreeStructureFromTabs(tabs);

@@ -20,6 +20,7 @@ import * as TabsGroup from '/common/tabs-group.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -152,11 +153,12 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       if (opener) {
         if (opener &&
             opener.favIconUrl) {
-          browser.runtime.sendMessage({
+          Sidebar.sendMessage({
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+            windowId:   groupTab.windowId,
             tab:        groupTab.id,
             favIconUrl: opener.favIconUrl
-          }).catch(ApiTabs.createErrorSuppressor());
+          });
         }
         newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title);
       }

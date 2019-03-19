@@ -60,7 +60,6 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       log('  expand by forceExpand option');
       Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
         collapsed: false,
-        inBackground:  false,
         broadcast: true
       }));
     }

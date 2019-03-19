@@ -9,8 +9,8 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
+import * as Sidebar from './sidebar.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -30,16 +30,16 @@ export function block(options = {}) {
 }
 
 export function blockIn(windowId, options = {}) {
-  const window = TabsStore.getWindow();
-  if (window && window != windowId)
+  const targetWindow = TabsStore.getWindow();
+  if (targetWindow && targetWindow != windowId)
     return;
 
-  if (!window) {
-    browser.runtime.sendMessage({
+  if (!targetWindow) {
+    Sidebar.sendMessage({
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
-      windowId: windowId,
+      windowId,
       throbber: !!options.throbber
-    }).catch(ApiTabs.createErrorSuppressor());
+    });
     return;
   }
   block(options);
@@ -60,16 +60,16 @@ export function unblock(_options = {}) {
 }
 
 export function unblockIn(windowId, options = {}) {
-  const window = TabsStore.getWindow();
-  if (window && window != windowId)
+  const targetWindow = TabsStore.getWindow();
+  if (targetWindow && targetWindow != windowId)
     return;
 
-  if (!window) {
-    browser.runtime.sendMessage({
+  if (!targetWindow) {
+    Sidebar.sendMessage({
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
-      windowId: windowId,
+      windowId,
       throbber: !!options.throbber
-    }).catch(ApiTabs.createErrorSuppressor());
+    });
     return;
   }
   unblock(options);

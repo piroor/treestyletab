@@ -38,17 +38,21 @@ export function hasFocus(windowId) {
 
 export function sendMessage(message) {
   if (!mOpenState)
-    throw new Error('not initialized yet');
+    return false;
 
   if (message.windowId) {
-    mOpenState.get(message.windowId).postMessage(message);
-    return;
+    const port = mOpenState.get(message.windowId);
+    if (!port)
+      return false;
+    port.postMessage(message);
+    return true;
   }
 
   // broadcast
   for (const port of mOpenState.values()) {
     port.postMessage(message);
   }
+  return true;
 }
 
 export function init() {

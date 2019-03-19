@@ -45,9 +45,11 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
 
+import * as Background from './background.js';
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
@@ -236,4 +238,44 @@ Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
   const manager = mTabCollapsedStateChangedManagers.get(tab.id);
   if (manager)
     manager.dispatch(tab, info);
+});
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
+      return Tree.doTreeChangeFromRemote(async () => {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+        const tab = Tab.get(message.tabId);
+        if (!tab)
+          return;
+        const params = {
+          collapsed: message.collapsed,
+          justNow:   message.justNow,
+          stack:     message.stack
+        };
+        if (message.manualOperation)
+          Tree.manualCollapseExpandSubtree(tab, params);
+        else
+          Tree.collapseExpandSubtree(tab, params);
+      });
+
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
+      return (async () => {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+        const tab = Tab.get(message.tabId);
+        if (!tab)
+          return;
+        // Tree's collapsed state can be changed before this message is delivered,
+        // so we should ignore obsolete messages.
+        if (message.byAncestor &&
+            message.collapsed != tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
+          return;
+        Tree.collapseExpandTab(tab, {
+          collapsed:   message.collapsed,
+          justNow:     message.justNow,
+          broadcasted: true,
+          stack:       message.stack
+        });
+      })();
+  }
 });

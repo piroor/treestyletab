@@ -47,6 +47,7 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as TabsStore from './tabs-store.js';
+import * as Sidebar from './sidebar.js';
 import { SequenceMatcher } from './diff.js';
 
 import Tab from './Tab.js';
@@ -379,10 +380,10 @@ async function syncToNativeTabsInternal(windowId) {
     // tabs.onMoved produced by this operation can break the order of tabs
     // in the sidebar, so we need to synchronize complete order of tabs after
     // all.
-    browser.runtime.sendMessage({
+    Sidebar.sendMessage({
       type: Constants.kCOMMAND_SYNC_TABS_ORDER,
       windowId
-    }).catch(ApiTabs.createErrorSuppressor());
+    });
 
     // Multiple times asynchronous tab move is unstable, so we retry again
     // for safety until all tabs are completely synchronized.

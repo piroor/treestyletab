@@ -21,6 +21,8 @@ import { SequenceMatcher } from '/common/diff.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
+import * as Background from './background.js';
+
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 function log(...args) {
@@ -282,7 +284,7 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-export async function reserveToUpdateSoundButtonTooltip(tab) {
+async function reserveToUpdateSoundButtonTooltip(tab) {
   if (tab.$TST.reservedUpdateSoundButtonTooltip)
     return;
   tab.$TST.reservedUpdateSoundButtonTooltip = () => {
@@ -893,5 +895,39 @@ configs.$addObserver(changedKey => {
         endObserveTabsOverflow();
       }
       break;
+  }
+});
+
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_SYNC_TABS_ORDER:
+      reserveToSyncTabsOrder();
+      break;
+
+    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
+      if (!message.tabIds.length)
+        break;
+      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      const add    = message.add || [];
+      const remove = message.remove || [];
+      log('apply broadcasted tab state ', message.tabIds, {
+        add:    add.join(','),
+        remove: remove.join(',')
+      });
+      const modified = add.concat(remove);
+      for (const id of message.tabIds) {
+        const tab = Tab.get(id);
+        if (!tab)
+          continue;
+        add.forEach(state => tab.$TST.addState(state));
+        remove.forEach(state => tab.$TST.removeState(state));
+        if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.includes(Constants.kTAB_STATE_MUTED)) {
+          reserveToUpdateSoundButtonTooltip(tab);
+        }
+      }
+    }; break;
   }
 });

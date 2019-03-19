@@ -14,6 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as Sidebar from '/common/sidebar.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -153,11 +154,11 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab);
-  browser.runtime.sendMessage({
+  Sidebar.sendMessage({
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
     tab:    tab.id,
     window: tab.windowId
-  }).catch(ApiTabs.createErrorSuppressor());
+  });
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
@@ -277,11 +278,11 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       justNow:   true
     });
   }
-  browser.runtime.sendMessage({
+  Sidebar.sendMessage({
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
     tab:    tab.id,
     window: tab.windowId
-  }).catch(ApiTabs.createErrorSuppressor());
+  });
 }
 
 

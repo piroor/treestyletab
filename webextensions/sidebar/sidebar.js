@@ -865,63 +865,6 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_PING_TO_SIDEBAR:
       return Promise.resolve(true);
 
-    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
-      RestoringTabCount.increment();
-      break;
-
-    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
-      RestoringTabCount.decrement();
-      break;
-
-    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
-      (async () => {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (tab)
-          Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
-      })();
-      break;
-
-    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      return Tree.doTreeChangeFromRemote(async () => {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        const params = {
-          collapsed: message.collapsed,
-          justNow:   message.justNow,
-          stack:     message.stack
-        };
-        if (message.manualOperation)
-          Tree.manualCollapseExpandSubtree(tab, params);
-        else
-          Tree.collapseExpandSubtree(tab, params);
-      });
-
-    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        // Tree's collapsed state can be changed before this message is delivered,
-        // so we should ignore obsolete messages.
-        if (message.byAncestor &&
-            message.collapsed != tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
-          return;
-        Tree.collapseExpandTab(tab, {
-          collapsed:   message.collapsed,
-          justNow:     message.justNow,
-          broadcasted: true,
-          stack:       message.stack
-        });
-      })();
-
-    case Constants.kCOMMAND_SYNC_TABS_ORDER:
-      SidebarTabs.reserveToSyncTabsOrder();
-      break;
-
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         const tabIds = message.tabIds.concat([message.nextTabId]);
@@ -954,6 +897,41 @@ function onMessage(message, _sender, _respond) {
         });
       })();
 
+    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
+      log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
+      return confirmToCloseTabs(message.tabIds);
+
+    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
+      return Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
+
+    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
+      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
+  }
+}
+
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)));
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab)
+        Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
+    }; break;
+
+    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
+      UserOperationBlocker.blockIn(mTargetWindow, message);
+      break;
+
+    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS:
+      UserOperationBlocker.unblockIn(mTargetWindow, message);
+      break;
+
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return Tree.doTreeChangeFromRemote(async () => {
         await Promise.all([
@@ -982,61 +960,5 @@ function onMessage(message, _sender, _respond) {
         if (tab)
           Tree.detachTab(tab, message);
       });
-
-    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
-      UserOperationBlocker.blockIn(mTargetWindow, message);
-      break;
-
-    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS:
-      UserOperationBlocker.unblockIn(mTargetWindow, message);
-      break;
-
-    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
-      if (!message.tabIds.length)
-        break;
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabIds, { element: true });
-        const add    = message.add || [];
-        const remove = message.remove || [];
-        log('apply broadcasted tab state ', message.tabIds, {
-          add:    add.join(','),
-          remove: remove.join(',')
-        });
-        const modified = add.concat(remove);
-        for (const id of message.tabIds) {
-          const tab = Tab.get(id);
-          if (!tab)
-            continue;
-          add.forEach(state => tab.$TST.addState(state));
-          remove.forEach(state => tab.$TST.removeState(state));
-          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
-              modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
-              modified.includes(Constants.kTAB_STATE_MUTED)) {
-            SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
-          }
-        }
-      })();
-    }; break;
-
-    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
-      log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
-      return confirmToCloseTabs(message.tabIds);
-
-
-    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
-      return Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
-
-    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
-      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
-  }
-}
-
-
-Background.onMessage.addListener(async message => {
-  switch (message.type) {
-    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
-      TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)));
-      break;
   }
 });
