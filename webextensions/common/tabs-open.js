@@ -111,85 +111,85 @@ export async function openURIsInTabs(uris, options = {}) {
     throw new Error('missing loading target window\n' + new Error().stack);
 
   return Tab.doAndGetNewTabs(async () => {
-      await Tab.waitUntilTrackedAll(options.windowId);
-      await TabsMove.waitUntilSynchronized(options.windowId);
-      const startIndex = Tab.calculateNewTabIndex(options);
-      log('startIndex: ', startIndex);
-      const window = TabsStore.windows.get(options.windowId);
-      window.toBeOpenedTabsWithPositions += uris.length;
-      if (options.isOrphan)
-        window.toBeOpenedOrphanTabs += uris.length;
-      return Promise.all(uris.map(async (uri, index) => {
-        const params = {
-          windowId: options.windowId,
-          active:   index == 0 && !options.inBackground
-        };
-        let searchQuery = null;
-        if (uri) {
-          if (SEARCH_PREFIX_MATCHER.test(uri)) {
-            const query = uri.replace(SEARCH_PREFIX_MATCHER, '');
-            if (browser.search &&
-                typeof browser.search.search == 'function')
-              searchQuery = query;
-            else
-              params.url = configs.defaultSearchEngine.replace(/%s/gi, query);
-          }
-          else {
-            params.url = uri;
-          }
+    await Tab.waitUntilTrackedAll(options.windowId);
+    await TabsMove.waitUntilSynchronized(options.windowId);
+    const startIndex = Tab.calculateNewTabIndex(options);
+    log('startIndex: ', startIndex);
+    const window = TabsStore.windows.get(options.windowId);
+    window.toBeOpenedTabsWithPositions += uris.length;
+    if (options.isOrphan)
+      window.toBeOpenedOrphanTabs += uris.length;
+    return Promise.all(uris.map(async (uri, index) => {
+      const params = {
+        windowId: options.windowId,
+        active:   index == 0 && !options.inBackground
+      };
+      let searchQuery = null;
+      if (uri) {
+        if (SEARCH_PREFIX_MATCHER.test(uri)) {
+          const query = uri.replace(SEARCH_PREFIX_MATCHER, '');
+          if (browser.search &&
+              typeof browser.search.search == 'function')
+            searchQuery = query;
+          else
+            params.url = configs.defaultSearchEngine.replace(/%s/gi, query);
         }
-        if (options.opener)
-          params.openerTabId = options.opener.id;
-        if (startIndex > -1)
-          params.index = startIndex + index;
-        if (options.cookieStoreId)
-          params.cookieStoreId = options.cookieStoreId;
+        else {
+          params.url = uri;
+        }
+      }
+      if (options.opener)
+        params.openerTabId = options.opener.id;
+      if (startIndex > -1)
+        params.index = startIndex + index;
+      if (options.cookieStoreId)
+        params.cookieStoreId = options.cookieStoreId;
         // Tabs opened with different container can take time to be tracked,
         // then TabsStore.waitUntilTabsAreCreated() may be resolved before it is
         // tracked like as "the tab is already closed". So we wait until the
         // tab is correctly tracked.
-        const promisedNewTabTracked = new Promise((resolve, reject) => {
-          const listener = (tab) => {
-            Tab.onCreating.removeListener(listener);
-            browser.tabs.get(tab.id)
-              .then(resolve)
-              .catch(ApiTabs.createErrorSuppressor(reject));
-          };
-          Tab.onCreating.addListener(listener);
+      const promisedNewTabTracked = new Promise((resolve, reject) => {
+        const listener = (tab) => {
+          Tab.onCreating.removeListener(listener);
+          browser.tabs.get(tab.id)
+            .then(resolve)
+            .catch(ApiTabs.createErrorSuppressor(reject));
+        };
+        Tab.onCreating.addListener(listener);
+      });
+      const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
+      await Promise.all([
+        promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
+        searchQuery && browser.search.search({
+          query: searchQuery,
+          tabId: createdTab.id
+        }).catch(ApiTabs.createErrorHandler())
+      ]);
+      const tab = Tab.get(createdTab.id);
+      log('created tab: ', tab);
+      if (!tab)
+        throw new Error('tab is already closed');
+      if (!options.opener &&
+          options.parent &&
+          !options.isOrphan)
+        await Tree.attachTabTo(tab, options.parent, {
+          insertBefore: options.insertBefore,
+          insertAfter:  options.insertAfter,
+          forceExpand:  params.active,
+          broadcast:    true
         });
-        const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
-        await Promise.all([
-          promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
-          searchQuery && browser.search.search({
-            query: searchQuery,
-            tabId: createdTab.id
-          }).catch(ApiTabs.createErrorHandler())
-        ]);
-        const tab = Tab.get(createdTab.id);
-        log('created tab: ', tab);
-        if (!tab)
-          throw new Error('tab is already closed');
-        if (!options.opener &&
-            options.parent &&
-            !options.isOrphan)
-          await Tree.attachTabTo(tab, options.parent, {
-            insertBefore: options.insertBefore,
-            insertAfter:  options.insertAfter,
-            forceExpand:  params.active,
-            broadcast:    true
-          });
-        else if (options.insertBefore)
-          await TabsMove.moveTabInternallyBefore(tab, options.insertBefore, {
-            broadcast: true
-          });
-        else if (options.insertAfter)
-          await TabsMove.moveTabInternallyAfter(tab, options.insertAfter, {
-            broadcast: true
-          });
-        log('tab is opened.');
-        await tab.$TST.opened;
-        return tab;
-      }));
+      else if (options.insertBefore)
+        await TabsMove.moveTabInternallyBefore(tab, options.insertBefore, {
+          broadcast: true
+        });
+      else if (options.insertAfter)
+        await TabsMove.moveTabInternallyAfter(tab, options.insertAfter, {
+          broadcast: true
+        });
+      log('tab is opened.');
+      await tab.$TST.opened;
+      return tab;
+    }));
   }, options.windowId);
 }
 
