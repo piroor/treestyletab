@@ -474,7 +474,7 @@ function onExternalMessage(message, sender) {
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {
-        const tab      = message.tab ? (await browser.tabs.get(message.tab).catch(ApiTabs.createErrorHandler())) : null ;
+        const tab      = message.tab ? Tab.get(message.tab) : null ;
         const windowId = message.window || tab && tab.windowId;
         if (windowId != TabsStore.getWindow())
           return;
