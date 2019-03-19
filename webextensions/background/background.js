@@ -194,6 +194,7 @@ async function rebuildAll() {
       for (const tab of window.tabs) {
         TabIdFixer.fixTab(tab);
         Tab.track(tab);
+        Tab.init(tab, { existing: true });
         tryStartHandleAccelKeyOnTab(tab);
       }
       try {
@@ -215,7 +216,7 @@ async function rebuildAll() {
         log(`build tabs for ${window.id} from scratch`);
         Window.init(window.id);
         for (let tab of window.tabs) {
-          tab = Tab.init(tab, { existing: true });
+          tab = Tab.get(tab.id);
           tab.$TST.clear(); // clear dirty restored states
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
           tryStartHandleAccelKeyOnTab(tab);

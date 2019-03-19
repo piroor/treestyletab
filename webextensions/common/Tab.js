@@ -62,10 +62,9 @@ export default class Tab {
       originalId:    null,
       originalTabId: null
     };
-    if (tab.id)
-      this.promisedUniqueId = this.updateUniqueId();
-    else
-      this.promisedUniqueId = Promise.resolve(this.uniqueId);
+    this.promisedUniqueId = new Promise((resolve, _reject) => {
+      this.onUniqueIdGenerated = resolve;
+    });
 
     TabsStore.tabs.set(tab.id, tab);
 
@@ -1001,6 +1000,7 @@ Tab.init = (tab, options = {}) => {
   if (trackedTab)
     tab = trackedTab;
   tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
+  tab.$TST.updateUniqueId().then(tab.$TST.onUniqueIdGenerated);
 
   if (tab.active)
     tab.$TST.addState(Constants.kTAB_STATE_ACTIVE);

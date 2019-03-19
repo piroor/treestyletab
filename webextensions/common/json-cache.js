@@ -96,7 +96,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
   tabs = tabs.map((tab, index) => {
     const cachedTab = cachedTabs[index];
     const oldId     = cachedTab.id;
-    tab = Tab.init(tab, { existing: true });
+    tab = Tab.get(tab.id);
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     idMap.set(oldId, tab);
     return tab;

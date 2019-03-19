@@ -264,7 +264,8 @@ function onMessage(message, sender) {
   switch (message.type) {
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
-        await Tab.waitUntilTracked(message.tabId);
+        if (!Tab.get(message.tabId))
+          await Tab.waitUntilTracked(message.tabId);
         return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
