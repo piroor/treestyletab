@@ -652,11 +652,11 @@ export async function bookmarkTab(tab, options = {}) {
     return bookmarkTabs(Tab.getSelectedTabs(tab.windowId));
 
   if (Sidebar.isOpen(tab.windowId)) {
-    browser.runtime.sendMessage({
+    Sidebar.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
       tabId:    tab.id
-    }).catch(ApiTabs.createErrorSuppressor());
+    });
   }
   else {
     await Bookmark.bookmarkTab(tab);
@@ -674,11 +674,11 @@ export async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
   if (Sidebar.isOpen(tabs[0].windowId)) {
-    browser.runtime.sendMessage({
+    Sidebar.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
-    }).catch(ApiTabs.createErrorSuppressor());
+    });
   }
   else {
     const folder = await Bookmark.bookmarkTabs(tabs);

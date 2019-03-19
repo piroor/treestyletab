@@ -19,7 +19,6 @@ import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as TabsMove from '/common/tabs-move.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
@@ -862,47 +861,9 @@ function onMessage(message, _sender, _respond) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
-    case Constants.kCOMMAND_MOVE_TABS_BEFORE:
-      return (async () => {
-        const tabIds = message.tabIds.concat([message.nextTabId]);
-        await Tab.waitUntilTracked(tabIds, { element: true });
-        return TabsMove.moveTabsBefore(
-          message.tabIds.map(id => Tab.get(id)),
-          message.nextTabId && Tab.get(message.nextTabId),
-          message
-        ).then(tabs => {
-          // Asynchronously broadcasted movement can break the order of tabs,
-          // so we trigger synchronization for safety.
-          SidebarTabs.reserveToSyncTabsOrder();
-          return tabs.map(tab => tab.id);
-        });
-      })();
-
-    case Constants.kCOMMAND_MOVE_TABS_AFTER:
-      return (async () => {
-        const tabIds = message.tabIds.concat([message.previousTabId]);
-        await Tab.waitUntilTracked(tabIds, { element: true });
-        return TabsMove.moveTabsAfter(
-          message.tabIds.map(id => Tab.get(id)),
-          message.previousTabId && Tab.get(message.previousTabId),
-          message
-        ).then(tabs => {
-          // Asynchronously broadcasted movement can break the order of tabs,
-          // so we trigger synchronization for safety.
-          SidebarTabs.reserveToSyncTabsOrder();
-          return tabs.map(tab => tab.id);
-        });
-      })();
-
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
       log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
       return confirmToCloseTabs(message.tabIds);
-
-    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
-      return Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
-
-    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
-      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
   }
 }
 
@@ -957,5 +918,13 @@ Background.onMessage.addListener(async message => {
         if (tab)
           Tree.detachTab(tab, message);
       });
+
+    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
+      Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
+      break;
+
+    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
+      Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
+      break;
   }
 });

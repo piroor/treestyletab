@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as TabsMove from '/common/tabs-move.js';
 import * as Tree from '/common/tree.js';
 import { SequenceMatcher } from '/common/diff.js';
 
@@ -928,6 +929,32 @@ Background.onMessage.addListener(async message => {
           reserveToUpdateSoundButtonTooltip(tab);
         }
       }
+    }; break;
+
+    case Constants.kCOMMAND_MOVE_TABS_BEFORE: {
+      const tabIds = message.tabIds.concat([message.nextTabId]);
+      await Tab.waitUntilTracked(tabIds, { element: true });
+      await TabsMove.moveTabsBefore(
+        message.tabIds.map(id => Tab.get(id)),
+        message.nextTabId && Tab.get(message.nextTabId),
+        message
+      );
+      // Asynchronously broadcasted movement can break the order of tabs,
+      // so we trigger synchronization for safety.
+      reserveToSyncTabsOrder();
+    }; break;
+
+    case Constants.kCOMMAND_MOVE_TABS_AFTER: {
+      const tabIds = message.tabIds.concat([message.previousTabId]);
+      await Tab.waitUntilTracked(tabIds, { element: true });
+      await TabsMove.moveTabsAfter(
+        message.tabIds.map(id => Tab.get(id)),
+        message.previousTabId && Tab.get(message.previousTabId),
+        message
+      );
+      // Asynchronously broadcasted movement can break the order of tabs,
+      // so we trigger synchronization for safety.
+      reserveToSyncTabsOrder();
     }; break;
   }
 });

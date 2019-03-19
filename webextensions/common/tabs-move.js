@@ -87,22 +87,12 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
-  if (options.inBackground || options.broadcast) {
-    const message = {
-      type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
-      windowId:    tabs[0].windowId,
-      tabIds:      tabs.map(tab => tab.id),
-      nextTabId:   referenceTab.id,
-      broadcasted: !!options.broadcast
-    };
-    if (options.inBackground) {
-      const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
-      return tabIds.map(id => Tab.get(id));
-    }
-    else {
-      browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-    }
-  }
+  Sidebar.sendMessage({
+    type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
+    windowId:    tabs[0].windowId,
+    tabIds:      tabs.map(tab => tab.id),
+    nextTabId:   referenceTab.id
+  });
 
   try {
     /*
@@ -140,7 +130,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
           .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
-    if (!options.broadcasted) {
+    if (Sidebar.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
       syncToNativeTabs(tabs);
@@ -180,22 +170,12 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
-  if (options.inBackground || options.broadcast) {
-    const message = {
-      type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
-      windowId:      tabs[0].windowId,
-      tabIds:        tabs.map(tab => tab.id),
-      previousTabId: referenceTab.id,
-      broadcasted:   !!options.broadcast
-    };
-    if (options.inBackground) {
-      const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
-      return tabIds.map(id => Tab.get(id));
-    }
-    else {
-      browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-    }
-  }
+  Sidebar.sendMessage({
+    type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
+    windowId:      tabs[0].windowId,
+    tabIds:        tabs.map(tab => tab.id),
+    previousTabId: referenceTab.id
+  });
 
   try {
     /*
@@ -242,7 +222,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
-    if (!options.broadcasted) {
+    if (Sidebar.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
       syncToNativeTabs(tabs);
