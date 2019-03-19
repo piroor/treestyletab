@@ -17,6 +17,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
+import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -257,3 +258,16 @@ function onMessage(message, sender) {
       })();
   }
 }
+
+Sidebar.onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_SELECT_TAB: {
+      await Tab.waitUntilTracked(message.tabId);
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      browser.tabs.update(tab.id, { active: true })
+        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    }; break;
+  }
+});

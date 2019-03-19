@@ -16,7 +16,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsMove from '/common/tabs-move.js';
-import * as TabsOpen from '/common/tabs-open.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -291,28 +290,6 @@ function onMessage(message, sender) {
         return { structure };
       })();
 
-    case Constants.kCOMMAND_LOAD_URI:
-      return TabsOpen.loadURI(message.uri, Object.assign({}, message.options, {
-        tab:      Tab.get(message.options.tabId),
-        inBackground: false
-      }));
-
-    case Constants.kCOMMAND_NEW_TABS:
-      return (async () => {
-        await Tab.waitUntilTracked([
-          message.parentId,
-          message.insertBeforeId,
-          message.insertAfterId
-        ]);
-        log('new tabs requested: ', message);
-        return TabsOpen.openURIsInTabs(message.uris, Object.assign({}, message, {
-          opener:       Tab.get(message.openerId),
-          parent:       Tab.get(message.parentId),
-          insertBefore: Tab.get(message.insertBeforeId),
-          insertAfter:  Tab.get(message.insertAfterId)
-        })).then(tabs => tabs.map(tab => tab.id));
-      })();
-
     case Constants.kCOMMAND_MOVE_TABS:
       return (async () => {
         log('move tabs requested: ', message);
@@ -325,12 +302,6 @@ function onMessage(message, sender) {
           })
         );
         return { movedTabs: movedTabs.map(tab => tab.id) };
-      })();
-
-    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabIds);
-        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
       })();
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
@@ -385,27 +356,6 @@ function onMessage(message, sender) {
         });
 
         return true;
-      })();
-
-    case Constants.kCOMMAND_SELECT_TAB:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabId);
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        browser.tabs.update(tab.id, { active: true })
-          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-      })();
-
-    case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabId);
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        TabsInternalOperation.activateTab(tab, Object.assign({}, message.options, {
-          inBackground: false
-        }));
       })();
 
     case Constants.kCOMMAND_SET_SUBTREE_MUTED:

@@ -42,10 +42,12 @@ import {
   log as internalLogger,
   configs
 } from './common.js';
+import * as Constants from '/common/constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
+import * as Sidebar from './sidebar.js';
 
 import Tab from './Tab.js';
 
@@ -193,3 +195,29 @@ export async function openURIsInTabs(uris, options = {}) {
   }, options.windowId);
 }
 
+
+Sidebar.onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_LOAD_URI:
+      loadURI(message.uri, {
+        tab: Tab.get(message.tabId)
+      });
+      break;
+
+    case Constants.kCOMMAND_NEW_TABS:
+      await Tab.waitUntilTracked([
+        message.parentId,
+        message.insertBeforeId,
+        message.insertAfterId
+      ]);
+      log('new tabs requested: ', message);
+      openURIsInTabs(message.uris, {
+        windowId:     message.windowId,
+        opener:       Tab.get(message.openerId),
+        parent:       Tab.get(message.parentId),
+        insertBefore: Tab.get(message.insertBeforeId),
+        insertAfter:  Tab.get(message.insertAfterId)
+      });
+      break;
+  }
+});

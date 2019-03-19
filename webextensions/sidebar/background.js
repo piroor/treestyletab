@@ -18,7 +18,7 @@ function log(...args) {
   internalLogger('sidebar/background', ...args);
 }
 
-export const onResponse = new EventListenerManager();
+export const onMessage = new EventListenerManager();
 
 let mConnectionPort = null;
 
@@ -37,6 +37,10 @@ function onConnectionMessage(message) {
   switch (message.type) {
     case 'echo': // for testing
       mConnectionPort.postMessage(message);
+      break;
+
+    default:
+      onMessage.dispatch(message);
       break;
   }
 }

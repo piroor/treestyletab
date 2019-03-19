@@ -960,12 +960,6 @@ function onMessage(message, _sender, _respond) {
         });
       })();
 
-    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabIds, { element: true });
-        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
-      })();
-
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return Tree.doTreeChangeFromRemote(async () => {
         await Promise.all([
@@ -1042,3 +1036,13 @@ function onMessage(message, _sender, _respond) {
       return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
   }
 }
+
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)));
+      break;
+  }
+});

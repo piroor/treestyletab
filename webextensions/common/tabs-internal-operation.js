@@ -15,6 +15,7 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as TabsStore from './tabs-store.js';
+import * as Sidebar from './sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -27,15 +28,6 @@ export async function activateTab(tab, options = {}) {
   if (!tab)
     return;
   log('activateTab: ', dumpTab(tab));
-  if (options.inBackground) {
-    await browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
-      windowId: tab.windowId,
-      tabId:    tab.id,
-      options:  options
-    }).catch(ApiTabs.createErrorSuppressor());
-    return;
-  }
   const window = TabsStore.windows.get(tab.windowId);
   window.internalFocusCount++;
   if (options.silently)
@@ -71,36 +63,28 @@ export async function activateTab(tab, options = {}) {
   }
 }
 
-export function removeTab(tab, options = {}) {
-  return removeTabs([tab], options);
+export function removeTab(tab) {
+  return removeTabs([tab]);
 }
 
-export function removeTabs(tabs, options = {}) {
+export function removeTabs(tabs) {
   tabs = tabs.filter(TabsStore.ensureLivingTab);
   if (!tabs.length)
     return;
   log('removeTabsInternally: ', tabs.map(dumpTab));
-  if (options.inBackground || options.broadcast) {
-    browser.runtime.sendMessage({
+  if (Sidebar.isInitialized()) // in background
+    Sidebar.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       windowId: tabs[0].windowId,
-      tabIds:   tabs.map(tab => tab.id),
-      options:  Object.assign({}, options, {
-        inBackground:    false,
-        broadcast:   options.inBackground && !options.broadcast,
-        broadcasted: !!options.broadcast
-      })
-    }).catch(ApiTabs.createErrorSuppressor());
-    if (options.inBackground)
-      return;
-  }
+      tabIds:   tabs.map(tab => tab.id)
+    });
   const window = TabsStore.windows.get(tabs[0].windowId);
   if (window) {
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
     }
   }
-  if (options.broadcasted)
+  if (!Sidebar.isInitialized()) // in sidebar
     return;
   return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
@@ -125,3 +109,13 @@ export function clearOldActiveStateInWindow(windowId, exception) {
   }
   return Array.from(oldTabs);
 }
+
+
+Sidebar.onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+      await Tab.waitUntilTracked(message.tabIds);
+      removeTabs(message.tabIds.map(id => Tab.get(id)));
+      break;
+  }
+});

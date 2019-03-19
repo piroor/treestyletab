@@ -385,10 +385,10 @@ async function onMouseUp(event) {
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            browser.runtime.sendMessage({
+            Background.sendMessage({
               type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
               tabIds: [livingTab.id],
-            }).catch(ApiTabs.createErrorSuppressor());
+            });
         });
     }
     else if (lastMousedown.detail.twisty) {
@@ -426,10 +426,10 @@ async function onMouseUp(event) {
         .then(confirmed => {
           if (!confirmed)
             return;
-          browser.runtime.sendMessage({
+          Background.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
             tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id],
-          }).catch(ApiTabs.createErrorSuppressor());
+          });
         });
     }
     else if (lastMousedown.detail.button == 0 &&
@@ -526,10 +526,10 @@ function onDblClick(event) {
         !event.shiftKey) {
       event.stopPropagation();
       event.preventDefault();
-      browser.runtime.sendMessage({
+      Background.sendMessage({
         type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
         tabIds: [livingTab.id],
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
     }
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();

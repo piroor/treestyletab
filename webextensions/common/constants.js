@@ -25,7 +25,6 @@ export const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-wi
 export const kCOMMAND_MOVE_TABS                      = 'treestyletab:move-tabs';
 export const kCOMMAND_NEW_TABS                       = 'treestyletab:open-new-tabs';
 export const kCOMMAND_NEW_TAB_AS                     = 'treestyletab:open-new-tab-as';
-export const kCOMMAND_SELECT_TAB_INTERNALLY          = 'treestyletab:select-tab-internally';
 export const kCOMMAND_REMOVE_TABS_INTERNALLY         = 'treestyletab:remove-tabs-internally';
 export const kCOMMAND_MOVE_TABS_BEFORE               = 'treestyletab:move-tabs-internally-before';
 export const kCOMMAND_MOVE_TABS_AFTER                = 'treestyletab:move-tabs-internally-after';

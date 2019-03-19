@@ -492,25 +492,24 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     if (behavior <= Constants.kDROPLINK_ASK)
       return;
     if (behavior & Constants.kDROPLINK_LOAD) {
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SELECT_TAB,
-        windowId: TabsStore.getWindow(),
-        tabId:    dropActionInfo.dragOverTab.id
-      }).catch(ApiTabs.createErrorSuppressor());
-      await browser.runtime.sendMessage({
-        type:    Constants.kCOMMAND_LOAD_URI,
-        uri:     uris.shift(),
-        tabId:   dropActionInfo.dragOverTab.id
-      }).catch(ApiTabs.createErrorSuppressor());
+      Background.sendMessage({
+        type:  Constants.kCOMMAND_SELECT_TAB,
+        tabId: dropActionInfo.dragOverTab.id
+      });
+      Background.sendMessage({
+        type:  Constants.kCOMMAND_LOAD_URI,
+        uri:   uris.shift(),
+        tabId: dropActionInfo.dragOverTab.id
+      });
     }
   }
   Background.sendMessage({
-    type:         Constants.kCOMMAND_NEW_TABS,
+    type:           Constants.kCOMMAND_NEW_TABS,
     uris,
-    windowId:     TabsStore.getWindow(),
-    parent:       dropActionInfo.parent && dropActionInfo.parent.id,
-    insertBefore: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
-    insertAfter:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
+    windowId:       TabsStore.getWindow(),
+    parentId:       dropActionInfo.parent && dropActionInfo.parent.id,
+    insertBeforeId: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
+    insertAfterId:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
   });
 }
 
@@ -895,11 +894,10 @@ function reserveToProcessLongHover(params = {}) {
       // auto-switch for staying on tabs
       if (!dragOverTab.active &&
           params.dropEffect == 'link') {
-        browser.runtime.sendMessage({
-          type:     Constants.kCOMMAND_SELECT_TAB,
-          windowId: TabsStore.getWindow(),
-          tabId:    dragOverTab.id
-        }).catch(ApiTabs.createErrorSuppressor());
+        Background.sendMessage({
+          type:  Constants.kCOMMAND_SELECT_TAB,
+          tabId: dragOverTab.id
+        });
       }
 
       if (!Tree.shouldTabAutoExpanded(dragOverTab))
