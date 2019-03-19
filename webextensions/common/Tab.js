@@ -15,6 +15,7 @@ import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
+import * as Sidebar from './sidebar.js';
 
 import Window from './Window.js';
 
@@ -1428,13 +1429,13 @@ Tab.onDetached         = new EventListenerManager();
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  browser.runtime.sendMessage({
+  Sidebar.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
     tabIds:   tabs.map(tab => tab.id),
     windowId: tabs[0].windowId,
     add:      options.add || [],
     remove:   options.remove || []
-  }).catch(ApiTabs.createErrorSuppressor());
+  });
 };
 
 Tab.getOtherTabs = (windowId, ignoreTabs, options = {}) => {

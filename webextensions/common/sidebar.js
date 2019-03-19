@@ -9,7 +9,6 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as TSTAPI from './tst-api.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -19,6 +18,8 @@ function log(...args) {
 }
 
 export const onMessage = new EventListenerManager();
+export const onConnected = new EventListenerManager();
+export const onDisconnected = new EventListenerManager();
 
 let mOpenState;
 const mReceivers = new Map();
@@ -68,21 +69,13 @@ export function init() {
     const receiver = message => onMessage.dispatch(windowId, message);
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
-    TSTAPI.sendMessage({
-      type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
-      window: windowId,
-      windowId
-    });
+    onConnected.dispatch(windowId);
     port.onDisconnect.addListener(_message => {
       mOpenState.delete(windowId);
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
       mFocusState.delete(windowId);
-      TSTAPI.sendMessage({
-        type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,
-        window: windowId,
-        windowId
-      });
+      onDisconnected.dispatch(windowId);
     });
   });
 }
