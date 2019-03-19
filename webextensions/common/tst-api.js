@@ -183,6 +183,8 @@ function getAddons() {
   return mAddons.entries();
 }
 
+const mConnections = new Map();
+
 export async function initAsBackend() {
   const manifest = browser.runtime.getManifest();
   registerAddon(manifest.applications.gecko.id, {
@@ -192,6 +194,17 @@ export async function initAsBackend() {
     listeningTypes: []
   });
   mContext = kCONTEXT_BACKEND;
+  browser.runtime.onConnectExternal.addListener(port => {
+    const sender = port.sender;
+    mConnections.set(sender.id, port);
+    port.onDisconnect.addListener(_message => {
+      mConnections.delete(sender.id);
+      onMessageExternal({
+        type: kUNREGISTER_SELF,
+        sender
+      }).catch(ApiTabs.createErrorSuppressor());
+    });
+  });
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
@@ -269,7 +282,7 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
   window.addEventListener('beforeunload', () => resolve());
 });
 
-browser.runtime.onMessageExternal.addListener((message, sender) => {
+function onMessageExternal(message, sender) {
   if (!message ||
       typeof message.type != 'string')
     return;
@@ -300,9 +313,8 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
         case kUNREGISTER_SELF:
           return (async () => {
             browser.runtime.sendMessage({
-              type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
-              sender:  sender,
-              message: message
+              type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+              sender
             }).catch(ApiTabs.createErrorSuppressor());
             unregisterAddon(sender.id);
             delete mScrollLockedBy[sender.id];
@@ -340,7 +352,8 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
       delete mGroupingBlockedBy[sender.id];
       return Promise.resolve(true);
   }
-});
+}
+browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
 function exportAddons() {
   const exported = {};
