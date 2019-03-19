@@ -865,10 +865,6 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_PING_TO_SIDEBAR:
       return Promise.resolve(true);
 
-    case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), message.structure);
-      break;
-
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
       RestoringTabCount.increment();
       break;

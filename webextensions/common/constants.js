@@ -15,7 +15,6 @@ export const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-uni
 export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
 export const kCOMMAND_SYNC_TABS_ORDER                = 'treestyletab:sync-tabs-order';
 export const kCOMMAND_PULL_TABS_ORDER                = 'treestyletab:pull-tabs-order';
-export const kCOMMAND_PUSH_TREE_STRUCTURE            = 'treestyletab:push-tree-structure';
 export const kCOMMAND_PULL_TREE_STRUCTURE            = 'treestyletab:pull-tree-structure';
 export const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
 export const kCOMMAND_CHANGE_TAB_COLLAPSED_STATE     = 'treestyletab:change-tab-collapsed-state';
