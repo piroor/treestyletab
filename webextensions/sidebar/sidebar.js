@@ -85,6 +85,7 @@ export async function init() {
   log('initialize sidebar on load');
 
   let promisedAllTabsTracked;
+  UserOperationBlocker.setProgress(0);
   const [nativeTabs] = await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
       const tabs = await MetricsData.addAsync('browser.tabs.query', browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()));
@@ -98,13 +99,16 @@ export async function init() {
       Tab.track(tabs[0]);
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
+        let lastDraw = Date.now();
         let count = 0;
+        const maxCount = tabs.length - 1;
         for (const tab of tabs.slice(1)) {
           TabIdFixer.fixTab(tab);
           Tab.track(tab);
-          if (count++ > 100) {
-            count = 0;
-            await nextFrame(); // initialize tabs progressively
+          if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+            UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs
+            await nextFrame();
+            lastDraw = Date.now();
           }
         }
       });
@@ -128,6 +132,7 @@ export async function init() {
   const promisedScrollPosition = browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
   const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
+  UserOperationBlocker.setProgress(16); // 1/6: wait background page
   const [importedTabs] = await Promise.all([
     MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()),
     MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
@@ -397,20 +402,39 @@ export async function rebuildAll(tabs, importedTabs, cache) {
         windowId: mTargetWindow
       })
     ]);
-    tabs = nativeTabs.map((tab, index) => {
+    let lastDraw = Date.now();
+    let count = 0;
+    const maxCount = nativeTabs.length;
+    tabs = []
+    for (let index = 0; index < maxCount; index++) {
+      let tab = nativeTabs[index];
       Tab.track(tab);
-      return importedTabs[index] && Tab.import(importedTabs[index]) || tab;
-    });
+      tab = importedTabs[index] && Tab.import(importedTabs[index]) || tab;
+      if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+        UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: re-track all tabs
+        await nextFrame();
+        lastDraw = Date.now();
+      }
+      tabs.push(tab);
+    }
   });
 
   const window = Window.init(mTargetWindow);
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
+  let lastDraw = Date.now();
+  let count = 0;
+  const maxCount = tabs.length;
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
+    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+      UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 66); // 3/3: build tab elements
+      await nextFrame();
+      lastDraw = Date.now();
+    }
   }
   SidebarTabs.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll: end (from scratch)');

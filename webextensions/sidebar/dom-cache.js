@@ -7,12 +7,14 @@
 
 import {
   log as internalLogger,
+  nextFrame,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -164,10 +166,14 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   if (tabElements.length != tabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${tabElements.length}, tabs.Tab=${tabs.length}`);
   log('fixupTabsRestoredFromCache start ', { elements: tabElements.map(tabElement => tabElement.id), tabs });
+  let lastDraw = Date.now();
+  let count = 0;
+  const maxCount = tabElements.length * 2;
   // step 1: build a map from old id to new id
-  tabElements.forEach((tabElement, index) => {
-    tabElement.setAttribute('id', `tab-${tabs[index].id}`); // set tab element's id before initialization, to associate the tab element correctly
-    const tab = tabs[index];
+  for (let index = 0, maxi = tabElements.length; index < maxi; index++) {
+    const tab        = tabs[index];
+    const tabElement = tabElements[index];
+    tabElement.setAttribute('id', `tab-${tab.id}`); // set tab element's id before initialization, to associate the tab element correctly
     tab.$TST.bindElement(tabElement);
     tabElement.apiTab = tab;
     Tab.init(tab, { existing: true });
@@ -175,7 +181,12 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     tabElement.$TST = tab.$TST;
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-  });
+    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+      UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: fixup all tabs
+      await nextFrame();
+      lastDraw = Date.now();
+    }
+  }
   MetricsData.add('fixupTabsRestoredFromCache: step 1 finished');
   // step 2: restore information of tabElements
   for (const tabElement of tabElements) {
@@ -184,6 +195,11 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     SidebarTabs.applyCollapseExpandStateToElement(tab);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
+    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+      UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 3/3: apply states to tabs
+      await nextFrame();
+      lastDraw = Date.now();
+    }
   }
   MetricsData.add('fixupTabsRestoredFromCache: step 2 finished');
 }

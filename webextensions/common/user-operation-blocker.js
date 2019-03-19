@@ -19,14 +19,25 @@ function log(...args) {
 
 let mBlockingCount = 0;
 let mBlockingThrobberCount = 0;
+const mProgressbar = document.querySelector('#blocking-screen progress');
 
 export function block(options = {}) {
   mBlockingCount++;
   document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
   if (options.throbber) {
     mBlockingThrobberCount++;
+    mProgressbar.delayedShow = setTimeout(() => {
+      mProgressbar.delayedShow = null;
+      mProgressbar.classList.add('shown');
+    }, Constants.kPROGRESS_DELAY);
     document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
   }
+}
+
+export function setProgress(percentage) {
+  if (!mProgressbar)
+    return;
+  mProgressbar.value = Math.max(0, Math.min(100, percentage));
 }
 
 export function blockIn(windowId, options = {}) {
@@ -49,8 +60,13 @@ export function unblock(_options = {}) {
   mBlockingThrobberCount--;
   if (mBlockingThrobberCount < 0)
     mBlockingThrobberCount = 0;
-  if (mBlockingThrobberCount == 0)
+  if (mBlockingThrobberCount == 0) {
+    setProgress(0);
+    mProgressbar.classList.remove('shown');
+    if (mProgressbar.delayedShow)
+      clearTimeout(mProgressbar.delayedShow);
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+  }
 
   mBlockingCount--;
   if (mBlockingCount < 0)

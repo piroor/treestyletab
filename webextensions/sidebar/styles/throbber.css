@@ -112,6 +112,19 @@
   background: white;
 }
 
+#blocking-screen progress {
+  display: none;
+}
+
+:root.blocking-throbber #blocking-screen progress.shown {
+  display: block;
+  --progressbar-width: calc(var(--throbber-size) * 8);
+  max-width: var(--progressbar-width);
+  position: absolute;
+  top: calc(50% + var(--throbber-size));
+  left: calc((100% - var(--progressbar-width)) / 2);
+}
+
 
 
 @keyframes tab-burst-animation {

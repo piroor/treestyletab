@@ -17,7 +17,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsMove from '/common/tabs-move.js';
 import * as Tree from '/common/tree.js';
-import { SequenceMatcher } from '/common/diff.js';
+import { Diff, SequenceMatcher } from '/common/diff.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -395,9 +395,11 @@ async function syncTabsOrder() {
   log('syncTabsOrder: internalOrder = ', internalOrder);
 
   const trackedWindow = TabsStore.windows.get(windowId);
-  if (internalOrder.slice(0).sort().join(',') != trackedWindow.order.sort().join(',')) {
+  const expectedTabs = internalOrder.slice(0).sort().join('\n');
+  const actualTabs   = trackedWindow.order.sort().join('\n');
+  if (expectedTabs != actualTabs) {
     if (reserveToSyncTabsOrder.retryCount > 10)
-      throw new Error(`fatal error: mismatched tabs in the window ${windowId}`);
+      throw new Error(`fatal error: mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
     log('syncTabsOrder: retry');
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
