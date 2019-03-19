@@ -289,20 +289,6 @@ function onMessage(message, sender) {
         return { structure };
       })();
 
-    case Constants.kCOMMAND_MOVE_TABS:
-      return (async () => {
-        log('move tabs requested: ', message);
-        await Tab.waitUntilTracked(message.tabIds.concat([message.insertBeforeId, message.insertAfterId]));
-        const movedTabs = await Tree.moveTabs(
-          message.tabIds.map(id => Tab.get(id)),
-          Object.assign({}, message, {
-            insertBefore: Tab.get(message.insertBeforeId),
-            insertAfter:  Tab.get(message.insertAfterId)
-          })
-        );
-        return { movedTabs: movedTabs.map(tab => tab.id) };
-      })();
-
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {
         logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');

@@ -21,7 +21,6 @@ export const kCOMMAND_CHANGE_TAB_COLLAPSED_STATE     = 'treestyletab:change-tab-
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR = 'treestyletab:set-subtree-collapsed-state-intelligently-for';
 export const kCOMMAND_LOAD_URI                       = 'treestyletab:load-uri';
 export const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-from-tabs';
-export const kCOMMAND_MOVE_TABS                      = 'treestyletab:move-tabs';
 export const kCOMMAND_NEW_TABS                       = 'treestyletab:open-new-tabs';
 export const kCOMMAND_NEW_TAB_AS                     = 'treestyletab:open-new-tab-as';
 export const kCOMMAND_REMOVE_TABS_INTERNALLY         = 'treestyletab:remove-tabs-internally';
