@@ -159,10 +159,10 @@ async function onShortcutCommand(command) {
       return;
 
     case 'newContainerTab':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.windowId
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
 
     case 'groupSelectedTabs':
@@ -329,11 +329,11 @@ function onMessage(message, sender) {
             }))
           );
           if (results.some(result => result && result.result))
-            return browser.runtime.sendMessage({
+            return Sidebar.sendMessage({
               type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
               windowId: message.windowId,
               button:   message.button
-            }).catch(ApiTabs.createErrorSuppressor());
+            });
 
           logMouseEvent('Ready to handle click action on the tab');
 
@@ -794,11 +794,11 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kSTART_CUSTOM_DRAG:
       return (async () => {
-        return browser.runtime.sendMessage({
+        Sidebar.sendMessage({
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
           windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false }).catch(ApiTabs.createErrorHandler())).id,
           button:   message.button || 0
-        }).catch(ApiTabs.createErrorSuppressor());
+        });
       })();
   }
 }

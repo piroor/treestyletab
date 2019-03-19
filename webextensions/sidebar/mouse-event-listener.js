@@ -83,6 +83,7 @@ Sidebar.onBuilt.addListener(async () => {
   MetricsData.add('mouse-event-listener: Sidebar.onBuilt: apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
+  Background.onMessage.addListener(onBackgroundMessage);
 
   mContextualIdentitySelector.ui = new MenuUI({
     root:       mContextualIdentitySelector,
@@ -300,11 +301,6 @@ function onMouseDown(event) {
         tab) {
       log('onMouseDown expired');
       mousedown.expired = true;
-      onMessage({
-        type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
-        windowId: mTargetWindow,
-        button:   event.button
-      });
     }
   }, configs.longPressDuration);
 }
@@ -598,6 +594,22 @@ function onMessage(message, _sender, _respond) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
+    case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
+      wait(0).then(() => { // wait until addons are updated
+        updateSpecialEventListenersForAPIListeners();
+      });
+      break;
+
+    case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
+      wait(0).then(() => { // wait until addons are updated
+        updateSpecialEventListenersForAPIListeners();
+      });
+      break;
+  }
+}
+
+function onBackgroundMessage(message) {
+  switch (message.type) {
     case Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED:
       if (message.windowId == mTargetWindow)
         EventUtils.cancelHandleMousedown(message.button || 0);
@@ -618,17 +630,5 @@ function onMessage(message, _sender, _respond) {
       `);
       mContextualIdentitySelector.ui.open({ anchor });
     }; break;
-
-    case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
-      wait(0).then(() => { // wait until addons are updated
-        updateSpecialEventListenersForAPIListeners();
-      });
-      break;
-
-    case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
-      wait(0).then(() => { // wait until addons are updated
-        updateSpecialEventListenersForAPIListeners();
-      });
-      break;
   }
 }
