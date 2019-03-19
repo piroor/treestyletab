@@ -187,9 +187,9 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (soundStateChanged) {
-    const parent = this.parent;
+    const parent = tab.$TST.parent;
     if (parent)
-      parent.inheritSoundStateFromChildren();
+      parent.$TST.inheritSoundStateFromChildren();
   }
 
   if (options.forceApply ||

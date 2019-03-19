@@ -728,12 +728,12 @@ export default class Tab {
   inheritSoundStateFromChildren() {
     const children = this.children;
 
-    if (children.some(child => child.maybeSoundPlaying))
+    if (children.some(child => child.$TST.maybeSoundPlaying))
       this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
     else
       this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-    if (children.some(child => child.maybeMuted))
+    if (children.some(child => child.$TST.maybeMuted))
       this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
     else
       this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
