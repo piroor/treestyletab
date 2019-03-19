@@ -56,7 +56,7 @@ export async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
-  Sidebar.startWatchOpenState();
+  Sidebar.init();
 
   await configs.$loaded;
   MetricsData.add('init: configs.$loaded');

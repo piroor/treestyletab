@@ -886,7 +886,7 @@ export function shouldApplyTreeBehavior(params = {}) {
     case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
       return true;
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return Sidebar.isWatchingOpenState() ? (params.windowId && Sidebar.isOpen(params.windowId)) : true ;
+      return Sidebar.isInitialized() ? (params.windowId && Sidebar.isOpen(params.windowId)) : true ;
     default:
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
       return !!params.byInternalOperation;

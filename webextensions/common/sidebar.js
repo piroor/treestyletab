@@ -24,12 +24,12 @@ let mOpenState;
 const mReceivers = new Map();
 const mFocusState = new Map();
 
-export function isOpen(windowId) {
-  return mOpenState && mOpenState.has(windowId)
+export function isInitialized() {
+  return !!mOpenState;
 }
 
-export function isWatchingOpenState() {
-  return !!mOpenState;
+export function isOpen(windowId) {
+  return mOpenState && mOpenState.has(windowId)
 }
 
 export function hasFocus(windowId) {
@@ -67,8 +67,8 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   }
 });
 
-export function startWatchOpenState() {
-  if (isWatchingOpenState())
+export function init() {
+  if (isInitialized())
     return;
   mOpenState = new Map();
   const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
