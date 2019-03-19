@@ -261,4 +261,4 @@ export const kSHORTHAND_URIS = {
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
 
 export const kPROGRESS_INTERVAL = 50;
-export const kPROGRESS_DELAY    = 250;
+export const kPROGRESS_DELAY    = 1000;
