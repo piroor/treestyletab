@@ -167,6 +167,11 @@ export default class Tab {
   }
 
   updateUniqueId(options = {}) {
+    if (!this.tab) {
+      const error = new Error('FATAL ERROR: updateUniqueId() is unavailable for an invalid tab');
+      console.log(error);
+      throw error;
+    }
     return UniqueId.request(this.tab, options).then(uniqueId => {
       if (uniqueId && TabsStore.ensureLivingTab(this.tab)) { // possibly removed from document while waiting
         this.uniqueId = uniqueId;
@@ -175,7 +180,7 @@ export default class Tab {
       }
       return uniqueId || {};
     }).catch(error => {
-      console.log(`FATAL ERROR: Failed to get unique id for a tab ${dumpTab(this.tab)}: `, error);
+      console.log(`FATAL ERROR: Failed to get unique id for a tab ${this.id}: `, error);
       return {};
     });
   }
