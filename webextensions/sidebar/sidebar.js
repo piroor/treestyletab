@@ -556,17 +556,15 @@ function updateTabbarLayout(params = {}) {
 
 
 function onFocus(_event) {
-  browser.runtime.sendMessage({
-    type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
-    windowId: mTargetWindow
-  }).catch(ApiTabs.createErrorSuppressor());
+  Background.sendMessage({
+    type: Constants.kNOTIFY_SIDEBAR_FOCUS
+  });
 }
 
 function onBlur(_event) {
-  browser.runtime.sendMessage({
-    type:     Constants.kNOTIFY_SIDEBAR_BLUR,
-    windowId: mTargetWindow
-  }).catch(ApiTabs.createErrorSuppressor());
+  Background.sendMessage({
+    type: Constants.kNOTIFY_SIDEBAR_BLUR
+  });
 }
 
 function onResize(_event) {

@@ -802,3 +802,57 @@ function onMessageExternal(message, sender) {
       })();
   }
 }
+
+
+Sidebar.onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_SET_SUBTREE_MUTED: {
+      await Tab.waitUntilTracked(message.tabId);
+      log('set muted state: ', message);
+      const root = Tab.get(message.tabId);
+      if (!root)
+        return;
+      const multiselected = root.$TST.multiselected;
+      const tabs = multiselected ?
+        Tab.getSelectedTabs(root.windowId, { iterator: true }) :
+        [root].concat(root.$TST.descendants) ;
+      for (const tab of tabs) {
+        const playing = tab.$TST.soundPlaying;
+        const muted   = tab.$TST.muted;
+        log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
+        if (!multiselected && playing != message.muted)
+          continue;
+
+        log(` => set muted=${message.muted}`);
+        browser.tabs.update(tab.id, {
+          muted: message.muted
+        }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+
+        const add = [];
+        const remove = [];
+        if (message.muted) {
+          add.push(Constants.kTAB_STATE_MUTED);
+          tab.$TST.addState(Constants.kTAB_STATE_MUTED);
+        }
+        else {
+          remove.push(Constants.kTAB_STATE_MUTED);
+          tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
+        }
+
+        if (tab.audible && !message.muted) {
+          add.push(Constants.kTAB_STATE_SOUND_PLAYING);
+          tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
+        }
+        else {
+          remove.push(Constants.kTAB_STATE_SOUND_PLAYING);
+          tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
+        }
+
+        // tabs.onUpdated is too slow, so users will be confused
+        // from still-not-updated tabs (in other words, they tabs
+        // are unresponsive for quick-clicks).
+        Tab.broadcastState(tab, { add, remove });
+      }
+    }; break;
+  }
+});

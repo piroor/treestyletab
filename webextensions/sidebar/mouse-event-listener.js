@@ -404,12 +404,11 @@ async function onMouseUp(event) {
     }
     else if (lastMousedown.detail.soundButton) {
       log('clicked on sound button');
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
-        windowId: mTargetWindow,
-        tabId:    tab.id,
-        muted:    tab.$TST.maybeSoundPlaying
-      }).catch(ApiTabs.createErrorSuppressor());
+      Background.sendMessage({
+        type:  Constants.kCOMMAND_SET_SUBTREE_MUTED,
+        tabId: tab.id,
+        muted: tab.$TST.maybeSoundPlaying
+      });
     }
     else if (lastMousedown.detail.closebox) {
       log('clicked on closebox');

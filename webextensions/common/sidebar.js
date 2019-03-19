@@ -51,22 +51,6 @@ export function sendMessage(message) {
   }
 }
 
-browser.runtime.onMessage.addListener((message, _sender) => {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
-
-  switch (message.type) {
-    case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      mFocusState.set(message.windowId, true);
-      break;
-
-    case Constants.kNOTIFY_SIDEBAR_BLUR:
-      mFocusState.delete(message.windowId);
-      break;
-  }
-});
-
 export function init() {
   if (isInitialized())
     return;
@@ -98,3 +82,15 @@ export function init() {
     });
   });
 }
+
+onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kNOTIFY_SIDEBAR_FOCUS:
+      mFocusState.set(windowId, true);
+      break;
+
+    case Constants.kNOTIFY_SIDEBAR_BLUR:
+      mFocusState.delete(windowId);
+      break;
+  }
+});
