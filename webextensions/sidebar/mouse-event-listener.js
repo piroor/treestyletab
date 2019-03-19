@@ -386,7 +386,7 @@ async function onMouseUp(event) {
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            TabsInternalOperation.removeTab(livingTab, { inRemote: true });
+            TabsInternalOperation.removeTab(livingTab, { inBackground: true });
         });
     }
     else if (lastMousedown.detail.twisty) {
@@ -395,7 +395,7 @@ async function onMouseUp(event) {
         Tree.collapseExpandSubtree(tab, {
           collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
-          inRemote:        true
+          inBackground:        true
         });
     }
     else if (lastMousedown.detail.soundButton) {
@@ -423,9 +423,9 @@ async function onMouseUp(event) {
           if (!confirmed)
             return;
           if (multiselected)
-            TabsInternalOperation.removeTabs(tabsToBeClosed, { inRemote: true });
+            TabsInternalOperation.removeTabs(tabsToBeClosed, { inBackground: true });
           else
-            TabsInternalOperation.removeTab(tab, { inRemote: true });
+            TabsInternalOperation.removeTab(tab, { inBackground: true });
         });
     }
     else if (lastMousedown.detail.button == 0 &&
@@ -501,7 +501,7 @@ function handleNewTabAction(event, options = {}) {
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground:  event.shiftKey,
-    inRemote:      true
+    inBackground:      true
   });
 }
 
@@ -522,7 +522,7 @@ function onDblClick(event) {
         !event.shiftKey) {
       event.stopPropagation();
       event.preventDefault();
-      TabsInternalOperation.removeTab(livingTab, { inRemote: true });
+      TabsInternalOperation.removeTab(livingTab, { inBackground: true });
     }
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
@@ -530,7 +530,7 @@ function onDblClick(event) {
       Tree.collapseExpandSubtree(livingTab, {
         collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
-        inRemote:        true
+        inBackground:        true
       });
     }
     return;

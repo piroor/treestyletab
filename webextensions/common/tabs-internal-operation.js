@@ -27,7 +27,7 @@ export async function activateTab(tab, options = {}) {
   if (!tab)
     return;
   log('activateTab: ', dumpTab(tab));
-  if (options.inRemote) {
+  if (options.inBackground) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
       windowId: tab.windowId,
@@ -80,18 +80,18 @@ export function removeTabs(tabs, options = {}) {
   if (!tabs.length)
     return;
   log('removeTabsInternally: ', tabs.map(dumpTab));
-  if (options.inRemote || options.broadcast) {
+  if (options.inBackground || options.broadcast) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id),
       options:  Object.assign({}, options, {
-        inRemote:    false,
-        broadcast:   options.inRemote && !options.broadcast,
+        inBackground:    false,
+        broadcast:   options.inBackground && !options.broadcast,
         broadcasted: !!options.broadcast
       })
     }).catch(ApiTabs.createErrorSuppressor());
-    if (options.inRemote)
+    if (options.inBackground)
       return;
   }
   const window = TabsStore.windows.get(tabs[0].windowId);

@@ -86,7 +86,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
-  if (options.inRemote || options.broadcast) {
+  if (options.inBackground || options.broadcast) {
     const message = {
       type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
       windowId:    tabs[0].windowId,
@@ -94,7 +94,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       nextTabId:   referenceTab.id,
       broadcasted: !!options.broadcast
     };
-    if (options.inRemote) {
+    if (options.inBackground) {
       const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
       return tabIds.map(id => Tab.get(id));
     }
@@ -179,7 +179,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
-  if (options.inRemote || options.broadcast) {
+  if (options.inBackground || options.broadcast) {
     const message = {
       type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
       windowId:      tabs[0].windowId,
@@ -187,7 +187,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       previousTabId: referenceTab.id,
       broadcasted:   !!options.broadcast
     };
-    if (options.inRemote) {
+    if (options.inBackground) {
       const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
       return tabIds.map(id => Tab.get(id));
     }

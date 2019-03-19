@@ -59,7 +59,7 @@ const SEARCH_PREFIX_MATCHER = /^about:treestyletab-search\?/;
 export async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
     throw new Error('missing loading target window or tab');
-  if (options.inRemote) {
+  if (options.inBackground) {
     await browser.runtime.sendMessage({
       uri,
       type:    Constants.kCOMMAND_LOAD_URI,
@@ -123,7 +123,7 @@ export async function openURIsInTabs(uris, options = {}) {
     throw new Error('missing loading target window\n' + new Error().stack);
 
   return Tab.doAndGetNewTabs(async () => {
-    if (options.inRemote) {
+    if (options.inBackground) {
       const ids = await browser.runtime.sendMessage(Object.assign({}, options, {
         type:           Constants.kCOMMAND_NEW_TABS,
         uris,
@@ -137,7 +137,7 @@ export async function openURIsInTabs(uris, options = {}) {
         insertAfterId:  options.insertAfter && options.insertAfter.id,
         cookieStoreId: options.cookieStoreId || null,
         isOrphan:      !!options.isOrphan,
-        inRemote:      false
+        inBackground:      false
       })).catch(ApiTabs.createErrorHandler());
       return ids.map(id => Tab.get(id));
     }

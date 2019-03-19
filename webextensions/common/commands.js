@@ -200,7 +200,7 @@ export async function openNewTabAs(options = {}) {
     windowId:      currentTab.windowId,
     inBackground:  !!options.inBackground,
     cookieStoreId: options.cookieStoreId,
-    inRemote:      !!options.inRemote
+    inBackground:      !!options.inBackground
   });
 }
 
@@ -403,7 +403,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       duplicate:    params.duplicate,
       insertBefore: params.insertBefore,
       insertAfter:  params.insertAfter,
-      inRemote:     true
+      inBackground:     true
     });
   }, windowId);
   log('=> opened group tabs: ', replacedGroupTabs);

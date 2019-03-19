@@ -317,7 +317,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_LOAD_URI:
       return TabsOpen.loadURI(message.uri, Object.assign({}, message.options, {
         tab:      Tab.get(message.options.tabId),
-        inRemote: false
+        inBackground: false
       }));
 
     case Constants.kCOMMAND_NEW_TABS:
@@ -436,7 +436,7 @@ function onMessage(message, sender) {
         if (!tab)
           return;
         TabsInternalOperation.activateTab(tab, Object.assign({}, message.options, {
-          inRemote: false
+          inBackground: false
         }));
       })();
 

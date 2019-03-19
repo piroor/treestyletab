@@ -465,7 +465,7 @@ function collapseAutoExpandedTabsWhileDragging() {
       Tree.collapseExpandSubtree(tab, {
         collapsed: false,
         justNow:   true,
-        inRemote:  true
+        inBackground:  true
       });
     }
   }
@@ -497,7 +497,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
       }).catch(ApiTabs.createErrorSuppressor());
       await TabsOpen.loadURI(uris.shift(), {
         tab:      dropActionInfo.dragOverTab,
-        inRemote: true
+        inBackground: true
       });
     }
   }
@@ -506,7 +506,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     parent:       dropActionInfo.parent,
     insertBefore: dropActionInfo.insertBefore,
     insertAfter:  dropActionInfo.insertAfter,
-    inRemote:     true
+    inBackground:     true
   });
 }
 
@@ -903,14 +903,14 @@ function reserveToProcessLongHover(params = {}) {
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
+        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inBackground: true });
       }
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
         Tree.collapseExpandSubtree(dragOverTab, {
           collapsed: false,
-          inRemote:  true
+          inBackground:  true
         });
       }
     }, configs.autoExpandOnLongHoverDelay);
@@ -1069,14 +1069,14 @@ async function onDragEnd(event) {
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
   if (!duplicate) {
     await await Tree.detachTabsFromTree(detachTabs, {
-      inRemote: true
+      inBackground: true
     });
   }
   Tree.openNewWindowFromTabs(detachTabs, {
     duplicate,
     left:      event.screenX,
     top:       event.screenY,
-    inRemote:  true
+    inBackground:  true
   });
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);

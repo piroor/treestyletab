@@ -407,7 +407,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   const window = Window.init(mTargetWindow);
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
   for (const tab of tabs) {
-    const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
+    const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
     if (tab.active)
@@ -998,7 +998,7 @@ function onMessage(message, _sender, _respond) {
           await Tree.attachTabTo(child, parent, Object.assign({}, message, {
             insertBefore: Tab.get(message.insertBeforeId),
             insertAfter:  Tab.get(message.insertAfterId),
-            inRemote:     false,
+            inBackground:     false,
             broadcast:    false
           }));
       });

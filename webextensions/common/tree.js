@@ -95,7 +95,7 @@ export async function attachTabTo(child, parent, options = {}) {
     forceExpand:      options.forceExpand,
     dontExpand:       options.dontExpand,
     delayedMove:      options.delayedMove,
-    inRemote:         options.inRemote,
+    inBackground:         options.inBackground,
     broadcast:        options.broadcast,
     broadcasted:      options.broadcasted,
     stack:            `${new Error().stack}\n${options.stack || ''}`
@@ -187,7 +187,7 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   }));
 
-  if (options.inRemote || options.broadcast) {
+  if (options.inBackground || options.broadcast) {
     browser.runtime.sendMessage({
       type:             Constants.kCOMMAND_ATTACH_TAB_TO,
       windowId:         child.windowId,
@@ -320,7 +320,7 @@ export function detachTab(child, options = {}) {
     oldParentTab: parent
   });
 
-  if (options.inRemote || options.broadcast) {
+  if (options.inBackground || options.broadcast) {
     browser.runtime.sendMessage({
       type:        Constants.kCOMMAND_DETACH_TAB,
       windowId:    child.windowId,
@@ -449,13 +449,13 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       log(' => kNEWTAB_OPEN_AS_ORPHAN');
       detachTab(tab, {
-        inRemote:  options.inRemote,
+        inBackground:  options.inBackground,
         broadcast: options.broadcast
       });
       if (tab.$TST.nextTab)
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true,
-          inRemote: options.inRemote
+          inBackground: options.inBackground
         });
       return false;
 
@@ -465,7 +465,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         dontMove:    options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
         forceExpand: true,
         delayedMove: true,
-        inRemote:    options.inRemote,
+        inBackground:    options.inBackground,
         broadcast:   options.broadcast
       });
 
@@ -475,19 +475,19 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       if (parent) {
         await attachTabTo(tab, parent, {
           delayedMove: true,
-          inRemote:  options.inRemote,
+          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         return true;
       }
       else {
         detachTab(tab, {
-          inRemote:  options.inRemote,
+          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true,
-          inRemote: options.inRemote
+          inBackground: options.inBackground
         });
       }
     };
@@ -503,25 +503,25 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           insertBefore: nextSibling,
           insertAfter:  baseTab.$TST.lastDescendant || baseTab,
           delayedMove:  true,
-          inRemote:     options.inRemote,
+          inBackground:     options.inBackground,
           broadcast:    options.broadcast
         });
       }
       else {
         detachTab(tab, {
-          inRemote:  options.inRemote,
+          inBackground:  options.inBackground,
           broadcast: options.broadcast
         });
         if (nextSibling)
           return TabsMove.moveTabBefore(tab, nextSibling, {
             delayedMove: true,
-            inRemote:  options.inRemote,
+            inBackground:  options.inBackground,
             broadcast: options.broadcast
           });
         else
           return TabsMove.moveTabAfter(tab, baseTab.$TST.lastDescendant, {
             delayedMove: true,
-            inRemote:  options.inRemote,
+            inBackground:  options.inBackground,
             broadcast: options.broadcast
           });
       }
@@ -610,7 +610,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     broadcasted:     !!params.broadcast,
     stack:           new Error().stack
   };
-  if (params.inRemote) {
+  if (params.inBackground) {
     await browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor());
     return;
   }
@@ -983,7 +983,7 @@ export async function moveTabs(tabs, options = {}) {
 
   options.insertAfter = options.insertAfter || Tab.getLastTab(destinationWindowId);
 
-  if (options.inRemote) {
+  if (options.inBackground) {
     const response = await browser.runtime.sendMessage(Object.assign({}, options, {
       type:                Constants.kCOMMAND_MOVE_TABS,
       windowId:            windowId,
@@ -994,7 +994,7 @@ export async function moveTabs(tabs, options = {}) {
       insertAfterId:       options.insertAfter && options.insertAfter.id,
       duplicate:           !!options.duplicate,
       destinationWindowId: destinationWindowId,
-      inRemote:            false
+      inBackground:            false
     })).catch(ApiTabs.createErrorHandler());
     return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
@@ -1217,7 +1217,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 
   const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
 
-  if (options.inRemote) {
+  if (options.inBackground) {
     const response = await browser.runtime.sendMessage(Object.assign({}, options, {
       type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
       windowId:  windowId,
@@ -1225,7 +1225,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       duplicate: !!options.duplicate,
       left:      'left' in options ? parseInt(options.left) : null,
       top:       'top' in options ? parseInt(options.top) : null,
-      inRemote:  false
+      inBackground:  false
     })).catch(ApiTabs.createErrorHandler());
     return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }

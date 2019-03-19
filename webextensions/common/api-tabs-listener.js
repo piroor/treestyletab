@@ -339,7 +339,7 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
-    tab = Tab.init(tab, { inRemote: !!targetWindow });
+    tab = Tab.init(tab, { inBackground: !!targetWindow });
 
     const nextTab = Tab.getTabAt(window.id, tab.index);
 
