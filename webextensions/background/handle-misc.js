@@ -210,47 +210,47 @@ async function onShortcutCommand(command) {
       return;
 
     case 'tabbarUp':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'lineup'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
     case 'tabbarPageUp':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pageup'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
     case 'tabbarHome':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'top'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
 
     case 'tabbarDown':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'linedown'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
     case 'tabbarPageDown':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pagedown'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
     case 'tabbarEnd':
-      browser.runtime.sendMessage({
+      Sidebar.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'bottom'
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
       return;
   }
 }

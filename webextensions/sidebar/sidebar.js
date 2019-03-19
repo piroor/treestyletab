@@ -430,16 +430,16 @@ async function importTabsFromBackground() {
   catch(_e) {
   }
   return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', new Promise((resolve, _reject) => {
-    const onBackgroundIsReady = (message, _sender, _respond) => {
+    const onBackgroundIsReady = (message) => {
       if (!message ||
           !message.type ||
           message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
           message.windowId != mTargetWindow)
         return;
-      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+      Background.onMessage.removeListener(onBackgroundIsReady);
       resolve(message.tabs);
     };
-    browser.runtime.onMessage.addListener(onBackgroundIsReady);
+    Background.onMessage.addListener(onBackgroundIsReady);
   }));
 }
 
@@ -862,9 +862,6 @@ function onMessage(message, _sender, _respond) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
-    case Constants.kCOMMAND_PING_TO_SIDEBAR:
-      return Promise.resolve(true);
-
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         const tabIds = message.tabIds.concat([message.nextTabId]);

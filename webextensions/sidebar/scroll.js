@@ -55,6 +55,7 @@ import Tab from '/common/Tab.js';
 
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
+import * as Background from './background.js';
 
 import * as RestoringTabCount from './restoring-tab-count.js';
 
@@ -80,7 +81,7 @@ export function init(scrollPosition) {
 
   document.addEventListener('wheel', onWheel, { capture: true });
   mTabBar.addEventListener('scroll', onScroll);
-  browser.runtime.onMessage.addListener(onMessage);
+  Background.onMessage.addListener(onBackgroundMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
@@ -508,27 +509,20 @@ Tab.onMoving.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
 Tab.onTabInternallyMoved.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
 
 
-function onMessage(message, _sender, _respond) {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
-
+async function onBackgroundMessage(message) {
   switch (message.type) {
-    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
-      return (async () => {
-        await Tab.waitUntilTracked([
-          message.tabId,
-          message.parentId
-        ], { element: true });
-        const tab = Tab.get(message.tabId);
-        const parent = Tab.get(message.parentId);
-        if (tab && parent && parent.active)
-          reserveToScrollToNewTab(tab);
-      })();
+    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY: {
+      await Tab.waitUntilTracked([
+        message.tabId,
+        message.parentId
+      ], { element: true });
+      const tab = Tab.get(message.tabId);
+      const parent = Tab.get(message.parentId);
+      if (tab && parent && parent.active)
+        reserveToScrollToNewTab(tab);
+    }; break;
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
-      if (message.windowId != TabsStore.getWindow())
-        break;
       switch (String(message.by).toLowerCase()) {
         case 'lineup':
           smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);

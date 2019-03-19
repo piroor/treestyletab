@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
+import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -132,12 +133,12 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       tab.$TST.parent != info.parent) // not detached while waiting
     return;
 
-  browser.runtime.sendMessage({
+  Sidebar.sendMessage({
     type:          Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
     tabId:         tab.id,
     parentId:      parent.id,
     newlyAttached: info.newlyAttached
-  }).catch(ApiTabs.createErrorSuppressor());
+  });
 
   if (info.newlyAttached)
     Background.reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
