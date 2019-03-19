@@ -48,7 +48,6 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
-import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
@@ -997,13 +996,14 @@ function onDrop(event) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
-    Commands.performTabsDragDrop({
+    Background.sendMessage({
+      type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
       windowId:            dropActionInfo.dragData.windowId,
-      tabs:                dropActionInfo.dragData.tabs,
+      tabIds:              dropActionInfo.dragData.tabs.map(tab => tab.id),
       action:              dropActionInfo.action,
-      attachTo:            dropActionInfo.parent,
-      insertBefore:        dropActionInfo.insertBefore,
-      insertAfter:         dropActionInfo.insertAfter,
+      attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
+      insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
+      insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
       destinationWindowId: TabsStore.getWindow(),
       duplicate:           dt.dropEffect == 'copy'
     });

@@ -343,22 +343,6 @@ function onMessage(message, sender) {
         return true;
       })();
 
-    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabIds.concat([
-          message.attachToId,
-          message.insertBeforeId,
-          message.insertAfterId
-        ]));
-        log('perform tabs dragdrop requested: ', message);
-        return Commands.performTabsDragDrop(Object.assign({}, message, {
-          tabs:         message.tabIds.map(id => Tab.get(id)),
-          attachTo:     message.attachToId && Tab.get(message.attachToId),
-          insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
-          insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
-        }));
-      })();
-
     case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
       return (async () => {
         if (JSON.stringify(message.permissions) == JSON.stringify(Permissions.ALL_URLS)) {

@@ -259,23 +259,6 @@ export async function performTabsDragDrop(params = {}) {
   const windowId = params.windowId || TabsStore.getWindow();
   const destinationWindowId = params.destinationWindowId || windowId;
 
-  if (TabsStore.getWindow()) {
-    browser.runtime.sendMessage(Object.assign({}, params, {
-      type:           Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
-      windowId:       windowId,
-      tabs:           null,
-      attachTo:       null,
-      insertBefore:   null,
-      insertAfter:    null,
-      tabIds:         params.tabs.map(tab => tab.id),
-      attachToId:     params.attachTo && params.attachTo.id,
-      insertBeforeId: params.insertBefore && params.insertBefore.id,
-      insertAfterId:  params.insertAfter && params.insertAfter.id,
-      destinationWindowId
-    })).catch(ApiTabs.createErrorSuppressor());
-    return;
-  }
-
   log('performTabsDragDrop ', {
     tabs:                params.tabs.map(dumpTab),
     attachTo:            dumpTab(params.attachTo),
@@ -720,7 +703,7 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
 }
 
 
-Sidebar.onMessage.addListener((windowId, message) => {
+Sidebar.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_NEW_TAB_AS: {
       const baseTab = Tab.get(message.baseTabId);
@@ -732,5 +715,20 @@ Sidebar.onMessage.addListener((windowId, message) => {
           inBackground:  message.inBackground
         });
     }; break;
+
+    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
+      await Tab.waitUntilTracked(message.tabIds.concat([
+        message.attachToId,
+        message.insertBeforeId,
+        message.insertAfterId
+      ]));
+      log('perform tabs dragdrop requested: ', message);
+      performTabsDragDrop(Object.assign({}, message, {
+        tabs:         message.tabIds.map(id => Tab.get(id)),
+        attachTo:     message.attachToId && Tab.get(message.attachToId),
+        insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
+        insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
+      }));
+      break;
   }
 });
