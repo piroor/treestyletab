@@ -29,6 +29,10 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
 }
 
+export function sendMessage(message) {
+  mConnectionPort.postMessage(message);
+}
+
 function onConnectionMessage(message) {
   switch (message.type) {
     case 'echo': // for testing

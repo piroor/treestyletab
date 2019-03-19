@@ -53,6 +53,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
+import * as Background from './background.js';
 
 import Tab from '/common/Tab.js';
 
@@ -461,13 +462,13 @@ function collapseAutoExpandedTabsWhileDragging() {
   if (mLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (const tab of mLongHoverExpandedTabs) {
-      browser.runtime.sendMessage({
+      Background.sendMessage({
         type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
         tabId:     tab.id,
         collapsed: false,
         justNow:   true,
         stack:     new Error().stack
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
     }
   }
   mLongHoverExpandedTabs = [];
@@ -503,14 +504,14 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
       }).catch(ApiTabs.createErrorSuppressor());
     }
   }
-  await browser.runtime.sendMessage({
+  Background.sendMessage({
     type:         Constants.kCOMMAND_NEW_TABS,
     uris,
     windowId:     TabsStore.getWindow(),
     parent:       dropActionInfo.parent && dropActionInfo.parent.id,
     insertBefore: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
     insertAfter:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
-  }).catch(ApiTabs.createErrorHandler());
+  });
 }
 
 function retrieveURIsFromDragEvent(event) {
@@ -906,20 +907,20 @@ function reserveToProcessLongHover(params = {}) {
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        browser.runtime.sendMessage({
+        Background.sendMessage({
           type:  Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR,
           tabId: dragOverTab.id
-        }).catch(ApiTabs.createErrorSuppressor());
+        });
       }
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
-        browser.runtime.sendMessage({
+        Background.sendMessage({
           type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
           tabId:     dragOverTab.id,
           collapsed: false,
           stack:     new Error().stack
-        }).catch(ApiTabs.createErrorSuppressor());
+        });
       }
     }, configs.autoExpandOnLongHoverDelay);
   }, 0);
@@ -1076,18 +1077,18 @@ async function onDragEnd(event) {
   const duplicate  = EventUtils.isAccelKeyPressed(event);
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
   if (!duplicate) {
-    await browser.runtime.sendMessage({
+    Background.sendMessage({
       type:   Constants.kCOMMAND_DETACH_TABS_FROM_TREE,
       tabIds: detachTabs.map(tab => tab.id)
     });
   }
-  browser.runtime.sendMessage({
+  Background.sendMessage({
     type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
     tabIds:    detachTabs.map(tab => tab.id),
     duplicate,
     left:      event.screenX,
     top:       event.screenY
-  }).catch(ApiTabs.createErrorHandler());
+  });
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 

@@ -720,3 +720,19 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
   });
   return tabs;
 }
+
+
+Sidebar.onMessage.addListener((windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_NEW_TAB_AS: {
+      const baseTab = Tab.get(message.baseTabId);
+      if (baseTab)
+        openNewTabAs({
+          baseTab,
+          as:            message.as,
+          cookieStoreId: message.cookieStoreId,
+          inBackground:  message.inBackground
+        });
+    }; break;
+  }
+});

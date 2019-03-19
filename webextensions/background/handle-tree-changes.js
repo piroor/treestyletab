@@ -19,6 +19,8 @@ import * as Tree from '/common/tree.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as BackgroundCache from './background-cache.js';
+import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {
   internalLogger('background/handle-tree-changes', ...args);
@@ -243,4 +245,10 @@ Tab.onShown.addListener(tab => {
 
 Background.onReady.addListener(() => {
   mInitialized = true;
+});
+
+Tree.onSubtreeCollapsedStateChanged.addListener((tab, _info) => {
+  if (mInitialized)
+    TreeStructure.reserveToSaveTreeStructure(tab.windowId);
+  BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 });

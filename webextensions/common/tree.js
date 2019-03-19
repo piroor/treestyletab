@@ -72,6 +72,7 @@ export const onAttached     = new EventListenerManager();
 export const onDetached     = new EventListenerManager();
 export const onLevelChanged = new EventListenerManager();
 export const onSubtreeCollapsedStateChanging = new EventListenerManager();
+export const onSubtreeCollapsedStateChanged  = new EventListenerManager();
 
 
 // return moved (or not)
@@ -618,6 +619,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     collapseExpandSubtreeInternal(tab, params),
     params.broadcast && browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor())
   ]);
+  onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
   if (!params.force &&
@@ -1542,3 +1544,66 @@ function snapshotTree(targetTab, tabs) {
     tabsById: snapshotById
   };
 }
+
+
+let mLastTreeChangeFromRemote = Promise.resolve();
+export function doTreeChangeFromRemote(task) {
+  const previousPromisedComplete = mLastTreeChangeFromRemote;
+  return mLastTreeChangeFromRemote = new Promise(async (resolve, reject) => {
+    try {
+      await previousPromisedComplete;
+      await task();
+      resolve();
+    }
+    catch(error) {
+      reject(error);
+    }
+  });
+}
+
+Sidebar.onMessage.addListener(async (windowId, message) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+      await Tab.waitUntilTracked(message.tabId);
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      const params = {
+        collapsed: message.collapsed,
+        justNow:   message.justNow,
+        broadcast: true,
+        stack:     message.stack
+      };
+      if (message.manualOperation)
+        manualCollapseExpandSubtree(tab, params);
+      else
+        collapseExpandSubtree(tab, params);
+    }; break;
+
+    case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR: {
+      await Tab.waitUntilTracked(message.tabId);
+      const tab = Tab.get(message.tabId);
+      if (tab)
+        doTreeChangeFromRemote(async () => {
+          return collapseExpandTreesIntelligentlyFor(tab);
+        });
+    }; break;
+
+    case Constants.kCOMMAND_DETACH_TABS_FROM_TREE: {
+      await Tab.waitUntilTracked(message.tabIds);
+      const tabs = message.tabIds.map(Tab.get);
+      doTreeChangeFromRemote(async () => {
+        return detachTabsFromTree(tabs);
+      });
+    }; break;
+
+    case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS: {
+      log('new window requested: ', message);
+      await Tab.waitUntilTracked(message.tabIds);
+      const tabs = message.tabIds.map(id => TabsStore.tabs.get(id));
+      doTreeChangeFromRemote(async () => {
+        return openNewWindowFromTabs(tabs, message);
+      });
+    }; break;
+  }
+});

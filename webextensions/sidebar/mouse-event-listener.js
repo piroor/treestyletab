@@ -54,6 +54,7 @@ import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 
+import * as Background from './background.js';
 import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
@@ -393,13 +394,13 @@ async function onMouseUp(event) {
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
       if (tab.$TST.hasChild)
-        browser.runtime.sendMessage({
+        Background.sendMessage({
           type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
           tabId:           tab.id,
           collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
           stack:           new Error().stack
-        }).catch(ApiTabs.createErrorSuppressor());
+        });
     }
     else if (lastMousedown.detail.soundButton) {
       log('clicked on sound button');
@@ -499,7 +500,7 @@ function handleNewTabAction(event, options = {}) {
   if (!configs.autoAttach && !('action' in options))
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
-  browser.runtime.sendMessage({
+  Background.sendMessage({
     type:          Constants.kCOMMAND_NEW_TAB_AS,
     baseTabId:     TabsStore.activeTabInWindow.get(mTargetWindow).id,
     as:            options.action,
@@ -533,13 +534,13 @@ function onDblClick(event) {
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      browser.runtime.sendMessage({
+      Background.sendMessage({
         type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
         tabId:           livingTab.id,
         collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
         stack:           new Error().stack
-      }).catch(ApiTabs.createErrorSuppressor());
+      });
     }
     return;
   }

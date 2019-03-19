@@ -852,21 +852,6 @@ function onConfigChange(changedKey) {
 }
 
 
-let mLastTreeChangeFromRemote = Promise.resolve();
-function doTreeChangeFromRemote(task) {
-  const previousPromisedComplete = mLastTreeChangeFromRemote;
-  return mLastTreeChangeFromRemote = new Promise(async (resolve, reject) => {
-    try {
-      await previousPromisedComplete;
-      await task();
-      resolve();
-    }
-    catch(error) {
-      reject(error);
-    }
-  });
-}
-
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
@@ -904,7 +889,7 @@ function onMessage(message, _sender, _respond) {
       break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      return doTreeChangeFromRemote(async () => {
+      return Tree.doTreeChangeFromRemote(async () => {
         await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (!tab)
@@ -982,7 +967,7 @@ function onMessage(message, _sender, _respond) {
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO:
-      return doTreeChangeFromRemote(async () => {
+      return Tree.doTreeChangeFromRemote(async () => {
         await Promise.all([
           await Tab.waitUntilTracked([
             message.childId,
@@ -1003,7 +988,7 @@ function onMessage(message, _sender, _respond) {
       });
 
     case Constants.kCOMMAND_DETACH_TAB:
-      return doTreeChangeFromRemote(async () => {
+      return Tree.doTreeChangeFromRemote(async () => {
         await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (tab)

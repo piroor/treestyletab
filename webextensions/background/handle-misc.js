@@ -27,8 +27,6 @@ import * as Permissions from '/common/permissions.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
-import * as BackgroundCache from './background-cache.js';
-import * as TreeStructure from './tree-structure.js';
 import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
 function log(...args) {
@@ -293,33 +291,6 @@ function onMessage(message, sender) {
         return { structure };
       })();
 
-    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      return (async () => {
-        await Tab.waitUntilTracked(message.tabId);
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        const params = {
-          collapsed: message.collapsed,
-          justNow:   message.justNow,
-          broadcast: true,
-          stack:     message.stack
-        };
-        if (message.manualOperation)
-          Tree.manualCollapseExpandSubtree(tab, params);
-        else
-          Tree.collapseExpandSubtree(tab, params);
-        if (mInitialized)
-          TreeStructure.reserveToSaveTreeStructure(tab.windowId);
-        BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-      })();
-
-    case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR: {
-      const tab = Tab.get(message.tabId);
-      if (tab)
-        Tree.collapseExpandTreesIntelligentlyFor(tab);
-    }; break;
-
     case Constants.kCOMMAND_LOAD_URI:
       return TabsOpen.loadURI(message.uri, Object.assign({}, message.options, {
         tab:      Tab.get(message.options.tabId),
@@ -340,26 +311,6 @@ function onMessage(message, sender) {
           insertBefore: Tab.get(message.insertBeforeId),
           insertAfter:  Tab.get(message.insertAfterId)
         })).then(tabs => tabs.map(tab => tab.id));
-      })();
-
-    case Constants.kCOMMAND_NEW_TAB_AS: {
-      const baseTab = Tab.get(message.baseTabId);
-      if (baseTab)
-        Commands.openNewTabAs({
-          baseTab,
-          as:            message.as,
-          cookieStoreId: message.cookieStoreId,
-          inBackground:  message.inBackground
-        });
-    }; break;
-
-    case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
-      return (async () => {
-        log('new window requested: ', message);
-        await Tab.waitUntilTracked(message.tabIds);
-        const tabs = message.tabIds.map(id => TabsStore.tabs.get(id));
-        const movedTabs = await Tree.openNewWindowFromTabs(tabs, message);
-        return { movedTabs: movedTabs.map(tab => tab.id) };
       })();
 
     case Constants.kCOMMAND_MOVE_TABS:
@@ -556,11 +507,6 @@ function onMessage(message, sender) {
         if (tab)
           await Tree.detachTab(tab);
       })();
-
-    case Constants.kCOMMAND_DETACH_TABS_FROM_TREE: {
-      const tabs = message.tabIds.map(Tab.get);
-      Tree.detachTabsFromTree(tabs);
-    }; break;
 
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {

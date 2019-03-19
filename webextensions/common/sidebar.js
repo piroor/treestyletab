@@ -18,7 +18,7 @@ function log(...args) {
   internalLogger('common/sidebar', ...args);
 }
 
-export const onResponse = new EventListenerManager();
+export const onMessage = new EventListenerManager();
 
 let mOpenState;
 const mReceivers = new Map();
@@ -77,7 +77,7 @@ export function init() {
       return;
     const windowId = parseInt(port.name.replace(matcher, ''));
     mOpenState.set(windowId, port);
-    const receiver = message => onResponse.dispatch(windowId, message);
+    const receiver = message => onMessage.dispatch(windowId, message);
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
     TSTAPI.sendMessage({
