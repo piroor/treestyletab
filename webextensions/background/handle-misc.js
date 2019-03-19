@@ -314,6 +314,12 @@ function onMessage(message, sender) {
         BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
+    case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR: {
+      const tab = Tab.get(message.tabId);
+      if (tab)
+        Tree.collapseExpandTreesIntelligentlyFor(tab);
+    }; break;
+
     case Constants.kCOMMAND_LOAD_URI:
       return TabsOpen.loadURI(message.uri, Object.assign({}, message.options, {
         tab:      Tab.get(message.options.tabId),
@@ -335,6 +341,17 @@ function onMessage(message, sender) {
           insertAfter:  Tab.get(message.insertAfterId)
         })).then(tabs => tabs.map(tab => tab.id));
       })();
+
+    case Constants.kCOMMAND_NEW_TAB_AS: {
+      const baseTab = Tab.get(message.baseTabId);
+      if (baseTab)
+        Commands.openNewTabAs({
+          baseTab,
+          as:            message.as,
+          cookieStoreId: message.cookieStoreId,
+          inBackground:  message.inBackground
+        });
+    }; break;
 
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
       return (async () => {
@@ -539,6 +556,11 @@ function onMessage(message, sender) {
         if (tab)
           await Tree.detachTab(tab);
       })();
+
+    case Constants.kCOMMAND_DETACH_TABS_FROM_TREE: {
+      const tabs = message.tabIds.map(Tab.get);
+      Tree.detachTabsFromTree(tabs);
+    }; break;
 
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {

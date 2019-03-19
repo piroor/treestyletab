@@ -187,7 +187,7 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   }));
 
-  if (options.inBackground || options.broadcast) {
+  if (options.broadcast) {
     browser.runtime.sendMessage({
       type:             Constants.kCOMMAND_ATTACH_TAB_TO,
       windowId:         child.windowId,
@@ -610,10 +610,6 @@ export async function collapseExpandSubtree(tab, params = {}) {
     broadcasted:     !!params.broadcast,
     stack:           new Error().stack
   };
-  if (params.inBackground) {
-    await browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor());
-    return;
-  }
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
     return;
   params.stack = `${new Error().stack}\n${params.stack || ''}`;
@@ -1214,23 +1210,6 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     return [];
 
   log('openNewWindowFromTabs: ', tabs, options);
-
-  const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
-
-  if (options.inBackground) {
-    const response = await browser.runtime.sendMessage(Object.assign({}, options, {
-      type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
-      windowId:  windowId,
-      tabIds:    tabs.map(tab => tab.id),
-      duplicate: !!options.duplicate,
-      left:      'left' in options ? parseInt(options.left) : null,
-      top:       'top' in options ? parseInt(options.top) : null,
-      inBackground:  false
-    })).catch(ApiTabs.createErrorHandler());
-    return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
-  }
-
-  log('opening new window');
   const windowParams = {
     //active: true,  // not supported in Firefox...
     url: 'about:blank',

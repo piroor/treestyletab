@@ -42,7 +42,6 @@ import {
   log as internalLogger,
   configs
 } from './common.js';
-import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsMove from './tabs-move.js';
@@ -59,17 +58,6 @@ const SEARCH_PREFIX_MATCHER = /^about:treestyletab-search\?/;
 export async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
     throw new Error('missing loading target window or tab');
-  if (options.inBackground) {
-    await browser.runtime.sendMessage({
-      uri,
-      type:    Constants.kCOMMAND_LOAD_URI,
-      options: Object.assign({}, options, {
-        tabId: options.tab && options.tab.id,
-        tab:   null
-      })
-    }).catch(ApiTabs.createErrorSuppressor());
-    return;
-  }
   try {
     let tabId;
     if (options.tab) {
@@ -123,25 +111,6 @@ export async function openURIsInTabs(uris, options = {}) {
     throw new Error('missing loading target window\n' + new Error().stack);
 
   return Tab.doAndGetNewTabs(async () => {
-    if (options.inBackground) {
-      const ids = await browser.runtime.sendMessage(Object.assign({}, options, {
-        type:           Constants.kCOMMAND_NEW_TABS,
-        uris,
-        parent:         null,
-        parentId:       options.parent && options.parent.id,
-        opener:         null,
-        openerId:       options.opener && options.opener.id,
-        insertBefore:   null,
-        insertBeforeId: options.insertBefore && options.insertBefore.id,
-        insertAfter:    null,
-        insertAfterId:  options.insertAfter && options.insertAfter.id,
-        cookieStoreId: options.cookieStoreId || null,
-        isOrphan:      !!options.isOrphan,
-        inBackground:      false
-      })).catch(ApiTabs.createErrorHandler());
-      return ids.map(id => Tab.get(id));
-    }
-    else {
       await Tab.waitUntilTrackedAll(options.windowId);
       await TabsMove.waitUntilSynchronized(options.windowId);
       const startIndex = Tab.calculateNewTabIndex(options);
@@ -221,7 +190,6 @@ export async function openURIsInTabs(uris, options = {}) {
         await tab.$TST.opened;
         return tab;
       }));
-    }
   }, options.windowId);
 }
 

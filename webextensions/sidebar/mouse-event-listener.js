@@ -48,10 +48,8 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Commands from '/common/commands.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
@@ -386,17 +384,22 @@ async function onMouseUp(event) {
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            TabsInternalOperation.removeTab(livingTab, { inBackground: true });
+            browser.runtime.sendMessage({
+              type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+              tabIds: [livingTab.id],
+            }).catch(ApiTabs.createErrorSuppressor());
         });
     }
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
       if (tab.$TST.hasChild)
-        Tree.collapseExpandSubtree(tab, {
+        browser.runtime.sendMessage({
+          type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+          tabId:           tab.id,
           collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
-          inBackground:        true
-        });
+          stack:           new Error().stack
+        }).catch(ApiTabs.createErrorSuppressor());
     }
     else if (lastMousedown.detail.soundButton) {
       log('clicked on sound button');
@@ -422,10 +425,10 @@ async function onMouseUp(event) {
         .then(confirmed => {
           if (!confirmed)
             return;
-          if (multiselected)
-            TabsInternalOperation.removeTabs(tabsToBeClosed, { inBackground: true });
-          else
-            TabsInternalOperation.removeTab(tab, { inBackground: true });
+          browser.runtime.sendMessage({
+            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+            tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id],
+          }).catch(ApiTabs.createErrorSuppressor());
         });
     }
     else if (lastMousedown.detail.button == 0 &&
@@ -496,12 +499,12 @@ function handleNewTabAction(event, options = {}) {
   if (!configs.autoAttach && !('action' in options))
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
-  Commands.openNewTabAs({
-    baseTab:       TabsStore.activeTabInWindow.get(mTargetWindow),
+  browser.runtime.sendMessage({
+    type:          Constants.kCOMMAND_NEW_TAB_AS,
+    baseTabId:     TabsStore.activeTabInWindow.get(mTargetWindow).id,
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
-    inBackground:  event.shiftKey,
-    inBackground:      true
+    inBackground:  event.shiftKey
   });
 }
 
@@ -522,16 +525,21 @@ function onDblClick(event) {
         !event.shiftKey) {
       event.stopPropagation();
       event.preventDefault();
-      TabsInternalOperation.removeTab(livingTab, { inBackground: true });
+      browser.runtime.sendMessage({
+        type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+        tabIds: [livingTab.id],
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      Tree.collapseExpandSubtree(livingTab, {
+      browser.runtime.sendMessage({
+        type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+        tabId:           livingTab.id,
         collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
-        inBackground:        true
-      });
+        stack:           new Error().stack
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     return;
   }

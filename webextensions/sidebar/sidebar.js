@@ -998,7 +998,6 @@ function onMessage(message, _sender, _respond) {
           await Tree.attachTabTo(child, parent, Object.assign({}, message, {
             insertBefore: Tab.get(message.insertBeforeId),
             insertAfter:  Tab.get(message.insertAfterId),
-            inBackground:     false,
             broadcast:    false
           }));
       });

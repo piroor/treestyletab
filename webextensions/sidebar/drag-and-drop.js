@@ -47,7 +47,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -462,11 +461,13 @@ function collapseAutoExpandedTabsWhileDragging() {
   if (mLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (const tab of mLongHoverExpandedTabs) {
-      Tree.collapseExpandSubtree(tab, {
+      browser.runtime.sendMessage({
+        type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+        tabId:     tab.id,
         collapsed: false,
         justNow:   true,
-        inBackground:  true
-      });
+        stack:     new Error().stack
+      }).catch(ApiTabs.createErrorSuppressor());
     }
   }
   mLongHoverExpandedTabs = [];
@@ -495,19 +496,21 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
         windowId: TabsStore.getWindow(),
         tabId:    dropActionInfo.dragOverTab.id
       }).catch(ApiTabs.createErrorSuppressor());
-      await TabsOpen.loadURI(uris.shift(), {
-        tab:      dropActionInfo.dragOverTab,
-        inBackground: true
-      });
+      await browser.runtime.sendMessage({
+        type:    Constants.kCOMMAND_LOAD_URI,
+        uri:     uris.shift(),
+        tabId:   dropActionInfo.dragOverTab.id
+      }).catch(ApiTabs.createErrorSuppressor());
     }
   }
-  await TabsOpen.openURIsInTabs(uris, {
+  await browser.runtime.sendMessage({
+    type:         Constants.kCOMMAND_NEW_TABS,
+    uris,
     windowId:     TabsStore.getWindow(),
-    parent:       dropActionInfo.parent,
-    insertBefore: dropActionInfo.insertBefore,
-    insertAfter:  dropActionInfo.insertAfter,
-    inBackground:     true
-  });
+    parent:       dropActionInfo.parent && dropActionInfo.parent.id,
+    insertBefore: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
+    insertAfter:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
+  }).catch(ApiTabs.createErrorHandler());
 }
 
 function retrieveURIsFromDragEvent(event) {
@@ -903,15 +906,20 @@ function reserveToProcessLongHover(params = {}) {
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inBackground: true });
+        browser.runtime.sendMessage({
+          type:  Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR,
+          tabId: dragOverTab.id
+        }).catch(ApiTabs.createErrorSuppressor());
       }
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
-        Tree.collapseExpandSubtree(dragOverTab, {
+        browser.runtime.sendMessage({
+          type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+          tabId:     dragOverTab.id,
           collapsed: false,
-          inBackground:  true
-        });
+          stack:     new Error().stack
+        }).catch(ApiTabs.createErrorSuppressor());
       }
     }, configs.autoExpandOnLongHoverDelay);
   }, 0);
@@ -1068,16 +1076,18 @@ async function onDragEnd(event) {
   const duplicate  = EventUtils.isAccelKeyPressed(event);
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
   if (!duplicate) {
-    await await Tree.detachTabsFromTree(detachTabs, {
-      inBackground: true
+    await browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_DETACH_TABS_FROM_TREE,
+      tabIds: detachTabs.map(tab => tab.id)
     });
   }
-  Tree.openNewWindowFromTabs(detachTabs, {
+  browser.runtime.sendMessage({
+    type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
+    tabIds:    detachTabs.map(tab => tab.id),
     duplicate,
     left:      event.screenX,
-    top:       event.screenY,
-    inBackground:  true
-  });
+    top:       event.screenY
+  }).catch(ApiTabs.createErrorHandler());
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 
