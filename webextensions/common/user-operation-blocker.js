@@ -34,10 +34,16 @@ export function block(options = {}) {
   }
 }
 
-export function setProgress(percentage) {
-  if (!mProgressbar)
-    return;
-  mProgressbar.value = Math.max(0, Math.min(100, percentage));
+export function setProgress(percentage, windowId = null) {
+  percentage = Math.max(0, Math.min(100, percentage));
+  if (mProgressbar)
+    mProgressbar.value = percentage;
+  if (windowId && !TabsStore.getWindow())
+    Sidebar.sendMessage({
+      type: Constants.kCOMMAND_PROGRESS_USER_OPERATIONS,
+      windowId,
+      percentage
+    });
 }
 
 export function blockIn(windowId, options = {}) {

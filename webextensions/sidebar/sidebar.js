@@ -914,6 +914,10 @@ Background.onMessage.addListener(async message => {
       UserOperationBlocker.unblockIn(mTargetWindow, message);
       break;
 
+    case Constants.kCOMMAND_PROGRESS_USER_OPERATIONS:
+      UserOperationBlocker.setProgress(message.percentage, mTargetWindow);
+      break;
+
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return Tree.doTreeChangeFromRemote(async () => {
         await Promise.all([

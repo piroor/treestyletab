@@ -1033,6 +1033,7 @@ export async function moveTabs(tabs, options = {}) {
                 while (true) {
                   await wait(100);
                   const tabs = Tab.getDuplicatingTabs(windowId);
+                  UserOperationBlocker.setProgress(Math.round(tabs.length / movedTabIds.length * 50), windowId);
                   if (tabs.length < movedTabIds.length)
                     continue; // not opened yet
                   const tabIds = tabs.map(tab => tab.id);
@@ -1052,6 +1053,7 @@ export async function moveTabs(tabs, options = {}) {
             else {
               movedTabs = await promisedDuplicatedTabs;
             }
+            UserOperationBlocker.setProgress(50, windowId);
             movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
           }
@@ -1108,6 +1110,7 @@ export async function moveTabs(tabs, options = {}) {
       while (Date.now() - startTime < maxDelay) {
         newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
         newTabs = newTabs.filter(tab => !!tab);
+        UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
           log('retrying: ', movedTabIds, newTabs.length, tabs.length);
           await wait(100);
