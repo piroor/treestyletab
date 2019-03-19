@@ -810,7 +810,8 @@ async function onWindowRemoved(windowId) {
   try {
     log('onWindowRemoved ', windowId);
     const window = TabsStore.windows.get(windowId);
-    if (window)
+    if (window &&
+        !TabsStore.getWindow()) // skip destructor on sidebar
       window.destroy();
 
     onCompleted();
