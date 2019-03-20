@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+ - 2.8.7 (2019.3.20)
+   * Optimize performance of messaging between the background page and sidebar contents.
+   * Optimize performance of initialization processes.
+   * Fix startup failure when the background page is initialized with cached tabs and the sidebar is initialized without cache.
+   * Show toolbar icons correctly when the option to show icons with theme color is active.
+   * Show "muted" and "sound playing" icon on the parent of a collapsed tree when any descendant has those status.
+   * Show progressbar on the sidebar while initialization.
  - 2.8.6 (2019.3.16)
    * Officially drop support for Firefox ESR60, and all 2.8.x versions are now marked as unsupported for ESR60.
    * Fix unexpectedly visible (expanded) tabs under logically collapsed tree on the startup session restoration.
