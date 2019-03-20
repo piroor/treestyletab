@@ -463,6 +463,7 @@ async function importTabsFromBackground() {
       resolve(message.tabs);
     };
     Background.onMessage.addListener(onBackgroundIsReady);
+    Background.connect();
   }));
 }
 

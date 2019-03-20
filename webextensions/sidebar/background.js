@@ -23,6 +23,8 @@ export const onMessage = new EventListenerManager();
 let mConnectionPort = null;
 
 export function connect() {
+  if (mConnectionPort)
+    return;
   mConnectionPort = browser.runtime.connect({
     name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${TabsStore.getWindow()}`
   });

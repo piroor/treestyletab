@@ -121,8 +121,6 @@ export async function init() {
 
   // notify that the master process is ready.
   for (const window of TabsStore.windows.values()) {
-    if (Sidebar.isOpen(window.id))
-      continue;
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,
