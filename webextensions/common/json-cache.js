@@ -72,9 +72,7 @@ export async function restoreTabsFromCacheInternal(params) {
     return [];
   }
   try {
-    await MetricsData.addAsync('rebuildAll: fixupTabsRestoredFromCache', fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache, {
-      dirty: params.shouldUpdate
-    }));
+    await MetricsData.addAsync('rebuildAll: fixupTabsRestoredFromCache', fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache));
   }
   catch(e) {
     log(String(e), e.stack);
@@ -104,20 +102,15 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, opt
   MetricsData.add('fixupTabsRestoredFromCache: step 1 done.');
   // step 2: restore information of tabs
   tabs.forEach((tab, index) => {
-    fixupTabRestoredFromCache(tab, permanentStates[index], cachedTabs[index], {
-      idMap: idMap,
-      dirty: options.dirty
-    });
+    fixupTabRestoredFromCache(tab, permanentStates[index], cachedTabs[index], idMap);
   });
   MetricsData.add('fixupTabsRestoredFromCache: step 2 done.');
 }
 
-function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}) {
+function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   tab.$TST.clear();
   tab.$TST.states = new Set([...cachedTab.states, ...permanentStates]);
   tab.$TST.attributes = cachedTab.attributes;
-
-  const idMap = options.idMap;
 
   log('fixupTabRestoredFromCache children: ', cachedTab.childIds);
   const childTabs = cachedTab.childIds
@@ -151,6 +144,5 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}
   }
 
   TabsStore.updateIndexesForTab(tab);
-  if (options.dirty)
-    TabsUpdate.updateTab(tab, tab, { forceApply: true });
+  TabsUpdate.updateTab(tab, tab, { forceApply: true, onlyApply: true });
 }

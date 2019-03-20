@@ -122,7 +122,7 @@ export async function request(tabOrId, options = {}) {
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
         // We need to update the related tab id.
-        await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, {
+        browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, {
           id:    oldId.id,
           tabId: tab.id
         }).catch(ApiTabs.createErrorSuppressor());

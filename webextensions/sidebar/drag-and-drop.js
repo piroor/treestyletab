@@ -1126,6 +1126,8 @@ function finishDrag() {
 function onTSTAPIDragEnter(event) {
   Scroll.autoScrollOnMouseEvent(event);
   const tab = EventUtils.getTabFromEvent(event);
+  if (!tab)
+    return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
     target = SidebarTabs.getClosebox(tab);
