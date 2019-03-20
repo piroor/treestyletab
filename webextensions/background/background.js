@@ -58,8 +58,19 @@ export async function init() {
   onInit.dispatch();
   Sidebar.init();
 
-  await configs.$loaded;
-  MetricsData.add('init: configs.$loaded');
+  let promisedWindows;
+  await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
+    waitUntilCompletelyRestored().then(() => {
+      // don't wait at here for better performance
+      promisedWindows = browser.windows.getAll({
+        populate:    true,
+        windowTypes: ['normal']
+      }).catch(ApiTabs.createErrorHandler());
+    }),
+    ContextualIdentities.init(),
+    configs.$loaded
+  ]));
+  MetricsData.add('init: prepare');
 
   Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
@@ -69,16 +80,9 @@ export async function init() {
 
   updatePanelUrl();
 
-  await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored and ContextualIdentities.init', Promise.all([
-    waitUntilCompletelyRestored(),
-    ContextualIdentities.init()
-  ]));
-  const restoredFromCache = await await MetricsData.addAsync('init: rebuildAll', async () => {
-    return rebuildAll();
-  });
-  await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', async () => {
-    return TreeStructure.loadTreeStructure(restoredFromCache);
-  });
+  const windows = await MetricsData.addAsync('init: getting all tabs across windows', promisedWindows); // wait at here for better performance
+  const restoredFromCache = await MetricsData.addAsync('init: rebuildAll', rebuildAll(windows));
+  await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
   Migration.migrateLegacyTreeStructure();
   MetricsData.add('init: Migration.migrateLegacyTreeStructure');
@@ -110,9 +114,7 @@ export async function init() {
     }
   }
 
-  await MetricsData.addAsync('init: initializing API for other addons', async () => {
-    return TSTAPI.initAsBackend();
-  });
+  await MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
 
   mInitialized = true;
   onReady.dispatch();
@@ -176,12 +178,7 @@ function destroy() {
   ContextualIdentities.endObserve();
 }
 
-async function rebuildAll() {
-  const windows = await 
-  await MetricsData.addAsync('rebuildAll: getting all tabs across windows', browser.windows.getAll({
-    populate:    true,
-    windowTypes: ['normal']
-  }).catch(ApiTabs.createErrorHandler()));
+async function rebuildAll(windows) {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {

@@ -68,12 +68,9 @@ async function saveTreeStructure(windowId) {
   ).catch(ApiTabs.createErrorSuppressor());
 }
 
-export async function loadTreeStructure(restoredFromCacheResults) {
+export async function loadTreeStructure(windows, restoredFromCacheResults) {
   log('loadTreeStructure');
-  const windows = await browser.windows.getAll({
-    windowTypes: ['normal']
-  }).catch(ApiTabs.createErrorHandler());
-  MetricsData.add('loadTreeStructure: browser.windows.getAll');
+  MetricsData.add('loadTreeStructure: start');
   return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async window => {
     if (restoredFromCacheResults &&
         restoredFromCacheResults[window.id]) {
