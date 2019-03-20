@@ -119,6 +119,7 @@
 :root.blocking-throbber #blocking-screen progress.shown {
   display: block;
   --progressbar-width: calc(var(--throbber-size) * 8);
+  max-height: calc(var(--throbber-size) / 2);
   max-width: var(--progressbar-width);
   position: absolute;
   top: calc(50% + var(--throbber-size));
