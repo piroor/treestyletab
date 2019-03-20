@@ -84,7 +84,7 @@ export async function restoreTabsFromCacheInternal(params) {
   return tabs;
 }
 
-async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, options = {}) {
+async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
   MetricsData.add('fixupTabsRestoredFromCache: start');
   if (tabs.length != cachedTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
