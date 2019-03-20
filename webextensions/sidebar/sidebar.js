@@ -138,9 +138,12 @@ export async function init() {
     MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
   ]);
 
+  // we don't need await for these features
+  MetricsData.addAsync('API for other addons', TSTAPI.initAsFrontend());
+
   let cachedContents;
   let restoredFromCache;
-  await MetricsData.addAsync('parallel initialization', Promise.all([
+  await Promise.all([
     MetricsData.addAsync('parallel initialization: main', async () => {
       if (configs.useCachedTree)
         await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', async () => {
@@ -190,9 +193,8 @@ export async function init() {
     }),
     MetricsData.addAsync('parallel initialization: TabContextMenu', async () => {
       TabContextMenu.init();
-    }),
-    MetricsData.addAsync('parallel initialization: API for other addons', TSTAPI.initAsFrontend())
-  ]));
+    })
+  ]);
 
   await MetricsData.addAsync('parallel initialization: post process', Promise.all([
     MetricsData.addAsync('parallel initialization: post process: main', async () => {
