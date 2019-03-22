@@ -949,6 +949,7 @@ Background.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
       if (message.tabId) {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (tab) {
           if (message.status == 'loading') {
