@@ -768,13 +768,6 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
   }
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
-  reserveToUpdateTwistyTooltip(tab);
-  reserveToUpdateCloseboxTooltip(tab);
-  if (mInitialized)
-    tab.$TST.tooltipIsDirty = true;
-});
-
 let mDelayedResized = null;
 window.addEventListener('resize', () => {
   if (mDelayedResized)
@@ -987,7 +980,16 @@ Background.onMessage.addListener(async message => {
       reserveToUpdateSoundButtonTooltip(tab);
     }; break;
 
-    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+    case Constants.kCOMMAND_NOTIFY_TREE_COLLAPSED_STATE_CHANGING: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      reserveToUpdateTwistyTooltip(tab);
+      reserveToUpdateCloseboxTooltip(tab);
+      if (mInitialized)
+        tab.$TST.tooltipIsDirty = true;
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
       if (message.collapsed)
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });

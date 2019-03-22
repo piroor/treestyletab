@@ -1407,7 +1407,6 @@ Tab.onShown            = new EventListenerManager();
 Tab.onHighlightedTabsChanged = new EventListenerManager();
 Tab.onSoundStateChanged = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
-Tab.onCollapsedStateChanging = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 
 Tab.onBeforeCreate     = new EventListenerManager();

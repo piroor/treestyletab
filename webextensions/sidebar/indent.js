@@ -178,7 +178,6 @@ function reserveToUpdateIndent() {
 
 Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 Tree.onDetached.addListener((_tab, _info) => { reserveToUpdateIndent() });
-Tree.onLevelChanged.addListener(_tab => { reserveToUpdateIndent() });
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
@@ -191,6 +190,10 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
       reserveToUpdateIndent();
       reserveToUpdateVisualMaxTreeLevel();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
+      reserveToUpdateIndent();
       break;
   }
 });

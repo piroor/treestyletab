@@ -70,7 +70,6 @@ function logCollapseExpand(...args) {
 
 export const onAttached     = new EventListenerManager();
 export const onDetached     = new EventListenerManager();
-export const onLevelChanged = new EventListenerManager();
 export const onSubtreeCollapsedStateChanging = new EventListenerManager();
 export const onSubtreeCollapsedStateChanged  = new EventListenerManager();
 
@@ -567,9 +566,13 @@ function updateTabsIndent(tabs, level = undefined) {
     if (!item || item.pinned)
       continue;
 
-    onLevelChanged.dispatch(item);
     item.$TST.setAttribute(Constants.kLEVEL, level);
     updateTabsIndent(item.$TST.children, level + 1);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
+      windowId: item.windowId,
+      tabId:    item.id
+    });
   }
 }
 
@@ -641,6 +644,12 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
   }
 
   onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
+  Sidebar.sendMessage({
+    type:      Constants.kCOMMAND_NOTIFY_TREE_COLLAPSED_STATE_CHANGING,
+    windowId:  tab.windowId,
+    tabId:     tab.id,
+    collapsed: !!params.collapsed
+  });
 }
 
 export function manualCollapseExpandSubtree(tab, params = {}) {
@@ -708,11 +717,22 @@ export async function collapseExpandTab(tab, params = {}) {
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
   const last = params.last &&
                  (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed);
+  const byAncestor = tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed;
   const collapseExpandInfo = Object.assign({}, params, {
     anchor: last && params.anchor,
-    last:   last
+    last
   });
-  Tab.onCollapsedStateChanging.dispatch(tab, collapseExpandInfo);
+  Sidebar.sendMessage({
+    type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGING,
+    windowId:  tab.windowId,
+    tabId:     tab.id,
+    anchorId:  collapseExpandInfo.anchor && collapseExpandInfo.anchor.id,
+    justNow:   params.justNow,
+    collapsed: params.collapsed,
+    last,
+    stack,
+    byAncestor
+  });
 
   if (params.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
@@ -724,16 +744,16 @@ export async function collapseExpandTab(tab, params = {}) {
   }
 
   Tab.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
-
   Sidebar.sendMessage({
-    type:      Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE,
+    type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED,
     windowId:  tab.windowId,
     tabId:     tab.id,
     anchorId:  collapseExpandInfo.anchor && collapseExpandInfo.anchor.id,
     justNow:   params.justNow,
     collapsed: params.collapsed,
+    last,
     stack,
-    byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
+    byAncestor
   });
 }
 
