@@ -55,6 +55,15 @@ Tab.onPinned.addListener(tab => {
   Tree.collapseExpandTabAndSubtree(tab, { collapsed: false });
 });
 
+Tab.onStateChanged.addListener(tab => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    status:   tab.status
+  });
+});
+
 
 /* message observer */
 

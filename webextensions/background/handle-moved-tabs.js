@@ -16,6 +16,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
+import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -57,21 +58,26 @@ Tab.onMoving.addListener((tab, moveInfo) => {
   const window           = TabsStore.windows.get(tab.windowId);
   const isNewlyOpenedTab = window.openingTabs.has(tab.id);
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
-  if (!isNewlyOpenedTab ||
-      moveInfo.byInternalOperation ||
-      moveInfo.alreadyMoved ||
-      !positionControlled)
-    return true;
-
+  if (isNewlyOpenedTab &&
+      !moveInfo.byInternalOperation &&
+      !moveInfo.alreadyMoved &&
+      positionControlled) {
   const opener = tab.$TST.openerTab;
   // if there is no valid opener, it can be a restored initial tab in a restored window
   // and can be just moved as a part of window restoration process.
-  if (!opener)
-    return true;
-
+  if (opener) {
   log('onTabMove for new child tab: move back '+moveInfo.toIndex+' => '+moveInfo.fromIndex);
   moveBack(tab, moveInfo);
   return false;
+  }
+  }
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_MOVING,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    status:   tab.status
+  });
+  return true;
 });
 
 async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
@@ -86,6 +92,13 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       broadcast: true
     });
   }
+
+  Sidebar.sendMessage({
+    type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
+    windowId:  tab.windowId,
+    tabId:     tab.id,
+    nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
+  });
 
   log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
   const action = await detectTabActionFromNewPosition(tab, moveInfo);

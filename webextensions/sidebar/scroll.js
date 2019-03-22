@@ -505,9 +505,6 @@ function reReserveScrollingForTab(tab) {
     reserveToScrollToNewTab(tab);
 }
 
-Tab.onMoving.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
-Tab.onTabInternallyMoved.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
-
 
 async function onBackgroundMessage(message) {
   switch (message.type) {
@@ -553,6 +550,12 @@ async function onBackgroundMessage(message) {
           break;
       }
       break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      reReserveScrollingForTab(Tab.get(message.tabId));
+    }; break;
   }
 }
 

@@ -22,6 +22,7 @@ import Tab from '/common/Tab.js';
 import * as DOMCache from './dom-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
+import * as Background from './background.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -320,10 +321,6 @@ Tab.onRemoved.addListener(async (_tab, _info) => {
   }
 });
 
-Tab.onMoved.addListener((_tab, _info) => {
-  reserveToUpdateCachedTabbar();
-});
-
 Tree.onLevelChanged.addListener(_tab => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -384,3 +381,11 @@ function onConfigChange(changedKey) {
       break;
   }
 }
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+      reserveToUpdateCachedTabbar();
+      break;
+  }
+});

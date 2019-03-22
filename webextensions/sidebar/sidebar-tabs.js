@@ -652,30 +652,6 @@ export function applyCollapseExpandStateToElement(tab) {
   }
 }
 
-Tab.onCreated.addListener((tab, _info) => {
-  tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
-});
-
-Tab.onTabInternallyMoved.addListener(async (tab, info) => {
-  if (!tab.$TST.element)
-    await Tab.waitUntilTracked(tab.id, { element: true });
-  const tabElement  = tab.$TST.element;
-  const nextElement = info.nextTab && info.nextTab.$TST.element;
-  if (tabElement.nextSibling != nextElement)
-    tabElement.parentNode.insertBefore(tabElement, nextElement);
-
-  if (!info.broadcasted) {
-    // Tab element movement triggered by sidebar itself can break order of
-    // tabs synchronized from the background, so for safetyl we trigger
-    // synchronization.
-    reserveToSyncTabsOrder();
-  }
-});
-
-
-Tab.onRemoving.addListener((_tab, _info) => {
-  reserveToUpdateLoadingState();
-});
 
 Tab.onRemoved.addListener((tab, _info) => {
   if (tab.$TST.collapsed ||
@@ -695,56 +671,6 @@ Tab.onRemoved.addListener((tab, _info) => {
 });
 
 const mTabWasVisibleBeforeMoving = new Map();
-
-Tab.onMoving.addListener((tab, _info) => {
-  tab.$TST.addState(Constants.kTAB_STATE_MOVING);
-  if (!configs.animation ||
-      tab.pinned ||
-      tab.$TST.opening)
-    return;
-  mTabWasVisibleBeforeMoving.set(tab.id, !tab.$TST.collapsed);
-  Tree.collapseExpandTab(tab, {
-    collapsed: true,
-    justNow:   true
-  });
-});
-
-Tab.onMoved.addListener(async (tab, info) => {
-  if (!tab.$TST.element)
-    await Tab.waitUntilTracked(tab.id, { element: true });
-  if (mInitialized &&
-      tab.$TST.parent)
-    tab.$TST.parent.$TST.tooltipIsDirty = true;
-
-  const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
-  mTabWasVisibleBeforeMoving.delete(tab.id);
-
-  if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
-    return;
-
-  tab.$TST.element.parentNode.insertBefore(tab.$TST.element, info.nextTab && info.nextTab.$TST.element);
-
-  if (configs.animation && wasVisible) {
-    Tree.collapseExpandTab(tab, {
-      collapsed: false
-    });
-    await wait(configs.collapseDuration);
-  }
-  tab.$TST.removeState(Constants.kTAB_STATE_MOVING);
-});
-
-Tab.onStateChanged.addListener(tab => {
-  if (tab.status == 'loading') {
-    tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-    TabsStore.addUnsynchronizedTab(tab);
-  }
-  else {
-    tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-    TabsStore.removeUnsynchronizedTab(tab);
-  }
-
-  reserveToUpdateLoadingState();
-});
 
 Tab.onLabelUpdated.addListener(tab => {
   getLabelContent(tab).textContent = tab.title;
@@ -958,5 +884,84 @@ Background.onMessage.addListener(async message => {
       // so we trigger synchronization for safety.
       reserveToSyncTabsOrder();
     }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVING: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      tab.$TST.addState(Constants.kTAB_STATE_MOVING);
+      if (!configs.animation ||
+          tab.pinned ||
+          tab.$TST.opening)
+        return;
+      mTabWasVisibleBeforeMoving.set(tab.id, !tab.$TST.collapsed);
+      Tree.collapseExpandTab(tab, {
+        collapsed: true,
+        justNow:   true
+      });
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
+      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      const tab     = Tab.get(message.tabId);
+      const nextTab = Tab.get(message.nextTabId);
+      if (mInitialized &&
+          tab.$TST.parent)
+        tab.$TST.parent.$TST.tooltipIsDirty = true;
+
+      const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
+      mTabWasVisibleBeforeMoving.delete(tab.id);
+
+      if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
+        return;
+
+      tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
+
+      if (configs.animation && wasVisible) {
+        Tree.collapseExpandTab(tab, {
+          collapsed: false
+        });
+        await wait(configs.collapseDuration);
+      }
+      tab.$TST.removeState(Constants.kTAB_STATE_MOVING);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      const tab         = Tab.get(message.tabId);
+      const tabElement  = tab.$TST.element;
+      const nextTab     = Tab.get(message.nextTabId);
+      const nextElement = nextTab && nextTab.$TST.element;
+      if (tabElement.nextSibling != nextElement)
+        tabElement.parentNode.insertBefore(tabElement, nextElement);
+      if (!message.broadcasted) {
+        // Tab element movement triggered by sidebar itself can break order of
+        // tabs synchronized from the background, so for safetyl we trigger
+        // synchronization.
+        reserveToSyncTabsOrder();
+      }
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+      if (message.tabId) {
+        const tab = Tab.get(message.tabId);
+        if (tab) {
+          if (message.status == 'loading') {
+            tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+            TabsStore.addUnsynchronizedTab(tab);
+          }
+          else {
+            tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+            TabsStore.removeUnsynchronizedTab(tab);
+          }
+        }
+      }
+      reserveToUpdateLoadingState();
+      break;
   }
 });

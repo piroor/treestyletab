@@ -18,6 +18,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
+import * as Background from './background.js';
 
 import Tab from '/common/Tab.js';
 
@@ -519,8 +520,6 @@ async function onContextMenu(event) {
 }
 
 // don't return promise, to avoid needless "await"
-Tab.onRemoving.addListener((_tab, _info) => { close(); });
-Tab.onMoving.addListener((_tab, _info) => { close(); });
 Tab.onActivated.addListener((_tab, _info) => { close(); });
 Tab.onCreating.addListener((_tab, _info) => { close(); });
 Tab.onPinned.addListener(_tab => { close(); });
@@ -529,3 +528,12 @@ Tab.onShown.addListener(_tab => { close(); });
 Tab.onHidden.addListener(_tab => { close(); });
 Tree.onAttached.addListener((_tab, _info) => { close(); });
 Tree.onDetached.addListener((_tab, _info) => { close(); });
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+      close();
+      break;
+  }
+});

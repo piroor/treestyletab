@@ -633,43 +633,6 @@ function onBrowserThemeChanged(updateInfo) {
 }
 
 
-Tab.onCreated.addListener((_tab, _info) => {
-  reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
-    timeout: configs.collapseDuration
-  });
-});
-
-Tab.onRemoving.addListener((tab, removeInfo) => {
-  if (removeInfo.isWindowClosing)
-    return;
-
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
-  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      tab.$TST.subtreeCollapsed)
-    Tree.collapseExpandSubtree(tab, {
-      collapsed: false
-    });
-
-  // We don't need to update children because they are controlled by bacgkround.
-  // However we still need to update the parent itself.
-  Tree.detachTab(tab, {
-    dontUpdateIndent: true
-  });
-
-  reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
-    timeout: configs.collapseDuration
-  });
-});
-
-Tab.onMoved.addListener((_tab, _info) => {
-  reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
-    timeout: configs.collapseDuration
-  });
-});
-
 Tab.onDetached.addListener((tab, _info) => {
   if (!TabsStore.ensureLivingTab(tab))
     return;
@@ -943,6 +906,36 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_PROGRESS_USER_OPERATIONS:
       UserOperationBlocker.setProgress(message.percentage, mTargetWindow);
       break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+      reserveToUpdateTabbarLayout({
+        reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
+        timeout: configs.collapseDuration
+      });
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, message);
+      if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+          tab.$TST.subtreeCollapsed)
+        Tree.collapseExpandSubtree(tab, {
+          collapsed: false
+        });
+
+      // We don't need to update children because they are controlled by bacgkround.
+      // However we still need to update the parent itself.
+      Tree.detachTab(tab, {
+        dontUpdateIndent: true
+      });
+
+      reserveToUpdateTabbarLayout({
+        reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+        timeout: configs.collapseDuration
+      });
+    }; break;
 
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return Tree.doTreeChangeFromRemote(async () => {

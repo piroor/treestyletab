@@ -449,6 +449,11 @@ Commands.onTabsClosing.addListener((tabIds, options = {}) => {
 });
 
 Tab.onCreated.addListener((tab, info = {}) => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
   if (!info.duplicated)
     return;
   // Duplicated tab has its own tree structure information inherited
@@ -495,6 +500,13 @@ Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
     info.oldPreviousTab,
     info.oldNextTab
   ]);
+  Sidebar.sendMessage({
+    type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
+    windowId:    tab.windowId,
+    tabId:       tab.id,
+    nextTabId:   info.nextTab && info.nextTab.id,
+    broadcasted: info.broadcasted
+  });
 });
 
 Tab.onMoved.addListener(async (tab, moveInfo) => {

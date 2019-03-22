@@ -47,6 +47,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 import * as Size from './size.js';
+import * as Background from './background.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -154,11 +155,6 @@ Tab.onCreated.addListener((tab, _info) => {
     reserveToReposition();
 });
 
-Tab.onRemoving.addListener((tab, _info) => {
-  if (tab.pinned)
-    reserveToReposition();
-});
-
 Tab.onDetached.addListener((tab, _info) => {
   if (tab.pinned)
     reserveToReposition();
@@ -179,6 +175,17 @@ Tab.onShown.addListener(_tab => {
 
 Tab.onHidden.addListener(_tab => {
   reserveToReposition();
+});
+
+Background.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab.pinned)
+        reserveToReposition();
+    }; break;
+  }
 });
 
 function onConfigChange(key) {
