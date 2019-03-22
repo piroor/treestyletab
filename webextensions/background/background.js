@@ -50,6 +50,7 @@ export const onDestroy = new EventListenerManager();
 export const onTreeCompletelyAttached = new EventListenerManager();
 
 let mInitialized = false;
+const mCachesLoadedFromRestoredTabs = new Map();
 
 export async function init() {
   MetricsData.add('init: start');
@@ -57,6 +58,21 @@ export async function init() {
 
   onInit.dispatch();
   Sidebar.init();
+
+  // Read caches from existing tabs at first, for better performance.
+  // Those promises will be resolved while waiting for waitUntilCompletelyRestored().
+  browser.windows.getAll({
+    populate:    true,
+    windowTypes: ['normal']
+  }).catch(ApiTabs.createErrorHandler())
+    .then(windows => {
+      for (const window of windows) {
+        const tab = window.tabs[window.tabs.length - 1];
+        browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
+          .catch(ApiTabs.createErrorSuppressor())
+          .then(cache => mCachesLoadedFromRestoredTabs.set(tab.id, cache));
+      }
+    });
 
   let promisedWindows;
   await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
@@ -82,6 +98,7 @@ export async function init() {
 
   const windows = await MetricsData.addAsync('init: getting all tabs across windows', promisedWindows); // wait at here for better performance
   const restoredFromCache = await MetricsData.addAsync('init: rebuildAll', rebuildAll(windows));
+  mCachesLoadedFromRestoredTabs.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
   Migration.migrateLegacyTreeStructure();
@@ -114,7 +131,8 @@ export async function init() {
     }
   }
 
-  await MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
+  // we don't need to await that for the initialization of TST itself.
+  MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
 
   mInitialized = true;
   onReady.dispatch();
@@ -146,7 +164,10 @@ function waitUntilCompletelyRestored() {
     let onNewTabRestored = async (tab, _info = {}) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
-      await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorSuppressor());
+      // Read caches from restored tabs while waiting, for better performance.
+      browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
+        .catch(ApiTabs.createErrorSuppressor())
+        .then(cache => mCachesLoadedFromRestoredTabs.set(tab.id, cache));
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
@@ -197,7 +218,8 @@ async function rebuildAll(windows) {
           log(`trying to restore window ${window.id} from cache`);
           restoredFromCache[window.id] = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
             owner: window.tabs[window.tabs.length - 1],
-            tabs:  window.tabs
+            tabs:  window.tabs,
+            caches: mCachesLoadedFromRestoredTabs
           }));
           log(`window ${window.id}: restored from cache?: `, restoredFromCache[window.id]);
           if (restoredFromCache[window.id])
