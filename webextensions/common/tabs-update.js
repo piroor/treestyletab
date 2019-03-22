@@ -96,10 +96,11 @@ export function updateTab(tab, newState = {}, options = {}) {
     tab.$TST.label = visibleLabel;
     Tab.onLabelUpdated.dispatch(tab);
     Sidebar.sendMessage({
-      type:  Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
-      tabId: tab.id,
-      title: tab.title,
-      label: tab.$TST.label
+      type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      title:    tab.title,
+      label:    tab.$TST.label
     });
   }
 
