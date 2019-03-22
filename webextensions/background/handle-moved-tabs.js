@@ -93,13 +93,6 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     });
   }
 
-  Sidebar.sendMessage({
-    type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
-    windowId:  tab.windowId,
-    tabId:     tab.id,
-    nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
-  });
-
   log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
   const action = await detectTabActionFromNewPosition(tab, moveInfo);
   if (!action) {
@@ -134,14 +127,20 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
 }
 
 Tab.onMoved.addListener((tab, moveInfo = {}) => {
-  if (moveInfo.byInternalOperation ||
-      tab.$TST.duplicating) {
-    log('internal move');
-    return;
+  if (!moveInfo.byInternalOperation &&
+      !tab.$TST.duplicating) {
+    log('process moved tab');
+    tryFixupTreeForInsertedTab(tab, moveInfo);
   }
-  log('process moved tab');
-
-  tryFixupTreeForInsertedTab(tab, moveInfo);
+  else {
+    log('internal move');
+  }
+  Sidebar.sendMessage({
+    type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
+    windowId:  tab.windowId,
+    tabId:     tab.id,
+    nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
+  });
 });
 
 Commands.onMoveUp.addListener(async tab => {
