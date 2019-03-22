@@ -471,9 +471,6 @@ function reserveToScrollToNewTab(tab) {
 }
 
 
-Tab.onActivated.addListener((tab, _info) => { reserveToScrollToTab(tab); });
-Tab.onUnpinned.addListener(tab => { reserveToScrollToTab(tab); });
-
 function reReserveScrollingForTab(tab) {
   if (reserveToScrollToTab.reservedTabId == tab.id)
     reserveToScrollToTab(tab);
@@ -553,6 +550,11 @@ async function onBackgroundMessage(message) {
       }
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      reserveToScrollToTab(Tab.get(message.tabId));
+    }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {

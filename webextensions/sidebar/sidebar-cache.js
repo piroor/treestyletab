@@ -328,22 +328,6 @@ Tree.onDetached.addListener((_tab, _info) => {
   });
 });
 
-Tab.onPinned.addListener(_tab => {
-  reserveToUpdateCachedTabbar();
-});
-
-Tab.onUnpinned.addListener(_tab => {
-  reserveToUpdateCachedTabbar();
-});
-
-Tab.onShown.addListener(_tab => {
-  reserveToUpdateCachedTabbar();
-});
-
-Tab.onHidden.addListener(_tab => {
-  reserveToUpdateCachedTabbar();
-});
-
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
@@ -365,6 +349,13 @@ Background.onMessage.addListener(async message => {
       wait(0).then(() => {
         reserveToUpdateCachedTabbar();
       });
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+      reserveToUpdateCachedTabbar();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED:

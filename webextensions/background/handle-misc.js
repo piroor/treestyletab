@@ -38,6 +38,14 @@ function logMouseEvent(...args) {
 let mInitialized = false;
 
 
+Tab.onActivated.addListener((tab, _info) => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
+});
+
 Tab.onPinned.addListener(tab => {
   Tree.collapseExpandSubtree(tab, {
     collapsed: false,
@@ -53,6 +61,35 @@ Tab.onPinned.addListener(tab => {
     broadcast: true
   });
   Tree.collapseExpandTabAndSubtree(tab, { collapsed: false });
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_PINNED,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
+});
+
+Tab.onUnpinned.addListener(tab => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
+});
+
+Tab.onShown.addListener(tab => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
+});
+
+Tab.onHidden.addListener(tab => {
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_HIDDEN,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
 });
 
 Tab.onStateChanged.addListener(tab => {

@@ -160,23 +160,6 @@ Tab.onDetached.addListener((tab, _info) => {
     reserveToReposition();
 });
 
-Tab.onPinned.addListener(_tab => {
-  reserveToReposition();
-});
-
-Tab.onUnpinned.addListener(tab => {
-  clearStyle(tab);
-  reserveToReposition();
-});
-
-Tab.onShown.addListener(_tab => {
-  reserveToReposition();
-});
-
-Tab.onHidden.addListener(_tab => {
-  reserveToReposition();
-});
-
 Background.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
@@ -184,6 +167,19 @@ Background.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (tab.pinned)
         reserveToReposition();
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+      reserveToReposition();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      clearStyle(tab);
+      reserveToReposition();
     }; break;
   }
 });

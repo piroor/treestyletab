@@ -157,9 +157,6 @@ function getMaxTreeLevel(windowId, options = {}) {
   return maxLevel;
 }
 
-Tab.onCreated.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tab.onShown.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tab.onHidden.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
 Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
 Tree.onDetached.addListener(async (_tab, detachInfo = {}) => {
   if (detachInfo.oldParentTab)
@@ -179,15 +176,20 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
-Tab.onShown.addListener(_tab => { reserveToUpdateIndent() });
-Tab.onHidden.addListener(_tab => { reserveToUpdateIndent() });
 Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 Tree.onDetached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 Tree.onLevelChanged.addListener(_tab => { reserveToUpdateIndent() });
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+      reserveToUpdateVisualMaxTreeLevel();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+      reserveToUpdateIndent();
       reserveToUpdateVisualMaxTreeLevel();
       break;
   }

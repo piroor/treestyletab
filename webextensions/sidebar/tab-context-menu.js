@@ -520,19 +520,19 @@ async function onContextMenu(event) {
 }
 
 // don't return promise, to avoid needless "await"
-Tab.onActivated.addListener((_tab, _info) => { close(); });
-Tab.onCreating.addListener((_tab, _info) => { close(); });
-Tab.onPinned.addListener(_tab => { close(); });
-Tab.onUnpinned.addListener(_tab => { close(); });
-Tab.onShown.addListener(_tab => { close(); });
-Tab.onHidden.addListener(_tab => { close(); });
 Tree.onAttached.addListener((_tab, _info) => { close(); });
 Tree.onDetached.addListener((_tab, _info) => { close(); });
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATING:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
       close();
       break;
   }
