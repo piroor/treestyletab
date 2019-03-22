@@ -135,6 +135,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
 
   Sidebar.sendMessage({
     type:          Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
+    windowId:      tab.windowId,
     tabId:         tab.id,
     parentId:      parent.id,
     newlyAttached: info.newlyAttached

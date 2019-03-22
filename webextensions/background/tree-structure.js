@@ -152,9 +152,9 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab);
   Sidebar.sendMessage({
-    type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
-    tab:    tab.id,
-    window: tab.windowId
+    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
+    tabId:    tab.id,
+    windowId: tab.windowId
   });
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
@@ -276,9 +276,9 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     });
   }
   Sidebar.sendMessage({
-    type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
-    tab:    tab.id,
-    window: tab.windowId
+    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
+    tabId:    tab.id,
+    windowId: tab.windowId
   });
 }
 
