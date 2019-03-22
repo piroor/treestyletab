@@ -22,13 +22,9 @@ function log(...args) {
   internalLogger('common/json-cache', ...args);
 }
 
-export async function getWindowSignature(windowIdOrTabs) {
-  let tabs = windowIdOrTabs;
-  if (typeof windowIdOrTabs == 'number') {
-    tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
-  }
-  tabs = tabs.map(tab => Tab.get(tab.id)).filter(tab => !!tab);
-  return Promise.all(tabs.map(tab => tab.$TST.promisedUniqueId.then(id => id.id || '?')));
+export function getWindowSignature(tabs) {
+  const tabIds = tabs.map(tab => tab.id);
+  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
 }
 
 export function trimSignature(signature, ignoreCount) {
@@ -51,8 +47,9 @@ export function matcheSignatures(signatures) {
   );
 }
 
-export function signatureFromTabsCache(cache) {
-  return cache.map(tab => tab.uniqueId.id || tab.uniqueId);
+export function signatureFromTabsCache(cachedTabs) {
+  const cachedTabIds = cachedTabs.map(tab => tab.id);
+  return cachedTabs.map(tab => `${tab.$TST.parentId ? cachedTabIds.indexOf(tab.$TST.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
 }
 
 export async function restoreTabsFromCacheInternal(params) {

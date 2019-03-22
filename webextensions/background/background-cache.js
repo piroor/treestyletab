@@ -44,13 +44,8 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   const tabs = options.tabs || await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   if (configs.debug)
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
-  // We cannot define constants with variables at a time like:
-  //   [const actualSignature, let cache] = await Promise.all([
-  // eslint-disable-next-line prefer-const
-  let [actualSignature, cache] = await Promise.all([
-    MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window wignature', JSONCache.getWindowSignature(tabs)),
-    MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS))
-  ]);
+  const actualSignature = JSONCache.getWindowSignature(tabs);
+  let cache = await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
   const promisedPermanentStates = Promise.all(tabs.map(tab => tab.$TST.getPermanentStates())); // don't await at here for better performance
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: start');
   let cachedSignature = cache && cache.signature;
@@ -227,7 +222,7 @@ async function cacheTree(windowId) {
   if (!window ||
       !configs.useCachedTree)
     return;
-  const signature = await JSONCache.getWindowSignature(windowId);
+  const signature = JSONCache.getWindowSignature(Tab.getAllTabs(windowId));
   if (window.allTabsRestored)
     return;
   //log('save cache for ', windowId);
@@ -237,7 +232,7 @@ async function cacheTree(windowId) {
   log('cacheTree for window ', windowId, { stack: new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         Constants.kBACKGROUND_CONTENTS_VERSION,
-    tabs:            TabsStore.windows.get(windowId).export(),
+    tabs:            TabsStore.windows.get(windowId).export(true),
     pinnedTabsCount: Tab.getPinnedTabs(windowId).length,
     signature
   });

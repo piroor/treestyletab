@@ -110,7 +110,12 @@ export async function getEffectiveWindowCache(options = {}) {
       }
     }),
     MetricsData.addAsync('getEffectiveWindowCache: getWindowSignature', async () => {
-      actualSignature = await DOMCache.getWindowSignature(options.tabs || mTargetWindow);
+      if (!options.tabs)
+        options.tabs = await browser.runtime.sendMessage({
+          type:     Constants.kCOMMAND_PULL_TABS,
+          windowId: mTargetWindow
+        });
+      actualSignature = DOMCache.getWindowSignature(options.tabs);
     })
   ]);
 
@@ -257,7 +262,7 @@ async function updateCachedTabbar() {
   if (Tab.needToWaitTracked(mTargetWindow))
     await Tab.waitUntilTrackedAll(mTargetWindow);
   const window    = TabsStore.windows.get(mTargetWindow);
-  const signature = await DOMCache.getWindowSignature(mTargetWindow);
+  const signature = DOMCache.getWindowSignature(Tab.getAllTabs(mTargetWindow));
   if (window.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });

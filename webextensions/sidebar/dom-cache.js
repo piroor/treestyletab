@@ -25,16 +25,9 @@ function log(...args) {
   internalLogger('sidebar/dom-cache', ...args);
 }
 
-export async function getWindowSignature(windowIdOrTabs) {
-  let tabs = windowIdOrTabs;
-  if (typeof windowIdOrTabs == 'number') {
-    tabs = await browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_PULL_TABS,
-      windowId: windowIdOrTabs
-    });
-  }
-  const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
-  return uniqueIds.map(id => id && id.id || '?').join('\n');
+export function getWindowSignature(tabs) {
+  const tabIds = tabs.map(tab => tab.id);
+  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`).join('\n');
 }
 
 export function trimSignature(signature, ignoreCount) {
@@ -57,14 +50,29 @@ export function matcheSignatures(signatures) {
   );
 }
 
-export function signatureFromTabsCache(cache) {
-  const uniqueIdMatcher = new RegExp(`${Constants.kPERSISTENT_ID}="([^"]+)"`);
-  if (!cache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g))
-    log('NO MATCH ', cache);
-  return (cache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g) || []).map(matched => {
-    const uniqueId = matched.match(uniqueIdMatcher);
-    return uniqueId ? uniqueId[1] : '?' ;
-  }).join('\n');
+export function signatureFromTabsCache(cachedTabs) {
+  const idMatcher = new RegExp(`${Constants.kAPI_TAB_ID}="([^"]+)"`);
+  const cookieStoreIdMatcher = new RegExp(/\bcontextual-identity-[^\s]+\b/);
+  const incognitoMatcher = new RegExp(/\bincognito\b/);
+  const pinnedMatcher = new RegExp(/\bpinned\b/);
+  const parentMatcher = new RegExp(`${Constants.kPARENT}="([^"]+)"`);
+  const classesMatcher = new RegExp('class="([^"]+)"');
+  const tabIds = [];
+  const tabs = (cachedTabs.match(/(<li[^>]*>[\w\W]+?<\/li>)/g) || []).map(matched => {
+    const id = parseInt(matched.match(idMatcher)[1]);
+    tabIds.push(id);
+    const classes = matched.match(classesMatcher)[1];
+    const cookieStoreId = classes.match(cookieStoreIdMatcher);
+    const parentMatched = matched.match(parentMatcher);
+    return {
+      id,
+      cookieStoreId: cookieStoreId && cookieStoreId[1] || 'contextual-identity-firefox-default',
+      parentId:      parentMatched && parseInt(parentMatched[1]),
+      incognito:     incognitoMatcher.test(classes),
+      pinned:        pinnedMatcher.test(classes)
+    };
+  });
+  return tabs.map(tab => `${tab.parentId ? tabIds.indexOf(tab.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`).join('\n');
 }
 
 export async function restoreTabsFromCacheInternal(params) {
