@@ -901,6 +901,7 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
 };
 
 Tab.waitUntilTracked = async (tabId, options = {}) => {
+  const stack = new Error().stack;
   if (!tabId)
     return null;
   const windowId = TabsStore.getWindow();
@@ -925,7 +926,7 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
         Tab.onTracked.removeListener(onTracked);
       // eslint-disable-next-line no-use-before-define
       Tab.onDestroyed.removeListener(onDestroyed);
-      reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getWindow() || 'bg'})`));
+      reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getWindow() || 'bg'})\b${stack}`));
     }, 10000); // Tabs.moveTabs() between windows may take much time
     const onDestroyed = (tab) => {
       if (tab.id != tabId)
@@ -935,7 +936,7 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
       else // eslint-disable-next-line no-use-before-define
         Tab.onTracked.removeListener(onTracked);
       Tab.onDestroyed.removeListener(onDestroyed);
-      reject(new Error(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getWindow() || 'bg'})`));
+      reject(new Error(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getWindow() || 'bg'})\n${stack}`));
     };
     const onTracked = (tab) => {
       if (tab.id != tabId)
