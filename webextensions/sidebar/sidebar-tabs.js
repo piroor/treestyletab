@@ -570,6 +570,20 @@ export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
   const classList = tab.$TST.classList;
 
+  getLabelContent(tab).textContent = tab.title;
+  tab.$TST.tooltipIsDirty = true;
+  if (configs.labelOverflowStyle == 'fade' &&
+      !tab.$TST.labelIsDirty &&
+      tab.$TST.collapsed)
+    tab.$TST.labelIsDirty = true;
+
+  const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
+  TabFavIconHelper.loadToImage({
+    image: getFavIcon(tab).firstChild,
+    tab,
+    url: openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl
+  });
+
   for (const state of classList) {
     if (IGNORE_CLASS_STATES.has(state) ||
         NATIVE_STATES.has(state))
