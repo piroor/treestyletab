@@ -26,6 +26,7 @@ export const configs = new Configs({
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
       'mixed',
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
+  applyBrowserTheme: true,
 
   faviconizePinnedTabs: true,
   faviconizedTabScale: 1.75,

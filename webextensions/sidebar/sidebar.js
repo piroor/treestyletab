@@ -170,10 +170,7 @@ export async function init() {
       ApiTabsListener.startListen();
 
       Background.connect();
-      if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-        browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
-      else
-        applyBrowserTheme();
+      onConfigChange('applyBrowserTheme');
 
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
@@ -298,7 +295,9 @@ function applyBrowserTheme(theme) {
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
 
-  if (!theme || !theme.colors) {
+  if (!theme ||
+      !theme.colors ||
+      !configs.applyBrowserTheme) {
     mBrowserThemeDefinition.textContent = defaultColors;
     return;
   }
@@ -855,6 +854,13 @@ function onConfigChange(changedKey) {
 
     case 'colorScheme':
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
+      break;
+
+    case 'applyBrowserTheme':
+      if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
+        browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
+      else
+        applyBrowserTheme();
       break;
 
     case 'narrowScrollbarSize':
