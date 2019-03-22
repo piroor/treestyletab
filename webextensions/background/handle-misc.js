@@ -64,6 +64,16 @@ Tab.onStateChanged.addListener(tab => {
   });
 });
 
+Tab.onSoundStateChanged.addListener(tab => {
+  Sidebar.sendMessage({
+    type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
+    windowId:              tab.windowId,
+    tabId:                 tab.id,
+    hasSoundPlayingMember: tab.$TST.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
+    hasMutedMember:        tab.$TST.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+  });
+});
+
 
 /* message observer */
 

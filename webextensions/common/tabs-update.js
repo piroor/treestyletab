@@ -48,6 +48,7 @@ import {
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
 import * as ContextualIdentities from './contextual-identities.js';
+import * as Sidebar from './sidebar.js';
 
 import Tab from './Tab.js';
 
@@ -94,23 +95,43 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
     tab.$TST.label = visibleLabel;
     Tab.onLabelUpdated.dispatch(tab);
+    Sidebar.sendMessage({
+      type:  Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
+      tabId: tab.id,
+      title: tab.title,
+      label: tab.$TST.label
+    });
   }
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
-    Tab.onFaviconUpdated.dispatch(tab,
-                                  openerOfGroupTab.favIconUrl);
+    Sidebar.sendMessage({
+      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+      windowId:   tab.windowId,
+      tabId:      tab.id,
+      favIconUrl: openerOfGroupTab.favIconUrl
+    });
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    Tab.onFaviconUpdated.dispatch(tab);
+    Sidebar.sendMessage({
+      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+      windowId:   tab.windowId,
+      tabId:      tab.id,
+      favIconUrl: tab.favIconUrl
+    });
   }
   else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
-    Tab.onFaviconUpdated.dispatch(tab, null);
+    Sidebar.sendMessage({
+      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+      windowId:   tab.windowId,
+      tabId:      tab.id,
+      favIconUrl: null
+    });
   }
 
   if ('status' in newState) {

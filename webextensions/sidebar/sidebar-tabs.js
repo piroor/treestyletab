@@ -672,23 +672,6 @@ Tab.onRemoved.addListener((tab, _info) => {
 
 const mTabWasVisibleBeforeMoving = new Map();
 
-Tab.onLabelUpdated.addListener(tab => {
-  getLabelContent(tab).textContent = tab.title;
-  tab.$TST.tooltipIsDirty = true;
-  if (configs.labelOverflowStyle == 'fade' &&
-      !tab.$TST.labelIsDirty &&
-      tab.$TST.collapsed)
-    tab.$TST.labelIsDirty = true;
-});
-
-Tab.onFaviconUpdated.addListener((tab, url) => {
-  TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab).firstChild,
-    tab,
-    url
-  });
-});
-
 Tab.onCollapsedStateChanged.addListener((tab, info) => {
   if (info.collapsed)
     return;
@@ -725,8 +708,6 @@ Tab.onUpdated.addListener((tab, info) => {
     }
   }, 50);
 });
-
-Tab.onSoundStateChanged.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
 
 Tab.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
@@ -964,5 +945,41 @@ Background.onMessage.addListener(async message => {
       }
       reserveToUpdateLoadingState();
       break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      getLabelContent(tab).textContent = message.title;
+      tab.$TST.tooltipIsDirty = true;
+      if (configs.labelOverflowStyle == 'fade' &&
+          !tab.$TST.labelIsDirty &&
+          tab.$TST.collapsed)
+        tab.$TST.labelIsDirty = true;
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab)
+        TabFavIconHelper.loadToImage({
+          image: getFavIcon(tab).firstChild,
+          tab,
+          url: message.favIconUrl
+        });
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (message.hasSoundPlayingMember)
+        tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+      else
+        tab.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+      if (message.hasMutedMember)
+        tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      else
+        tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      reserveToUpdateSoundButtonTooltip(tab);
+    }; break;
   }
 });

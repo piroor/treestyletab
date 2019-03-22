@@ -1398,7 +1398,6 @@ Tab.getRecycledTabs = (windowId, options = {}) => {
 
 Tab.onGroupTabDetected = new EventListenerManager();
 Tab.onLabelUpdated     = new EventListenerManager();
-Tab.onFaviconUpdated   = new EventListenerManager();
 Tab.onStateChanged     = new EventListenerManager();
 Tab.onPinned           = new EventListenerManager();
 Tab.onUnpinned         = new EventListenerManager();

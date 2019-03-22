@@ -888,13 +888,6 @@ Background.onMessage.addListener(async message => {
       TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)));
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      if (tab)
-        Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
-    }; break;
-
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
       UserOperationBlocker.blockIn(mTargetWindow, message);
       break;

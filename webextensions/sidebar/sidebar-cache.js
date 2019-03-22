@@ -281,33 +281,9 @@ async function updateCachedTabbar() {
 }
 
 
-Tab.onFaviconUpdated.addListener((_tab, _url) => {
-  wait(0).then(() => {
-    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  });
-});
-
 Tab.onUpdated.addListener((_tab, _url) => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  });
-});
-
-Tab.onLabelUpdated.addListener(_tab => {
-  wait(0).then(() => {
-    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  });
-});
-
-Tab.onSoundStateChanged.addListener(async _tab => {
-  wait(0).then(() => {
-    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  });
-});
-
-Tab.onCreated.addListener((_tab, _info) => {
-  wait(0).then(() => {
-    reserveToUpdateCachedTabbar();
   });
 });
 
@@ -384,8 +360,19 @@ function onConfigChange(changedKey) {
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
-      reserveToUpdateCachedTabbar();
+      wait(0).then(() => {
+        reserveToUpdateCachedTabbar();
+      });
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED:
+      wait(0).then(() => {
+        markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+      });
       break;
   }
 });

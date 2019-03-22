@@ -156,7 +156,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
           Sidebar.sendMessage({
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
             windowId:   groupTab.windowId,
-            tab:        groupTab.id,
+            tabId:      groupTab.id,
             favIconUrl: opener.favIconUrl
           });
         }
