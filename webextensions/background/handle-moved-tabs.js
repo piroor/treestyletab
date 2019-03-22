@@ -62,14 +62,14 @@ Tab.onMoving.addListener((tab, moveInfo) => {
       !moveInfo.byInternalOperation &&
       !moveInfo.alreadyMoved &&
       positionControlled) {
-  const opener = tab.$TST.openerTab;
-  // if there is no valid opener, it can be a restored initial tab in a restored window
-  // and can be just moved as a part of window restoration process.
-  if (opener) {
-  log('onTabMove for new child tab: move back '+moveInfo.toIndex+' => '+moveInfo.fromIndex);
-  moveBack(tab, moveInfo);
-  return false;
-  }
+    const opener = tab.$TST.openerTab;
+    // if there is no valid opener, it can be a restored initial tab in a restored window
+    // and can be just moved as a part of window restoration process.
+    if (opener) {
+      log('onTabMove for new child tab: move back '+moveInfo.toIndex+' => '+moveInfo.fromIndex);
+      moveBack(tab, moveInfo);
+      return false;
+    }
   }
   Sidebar.sendMessage({
     type:     Constants.kCOMMAND_NOTIFY_TAB_MOVING,
