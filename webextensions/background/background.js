@@ -50,7 +50,7 @@ export const onDestroy = new EventListenerManager();
 export const onTreeCompletelyAttached = new EventListenerManager();
 
 let mInitialized = false;
-const mCachesLoadedFromRestoredTabs = new Map();
+const mPreloadedCaches = new Map();
 
 export async function init() {
   MetricsData.add('init: start');
@@ -70,7 +70,7 @@ export async function init() {
         const tab = window.tabs[window.tabs.length - 1];
         browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
-          .then(cache => mCachesLoadedFromRestoredTabs.set(tab.id, cache));
+          .then(cache => mPreloadedCaches.set(tab.id, cache));
       }
     });
 
@@ -98,7 +98,7 @@ export async function init() {
 
   const windows = await MetricsData.addAsync('init: getting all tabs across windows', promisedWindows); // wait at here for better performance
   const restoredFromCache = await MetricsData.addAsync('init: rebuildAll', rebuildAll(windows));
-  mCachesLoadedFromRestoredTabs.clear();
+  mPreloadedCaches.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
   Migration.migrateLegacyTreeStructure();
@@ -167,7 +167,7 @@ function waitUntilCompletelyRestored() {
       // Read caches from restored tabs while waiting, for better performance.
       browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
         .catch(ApiTabs.createErrorSuppressor())
-        .then(cache => mCachesLoadedFromRestoredTabs.set(tab.id, cache));
+        .then(cache => mPreloadedCaches.set(tab.id, cache));
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
@@ -219,7 +219,7 @@ async function rebuildAll(windows) {
           restoredFromCache[window.id] = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs,
-            caches: mCachesLoadedFromRestoredTabs
+            caches: mPreloadedCaches
           }));
           log(`window ${window.id}: restored from cache?: `, restoredFromCache[window.id]);
           if (restoredFromCache[window.id])

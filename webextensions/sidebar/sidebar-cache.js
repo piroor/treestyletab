@@ -61,7 +61,7 @@ export async function getEffectiveWindowCache(options = {}) {
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      [cache, tabsDirty, collapsedDirty] = await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
+      [cache, tabsDirty, collapsedDirty] = options.caches && options.caches.get(mLastWindowCacheOwner.id) || await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
