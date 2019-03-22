@@ -11,7 +11,6 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as MetricsData from '/common/metrics-data.js';
