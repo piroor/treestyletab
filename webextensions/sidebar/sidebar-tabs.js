@@ -931,21 +931,23 @@ Background.onMessage.addListener(async message => {
       }
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
-      if (message.tabId) {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (tab) {
-          if (message.status == 'loading') {
-            tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-            TabsStore.addUnsynchronizedTab(tab);
-          }
-          else {
-            tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-            TabsStore.removeUnsynchronizedTab(tab);
-          }
+    case Constants.kCOMMAND_UPDATE_LOADING_STATE: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab) {
+        if (message.status == 'loading') {
+          tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+          TabsStore.addUnsynchronizedTab(tab);
+        }
+        else {
+          tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+          TabsStore.removeUnsynchronizedTab(tab);
         }
       }
+      reserveToUpdateLoadingState();
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
       reserveToUpdateLoadingState();
       break;
 
