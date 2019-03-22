@@ -234,12 +234,6 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
-  const manager = mTabCollapsedStateChangedManagers.get(tab.id);
-  if (manager)
-    manager.dispatch(tab, info);
-});
-
 Background.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
@@ -265,6 +259,11 @@ Background.onMessage.addListener(async message => {
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
+        const manager = mTabCollapsedStateChangedManagers.get(tab.id);
+        if (manager)
+          manager.dispatch(tab, Object.assign({}, message, {
+            anchor: Tab.get(message.anchorId)
+          }));
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (message.byAncestor &&

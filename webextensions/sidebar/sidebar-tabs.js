@@ -686,17 +686,6 @@ Tab.onRemoved.addListener((tab, _info) => {
 
 const mTabWasVisibleBeforeMoving = new Map();
 
-Tab.onCollapsedStateChanged.addListener((tab, info) => {
-  if (info.collapsed)
-    return;
-  reserveToUpdateLoadingState();
-  if (configs.labelOverflowStyle == 'fade' &&
-      tab.$TST.labelIsDirty) {
-    updateLabelOverflow(tab);
-    delete tab.$TST.labelIsDirty;
-  }
-});
-
 let mReservedUpdateActiveTab;
 Tab.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
@@ -994,6 +983,19 @@ Background.onMessage.addListener(async message => {
       else
         tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
       reserveToUpdateSoundButtonTooltip(tab);
+    }; break;
+
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+      if (message.collapsed)
+        return;
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      reserveToUpdateLoadingState();
+      if (configs.labelOverflowStyle == 'fade' &&
+          tab.$TST.labelIsDirty) {
+        updateLabelOverflow(tab);
+        delete tab.$TST.labelIsDirty;
+      }
     }; break;
   }
 });

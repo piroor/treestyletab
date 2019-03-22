@@ -729,6 +729,7 @@ export async function collapseExpandTab(tab, params = {}) {
     type:      Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE,
     windowId:  tab.windowId,
     tabId:     tab.id,
+    anchorId:  collapseExpandInfo.anchor && collapseExpandInfo.anchor.id,
     justNow:   params.justNow,
     collapsed: params.collapsed,
     stack,

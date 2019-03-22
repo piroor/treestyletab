@@ -471,30 +471,6 @@ function reserveToScrollToNewTab(tab) {
 }
 
 
-Tab.onCreated.addListener((tab, _info) => {
-  if (configs.animation) {
-    wait(10).then(() => { // wait until the tab is moved by TST itself
-      const parent = tab.$TST.parent;
-      if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
-        return;
-      const active = tab.active;
-      Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
-        collapsed: false,
-        anchor:    Tab.getActiveTab(tab.windowId),
-        last:      true
-      });
-      if (!active)
-        notifyOutOfViewTab(tab);
-    });
-  }
-  else {
-    if (tab.active)
-      reserveToScrollToNewTab(tab);
-    else
-      notifyOutOfViewTab(tab);
-  }
-});
-
 Tab.onActivated.addListener((tab, _info) => { reserveToScrollToTab(tab); });
 Tab.onUnpinned.addListener(tab => { reserveToScrollToTab(tab); });
 
@@ -550,6 +526,33 @@ async function onBackgroundMessage(message) {
           break;
       }
       break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (configs.animation) {
+        wait(10).then(() => { // wait until the tab is moved by TST itself
+          const parent = tab.$TST.parent;
+          if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
+            return;
+          const active = tab.active;
+          Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
+            collapsed: false,
+            anchor:    Tab.getActiveTab(tab.windowId),
+            last:      true
+          });
+          if (!active)
+            notifyOutOfViewTab(tab);
+        });
+      }
+      else {
+        if (tab.active)
+          reserveToScrollToNewTab(tab);
+        else
+          notifyOutOfViewTab(tab);
+      }
+    }; break;
+
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
