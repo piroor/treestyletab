@@ -87,12 +87,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
-  Sidebar.sendMessage({
-    type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
-    windowId:    tabs[0].windowId,
-    tabIds:      tabs.map(tab => tab.id),
-    nextTabId:   referenceTab.id
-  });
 
   try {
     /*
@@ -178,12 +172,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
-  Sidebar.sendMessage({
-    type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
-    windowId:      tabs[0].windowId,
-    tabIds:        tabs.map(tab => tab.id),
-    previousTabId: referenceTab.id
-  });
 
   try {
     /*
