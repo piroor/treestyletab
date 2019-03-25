@@ -14,7 +14,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
@@ -291,22 +290,6 @@ Tab.onRemoved.addListener(async (_tab, _info) => {
   }
 });
 
-Tree.onAttached.addListener((_tab, _info) => {
-  wait(0).then(() => {
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToUpdateCachedTabbar();
-  });
-});
-
-Tree.onDetached.addListener((_tab, _info) => {
-  wait(0).then(() => {
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToUpdateCachedTabbar();
-  });
-});
-
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
@@ -327,6 +310,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+    case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
       wait(0).then(() => {
         // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
         // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053

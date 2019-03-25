@@ -15,7 +15,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 import * as Background from './background.js';
@@ -519,10 +518,6 @@ async function onContextMenu(event) {
   });
 }
 
-// don't return promise, to avoid needless "await"
-Tree.onAttached.addListener((_tab, _info) => { close(); });
-Tree.onDetached.addListener((_tab, _info) => { close(); });
-
 Background.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING:
@@ -533,6 +528,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+    case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
       close();
       break;
   }

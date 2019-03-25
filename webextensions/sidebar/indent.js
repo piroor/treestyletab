@@ -12,7 +12,6 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
 
@@ -157,13 +156,6 @@ function getMaxTreeLevel(windowId, options = {}) {
   return maxLevel;
 }
 
-Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tree.onDetached.addListener(async (_tab, detachInfo = {}) => {
-  if (detachInfo.oldParentTab)
-    reserveToUpdateVisualMaxTreeLevel();
-});
-
-
 function reserveToUpdateIndent() {
   if (!mInitialized)
     return;
@@ -176,8 +168,6 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
-Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateIndent() });
-Tree.onDetached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
@@ -188,6 +178,7 @@ Background.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+    case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
       reserveToUpdateIndent();
       reserveToUpdateVisualMaxTreeLevel();
       break;

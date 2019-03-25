@@ -930,35 +930,6 @@ Background.onMessage.addListener(async message => {
       MetricsData.add('Tabs.onWindowRestoring restore end');
     }; break;
 
-    case Constants.kCOMMAND_ATTACH_TAB_TO:
-      return Tree.doTreeChangeFromRemote(async () => {
-        await Promise.all([
-          await Tab.waitUntilTracked([
-            message.childId,
-            message.parentId,
-            message.insertBeforeId,
-            message.insertAfterId
-          ], { element: true })
-        ]);
-        log('attach tab from remote ', message);
-        const child  = Tab.get(message.childId);
-        const parent = Tab.get(message.parentId);
-        if (child && parent)
-          await Tree.attachTabTo(child, parent, Object.assign({}, message, {
-            insertBefore: Tab.get(message.insertBeforeId),
-            insertAfter:  Tab.get(message.insertAfterId),
-            broadcast:    false
-          }));
-      });
-
-    case Constants.kCOMMAND_DETACH_TAB:
-      return Tree.doTreeChangeFromRemote(async () => {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (tab)
-          Tree.detachTab(tab, message);
-      });
-
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
       Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
       break;

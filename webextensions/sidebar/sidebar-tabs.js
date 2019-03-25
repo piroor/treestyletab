@@ -688,37 +688,6 @@ const mTabWasVisibleBeforeMoving = new Map();
 
 let mReservedUpdateActiveTab;
 
-Tree.onAttached.addListener((_tab, info = {}) => {
-  if (!mInitialized)
-    return;
-  reserveToUpdateTwistyTooltip(info.parent);
-  reserveToUpdateCloseboxTooltip(info.parent);
-  if (info.newlyAttached) {
-    const ancestors = [info.parent].concat(info.parent.$TST.ancestors);
-    for (const ancestor of ancestors) {
-      updateDescendantsCount(ancestor);
-      updateDescendantsHighlighted(ancestor);
-    }
-  }
-  info.parent.$TST.tooltipIsDirty = true;
-});
-
-Tree.onDetached.addListener((_tab, detachInfo = {}) => {
-  if (!mInitialized)
-    return;
-  const parent = detachInfo.oldParentTab;
-  if (!parent)
-    return;
-  reserveToUpdateTwistyTooltip(parent);
-  reserveToUpdateCloseboxTooltip(parent);
-  parent.$TST.tooltipIsDirty = true;
-  const ancestors = [parent].concat(parent.$TST.ancestors);
-  for (const ancestor of ancestors) {
-    updateDescendantsCount(ancestor);
-    updateDescendantsHighlighted(ancestor);
-  }
-});
-
 let mDelayedResized = null;
 window.addEventListener('resize', () => {
   if (mDelayedResized)
@@ -1006,6 +975,26 @@ Background.onMessage.addListener(async message => {
       wait(0).then(() => {
         TabsUpdate.updateTab(tab, { title }, { tab });
       });
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
+      if (!mInitialized)
+        return;
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+
+      tab.children = message.childIds;
+
+      reserveToUpdateTwistyTooltip(tab);
+      reserveToUpdateCloseboxTooltip(tab);
+      if (message.newlyAttached || message.detached) {
+        const ancestors = [tab].concat(tab.$TST.ancestors);
+        for (const ancestor of ancestors) {
+          updateDescendantsCount(ancestor);
+          updateDescendantsHighlighted(ancestor);
+        }
+      }
+      tab.$TST.tooltipIsDirty = true;
     }; break;
   }
 });

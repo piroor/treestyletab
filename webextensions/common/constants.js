@@ -56,6 +56,7 @@ export const kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED = 'treestyletab:notify-tab-
 export const kCOMMAND_NOTIFY_TABS_CLOSING            = 'treestyletab:notify-tabs-closing';
 export const kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED = 'treestyletab:notify-highlighted-tabs-changed';
 export const kCOMMAND_NOTIFY_GROUP_TAB_DETECTED      = 'treestyletab:notify-group-tab-detected';
+export const kCOMMAND_NOTIFY_CHILDREN_CHANGED        = 'treestyletab:notify-children-changed';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
 export const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
 export const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
@@ -64,9 +65,7 @@ export const kCOMMAND_RESPONSE_QUERY_LOGS            = 'treestyletab:response-qu
 
 export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 export const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';
-export const kCOMMAND_ATTACH_TAB_TO           = 'treestyletab:attach-tab-to';
 export const kCOMMAND_TAB_ATTACHED_COMPLETELY = 'treestyletab:tab-attached-completely';
-export const kCOMMAND_DETACH_TAB              = 'treestyletab:detach-tab';
 export const kCOMMAND_DETACH_TABS_FROM_TREE   = 'treestyletab:detach-tabs-from-tree';
 export const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';

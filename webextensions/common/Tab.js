@@ -452,7 +452,7 @@ export default class Tab {
     }
     for (const child of Array.from(new Set(this.children.concat(oldChildren)))) {
       if (this.childIds.includes(child.id))
-        child.$TST.invalidateCachedAncestors();
+        child.$TST.parent = this.id;
       else
         child.$TST.parent = null;
     }

@@ -169,14 +169,21 @@ export async function attachTabTo(child, parent, options = {}) {
     // we need to set its children via the "children" setter, to invalidate cached information.
     parent.$TST.children = parent.$TST.childIds.concat([child.id]);
 
-    log('attachTabTo: setting parent information to ', child.id);
-    // we need to set its parent via the "parent" setter, to invalidate cached information.
-    child.$TST.parent = parent.id;
+    // We don't need to update its parent information, because the parent's
+    // "children" setter updates the child itself automatically.
 
     const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
     if (!options.dontUpdateIndent) {
       updateTabsIndent(child, parentLevel + 1);
     }
+
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
+      windowId: parent.windowId,
+      tabId:    parent.id,
+      childIds: parent.$TST.childIds,
+      newlyAttached
+    });
   }
 
   onAttached.dispatch(child, Object.assign({}, options, {
@@ -185,22 +192,6 @@ export async function attachTabTo(child, parent, options = {}) {
     insertAfter:  options.insertAfter,
     newIndex, newlyAttached
   }));
-
-  Sidebar.sendMessage({
-    type:             Constants.kCOMMAND_ATTACH_TAB_TO,
-    windowId:         child.windowId,
-    childId:          child.id,
-    parentId:         parent.id,
-    insertAt:         options.insertAt,
-    insertBeforeId:   options.insertBefore && options.insertBefore.id,
-    insertAfterId:    options.insertAfter && options.insertAfter.id,
-    dontMove:         !!options.dontMove,
-    dontUpdateIndent: !!options.dontUpdateIndent,
-    forceExpand:      !!options.forceExpand,
-    dontExpand:       !!options.dontExpand,
-    justNow:          !!options.justNow,
-    stack:            new Error().stack
-  });
 
   return moved;
 }
@@ -305,6 +296,13 @@ export function detachTab(child, options = {}) {
   if (parent) {
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
     log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
+      windowId: parent.windowId,
+      tabId:    parent.id,
+      childIds: parent.$TST.childIds,
+      detached: true
+    });
   }
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child
@@ -314,13 +312,6 @@ export function detachTab(child, options = {}) {
 
   onDetached.dispatch(child, {
     oldParentTab: parent
-  });
-
-  Sidebar.sendMessage({
-    type:        Constants.kCOMMAND_DETACH_TAB,
-    windowId:    child.windowId,
-    tabId:       child.id,
-    stack:       new Error().stack
   });
 }
 
