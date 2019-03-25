@@ -56,6 +56,7 @@ import Tab from '/common/Tab.js';
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 import * as Background from './background.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 
 import * as RestoringTabCount from './restoring-tab-count.js';
 
@@ -559,6 +560,8 @@ async function onBackgroundMessage(message) {
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
+      if (message.maybeMoved)
+        await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       reReserveScrollingForTab(Tab.get(message.tabId));
     }; break;
   }

@@ -471,7 +471,8 @@ async function onNewTabTracked(tab) {
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
       windowId: tab.windowId,
-      tabId:    tab.id
+      tabId:    tab.id,
+      maybeMoved: moved
     });
 
     if (!duplicated &&

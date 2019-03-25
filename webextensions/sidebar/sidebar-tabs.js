@@ -705,7 +705,7 @@ const mMovedNewTabResolvers = new Map();
 const mPromsiedMovedNewTabs = new Map();
 const mAlreadyMovedNewTabs = new Set();
 
-async function waitUntilNewTabIsMoved(tabId) {
+export async function waitUntilNewTabIsMoved(tabId) {
   if (mAlreadyMovedNewTabs.has(tabId))
     return true;
   if (mPromsiedMovedNewTabs.has(tabId))
@@ -726,9 +726,9 @@ async function waitUntilNewTabIsMoved(tabId) {
   return promise;
 }
 
-function maybeNewTabIsMoved(tabId, newIndex) {
+function maybeNewTabIsMoved(tabId) {
   if (mMovedNewTabResolvers.has(tabId)) {
-    mMovedNewTabResolvers.get(tabId)(newIndex);
+    mMovedNewTabResolvers.get(tabId)();
   }
   else {
     mAlreadyMovedNewTabs.add(tabId);
@@ -771,12 +771,7 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
-      let newIndex;
-      if (message.maybeMoved)
-        newIndex = await waitUntilNewTabIsMoved(message.tabId);
       const nativeTab = await browser.tabs.get(message.tabId);
-      if (typeof newIndex == 'number' && newIndex > -1)
-        nativeTab.index = newIndex;
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true, tab });
 
@@ -797,6 +792,8 @@ Background.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
       tab.$TST.resolveOpened();
+      if (message.maybeMoved)
+        await waitUntilNewTabIsMoved(message.tabId);
       if (configs.animation) {
         await wait(0); // nextFrame() is too fast!
         Tree.collapseExpandTab(tab, {
@@ -852,10 +849,7 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
-      if (!Tab.get(message.tabId)) {
-        maybeNewTabIsMoved(message.tabId, message.newIndex);
-        return;
-      }
+      maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
       if (tab.index == message.newIndex)
@@ -870,7 +864,8 @@ Background.onMessage.addListener(async message => {
       let shouldAnimate = false;
       if (configs.animation &&
           !tab.pinned &&
-          !tab.$TST.opening) {
+          !tab.$TST.opening &&
+          !tab.$TST.collapsed) {
         shouldAnimate = true;
         Tree.collapseExpandTab(tab, {
           collapsed: true,
@@ -893,10 +888,7 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
-      if (!Tab.get(message.tabId)) {
-        maybeNewTabIsMoved(message.tabId, message.newIndex);
-        return;
-      }
+      maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
       if (tab.index == message.newIndex)
