@@ -219,6 +219,7 @@ export const configs = new Configs({
   debug:     false,
   loggingQueries: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': false,/"
+    'background/api-tabs-listener': false,
     'background/background-cache': false,
     'background/background': false,
     'background/browser-action-menu': false,
@@ -237,7 +238,6 @@ export const configs = new Configs({
     'common/Tab': false,
     'common/Window': false,
     'common/api-tabs': false,
-    'common/api-tabs-listener': false,
     'common/bookmarks': false,
     'common/commands': false,
     'common/contextual-identities': false,

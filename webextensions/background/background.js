@@ -15,7 +15,6 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -31,6 +30,7 @@ import * as Migration from '/common/migration.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
+import * as ApiTabsListener from './api-tabs-listener.js';
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TabContextMenu from './tab-context-menu.js';

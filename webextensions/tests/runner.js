@@ -10,7 +10,7 @@ import {
   configs
 } from '/common/common.js';
 
-import * as ApiTabsListener from '/common/api-tabs-listener.js';
+import * as ApiTabsListener from '/background/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
 
 import * as TestGroup from './test-group.js';

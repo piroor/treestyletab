@@ -44,23 +44,23 @@ import {
   log as internalLogger,
   dumpTab,
   configs
-} from './common.js';
-import * as Constants from './constants.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from './tabs-store.js';
-import * as TabsUpdate from './tabs-update.js';
-import * as TabsInternalOperation from './tabs-internal-operation.js';
-import * as Tree from './tree.js';
-import * as Sidebar from './sidebar.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as Tree from '/common/tree.js';
+import * as Sidebar from '/common/sidebar.js';
 
-import Tab from './Tab.js';
-import Window from './Window.js';
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
 
 function log(...args) {
-  internalLogger('common/api-tabs-listener', ...args);
+  internalLogger('background/api-tabs-listener', ...args);
 }
 function logUpdated(...args) {
-  internalLogger('common/tabs-update', ...args);
+  internalLogger('background/tabs-update', ...args);
 }
 
 export function startListen() {
