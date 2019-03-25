@@ -963,6 +963,7 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
+      await Tab.waitUntilTracked(message.tabIds, { element: true });
       TabsUpdate.updateTabsHighlighted(message);
       const window = TabsStore.windows.get(message.windowId);
       if (!window || !window.element)

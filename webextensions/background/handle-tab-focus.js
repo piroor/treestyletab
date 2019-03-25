@@ -32,7 +32,7 @@ let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
 
-Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
+Tab.onActivating.addListener((tab, info = {}) => { // return false if the activation should be canceled
   log('Tabs.onActivating ', dumpTab(tab), info);
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
@@ -93,7 +93,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusi
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
-    return false;
+    return true;
   }
   else if (tab.$TST.hasChild &&
            tab.$TST.subtreeCollapsed &&
