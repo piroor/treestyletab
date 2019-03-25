@@ -64,15 +64,8 @@ function logUpdated(...args) {
 }
 
 export function startListen() {
-  const targetWindow = TabsStore.getWindow();
-
   browser.tabs.onActivated.addListener(onActivated);
-
-  if (typeof targetWindow === 'number')
-    browser.tabs.onUpdated.addListener(onUpdated, { windowId: targetWindow });
-  else
-    browser.tabs.onUpdated.addListener(onUpdated);
-
+  browser.tabs.onUpdated.addListener(onUpdated);
   browser.tabs.onHighlighted.addListener(onHighlighted);
   browser.tabs.onCreated.addListener(onCreated);
   browser.tabs.onRemoved.addListener(onRemoved);
@@ -118,10 +111,6 @@ function warnTabDestroyedWhileWaiting(tabId, tab) {
 
 
 async function onActivated(activeInfo) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && activeInfo.windowId != targetWindow)
-    return;
-
   TabsStore.activeTabInWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
 
   const [onCompleted, previous] = addTabOperationQueue();
@@ -206,10 +195,6 @@ async function onActivated(activeInfo) {
 }
 
 async function onUpdated(tabId, changeInfo, tab) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && tab.windowId != targetWindow)
-    return;
-
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
@@ -316,19 +301,11 @@ function onHighlighted(highlightInfo) {
 }
 
 function onCreated(tab) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && tab.windowId != targetWindow)
-    return;
-
   log('tabs.onCreated: ', dumpTab(tab));
   return onNewTabTracked(tab);
 }
 
 async function onNewTabTracked(tab) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && tab.windowId != targetWindow)
-    return null;
-
   const window               = Window.init(tab.windowId);
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
@@ -363,7 +340,7 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
-    tab = Tab.init(tab, { inBackground: !!targetWindow });
+    tab = Tab.init(tab, { inBackground: false });
 
     const nextTab = Tab.getTabAt(window.id, tab.index);
 
@@ -554,10 +531,6 @@ function checkRecycledTab(windowId) {
 
 async function onRemoved(tabId, removeInfo) {
   log('tabs.onRemoved: ', tabId, removeInfo);
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && removeInfo.windowId != targetWindow)
-    return;
-
   const window              = Window.init(removeInfo.windowId);
   const byInternalOperation = window.internalClosingTabs.has(tabId);
   if (byInternalOperation)
@@ -638,10 +611,6 @@ async function onRemoved(tabId, removeInfo) {
 }
 
 async function onMoved(tabId, moveInfo) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && moveInfo.windowId != targetWindow)
-    return;
-
   const window = Window.init(moveInfo.windowId);
 
   // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
@@ -757,10 +726,6 @@ async function onMoved(tabId, moveInfo) {
 const mTreeInfoForTabsMovingAcrossWindows = new Map();
 
 async function onAttached(tabId, attachInfo) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && attachInfo.newWindowId != targetWindow)
-    return;
-
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
@@ -810,10 +775,6 @@ async function onAttached(tabId, attachInfo) {
 }
 
 async function onDetached(tabId, detachInfo) {
-  const targetWindow = TabsStore.getWindow();
-  if (targetWindow && detachInfo.oldWindowId != targetWindow)
-    return;
-
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
@@ -850,10 +811,7 @@ async function onDetached(tabId, detachInfo) {
     }
 
     TabsStore.addRemovedTab(oldTab);
-    if (targetWindow)
-      oldWindow.untrackTab(oldTab.id);
-    else
-      oldWindow.detachTab(oldTab.id);
+    oldWindow.detachTab(oldTab.id);
     if (oldWindow.tabs &&
         oldWindow.tabs.size == 0) // not destroyed yet case
       oldWindow.destroy();
