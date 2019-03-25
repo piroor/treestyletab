@@ -433,7 +433,8 @@ async function onNewTabTracked(tab) {
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
       windowId: tab.windowId,
-      tabId:    tab.id
+      tabId:    tab.id,
+      maybeMoved: moved
     });
     log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
 

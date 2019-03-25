@@ -699,6 +699,46 @@ configs.$addObserver(changedKey => {
 });
 
 
+// Mechanism to override "index" of newly opened tabs by TST's detection logic
+
+const mMovedNewTabResolvers = new Map();
+const mPromsiedMovedNewTabs = new Map();
+const mAlreadyMovedNewTabs = new Set();
+
+async function waitUntilNewTabIsMoved(tabId) {
+  if (mAlreadyMovedNewTabs.has(tabId))
+    return true;
+  if (mPromsiedMovedNewTabs.has(tabId))
+    return mPromsiedMovedNewTabs.get(tabId);
+  const timer = setTimeout(() => {
+    if (mMovedNewTabResolvers.has(tabId))
+      mMovedNewTabResolvers.get(tabId)();
+  }, Math.max(0, configs.autoGroupNewTabsTimeout));
+  const promise = new Promise((resolve, _reject) => {
+    mMovedNewTabResolvers.set(tabId, resolve);
+  }).then(newIndex => {
+    mMovedNewTabResolvers.delete(tabId);
+    mPromsiedMovedNewTabs.delete(tabId);
+    clearTimeout(timer);
+    return newIndex;
+  });
+  mPromsiedMovedNewTabs.set(tabId, promise);
+  return promise;
+}
+
+function maybeNewTabIsMoved(tabId, newIndex) {
+  if (mMovedNewTabResolvers.has(tabId)) {
+    mMovedNewTabResolvers.get(tabId)(newIndex);
+  }
+  else {
+    mAlreadyMovedNewTabs.add(tabId);
+    setTimeout(() => {
+      mAlreadyMovedNewTabs.delete(tabId);
+    }, Math.min(10 * 1000, configs.autoGroupNewTabsTimeout));
+  }
+}
+
+
 Background.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_SYNC_TABS_ORDER:
@@ -731,7 +771,14 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
+      let newIndex = -1;
+      if (message.maybeMoved) {
+        console.log('kCOMMAND_NOTIFY_TAB_CREATING ', message.tabId);
+        newIndex = await waitUntilNewTabIsMoved(message.tabId);
+      }
       const nativeTab = await browser.tabs.get(message.tabId);
+      if (newIndex > -1)
+        nativeTab.index = newIndex;
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true, tab });
 
@@ -807,8 +854,11 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
+      maybeNewTabIsMoved(message.tabId, message.newIndex);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
+      if (tab.index == message.newIndex)
+        return;
       const nextTab = Tab.get(message.nextTabId);
       if (mInitialized &&
           tab.$TST.parent)
@@ -842,8 +892,11 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+      maybeNewTabIsMoved(message.tabId, message.newIndex);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
+      if (tab.index == message.newIndex)
+        return;
       tab.index         = message.newIndex;
       Tab.track(tab);
       const tabElement  = tab.$TST.element;

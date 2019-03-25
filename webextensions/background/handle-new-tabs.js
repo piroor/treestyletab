@@ -71,7 +71,10 @@ Tab.onCreating.addListener((tab, info = {}) => {
   if (opener && opener.pinned &&
       opener.windowId == tab.windowId) {
     if (configs.autoGroupNewTabsFromPinned) {
-      return false;
+      if (Tab.getGroupTabForOpener(opener) ||
+          tab.$TST.needToBeGroupedSiblings.length > 0)
+        return false;
+      return true;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
       return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {

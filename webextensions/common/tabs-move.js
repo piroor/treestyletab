@@ -88,13 +88,13 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
 
+  const movedTabs = [];
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let movedTabsCount = 0;
     for (const tab of tabs) {
       const oldPreviousTab = tab.$TST.unsafePreviousTab;
       const oldNextTab     = tab.$TST.unsafeNextTab;
@@ -107,7 +107,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       else
         tab.index = referenceTab.index;
       Tab.track(tab);
-      movedTabsCount++;
+      movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab: referenceTab,
         oldPreviousTab,
@@ -123,7 +123,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
     }
-    if (movedTabsCount == 0) {
+    if (movedTabs.length == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -142,7 +142,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
-  return tabs;
+  return movedTabs;
 }
 export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
   return moveTabsInternallyBefore([tab], referenceTab, options);
@@ -173,6 +173,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
 
   log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
 
+  const movedTabs = [];
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
@@ -182,7 +183,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     let nextTab = referenceTab.$TST.unsafeNextTab;
     if (nextTab && tabs.find(tab => tab.id == nextTab.id))
       nextTab = null;
-    let movedTabsCount = 0;
     for (const tab of tabs) {
       const oldPreviousTab = tab.$TST.unsafePreviousTab;
       const oldNextTab     = tab.$TST.unsafeNextTab;
@@ -201,7 +201,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         tab.index = window.tabs.size - 1
       }
       Tab.track(tab);
-      movedTabsCount++;
+      movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab,
         oldPreviousTab,
@@ -217,7 +217,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
     }
-    if (movedTabsCount == 0) {
+    if (movedTabs.length == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -236,7 +236,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
-  return tabs;
+  return movedTabs;
 }
 export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
   return moveTabsInternallyAfter([tab], referenceTab, options);
