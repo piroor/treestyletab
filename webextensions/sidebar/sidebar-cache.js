@@ -297,13 +297,6 @@ Tab.onRemoved.addListener(async (_tab, _info) => {
   }
 });
 
-Tab.onDetached.addListener(async (tab, _info) => {
-  if (!TabsStore.ensureLivingTab(tab))
-    return;
-  await wait(0);
-  reserveToUpdateCachedTabbar();
-});
-
 Tree.onAttached.addListener((_tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -339,6 +332,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
       wait(0).then(() => {
         // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
         // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053

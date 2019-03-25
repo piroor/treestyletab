@@ -712,15 +712,6 @@ Tab.onUpdated.addListener((tab, info) => {
   }, 50);
 });
 
-Tab.onDetached.addListener((tab, _info) => {
-  if (!mInitialized ||
-      !TabsStore.ensureLivingTab(tab))
-    return;
-  tab.$TST.tooltipIsDirty = true;
-  if (tab.$TST.element.parentNode)
-    tab.$TST.element.parentNode.removeChild(tab.$TST.element);
-});
-
 Tab.onGroupTabDetected.addListener(tab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
@@ -1000,6 +991,14 @@ Background.onMessage.addListener(async message => {
         updateLabelOverflow(tab);
         delete tab.$TST.labelIsDirty;
       }
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      tab.$TST.tooltipIsDirty = true;
+      if (tab.$TST.element.parentNode)
+        tab.$TST.element.parentNode.removeChild(tab.$TST.element);
     }; break;
   }
 });

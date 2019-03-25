@@ -633,16 +633,6 @@ function onBrowserThemeChanged(updateInfo) {
 }
 
 
-Tab.onDetached.addListener((tab, _info) => {
-  if (!TabsStore.ensureLivingTab(tab))
-    return;
-  // We don't need to update children because they are controlled by bacgkround.
-  // However we still need to update the parent itself.
-  Tree.detachTab(tab, {
-    dontUpdateIndent: true
-  });
-});
-
 Tab.onRestoring.addListener(tab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
     return;
@@ -927,6 +917,16 @@ Background.onMessage.addListener(async message => {
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
         timeout: configs.collapseDuration
+      });
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      // We don't need to update children because they are controlled by bacgkround.
+      // However we still need to update the parent itself.
+      Tree.detachTab(tab, {
+        dontUpdateIndent: true
       });
     }; break;
 

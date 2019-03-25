@@ -150,11 +150,6 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
-Tab.onDetached.addListener((tab, _info) => {
-  if (tab.pinned)
-    reserveToReposition();
-});
-
 Background.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
@@ -164,7 +159,8 @@ Background.onMessage.addListener(async message => {
         reserveToReposition();
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (tab.pinned)

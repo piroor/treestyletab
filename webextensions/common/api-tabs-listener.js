@@ -51,6 +51,7 @@ import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
+import * as Sidebar from './sidebar.js';
 
 import Tab from './Tab.js';
 import Window from './Window.js';
@@ -738,6 +739,11 @@ async function onAttached(tabId, attachInfo) {
       // don't do await if not needed, to process things synchronously
       if (onAttachedResult instanceof Promise)
         await onAttachedResult;
+      Sidebar.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW,
+        windowId: attachInfo.newWindowId,
+        tabId:    tabId
+      });
     }
 
     onCompleted();
@@ -779,8 +785,14 @@ async function onDetached(tabId, detachInfo) {
 
     Tab.onStateChanged.dispatch(oldTab);
 
-    if (!byInternalOperation) // we should process only tabs detached by others.
+    if (!byInternalOperation) { // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);
+      Sidebar.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,
+        windowId: detachInfo.oldWindowId,
+        tabId:    tabId
+      });
+    }
 
     TabsStore.addRemovedTab(oldTab);
     if (targetWindow)
