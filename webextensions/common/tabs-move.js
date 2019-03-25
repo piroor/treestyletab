@@ -124,6 +124,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
+        newIndex:    tab.index,
         nextTabId:   referenceTab && referenceTab.id,
         broadcasted: !!options.broadcasted
       });
@@ -223,6 +224,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
+        newIndex:    tab.index,
         nextTabId:   nextTab && nextTab.id,
         broadcasted: !!options.broadcasted
       });

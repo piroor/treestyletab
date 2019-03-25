@@ -871,6 +871,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
+      tab.index         = message.newIndex;
+      Tab.track(tab);
       const tabElement  = tab.$TST.element;
       const nextTab     = Tab.get(message.nextTabId);
       const nextElement = nextTab && nextTab.$TST.element;
