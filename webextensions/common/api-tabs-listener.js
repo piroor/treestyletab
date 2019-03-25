@@ -734,13 +734,14 @@ async function onMoved(tabId, moveInfo) {
       // don't do await if not needed, to process things synchronously
       if (onMovedResult instanceof Promise)
         await onMovedResult;
-      Sidebar.sendMessage({
-        type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
-        windowId:  movedTab.windowId,
-        tabId:     movedTab.id,
-        newIndex:  movedTab.index,
-        nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
-      });
+      if (!alreadyMoved)
+        Sidebar.sendMessage({
+          type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
+          windowId:  movedTab.windowId,
+          tabId:     movedTab.id,
+          newIndex:  movedTab.index,
+          nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
+        });
     }
     if (maybeInternalOperation)
       window.internalMovingTabs.delete(tabId);
