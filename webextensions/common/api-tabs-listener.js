@@ -486,6 +486,12 @@ async function onNewTabTracked(tab) {
     });
     tab.$TST.resolveOpened();
 
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
+      windowId: tab.windowId,
+      tabId:    tab.id
+    });
+
     if (!duplicated &&
         restored) {
       tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
@@ -504,14 +510,9 @@ async function onNewTabTracked(tab) {
       if (tab[key] != renewedTab[key])
         changedProps[key] = renewedTab[key];
     }
+
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
-
-    Sidebar.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
-      windowId: tab.windowId,
-      tabId:    tab.id
-    });
 
     const currentActiveTab = Tab.getActiveTab(tab.windowId);
     if (renewedTab.active &&

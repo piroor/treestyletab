@@ -204,7 +204,8 @@ function matchedWithQuery(tab, query) {
        tab.pinned))
     return false;
   if (query.visible &&
-      (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
+      ((tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) &&
+        !tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING)) ||
        tab.hidden ||
        tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
     return false;

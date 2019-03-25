@@ -538,13 +538,6 @@ Tab.onInitialized.addListener((tab, info) => {
 
   tabElement.setAttribute('draggable', true);
 
-  if (!info.existing && configs.animation) {
-    Tree.collapseExpandTab(tab, {
-      collapsed: true,
-      justNow:   true
-    });
-  }
-
   applyStatesToElement(tab);
 
   const window  = TabsStore.windows.get(tab.windowId);
@@ -766,13 +759,33 @@ Background.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
       const nativeTab = await browser.tabs.get(message.tabId);
-      Tab.init(nativeTab, { inBackground: true });
+      const tab = Tab.init(nativeTab, { inBackground: true });
+      TabsUpdate.updateTab(tab, tab, { forceApply: true, tab });
+
+      tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+      TabsStore.addUnsynchronizedTab(tab);
+      TabsStore.addLoadingTab(tab);
+      if (configs.animation)
+        Tree.collapseExpandTab(tab, {
+          collapsed: true,
+          justNow:   true
+        });
+      else
+        reserveToUpdateLoadingState();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+      tab.$TST.resolveOpened();
+      if (configs.animation) {
+        await wait(0); // nextFrame() is too fast!
+        Tree.collapseExpandTab(tab, {
+          collapsed: false
+        });
+        reserveToUpdateLoadingState();
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
