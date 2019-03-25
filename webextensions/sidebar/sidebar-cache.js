@@ -280,16 +280,6 @@ async function updateCachedTabbar() {
 }
 
 
-Tab.onRemoved.addListener(async (_tab, _info) => {
-  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  await wait(0);
-  if (configs.animation) {
-    await wait(configs.animation ? configs.collapseDuration : 0);
-    await reserveToUpdateCachedTabbar();
-  }
-});
-
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
@@ -309,19 +299,29 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
-    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
-      wait(0).then(() => {
-        // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-        // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-        reserveToUpdateCachedTabbar();
-      });
+      if (message.tabId)
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+      await wait(0);
+      // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+      // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+      reserveToUpdateCachedTabbar();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVED:
+      await wait(0);
+      if (configs.animation)
+        await wait(configs.animation ? configs.collapseDuration : 0);
+      reserveToUpdateCachedTabbar();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+      if (message.tabId)
+        await Tab.waitUntilTracked(message.tabId, { element: true });
       reserveToUpdateCachedTabbar();
       break;
 
@@ -329,9 +329,10 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED:
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED:
-      wait(0).then(() => {
-        markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-      });
+      if (message.tabId)
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+      await wait(0);
+      markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
       break;
   }
 });

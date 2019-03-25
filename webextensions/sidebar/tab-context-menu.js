@@ -520,8 +520,8 @@ async function onContextMenu(event) {
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
-    case Constants.kCOMMAND_NOTIFY_TAB_CREATING:
-    case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED:
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:

@@ -14,6 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsMove from '/common/tabs-move.js';
 import * as Tree from '/common/tree.js';
@@ -667,25 +668,6 @@ export function applyCollapseExpandStateToElement(tab) {
 }
 
 
-Tab.onRemoved.addListener((tab, _info) => {
-  if (tab.$TST.collapsed ||
-      !configs.animation)
-    return;
-
-  return new Promise(async (resolve, _reject) => {
-    if (!tab.$TST ||
-        !tab.$TST.element ||
-        !tab.$TST.element.parentNode)
-      return resolve();
-    const tabRect = tab.$TST.element.getBoundingClientRect();
-    tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
-    await wait(configs.animation ? configs.collapseDuration : 0);
-    resolve();
-  });
-});
-
-const mTabWasVisibleBeforeMoving = new Map();
-
 let mReservedUpdateActiveTab;
 
 let mDelayedResized = null;
@@ -782,10 +764,28 @@ Background.onMessage.addListener(async message => {
       reserveToSyncTabsOrder();
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
+      const nativeTab = await browser.tabs.get(message.tabId);
+      Tab.init(nativeTab, { inBackground: true });
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      TabsStore.activeTabInWindow.set(message.windowId, tab);
+      TabsInternalOperation.setTabActive(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
@@ -817,21 +817,6 @@ Background.onMessage.addListener(async message => {
       }, 50);
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_MOVING: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      tab.$TST.addState(Constants.kTAB_STATE_MOVING);
-      if (!configs.animation ||
-          tab.pinned ||
-          tab.$TST.opening)
-        return;
-      mTabWasVisibleBeforeMoving.set(tab.id, !tab.$TST.collapsed);
-      Tree.collapseExpandTab(tab, {
-        collapsed: true,
-        justNow:   true
-      });
-    }; break;
-
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
@@ -840,15 +825,25 @@ Background.onMessage.addListener(async message => {
           tab.$TST.parent)
         tab.$TST.parent.$TST.tooltipIsDirty = true;
 
-      const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
-      mTabWasVisibleBeforeMoving.delete(tab.id);
+      tab.$TST.addState(Constants.kTAB_STATE_MOVING);
 
-      if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
-        return;
+      let shouldAnimate = false;
+      if (configs.animation &&
+          !tab.pinned &&
+          !tab.$TST.opening) {
+        shouldAnimate = true;
+        Tree.collapseExpandTab(tab, {
+          collapsed: true,
+          justNow:   true
+        });
+      }
 
+      tab.index = message.newIndex;
+      const window = TabsStore.windows.get(message.windowId);
+      window.trackTab(tab);
       tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
-      if (configs.animation && wasVisible) {
+      if (shouldAnimate) {
         Tree.collapseExpandTab(tab, {
           collapsed: false
         });
@@ -889,9 +884,34 @@ Background.onMessage.addListener(async message => {
       reserveToUpdateLoadingState();
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
+      TabsStore.removeHighlightedTab(tab);
+      TabsStore.removeGroupTab(tab);
+      TabsStore.addRemovingTab(tab);
+      TabsStore.addRemovedTab(tab); // reserved
       reserveToUpdateLoadingState();
-      break;
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVED: {
+      const tab = Tab.get(message.tabId);
+      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
+      if (!tab)
+        return;
+      if (!tab.$TST.collapsed &&
+          configs.animation) {
+        const tabRect = tab.$TST.element.getBoundingClientRect();
+        tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
+        Tree.collapseExpandTab(tab, {
+          collapsed: true
+        });
+        await wait(configs.animation ? configs.collapseDuration : 0);
+      }
+      tab.$TST.destroy();
+    }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
@@ -929,6 +949,17 @@ Background.onMessage.addListener(async message => {
       reserveToUpdateSoundButtonTooltip(tab);
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
+      TabsUpdate.updateTabsHighlighted(message);
+      const window = TabsStore.windows.get(message.windowId);
+      if (!window || !window.element)
+        return;
+      if (message.tabIds.lengt > 1)
+        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+      else
+        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TREE_COLLAPSED_STATE_CHANGING: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
@@ -955,6 +986,9 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       tab.$TST.tooltipIsDirty = true;
+      TabsStore.addRemovedTab(tab);
+      const window = TabsStore.windows.get(message.windowId);
+      window.untrackTab(message.tabId);
       if (tab.$TST.element.parentNode)
         tab.$TST.element.parentNode.removeChild(tab.$TST.element);
     }; break;

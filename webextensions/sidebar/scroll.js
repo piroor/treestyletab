@@ -556,7 +556,7 @@ async function onBackgroundMessage(message) {
       reserveToScrollToTab(Tab.get(message.tabId));
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_MOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       reReserveScrollingForTab(Tab.get(message.tabId));

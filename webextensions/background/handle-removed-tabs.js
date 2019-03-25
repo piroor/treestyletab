@@ -35,14 +35,6 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  Sidebar.sendMessage({
-    type:                Constants.kCOMMAND_NOTIFY_TAB_REMOVING,
-    windowId:            tab.windowId,
-    tabId:               tab.id,
-    keepChildren:        removeInfo.keepChildren,
-    byInternalOperation: removeInfo.byInternalOperation
-  });
-
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (!Sidebar.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&

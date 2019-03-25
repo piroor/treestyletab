@@ -17,7 +17,6 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsMove from '/common/tabs-move.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
-import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -28,12 +27,6 @@ function log(...args) {
 
 // this should return false if the tab is / may be moved while processing
 Tab.onCreating.addListener((tab, info = {}) => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-
   if (info.duplicatedInternally)
     return true;
 

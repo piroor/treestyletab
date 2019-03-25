@@ -10,9 +10,7 @@ import {
   dumpTab
 } from '/common/common.js';
 
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -39,13 +37,6 @@ Tab.onUpdated.addListener((tab, info, options = {}) => {
       active:      descendant.active
     }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
-});
-
-Tab.onHighlightedTabsChanged.addListener(windowId => {
-  Sidebar.sendMessage({
-    type: Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
-    windowId
-  });
 });
 
 const mLastClickedTabInWindow = new Map();

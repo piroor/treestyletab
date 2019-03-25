@@ -16,7 +16,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
-import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
@@ -71,12 +70,6 @@ Tab.onMoving.addListener((tab, moveInfo) => {
       return false;
     }
   }
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_MOVING,
-    windowId: tab.windowId,
-    tabId:    tab.id,
-    status:   tab.status
-  });
   return true;
 });
 
@@ -135,12 +128,6 @@ Tab.onMoved.addListener((tab, moveInfo = {}) => {
   else {
     log('internal move');
   }
-  Sidebar.sendMessage({
-    type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
-    windowId:  tab.windowId,
-    tabId:     tab.id,
-    nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
-  });
 });
 
 Commands.onMoveUp.addListener(async tab => {

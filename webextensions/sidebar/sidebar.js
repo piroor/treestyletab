@@ -15,7 +15,6 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
@@ -167,7 +166,6 @@ export async function init() {
         cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs, caches: mPreloadedCaches }));
       mPreloadedCaches.clear();
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
-      ApiTabsListener.startListen();
 
       Background.connect();
       onConfigChange('applyBrowserTheme');
@@ -821,6 +819,8 @@ Background.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+      if (message.tabId)
+        await Tab.waitUntilTracked(message.tabId, { element: true });
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
         timeout: configs.collapseDuration
@@ -857,17 +857,6 @@ Background.onMessage.addListener(async message => {
       Tree.detachTab(tab, {
         dontUpdateIndent: true
       });
-    }; break;
-
-    case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
-      const window             = TabsStore.windows.get(message.windowId);
-      const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(message.windowId);
-      if (!window || !window.element || !allHighlightedTabs)
-        return;
-      if (allHighlightedTabs.size > 1)
-        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-      else
-        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING: {

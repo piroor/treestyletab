@@ -191,6 +191,12 @@ async function onActivated(activeInfo) {
     // don't do await if not needed, to process things synchronously
     if (onActivatedReuslt instanceof Promise)
       await onActivatedReuslt;
+
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
+      windowId: activeInfo.windowId,
+      tabId:    activeInfo.tabId
+    });
     onCompleted();
   }
   catch(e) {
@@ -255,7 +261,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     if (configs.enableWorkaroundForBug1409262 &&
         tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
       logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.$TST.updatedOpenerTabId} => ${tab.openerTabId}`);
-      updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = tab.openerTabId;
+      updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = changeInfo.openerTabId = tab.openerTabId;
     }
 
     TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
@@ -264,6 +270,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     // don't do await if not needed, to process things synchronously
     if (onUpdatedResult instanceof Promise)
       await onUpdatedResult;
+
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
       windowId: tab.windowId,
@@ -288,12 +295,22 @@ function onHighlighted(highlightInfo) {
       highlightInfo.tabIds.length == 1) {
     // simple active tab switching
     TabsUpdate.updateTabsHighlighted(highlightInfo);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
+      windowId: highlightInfo.windowId,
+      tabIds:   highlightInfo.tabIds
+    });
     return;
   }
   timer = setTimeout(() => {
     mTabsHighlightedTimers.delete(highlightInfo.windowId);
     TabsUpdate.updateTabsHighlighted(highlightInfo);
     mLastHighlightedCount.set(highlightInfo.windowId, highlightInfo.tabIds.length);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
+      windowId: highlightInfo.windowId,
+      tabIds:   highlightInfo.tabIds
+    });
   }, 50);
   mTabsHighlightedTimers.set(highlightInfo.windowId, timer);
 }
@@ -432,6 +449,11 @@ async function onNewTabTracked(tab) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
+      windowId: tab.windowId,
+      tabId:    tab.id
+    });
     log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
 
     if (TabsStore.ensureLivingTab(tab) &&
@@ -484,6 +506,12 @@ async function onNewTabTracked(tab) {
     }
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
+
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
+      windowId: tab.windowId,
+      tabId:    tab.id
+    });
 
     const currentActiveTab = Tab.getActiveTab(tab.windowId);
     if (renewedTab.active &&
@@ -558,6 +586,15 @@ async function onRemoved(tabId, removeInfo) {
 
     Tab.onStateChanged.dispatch(oldTab);
 
+    if (!removeInfo.isWindowClosing)
+      Sidebar.sendMessage({
+        type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVING,
+        windowId:        oldTab.windowId,
+        tabId:           oldTab.id,
+        isWindowClosing: removeInfo.isWindowClosing,
+        byInternalOperation
+      });
+
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
     }));
@@ -582,6 +619,14 @@ async function onRemoved(tabId, removeInfo) {
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
+
+    Sidebar.sendMessage({
+      type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVED,
+      windowId:        oldTab.windowId,
+      tabId:           oldTab.id,
+      isWindowClosing: removeInfo.isWindowClosing,
+      byInternalOperation
+    });
     oldTab.$TST.destroy();
     onCompleted();
   }
@@ -689,6 +734,13 @@ async function onMoved(tabId, moveInfo) {
       // don't do await if not needed, to process things synchronously
       if (onMovedResult instanceof Promise)
         await onMovedResult;
+      Sidebar.sendMessage({
+        type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
+        windowId:  movedTab.windowId,
+        tabId:     movedTab.id,
+        newIndex:  movedTab.index,
+        nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
+      });
     }
     if (maybeInternalOperation)
       window.internalMovingTabs.delete(tabId);
@@ -745,11 +797,6 @@ async function onAttached(tabId, attachInfo) {
       // don't do await if not needed, to process things synchronously
       if (onAttachedResult instanceof Promise)
         await onAttachedResult;
-      Sidebar.sendMessage({
-        type: Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW,
-        windowId: attachInfo.newWindowId,
-        tabId:    tabId
-      });
     }
 
     onCompleted();

@@ -38,14 +38,6 @@ function logMouseEvent(...args) {
 let mInitialized = false;
 
 
-Tab.onActivated.addListener((tab, _info) => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-});
-
 Tab.onPinned.addListener(tab => {
   Tree.collapseExpandSubtree(tab, {
     collapsed: false,
