@@ -771,11 +771,9 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
-      let newIndex = -1;
-      if (message.maybeMoved) {
-        console.log('kCOMMAND_NOTIFY_TAB_CREATING ', message.tabId);
+      let newIndex;
+      if (message.maybeMoved)
         newIndex = await waitUntilNewTabIsMoved(message.tabId);
-      }
       const nativeTab = await browser.tabs.get(message.tabId);
       if (typeof newIndex == 'number' && newIndex > -1)
         nativeTab.index = newIndex;
