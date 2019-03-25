@@ -160,7 +160,9 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
-    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (tab.pinned)
