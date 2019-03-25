@@ -184,6 +184,9 @@ Background.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      tab.$TST.setAttribute(Constants.kLEVEL, message.level);
       reserveToUpdateIndent();
       break;
   }

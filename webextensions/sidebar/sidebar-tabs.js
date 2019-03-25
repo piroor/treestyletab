@@ -983,7 +983,7 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
 
-      tab.children = message.childIds;
+      tab.$TST.children = message.childIds;
 
       reserveToUpdateTwistyTooltip(tab);
       reserveToUpdateCloseboxTooltip(tab);

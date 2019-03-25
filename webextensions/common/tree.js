@@ -562,7 +562,8 @@ function updateTabsIndent(tabs, level = undefined) {
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
       windowId: item.windowId,
-      tabId:    item.id
+      tabId:    item.id,
+      level:    level
     });
   }
 }
