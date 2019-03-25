@@ -462,7 +462,7 @@ Window.onInitialized.addListener(windowId => {
   container.$TST.bindElement(container);
 });
 
-Tab.onInitialized.addListener((tab, info) => {
+Tab.onInitialized.addListener((tab, _info) => {
   if (tab.$TST.element) // restored from cache
     return;
 
