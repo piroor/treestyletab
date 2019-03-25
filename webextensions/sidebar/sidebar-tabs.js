@@ -852,7 +852,10 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
-      maybeNewTabIsMoved(message.tabId, message.newIndex);
+      if (!Tab.get(message.tabId)) {
+        maybeNewTabIsMoved(message.tabId, message.newIndex);
+        return;
+      }
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
       if (tab.index == message.newIndex)
@@ -890,7 +893,10 @@ Background.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
-      maybeNewTabIsMoved(message.tabId, message.newIndex);
+      if (!Tab.get(message.tabId)) {
+        maybeNewTabIsMoved(message.tabId, message.newIndex);
+        return;
+      }
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
       if (tab.index == message.newIndex)
