@@ -687,30 +687,6 @@ Tab.onRemoved.addListener((tab, _info) => {
 const mTabWasVisibleBeforeMoving = new Map();
 
 let mReservedUpdateActiveTab;
-Tab.onUpdated.addListener((tab, info) => {
-  reserveToUpdateSoundButtonTooltip(tab);
-  tab.$TST.tooltiplIsDirty = true;
-
-  if (!('highlighted' in info))
-    return;
-
-  reserveToUpdateCloseboxTooltip(tab);
-
-  for (const ancestor of tab.$TST.ancestors) {
-    updateDescendantsHighlighted(ancestor);
-  }
-
-  if (mReservedUpdateActiveTab)
-    clearTimeout(mReservedUpdateActiveTab);
-  mReservedUpdateActiveTab = setTimeout(() => {
-    mReservedUpdateActiveTab = null;
-    const activeTab = Tab.getActiveTab(tab.windowId);
-    if (activeTab) {
-      reserveToUpdateSoundButtonTooltip(activeTab);
-      reserveToUpdateCloseboxTooltip(activeTab);
-    }
-  }, 50);
-});
 
 Tree.onAttached.addListener((_tab, info = {}) => {
   if (!mInitialized)
@@ -841,6 +817,35 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      TabsUpdate.updateTab(tab, message.updatedProperties, { tab });
+
+      reserveToUpdateSoundButtonTooltip(tab);
+      tab.$TST.tooltiplIsDirty = true;
+
+      if (!('highlighted' in message.updatedProperties))
+        return;
+
+      reserveToUpdateCloseboxTooltip(tab);
+
+      for (const ancestor of tab.$TST.ancestors) {
+        updateDescendantsHighlighted(ancestor);
+      }
+
+      if (mReservedUpdateActiveTab)
+        clearTimeout(mReservedUpdateActiveTab);
+      mReservedUpdateActiveTab = setTimeout(() => {
+        mReservedUpdateActiveTab = null;
+        const activeTab = Tab.getActiveTab(tab.windowId);
+        if (activeTab) {
+          reserveToUpdateSoundButtonTooltip(activeTab);
+          reserveToUpdateCloseboxTooltip(activeTab);
+        }
+      }, 50);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVING: {

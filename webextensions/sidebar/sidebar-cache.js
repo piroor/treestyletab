@@ -281,12 +281,6 @@ async function updateCachedTabbar() {
 }
 
 
-Tab.onUpdated.addListener((_tab, _url) => {
-  wait(0).then(() => {
-    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  });
-});
-
 Tab.onRemoved.addListener(async (_tab, _info) => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
@@ -347,6 +341,7 @@ Background.onMessage.addListener(async message => {
       reserveToUpdateCachedTabbar();
       break;
 
+    case Constants.kCOMMAND_NOTIFY_TAB_UPDATED:
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED:
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED:
