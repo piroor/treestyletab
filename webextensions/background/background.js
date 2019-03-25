@@ -495,13 +495,6 @@ Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
     info.oldPreviousTab,
     info.oldNextTab
   ]);
-  Sidebar.sendMessage({
-    type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
-    windowId:    tab.windowId,
-    tabId:       tab.id,
-    nextTabId:   info.nextTab && info.nextTab.id,
-    broadcasted: info.broadcasted
-  });
 });
 
 Tab.onMoved.addListener(async (tab, moveInfo) => {

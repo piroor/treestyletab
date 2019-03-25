@@ -273,15 +273,6 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 }
 
 
-Tab.onRestoring.addListener(tab => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
-    tabId:    tab.id,
-    windowId: tab.windowId
-  });
-});
-
-
 Tab.onRestored.addListener(tab => {
   log('onTabRestored ', dumpTab(tab));
   reserveToAttachTabFromRestoredInfo(tab, {

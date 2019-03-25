@@ -53,54 +53,6 @@ Tab.onPinned.addListener(tab => {
     broadcast: true
   });
   Tree.collapseExpandTabAndSubtree(tab, { collapsed: false });
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_PINNED,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-});
-
-Tab.onUnpinned.addListener(tab => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-});
-
-Tab.onShown.addListener(tab => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-});
-
-Tab.onHidden.addListener(tab => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_HIDDEN,
-    windowId: tab.windowId,
-    tabId:    tab.id
-  });
-});
-
-Tab.onStateChanged.addListener(tab => {
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
-    windowId: tab.windowId,
-    tabId:    tab.id,
-    status:   tab.status
-  });
-});
-
-Tab.onSoundStateChanged.addListener(tab => {
-  Sidebar.sendMessage({
-    type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
-    windowId:              tab.windowId,
-    tabId:                 tab.id,
-    hasSoundPlayingMember: tab.$TST.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
-    hasMutedMember:        tab.$TST.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
-  });
 });
 
 

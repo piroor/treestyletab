@@ -120,6 +120,13 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         oldNextTab,
         broadcasted: !!options.broadcasted
       });
+      Sidebar.sendMessage({
+        type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
+        windowId:    tab.windowId,
+        tabId:       tab.id,
+        nextTabId:   referenceTab && referenceTab.id,
+        broadcasted: !!options.broadcasted
+      });
     }
     if (movedTabsCount == 0) {
       log(' => actually nothing moved');
@@ -210,6 +217,13 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         nextTab,
         oldPreviousTab,
         oldNextTab,
+        broadcasted: !!options.broadcasted
+      });
+      Sidebar.sendMessage({
+        type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
+        windowId:    tab.windowId,
+        tabId:       tab.id,
+        nextTabId:   nextTab && nextTab.id,
         broadcasted: !!options.broadcasted
       });
     }

@@ -401,7 +401,11 @@ async function onNewTabTracked(tab) {
         });
         window.allTabsRestored = Tab.onWindowRestoring.dispatch(tab.windowId);
       }
-      Tab.onRestoring.dispatch(tab);
+      Sidebar.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
+        tabId:    tab.id,
+        windowId: tab.windowId
+      });
       await window.allTabsRestored;
       log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
     }
@@ -557,8 +561,6 @@ async function onRemoved(tabId, removeInfo) {
     TabsStore.removeGroupTab(oldTab);
 
     TabsStore.addRemovedTab(oldTab);
-
-    Tab.onStateChanged.dispatch(oldTab);
 
     if (!removeInfo.isWindowClosing)
       Sidebar.sendMessage({
@@ -798,8 +800,6 @@ async function onDetached(tabId, detachInfo) {
       descendants: oldTab.$TST.descendants
     });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
-
-    Tab.onStateChanged.dispatch(oldTab);
 
     if (!byInternalOperation) { // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);

@@ -157,7 +157,12 @@ export function updateTab(tab, newState = {}, options = {}) {
         }, configs.burstDuration);
       }
     }
-    Tab.onStateChanged.dispatch(tab);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      status:   tab.status
+    });
   }
 
   if ((options.forceApply ||
@@ -169,12 +174,22 @@ export function updateTab(tab, newState = {}, options = {}) {
       TabsStore.removeUnpinnedTab(tab);
       TabsStore.addPinnedTab(tab);
       Tab.onPinned.dispatch(tab);
+      Sidebar.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_PINNED,
+        windowId: tab.windowId,
+        tabId:    tab.id
+      });
     }
     else {
       tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
       TabsStore.removePinnedTab(tab);
       TabsStore.addUnpinnedTab(tab);
       Tab.onUnpinned.dispatch(tab);
+      Sidebar.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
+        windowId: tab.windowId,
+        tabId:    tab.id
+      });
     }
   }
 
@@ -240,6 +255,11 @@ export function updateTab(tab, newState = {}, options = {}) {
         TabsStore.removeVisibleTab(tab);
         TabsStore.removeControllableTab(tab);
         Tab.onHidden.dispatch(tab);
+        Sidebar.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_HIDDEN,
+          windowId: tab.windowId,
+          tabId:    tab.id
+        });
       }
     }
     else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
@@ -248,6 +268,11 @@ export function updateTab(tab, newState = {}, options = {}) {
         TabsStore.addVisibleTab(tab);
       TabsStore.addControllableTab(tab);
       Tab.onShown.dispatch(tab);
+      Sidebar.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
+        windowId: tab.windowId,
+        tabId:    tab.id
+      });
     }
   }
 

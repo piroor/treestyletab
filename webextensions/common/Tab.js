@@ -747,7 +747,13 @@ export default class Tab {
     if (parent)
       parent.$TST.inheritSoundStateFromChildren();
 
-    Tab.onSoundStateChanged.dispatch(this.tab);
+    Sidebar.sendMessage({
+      type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
+      windowId:              this.tab.windowId,
+      tabId:                 this.tab.id,
+      hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
+      hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+    });
   }
 
 
@@ -1405,7 +1411,6 @@ Tab.onUnpinned         = new EventListenerManager();
 Tab.onHidden           = new EventListenerManager();
 Tab.onShown            = new EventListenerManager();
 Tab.onHighlightedTabsChanged = new EventListenerManager();
-Tab.onSoundStateChanged = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 
@@ -1419,7 +1424,6 @@ Tab.onMoved            = new EventListenerManager();
 Tab.onActivating       = new EventListenerManager();
 Tab.onActivated        = new EventListenerManager();
 Tab.onUpdated          = new EventListenerManager();
-Tab.onRestoring        = new EventListenerManager();
 Tab.onRestored         = new EventListenerManager();
 Tab.onWindowRestoring  = new EventListenerManager();
 Tab.onAttached         = new EventListenerManager();
