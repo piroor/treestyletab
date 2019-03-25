@@ -712,7 +712,7 @@ async function onMoved(tabId, moveInfo) {
           windowId:  movedTab.windowId,
           tabId:     movedTab.id,
           newIndex:  movedTab.index,
-          nextTabId: moveInfo.nextTab && moveInfo.nextTab.id
+          nextTabId: nextTab && nextTab.id
         });
     }
     if (maybeInternalOperation)
