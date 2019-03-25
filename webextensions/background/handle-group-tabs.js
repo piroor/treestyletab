@@ -248,6 +248,11 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
 Tab.onGroupTabDetected.addListener(tab => {
   tryInitGroupTab(tab);
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
+    windowId: tab.windowId,
+    tabId:    tab.id
+  });
 });
 
 Tab.onLabelUpdated.addListener(tab => {

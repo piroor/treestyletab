@@ -54,6 +54,7 @@ export const kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED     = 'treestyletab:notify-tab-
 export const kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED = 'treestyletab:notify-tab-sound-state-updated';
 export const kCOMMAND_NOTIFY_TABS_CLOSING            = 'treestyletab:notify-tabs-closing';
 export const kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED = 'treestyletab:notify-highlighted-tabs-changed';
+export const kCOMMAND_NOTIFY_GROUP_TAB_DETECTED      = 'treestyletab:notify-group-tab-detected';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
 export const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
 export const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';

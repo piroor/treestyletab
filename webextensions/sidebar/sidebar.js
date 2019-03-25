@@ -633,64 +633,6 @@ function onBrowserThemeChanged(updateInfo) {
 }
 
 
-Tab.onRestoring.addListener(tab => {
-  if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
-    return;
-
-  const window = TabsStore.windows.get(tab.windowId);
-  // When we are restoring two or more tabs.
-  // (But we don't need do this again for third, fourth, and later tabs.)
-  if (window.restoredCount == 2)
-    UserOperationBlocker.block({ throbber: true });
-});
-
-// Tree restoration for "Restore Previous Session"
-Tab.onWindowRestoring.addListener(async windowId => {
-  if (!configs.useCachedTree)
-    return;
-
-  log('Tabs.onWindowRestoring');
-  const window = TabsStore.windows.get(windowId);
-  const restoredCount = await window.allTabsRestored;
-  if (restoredCount == 1) {
-    log('Tabs.onWindowRestoring: single tab restored');
-    UserOperationBlocker.unblock({ throbber: true });
-    return;
-  }
-
-  log('Tabs.onWindowRestoring: continue');
-  const cache = await SidebarCache.getEffectiveWindowCache({
-    ignorePinnedTabs: true
-  });
-  if (!cache ||
-      (cache.offset &&
-       window.element.childNodes.length <= cache.offset)) {
-    log('Tabs.onWindowRestoring: no effective cache');
-    UserOperationBlocker.unblock({ throbber: true });
-    return;
-  }
-
-  log('Tabs.onWindowRestoring restore! ', cache);
-  MetricsData.add('Tabs.onWindowRestoring restore start');
-  cache.tabbar.tabsDirty = true;
-  const importedTabs = await browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_PULL_TABS,
-    windowId
-  });
-  const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
-    offset: cache.offset || 0,
-    tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
-  });
-  if (!restored) {
-    await rebuildAll();
-  }
-  Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
-  updateTabbarLayout({ justNow: true });
-  UserOperationBlocker.unblock({ throbber: true });
-  MetricsData.add('Tabs.onWindowRestoring restore end');
-});
-
-
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
@@ -917,6 +859,77 @@ Background.onMessage.addListener(async message => {
       });
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
+      const window             = TabsStore.windows.get(message.windowId);
+      const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(message.windowId);
+      if (!window || !window.element || !allHighlightedTabs)
+        return;
+      if (allHighlightedTabs.size > 1)
+        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+      else
+        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING: {
+      if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
+        return;
+
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      const window = TabsStore.windows.get(tab.windowId);
+      // When we are restoring two or more tabs.
+      // (But we don't need do this again for third, fourth, and later tabs.)
+      if (window.restoredCount == 2)
+        UserOperationBlocker.block({ throbber: true });
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
+      // Tree restoration for "Restore Previous Session"
+      if (!configs.useCachedTree)
+        return;
+
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      log('Tabs.onWindowRestoring');
+      const window = TabsStore.windows.get(message.windowId);
+      const restoredCount = await window.allTabsRestored;
+      if (restoredCount == 1) {
+        log('Tabs.onWindowRestoring: single tab restored');
+        UserOperationBlocker.unblock({ throbber: true });
+        return;
+      }
+
+      log('Tabs.onWindowRestoring: continue');
+      const cache = await SidebarCache.getEffectiveWindowCache({
+        ignorePinnedTabs: true
+      });
+      if (!cache ||
+          (cache.offset &&
+           window.element.childNodes.length <= cache.offset)) {
+        log('Tabs.onWindowRestoring: no effective cache');
+        UserOperationBlocker.unblock({ throbber: true });
+        return;
+      }
+
+      log('Tabs.onWindowRestoring restore! ', cache);
+      MetricsData.add('Tabs.onWindowRestoring restore start');
+      cache.tabbar.tabsDirty = true;
+      const importedTabs = await browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_PULL_TABS,
+        windowId: message.windowId
+      });
+      const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
+        offset: cache.offset || 0,
+        tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
+      });
+      if (!restored) {
+        await rebuildAll();
+      }
+      Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
+      updateTabbarLayout({ justNow: true });
+      UserOperationBlocker.unblock({ throbber: true });
+      MetricsData.add('Tabs.onWindowRestoring restore end');
+    }; break;
+
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return Tree.doTreeChangeFromRemote(async () => {
         await Promise.all([
@@ -953,16 +966,5 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
       Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
       break;
-
-    case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
-      const window             = TabsStore.windows.get(message.windowId);
-      const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(message.windowId);
-      if (!window || !window.element || !allHighlightedTabs)
-        return;
-      if (allHighlightedTabs.size > 1)
-        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-      else
-        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-    }; break;
   }
 });

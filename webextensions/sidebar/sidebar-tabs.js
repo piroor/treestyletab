@@ -712,22 +712,6 @@ Tab.onUpdated.addListener((tab, info) => {
   }, 50);
 });
 
-Tab.onGroupTabDetected.addListener(tab => {
-  // When a group tab is restored but pending, TST cannot update title of the tab itself.
-  // For failsafe now we update the title based on its URL.
-  const uri = tab.url;
-  const parameters = uri.replace(/^[^\?]+/, '');
-  let title = parameters.match(/[&?]title=([^&;]*)/);
-  if (!title)
-    title = parameters.match(/^\?([^&;]*)/);
-  title = title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab_label_default');
-  tab.title = title;
-  wait(0).then(() => {
-    TabsUpdate.updateTab(tab, { title }, { tab });
-  });
-});
-
 Tree.onAttached.addListener((_tab, info = {}) => {
   if (!mInitialized)
     return;
@@ -999,6 +983,24 @@ Background.onMessage.addListener(async message => {
       tab.$TST.tooltipIsDirty = true;
       if (tab.$TST.element.parentNode)
         tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      // When a group tab is restored but pending, TST cannot update title of the tab itself.
+      // For failsafe now we update the title based on its URL.
+      const uri = tab.url;
+      const parameters = uri.replace(/^[^\?]+/, '');
+      let title = parameters.match(/[&?]title=([^&;]*)/);
+      if (!title)
+        title = parameters.match(/^\?([^&;]*)/);
+      title = title && decodeURIComponent(title[1]) ||
+               browser.i18n.getMessage('groupTab_label_default');
+      tab.title = title;
+      wait(0).then(() => {
+        TabsUpdate.updateTab(tab, { title }, { tab });
+      });
     }; break;
   }
 });

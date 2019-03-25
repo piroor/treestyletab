@@ -151,11 +151,6 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab);
-  Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
-    tabId:    tab.id,
-    windowId: tab.windowId
-  });
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
@@ -275,12 +270,16 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       justNow:   true
     });
   }
+}
+
+
+Tab.onRestoring.addListener(tab => {
   Sidebar.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
+    type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
     tabId:    tab.id,
     windowId: tab.windowId
   });
-}
+});
 
 
 Tab.onRestored.addListener(tab => {
@@ -292,6 +291,11 @@ Tab.onRestored.addListener(tab => {
     Tree.fixupSubtreeCollapsedState(tab, {
       justNow:   true,
       broadcast: true
+    });
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
+      tabId:    tab.id,
+      windowId: tab.windowId
     });
   });
 });
