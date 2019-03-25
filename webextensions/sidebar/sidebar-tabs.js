@@ -804,6 +804,9 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      for (const property of Object.keys(message.updatedProperties)) {
+        tab[property] = message.updatedProperties[property];
+      }
       TabsUpdate.updateTab(tab, message.updatedProperties, { tab });
 
       reserveToUpdateSoundButtonTooltip(tab);
