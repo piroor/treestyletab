@@ -690,19 +690,6 @@ Tab.onWindowRestoring.addListener(async windowId => {
   MetricsData.add('Tabs.onWindowRestoring restore end');
 });
 
-Tab.onHighlightedTabsChanged.addListener(windowId => {
-  if (windowId != mTargetWindow)
-    return;
-  const window             = TabsStore.windows.get(windowId);
-  const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(windowId);
-  if (!window || !window.element || !allHighlightedTabs)
-    return;
-  if (allHighlightedTabs.size > 1)
-    window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  else
-    window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-});
-
 
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
@@ -966,5 +953,16 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
       Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
       break;
+
+    case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
+      const window             = TabsStore.windows.get(message.windowId);
+      const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(message.windowId);
+      if (!window || !window.element || !allHighlightedTabs)
+        return;
+      if (allHighlightedTabs.size > 1)
+        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+      else
+        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    }; break;
   }
 });
