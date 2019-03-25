@@ -777,7 +777,7 @@ Background.onMessage.addListener(async message => {
         newIndex = await waitUntilNewTabIsMoved(message.tabId);
       }
       const nativeTab = await browser.tabs.get(message.tabId);
-      if (newIndex > -1)
+      if (typeof newIndex == 'number' && newIndex > -1)
         nativeTab.index = newIndex;
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true, tab });
@@ -1059,7 +1059,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
       if (!mInitialized)
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked([message.tabId].concat(message.childIds), { element: true });
       const tab = Tab.get(message.tabId);
 
       tab.$TST.children = message.childIds;
