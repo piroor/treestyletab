@@ -647,6 +647,7 @@ function onConfigChange(changedKey) {
         // breaking of initialized tab states.
         for (const tab of Tab.getAllTabs(mTargetWindow, { iterator: true })) {
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
+          tab.$TST.tooltipIsDirty = true;
         }
       }
       if (configs.debug)
