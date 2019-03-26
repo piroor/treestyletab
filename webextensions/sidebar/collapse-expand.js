@@ -49,10 +49,6 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
-import * as Sidebar from './sidebar.js';
-import * as SidebarCache from './sidebar-cache.js';
-import * as Scroll from './scroll.js';
-import * as Indent from './indent.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -60,14 +56,16 @@ function log(...args) {
   internalLogger('sidebar/collapse-expand', ...args);
 }
 
+export const onUpdating = new EventListenerManager();
+export const onUpdated = new EventListenerManager();
 
 const mUpdatingCollapsedStateCancellers = new Map();
 const mTabCollapsedStateChangedManagers = new Map();
 
-function updateCollapsed(tab, info = {}) {
+export function setCollapsed(tab, info = {}) {
   const toBeCollapsed = info.collapsed;
 
-  log('updateCollapsed ', tab.id, info);
+  log('setCollapsed ', tab.id, info);
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
 
@@ -80,8 +78,6 @@ function updateCollapsed(tab, info = {}) {
     TabsStore.addVisibleTab(tab);
   }
 
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-
   if (tab.$TST.onEndCollapseExpandAnimation) {
     clearTimeout(tab.$TST.onEndCollapseExpandAnimation.timeout);
     delete tab.$TST.onEndCollapseExpandAnimation;
@@ -89,11 +85,6 @@ function updateCollapsed(tab, info = {}) {
 
   if (tab.status == 'loading')
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-
-  if (info.anchor && !Scroll.isTabInViewport(info.anchor))
-    info.anchor = null;
-
-  const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
   let manager = mTabCollapsedStateChangedManagers.get(tab.id);
   if (!manager) {
@@ -125,7 +116,6 @@ function updateCollapsed(tab, info = {}) {
     mUpdatingCollapsedStateCancellers.delete(tab.id);
 
     const toBeCollapsed = info.collapsed;
-    SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
     if (configs.animation &&
         !info.justNow &&
@@ -138,17 +128,11 @@ function updateCollapsed(tab, info = {}) {
     else
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
-    const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
     onEndCollapseExpandCompletely(tab, {
       collapsed: toBeCollapsed,
-      reason
+      anchor:    info.anchor,
+      last:      info.last
     });
-
-    if (info.last)
-      Scroll.scrollToTab(tab, {
-        anchor:            info.anchor,
-        notifyOnOutOfView: true
-      });
   };
   manager.addListener(onCompleted);
 
@@ -171,7 +155,7 @@ function updateCollapsed(tab, info = {}) {
     TabsStore.addExpandingTab(tab);
   }
 
-  Sidebar.reserveToUpdateTabbarLayout({ reason });
+  onUpdated.dispatch(tab, { collapsed: info.cpllapsed });
 
   const onCanceled = () => {
     manager.removeListener(onCompleted);
@@ -185,11 +169,11 @@ function updateCollapsed(tab, info = {}) {
     }
 
     //log('start animation for ', dumpTab(tab));
-    if (info.last)
-      Scroll.scrollToTab(tab, {
-        anchor:            info.anchor,
-        notifyOnOutOfView: true
-      });
+    onUpdating.dispatch(tab, {
+      collapsed: toBeCollapsed,
+      anchor:    info.anchor,
+      last:      info.last
+    });
 
     tab.$TST.onEndCollapseExpandAnimation = (() => {
       if (cancelled) {
@@ -212,8 +196,7 @@ function updateCollapsed(tab, info = {}) {
         tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
       onEndCollapseExpandCompletely(tab, {
-        collapsed: toBeCollapsed,
-        reason
+        collapsed: toBeCollapsed
       });
     });
     tab.$TST.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
@@ -230,16 +213,7 @@ function updateCollapsed(tab, info = {}) {
   });
 }
 function onEndCollapseExpandCompletely(tab, options = {}) {
-  if (tab.active && !options.collapsed)
-    Scroll.scrollToTab(tab);
-
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible)
-    Indent.reserveToUpdateVisualMaxTreeLevel();
-
-  // this is very required for no animation case!
-  Sidebar.reserveToUpdateTabbarLayout({ reason: options.reason });
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  onUpdated.dispatch(tab, options);
 }
 
 Background.onMessage.addListener(async message => {
@@ -265,7 +239,7 @@ Background.onMessage.addListener(async message => {
         manager.dispatch(tab, Object.assign({}, message, {
           anchor: Tab.get(message.anchorId)
         }));
-      updateCollapsed(tab, {
+      setCollapsed(tab, {
         collapsed: message.collapsed,
         justNow:   message.justNow,
         anchor:    Tab.get(message.anchorId),

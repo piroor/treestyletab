@@ -48,7 +48,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
@@ -57,6 +56,7 @@ import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 import * as Background from './background.js';
 import * as SidebarTabs from './sidebar-tabs.js';
+import * as CollapseExpand from './collapse-expand.js';
 
 import * as RestoringTabCount from './restoring-tab-count.js';
 
@@ -536,7 +536,7 @@ async function onBackgroundMessage(message) {
           if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
             return;
           const active = tab.active;
-          Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
+          CollapseExpand.setCollapsed(tab, { // this is called to scroll to the tab by the "last" parameter
             collapsed: false,
             anchor:    Tab.getActiveTab(tab.windowId),
             last:      true
@@ -594,3 +594,21 @@ function onMessageExternal(message, _aSender) {
       })();
   }
 }
+
+CollapseExpand.onUpdating.addListener((tab, options) => {
+  if (options.last)
+    scrollToTab(tab, {
+      anchor:            isTabInViewport(options.anchor) && options.anchor,
+      notifyOnOutOfView: true
+    });
+});
+
+CollapseExpand.onUpdated.addListener((tab, options) => {
+  if (options.last)
+    scrollToTab(tab, {
+      anchor:            isTabInViewport(options.anchor) && options.anchor,
+      notifyOnOutOfView: true
+    });
+  else if (tab.active && !options.collapsed)
+    scrollToTab(tab);
+});

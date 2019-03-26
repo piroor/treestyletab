@@ -50,6 +50,7 @@ export const kCOMMAND_NOTIFY_GROUP_TAB_DETECTED      = 'treestyletab:notify-grou
 export const kCOMMAND_NOTIFY_CHILDREN_CHANGED        = 'treestyletab:notify-children-changed';
 export const kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED     = 'treestyletab:notify-tab-collapsed-state-changed';
 export const kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED = 'treestyletab:notify-subtree-collapsed-state-changed';
+export const kCOMMAND_SET_TAB_COLLAPSED_STATE                       = 'treestyletab:set-tab-collapsed-state';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE                   = 'treestyletab:set-subtree-collapsed-state';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR = 'treestyletab:set-subtree-collapsed-state-intelligently-for';
 export const kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED       = 'treestyletab:notify-tab-level-changed';

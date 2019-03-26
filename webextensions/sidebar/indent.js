@@ -16,6 +16,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as CollapseExpand from './collapse-expand.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -168,6 +169,12 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
+
+CollapseExpand.onUpdated.addListener((_tab, _options) => {
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    reserveToUpdateVisualMaxTreeLevel();
+});
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {

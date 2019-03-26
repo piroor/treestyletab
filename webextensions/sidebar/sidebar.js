@@ -18,7 +18,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Commands from '/common/commands.js';
@@ -36,6 +35,7 @@ import * as PinnedTabs from './pinned-tabs.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabDragHandle from './tab-drag-handle.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
+import * as CollapseExpand from './collapse-expand.js';
 import * as Size from './size.js';
 import * as Color from './color.js';
 import * as Indent from './indent.js';
@@ -637,6 +637,11 @@ ContextualIdentities.onUpdated.addListener(() => {
 });
 
 
+CollapseExpand.onUpdated.addListener((_tab, options) => {
+  const reason = options.collapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
+  reserveToUpdateTabbarLayout({ reason });
+});
+
 function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
@@ -830,33 +835,9 @@ Background.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, message);
-      if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-          tab.$TST.subtreeCollapsed)
-        Tree.collapseExpandSubtree(tab, {
-          collapsed: false
-        });
-
-      // We don't need to update children because they are controlled by bacgkround.
-      // However we still need to update the parent itself.
-      Tree.detachTab(tab, {
-        dontUpdateIndent: true
-      });
-
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
         timeout: configs.collapseDuration
-      });
-    }; break;
-
-    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      // We don't need to update children because they are controlled by bacgkround.
-      // However we still need to update the parent itself.
-      Tree.detachTab(tab, {
-        dontUpdateIndent: true
       });
     }; break;
 

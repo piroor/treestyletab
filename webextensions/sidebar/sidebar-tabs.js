@@ -16,13 +16,13 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as Tree from '/common/tree.js';
 import { Diff, SequenceMatcher } from '/common/diff.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 import * as Background from './background.js';
+import * as CollapseExpand from './collapse-expand.js';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
@@ -779,7 +779,7 @@ Background.onMessage.addListener(async message => {
       TabsStore.addUnsynchronizedTab(tab);
       TabsStore.addLoadingTab(tab);
       if (configs.animation)
-        Tree.collapseExpandTab(tab, {
+        CollapseExpand.setCollapsed(tab, {
           collapsed: true,
           justNow:   true
         });
@@ -796,7 +796,7 @@ Background.onMessage.addListener(async message => {
         await waitUntilNewTabIsMoved(message.tabId);
       if (configs.animation) {
         await wait(0); // nextFrame() is too fast!
-        Tree.collapseExpandTab(tab, {
+        CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });
         reserveToUpdateLoadingState();
@@ -867,7 +867,7 @@ Background.onMessage.addListener(async message => {
           !tab.$TST.opening &&
           !tab.$TST.collapsed) {
         shouldAnimate = true;
-        Tree.collapseExpandTab(tab, {
+        CollapseExpand.setCollapsed(tab, {
           collapsed: true,
           justNow:   true
         });
@@ -879,7 +879,7 @@ Background.onMessage.addListener(async message => {
       tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
       if (shouldAnimate) {
-        Tree.collapseExpandTab(tab, {
+        CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });
         await wait(configs.collapseDuration);
@@ -928,6 +928,7 @@ Background.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
+      tab.$TST.parent = null;
       // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
       TabsStore.removeHighlightedTab(tab);
       TabsStore.removeGroupTab(tab);
@@ -945,7 +946,7 @@ Background.onMessage.addListener(async message => {
           configs.animation) {
         const tabRect = tab.$TST.element.getBoundingClientRect();
         tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
-        Tree.collapseExpandTab(tab, {
+        CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
         await wait(configs.animation ? configs.collapseDuration : 0);
@@ -1022,6 +1023,7 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       tab.$TST.tooltipIsDirty = true;
+      tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
       const window = TabsStore.windows.get(message.windowId);
       window.untrackTab(message.tabId);

@@ -22,6 +22,7 @@ import * as DOMCache from './dom-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
 import * as Background from './background.js';
+import * as CollapseExpand from './collapse-expand.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -293,6 +294,10 @@ function onConfigChange(changedKey) {
       break;
   }
 }
+
+CollapseExpand.onUpdated.addListener((_tab, _options) => {
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+});
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {

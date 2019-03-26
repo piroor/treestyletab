@@ -377,15 +377,17 @@ export function detachAllChildren(tab, options = {}) {
       collapsed: false
     }));
 
-  for (let i = 0, maxi = children.length; i < maxi; i++) {
-    const child = children[i];
+  let count = 0;
+  for (const child of children) {
+    if (!child)
+      continue;
     if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
       detachTab(child, options);
       moveTabSubtreeBefore(child, nextTab, options);
     }
     else if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
       detachTab(child, options);
-      if (i == 0) {
+      if (count == 0) {
         if (parent) {
           attachTabTo(child, parent, Object.assign({}, options, {
             dontExpan: true,
@@ -413,6 +415,7 @@ export function detachAllChildren(tab, options = {}) {
     else { // options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
       detachTab(child, options);
     }
+    count++;
   }
 }
 
@@ -1546,6 +1549,20 @@ Sidebar.onMessage.addListener(async (windowId, message) => {
       if (tab)
         doTreeChangeFromRemote(async () => {
           return collapseExpandTreesIntelligentlyFor(tab);
+        });
+    }; break;
+
+    case Constants.kCOMMAND_SET_TAB_COLLAPSED_STATE: {
+      await Tab.waitUntilTracked(message.tabId);
+      const tab = Tab.get(message.tabId);
+      if (tab)
+        doTreeChangeFromRemote(async () => {
+          return collapseExpandTab(tab, {
+            collapsed: message.collapsed,
+            justNow:   message.justNow,
+            anchor:    Tab.get(message.anchorId),
+            last:      message.last
+          });
         });
     }; break;
 

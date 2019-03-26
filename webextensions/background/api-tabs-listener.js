@@ -564,7 +564,24 @@ async function onRemoved(tabId, removeInfo) {
 
     TabsStore.addRemovedTab(oldTab);
 
-    if (!removeInfo.isWindowClosing)
+    // The removing tab may be attached to tree/someone attached to the removing tab.
+    // We need to clear them by onRemoved handlers.
+    const oldChildren = oldTab.$TST.children;
+    const oldParent   = oldTab.$TST.parent;
+
+    removeInfo = Object.assign({}, removeInfo, {
+      byInternalOperation,
+      oldChildren,
+      oldParent
+    });
+
+    if (!removeInfo.isWindowClosing) {
+      const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(oldTab, removeInfo);
+      if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+          oldTab.$TST.subtreeCollapsed)
+        Tree.collapseExpandSubtree(oldTab, {
+          collapsed: false
+        });
       Sidebar.sendMessage({
         type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVING,
         windowId:        oldTab.windowId,
@@ -572,6 +589,7 @@ async function onRemoved(tabId, removeInfo) {
         isWindowClosing: removeInfo.isWindowClosing,
         byInternalOperation
       });
+    }
 
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
@@ -580,20 +598,12 @@ async function onRemoved(tabId, removeInfo) {
     if (onRemovingResult instanceof Promise)
       await onRemovingResult;
 
-    // The removing tab may be attached to tree/someone attached to the removing tab.
-    // We need to clear them by onRemoved handlers.
-    const oldChildren = oldTab.$TST.children;
-    const oldParent   = oldTab.$TST.parent;
     oldTab.$TST.addState(Constants.kTAB_STATE_REMOVING);
     TabsStore.addRemovingTab(oldTab);
 
     TabsStore.windows.get(removeInfo.windowId).detachTab(oldTab.id);
 
-    const onRemovedReuslt = Tab.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
-      byInternalOperation,
-      oldChildren,
-      oldParent
-    }));
+    const onRemovedReuslt = Tab.onRemoved.dispatch(oldTab, removeInfo);
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
