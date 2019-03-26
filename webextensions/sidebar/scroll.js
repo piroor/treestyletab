@@ -546,7 +546,8 @@ async function onBackgroundMessage(message) {
         });
       }
       else {
-        if (tab.active)
+        if (tab.active ||
+            Tab.getActiveTab(tab.windowId).pinned)
           reserveToScrollToNewTab(tab);
         else
           notifyOutOfViewTab(tab);
