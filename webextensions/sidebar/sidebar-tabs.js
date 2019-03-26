@@ -819,33 +819,53 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      for (const property of Object.keys(message.updatedProperties)) {
-        tab[property] = message.updatedProperties[property];
+      if (!tab)
+        return;
+
+      const highlightedChanged = 'highlighted' in message.updatedProperties;
+      for (const key of Object.keys(message.updatedProperties)) {
+        tab[key] = message.updatedProperties[key];
       }
-      TabsUpdate.updateTab(tab, message.updatedProperties, { tab });
+      for (const key of Object.keys(message.addedAttributes)) {
+        tab.$TST.setAttribute(key, message.addedAttributes[key]);
+      }
+      for (const key of message.removedAttributes) {
+        tab.$TST.removeAttribute(key, );
+      }
+      for (const state of message.addedStates) {
+        tab.$TST.addState(state);
+      }
+      for (const state of message.removedStates) {
+        tab.$TST.removeState(state);
+      }
+
+      if (message.soundStateChanged) {
+        const parent = tab.$TST.parent;
+        if (parent)
+          parent.$TST.inheritSoundStateFromChildren();
+      }
+
+      TabsStore.updateIndexesForTab(tab);
 
       reserveToUpdateSoundButtonTooltip(tab);
       tab.$TST.tooltiplIsDirty = true;
 
-      if (!('highlighted' in message.updatedProperties))
-        return;
-
-      reserveToUpdateCloseboxTooltip(tab);
-
-      for (const ancestor of tab.$TST.ancestors) {
-        updateDescendantsHighlighted(ancestor);
-      }
-
-      if (mReservedUpdateActiveTab)
-        clearTimeout(mReservedUpdateActiveTab);
-      mReservedUpdateActiveTab = setTimeout(() => {
-        mReservedUpdateActiveTab = null;
-        const activeTab = Tab.getActiveTab(tab.windowId);
-        if (activeTab) {
-          reserveToUpdateSoundButtonTooltip(activeTab);
-          reserveToUpdateCloseboxTooltip(activeTab);
+      if (highlightedChanged) {
+        reserveToUpdateCloseboxTooltip(tab);
+        for (const ancestor of tab.$TST.ancestors) {
+          updateDescendantsHighlighted(ancestor);
         }
-      }, 50);
+        if (mReservedUpdateActiveTab)
+          clearTimeout(mReservedUpdateActiveTab);
+        mReservedUpdateActiveTab = setTimeout(() => {
+          mReservedUpdateActiveTab = null;
+          const activeTab = Tab.getActiveTab(tab.windowId);
+          if (activeTab) {
+            reserveToUpdateSoundButtonTooltip(activeTab);
+            reserveToUpdateCloseboxTooltip(activeTab);
+          }
+        }, 50);
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
@@ -912,13 +932,28 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (tab) {
+        const reallyChanged = !tab.$TST.states.has(message.status);
         if (message.status == 'loading') {
+          tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
+          TabsStore.addLoadingTab(tab);
           tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
           TabsStore.addUnsynchronizedTab(tab);
         }
         else {
+          if (reallyChanged) {
+            tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
+            if (tab.$TST.delayedBurstEnd)
+              clearTimeout(tab.$TST.delayedBurstEnd);
+            tab.$TST.delayedBurstEnd = setTimeout(() => {
+              delete tab.$TST.delayedBurstEnd;
+              tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
+              if (!tab.active)
+                tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+            }, configs.burstDuration);
+          }
           tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
           TabsStore.removeUnsynchronizedTab(tab);
+          TabsStore.removeLoadingTab(tab);
         }
       }
       reserveToUpdateLoadingState();
@@ -957,6 +992,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      tab.$TST.label = message.label;
       getLabelContent(tab).textContent = message.title;
       tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
@@ -968,12 +1004,14 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab)
+      if (tab) {
+        tab.favIconUrl = message.favIconUrl;
         TabFavIconHelper.loadToImage({
           image: getFavIcon(tab).firstChild,
           tab,
           url: message.favIconUrl
         });
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
@@ -1002,11 +1040,53 @@ Background.onMessage.addListener(async message => {
         window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab) {
+        tab.pinned = true;
+        TabsStore.removeUnpinnedTab(tab);
+        TabsStore.addPinnedTab(tab);
+      }
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab) {
+        tab.pinned = false;
+        TabsStore.removePinnedTab(tab);
+        TabsStore.addUnpinnedTab(tab);
+      }
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab) {
+        tab.hidden = true;
+        TabsStore.removeVisibleTab(tab);
+        TabsStore.removeControllableTab(tab);
+      }
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (tab) {
+        tab.hidden = false;
+        if (!tab.$TST.collapsed)
+          TabsStore.addVisibleTab(tab);
+        TabsStore.addControllableTab(tab);
+      }
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
       if (message.collapsed)
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      TabsStore.addVisibleTab(tab);
       reserveToUpdateLoadingState();
       reserveToUpdateTwistyTooltip(tab);
       reserveToUpdateCloseboxTooltip(tab);

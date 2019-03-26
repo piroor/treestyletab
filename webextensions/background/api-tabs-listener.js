@@ -256,12 +256,6 @@ async function onUpdated(tabId, changeInfo, tab) {
     if (onUpdatedResult instanceof Promise)
       await onUpdatedResult;
 
-    Sidebar.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-      windowId: tab.windowId,
-      tabId:    tabId,
-      updatedProperties: changeInfo
-    });
     onCompleted();
   }
   catch(e) {
