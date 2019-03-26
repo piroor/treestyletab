@@ -527,6 +527,8 @@ async function onBackgroundMessage(message) {
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
+      if (message.maybeMoved)
+        await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       const tab = Tab.get(message.tabId);
       if (configs.animation) {
         wait(10).then(() => { // wait until the tab is moved by TST itself
@@ -560,8 +562,6 @@ async function onBackgroundMessage(message) {
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
-      if (message.maybeMoved)
-        await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       reReserveScrollingForTab(Tab.get(message.tabId));
     }; break;
   }
