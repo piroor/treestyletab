@@ -583,18 +583,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     return;
   params.stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
-  await Promise.all([
-    collapseExpandSubtreeInternal(tab, params),
-    Sidebar.sendMessage({
-      type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
-      windowId:        tab.windowId,
-      tabId:           tab.id,
-      collapsed:       params.collapsed,
-      manualOperation: !!params.manualOperation,
-      justNow:         !!params.justNow,
-      stack:           new Error().stack
-    })
-  ]);
+  await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
@@ -637,10 +626,13 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
 
   onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
   Sidebar.sendMessage({
-    type:      Constants.kCOMMAND_NOTIFY_TREE_COLLAPSED_STATE_CHANGING,
+    type:      Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED,
     windowId:  tab.windowId,
     tabId:     tab.id,
-    collapsed: !!params.collapsed
+    collapsed: !!params.collapsed,
+    justNow:   params.justNow,
+    anchorId:  tab.id,
+    last:      true
   });
 }
 
@@ -713,17 +705,6 @@ export async function collapseExpandTab(tab, params = {}) {
   const collapseExpandInfo = Object.assign({}, params, {
     anchor: last && params.anchor,
     last
-  });
-  Sidebar.sendMessage({
-    type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGING,
-    windowId:  tab.windowId,
-    tabId:     tab.id,
-    anchorId:  collapseExpandInfo.anchor && collapseExpandInfo.anchor.id,
-    justNow:   params.justNow,
-    collapsed: params.collapsed,
-    last,
-    stack,
-    byAncestor
   });
 
   if (params.collapsed) {
@@ -1542,7 +1523,7 @@ export function doTreeChangeFromRemote(task) {
 
 Sidebar.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
-    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+    case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE: {
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)

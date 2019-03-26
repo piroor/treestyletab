@@ -1001,21 +1001,16 @@ Background.onMessage.addListener(async message => {
         window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TREE_COLLAPSED_STATE_CHANGING: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      reserveToUpdateTwistyTooltip(tab);
-      reserveToUpdateCloseboxTooltip(tab);
-      if (mInitialized)
-        tab.$TST.tooltipIsDirty = true;
-    }; break;
-
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
       if (message.collapsed)
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       reserveToUpdateLoadingState();
+      reserveToUpdateTwistyTooltip(tab);
+      reserveToUpdateCloseboxTooltip(tab);
+      if (mInitialized)
+        tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
           tab.$TST.labelIsDirty) {
         updateLabelOverflow(tab);

@@ -45,7 +45,6 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
 
@@ -65,12 +64,21 @@ function log(...args) {
 const mUpdatingCollapsedStateCancellers = new Map();
 const mTabCollapsedStateChangedManagers = new Map();
 
-function onCollapsedStateChanging(tab, info = {}) {
+function updateCollapsed(tab, info = {}) {
   const toBeCollapsed = info.collapsed;
 
-  log('Tabs.onCollapsedStateChanging ', tab.id, info);
+  log('updateCollapsed ', tab.id, info);
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
+
+  if (toBeCollapsed) {
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+    TabsStore.removeVisibleTab(tab);
+  }
+  else {
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
+    TabsStore.addVisibleTab(tab);
+  }
 
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
@@ -236,31 +244,15 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
 
 Background.onMessage.addListener(async message => {
   switch (message.type) {
-    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      return Tree.doTreeChangeFromRemote(async () => {
-        await Tab.waitUntilTracked(message.tabId, { element: true });
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-        const params = {
-          collapsed: message.collapsed,
-          justNow:   message.justNow,
-          stack:     message.stack
-        };
-        if (message.manualOperation)
-          Tree.manualCollapseExpandSubtree(tab, params);
-        else
-          Tree.collapseExpandSubtree(tab, params);
-      });
-
-    case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGING: {
+    case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      onCollapsedStateChanging(tab, Object.assign({}, message, {
-        anchor: Tab.get(message.anchorId)
-      }));
+      if (message.collapsed)
+        tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+      else
+        tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
@@ -273,16 +265,11 @@ Background.onMessage.addListener(async message => {
         manager.dispatch(tab, Object.assign({}, message, {
           anchor: Tab.get(message.anchorId)
         }));
-      // Tree's collapsed state can be changed before this message is delivered,
-      // so we should ignore obsolete messages.
-      if (message.byAncestor &&
-          message.collapsed != tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
-        return;
-      Tree.collapseExpandTab(tab, {
-        collapsed:   message.collapsed,
-        justNow:     message.justNow,
-        broadcasted: true,
-        stack:       message.stack
+      updateCollapsed(tab, {
+        collapsed: message.collapsed,
+        justNow:   message.justNow,
+        anchor:    Tab.get(message.anchorId),
+        last:      message.last
       });
     }; break;
   }

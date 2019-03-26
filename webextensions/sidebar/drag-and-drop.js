@@ -462,7 +462,7 @@ function collapseAutoExpandedTabsWhileDragging() {
       configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (const tab of mLongHoverExpandedTabs) {
       Background.sendMessage({
-        type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+        type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
         tabId:     tab.id,
         collapsed: false,
         justNow:   true,
@@ -913,7 +913,7 @@ function reserveToProcessLongHover(params = {}) {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
         Background.sendMessage({
-          type:      Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+          type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:     dragOverTab.id,
           collapsed: false,
           stack:     new Error().stack

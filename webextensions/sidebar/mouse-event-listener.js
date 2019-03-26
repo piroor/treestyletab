@@ -391,7 +391,7 @@ async function onMouseUp(event) {
       log('clicked on twisty');
       if (tab.$TST.hasChild)
         Background.sendMessage({
-          type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+          type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:           tab.id,
           collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
@@ -530,7 +530,7 @@ function onDblClick(event) {
       event.stopPropagation();
       event.preventDefault();
       Background.sendMessage({
-        type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+        type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
         tabId:           livingTab.id,
         collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
