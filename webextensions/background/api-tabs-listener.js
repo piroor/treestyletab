@@ -558,15 +558,10 @@ async function onRemoved(tabId, removeInfo) {
 
     TabsStore.addRemovedTab(oldTab);
 
-    // The removing tab may be attached to tree/someone attached to the removing tab.
-    // We need to clear them by onRemoved handlers.
-    const oldChildren = oldTab.$TST.children;
-    const oldParent   = oldTab.$TST.parent;
-
     removeInfo = Object.assign({}, removeInfo, {
       byInternalOperation,
-      oldChildren,
-      oldParent
+      oldChildren: oldTab.$TST.children,
+      oldParent:   oldTab.$TST.parent
     });
 
     if (!removeInfo.isWindowClosing) {
@@ -592,6 +587,10 @@ async function onRemoved(tabId, removeInfo) {
     if (onRemovingResult instanceof Promise)
       await onRemovingResult;
 
+    // The removing tab may be attached to tree/someone attached to the removing tab.
+    // We need to clear them by onRemoved handlers.
+    removeInfo.oldChildren = oldTab.$TST.children;
+    removeInfo.oldParent   = oldTab.$TST.parent;
     oldTab.$TST.addState(Constants.kTAB_STATE_REMOVING);
     TabsStore.addRemovingTab(oldTab);
 
