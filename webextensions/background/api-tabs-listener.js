@@ -60,7 +60,7 @@ function log(...args) {
   internalLogger('background/api-tabs-listener', ...args);
 }
 function logUpdated(...args) {
-  internalLogger('background/tabs-update', ...args);
+  internalLogger('common/tabs-update', ...args);
 }
 
 export function startListen() {
