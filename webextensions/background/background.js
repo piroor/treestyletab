@@ -87,6 +87,7 @@ export async function init() {
     configs.$loaded
   ]));
   MetricsData.add('init: prepare');
+  EventListenerManager.debug = configs.debug;
 
   Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
@@ -537,6 +538,9 @@ configs.$addObserver(key => {
       break;
     case 'applyThemeColorToIcon':
       applyThemeColorToIcon();
+      break;
+    case 'debug':
+      EventListenerManager.debug = configs.debug;
       break;
   }
 });

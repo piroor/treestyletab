@@ -141,6 +141,7 @@ export async function init() {
     configs.$loaded
   ]);
   MetricsData.add('browser.tabs.query finish, SidebarCache initialized, configs are loaded.');
+  EventListenerManager.debug = configs.debug;
 
   onConfigChange('colorScheme');
   onConfigChange('simulateSVGContextFill');
@@ -648,6 +649,7 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
+      EventListenerManager.debug = configs.debug;
       if (mInitialized) {
         // We have no need to re-update tabs on the startup process.
         // Moreover, we should not re-update tabs at the time to avoid
