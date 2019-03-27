@@ -11,6 +11,7 @@ import {
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
+import * as Constants from '/common/constants.js';
 import * as Utils from './utils.js';
 
 let win;
@@ -171,5 +172,73 @@ export async function testInheritMutedState() {
        [A, B, C, D].map(tab => tab.$TST.maybeMuted),
        'ancestors must inherit "muted" state from descendant');
   }
+}
+
+export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
+  await Utils.setConfigs({
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    promoteAllChildrenWhenClosedParentIsLastChild: true
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'B' },
+    D: { index: 4, openerTabId: 'B' },
+    E: { index: 5 },
+    F: { index: 6, openerTabId: 'E' },
+    G: { index: 7, openerTabId: 'F' },
+    H: { index: 8, openerTabId: 'F' }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${C.id}`,
+      `${A.id} => ${B.id} => ${D.id}`,
+      `${E.id}`,
+      `${E.id} => ${F.id}`,
+      `${E.id} => ${F.id} => ${G.id}`,
+      `${E.id} => ${F.id} => ${H.id}`,
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs must be initialized with specified structure');
+  }
+
+  await browser.tabs.remove(tabs.B.id);
+  await wait(1000);
+
+  delete tabs.B;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+    ], Utils.treeStructure([A, C, D]),
+       'all children must be promoted');
+  }
+
+  await Utils.setConfigs({
+    promoteAllChildrenWhenClosedParentIsLastChild: false
+  });
+  await browser.tabs.remove(tabs.F.id);
+  await wait(1000);
+
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { E, G, H } = tabs;
+    is([
+      `${E.id}`,
+      `${E.id} => ${G.id}`,
+      `${E.id} => ${G.id} => ${H.id}`,
+    ], Utils.treeStructure([E, G, H]),
+       'only first child must be promoted');
+  }
+
 }
 
