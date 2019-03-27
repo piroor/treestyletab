@@ -104,6 +104,10 @@ export async function init() {
   Migration.migrateLegacyTreeStructure();
   MetricsData.add('init: Migration.migrateLegacyTreeStructure');
 
+  for (const window of windows) {
+    TabsUpdate.completeLoadingTabs(window.id);
+  }
+
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();

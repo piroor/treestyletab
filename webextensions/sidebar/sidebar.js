@@ -167,6 +167,8 @@ export async function init() {
       mPreloadedCaches.clear();
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
 
+      TabsUpdate.completeLoadingTabs(mTargetWindow);
+
       Background.connect();
       onConfigChange('applyBrowserTheme');
 

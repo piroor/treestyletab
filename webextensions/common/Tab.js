@@ -1292,6 +1292,15 @@ Tab.getGroupTabs = (windowId, options = {}) => {
   }, options));
 };
 
+Tab.getLoadingTabs = (windowId, options = {}) => {
+  return TabsStore.queryAll(Object.assign({
+    windowId,
+    tabs:    TabsStore.loadingTabsInWindow.get(windowId),
+    living:  true,
+    ordered: true
+  }, options));
+};
+
 Tab.getDraggingTabs = (windowId, options = {}) => {
   return TabsStore.queryAll(Object.assign({
     windowId,

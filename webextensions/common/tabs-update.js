@@ -421,3 +421,13 @@ async function updateTabHighlighted(tab, highlighted) {
   Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
 }
+
+export function completeLoadingTabs(windowId) {
+  browser.tabs.query({ windowId, status: 'complete' }).then(completedTabs => {
+    completedTabs = new Set(completedTabs.map(tab => tab.id));
+    for (const tab of Tab.getLoadingTabs(window.id, { ordered: false, iterator: true })) {
+      if (completedTabs.has(tab.id))
+        updateTab(tab, { status: 'complete' }, { tab });
+    }
+  });
+}
