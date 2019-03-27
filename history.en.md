@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Stabilize handling of tabs based on asynchronous WebExtensions API. At old versions, tabs were handled on both the background page and sidebar pages separately, so they were sometimes mis-synchronized. Now all tabs are always handled only on the background page, and a sidebar page works just like a canvas to show tabs.
+   * Stabilize handling of tabs based on asynchronous events.
+   * Add an option to deactivate browser theme color.
+   * Show a `about:performance` tab with the favicon same to Firefox's native tab.
  - 2.8.7 (2019.3.20)
    * Optimize performance of messaging between the background page and sidebar contents.
    * Optimize performance of initialization processes.
