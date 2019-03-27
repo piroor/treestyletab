@@ -773,7 +773,7 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
       const nativeTab = await browser.tabs.get(message.tabId);
       const tab = Tab.init(nativeTab, { inBackground: true });
-      TabsUpdate.updateTab(tab, tab, { forceApply: true, tab });
+      TabsUpdate.updateTab(tab, tab, { forceApply: true });
 
       tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
       TabsStore.addUnsynchronizedTab(tab);
@@ -1135,7 +1135,7 @@ Background.onMessage.addListener(async message => {
                browser.i18n.getMessage('groupTab_label_default');
       tab.title = title;
       wait(0).then(() => {
-        TabsUpdate.updateTab(tab, { title }, { tab });
+        TabsUpdate.updateTab(tab, { title });
       });
     }; break;
 

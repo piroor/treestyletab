@@ -358,7 +358,6 @@ async function onNewTabTracked(tab) {
     }
 
     TabsUpdate.updateTab(tab, tab, {
-      tab,
       forceApply: true
     });
 
