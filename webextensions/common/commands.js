@@ -127,11 +127,11 @@ export async function bookmarkTree(root, options = {}) {
 
   const tab = tabs[0];
   if (Sidebar.isOpen(tab.windowId)) {
-    return browser.runtime.sendMessage({
+    return Sidebar.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
       tabIds:   tabs.map(tab => tab.id)
-    }).catch(ApiTabs.createErrorHandler());
+    });
   }
 
   const folder = await Bookmark.bookmarkTabs(tabs, options);
