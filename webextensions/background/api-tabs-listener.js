@@ -319,8 +319,8 @@ async function onNewTabTracked(tab) {
     activeTab
   });
 
-  if (Tab.needToWaitTracked(tab.windowId))
-    await Tab.waitUntilTrackedAll(tab.windowId);
+  if (Tab.needToWaitTracked(tab.windowId, { exceptionTabId: tab.id }))
+    await Tab.waitUntilTrackedAll(tab.windowId, { exceptionTabId: tab.id });
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)

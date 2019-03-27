@@ -903,8 +903,12 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
     }
   }
   return Promise.all(tabSets.map(tabs => {
-    if (tabs)
-      return Tab.waitUntilTracked(Array.from(tabs, tab => tab.id), options);
+    if (!tabs)
+      return;
+    let tabIds = Array.from(tabs, tab => tab.id);
+    if (options.exceptionTabId)
+      tabIds = tabIds.filter(id => id != options.exceptionTabId);
+    return Tab.waitUntilTracked(tabIds, options);
   }));
 };
 
