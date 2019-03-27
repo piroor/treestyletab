@@ -333,7 +333,7 @@ function applyBrowserTheme(theme) {
       --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
       --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${theme.colors.textcolor};
-      --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.textcolor};
+      --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.bookmark_text || theme.colors.textcolor};
       --browser-border:          ${Color.mixCSSColors(theme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
