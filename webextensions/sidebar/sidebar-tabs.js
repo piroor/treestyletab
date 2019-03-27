@@ -812,8 +812,10 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      TabsStore.activeTabInWindow.set(message.windowId, tab);
-      TabsInternalOperation.setTabActive(tab);
+      if (tab) {
+        TabsStore.activeTabInWindow.set(message.windowId, tab);
+        TabsInternalOperation.setTabActive(tab);
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
