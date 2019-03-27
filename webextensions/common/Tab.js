@@ -788,9 +788,11 @@ export default class Tab {
   }
 
   get sanitized() {
-    return Object.assign({}, this.tab, {
+    const sanitized = Object.assign({}, this.tab, {
       '$TST': null
     });
+    delete sanitized.$TST;
+    return sanitized;
   }
 
   export(full) {
