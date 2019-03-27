@@ -181,62 +181,67 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
   });
 
   let tabs = await Utils.createTabs({
+    // setting up of multiple root level tabs (B and F) is fragile, so we setup them under a root level tab A.
     A: { index: 1 },
     B: { index: 2, openerTabId: 'A' },
     C: { index: 3, openerTabId: 'B' },
-    D: { index: 4, openerTabId: 'B' },
-    E: { index: 5 },
-    F: { index: 6, openerTabId: 'E' },
+    D: { index: 4, openerTabId: 'C' },
+    E: { index: 5, openerTabId: 'C' },
+    F: { index: 6, openerTabId: 'A' },
     G: { index: 7, openerTabId: 'F' },
-    H: { index: 8, openerTabId: 'F' }
+    H: { index: 8, openerTabId: 'G' },
+    I: { index: 9, openerTabId: 'G' }
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { A, B, C, D, E, F, G, H } = tabs;
+    const { A, B, C, D, E, F, G, H, I } = tabs;
     is([
       `${A.id}`,
       `${A.id} => ${B.id}`,
       `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${D.id}`,
-      `${E.id}`,
-      `${E.id} => ${F.id}`,
-      `${E.id} => ${F.id} => ${G.id}`,
-      `${E.id} => ${F.id} => ${H.id}`,
-    ], Utils.treeStructure(Object.values(tabs)),
+      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
+      `${A.id} => ${B.id} => ${C.id} => ${E.id}`,
+      `${A.id} => ${F.id}`,
+      `${A.id} => ${F.id} => ${G.id}`,
+      `${A.id} => ${F.id} => ${G.id} => ${H.id}`,
+      `${A.id} => ${F.id} => ${G.id} => ${I.id}`,
+    ], Utils.treeStructure([A, B, C, D, E, F, G, H, I]),
        'tabs must be initialized with specified structure');
   }
 
-  await browser.tabs.remove(tabs.B.id);
+  await browser.tabs.remove(tabs.C.id);
   await wait(1000);
 
-  delete tabs.B;
+  delete tabs.C;
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { A, C, D } = tabs;
+    const { A, B, D, E } = tabs;
     is([
       `${A.id}`,
-      `${A.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-    ], Utils.treeStructure([A, C, D]),
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${D.id}`,
+      `${A.id} => ${B.id} => ${E.id}`,
+    ], Utils.treeStructure([A, B, D, E]),
        'all children must be promoted');
   }
 
   await Utils.setConfigs({
     promoteAllChildrenWhenClosedParentIsLastChild: false
   });
-  await browser.tabs.remove(tabs.F.id);
+  await browser.tabs.remove(tabs.G.id);
   await wait(1000);
 
-  delete tabs.F;
+  delete tabs.G;
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { E, G, H } = tabs;
+    const { A, F, H, I } = tabs;
     is([
-      `${E.id}`,
-      `${E.id} => ${G.id}`,
-      `${E.id} => ${G.id} => ${H.id}`,
-    ], Utils.treeStructure([E, G, H]),
+      `${A.id}`,
+      `${A.id} => ${F.id}`,
+      `${A.id} => ${F.id} => ${H.id}`,
+      `${A.id} => ${F.id} => ${H.id} => ${I.id}`,
+    ], Utils.treeStructure([A, F, H, I]),
        'only first child must be promoted');
   }
 
