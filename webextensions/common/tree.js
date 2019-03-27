@@ -1509,21 +1509,6 @@ function snapshotTree(targetTab, tabs) {
 }
 
 
-let mLastTreeChangeFromRemote = Promise.resolve();
-export function doTreeChangeFromRemote(task) {
-  const previousPromisedComplete = mLastTreeChangeFromRemote;
-  return mLastTreeChangeFromRemote = new Promise(async (resolve, reject) => {
-    try {
-      await previousPromisedComplete;
-      await task();
-      resolve();
-    }
-    catch(error) {
-      reject(error);
-    }
-  });
-}
-
 Sidebar.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE: {
@@ -1547,40 +1532,16 @@ Sidebar.onMessage.addListener(async (windowId, message) => {
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (tab)
-        doTreeChangeFromRemote(async () => {
-          return collapseExpandTreesIntelligentlyFor(tab);
-        });
-    }; break;
-
-    case Constants.kCOMMAND_SET_TAB_COLLAPSED_STATE: {
-      await Tab.waitUntilTracked(message.tabId);
-      const tab = Tab.get(message.tabId);
-      if (tab)
-        doTreeChangeFromRemote(async () => {
-          return collapseExpandTab(tab, {
-            collapsed: message.collapsed,
-            justNow:   message.justNow,
-            anchor:    Tab.get(message.anchorId),
-            last:      message.last
-          });
-        });
-    }; break;
-
-    case Constants.kCOMMAND_DETACH_TABS_FROM_TREE: {
-      await Tab.waitUntilTracked(message.tabIds);
-      const tabs = message.tabIds.map(Tab.get);
-      doTreeChangeFromRemote(async () => {
-        return detachTabsFromTree(tabs);
-      });
+        collapseExpandTreesIntelligentlyFor(tab);
     }; break;
 
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS: {
       log('new window requested: ', message);
       await Tab.waitUntilTracked(message.tabIds);
       const tabs = message.tabIds.map(id => TabsStore.tabs.get(id));
-      doTreeChangeFromRemote(async () => {
-        return openNewWindowFromTabs(tabs, message);
-      });
+      if (!message.duplicate)
+        await detachTabsFromTree(tabs);
+      openNewWindowFromTabs(tabs, message);
     }; break;
   }
 });

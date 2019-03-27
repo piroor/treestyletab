@@ -1072,18 +1072,11 @@ async function onDragEnd(event) {
     return;
   }
 
-  const duplicate  = EventUtils.isAccelKeyPressed(event);
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
-  if (!duplicate) {
-    Background.sendMessage({
-      type:   Constants.kCOMMAND_DETACH_TABS_FROM_TREE,
-      tabIds: detachTabs.map(tab => tab.id)
-    });
-  }
   Background.sendMessage({
     type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
     tabIds:    detachTabs.map(tab => tab.id),
-    duplicate,
+    duplicate: EventUtils.isAccelKeyPressed(event),
     left:      event.screenX,
     top:       event.screenY
   });
