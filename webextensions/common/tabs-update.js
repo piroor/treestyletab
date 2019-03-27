@@ -58,9 +58,6 @@ function log(...args) {
 let mDelayedDispatchOnHighlightedTabsChanged;
 
 export function updateTab(tab, newState = {}, options = {}) {
-  if (newState.$TST)
-    newState = newState.$TST.sanitized;
-
   const messages          = [];
   const addedAttributes   = {};
   const removedAttributes = [];
@@ -384,7 +381,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
     windowId: tab.windowId,
     tabId:    tab.id,
-    updatedProperties: newState,
+    updatedProperties: newState && newState.$TST && newState.$TST.sanitized,
     addedAttributes,
     removedAttributes,
     addedStates,
