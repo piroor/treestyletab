@@ -503,7 +503,7 @@ async function onNewTabTracked(tab) {
     return tab;
   }
   catch(e) {
-    console.log(e);
+    console.log(e, e.stack);
     onCompleted();
   }
 }
