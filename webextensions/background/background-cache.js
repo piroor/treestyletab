@@ -146,7 +146,7 @@ async function updateWindowCache(owner, key, value) {
 }
 
 export function clearWindowCache(owner) {
-  log('clearWindowCache for owner ', owner, { stack: new Error().stack });
+  log('clearWindowCache for owner ', owner, { stack: configs.debug && new Error().stack });
   updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -197,7 +197,7 @@ export async function reserveToCacheTree(windowId) {
   if (window.allTabsRestored)
     return;
 
-  log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
+  log('reserveToCacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
   clearWindowCache(windowId.lastWindowCacheOwner);
 
   if (window.waitingToCacheTree)
@@ -229,7 +229,7 @@ async function cacheTree(windowId) {
   window.lastWindowCacheOwner = getWindowCacheOwner(windowId);
   if (!window.lastWindowCacheOwner)
     return;
-  log('cacheTree for window ', windowId, { stack: new Error().stack });
+  log('cacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:            TabsStore.windows.get(windowId).export(true),

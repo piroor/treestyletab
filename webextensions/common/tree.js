@@ -97,7 +97,7 @@ export async function attachTabTo(child, parent, options = {}) {
     delayedMove:      options.delayedMove,
     broadcast:        options.broadcast,
     broadcasted:      options.broadcasted,
-    stack:            `${new Error().stack}\n${options.stack || ''}`
+    stack:            `${configs.debug && new Error().stack}\n${options.stack || ''}`
   });
 
   if (parent.pinned || child.pinned) {
@@ -285,7 +285,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
 
 export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
-      { stack: `${new Error().stack}\n${options.stack || ''}` });
+      { stack: `${configs.debug && new Error().stack}\n${options.stack || ''}` });
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
 
@@ -584,7 +584,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     return;
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
     return;
-  params.stack = `${new Error().stack}\n${params.stack || ''}`;
+  params.stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
@@ -689,7 +689,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
 export async function collapseExpandTab(tab, params = {}) {
   if (tab.pinned && params.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
-        dumpTab(tab), { stack: new Error().stack });
+        dumpTab(tab), { stack: configs.debug && new Error().stack });
     params.collapsed = false;
   }
 
@@ -700,7 +700,7 @@ export async function collapseExpandTab(tab, params = {}) {
       tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
     return;
 
-  const stack = `${new Error().stack}\n${params.stack || ''}`;
+  const stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
   const last = params.last &&
                  (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed);

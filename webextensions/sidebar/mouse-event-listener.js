@@ -395,7 +395,7 @@ async function onMouseUp(event) {
           tabId:           tab.id,
           collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
-          stack:           new Error().stack
+          stack:           configs.debug && new Error().stack
         });
     }
     else if (lastMousedown.detail.soundButton) {
@@ -534,7 +534,7 @@ function onDblClick(event) {
         tabId:           livingTab.id,
         collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
-        stack:           new Error().stack
+        stack:           configs.debug && new Error().stack
       });
     }
     return;

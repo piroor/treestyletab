@@ -913,7 +913,7 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
 };
 
 async function waitUntilTracked(tabId, options = {}) {
-  const stack = new Error().stack;
+  const stack = configs.debug && new Error().stack;
   const tab = Tab.get(tabId);
   if (tab) {
     if (options.element)

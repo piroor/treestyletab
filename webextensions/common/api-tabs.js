@@ -82,7 +82,7 @@ export function handleUnloadedError(error) {
 }
 
 export function createErrorHandler(...handlers) {
-  const stack = new Error().stack;
+  const stack = configs.debug && new Error().stack;
   return (error) => {
     try {
       if (handlers.length > 0) {
@@ -114,7 +114,7 @@ export function createErrorHandler(...handlers) {
 }
 
 export function createErrorSuppressor(...handlers) {
-  const stack = new Error().stack;
+  const stack = configs.debug && new Error().stack;
   return (error) => {
     try {
       if (handlers.length > 0) {

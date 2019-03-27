@@ -466,7 +466,7 @@ function collapseAutoExpandedTabsWhileDragging() {
         tabId:     tab.id,
         collapsed: false,
         justNow:   true,
-        stack:     new Error().stack
+        stack:     configs.debug && new Error().stack
       });
     }
   }
@@ -916,7 +916,7 @@ function reserveToProcessLongHover(params = {}) {
           type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:     dragOverTab.id,
           collapsed: false,
-          stack:     new Error().stack
+          stack:     configs.debug && new Error().stack
         });
       }
     }, configs.autoExpandOnLongHoverDelay);

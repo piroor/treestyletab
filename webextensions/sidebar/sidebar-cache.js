@@ -196,7 +196,7 @@ function updateWindowCache(key, value) {
 }
 
 function clearWindowCache() {
-  log('clearWindowCache ', { stack: new Error().stack });
+  log('clearWindowCache ', { stack: configs.debug && new Error().stack });
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -238,7 +238,7 @@ export async function reserveToUpdateCachedTabbar() {
   if (window.allTabsRestored)
     return;
 
-  log('reserveToUpdateCachedTabbar ', { stack: new Error().stack });
+  log('reserveToUpdateCachedTabbar ', { stack: configs.debug && new Error().stack });
   // clear dirty cache
   clearWindowCache();
 
@@ -266,7 +266,7 @@ async function updateCachedTabbar() {
   const signature = DOMCache.getWindowSignature(Tab.getAllTabs(mTargetWindow));
   if (window.allTabsRestored)
     return;
-  log('updateCachedTabbar ', { stack: new Error().stack });
+  log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
