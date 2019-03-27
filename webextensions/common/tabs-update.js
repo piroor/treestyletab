@@ -381,7 +381,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
     windowId: tab.windowId,
     tabId:    tab.id,
-    updatedProperties: newState && newState.$TST && newState.$TST.sanitized,
+    updatedProperties: newState && newState.$TST && newState.$TST.sanitized || newState,
     addedAttributes,
     removedAttributes,
     addedStates,
