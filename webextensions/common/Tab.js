@@ -912,18 +912,8 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
   }));
 };
 
-Tab.waitUntilTracked = async (tabId, options = {}) => {
+async function waitUntilTracked(tabId, options = {}) {
   const stack = new Error().stack;
-  if (!tabId)
-    return null;
-  const windowId = TabsStore.getWindow();
-  if (windowId) {
-    const tabs = TabsStore.removedTabsInWindow.get(windowId);
-    if (tabs && tabs.has(tabId))
-      return null; // already removed tab
-  }
-  if (Array.isArray(tabId))
-    return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
   const tab = Tab.get(tabId);
   if (tab) {
     if (options.element)
@@ -974,6 +964,38 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
     else
       Tab.onTracked.addListener(onTracked);
     Tab.onDestroyed.addListener(onDestroyed);
+  });
+};
+
+const mPromisedTrackedTabs = new Map();
+
+Tab.waitUntilTracked = async (tabId, options = {}) => {
+  if (!tabId)
+    return null;
+
+  const windowId = TabsStore.getWindow();
+  if (windowId) {
+    const tabs = TabsStore.removedTabsInWindow.get(windowId);
+    if (tabs && tabs.has(tabId))
+      return null; // already removed tab
+  }
+  if (Array.isArray(tabId))
+    return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
+
+  const key = `${tabId}:${!!options.element}`;
+  if (mPromisedTrackedTabs.has(key))
+    return mPromisedTrackedTabs.get(key);
+
+  const promisedTracked = waitUntilTracked(tabId, options);
+  mPromisedTrackedTabs.set(key, promisedTracked);
+  return promisedTracked.then(tab => {
+    if (mPromisedTrackedTabs.get(key) == promisedTracked)
+      mPromisedTrackedTabs.delete(key);
+    return tab;
+  }).catch(error => {
+    if (mPromisedTrackedTabs.get(key) == promisedTracked)
+      mPromisedTrackedTabs.delete(key);
+    throw error;
   });
 };
 
