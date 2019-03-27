@@ -58,6 +58,9 @@ function log(...args) {
 let mDelayedDispatchOnHighlightedTabsChanged;
 
 export function updateTab(tab, newState = {}, options = {}) {
+  if (newState.$TST)
+    newState = newState.$TST.sanitized;
+
   const messages          = [];
   const addedAttributes   = {};
   const removedAttributes = [];
