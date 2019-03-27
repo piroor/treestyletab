@@ -380,18 +380,18 @@ export function updateTab(tab, newState = {}, options = {}) {
     });
   }
 
-    Sidebar.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-      windowId: tab.windowId,
-      tabId:    tab.id,
-      updatedProperties: newState,
-      addedAttributes,
-      removedAttributes,
-      addedStates,
-      removedStates,
-      soundStateChanged
-    });
-    messages.forEach(Sidebar.sendMessage);
+  Sidebar.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    updatedProperties: newState,
+    addedAttributes,
+    removedAttributes,
+    addedStates,
+    removedStates,
+    soundStateChanged
+  });
+  messages.forEach(Sidebar.sendMessage);
 }
 
 export async function updateTabsHighlighted(highlightInfo) {

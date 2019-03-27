@@ -824,29 +824,29 @@ Background.onMessage.addListener(async message => {
 
       const highlightedChanged = message.updatedProperties && 'highlighted' in message.updatedProperties;
       if (message.updatedProperties) {
-      for (const key of Object.keys(message.updatedProperties)) {
-        tab[key] = message.updatedProperties[key];
-      }
+        for (const key of Object.keys(message.updatedProperties)) {
+          tab[key] = message.updatedProperties[key];
+        }
       }
       if (message.addedAttributes) {
-      for (const key of Object.keys(message.addedAttributes)) {
-        tab.$TST.setAttribute(key, message.addedAttributes[key]);
-      }
+        for (const key of Object.keys(message.addedAttributes)) {
+          tab.$TST.setAttribute(key, message.addedAttributes[key]);
+        }
       }
       if (message.removedAttributes) {
-      for (const key of message.removedAttributes) {
-        tab.$TST.removeAttribute(key, );
-      }
+        for (const key of message.removedAttributes) {
+          tab.$TST.removeAttribute(key, );
+        }
       }
       if (message.addedStates) {
-      for (const state of message.addedStates) {
-        tab.$TST.addState(state);
-      }
+        for (const state of message.addedStates) {
+          tab.$TST.addState(state);
+        }
       }
       if (message.removedStates) {
-      for (const state of message.removedStates) {
-        tab.$TST.removeState(state);
-      }
+        for (const state of message.removedStates) {
+          tab.$TST.removeState(state);
+        }
       }
 
       if (message.soundStateChanged) {
