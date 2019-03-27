@@ -63,7 +63,6 @@ export function updateTab(tab, newState = {}, options = {}) {
   const removedAttributes = [];
   const addedStates       = [];
   const removedStates     = [];
-  const promises          = [];
 
   if ('url' in newState) {
     tab.$TST.setAttribute(Constants.kCURRENT_URI, addedAttributes[Constants.kCURRENT_URI] = newState.url);
@@ -96,16 +95,26 @@ export function updateTab(tab, newState = {}, options = {}) {
         visibleLabel = `${newState.title} - ${identity.name}`;
     }
     if (options.forceApply) {
-      promises.push(tab.$TST.getPermanentStates().then(states => {
+      tab.$TST.getPermanentStates().then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD)) {
           tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          addedStates.push(Constants.kTAB_STATE_UNREAD);
+          Sidebar.sendMessage({
+            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+            windowId: tab.windowId,
+            tabId:    tab.id,
+            addedStates: [Constants.kTAB_STATE_UNREAD]
+          });
         }
         else {
           tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          removedStates.push(Constants.kTAB_STATE_UNREAD);
+          Sidebar.sendMessage({
+            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+            windowId: tab.windowId,
+            tabId:    tab.id,
+            removedStates: [Constants.kTAB_STATE_UNREAD]
+          });
         }
-      }));
+      });
     }
     else if (!tab.active) {
       tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
@@ -344,21 +353,30 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'discarded' in newState) {
-    promises.push(wait(0).then(() => {
+    wait(0).then(() => {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
       if (newState.discarded) {
         tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
-        addedStates.push(Constants.kTAB_STATE_DISCARDED);
+        Sidebar.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+          windowId: tab.windowId,
+          tabId:    tab.id,
+          addedStates: [Constants.kTAB_STATE_DISCARDED]
+        });
       }
       else {
         tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
-        removedStates.push(Constants.kTAB_STATE_DISCARDED);
+        Sidebar.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+          windowId: tab.windowId,
+          tabId:    tab.id,
+          removedStates: [Constants.kTAB_STATE_DISCARDED]
+        });
       }
-    }));
+    });
   }
 
-  Promise.all(promises).then(() => {
     Sidebar.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
       windowId: tab.windowId,
@@ -371,7 +389,6 @@ export function updateTab(tab, newState = {}, options = {}) {
       soundStateChanged
     });
     messages.forEach(Sidebar.sendMessage);
-  });
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
