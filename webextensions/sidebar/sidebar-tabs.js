@@ -1129,7 +1129,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      // don't wait until tracked here, because detaching tab will become untracked!
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
