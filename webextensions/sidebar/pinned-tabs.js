@@ -155,6 +155,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       if (tab.pinned)
         reserveToReposition();
     }; break;
@@ -165,6 +167,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       if (tab.pinned)
         reserveToReposition();
     }; break;
@@ -178,6 +182,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       clearStyle(tab);
       reserveToReposition();
     }; break;
