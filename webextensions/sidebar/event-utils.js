@@ -38,10 +38,10 @@ export function isCopyAction(event) {
 }
 
 export function getElementTarget(eventOrTarget) {
-  const target = 'nodeType' in eventOrTarget ? eventOrTarget : eventOrTarget.target;
+  const target = eventOrTarget instanceof Node ? eventOrTarget : eventOrTarget.target;
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
-  return target;
+  return target instanceof Element ? target : null;
 }
 
 export function isEventFiredOnTwisty(event) {
