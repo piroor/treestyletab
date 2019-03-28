@@ -196,7 +196,7 @@ Background.onMessage.addListener(async message => {
       if (!tab)
         return;
       if (tab.$TST.getAttribute(Constants.kLEVEL) != message.level)
-      tab.$TST.setAttribute(Constants.kLEVEL, message.level);
+        tab.$TST.setAttribute(Constants.kLEVEL, message.level);
       reserveToUpdateIndent();
       break;
   }
