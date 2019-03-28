@@ -171,6 +171,7 @@ export const configs = new Configs({
   enableWorkaroundForBug1409262: false,
   simulateCloseTabByDblclick: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
+  maximumDelayUntilTabIsTracked: 10 * 60 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400, // obsolete, migrated to longPressDuration

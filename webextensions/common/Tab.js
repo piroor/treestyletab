@@ -942,7 +942,7 @@ async function waitUntilTracked(tabId, options = {}) {
       // eslint-disable-next-line no-use-before-define
       Tab.onDestroyed.removeListener(onDestroyed);
       reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getWindow() || 'bg'})\b${stack}`));
-    }, 10000); // Tabs.moveTabs() between windows may take much time
+    }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
     const onDestroyed = (tab) => {
       if (tab.id != tabId)
         return;
