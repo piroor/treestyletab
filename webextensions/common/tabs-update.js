@@ -405,7 +405,7 @@ export async function updateTabsHighlighted(highlightInfo) {
     ordered: false,
     '!id':   tabIds
   });
-  const highlightedTabs = tabIds.map(id => window.tabs.get(id)).filter(tab => !tab.highlighted);
+  const highlightedTabs = tabIds.map(id => window.tabs.get(id)).filter(tab => tab && !tab.highlighted);
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
 
