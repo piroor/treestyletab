@@ -506,6 +506,11 @@ Tab.onMoved.addListener((tab, moveInfo) => {
   ]);
 });
 
+Tree.onAttached.addListener((tab, attachInfo) => {
+  reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
+  reserveToUpdateChildren(attachInfo.parent);
+});
+
 Tree.onDetached.addListener((tab, detachInfo) => {
   reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
   reserveToUpdateChildren(detachInfo.oldParentTab);
