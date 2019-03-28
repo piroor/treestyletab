@@ -146,7 +146,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
       }));
     }));
     if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
-    reserveToAttachTabFromRestoredInfo.onDone();
+      reserveToAttachTabFromRestoredInfo.onDone();
     delete reserveToAttachTabFromRestoredInfo.onDone;
     delete reserveToAttachTabFromRestoredInfo.promisedDone;
     Tab.dumpAll();
