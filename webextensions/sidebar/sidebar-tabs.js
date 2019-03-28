@@ -800,9 +800,9 @@ Background.onMessage.addListener(async message => {
       if (configs.animation) {
         await wait(0); // nextFrame() is too fast!
         if (tab.$TST.shouldExpandLater)
-        CollapseExpand.setCollapsed(tab, {
-          collapsed: false
-        });
+          CollapseExpand.setCollapsed(tab, {
+            collapsed: false
+          });
         reserveToUpdateLoadingState();
       }
     }; break;
