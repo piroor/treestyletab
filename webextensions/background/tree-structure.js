@@ -331,7 +331,7 @@ Tab.onRestored.addListener(tab => {
       mRestoringTabs.delete(tab.windowId);
       mMaxRestoringTabs.delete(tab.windowId);
       setTimeout(() => { // unblock in the next event loop, after other asynchronous operations are finished
-      UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
+        UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
       }, 0);
     }
     else {
