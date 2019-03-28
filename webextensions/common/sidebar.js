@@ -59,6 +59,10 @@ export function sendMessage(message) {
 
 const mReservedTasks = new WeakMap();
 
+// Se should not send messages immediately, instead we should throttle
+// it and bulk-send multiple messages, for better user experience.
+// Sending too much messages in one event loop may block everything
+// and makes Firefox like frozen.
 function sendMessageToPort(port, message) {
   const task = mReservedTasks.get(port) || { messages: [] };
   task.messages.push(message);
@@ -71,7 +75,12 @@ function sendMessageToPort(port, message) {
       port.postMessage(messages);
       log(`${messages.length} messages sent:`, messages);
     };
-    window.requestAnimationFrame(task.onFrame);
+    // We should not use window.requestAnimationFrame for throttling,
+    // because it is quite lagged on some environment. Firefox may
+    // decelerate the method for an invisible document (the background
+    // page).
+    //window.requestAnimationFrame(task.onFrame);
+    setTimeout(task.onFrame, 0);
   }
 }
 

@@ -34,6 +34,10 @@ let mReservedMessages = [];
 let mOnFrame;
 
 export function sendMessage(message) {
+  // Se should not send messages immediately, instead we should throttle
+  // it and bulk-send multiple messages, for better user experience.
+  // Sending too much messages in one event loop may block everything
+  // and makes Firefox like frozen.
   //mConnectionPort.postMessage(message);
   mReservedMessages.push(message);
   if (!mOnFrame) {
@@ -44,7 +48,11 @@ export function sendMessage(message) {
       mConnectionPort.postMessage(messages);
       log(`${messages.length} messages sent:`, messages);
     };
-    window.requestAnimationFrame(mOnFrame);
+    // Because sidebar is always visible, we may not need to avoid using
+    // window.requestAnimationFrame. I just use a timer instead just for
+    // a unity with common/sidebar.js.
+    //window.requestAnimationFrame(mOnFrame);
+    setTimeout(mOnFrame, 0);
   }
 }
 
