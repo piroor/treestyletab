@@ -1029,14 +1029,14 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab) {
+      if (!tab)
+        return;
         tab.favIconUrl = message.favIconUrl;
         TabFavIconHelper.loadToImage({
           image: getFavIcon(tab).firstChild,
           tab,
           url: message.favIconUrl
         });
-      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
@@ -1070,42 +1070,42 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab) {
+      if (!tab)
+        return;
         tab.pinned = true;
         TabsStore.removeUnpinnedTab(tab);
         TabsStore.addPinnedTab(tab);
-      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab) {
+      if (!tab)
+        return;
         tab.pinned = false;
         TabsStore.removePinnedTab(tab);
         TabsStore.addUnpinnedTab(tab);
-      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab) {
+      if (!tab)
+        return;
         tab.hidden = true;
         TabsStore.removeVisibleTab(tab);
         TabsStore.removeControllableTab(tab);
-      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab) {
+      if (!tab)
+        return;
         tab.hidden = false;
         if (!tab.$TST.collapsed)
           TabsStore.addVisibleTab(tab);
         TabsStore.addControllableTab(tab);
-      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
