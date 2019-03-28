@@ -566,7 +566,7 @@ function updateTabsIndent(tabs, level = undefined) {
       type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
       windowId: item.windowId,
       tabId:    item.id,
-      level:    level
+      level
     });
   }
 }
