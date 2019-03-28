@@ -105,10 +105,6 @@ export async function init() {
   Migration.migrateLegacyTreeStructure();
   MetricsData.add('init: Migration.migrateLegacyTreeStructure');
 
-  for (const window of windows) {
-    TabsUpdate.completeLoadingTabs(window.id);
-  }
-
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
@@ -122,6 +118,7 @@ export async function init() {
   for (const windowId of Object.keys(restoredFromCache)) {
     if (!restoredFromCache[windowId])
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
+    TabsUpdate.completeLoadingTabs(windowId);
   }
 
   for (const tab of Tab.getAllTabs(null, { iterator: true })) {
