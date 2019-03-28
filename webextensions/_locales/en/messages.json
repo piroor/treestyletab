@@ -384,6 +384,7 @@
   "config_logFor_background": { "message": "Logs from background modules" },
   "config_logFor_sidebar":    { "message": "Logs from sidebar modules" },
   "config_loggingQueries_label": { "message": "Collect performance log of tabs querying" },
+  "config_loggingConnectionMessages_label": { "message": "Collect internal messaging log" },
   "config_showQueryLogsButton_label": { "message": "Show Logs" },
   "config_simulateSVGContextFill_label": { "message": "Activate workaround for the Bug 1388193 and Bug 1421329 to simulate SVG icons (*This may increase CPU usage. To deactivate this option, you need to activate \"svg.context-properties.content.enabled\" via \"about:config\", until these bugs are fixed.)" },
   "config_useCachedTree_label": { "message": "Optimize tree restoration with cache" },

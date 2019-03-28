@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 
@@ -36,9 +37,16 @@ export function hasFocus(windowId) {
   return mFocusState.has(windowId)
 }
 
+export const counts = {};
+
 export function sendMessage(message) {
   if (!mOpenState)
     return false;
+
+  if (configs.loggingConnectionMessages) {
+    counts[message.type] = counts[message.type] || 0;
+    counts[message.type]++;
+  }
 
   if (message.windowId) {
     const port = mOpenState.get(message.windowId);

@@ -380,6 +380,7 @@
   "config_logFor_background": { "message": "バックグラウンドモジュールからのログ" },
   "config_logFor_sidebar":    { "message": "サイドバーモジュールからのログ" },
   "config_loggingQueries_label": { "message": "タブの検索処理のパフォーマンスログを収集する" },
+  "config_loggingConnectionMessages_label": { "message": "内部通信のログを収集する" },
   "config_showQueryLogsButton_label": { "message": "ログを表示" },
   "config_simulateSVGContextFill_label": { "message": "Bug 1388193およびBug 1421329を回避して擬似的にSVGアイコンを表示する（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、これらのBugが修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },

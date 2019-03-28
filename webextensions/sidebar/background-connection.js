@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -30,10 +31,16 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
 }
 
+export const counts = {};
+
 let mReservedMessages = [];
 let mOnFrame;
 
 export function sendMessage(message) {
+  if (configs.loggingConnectionMessages) {
+    counts[message.type] = counts[message.type] || 0;
+    counts[message.type]++;
+  }
   // Se should not send messages immediately, instead we should throttle
   // it and bulk-send multiple messages, for better user experience.
   // Sending too much messages in one event loop may block everything

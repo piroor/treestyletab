@@ -272,6 +272,7 @@ export const configs = new Configs({
     'sidebar/tab-context-menu': false,
     'sidebar/tab-drag-handle': false
   },
+  loggingConnectionMessages: false,
 
   configsVersion: 0
 }, {
