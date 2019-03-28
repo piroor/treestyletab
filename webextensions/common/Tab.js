@@ -740,29 +740,29 @@ export default class Tab {
       clearTimeout(this.delayedInheritSoundStateFromChildren);
     this.delayedInheritSoundStateFromChildren = setTimeout(() => {
       delete this.delayedInheritSoundStateFromChildren;
-    const children = this.children;
+      const children = this.children;
 
-    if (children.some(child => child.$TST.maybeSoundPlaying))
-      this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-    else
-      this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+      if (children.some(child => child.$TST.maybeSoundPlaying))
+        this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+      else
+        this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-    if (children.some(child => child.$TST.maybeMuted))
-      this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-    else
-      this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      if (children.some(child => child.$TST.maybeMuted))
+        this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      else
+        this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
-    const parent = this.parent;
-    if (parent)
-      parent.$TST.inheritSoundStateFromChildren();
+      const parent = this.parent;
+      if (parent)
+        parent.$TST.inheritSoundStateFromChildren();
 
-    Sidebar.sendMessage({
-      type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
-      windowId:              this.tab.windowId,
-      tabId:                 this.tab.id,
-      hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
-      hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
-    });
+      Sidebar.sendMessage({
+        type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
+        windowId:              this.tab.windowId,
+        tabId:                 this.tab.id,
+        hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
+        hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+      });
     }, 100);
   }
 
