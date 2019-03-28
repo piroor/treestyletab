@@ -20,7 +20,6 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
-import * as Commands from '/common/commands.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -516,7 +515,6 @@ export async function confirmToCloseTabs(tabIds, _options = {}) {
       return false;
   }
 }
-Commands.onTabsClosing.addListener(confirmToCloseTabs);
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
