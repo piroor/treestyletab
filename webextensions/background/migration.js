@@ -8,15 +8,15 @@
 import {
   log as internalLogger,
   configs
-} from './common.js';
-import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  internalLogger('common/migration', ...args);
+  internalLogger('background/migration', ...args);
 }
 
 const kCONFIGS_VERSION = 3;
