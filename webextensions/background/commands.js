@@ -18,6 +18,7 @@ import * as TabsMove from '/common/tabs-move.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
@@ -502,7 +503,7 @@ export async function moveBefore(tab, options = {}) {
     );
   }
   else {
-    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+    const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
       insertBefore
     });
     if (!referenceTabs.insertBefore &&
@@ -535,7 +536,7 @@ export async function moveAfter(tab, options = {}) {
     );
   }
   else {
-    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+    const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
       insertAfter
     });
     if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)

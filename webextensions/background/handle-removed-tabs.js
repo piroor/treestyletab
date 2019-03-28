@@ -17,6 +17,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
@@ -35,7 +36,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+  let closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (!Sidebar.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       tab.$TST.subtreeCollapsed)
@@ -100,7 +101,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   self.closingTabIds.push(tab.id);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(Tree.getClosingTabsFromParent(tab).map(tab => tab.id));
+      .concat(TreeBehavior.getClosingTabsFromParent(tab).map(tab => tab.id));
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
   }
 
@@ -212,7 +213,7 @@ browser.windows.onRemoved.addListener(windowId  => {
 
 Tab.onDetached.addListener((tab, info = {}) => {
   log('Tabs.onDetached ', dumpTab(tab));
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
+  let closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 

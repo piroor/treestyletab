@@ -48,7 +48,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -377,7 +377,7 @@ async function onMouseUp(event) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
       //log('middle-click to close');
-      const tabs = Tree.getClosingTabsFromParent(livingTab);
+      const tabs = TreeBehavior.getClosingTabsFromParent(livingTab);
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
@@ -416,7 +416,7 @@ async function onMouseUp(event) {
       const multiselected  = tab.$TST.multiselected;
       const tabsToBeClosed = multiselected ?
         Tab.getSelectedTabs(tab.windowId) :
-        Tree.getClosingTabsFromParent(tab) ;
+        TreeBehavior.getClosingTabsFromParent(tab) ;
       Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
         .then(confirmed => {
           if (!confirmed)

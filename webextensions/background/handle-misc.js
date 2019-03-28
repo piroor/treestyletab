@@ -16,6 +16,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Sidebar from '/common/sidebar.js';
 import * as Permissions from '/common/permissions.js';
@@ -44,7 +45,7 @@ Tab.onPinned.addListener(tab => {
     broadcast: true
   });
   Tree.detachAllChildren(tab, {
-    behavior: Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
+    behavior: TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
       keepChildren: true
     }),
     broadcast: true

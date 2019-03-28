@@ -51,6 +51,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
@@ -564,7 +565,7 @@ async function onRemoved(tabId, removeInfo) {
     });
 
     if (!removeInfo.isWindowClosing) {
-      const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(oldTab, removeInfo);
+      const closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(oldTab, removeInfo);
       if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
           oldTab.$TST.subtreeCollapsed)
         Tree.collapseExpandSubtree(oldTab, {

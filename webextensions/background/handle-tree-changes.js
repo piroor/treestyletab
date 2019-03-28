@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
@@ -66,7 +67,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     }
     if (!info.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent))) {
+          (isNewTreeCreatedManually ||
+           parent.$TST.isAutoExpandable)) {
         log('  collapse others by collapseExpandTreesIntelligentlyFor');
         Tree.collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
@@ -76,7 +78,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       const newAncestors = [parent].concat(parent.$TST.ancestors);
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
-          Tree.shouldTabAutoExpanded(parent) ||
+          parent.$TST.isAutoExpandable ||
           info.forceExpand) {
         log('  expand ancestor tabs');
         newAncestors.filter(ancestor => ancestor.$TST.subtreeCollapsed).forEach(ancestor => {
@@ -94,7 +96,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         }));
       }
     }
-    else if (Tree.shouldTabAutoExpanded(parent) ||
+    else if (parent.$TST.isAutoExpandable ||
              parent.$TST.collapsed) {
       log('  collapse auto expanded tree');
       Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
@@ -222,7 +224,7 @@ function reserveAttachShownTab(tab) {
       if (!TabsStore.ensureLivingTab(tab) ||
           tab.$TST.hasParent)
         continue;
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
         insertAfter:  tab.$TST.nearestVisiblePrecedingTab,
         insertBefore: tab.$TST.nearestFollowingForeignerTab
       });

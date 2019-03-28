@@ -47,7 +47,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
@@ -358,7 +358,7 @@ function getDropAction(event) {
 
     case kDROP_BEFORE: {
       log('drop position = before ', info.targetTab.id);
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
+      const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertBefore: targetTab
       });
       if (referenceTabs.parent)
@@ -379,7 +379,7 @@ function getDropAction(event) {
 
     case kDROP_AFTER: {
       log('drop position = after ', info.targetTab.id);
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
+      const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertAfter: targetTab
       });
       if (referenceTabs.parent)
@@ -899,7 +899,7 @@ function reserveToProcessLongHover(params = {}) {
         });
       }
 
-      if (!Tree.shouldTabAutoExpanded(dragOverTab))
+      if (!dragOverTab || dragOverTab.$TST.isAutoExpandable)
         return;
 
       // auto-expand for staying on a parent

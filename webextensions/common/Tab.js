@@ -223,6 +223,10 @@ export default class Tab {
            !this.subtreeCollapsed;
   }
 
+  get isAutoExpandable() {
+    return this.hasChild && this.subtreeCollapsed;
+  }
+
   get precedesPinnedTab() {
     const following = this.nearestVisibleFollowingTab;
     return following && following.pinned;

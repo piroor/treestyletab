@@ -16,6 +16,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsMove from '/common/tabs-move.js';
 import * as Tree from '/common/tree.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
@@ -204,7 +205,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
 Tab.onAttached.addListener(async (tab, info = {}) => {
   if (!info.windowId ||
-      !Tree.shouldApplyTreeBehavior(info))
+      !TreeBehavior.shouldApplyTreeBehavior(info))
     return;
 
   log('Tabs.onAttached ', dumpTab(tab), info);
