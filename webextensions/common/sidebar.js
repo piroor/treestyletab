@@ -12,7 +12,6 @@ import * as Constants from './constants.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/sidebar', ...args);
 }
@@ -70,6 +69,7 @@ function sendMessageToPort(port, message) {
       const messages = task.messages;
       task.messages = [];
       port.postMessage(messages);
+      log(`${messages.length} messages sent:`, messages);
     };
     window.requestAnimationFrame(task.onFrame);
   }

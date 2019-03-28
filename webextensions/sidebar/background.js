@@ -13,7 +13,6 @@ import * as TabsStore from '/common/tabs-store.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('sidebar/background', ...args);
 }
@@ -43,6 +42,7 @@ export function sendMessage(message) {
       const messages = mReservedMessages;
       mReservedMessages = [];
       mConnectionPort.postMessage(messages);
+      log(`${messages.length} messages sent:`, messages);
     };
     window.requestAnimationFrame(mOnFrame);
   }
