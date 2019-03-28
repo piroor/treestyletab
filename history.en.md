@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0 (2019.3.29)
    * Stabilize handling of tabs based on asynchronous WebExtensions API. At old versions, tabs were handled on both the background page and sidebar pages separately, so they were sometimes mis-synchronized. Now all tabs are always handled only on the background page, and a sidebar page works just like a canvas to show tabs.
    * Restore tree of reopened window, even if there are large number of tabs and it takes very long time (until 10 minutes).
    * Add an option to deactivate browser theme color.
