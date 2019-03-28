@@ -989,12 +989,13 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
   const promisedTracked = waitUntilTracked(tabId, options);
   mPromisedTrackedTabs.set(key, promisedTracked);
   return promisedTracked.then(tab => {
-    if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      mPromisedTrackedTabs.delete(key);
+    // Don't claer the last promise, because it is required to process following "waitUntilTracked" callbacks sequentically.
+    //if (mPromisedTrackedTabs.get(key) == promisedTracked)
+    //  mPromisedTrackedTabs.delete(key);
     return tab;
   }).catch(error => {
-    if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      mPromisedTrackedTabs.delete(key);
+    //if (mPromisedTrackedTabs.get(key) == promisedTracked)
+    //  mPromisedTrackedTabs.delete(key);
     throw error;
   });
 };
