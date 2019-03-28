@@ -81,27 +81,27 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
     const tabs = Tab.getAllTabs(window.id);
     let windowStateCompletelyApplied = false;
     try {
-    const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
-    let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
-    MetricsData.add('loadTreeStructure: read stored data');
-    if (structure &&
+      const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
+      let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
+      MetricsData.add('loadTreeStructure: read stored data');
+      if (structure &&
         structure.length > 0 &&
         structure.length <= tabs.length) {
-      uniqueIds = uniqueIds.map(id => id.id);
-      let tabsOffset;
-      if (structure[0].id) {
-        tabsOffset = uniqueIds.join('\n').indexOf(structure.map(item => item.id).join('\n'));
-        windowStateCompletelyApplied = tabsOffset > -1;
+        uniqueIds = uniqueIds.map(id => id.id);
+        let tabsOffset;
+        if (structure[0].id) {
+          tabsOffset = uniqueIds.join('\n').indexOf(structure.map(item => item.id).join('\n'));
+          windowStateCompletelyApplied = tabsOffset > -1;
+        }
+        else {
+          tabsOffset = 0;
+          windowStateCompletelyApplied = structure.length == tabs.length;
+        }
+        if (tabsOffset > -1) {
+          await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
+          MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
+        }
       }
-      else {
-        tabsOffset = 0;
-        windowStateCompletelyApplied = structure.length == tabs.length;
-      }
-      if (tabsOffset > -1) {
-        await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
-        MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
-      }
-    }
     }
     catch(error) {
       console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, error.stack);
