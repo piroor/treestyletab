@@ -144,6 +144,7 @@ export async function init() {
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
     });
+    TabsUpdate.completeLoadingTabs(window.id); // failsafe
   }
 
   log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());

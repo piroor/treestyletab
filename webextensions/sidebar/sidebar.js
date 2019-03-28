@@ -195,6 +195,8 @@ export async function init() {
 
       DragAndDrop.init();
       TabDragHandle.init();
+
+      TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
     }),
     MetricsData.addAsync('parallel initialization: Size', async () => {
       Size.init();

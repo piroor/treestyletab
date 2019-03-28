@@ -14,6 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -272,8 +273,10 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimizie further initialization tasks in the sidebar
     case Constants.kCOMMAND_PULL_TABS:
-      if (message.windowId)
+      if (message.windowId) {
+        TabsUpdate.completeLoadingTabs(message.windowId); // don't wait here for better perfomance
         return Promise.resolve(TabsStore.windows.get(message.windowId).export(true));
+      }
       return Promise.resolve(message.tabIds.map(id => {
         const tab = Tab.get(id);
         return tab && tab.$TST.export(true);
