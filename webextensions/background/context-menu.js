@@ -11,12 +11,12 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsGroup from '/common/tabs-group.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 import Tab from '/common/Tab.js';
 
+import * as TabsGroup from './tabs-group.js';
 import * as Commands from './commands.js';
 
 function log(...args) {

@@ -17,13 +17,13 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsOpen from '/common/tabs-open.js';
-import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as TabsGroup from './tabs-group.js';
 
 function log(...args) {
   internalLogger('background/handle-removed-tabs', ...args);

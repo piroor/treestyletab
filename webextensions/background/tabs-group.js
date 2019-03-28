@@ -8,16 +8,16 @@
 import {
   log as internalLogger,
   dumpTab
-} from './common.js';
-import * as Constants from './constants.js';
-import * as TabsMove from './tabs-move.js';
-import * as TabsOpen from './tabs-open.js';
-import * as Tree from './tree.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as Tree from '/common/tree.js';
 
-import Tab from './Tab.js';
+import Tab from '/common/Tab.js';
 
 function log(...args) {
-  internalLogger('common/tabs-group', ...args);
+  internalLogger('background/tabs-group', ...args);
 }
 
 export function makeGroupTabURI(options = {}) {

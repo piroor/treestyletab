@@ -15,7 +15,6 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
-import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Sidebar from '/common/sidebar.js';
@@ -24,6 +23,7 @@ import * as Permissions from '/common/permissions.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as TabsGroup from './tabs-group.js';
 import * as Commands from './commands.js';
 import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
