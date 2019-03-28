@@ -69,6 +69,8 @@ export function setCollapsed(tab, info = {}) {
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
 
+  tab.$TST.shouldExpandLater = false; // clear flag
+
   if (toBeCollapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.removeVisibleTab(tab);

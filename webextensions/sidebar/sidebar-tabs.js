@@ -778,13 +778,16 @@ Background.onMessage.addListener(async message => {
       tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
       TabsStore.addUnsynchronizedTab(tab);
       TabsStore.addLoadingTab(tab);
-      if (configs.animation)
+      if (configs.animation) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true,
           justNow:   true
         });
-      else
+        tab.$TST.shouldExpandLater = true;
+      }
+      else {
         reserveToUpdateLoadingState();
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
@@ -796,6 +799,7 @@ Background.onMessage.addListener(async message => {
         await waitUntilNewTabIsMoved(message.tabId);
       if (configs.animation) {
         await wait(0); // nextFrame() is too fast!
+        if (tab.$TST.shouldExpandLater)
         CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });
@@ -903,6 +907,7 @@ Background.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
+        tab.$TST.shouldExpandLater = true;
       }
 
       tab.index = message.newIndex;
@@ -910,7 +915,7 @@ Background.onMessage.addListener(async message => {
       window.trackTab(tab);
       tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
-      if (shouldAnimate) {
+      if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });
