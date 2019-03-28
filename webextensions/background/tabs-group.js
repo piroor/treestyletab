@@ -11,10 +11,11 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsMove from '/common/tabs-move.js';
-import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
+
+import * as TabsOpen from './tabs-open.js';
 
 function log(...args) {
   internalLogger('background/tabs-group', ...args);
