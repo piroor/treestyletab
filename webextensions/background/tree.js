@@ -561,16 +561,29 @@ function updateTabsIndent(tabs, level = undefined) {
     if (!item || item.pinned)
       continue;
 
-    item.$TST.setAttribute(Constants.kLEVEL, level);
-    updateTabsIndent(item.$TST.children, level + 1);
-    Sidebar.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
-      windowId: item.windowId,
-      tabId:    item.id,
-      level
-    });
+    updateTabIndent(item, level);
   }
 }
+
+// this is called multiple times on a session restoration, so this should be throttled for better performance
+function updateTabIndent(tab, level = undefined) {
+  let timer = updateTabIndent.delayed.get(tab.id);
+  if (timer)
+    clearTimeout(timer);
+  timer = setTimeout(() => {
+    updateTabIndent.delayed.delete(tab.id);
+    tab.$TST.setAttribute(Constants.kLEVEL, level);
+    updateTabsIndent(tab.$TST.children, level + 1);
+    Sidebar.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      level
+    });
+  }, 100);
+  updateTabIndent.delayed.set(tab.id, timer);
+}
+updateTabIndent.delayed = new Map();
 
 
 // collapse/expand tabs

@@ -735,6 +735,11 @@ export default class Tab {
   }
 
   inheritSoundStateFromChildren() {
+    // this is called too many times on a session restoration, so this should be throttled for better performance
+    if (this.delayedInheritSoundStateFromChildren)
+      clearTimeout(this.delayedInheritSoundStateFromChildren);
+    this.delayedInheritSoundStateFromChildren = setTimeout(() => {
+      delete this.delayedInheritSoundStateFromChildren;
     const children = this.children;
 
     if (children.some(child => child.$TST.maybeSoundPlaying))
@@ -758,6 +763,7 @@ export default class Tab {
       hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
       hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
     });
+    }, 100);
   }
 
 
