@@ -1138,7 +1138,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addRemovedTab(tab);
       const window = TabsStore.windows.get(message.windowId);
       window.untrackTab(message.tabId);
-      if (tab.$TST.element.parentNode)
+      if (tab.$TST.element && tab.$TST.element.parentNode)
         tab.$TST.element.parentNode.removeChild(tab.$TST.element);
     }; break;
 
