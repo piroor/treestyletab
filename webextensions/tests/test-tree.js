@@ -55,6 +55,7 @@ export async function testAutoFixupForHiddenTabs() {
     G: { index: 7, cookieStoreId: 'firefox-container-1', openerTabId: 'F' },
     H: { index: 8, cookieStoreId: 'firefox-default', openerTabId: 'A' }
   }, { windowId: win.id });
+  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -140,6 +141,7 @@ export async function testInheritMutedState() {
     C: { index: 3, openerTabId: 'B' },
     D: { index: 4, openerTabId: 'C' }
   }, { windowId: win.id });
+  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -192,6 +194,7 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
     H: { index: 8, openerTabId: 'G' },
     I: { index: 9, openerTabId: 'G' }
   }, { windowId: win.id });
+  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {

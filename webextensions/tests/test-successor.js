@@ -42,6 +42,7 @@ export async function testSuccessorForLastChildWithPreviousSibling() {
     C: { index: 3, openerTabId: 'A', active: true },
     D: { index: 4, active: false }
   }, { windowId: win.id });
+  await wait(1000);
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, B, C, D } = tabs;
@@ -79,6 +80,7 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
     D: { index: 3, openerTabId: 'A', active: false },
     E: { index: 5, active: false }
   }, { windowId: win.id });
+  await wait(1000);
   // deactivate the effect of the "browser.tabs.selectOwnerOnClose"
   await browser.tabs.update(tabs.D.id, { active: true });
   await wait(50);
@@ -124,6 +126,7 @@ export async function testSimulateSelectOwnerOnClose() {
     B: { index: 2, openerTabId: tabs.A.id, active: false },
     C: { index: 3, openerTabId: tabs.A.id, active: false }
   }, { windowId: win.id });
+  await wait(1000);
   tabs = await Utils.refreshTabs({ A: tabs.A, B: childTabs.B, C: childTabs.C });
   {
     const { A, B, C } = tabs;
@@ -159,6 +162,7 @@ export async function testSimulateSelectOwnerOnCloseCleared() {
     B: { index: 2, openerTabId: tabs.A.id, active: false },
     C: { index: 3, openerTabId: tabs.A.id, active: false }
   }, { windowId: win.id });
+  await wait(1000);
   tabs = await Utils.refreshTabs({ A: tabs.A, B: childTabs.B, C: childTabs.C });
   {
     const { A, B, C } = tabs;
