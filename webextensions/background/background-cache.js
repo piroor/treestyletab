@@ -11,15 +11,14 @@ import {
   wait,
   configs
 } from '/common/common.js';
-
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 
-import * as JSONCache from './json-cache.js';
 import * as Tree from './tree.js';
 
 function log(...args) {
@@ -33,6 +32,11 @@ export function activate() {
   configs.$addObserver(onConfigChange);
 }
 
+
+// ===================================================================
+// restoring tabs from cache
+// ===================================================================
+
 export async function restoreWindowFromEffectiveWindowCache(windowId, options = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache: start');
   log(`restoreWindowFromEffectiveWindowCache for ${windowId} start`);
@@ -45,7 +49,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   const tabs = options.tabs || await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   if (configs.debug)
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
-  const actualSignature = JSONCache.getWindowSignature(tabs);
+  const actualSignature = getWindowSignature(tabs);
   let cache = options.caches && options.caches.get(owner.id) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
   const promisedPermanentStates = Promise.all(tabs.map(tab => tab.$TST.getPermanentStates())); // don't await at here for better performance
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: start');
@@ -53,7 +57,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
     owner, cachedSignature, cache
   });
-  const signatureGeneratedFromCache = JSONCache.signatureFromTabsCache(cache.tabs).join('\n');
+  const signatureGeneratedFromCache = signatureFromTabsCache(cache.tabs).join('\n');
   if (cache &&
       cache.tabs &&
       cachedSignature &&
@@ -73,11 +77,11 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       cache &&
       cache.tabs &&
       cachedSignature) {
-    cache.tabs      = JSONCache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
-    cachedSignature = JSONCache.trimSignature(cachedSignature, cache.pinnedTabsCount);
+    cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
+    cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: matching actual signature of got cache');
-  const signatureMatched = JSONCache.matcheSignatures({
+  const signatureMatched = matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -108,12 +112,43 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   return restored;
 }
 
+function getWindowSignature(tabs) {
+  const tabIds = tabs.map(tab => tab.id);
+  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+}
+
+function trimSignature(signature, ignoreCount) {
+  if (!ignoreCount || ignoreCount < 0)
+    return signature;
+  return signature.slice(ignoreCount);
+}
+
+function trimTabsCache(cache, ignoreCount) {
+  if (!ignoreCount || ignoreCount < 0)
+    return cache;
+  return cache.slice(ignoreCount);
+}
+
+function matcheSignatures(signatures) {
+  return (
+    signatures.actual &&
+    signatures.cached &&
+    signatures.actual.slice(-signatures.cached.length).join('\n') == signatures.cached.join('\n')
+  );
+}
+
+function signatureFromTabsCache(cachedTabs) {
+  const cachedTabIds = cachedTabs.map(tab => tab.id);
+  return cachedTabs.map(tab => `${tab.$TST.parentId ? cachedTabIds.indexOf(tab.$TST.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+}
+
+
 async function restoreTabsFromCache(windowId, params = {}) {
   if (!params.cache ||
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  return (await JSONCache.restoreTabsFromCacheInternal({
+  return (await restoreTabsFromCacheInternal({
     windowId:     windowId,
     tabs:         params.tabs,
     permanentStates: params.permanentStates,
@@ -122,6 +157,102 @@ async function restoreTabsFromCache(windowId, params = {}) {
   })).length > 0;
 }
 
+async function restoreTabsFromCacheInternal(params) {
+  MetricsData.add('restoreTabsFromCacheInternal: start');
+  log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
+  const offset = params.offset || 0;
+  const window = TabsStore.windows.get(params.windowId);
+  const tabs   = params.tabs.slice(offset).map(tab => Tab.get(tab.id));
+  if (offset > 0 &&
+      tabs.length <= offset) {
+    log('restoreTabsFromCacheInternal: missing window');
+    return [];
+  }
+  log(`restoreTabsFromCacheInternal: there is ${window.tabs.size} tabs`);
+  if (params.cache.length != tabs.length) {
+    log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
+    return [];
+  }
+  try {
+    await MetricsData.addAsync('rebuildAll: fixupTabsRestoredFromCache', fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache));
+  }
+  catch(e) {
+    log(String(e), e.stack);
+    throw e;
+  }
+  log('restoreTabsFromCacheInternal: done');
+  if (configs.debug)
+    Tab.dumpAll();
+  return tabs;
+}
+
+async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
+  MetricsData.add('fixupTabsRestoredFromCache: start');
+  if (tabs.length != cachedTabs.length)
+    throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
+  log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(dumpTab), cachedTabs });
+  const idMap = new Map();
+  // step 1: build a map from old id to new id
+  tabs = tabs.map((tab, index) => {
+    const cachedTab = cachedTabs[index];
+    const oldId     = cachedTab.id;
+    tab = Tab.get(tab.id);
+    log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
+    idMap.set(oldId, tab);
+    return tab;
+  });
+  MetricsData.add('fixupTabsRestoredFromCache: step 1 done.');
+  // step 2: restore information of tabs
+  tabs.forEach((tab, index) => {
+    fixupTabRestoredFromCache(tab, permanentStates[index], cachedTabs[index], idMap);
+  });
+  MetricsData.add('fixupTabsRestoredFromCache: step 2 done.');
+}
+
+function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
+  tab.$TST.clear();
+  tab.$TST.states = new Set([...cachedTab.$TST.states, ...permanentStates]);
+  tab.$TST.attributes = cachedTab.$TST.attributes;
+
+  log('fixupTabRestoredFromCache children: ', cachedTab.$TST.childIds);
+  const childTabs = cachedTab.$TST.childIds
+    .map(oldId => idMap.get(oldId))
+    .filter(tab => !!tab);
+  tab.$TST.children = childTabs;
+  if (childTabs.length > 0)
+    tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);
+  else
+    tab.$TST.removeAttribute(Constants.kCHILDREN);
+  log('fixupTabRestoredFromCache children: => ', tab.$TST.childIds);
+
+  log('fixupTabRestoredFromCache parent: ', cachedTab.$TST.parentId);
+  const parentTab = idMap.get(cachedTab.$TST.parentId) || null;
+  tab.$TST.parent = parentTab;
+  if (parentTab)
+    tab.$TST.setAttribute(Constants.kPARENT, parentTab.id);
+  else
+    tab.$TST.removeAttribute(Constants.kPARENT);
+  log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
+
+  if (parentTab &&
+      (parentTab.$TST.collapsed ||
+       parentTab.$TST.subtreeCollapsed)) {
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
+  }
+  else {
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+  }
+
+  TabsStore.updateIndexesForTab(tab);
+  TabsUpdate.updateTab(tab, tab, { forceApply: true, onlyApply: true });
+}
+
+
+// ===================================================================
+// updating cache
+// ===================================================================
 
 async function updateWindowCache(owner, key, value) {
   if (!owner)
@@ -223,7 +354,7 @@ async function cacheTree(windowId) {
   if (!window ||
       !configs.useCachedTree)
     return;
-  const signature = JSONCache.getWindowSignature(Tab.getAllTabs(windowId));
+  const signature = getWindowSignature(Tab.getAllTabs(windowId));
   if (window.allTabsRestored)
     return;
   //log('save cache for ', windowId);
