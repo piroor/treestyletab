@@ -9,16 +9,16 @@ import {
   log as internalLogger,
   dumpTab,
   configs
-} from './common.js';
-import * as Constants from './constants.js';
-import * as TabsStore from './tabs-store.js';
-import * as TabsUpdate from './tabs-update.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 import * as MetricsData from '/common/metrics-data.js';
 
-import Tab from './Tab.js';
+import Tab from '/common/Tab.js';
 
 function log(...args) {
-  internalLogger('common/json-cache', ...args);
+  internalLogger('background/json-cache', ...args);
 }
 
 export function getWindowSignature(tabs) {

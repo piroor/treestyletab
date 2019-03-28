@@ -16,10 +16,11 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
-import * as JSONCache from '/common/json-cache.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
+
+import * as JSONCache from './json-cache.js';
 
 function log(...args) {
   internalLogger('background/background-cache', ...args);
