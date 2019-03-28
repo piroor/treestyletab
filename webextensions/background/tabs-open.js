@@ -45,11 +45,11 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsMove from '/common/tabs-move.js';
 import * as Sidebar from '/common/sidebar.js';
 
 import Tab from '/common/Tab.js';
 
+import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
 function log(...args) {

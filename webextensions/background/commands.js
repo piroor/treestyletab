@@ -14,7 +14,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsMove from '/common/tabs-move.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
@@ -23,6 +22,7 @@ import * as Sidebar from '/common/sidebar.js';
 import Tab from '/common/Tab.js';
 
 import * as TabsOpen from './tabs-open.js';
+import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';

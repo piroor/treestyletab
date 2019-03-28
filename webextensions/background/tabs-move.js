@@ -42,18 +42,18 @@ import {
   log as internalLogger,
   wait,
   configs
-} from './common.js';
+} from '/common/common.js';
 
-import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
-import * as TabsStore from './tabs-store.js';
-import * as Sidebar from './sidebar.js';
-import { SequenceMatcher } from './diff.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as Sidebar from '/common/sidebar.js';
+import { SequenceMatcher } from '/common/diff.js';
 
-import Tab from './Tab.js';
+import Tab from '/common/Tab.js';
 
 function log(...args) {
-  internalLogger('common/tabs-move', ...args);
+  internalLogger('background/tabs-move', ...args);
 }
 function logApiTabs(...args) {
   internalLogger('common/api-tabs', ...args);

@@ -51,12 +51,13 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Sidebar from '/common/sidebar.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
-import * as TabsMove from '/common/tabs-move.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
+
+import * as TabsMove from './tabs-move.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 

@@ -10,11 +10,11 @@ import {
   dumpTab
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as TabsMove from '/common/tabs-move.js';
 
 import Tab from '/common/Tab.js';
 
 import * as TabsOpen from './tabs-open.js';
+import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
 function log(...args) {
