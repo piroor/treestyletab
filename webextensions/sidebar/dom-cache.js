@@ -189,7 +189,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     tabElement.$TST = tab.$TST;
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+    if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: fixup all tabs
       await nextFrame();
       lastDraw = Date.now();
@@ -203,7 +203,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     SidebarTabs.applyCollapseExpandStateToElement(tab);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
-    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+    if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 3/3: apply states to tabs
       await nextFrame();
       lastDraw = Date.now();

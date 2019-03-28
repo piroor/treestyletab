@@ -121,7 +121,7 @@ export async function init() {
         for (const tab of tabs.slice(1)) {
           TabIdFixer.fixTab(tab);
           Tab.track(tab);
-          if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+          if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
             UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs
             await nextFrame();
             lastDraw = Date.now();
@@ -430,7 +430,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
       let tab = nativeTabs[index];
       Tab.track(tab);
       tab = importedTabs[index] && Tab.import(importedTabs[index]) || tab;
-      if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+      if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
         UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: re-track all tabs
         await nextFrame();
         lastDraw = Date.now();
@@ -450,7 +450,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
     SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
-    if (Date.now() - lastDraw > Constants.kPROGRESS_INTERVAL) {
+    if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 66); // 3/3: build tab elements
       await nextFrame();
       lastDraw = Date.now();

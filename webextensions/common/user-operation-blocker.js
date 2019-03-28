@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
@@ -29,7 +30,7 @@ export function block(options = {}) {
     mProgressbar.delayedShow = setTimeout(() => {
       mProgressbar.delayedShow = null;
       mProgressbar.classList.add('shown');
-    }, Constants.kPROGRESS_DELAY);
+    }, configs.delayToShowProgressForBlockedUserOperation);
     document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
   }
 }

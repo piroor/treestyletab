@@ -16,6 +16,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
 
@@ -279,12 +280,30 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   }
 }
 
+const mRestoringTabs = new Map();
+const mMaxRestoringTabs = new Map();
 
 Tab.onRestored.addListener(tab => {
   log('onTabRestored ', dumpTab(tab));
+
+  const count = mRestoringTabs.get(tab.windowId) || 0;
+  if (count == 0) {
+    setTimeout(() => {
+      const count = mRestoringTabs.get(tab.windowId) || 0;
+      if (count > 0) {
+        UserOperationBlocker.blockIn(tab.windowId, { throbber: true });
+        UserOperationBlocker.setProgress(0, tab.windowId);
+      }
+    }, configs.delayToBlockUserOperationForTabsRestoration);
+  }
+  mRestoringTabs.set(tab.windowId, count + 1);
+  const maxCount = mMaxRestoringTabs.get(tab.windowId) || 0;
+  mMaxRestoringTabs.set(tab.windowId, Math.max(count, maxCount));
+
   reserveToAttachTabFromRestoredInfo(tab, {
     children: true
   });
+
   reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
     Tree.fixupSubtreeCollapsedState(tab, {
       justNow:   true,
@@ -295,5 +314,18 @@ Tab.onRestored.addListener(tab => {
       tabId:    tab.id,
       windowId: tab.windowId
     });
+
+    let count = mRestoringTabs.get(tab.windowId) || 0;
+    count--;
+    if (count == 0) {
+      mRestoringTabs.delete(tab.windowId);
+      mMaxRestoringTabs.delete(tab.windowId);
+      UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
+    }
+    else {
+      mRestoringTabs.set(tab.windowId, count);
+      const maxCount = mMaxRestoringTabs.get(tab.windowId);
+      UserOperationBlocker.setProgress(Math.round(maxCount - count / maxCount * 100), tab.windowId);
+    }
   });
 });
