@@ -740,6 +740,9 @@ export default class Tab {
       clearTimeout(this.delayedInheritSoundStateFromChildren);
     this.delayedInheritSoundStateFromChildren = setTimeout(() => {
       delete this.delayedInheritSoundStateFromChildren;
+      if (!TabsStore.ensureLivingTab(this.tab))
+        return;
+
       const children = this.children;
 
       if (children.some(child => child.$TST.maybeSoundPlaying))

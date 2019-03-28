@@ -572,6 +572,8 @@ function updateTabIndent(tab, level = undefined) {
     clearTimeout(timer);
   timer = setTimeout(() => {
     updateTabIndent.delayed.delete(tab.id);
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
     tab.$TST.setAttribute(Constants.kLEVEL, level);
     updateTabsIndent(tab.$TST.children, level + 1);
     Sidebar.sendMessage({
@@ -737,6 +739,8 @@ export async function collapseExpandTab(tab, params = {}) {
     clearTimeout(timer);
   timer = setTimeout(() => {
     collapseExpandTab.delayedNotify.delete(tab.id);
+    if (!TabsStore.ensureLivingTab(this.tab))
+      return;
     Sidebar.sendMessage({
       type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED,
       windowId:  tab.windowId,
