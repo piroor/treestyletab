@@ -1152,6 +1152,19 @@ Background.onMessage.addListener(async message => {
       await Tab.waitUntilTracked([message.tabId].concat(message.childIds), { element: true });
       const tab = Tab.get(message.tabId);
 
+      if (message.newChildIds.length > 0) {
+        // set initial level for newly opened child, to avoid annoying jumping of new tab
+        const childLevel = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) + 1);
+        for (const childId of message.newChildIds) {
+          const child = Tab.get(childId);
+          if (!child || child.$TST.hasChild)
+            continue;
+          const currentLevel = child.$TST.getAttribute(Constants.kLEVEL) || 0;
+          if (currentLevel == 0)
+            child.$TST.setAttribute(Constants.kLEVEL, childLevel);
+        }
+      }
+
       tab.$TST.children = message.childIds;
 
       reserveToUpdateTwistyTooltip(tab);
