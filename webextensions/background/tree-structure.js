@@ -145,6 +145,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
         bulk
       }));
     }));
+    if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
     reserveToAttachTabFromRestoredInfo.onDone();
     delete reserveToAttachTabFromRestoredInfo.onDone;
     delete reserveToAttachTabFromRestoredInfo.promisedDone;
@@ -206,18 +207,21 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
   let attached = false;
   const active = tab.active;
+  const promises = [];
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    const done = Tree.attachTabTo(tab, ancestor, {
+    const promisedDone = Tree.attachTabTo(tab, ancestor, {
       insertBefore,
       insertAfter,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
     });
-    if (!options.bulk)
-      await done;
+    if (options.bulk)
+      promises.push(promisedDone);
+    else
+      await promisedDone;
     attached = true;
     break;
   }
@@ -226,14 +230,16 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: tab, parent: opener });
-      const done = Tree.attachTabTo(tab, opener, {
+      const promisedDone = Tree.attachTabTo(tab, opener, {
         dontExpand:  !active,
         forceExpand: active,
         broadcast:   true,
         insertAt:    Constants.kINSERT_NEAREST
       });
-      if (!options.bulk)
-        await done;
+      if (options.bulk)
+        promises.push(promisedDone);
+      else
+        await promisedDone;
     }
     else if (!options.bulk &&
              (tab.$TST.nearestNormalFollowingTab ||
@@ -272,12 +278,16 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   const subtreeCollapsed = states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if ((options.canCollapse || options.bulk) &&
       tab.$TST.subtreeCollapsed != subtreeCollapsed) {
-    Tree.collapseExpandSubtree(tab, {
+    const promisedDone = Tree.collapseExpandSubtree(tab, {
       broadcast: true,
       collapsed: subtreeCollapsed,
       justNow:   true
     });
+    promises.push(promisedDone);
   }
+
+  if (options.bulk)
+    return Promise.all(promises);
 }
 
 const mRestoringTabs = new Map();
