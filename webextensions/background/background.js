@@ -496,7 +496,7 @@ Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
   ]);
 });
 
-Tab.onMoved.addListener(async (tab, moveInfo) => {
+Tab.onMoved.addListener((tab, moveInfo) => {
   reserveToUpdateInsertionPosition([
     tab,
     moveInfo.oldPreviousTab,
@@ -506,7 +506,7 @@ Tab.onMoved.addListener(async (tab, moveInfo) => {
   ]);
 });
 
-Tree.onDetached.addListener(async (tab, detachInfo) => {
+Tree.onDetached.addListener((tab, detachInfo) => {
   reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
   reserveToUpdateChildren(detachInfo.oldParentTab);
 });
