@@ -730,6 +730,13 @@ export async function collapseExpandTab(tab, params = {}) {
   }
 
   Tab.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
+
+  // the message is called multiple times on a session restoration, so it should be throttled for better performance
+  let timer = collapseExpandTab.delayedNotify.get(tab.id);
+  if (timer)
+    clearTimeout(timer);
+  timer = setTimeout(() => {
+    collapseExpandTab.delayedNotify.delete(tab.id);
   Sidebar.sendMessage({
     type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED,
     windowId:  tab.windowId,
@@ -741,7 +748,10 @@ export async function collapseExpandTab(tab, params = {}) {
     stack,
     byAncestor
   });
+  }, 100);
+  collapseExpandTab.delayedNotify.set(tab.id, timer);
 }
+collapseExpandTab.delayedNotify = new Map();
 
 export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   if (!tab)
