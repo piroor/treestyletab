@@ -739,7 +739,7 @@ export async function collapseExpandTab(tab, params = {}) {
     clearTimeout(timer);
   timer = setTimeout(() => {
     collapseExpandTab.delayedNotify.delete(tab.id);
-    if (!TabsStore.ensureLivingTab(this.tab))
+    if (!TabsStore.ensureLivingTab(tab))
       return;
     Sidebar.sendMessage({
       type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED,
