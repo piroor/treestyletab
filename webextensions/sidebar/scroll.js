@@ -482,7 +482,7 @@ function reReserveScrollingForTab(tab) {
 
 async function onBackgroundMessage(message) {
   switch (message.type) {
-    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY: {
+    case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY: {
       await Tab.waitUntilTracked([
         message.tabId,
         message.parentId
