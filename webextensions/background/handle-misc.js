@@ -19,12 +19,12 @@ import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Sidebar from '/common/sidebar.js';
-import * as Commands from '/common/commands.js';
 import * as Permissions from '/common/permissions.js';
 
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as Commands from './commands.js';
 import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
 function log(...args) {

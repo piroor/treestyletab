@@ -24,13 +24,13 @@ import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Sidebar from '/common/sidebar.js';
-import * as Commands from '/common/commands.js';
 import * as Migration from '/common/migration.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 import * as ApiTabsListener from './api-tabs-listener.js';
+import * as Commands from './commands.js';
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TabContextMenu from './tab-context-menu.js';

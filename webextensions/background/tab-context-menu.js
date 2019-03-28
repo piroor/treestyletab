@@ -12,11 +12,12 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 
 import Tab from '/common/Tab.js';
+
+import * as Commands from './commands.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 

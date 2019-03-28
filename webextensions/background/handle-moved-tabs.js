@@ -15,10 +15,10 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
-import * as Commands from '/common/commands.js';
 
 import Tab from '/common/Tab.js';
 
+import * as Commands from './commands.js';
 import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {
