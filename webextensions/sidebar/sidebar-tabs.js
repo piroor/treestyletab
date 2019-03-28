@@ -793,6 +793,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
@@ -810,6 +812,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
     }; break;
 
@@ -888,7 +892,8 @@ Background.onMessage.addListener(async message => {
       maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
-      if (tab.index == message.newIndex)
+      if (!tab ||
+          tab.index == message.newIndex)
         return;
       const nextTab = Tab.get(message.nextTabId);
       if (mInitialized &&
@@ -928,7 +933,8 @@ Background.onMessage.addListener(async message => {
       maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
-      if (tab.index == message.newIndex)
+      if (!tab ||
+          tab.index == message.newIndex)
         return;
       tab.index         = message.newIndex;
       Tab.track(tab);
@@ -1009,6 +1015,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       tab.$TST.label = message.label;
       getLabelContent(tab).textContent = message.title;
       tab.$TST.tooltipIsDirty = true;
@@ -1034,6 +1042,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       if (message.hasSoundPlayingMember)
         tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
       else
@@ -1103,6 +1113,8 @@ Background.onMessage.addListener(async message => {
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       TabsStore.addVisibleTab(tab);
       reserveToUpdateLoadingState();
       reserveToUpdateTwistyTooltip(tab);
@@ -1119,6 +1131,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       tab.$TST.tooltipIsDirty = true;
       tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
@@ -1131,6 +1145,8 @@ Background.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
       // When a group tab is restored but pending, TST cannot update title of the tab itself.
       // For failsafe now we update the title based on its URL.
       const uri = tab.url;
@@ -1151,6 +1167,8 @@ Background.onMessage.addListener(async message => {
         return;
       await Tab.waitUntilTracked([message.tabId].concat(message.childIds), { element: true });
       const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
 
       if (message.newChildIds.length > 0) {
         // set initial level for newly opened child, to avoid annoying jumping of new tab
