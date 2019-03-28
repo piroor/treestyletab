@@ -31,11 +31,26 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
 }
 
+let mReservedMessages = [];
+let mOnFrame;
+
 export function sendMessage(message) {
-  mConnectionPort.postMessage(message);
+  //mConnectionPort.postMessage(message);
+  mReservedMessages.push(message);
+  if (!mOnFrame) {
+    mOnFrame = () => {
+      mOnFrame = null;
+      const messages = mReservedMessages;
+      mReservedMessages = [];
+      mConnectionPort.postMessage(messages);
+    };
+    window.requestAnimationFrame(mOnFrame);
+  }
 }
 
 function onConnectionMessage(message) {
+  if (Array.isArray(message))
+    return message.forEach(onConnectionMessage);
   switch (message.type) {
     case 'echo': // for testing
       mConnectionPort.postMessage(message);

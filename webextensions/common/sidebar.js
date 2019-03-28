@@ -45,15 +45,34 @@ export function sendMessage(message) {
     const port = mOpenState.get(message.windowId);
     if (!port)
       return false;
-    port.postMessage(message);
+    sendMessageToPort(port, message);
+    //port.postMessage(message);
     return true;
   }
 
   // broadcast
   for (const port of mOpenState.values()) {
-    port.postMessage(message);
+    sendMessageToPort(port, message);
+    //port.postMessage(message);
   }
   return true;
+}
+
+const mReservedTasks = new WeakMap();
+
+function sendMessageToPort(port, message) {
+  const task = mReservedTasks.get(port) || { messages: [] };
+  task.messages.push(message);
+  mReservedTasks.set(port, task);
+  if (!task.onFrame) {
+    task.onFrame = () => {
+      delete task.onFrame;
+      const messages = task.messages;
+      task.messages = [];
+      port.postMessage(messages);
+    };
+    window.requestAnimationFrame(task.onFrame);
+  }
 }
 
 export function init() {
@@ -66,7 +85,11 @@ export function init() {
       return;
     const windowId = parseInt(port.name.replace(matcher, ''));
     mOpenState.set(windowId, port);
-    const receiver = message => onMessage.dispatch(windowId, message);
+    const receiver = message => {
+      if (Array.isArray(message))
+        return message.forEach(receiver);
+      onMessage.dispatch(windowId, message);
+    };
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
     onConnected.dispatch(windowId);
