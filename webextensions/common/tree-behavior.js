@@ -9,14 +9,14 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 export function shouldApplyTreeBehavior(params = {}) {
   switch (configs.parentTabBehaviorForChanges) {
     case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
       return true;
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return Sidebar.isInitialized() ? (params.windowId && Sidebar.isOpen(params.windowId)) : true ;
+      return SidebarConnection.isInitialized() ? (params.windowId && SidebarConnection.isOpen(params.windowId)) : true ;
     default:
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
       return !!params.byInternalOperation;

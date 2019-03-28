@@ -15,7 +15,7 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as TabsStore from './tabs-store.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -72,8 +72,8 @@ export function removeTabs(tabs) {
   if (!tabs.length)
     return;
   log('removeTabsInternally: ', tabs.map(dumpTab));
-  if (Sidebar.isInitialized()) // in background
-    Sidebar.sendMessage({
+  if (SidebarConnection.isInitialized()) // in background
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
@@ -84,7 +84,7 @@ export function removeTabs(tabs) {
       window.internalClosingTabs.add(tab.id);
     }
   }
-  if (!Sidebar.isInitialized()) // in sidebar
+  if (!SidebarConnection.isInitialized()) // in sidebar
     return;
   return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
@@ -111,7 +111,7 @@ export function clearOldActiveStateInWindow(windowId, exception) {
 }
 
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds);

@@ -17,7 +17,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -128,8 +128,8 @@ export async function bookmarkTree(root, options = {}) {
     tabs.shift();
 
   const tab = tabs[0];
-  if (Sidebar.isOpen(tab.windowId)) {
-    return Sidebar.sendMessage({
+  if (SidebarConnection.isOpen(tab.windowId)) {
+    return SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
       tabIds:   tabs.map(tab => tab.id)
@@ -636,8 +636,8 @@ export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && tab.$TST.multiselected)
     return bookmarkTabs(Tab.getSelectedTabs(tab.windowId));
 
-  if (Sidebar.isOpen(tab.windowId)) {
-    Sidebar.sendMessage({
+  if (SidebarConnection.isOpen(tab.windowId)) {
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
       tabId:    tab.id
@@ -658,8 +658,8 @@ export async function bookmarkTab(tab, options = {}) {
 export async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
-  if (Sidebar.isOpen(tabs[0].windowId)) {
-    Sidebar.sendMessage({
+  if (SidebarConnection.isOpen(tabs[0].windowId)) {
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
@@ -705,7 +705,7 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
 }
 
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_NEW_TAB_AS: {
       const baseTab = Tab.get(message.baseTabId);

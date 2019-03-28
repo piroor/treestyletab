@@ -14,7 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
@@ -290,7 +290,7 @@ Tab.onRestored.addListener(tab => {
       justNow:   true,
       broadcast: true
     });
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
       tabId:    tab.id,
       windowId: tab.windowId

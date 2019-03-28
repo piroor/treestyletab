@@ -52,7 +52,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -461,7 +461,7 @@ function collapseAutoExpandedTabsWhileDragging() {
   if (mLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (const tab of mLongHoverExpandedTabs) {
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
         tabId:     tab.id,
         collapsed: false,
@@ -491,18 +491,18 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     if (behavior <= Constants.kDROPLINK_ASK)
       return;
     if (behavior & Constants.kDROPLINK_LOAD) {
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_SELECT_TAB,
         tabId: dropActionInfo.dragOverTab.id
       });
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_LOAD_URI,
         uri:   uris.shift(),
         tabId: dropActionInfo.dragOverTab.id
       });
     }
   }
-  Background.sendMessage({
+  BackgroundConnection.sendMessage({
     type:           Constants.kCOMMAND_NEW_TABS,
     uris,
     windowId:       TabsStore.getWindow(),
@@ -893,7 +893,7 @@ function reserveToProcessLongHover(params = {}) {
       // auto-switch for staying on tabs
       if (!dragOverTab.active &&
           params.dropEffect == 'link') {
-        Background.sendMessage({
+        BackgroundConnection.sendMessage({
           type:  Constants.kCOMMAND_SELECT_TAB,
           tabId: dragOverTab.id
         });
@@ -904,7 +904,7 @@ function reserveToProcessLongHover(params = {}) {
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        Background.sendMessage({
+        BackgroundConnection.sendMessage({
           type:  Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR,
           tabId: dragOverTab.id
         });
@@ -912,7 +912,7 @@ function reserveToProcessLongHover(params = {}) {
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
-        Background.sendMessage({
+        BackgroundConnection.sendMessage({
           type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:     dragOverTab.id,
           collapsed: false,
@@ -996,7 +996,7 @@ function onDrop(event) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
-    Background.sendMessage({
+    BackgroundConnection.sendMessage({
       type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
       windowId:            dropActionInfo.dragData.windowId,
       tabIds:              dropActionInfo.dragData.tabs.map(tab => tab.id),
@@ -1073,7 +1073,7 @@ async function onDragEnd(event) {
   }
 
   const detachTabs = dragData.individualOnOutside ? [dragData.tab] : dragData.tabs;
-  Background.sendMessage({
+  BackgroundConnection.sendMessage({
     type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
     tabIds:    detachTabs.map(tab => tab.id),
     duplicate: EventUtils.isAccelKeyPressed(event),

@@ -47,7 +47,7 @@ import {
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
 import * as ContextualIdentities from './contextual-identities.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 import Tab from './Tab.js';
 
@@ -98,7 +98,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.getPermanentStates().then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD)) {
           tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          Sidebar.sendMessage({
+          SidebarConnection.sendMessage({
             type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
             windowId: tab.windowId,
             tabId:    tab.id,
@@ -107,7 +107,7 @@ export function updateTab(tab, newState = {}, options = {}) {
         }
         else {
           tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          Sidebar.sendMessage({
+          SidebarConnection.sendMessage({
             type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
             windowId: tab.windowId,
             tabId:    tab.id,
@@ -358,7 +358,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       // the newly active tab *was* discarded on onTabClosed handler.
       if (newState.discarded) {
         tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
-        Sidebar.sendMessage({
+        SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
           windowId: tab.windowId,
           tabId:    tab.id,
@@ -367,7 +367,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       }
       else {
         tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
-        Sidebar.sendMessage({
+        SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
           windowId: tab.windowId,
           tabId:    tab.id,
@@ -377,7 +377,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     });
   }
 
-  Sidebar.sendMessage({
+  SidebarConnection.sendMessage({
     type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
     windowId: tab.windowId,
     tabId:    tab.id,
@@ -388,7 +388,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     removedStates,
     soundStateChanged
   });
-  messages.forEach(Sidebar.sendMessage);
+  messages.forEach(SidebarConnection.sendMessage);
 }
 
 export async function updateTabsHighlighted(highlightInfo) {

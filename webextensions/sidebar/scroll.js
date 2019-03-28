@@ -54,7 +54,7 @@ import Tab from '/common/Tab.js';
 
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as CollapseExpand from './collapse-expand.js';
 
@@ -82,7 +82,7 @@ export function init(scrollPosition) {
 
   document.addEventListener('wheel', onWheel, { capture: true });
   mTabBar.addEventListener('scroll', onScroll);
-  Background.onMessage.addListener(onBackgroundMessage);
+  BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 

@@ -17,7 +17,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -518,7 +518,7 @@ async function onContextMenu(event) {
   });
 }
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:

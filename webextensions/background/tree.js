@@ -48,7 +48,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
@@ -178,7 +178,7 @@ export async function attachTabTo(child, parent, options = {}) {
       updateTabsIndent(child, parentLevel + 1);
     }
 
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
       windowId: parent.windowId,
       tabId:    parent.id,
@@ -298,7 +298,7 @@ export function detachTab(child, options = {}) {
   if (parent) {
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
     log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
       windowId: parent.windowId,
       tabId:    parent.id,
@@ -578,7 +578,7 @@ function updateTabIndent(tab, level = undefined) {
       return;
     tab.$TST.setAttribute(Constants.kLEVEL, level);
     updateTabsIndent(tab.$TST.children, level + 1);
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
       windowId: tab.windowId,
       tabId:    tab.id,
@@ -642,7 +642,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
   }
 
   onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
-  Sidebar.sendMessage({
+  SidebarConnection.sendMessage({
     type:      Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED,
     windowId:  tab.windowId,
     tabId:     tab.id,
@@ -743,7 +743,7 @@ export async function collapseExpandTab(tab, params = {}) {
     collapseExpandTab.delayedNotify.delete(tab.id);
     if (!TabsStore.ensureLivingTab(tab))
       return;
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:      Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED,
       windowId:  tab.windowId,
       tabId:     tab.id,
@@ -1382,7 +1382,7 @@ function snapshotTree(targetTab, tabs) {
 }
 
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE: {
       await Tab.waitUntilTracked(message.tabId);

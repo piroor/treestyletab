@@ -10,7 +10,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -39,7 +39,7 @@ export function setProgress(percentage, windowId = null) {
   if (mProgressbar)
     mProgressbar.value = percentage;
   if (windowId && !TabsStore.getWindow())
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type: Constants.kCOMMAND_PROGRESS_USER_OPERATIONS,
       windowId,
       percentage
@@ -52,7 +52,7 @@ export function blockIn(windowId, options = {}) {
     return;
 
   if (!targetWindow) {
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId,
       throbber: !!options.throbber
@@ -87,7 +87,7 @@ export function unblockIn(windowId, options = {}) {
     return;
 
   if (!targetWindow) {
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId,
       throbber: !!options.throbber

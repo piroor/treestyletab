@@ -14,7 +14,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
-  internalLogger('sidebar/background', ...args);
+  internalLogger('sidebar/background-connection', ...args);
 }
 
 export const onMessage = new EventListenerManager();
@@ -50,7 +50,7 @@ export function sendMessage(message) {
     };
     // Because sidebar is always visible, we may not need to avoid using
     // window.requestAnimationFrame. I just use a timer instead just for
-    // a unity with common/sidebar.js.
+    // a unity with common/sidebar-connection.js.
     //window.requestAnimationFrame(mOnFrame);
     setTimeout(mOnFrame, 0);
   }

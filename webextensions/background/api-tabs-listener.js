@@ -51,7 +51,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -183,7 +183,7 @@ async function onActivated(activeInfo) {
     if (onActivatedReuslt instanceof Promise)
       await onActivatedReuslt;
 
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
       windowId: activeInfo.windowId,
       tabId:    activeInfo.tabId
@@ -276,7 +276,7 @@ function onHighlighted(highlightInfo) {
       highlightInfo.tabIds.length == 1) {
     // simple active tab switching
     TabsUpdate.updateTabsHighlighted(highlightInfo);
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
       windowId: highlightInfo.windowId,
       tabIds:   highlightInfo.tabIds
@@ -287,7 +287,7 @@ function onHighlighted(highlightInfo) {
     mTabsHighlightedTimers.delete(highlightInfo.windowId);
     TabsUpdate.updateTabsHighlighted(highlightInfo);
     mLastHighlightedCount.set(highlightInfo.windowId, highlightInfo.tabIds.length);
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
       windowId: highlightInfo.windowId,
       tabIds:   highlightInfo.tabIds
@@ -396,7 +396,7 @@ async function onNewTabTracked(tab) {
         });
         window.allTabsRestored = Tab.onWindowRestoring.dispatch(tab.windowId);
       }
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
         tabId:    tab.id,
         windowId: tab.windowId
@@ -425,7 +425,7 @@ async function onNewTabTracked(tab) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
       windowId: tab.windowId,
       tabId:    tab.id,
@@ -463,7 +463,7 @@ async function onNewTabTracked(tab) {
     });
     tab.$TST.resolveOpened();
 
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
       windowId: tab.windowId,
       tabId:    tab.id,
@@ -572,7 +572,7 @@ async function onRemoved(tabId, removeInfo) {
         Tree.collapseExpandSubtree(oldTab, {
           collapsed: false
         });
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVING,
         windowId:        oldTab.windowId,
         tabId:           oldTab.id,
@@ -602,7 +602,7 @@ async function onRemoved(tabId, removeInfo) {
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
 
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVED,
       windowId:        oldTab.windowId,
       tabId:           oldTab.id,
@@ -713,7 +713,7 @@ async function onMoved(tabId, moveInfo) {
       if (onMovedResult instanceof Promise)
         await onMovedResult;
       if (!alreadyMoved)
-        Sidebar.sendMessage({
+        SidebarConnection.sendMessage({
           type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
           windowId:  movedTab.windowId,
           tabId:     movedTab.id,
@@ -809,7 +809,7 @@ async function onDetached(tabId, detachInfo) {
 
     if (!byInternalOperation) { // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,
         windowId: detachInfo.oldWindowId,
         tabId:    tabId

@@ -16,7 +16,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -259,7 +259,7 @@ function onMessage(message, sender) {
   }
 }
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_SELECT_TAB: {
       await Tab.waitUntilTracked(message.tabId);

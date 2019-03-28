@@ -27,7 +27,7 @@ import * as MetricsData from '/common/metrics-data.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
@@ -169,7 +169,7 @@ export async function init() {
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
-      Background.connect();
+      BackgroundConnection.connect();
       onConfigChange('applyBrowserTheme');
 
       configs.$addObserver(onConfigChange);
@@ -479,11 +479,11 @@ async function importTabsFromBackground() {
           message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
           message.windowId != mTargetWindow)
         return;
-      Background.onMessage.removeListener(onBackgroundIsReady);
+      BackgroundConnection.onMessage.removeListener(onBackgroundIsReady);
       resolve(message.tabs);
     };
-    Background.onMessage.addListener(onBackgroundIsReady);
-    Background.connect();
+    BackgroundConnection.onMessage.addListener(onBackgroundIsReady);
+    BackgroundConnection.connect();
   }));
 }
 
@@ -599,13 +599,13 @@ function updateTabbarLayout(params = {}) {
 
 
 function onFocus(_event) {
-  Background.sendMessage({
+  BackgroundConnection.sendMessage({
     type: Constants.kNOTIFY_SIDEBAR_FOCUS
   });
 }
 
 function onBlur(_event) {
-  Background.sendMessage({
+  BackgroundConnection.sendMessage({
     type: Constants.kNOTIFY_SIDEBAR_BLUR
   });
 }
@@ -808,7 +808,7 @@ function onMessage(message, _sender, _respond) {
 }
 
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds, { element: true });

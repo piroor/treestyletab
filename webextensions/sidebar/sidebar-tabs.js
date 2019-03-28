@@ -21,7 +21,7 @@ import { Diff, SequenceMatcher } from '/common/diff.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
@@ -739,7 +739,7 @@ function maybeNewTabIsMoved(tabId) {
 }
 
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_SYNC_TABS_ORDER:
       reserveToSyncTabsOrder();

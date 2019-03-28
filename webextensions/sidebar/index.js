@@ -15,6 +15,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as Sidebar from './sidebar.js';
+import * as BackgroundConnection from './background-connection.js';
 import './mouse-event-listener.js';
 import './collapse-expand.js';
 
@@ -38,3 +39,4 @@ window.log = log;
 window.gMetricsData = MetricsData;
 window.Tab = Tab;
 window.TabsStore = TabsStore;
+window.BackgroundConnection = BackgroundConnection;

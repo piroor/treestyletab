@@ -15,7 +15,7 @@ import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 import Window from './Window.js';
 
@@ -759,7 +759,7 @@ export default class Tab {
       if (parent)
         parent.$TST.inheritSoundStateFromChildren();
 
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
         windowId:              this.tab.windowId,
         tabId:                 this.tab.id,
@@ -1488,7 +1488,7 @@ Tab.onDetached         = new EventListenerManager();
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  Sidebar.sendMessage({
+  SidebarConnection.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
     tabIds:   tabs.map(tab => tab.id),
     windowId: tabs[0].windowId,

@@ -22,7 +22,7 @@ import * as TabsUpdate from '/common/tabs-update.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -57,7 +57,7 @@ export async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
-  Sidebar.init();
+  SidebarConnection.init();
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting for waitUntilCompletelyRestored().
@@ -139,7 +139,7 @@ export async function init() {
 
   // notify that the master process is ready.
   for (const window of TabsStore.windows.values()) {
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
@@ -415,8 +415,8 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
   if (!granted ||
       /^(about|chrome|resource):/.test(tabs[0].url) ||
       (!options.showInTab &&
-       Sidebar.isOpen(options.windowId) &&
-       Sidebar.hasFocus(options.windowId)))
+       SidebarConnection.isOpen(options.windowId) &&
+       SidebarConnection.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       tabIds:   tabs.map(tab => tab.id),

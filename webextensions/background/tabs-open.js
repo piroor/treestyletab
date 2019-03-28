@@ -45,7 +45,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -197,7 +197,7 @@ export async function openURIsInTabs(uris, options = {}) {
 }
 
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_LOAD_URI:
       loadURI(message.uri, {

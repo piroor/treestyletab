@@ -48,7 +48,7 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarConnection from './sidebar-connection.js';
 
 import Tab from './Tab.js';
 
@@ -652,7 +652,7 @@ export function formatResult(results, originalMessage) {
   return results;
 }
 
-Sidebar.onConnected.addListener(windowId => {
+SidebarConnection.onConnected.addListener(windowId => {
   sendMessage({
     type:   kNOTIFY_SIDEBAR_SHOW,
     window: windowId,
@@ -660,7 +660,7 @@ Sidebar.onConnected.addListener(windowId => {
   });
 });
 
-Sidebar.onDisconnected.addListener(windowId => {
+SidebarConnection.onDisconnected.addListener(windowId => {
   sendMessage({
     type:   kNOTIFY_SIDEBAR_HIDE,
     window: windowId,

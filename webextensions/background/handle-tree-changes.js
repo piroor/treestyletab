@@ -15,7 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -135,7 +135,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       tab.$TST.parent != info.parent) // not detached while waiting
     return;
 
-  Sidebar.sendMessage({
+  SidebarConnection.sendMessage({
     type:          Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY,
     windowId:      tab.windowId,
     tabId:         tab.id,

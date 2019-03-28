@@ -47,7 +47,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import { SequenceMatcher } from '/common/diff.js';
 
 import Tab from '/common/Tab.js';
@@ -114,7 +114,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         oldNextTab,
         broadcasted: !!options.broadcasted
       });
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
@@ -132,7 +132,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
           .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
-    if (Sidebar.isInitialized()) { // only on the background page
+    if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
       syncToNativeTabs(tabs);
@@ -208,7 +208,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         oldNextTab,
         broadcasted: !!options.broadcasted
       });
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
@@ -226,7 +226,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
-    if (Sidebar.isInitialized()) { // only on the background page
+    if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
       syncToNativeTabs(tabs);
@@ -364,7 +364,7 @@ async function syncToNativeTabsInternal(windowId) {
     // tabs.onMoved produced by this operation can break the order of tabs
     // in the sidebar, so we need to synchronize complete order of tabs after
     // all.
-    Sidebar.sendMessage({
+    SidebarConnection.sendMessage({
       type: Constants.kCOMMAND_SYNC_TABS_ORDER,
       windowId
     });

@@ -15,7 +15,7 @@ import * as TabsStore from '/common/tabs-store.js';
 
 import Tab from '/common/Tab.js';
 
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -176,7 +176,7 @@ CollapseExpand.onUpdated.addListener((_tab, _options) => {
     reserveToUpdateVisualMaxTreeLevel();
 });
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:

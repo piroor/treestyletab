@@ -18,7 +18,7 @@ import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
 
 import Tab from '/common/Tab.js';
@@ -85,7 +85,7 @@ function onToolbarButtonClick(tab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (Sidebar.isOpen(tab.windowId))
+  if (SidebarConnection.isOpen(tab.windowId))
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();
@@ -160,7 +160,7 @@ async function onShortcutCommand(command) {
       return;
 
     case 'newContainerTab':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.windowId
       });
@@ -211,21 +211,21 @@ async function onShortcutCommand(command) {
       return;
 
     case 'tabbarUp':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'lineup'
       });
       return;
     case 'tabbarPageUp':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pageup'
       });
       return;
     case 'tabbarHome':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'top'
@@ -233,21 +233,21 @@ async function onShortcutCommand(command) {
       return;
 
     case 'tabbarDown':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'linedown'
       });
       return;
     case 'tabbarPageDown':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pagedown'
       });
       return;
     case 'tabbarEnd':
-      Sidebar.sendMessage({
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'bottom'
@@ -319,7 +319,7 @@ function onMessage(message, sender) {
             }))
           );
           if (results.some(result => result && result.result))
-            return Sidebar.sendMessage({
+            return SidebarConnection.sendMessage({
               type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
               windowId: message.windowId,
               button:   message.button
@@ -668,7 +668,7 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kSTART_CUSTOM_DRAG:
       return (async () => {
-        Sidebar.sendMessage({
+        SidebarConnection.sendMessage({
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
           windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false }).catch(ApiTabs.createErrorHandler())).id,
           button:   message.button || 0
@@ -678,7 +678,7 @@ function onMessageExternal(message, sender) {
 }
 
 
-Sidebar.onMessage.addListener(async (windowId, message) => {
+SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
     case Constants.kCOMMAND_SET_SUBTREE_MUTED: {
       await Tab.waitUntilTracked(message.tabId);

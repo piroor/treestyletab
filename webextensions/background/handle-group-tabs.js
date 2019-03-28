@@ -17,7 +17,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Sidebar from '/common/sidebar.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -154,7 +154,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       if (opener) {
         if (opener &&
             opener.favIconUrl) {
-          Sidebar.sendMessage({
+          SidebarConnection.sendMessage({
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
             windowId:   groupTab.windowId,
             tabId:      groupTab.id,

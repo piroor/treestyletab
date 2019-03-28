@@ -48,7 +48,7 @@ import * as TabsStore from '/common/tabs-store.js';
 
 import Tab from '/common/Tab.js';
 
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -218,7 +218,7 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
   onUpdated.dispatch(tab, options);
 }
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });

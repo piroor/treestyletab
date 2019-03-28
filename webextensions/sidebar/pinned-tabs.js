@@ -47,7 +47,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 import * as Size from './size.js';
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -150,7 +150,7 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
-Background.onMessage.addListener(async message => {
+BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });

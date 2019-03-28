@@ -54,7 +54,7 @@ import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 
-import * as Background from './background.js';
+import * as BackgroundConnection from './background-connection.js';
 import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
@@ -83,7 +83,7 @@ Sidebar.onBuilt.addListener(async () => {
   MetricsData.add('mouse-event-listener: Sidebar.onBuilt: apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
-  Background.onMessage.addListener(onBackgroundMessage);
+  BackgroundConnection.onMessage.addListener(onBackgroundMessage);
 
   mContextualIdentitySelector.ui = new MenuUI({
     root:       mContextualIdentitySelector,
@@ -381,7 +381,7 @@ async function onMouseUp(event) {
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            Background.sendMessage({
+            BackgroundConnection.sendMessage({
               type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
               tabIds: [livingTab.id],
             });
@@ -390,7 +390,7 @@ async function onMouseUp(event) {
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
       if (tab.$TST.hasChild)
-        Background.sendMessage({
+        BackgroundConnection.sendMessage({
           type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:           tab.id,
           collapsed:       !tab.$TST.subtreeCollapsed,
@@ -400,7 +400,7 @@ async function onMouseUp(event) {
     }
     else if (lastMousedown.detail.soundButton) {
       log('clicked on sound button');
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_SET_SUBTREE_MUTED,
         tabId: tab.id,
         muted: tab.$TST.maybeSoundPlaying
@@ -421,7 +421,7 @@ async function onMouseUp(event) {
         .then(confirmed => {
           if (!confirmed)
             return;
-          Background.sendMessage({
+          BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
             tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id],
           });
@@ -495,7 +495,7 @@ function handleNewTabAction(event, options = {}) {
   if (!configs.autoAttach && !('action' in options))
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
-  Background.sendMessage({
+  BackgroundConnection.sendMessage({
     type:          Constants.kCOMMAND_NEW_TAB_AS,
     baseTabId:     TabsStore.activeTabInWindow.get(mTargetWindow).id,
     as:            options.action,
@@ -521,7 +521,7 @@ function onDblClick(event) {
         !event.shiftKey) {
       event.stopPropagation();
       event.preventDefault();
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
         tabIds: [livingTab.id],
       });
@@ -529,7 +529,7 @@ function onDblClick(event) {
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      Background.sendMessage({
+      BackgroundConnection.sendMessage({
         type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
         tabId:           livingTab.id,
         collapsed:       !livingTab.$TST.subtreeCollapsed,
