@@ -5,6 +5,7 @@
    * Stabilize handling of tabs based on asynchronous events.
    * Add an option to deactivate browser theme color.
    * Show a `about:performance` tab with the favicon same to Firefox's native tab.
+   * Drop support of migration about data from legacy versions.
  - 2.8.7 (2019.3.20)
    * Optimize performance of messaging between the background page and sidebar contents.
    * Optimize performance of initialization processes.
