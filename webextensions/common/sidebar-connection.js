@@ -13,7 +13,7 @@ import * as Constants from './constants.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
-  internalLogger('common/sidebar', ...args);
+  internalLogger('common/sidebar-connection', ...args);
 }
 
 export const onMessage = new EventListenerManager();
