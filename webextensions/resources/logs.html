@@ -4,9 +4,17 @@
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <meta charset="UTF-8">
 <link rel="icon" href="./16x16.svg">
-<script type="application/javascript" src="query-logs.js"></script>
-<title>Query Logs</title>
+<script type="module" src="module/logs.js"></script>
+<title>Logs for Performance Tuning</title>
+
+<h1>Query Logs</h1>
 <pre>[</pre>
 <pre id="queryLogs"></pre>
 <pre>];</pre>
-<pre id="results"></pre>
+<pre id="queryLogsAnalysis"></pre>
+
+<h1>Internal Messaging Logs</h1>
+<pre>{</pre>
+<pre id="connectionMessageLogs"></pre>
+<pre>};</pre>
+<pre id="connectionMessageLogsAnalysis"></pre>

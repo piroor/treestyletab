@@ -5,24 +5,37 @@
 */
 'use strict';
 
+import * as Constants from '/common/constants.js';
+
 window.addEventListener('DOMContentLoaded', () => {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
-        typeof message != 'object' ||
-        message.type != 'treestyletab:response-query-logs')
+        typeof message != 'object')
       return;
-    if (!message.logs || message.logs.length < 1)
-      return;
-    document.getElementById('queryLogs').textContent += message.logs.filter(log => !!log).map(log => {
-      log.windowId = message.windowId || 'background';
-      return JSON.stringify(log);
-    }).join(',\n')+',\n';
-    analyze();
+    switch (message.type) {
+      case Constants.kCOMMAND_RESPONSE_QUERY_LOGS: {
+        if (!message.logs || message.logs.length < 1)
+          return;
+        document.getElementById('queryLogs').textContent += message.logs.filter(log => !!log).map(log => {
+          log.windowId = message.windowId || 'background';
+          return JSON.stringify(log);
+        }).join(',\n')+',\n';
+        analyzeQueryLogs();
+      }; break;
+
+      case Constants.kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS: {
+        const logs = document.getElementById('connectionMessageLogs');
+        logs.textContent += message.windowId ? `"${message.windowId} => background"` : '"background => sidebar"';
+        logs.textContent += ': ' + JSON.stringify(message.logs, null, 2) + ',\n';
+        analyzeConnectionMessageLogs();
+      }; break;
+    }
   });
-  browser.runtime.sendMessage({ type: 'treestyletab:request-query-logs' });
+  browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_QUERY_LOGS });
+  browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS });
 }, { once: true });
 
-function analyze() {
+function analyzeQueryLogs() {
   const logs = JSON.parse(`[${document.getElementById('queryLogs').textContent.replace(/,\s*$/, '')}]`);
 
   function toString(data) {
@@ -99,5 +112,37 @@ function analyze() {
   results.push('Top 10 slowest queries:\n' + logs.sort((a,b) => (b.elasped || b.elapsed || 0) - (a.elasped || a.elapsed || 0)).slice(0, 10).map(toString).join('\n'));
   results.push('Count of query tyepes:\n' + uniq(normalizedLogs).sort((a, b) => b.count - a.count).map(toString).join('\n'));
   results.push('Sorted in total elapsed time:\n' + uniq(normalizedLogs).sort((a, b) => b.totalElapsed - a.totalElapsed).map(toString).join('\n'));
-  document.getElementById('results').textContent = '`\n' + results.join('\n') + '\n`';
+  document.getElementById('queryLogsAnalysis').textContent = '`\n' + results.join('\n') + '\n`';
+}
+
+function analyzeConnectionMessageLogs() {
+  const logs = JSON.parse(`{${document.getElementById('connectionMessageLogs').textContent.replace(/,\s*$/, '')}}`);
+
+  const counts = {};
+  for (const direction of Object.keys(logs)) {
+    let partialLogs = logs[direction];
+    const isBackground = direction.startsWith('background');
+    if (!isBackground) {
+      partialLogs = {};
+      partialLogs[direction] = logs[direction];
+    }
+    for (const part of Object.keys(partialLogs)) {
+      for (const type of Object.keys(partialLogs[part])) {
+        const typeLabel = `${type} (${isBackground ? 'background => sidebar' : 'sidebar => background'})`;
+        counts[typeLabel] = counts[typeLabel] || 0;
+        counts[typeLabel] += partialLogs[part][type];
+      }
+    }
+  }
+
+  let totalCount = 0;
+  const sortableCounts = [];
+  for (const type of Object.keys(counts)) {
+    sortableCounts.push({ type, count: counts[type] });
+    totalCount += counts[type];
+  }
+
+  const results = [];
+  results.push('Top 10 message types:\n' + sortableCounts.sort((a,b) => b.count- a.count).slice(0, 10).map(count => `${count.type}: ${count.count} (${parseInt(count.count / totalCount * 100)} %)`).join('\n'));
+  document.getElementById('connectionMessageLogsAnalysis').textContent = '`\n' + results.join('\n') + '\n`';
 }

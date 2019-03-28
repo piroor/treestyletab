@@ -37,18 +37,21 @@ export function hasFocus(windowId) {
   return mFocusState.has(windowId)
 }
 
-export const counts = {};
+export const counts = {
+  broadcast: {}
+};
 
 export function sendMessage(message) {
   if (!mOpenState)
     return false;
 
-  if (configs.loggingConnectionMessages) {
-    counts[message.type] = counts[message.type] || 0;
-    counts[message.type]++;
-  }
-
   if (message.windowId) {
+    if (configs.loggingConnectionMessages) {
+      counts[message.windowId] = counts[message.windowId] || {};
+      const localCounts = counts[message.windowId];
+      localCounts[message.type] = localCounts[message.type] || 0;
+      localCounts[message.type]++;
+    }
     const port = mOpenState.get(message.windowId);
     if (!port)
       return false;
@@ -58,6 +61,8 @@ export function sendMessage(message) {
   }
 
   // broadcast
+  counts.broadcast[message.type] = counts.broadcast[message.type] || 0;
+  counts.broadcast[message.type]++;
   for (const port of mOpenState.values()) {
     sendMessageToPort(port, message);
     //port.postMessage(message);
@@ -130,4 +135,22 @@ onMessage.addListener(async (windowId, message) => {
       mFocusState.delete(windowId);
       break;
   }
+});
+
+
+//===================================================================
+// Logging
+//===================================================================
+
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      typeof message != 'object' ||
+      message.type != Constants.kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS ||
+      !isInitialized())
+    return;
+
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS,
+    logs: JSON.parse(JSON.stringify(counts))
+  });
 });

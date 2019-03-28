@@ -76,3 +76,21 @@ function onConnectionMessage(message) {
       break;
   }
 }
+
+
+//===================================================================
+// Logging
+//===================================================================
+
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      typeof message != 'object' ||
+      message.type != Constants.kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS)
+    return;
+
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS,
+    logs: JSON.parse(JSON.stringify(counts)),
+    windowId: TabsStore.getWindow()
+  });
+});

@@ -107,9 +107,9 @@ function updateBookmarksUI(enabled) {
   }
 }
 
-async function showQueryLogs() {
+async function showLogs() {
   browser.tabs.create({
-    url: '/resources/query-logs.html'
+    url: '/resources/logs.html'
   });
 }
 
@@ -152,16 +152,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const showQueryLogsButton = document.getElementById('showQueryLogsButton');
-  showQueryLogsButton.addEventListener('click', event => {
+  const showLogsButton = document.getElementById('showLogsButton');
+  showLogsButton.addEventListener('click', event => {
     if (event.button != 0)
       return;
-    showQueryLogs();
+    showLogs();
   });
-  showQueryLogsButton.addEventListener('keydown', event => {
+  showLogsButton.addEventListener('keydown', event => {
     if (event.key != 'Enter')
       return;
-    showQueryLogs();
+    showLogs();
   });
 
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
