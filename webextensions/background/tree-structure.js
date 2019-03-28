@@ -79,10 +79,11 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
       return;
     }
     const tabs = Tab.getAllTabs(window.id);
+    let windowStateCompletelyApplied = false;
+    try {
     const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
     let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
     MetricsData.add('loadTreeStructure: read stored data');
-    let windowStateCompletelyApplied = false;
     if (structure &&
         structure.length > 0 &&
         structure.length <= tabs.length) {
@@ -100,6 +101,11 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
         MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
       }
+    }
+    }
+    catch(error) {
+      console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, error.stack);
+      MetricsData.add('loadTreeStructure: failed to apply tree structure');
     }
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${window.id} is not same to actual state. Fallback to restoration from tab relations.`);
