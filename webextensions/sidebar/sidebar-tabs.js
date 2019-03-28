@@ -955,7 +955,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (tab) {
-        const reallyChanged = !tab.$TST.states.has(message.status);
         if (message.status == 'loading') {
           tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
           TabsStore.addLoadingTab(tab);
@@ -963,7 +962,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           TabsStore.addUnsynchronizedTab(tab);
         }
         else {
-          if (reallyChanged) {
+          if (message.reallyChanged) {
             tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
             if (tab.$TST.delayedBurstEnd)
               clearTimeout(tab.$TST.delayedBurstEnd);

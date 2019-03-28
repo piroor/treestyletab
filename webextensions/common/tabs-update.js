@@ -163,6 +163,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if ('status' in newState) {
+    const reallyChanged = !tab.$TST.states.has(newState.status);
     const removed = newState.status == 'loading' ? 'complete' : 'loading';
     tab.$TST.removeState(removed);
     removedStates.push(removed);
@@ -177,7 +178,8 @@ export function updateTab(tab, newState = {}, options = {}) {
         type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
         windowId: tab.windowId,
         tabId:    tab.id,
-        status:   tab.status
+        status:   tab.status,
+        reallyChanged
       });
     }
   }
