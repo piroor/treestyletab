@@ -18,7 +18,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
 import * as Bookmark from '/common/bookmark.js';
-import * as Migration from '/common/migration.js';
 
 log.context = 'Options';
 const options = new Options(configs);
@@ -215,8 +214,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     Permissions.isGranted(Permissions.BOOKMARKS).then(granted => updateBookmarksUI(granted));
-
-    document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = Migration.kLEGACY_CONFIGS_MIGRATION_VERSION;
 
     Permissions.bindToCheckbox(
       Permissions.ALL_URLS,

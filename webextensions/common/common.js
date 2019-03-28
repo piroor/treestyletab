@@ -273,11 +273,7 @@ export const configs = new Configs({
     'sidebar/tab-drag-handle': false
   },
 
-  importedConfigsFromLegacy: null,
-  legacyConfigsNextMigrationVersion: 0,
-  configsVersion: 0,
-  importedTreeStructureFromLegacy: null,
-  migrateLegacyTreeStructure: true
+  configsVersion: 0
 }, {
   localKeys: `
     optionsExpandedSections

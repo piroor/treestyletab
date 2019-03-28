@@ -89,11 +89,10 @@ export async function init() {
   MetricsData.add('init: prepare');
   EventListenerManager.debug = configs.debug;
 
-  Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
   Migration.notifyNewFeatures(); // open new tab now, instead of the end of initialization, because the sidebar may fail to track tabs.onCreated for the tab while its initializing process.
   configs.grantedRemovingTabIds = []; // clear!
-  MetricsData.add('init: Migration.migrateLegacyConfigs, Migration.migrateConfigs');
+  MetricsData.add('init: Migration.migrateConfigs');
 
   updatePanelUrl();
 
@@ -101,9 +100,6 @@ export async function init() {
   const restoredFromCache = await MetricsData.addAsync('init: rebuildAll', rebuildAll(windows));
   mPreloadedCaches.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
-
-  Migration.migrateLegacyTreeStructure();
-  MetricsData.add('init: Migration.migrateLegacyTreeStructure');
 
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();

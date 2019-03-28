@@ -367,35 +367,6 @@
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
 
-  "config_importedConfigsFromLegacy_label": { "message": "旧バージョンからの設定の移行" },
-  "config_legacyConfigsNextMigrationVersion_before": { "message": "次回初期化時に設定レベル" },
-  "config_legacyConfigsNextMigrationVersion_after": { "message": "から移行する" },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_before": { "message": "（現在は設定レベル" },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_after": { "message": "までの移行が可能です）" },
-  "config_importedConfigsFromLegacy_placeholder": { "message": "旧バージョンからの設定移行用データをここに貼り付けてください" },
-  "migration_configs_notification_title": { "message": "ツリー型タブ：設定の移行に成功しました" },
-  "migration_configs_notification_message": { "message": "旧バージョンで使用されていた設定を反映しました。" },
-  "migration_configsFailed_notification_title": { "message": "ツリー型タブ：設定の移行に失敗しました" },
-  "migration_configsFailed_notification_message": { "message": "設定の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
-
-  "config_importedTreeStructureFromLegacy_label": { "message": "旧バージョンからのツリー情報の移行" },
-  "config_migrateSessionStore_before":     { "message": "\u200b" },
-  "config_migrateSessionStore_link_label": { "message": "ツリー情報の手動での移行手順" },
-  "config_migrateSessionStore_after":      { "message": "も参照して下さい。" },
-  "config_migrateLegacyTreeStructure_label": { "message": "次回初期化時にツリー情報を復元する" },
-  "config_importedTreeStructureFromLegacy_placeholder": { "message": "旧バージョンからのツリー情報移行用データをここに貼り付けてください" },
-  "migration_tree_notification_title": { "message": "ツリー型タブ：ツリー情報の移行に成功しました" },
-  "migration_tree_notification_message_withSession": { "message": "$COUNT$個のウィンドウについて、引き継がれたツリー構造を反映しました。これらのウィンドウのタブは前回終了時の状態を完全に保持しています。",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-  "migration_tree_notification_message_withoutSession": { "message": "対応するウィンドウが見つからなかった$COUNT$個のウィンドウのツリー構造について、ウィンドウ全体を復元しました。これらのウィンドウのタブは前回終了時の情報が失われていますのでご注意下さい。",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-  "migration_treeFailed_notification_title": { "message": "ツリー型タブ：ツリー情報の移行に失敗しました" },
-  "migration_treeFailed_notification_message": { "message": "ツリー構造の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
-
 
   "config_debug_caption": { "message": "開発用" },
 

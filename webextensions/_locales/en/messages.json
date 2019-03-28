@@ -371,35 +371,6 @@
   "config_userStyleRules_description_after": { "message": " also." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
 
-  "config_importedConfigsFromLegacy_label": { "message": "Migration of Old Configuration" },
-  "config_legacyConfigsNextMigrationVersion_before": { "message": "Migrate configurations from the config level" },
-  "config_legacyConfigsNextMigrationVersion_after": { "message": "at the next startup" },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_before": { "message": "(Available config level is " },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_after": { "message": " or less for now)" },
-  "config_importedConfigsFromLegacy_placeholder": { "message": "Paste migration data for old configuration here" },
-  "migration_configs_notification_title": { "message": "Tree Style Tab: Configurations are successfully migrated" },
-  "migration_configs_notification_message": { "message": "Configurations are applied from the old version." },
-  "migration_configsFailed_notification_title": { "message": "Tree Style Tab: Failed to migrate configurations" },
-  "migration_configsFailed_notification_message": { "message": "Migration process is aborted due to unexpected problem." },
-
-  "config_importedTreeStructureFromLegacy_label": { "message": "Migration of Old Tree" },
-  "config_migrateSessionStore_before":     { "message": "See" },
-  "config_migrateSessionStore_link_label": { "message": "the instruction for manual migration of tree information" },
-  "config_migrateSessionStore_after":      { "message": "also." },
-  "config_migrateLegacyTreeStructure_label": { "message": "Migrate tree of tabs at the next startup" },
-  "config_importedTreeStructureFromLegacy_placeholder": { "message": "Paste migration data for old tree here" },
-  "migration_tree_notification_title": { "message": "Tree Style Tab: Tree of tabs are successfully migrated" },
-  "migration_tree_notification_message_withSession": { "message": "$COUNT$ window(s) are restored completely, with previous session information.",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-  "migration_tree_notification_message_withoutSession": { "message": "$COUNT$ window(s) are restored only their tree structure. Tabs in those windows don't have any previous session information.",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-  "migration_treeFailed_notification_title": { "message": "Tree Style Tab: Failed to migrate tree of tabs" },
-  "migration_treeFailed_notification_message": { "message": "Migration process is aborted due to unexpected problem." },
-
 
   "config_debug_caption": { "message": "Development" },
 
