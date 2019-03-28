@@ -14,9 +14,10 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
+
+import * as Tree from './tree.js';
 
 function log(...args) {
   internalLogger('background/successor-tab', ...args);

@@ -45,23 +45,23 @@ import {
   wait,
   dumpTab,
   configs
-} from './common.js';
-import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
-import * as Sidebar from './sidebar.js';
-import * as TabsStore from './tabs-store.js';
-import * as TabsInternalOperation from './tabs-internal-operation.js';
-import * as TabsMove from './tabs-move.js';
-import * as UserOperationBlocker from './user-operation-blocker.js';
-import * as MetricsData from './metrics-data.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Sidebar from '/common/sidebar.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as MetricsData from '/common/metrics-data.js';
 
-import Tab from './Tab.js';
-import Window from './Window.js';
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
-  internalLogger('common/tree', ...args);
+  internalLogger('background/tree', ...args);
 }
 function logCollapseExpand(...args) {
   internalLogger('sidebar/collapse-expand', ...args);

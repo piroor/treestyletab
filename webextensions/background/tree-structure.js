@@ -15,10 +15,11 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Sidebar from '/common/sidebar.js';
-import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
+
+import * as Tree from './tree.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 

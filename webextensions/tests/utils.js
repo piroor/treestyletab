@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-//import * as Tree from '/common/tree.js';
+//import * as Tree from '/background/tree.js';
 import Tab from '/common/Tab.js';
 
 export async function createTab(params = {}) {

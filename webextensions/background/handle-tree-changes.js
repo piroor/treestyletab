@@ -14,7 +14,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as Tree from '/common/tree.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Sidebar from '/common/sidebar.js';
 
@@ -22,6 +21,7 @@ import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
+import * as Tree from './tree.js';
 import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {

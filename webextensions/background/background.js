@@ -19,7 +19,6 @@ import * as MetricsData from '/common/metrics-data.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as Tree from '/common/tree.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -30,6 +29,7 @@ import Window from '/common/Window.js';
 
 import * as ApiTabsListener from './api-tabs-listener.js';
 import * as Commands from './commands.js';
+import * as Tree from './tree.js';
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TabContextMenu from './tab-context-menu.js';

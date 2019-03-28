@@ -15,12 +15,12 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsMove from '/common/tabs-move.js';
-import * as Tree from '/common/tree.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
 import * as TabsOpen from './tabs-open.js';
+import * as Tree from './tree.js';
 
 function log(...args) {
   internalLogger('background/handle-new-tabs', ...args);
