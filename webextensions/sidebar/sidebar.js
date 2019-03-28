@@ -195,8 +195,6 @@ export async function init() {
 
       DragAndDrop.init();
       TabDragHandle.init();
-
-      TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
     }),
     MetricsData.addAsync('parallel initialization: Size', async () => {
       Size.init();
@@ -231,6 +229,8 @@ export async function init() {
       Scroll.init(await promisedScrollPosition);
     })
   ]));
+
+  TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
 
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
