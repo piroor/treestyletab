@@ -181,7 +181,7 @@ function reserveDetachHiddenTab(tab) {
         if (nearestVisibleAncestor &&
             nearestVisibleAncestor == descendant.$TST.parent)
           continue;
-       for (const ancestor of descendant.$TST.ancestors) {
+        for (const ancestor of descendant.$TST.ancestors) {
           if (!ancestor.hidden &&
               !ancestor.$TST.collapsed)
             break;
