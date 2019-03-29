@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.0.2 (2019.3.29)
+   * Open new tabs at correct position even if there is any hidden tab.
+   * Don't produce invisible/inaccessible tab after auto-fixing of tree for hidden tabs.
+   * Fix unclosability of the tab which notifies updated features of TST itself. (regression)
+   * Don't destroy sidebar after the last tab is closed with `browser.tabs.closeWindowWithLastTab`=`false`. (regression)
  - 3.0.1 (2019.3.29)
    * Update layout for pinned tabs correctly after pinnde tab is moved or detached (regression on 3.0)
    * Apply burst animation correctly (regression on 3.0)
