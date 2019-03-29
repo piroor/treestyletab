@@ -173,3 +173,9 @@ export async function doAndGetNewTabs(task, queryToFindTabs) {
   const allTabs = await browser.tabs.query(queryToFindTabs);
   return allTabs.filter(tab => !oldAllTabIds.includes(tab.id));
 }
+
+export async function callAPI(message) {
+  return browser.runtime.sendMessage(Object.assign({}, message, {
+    type: `treestyletab:api:${message.type}`
+  }));
+}
