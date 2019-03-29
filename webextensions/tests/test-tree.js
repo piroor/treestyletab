@@ -71,6 +71,9 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id} => ${H.id}`
     ], Utils.treeStructure(Object.values(tabs)),
        'tabs must be initialized with specified structure');
+    is([A.id, B.id, C.id, D.id, E.id, F.id, G.id, H.id],
+       await Utils.tabsOrder([A, B, C, D, E, F, G, H]),
+       'tabs must be initialized with specified order');
 
     await new Promise(resolve => {
       // wait until tabs are updated by TST
