@@ -61,6 +61,7 @@ export const kCOMMAND_REQUEST_QUERY_LOGS             = 'treestyletab:request-que
 export const kCOMMAND_RESPONSE_QUERY_LOGS            = 'treestyletab:response-query-logs';
 export const kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS  = 'treestyletab:request-connection-message-logs';
 export const kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS = 'treestyletab:response-connection-message-logs';
+export const kCOMMAND_NOTIFY_TEST_KEY_CHANGED        = 'treestyletab:notify-test-key-changed';
 
 export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 export const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';

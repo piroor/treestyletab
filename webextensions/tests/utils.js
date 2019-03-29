@@ -7,7 +7,6 @@
 
 import {
   wait,
-  nextFrame,
   configs
 } from '/common/common.js';
 
@@ -135,11 +134,25 @@ export async function tabsOrder(tabs) {
 }
 
 export async function setConfigs(values) {
+  const uniqueValue = Date.now() + ':' + parseInt(Math.random() * 65000);
+  // wait until updated configs are delivered to other namespaces
+  return new Promise((resolve, reject) => {
+    const onMessage = (message, sender) => {
+      if (!message ||
+          !message.type ||
+          message.type != Constants.kCOMMAND_NOTIFY_TEST_KEY_CHANGED ||
+          message.value != uniqueValue)
+        return;
+      browser.runtime.onMessage.removeListener(onMessage);
+      resolve();
+    };
+    browser.runtime.onMessage.addListener(onMessage);
+
   for (const key of Object.keys(values)) {
     configs[key] = values[key];
   }
-  // wait until updated configs are delivered to other namespaces
-  await wait(1000);
+    configs.testKey = uniqueValue;
+  });
 }
 
 export async function doAndGetNewTabs(task, queryToFindTabs) {

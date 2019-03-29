@@ -276,7 +276,9 @@ export const configs = new Configs({
   },
   loggingConnectionMessages: false,
 
-  configsVersion: 0
+  configsVersion: 0,
+
+  testKey: 0 // for tests/utils.js
 }, {
   localKeys: `
     optionsExpandedSections
@@ -298,6 +300,7 @@ export const configs = new Configs({
     notifiedFeaturesVersion
     requestingPermissions
     requestingPermissionsNatively
+    testKey
   `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
 });
 

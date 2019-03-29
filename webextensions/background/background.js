@@ -541,5 +541,12 @@ configs.$addObserver(key => {
     case 'debug':
       EventListenerManager.debug = configs.debug;
       break;
+
+    case 'testKey': // for tests/utils.js
+      browser.runtime.sendMessage({
+        type:  Constants.kCOMMAND_NOTIFY_TEST_KEY_CHANGED,
+        value: configs.testKey
+      });
+      break;
   }
 });
