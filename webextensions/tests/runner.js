@@ -55,11 +55,25 @@ async function runAll() {
     TestSuccessor,
     TestTree
   ];
+  let runOnlyRunnable = false;
+  findRunnable:
+  for (const tests of testCases) {
+    for (const name of Object.keys(tests)) {
+      if (!name.startsWith('test'))
+        continue;
+      if (tests[name].runnable) {
+        runOnlyRunnable = true;
+        break findRunnable;
+      }
+    }
+  }
   for (const tests of testCases) {
     const setup    = tests.setUp || tests.setup;
     const teardown = tests.tearDown || tests.teardown;
     for (const name of Object.keys(tests)) {
       if (!name.startsWith('test'))
+        continue;
+      if (runOnlyRunnable && !tests[name].runnable)
         continue;
       await restoreConfigs(configs.$default);
       let shouldTearDown = true;
