@@ -25,12 +25,18 @@ export async function createTabs(definitions, commonParams = {}) {
     await setConfigs({ autoGroupNewTabs: false });
 
   let tabs;
+  let toBeActiveTabId;
   if (Array.isArray(definitions)) {
-    tabs = Promise.all(definitions.map((definition, index) => {
+    tabs = Promise.all(definitions.map(async (definition, index) => {
       if (!definition.url)
         definition.url = `about:blank?${index}`;
       const params = Object.assign({}, commonParams, definition);
-      return createTab(params);
+      const tab = await createTab(Object.assign({}, params, {
+        active: false // prepare all tabs in background, otherwise they may be misordered!
+      }));
+      if (definition.active)
+        toBeActiveTabId = tab.id;
+      return tab;
     }));
   }
 
@@ -43,9 +49,16 @@ export async function createTabs(definitions, commonParams = {}) {
       if (!definition.url)
         definition.url = `about:blank?${name}`;
       const params = Object.assign({}, commonParams, definition);
-      tabs[name] = await createTab(params);
+      tabs[name] = await createTab(Object.assign({}, params, {
+        active: false // prepare all tabs in background, otherwise they may be misordered!
+      }));
+      if (definition.active)
+        toBeActiveTabId = tabs[name].id;
     }
   }
+
+  if (toBeActiveTabId)
+    await browser.tabs.update(toBeActiveTabId, { active: true });
 
   if (!tabs)
     throw new Error('Invalid tab definitions: ', definitions);

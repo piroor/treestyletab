@@ -37,10 +37,10 @@ export async function testSuccessorForLastChildWithPreviousSibling() {
   });
 
   let tabs = await Utils.createTabs({
-    A: { index: 1, active: false },
-    B: { index: 2, openerTabId: 'A', active: false },
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
     C: { index: 3, openerTabId: 'A', active: true },
-    D: { index: 4, active: false }
+    D: { index: 4 }
   }, { windowId: win.id });
   await wait(1000);
   tabs = await Utils.refreshTabs(tabs);
