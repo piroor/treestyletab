@@ -819,8 +819,15 @@ async function onDetached(tabId, detachInfo) {
     TabsStore.addRemovedTab(oldTab);
     oldWindow.detachTab(oldTab.id);
     if (oldWindow.tabs &&
-        oldWindow.tabs.size == 0) // not destroyed yet case
-      oldWindow.destroy();
+        oldWindow.tabs.size == 0) { // not destroyed yet case
+      setTimeout(() => {
+        // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
+        // so we should not destroy the window immediately.
+        if (oldWindow.tabs &&
+            oldWindow.tabs.size == 0)
+          oldWindow.destroy();
+      }, 100);
+    }
 
     onCompleted();
   }

@@ -185,7 +185,13 @@ export default class Window {
     const index = order.indexOf(tab.id);
     order.splice(index, 1);
     if (this.tabs.size == 0) {
-      this.destroy();
+      // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
+      // so we should not destroy the window immediately.
+      setTimeout(() => {
+        if (this.tabs &&
+            this.tabs.size == 0)
+          this.destroy();
+      }, 100);
     }
     else {
       for (let i = index, maxi = order.length; i < maxi; i++) {
