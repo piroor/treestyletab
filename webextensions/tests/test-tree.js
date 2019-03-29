@@ -141,7 +141,6 @@ export async function testInheritMutedState() {
     C: { index: 3, openerTabId: 'B' },
     D: { index: 4, openerTabId: 'C' }
   }, { windowId: win.id });
-  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -188,7 +187,6 @@ export async function testPromoteFirstChildWhenClosedParentIsLastChild() {
     C: { index: 3, openerTabId: 'B' },
     D: { index: 4, openerTabId: 'B' }
   }, { windowId: win.id });
-  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -230,7 +228,6 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
     C: { index: 3, openerTabId: 'B' },
     D: { index: 4, openerTabId: 'B' }
   }, { windowId: win.id });
-  await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -271,7 +268,6 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
   const childTabs = await Utils.createTabs({
     D: { openerTabId: tabs.B.id }
   }, { windowId: win.id });
-  await wait(1000);
 
   tabs = await Utils.refreshTabs({ B: tabs.B, C: tabs.C, D: childTabs.D });
   {

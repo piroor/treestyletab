@@ -25,11 +25,14 @@ export async function createTabs(definitions, commonParams = {}) {
 
   let tabs;
   let toBeActiveTabId;
+  let treeChanged = false;
   if (Array.isArray(definitions)) {
     tabs = Promise.all(definitions.map(async (definition, index) => {
       if (!definition.url)
         definition.url = `about:blank?${index}`;
       const params = Object.assign({}, commonParams, definition);
+      if (params.openerTabId)
+        treeChanged = true;
       const tab = await createTab(Object.assign({}, params, {
         active: false // prepare all tabs in background, otherwise they may be misordered!
       }));
@@ -48,6 +51,8 @@ export async function createTabs(definitions, commonParams = {}) {
       if (!definition.url)
         definition.url = `about:blank?${name}`;
       const params = Object.assign({}, commonParams, definition);
+      if (params.openerTabId)
+        treeChanged = true;
       tabs[name] = await createTab(Object.assign({}, params, {
         active: false // prepare all tabs in background, otherwise they may be misordered!
       }));
@@ -56,11 +61,14 @@ export async function createTabs(definitions, commonParams = {}) {
     }
   }
 
+  if (!tabs)
+    throw new Error('Invalid tab definitions: ', definitions);
+
   if (toBeActiveTabId)
     await browser.tabs.update(toBeActiveTabId, { active: true });
 
-  if (!tabs)
-    throw new Error('Invalid tab definitions: ', definitions);
+  if (treeChanged) // wait until tree information is applied
+    await wait(1000);
 
   if (oldAutoGroupNewTabs)
     await setConfigs({ autoGroupNewTabs: oldAutoGroupNewTabs });
