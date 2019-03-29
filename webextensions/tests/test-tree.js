@@ -258,6 +258,33 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
     ], Utils.treeStructure([A, C, D]),
        'all children must be promoted');
   }
+}
 
+export async function testCalculateNewTabPositionWithHiddenTabs() {
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2, active: true },
+    C: { index: 3 }
+  }, { windowId: win.id });
+  await browser.tabs.hide([tabs.A.id]);
+  await wait(1000);
+  const childTabs = await Utils.createTabs({
+    D: { openerTabId: tabs.B.id }
+  }, { windowId: win.id });
+  await wait(1000);
+
+  tabs = await Utils.refreshTabs({ B: tabs.B, C: tabs.C, D: childTabs.D });
+  {
+    const { B, C, D } = tabs;
+    is([
+      `${B.id}`,
+      `${B.id} => ${D.id}`,
+      `${C.id}`,
+    ], Utils.treeStructure([B, D, C]),
+       'new tab must be a child of the opener');
+    is([B.id, D.id, C.id],
+       await Utils.tabsOrder([B, C, D]),
+       'new tab must be placed next to the opener');
+  }
 }
 
