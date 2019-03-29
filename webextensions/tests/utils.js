@@ -148,9 +148,9 @@ export async function setConfigs(values) {
     };
     browser.runtime.onMessage.addListener(onMessage);
 
-  for (const key of Object.keys(values)) {
-    configs[key] = values[key];
-  }
+    for (const key of Object.keys(values)) {
+      configs[key] = values[key];
+    }
     configs.testKey = uniqueValue;
   });
 }
