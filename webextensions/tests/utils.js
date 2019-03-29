@@ -139,7 +139,7 @@ export async function setConfigs(values) {
     configs[key] = values[key];
   }
   // wait until updated configs are delivered to other namespaces
-  await nextFrame();
+  await wait(1000);
 }
 
 export async function doAndGetNewTabs(task, queryToFindTabs) {
