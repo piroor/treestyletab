@@ -55,7 +55,7 @@ export async function testSuccessorForLastChildWithPreviousSibling() {
        'tabs must be initialized with specified structure');
     is([A.id, B.id, C.id, D.id],
        await Utils.tabsOrder([A, B, C, D]),
-       'tabs must be ordered with specified order');
+       'tabs must be initialized with specified order');
     is('C', await getActiveTabName(tabs),
        'the last child tab must be active');
   }
@@ -101,7 +101,7 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
        'tabs must be initialized with specified structure');
     is([A.id, B.id, C.id, D.id, E.id],
        await Utils.tabsOrder([A, B, C, D, E]),
-       'tabs must be ordered with specified order');
+       'tabs must be initialized with specified order');
     is('D', await getActiveTabName(tabs),
        'the last descendant tab must be active');
   }
