@@ -136,8 +136,8 @@ export async function tabsOrder(tabs) {
 export async function setConfigs(values) {
   const uniqueValue = Date.now() + ':' + parseInt(Math.random() * 65000);
   // wait until updated configs are delivered to other namespaces
-  return new Promise((resolve, reject) => {
-    const onMessage = (message, sender) => {
+  return new Promise((resolve, _reject) => {
+    const onMessage = (message, _sender) => {
       if (!message ||
           !message.type ||
           message.type != Constants.kCOMMAND_NOTIFY_TEST_KEY_CHANGED ||
