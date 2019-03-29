@@ -1205,12 +1205,12 @@ Tab.getAllTabs = (windowId = null, options = {}) => {
 };
 
 Tab.getTabAt = (windowId, index) => {
-  const tabs    = TabsStore.controllableTabsInWindow.get(windowId);
+  const tabs    = TabsStore.livingTabsInWindow.get(windowId);
   const allTabs = TabsStore.windows.get(windowId).tabs;
   return TabsStore.query({
     windowId,
     tabs,
-    controllable: true,
+    living:       true,
     fromIndex:    Math.max(0, index - (allTabs.size - tabs.size)),
     logicalIndex: index,
     first:        true
