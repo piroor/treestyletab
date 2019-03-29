@@ -90,7 +90,6 @@ export async function init() {
   EventListenerManager.debug = configs.debug;
 
   Migration.migrateConfigs();
-  Migration.notifyNewFeatures(); // open new tab now, instead of the end of initialization, because the sidebar may fail to track tabs.onCreated for the tab while its initializing process.
   configs.grantedRemovingTabIds = []; // clear!
   MetricsData.add('init: Migration.migrateConfigs');
 
@@ -102,6 +101,14 @@ export async function init() {
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
   ApiTabsListener.startListen();
+
+  // Open new tab now (after listening is started, before the end of initialization),
+  // because the sidebar may fail to track tabs.onCreated for the tab while its
+  // initializing process.
+  const promisedNotificationTab = Migration.notifyNewFeatures();
+  if (promisedNotificationTab)
+    await promisedNotificationTab;
+
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
   MetricsData.add('init: started listening');

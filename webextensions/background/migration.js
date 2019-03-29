@@ -56,7 +56,7 @@ export async function notifyNewFeatures() {
     return;
   configs.notifiedFeaturesVersion = featuresVersion;
 
-  browser.tabs.create({
+  return browser.tabs.create({
     url:    Constants.kSHORTHAND_URIS.startup,
     active: true
   }).catch(ApiTabs.createErrorSuppressor());
