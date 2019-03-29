@@ -178,15 +178,23 @@ function reserveDetachHiddenTab(tab) {
         if (descendant.hidden)
           continue;
         const nearestVisibleAncestor = descendant.$TST.ancestors.find(ancestor => !ancestor.hidden && !tabs.has(ancestor));
-        if (nearestVisibleAncestor) {
-          if (nearestVisibleAncestor == descendant.$TST.parent)
+        if (nearestVisibleAncestor &&
+            nearestVisibleAncestor == descendant.$TST.parent)
+          continue;
+       for (const ancestor of descendant.$TST.ancestors) {
+          if (!ancestor.hidden &&
+              !ancestor.$TST.collapsed)
+            break;
+          if (!ancestor.$TST.subtreeCollapsed)
             continue;
-          await Tree.attachTabTo(descendant, nearestVisibleAncestor, {
-            dontMove:  true,
+          await Tree.collapseExpandSubtree(ancestor, {
+            collapsed: false,
             broadcast: true
           });
-          Tree.collapseExpandTabAndSubtree(nearestVisibleAncestor, {
-            collapsed: false,
+        }
+        if (nearestVisibleAncestor) {
+          await Tree.attachTabTo(descendant, nearestVisibleAncestor, {
+            dontMove:  true,
             broadcast: true
           });
         }
