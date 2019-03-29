@@ -63,31 +63,31 @@ export function getTabFromDOMNode(node, options = {}) {
 }
 
 function getLabel(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kLABEL}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kLABEL}`);
 }
 
 function getLabelContent(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kLABEL}-content`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kLABEL}-content`);
 }
 
 function getTwisty(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kTWISTY}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kTWISTY}`);
 }
 
 function getFavIcon(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kFAVICON}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kFAVICON}`);
 }
 
 function getSoundButton(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kSOUND_BUTTON}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 
 function getDescendantsCounter(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kCOUNTER}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kCOUNTER}`);
 }
 
 export function getClosebox(tab) {
-  return tab && tab.$TST.element.querySelector(`.${Constants.kCLOSEBOX}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kCLOSEBOX}`);
 }
 
 
@@ -346,6 +346,8 @@ function endObserveTabsOverflow() {
 
 export function updateLabelOverflow(tab) {
   const label = getLabel(tab);
+  if (!label)
+    return;
   if (!tab.pinned &&
       label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
     label.classList.add('overflow');
@@ -357,6 +359,8 @@ export function updateLabelOverflow(tab) {
 function onOverflow(event) {
   const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
+  if (!label)
+    return;
   if (event.target == label && !tab.pinned) {
     label.classList.add('overflow');
     tab.$TST.tooltipIsDirty = true;
@@ -366,6 +370,8 @@ function onOverflow(event) {
 function onUnderflow(event) {
   const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
+  if (!label)
+    return;
   if (event.target == label && !tab.pinned) {
     label.classList.remove('overflow');
     tab.$TST.tooltipIsDirty = true;
