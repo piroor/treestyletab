@@ -370,6 +370,10 @@ async function cacheTree(windowId) {
 // update cache on events
 
 Tab.onCreated.addListener((tab, _info = {}) => {
+  if (!tab.$TST.nextTab) { // new last tab is added, then the last cache owner is not the owner anymore
+    const window = TabsStore.windows.get(tab.windowId);
+    TabsInternalOperation.clearCache(window.lastWindowCacheOwner);
+  }
   reserveToCacheTree(tab.windowId);
 });
 
@@ -403,7 +407,9 @@ Tab.onWindowRestoring.addListener(async windowId => {
   }
 });
 
-Tab.onRemoved.addListener((_tab, info) => {
+Tab.onRemoved.addListener((tab, info) => {
+  if (!tab.$TST.nextTab) // the tab was the cache owner
+    TabsInternalOperation.clearCache(tab);
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
@@ -412,8 +418,9 @@ Tab.onRemoved.addListener((_tab, info) => {
 });
 
 Tab.onMoved.addListener((tab, info) => {
+  if (tab.$TST.nextTab) // the tab is not the cache owner anymore
+    TabsInternalOperation.clearCache(tab);
   reserveToCacheTree(info.windowId);
-  TabsInternalOperation.clearCache(tab);
 });
 
 Tab.onUpdated.addListener((tab, _info) => {
@@ -433,6 +440,8 @@ Tree.onAttached.addListener((tab, _info) => {
 });
 
 Tree.onDetached.addListener((tab, _info) => {
+  if (!tab.$TST.nextTab) // the tab was the cache owner
+    TabsInternalOperation.clearCache(tab);
   wait(0).then(() => {
     // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
     // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
@@ -441,6 +450,8 @@ Tree.onDetached.addListener((tab, _info) => {
 });
 
 Tab.onPinned.addListener(tab => {
+  if (!tab.$TST.nextTab) // the tab was the cache owner
+    TabsInternalOperation.clearCache(tab);
   reserveToCacheTree(tab.windowId);
 });
 
