@@ -1488,6 +1488,8 @@ Tab.onDetached         = new EventListenerManager();
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
     tabs = [tabs];
+  if (tabs.length == 0)
+    return;
   SidebarConnection.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
     tabIds:   tabs.map(tab => tab.id),
