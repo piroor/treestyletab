@@ -650,9 +650,10 @@ export function applyStatesToElement(tab) {
 export function applyCollapseExpandStateToElement(tab) {
   const classList = tab.$TST.classList;
   const parent = tab.$TST.parent;
-  if (parent &&
-      (parent.$TST.collapsed ||
-       parent.$TST.subtreeCollapsed)) {
+  if (tab.$TST.collapsed ||
+      (parent &&
+       (parent.$TST.collapsed ||
+        parent.$TST.subtreeCollapsed))) {
     if (!classList.contains(Constants.kTAB_STATE_COLLAPSED))
       classList.add(Constants.kTAB_STATE_COLLAPSED);
     if (!classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
