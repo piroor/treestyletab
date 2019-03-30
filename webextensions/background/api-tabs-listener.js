@@ -807,14 +807,14 @@ async function onDetached(tabId, detachInfo) {
     });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
-    if (!byInternalOperation) { // we should process only tabs detached by others.
+    if (!byInternalOperation) // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);
-      SidebarConnection.sendMessage({
-        type: Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,
-        windowId: detachInfo.oldWindowId,
-        tabId:    tabId
-      });
-    }
+
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,
+      windowId: detachInfo.oldWindowId,
+      tabId
+    });
 
     TabsStore.addRemovedTab(oldTab);
     oldWindow.detachTab(oldTab.id);
