@@ -248,7 +248,7 @@ ul {
   z-index: -100;
 }
 
-.tab:not(.pinned).collapsed-completely {
+.tab:not(.pinned).collapsed.collapsed-completely {
   visibility: collapse;
 }
 
