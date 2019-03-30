@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Attach/detach tabs to/from existing windows correctly. (regression)
  - 3.0.2 (2019.3.29)
    * Open new tabs at correct position even if there is any hidden tab.
    * Don't produce invisible/inaccessible tab after auto-fixing of tree for hidden tabs.
