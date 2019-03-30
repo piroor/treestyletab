@@ -221,11 +221,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      // finish previous process
-      if (tab.$TST.collapsedStateChangedManager)
-        tab.$TST.collapsedStateChangedManager.dispatch(tab, Object.assign({}, message, {
-          anchor: Tab.get(message.anchorId)
-        }));
       setCollapsed(tab, {
         collapsed: message.collapsed,
         justNow:   message.justNow,
