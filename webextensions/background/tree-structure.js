@@ -75,7 +75,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
   MetricsData.add('loadTreeStructure: start');
   return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async window => {
     if (restoredFromCacheResults &&
-        restoredFromCacheResults[window.id]) {
+        restoredFromCacheResults.get(window.id)) {
       log(`skip tree structure restoration for window ${window.id} (restored from cache)`);
       return;
     }

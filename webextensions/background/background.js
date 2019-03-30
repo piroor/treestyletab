@@ -118,9 +118,9 @@ export async function init() {
 
   Permissions.clearRequest();
 
-  for (const windowId of Object.keys(restoredFromCache)) {
+  for (const windowId of restoredFromCache.keys()) {
     if (!restoredFromCache[windowId])
-      BackgroundCache.reserveToCacheTree(parseInt(windowId));
+      BackgroundCache.reserveToCacheTree(windowId);
     TabsUpdate.completeLoadingTabs(windowId);
   }
 
@@ -206,7 +206,7 @@ function destroy() {
 }
 
 async function rebuildAll(windows) {
-  const restoredFromCache = {};
+  const restoredFromCache = new Map();
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
       const trackedWindow = TabsStore.windows.get(window.id);
@@ -222,13 +222,14 @@ async function rebuildAll(windows) {
       try {
         if (configs.useCachedTree) {
           log(`trying to restore window ${window.id} from cache`);
-          restoredFromCache[window.id] = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
+          const restored = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs,
             caches: mPreloadedCaches
           }));
-          log(`window ${window.id}: restored from cache?: `, restoredFromCache[window.id]);
-          if (restoredFromCache[window.id])
+          restoredFromCache.set(window.id, restored);
+          log(`window ${window.id}: restored from cache?: `, restored);
+          if (restored)
             return;
         }
       }
@@ -248,7 +249,7 @@ async function rebuildAll(windows) {
       catch(e) {
         log(`failed to build tabs for ${window.id}`, e);
       }
-      restoredFromCache[window.id] = false;
+      restoredFromCache.set(window.id, false);
     });
     for (const tab of Tab.getGroupTabs(window.id, { iterator: true })) {
       if (!tab.discarded)
