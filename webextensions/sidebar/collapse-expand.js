@@ -130,7 +130,7 @@ export function setCollapsed(tab, info = {}) {
     else
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
-    onEndCollapseExpandCompletely(tab, {
+    onUpdated.dispatch(tab, {
       collapsed: toBeCollapsed,
       anchor:    info.anchor,
       last:      info.last
@@ -197,7 +197,7 @@ export function setCollapsed(tab, info = {}) {
       else
         tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
-      onEndCollapseExpandCompletely(tab, {
+      onUpdated.dispatch(tab, {
         collapsed: toBeCollapsed
       });
     });
@@ -213,9 +213,6 @@ export function setCollapsed(tab, info = {}) {
       delete tab.$TST.onEndCollapseExpandAnimation;
     }, configs.collapseDuration);
   });
-}
-function onEndCollapseExpandCompletely(tab, options = {}) {
-  onUpdated.dispatch(tab, options);
 }
 
 BackgroundConnection.onMessage.addListener(async message => {
