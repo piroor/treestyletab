@@ -310,11 +310,11 @@ function applyBrowserTheme(theme) {
     if (theme.images.headerURL) {
       extraColors.push(`--browser-header-url: url(${JSON.stringify(theme.images.headerURL)})`);
       extraColors.push('--browser-bg-for-header-image: transparent;');
-      // https://searchfox.org/mozilla-central/source/browser/themes/shared/tabs.inc.css#537
+      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/themes/shared/tabs.inc.css#537
       extraColors.push('--browser-bg-hover-for-header-image: rgba(0, 0, 0, 0.1);');
-      // https://searchfox.org/mozilla-central/source/browser/base/content/browser.css#20
+      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
       extraColors.push('--browser-bg-active-for-header-image: rgba(255, 255, 255, 0.4)');
-      // https://searchfox.org/mozilla-central/source/toolkit/themes/windows/global/global.css#138
+      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/toolkit/themes/windows/global/global.css#138
       if (Color.isBrightColor(theme.colors.textcolor))
         extraColors.push('--browser-textshadow-for-header-image: 1px 1px 1.5px black'); // for bright text
       else
