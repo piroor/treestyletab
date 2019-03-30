@@ -48,6 +48,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import { SequenceMatcher } from '/common/diff.js';
 
 import Tab from '/common/Tab.js';
@@ -102,6 +103,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         continue;
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
+      TabsInternalOperation.clearCache(tab);
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
@@ -192,6 +194,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
       if (nextTab) {
+        TabsInternalOperation.clearCache(tab);
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
         else
