@@ -40,7 +40,8 @@
   --toolbar-non-lwt-bgcolor: #f9f9fa;
   --toolbar-non-lwt-textcolor: #0c0c0d;
 
-  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor)));
+  --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-lighter, white);
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));

@@ -8,7 +8,8 @@
 @import url("border.css");
 
 :root {
-  --tab-surface: Background;
+  --tab-like-surface: Background;
+  --tab-surface: var(Background);
   --tab-text: CaptionText;
   --tab-text-inverted: Caption;
   --tab-border: ThreeDHighlight;

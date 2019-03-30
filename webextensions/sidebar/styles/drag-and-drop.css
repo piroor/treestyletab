@@ -131,7 +131,7 @@
 }
 
 #tab-drag-handle > span {
-  background: var(--tab-surface-active, var(--bg-color));
+  background: var(--tab-like-surface, var(--bg-color));
   border-left: 1px solid var(--tab-border);
   display: table-cell;
   height: var(--handle-size);

@@ -10,7 +10,8 @@
   --dropmarker-color: white;
   --throbber-color: white;
   --throbber-shadow-color: rgba(0, 0, 0, 0.45);
-  --tab-surface: #9d9d9d;
+  --tab-like-surface: #9d9d9d;
+  --tab-surface: var(--tab-like-surface);
   --tab-surface-active: #b3b2b3;
   --tab-text: black;
   --tab-text-inverted: white;

@@ -6,7 +6,8 @@
 
 :root,
 :root[color-scheme="system-color"] {
-  --tab-surface: #252526;
+  --tab-like-surface: #252526;
+  --tab-surface: var(--tab-like-surface);
   --tab-text: #efefef;
   --tab-text-inverted: black;
   --tab-text-active: #f9f9fa;
