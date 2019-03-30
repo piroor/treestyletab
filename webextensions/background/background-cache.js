@@ -372,7 +372,8 @@ async function cacheTree(windowId) {
 Tab.onCreated.addListener((tab, _info = {}) => {
   if (!tab.$TST.nextTab) { // new last tab is added, then the last cache owner is not the owner anymore
     const window = TabsStore.windows.get(tab.windowId);
-    TabsInternalOperation.clearCache(window.lastWindowCacheOwner);
+    if (window.lastWindowCacheOwner)
+      TabsInternalOperation.clearCache(window.lastWindowCacheOwner);
   }
   reserveToCacheTree(tab.windowId);
 });

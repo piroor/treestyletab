@@ -112,6 +112,8 @@ export function clearOldActiveStateInWindow(windowId, exception) {
 }
 
 export function clearCache(tab) {
+  if (!tab)
+    return;
   const errorHandler = ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError);
   for (const key of Constants.kCACHE_KEYS) {
     browser.sessions.removeTabValue(tab.id, key).catch(errorHandler);
