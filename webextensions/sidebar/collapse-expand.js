@@ -59,9 +59,6 @@ function log(...args) {
 export const onUpdating = new EventListenerManager();
 export const onUpdated = new EventListenerManager();
 
-const mUpdatingCollapsedStateCancellers = new Map();
-const mTabCollapsedStateChangedManagers = new Map();
-
 export function setCollapsed(tab, info = {}) {
   log('setCollapsed ', tab.id, info);
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
@@ -86,15 +83,11 @@ export function setCollapsed(tab, info = {}) {
   if (tab.status == 'loading')
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  let manager = mTabCollapsedStateChangedManagers.get(tab.id);
-  if (!manager) {
-    manager = new EventListenerManager();
-    mTabCollapsedStateChangedManagers.set(tab.id, manager);
-  }
+  const manager = tab.$TST.collapsedStateChangedManager || new EventListenerManager();
 
-  if (mUpdatingCollapsedStateCancellers.has(tab.id)) {
-    mUpdatingCollapsedStateCancellers.get(tab.id)(tab.$TST.collapsed);
-    mUpdatingCollapsedStateCancellers.delete(tab.id);
+  if (tab.$TST.updatingCollapsedStateCanceller) {
+    tab.$TST.updatingCollapsedStateCanceller(tab.$TST.collapsed);
+    delete tab.$TST.updatingCollapsedStateCanceller;
   }
 
   let cancelled = false;
@@ -113,12 +106,10 @@ export function setCollapsed(tab, info = {}) {
         !TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
-    mUpdatingCollapsedStateCancellers.delete(tab.id);
-
     if (configs.animation &&
         !info.justNow &&
         configs.collapseDuration > 0)
-      return; // animation
+      return; // force completion is required only for non-animation case
 
     //log('=> skip animation');
     if (tab.$TST.collapsed)
@@ -138,10 +129,11 @@ export function setCollapsed(tab, info = {}) {
       info.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');
+    onCompleted(tab, info);
     return;
   }
 
-  mUpdatingCollapsedStateCancellers.set(tab.id, canceller);
+  tab.$TST.updatingCollapsedStateCanceller = canceller;
 
   if (tab.$TST.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSING);
@@ -229,9 +221,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      const manager = mTabCollapsedStateChangedManagers.get(tab.id);
-      if (manager)
-        manager.dispatch(tab, Object.assign({}, message, {
+      // finish previous process
+      if (tab.$TST.collapsedStateChangedManager)
+        tab.$TST.collapsedStateChangedManager.dispatch(tab, Object.assign({}, message, {
           anchor: Tab.get(message.anchorId)
         }));
       setCollapsed(tab, {
