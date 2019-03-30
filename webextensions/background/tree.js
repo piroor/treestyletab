@@ -672,12 +672,6 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
 
   collapseExpandTab(tab, params);
 
-  //const data = {
-  //  collapsed : params.collapsed
-  //};
-  ///* PUBLIC API */
-  //fireCustomEvent(Constants.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, tab, true, false, data);
-
   if (params.collapsed && tab.active) {
     const newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
     logCollapseExpand('current tab is going to be collapsed, switch to ', newSelection.id);
