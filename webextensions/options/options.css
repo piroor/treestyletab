@@ -23,6 +23,10 @@ ul p.sub {
   margin-bottom: 0;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 label[disabled="true"] {
   opacity: 0.5;
 }
@@ -91,6 +95,11 @@ label input[type="checkbox"] ~ img {
 }
 .has-preview-image[data-value="3"] .preview-image {
   background-image: url("as-next-sibling.png");
+}
+
+
+#browserThemeCustomRules {
+  -moz-user-select: text;
 }
 
 

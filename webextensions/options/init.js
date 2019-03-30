@@ -18,6 +18,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
 import * as Bookmark from '/common/bookmark.js';
+import * as BrowserTheme from '/common/browser-theme.js';
 
 log.context = 'Options';
 const options = new Options(configs);
@@ -167,6 +168,25 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
+
+  if (browser.theme && browser.theme.getCurrent)
+    browser.theme.getCurrent().then(theme => {
+      const rules = BrowserTheme.generateThemeRules(theme)
+        .replace(/(#[0-9a-f]+|(?:rgb|hsl)a?\([^\)]+\))/g, `$1<span style="
+          background-color: $1;
+          border-radius:    0.2em;
+          box-shadow:       1px 1px 1.5px black;
+          display:          inline-block;
+          height:           1em;
+          width:            1em;
+        ">\u200b</span>`);
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById('browserThemeCustomRules'));
+      range.collapse(false);
+      range.startContainer.appendChild(range.createContextualFragment(rules));
+      range.detach();
+      document.getElementById('browserThemeCustomRulesBlock').style.display = rules ? 'block' : 'none';
+    });
 
   configs.$loaded.then(() => {
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {
