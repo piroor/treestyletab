@@ -22,6 +22,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as BrowserTheme from '/common/browser-theme.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
@@ -338,6 +339,7 @@ function applyBrowserTheme(theme) {
       --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.bookmark_text || theme.colors.textcolor};
       --browser-border:          ${Color.mixCSSColors(theme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
+      ${BrowserTheme.generateThemeRules(theme)}
     }
   `;
 }
