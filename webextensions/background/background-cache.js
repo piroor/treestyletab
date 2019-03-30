@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
@@ -67,7 +68,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       signatureGeneratedFromCache
     });
     cache = cachedSignature = null;
-    clearWindowCache(windowId);
+    TabsInternalOperation.clearCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: signature failed.');
   }
   else {
@@ -92,7 +93,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
       !signatureMatched) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
-    clearWindowCache(owner);
+    TabsInternalOperation.clearCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: actual signature failed.');
     return false;
   }
@@ -280,14 +281,6 @@ async function updateWindowCache(owner, key, value) {
   }
 }
 
-export function clearWindowCache(owner) {
-  log('clearWindowCache for owner ', owner, { stack: configs.debug && new Error().stack });
-  updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS);
-  updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(owner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-}
-
 export function markWindowCacheDirtyFromTab(tab, akey) {
   const window = TabsStore.windows.get(tab.windowId);
   if (!window) // the window may be closed
@@ -333,7 +326,7 @@ export async function reserveToCacheTree(windowId) {
     return;
 
   log('reserveToCacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
-  clearWindowCache(windowId.lastWindowCacheOwner);
+  TabsInternalOperation.clearCache(windowId.lastWindowCacheOwner);
 
   if (window.waitingToCacheTree)
     clearTimeout(window.waitingToCacheTree);
@@ -418,8 +411,9 @@ Tab.onRemoved.addListener((_tab, info) => {
   });
 });
 
-Tab.onMoved.addListener((_tab, info) => {
+Tab.onMoved.addListener((tab, info) => {
   reserveToCacheTree(info.windowId);
+  TabsInternalOperation.clearCache(tab);
 });
 
 Tab.onUpdated.addListener((tab, _info) => {
@@ -475,7 +469,7 @@ function onConfigChange(key) {
             reserveToCacheTree(window.id);
           }
           else {
-            clearWindowCache(owner);
+            TabsInternalOperation.clearCache(owner);
             location.reload();
           }
         }
