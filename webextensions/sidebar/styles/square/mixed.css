@@ -37,7 +37,7 @@
 :root,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: var(--browser-bg-url, none);
+  background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
 .tab,

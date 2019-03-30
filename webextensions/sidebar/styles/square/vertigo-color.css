@@ -40,7 +40,7 @@
   --toolbar-non-lwt-bgcolor: #f9f9fa;
   --toolbar-non-lwt-textcolor: #0c0c0d;
 
-  --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor)));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-lighter, white);
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
@@ -48,9 +48,9 @@
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
-  --tab-surface-hover: var(--browser-bg-less-lighter, #e0e8f6);
-  --tab-surface-active: var(--browser-bg-lighter, #c1d2ee);
-  --tab-surface-active-hover: var(--browser-bg-more-lighter, #d1e2fe);
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-less-lighter, #e0e8f6));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, #c1d2ee));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #d1e2fe));
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
@@ -64,14 +64,14 @@
 :root,
 #background {
   background-color: var(--browser-background, var(--tab-surface));
-  background-image: var(--browser-bg-url, none);
+  background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
 :root[color-scheme="system-color"] {
-  --tab-surface: var(--browser-bg-base, -moz-dialog);
-  --tab-surface-hover: var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter));
-  --tab-surface-active: var(--browser-bg-lighter, var(--face-highlight-lighter));
-  --tab-surface-active-hover: var(--browser-bg-more-lighter, var(--face-highlight-more-lighter));
+  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter)));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, var(--face-highlight-lighter)));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-lighter)));
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-lighter, -moz-dialog);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
@@ -84,6 +84,7 @@
 .after-tabs button {
   background: transparent;
   color: var(--tab-text);
+  text-shadow: var(--browser-textshadow-for-header-image, none);
 }
 
 .tab.active,

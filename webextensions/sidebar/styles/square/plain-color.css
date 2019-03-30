@@ -10,15 +10,15 @@
   --toolbar-non-lwt-bgcolor: #f9f9fa;
   --toolbar-non-lwt-textcolor: #0c0c0d;
 
-  --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor)));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: Highlight;
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
-  --tab-surface-hover: var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */);
-  --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
-  --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, Highlight));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, Highlight));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
 
@@ -28,19 +28,19 @@
 :root,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: var(--browser-bg-url, none);
+  background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
 :root[color-scheme="system-color"] {
-  --tab-surface: var(--browser-bg-base, -moz-dialog);
+  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: Highlight;
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
-  --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
-  --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
-  --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, ThreeDHighlight));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, Highlight));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, Highlight));
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
@@ -64,6 +64,7 @@
 .after-tabs button {
   background: var(--tab-surface);
   color: var(--tab-text);
+  text-shadow: var(--browser-textshadow-for-header-image, none);
 }
 
 .tab * {

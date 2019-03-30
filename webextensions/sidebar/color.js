@@ -72,3 +72,9 @@ function mixColors(base, over) {
   return { red, green, blue, alpha: 1 };
 }
 
+export function isBrightColor(color) {
+  color = parseCSSColor(color);
+  // https://searchfox.org/mozilla-central/source/browser/base/content/browser.js#8200
+  const luminance = (color.red * 0.2125) + (color.green * 0.7154) + (color.blue * 0.0721);
+  return luminance > 110;
+}
