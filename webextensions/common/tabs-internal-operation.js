@@ -67,6 +67,13 @@ export function removeTab(tab) {
   return removeTabs([tab]);
 }
 
+const cacheKeys = [
+  Constants.kWINDOW_STATE_CACHED_TABS,
+  Constants.kWINDOW_STATE_CACHED_SIDEBAR,
+  Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY,
+  Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY
+];
+
 export function removeTabs(tabs) {
   tabs = tabs.filter(TabsStore.ensureLivingTab);
   if (!tabs.length)
@@ -80,8 +87,12 @@ export function removeTabs(tabs) {
     });
   const window = TabsStore.windows.get(tabs[0].windowId);
   if (window) {
+    const errorHandler = ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError);
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
+      for (const key of cacheKeys) {
+        browser.sessions.removeTabValue(tab.id, key).catch(errorHandler);
+      }
     }
   }
   if (!SidebarConnection.isInitialized()) // in sidebar
