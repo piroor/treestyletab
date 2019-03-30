@@ -323,6 +323,7 @@ function applyBrowserTheme(theme) {
     extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
   if (theme.colors.tab_loading)
     extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
+  extraColors.push(BrowserTheme.generateThemeRules(theme));
   mBrowserThemeDefinition.textContent = `
     ${defaultColors}
     :root {
@@ -339,7 +340,6 @@ function applyBrowserTheme(theme) {
       --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.bookmark_text || theme.colors.textcolor};
       --browser-border:          ${Color.mixCSSColors(theme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
-      ${BrowserTheme.generateThemeRules(theme)}
     }
   `;
 }
