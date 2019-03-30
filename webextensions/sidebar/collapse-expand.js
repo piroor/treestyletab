@@ -63,15 +63,13 @@ const mUpdatingCollapsedStateCancellers = new Map();
 const mTabCollapsedStateChangedManagers = new Map();
 
 export function setCollapsed(tab, info = {}) {
-  const toBeCollapsed = info.collapsed;
-
   log('setCollapsed ', tab.id, info);
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
 
   tab.$TST.shouldExpandLater = false; // clear flag
 
-  if (toBeCollapsed) {
+  if (info.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.removeVisibleTab(tab);
   }
@@ -95,14 +93,14 @@ export function setCollapsed(tab, info = {}) {
   }
 
   if (mUpdatingCollapsedStateCancellers.has(tab.id)) {
-    mUpdatingCollapsedStateCancellers.get(tab.id)(toBeCollapsed);
+    mUpdatingCollapsedStateCancellers.get(tab.id)(tab.$TST.collapsed);
     mUpdatingCollapsedStateCancellers.delete(tab.id);
   }
 
   let cancelled = false;
   const canceller = (aNewToBeCollapsed) => {
     cancelled = true;
-    if (aNewToBeCollapsed != toBeCollapsed) {
+    if (aNewToBeCollapsed != tab.$TST.collapsed) {
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSING);
       tab.$TST.removeState(Constants.kTAB_STATE_EXPANDING);
       TabsStore.removeCollapsingTab(tab);
@@ -117,21 +115,19 @@ export function setCollapsed(tab, info = {}) {
 
     mUpdatingCollapsedStateCancellers.delete(tab.id);
 
-    const toBeCollapsed = info.collapsed;
-
     if (configs.animation &&
         !info.justNow &&
         configs.collapseDuration > 0)
       return; // animation
 
     //log('=> skip animation');
-    if (toBeCollapsed)
+    if (tab.$TST.collapsed)
       tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
     else
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
     onUpdated.dispatch(tab, {
-      collapsed: toBeCollapsed,
+      collapsed: tab.$TST.collapsed,
       anchor:    info.anchor,
       last:      info.last
     });
@@ -147,7 +143,7 @@ export function setCollapsed(tab, info = {}) {
 
   mUpdatingCollapsedStateCancellers.set(tab.id, canceller);
 
-  if (toBeCollapsed) {
+  if (tab.$TST.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSING);
     TabsStore.addCollapsingTab(tab);
   }
@@ -172,7 +168,7 @@ export function setCollapsed(tab, info = {}) {
 
     //log('start animation for ', dumpTab(tab));
     onUpdating.dispatch(tab, {
-      collapsed: toBeCollapsed,
+      collapsed: tab.$TST.collapsed,
       anchor:    info.anchor,
       last:      info.last
     });
@@ -192,13 +188,13 @@ export function setCollapsed(tab, info = {}) {
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED))
+      if (tab.$TST.collapsed)
         tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
       onUpdated.dispatch(tab, {
-        collapsed: toBeCollapsed
+        collapsed: tab.$TST.collapsed
       });
     });
     tab.$TST.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
