@@ -849,9 +849,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
         return;
 
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      const window = TabsStore.windows.get(tab.windowId);
+      const window = TabsStore.windows.get(mTargetWindow);
       // When we are restoring two or more tabs.
       // (But we don't need do this again for third, fourth, and later tabs.)
       if (window.restoredCount == 2)
@@ -865,7 +863,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       await Tab.waitUntilTracked(message.tabId, { element: true });
       log('Tabs.onWindowRestoring');
-      const window = TabsStore.windows.get(message.windowId);
+      const window = TabsStore.windows.get(mTargetWindow);
       const restoredCount = await window.allTabsRestored;
       if (restoredCount == 1) {
         log('Tabs.onWindowRestoring: single tab restored');
