@@ -284,6 +284,11 @@ ul {
   top: 0;
 }
 
+.tab:not(.highlighted) .highlighter,
+.tab:not(.bursting) .burster {
+  display: none;
+}
+
 .tab .highlighter {
   z-index: 5000;
 }
