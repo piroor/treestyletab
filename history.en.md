@@ -4,7 +4,7 @@
    * Apply the header image of the current browser theme more aggressively, on "Plain", "Vertigo" and "Mixed" theme.
    * Define custom CSS properties to use the color scheme of the current browser theme, for user stylesheets.
    * Attach/detach tabs to/from existing windows correctly. (regression)
-   * Don't produce "invisible expanded children" on some edge cases.
+   * Don't produce "invisible expanded children" with disabled animation effect.
    * Clear needless cache data for tree restoration for closing or moved tabs, if possible.
  - 3.0.2 (2019.3.29)
    * Open new tabs at correct position even if there is any hidden tab.
