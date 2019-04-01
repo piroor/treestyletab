@@ -193,13 +193,13 @@ export default class Window {
       if (!TabsStore.getWindow()) { // only in the background page - the sidebar has no need to destroy itself manually.
       // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
       // so we should not destroy the window immediately.
-      if (this.delayedDestroy)
-        clearTimeout(this.delayedDestroy);
-      this.delayedDestroy = setTimeout(() => {
-        if (this.tabs &&
+        if (this.delayedDestroy)
+          clearTimeout(this.delayedDestroy);
+        this.delayedDestroy = setTimeout(() => {
+          if (this.tabs &&
             this.tabs.size == 0)
-          this.destroy();
-      }, (configs.collapseDuration, 1000) * 5);
+            this.destroy();
+        }, (configs.collapseDuration, 1000) * 5);
       }
     }
     else {
