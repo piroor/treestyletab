@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.4 (2019.4.2)
    * Apply tab surface color on the "High Contrast" skin. (regression on 3.0.3)
    * Highlight tabs more again, when they have collapsed but highlighted descendants. (regression on 3.0)
    * Fix sidebar breakage on undoing close tab with `browser.tabs.closeWindowWithLastTab`=`false`.
