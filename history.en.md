@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Apply tab surface color on the "High Contrast" skin. (regression on 3.0.3)
+   * Highlight tabs more again, when they have collapsed but highlighted descendants. (regression on 3.0)
+   * Fix sidebar breakage on undoing close tab with `browser.tabs.closeWindowWithLastTab`=`false`.
+   * Use `scrollbar-width` CSS property to control the scrollbar in the sidebar.
  - 3.0.3 (2019.3.31)
    * Attach/detach tabs to/from existing windows correctly. (regression)
    * Don't produce "invisible expanded children" with disabled animation effect. (regression)
