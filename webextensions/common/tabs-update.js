@@ -426,6 +426,7 @@ async function updateTabHighlighted(tab, highlighted) {
   const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
   if (!inheritHighlighted)
     window.tabsToBeHighlightedAlone.delete(tab.id);
+  updateTab(tab, { highlighted });
   Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
 }
