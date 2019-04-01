@@ -59,17 +59,12 @@ export function init() {
   mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
-  const dummyTabbar = document.querySelector('#dummy-tabs');
-  const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
-  const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
     --tab-size: ${mTabHeight}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
-    --scrollbar-size: ${scrollbarSize}px;
-    --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;

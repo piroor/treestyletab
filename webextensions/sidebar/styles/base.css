@@ -134,24 +134,12 @@ button {
   direction: ltr;
 }
 
-/* narrow scrollbar */
-
-:root.left-scrollbar.narrow-scrollbar #tabbar.overflow {
-  margin-left: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
+:root.narrow-scrollbar #tabbar {
+  scrollbar-width: thin;
 }
 
-:root.right-scrollbar.narrow-scrollbar #tabbar.overflow {
-  margin-right: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
-}
-
-/* no scrollbar */
-
-:root.left-scrollbar.no-scrollbar #tabbar.overflow {
-  margin-left: calc(0px - var(--scrollbar-size));
-}
-
-:root.right-scrollbar.no-scrollbar #tabbar.overflow {
-  margin-right: calc(0px - var(--scrollbar-size));
+:root.no-scrollbar #tabbar {
+  scrollbar-width: none;
 }
 
 
