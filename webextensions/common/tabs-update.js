@@ -55,8 +55,6 @@ function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
-let mDelayedDispatchOnHighlightedTabsChanged;
-
 export function updateTab(tab, newState = {}, options = {}) {
   const messages          = [];
   const addedAttributes   = {};
@@ -333,12 +331,6 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
       removedStates.push(Constants.kTAB_STATE_HIGHLIGHTED);
     }
-    if (mDelayedDispatchOnHighlightedTabsChanged)
-      clearTimeout(mDelayedDispatchOnHighlightedTabsChanged);
-    mDelayedDispatchOnHighlightedTabsChanged = setTimeout(windowId => {
-      mDelayedDispatchOnHighlightedTabsChanged = null;
-      Tab.onHighlightedTabsChanged.dispatch(windowId);
-    }, 0, tab.windowId);
   }
 
   if (options.forceApply ||
@@ -420,9 +412,6 @@ export async function updateTabsHighlighted(highlightInfo) {
     TabsStore.addHighlightedTab(tab);
     updateTabHighlighted(tab, true);
   }
-  if (unhighlightedTabs.length > 0 ||
-      highlightedTabs.length > 0)
-    Tab.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
 }
 async function updateTabHighlighted(tab, highlighted) {
   log(`highlighted status of ${dumpTab(tab)}: `, { old: tab.highlighted, new: highlighted });

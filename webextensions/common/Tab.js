@@ -1461,7 +1461,6 @@ Tab.onPinned           = new EventListenerManager();
 Tab.onUnpinned         = new EventListenerManager();
 Tab.onHidden           = new EventListenerManager();
 Tab.onShown            = new EventListenerManager();
-Tab.onHighlightedTabsChanged = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 
