@@ -276,7 +276,7 @@ async function restoreTabsFromCacheInternal(params) {
     tabElements = Array.slice(container.childNodes, -matched.length);
   }
   else {
-    if (container)
+    if (container && container.parentNode)
       container.parentNode.removeChild(container);
     log('restoreTabsFromCacheInternal: restore');
     if (configs.debug)

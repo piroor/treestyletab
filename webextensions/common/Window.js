@@ -73,10 +73,10 @@ export default class Window {
 
     if (this.element) {
       const element = this.element;
-      if (element.parentNode && !element.hasChildNodes())
+      if (element.parentNode && !element.hasChildNodes()) {
         element.parentNode.removeChild(element);
-      delete this.element;
-      delete this.classList;
+        this.unbindElement();
+      }
     }
 
     delete this.tabs;
