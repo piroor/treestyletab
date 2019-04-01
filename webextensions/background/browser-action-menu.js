@@ -676,7 +676,7 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
             key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
+            value: Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
             type:  'radio'
           },
           {
@@ -688,13 +688,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
             key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_NONE,
+            value: Constants.kDRAG_BEHAVIOR_TEAR_OFF,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
             key:   'tabDragBehavior',
             value: Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_tabDragBehavior_none'),
+            key:   'tabDragBehavior',
+            value: Constants.kDRAG_BEHAVIOR_NONE,
             type:  'radio'
           }
         ]
@@ -705,7 +711,7 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
             key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
+            value: Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
             type:  'radio'
           },
           {
@@ -717,13 +723,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
             key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_NONE,
+            value: Constants.kDRAG_BEHAVIOR_TEAR_OFF,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
             key:   'tabDragBehaviorShift',
             value: Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_tabDragBehavior_none'),
+            key:   'tabDragBehaviorShift',
+            value: Constants.kDRAG_BEHAVIOR_NONE,
             type:  'radio'
           }
         ]

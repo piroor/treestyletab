@@ -174,6 +174,7 @@ function sanitizeDragData(dragData) {
     tab:      dragData.tab && dragData.tab.$TST.sanitized,
     tabs:     dragData.tabs.map(tab => tab && tab.$TST.sanitized),
     windowId: dragData.windowId,
+    behavior: dragData.behavior,
     individualOnOutside: dragData.individualOnOutside
   };
 }
@@ -633,6 +634,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
 
   const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event));
   dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  dragData.behavior = behavior;
   if (!dragData.tab) {
     log('onDragStart: canceled / no dragged tab from drag data');
     return;
@@ -730,21 +732,22 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
 
   if (!('behavior' in options) &&
       configs.showTabDragBehaviorNotification) {
-    const currentBehavior = event.shiftKey ? configs.tabDragBehaviorShift : configs.tabDragBehavior;
     const invertedBehavior = event.shiftKey ? configs.tabDragBehavior : configs.tabDragBehaviorShift;
     const count            = dragData.tabs.length;
-    const currentResult    = getTabDragBehaviorNotificationMessageType(currentBehavior, count);
+    const currentResult    = getTabDragBehaviorNotificationMessageType(behavior, count);
     const invertedResult   = getTabDragBehaviorNotificationMessageType(invertedBehavior, count);
-    const invertSuffix     = event.shiftKey ? 'without_shift' : 'with_shift';
+    if (currentResult || invertedResult) {
+      const invertSuffix = event.shiftKey ? 'without_shift' : 'with_shift';
     mDragBehaviorNotification.firstChild.textContent = [
-      browser.i18n.getMessage(`tabDragBehaviorNotification_message_base`, [
+      currentResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_base`, [
         browser.i18n.getMessage(`tabDragBehaviorNotification_message_${currentResult}`)]),
-      browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
+      invertedResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
         browser.i18n.getMessage(`tabDragBehaviorNotification_message_${invertedResult}`)]),
     ].join('\n');
-    mDragBehaviorNotification.firstChild.style.animationDuration = browser.i18n.getMessage('tabDragBehaviorNotification_message_duration');
+    mDragBehaviorNotification.firstChild.style.animationDuration = browser.i18n.getMessage(`tabDragBehaviorNotification_message_duration_${currentResult && invertedResult ? 'both' : 'single'}`);
     mDragBehaviorNotification.classList.remove('hiding');
     mDragBehaviorNotification.classList.add('shown');
+    }
   }
 
   TSTAPI.sendMessage({
@@ -760,14 +763,18 @@ function getTabDragBehaviorNotificationMessageType(behavior, count) {
   if (behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE && count > 1) {
     if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
       return 'tree_bookmark';
-    else
+    else if (behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF)
       return 'tree_tearoff';
+    else
+      return '';
   }
   else {
     if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
       return 'tab_bookmark';
-    else
+    else if (behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF)
       return 'tab_tearoff';
+    else
+      return '';
   }
 }
 
@@ -1027,6 +1034,9 @@ async function onDragEnd(event) {
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);
+
+  if (!(dragData.behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF))
+    return;
 
   if (event.dataTransfer.getData(kTYPE_URI_LIST)) {
     log('do nothing by TST for dropping just for bookmarking or linking');

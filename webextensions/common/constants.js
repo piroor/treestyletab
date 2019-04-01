@@ -262,6 +262,7 @@ export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
 export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_WHOLE_TREE     = 1 << 0;
 export const kDRAG_BEHAVIOR_ALLOW_BOOKMARK = 1 << 1;
+export const kDRAG_BEHAVIOR_TEAR_OFF       = 1 << 2;
 
 export const kNEWTAB_DO_NOTHING           = -1;
 export const kNEWTAB_OPEN_AS_ORPHAN       = 0;

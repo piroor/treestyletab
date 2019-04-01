@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 3;
+const kCONFIGS_VERSION = 4;
 const kFEATURES_VERSION = 3;
 
 export function migrateConfigs() {
@@ -34,6 +34,12 @@ export function migrateConfigs() {
     case 2:
       if (!configs.simulateSelectOwnerOnClose)
         configs.successorTabControlLevel = Constants.kSUCCESSOR_TAB_CONTROL_NEVER;
+
+    case 3:
+      if (!(configs.tabDragBehavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK))
+        configs.tabDragBehavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+      if (!(configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK))
+        configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

@@ -6,7 +6,8 @@
 import '../extlib/TabIdFixer.js';
 
 import {
-  log
+  log,
+  configs
 } from '/common/common.js';
 
 import * as MetricsData from '/common/metrics-data.js';
@@ -46,3 +47,4 @@ window.gMetricsData = MetricsData;
 window.Tab = Tab;
 window.TabsStore = TabsStore;
 window.SidebarConnection = SidebarConnection;
+window.configs = configs;

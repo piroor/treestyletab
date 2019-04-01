@@ -104,7 +104,8 @@
   "dropLinksOnTabBehavior_load":    { "message": "Load to this tab" },
   "dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "16s" },
+  "tabDragBehaviorNotification_message_duration_single":  { "message": "8s" },
+  "tabDragBehaviorNotification_message_duration_both":  { "message": "16s" },
   "tabDragBehaviorNotification_message_base":  { "message": "Dropping to outside of sidebar will $RESULT$.",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }
@@ -340,6 +341,7 @@
   "config_tabDragBehavior_bookmark_tree": { "message": "Create links or bookmarks from Whole Tree (but impossible to detach from the window)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Detach Individual Tab from the window (but impossible to create bookmark)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Create link or bookmark from Individual Tab (but impossible to detach from the window)" },
+  "config_tabDragBehavior_none":          { "message": "Do nothing" },
   "config_showTabDragHandle_label":       { "message": "Show drag handle on a edge of each tab, to start dragging for specific purpose" },
   "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
 
