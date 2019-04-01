@@ -191,7 +191,7 @@ export default class Window {
         if (this.tabs &&
             this.tabs.size == 0)
           this.destroy();
-      }, 1000);
+      }, (configs.collapseDuration, 1000) * 5);
     }
     else {
       for (let i = index, maxi = order.length; i < maxi; i++) {

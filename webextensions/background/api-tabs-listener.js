@@ -826,7 +826,7 @@ async function onDetached(tabId, detachInfo) {
         if (oldWindow.tabs &&
             oldWindow.tabs.size == 0)
           oldWindow.destroy();
-      }, 1000);
+      }, (configs.collapseDuration, 1000) * 5);
     }
 
     onCompleted();
