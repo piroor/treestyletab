@@ -9,7 +9,7 @@
 
 :root {
   --tab-like-surface: Background;
-  --tab-surface: var(Background);
+  --tab-surface: var(--tab-like-surface);
   --tab-text: CaptionText;
   --tab-text-inverted: Caption;
   --tab-border: ThreeDHighlight;
