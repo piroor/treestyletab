@@ -139,6 +139,11 @@ export default class Window {
     if (alreadyTracked)
       tab = alreadyTracked;
 
+    if (this.delayedDestroy) {
+      clearTimeout(this.delayedDestroy);
+      delete this.delayedDestroy;
+    }
+
     const order = this.order;
     if (this.tabs.has(tab.id)) { // already tracked: update
       const index = order.indexOf(tab.id);
@@ -187,7 +192,9 @@ export default class Window {
     if (this.tabs.size == 0) {
       // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
       // so we should not destroy the window immediately.
-      setTimeout(() => {
+      if (this.delayedDestroy)
+        clearTimeout(this.delayedDestroy);
+      this.delayedDestroy = setTimeout(() => {
         if (this.tabs &&
             this.tabs.size == 0)
           this.destroy();

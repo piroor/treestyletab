@@ -820,7 +820,9 @@ async function onDetached(tabId, detachInfo) {
     oldWindow.detachTab(oldTab.id);
     if (oldWindow.tabs &&
         oldWindow.tabs.size == 0) { // not destroyed yet case
-      setTimeout(() => {
+      if (oldWindow.delayedDestroy)
+        clearTimeout(oldWindow.delayedDestroy);
+      oldWindow.delayedDestroy = setTimeout(() => {
         // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
         // so we should not destroy the window immediately.
         if (oldWindow.tabs &&
