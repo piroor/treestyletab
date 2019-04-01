@@ -818,7 +818,8 @@ async function onDetached(tabId, detachInfo) {
 
     TabsStore.addRemovedTab(oldTab);
     oldWindow.detachTab(oldTab.id);
-    if (oldWindow.tabs &&
+    if (!TabsStore.getWindow() && // only in the background page - the sidebar has no need to destroy itself manually.
+        oldWindow.tabs &&
         oldWindow.tabs.size == 0) { // not destroyed yet case
       if (oldWindow.delayedDestroy)
         clearTimeout(oldWindow.delayedDestroy);

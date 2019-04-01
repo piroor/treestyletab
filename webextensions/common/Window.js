@@ -190,6 +190,7 @@ export default class Window {
     const index = order.indexOf(tab.id);
     order.splice(index, 1);
     if (this.tabs.size == 0) {
+      if (!TabsStore.getWindow()) { // only in the background page - the sidebar has no need to destroy itself manually.
       // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
       // so we should not destroy the window immediately.
       if (this.delayedDestroy)
@@ -199,6 +200,7 @@ export default class Window {
             this.tabs.size == 0)
           this.destroy();
       }, (configs.collapseDuration, 1000) * 5);
+      }
     }
     else {
       for (let i = index, maxi = order.length; i < maxi; i++) {
