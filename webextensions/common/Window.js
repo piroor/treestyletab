@@ -191,7 +191,7 @@ export default class Window {
         if (this.tabs &&
             this.tabs.size == 0)
           this.destroy();
-      }, 100);
+      }, 1000);
     }
     else {
       for (let i = index, maxi = order.length; i < maxi; i++) {

@@ -826,7 +826,7 @@ async function onDetached(tabId, detachInfo) {
         if (oldWindow.tabs &&
             oldWindow.tabs.size == 0)
           oldWindow.destroy();
-      }, 100);
+      }, 1000);
     }
 
     onCompleted();
