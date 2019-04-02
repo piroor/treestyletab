@@ -178,68 +178,29 @@ export async function testNewTabBeforeHiddenTab() {
   await browser.tabs.hide([tabs.B.id, tabs.F.id]);
   await wait(1000);
 
-  let newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
-      message: {
-        type:      Constants.kCOMMAND_NEW_TAB_AS,
-        baseTabId: tabs.A.id,
-        as:        Constants.kNEWTAB_OPEN_AS_CHILD
-      }
-    });
-    await wait(1000);
-  }, { windowId: win.id });
-  is(1, newTabs.length, 'a new tab must be opened');
-  is(1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+  async function assertNewTabOpenedAs(expectedIndex, baseTab, position) {
+    const newTabs = await Utils.doAndGetNewTabs(async () => {
+      await browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+        message: {
+          type:      Constants.kCOMMAND_NEW_TAB_AS,
+          baseTabId: baseTab.id,
+          as:        position
+        }
+      });
+      await wait(1000);
+    }, { windowId: win.id });
+    is(1, newTabs.length, 'a new tab must be opened');
+    is(expectedIndex, newTabs[0].index, 'a new tab must be placed before hidden tab');
 
-  await browser.tabs.update(tabs.A.id, { active: true });
-  await browser.tabs.remove(newTabs[0].id);
-  await wait(1000);
-  newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
-      message: {
-        type:      Constants.kCOMMAND_NEW_TAB_AS,
-        baseTabId: tabs.A.id,
-        as:        Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
-      }
-    });
+    await browser.tabs.update(baseTab.id, { active: true });
+    await browser.tabs.remove(newTabs[0].id);
     await wait(1000);
-  }, { windowId: win.id });
-  is(1, newTabs.length, 'a new tab must be opened');
-  is(1, newTabs[0].index, 'a new tab must be placed before hidden tab');
-
-  newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
-      message: {
-        type:      Constants.kCOMMAND_NEW_TAB_AS,
-        baseTabId: tabs.C.id,
-        as:        Constants.kNEWTAB_OPEN_AS_CHILD
-      }
-    });
-    await wait(1000);
-    tabs = await Utils.refreshTabs(tabs);
-  }, { windowId: win.id });
-  is(1, newTabs.length, 'a new tab must be opened');
-  is(tabs.E.index + 1, newTabs[0].index, 'a new tab must be placed before hidden tab');
-
-  await browser.tabs.remove(newTabs[0].id);
-  await wait(1000);
-  newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
-      message: {
-        type:      Constants.kCOMMAND_NEW_TAB_AS,
-        baseTabId: tabs.D.id,
-        as:        Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
-      }
-    });
-    await wait(1000);
-    tabs = await Utils.refreshTabs(tabs);
-  }, { windowId: win.id });
-  is(1, newTabs.length, 'a new tab must be opened');
-  is(tabs.E.index + 1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+  }
+  await assertNewTabOpenedAs(1, tabs.A, Constants.kNEWTAB_OPEN_AS_CHILD);
+  await assertNewTabOpenedAs(1, tabs.A, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
+  await assertNewTabOpenedAs(5, tabs.C, Constants.kNEWTAB_OPEN_AS_CHILD);
+  await assertNewTabOpenedAs(5, tabs.C, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
 }
 
 export async function testMoveAttachedTabBeforeHiddenTab() {
