@@ -285,6 +285,23 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
   return { insertBefore, insertAfter };
 }
 
+export function getReferenceTabsForNewNextSibling(base, options = {}) {
+  log('getReferenceTabsForNewNextSibling ', base);
+  let insertBefore = base.$TST.nextSiblingTab;
+  if (insertBefore &&
+      insertBefore.pinned &&
+      !options.pinned) {
+    insertBefore = Tab.getFirstNormalTab(base.windowId);
+  }
+  let insertAfter  = base.$TST.lastDescendant || base;
+  if (insertAfter &&
+      !insertAfter.pinned &&
+      options.pinned) {
+    insertAfter = Tab.getLastPinnedTab(base.windowId);
+  }
+  return { insertBefore, insertAfter };
+}
+
 export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
       { stack: `${configs.debug && new Error().stack}\n${options.stack || ''}` });

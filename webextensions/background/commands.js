@@ -181,13 +181,14 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
       parent      = currentTab.$TST.parent;
-      insertAfter = parent.$TST.lastDescendant;
+      insertAfter = parent && parent.$TST.lastDescendant;
       break;
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       parent       = currentTab.$TST.parent;
-      insertBefore = currentTab.$TST.nextSiblingTab;
-      insertAfter  = currentTab.$TST.lastDescendant || currentTab;
+      const refTabs = Tree.getReferenceTabsForNewNextSibling(currentTab, options);
+      insertBefore = refTabs.insertBefore;
+      insertAfter  = refTabs.insertAfter;
     }; break;
   }
 
