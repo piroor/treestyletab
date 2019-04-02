@@ -358,7 +358,8 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_newTabAction_caption')
+        title: browser.i18n.getMessage('config_newTabAction_caption'),
+        enabled: false
       },
       {
         title:    indent() + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before'),
@@ -507,7 +508,8 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_groupTab_caption')
+        title: browser.i18n.getMessage('config_groupTab_caption'),
+        enabled: false
       },
       {
         dynamicTitle: true,
@@ -664,7 +666,8 @@ const mItems = [
     title:    browser.i18n.getMessage('config_drag_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('config_tabDragBehavior_caption')
+        title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
+        enabled: false
       },
       {
         title:    indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
@@ -836,6 +839,8 @@ function createItem(id, item, parent) {
     contexts: ['browser_action'],
     parentId
   };
+  if ('enabled' in item)
+    params.enabled = item.enabled;
   log('create: ', params);
   browser.menus.create(params);
   if (item.children) {
