@@ -53,7 +53,7 @@ export async function testInheritContainerFromAutoAttachedParent() {
     newTabContainer: 'firefox-container-1'
   }, {
     newTabsCount:    newTabs.length,
-    newTabParent:    newTabs.length > 0 && newTabs[0].openerTabId,
+    newTabParent:    newTabs.length > 0 && newTabs[0].$TST.parentId,
     newTabContainer: newTabs.length > 0 && newTabs[0].cookieStoreId
   }, 'a new tab implicitly attached to the active tab must inherit the contianer of the old active tab, and there must not be any needless group tab to group the original tab and the reopened tab.');
   isNot(originalTab.id, newTabs[0].id,
@@ -83,7 +83,7 @@ export async function testDoNotInheritContainerFromExplicitParent() {
     newTabContainer: 'firefox-default'
   }, {
     newTabsCount:    newTabs.length,
-    newTabParent:    newTabs.length > 0 && newTabs[0].openerTabId,
+    newTabParent:    newTabs.length > 0 && newTabs[0].$TST.parentId,
     newTabContainer: newTabs.length > 0 && newTabs[0].cookieStoreId
   }, 'a new tab explicitly attached to the active tab must not inherit the contianer of the old active tab.');
 }
