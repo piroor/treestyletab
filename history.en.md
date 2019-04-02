@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.5 (2019.4.3)
    * Fix "broken/mismatched index" problem of tabs triggered with a new tab opened before a pinned tab. Annoying behavior like focusing another tab with clicking on a tab is reduced.
    * Determine positions to place new tabs considering existence of hidden tabs, for environments that hidden tabs are revealed by other addons or the user stylesheet.
    * Add ability logging with timestamp at the debug mode.
