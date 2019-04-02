@@ -164,3 +164,79 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
   }
 }
 
+export async function testNewTabBeforeHiddenTab() {
+  let tabs = await Utils.createTabs({
+    A: { index: 0, active: true },
+    B: { index: 1 }, // => hidden
+    C: { index: 2 },
+    D: { index: 3, openerTabId: 'C' },
+    E: { index: 4, openerTabId: 'D' },
+    F: { index: 5 }, // => hidden
+    G: { index: 6 }
+  }, { windowId: win.id });
+  await browser.tabs.hide([tabs.B.id, tabs.F.id]);
+  await wait(1000);
+
+  let newTabs = await Utils.doAndGetNewTabs(async () => {
+    await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+      message: {
+        type:      Constants.kCOMMAND_NEW_TAB_AS,
+        baseTabId: tabs.A.id,
+        as:        Constants.kNEWTAB_OPEN_AS_CHILD
+      }
+    });
+    await wait(1000);
+  }, { windowId: win.id });
+  is(1, newTabs.length, 'a new tab must be opened');
+  is(1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+
+  await browser.tabs.update(tabs.A.id, { active: true });
+  await browser.tabs.remove(newTabs[0].id);
+  await wait(1000);
+  newTabs = await Utils.doAndGetNewTabs(async () => {
+    await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+      message: {
+        type:      Constants.kCOMMAND_NEW_TAB_AS,
+        baseTabId: tabs.A.id,
+        as:        Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
+      }
+    });
+    await wait(1000);
+  }, { windowId: win.id });
+  is(1, newTabs.length, 'a new tab must be opened');
+  is(1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+
+  newTabs = await Utils.doAndGetNewTabs(async () => {
+    await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+      message: {
+        type:      Constants.kCOMMAND_NEW_TAB_AS,
+        baseTabId: tabs.C.id,
+        as:        Constants.kNEWTAB_OPEN_AS_CHILD
+      }
+    });
+    await wait(1000);
+    tabs = await Utils.refreshTabs(tabs);
+  }, { windowId: win.id });
+  is(1, newTabs.length, 'a new tab must be opened');
+  is(tabs.E.index + 1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+
+  await browser.tabs.remove(newTabs[0].id);
+  await wait(1000);
+  newTabs = await Utils.doAndGetNewTabs(async () => {
+    await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+      message: {
+        type:      Constants.kCOMMAND_NEW_TAB_AS,
+        baseTabId: tabs.D.id,
+        as:        Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
+      }
+    });
+    await wait(1000);
+    tabs = await Utils.refreshTabs(tabs);
+  }, { windowId: win.id });
+  is(1, newTabs.length, 'a new tab must be opened');
+  is(tabs.E.index + 1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+}
