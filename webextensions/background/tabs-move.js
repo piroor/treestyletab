@@ -88,6 +88,19 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
 
+  const precedingReferenceTab = referenceTab.$TST.previousTab;
+  if (referenceTab.pinned) {
+    // unpinned tab cannot be moved before any pinned tab
+    tabs = tabs.filter(tab => tab.pinned);
+  }
+  else if (precedingReferenceTab &&
+           !precedingReferenceTab.pinned) {
+    // pinned tab cannot be moved after any unpinned tab
+    tabs = tabs.filter(tab => !tab.pinned);
+  }
+  if (!tabs.length)
+    return [];
+
   const movedTabs = [];
   try {
     /*
@@ -172,6 +185,19 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
+
+  const followingReferenceTab = referenceTab.$TST.nextTab;
+  if (followingReferenceTab &&
+      followingReferenceTab.pinned) {
+    // unpinned tab cannot be moved before any pinned tab
+    tabs = tabs.filter(tab => tab.pinned);
+  }
+  else if (!referenceTab.pinned) {
+    // pinned tab cannot be moved after any unpinned tab
+    tabs = tabs.filter(tab => !tab.pinned);
+  }
+  if (!tabs.length)
+    return [];
 
   const movedTabs = [];
   try {
