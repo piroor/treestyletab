@@ -88,7 +88,6 @@ export async function testDoNotInheritContainerFromExplicitParent() {
   }, 'a new tab explicitly attached to the active tab must not inherit the contianer of the old active tab.');
 }
 
-testTryToOpenUnpinnedTabBeforePinnedTab.runnable = true;
 export async function testTryToOpenUnpinnedTabBeforePinnedTab() {
   await Utils.setConfigs({
     autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
