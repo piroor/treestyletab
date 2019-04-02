@@ -166,7 +166,7 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
 }
 
 export async function testNewTabBeforeHiddenTab() {
-  let tabs = await Utils.createTabs({
+  const tabs = await Utils.createTabs({
     A: { index: 0, active: true },
     B: { index: 1 }, // => hidden
     C: { index: 2 },
