@@ -12,6 +12,12 @@ For Japanese people:
 
 ## Steps to reproduce
 
+<!--
+Please research any complete steps to reproduce the problem from scratch,
+on a clean environment with a new profile. See also the guide:
+https://github.com/piroor/treestyletab/wiki/How-to-run-Firefox-with-a-clean-profile
+-->
+
  1. Start Firefox with clean profile.
  2. Install TST.
  3. 
