@@ -86,8 +86,8 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
       let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
       MetricsData.add('loadTreeStructure: read stored data');
       if (structure &&
-        structure.length > 0 &&
-        structure.length <= tabs.length) {
+          structure.length > 0 &&
+          structure.length <= tabs.length) {
         uniqueIds = uniqueIds.map(id => id.id);
         let tabsOffset;
         if (structure[0].id) {
