@@ -9,6 +9,7 @@ import {
   wait
 } from '/common/common.js';
 import { is /*, ok, ng*/ } from '/tests/assert.js';
+import * as TSTAPI from '/common/tst-api.js';
 //import Tab from '/common/Tab.js';
 
 import * as Constants from '/common/constants.js';
@@ -239,4 +240,36 @@ export async function testNewTabBeforeHiddenTab() {
   }, { windowId: win.id });
   is(1, newTabs.length, 'a new tab must be opened');
   is(tabs.E.index + 1, newTabs[0].index, 'a new tab must be placed before hidden tab');
+}
+
+export async function testMoveAttachedTabBeforeHiddenTab() {
+  let tabs = await Utils.createTabs({
+    A: { index: 0, active: true },
+    B: { index: 1 }, // => hidden
+    C: { index: 2 },
+    D: { index: 3, openerTabId: 'C' },
+    E: { index: 4, openerTabId: 'D' },
+    F: { index: 5 }, // => hidden
+    G: { index: 6 },
+    H: { index: 7 },
+    I: { index: 8 }
+  }, { windowId: win.id });
+  await browser.tabs.hide([tabs.B.id, tabs.F.id]);
+  await wait(1000);
+
+  await Utils.callAPI({
+    type:   TSTAPI.kATTACH,
+    parent: tabs.A.id,
+    child:  tabs.H.id
+  });
+  await Utils.callAPI({
+    type:   TSTAPI.kATTACH,
+    parent: tabs.C.id,
+    child:  tabs.I.id
+  });
+  await wait(500);
+
+  tabs = await Utils.refreshTabs(tabs);
+  is(tabs.A.index + 1, tabs.H.index, 'first child tab must be placed before hidden tab');
+  is(tabs.E.index + 1, tabs.I.index, 'new child tab must be placed before hidden tab');
 }
