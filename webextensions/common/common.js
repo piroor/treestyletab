@@ -220,6 +220,7 @@ export const configs = new Configs({
 `.trim(),
 
   debug:     false,
+  logTimestamp: true,
   loggingQueries: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': false,/"
     'background/api-tabs-listener': false,
@@ -329,7 +330,8 @@ export function log(module, ...args)
   else
     module = '';
 
-  const line = `tst<${log.context}>: ${module}${indent}${message}`;
+  const timestamp = configs.logTimestamp ? `${new Date().toString()} ` : '';
+  const line = `tst<${log.context}>: ${timestamp}${module}${indent}${message}`;
   if (useConsole)
     console.log(line, ...args);
 
