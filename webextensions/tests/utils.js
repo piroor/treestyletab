@@ -170,8 +170,8 @@ export async function doAndGetNewTabs(task, queryToFindTabs) {
   const oldAllTabIds = (await browser.tabs.query(queryToFindTabs)).map(tab => tab.id);
   await task();
   await wait(150); // wait until new tabs are tracked
-  let allTabs = await browser.tabs.query(queryToFindTabs);
-  let newTabs = allTabs.filter(tab => !oldAllTabIds.includes(tab.id));
+  const allTabs = await browser.tabs.query(queryToFindTabs);
+  const newTabs = allTabs.filter(tab => !oldAllTabIds.includes(tab.id));
   return refreshTabs(newTabs);
 }
 
