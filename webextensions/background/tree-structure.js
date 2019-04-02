@@ -116,6 +116,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
     }
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${window.id} is not same to actual state. Fallback to restoration from tab relations.`);
+      MetricsData.add('loadTreeStructure: fallback to reserveToAttachTabFromRestoredInfo');
       for (const tab of tabs) {
         reserveToAttachTabFromRestoredInfo(tab, {
           keepCurrentTree: true,
@@ -123,7 +124,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         });
       }
       await reserveToAttachTabFromRestoredInfo.promisedDone;
-      MetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
+      MetricsData.add('loadTreeStructure: attachTabFromRestoredInfo finish');
     }
     Tab.dumpAll();
   })));
