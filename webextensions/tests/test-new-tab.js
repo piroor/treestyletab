@@ -19,6 +19,8 @@ let win;
 
 export async function setup() {
   win = await browser.windows.create();
+  // wait until timeout the special timer which prevents grouping of new tabs
+  await wait(configs.autoGroupNewTabsDelayOnNewWindow);
 }
 
 export async function teardown() {
@@ -32,9 +34,6 @@ export async function testInheritContainerFromAutoAttachedParent() {
     inheritContextualIdentityToNewChildTab: true,
     autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_CHILD
   });
-
-  // wait until timeout the special timer which prevents grouping of new tabs
-  await wait(configs.autoGroupNewTabsDelayOnNewWindow);
 
   const parent = await browser.tabs.create({
     windowId: win.id,
@@ -89,3 +88,27 @@ export async function testDoNotInheritContainerFromExplicitParent() {
   }, 'a new tab explicitly attached to the active tab must not inherit the contianer of the old active tab.');
 }
 
+testTryToOpenUnpinnedTabBeforePinnedTab.runnable = true;
+export async function testTryToOpenUnpinnedTabBeforePinnedTab() {
+  await Utils.setConfigs({
+    autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
+  });
+
+  const tabs = await Utils.createTabs({
+    A: { index: 0, pinned: true, active: true },
+    B: { index: 1, pinned: true }
+  }, { windowId: win.id });
+  const newTabs = await Utils.doAndGetNewTabs(async () => {
+    await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE,
+      message: {
+        type:      Constants.kCOMMAND_NEW_TAB_AS,
+        baseTabId: tabs.A.id,
+        as:        Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
+      }
+    });
+    await wait(1000);
+  }, { windowId: win.id });
+  is(1, newTabs.length, 'a new tab must be opened');
+  is(2, newTabs[0].index, 'a new tab must be placed after pinned tabs');
+}

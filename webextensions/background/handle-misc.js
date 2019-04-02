@@ -359,6 +359,10 @@ function onMessage(message, sender) {
         }
       })();
 
+    case Constants.kCOMMAND_SIMULATE_SIDEBAR_MESSAGE: {
+      SidebarConnection.onMessage.dispatch(message.message.windowId, message.message);
+    }; break;
+
     default:
       const API_PREFIX_MATCHER = /^treestyletab:api:/;
       if (API_PREFIX_MATCHER.test(message.type)) {
