@@ -1145,6 +1145,16 @@ Tab.getLastOpenedTab = windowId => {
     null ;
 };
 
+Tab.getLastPinnedTab = windowId => { // visible, pinned
+  return TabsStore.query({
+    windowId,
+    tabs:    TabsStore.pinnedTabsInWindow.get(windowId),
+    living:  true,
+    ordered: true,
+    last:    true
+  });
+};
+
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
   return TabsStore.query({
     windowId,
