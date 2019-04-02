@@ -135,7 +135,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     clearTimeout(reserveToAttachTabFromRestoredInfo.waiting);
   reserveToAttachTabFromRestoredInfo.tasks.push({ tab, options: options });
   if (!reserveToAttachTabFromRestoredInfo.promisedDone) {
-    reserveToAttachTabFromRestoredInfo.promisedDone = new Promise((resolve, _aReject) => {
+    reserveToAttachTabFromRestoredInfo.promisedDone = new Promise((resolve, _reject) => {
       reserveToAttachTabFromRestoredInfo.onDone = resolve;
     });
   }
@@ -150,7 +150,9 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
       return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
         uniqueId,
         bulk
-      }));
+      })).catch(error => {
+        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, error.stack);
+      });
     }));
     if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
       reserveToAttachTabFromRestoredInfo.onDone();
