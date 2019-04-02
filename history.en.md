@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Fix "broken/mismatched index" problem of tabs triggered with a new tab opened before a pinned tab. Annoying behavior like focusing another tab with clicking on a tab is reduced.
+   * Add ability logging with timestamp at the debug mode.
  - 3.0.4 (2019.4.2)
    * Apply tab surface color on the "High Contrast" skin. (regression on 3.0.3)
    * Highlight tabs more again, when they have collapsed but highlighted descendants. (regression on 3.0)
