@@ -319,8 +319,7 @@ const mItems = [
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-            type:  'radio',
-            visible: isMac
+            type:  'radio'
           }
         ]
       },
@@ -386,8 +385,7 @@ const mItems = [
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-            type:  'radio',
-            visible: isMac
+            type:  'radio'
           }
         ]
       },
@@ -416,8 +414,7 @@ const mItems = [
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-            type:  'radio',
-            visible: isMac
+            type:  'radio'
           }
         ]
       },
@@ -452,8 +449,7 @@ const mItems = [
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-            type:  'radio',
-            visible: isMac
+            type:  'radio'
           },
           { type: 'separator' },
           {
