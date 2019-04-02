@@ -413,7 +413,7 @@ function getDropAction(event) {
         }
       }
       if (info.draggedTab &&
-          info.draggedTab.pinned != targetTab.$TST.precedesPinnedTab)
+          info.draggedTab.pinned != !!targetTab.$TST.precedesPinnedTab)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
