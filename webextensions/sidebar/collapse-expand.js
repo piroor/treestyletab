@@ -69,10 +69,12 @@ export function setCollapsed(tab, info = {}) {
   if (info.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.removeVisibleTab(tab);
+    TabsStore.removeExpandedTab(tab);
   }
   else {
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.addVisibleTab(tab);
+    TabsStore.addExpandedTab(tab);
   }
 
   if (tab.$TST.onEndCollapseExpandAnimation) {

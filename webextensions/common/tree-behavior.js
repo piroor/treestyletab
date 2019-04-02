@@ -140,13 +140,13 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          +-----------------------------------------------------
     */
     const nextTab = params.insertAfter && params.insertAfter.$TST.nearestVisibleFollowingTab;
-    // We need to refer unsafeNextTab instead of a visible tab, to avoid
+    // We need to refer unsafeNearestExpandedFollowingTab instead of a visible tab, to avoid
     // placing the tab after hidden tabs (it is too far from the target).
-    const phisicalNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNextTab;
+    const unsafeNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
     if (!nextTab) {
       return {
         parent:      params.insertAfter && params.insertAfter.$TST.parent,
-        insertBefore: phisicalNextTab,
+        insertBefore: unsafeNextTab,
         insertAfter: params.insertAfter
       };
     }
@@ -158,7 +158,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
         parent = (targetLevel < nextLevel) ? params.insertAfter : (params.insertAfter && params.insertAfter.$TST.parent) ;
       return {
         parent,
-        insertBefore: phisicalNextTab || nextTab,
+        insertBefore: unsafeNextTab || nextTab,
         insertAfter:  params.insertAfter
       };
     }

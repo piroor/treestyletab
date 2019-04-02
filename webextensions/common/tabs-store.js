@@ -306,6 +306,7 @@ export const controllableTabsInWindow = new Map();
 export const removingTabsInWindow    = new Map();
 export const removedTabsInWindow     = new Map();
 export const visibleTabsInWindow     = new Map();
+export const expandedTabsInWindow    = new Map();
 export const selectedTabsInWindow    = new Map();
 export const highlightedTabsInWindow = new Map();
 export const pinnedTabsInWindow      = new Map();
@@ -335,6 +336,7 @@ export function prepareIndexesForWindow(windowId) {
   removingTabsInWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
   removedTabsInWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
   visibleTabsInWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
+  expandedTabsInWindow.set(windowId, createMapWithName(`expanded tabs in window ${windowId}`));
   selectedTabsInWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
   highlightedTabsInWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
   pinnedTabsInWindow.set(windowId, createMapWithName(`pinned tabs in window ${windowId}`));
@@ -360,6 +362,7 @@ export function unprepareIndexesForWindow(windowId) {
   removingTabsInWindow.delete(windowId);
   removedTabsInWindow.delete(windowId);
   visibleTabsInWindow.delete(windowId);
+  expandedTabsInWindow.delete(windowId);
   selectedTabsInWindow.delete(windowId);
   highlightedTabsInWindow.delete(windowId);
   pinnedTabsInWindow.delete(windowId);
@@ -382,6 +385,11 @@ export function updateIndexesForTab(tab) {
     addControllableTab(tab);
   else
     removeControllableTab(tab);
+
+  if (tab.$TST.collapsed)
+    removeExpandedTab(tab);
+  else
+    addExpandedTab(tab);
 
   if (tab.hidden || tab.$TST.collapsed)
     removeVisibleTab(tab);
@@ -447,6 +455,7 @@ export function removeTabFromIndexes(tab) {
   removeRemovingTab(tab);
   //removeRemovedTab(tab);
   removeVisibleTab(tab);
+  removeExpandedTab(tab);
   removeSelectedTab(tab);
   removeHighlightedTab(tab);
   removePinnedTab(tab);
@@ -514,6 +523,13 @@ export function addVisibleTab(tab) {
 }
 export function removeVisibleTab(tab) {
   removeTabFromIndex(tab, visibleTabsInWindow);
+}
+
+export function addExpandedTab(tab) {
+  addTabToIndex(tab, expandedTabsInWindow);
+}
+export function removeExpandedTab(tab) {
+  removeTabFromIndex(tab, expandedTabsInWindow);
 }
 
 export function addSelectedTab(tab) {

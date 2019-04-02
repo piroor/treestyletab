@@ -1123,6 +1123,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       TabsStore.addVisibleTab(tab);
+      TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
       reserveToUpdateTwistyTooltip(tab);
       reserveToUpdateCloseboxTooltip(tab);

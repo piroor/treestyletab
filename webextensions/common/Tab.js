@@ -346,6 +346,15 @@ export default class Tab {
     });
   }
 
+  get unsafeNearestExpandedFollowingTab() { // not-collapsed, possibly hidden
+    return TabsStore.query({
+      windowId: this.tab.windowId,
+      tabs:     TabsStore.expandedTabsInWindow.get(this.tab.windowId),
+      fromId:   this.tab.id,
+      index:    (index => index > this.tab.index)
+    });
+  }
+
   get nearestVisiblePrecedingTab() { // visible, not-collapsed
     return TabsStore.query({
       windowId: this.tab.windowId,
