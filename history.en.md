@@ -6,6 +6,7 @@
    * Determine positions to place new tabs considering existence of hidden tabs, for environments that hidden tabs are revealed by other addons or the user stylesheet.
    * Add ability logging with timestamp at the debug mode.
    * Add more error handling around the startup process, to reduce hanging up.
+   * Fix wrongly deep indent level of attached child tabs.
  - 3.0.4 (2019.4.2)
    * Apply tab surface color on the "High Contrast" skin. (regression on 3.0.3)
    * Highlight tabs more again, when they have collapsed but highlighted descendants. (regression on 3.0)

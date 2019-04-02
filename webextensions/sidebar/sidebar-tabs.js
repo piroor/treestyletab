@@ -1180,7 +1180,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       if (message.newChildIds.length > 0) {
         // set initial level for newly opened child, to avoid annoying jumping of new tab
-        const childLevel = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) + 1);
+        const childLevel = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0) + 1;
         for (const childId of message.newChildIds) {
           const child = Tab.get(childId);
           if (!child || child.$TST.hasChild)
