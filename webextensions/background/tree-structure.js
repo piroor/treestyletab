@@ -102,6 +102,12 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
           await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
           MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
         }
+        else {
+          MetricsData.add('loadTreeStructure: mismatched signature');
+        }
+      }
+      else {
+        MetricsData.add('loadTreeStructure: no valid structure information');
       }
     }
     catch(error) {
