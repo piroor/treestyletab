@@ -258,7 +258,9 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
     log('  insert after parent');
   }
   if (insertBefore == child) {
-    insertBefore = insertBefore && insertBefore.$TST.nextTab;
+    // Return unsafe tab, to avoid placing the child after hidden tabs
+    // (too far from the place it should be.)
+    insertBefore = insertBefore && insertBefore.$TST.unsafeNextTab;
     log('  => insert before next tab of the child tab itelf');
   }
   if (insertAfter == child) {

@@ -345,8 +345,8 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.nearestVisibleFollowingTab) :
-        (targetTab.$TST.nextSiblingTab || targetTab.$TST.nearestFollowingForeignerTab);
+        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
+        (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
         (targetTab.$TST.lastDescendant || targetTab);

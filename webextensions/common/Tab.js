@@ -441,6 +441,11 @@ export default class Tab {
     return base && base.$TST.nextTab;
   }
 
+  get unsafeNearestFollowingForeignerTab() {
+    const base = this.lastDescendant || this.tab;
+    return base && base.$TST.unsafeNextTab;
+  }
+
   set children(tabs) {
     const oldChildren = this.children;
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
@@ -1530,10 +1535,13 @@ function getTabIndex(tab, options = {}) {
 }
 
 Tab.calculateNewTabIndex = params => {
-  if (params.insertBefore)
-    return getTabIndex(params.insertBefore, params);
+  // We need to calculate new index based on "insertAfter" at first, to avoid
+  // placing of the new tab after hidden tabs (too far from the location it
+  // should be.)
   if (params.insertAfter)
     return getTabIndex(params.insertAfter, params) + 1;
+  if (params.insertBefore)
+    return getTabIndex(params.insertBefore, params);
   return -1;
 };
 
