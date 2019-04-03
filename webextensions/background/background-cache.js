@@ -115,7 +115,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 
 function getWindowSignature(tabs) {
   const tabIds = tabs.map(tab => tab.id);
-  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.$TST && tab.$TST.parentId || tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
 }
 
 function trimSignature(signature, ignoreCount) {
