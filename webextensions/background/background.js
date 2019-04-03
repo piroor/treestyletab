@@ -146,12 +146,12 @@ export async function init() {
 
   // notify that the master process is ready.
   for (const window of TabsStore.windows.values()) {
+    TabsUpdate.completeLoadingTabs(window.id); // failsafe
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
     });
-    TabsUpdate.completeLoadingTabs(window.id); // failsafe
   }
 
   log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
