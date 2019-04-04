@@ -318,6 +318,7 @@ async function onNewTabTracked(tab) {
   // See also:
   //   https://github.com/piroor/treestyletab/issues/2131
   //   https://github.com/piroor/treestyletab/issues/2216
+  //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
   tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
   // We need to track new tab after getting old active tab. Otherwise, this
