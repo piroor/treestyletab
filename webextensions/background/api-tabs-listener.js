@@ -308,6 +308,18 @@ async function onNewTabTracked(tab) {
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
 
+  // New tab's index can become invalid because the value of "index" is same to
+  // the one given to browser.tabs.create() (new tab) or the original index
+  // (restored tab) instead of its actual index.
+  // (By the way, any pinned tab won't be opened after the first unpinned tab,
+  // and any unpinned tab won't be opened before the last pinned tab. On such
+  // cases Firefox automatically fixup the index regardless they are newly
+  // opened ore restored, so we don't need to care such cases.)
+  // See also:
+  //   https://github.com/piroor/treestyletab/issues/2131
+  //   https://github.com/piroor/treestyletab/issues/2216
+  tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
+
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
   // impossible to know which tab was previously active.
@@ -331,11 +343,6 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(${dumpTab(tab)}): start to create tab element`);
 
   try {
-    // New tab's index can become invalid because the value of "index" is same to
-    // the one given to browser.tabs.create() instead of actual index.
-    // See also: https://github.com/piroor/treestyletab/issues/2131
-    tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
-
     tab = Tab.init(tab, { inBackground: false });
 
     const nextTab = Tab.getTabAt(window.id, tab.index);
