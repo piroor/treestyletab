@@ -111,6 +111,7 @@ export const configs = new Configs({
   autoGroupNewTabsTimeout: 100,
   autoGroupNewTabsDelayOnNewWindow: 500,
   autoGroupNewTabsFromPinned: true,
+  showAutoGroupOptionHint: true,
 
 
   // behavior around newly opened tabs

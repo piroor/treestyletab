@@ -65,6 +65,8 @@
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
     }},
+  "groupTab_options_label": { "message": "There is an option to deactivate opening of this type tab." },
+  "groupTab_options_dismiss": { "message": "Dismiss this hint" },
 
   "bookmarkFolder_label_default": { "message": "$TITLE$ and more (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {

@@ -146,6 +146,51 @@
 
     updateTree();
 
+    browser.runtime.sendMessage({
+      type: 'treestyletab:get-config-value',
+      key:  'showAutoGroupOptionHint'
+    }).then(show => {
+      const hint = document.getElementById('optionHint');
+      hint.style.display = show ? 'block' : 'none';
+      if (!show || !isTemporary())
+        return;
+
+      hint.firstChild.addEventListener('click', event => {
+        if (event.button != 0)
+          return;
+        window.open(`moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`);
+      });
+      hint.firstChild.addEventListener('keydown', event => {
+        if (event.key != 'Enter' &&
+            event.key != 'Space')
+          return;
+        window.open(`moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`);
+      });
+
+      const closebox = document.getElementById('dismissOptionHint');
+      closebox.addEventListener('click', event => {
+        if (event.button != 0)
+          return;
+        hint.style.display = 'none';
+        browser.runtime.sendMessage({
+          type: 'treestyletab:set-config-value',
+          key:  'showAutoGroupOptionHint',
+          value: false
+        });
+      });
+      closebox.addEventListener('keydown', event => {
+        if (event.key != 'Enter' &&
+            event.key != 'Space')
+          return;
+        hint.style.display = 'none';
+        browser.runtime.sendMessage({
+          type: 'treestyletab:set-config-value',
+          key:  'showAutoGroupOptionHint',
+          value: false
+        });
+      });
+    });
+
     window.setTitle    = window.setTitle || setTitle;
     window.updateTree  = window.updateTree || updateTree;
     window.initialized = true;

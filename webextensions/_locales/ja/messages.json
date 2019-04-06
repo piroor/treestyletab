@@ -65,6 +65,8 @@
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
     }},
+  "groupTab_options_label": { "message": "オプション設定でこのタブを開かないようにできます" },
+  "groupTab_options_dismiss": { "message": "このヒント情報を表示しない" },
 
   "bookmarkFolder_label_default": { "message": "$TITLE$ など (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {

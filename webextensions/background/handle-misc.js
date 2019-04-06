@@ -271,6 +271,12 @@ function onMessage(message, sender) {
         return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
+    case Constants.kCOMMAND_GET_CONFIG_VALUE:
+      return Promise.resolve(configs[message.key]);
+
+    case Constants.kCOMMAND_SET_CONFIG_VALUE:
+      return Promise.resolve(configs[message.key] = message.value);
+
     case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimizie further initialization tasks in the sidebar
     case Constants.kCOMMAND_PULL_TABS:
       if (message.windowId) {
