@@ -326,7 +326,10 @@ function applyBrowserTheme(theme) {
       bgAlpha = 0.75;
     }
   }
-  const themeBaseColor = Color.mixCSSColors(theme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  const themeFrameColor   = theme.colors.frame || theme.colors.accentcolor /* old name */;
+  const inactiveTextColor = theme.colors.tab_background_text || theme.colors.textcolor /* old name */;
+  const activeTextColor   = theme.colors.bookmark_text || theme.colors.toolbar_text /* old name */ || inactiveTextColor;
+  const themeBaseColor    = Color.mixCSSColors(themeFrameColor, 'rgba(0, 0, 0, 0)', bgAlpha);
   let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
   if (theme.colors.toolbar)
     toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
@@ -338,7 +341,7 @@ function applyBrowserTheme(theme) {
   mBrowserThemeDefinition.textContent = `
     ${defaultColors}
     :root {
-      --browser-background:      ${theme.colors.accentcolor};
+      --browser-background:      ${themeFrameColor};
       --browser-bg-base:         ${themeBaseColor};
       --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
@@ -347,9 +350,9 @@ function applyBrowserTheme(theme) {
       --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
       --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
       --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
-      --browser-fg:              ${theme.colors.textcolor};
-      --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.bookmark_text || theme.colors.textcolor};
-      --browser-border:          ${Color.mixCSSColors(theme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
+      --browser-fg:              ${inactiveTextColor};
+      --browser-fg-active:       ${activeTextColor};
+      --browser-border:          ${Color.mixCSSColors(inactiveTextColor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
