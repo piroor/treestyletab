@@ -23,6 +23,10 @@ import * as BrowserTheme from '/common/browser-theme.js';
 log.context = 'Options';
 const options = new Options(configs);
 
+document.title = browser.i18n.getMessage('config_title');
+if (location.hash && location.hash != '#')
+  document.body.classList.add('independent');
+
 function onConfigChanged(key) {
   const value = configs[key];
   switch (key) {
@@ -189,8 +193,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
   configs.$loaded.then(() => {
+    const focusedItem = document.querySelector(':target');
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {
-      if (configs.optionsExpandedGroups.includes(fieldset.id))
+      if (configs.optionsExpandedGroups.includes(fieldset.id) ||
+          (focusedItem && fieldset.contains(focusedItem)))
         fieldset.classList.remove('collapsed');
       else
         fieldset.classList.add('collapsed');
@@ -221,7 +227,8 @@ window.addEventListener('DOMContentLoaded', () => {
     for (const heading of document.querySelectorAll('body > section > h1')) {
       const section = heading.parentNode;
       section.style.maxHeight = `${heading.offsetHeight}px`;
-      if (!configs.optionsExpandedSections.includes(section.id))
+      if (!configs.optionsExpandedSections.includes(section.id) &&
+          (!focusedItem || !section.contains(focusedItem)))
         section.classList.add('collapsed');
       heading.addEventListener('click', () => {
         section.classList.toggle('collapsed');
@@ -322,5 +329,8 @@ window.addEventListener('DOMContentLoaded', () => {
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');
     onConfigChanged('successorTabControlLevel');
+
+    if (focusedItem)
+      focusedItem.scrollIntoView();
   });
 }, { once: true });

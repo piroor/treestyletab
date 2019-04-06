@@ -177,6 +177,9 @@
   "context_topLevel_prefix": { "message": "トップレベルの項目: " },
 
 
+
+  "config_title": { "message": "ツリー型タブの設定" },
+
   "config_appearance_caption": { "message": "外観" },
 
   "config_sidebarPosition_caption": { "message": "サイドバーの位置に合わせたスタイル:" },
