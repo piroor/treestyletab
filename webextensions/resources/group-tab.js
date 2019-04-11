@@ -150,9 +150,12 @@
       type: 'treestyletab:get-config-value',
       key:  'showAutoGroupOptionHint'
     }).then(show => {
+      if (!isTemporary())
+        show = false;
+
       const hint = document.getElementById('optionHint');
       hint.style.display = show ? 'block' : 'none';
-      if (!show || !isTemporary())
+      if (!show)
         return;
 
       hint.firstChild.addEventListener('click', event => {
