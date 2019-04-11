@@ -546,6 +546,12 @@ Tab.onInitialized.addListener((tab, _info) => {
   applyStatesToElement(tab);
 
   const window  = TabsStore.windows.get(tab.windowId);
+
+  // Restored tab's index can become invalid.
+  // See also:
+  //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
+  tab.index = Math.max(0, Math.min(tab.index, window.tabs.size - 1));
+
   const nextTab = Tab.getTabAt(window.id, tab.index);
   log(`creating tab element for ${tab.id} at ${tab.index}, nextTab = `, nextTab);
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
