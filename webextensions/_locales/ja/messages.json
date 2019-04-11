@@ -300,6 +300,7 @@
   "config_autoGroupNewTabs_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
+  "config_warnOnAutoGroupNewTabs_label": { "message": "自動的にグループ化する前に確認する" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
 
