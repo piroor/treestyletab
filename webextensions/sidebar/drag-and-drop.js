@@ -906,7 +906,9 @@ function reserveToProcessLongHover(params = {}) {
         });
       }
 
-      if (!dragOverTab || dragOverTab.$TST.isAutoExpandable)
+      if (!dragOverTab ||
+          dragOverTab.$TST.isAutoExpandable ||
+          !dragOverTab.$TST.subtreeCollapsed)
         return;
 
       // auto-expand for staying on a parent
