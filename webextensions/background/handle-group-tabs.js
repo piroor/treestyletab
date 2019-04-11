@@ -328,7 +328,13 @@ async function onNewTabsTimeout(window) {
 
   window.openedNewTabs.clear();
 
-  tabReferences = tabReferences.filter(tabReference => !!tabReference.id);
+  tabReferences = tabReferences.filter(tabReference => {
+    if (!tabReference.id)
+      return false;
+    const tab = Tab.get(tabReference.id);
+    const uniqueId = tab && tab.$TST && tab.$TST.uniqueId;
+    return !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
+  });
   if (tabReferences.length == 0 ||
       TSTAPI.isGroupingBlocked())
     return;
