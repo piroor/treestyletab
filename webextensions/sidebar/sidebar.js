@@ -535,6 +535,32 @@ export async function confirmToCloseTabs(tabIds, _options = {}) {
 }
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
+async function confirmToAutoGroupNewTabs(tabIds) {
+  const count = tabIds.length;
+  if (count <= 1 ||
+      !configs.warnOnAutoGroupNewTabs)
+    return true;
+
+  const confirm = new RichConfirm({
+    message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [count]),
+    buttons: [
+      browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),
+      browser.i18n.getMessage('warnOnAutoGroupNewTabs_cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
+    checked: true
+  });
+  const result = await confirm.show();
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnAutoGroupNewTabs = false;
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 export function reserveToUpdateTabbarLayout(options = {}) {
   //log('reserveToUpdateTabbarLayout');
@@ -820,6 +846,10 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
       log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
       return confirmToCloseTabs(message.tabIds);
+
+    case Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS:
+      log('kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS: ', { message, mTargetWindow });
+      return confirmToAutoGroupNewTabs(message.tabIds);
   }
 }
 

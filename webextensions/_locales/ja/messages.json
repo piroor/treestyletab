@@ -133,6 +133,14 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ 個のタブが一度に開かれました。グループとして1つのツリーにまとめますか？",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnAutoGroupNewTabs_warnAgain": { "message": "複数のタブが一度に開かれたときは確認する" },
+  "warnOnAutoGroupNewTabs_close":     { "message": "グループ化する" },
+  "warnOnAutoGroupNewTabs_cancel":    { "message": "そのままにする" },
+
   "bookmarkDialog_title":    { "message": "名前:" },
   "bookmarkDialog_url":      { "message": "場所:" },
   "bookmarkDialog_parentId": { "message": "フォルダー:" },

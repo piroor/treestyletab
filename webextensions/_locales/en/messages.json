@@ -133,6 +133,14 @@
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
+  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ tabs are opened in a time. Do you want them to be grouped in a tree?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnAutoGroupNewTabs_warnAgain": { "message": "Ask me when multiple tabs are opened in a time" },
+  "warnOnAutoGroupNewTabs_close":     { "message": "Group tabs" },
+  "warnOnAutoGroupNewTabs_cancel":    { "message": "Keep tabs flat" },
+
   "bookmarkDialog_title":    { "message": "Name:" },
   "bookmarkDialog_url":      { "message": "Location:" },
   "bookmarkDialog_parentId": { "message": "Folder:" },

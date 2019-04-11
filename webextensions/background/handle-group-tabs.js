@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import RichConfirm from '/extlib/RichConfirm.js';
+
 import {
   log as internalLogger,
   dumpTab,
@@ -379,8 +381,11 @@ async function tryGroupNewTabs() {
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
     }
     if (newRootTabs.length > 1 &&
-        configs.autoGroupNewTabs)
-      await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+        configs.autoGroupNewTabs) {
+      const granted = await confirmToAutoGroupNewTabs(tabs);
+      if (granted)
+        await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+    }
   }
   catch(e) {
     log('Error on tryGroupNewTabs: ', String(e), e.stack);
@@ -389,6 +394,40 @@ async function tryGroupNewTabs() {
     tryGroupNewTabs.running = false;
     if (mToBeGroupedTabSets.length > 0)
       tryGroupNewTabs();
+  }
+}
+
+async function confirmToAutoGroupNewTabs(tabs) {
+  if (tabs.length <= 1 ||
+      !configs.warnOnAutoGroupNewTabs)
+    return true;
+
+  const windowId = tabs[0].windowId;
+  if (/^(about|chrome|resource):/.test(tabs[0].url) ||
+      (SidebarConnection.isOpen(windowId) &&
+       SidebarConnection.hasFocus(windowId)))
+    return browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS,
+      tabIds:   tabs.map(tab => tab.id),
+      windowId: windowId
+    }).catch(ApiTabs.createErrorHandler());
+
+  const result = await RichConfirm.showInTab(tabs[0].id, {
+    message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
+    buttons: [
+      browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),
+      browser.i18n.getMessage('warnOnAutoGroupNewTabs_cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
+    checked: true
+  });
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnAutoGroupNewTabs = false;
+      return true;
+    default:
+      return false;
   }
 }
 
