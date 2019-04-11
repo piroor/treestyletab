@@ -557,8 +557,10 @@ async function confirmToAutoGroupNewTabs(tabIds) {
         configs.warnOnAutoGroupNewTabs = false;
       return true;
     case 1:
-      if (!result.checked)
+      if (!result.checked) {
+        configs.warnOnAutoGroupNewTabs = false;
         configs.autoGroupNewTabs = false;
+      }
     default:
       return false;
   }
