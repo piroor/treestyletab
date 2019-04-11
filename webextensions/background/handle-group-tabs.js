@@ -426,6 +426,9 @@ async function confirmToAutoGroupNewTabs(tabs) {
       if (!result.checked)
         configs.warnOnAutoGroupNewTabs = false;
       return true;
+    case 1:
+      if (!result.checked)
+        configs.autoGroupNewTabs = false;
     default:
       return false;
   }
