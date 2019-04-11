@@ -176,11 +176,16 @@
     display: none;
     line-height: 1;
     margin: 1em 0 0 1em;
+    opacity: 0.5;
     padding: 0.5em;
     position: fixed;
     right: 0.5em;
     top: 0.5em;
+    transition: opacity 150ms ease-out;
     z-idnex: 1000;
+  }
+  #optionHint:hover {
+    opacity: 1;
   }
 
   #optionHint a {
