@@ -197,7 +197,7 @@ export async function openURIsInTabs(uris, options = {}) {
 }
 
 
-SidebarConnection.onMessage.addListener(async (windowId, message) => {
+async function onMessage(message, openerTab) {
   switch (message.type) {
     case Constants.kCOMMAND_LOAD_URI:
       loadURI(message.uri, {
@@ -205,8 +205,27 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       });
       break;
 
+    case Constants.kCOMMAND_OPEN_TAB:
+      if (!message.parentId && openerTab)
+        message.parentId = openerTab.id;
+      if (!message.windowId && openerTab)
+        message.windowId = openerTab.windowId;
+      await Tab.waitUntilTracked([
+        message.parentId,
+        message.insertBeforeId,
+        message.insertAfterId
+      ]);
+      openURIsInTabs(message.uris || [message.uri], {
+        windowId:     message.windowId,
+        parent:       Tab.get(message.parentId),
+        insertBefore: Tab.get(message.insertBeforeId),
+        insertAfter:  Tab.get(message.insertAfterId)
+      });
+      break;
+
     case Constants.kCOMMAND_NEW_TABS:
       await Tab.waitUntilTracked([
+        message.openerId,
         message.parentId,
         message.insertBeforeId,
         message.insertAfterId
@@ -221,4 +240,17 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       });
       break;
   }
+}
+
+SidebarConnection.onMessage.addListener((windowId, message) => {
+  onMessage(message);
+});
+
+browser.runtime.onMessage.addListener((message, sender) => {
+  if (!message ||
+      typeof message.type != 'string' ||
+      message.type.indexOf('treestyletab:') != 0)
+    return;
+
+  onMessage(message, sender.tab);
 });

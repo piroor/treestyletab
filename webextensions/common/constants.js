@@ -19,6 +19,7 @@ export const kCOMMAND_SYNC_TABS_ORDER                = 'treestyletab:sync-tabs-o
 export const kCOMMAND_PULL_TABS_ORDER                = 'treestyletab:pull-tabs-order';
 export const kCOMMAND_PULL_TREE_STRUCTURE            = 'treestyletab:pull-tree-structure';
 export const kCOMMAND_LOAD_URI                       = 'treestyletab:load-uri';
+export const kCOMMAND_OPEN_TAB                       = 'treestyletab:open-tab';
 export const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-from-tabs';
 export const kCOMMAND_NEW_TABS                       = 'treestyletab:open-new-tabs';
 export const kCOMMAND_NEW_TAB_AS                     = 'treestyletab:open-new-tab-as';

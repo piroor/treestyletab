@@ -161,13 +161,19 @@
       hint.firstChild.addEventListener('click', event => {
         if (event.button != 0)
           return;
-        window.open(`moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`);
+        browser.runtime.sendMessage({
+          type: 'treestyletab:open-tab',
+          uri:  `moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`
+        });
       });
       hint.firstChild.addEventListener('keydown', event => {
         if (event.key != 'Enter' &&
             event.key != 'Space')
           return;
-        window.open(`moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`);
+        browser.runtime.sendMessage({
+          type: 'treestyletab:open-tab',
+          uri:  `moz-extension://${location.host}/options/options.html#autoGroupNewTabsSection`
+        });
       });
 
       const closebox = document.getElementById('dismissOptionHint');
