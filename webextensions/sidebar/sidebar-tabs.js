@@ -546,14 +546,8 @@ Tab.onInitialized.addListener((tab, _info) => {
   applyStatesToElement(tab);
 
   const window  = TabsStore.windows.get(tab.windowId);
-
-  // Restored tab's index can become invalid.
-  // See also:
-  //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
-  tab.index = Math.max(0, Math.min(tab.index, window.tabs.size - 1));
-
-  const nextTab = Tab.getTabAt(window.id, tab.index);
-  log(`creating tab element for ${tab.id} at ${tab.index}, nextTab = `, nextTab);
+  const nextTab = tab.$TST.unsafeNextTab;
+  log(`creating tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
 
@@ -785,7 +779,21 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
-      const nativeTab = await browser.tabs.get(message.tabId);
+      const nativeTab = message.tab;
+
+      // The "index" property of the tab was already updated by the master process
+      // with other newly opened tabs. However, such other tabs are not tracked by
+      // this sidebar namespage yet. Thus we need to correct the index of the tab
+      // to be inserted to already tracked tabs.
+      const window = TabsStore.windows.get(message.windowId);
+      let index = 0;
+      for (const id of message.order) {
+        if (window.tabs.has(id))
+          nativeTab.index = ++index;
+        if (id == message.tabId)
+          break;
+      }
+
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
 

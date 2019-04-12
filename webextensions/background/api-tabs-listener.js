@@ -437,6 +437,8 @@ async function onNewTabTracked(tab) {
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
       windowId: tab.windowId,
       tabId:    tab.id,
+      tab:      tab.$TST.sanitized,
+      order:    window.order,
       maybeMoved: moved
     });
     log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
