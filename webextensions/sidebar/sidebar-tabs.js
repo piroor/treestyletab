@@ -782,8 +782,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       const nativeTab = message.tab;
 
       // The "index" property of the tab was already updated by the master process
-      // with other newly opened tabs. However, such other tabs are not tracked by
-      // this sidebar namespage yet. Thus we need to correct the index of the tab
+      // with other newly opened tabs. However, such other tabs are not tracked on
+      // this sidebar namespace yet. Thus we need to correct the index of the tab
       // to be inserted to already tracked tabs.
       const window = TabsStore.windows.get(message.windowId);
       let index = 0;
