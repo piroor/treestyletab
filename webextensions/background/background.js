@@ -146,8 +146,10 @@ export async function init() {
 
   // notify that the master process is ready.
   for (const window of TabsStore.windows.values()) {
+    if (SidebarConnection.isOpen(window.id))
+      return;
     TabsUpdate.completeLoadingTabs(window.id); // failsafe
-    SidebarConnection.sendMessage({
+    browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar

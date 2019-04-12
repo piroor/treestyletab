@@ -495,11 +495,10 @@ async function importTabsFromBackground() {
           message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
           message.windowId != mTargetWindow)
         return;
-      BackgroundConnection.onMessage.removeListener(onBackgroundIsReady);
+      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
       resolve(message.tabs);
     };
-    BackgroundConnection.onMessage.addListener(onBackgroundIsReady);
-    BackgroundConnection.connect();
+    browser.runtime.onMessage.addListener(onBackgroundIsReady);
   }));
 }
 
