@@ -785,6 +785,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       // with other newly opened tabs. However, such other tabs are not tracked on
       // this sidebar namespace yet. Thus we need to correct the index of the tab
       // to be inserted to already tracked tabs.
+      // For example:
+      //  - tabs in the background page: [a,b,X,Y,Z,c,d]
+      //  - tabs in the sidebar page:    [a,b,c,d]
+      //  - notified tab:                Z (as index=4) (X and Y will be notified later)
+      // then the new tab Z must be treated as index=2 and the result must become
+      // [a,b,Z,c,d] instead of [a,b,c,d,Z]. How should we calculate the index with
+      // less amount?
       const window = TabsStore.windows.get(message.windowId);
       let index = 0;
       for (const id of message.order) {
