@@ -176,7 +176,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (browser.theme && browser.theme.getCurrent)
     browser.theme.getCurrent().then(theme => {
       const rules = BrowserTheme.generateThemeRules(theme)
-        .replace(/(#[0-9a-f]+|(?:rgb|hsl)a?\([^\)]+\))/g, `$1<span style="
+        .replace(/(#(?:[0-9a-f]{3,8})|(?:rgb|hsl)a?\([^\)]+\))/gi, `$1<span style="
           background-color: $1;
           border-radius:    0.2em;
           box-shadow:       1px 1px 1.5px black;
