@@ -881,12 +881,13 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
   if (!tab)
     return;
+
+  log('moveTabSubtreeAfter: ', tab.id, previousTab && previousTab.id);
   if (previousTab && previousTab.$TST.isAllPlacedAfterSelf([tab].concat(tab.$TST.descendants))) {
-    log('moveTabSubtreeAfter:no need to move');
+    log(' => no need to move');
     return;
   }
 
-  log('moveTabSubtreeAfter: ', tab.id, previousTab && previousTab.id);
   const window = TabsStore.windows.get(tab.windowId);
   window.subTreeMovingCount++;
   try {
