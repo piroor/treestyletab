@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  dumpTab
+  dumpTab,
+  configs
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -51,21 +52,22 @@ export async function updateSelectionByTabClick(tab, event) {
     // select the clicked tab and tabs between last activated tab
     const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;
     const betweenTabs      = Tab.getTabsBetween(lastClickedTab, tab);
-    const targetTabs       = [lastClickedTab].concat(betweenTabs);
-    if (tab != lastClickedTab)
-      targetTabs.push(tab);
+    const targetTabs       = new Set([lastClickedTab].concat(betweenTabs));
+    targetTabs.add(tab);
+
+    log(' => ', { lastClickedTab, betweenTabs, targetTabs });
 
     try {
       if (!ctrlKeyPressed) {
         const alreadySelectedTabs = Tab.getSelectedTabs(tab.windowId, { iterator: true });
-        log('clear old selection by shift-click: ', alreadySelectedTabs.map(dumpTab));
+        log('clear old selection by shift-click: ', configs.debug && Array.from(alreadySelectedTabs, dumpTab));
         for (const alreadySelectedTab of alreadySelectedTabs) {
-          if (!targetTabs.includes(alreadySelectedTab))
+          if (!targetTabs.has(alreadySelectedTab))
             highlightedTabIds.delete(alreadySelectedTab.id);
         }
       }
 
-      log('set selection by shift-click: ', targetTabs.map(dumpTab));
+      log('set selection by shift-click: ', configs.debug && Array.from(targetTabs, dumpTab));
       for (const toBeSelectedTab of targetTabs) {
         highlightedTabIds.add(toBeSelectedTab.id);
       }
