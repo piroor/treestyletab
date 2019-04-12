@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.6 (2019.4.12)
    * Fix one of hanging up cases on the startup. (regression on 3.0)
    * Select tabs with Shift-click correctly. (regression on recent versions)
    * Open new blank tab as a child of the active tab, at the position next to the parent tab correctly, even if there is any tab marked as "hidden".
