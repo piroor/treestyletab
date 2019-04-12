@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Open new blank tab as a child of the active tab, at the position next to the parent tab correctly, even if there is any tab marked as "hidden".
+   * Open tabs at correct position even if they are opened at a time, for example, [Snap Links Plus](https://addons.mozilla.org/firefox/addon/snaplinksplus/).
+   * Add a hint to suppress auto-grouping for tabs opened at a time.
+   * Add confirmation to group tabs opened at a time.
+   * Add safeguard for tabs opened with wrong index, to avoid wrong tab focus. (See also the [bug 1504775](https://bugzilla.mozilla.org/show_bug.cgi?id=1504775).)
+   * Don't group multiple tabs restored or duplicated at a time.
+   * Don't collapse other trees, with a dragover on an expanded tree.
+   * Make more compatible with themes including new color names.
  - 3.0.5 (2019.4.3)
    * Fix "broken/mismatched index" problem of tabs triggered with a new tab opened before a pinned tab. Annoying behavior like focusing another tab with clicking on a tab is reduced.
    * Determine positions to place new tabs considering existence of hidden tabs, for environments that hidden tabs are revealed by other addons or the user stylesheet.
