@@ -48,6 +48,7 @@ export async function updateSelectionByTabClick(tab, event) {
   const activeTab          = Tab.getActiveTab(tab.windowId);
   const highlightedTabIds  = new Set(Tab.getHighlightedTabs(tab.windowId).map(tab => tab.id));
   const inSelectionSession = mIsInSelectionSession.get(tab.windowId);
+  log('updateSelectionByTabClick ', { ctrlKeyPressed, activeTab, highlightedTabIds, inSelectionSession });
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
     const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;

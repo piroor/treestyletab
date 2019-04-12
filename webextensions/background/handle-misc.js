@@ -343,6 +343,7 @@ function onMessage(message, sender) {
             onRegularArea &&
             await HandleTabMultiselect.updateSelectionByTabClick(tab, message)
           );
+          logMouseEvent(' => ', { onRegularArea, wasMultiselectionAction });
           if (message.button == 0 &&
               onRegularArea &&
               !wasMultiselectionAction)
