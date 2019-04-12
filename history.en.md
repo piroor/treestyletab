@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Select tabs with Shift-click correctly. (regression on recent versions)
    * Open new blank tab as a child of the active tab, at the position next to the parent tab correctly, even if there is any tab marked as "hidden".
    * Open tabs at correct position even if they are opened at a time, for example, [Snap Links Plus](https://addons.mozilla.org/firefox/addon/snaplinksplus/).
    * Add a hint to suppress auto-grouping for tabs opened at a time.
