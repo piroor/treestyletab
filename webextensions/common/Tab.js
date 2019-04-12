@@ -635,20 +635,20 @@ export default class Tab {
       return true;
     let nextTab = this.tab;
     if (tabs[tabs.length - 1] == nextTab)
-      nextTab = nextTab.$TST.nextTab;
-    if (!nextTab && !tabs[tabs.length - 1].$TST.nextTab)
+      nextTab = nextTab.$TST.unsafeNextTab;
+    if (!nextTab && !tabs[tabs.length - 1].$TST.unsafeNextTab)
       return true;
 
     tabs = Array.from(tabs);
     let previousTab = tabs.shift();
     for (const tab of tabs) {
-      if (tab.$TST.previousTab != previousTab)
+      if (tab.$TST.unsafePreviousTab != previousTab)
         return false;
       previousTab = tab;
     }
     return !nextTab ||
            !previousTab ||
-           previousTab.$TST.nextTab == nextTab;
+           previousTab.$TST.unsafeNextTab == nextTab;
   }
 
   isAllPlacedAfterSelf(tabs) {
@@ -656,20 +656,20 @@ export default class Tab {
       return true;
     let previousTab = this.tab;
     if (tabs[0] == previousTab)
-      previousTab = previousTab.$TST.previousTab;
-    if (!previousTab && !tabs[0].$TST.previousTab)
+      previousTab = previousTab.$TST.unsafePreviousTab;
+    if (!previousTab && !tabs[0].$TST.unsafePreviousTab)
       return true;
 
     tabs = Array.from(tabs).reverse();
     let nextTab = tabs.shift();
     for (const tab of tabs) {
-      if (tab.$TST.nextTab != nextTab)
+      if (tab.$TST.unsafeNextTab != nextTab)
         return false;
       nextTab = tab;
     }
     return !previousTab ||
            !nextTab ||
-           nextTab.$TST.previousTab == previousTab;
+           nextTab.$TST.unsafePreviousTab == previousTab;
   }
 
   detach() {
