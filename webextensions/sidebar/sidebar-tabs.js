@@ -1194,15 +1194,19 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
       if (!mInitialized)
         return;
-      await Tab.waitUntilTracked([message.tabId].concat(message.childIds), { element: true });
+      // We need to wait not only for added children but removed children also,
+      // to construct same number of promises for "attached but detached immediately"
+      // cases.
+      const relatedTabIds = [message.tabId].concat(message.addedChildIds, message.removedChildIds);
+      await Tab.waitUntilTracked(relatedTabIds, { element: true });
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
 
-      if (message.newChildIds.length > 0) {
+      if (message.addedChildIds.length > 0) {
         // set initial level for newly opened child, to avoid annoying jumping of new tab
         const childLevel = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0) + 1;
-        for (const childId of message.newChildIds) {
+        for (const childId of message.addedChildIds) {
           const child = Tab.get(childId);
           if (!child || child.$TST.hasChild)
             continue;

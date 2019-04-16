@@ -183,7 +183,8 @@ export async function attachTabTo(child, parent, options = {}) {
       windowId: parent.windowId,
       tabId:    parent.id,
       childIds: parent.$TST.childIds,
-      newChildIds: [child.id],
+      addedChildIds:   [child.id],
+      removedChildIds: [],
       newlyAttached
     });
   }
@@ -322,7 +323,8 @@ export function detachTab(child, options = {}) {
       windowId: parent.windowId,
       tabId:    parent.id,
       childIds: parent.$TST.childIds,
-      newChildIds: [],
+      addedChildIds:   [],
+      removedChildIds: [child.id],
       detached: true
     });
   }
