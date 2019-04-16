@@ -172,11 +172,10 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const window = TabsStore.windows.get(tab.windowId);
     log('window.openedNewTabs ', window.openedNewTabs);
-    log('window.toBeGroupedTabs ', window.toBeGroupedTabs);
     if (!tab.$TST.parent &&
         possibleOpenerTab &&
         !window.openedNewTabs.has(tab.id) &&
-        !window.toBeGroupedTabs.has(tab.id) &&
+        !tab.$TST.openedWithOthers &&
         !tab.$TST.positionedBySelf) {
       if (tab.$TST.isNewTabCommandTab) {
         log('behave as a tab opened by new tab command (delayed)');

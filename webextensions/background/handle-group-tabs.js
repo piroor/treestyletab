@@ -333,20 +333,20 @@ async function onNewTabsTimeout(window) {
   tabReferences = tabReferences.filter(tabReference => {
     if (blocked || !tabReference.id)
       return false;
-    // We should check the config here, because to-be-grouped tabs should be
-    // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
-    const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
-    if (!shouldBeGrouped)
-      return false;
     const tab = Tab.get(tabReference.id);
+    if (!tab)
+      return false;
     const uniqueId = tab && tab.$TST && tab.$TST.uniqueId;
-    const isRegularTab = !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
-    if (isRegularTab)
-      window.toBeGroupedTabs.set(tabReference.id, tab);
-    return isRegularTab;
+    return !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
   });
   if (tabReferences.length == 0)
     return;
+
+  if (tabReferences.length > 1) {
+    for (const tabReference of tabReferences) {
+      Tab.get(tabReference.id).$TST.openedWithOthers = true;
+    }
+  }
 
   mToBeGroupedTabSets.push(tabReferences);
   tryGroupNewTabs();
@@ -366,10 +366,17 @@ async function tryGroupNewTabs() {
     // extract only pure new tabs
     let tabs = tabReferences.map(tabReference => {
       const tab = Tab.get(tabReference.id);
+      if (!tab)
+        return null;
+      // We should check the config here, because to-be-grouped tabs should be
+      // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
+      const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
+      if (!shouldBeGrouped)
+        return null;
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       return tab;
-    });
+    }).filter(tab => !!tab);
     const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
     tabs = tabs.filter((id, index) => {
       const uniqueId = uniqueIds[index];
@@ -392,7 +399,6 @@ async function tryGroupNewTabs() {
       const granted = await confirmToAutoGroupNewTabs(tabs);
       if (granted)
         await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
-      TabsStore.windows.get(newRootTabs[0].windowId).toBeGroupedTabs.clear();
     }
   }
   catch(e) {
