@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Show color sampels of custom CSS properties more correctly.
+   * Open duplicated tab as an orphan or a next sibling tab more correctly.
+   * Don't attach a tab to the current tab even if they have same domain, when those tabs are opened in a time.
  - 3.0.6 (2019.4.12)
    * Fix one of hanging up cases on the startup. (regression on 3.0)
    * Select tabs with Shift-click correctly. (regression on recent versions)
