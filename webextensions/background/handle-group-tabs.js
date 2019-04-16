@@ -291,12 +291,10 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
 
   const openerId  = tab.openerTabId;
   const openerTab = openerId && (await browser.tabs.get(openerId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)));
-  if ((configs.autoGroupNewTabsFromPinned &&
-       openerTab &&
+  if ((openerTab &&
        openerTab.pinned &&
        openerTab.windowId == tab.windowId) ||
-      (configs.autoGroupNewTabs &&
-       !openerTab &&
+      (!openerTab &&
        !info.maybeOrphan)) {
     if (window.preventAutoGroupNewTabsUntil > Date.now()) {
       window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
@@ -304,7 +302,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
     else {
       window.openedNewTabs.set(tab.id, {
         id:       tab.id,
-        openerId: openerTab && openerTab.id
+        openerId: openerTab && openerTab.id,
+        openerIsPinned: openerTab && openerTab.pinned
       });
     }
   }
@@ -330,15 +329,23 @@ async function onNewTabsTimeout(window) {
 
   window.openedNewTabs.clear();
 
+  const blocked = TSTAPI.isGroupingBlocked();
   tabReferences = tabReferences.filter(tabReference => {
-    if (!tabReference.id)
+    if (blocked || !tabReference.id)
+      return false;
+    // We should check the config here, because to-be-grouped tabs should be
+    // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
+    const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
+    if (!shouldBeGrouped)
       return false;
     const tab = Tab.get(tabReference.id);
     const uniqueId = tab && tab.$TST && tab.$TST.uniqueId;
-    return !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
+    const isRegularTab = !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
+    if (isRegularTab)
+      window.toBeGroupedTabs.set(tabReference.id, tab);
+    return isRegularTab;
   });
-  if (tabReferences.length == 0 ||
-      TSTAPI.isGroupingBlocked())
+  if (tabReferences.length == 0)
     return;
 
   mToBeGroupedTabSets.push(tabReferences);
@@ -385,6 +392,7 @@ async function tryGroupNewTabs() {
       const granted = await confirmToAutoGroupNewTabs(tabs);
       if (granted)
         await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+      TabsStore.windows.get(newRootTabs[0].windowId).toBeGroupedTabs.clear();
     }
   }
   catch(e) {
