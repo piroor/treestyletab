@@ -172,7 +172,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const window = TabsStore.windows.get(tab.windowId);
     log('window.openedNewTabs ', window.openedNewTabs);
-    log('window.toBeGroupedTabs ', window.openedNewTabs);
+    log('window.toBeGroupedTabs ', window.toBeGroupedTabs);
     if (!tab.$TST.parent &&
         possibleOpenerTab &&
         !window.openedNewTabs.has(tab.id) &&
