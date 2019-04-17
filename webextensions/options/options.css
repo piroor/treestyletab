@@ -72,6 +72,15 @@ label[disabled="true"] button {
   max-width: 100px;
 }
 
+#applyThemeColorToIcon ~ img {
+  max-width: 85px;
+}
+
+#showTabDragHandle ~ img,
+#showTabDragBehaviorNotification ~ img {
+  max-width: 120px;
+}
+
 label input[type="radio"] ~ img,
 label input[type="checkbox"] ~ img {
   border: 1px solid ThreeDShadow;
