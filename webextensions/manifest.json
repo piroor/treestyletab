@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [

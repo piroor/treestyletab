@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.7 (2019.4.18)
    * Show color sampels of custom CSS properties more correctly.
    * Open duplicated tab as an independent or a next sibling tab more correctly.
    * Don't attach a tab to the current tab even if they have same domain, when those tabs are opened in a time.
