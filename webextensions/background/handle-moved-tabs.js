@@ -88,7 +88,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 
   log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
-  const action = await detectTabActionFromNewPosition(tab, moveInfo);
+  const action = detectTabActionFromNewPosition(tab, moveInfo);
   if (!action) {
     log('no action');
     return;
@@ -166,7 +166,7 @@ function moveBack(tab, moveInfo) {
   }));
 }
 
-async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
+function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   if (tab.pinned)
     return tab.$TST.parentId ? { action: 'detach' } : { action: 'move' };
 
