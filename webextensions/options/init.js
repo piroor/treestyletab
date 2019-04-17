@@ -308,7 +308,7 @@ window.addEventListener('DOMContentLoaded', () => {
           return;
         const rect = select.getBoundingClientRect();
         previewImage.style.left = `${rect.left}px`;
-        previewImage.style.top  = `${rect.bottom + 5}px`;
+        previewImage.style.top  = `${rect.top - 5 - previewImage.offsetHeight}px`;
       });
       select.addEventListener('change', () => {
         container.dataset.value = select.dataset.value = select.value;
@@ -317,9 +317,6 @@ window.addEventListener('DOMContentLoaded', () => {
         if (event.target == select)
           return;
         container.dataset.value = select.dataset.value = event.target.value;
-        const rect = select.getBoundingClientRect();
-        previewImage.style.left = `${rect.left}px`;
-        previewImage.style.top  = `${rect.top - 5 - previewImage.offsetHeight}px`;
       });
       select.addEventListener('mouseout', () => {
         container.dataset.value = select.dataset.value = select.value;
