@@ -779,12 +779,20 @@ function getTabDragBehaviorNotificationMessageType(behavior, count) {
 }
 
 let mLastDragOverTimestamp = null;
+let mDelayedClearDropPosition = null;
 
 function onDragOver(event) {
   if (mFinishCanceledDragOperation) {
     clearTimeout(mFinishCanceledDragOperation);
     mFinishCanceledDragOperation = null;
   }
+
+  if (mDelayedClearDropPosition)
+    clearTimeout(mDelayedClearDropPosition);
+  mDelayedClearDropPosition = setTimeout(() => {
+    mDelayedClearDropPosition = null;
+    clearDropPosition();
+  }, 250);
 
   event.preventDefault(); // this is required to override default dragover actions!
   Scroll.autoScrollOnMouseEvent(event);
