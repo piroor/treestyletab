@@ -4,6 +4,7 @@
    * Show color sampels of custom CSS properties more correctly.
    * Open duplicated tab as an independent or a next sibling tab more correctly.
    * Don't attach a tab to the current tab even if they have same domain, when those tabs are opened in a time.
+   * Clear "dragging" state and drop-position-marker more aggressively while drag-and-drop opeartions.
    * Confusable checkboxes related to the color scheme of the browser theme now have description screenshots.
  - 3.0.6 (2019.4.12)
    * Fix one of hanging up cases on the startup. (regression on 3.0)
