@@ -1097,7 +1097,6 @@ onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 
 function finishDrag() {
   log('finishDrag');
-  clearDraggingTabsState();
 
   mDragBehaviorNotification.classList.add('hiding');
   mDragBehaviorNotification.classList.remove('shown');
@@ -1116,6 +1115,11 @@ function finishDrag() {
     }).catch(ApiTabs.createErrorSuppressor());
   });
 
+  onFinishDrag();
+}
+
+function onFinishDrag() {
+  clearDraggingTabsState();
   clearDropPosition();
   mLastDropPosition = null;
   mLastDragOverTimestamp = null;
@@ -1190,6 +1194,8 @@ function onMessage(message, _sender, _respond) {
   switch (message.type) {
     case Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
       setDragData(message.dragData || null);
+      if (!message.dragData)
+        onFinishDrag();
       break;
   }
 }
