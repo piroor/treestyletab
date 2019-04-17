@@ -226,7 +226,7 @@
   "config_colorScheme_photon": { "message": "Photon" },
   "config_colorScheme_systemColor": { "message": "System Color" },
 
-  "config_applyBrowserTheme_label": { "message": "Apply Browser Theme" },
+  "config_applyBrowserTheme_label": { "message": "Apply Browser Theme (*available only on Plain, Vertigo and Mixed)" },
 
   "config_maxTreeLevel_before": { "message": "Indent tabs until" },
   "config_maxTreeLevel_after": { "message": "level(s) (*Negative value means \"infinite\")" },
