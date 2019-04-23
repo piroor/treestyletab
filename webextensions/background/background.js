@@ -113,6 +113,7 @@ export async function init() {
   onBuilt.dispatch();
   MetricsData.add('init: started listening');
 
+  //provide reloadSidebars() implementation for use in Tab context menu (avoiding cyclical dependencies)
   const reloadSidebarsCommand = reloadSidebars;
   TabContextMenu.init(reloadSidebarsCommand);
   MetricsData.add('init: started initializing of context menu');
@@ -120,13 +121,20 @@ export async function init() {
   Permissions.clearRequest();
 
   for (const windowId of restoredFromCache.keys()) {
+
+    //MAYBE: Is await needed for lines commented with "//await needed?"
+    //Can remove some of the 4 added await uses, possibly later, to speed-up,
+    //but suggest doing *after* fixing the remaining major initialization issues from #2238 (in case this help to avoid or pinpoint them) like:
+    // "Error: Could not establish connection. Receiving end does not exist" 
+    // and "Tab opened during init never sets favicon or sometimes title"?
+  
     if (!restoredFromCache[windowId])
-      await BackgroundCache.reserveToCacheTree(windowId);
-    await TabsUpdate.completeLoadingTabs(windowId);
+      await BackgroundCache.reserveToCacheTree(windowId); //await needed?
+    await TabsUpdate.completeLoadingTabs(windowId); //await needed?
   }
 
   for (const tab of Tab.getAllTabs(null, { iterator: true })) {
-    await updateSubtreeCollapsed(tab);
+    await updateSubtreeCollapsed(tab); //await needed?
   }
   for (const tab of Tab.getActiveTabs()) {
     for (const ancestor of tab.$TST.ancestors) {
@@ -139,7 +147,7 @@ export async function init() {
 
   // we don't need to await that for the initialization of TST itself.
   //waiting to see if helps fix the m
-  await MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
+  await MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend()); //await needed?
 
   mInitialized = true;
   onReady.dispatch();
