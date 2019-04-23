@@ -379,59 +379,83 @@ function onUnderflow(event) {
 }
 
 
-
+const waitMsBeforeSyncTabsOrderRetry = 100;
+const immediatelySyncInsteadOfDelayedOnReservetoSync = true; //MAYBE: If still failing to sync tabs, then try = true instead
 export function reserveToSyncTabsOrder() {
-  if (reserveToSyncTabsOrder.timer)
+  if (immediatelySyncInsteadOfDelayedOnReservetoSync) {
+    syncTabsOrder(); //MAYBE: await and make this async function instead?
+    return;
+  }
+  if (reserveToSyncTabsOrder.timer) {
     clearTimeout(reserveToSyncTabsOrder.timer);
+  }
   reserveToSyncTabsOrder.timer = setTimeout(() => {
     delete reserveToSyncTabsOrder.timer;
     syncTabsOrder();
-  }, 100);
+  }, waitMsBeforeSyncTabsOrderRetry);
 }
-reserveToSyncTabsOrder.retryCount = 0;
 
+async function reloadSidebars() {
+  const windowId = TabsStore.getWindow();
+  await browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_RELOAD_SIDEBARS,
+    windowId
+  }).catch(ApiTabs.createErrorHandler());
+}
+
+
+let reloadAttemptsToSyncOrder = 0;
+const reloadAttemptsToSyncOrderMax = 1;
+const throwErrorOnFailedReloadToResync = false;
+
+//Rewritten by Dan Moorehead <Dan@PowerAnalytics.ai> to fix sync never actually occurring
+//with added support for reloadSidebars() both on-demand (via context menu) and automatically (if reordering fails)
+//to fix Tab Sync, Non-clickable tabs and other critical issues from:
+//https://github.com/piroor/treestyletab/issues/2199 and https://github.com/piroor/treestyletab/issues/2238
 async function syncTabsOrder() {
+
   log('syncTabsOrder');
-  const windowId      = TabsStore.getWindow();
+  const windowId = TabsStore.getWindow();
+  const trackedWindow = TabsStore.windows.get(windowId);
+
+  //sendMessage() performs the following (via a non-async onMessage() implementation):
+  // TabsUpdate.completeLoadingTabs(windowId); // don't wait here for better perfomance
+  // internalOrder = Promise.resolve(trackedWindow.export(true));
+
+  //request current tab order from the browser (shown in tab bar) from background process
   const internalOrder = await browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
   }).catch(ApiTabs.createErrorHandler());
 
+  //OR: if we want internal browser order, should this instead be the following (like done in rebuildAll())?:
+  //const internalOrder = browser.tabs.query({ windowId: mTargetWindow }).catch(ApiTabs.createErrorHandler()),
+
   log('syncTabsOrder: internalOrder = ', internalOrder);
-
-  const trackedWindow = TabsStore.windows.get(windowId);
-  const expectedTabs = internalOrder.slice(0).sort().join('\n');
-  const actualTabs   = trackedWindow.order.sort().join('\n');
-  if (expectedTabs != actualTabs) {
-    if (reserveToSyncTabsOrder.retryCount > 10)
-      throw new Error(`fatal error: mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
-    log('syncTabsOrder: retry');
-    reserveToSyncTabsOrder.retryCount++;
-    return reserveToSyncTabsOrder();
-  }
-  reserveToSyncTabsOrder.retryCount = 0;
-
+  
+  //the actual elements order shown in sidebar?
   const container = trackedWindow.element;
-  if (container.childNodes.length != internalOrder.length) {
-    if (reserveToSyncTabsOrder.retryCount > 10)
-      throw new Error(`fatal error: mismatched number of tabs in the window ${windowId}`);
-    log('syncTabsOrder: retry');
-    reserveToSyncTabsOrder.retryCount++;
-    return reserveToSyncTabsOrder();
-  }
-  reserveToSyncTabsOrder.retryCount = 0;
-
-  trackedWindow.order = internalOrder;
-  let count = 0;
-  for (const tab of trackedWindow.getOrderedTabs()) {
-    tab.index = count++;
-  }
-
   const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
-  const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
-  log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
-  for (const operation of DOMElementsOperations) {
+
+  //NOTE: Now using elementOrders, and comparing *without* sorting first, and not using trackedWindow.order, and not deferring, which all caused issues preventing sync from every actually occurring
+  const expectedTabs = internalOrder.join('\n');
+  const actualTabs = elementsOrder.join('\n');
+
+  //verify if had already set trackedWindow.order = internalOrder for the current tab order (if order matches)
+  if (expectedTabs === actualTabs) {
+    //reset recursive attempts count
+    reloadAttemptsToSyncOrder = 0;
+
+    //tabs already in sync, so return
+    return true; //success
+  }
+
+  const matcher = new SequenceMatcher(elementsOrder, internalOrder);
+  const reorderOperations = matcher.operations();
+  
+  log(`syncTabsOrder: rearrange `, { expectedTabs:expectedTabs, actualTabsInSidebar:actualTabs });
+
+  for (const operation of reorderOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
     switch (tag) {
@@ -452,6 +476,62 @@ async function syncTabsOrder() {
         break;
     }
   }
+
+  //check the new order, after attempted to order to match
+  const elementsOrderAfter = Array.from(container.childNodes, tab => tab.apiTab.id);
+  const actualTabsAfter = elementsOrderAfter.join('\n');
+
+  trackedWindow.order = elementsOrderAfter;
+  trackedWindow.browserOrder = internalOrder;
+
+  //set cached index for each tab? (for element in sidebar?)
+  //now doing afterwards instead (or needed before?)
+  const orderedTabs = trackedWindow.getOrderedTabs();
+  let count = 0;
+  for (const tab of orderedTabs) {
+    tab.index = count++;
+  }
+
+  //finished attempted sync, so check if was successful
+
+  if (expectedTabs === actualTabsAfter) {
+    //successfully did simple reordering
+    log('Synced up Sidebar tabs to browser tab bar via reordering');
+    
+    //reset attempts
+    reloadAttemptsToSyncOrder = 0;
+
+    return true; //success
+  }
+
+  //otherwise, failed to sync it
+  //attempt to reload sidebar instead to auto-fix
+
+  //increment counter to prevent infinite recursion
+  reloadAttemptsToSyncOrder++;
+
+  const warning = `Reloading Sidebar attempt #${reloadAttemptsToSyncOrder} after failed to just reorder Sidebar tabs to match actual browser tab bar for window #${windowId}. Tab index differences:\n${Diff.readable(expectedTabs, actualTabsAfter)}`;
+  
+  //if already exceeded max recursive reload attempts, then error out
+  if (reloadAttemptsToSyncOrder > reloadAttemptsToSyncOrderMax) {
+
+    const syncError = new Error('Sidebar tabs still out-of-sync even after  match browser, even after: ' + warning);
+
+    if (throwErrorOnFailedReloadToResync) {
+      throw syncError;
+    } else {
+      log(syncError); //OR: throw syncError
+    }
+    return false; //failed to sync
+  }
+  
+  log(warning);
+  
+  await reloadSidebars();
+
+  //recursive (limited by reloadAttemptsToSyncOrder counter)
+  return await syncTabsOrder();
+
 }
 
 Window.onInitialized.addListener(windowId => {
