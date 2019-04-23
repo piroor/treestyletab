@@ -408,14 +408,16 @@ async function syncTabsOrder() {
   log('syncTabsOrder: internalOrder = ', internalOrder);
 
   const trackedWindow = TabsStore.windows.get(windowId);
+  const actualOrder   = trackedWindow.order;
   const container     = trackedWindow.element;
   const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
 
-  if (internalOrder.join('\n') == elementsOrder.join('\n')) // no need to sync
-    return;
+  if (internalOrder.join('\n') == elementsOrder.join('\n') &&
+      internalOrder.join('\n') == actualOrder.join('\n'))
+    return; // no need to sync
 
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
-  const actualTabs   = trackedWindow.order.sort().join('\n');
+  const actualTabs   = actualOrder.slice(0).sort().join('\n');
   if (expectedTabs != actualTabs) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.log(`mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
