@@ -381,12 +381,16 @@ function onUnderflow(event) {
 
 
 export function reserveToSyncTabsOrder() {
+  if (configs.delayToRetrySyncTabsOrder <= 0) {
+    syncTabsOrder();
+    return;
+  }
   if (reserveToSyncTabsOrder.timer)
     clearTimeout(reserveToSyncTabsOrder.timer);
   reserveToSyncTabsOrder.timer = setTimeout(() => {
     delete reserveToSyncTabsOrder.timer;
     syncTabsOrder();
-  }, 100);
+  }, configs.delayToRetrySyncTabsOrder);
 }
 reserveToSyncTabsOrder.retryCount = 0;
 

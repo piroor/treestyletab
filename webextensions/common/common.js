@@ -177,6 +177,7 @@ export const configs = new Configs({
   intervalToUpdateProgressForBlockedUserOperation: 50,
   delayToShowProgressForBlockedUserOperation: 1000,
   acceptableDelayForInternalFocusMoving: 150,
+  delayToRetrySyncTabsOrder: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400, // obsolete, migrated to longPressDuration
   longPressDuration: 400,
