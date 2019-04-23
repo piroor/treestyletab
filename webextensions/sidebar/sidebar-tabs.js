@@ -404,7 +404,7 @@ async function syncTabsOrder() {
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_PULL_TABS_ORDER,
       windowId
-    }).catch(ApiTabs.createErrorHandler(),
+    }).catch(ApiTabs.createErrorHandler()),
     browser.tabs.query(windowId).then(tabs => tabs.map(tab => tab.id))
   ]);
 
