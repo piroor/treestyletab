@@ -400,12 +400,15 @@ reserveToSyncTabsOrder.retryCount = 0;
 async function syncTabsOrder() {
   log('syncTabsOrder');
   const windowId      = TabsStore.getWindow();
-  const internalOrder = await browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_PULL_TABS_ORDER,
-    windowId
-  }).catch(ApiTabs.createErrorHandler());
+  const [internalOrder, nativeOrder] = await Promise.all([
+    browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_PULL_TABS_ORDER,
+      windowId
+    }).catch(ApiTabs.createErrorHandler(),
+    browser.tabs.query(windowId).then(tabs => tabs.map(tab => tab.id))
+  ]);
 
-  log('syncTabsOrder: internalOrder = ', internalOrder);
+  log('syncTabsOrder: internalOrder, nativeOrder = ', internalOrder, nativeOrder);
 
   const trackedWindow = TabsStore.windows.get(windowId);
   const actualOrder   = trackedWindow.order;
@@ -413,14 +416,25 @@ async function syncTabsOrder() {
   const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
 
   if (internalOrder.join('\n') == elementsOrder.join('\n') &&
-      internalOrder.join('\n') == actualOrder.join('\n'))
+      internalOrder.join('\n') == actualOrder.join('\n') &&
+      internalOrder.join('\n') == nativeOrder.join('\n'))
     return; // no need to sync
 
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
-  const actualTabs   = actualOrder.slice(0).sort().join('\n');
+  const nativeTabs   = nativeOrder.slice(0).join('\n');
+  if (expectedTabs != nativeTabs) {
+    console.log(`mismatched nativeTabs in the window ${windowId}:\n${Diff.readable(expectedTabs, nativeTabs)}`);
+    browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_RELOAD
+    }).catch(ApiTabs.createErrorSuppressor());
+    return;
+  }
+
+
+  const actualTabs = actualOrder.slice(0).sort().join('\n');
   if (expectedTabs != actualTabs) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
-      console.log(`mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
+      console.log(`mismatched actualTabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
       reserveToSyncTabsOrder.retryCount = 0;
       return onSyncFailed.dispatch();
     }
