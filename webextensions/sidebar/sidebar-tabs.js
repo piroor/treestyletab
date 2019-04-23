@@ -25,6 +25,7 @@ import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -33,6 +34,8 @@ function log(...args) {
 let mInitialized = false;
 
 export const wholeContainer = document.querySelector('#all-tabs');
+
+export const onSyncFailed = new EventListenerManager();
 
 export function init() {
   mInitialized = true;
@@ -405,21 +408,32 @@ async function syncTabsOrder() {
   log('syncTabsOrder: internalOrder = ', internalOrder);
 
   const trackedWindow = TabsStore.windows.get(windowId);
+  const container     = trackedWindow.element;
+  const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
+
+  if (internalOrder.join('\n') == elementsOrder.join('\n')) // no need to sync
+    return;
+
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
   const actualTabs   = trackedWindow.order.sort().join('\n');
   if (expectedTabs != actualTabs) {
-    if (reserveToSyncTabsOrder.retryCount > 10)
-      throw new Error(`fatal error: mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
+    if (reserveToSyncTabsOrder.retryCount > 10) {
+      console.log(`mismatched tabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
+      reserveToSyncTabsOrder.retryCount = 0;
+      return onSyncFailed.dispatch();
+    }
     log('syncTabsOrder: retry');
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
   reserveToSyncTabsOrder.retryCount = 0;
 
-  const container = trackedWindow.element;
   if (container.childNodes.length != internalOrder.length) {
-    if (reserveToSyncTabsOrder.retryCount > 10)
-      throw new Error(`fatal error: mismatched number of tabs in the window ${windowId}`);
+    if (reserveToSyncTabsOrder.retryCount > 10) {
+      console.log(`mismatched number of tabs in the window ${windowId}`);
+      reserveToSyncTabsOrder.retryCount = 0;
+      return onSyncFailed.dispatch();
+    }
     log('syncTabsOrder: retry');
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
@@ -432,7 +446,6 @@ async function syncTabsOrder() {
     tab.index = count++;
   }
 
-  const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
   const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
   log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
   for (const operation of DOMElementsOperations) {

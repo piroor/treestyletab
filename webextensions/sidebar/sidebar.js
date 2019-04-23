@@ -102,7 +102,7 @@ export async function init() {
 
   let promisedAllTabsTracked;
   UserOperationBlocker.setProgress(0);
-  const [nativeTabs] = await Promise.all([
+  await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
       const tabs = await MetricsData.addAsync('browser.tabs.query', browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()));
       preloadCache(tabs[tabs.length-1].id);
@@ -166,12 +166,14 @@ export async function init() {
       if (configs.useCachedTree)
         cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs, caches: mPreloadedCaches }));
       mPreloadedCaches.clear();
-      restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
+      restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedTabs, cachedContents && cachedContents.tabbar));
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
       BackgroundConnection.connect();
       onConfigChange('applyBrowserTheme');
+
+      SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
 
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
@@ -407,7 +409,7 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-export async function rebuildAll(tabs, importedTabs, cache) {
+export async function rebuildAll(importedTabs, cache) {
   MetricsData.add('rebuildAll: start');
   const range = document.createRange();
   range.selectNodeContents(SidebarTabs.wholeContainer);
@@ -418,7 +420,13 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   if (!trackedWindow)
     Window.init(mTargetWindow);
 
-  tabs = importedTabs.map(importedTab => Tab.import(importedTab));
+  if (!importedTabs)
+    importedTabs = await MetricsData.addAsync('rebuildAll: import tabs', browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_PING_TO_BACKGROUND,
+      windowId: mTargetWindow
+    }).catch(ApiTabs.createErrorHandler()));
+
+  let tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   if (cache) {
     const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs });
