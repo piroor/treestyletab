@@ -144,19 +144,27 @@ export async function init() {
   BackgroundCache.activate();
   TreeStructure.startTracking();
 
-  // notify that the master process is ready.
+  await MetricsData.addAsync('init: exporting tabs to sidebars', notifyReadyToSidebars());
+
+  log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
+}
+
+async function notifyReadyToSidebars() {
+  const promisedResults = [];
   for (const window of TabsStore.windows.values()) {
+    // Skip windows already detected as "opened", because the "opened" status
+    // means that the connection is estabilished and there is no need to
+    // receive tabs exported at here.
     if (SidebarConnection.isOpen(window.id))
-      return;
+      continue;
     TabsUpdate.completeLoadingTabs(window.id); // failsafe
-    browser.runtime.sendMessage({
+    promisedResults.push(browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
-    });
+    }).catch(ApiTabs.createErrorSuppressor()));
   }
-
-  log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
+  return Promise.all(promisedResults);
 }
 
 function updatePanelUrl() {
