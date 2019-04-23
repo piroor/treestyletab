@@ -81,6 +81,7 @@ Background.onDestroy.addListener(() => {
 });
 
 
+
 function onToolbarButtonClick(tab) {
   if (Permissions.requestPostProcess())
     return;
@@ -89,6 +90,16 @@ function onToolbarButtonClick(tab) {
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();
+}
+
+
+//only works in response to a user action (and therefore can't be used indirectly via message sent to background)
+//slower alternative to reloadSidebars() in background.js
+async function reopenSidebar() {
+  //if (!Permissions.requestPostProcess()) return;
+  //if (!SidebarConnection.isOpen(windowId)) return;
+  await browser.sidebarAction.close();
+  await browser.sidebarAction.open();
 }
 
 async function onShortcutCommand(command) {
@@ -209,6 +220,10 @@ async function onShortcutCommand(command) {
     case 'focusFirstChild':
       TabsInternalOperation.activateTab(activeTab.$TST.firstChild);
       return;
+      
+    case 'reloadSidebars':
+      Background.reloadSidebars();
+      break;
 
     case 'tabbarUp':
       SidebarConnection.sendMessage({
