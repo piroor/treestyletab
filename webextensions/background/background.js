@@ -278,7 +278,7 @@ export async function reload(options = {}) {
     if (!SidebarConnection.isOpen(window.id))
       continue;
     browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_RELOAD_SIDEBARS
+      type: Constants.kCOMMAND_RELOAD
     }).catch(ApiTabs.createErrorSuppressor());
   }
 }
