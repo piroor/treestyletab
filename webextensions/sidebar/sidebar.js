@@ -18,6 +18,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -151,8 +152,16 @@ export async function init() {
   const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
   UserOperationBlocker.setProgress(16); // 1/6: wait background page
+
+  //importsTabs is set to result of importTabsFromBackground() (window.export(true) returned from exportTabsToSidebar() in background.js)
+  //but only if and when promisedAllTabsTracked() has completed (which executes either way)
+  //and only if have tab caching enabled (is by default) and background tab exporting enabled (now disabled by default as fails with errors)
+  //WARNING: configs.useCachedTreeBackgroundExport = false by default now, because sendMessage() in exportTabsToSidebar() results in error:
+  // "Error: Could not establish connection. Receiving end does not exist"
   const [importedTabs] = await Promise.all([
-    MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()),
+    ( (configs.useCachedTree && configs.useCachedTreeBackgroundExport)
+      ? MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()) 
+      : []),
     MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
   ]);
 
@@ -231,7 +240,8 @@ export async function init() {
     })
   ]));
 
-  TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
+  //MAYBE: await now instead, to see if avoids the "Error: Could not establish connection. Receiving end does not exist." and other failed init errors and tabs opened during init failing to ever show as loaded? 
+  await TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
 
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
@@ -241,6 +251,7 @@ export async function init() {
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
 }
+
 
 function applyStyle(style) {
   mStyle = style || configs.style;
@@ -407,7 +418,11 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
+//NOTE: tabs parameter is ignored, overwritten before used
 export async function rebuildAll(tabs, importedTabs, cache) {
+
+  if (!importedTabs) importedTabs = [];
+
   MetricsData.add('rebuildAll: start');
   const range = document.createRange();
   range.selectNodeContents(SidebarTabs.wholeContainer);
@@ -431,13 +446,18 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   // Re-get tabs before rebuilding tree, because they can be modified while
   // waiting for SidebarCache.restoreTabsFromCache().
   await MetricsData.addAsync('rebuildAll: re-import tabs before rebuilding tree', async () => {
-    const [nativeTabs, importedTabs] = await Promise.all([
+    let [nativeTabs, importedTabs] = await Promise.all([
       browser.tabs.query({ windowId: mTargetWindow }).catch(ApiTabs.createErrorHandler()),
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_PULL_TABS,
         windowId: mTargetWindow
       })
     ]);
+    if (!importedTabs) {
+      //is this an error that needs to be fixed?
+      //this occurs when open tab while TST is still initializing (when have it auto open in sidebar on Firefox startup)
+      importedTabs = [];
+    }
     let lastDraw = Date.now();
     let count = 0;
     const maxCount = nativeTabs.length;
