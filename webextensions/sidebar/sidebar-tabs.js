@@ -423,30 +423,18 @@ async function syncTabsOrder() {
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
   const nativeTabs   = nativeOrder.slice(0).join('\n');
   if (expectedTabs != nativeTabs) {
-    console.log(`mismatched nativeTabs in the window ${windowId}:\n${Diff.readable(expectedTabs, nativeTabs)}`);
+    console.log(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`);
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_RELOAD
     }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
 
-
   const actualTabs = actualOrder.slice(0).sort().join('\n');
-  if (expectedTabs != actualTabs) {
+  if (expectedTabs != actualTabs ||
+      container.childNodes.length != internalOrder.length) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
-      console.log(`mismatched actualTabs in the window ${windowId}:\n${Diff.readable(expectedTabs, actualTabs)}`);
-      reserveToSyncTabsOrder.retryCount = 0;
-      return onSyncFailed.dispatch();
-    }
-    log('syncTabsOrder: retry');
-    reserveToSyncTabsOrder.retryCount++;
-    return reserveToSyncTabsOrder();
-  }
-  reserveToSyncTabsOrder.retryCount = 0;
-
-  if (container.childNodes.length != internalOrder.length) {
-    if (reserveToSyncTabsOrder.retryCount > 10) {
-      console.log(`mismatched number of tabs in the window ${windowId}`);
+      console.log(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`);
       reserveToSyncTabsOrder.retryCount = 0;
       return onSyncFailed.dispatch();
     }
