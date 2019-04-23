@@ -269,20 +269,6 @@ async function rebuildAll(windows) {
   return restoredFromCache;
 }
 
-export async function reload(options = {}) {
-  mPreloadedCaches.clear();
-  await MetricsData.addAsync('reload: rebuildAll', rebuildAll());
-  if (!options.all)
-    return;
-  for (const window of TabsStore.windows.values()) {
-    if (!SidebarConnection.isOpen(window.id))
-      continue;
-    browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_RELOAD
-    }).catch(ApiTabs.createErrorSuppressor());
-  }
-}
-
 export async function tryStartHandleAccelKeyOnTab(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;

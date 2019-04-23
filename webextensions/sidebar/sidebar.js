@@ -862,10 +862,6 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS:
       log('kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS: ', { message, mTargetWindow });
       return confirmToAutoGroupNewTabs(message.tabIds);
-
-    case Constants.kCOMMAND_RELOAD:
-      location.reload();
-      return;
   }
 }
 
