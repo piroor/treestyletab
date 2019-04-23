@@ -192,6 +192,10 @@ export const configs = new Configs({
 
   useCachedTree: true,
 
+  //workaround for: https://github.com/piroor/treestyletab/issues/2199 and parts of https://github.com/piroor/treestyletab/issues/2238
+  //WARNING: leave as false to avoid "Error: Could not establish connection. Receiving end does not exist" in exportTabsToSidebar()
+  useCachedTreeBackgroundExport: true,
+
   // This should be removed after https://bugzilla.mozilla.org/show_bug.cgi?id=1388193
   // or https://bugzilla.mozilla.org/show_bug.cgi?id=1421329 become fixed.
   // Otherwise you need to set "svg.context-properties.content.enabled"="true" via "about:config".

@@ -113,19 +113,20 @@ export async function init() {
   onBuilt.dispatch();
   MetricsData.add('init: started listening');
 
-  TabContextMenu.init();
+  const reloadSidebarsCommand = reloadSidebars;
+  TabContextMenu.init(reloadSidebarsCommand);
   MetricsData.add('init: started initializing of context menu');
 
   Permissions.clearRequest();
 
   for (const windowId of restoredFromCache.keys()) {
     if (!restoredFromCache[windowId])
-      BackgroundCache.reserveToCacheTree(windowId);
-    TabsUpdate.completeLoadingTabs(windowId);
+      await BackgroundCache.reserveToCacheTree(windowId);
+    await TabsUpdate.completeLoadingTabs(windowId);
   }
 
   for (const tab of Tab.getAllTabs(null, { iterator: true })) {
-    updateSubtreeCollapsed(tab);
+    await updateSubtreeCollapsed(tab);
   }
   for (const tab of Tab.getActiveTabs()) {
     for (const ancestor of tab.$TST.ancestors) {
@@ -137,26 +138,61 @@ export async function init() {
   }
 
   // we don't need to await that for the initialization of TST itself.
-  MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
+  //waiting to see if helps fix the m
+  await MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
 
   mInitialized = true;
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
 
-  // notify that the master process is ready.
-  for (const window of TabsStore.windows.values()) {
-    if (SidebarConnection.isOpen(window.id))
-      return;
-    TabsUpdate.completeLoadingTabs(window.id); // failsafe
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
-      windowId: window.id,
-      tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
-    });
+  if (configs.useCachedTree && configs.useCachedTreeBackgroundExport) {
+    //WARNING: simply results in "Error: Could not establish connection. Receiving end does not exist" on sendMessage()
+    //so disabled by default now, and never done if caching is disabled
+    //workaround for: https://github.com/piroor/treestyletab/issues/2199 and parts of https://github.com/piroor/treestyletab/issues/2238
+    await exportTabsToSidebar();
   }
 
   log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
+}
+
+//auto-fix if tab sync or other issues occur, either automatically (eg. to be called from syncTabsOrder()) or on-demand (eg. via sidebar context menu by user)
+//workaround for: https://github.com/piroor/treestyletab/issues/2199 and parts of https://github.com/piroor/treestyletab/issues/2238
+export async function reloadSidebars() {
+  const promisedWindows = browser.windows.getAll({
+    populate:    true,
+    windowTypes: ['normal']
+  }).catch(ApiTabs.createErrorHandler());
+
+  const windows = await MetricsData.addAsync('reinit: getting all tabs across windows', promisedWindows);
+  
+  const restoredFromCache = await MetricsData.addAsync('reinit: rebuildAll', rebuildAll(windows));
+  //clear cache
+  mPreloadedCaches.clear();
+  //await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
+  //need to notify Sidebar to refresh?
+}
+export async function exportTabsToSidebar() {
+  //is this required only for session restore?
+
+  const skipInitIfAlreadyOpen = true //original = true;
+
+  // notify that the master process is ready.
+  for (const window of TabsStore.windows.values()) {
+    if (skipInitIfAlreadyOpen && SidebarConnection.isOpen(window.id))
+      return;
+    //changed to await to see if reduces frequency of below error
+    await TabsUpdate.completeLoadingTabs(window.id); // failsafe
+
+    //WARNING: sendMessage() results in "Error: Could not establish connection. Receiving end does not exist"
+    //MAYBE: so if want to continue to use this, should either have sidebar do after init or cache here until requested by sidebar?
+
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
+      windowId: window.id,
+      tabs:     window.export(true) // send tabs together to optimize further initialization tasks in the sidebar
+    });
+  }
 }
 
 function updatePanelUrl() {
