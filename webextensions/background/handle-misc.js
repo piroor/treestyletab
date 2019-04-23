@@ -264,6 +264,9 @@ function onMessage(message, sender) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
+    case Constants.kCOMMAND_RELOAD:
+     return Background.reload({ all: message.all });
+
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         if (!Tab.get(message.tabId))
