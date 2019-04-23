@@ -164,6 +164,9 @@
     "focusFirstChild": {
       "description": "__MSG_command_focusFirstChild__"
     },
+    "reloadSidebars": {
+      "description": "__MSG_command_reloadSidebars__"
+    },
     "tabbarUp": {
       "description": "__MSG_command_tabbarUp__ (Alt+Shift+Up)"
     },
