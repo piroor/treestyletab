@@ -77,6 +77,11 @@ export function init() {
   browser.windows.onRemoved.addListener(onWindowRemoved);
 }
 
+let mPromisedStartedResolver;
+let mPromisedStarted = new Promise((resolve, _reject) => {
+  mPromisedStartedResolver = resolve;
+});
+
 export function destroy() {
   mPromisedStartedResolver = undefined;
   mPromisedStarted = undefined;
@@ -90,11 +95,6 @@ export function destroy() {
   browser.tabs.onDetached.removeListener(onDetached);
   browser.windows.onRemoved.removeListener(onWindowRemoved);
 }
-
-let mPromisedStartedResolver;
-let mPromisedStarted = new Promise((resolve, _reject) => {
-  mPromisedStartedResolver = resolve;
-});
 
 export function start() {
   if (!mPromisedStartedResolver)
