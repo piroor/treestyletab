@@ -397,7 +397,7 @@ export function reserveToSyncTabsOrder() {
 }
 reserveToSyncTabsOrder.retryCount = 0;
 
-export async function syncTabsOrder() {
+async function syncTabsOrder() {
   log('syncTabsOrder');
   const windowId      = TabsStore.getWindow();
   const [internalOrder, nativeOrder] = await Promise.all([
