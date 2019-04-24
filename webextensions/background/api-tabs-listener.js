@@ -823,7 +823,8 @@ async function onDetached(tabId, detachInfo) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,
       windowId: detachInfo.oldWindowId,
-      tabId
+      tabId,
+      wasPinned: oldTab.pinned
     });
 
     TabsStore.addRemovedTab(oldTab);

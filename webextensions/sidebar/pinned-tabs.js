@@ -162,7 +162,6 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
-    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       // don't wait until tracked here, because removing or detaching tab will become untracked!
@@ -175,6 +174,11 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
       reserveToReposition();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+      if (message.wasPinned)
+        reserveToReposition();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
