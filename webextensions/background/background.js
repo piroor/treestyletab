@@ -110,7 +110,7 @@ export async function init() {
     await promisedNotificationTab;
 
   ContextualIdentities.startObserve();
-  onBuilt.dispatch();
+  onBuilt.dispatch(); // after this line, this master process may receive "kCOMMAND_PING_TO_BACKGROUND" requests from sidebars.
   MetricsData.add('init: started listening');
 
   TabContextMenu.init();

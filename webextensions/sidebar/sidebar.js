@@ -234,7 +234,13 @@ export async function init() {
   ]));
 
   TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
-  SidebarTabs.reserveToSyncTabsOrder(); // failsafe
+
+  // Failsafe for tabs opened in the window between "importTabsFromBackground()"
+  // and "BackgroundConnection.connect()". Sadly such tabs are never tracked by
+  // this sidebar process, so the sync operation will fail after retryings and
+  // will notify SidebarTabs.onSyncFailed event, then this sidebar page will be
+  // reloaded for complete retry.
+  SidebarTabs.reserveToSyncTabsOrder();
 
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
