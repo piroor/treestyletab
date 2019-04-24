@@ -252,6 +252,10 @@ function updateItems() {
 }
 
 export const onClick = (info, tab) => {
+  // Extra context menu commands won't be available on the blank area of the tab bar.
+  if (!tab)
+    return;
+
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tab.get(tab.id);
