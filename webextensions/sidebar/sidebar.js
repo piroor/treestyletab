@@ -234,6 +234,7 @@ export async function init() {
   ]));
 
   TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
+  SidebarTabs.syncTabsOrder(); // failsafe
 
   document.documentElement.classList.remove('initializing');
   mInitialized = true;

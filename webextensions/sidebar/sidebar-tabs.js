@@ -397,7 +397,7 @@ export function reserveToSyncTabsOrder() {
 }
 reserveToSyncTabsOrder.retryCount = 0;
 
-async function syncTabsOrder() {
+export async function syncTabsOrder() {
   log('syncTabsOrder');
   const windowId      = TabsStore.getWindow();
   const [internalOrder, nativeOrder] = await Promise.all([
@@ -417,22 +417,26 @@ async function syncTabsOrder() {
 
   if (internalOrder.join('\n') == elementsOrder.join('\n') &&
       internalOrder.join('\n') == actualOrder.join('\n') &&
-      internalOrder.join('\n') == nativeOrder.join('\n'))
+      internalOrder.join('\n') == nativeOrder.join('\n')) {
+    reserveToSyncTabsOrder.retryCount = 0;
     return; // no need to sync
+  }
 
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
   const nativeTabs   = nativeOrder.slice(0).sort().join('\n');
   if (expectedTabs != nativeTabs) {
     console.log(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`);
+    reserveToSyncTabsOrder.retryCount = 0;
     browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_RELOAD
+      type: Constants.kCOMMAND_RELOAD,
+      all:  true
     }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
 
   const actualTabs = actualOrder.slice(0).sort().join('\n');
   if (expectedTabs != actualTabs ||
-      container.childNodes.length != internalOrder.length) {
+      elementsOrder.length != internalOrder.length) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.log(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`);
       reserveToSyncTabsOrder.retryCount = 0;
