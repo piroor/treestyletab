@@ -433,8 +433,8 @@ async function updateTabHighlighted(tab, highlighted) {
 
 
 export async function completeLoadingTabs(windowId) {
-  const completedTabs = new Set(await browser.tabs.query({ windowId, status: 'complete' }));
-  for (const tab of Tab.getLoadingTabs(window.id, { ordered: false, iterator: true })) {
+  const completedTabs = new Set((await browser.tabs.query({ windowId, status: 'complete' })).map(tab => tab.id));
+  for (const tab of Tab.getLoadingTabs(windowId, { ordered: false, iterator: true })) {
     if (completedTabs.has(tab.id))
       updateTab(tab, { status: 'complete' });
   }
