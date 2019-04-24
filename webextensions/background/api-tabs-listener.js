@@ -65,7 +65,7 @@ function logUpdated(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
-export function startListen() {
+export function init() {
   browser.tabs.onActivated.addListener(onActivated);
   browser.tabs.onUpdated.addListener(onUpdated);
   browser.tabs.onHighlighted.addListener(onHighlighted);
@@ -77,7 +77,9 @@ export function startListen() {
   browser.windows.onRemoved.addListener(onWindowRemoved);
 }
 
-export function endListen() {
+export function destroy() {
+  mPromisedStartedResolver = undefined;
+  mPromisedStarted = undefined;
   browser.tabs.onActivated.removeListener(onActivated);
   browser.tabs.onUpdated.removeListener(onUpdated);
   browser.tabs.onHighlighted.removeListener(onHighlighted);
@@ -89,6 +91,18 @@ export function endListen() {
   browser.windows.onRemoved.removeListener(onWindowRemoved);
 }
 
+let mPromisedStartedResolver;
+let mPromisedStarted = new Promise((resolve, _reject) => {
+  mPromisedStartedResolver = resolve;
+});
+
+export function start() {
+  if (!mPromisedStartedResolver)
+    return;
+  mPromisedStartedResolver();
+  mPromisedStartedResolver = undefined;
+  mPromisedStarted = undefined;
+}
 
 
 const mTabOperationQueue = [];
@@ -113,6 +127,9 @@ function warnTabDestroyedWhileWaiting(tabId, tab) {
 
 
 async function onActivated(activeInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   TabsStore.activeTabInWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
 
   const [onCompleted, previous] = addTabOperationQueue();
@@ -197,6 +214,9 @@ async function onActivated(activeInfo) {
 }
 
 async function onUpdated(tabId, changeInfo, tab) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
@@ -268,7 +288,10 @@ async function onUpdated(tabId, changeInfo, tab) {
 
 const mTabsHighlightedTimers = new Map();
 const mLastHighlightedCount  = new Map();
-function onHighlighted(highlightInfo) {
+async function onHighlighted(highlightInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   let timer = mTabsHighlightedTimers.get(highlightInfo.windowId);
   if (timer)
     clearTimeout(timer);
@@ -296,7 +319,10 @@ function onHighlighted(highlightInfo) {
   mTabsHighlightedTimers.set(highlightInfo.windowId, timer);
 }
 
-function onCreated(tab) {
+async function onCreated(tab) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   log('tabs.onCreated: ', dumpTab(tab));
   return onNewTabTracked(tab);
 }
@@ -541,6 +567,9 @@ function checkRecycledTab(windowId) {
 }
 
 async function onRemoved(tabId, removeInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   log('tabs.onRemoved: ', tabId, removeInfo);
   const window              = Window.init(removeInfo.windowId);
   const byInternalOperation = window.internalClosingTabs.has(tabId);
@@ -629,6 +658,9 @@ async function onRemoved(tabId, removeInfo) {
 }
 
 async function onMoved(tabId, moveInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   const window = Window.init(moveInfo.windowId);
 
   // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
@@ -744,6 +776,9 @@ async function onMoved(tabId, moveInfo) {
 const mTreeInfoForTabsMovingAcrossWindows = new Map();
 
 async function onAttached(tabId, attachInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
@@ -793,6 +828,9 @@ async function onAttached(tabId, attachInfo) {
 }
 
 async function onDetached(tabId, detachInfo) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
@@ -852,6 +890,9 @@ async function onDetached(tabId, detachInfo) {
 }
 
 async function onWindowRemoved(windowId) {
+  if (mPromisedStarted)
+    await mPromisedStarted;
+
   mTabsHighlightedTimers.delete(windowId);
   mLastHighlightedCount.delete(windowId);
 

@@ -82,6 +82,7 @@ export async function init() {
         populate:    true,
         windowTypes: ['normal']
       }).catch(ApiTabs.createErrorHandler());
+      ApiTabsListener.init();
     }),
     ContextualIdentities.init(),
     configs.$loaded
@@ -100,7 +101,7 @@ export async function init() {
   mPreloadedCaches.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
-  ApiTabsListener.startListen();
+  ApiTabsListener.start();
 
   // Open new tab now (after listening is started, before the end of initialization),
   // because the sidebar may fail to track tabs.onCreated for the tab while its
@@ -211,7 +212,7 @@ function destroy() {
   }).catch(ApiTabs.createErrorSuppressor());
 
   onDestroy.dispatch();
-  ApiTabsListener.endListen();
+  ApiTabsListener.destroy();
   ContextualIdentities.endObserve();
 }
 
