@@ -216,6 +216,11 @@ function destroy() {
 }
 
 async function rebuildAll(windows) {
+  if (!windows)
+    windows = await browser.windows.getAll({
+      populate:    true,
+      windowTypes: ['normal']
+    }).catch(ApiTabs.createErrorHandler());
   const restoredFromCache = new Map();
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
