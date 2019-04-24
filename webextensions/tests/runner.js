@@ -24,12 +24,13 @@ let mLogs;
 
 async function run() {
   await configs.$loaded;
-  ApiTabsListener.startListen();
+  ApiTabsListener.init();
+  ApiTabsListener.start();
   mResults = document.getElementById('results');
   mLogs = document.getElementById('logs');
   const configValues = backupConfigs();
   await runAll();
-  ApiTabsListener.endListen();
+  ApiTabsListener.destroy();
   await restoreConfigs(configValues);
 }
 
