@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Fix "never completely loaded" appearance of tabs opened while TST is initializing.
+   * Update layout of pinned tabs correctly after any pinned tab is detached from an window.
+   * Reload all sidebars when untracked tabs are detected which are opened while TST is initializing. This "auto fix" behavior is [proposed by Dan Moorehead](https://github.com/piroor/treestyletab/pull/2239), thanks!
  - 3.0.7 (2019.4.18)
    * Show color sampels of custom CSS properties more correctly.
    * Open duplicated tab as an independent or a next sibling tab more correctly.
