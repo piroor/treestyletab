@@ -408,12 +408,12 @@ async function syncTabsOrder() {
     browser.tabs.query({ windowId }).then(tabs => tabs.map(tab => tab.id))
   ]);
 
-  log('syncTabsOrder: internalOrder, nativeOrder = ', internalOrder, nativeOrder);
-
   const trackedWindow = TabsStore.windows.get(windowId);
   const actualOrder   = trackedWindow.order;
   const container     = trackedWindow.element;
   const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
+
+  log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder, elementsOrder });
 
   if (internalOrder.join('\n') == elementsOrder.join('\n') &&
       internalOrder.join('\n') == actualOrder.join('\n') &&
