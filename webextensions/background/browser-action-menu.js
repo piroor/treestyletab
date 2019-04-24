@@ -215,75 +215,122 @@ const mItems = [
     title:    browser.i18n.getMessage('config_context_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeTree_label'),
-        key:   'context_closeTabOptions_closeTree',
+        title: browser.i18n.getMessage('config_extraItems_topLevel'),
+        enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_reloadTree_label'),
+        key:   'context_topLevel_reloadTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeDescendants_label'),
-        key:   'context_closeTabOptions_closeDescendants',
+        title: indent() + browser.i18n.getMessage('context_reloadDescendants_label'),
+        key:   'context_topLevel_reloadDescendants',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeOthers_label'),
-        key:   'context_closeTabOptions_closeOthers',
+        title: indent() + browser.i18n.getMessage('context_closeTree_label'),
+        key:   'context_topLevel_closeTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_closeDescendants_label'),
+        key:   'context_topLevel_closeDescendants',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_closeOthers_label'),
+        key:   'context_topLevel_closeOthers',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_collapseTree_label'),
+        key:   'context_topLevel_collapseTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_collapseAll_label'),
+        key:   'context_topLevel_collapseAll',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_expandTree_label'),
+        key:   'context_topLevel_expandTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_expandAll_label'),
+        key:   'context_topLevel_expandAll',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_bookmarkTree_label'),
+        key:   'context_topLevel_bookmarkTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_groupTabs_label'),
+        key:   'context_topLevel_groupTabs',
         type:  'checkbox'
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('context_reloadTree_label'),
+        title: browser.i18n.getMessage('config_extraItems_subMenu'),
+        enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_reloadTree_label'),
         key:   'context_reloadTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_reloadDescendants_label'),
+        title: indent() + browser.i18n.getMessage('context_reloadDescendants_label'),
         key:   'context_reloadDescendants',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_closeTree_label'),
+        title: indent() + browser.i18n.getMessage('context_closeTree_label'),
         key:   'context_closeTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_closeDescendants_label'),
+        title: indent() + browser.i18n.getMessage('context_closeDescendants_label'),
         key:   'context_closeDescendants',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_closeOthers_label'),
+        title: indent() + browser.i18n.getMessage('context_closeOthers_label'),
         key:   'context_closeOthers',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_collapseTree_label'),
+        title: indent() + browser.i18n.getMessage('context_collapseTree_label'),
         key:   'context_collapseTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_collapseAll_label'),
+        title: indent() + browser.i18n.getMessage('context_collapseAll_label'),
         key:   'context_collapseAll',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_expandTree_label'),
+        title: indent() + browser.i18n.getMessage('context_expandTree_label'),
         key:   'context_expandTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_expandAll_label'),
+        title: indent() + browser.i18n.getMessage('context_expandAll_label'),
         key:   'context_expandAll',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_bookmarkTree_label'),
+        title: indent() + browser.i18n.getMessage('context_bookmarkTree_label'),
         key:   'context_bookmarkTree',
         type:  'checkbox'
       },
-      { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_emulateDefaultContextMenu_label'),
-        key:   'emulateDefaultContextMenu',
+        title: indent() + browser.i18n.getMessage('context_groupTabs_label'),
+        key:   'context_groupTabs',
         type:  'checkbox'
       }
     ]

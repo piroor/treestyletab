@@ -34,6 +34,12 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_reload_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
   },
+  'context_topLevel_reloadTree': {
+    title:              browser.i18n.getMessage('context_reloadTree_label')
+  },
+  'context_topLevel_reloadDescendants': {
+    title:              browser.i18n.getMessage('context_reloadDescendants_label')
+  },
   'context_toggleMuteTab-mute': {
     title:              browser.i18n.getMessage('tabContextMenu_mute_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_mute_label_multiselected')
@@ -63,6 +69,9 @@ const mItemsById = {
   'context_bookmarkTab': {
     title:              browser.i18n.getMessage('tabContextMenu_bookmark_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
+  },
+  'context_topLevel_bookmarkTree': {
+    title: browser.i18n.getMessage('context_bookmarkTree_label')
   },
   'context_reopenInContainer': {
     title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
@@ -95,20 +104,35 @@ const mItemsById = {
   'context_separator:afterReloadAll': {
     type: 'separator'
   },
+  'context_topLevel_collapseTree': {
+    title: browser.i18n.getMessage('context_collapseTree_label')
+  },
+  'context_topLevel_collapseAll': {
+    title: browser.i18n.getMessage('context_collapseAll_label')
+  },
+  'context_topLevel_expandTree': {
+    title: browser.i18n.getMessage('context_expandTree_label')
+  },
+  'context_topLevel_expandAll': {
+    title: browser.i18n.getMessage('context_expandAll_label')
+  },
+  'context_separator:afterCollapseExpand': {
+    type: 'separator'
+  },
   'context_closeTabsToTheEnd': {
-    title:    browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
+    title: browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
   },
   'context_closeOtherTabs': {
-    title:    browser.i18n.getMessage('tabContextMenu_closeOther_label')
+    title: browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
-  'context_closeTabOptions_closeTree': {
-    title:    browser.i18n.getMessage('context_closeTree_label')
+  'context_topLevel_closeTree': {
+    title: browser.i18n.getMessage('context_closeTree_label')
   },
-  'context_closeTabOptions_closeDescendants': {
-    title:    browser.i18n.getMessage('context_closeDescendants_label')
+  'context_topLevel_closeDescendants': {
+    title: browser.i18n.getMessage('context_closeDescendants_label')
   },
-  'context_closeTabOptions_closeOthers': {
-    title:    browser.i18n.getMessage('context_closeOthers_label')
+  'context_topLevel_closeOthers': {
+    title: browser.i18n.getMessage('context_closeOthers_label')
   },
   'context_undoCloseTab': {
     title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
@@ -116,6 +140,12 @@ const mItemsById = {
   'context_closeTab': {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
+  },
+  'context_separator:afterClose': {
+    type: 'separator'
+  },
+  'context_topLevel_groupTabs': {
+    title: browser.i18n.getMessage('context_groupTabs_label')
   },
 
   'noContextTab:context_reloadTab': {
@@ -380,6 +410,13 @@ async function onShown(info, contextTab) {
     visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
+  updateItem('context_topLevel_reloadTree', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_reloadTree
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_reloadDescendants', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_reloadDescendants,
+    enabled: contextTab && contextTab.$TST.hasChild
+  }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
     visible: emulate && contextTab && (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
     multiselected
@@ -409,6 +446,9 @@ async function onShown(info, contextTab) {
   updateItem('context_bookmarkTab', {
     visible: emulate && contextTab,
     multiselected: multiselected || !contextTab
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_bookmarkTree', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_bookmarkTree
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
@@ -456,6 +496,21 @@ async function onShown(info, contextTab) {
     visible: emulate && !mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
 
+  updateItem('context_topLevel_collapseTree', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseTree,
+    enabled: contextTab && contextTab.$TST.hasChild
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_collapseAll', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseAll
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_expandTree', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandTree,
+    enabled: contextTab && contextTab.$TST.hasChild
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_expandAll', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
+  }) && modifiedItemsCount++;
+
   updateItem('context_closeTabsToTheEnd', {
     visible: emulate && contextTab,
     enabled: hasMultipleNormalTabs && nextTab,
@@ -467,17 +522,15 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
 
-  updateItem('context_closeTabOptions_closeTree', {
-    visible: emulate && contextTab && configs.context_closeTabOptions_closeTree,
-    enabled: !multiselected
+  updateItem('context_topLevel_closeTree', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeTree
   }) && modifiedItemsCount++;
-  updateItem('context_closeTabOptions_closeDescendants', {
-    visible: emulate && contextTab && configs.context_closeTabOptions_closeDescendants,
-    enabled: !multiselected && contextTab && contextTab.$TST.hasChild
+  updateItem('context_topLevel_closeDescendants', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeDescendants,
+    enabled: contextTab && contextTab.$TST.hasChild
   }) && modifiedItemsCount++;
-  updateItem('context_closeTabOptions_closeOthers', {
-    visible: emulate && contextTab && configs.context_closeTabOptions_closeOthers,
-    enabled: !multiselected
+  updateItem('context_topLevel_closeOthers', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeOthers
   }) && modifiedItemsCount++;
 
   updateItem('context_undoCloseTab', {
@@ -503,9 +556,15 @@ async function onShown(info, contextTab) {
     visible: emulate && !contextTab
   }) && modifiedItemsCount++;
 
+  updateItem('context_topLevel_groupTabs', {
+    visible: emulate && multiselected && contextTab && configs.context_topLevel_groupTabs
+  }) && modifiedItemsCount++;
+
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
   updateSeparator('context_separator:afterSendTab') && modifiedItemsCount++;
   updateSeparator('context_separator:afterReloadAll') && modifiedItemsCount++;
+  updateSeparator('context_separator:afterCollapseExpand') && modifiedItemsCount++;
+  updateSeparator('context_separator:afterClose') && modifiedItemsCount++;
 
   const flattenExtraItems = Array.from(mExtraItems.values()).flat();
 

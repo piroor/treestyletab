@@ -241,6 +241,8 @@
   "config_context_caption": { "message": "Context Menu" },
   "config_emulateDefaultContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
   "config_extraItems_caption": { "message": "Additional Context Menu Items" },
+  "config_extraItems_topLevel": { "message": "Top Level" },
+  "config_extraItems_subMenu": { "message": "Sub Menu" },
 
 
   "config_newTab_caption": { "message": "New Tabs Behavior" },

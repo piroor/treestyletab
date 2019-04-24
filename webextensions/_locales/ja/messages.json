@@ -238,6 +238,8 @@
   "config_context_caption": { "message": "コンテキストメニュー" },
   "config_emulateDefaultContextMenu_label": { "message": "サイドバー上でタブのコンテキストメニューを再現する" },
   "config_extraItems_caption": { "message": "コンテキストメニューに追加する項目" },
+  "config_extraItems_topLevel": { "message": "トップレベル" },
+  "config_extraItems_subMenu": { "message": "サブメニュー" },
 
 
   "config_newTab_caption": { "message": "新しいタブの挙動" },

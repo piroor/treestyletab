@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 4;
+const kCONFIGS_VERSION = 5;
 const kFEATURES_VERSION = 3;
 
 export function migrateConfigs() {
@@ -40,6 +40,12 @@ export function migrateConfigs() {
         configs.tabDragBehavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
       if (!(configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK))
         configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+
+    case 4:
+      configs.emulateDefaultContextMenu = true; // activate by default
+      configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
+      configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
+      configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

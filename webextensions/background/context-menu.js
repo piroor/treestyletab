@@ -261,7 +261,7 @@ export const onClick = (info, tab) => {
   const contextTab = Tab.get(tab.id);
   const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [];
 
-  switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
+  switch (info.menuItemId.replace(/^(?:grouped:|context_topLevel_)/, '')) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;

@@ -52,6 +52,7 @@ export const configs = new Configs({
   // context menu
   fakeContextMenu: true, // obsolete, migrated to emulateDefaultContextMenu
   emulateDefaultContextMenu: true,
+
   context_reloadTree: true,
   context_reloadDescendants: false,
   context_closeTree: true,
@@ -64,9 +65,21 @@ export const configs = new Configs({
   context_bookmarkTree: true,
   context_groupTabs: true,
 
-  context_closeTabOptions_closeTree: false,
-  context_closeTabOptions_closeDescendants: false,
-  context_closeTabOptions_closeOthers: false,
+  context_topLevel_reloadTree: false,
+  context_topLevel_reloadDescendants: false,
+  context_topLevel_closeTree: false,
+  context_topLevel_closeDescendants: false,
+  context_topLevel_closeOthers: false,
+  context_topLevel_collapseTree: false,
+  context_topLevel_collapseAll: false,
+  context_topLevel_expandTree: false,
+  context_topLevel_expandAll: false,
+  context_topLevel_bookmarkTree: false,
+  context_topLevel_groupTabs: false,
+
+  context_closeTabOptions_closeTree: false, // obsolete, migrated to context_topLevel_closeTree
+  context_closeTabOptions_closeDescendants: false, // obsolete, migrated to context_topLevel_closeDescendants
+  context_closeTabOptions_closeOthers: false, // obsolete, migrated to context_topLevel_closeOthers
 
   context_collapsed: false,
   context_pinnedTab: false,
