@@ -421,7 +421,7 @@ async function syncTabsOrder() {
     return; // no need to sync
 
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
-  const nativeTabs   = nativeOrder.slice(0).join('\n');
+  const nativeTabs   = nativeOrder.slice(0).sort().join('\n');
   if (expectedTabs != nativeTabs) {
     console.log(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`);
     browser.runtime.sendMessage({
