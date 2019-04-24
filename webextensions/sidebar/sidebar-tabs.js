@@ -405,7 +405,7 @@ async function syncTabsOrder() {
       type: Constants.kCOMMAND_PULL_TABS_ORDER,
       windowId
     }).catch(ApiTabs.createErrorHandler()),
-    browser.tabs.query(windowId).then(tabs => tabs.map(tab => tab.id))
+    browser.tabs.query({ windowId }).then(tabs => tabs.map(tab => tab.id))
   ]);
 
   log('syncTabsOrder: internalOrder, nativeOrder = ', internalOrder, nativeOrder);
