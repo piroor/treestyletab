@@ -164,6 +164,15 @@
     "focusFirstChild": {
       "description": "__MSG_command_focusFirstChild__"
     },
+    "focusLastChild": {
+      "description": "__MSG_command_focusLastChild__"
+    },
+    "focusPreviousSibling": {
+      "description": "__MSG_command_focusPreviousSibling__"
+    },
+    "focusNextSibling": {
+      "description": "__MSG_command_focusNextSibling__"
+    },
     "tabbarUp": {
       "description": "__MSG_command_tabbarUp__ (Alt+Shift+Up)"
     },
