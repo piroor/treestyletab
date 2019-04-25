@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.8 (2019.4.25)
    * Prevent producing of untracked tabs more aggressively (including auto-fix feature [proposed by Dan Moorehead](https://github.com/piroor/treestyletab/pull/2239)), which are opened while TST is initializing. They might to cause various problems.
    * Add ability to show all extra context menu commands as top level context menu items.
    * Fix "never completely loaded" appearance of tabs opened while TST is initializing.
