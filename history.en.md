@@ -5,6 +5,7 @@
    * Add ability to show all extra context menu commands as top level context menu items.
    * Fix "never completely loaded" appearance of tabs opened while TST is initializing.
    * Update layout of pinned tabs correctly after any pinned tab is detached from an window.
+   * Add new commands for user defined keyboard shortcuts: "Focus to Last Child Tab", "Focus to Previous Sibling Tab", and "Focus to Next Sibling Tab" ([by Sinkerine, thanks!](https://github.com/piroor/treestyletab/pull/2237))
  - 3.0.7 (2019.4.18)
    * Show color sampels of custom CSS properties more correctly.
    * Open duplicated tab as an independent or a next sibling tab more correctly.
