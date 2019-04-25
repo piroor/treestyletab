@@ -151,10 +151,12 @@ export async function init() {
   const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
   UserOperationBlocker.setProgress(16); // 1/6: wait background page
-  const [importedTabs] = await Promise.all([
+  const promisedResults = Promise.all([
     MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()),
     MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
   ]);
+  BackgroundConnection.connect(); // Start queuing of messages from the background page immediately!
+  const [importedTabs] = await promisedResults;
 
   // we don't need await for these features
   MetricsData.addAsync('API for other addons', TSTAPI.initAsFrontend());
@@ -170,7 +172,7 @@ export async function init() {
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
-      BackgroundConnection.connect();
+      BackgroundConnection.start(); // Start to process messages including queued ones.
       onConfigChange('applyBrowserTheme');
 
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
@@ -235,7 +237,7 @@ export async function init() {
 
   TabsUpdate.completeLoadingTabs(mTargetWindow); // failsafe
 
-  // Failsafe for tabs opened in the window between "importTabsFromBackground()"
+  // Failsafe for tabs opened/closed in the window between "importTabsFromBackground()"
   // and "BackgroundConnection.connect()". Sadly such tabs are never tracked by
   // this sidebar process, so the sync operation will fail after retryings and
   // will notify SidebarTabs.onSyncFailed event, then this sidebar page will be

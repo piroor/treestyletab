@@ -31,6 +31,19 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
 }
 
+let mPromisedStartedResolver;
+let mPromisedStarted = new Promise((resolve, _reject) => {
+  mPromisedStartedResolver = resolve;
+});
+
+export function start() {
+  if (!mPromisedStartedResolver)
+    return;
+  mPromisedStartedResolver();
+  mPromisedStartedResolver = undefined;
+  mPromisedStarted = undefined;
+}
+
 export const counts = {};
 
 let mReservedMessages = [];
@@ -63,15 +76,18 @@ export function sendMessage(message) {
   }
 }
 
-function onConnectionMessage(message) {
+async function onConnectionMessage(message) {
   if (Array.isArray(message))
     return message.forEach(onConnectionMessage);
+
   switch (message.type) {
     case 'echo': // for testing
       mConnectionPort.postMessage(message);
       break;
 
     default:
+      if (mPromisedStarted)
+        await mPromisedStarted;
       onMessage.dispatch(message);
       break;
   }

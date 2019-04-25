@@ -82,7 +82,7 @@ export async function init() {
         populate:    true,
         windowTypes: ['normal']
       }).catch(ApiTabs.createErrorHandler());
-      ApiTabsListener.init();
+      ApiTabsListener.init(); // Start queuing of messages notified via WE APIs immediately!
     }),
     ContextualIdentities.init(),
     configs.$loaded
@@ -101,7 +101,7 @@ export async function init() {
   mPreloadedCaches.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
-  ApiTabsListener.start();
+  ApiTabsListener.start(); // Start to process messages including queued ones.
 
   // Open new tab now (after listening is started, before the end of initialization),
   // because the sidebar may fail to track tabs.onCreated for the tab while its
