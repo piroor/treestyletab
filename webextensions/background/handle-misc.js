@@ -210,19 +210,14 @@ async function onShortcutCommand(command) {
       TabsInternalOperation.activateTab(activeTab.$TST.firstChild);
       return;
     case 'focusLastChild':
-      const children = activeTab.$TST.children;
-      if(children.length > 0) {
-        TabsInternalOperation.activateTab(children[children.length - 1]);
-      }
+      TabsInternalOperation.activateTab(activeTab.$TST.lastChild);
       return;
-    case 'focusPreviousSibling': {
+    case 'focusPreviousSibling':
       TabsInternalOperation.activateTab(activeTab.$TST.previousSiblingTab);
       return;
-    }
-    case 'focusNextSibling': {
+    case 'focusNextSibling':
       TabsInternalOperation.activateTab(activeTab.$TST.nextSiblingTab);
       return;
-    }
 
     case 'tabbarUp':
       SidebarConnection.sendMessage({
