@@ -52,6 +52,13 @@ export const onTreeCompletelyAttached = new EventListenerManager();
 let mInitialized = false;
 const mPreloadedCaches = new Map();
 
+async function getAllWindows() {
+  return browser.windows.getAll({
+    populate:    true,
+    windowTypes: ['normal']
+  }).catch(ApiTabs.createErrorHandler());
+}
+
 export async function init() {
   MetricsData.add('init: start');
   window.addEventListener('pagehide', destroy, { once: true });
@@ -61,10 +68,7 @@ export async function init() {
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting for waitUntilCompletelyRestored().
-  browser.windows.getAll({
-    populate:    true,
-    windowTypes: ['normal']
-  }).catch(ApiTabs.createErrorHandler())
+  getAllWindows()
     .then(windows => {
       for (const window of windows) {
         const tab = window.tabs[window.tabs.length - 1];
@@ -78,10 +82,7 @@ export async function init() {
   await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
     waitUntilCompletelyRestored().then(() => {
       // don't wait at here for better performance
-      promisedWindows = browser.windows.getAll({
-        populate:    true,
-        windowTypes: ['normal']
-      }).catch(ApiTabs.createErrorHandler());
+      promisedWindows = getAllWindows();
       ApiTabsListener.init(); // Start queuing of messages notified via WE APIs immediately!
     }),
     ContextualIdentities.init(),
@@ -218,10 +219,7 @@ function destroy() {
 
 async function rebuildAll(windows) {
   if (!windows)
-    windows = await browser.windows.getAll({
-      populate:    true,
-      windowTypes: ['normal']
-    }).catch(ApiTabs.createErrorHandler());
+    windows = await getAllWindows();
   const restoredFromCache = new Map();
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
