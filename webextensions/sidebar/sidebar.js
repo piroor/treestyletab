@@ -492,6 +492,19 @@ export async function rebuildAll(importedTabs, cache) {
   return false;
 }
 
+const mImportedTabs = new Promise((resolve, _reject) => {
+  const onBackgroundIsReady = (message) => {
+    if (!message ||
+        !message.type ||
+        message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
+        message.windowId != mTargetWindow)
+      return;
+    browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+    resolve(message.tabs);
+  };
+  browser.runtime.onMessage.addListener(onBackgroundIsReady);
+});
+
 async function importTabsFromBackground() {
   try {
     const importedTabs = await MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_BACKGROUND', browser.runtime.sendMessage({
@@ -503,18 +516,7 @@ async function importTabsFromBackground() {
   }
   catch(_e) {
   }
-  return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', new Promise((resolve, _reject) => {
-    const onBackgroundIsReady = (message) => {
-      if (!message ||
-          !message.type ||
-          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
-          message.windowId != mTargetWindow)
-        return;
-      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-      resolve(message.tabs);
-    };
-    browser.runtime.onMessage.addListener(onBackgroundIsReady);
-  }));
+  return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', mImportedTabs);
 }
 
 
