@@ -30,7 +30,7 @@ TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XU
 
 There are [automated builds from latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/).
 
- * ["Renewed" version 2.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
+ * ["Renewed" version 2.x and later](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
  * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
 
 Packages are not signed, and there are two methods to try them in your environment:
