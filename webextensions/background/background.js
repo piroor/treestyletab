@@ -275,7 +275,9 @@ async function rebuildAll(windows) {
 
 export async function reload(options = {}) {
   mPreloadedCaches.clear();
-  await MetricsData.addAsync('reload: rebuildAll', rebuildAll());
+  const windows = await getAllWindows();
+  await MetricsData.addAsync('reload: rebuildAll', rebuildAll(windows));
+  await MetricsData.addAsync('reload: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows));
   if (!options.all)
     return;
   for (const window of TabsStore.windows.values()) {
