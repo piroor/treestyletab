@@ -346,6 +346,7 @@ async function onNewTabTracked(tab) {
   //   https://github.com/piroor/treestyletab/issues/2216
   //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
   tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
+  tab.reindexedBy = `onNewTabTracked (${tab.index})`;
 
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
@@ -743,6 +744,7 @@ async function onMoved(tabId, moveInfo) {
         else {
           movedTab.index = window.tabs.size - 1
         }
+        movedTab.reindexedBy = `tabs.onMoved (${movedTab.index})`;
         window.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.from(window.getOrderedTabs())
@@ -795,6 +797,7 @@ async function onAttached(tabId, attachInfo) {
     if (tab) {
       tab.windowId = attachInfo.newWindowId
       tab.index    = attachedTab.index;
+      tab.reindexedBy = `tabs.onAttached (${tab.index})`;
     }
     else {
       tab = attachedTab;

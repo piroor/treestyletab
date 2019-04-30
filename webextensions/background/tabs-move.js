@@ -119,6 +119,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.index = referenceTab.index - 1;
       else
         tab.index = referenceTab.index;
+      tab.reindexedBy = `moveTabsInternallyBefore (${tab.index})`;
       Tab.track(tab);
       movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {
@@ -226,6 +227,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       else {
         tab.index = window.tabs.size - 1
       }
+      tab.reindexedBy = `moveTabsInternallyAfter (${tab.index})`;
       Tab.track(tab);
       movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {

@@ -452,6 +452,7 @@ async function syncTabsOrder() {
   let count = 0;
   for (const tab of trackedWindow.getOrderedTabs()) {
     tab.index = count++;
+    tab.reindexedBy = `syncTabsOrder (${tab.index})`;
   }
 
   const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
@@ -805,6 +806,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
       const nativeTab = message.tab;
+      nativeTab.reindexedBy = `creating (${nativeTab.index})`;
 
       // The "index" property of the tab was already updated by the master process
       // with other newly opened tabs. However, such other tabs are not tracked on
@@ -820,8 +822,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       const window = TabsStore.windows.get(message.windowId);
       let index = 0;
       for (const id of message.order) {
-        if (window.tabs.has(id))
+        if (window.tabs.has(id)) {
           nativeTab.index = ++index;
+          nativeTab.reindexedBy = `creating/fixed (${nativeTab.index})`;
+        }
         if (id == message.tabId)
           break;
       }
@@ -972,6 +976,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
 
       tab.index = message.newIndex;
+      tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
       tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
@@ -992,7 +997,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           tab.index == message.newIndex)
         return;
-      tab.index         = message.newIndex;
+      tab.index = message.newIndex;
+      tab.reindexedBy = `internally moved (${tab.index})`;
       Tab.track(tab);
       const tabElement  = tab.$TST.element;
       const nextTab     = Tab.get(message.nextTabId);

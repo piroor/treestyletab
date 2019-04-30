@@ -867,7 +867,8 @@ Tab.UNSYNCHRONIZABLE_PROPERTIES = new Set([
   // Index of tabs are managed and fixed by other sections like handling of
   // "kCOMMAND_NOTIFY_TAB_CREATING", Window.prototype.trackTab, and others.
   // See also: https://github.com/piroor/treestyletab/issues/2119
-  'index'
+  'index',
+  'reindexedBy'
 ]);
 
 
