@@ -346,7 +346,7 @@ export function log(module, ...args)
   else
     module = '';
 
-  const timestamp = configs.logTimestamp ? `${new Date().toString()} ` : '';
+  const timestamp = configs.logTimestamp ? `${getTimeStamp()} ` : '';
   const line = `tst<${log.context}>: ${timestamp}${module}${indent}${message}`;
   if (useConsole)
     console.log(line, ...args);
@@ -358,6 +358,15 @@ log.context = '?';
 log.max  = 2000;
 log.logs = [];
 log.forceStore = true;
+
+function getTimeStamp() {
+  const time = new Date();
+  const hours = `0${time.getHours()}`.substr(-2);
+  const minutes = `0${time.getMinutes()}`.substr(-2);
+  const seconds = `0${time.getSeconds()}`.substr(-2);
+  const milliseconds = `00${time.getMilliseconds()}`.substr(-3);
+  return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+}
 
 configs.$logger = log;
 
