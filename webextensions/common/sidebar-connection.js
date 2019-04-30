@@ -86,7 +86,8 @@ function sendMessageToPort(port, message) {
       const messages = task.messages;
       task.messages = [];
       port.postMessage(messages);
-      log(`${messages.length} messages sent:`, messages);
+      if (configs.debug)
+        log(`${messages.length} messages sent (${Array.from(new Set(messages.map(message => message.type))).join(', ')}):`, messages);
     };
     // We should not use window.requestAnimationFrame for throttling,
     // because it is quite lagged on some environment. Firefox may

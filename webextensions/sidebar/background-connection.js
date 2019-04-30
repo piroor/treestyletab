@@ -66,7 +66,8 @@ export function sendMessage(message) {
       const messages = mReservedMessages;
       mReservedMessages = [];
       mConnectionPort.postMessage(messages);
-      log(`${messages.length} messages sent:`, messages);
+      if (configs.debug)
+        log(`${messages.length} messages sent (${Array.from(new Set(messages.map(message => message.type))).join(', ')}):`, messages);
     };
     // Because sidebar is always visible, we may not need to avoid using
     // window.requestAnimationFrame. I just use a timer instead just for
