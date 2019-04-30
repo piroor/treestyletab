@@ -155,7 +155,8 @@ export async function init() {
     MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()),
     MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
   ]);
-  BackgroundConnection.connect(); // Start queuing of messages from the background page immediately!
+  log('Start queuing of messages from the background page');
+  BackgroundConnection.connect();
   const [importedTabs] = await promisedResults;
 
   // we don't need await for these features
@@ -172,7 +173,8 @@ export async function init() {
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
-      BackgroundConnection.start(); // Start to process messages including queued ones.
+      log('Start to process messages including queued ones');
+      BackgroundConnection.start();
       onConfigChange('applyBrowserTheme');
 
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
@@ -493,6 +495,7 @@ export async function rebuildAll(importedTabs, cache) {
 }
 
 const mImportedTabs = new Promise((resolve, _reject) => {
+  log('preparing mImportedTabs');
   const onBackgroundIsReady = (message) => {
     if (!message ||
         !message.type ||
@@ -500,12 +503,14 @@ const mImportedTabs = new Promise((resolve, _reject) => {
         message.windowId != mTargetWindow)
       return;
     browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+    log('mImportedTabs is resolved');
     resolve(message.tabs);
   };
   browser.runtime.onMessage.addListener(onBackgroundIsReady);
 });
 
 async function importTabsFromBackground() {
+  log('importTabsFromBackground: start');
   try {
     const importedTabs = await MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_BACKGROUND', browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_BACKGROUND,
@@ -514,8 +519,10 @@ async function importTabsFromBackground() {
     if (importedTabs)
       return importedTabs;
   }
-  catch(_e) {
+  catch(e) {
+    log('importTabsFromBackground: error: ', e);
   }
+  log('importTabsFromBackground: waiting for mImportedTabs');
   return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', mImportedTabs);
 }
 
