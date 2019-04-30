@@ -497,13 +497,14 @@ export async function rebuildAll(importedTabs, cache) {
 const mImportedTabs = new Promise((resolve, _reject) => {
   log('preparing mImportedTabs');
   const onBackgroundIsReady = (message) => {
+    log(`mImportedTabs (${mTargetWindow}): onBackgroundIsReady `, message && message.type, message && message.windowId);
     if (!message ||
         !message.type ||
         message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
         message.windowId != mTargetWindow)
       return;
     browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-    log('mImportedTabs is resolved');
+    log(`mImportedTabs is resolved with ${message.tabs.length} tabs`);
     resolve(message.tabs);
   };
   browser.runtime.onMessage.addListener(onBackgroundIsReady);

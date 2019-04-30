@@ -60,6 +60,7 @@ async function getAllWindows() {
 }
 
 export async function init() {
+  log('init: start');
   MetricsData.add('init: start');
   window.addEventListener('pagehide', destroy, { once: true });
 
@@ -79,11 +80,13 @@ export async function init() {
     });
 
   let promisedWindows;
+  log('init: Getting existing windows and tabs');
   await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
     waitUntilCompletelyRestored().then(() => {
       // don't wait at here for better performance
       promisedWindows = getAllWindows();
-      ApiTabsListener.init(); // Start queuing of messages notified via WE APIs immediately!
+      log('init: Start queuing of messages notified via WE APIs');
+      ApiTabsListener.init();
     }),
     ContextualIdentities.init(),
     configs.$loaded
@@ -102,7 +105,8 @@ export async function init() {
   mPreloadedCaches.clear();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
-  ApiTabsListener.start(); // Start to process messages including queued ones.
+  log('init: Start to process messages including queued ones');
+  ApiTabsListener.start();
 
   // Open new tab now (after listening is started, before the end of initialization),
   // because the sidebar may fail to track tabs.onCreated for the tab while its
@@ -152,6 +156,7 @@ export async function init() {
 }
 
 async function notifyReadyToSidebars() {
+  log('notifyReadyToSidebars: start');
   const promisedResults = [];
   for (const window of TabsStore.windows.values()) {
     // Skip windows already detected as "opened", because the "opened" status
@@ -160,6 +165,7 @@ async function notifyReadyToSidebars() {
     if (SidebarConnection.isOpen(window.id))
       continue;
     TabsUpdate.completeLoadingTabs(window.id); // failsafe
+    log(`notifyReadyToSidebars: to ${window.id}`);
     promisedResults.push(browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
       windowId: window.id,

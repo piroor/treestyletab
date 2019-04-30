@@ -67,6 +67,7 @@ Background.onInit.addListener(() => {
 });
 
 Background.onBuilt.addListener(() => {
+  log('Start listening of messages');
   browser.runtime.onMessage.addListener(onMessage);
 });
 
