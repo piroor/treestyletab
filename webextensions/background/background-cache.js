@@ -52,6 +52,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
   const actualSignature = getWindowSignature(tabs);
   let cache = options.caches && options.caches.get(owner.id) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
+  if (!cache) {
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId} fail: no cache`);
+    return false;
+  }
   const promisedPermanentStates = Promise.all(tabs.map(tab => tab.$TST.getPermanentStates())); // don't await at here for better performance
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: start');
   let cachedSignature = cache && cache.signature;
