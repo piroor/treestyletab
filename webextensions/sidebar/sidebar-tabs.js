@@ -889,6 +889,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       const highlightedChanged = message.updatedProperties && 'highlighted' in message.updatedProperties;
       if (message.updatedProperties) {
         for (const key of Object.keys(message.updatedProperties)) {
+          if (Tab.UNSYNCHRONIZABLE_PROPERTIES.has(key))
+            continue;
           tab[key] = message.updatedProperties[key];
         }
       }
