@@ -542,6 +542,7 @@ async function importTabsFromBackground() {
 
 export async function confirmToCloseTabs(tabIds, _options = {}) {
   tabIds = tabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+  log('confirmToCloseTabs: ', tabIds);
   const count = tabIds.length;
   if (count <= 1 ||
       !configs.warnOnCloseTabs)

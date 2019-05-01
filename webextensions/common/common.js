@@ -270,7 +270,7 @@ export const configs = new Configs({
     'common/sidebar-connection': false,
     'common/tabs-internal-operation': false,
     'common/tabs-update': false,
-    'common/tabs': false,
+    'common/tree-behavior': false,
     'common/tst-api': false,
     'common/unique-id': false,
     'common/user-operation-blocker': false,

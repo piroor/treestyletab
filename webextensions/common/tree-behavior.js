@@ -6,10 +6,15 @@
 'use strict';
 
 import {
+  log as internalLogger,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
+
+function log(...args) {
+  internalLogger('common/tree-behavior', ...args);
+}
 
 export function shouldApplyTreeBehavior(params = {}) {
   switch (configs.parentTabBehaviorForChanges) {
@@ -54,21 +59,23 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
 }
 
 export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
-  return getCloseParentBehaviorForTab(tab, {
-    keepChildren: (
-      removeInfo.keepChildren ||
-      !shouldApplyTreeBehavior({
-        windowId:            removeInfo.windowId || tab.windowId,
-        byInternalOperation: removeInfo.byInternalOperation
-      })
-    )
-  });
+  const keepChildren = (
+    removeInfo.keepChildren ||
+    !shouldApplyTreeBehavior({
+      windowId:            removeInfo.windowId || tab.windowId,
+      byInternalOperation: removeInfo.byInternalOperation
+    })
+  );
+  log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, keepChildren });
+  return getCloseParentBehaviorForTab(tab, { keepChildren });
 }
 
-export function getClosingTabsFromParent(tab) {
-  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
+export function getClosingTabsFromParent(tab, removeInfo = {}) {
+  log('getClosingTabsFromParent: ', tab);
+  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, Object.assign(removeInfo, {
     windowId: tab.windowId
-  });
+  }));
+  log('getClosingTabsFromParent: closeParentBehavior ', closeParentBehavior);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     return [tab];
   return [tab].concat(tab.$TST.descendants);
