@@ -376,8 +376,9 @@ async function onMouseUp(event) {
   if (livingTab) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
-      //log('middle-click to close');
-      const tabs = TreeBehavior.getClosingTabsFromParent(livingTab);
+      const tabs = TreeBehavior.getClosingTabsFromParent(livingTab, {
+        byInternalOperation: true
+      });
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
@@ -416,7 +417,9 @@ async function onMouseUp(event) {
       const multiselected  = tab.$TST.multiselected;
       const tabsToBeClosed = multiselected ?
         Tab.getSelectedTabs(tab.windowId) :
-        TreeBehavior.getClosingTabsFromParent(tab) ;
+        TreeBehavior.getClosingTabsFromParent(tab, {
+          byInternalOperation: true
+        }) ;
       Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
         .then(confirmed => {
           if (!confirmed)
