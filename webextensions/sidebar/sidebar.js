@@ -508,15 +508,15 @@ const mImportedTabs = new Promise((resolve, _reject) => {
     // we need to wait until it is resolved.
     // See also: https://github.com/piroor/treestyletab/issues/2200
     mPromisedTargetWindow.then(windowId => {
-    log(`mImportedTabs (${windowId}): onBackgroundIsReady `, message && message.type, message && message.windowId);
-    if (!message ||
-        !message.type ||
-        message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
-        message.windowId != windowId)
-      return;
-    browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-    log(`mImportedTabs is resolved with ${message.tabs.length} tabs`);
-    resolve(message.tabs);
+      log(`mImportedTabs (${windowId}): onBackgroundIsReady `, message && message.type, message && message.windowId);
+      if (!message ||
+          !message.type ||
+          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
+          message.windowId != windowId)
+        return;
+      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+      log(`mImportedTabs is resolved with ${message.tabs.length} tabs`);
+      resolve(message.tabs);
     });
   };
   browser.runtime.onMessage.addListener(onBackgroundIsReady);
