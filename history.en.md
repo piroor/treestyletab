@@ -3,6 +3,8 @@
  - master/HEAD
    * Reduce wrong tab focus on clicked, caused with broken internal index of tabs.
    * Reduce stuck on sidebar initialization triggered with timing issue.
+   * Show confirmation dialog correctly when multiple tabs are closed with operations inside the sidebar, even if TST is configured to treat tabs closed with operations outside of the sidebar as solo tabs.
+   * Show confirmation dialog correctly when multiple tabs are closed with operations outside of the sidebar, if TST is configured to handle them.
    * Output timestamp of debug logs with more debuggable format: `(hours):(minutes):(seconds).(milliseconds)`. Years, months, days, and the timezone are omitted.
  - 3.0.9 (2019.4.30)
    * Tree structure is restored after auto-fix triggered with corruption of tabs information.
