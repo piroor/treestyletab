@@ -379,7 +379,7 @@ async function onMouseUp(event) {
       const tabs = TreeBehavior.getClosingTabsFromParent(livingTab, {
         byInternalOperation: true
       });
-      Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
+      Sidebar.confirmToCloseTabs(tabs.map(tab => tab.$TST.sanitized))
         .then(confirmed => {
           if (confirmed)
             BackgroundConnection.sendMessage({
@@ -420,7 +420,7 @@ async function onMouseUp(event) {
         TreeBehavior.getClosingTabsFromParent(tab, {
           byInternalOperation: true
         }) ;
-      Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
+      Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.$TST.sanitized))
         .then(confirmed => {
           if (!confirmed)
             return;

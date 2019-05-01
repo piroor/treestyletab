@@ -440,8 +440,9 @@ async function updateSubtreeCollapsed(tab) {
     tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
 }
 
-export async function confirmToCloseTabs(tabIds, options = {}) {
-  tabIds = tabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+export async function confirmToCloseTabs(tabs, options = {}) {
+  tabs = tabs.filter(tab => !configs.grantedRemovingTabIds.includes(tab.id));
+  const tabIds = tabs.map(tab => tab.id);
   const count = tabIds.length;
   log('confirmToCloseTabs ', { tabIds, count, options });
   if (count <= 1 ||
@@ -461,8 +462,8 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
        SidebarConnection.isOpen(options.windowId) &&
        SidebarConnection.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-      tabIds,
+      type: Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+      tabs,
       windowId: options.windowId
     }).catch(ApiTabs.createErrorHandler());
 

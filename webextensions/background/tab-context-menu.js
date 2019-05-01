@@ -692,7 +692,7 @@ async function onClick(info, contextTab) {
     case 'context_closeTabsToTheEnd': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       let after = false;
-      const closeTabIds = [];
+      const closeTabs = [];
       const keptTabIds = new Set(
         multiselectedTabs ?
           multiselectedTabs.map(tab => tab.id) :
@@ -704,16 +704,16 @@ async function onClick(info, contextTab) {
           continue;
         }
         if (after && !tab.pinned)
-          closeTabIds.push(tab.id);
+          closeTabs.push(Tab.get(tab.id).$TST.sanitized);
       }
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs: closeTabIds,
+        tabs: closeTabs,
         windowId
       }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabIds)
+      browser.tabs.remove(closeTabs.map(tab => tab.id))
         .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
     case 'context_closeOtherTabs': {
@@ -723,15 +723,15 @@ async function onClick(info, contextTab) {
           multiselectedTabs.map(tab => tab.id) :
           [contextTab.id]
       );
-      const closeTabIds = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => tab.id);
+      const closeTabs = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => Tab.get(tab.id).$TST.sanitized);
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs: closeTabIds,
+        tabs: closeTabs,
         windowId
       }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabIds)
+      browser.tabs.remove(closeTabs.map(tab => tab.id))
         .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
     case 'context_undoCloseTab': {

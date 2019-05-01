@@ -540,8 +540,9 @@ async function importTabsFromBackground() {
 }
 
 
-export async function confirmToCloseTabs(tabIds, _options = {}) {
-  tabIds = tabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+export async function confirmToCloseTabs(tabs, _options = {}) {
+  tabs = tabs.filter(tab => !configs.grantedRemovingTabIds.includes(tab.id));
+  const tabIds = tabs.map(tab => tab.id);
   log('confirmToCloseTabs: ', tabIds);
   const count = tabIds.length;
   if (count <= 1 ||
@@ -889,7 +890,7 @@ function onMessage(message, _sender, _respond) {
   switch (message.type) {
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
       log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
-      return confirmToCloseTabs(message.tabIds);
+      return confirmToCloseTabs(message.tabs);
 
     case Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS:
       log('kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS: ', { message, mTargetWindow });

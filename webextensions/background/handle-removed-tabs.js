@@ -120,7 +120,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     shouldRestoreCount = self.closingTabIds.length;
     if (allClosingTabs.length > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
-      return Background.confirmToCloseTabs(allClosingTabs, {
+      return Background.confirmToCloseTabs(allClosingTabs.map(id => Tab.get(id).$TST.sanitized), {
         windowId: tab.windowId
       });
     }
