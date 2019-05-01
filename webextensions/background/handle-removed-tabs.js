@@ -134,26 +134,26 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
       // this is required to wait until the closing tab is stored to the "recently closed" list
       wait(0).then(async () => {
-      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 }).catch(ApiTabs.createErrorHandler());
-      const toBeRestoredTabs = [];
-      for (const session of sessions) {
-        if (!session.tab)
-          continue;
-        toBeRestoredTabs.push(session.tab);
-        if (toBeRestoredTabs.length == shouldRestoreCount)
-          break;
-      }
-      const promisedRestoredTabSets = [];
-      for (const tab of toBeRestoredTabs.reverse()) {
-        log('tryGrantClose: Tabrestoring session = ', tab);
-        promisedRestoredTabSets.push(Tab.doAndGetNewTabs(async () => {
-          browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
-          await Tab.waitUntilTrackedAll();
-        }));
-      }
-      const restoredTabs = (await Promise.all(promisedRestoredTabSets)).flat();
-      await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
-      log('tryGrantClose: restored ', restoredTabs);
+        const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 }).catch(ApiTabs.  createErrorHandler());
+        const toBeRestoredTabs = [];
+        for (const session of sessions) {
+          if (!session.tab)
+            continue;
+          toBeRestoredTabs.push(session.tab);
+          if (toBeRestoredTabs.length == shouldRestoreCount)
+            break;
+        }
+        const promisedRestoredTabSets = [];
+        for (const tab of toBeRestoredTabs.reverse()) {
+          log('tryGrantClose: Tabrestoring session = ', tab);
+          promisedRestoredTabSets.push(Tab.doAndGetNewTabs(async () => {
+            browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
+            await Tab.waitUntilTrackedAll();
+          }));
+        }
+        const restoredTabs = (await Promise.all(promisedRestoredTabSets)).flat();
+        await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
+        log('tryGrantClose: restored ', restoredTabs);
       });
       return false;
     });
