@@ -57,6 +57,11 @@ let mStyle;
 let mTargetWindow = null;
 let mInitialized = false;
 
+let mPromisedTargetWindowResolver;
+const mPromisedTargetWindow = new Promise((resolve, _reject) => {
+  mPromisedTargetWindowResolver = resolve;
+});
+
 const mTabBar                     = document.querySelector('#tabbar');
 const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
 const mStyleLoader                = document.querySelector('#style-loader');
@@ -108,6 +113,7 @@ export async function init() {
       preloadCache(tabs[tabs.length-1].id);
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);
+      mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
       // Track only the first tab for now, because it is required to initialize
@@ -496,12 +502,16 @@ export async function rebuildAll(importedTabs, cache) {
 
 const mImportedTabs = new Promise((resolve, _reject) => {
   log('preparing mImportedTabs');
-  const onBackgroundIsReady = (message) => {
-    log(`mImportedTabs (${mTargetWindow}): onBackgroundIsReady `, message && message.type, message && message.windowId);
+  const onBackgroundIsReady = async message => {
+    // This handler may be called before mTargetWindow is initialized, so
+    // we need to wait until it is resolved.
+    // See also: https://github.com/piroor/treestyletab/issues/2200
+    const windowId = mTargetWindow || await mPromisedTargetWindow;
+    log(`mImportedTabs (${windowId}): onBackgroundIsReady `, message && message.type, message && message.windowId);
     if (!message ||
         !message.type ||
         message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
-        message.windowId != mTargetWindow)
+        message.windowId != windowId)
       return;
     browser.runtime.onMessage.removeListener(onBackgroundIsReady);
     log(`mImportedTabs is resolved with ${message.tabs.length} tabs`);
