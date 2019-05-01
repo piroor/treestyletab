@@ -143,12 +143,17 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
         if (toBeRestoredTabs.length == shouldRestoreCount)
           break;
       }
+      const promisedRestoredTabSets = [];
       for (const tab of toBeRestoredTabs.reverse()) {
-        log('tryGrantClose: Tabrestoring session = ', dumpTab(tab));
-        browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
-        const tabs = await Tab.waitUntilTrackedAll();
-        await Promise.all(tabs.map(tab => tab.$TST.opened));
+        log('tryGrantClose: Tabrestoring session = ', tab);
+        promisedRestoredTabSets.push(Tab.doAndGetNewTabs(async () => {
+          browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
+          await Tab.waitUntilTrackedAll();
+        }));
       }
+      const restoredTabs = (await Promise.all(promisedRestoredTabSets)).flat();
+      await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
+      console.log('tryGrantClose: restored ', restoredTabs);
       return false;
     });
 
