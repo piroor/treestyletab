@@ -26,7 +26,7 @@
   "command_tabbarDown":            { "message": "Zeilenweise in Tabs nach unten scrollen" },
   "command_tabbarPageDown":        { "message": "Seitenweise in Tabs nach unten scrollen" },
   "command_tabbarEnd":             { "message": "Zum letzten Tab scrollen" },
-  "command_groupSelectedTabs":     { "message": "Neue Gruppe vom ausgewählten Tab erstellen" },
+  "command_groupSelectedTabs":     { "message": "Neue Gruppe mit ausgewählten Tabs erstellen" },
 
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Tabs schließen" },
@@ -62,7 +62,7 @@
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
     }},
-  "groupTab_label_default": { "message": "Gruppieren" },
+  "groupTab_label_default": { "message": "Gruppe" },
   "groupTab_temporary_label": { "message": "Diesen Tab schließen, wenn keine untergeordneten Tabs mehr existieren" },
   "groupTab_fromPinnedTab_label": { "message": "Tabs von $TITLE$",
     "placeholders": {
@@ -363,7 +363,7 @@
   "config_showTabDragHandle_label":       { "message": "Zeige Anfasser neben Tab, um das Ziehen mit einem bestimmten Ziel zu starten" },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
 
-  "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Drag-&Drop auf einen Tab abgelegt wird" },
+  "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Ziehen und Ablegen auf einen Tab abgelegt wird" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Immer nachfragen" },
   "config_dropLinksOnTabBehavior_load":    { "message": "In diesem Tab öffnen" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "In einem neuen untergeordneten Tab öffnen" },
