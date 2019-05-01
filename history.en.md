@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Reduce wrong tab focus on clicked, caused with broken internal index of tabs.
+   * Reduce stuck on sidebar initialization triggered with timing issue.
+   * Output timestamp of debug logs with more debuggable format: `(hours):(minutes):(seconds).(milliseconds)`. Years, months, days, and the timezone are omitted.
  - 3.0.9 (2019.4.30)
    * Tree structure is restored after auto-fix triggered with corruption of tabs information.
    * More stabilized initialization of sidebar contents.
