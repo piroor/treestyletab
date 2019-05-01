@@ -130,7 +130,7 @@
   "context_collapseTree_label": { "message": "Di&esen Zweig zuklappen" },
   "context_collapseAll_label": { "message": "Alle &zuklappen" },
   "context_expandTree_label": { "message": "Diesen Zweig auskla&ppen" },
-  "context_expandAll_label": { "message": "Alle au&fklappen)" },
+  "context_expandAll_label": { "message": "Alle au&fklappen" },
   "context_bookmarkTree_label": { "message": "&Lesezeichen für diesen Zweig anlegen…" },
 
 
