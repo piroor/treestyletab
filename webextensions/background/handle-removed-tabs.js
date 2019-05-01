@@ -115,12 +115,16 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     self.closingTabIds = Array.from(new Set(self.closingTabIds));
     self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
-    let allClosingTabs = [tab.id].concat(self.closingDescendantTabIds);
+    let allClosingTabs = [tab].concat(self.closingDescendantTabIds.map(id => Tab.get(id)));
     allClosingTabs = Array.from(new Set(allClosingTabs));
     shouldRestoreCount = self.closingTabIds.length;
-    if (allClosingTabs.length > 0) {
+    const restorableClosingTabs = allClosingTabs.filter(tab => (
+      tab.url != 'about:blank' &&
+      tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl
+    ));
+    if (restorableClosingTabs.length > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
-      return Background.confirmToCloseTabs(allClosingTabs.map(id => Tab.get(id).$TST.sanitized), {
+      return Background.confirmToCloseTabs(allClosingTabs.map(tab => tab.$TST.sanitized), {
         windowId: tab.windowId
       });
     }
