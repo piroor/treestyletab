@@ -153,7 +153,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       }
       const restoredTabs = (await Promise.all(promisedRestoredTabSets)).flat();
       await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
-      console.log('tryGrantClose: restored ', restoredTabs);
+      log('tryGrantClose: restored ', restoredTabs);
       });
       return false;
     });
