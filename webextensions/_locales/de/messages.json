@@ -37,18 +37,18 @@
   "tab_soundButton_playing_tooltip_multiselected": { "message": "Tabs stumm schalten" },
   "tab_twisty_expanded_tooltip": { "message": "Zweig zuklappen" },
   "tab_twisty_collapsed_tooltip": { "message": "Zweig aufklappen" },
-  "tab_tree_tooltip": { "message": "$TREE$\n  ...und $COUNT$ weitere(r) Tab (s)",
+  "tab_tree_tooltip": { "message": "$TREE$\n  …und $COUNT$ weitere(r) Tab (s)",
     "placeholders": {
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar_newTabButton_tooltip": { "message": "Neuen Tab öffnen" },
 
-  "tabbar_newTabAction_tooltip":           { "message": "Neuen Tab öffnen als..." },
-  "tabbar_newTabAction_independent_label": { "message": "E&igenständigen Tab" },
-  "tabbar_newTabAction_child_label":       { "message": "Untergeordneten Tab (&c)" },
-  "tabbar_newTabAction_sibling_label":     { "message": "Tab auf der Ebene de&s aktiven Tab" },
-  "tabbar_newTabAction_nextSibling_label": { "message": "direkte&n Nachbar auf der Ebene des aktiven Tab" },
+  "tabbar_newTabAction_tooltip":           { "message": "Neuen Tab öffnen als…" },
+  "tabbar_newTabAction_independent_label": { "message": "&Eigenständigen Tab" },
+  "tabbar_newTabAction_child_label":       { "message": "&Untergeordneten Tab" },
+  "tabbar_newTabAction_sibling_label":     { "message": "Tab auf der Ebene des &aktiven Tab" },
+  "tabbar_newTabAction_nextSibling_label": { "message": "Direkter &Nachbar auf der Ebene des aktiven Tab" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Neuer Tab in Umgebung" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "Standard" },
@@ -436,43 +436,43 @@
 
 
   "tabContextMenu_reload_label":      { "message": "Tab neu la&den" },
-  "tabContextMenu_mute_label":        { "message": "&Ton aus" },
-  "tabContextMenu_unmute_label":      { "message": "&Ton an" },
+  "tabContextMenu_mute_label":        { "message": "Tab stu&mmschalten" },
+  "tabContextMenu_unmute_label":      { "message": "Stu&mmschaltung aufheben" },
 
   "tabContextMenu_pin_label":         { "message": "Tab an&heften" },
   "tabContextMenu_unpin_label":       { "message": "Ta&b ablösen" },
   "tabContextMenu_duplicate_label":   { "message": "Tab &klonen" },
   "tabContextMenu_selectAllTabs_label": { "message": "&Alle Tabs auswählen" },
-  "tabContextMenu_bookmark_label":    { "message": "Lesezeichen für Tab hinzufügen" },
-  "tabContextMenu_reopenInContainer_label":             { "message": "Öffn&en in Tab-Umgebung" },
-  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Kei&ne Tab-Umgebung" },
+  "tabContextMenu_bookmark_label":    { "message": "Tab als &Lesezeichen hinzufügen" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "In Tab-&Umgebung öffnen" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Keine Tab-&Umgebung" },
   "tabContextMenu_moveTab_label":     { "message": "Tab &verschieben" },
-  "tabContextMenu_moveTabToStart_label": { "message": "Zum Anfang verschieben" },
-  "tabContextMenu_moveTabToEnd_label":   { "message": "Zum Ende verschieben" },
-  "tabContextMenu_tearOff_label":     { "message": "I&n neues Fenster verschieben" },
+  "tabContextMenu_moveTabToStart_label": { "message": "An &Anfang verschieben" },
+  "tabContextMenu_moveTabToEnd_label":   { "message": "An &Ende verschieben" },
+  "tabContextMenu_tearOff_label":     { "message": "In &neues Fenster verschieben" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Alle &Tabs neu laden" },
+  "tabContextMenu_reloadAll_label":   { "message": "Alle Tabs neu la&den" },
   "tabContextMenu_bookmarkAll_label": { "message": "&Lesezeichen für alle Tabs hinzufügen…" },
 
-  "tabContextMenu_closeTabsToBottom_label":  { "message": "Tabs nach &unten schließen" },
-  "tabContextMenu_closeOther_label":  { "message": "&Andere Tabs schließen" },
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "Tabs nach un&ten schließen" },
+  "tabContextMenu_closeOther_label":  { "message": "Andere Tabs &schließen" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Geschlossenen Tab wiederherstellen" },
   "tabContextMenu_close_label":       { "message": "Tab s&chließen" },
 
-  "tabContextMenu_reload_label_multiselected":      { "message": "Ausgewählte &Tabs neu laden" },
-  "tabContextMenu_mute_label_multiselected":        { "message": "Tabs st&umm schalten" },
-  "tabContextMenu_unmute_label_multiselected":      { "message": "Stummschaltung für Ta&bs aufheben" },
+  "tabContextMenu_reload_label_multiselected":      { "message": "Ausgewählte Tabs neu la&den" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "Tabs st&ummschalten" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Stu&mmschaltung aufheben" },
 
   "tabContextMenu_pin_label_multiselected":         { "message": "Tabs an&heften" },
   "tabContextMenu_unpin_label_multiselected":       { "message": "Ta&bs ablösen" },
 
-  "tabContextMenu_duplicate_label_multiselected":   { "message": "Tabs &duplizieren" },
+  "tabContextMenu_duplicate_label_multiselected":   { "message": "Tabs &klonen" },
 
-  "tabContextMenu_moveTab_label_multiselected": { "message": "Tabs verschieben" },
+  "tabContextMenu_moveTab_label_multiselected": { "message": "Tabs &verschieben" },
 
-  "tabContextMenu_bookmark_label_multiselected": { "message": "&Lesezeichen für Tabs erstellen..." },
-  "tabContextMenu_bookmarkSelected_label":       { "message": "Lesezeichen für ausgewählte Tabs erstellen…" },
+  "tabContextMenu_bookmark_label_multiselected": { "message": "&Lesezeichen für Tabs hinzufügen…" },
+  "tabContextMenu_bookmarkSelected_label":       { "message": "&Lesezeichen für ausgewählte Tabs hinzufügen…" },
 
-  "tabContextMenu_close_label_multiselected":       { "message": "Ausgewählte Tabs &schließen" }
+  "tabContextMenu_close_label_multiselected":       { "message": "Ausgewählte Tabs s&chließen" }
 }
