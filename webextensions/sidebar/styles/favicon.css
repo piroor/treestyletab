@@ -92,6 +92,14 @@
   mask: url("/resources/icons/performance.svg") no-repeat center / 100%;
 }
 
+.tab[data-current-uri^="about:debugging"] .favicon-builtin::before {
+  background: url("/resources/icons/developer.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill .tab[data-current-uri^="about:debugging"] .favicon-builtin::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/developer.svg") no-repeat center / 100%;
+}
+
 .tab[data-current-uri^="about:privatebrowsing"] .favicon-builtin::before,
 :root.simulate-svg-context-fill .tab[data-current-uri^="about:privatebrowsing"] .favicon-builtin::before {
   background: url("/resources/icons/privatebrowsing-favicon.svg") no-repeat center / 100%;
