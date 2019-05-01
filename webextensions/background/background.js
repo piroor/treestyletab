@@ -159,8 +159,8 @@ async function notifyReadyToSidebars() {
   log('notifyReadyToSidebars: start');
   const promisedResults = [];
   for (const window of TabsStore.windows.values()) {
-    // Send PING to all windows whether they are detected as "opened" or "not opened yet",
-    // because the connection may be established before this background page starts listening
+    // Send PING to all windows whether they are detected as opened or not, because
+    // the connection may be established before this background page starts listening
     // of messages from sidebar pages.
     // See also: https://github.com/piroor/treestyletab/issues/2200
     TabsUpdate.completeLoadingTabs(window.id); // failsafe

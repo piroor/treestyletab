@@ -502,11 +502,12 @@ export async function rebuildAll(importedTabs, cache) {
 
 const mImportedTabs = new Promise((resolve, _reject) => {
   log('preparing mImportedTabs');
-  const onBackgroundIsReady = async message => {
+  // This must be synchronous , to avoid blocking to other listeners.
+  const onBackgroundIsReady = message => {
     // This handler may be called before mTargetWindow is initialized, so
     // we need to wait until it is resolved.
     // See also: https://github.com/piroor/treestyletab/issues/2200
-    const windowId = mTargetWindow || await mPromisedTargetWindow;
+    mPromisedTargetWindow.then(windowId => {
     log(`mImportedTabs (${windowId}): onBackgroundIsReady `, message && message.type, message && message.windowId);
     if (!message ||
         !message.type ||
@@ -516,6 +517,7 @@ const mImportedTabs = new Promise((resolve, _reject) => {
     browser.runtime.onMessage.removeListener(onBackgroundIsReady);
     log(`mImportedTabs is resolved with ${message.tabs.length} tabs`);
     resolve(message.tabs);
+    });
   };
   browser.runtime.onMessage.addListener(onBackgroundIsReady);
 });
@@ -870,6 +872,8 @@ function onConfigChange(changedKey) {
 }
 
 
+// This must be synchronous and return Promise on demando, to avoid
+// blocking to other listeners.
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||

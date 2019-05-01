@@ -60,6 +60,13 @@ Tab.onPinned.addListener(tab => {
 
 /* message observer */
 
+// We cannot start listening of messages of browser.runtime.onMessage(External)
+// at here and wait processing until promises are resolved like ApiTabsListener
+// and BackgroundConnection, because making listeners asynchornous (async
+// functions) will break things - those listeners must not return Promise for
+// unneeded cases.
+// See also: https://github.com/piroor/treestyletab/issues/2200
+
 Background.onInit.addListener(() => {
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.commands.onCommand.addListener(onShortcutCommand);
@@ -266,6 +273,8 @@ async function onShortcutCommand(command) {
   }
 }
 
+// This must be synchronous and return Promise on demando, to avoid
+// blocking to other listeners.
 function onMessage(message, sender) {
   if (!message ||
       typeof message.type != 'string' ||
@@ -393,6 +402,8 @@ function onMessage(message, sender) {
   }
 }
 
+// This must be synchronous and return Promise on demando, to avoid
+// blocking to other listeners.
 function onMessageExternal(message, sender) {
   //log('onMessageExternal: ', message, sender);
   switch (message.type) {
