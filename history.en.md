@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.10 (2019.5.2)
    * Reduce wrong tab focus on clicked, caused with broken internal index of tabs.
    * Reduce stuck on sidebar initialization triggered with timing issue.
    * Show confirmation dialog correctly when multiple tabs are closed with operations inside the sidebar, even if TST is configured to treat tabs closed with operations outside of the sidebar as solo tabs.
