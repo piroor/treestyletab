@@ -25,8 +25,9 @@ export function makeGroupTabURI(options = {}) {
   const base = Constants.kGROUP_TAB_URI;
   const title = encodeURIComponent(options.title || '');
   const temporaryOption = options.temporary ? '&temporary=true' : '' ;
+  const temporaryAggressiveOption = options.temporaryAggressive ? '&temporaryAggressive=true' : '' ;
   const openerTabIdOption = options.openerTabId ? `&openerTabId=${options.openerTabId}` : '' ;
-  return `${base}?title=${title}${temporaryOption}${openerTabIdOption}`;
+  return `${base}?title=${title}${temporaryOption}${temporaryAggressiveOption}${openerTabIdOption}`;
 }
 
 export async function groupTabs(tabs, options = {}) {

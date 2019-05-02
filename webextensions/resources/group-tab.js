@@ -12,6 +12,7 @@
   let gTitle;
   let gTitleField;
   let gTemporaryCheck;
+  let gTemporaryAggressiveCheck;
 
   document.title = getTitle();
 
@@ -34,6 +35,11 @@
   function isTemporary() {
     const params = location.search.split('#')[0];
     return /[&?]temporary=true/.test(params);
+  }
+
+  function isTemporaryAggressive() {
+    const params = location.search.split('#')[0];
+    return /[&?]temporaryAggressive=true/.test(params);
   }
 
   function getOpenerTabId() {
@@ -66,14 +72,19 @@
   }
 
   function updateParameters(aParameters = {}) {
-    const title     = aParameters.title || getTitle() || '';
-    const temporary = String(gTemporaryCheck.checked);
+    const title = aParameters.title || getTitle() || '';
+
+    let temporary = gTemporaryCheck.checked;
+    temporary = temporary ? `&temporary=${temporary}` : '';
+
+    let temporaryAggressive = gTemporaryAggressiveCheck.checked;
+    temporaryAggressive = temporaryAggressive ? `&temporaryAggressive=${temporaryAggressive}` : '';
 
     let opener = getOpenerTabId();
     opener = opener ? `&openerTabId=${opener}` : '';
 
     let uri = location.href.split('?')[0];
-    uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}${opener}`;
+    uri = `${uri}?title=${encodeURIComponent(title)}${temporary}${temporaryAggressive}${opener}`;
     history.replaceState({}, document.title, uri);
   }
 
@@ -140,7 +151,19 @@
 
     gTemporaryCheck = document.querySelector('#temporary');
     gTemporaryCheck.checked = isTemporary();
-    gTemporaryCheck.addEventListener('change', _event => updateParameters());
+    gTemporaryCheck.addEventListener('change', _event => {
+      if (gTemporaryCheck.checked)
+        gTemporaryAggressiveCheck.checked = false;
+      updateParameters();
+    });
+
+    gTemporaryAggressiveCheck = document.querySelector('#temporaryAggressive');
+    gTemporaryAggressiveCheck.checked = isTemporaryAggressive();
+    gTemporaryAggressiveCheck.addEventListener('change', _event => {
+      if (gTemporaryAggressiveCheck.checked)
+        gTemporaryCheck.checked = false;
+      updateParameters();
+    });
 
     window.l10n.updateDocument();
 
@@ -150,7 +173,7 @@
       type: 'treestyletab:get-config-value',
       key:  'showAutoGroupOptionHint'
     }).then(show => {
-      if (!isTemporary())
+      if (!isTemporary() && !isTemporaryAggressive())
         show = false;
 
       const hint = document.getElementById('optionHint');

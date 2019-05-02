@@ -63,7 +63,8 @@
       "title": { "content": "$1", "example": "タイトル" }
     }},
   "groupTab_label_default": { "message": "グループ" },
-  "groupTab_temporary_label": { "message": "子タブがなくなったらこのタブを閉じる" },
+  "groupTab_temporary_label": { "message": "子タブがすべてなくなったらこのタブを閉じる" },
+  "groupTab_temporaryAggressive_label": { "message": "子タブが1つ以下になったらこのタブを閉じる" },
   "groupTab_fromPinnedTab_label": { "message": "$TITLE$ から開いたタブ",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }

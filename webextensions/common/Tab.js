@@ -257,6 +257,12 @@ export default class Tab {
     return /[&?]temporary=true/.test(this.tab.url);
   }
 
+  get isTemporaryAggressiveGroupTab() {
+    if (!this.isGroupTab)
+      return false;
+    return /[&?]temporaryAggressive=true/.test(this.tab.url);
+  }
+
   get selected() {
     return this.states.has(Constants.kTAB_STATE_SELECTED) ||
              (this.hasOtherHighlighted && !!(this.tab && this.tab.highlighted));

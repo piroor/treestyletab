@@ -96,13 +96,22 @@ function cleanupNeedlssGroupTab(tabs) {
   log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
-    if (!tab.$TST.isTemporaryGroupTab)
+    if (tab.$TST.isTemporaryGroupTab) {
+      if (tab.$TST.childIds.length > 1)
+        break;
+      const lastChild = tab.$TST.firstChild;
+      if (lastChild &&
+          !lastChild.$TST.isTemporaryGroupTab &&
+          !lastChild.$TST.isTemporaryAggressiveGroupTab)
+        break;
+    }
+    else if (tab.$TST.isTemporaryAggressiveGroupTab) {
+      if (tab.$TST.childIds.length > 1)
+        break;
+    }
+    else {
       break;
-    if (tab.$TST.childIds.length > 1)
-      break;
-    const lastChild = tab.$TST.firstChild;
-    if (lastChild && !lastChild.$TST.isTemporaryGroupTab)
-      break;
+    }
     tabsToBeRemoved.push(tab);
   }
   log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
