@@ -20,6 +20,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as Permissions from '/common/permissions.js';
 
 import Tab from '/common/Tab.js';
 
@@ -426,7 +427,9 @@ async function confirmToAutoGroupNewTabs(tabs) {
     return true;
 
   const windowId = tabs[0].windowId;
-  if (/^(about|chrome|resource):/.test(tabs[0].url) ||
+  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
+  if (!granted ||
+      /^(about|chrome|resource):/.test(tabs[0].url) ||
       (SidebarConnection.isOpen(windowId) &&
        SidebarConnection.hasFocus(windowId)))
     return browser.runtime.sendMessage({
