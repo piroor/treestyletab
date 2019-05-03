@@ -36,6 +36,11 @@ export const windows        = new Map();
 export const tabs           = new Map();
 export const tabsByUniqueId = new Map();
 
+export function clear() {
+  tabs.clear();
+  tabsByUniqueId.clear();
+}
+
 export const queryLogs = [];
 const MAX_LOGS = 100000;
 

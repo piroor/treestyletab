@@ -84,6 +84,13 @@ export default class Window {
     delete this.id;
   }
 
+  clear() {
+    this.tabs.clear();
+    this.order = [];
+    TabsStore.unprepareIndexesForWindow(this.id);
+    TabsStore.prepareIndexesForWindow(this.id);
+  }
+
   bindElement(element) {
     this.element = element;
     this.classList = element.classList;

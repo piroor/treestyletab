@@ -228,9 +228,9 @@ async function rebuildAll(windows) {
   const restoredFromCache = new Map();
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
-      const trackedWindow = TabsStore.windows.get(window.id);
+      let trackedWindow = TabsStore.windows.get(window.id);
       if (!trackedWindow)
-        Window.init(window.id);
+        trackedWindow = Window.init(window.id);
 
       for (const tab of window.tabs) {
         TabIdFixer.fixTab(tab);
@@ -280,6 +280,10 @@ async function rebuildAll(windows) {
 
 export async function reload(options = {}) {
   mPreloadedCaches.clear();
+  for (const window of TabsStore.windows.values()) {
+    window.clear();
+  }
+  TabsStore.clear();
   const windows = await getAllWindows();
   await MetricsData.addAsync('reload: rebuildAll', rebuildAll(windows));
   await MetricsData.addAsync('reload: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows));
