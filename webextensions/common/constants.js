@@ -38,6 +38,7 @@ export const kCOMMAND_NOTIFY_TAB_REMOVED             = 'treestyletab:notify-tab-
 export const kCOMMAND_NOTIFY_TAB_ACTIVATED           = 'treestyletab:notify-tab-activated';
 export const kCOMMAND_NOTIFY_START_TAB_SWITCH        = 'treestyletab:notify-start-tab-switch';
 export const kCOMMAND_NOTIFY_END_TAB_SWITCH          = 'treestyletab:notify-end-tab-switch';
+export const kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW   = 'treestyletab:notify-tab-attached-to-window';
 export const kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW = 'treestyletab:notify-tab-detached-from-window';
 export const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions-granted';
 export const kCOMMAND_NOTIFY_TAB_PINNED              = 'treestyletab:notify-tab-pinned';
