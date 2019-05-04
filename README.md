@@ -85,22 +85,29 @@ Some addons provide extended behavior to TST's sidebar panel:
 
 ## Similar projects
 
- * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/):
-   Cross-browser, more powerful features, and high customizability.
-   (One large difference between TST is: the design strategy.
-   TST is aimed to keep it simple and work together with other addons as possible as it can.)
- * [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/),
-   [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/):
-   Vertical tab bar without tree.
- * [sidebarTabs](https://github.com/asamuzaK/sidebarTabs):
-   Vertical tab bar with grouped tabs.
- * [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/):
-   Vertical tab bar with grouped tabs.
+### Vertical tab bar with tree, and more features
 
-Some Google Chrome extensions also provides similar feature.
+* [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
+* [Sidebery](https://addons.mozilla.org/firefox/addon/sidebery/)
 
- * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
- * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
+### Vertical tab bar with grouping
+
+* [Container Tabs Sidebar](https://addons.mozilla.org/firefox/addon/container-tabs-sidebar/)
+* [Sidebar Tabs](https://addons.mozilla.org/firefox/addon/sidebartabs/)
+* [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/)
+
+### Vertical tab bar without tree or grouping
+
+* [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/)
+* [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
+* [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
+* [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
+* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
+
+### Google Chrome extensions
+
+* [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
+* [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
 
 ## If you have any request, proposal, or unexpected trouble from bugs?
 
