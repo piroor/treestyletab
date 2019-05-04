@@ -307,68 +307,68 @@ Tab.onRestored.addListener(tab => {
   log('onTabRestored ', dumpTab(tab));
   mProcessingTabRestorations.push(async () => {
     try {
-  const count = mRestoringTabs.get(tab.windowId) || 0;
-  if (count == 0) {
-    setTimeout(() => {
       const count = mRestoringTabs.get(tab.windowId) || 0;
-      if (count > 0) {
-        UserOperationBlocker.blockIn(tab.windowId, { throbber: true });
-        UserOperationBlocker.setProgress(0, tab.windowId);
+      if (count == 0) {
+        setTimeout(() => {
+          const count = mRestoringTabs.get(tab.windowId) || 0;
+          if (count > 0) {
+            UserOperationBlocker.blockIn(tab.windowId, { throbber: true });
+            UserOperationBlocker.setProgress(0, tab.windowId);
+          }
+        }, configs.delayToBlockUserOperationForTabsRestoration);
       }
-    }, configs.delayToBlockUserOperationForTabsRestoration);
-  }
-  mRestoringTabs.set(tab.windowId, count + 1);
-  const maxCount = mMaxRestoringTabs.get(tab.windowId) || 0;
-  mMaxRestoringTabs.set(tab.windowId, Math.max(count, maxCount));
+      mRestoringTabs.set(tab.windowId, count + 1);
+      const maxCount = mMaxRestoringTabs.get(tab.windowId) || 0;
+      mMaxRestoringTabs.set(tab.windowId, Math.max(count, maxCount));
 
-  if (count == 0) {
-    // Force restore recycled active tab.
-    // See also: https://github.com/piroor/treestyletab/issues/2191#issuecomment-489271889
-    const activeTab = Tab.getActiveTab(tab.windowId);
-    let uniqueId, restoredUniqueId;
-    // eslint-disable-next-line prefer-const
-    [uniqueId, restoredUniqueId] = await Promise.all([
-      activeTab.$TST.promisedUniqueId,
-      browser.sessions.getTabValue(activeTab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
-    ]);
-    if (restoredUniqueId && restoredUniqueId.id != uniqueId.id) {
-      activeTab.$TST.updateUniqueId({ id: restoredUniqueId.id });
-      reserveToAttachTabFromRestoredInfo(activeTab, {
+      if (count == 0) {
+        // Force restore recycled active tab.
+        // See also: https://github.com/piroor/treestyletab/issues/2191#issuecomment-489271889
+        const activeTab = Tab.getActiveTab(tab.windowId);
+        let uniqueId, restoredUniqueId;
+        // eslint-disable-next-line prefer-const
+        [uniqueId, restoredUniqueId] = await Promise.all([
+          activeTab.$TST.promisedUniqueId,
+          browser.sessions.getTabValue(activeTab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
+        ]);
+        if (restoredUniqueId && restoredUniqueId.id != uniqueId.id) {
+          activeTab.$TST.updateUniqueId({ id: restoredUniqueId.id });
+          reserveToAttachTabFromRestoredInfo(activeTab, {
+            children: true
+          });
+        }
+      }
+
+      reserveToAttachTabFromRestoredInfo(tab, {
         children: true
       });
-    }
-  }
 
-  reserveToAttachTabFromRestoredInfo(tab, {
-    children: true
-  });
+      reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
+        Tree.fixupSubtreeCollapsedState(tab, {
+          justNow:   true,
+          broadcast: true
+        });
+        SidebarConnection.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
+          tabId:    tab.id,
+          windowId: tab.windowId
+        });
 
-  reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
-    Tree.fixupSubtreeCollapsedState(tab, {
-      justNow:   true,
-      broadcast: true
-    });
-    SidebarConnection.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
-      tabId:    tab.id,
-      windowId: tab.windowId
-    });
-
-    let count = mRestoringTabs.get(tab.windowId) || 0;
-    count--;
-    if (count == 0) {
-      mRestoringTabs.delete(tab.windowId);
-      mMaxRestoringTabs.delete(tab.windowId);
-      setTimeout(() => { // unblock in the next event loop, after other asynchronous operations are finished
-        UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
-      }, 0);
-    }
-    else {
-      mRestoringTabs.set(tab.windowId, count);
-      const maxCount = mMaxRestoringTabs.get(tab.windowId);
-      UserOperationBlocker.setProgress(Math.round(maxCount - count / maxCount * 100), tab.windowId);
-    }
-  });
+        let count = mRestoringTabs.get(tab.windowId) || 0;
+        count--;
+        if (count == 0) {
+          mRestoringTabs.delete(tab.windowId);
+          mMaxRestoringTabs.delete(tab.windowId);
+          setTimeout(() => { // unblock in the next event loop, after other asynchronous operations are finished
+            UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
+          }, 0);
+        }
+        else {
+          mRestoringTabs.set(tab.windowId, count);
+          const maxCount = mMaxRestoringTabs.get(tab.windowId);
+          UserOperationBlocker.setProgress(Math.round(maxCount - count / maxCount * 100), tab.windowId);
+        }
+      });
     }
     catch(_e) {
     }
