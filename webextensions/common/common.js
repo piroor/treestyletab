@@ -233,6 +233,12 @@ export const configs = new Configs({
   content: "🕶";
 }
 */
+
+/* Show internal tab id in the debug mode */
+:root.debug .tab:not(.faviconized)::after {
+  content: attr(data-tab-id);
+  opacity: 0.5;
+}
 `.trim(),
 
   debug:     false,
