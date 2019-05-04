@@ -301,10 +301,12 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
 const mRestoringTabs = new Map();
 const mMaxRestoringTabs = new Map();
+const mProcessingTabRestorations = [];
 
 Tab.onRestored.addListener(tab => {
   log('onTabRestored ', dumpTab(tab));
-
+  mProcessingTabRestorations.push(async () => {
+    try {
   const count = mRestoringTabs.get(tab.windowId) || 0;
   if (count == 0) {
     setTimeout(() => {
@@ -318,6 +320,24 @@ Tab.onRestored.addListener(tab => {
   mRestoringTabs.set(tab.windowId, count + 1);
   const maxCount = mMaxRestoringTabs.get(tab.windowId) || 0;
   mMaxRestoringTabs.set(tab.windowId, Math.max(count, maxCount));
+
+  if (count == 0) {
+    // Force restore recycled active tab.
+    // See also: https://github.com/piroor/treestyletab/issues/2191#issuecomment-489271889
+    const activeTab = Tab.getActiveTab(tab.windowId);
+    let uniqueId, restoredUniqueId;
+    // eslint-disable-next-line prefer-const
+    [uniqueId, restoredUniqueId] = await Promise.all([
+      activeTab.$TST.promisedUniqueId,
+      browser.sessions.getTabValue(activeTab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
+    ]);
+    if (restoredUniqueId && restoredUniqueId.id != uniqueId.id) {
+      activeTab.$TST.updateUniqueId({ id: restoredUniqueId.id });
+      reserveToAttachTabFromRestoredInfo(activeTab, {
+        children: true
+      });
+    }
+  }
 
   reserveToAttachTabFromRestoredInfo(tab, {
     children: true
@@ -349,4 +369,13 @@ Tab.onRestored.addListener(tab => {
       UserOperationBlocker.setProgress(Math.round(maxCount - count / maxCount * 100), tab.windowId);
     }
   });
+    }
+    catch(_e) {
+    }
+    mProcessingTabRestorations.shift();
+    if (mProcessingTabRestorations.length > 0)
+      mProcessingTabRestorations[0]();
+  });
+  if (mProcessingTabRestorations.length == 1)
+    mProcessingTabRestorations[0]();
 });
