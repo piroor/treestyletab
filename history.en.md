@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Prevent infinitly reloading when missynchronized tabs are detected.
+   * Show confirmation dialog in the sidebar for grouping, when a required permission is not granted.
+   * Restore tree structure around recycled active tab more correctly, on manual session restoration.
+   * Close temporary group tab when there is one or less child, if it was opened as a successor of a closed parent tab.
+   * Fix odd behavior of tabs after a tab is detached from its window by drag and drop.
+   * Don't produce multiple active tabs after a tab is attached to an existing window.
+   * Add example style rule for debugging.
+   * Update `de` locale by SammysHP. Thanks!
  - 3.0.10 (2019.5.2)
    * Reduce wrong tab focus on clicked, caused with broken internal index of tabs.
    * Reduce stuck on sidebar initialization triggered with timing issue.
