@@ -17,23 +17,16 @@ If you want, you can restructure the tree via drag and drop.
 Anyway this addon just provide uncolored "tree" feature.
 Please enjoy as you like!
 
-## Supported versions of Firefox
+## Release builds
 
-TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XUL-based), and one more extra line: "migration".
-
- * "Renewed", version 2.0 and later: supports Firefox 57 and later.
-   By technical reasons, some features are dropped from the legacy version.
- * "Legacy", version 0.19.x supports only Firefox 52-56.
-   Just maintained for people who are not migrated to Firefox 57 or later yet.
+* The signed package of the latest version is available at [Mozilla Add-ons (AMO)](https://addons.mozilla.org/firefox/addon/tree-style-tab/). See also the [`strict_min_version` information in the install manifest](https://github.com/piroor/treestyletab/blob/master/webextensions/manifest.json#L203) to know the minimum supported Firefox version.
+* [Old packages are also downloadable on the AMO website](https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/). TST sometimes drops outdated versions of Firefox, but you may find out old packages supporting the dropped versions of Firefox. 
+* For more older versions of Firefox, Waterfox, or Palemoon, [Classic Add-ons Archive](https://github.com/JustOff/ca-archive) possibly contains legacy packages of TST.
 
 ## Development builds
 
-There are [automated builds from latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/).
-
- * ["Renewed" version 2.x and later](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
- * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
-
-Packages are not signed, and there are two methods to try them in your environment:
+There is an [automated buildd based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi).
+It is not signed, so there are two methods to try them in your environment:
 
  * Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart your Firefox.
  * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of the stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you will be able to install such an unsigned addon.
@@ -85,22 +78,29 @@ Some addons provide extended behavior to TST's sidebar panel:
 
 ## Similar projects
 
- * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/):
-   Cross-browser, more powerful features, and high customizability.
-   (One large difference between TST is: the design strategy.
-   TST is aimed to keep it simple and work together with other addons as possible as it can.)
- * [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/),
-   [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/):
-   Vertical tab bar without tree.
- * [sidebarTabs](https://github.com/asamuzaK/sidebarTabs):
-   Vertical tab bar with grouped tabs.
- * [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/):
-   Vertical tab bar with grouped tabs.
+### Vertical tab bar with tree, and more features
 
-Some Google Chrome extensions also provides similar feature.
+* [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
+* [Sidebery](https://addons.mozilla.org/firefox/addon/sidebery/)
 
- * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
- * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
+### Vertical tab bar with grouping
+
+* [Container Tabs Sidebar](https://addons.mozilla.org/firefox/addon/container-tabs-sidebar/)
+* [Sidebar Tabs](https://addons.mozilla.org/firefox/addon/sidebartabs/)
+* [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/)
+
+### Vertical tab bar without tree or grouping
+
+* [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/)
+* [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
+* [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
+* [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
+* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
+
+### Google Chrome extensions
+
+* [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
+* [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
 
 ## If you have any request, proposal, or unexpected trouble from bugs?
 
@@ -124,7 +124,7 @@ Any feature request unrelated to these points may be rejected, even if many peop
 Here is a list of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
 
- * *[Never support for Pale Moon or Waterfox.](https://github.com/piroor/treestyletab/issues/1043)* TST is designed for latest release of Mozilla Firefox and Mozilla Firefox ESR, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
+ * *[Never support for Pale Moon or Waterfox.](https://github.com/piroor/treestyletab/issues/1043)* TST is designed for latest release of Mozilla Firefox<!-- and Mozilla Firefox ESR-->, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
  * *Never support for horizontal tab bar.* TST 2.x is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
  * *Poor support for the non-indented vertical tabs.* I recommend you to use [other addons providing vertical tab bar without tree](#similar-projects) instead.
  * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on, is [available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)

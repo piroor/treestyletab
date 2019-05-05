@@ -171,6 +171,14 @@ export default class Tab {
       console.log(error);
       throw error;
     }
+    if (options.id) {
+      if (this.uniqueId.id)
+        TabsStore.tabsByUniqueId.delete(this.uniqueId.id);
+      this.uniqueId.id = options.id;
+      TabsStore.tabsByUniqueId.set(options.id, this.tab);
+      this.setAttribute(Constants.kPERSISTENT_ID, options.id);
+      return Promise.resolve(this.uniqueId);
+    }
     return UniqueId.request(this.tab, options).then(uniqueId => {
       if (uniqueId && TabsStore.ensureLivingTab(this.tab)) { // possibly removed from document while waiting
         this.uniqueId = uniqueId;
@@ -255,6 +263,12 @@ export default class Tab {
     if (!this.isGroupTab)
       return false;
     return /[&?]temporary=true/.test(this.tab.url);
+  }
+
+  get isTemporaryAggressiveGroupTab() {
+    if (!this.isGroupTab)
+      return false;
+    return /[&?]temporaryAggressive=true/.test(this.tab.url);
   }
 
   get selected() {

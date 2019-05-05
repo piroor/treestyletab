@@ -40,7 +40,9 @@ function setSuccessor(tabId, successorTabId = -1) {
     // ignore error for already closed tab
     if (!error ||
         !error.message ||
-        error.message.indexOf('Invalid successorTabId') != 0)
+        (error.message.indexOf('Invalid successorTabId') != 0 &&
+         // This error may happen at the time just after a tab is detached from its original window.
+         error.message.indexOf('Successor tab must be in the same window as the tab being updated') != 0))
       throw error;
   }));
 }

@@ -822,6 +822,12 @@ async function onAttached(tabId, attachInfo) {
         await onAttachedResult;
     }
 
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW,
+      windowId: attachInfo.newWindowId,
+      tabId
+    });
+
     onCompleted();
   }
   catch(e) {

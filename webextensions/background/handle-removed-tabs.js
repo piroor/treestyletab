@@ -59,7 +59,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     const firstChild = tab.$TST.firstChild;
     const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
-      temporary: true
+      temporaryAggressive: true
     });
     const window = TabsStore.windows.get(tab.windowId);
     window.toBeOpenedTabsWithPositions++;

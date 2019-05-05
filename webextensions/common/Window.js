@@ -84,6 +84,13 @@ export default class Window {
     delete this.id;
   }
 
+  clear() {
+    this.tabs.clear();
+    this.order = [];
+    TabsStore.unprepareIndexesForWindow(this.id);
+    TabsStore.prepareIndexesForWindow(this.id);
+  }
+
   bindElement(element) {
     this.element = element;
     this.classList = element.classList;
@@ -190,6 +197,8 @@ export default class Window {
     this.tabs.delete(tabId);
     const order = this.order;
     const index = order.indexOf(tab.id);
+    if (index < 0) // the tab is not tracked yet!
+      return;
     order.splice(index, 1);
     if (this.tabs.size == 0) {
       if (!TabsStore.getWindow()) { // only in the background page - the sidebar has no need to destroy itself manually.
