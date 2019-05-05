@@ -17,24 +17,16 @@ If you want, you can restructure the tree via drag and drop.
 Anyway this addon just provide uncolored "tree" feature.
 Please enjoy as you like!
 
-## Supported versions of Firefox
+## Release builds
 
-TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XUL-based), and one more extra line: "migration".
-
- * "Renewed", version 2.0 and later: designed for Firefox 57 and later.
-   By technical reasons, some features are dropped from the legacy version.
-   And please note that outdated versions of Firefox may become unsupported day by day.
- * "Legacy", version 0.19.x designed for Firefox 52-56.
-   Just maintained for people who are not migrated to Firefox 57 or later yet.
+* The signed package of the latest version is available at [Mozilla Add-ons (AMO)](https://addons.mozilla.org/firefox/addon/tree-style-tab/).
+* [Old packages are also downloadable on the AMO website](https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/). TST sometimes drops outdated versions of Firefox, but you may find out old packages supporting the dropped versions of Firefox. 
+* For more older versions of Firefox, Waterfox, or Palemoon, [Classic Add-ons Archive](https://github.com/JustOff/ca-archive) possibly contains legacy packages of TST.
 
 ## Development builds
 
-There are [automated builds from latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/).
-
- * ["Renewed" version 2.x and later](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
- * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
-
-Packages are not signed, and there are two methods to try them in your environment:
+There is an [automated buildd based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi).
+It is not signed, so there are two methods to try them in your environment:
 
  * Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart your Firefox.
  * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of the stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you will be able to install such an unsigned addon.
