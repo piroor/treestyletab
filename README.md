@@ -21,9 +21,9 @@ Please enjoy as you like!
 
 TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XUL-based), and one more extra line: "migration".
 
- * "Renewed", version 2.0 and later: supports Firefox 57 and later.
+ * "Renewed", version 2.0 and later: designed for Firefox 57 and later.
    By technical reasons, some features are dropped from the legacy version.
- * "Legacy", version 0.19.x supports only Firefox 52-56.
+ * "Legacy", version 0.19.x designed for Firefox 52-56.
    Just maintained for people who are not migrated to Firefox 57 or later yet.
 
 ## Development builds
@@ -131,7 +131,7 @@ Any feature request unrelated to these points may be rejected, even if many peop
 Here is a list of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
 
- * *[Never support for Pale Moon or Waterfox.](https://github.com/piroor/treestyletab/issues/1043)* TST is designed for latest release of Mozilla Firefox and Mozilla Firefox ESR, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
+ * *[Never support for Pale Moon or Waterfox.](https://github.com/piroor/treestyletab/issues/1043)* TST is designed for latest release of Mozilla Firefox<!-- and Mozilla Firefox ESR-->, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
  * *Never support for horizontal tab bar.* TST 2.x is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
  * *Poor support for the non-indented vertical tabs.* I recommend you to use [other addons providing vertical tab bar without tree](#similar-projects) instead.
  * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on, is [available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
