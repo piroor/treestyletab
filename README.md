@@ -23,6 +23,7 @@ TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XU
 
  * "Renewed", version 2.0 and later: designed for Firefox 57 and later.
    By technical reasons, some features are dropped from the legacy version.
+   And please note that outdated versions of Firefox may become unsupported day by day.
  * "Legacy", version 0.19.x designed for Firefox 52-56.
    Just maintained for people who are not migrated to Firefox 57 or later yet.
 
