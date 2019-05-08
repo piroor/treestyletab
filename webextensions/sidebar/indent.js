@@ -23,7 +23,10 @@ function log(...args) {
   internalLogger('sidebar/indent', ...args);
 }
 
-let mInitialized = false;
+let mPromisedInitializedResolver;
+let mPromisedInitialized = new Promise((resolve, _reject) => {
+  mPromisedInitializedResolver = resolve;
+});
 let mIndentDefinition;
 let mLastMaxLevel  = -1;
 let mLastMaxIndent = -1;
@@ -36,7 +39,8 @@ export function init() {
 
   window.addEventListener('resize', reserveToUpdateIndent);
 
-  mInitialized = true;
+  mPromisedInitializedResolver();
+  mPromisedInitialized = null;
 }
 
 export function updateRestoredTree(cachedIndent) {
@@ -127,9 +131,9 @@ export function getCacheInfo() {
 }
 
 
-export function reserveToUpdateVisualMaxTreeLevel() {
-  if (!mInitialized)
-    return;
+export async function reserveToUpdateVisualMaxTreeLevel() {
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
@@ -157,9 +161,9 @@ function getMaxTreeLevel(windowId, options = {}) {
   return maxLevel;
 }
 
-function reserveToUpdateIndent() {
-  if (!mInitialized)
-    return;
+async function reserveToUpdateIndent() {
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
   //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
     clearTimeout(reserveToUpdateIndent.waiting);
