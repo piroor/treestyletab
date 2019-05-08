@@ -1,6 +1,7 @@
 <!--
 NOTE: Please read the guideline to open a new issue at first.
 https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
+Or, please read an example of a helpful bug report: https://github.com/piroor/treestyletab/issues/2267
 
 For Japanese people:
 英語は不得意、という場合は日本語で書いてもOKです。ただし、
