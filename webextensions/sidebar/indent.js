@@ -40,7 +40,7 @@ export function init() {
   window.addEventListener('resize', reserveToUpdateIndent);
 
   mPromisedInitializedResolver();
-  mPromisedInitialized = null;
+  mPromisedInitialized = mPromisedInitializedResolver = null;
 }
 
 export function updateRestoredTree(cachedIndent) {

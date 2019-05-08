@@ -31,14 +31,16 @@ function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
 }
 
-let mInitialized = false;
+let mPromisedInitializedResolver;
+let mPromisedInitialized = new Promise((resolve, _reject) => {
+  mPromisedInitializedResolver = resolve;
+});
 
 export const wholeContainer = document.querySelector('#all-tabs');
 
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
-  mInitialized = true;
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
@@ -50,6 +52,9 @@ export function init() {
     if (tab)
       updateTabAndAncestorsTooltip(tab);
   });
+
+  mPromisedInitializedResolver();
+  mPromisedInitialized = mPromisedInitializedResolver = null;
 }
 
 export function getTabFromDOMNode(node, options = {}) {
@@ -254,9 +259,9 @@ function getTooltipWithDescendants(tab) {
 }
 
 
-function reserveToUpdateLoadingState() {
-  if (!mInitialized)
-    return;
+async function reserveToUpdateLoadingState() {
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
   if (reserveToUpdateLoadingState.waiting)
     clearTimeout(reserveToUpdateLoadingState.waiting);
   reserveToUpdateLoadingState.waiting = setTimeout(() => {
@@ -708,13 +713,14 @@ window.addEventListener('resize', () => {
   }, 250);
 });
 
-configs.$addObserver(changedKey => {
+configs.$addObserver(async changedKey => {
   switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
-      if (mInitialized)
-        for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
-          tab.$TST.tooltipIsDirty = true;
-        }
+      if (mPromisedInitialized)
+        await mPromisedInitialized;
+      for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
+        tab.$TST.tooltipIsDirty = true;
+      }
       break;
 
     case 'labelOverflowStyle':
@@ -956,8 +962,9 @@ BackgroundConnection.onMessage.addListener(async message => {
           tab.index == message.newIndex)
         return;
       const nextTab = Tab.get(message.nextTabId);
-      if (mInitialized &&
-          tab.$TST.parent)
+      if (mPromisedInitialized)
+        await mPromisedInitialized;
+      if (tab.$TST.parent)
         tab.$TST.parent.$TST.tooltipIsDirty = true;
 
       tab.$TST.addState(Constants.kTAB_STATE_MOVING);
@@ -1181,8 +1188,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       reserveToUpdateLoadingState();
       reserveToUpdateTwistyTooltip(tab);
       reserveToUpdateCloseboxTooltip(tab);
-      if (mInitialized)
-        tab.$TST.tooltipIsDirty = true;
+      if (mPromisedInitialized)
+        await mPromisedInitialized;
+      tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
           tab.$TST.labelIsDirty) {
         updateLabelOverflow(tab);
@@ -1234,7 +1242,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
-      if (!mInitialized)
+      if (mPromisedInitialized)
         return;
       // We need to wait not only for added children but removed children also,
       // to construct same number of promises for "attached but detached immediately"
