@@ -491,7 +491,9 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       return true;
     }
     const opener = Tab.getByUniqueId(tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID));
-    if (!opener || !opener.pinned)
+    if (!opener ||
+        !opener.pinned ||
+        opener.windowId != tab.windowId)
       return false;
     // existing and not yet grouped tab
     if (!pinnedOpeners.includes(opener))
