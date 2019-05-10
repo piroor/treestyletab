@@ -18,7 +18,6 @@ import Tab from '/common/Tab.js';
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('sidebar/indent', ...args);
 }
@@ -134,6 +133,7 @@ export function getCacheInfo() {
 export async function reserveToUpdateVisualMaxTreeLevel() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
+  log('reserveToUpdateVisualMaxTreeLevel');
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
@@ -146,6 +146,7 @@ function updateVisualMaxTreeLevel() {
   const maxLevel = getMaxTreeLevel(mTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
+  log('updateVisualMaxTreeLevel ', { maxLevel });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
 }
 
@@ -164,7 +165,7 @@ function getMaxTreeLevel(windowId, options = {}) {
 async function reserveToUpdateIndent() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
-  //log('reserveToUpdateIndent');
+  log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
     clearTimeout(reserveToUpdateIndent.waiting);
   reserveToUpdateIndent.waiting = setTimeout(() => {
@@ -184,12 +185,14 @@ BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+      log('listen: ', message.type);
       reserveToUpdateVisualMaxTreeLevel();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
+      log('listen: ', message.type);
       reserveToUpdateIndent();
       reserveToUpdateVisualMaxTreeLevel();
       break;
@@ -197,6 +200,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      log('listen: ', message.type, tab);
       if (!tab)
         return;
       if (tab.$TST.getAttribute(Constants.kLEVEL) != message.level)
