@@ -234,6 +234,7 @@ export async function init() {
       updateTabbarLayout({ justNow: true });
 
       SidebarTabs.init();
+      Indent.reserveToUpdateVisualMaxTreeLevel();
 
       onConfigChange('animation');
       onReady.dispatch();
