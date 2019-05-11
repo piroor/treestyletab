@@ -324,10 +324,10 @@ async function onCreated(tab) {
     await mPromisedStarted;
 
   log('tabs.onCreated: ', dumpTab(tab));
-  return onNewTabTracked(tab);
+  return onNewTabTracked(tab, { type: 'onCreated' });
 }
 
-async function onNewTabTracked(tab) {
+async function onNewTabTracked(tab, info) {
   const window               = Window.init(tab.windowId);
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
@@ -351,7 +351,10 @@ async function onNewTabTracked(tab) {
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
   // impossible to know which tab was previously active.
-  Tab.track(tab);
+  tab = Tab.track(tab);
+
+  if (info.type == 'onCreated')
+    tab.$TST.addState(Constants.kTAB_STATE_CREATING);
 
   log(`onNewTabTracked(i${dumpTab(tab)}): `, tab, { window, positionedBySelf, duplicatedInternally, maybeOrphan, activeTab });
 
@@ -515,6 +518,7 @@ async function onNewTabTracked(tab) {
     }
 
     onCompleted(uniqueId);
+    tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
 
     // tab can be changed while creating!
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
@@ -543,6 +547,7 @@ async function onNewTabTracked(tab) {
   catch(e) {
     console.log(e, e.stack);
     onCompleted();
+    tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
   }
 }
 
@@ -809,7 +814,7 @@ async function onAttached(tabId, attachInfo) {
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const window = TabsStore.windows.get(attachInfo.newWindowId);
-    await onNewTabTracked(tab);
+    await onNewTabTracked(tab, { type: 'onAttached' });
     const byInternalOperation = window.toBeAttachedTabs.has(tab.id);
     if (byInternalOperation)
       window.toBeAttachedTabs.delete(tab.id);

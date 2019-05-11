@@ -251,8 +251,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
         await promisedDone;
     }
     else if (!options.bulk &&
-             (tab.$TST.nearestNormalFollowingTab ||
-              tab.$TST.nearestNormalPrecedingTab)) {
+             (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
+              tab.$TST.nearestCompletelyOpenedNormalPrecedingTab)) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,

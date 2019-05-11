@@ -141,6 +141,7 @@ export const kTAB_STATE_HIDDEN                    = 'hidden';
 export const kTAB_STATE_ANIMATION_READY           = 'animation-ready';
 export const kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD  = 'not-activated-since-load';
 export const kTAB_STATE_BURSTING                  = 'bursting';
+export const kTAB_STATE_CREATING                  = 'creating';
 export const kTAB_STATE_REMOVING                  = 'removing';
 export const kTAB_STATE_COLLAPSED                 = 'collapsed';
 export const kTAB_STATE_COLLAPSED_DONE            = 'collapsed-completely';
@@ -167,6 +168,7 @@ export const kTAB_INTERNAL_STATES = [
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_ANIMATION_READY,
   kTAB_STATE_COLLAPSED_DONE,
+  kTAB_STATE_CREATING,
   kTAB_STATE_DUPLICATING,
   kTAB_STATE_COLLAPSING,
   kTAB_STATE_EXPANDING,
@@ -175,6 +177,7 @@ export const kTAB_INTERNAL_STATES = [
   kTAB_STATE_THROBBER_UNSYNCHRONIZED
 ];
 export const kTAB_TEMPORARY_STATES = [
+  kTAB_STATE_CREATING,
   kTAB_STATE_BURSTING,
   kTAB_STATE_COLLAPSING,
   kTAB_STATE_DUPLICATING,

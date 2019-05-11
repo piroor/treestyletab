@@ -329,20 +329,22 @@ export default class Tab {
     });
   }
 
-  get nearestNormalFollowingTab() {
+  get nearestCompletelyOpenedNormalFollowingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
+      states:   [Constants.kTAB_STATE_CREATING, false],
       fromId:   this.tab.id,
       normal:   true,
       index:    (index => index > this.tab.index)
     });
   }
 
-  get nearestNormalPrecedingTab() {
+  get nearestCompletelyOpenedNormalPrecedingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
+      states:   [Constants.kTAB_STATE_CREATING, false],
       fromId:   this.tab.id,
       normal:   true,
       index:    (index => index < this.tab.index),

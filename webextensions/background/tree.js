@@ -1346,8 +1346,8 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 //===================================================================
 
 export function snapshotForActionDetection(targetTab) {
-  const prevTab = targetTab.$TST.nearestNormalPrecedingTab;
-  const nextTab = targetTab.$TST.nearestNormalFollowingTab;
+  const prevTab = targetTab.$TST.nearestCompletelyOpenedNormalPrecedingTab;
+  const nextTab = targetTab.$TST.nearestCompletelyOpenedNormalFollowingTab;
   const tabs = Array.from(new Set([
     ...(prevTab && prevTab.$TST.ancestors || []),
     prevTab,
@@ -1385,9 +1385,9 @@ function snapshotTree(targetTab, tabs) {
       continue;
     const parent = tab.$TST.parent;
     item.parent = parent && parent.id;
-    const next = tab.$TST.nearestNormalFollowingTab;
+    const next = tab.$TST.nearestCompletelyOpenedNormalFollowingTab;
     item.next = next && next.id;
-    const previous = tab.$TST.nearestNormalPrecedingTab;
+    const previous = tab.$TST.nearestCompletelyOpenedNormalPrecedingTab;
     item.previous = previous && previous.id;
   }
   const activeTab = Tab.getActiveTab(targetTab.windowId);
