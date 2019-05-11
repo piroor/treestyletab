@@ -148,3 +148,49 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
        'all children must be promoted');
   }
 }
+
+// https://github.com/piroor/treestyletab/issues/2273
+export async function testIgnoreCreatingTabsOnTreeStructureAutoFix() {
+  await Utils.setConfigs({
+    autoGroupNewTabs: false
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'B' }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${C.id}`
+    ], Utils.treeStructure([A, B, C]),
+       'tabs must be initialized with specified structure');
+  }
+
+  const newTabs = await Utils.doAndGetNewTabs(async () => {
+    await Promise.all([
+      browser.tabs.create({ windowId: win.id }),
+      browser.tabs.create({ windowId: win.id })
+    ]);
+  }, { windowId: win.id });
+  tabs.D = newTabs[0];
+  tabs.E = newTabs[1];
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${C.id}`,
+      `${D.id}`,
+      `${E.id}`
+    ], Utils.treeStructure([A, B, C, D, E]),
+       'new tabs opened in a time must not be attached');
+  }
+}
