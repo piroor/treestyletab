@@ -73,6 +73,16 @@ export async function tryInitGroupTab(tab) {
   browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
   })).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+
+  if (tab.$TST.states.has(Constants.kTAB_STATE_UNREAD)) {
+    tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      removedStates: [Constants.kTAB_STATE_UNREAD]
+    });
+  }
 }
 
 export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {

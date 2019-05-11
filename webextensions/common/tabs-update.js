@@ -94,7 +94,8 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
-        if (states.includes(Constants.kTAB_STATE_UNREAD)) {
+        if (states.includes(Constants.kTAB_STATE_UNREAD) &&
+            !tab.$TST.isGroupTab) {
           tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
           SidebarConnection.sendMessage({
             type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
@@ -113,6 +114,10 @@ export function updateTab(tab, newState = {}, options = {}) {
           });
         }
       });
+    }
+    else if (tab.$TST.isGroupTab) {
+      tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
+      removedStates.push(Constants.kTAB_STATE_UNREAD);
     }
     else if (!tab.active) {
       tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
