@@ -12,6 +12,8 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 
@@ -713,8 +715,7 @@ async function onClick(info, contextTab) {
       }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabs.map(tab => tab.id))
-        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      TabsInternalOperation.removeTabs(closeTabs);
     }; break;
     case 'context_closeOtherTabs': {
       const tabs  = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
@@ -731,28 +732,26 @@ async function onClick(info, contextTab) {
       }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabs.map(tab => tab.id))
-        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      TabsInternalOperation.removeTabs(closeTabs);
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 }).catch(ApiTabs.createErrorHandler());
       if (sessions.length && sessions[0].tab)
         browser.sessions.restore(sessions[0].tab.sessionId).catch(ApiTabs.createErrorSuppressor());
     }; break;
-    case 'context_closeTab':
-      if (multiselectedTabs) {
-        // close down to top, to keep tree structure of Tree Style Tab
-        multiselectedTabs.reverse();
-        for (const tab of multiselectedTabs) {
-          browser.tabs.remove(tab.id)
-            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-        }
-      }
-      else {
-        browser.tabs.remove(contextTab.id)
-          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-      }
-      break;
+    case 'context_closeTab': {
+      const closeTabs = (multiselectedTabs || TreeBehavior.getClosingTabsFromParent(contextTab, {
+        byInternalOperation: true
+      })).reverse(); // close down to top, to keep tree structure of Tree Style Tab
+      const canceled = (await browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        tabs: closeTabs.map(tab => tab.$TST.sanitized),
+        windowId
+      }).catch(ApiTabs.createErrorHandler())) === false;
+      if (canceled)
+        return;
+      TabsInternalOperation.removeTabs(closeTabs);
+    }; break;
 
     default: {
       const contextualIdentityMatch = info.menuItemId.match(/^context_reopenInContainer:(.+)$/);
