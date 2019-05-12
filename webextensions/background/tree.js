@@ -53,6 +53,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -187,6 +188,12 @@ export async function attachTabTo(child, parent, options = {}) {
       removedChildIds: [],
       newlyAttached
     });
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED))
+      TSTAPI.sendMessage({
+        type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
+        tab:    TSTAPI.serializeTab(child),
+        parent: TSTAPI.serializeTab(parent)
+      }).catch(_error => {});
   }
 
   onAttached.dispatch(child, Object.assign({}, options, {
@@ -327,6 +334,12 @@ export function detachTab(child, options = {}) {
       removedChildIds: [child.id],
       detached: true
     });
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED))
+      TSTAPI.sendMessage({
+        type:      TSTAPI.kNOTIFY_TREE_DETACHED,
+        tab:       TSTAPI.serializeTab(child),
+        oldParent: TSTAPI.serializeTab(parent)
+      }).catch(_error => {});
   }
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child

@@ -79,6 +79,8 @@ export const kNOTIFY_TAB_DRAGSTART  = 'tab-dragstart';
 export const kNOTIFY_TAB_DRAGENTER  = 'tab-dragenter';
 export const kNOTIFY_TAB_DRAGEXIT   = 'tab-dragexit';
 export const kNOTIFY_TAB_DRAGEND    = 'tab-dragend';
+export const kNOTIFY_TREE_ATTACHED  = 'tree-attached';
+export const kNOTIFY_TREE_DETACHED  = 'tree-detached';
 export const kNOTIFY_NATIVE_TAB_DRAGSTART = 'native-tab-dragstart';
 export const kSTART_CUSTOM_DRAG     = 'start-custom-drag';
 export const kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB = 'try-move-focus-from-closing-current-tab';
@@ -498,6 +500,10 @@ export async function serializeTabWithEffectiveFavIconUrl(tab, interval) {
   preparePromiseForEffectiveFavIcon(serializedRoot);
   await Promise.all(promises);
   return serializedRoot;
+}
+
+export function hasListenerForMessageType(type) {
+  return getListenersForMessageType(type).length > 0;
 }
 
 export function getListenersForMessageType(type) {
