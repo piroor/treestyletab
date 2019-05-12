@@ -57,9 +57,7 @@ export async function closeTree(rootTab) {
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
-  for (const tab of tabs) {
-    TabsInternalOperation.removeTab(tab);
-  }
+  TabsInternalOperation.removeTabs(tabs);
 }
 
 export async function closeDescendants(rootTab) {
@@ -68,9 +66,7 @@ export async function closeDescendants(rootTab) {
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
-  for (const tab of tabs) {
-    TabsInternalOperation.removeTab(tab);
-  }
+  TabsInternalOperation.removeTabs(tabs);
 }
 
 export async function closeOthers(rootTab) {
@@ -84,9 +80,7 @@ export async function closeOthers(rootTab) {
   const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
   if (canceled)
     return;
-  for (const tab of closeTabs) {
-    TabsInternalOperation.removeTab(tab);
-  }
+  TabsInternalOperation.removeTabs(closeTabs);
 }
 
 export function collapseTree(rootTab) {
