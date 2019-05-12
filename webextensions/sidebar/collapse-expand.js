@@ -204,6 +204,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+      tab.$TST.tooltipIsDirty = true;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
