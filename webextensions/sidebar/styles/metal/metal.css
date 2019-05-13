@@ -23,7 +23,7 @@
 
 .tab,
 .tab *,
-.tab:not(.collapsed):hover,
+.tab:hover,
 .after-tabs button {
   color: val(--tab-text);
 }

@@ -45,7 +45,7 @@
   background-color: var(--tab-surface);
 }
 
-.tab:not(.collapsed):hover,
+.tab:hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
 }
@@ -54,7 +54,7 @@
   --tab-surface: var(--tab-surface-active);
 }
 
-.tab.active:not(.collapsed):hover {
+.tab.active:hover {
   --tab-surface: var(--tab-surface-active-hover);
 }
 
@@ -66,7 +66,7 @@
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.left .tab:not(.faviconized):not(.collapsed):hover {
+:root.left .tab:not(.faviconized):hover {
   background-image: linear-gradient(
                       to right,
                       var(--tab-surface-active-gradient-start) 0,
@@ -81,7 +81,7 @@
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.right .tab:not(.faviconized):not(.collapsed):hover {
+:root.right .tab:not(.faviconized):hover {
   background-image: linear-gradient(
                       to left,
                       var(--tab-surface-active-gradient-start) 0,

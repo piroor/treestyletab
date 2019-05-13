@@ -85,7 +85,7 @@
   color: var(--tab-text);
 }
 
-.tab:not(.collapsed):not(.active):hover,
+.tab:not(.active):hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
 }
@@ -96,7 +96,7 @@
   --tab-text: var(--tab-active-text);
   --tab-text-inverted: var(--tab-active-text-inverted);
 }
-.tab:not(.collapsed).active:hover {
+.tab.active:hover {
   --tab-surface: var(--tab-surface-active-hover);
 }
 
