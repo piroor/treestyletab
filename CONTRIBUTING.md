@@ -16,7 +16,7 @@ Here is a list of typical questions I asked to existing reports:
  * **Does the problem appear with the [latest develpment build](http://piro.sakura.ne.jp/xul/xpi/nightly/)?**
    Possibly, problems you met has been resolved already.
    On Firefox 48 and later, you'll have to use an [unbranded Firefox](https://wiki.mozilla.org/Add-ons/Extension_Signing#Unbranded_Builds) (including Beta, Aurora, and Nightly) with a secret preference `xpinstall.signatures.required`=`false` (you can set it via `about:config`), to try unsigned development builds.
- * **Does the problem appear without Tab Mix Plus or something other tab related addon?**
+ * **Does the problem appear without something other tab related addon?**
    If a compatibility issue with other addons is reported without such information, it is very hard to be resolved.
    See also the next to next.
  * **Is the "problem" really introduced by TST?**
@@ -25,7 +25,8 @@ Here is a list of typical questions I asked to existing reports:
    See also the next.
  * **Does the problem appear with a clean profile?**
    You can start Firefox with temporary clean profile by a command line. See also the document [How to run Firefox with a clean profile](https://github.com/piroor/treestyletab/wiki/How-to-run-Firefox-with-a-clean-profile).
-   If the problem doesn't appear with a clean profile, please find complete reproduction steps out through changing configs, installing addons, and other customizations.
+   If the problem doesn't appear with a clean profile, please try to find complete reproduction steps out through changing configs, installing addons, and other customizations.
+   - You can export/import all options except keybaord shortcuts, via TST's options => `Development` => `All Configs` => `Export` and `Import`. If you cannot reproduce the problem with a clean profile, please export configs on your regular profile and attach it to the issue.
  * **Is the main topic single and clear?**
    Sometimes I got an issue including multiple topics, but such an issue is hard to be closed, then it often stays opened for long time and confuses me.
    If you have multiple topics, please report them as separate issues for each.
@@ -61,6 +62,8 @@ C
 \- D
 E (selected)
 ```
+
+[Here is an example issue I created.](https://github.com/piroor/treestyletab/issues/2267)
 
 ## Please don't join to an existing discussion if your problem is different from the originally reported one
 
