@@ -903,8 +903,7 @@ function reserveToProcessLongHover(params = {}) {
       }
 
       if (!dragOverTab ||
-          dragOverTab.$TST.isAutoExpandable ||
-          !dragOverTab.$TST.subtreeCollapsed)
+          !dragOverTab.$TST.isAutoExpandable)
         return;
 
       // auto-expand for staying on a parent
