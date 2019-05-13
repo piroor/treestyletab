@@ -602,7 +602,7 @@ export function applyStatesToElement(tab) {
   const classList = tab.$TST.classList;
 
   getLabelContent(tab).textContent = tab.title;
-  tab.dataset.title = tab.title;
+  tab.$TST.element.dataset.title = tab.title;
   tab.$TST.tooltipIsDirty = true;
   if (configs.labelOverflowStyle == 'fade' &&
       !tab.$TST.labelIsDirty &&
@@ -1087,7 +1087,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       tab.$TST.label = message.label;
-      tab.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
+      tab.$TST.element.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
       getLabelContent(tab).textContent = message.title;
       tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
