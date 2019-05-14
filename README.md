@@ -96,7 +96,18 @@ Some addons provide extended behavior to TST's sidebar panel:
 * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
 * [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
 * [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
-* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button with a popup panel also. It has an option to show a search field in the panel by default, so its popup panel will work as a searchable list of tabs corraborative with TST.
+* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
+
+### Listing tabs with a search field
+
+There are some addons providing a popup panel to show a list of tabs with a search field corraborative with TST:
+
+* [Tab Manager v2](https://addons.mozilla.org/firefox/addon/tab-manager-v2)
+* [TabSearch](https://addons.mozilla.org/firefox/addon/tab_search/)
+* [Tabby - Window & Tab Manager](https://addons.mozilla.org/firefox/addon/tabby-window-tab-manager/)
+* [Tab Master 5000](https://addons.mozilla.org/firefox/addon/tab-master-5000/)
+* [Power Tabs](https://addons.mozilla.org/firefox/addon/power-tabs/)
+* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button with a popup panel also. It has an option to show a search field in the panel by default.
 
 ### Google Chrome extensions
 
