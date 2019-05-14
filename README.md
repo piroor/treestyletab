@@ -96,7 +96,7 @@ Some addons provide extended behavior to TST's sidebar panel:
 * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
 * [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
 * [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
-* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
+* [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button also. It has an option to show a search field by default, so the popup will work as a searchable list of tabs.
 
 ### Google Chrome extensions
 
