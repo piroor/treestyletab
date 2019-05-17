@@ -64,7 +64,7 @@
   --throbber-color: HighlightText;
   --tab-border: Highlight;
   --tab-text: HighlightText;
-  --tab-text-inverted: Highligh;
+  --tab-text-inverted: Highlight;
 }
 
 .tab:not(.active) {
