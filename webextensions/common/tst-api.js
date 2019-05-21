@@ -766,9 +766,6 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
     if (permissions.has(kPERMISSION_COOKIES))
       allowedProperties.push('cookieStoreId');
   }
-  else {
-    tab.states = tab.states.filter(state => Constants.kTAB_SAFE_STATES.has(state));
-  }
 
   allowedProperties = new Set(allowedProperties);
   for (const key of Object.keys(tab)) {
@@ -776,8 +773,7 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
       delete tab[key];
   }
 
-  if (tab.states && !permissions.has(kPERMISSION_COOKIES))
-    tab.states = tab.states.filter(state => !/^(contextual-identity-)?(firefox-container-|firefox-default$)/.test(state));
+  tab.states = tab.states.filter(state => Constants.kTAB_SAFE_STATES.has(state));
 
   if (tab.children)
     tab.children = tab.children.map(child => sanitizeTabValue(child, permissions));
