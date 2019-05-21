@@ -202,6 +202,7 @@ export const configs = new Configs({
     'multipletab@piro.sakura.ne.jp'
   ],
   cachedExternalAddons: [],
+  cachedExternalAddonPermissions: {},
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,

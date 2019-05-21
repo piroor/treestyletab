@@ -176,6 +176,16 @@
   "message_startup_userChromeCss_description_note": { "message": "note that it is very low level customization, thus there is no guarantee and it can cause troubles on future versions of Firefox. Please try it at your own risk, only when you know what you are doing and if you are confident that you can resolve such troubles by yourself." },
   "message_startup_userChromeCss_description_3": { "message": "." },
 
+  "api_requestedPermissions_title": { "message": "Request for Extra Permissions" },
+  "api_requestedPermissions_message": { "message": "⚠The addon \"$NAME$\" is requesting to do following operation:\n\n$PERMISSIONS$\n\nvia Tree Style Tab's API. Click here if you grant that.",
+    "placeholders": {
+      "NAME":        { "content": "$1", "example": "foobar" },
+      "PERMISSIONS": { "content": "$2", "example": "tabs" }
+    }},
+  "api_requestedPermissions_type_activeTab": { "message": "Access active browser tab" },
+  "api_requestedPermissions_type_tabs":      { "message": "Access browser tabs" },
+  "api_requestedPermissions_type_cookies":   { "message": "Detect container of browser tabs" },
+
 
   "context_reloadTree_label": { "message": "&Reload this Tree" },
   "context_reloadDescendants_label": { "message": "R&eload Descendants" },

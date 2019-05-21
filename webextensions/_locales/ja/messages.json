@@ -176,6 +176,15 @@
   "message_startup_userChromeCss_description_note": { "message": "この方法は低レイヤのカスタマイズ手段のため、Firefoxの将来のバージョンで使えなくなったり、トラブルの原因になったりする恐れがあります。自己の責任と判断に基づいて、トラブルを自己解決できる自信がある場合にだけこの方法を使って下さい。" },
   "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
+  "api_requestedPermissions_title": { "message": "アクセス権の要求" },
+  "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がツリー型タブのAPIを経由して以下の事をしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
+    "placeholders": {
+      "NAME":        { "content": "$1", "example": "foobar" },
+      "PERMISSIONS": { "content": "$2", "example": "tabs" }
+    }},
+  "api_requestedPermissions_type_activeTab": { "message": "ブラウザーの現在のタブへのアクセス" },
+  "api_requestedPermissions_type_tabs":      { "message": "ブラウザーのタブへのアクセス" },
+  "api_requestedPermissions_type_cookies":   { "message": "ブラウザーのタブのコンテナーの識別" },
 
   "context_reloadTree_label": { "message": "このツリーを再読み込み(&R)" },
   "context_reloadDescendants_label": { "message": "このタブの配下のタブをすべて再読み込み(&E)" },

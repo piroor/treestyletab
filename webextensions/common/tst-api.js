@@ -166,10 +166,41 @@ function registerAddon(id, addon) {
     ];
   }
 
-  addon.requestedPermissions = new Set(addon.permissions || []);
-  addon.permissions = new Set();
+  let requestedPermissions = addon.permissions || [];
+  if (!Array.isArray(requestedPermissions))
+    requestedPermissions = [requestedPermissions];
+  addon.requestedPermissions = new Set(requestedPermissions);
+  const cachedPermissions = configs.cachedExternalAddonPermissions[id] || [];
+  addon.grantedPermissions = new Set(cachedPermissions);
+
+  if (!addon.bypassPermissionCheck &&
+      addon.requestedPermissions.size > 0 &&
+      cachedPermissions.length != addon.requestedPermissions.size) {
+    notifyPermissionRequest(addon, addon.requestedPermissions);
+  }
 
   mAddons.set(id, addon);
+}
+
+async function notifyPermissionRequest(addon, requestedPermissions) {
+  log('notifyPermissionRequest ', addon, requestedPermissions);
+
+  browser.notifications.create({
+    type:    'basic',
+    iconUrl: Constants.kNOTIFICATION_DEFAULT_ICON,
+    title:   browser.i18n.getMessage('api_requestedPermissions_title'),
+    message: browser.i18n.getMessage('api_requestedPermissions_message', [
+      addon.name || addon.title || addon.id,
+      Array.from(requestedPermissions, permission => {
+        try {
+          return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
+        }
+        catch(_error) {
+          return permission;
+        }
+      }).join('\n')
+    ])
+  });
 }
 
 function unregisterAddon(id) {
@@ -554,7 +585,7 @@ function* spawnMessages(targetSet, params) {
 
   const send = async (id) => {
     try {
-      const permissionsKey = Array.from(mAddons.get(id).permissions).sort().join(',');
+      const permissionsKey = Array.from(mAddons.get(id).grantedPermissions).sort().join(',');
       const allowedMessage = messageVariations[permissionsKey] || (messageVariations[permissionsKey] = sanitizeMessage(message, { id, tabProperties, contextTabProperties }));
 
       const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
@@ -589,7 +620,7 @@ export function sanitizeMessage(message, params) {
     return message;
 
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
-  const permissions = addon.permissions;
+  const permissions = addon.grantedPermissions;
   if (params.contextTabProperties) {
     for (const name of params.contextTabProperties) {
       const value = sanitizedMessage[name];
