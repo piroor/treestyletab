@@ -70,6 +70,7 @@ export const kNOTIFY_TAB_DRAGEND    = 'tab-dragend';
 export const kNOTIFY_TREE_ATTACHED  = 'tree-attached';
 export const kNOTIFY_TREE_DETACHED  = 'tree-detached';
 export const kNOTIFY_NATIVE_TAB_DRAGSTART = 'native-tab-dragstart';
+export const kNOTIFY_PERMISSIONS_CHANGED = 'granted-permissions-changed';
 export const kSTART_CUSTOM_DRAG     = 'start-custom-drag';
 export const kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB = 'try-move-focus-from-closing-current-tab';
 export const kGET_TREE              = 'get-tree';
@@ -218,11 +219,17 @@ function setPermissions(addon, permisssions) {
   const cachedPermissions = JSON.parse(JSON.stringify(configs.grantedExternalAddonPermissions));
   cachedPermissions[addon.id] = Array.from(addon.grantedPermissions);
   configs.grantedExternalAddonPermissions = cachedPermissions;
+
+  const grantedPermissions = Array.from(addon.grantedPermissions);
   browser.runtime.sendMessage({
     type:        kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
     id:          addon.id,
-    permissions: Array.from(addon.grantedPermissions)
+    permissions: grantedPermissions
   });
+  browser.runtime.sendMessage(addon.id, {
+    type: kNOTIFY_PERMISSIONS_CHANGED,
+    grantedPermissions
+  }).catch(ApiTabs.createErrorHandler());
 }
 
 if (mIsBackend) {
