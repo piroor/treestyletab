@@ -578,25 +578,34 @@ function* spawnMessages(targetSet, params) {
 
 export function sanitizeMessage(message, params) {
   const addon = mAddons.get(params.id);
-  if (params.tabProperties.length == 0 ||
+  if (!message ||
+      params.tabProperties.length == 0 ||
       addon.bypassPermissionCheck)
     return message;
 
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
   const permissions = addon.permissions;
+  if (params.contextTabProperties) {
   for (const name of params.contextTabProperties) {
     const value = sanitizedMessage[name];
+    if (!value)
+      continue;
     if (Array.isArray(value))
       sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true));
     else
       sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
   }
+  }
+  if (params.tabProperties) {
   for (const name of params.tabProperties) {
     const value = sanitizedMessage[name];
+    if (!value)
+      continue;
     if (Array.isArray(value))
       sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions));
     else
       sanitizedMessage[name] = sanitizeTabValue(value, permissions);
+  }
   }
   return sanitizedMessage;
 }
