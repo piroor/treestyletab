@@ -119,6 +119,7 @@ export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-check
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
+export const kCOMMAND_BROADCAST_API_PERMISSION_CHANGED = 'treestyletab:permission-changed';
 export const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
 export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
 
@@ -172,22 +173,28 @@ function registerAddon(id, addon) {
   if (!Array.isArray(requestedPermissions))
     requestedPermissions = [requestedPermissions];
   addon.requestedPermissions = new Set(requestedPermissions);
-  const cachedPermissions = configs.cachedExternalAddonPermissions[id] || [];
-  addon.grantedPermissions = new Set(cachedPermissions);
+  const grantedPermissions = configs.grantedExternalAddonPermissions[id] || [];
+  addon.grantedPermissions = new Set(grantedPermissions);
 
-  if (!addon.bypassPermissionCheck &&
+  if (mIsBackend &&
+      !addon.bypassPermissionCheck &&
       addon.requestedPermissions.size > 0 &&
-      cachedPermissions.length != addon.requestedPermissions.size) {
+      addon.grantedPermissions.size != addon.requestedPermissions.size)
     notifyPermissionRequest(addon, addon.requestedPermissions);
-  }
 
   mAddons.set(id, addon);
 }
 
+const mPermissionNotificationForAddon = new Map();
+
 async function notifyPermissionRequest(addon, requestedPermissions) {
   log('notifyPermissionRequest ', addon, requestedPermissions);
 
-  browser.notifications.create({
+  if (mPermissionNotificationForAddon.has(addon.id))
+    return;
+
+  mPermissionNotificationForAddon.set(addon.id, -1);
+  const id = await browser.notifications.create({
     type:    'basic',
     iconUrl: Constants.kNOTIFICATION_DEFAULT_ICON,
     title:   browser.i18n.getMessage('api_requestedPermissions_title'),
@@ -202,6 +209,37 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
         }
       }).join('\n')
     ])
+  });
+  mPermissionNotificationForAddon.set(addon.id, id);
+}
+
+if (mIsBackend) {
+  browser.notifications.onClicked.addListener(notificationId => {
+    for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
+      if (id != notificationId)
+        continue;
+      mPermissionNotificationForAddon.delete(addonId);
+      const addon = getAddon(addonId);
+      addon.grantedPermissions = addon.requestedPermissions;
+      const cachedPermissions = JSON.parse(JSON.stringify(configs.grantedExternalAddonPermissions));
+      cachedPermissions[addonId] = Array.from(addon.grantedPermissions);
+      configs.grantedExternalAddonPermissions = cachedPermissions;
+      browser.runtime.sendMessage({
+        type:        kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
+        id:          addonId,
+        permissions: Array.from(addon.grantedPermissions)
+      });
+      break;
+    }
+  });
+
+  browser.notifications.onClosed.addListener((notificationId, byUser) => {
+    for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
+      if (id != notificationId)
+        continue;
+      mPermissionNotificationForAddon.delete(addonId);
+      break;
+    }
   });
 }
 
@@ -299,6 +337,11 @@ browser.runtime.onMessage.addListener((message, _sender) => {
           uninstallStyleForAddon(message.sender.id)
           unregisterAddon(message.sender.id);
           break;
+
+        case kCOMMAND_BROADCAST_API_PERMISSION_CHANGED: {
+          const addon = getAddon(message.id);
+          addon.grantedPermissions = new Set(message.permissions);
+        }; break;
       }
   }
 });
