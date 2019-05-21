@@ -6,7 +6,7 @@
 'use strict';
 
 export const kBACKGROUND_CONTENTS_VERSION = 5;
-export const kSIDEBAR_CONTENTS_VERSION    = 8;
+export const kSIDEBAR_CONTENTS_VERSION    = 9;
 
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
 export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';

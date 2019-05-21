@@ -82,8 +82,9 @@ export function update(options = {}) {
   else {
     const indentToSelectors = {};
     const defaultIndentToSelectors = {};
+    const indentUnitDefinitions = [];
     for (let i = 0; i <= mLastMaxLevel; i++) {
-      generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
+      generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors, indentUnitDefinitions);
     }
 
     const definitions = [];
@@ -94,12 +95,11 @@ export function update(options = {}) {
         definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
       }
     }
-    mIndentDefinition.textContent = definitions.join('\n');
+    mIndentDefinition.textContent = indentUnitDefinitions.concat(definitions).join('\n');
   }
 }
-function generateIndentAndSelectorsForMaxLevel(maxLevel, indentToSelectors, defaultIndentToSelectors) {
-  const minIndent  = Math.max(Constants.kDEFAULT_MIN_INDENT, configs.minIndent);
-  const indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / maxLevel), minIndent));
+function generateIndentAndSelectorsForMaxLevel(maxLevel, indentToSelectors, defaultIndentToSelectors, indentUnitDefinitions) {
+  const indentUnit = calculateIndentUnit(maxLevel);
 
   let configuredMaxLevel = configs.maxTreeLevel;
   if (configuredMaxLevel < 0)
@@ -113,12 +113,20 @@ function generateIndentAndSelectorsForMaxLevel(maxLevel, indentToSelectors, defa
     defaultIndentToSelectors[defaultIndent] = [];
   defaultIndentToSelectors[defaultIndent].push(`${base}:not([${Constants.kLEVEL}="0"])`);
 
+  indentUnitDefinitions.push(`:root[${Constants.kMAX_TREE_LEVEL}="${maxLevel}"]:not(.initializing)  {
+    --indent-size: ${indentUnit}px;
+  }`);
+
   for (let level = 1; level <= maxLevel; level++) {
     const indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!indentToSelectors[indent])
       indentToSelectors[indent] = [];
     indentToSelectors[indent].push(`${base}[${Constants.kLEVEL}="${level}"]`);
   }
+}
+function calculateIndentUnit(maxLevel) {
+  const minIndent  = Math.max(Constants.kDEFAULT_MIN_INDENT, configs.minIndent);
+  return Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / maxLevel), minIndent));
 }
 
 export function getCacheInfo() {
