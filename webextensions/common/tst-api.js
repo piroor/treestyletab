@@ -586,26 +586,26 @@ export function sanitizeMessage(message, params) {
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
   const permissions = addon.permissions;
   if (params.contextTabProperties) {
-  for (const name of params.contextTabProperties) {
-    const value = sanitizedMessage[name];
-    if (!value)
-      continue;
-    if (Array.isArray(value))
-      sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true));
-    else
-      sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
-  }
+    for (const name of params.contextTabProperties) {
+      const value = sanitizedMessage[name];
+      if (!value)
+        continue;
+      if (Array.isArray(value))
+        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true));
+      else
+        sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
+    }
   }
   if (params.tabProperties) {
-  for (const name of params.tabProperties) {
-    const value = sanitizedMessage[name];
-    if (!value)
-      continue;
-    if (Array.isArray(value))
-      sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions));
-    else
-      sanitizedMessage[name] = sanitizeTabValue(value, permissions);
-  }
+    for (const name of params.tabProperties) {
+      const value = sanitizedMessage[name];
+      if (!value)
+        continue;
+      if (Array.isArray(value))
+        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions));
+      else
+        sanitizedMessage[name] = sanitizeTabValue(value, permissions);
+    }
   }
   return sanitizedMessage;
 }
