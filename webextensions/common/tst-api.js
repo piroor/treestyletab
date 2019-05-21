@@ -861,8 +861,8 @@ export function formatTabResult(results, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: ['tabs'] }).tabs;
-  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: ['tab'] }).tab;
+    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: ['tabs'] }).tabs.filter(tab => !!tab);
+  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: ['tab'] }).tab || null;
 }
 
 SidebarConnection.onConnected.addListener(windowId => {
