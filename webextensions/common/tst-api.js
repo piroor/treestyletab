@@ -736,16 +736,16 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
   ]);
   if (permissions.has(kPERMISSION_INCOGNITO) ||
       !tab.incognito) {
-    if (permissions.has(kPERMISSION_TABS) ||
-        (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab))) {
-      allowedProperties.add('favIconUrl');
-      allowedProperties.add('title');
-      allowedProperties.add('url');
-      allowedProperties.add('effectiveFavIconUrl'); // TST specific property
-    }
-    if (permissions.has(kPERMISSION_COOKIES)) {
-      allowedProperties.add('cookieStoreId');
-    }
+  if (permissions.has(kPERMISSION_TABS) ||
+      (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab))) {
+    allowedProperties.add('favIconUrl');
+    allowedProperties.add('title');
+    allowedProperties.add('url');
+    allowedProperties.add('effectiveFavIconUrl'); // TST specific property
+  }
+  if (permissions.has(kPERMISSION_COOKIES)) {
+    allowedProperties.add('cookieStoreId');
+  }
   }
 
   for (const key of Object.keys(tab)) {
