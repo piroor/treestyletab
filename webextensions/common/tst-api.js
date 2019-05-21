@@ -123,9 +123,6 @@ export const kCOMMAND_BROADCAST_API_PERMISSION_CHANGED = 'treestyletab:permissio
 export const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
 export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
 
-const kCONTEXT_BACKEND  = 1;
-const kCONTEXT_FRONTEND = 2;
-
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
 const kPERMISSION_ACTIVE_TAB = 'activeTab';
@@ -233,7 +230,7 @@ if (mIsBackend) {
     }
   });
 
-  browser.notifications.onClosed.addListener((notificationId, byUser) => {
+  browser.notifications.onClosed.addListener((notificationId, _byUser) => {
     for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
       if (id != notificationId)
         continue;
