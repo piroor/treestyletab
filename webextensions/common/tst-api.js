@@ -146,7 +146,7 @@ function registerAddon(id, addon) {
   log('addon is registered: ', id, addon);
 
   // inherit properties from last effective value
-  const oldAddon = mAddons.get(id);
+  const oldAddon = getAddon(id);
   if (oldAddon) {
     if (!('listeningTypes' in addon) && 'listeningTypes' in oldAddon)
       addon.listeningTypes = oldAddon.listeningTypes;
@@ -206,7 +206,7 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
 }
 
 function unregisterAddon(id) {
-  log('addon is unregistered: ', id, mAddons.get(id));
+  log('addon is unregistered: ', id, getAddon(id));
   mAddons.delete(id);
   delete mScrollLockedBy[id];
   delete mGroupingBlockedBy[id];
@@ -576,7 +576,7 @@ function* spawnMessages(targetSet, params) {
 
   const send = async (id) => {
     try {
-      const permissionsKey = Array.from(mAddons.get(id).grantedPermissions).sort().join(',');
+      const permissionsKey = Array.from(getAddon(id).grantedPermissions).sort().join(',');
       const allowedMessage = messageVariations[permissionsKey] || (messageVariations[permissionsKey] = sanitizeMessage(message, { id, tabProperties, contextTabProperties }));
 
       const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
@@ -599,7 +599,7 @@ function* spawnMessages(targetSet, params) {
 }
 
 export function sanitizeMessage(message, params) {
-  const addon = mAddons.get(params.id);
+  const addon = getAddon(params.id);
   if (!message ||
       (!params.tabProperties &&
        !params.contextTabProperties) ||
