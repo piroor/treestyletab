@@ -567,7 +567,7 @@ function serializeTabInternal(tab) {
   tab = Tab.get(tab.id);
   const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
   const serialized     = Object.assign({}, tab.$TST.sanitized, {
-    states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
+    states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.has(state)),
     indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
     ancestorTabIds
   });
@@ -703,52 +703,57 @@ export function sanitizeMessage(message, params) {
 }
 
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
-  if (!permissions.has(kPERMISSION_INCOGNITO) &&
-      tab.incognito)
-    return null;
-
-  const allowedProperties = new Set([
-    'active',
-    'attention',
-    'audible',
-    'autoDiscardable',
-    'discarded',
-    'height',
-    'hidden',
-    'highlighted',
-    'id',
-    'incognito',
-    'index',
-    'isArticle',
-    'isInReaderMode',
-    'lastAccessed',
-    'mutedInfo',
-    'openerTabId',
-    'pinned',
-    'selected',
-    'sessionId',
-    'sharingState',
-    'status',
-    'successorId',
-    'width',
-    'windowId',
+  let allowedProperties = [
     // TST specific properties
     'states',
     'indent',
     'children',
     'ancestorTabIds'
-  ]);
-  if (permissions.has(kPERMISSION_TABS) ||
-      (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab))) {
-    allowedProperties.add('favIconUrl');
-    allowedProperties.add('title');
-    allowedProperties.add('url');
-    allowedProperties.add('effectiveFavIconUrl'); // TST specific property
+  ];
+  if (permissions.has(kPERMISSION_INCOGNITO) ||
+      !tab.incognito) {
+    allowedProperties = allowedProperties.concat([
+      'active',
+      'attention',
+      'audible',
+      'autoDiscardable',
+      'discarded',
+      'height',
+      'hidden',
+      'highlighted',
+      'id',
+      'incognito',
+      'index',
+      'isArticle',
+      'isInReaderMode',
+      'lastAccessed',
+      'mutedInfo',
+      'openerTabId',
+      'pinned',
+      'selected',
+      'sessionId',
+      'sharingState',
+      'status',
+      'successorId',
+      'width',
+      'windowId',
+    ]);
+    if (permissions.has(kPERMISSION_TABS) ||
+        (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
+      allowedProperties = allowedProperties.concat([
+        'favIconUrl',
+        'title',
+        'url',
+        'effectiveFavIconUrl' // TST specific property
+      ]);
+    if (permissions.has(kPERMISSION_COOKIES))
+      allowedProperties.push('cookieStoreId');
   }
-  if (permissions.has(kPERMISSION_COOKIES)) {
-    allowedProperties.add('cookieStoreId');
+  else {
+    tab.states = tab.states.filter(state => Constants.kTAB_SAFE_STATES.has(state));
   }
 
+  allowedProperties = new Set(allowedProperties);
   for (const key of Object.keys(tab)) {
     if (!allowedProperties.has(key))
       delete tab[key];

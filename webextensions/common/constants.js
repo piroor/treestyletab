@@ -163,7 +163,7 @@ export const kTAB_STATE_DRAGGING                  = 'dragging';
 export const kTAB_STATE_DUPLICATING               = 'duplicating';
 export const kTAB_STATE_RESTORED                  = 'restored';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
-export const kTAB_INTERNAL_STATES = [
+export const kTAB_INTERNAL_STATES = new Set([
   'tab',
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_ANIMATION_READY,
@@ -176,8 +176,8 @@ export const kTAB_INTERNAL_STATES = [
   kTAB_STATE_REMOVING,
   kTAB_STATE_SHOWING,
   kTAB_STATE_THROBBER_UNSYNCHRONIZED
-];
-export const kTAB_TEMPORARY_STATES = [
+]);
+export const kTAB_TEMPORARY_STATES = new Set([
   kTAB_STATE_CREATING,
   kTAB_STATE_BURSTING,
   kTAB_STATE_COLLAPSING,
@@ -186,7 +186,10 @@ export const kTAB_TEMPORARY_STATES = [
   kTAB_STATE_MOVING,
   kTAB_STATE_REMOVING,
   kTAB_STATE_SHOWING
-];
+]);
+export const kTAB_SAFE_STATES = new Set([
+  kTAB_STATE_COLLAPSED
+]);
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';
