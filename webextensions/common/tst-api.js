@@ -639,8 +639,25 @@ function* spawnMessages(targetSet, params) {
 
   const messageVariations = {};
 
+  let tab;
+  for (const key of tabProperties.concat(contextTabProperties)) {
+    if (!message[key])
+      continue;
+    if (Array.isArray(message[key]))
+      tab = message[key][0];
+    else
+      tab = message[key];
+    break;
+  }
+
   const send = async (id) => {
     try {
+      if (!canSendTabInformation(id, tab))
+        return {
+          id,
+          result: undefined
+        };
+
       const permissionsKey = Array.from(getAddon(id).grantedPermissions).sort().join(',');
       const allowedMessage = messageVariations[permissionsKey] || (messageVariations[permissionsKey] = sanitizeMessage(message, { id, tabProperties, contextTabProperties }));
 
@@ -710,8 +727,8 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
     'children',
     'ancestorTabIds'
   ];
-  if (permissions.has(kPERMISSION_INCOGNITO) ||
-      !tab.incognito) {
+  if (!tab.incognito ||
+      permissions.has(kPERMISSION_INCOGNITO)) {
     allowedProperties = allowedProperties.concat([
       'active',
       'attention',
@@ -766,6 +783,14 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
     tab.children = tab.children.map(child => sanitizeTabValue(child, permissions));
 
   return tab;
+}
+
+function canSendTabInformation(addonId, tab) {
+  return (
+    !tab ||
+    !tab.incognito ||
+    getAddon(addonId).grantedPermissions.has(kPERMISSION_INCOGNITO)
+  );
 }
 
 
