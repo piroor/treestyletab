@@ -721,6 +721,7 @@ export function sanitizeMessage(message, params) {
 
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
   let allowedProperties = [
+    'id',
     // TST specific properties
     'states',
     'indent',
@@ -738,7 +739,6 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
       'height',
       'hidden',
       'highlighted',
-      'id',
       'incognito',
       'index',
       'isArticle',
