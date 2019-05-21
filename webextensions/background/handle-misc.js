@@ -415,7 +415,7 @@ function onMessageExternal(message, sender) {
           tab => TSTAPI.serializeTabWithEffectiveFavIconUrl(tab, message.interval),
           message.interval
         );
-        return TSTAPI.formatResult(results, message);
+        return TSTAPI.formatTabResult(results, message, sender.id);
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
@@ -628,7 +628,7 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
         const reopenedTabs = await Commands.reopenInContainer(tabsArray, message.containerId || 'firefox-default');
-        return TSTAPI.formatResult(reopenedTabs, message);
+        return TSTAPI.formatTabResult(reopenedTabs, message, sender.id);
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:

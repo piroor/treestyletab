@@ -743,14 +743,21 @@ export async function doProgressively(tabs, task, interval) {
 }
 
 export function formatResult(results, originalMessage) {
-  if (Array.isArray(originalMessage.tabs))
-    return results;
-  if (originalMessage.tab == '*' ||
+  if (Array.isArray(originalMessage.tabs) ||
+      originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
     return results;
   if (originalMessage.tab)
     return results[0];
   return results;
+}
+
+export function formatTabResult(results, originalMessage, senderId) {
+  if (Array.isArray(originalMessage.tabs) ||
+      originalMessage.tab == '*' ||
+      originalMessage.tabs == '*')
+    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: 'tabs' }).tabs;
+  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: 'tab' }).tab;
 }
 
 SidebarConnection.onConnected.addListener(windowId => {
