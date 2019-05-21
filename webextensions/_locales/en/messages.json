@@ -405,7 +405,7 @@
   "config_userStyleRules_themeRules_description": { "message": "Following custom properties are also available via \"var()\", based on the current browser theme:" },
 
   "config_externaladdonpermissions_label": { "message": "Permissions for API Call from Other Addons" },
-  "config_externaladdonpermissions_description": { "message": "Addons allowed here may access your privacy data via Tree Style Tab's API, even if the addon is forbidden to access such sensitive information on Firefox's permission system. Please don't give permission for addons if you cannot trust." },
+  "config_externaladdonpermissions_description": { "message": "Addons allowed here may access your privacy data via Tree Style Tab's API, even if the addon is forbidden by Firefox to access such information. Please don't give permission for addons if you cannot trust." },
 
 
   "config_debug_caption": { "message": "Development" },
