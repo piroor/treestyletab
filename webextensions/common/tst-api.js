@@ -683,7 +683,7 @@ export function sanitizeMessage(message, params) {
       if (!value)
         continue;
       if (Array.isArray(value))
-        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true));
+        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true)).filter(tab => !!tab);
       else
         sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
     }
@@ -694,7 +694,7 @@ export function sanitizeMessage(message, params) {
       if (!value)
         continue;
       if (Array.isArray(value))
-        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions));
+        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions)).filter(tab => !!tab);
       else
         sanitizedMessage[name] = sanitizeTabValue(value, permissions);
     }
@@ -705,7 +705,7 @@ export function sanitizeMessage(message, params) {
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
   if (!permissions.has(kPERMISSION_INCOGNITO) &&
       tab.incognito)
-    return {};
+    return null;
 
   const allowedProperties = new Set([
     'active',
