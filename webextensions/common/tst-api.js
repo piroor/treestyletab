@@ -310,39 +310,39 @@ browser.runtime.onMessage.addListener((message, _sender) => {
     return;
 
   if (mIsBackend) {
-      switch (message.type) {
-        case kCOMMAND_REQUEST_INITIALIZE:
-          return Promise.resolve({
-            addons:         exportAddons(),
-            scrollLocked:   mScrollLockedBy,
-            groupingLocked: mGroupingBlockedBy
-          });
+    switch (message.type) {
+      case kCOMMAND_REQUEST_INITIALIZE:
+        return Promise.resolve({
+          addons:         exportAddons(),
+          scrollLocked:   mScrollLockedBy,
+          groupingLocked: mGroupingBlockedBy
+        });
 
-        case kCOMMAND_REQUEST_CONTROL_STATE:
-          return Promise.resolve({
-            scrollLocked:   mScrollLockedBy,
-            groupingLocked: mGroupingBlockedBy
-          });
-      }
+      case kCOMMAND_REQUEST_CONTROL_STATE:
+        return Promise.resolve({
+          scrollLocked:   mScrollLockedBy,
+          groupingLocked: mGroupingBlockedBy
+        });
+    }
   }
   else if (mIsFrontend) {
-      switch (message.type) {
-        case kCOMMAND_BROADCAST_API_REGISTERED:
-          registerAddon(message.sender.id, message.message);
-          if (message.message.style)
-            installStyleForAddon(message.sender.id, message.message.style);
-          break;
+    switch (message.type) {
+      case kCOMMAND_BROADCAST_API_REGISTERED:
+        registerAddon(message.sender.id, message.message);
+        if (message.message.style)
+          installStyleForAddon(message.sender.id, message.message.style);
+        break;
 
-        case kCOMMAND_BROADCAST_API_UNREGISTERED:
-          uninstallStyleForAddon(message.sender.id)
-          unregisterAddon(message.sender.id);
-          break;
+      case kCOMMAND_BROADCAST_API_UNREGISTERED:
+        uninstallStyleForAddon(message.sender.id)
+        unregisterAddon(message.sender.id);
+        break;
 
-        case kCOMMAND_BROADCAST_API_PERMISSION_CHANGED: {
-          const addon = getAddon(message.id);
-          addon.grantedPermissions = new Set(message.permissions);
-        }; break;
-      }
+      case kCOMMAND_BROADCAST_API_PERMISSION_CHANGED: {
+        const addon = getAddon(message.id);
+        addon.grantedPermissions = new Set(message.permissions);
+      }; break;
+    }
   }
 });
 
@@ -358,45 +358,45 @@ function onMessageExternal(message, sender) {
     return;
 
   if (mIsBackend) {
-      log('backend API message ', message, sender);
-      switch (message.type) {
-        case kPING:
-          return Promise.resolve(true);
+    log('backend API message ', message, sender);
+    switch (message.type) {
+      case kPING:
+        return Promise.resolve(true);
 
-        case kREGISTER_SELF:
-          return (async () => {
-            message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
-            message.id = sender.id;
-            registerAddon(sender.id, message);
-            browser.runtime.sendMessage({
-              type:    kCOMMAND_BROADCAST_API_REGISTERED,
-              sender:  sender,
-              message: message
-            }).catch(ApiTabs.createErrorSuppressor());
-            const index = configs.cachedExternalAddons.indexOf(sender.id);
-            if (index < 0)
-              configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
-            return true;
-          })();
+      case kREGISTER_SELF:
+        return (async () => {
+          message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
+          message.id = sender.id;
+          registerAddon(sender.id, message);
+          browser.runtime.sendMessage({
+            type:    kCOMMAND_BROADCAST_API_REGISTERED,
+            sender:  sender,
+            message: message
+          }).catch(ApiTabs.createErrorSuppressor());
+          const index = configs.cachedExternalAddons.indexOf(sender.id);
+          if (index < 0)
+            configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
+          return true;
+        })();
 
-        case kUNREGISTER_SELF:
-          return (async () => {
-            browser.runtime.sendMessage({
-              type: kCOMMAND_BROADCAST_API_UNREGISTERED,
-              sender
-            }).catch(ApiTabs.createErrorSuppressor());
-            unregisterAddon(sender.id);
-            delete mScrollLockedBy[sender.id];
-            configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
-            return true;
-          })();
+      case kUNREGISTER_SELF:
+        return (async () => {
+          browser.runtime.sendMessage({
+            type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+            sender
+          }).catch(ApiTabs.createErrorSuppressor());
+          unregisterAddon(sender.id);
+          delete mScrollLockedBy[sender.id];
+          configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
+          return true;
+        })();
 
-        case kWAIT_FOR_SHUTDOWN:
-          return mPromisedOnBeforeUnload;
-      }
+      case kWAIT_FOR_SHUTDOWN:
+        return mPromisedOnBeforeUnload;
+    }
   }
   else if (mIsFrontend) {
-      log('frontend API message ', message, sender);
+    log('frontend API message ', message, sender);
   }
   else {
     return;
