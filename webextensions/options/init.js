@@ -19,6 +19,7 @@ import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as BrowserTheme from '/common/browser-theme.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 log.context = 'Options';
 const options = new Options(configs);
@@ -322,6 +323,38 @@ window.addEventListener('DOMContentLoaded', () => {
         container.dataset.value = select.dataset.value = select.value;
       });
     }
+
+    browser.runtime.sendMessage({
+      type: TSTAPI.kCOMMAND_GET_ADDONS
+    }).then(addons => {
+      const container = document.getElementById('externalAddonPermissions');
+      for (const addon of addons) {
+        if (addon.permissions.length == 0)
+          continue;
+        const item = document.createElement('li');
+        const label = item.appendChild(document.createElement('label'));
+        const checkbox = label.appendChild(document.createElement('input'));
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.checked = addon.permissionsGranted;
+        checkbox.addEventListener('change', () => {
+          browser.runtime.sendMessage({
+            type:        TSTAPI.kCOMMAND_SET_API_PERMISSION,
+            id:          addon.id,
+            permissions: checkbox.checked ? addon.permissions : addon.permissions.map(permission => `!${permission}`)
+          });
+        });
+        const permissionNames = addon.permissions.map(permission => {
+          try {
+            return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
+          }
+          catch(_error) {
+            return permission;
+          }
+        }).join(', ');
+        label.appendChild(document.createTextNode(`${addon.label}: ${permissionNames}`));
+        container.appendChild(item);
+      }
+    });
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');

@@ -122,6 +122,8 @@ export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unreg
 export const kCOMMAND_BROADCAST_API_PERMISSION_CHANGED = 'treestyletab:permission-changed';
 export const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
 export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
+export const kCOMMAND_GET_ADDONS                 = 'treestyletab:get-addons';
+export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permisssion';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
@@ -211,21 +213,26 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
   mPermissionNotificationForAddon.set(addon.id, id);
 }
 
+function setPermissions(addon, permisssions) {
+  addon.grantedPermissions = permisssions;
+  const cachedPermissions = JSON.parse(JSON.stringify(configs.grantedExternalAddonPermissions));
+  cachedPermissions[addon.id] = Array.from(addon.grantedPermissions);
+  configs.grantedExternalAddonPermissions = cachedPermissions;
+  browser.runtime.sendMessage({
+    type:        kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
+    id:          addon.id,
+    permissions: Array.from(addon.grantedPermissions)
+  });
+}
+
 if (mIsBackend) {
   browser.notifications.onClicked.addListener(notificationId => {
     for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
       if (id != notificationId)
         continue;
       mPermissionNotificationForAddon.delete(addonId);
-      const addon = getAddon(addonId);
-      addon.grantedPermissions = addon.requestedPermissions;
-      const cachedPermissions = JSON.parse(JSON.stringify(configs.grantedExternalAddonPermissions));
-      cachedPermissions[addonId] = Array.from(addon.grantedPermissions);
-      configs.grantedExternalAddonPermissions = cachedPermissions;
-      browser.runtime.sendMessage({
-        type:        kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
-        id:          addonId,
-        permissions: Array.from(addon.grantedPermissions)
+      browser.tabs.create({
+        url: `moz-extension://${location.host}/options/options.html#externalAddonPermissionsGroup`
       });
       break;
     }
@@ -321,6 +328,23 @@ browser.runtime.onMessage.addListener((message, _sender) => {
           scrollLocked:   mScrollLockedBy,
           groupingLocked: mGroupingBlockedBy
         });
+
+      case kCOMMAND_GET_ADDONS: {
+        const addons = [];
+        for (const [id, addon] of mAddons.entries()) {
+          addons.push({
+            id,
+            label:              addon.name || addon.title || addon.id,
+            permissions:        Array.from(addon.requestedPermissions),
+            permissionsGranted: Array.from(addon.requestedPermissions).join(',') == Array.from(addon.grantedPermissions).join(',')
+          });
+        }
+        return Promise.resolve(addons);
+      }; break;
+
+      case kCOMMAND_SET_API_PERMISSION:
+        setPermissions(getAddon(message.id), new Set(message.permissions));
+        break;
     }
   }
   else if (mIsFrontend) {

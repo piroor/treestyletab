@@ -400,6 +400,9 @@
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "現在のブラウザのテーマに基づいて、「var()」で以下のカスタムプロパティも使用できます：" },
 
+  "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
+  "config_externaladdonpermissions_description": { "message": "Firefox自体がそのアドオンに権限を与えていない場合でも、ここで権限を与えたアドオンはツリー型タブを介してプライバシー情報にアクセスできるようになります。信用できないアドオンに対しては絶対に権限を与えないで下さい。" },
+
 
   "config_debug_caption": { "message": "開発用" },
 

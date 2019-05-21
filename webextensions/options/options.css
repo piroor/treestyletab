@@ -13,7 +13,7 @@ body.independent {
   flex-direction: column;
   font: caption;
   margin: 0;
-  padding: 1em;
+  padding: 1em 1em 100%;
   -moz-user-select: none;
 }
 
