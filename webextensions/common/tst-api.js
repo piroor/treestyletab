@@ -220,15 +220,15 @@ function setPermissions(addon, permisssions) {
   cachedPermissions[addon.id] = Array.from(addon.grantedPermissions);
   configs.grantedExternalAddonPermissions = cachedPermissions;
 
-  const grantedPermissions = Array.from(addon.grantedPermissions);
+  const permissions = Array.from(addon.grantedPermissions);
   browser.runtime.sendMessage({
-    type:        kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
-    id:          addon.id,
-    permissions: grantedPermissions
+    type: kCOMMAND_BROADCAST_API_PERMISSION_CHANGED,
+    id:   addon.id,
+    permissions
   });
   browser.runtime.sendMessage(addon.id, {
-    type: kNOTIFY_PERMISSIONS_CHANGED,
-    grantedPermissions
+    type:               kNOTIFY_PERMISSIONS_CHANGED,
+    grantedPermissions: permissions.filter(permission => permission.startsWith('!'))
   }).catch(ApiTabs.createErrorHandler());
 }
 
