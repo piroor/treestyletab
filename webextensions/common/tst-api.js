@@ -131,10 +131,12 @@ const kPERMISSION_ACTIVE_TAB = 'activeTab';
 const kPERMISSION_TABS       = 'tabs';
 const kPERMISSION_COOKIES    = 'cookies';
 
-let mContext = null;
 const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
+
+const mIsBackground = location.href.startsWith(browser.extension.getURL('background/background.html'));
+const mIsFrontend   = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
 
 export function getAddon(id) {
   return mAddons.get(id);
@@ -225,7 +227,6 @@ export async function initAsBackend() {
     listeningTypes: [],
     bypassPermissionCheck: true
   });
-  mContext = kCONTEXT_BACKEND;
   browser.runtime.onConnectExternal.addListener(port => {
     const sender = port.sender;
     mConnections.set(sender.id, port);
@@ -270,8 +271,7 @@ browser.runtime.onMessage.addListener((message, _sender) => {
       typeof message.type != 'string')
     return;
 
-  switch (mContext) {
-    case kCONTEXT_BACKEND:
+  if (mIsBackground) {
       switch (message.type) {
         case kCOMMAND_REQUEST_INITIALIZE:
           return Promise.resolve({
@@ -286,9 +286,8 @@ browser.runtime.onMessage.addListener((message, _sender) => {
             groupingLocked: mGroupingBlockedBy
           });
       }
-      break;
-
-    case kCONTEXT_FRONTEND:
+  }
+  else if (mIsFrontend) {
       switch (message.type) {
         case kCOMMAND_BROADCAST_API_REGISTERED:
           registerAddon(message.sender.id, message.message);
@@ -301,10 +300,6 @@ browser.runtime.onMessage.addListener((message, _sender) => {
           unregisterAddon(message.sender.id);
           break;
       }
-      break;
-
-    default:
-      return;
   }
 });
 
@@ -319,8 +314,7 @@ function onMessageExternal(message, sender) {
       typeof message.type != 'string')
     return;
 
-  switch (mContext) {
-    case kCONTEXT_BACKEND:
+  if (mIsBackground) {
       log('backend API message ', message, sender);
       switch (message.type) {
         case kPING:
@@ -357,14 +351,12 @@ function onMessageExternal(message, sender) {
         case kWAIT_FOR_SHUTDOWN:
           return mPromisedOnBeforeUnload;
       }
-      break;
-
-    case kCONTEXT_FRONTEND:
+  }
+  else if (mIsFrontend) {
       log('frontend API message ', message, sender);
-      break;
-
-    default:
-      return;
+  }
+  else {
+    return;
   }
 
   switch (message.type) {
@@ -408,7 +400,6 @@ export async function initAsFrontend() {
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
-  mContext = kCONTEXT_FRONTEND;
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
 }
