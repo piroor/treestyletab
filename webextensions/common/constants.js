@@ -163,6 +163,7 @@ export const kTAB_STATE_DRAGGING                  = 'dragging';
 export const kTAB_STATE_DUPLICATING               = 'duplicating';
 export const kTAB_STATE_RESTORED                  = 'restored';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
+export const kTAB_STATE_GROUP_TAB                 = 'group-tab';
 export const kTAB_INTERNAL_STATES = new Set([
   'tab',
   kTAB_STATE_LAST_ROW,
@@ -188,7 +189,9 @@ export const kTAB_TEMPORARY_STATES = new Set([
   kTAB_STATE_SHOWING
 ]);
 export const kTAB_SAFE_STATES = new Set([
-  kTAB_STATE_COLLAPSED
+  kTAB_STATE_COLLAPSED,
+  kTAB_STATE_SUBTREE_COLLAPSED,
+  kTAB_STATE_GROUP_TAB
 ]);
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
@@ -297,7 +300,6 @@ export const kTABBAR_UPDATE_REASON_TAB_MOVE      = 1 << 6;
 
 export const kDEFAULT_MIN_INDENT = 3;
 
-export const kTAB_STATE_GROUP_TAB = 'group-tab';
 export const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
 export const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_label', '.+')}$`);
 export const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_fromPinnedTab_label', '.+')}$`);
