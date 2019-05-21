@@ -127,6 +127,7 @@ export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
 const kPERMISSION_ACTIVE_TAB = 'activeTab';
 const kPERMISSION_TABS       = 'tabs';
+const kPERMISSION_INCOGNITO  = 'incognito';
 const kPERMISSION_COOKIES    = 'cookies';
 
 const mAddons = new Map();
@@ -678,6 +679,10 @@ export function sanitizeMessage(message, params) {
 }
 
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
+  if (!permissions.has(kPERMISSION_INCOGNITO) &&
+      tab.incognito)
+    return {};
+
   const allowedProperties = new Set([
     'active',
     'attention',

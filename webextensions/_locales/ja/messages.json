@@ -184,6 +184,7 @@
     }},
   "api_requestedPermissions_type_activeTab": { "message": "ブラウザーの現在のタブへのアクセス" },
   "api_requestedPermissions_type_tabs":      { "message": "ブラウザーのタブへのアクセス" },
+  "api_requestedPermissions_type_incognito": { "message": "プライベートブラウズウィンドウのタブへのアクセス" },
   "api_requestedPermissions_type_cookies":   { "message": "ブラウザーのタブのコンテナーの識別" },
 
   "context_reloadTree_label": { "message": "このツリーを再読み込み(&R)" },
