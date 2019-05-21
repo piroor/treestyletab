@@ -135,8 +135,8 @@ const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
 
-const mIsBackground = location.href.startsWith(browser.extension.getURL('background/background.html'));
-const mIsFrontend   = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
+const mIsBackend  = location.href.startsWith(browser.extension.getURL('background/background.html'));
+const mIsFrontend = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
 
 export function getAddon(id) {
   return mAddons.get(id);
@@ -271,7 +271,7 @@ browser.runtime.onMessage.addListener((message, _sender) => {
       typeof message.type != 'string')
     return;
 
-  if (mIsBackground) {
+  if (mIsBackend) {
       switch (message.type) {
         case kCOMMAND_REQUEST_INITIALIZE:
           return Promise.resolve({
@@ -314,7 +314,7 @@ function onMessageExternal(message, sender) {
       typeof message.type != 'string')
     return;
 
-  if (mIsBackground) {
+  if (mIsBackend) {
       log('backend API message ', message, sender);
       switch (message.type) {
         case kPING:
