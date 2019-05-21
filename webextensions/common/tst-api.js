@@ -579,7 +579,12 @@ function* spawnMessages(targetSet, params) {
 export function sanitizeMessage(message, params) {
   const addon = mAddons.get(params.id);
   if (!message ||
-      params.tabProperties.length == 0 ||
+      (!params.tabProperties &&
+       !params.contextTabProperties) ||
+      (params.tabProperties &&
+       params.tabProperties.length == 0 &&
+       params.contextTabProperties &&
+       params.contextTabProperties.length == 0) ||
       addon.bypassPermissionCheck)
     return message;
 
@@ -647,7 +652,7 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
     allowedProperties.add('favIconUrl');
     allowedProperties.add('title');
     allowedProperties.add('url');
-    allowedProperties.add('url');
+    allowedProperties.add('effectiveFavIconUrl'); // TST specific property
   }
   if (permissions.has(kPERMISSION_COOKIES)) {
     allowedProperties.add('cookieStoreId');
@@ -659,7 +664,7 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
   }
 
   if (tab.states && !permissions.has(kPERMISSION_COOKIES))
-    tab.states = tab.states.filter(state => !/^(firefox-container-|firefox-default$)/.test(state));
+    tab.states = tab.states.filter(state => !/^(contextual-identity-)?(firefox-container-|firefox-default$)/.test(state));
 
   if (tab.children)
     tab.children = tab.children.map(child => sanitizeTabValue(child, permissions));
@@ -765,8 +770,8 @@ export function formatTabResult(results, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: 'tabs' }).tabs;
-  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: 'tab' }).tab;
+    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: ['tabs'] }).tabs;
+  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: ['tab'] }).tab;
 }
 
 SidebarConnection.onConnected.addListener(windowId => {
