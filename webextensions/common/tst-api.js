@@ -191,7 +191,8 @@ export async function initAsBackend() {
     id:         manifest.applications.gecko.id,
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
-    listeningTypes: []
+    listeningTypes: [],
+    bypassPermissionCheck: true
   });
   mContext = kCONTEXT_BACKEND;
   browser.runtime.onConnectExternal.addListener(port => {
@@ -576,11 +577,13 @@ function* spawnMessages(targetSet, params) {
 }
 
 export function sanitizeMessage(message, params) {
-  if (params.tabProperties.length == 0)
+  const addon = mAddons.get(params.id);
+  if (params.tabProperties.length == 0 ||
+      addon.bypassPermissionCheck)
     return message;
 
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
-  const permissions = mAddons.get(params.id).permissions;
+  const permissions = addon.permissions;
   for (const name of params.contextTabProperties) {
     const value = sanitizedMessage[name];
     if (Array.isArray(value))
