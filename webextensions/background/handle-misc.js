@@ -335,7 +335,7 @@ function onMessage(message, sender) {
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
           type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
           tab:  serializedTab
-        }));
+        }), { tabProperties: ['tab'] });
 
         // We must send tab-mouseup after tab-mousedown is notified.
         // So, we return to the caller process and do this post process asynchronously.
@@ -344,7 +344,7 @@ function onMessage(message, sender) {
             await TSTAPI.sendMessage(Object.assign({}, message, {
               type: TSTAPI.kNOTIFY_TAB_CLICKED,
               tab:  serializedTab
-            }))
+            }), { tabProperties: ['tab'] })
           );
           if (results.some(result => result && result.result))
             return SidebarConnection.sendMessage({

@@ -181,7 +181,7 @@ export async function attachTabTo(child, parent, options = {}) {
         type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
         tab:    TSTAPI.serializeTab(child),
         parent: TSTAPI.serializeTab(parent)
-      }).catch(_error => {});
+      }, { tabProperties: ['tab', 'parent'] }).catch(_error => {});
   }
 
   onAttached.dispatch(child, Object.assign({}, options, {
@@ -327,7 +327,7 @@ export function detachTab(child, options = {}) {
         type:      TSTAPI.kNOTIFY_TREE_DETACHED,
         tab:       TSTAPI.serializeTab(child),
         oldParent: TSTAPI.serializeTab(parent)
-      }).catch(_error => {});
+      }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
   }
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child

@@ -146,7 +146,7 @@ function onMouseMove(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
@@ -172,7 +172,7 @@ function onMouseOver(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
   }
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
@@ -198,7 +198,7 @@ function onMouseOut(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
   }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
@@ -342,7 +342,7 @@ async function onMouseUp(event) {
       tab:     serializedTab,
       window:  mTargetWindow,
       windowId: mTargetWindow
-    }));
+    }), { tabProperties: ['tab'] });
     // don't wait here, because we need process following common operations
     // even if this mouseup event is canceled.
     promisedCanceled = results.then(results => results.some(result => result && result.result));
@@ -455,12 +455,12 @@ async function onMouseUp(event) {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: mTargetWindow,
     windowId: mTargetWindow
-  }));
+  }), { tabProperties: ['tab'] });
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
     window: mTargetWindow,
     windowId: mTargetWindow
-  })));
+  }), { tabProperties: ['tab'] }));
   if (results.some(result => result.result))// canceled
     return;
 

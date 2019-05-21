@@ -112,7 +112,7 @@ export function endMultiDrag(tab, coordinates) {
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
       clientY: coordinates.clientY
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
 
     mLastDragEnteredTarget = null;
   }
@@ -124,7 +124,7 @@ export function endMultiDrag(tab, coordinates) {
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
       clientY: coordinates.clientY
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
   }
   mCapturingForDragging = false;
   mReadyToCaptureMouseEvents = false;
@@ -646,7 +646,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
       window: windowId,
       windowId,
       startOnClosebox
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
@@ -742,7 +742,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      TSTAPI.serializeTab(tab),
     windowId: TabsStore.getWindow()
-  }).catch(_error => {});
+  }, { tabProperties: ['tab'] }).catch(_error => {});
 
   log('onDragStart: started');
 });
@@ -1145,7 +1145,7 @@ function onTSTAPIDragEnter(event) {
         tab:      TSTAPI.serializeTab(tab),
         window:   tab.windowId,
         windowId: tab.windowId
-      }).catch(_error => {});
+      }, { tabProperties: ['tab'] }).catch(_error => {});
     }
   }
   mLastDragEnteredTarget = target;
@@ -1169,7 +1169,7 @@ function onTSTAPIDragExit(event) {
       tab:      TSTAPI.serializeTab(tab),
       window:   tab.windowId,
       windowId: tab.windowId
-    }).catch(_error => {});
+    }, { tabProperties: ['tab'] }).catch(_error => {});
   }, 10);
 }
 

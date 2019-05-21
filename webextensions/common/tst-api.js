@@ -125,6 +125,12 @@ export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control
 const kCONTEXT_BACKEND  = 1;
 const kCONTEXT_FRONTEND = 2;
 
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+const kPERMISSION_ACTIVE_TAB = 'activeTab';
+const kPERMISSION_TABS       = 'tabs';
+const kPERMISSION_COOKIES    = 'cookies';
+
 let mContext = null;
 const mAddons = new Map();
 let mScrollLockedBy    = {};
@@ -159,6 +165,10 @@ function registerAddon(id, addon) {
       kNOTIFY_TABBAR_MOUSEUP
     ];
   }
+
+  addon.requestedPermissions = new Set(addon.permissions || []);
+  addon.permissions = new Set();
+
   mAddons.set(id, addon);
 }
 
@@ -432,7 +442,8 @@ export async function notifyScrolled(params = {}) {
     clientX:  params.event.clientX,
     clientY:  params.event.clientY
   }, {
-    targets: lockers
+    targets: lockers,
+    tabProperties: ['tab', 'tabs']
   });
   for (const result of results) {
     if (!result || result.error || result.result === undefined)
@@ -509,10 +520,14 @@ export async function sendMessage(message, options = {}) {
   for (const addon of listenerAddons) {
     uniqueTargets.add(addon.id);
   }
+  const tabProperties = options.tabProperties || [];
+  const contextTabProperties = options.contextTabProperties || [];
   log(`sendMessage: sending message for ${message.type}: `, {
     message,
     listenerAddons,
-    targets: options.targets
+    targets: options.targets,
+    tabProperties,
+    contextTabProperties
   });
   if (options.targets) {
     if (!Array.isArray(options.targets))
@@ -522,17 +537,26 @@ export async function sendMessage(message, options = {}) {
     }
   }
 
-  const promisedResults = spawnMessages(uniqueTargets, message);
+  const promisedResults = spawnMessages(uniqueTargets, { message, tabProperties, contextTabProperties });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
     return results;
   }).catch(ApiTabs.createErrorHandler());
 }
 
-function* spawnMessages(targetSet, message) {
+function* spawnMessages(targetSet, params) {
+  const message = params.message;
+  const tabProperties = params.tabProperties || [];
+  const contextTabProperties = params.contextTabProperties || [];
+
+  const messageVariations = {};
+
   const send = async (id) => {
     try {
-      const result = await browser.runtime.sendMessage(id, message).catch(ApiTabs.createErrorHandler());
+      const permissionsKey = Array.from(mAddons.get(id).permissions).sort().join(',');
+      const allowedMessage = messageVariations[permissionsKey] || (messageVariations[permissionsKey] = sanitizeMessage(message, { id, tabProperties, contextTabProperties }));
+
+      const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
       return {
         id,
         result
@@ -549,6 +573,86 @@ function* spawnMessages(targetSet, message) {
   for (const id of targetSet) {
     yield send(id);
   }
+}
+
+export function sanitizeMessage(message, params) {
+  if (params.tabProperties.length == 0)
+    return message;
+
+  const sanitizedMessage = JSON.parse(JSON.stringify(message));
+  const permissions = mAddons.get(params.id).permissions;
+  for (const name of params.contextTabProperties) {
+    const value = sanitizedMessage[name];
+    if (Array.isArray(value))
+      sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true));
+    else
+      sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
+  }
+  for (const name of params.tabProperties) {
+    const value = sanitizedMessage[name];
+    if (Array.isArray(value))
+      sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions));
+    else
+      sanitizedMessage[name] = sanitizeTabValue(value, permissions);
+  }
+  return sanitizedMessage;
+}
+
+function sanitizeTabValue(tab, permissions, isContextTab = false) {
+  const allowedProperties = new Set([
+    'active',
+    'attention',
+    'audible',
+    'autoDiscardable',
+    'discarded',
+    'height',
+    'hidden',
+    'highlighted',
+    'id',
+    'incognito',
+    'index',
+    'isArticle',
+    'isInReaderMode',
+    'lastAccessed',
+    'mutedInfo',
+    'openerTabId',
+    'pinned',
+    'selected',
+    'sessionId',
+    'sharingState',
+    'status',
+    'successorId',
+    'width',
+    'windowId',
+    // TST specific properties
+    'states',
+    'indent',
+    'children',
+    'ancestorTabIds'
+  ]);
+  if (permissions.has(kPERMISSION_TABS) ||
+      (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab))) {
+    allowedProperties.add('favIconUrl');
+    allowedProperties.add('title');
+    allowedProperties.add('url');
+    allowedProperties.add('url');
+  }
+  if (permissions.has(kPERMISSION_COOKIES)) {
+    allowedProperties.add('cookieStoreId');
+  }
+
+  for (const key of Object.keys(tab)) {
+    if (!allowedProperties.has(key))
+      delete tab[key];
+  }
+
+  if (tab.states && !permissions.has(kPERMISSION_COOKIES))
+    tab.states = tab.states.filter(state => !/^(firefox-container-|firefox-default$)/.test(state));
+
+  if (tab.children)
+    tab.children = tab.children.map(child => sanitizeTabValue(child, permissions));
+
+  return tab;
 }
 
 

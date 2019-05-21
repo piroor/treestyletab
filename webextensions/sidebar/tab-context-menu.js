@@ -353,7 +353,7 @@ async function onCommand(item, event) {
   if (owner == browser.runtime.id)
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   else
-    await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
+    await browser.runtime.sendMessage(owner, TSTAPI.sanitizeMessage(message, { id: owner.id, contextTabProperties: ['tab'] })).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {
     item.classList.toggle('checked');
@@ -429,7 +429,7 @@ async function onShown(contextTab) {
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message)
+    TSTAPI.sendMessage(message, { contextTabProperties: ['tab'] })
   ]);
 }
 
