@@ -260,6 +260,22 @@ if (mIsBackend) {
       break;
     }
   });
+
+  SidebarConnection.onConnected.addListener(windowId => {
+    sendMessage({
+      type:   kNOTIFY_SIDEBAR_SHOW,
+      window: windowId,
+      windowId
+    });
+  });
+
+  SidebarConnection.onDisconnected.addListener(windowId => {
+    sendMessage({
+      type:   kNOTIFY_SIDEBAR_HIDE,
+      window: windowId,
+      windowId
+    });
+  });
 }
 
 function unregisterAddon(id) {
@@ -566,49 +582,7 @@ export function isGroupingBlocked() {
 }
 
 
-export function serializeTab(tab) {
-  tab = Tab.get(tab.id);
-  const serialized = serializeTabInternal(tab);
-  serialized.children = tab.$TST.children.map(serializeTab);
-  return serialized;
-}
-
-export async function serializeTabAsync(tab, interval) {
-  tab = Tab.get(tab.id);
-  const serialized = serializeTabInternal(tab);
-  serialized.children = await doProgressively(
-    tab.$TST.children,
-    tab => serializeTabAsync(tab, interval),
-    interval
-  );
-  return serialized;
-}
-
-function serializeTabInternal(tab) {
-  tab = Tab.get(tab.id);
-  const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
-  const serialized     = Object.assign({}, tab.$TST.sanitized, {
-    states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.has(state)),
-    indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
-    ancestorTabIds
-  });
-  // console.log(serialized, new Error().stack);
-  return serialized;
-}
-
-export async function serializeTabWithEffectiveFavIconUrl(tab, interval) {
-  const serializedRoot = await serializeTabAsync(tab, interval);
-  const promises = [];
-  const preparePromiseForEffectiveFavIcon = serializedOneTab => {
-    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(serializedOneTab).then(url => {
-      serializedOneTab.effectiveFavIconUrl = url;
-    }));
-    serializedOneTab.children.map(preparePromiseForEffectiveFavIcon);
-  };
-  preparePromiseForEffectiveFavIcon(serializedRoot);
-  await Promise.all(promises);
-  return serializedRoot;
-}
+/* Utilities to send notification messages to other addons */
 
 export function hasListenerForMessageType(type) {
   return getListenersForMessageType(type).length > 0;
@@ -701,6 +675,15 @@ function* spawnMessages(targetSet, params) {
   }
 }
 
+export function canSendIncognitoInfo(addonId, params) {
+  if (addonId == browser.runtime.id)
+    return true;
+  const tab = params.tab;
+  const window = params.windowId && TabsStore.windows.get(params.windowId);
+  const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
+  return !hasIncognitoInfo || configs.incognitoAllowedExternalAddons.includes(addonId);
+}
+
 export function sanitizeMessage(message, params) {
   const addon = getAddon(params.id);
   if (!message ||
@@ -743,9 +726,56 @@ export function sanitizeMessage(message, params) {
   return sanitizedMessage;
 }
 
+/* Utilities to export tabs safely */
+
+export function serializeTab(tab) {
+  tab = Tab.get(tab.id);
+  const serialized = serializeTabInternal(tab);
+  serialized.children = tab.$TST.children.map(serializeTab);
+  return serialized;
+}
+
+export async function serializeTabAsync(tab, interval) {
+  tab = Tab.get(tab.id);
+  const serialized = serializeTabInternal(tab);
+  serialized.children = await doProgressively(
+    tab.$TST.children,
+    tab => serializeTabAsync(tab, interval),
+    interval
+  );
+  return serialized;
+}
+
+function serializeTabInternal(tab) {
+  tab = Tab.get(tab.id);
+  const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
+  const serialized     = Object.assign({}, tab.$TST.sanitized, {
+    states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.has(state)),
+    indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
+    ancestorTabIds
+  });
+  // console.log(serialized, new Error().stack);
+  return serialized;
+}
+
+export async function serializeTabWithEffectiveFavIconUrl(tab, interval) {
+  const serializedRoot = await serializeTabAsync(tab, interval);
+  const promises = [];
+  const preparePromiseForEffectiveFavIcon = serializedOneTab => {
+    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(serializedOneTab).then(url => {
+      serializedOneTab.effectiveFavIconUrl = url;
+    }));
+    serializedOneTab.children.map(preparePromiseForEffectiveFavIcon);
+  };
+  preparePromiseForEffectiveFavIcon(serializedRoot);
+  await Promise.all(promises);
+  return serializedRoot;
+}
+
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
-  if (tab.incognito &&
-      !permissions.has(kPERMISSION_INCOGNITO))
+  if (!tab ||
+      (tab.incognito &&
+       !permissions.has(kPERMISSION_INCOGNITO)))
     return null;
 
   let allowedProperties = [
@@ -808,15 +838,8 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
   return tab;
 }
 
-export function canSendIncognitoInfo(addonId, params) {
-  if (addonId == browser.runtime.id)
-    return true;
-  const tab = params.tab;
-  const window = params.windowId && TabsStore.windows.get(params.windowId);
-  const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
-  return !hasIncognitoInfo || configs.incognitoAllowedExternalAddons.includes(addonId);
-}
 
+/* Utilities for request-response type API call */
 
 export async function getTargetTabs(message, sender) {
   await Tab.waitUntilTrackedAll(message.window || message.windowId);
@@ -918,19 +941,3 @@ export function formatTabResult(results, originalMessage, senderId) {
     return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: ['tabs'] }).tabs.filter(tab => !!tab);
   return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: ['tab'] }).tab || null;
 }
-
-SidebarConnection.onConnected.addListener(windowId => {
-  sendMessage({
-    type:   kNOTIFY_SIDEBAR_SHOW,
-    window: windowId,
-    windowId
-  });
-});
-
-SidebarConnection.onDisconnected.addListener(windowId => {
-  sendMessage({
-    type:   kNOTIFY_SIDEBAR_HIDE,
-    window: windowId,
-    windowId
-  });
-});
