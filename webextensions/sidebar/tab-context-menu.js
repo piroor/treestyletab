@@ -83,7 +83,10 @@ async function rebuild() {
     return;
 
   const extraItemNodes = document.createDocumentFragment();
+  const incognitoParams = { windowId: TabsStore.getWindow() };
   for (const [id, extraItems] of mExtraItems.entries()) {
+    if (!TSTAPI.canSendIncognitoInfo(id, incognitoParams))
+      continue;
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
     addonItem.appendChild(document.createTextNode(name));
