@@ -741,17 +741,20 @@ export function sanitizeMessage(message, params) {
 }
 
 function sanitizeTabValue(tab, permissions, isContextTab = false) {
+  if (tab.incognito &&
+      !permissions.has(kPERMISSION_INCOGNITO))
+    return null;
+
   let allowedProperties = [
     'id',
+
     // TST specific properties
     'states',
     'indent',
     'children',
-    'ancestorTabIds'
-  ];
-  if (!tab.incognito ||
-      permissions.has(kPERMISSION_INCOGNITO)) {
-    allowedProperties = allowedProperties.concat([
+    'ancestorTabIds',
+
+    // basic tabs.Tab properties
       'active',
       'attention',
       'audible',
@@ -775,7 +778,7 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
       'successorId',
       'width',
       'windowId',
-    ]);
+  ];
     if (permissions.has(kPERMISSION_TABS) ||
         (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
       allowedProperties = allowedProperties.concat([
@@ -786,7 +789,6 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
       ]);
     if (permissions.has(kPERMISSION_COOKIES))
       allowedProperties.push('cookieStoreId');
-  }
 
   allowedProperties = new Set(allowedProperties);
   for (const key of Object.keys(tab)) {
