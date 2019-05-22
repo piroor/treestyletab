@@ -357,7 +357,7 @@ window.addEventListener('DOMContentLoaded', () => {
             return permission;
           }
         }).join(', ');
-        label.appendChild(document.createTextNode(`${addon.label}: ${permissionNames}`));
+        label.appendChild(document.createTextNode(`${addon.label} (${permissionNames})`));
         container.appendChild(item);
       }
     });
