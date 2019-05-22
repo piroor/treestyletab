@@ -270,8 +270,8 @@ const mConnections = new Map();
 
 export async function initAsBackend() {
   const manifest = browser.runtime.getManifest();
-  registerAddon(manifest.applications.gecko.id, {
-    id:         manifest.applications.gecko.id,
+  registerAddon(browser.runtime.id, {
+    id:         browser.runtime.id,
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
     listeningTypes: [],
@@ -789,6 +789,8 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
 }
 
 export function canSendIncognitoInfo(addonId, params) {
+  if (addonId == browser.runtime.id)
+    return true;
   const tab = params.tab;
   const window = params.windowId && TabsStore.windows.get(params.windowId);
   const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
