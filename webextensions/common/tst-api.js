@@ -747,41 +747,40 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
 
   let allowedProperties = [
     'id',
-
     // TST specific properties
     'states',
     'indent',
     'children',
-    'ancestorTabIds',
-
-    // basic tabs.Tab properties
-    'active',
-    'attention',
-    'audible',
-    'autoDiscardable',
-    'discarded',
-    'height',
-    'hidden',
-    'highlighted',
-    'incognito',
-    'index',
-    'isArticle',
-    'isInReaderMode',
-    'lastAccessed',
-    'mutedInfo',
-    'openerTabId',
-    'pinned',
-    'selected',
-    'sessionId',
-    'sharingState',
-    'status',
-    'successorId',
-    'width',
-    'windowId',
+    'ancestorTabIds'
   ];
   if (permissions.has(kPERMISSION_TABS) ||
       (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
     allowedProperties = allowedProperties.concat([
+      // basic tabs.Tab properties
+      'active',
+      'attention',
+      'audible',
+      'autoDiscardable',
+      'discarded',
+      'height',
+      'hidden',
+      'highlighted',
+      'incognito',
+      'index',
+      'isArticle',
+      'isInReaderMode',
+      'lastAccessed',
+      'mutedInfo',
+      'openerTabId',
+      'pinned',
+      'selected',
+      'sessionId',
+      'sharingState',
+      'status',
+      'successorId',
+      'width',
+      'windowId',
+      // specially allowed with "tabs" or "activeTab" permission
       'favIconUrl',
       'title',
       'url',
