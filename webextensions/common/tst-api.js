@@ -416,10 +416,10 @@ function onMessageExternal(message, sender) {
           const index = configs.cachedExternalAddons.indexOf(sender.id);
           if (index < 0)
             configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
-          const addon = getAddon(message.id);
-          if (addon.requestedPermissions.size > 0)
-            notifyPermissionChanged(addon);
-          return true;
+          return {
+            grantedPermissions:   Array.from(getAddon(sender.id).grantedPermissions).filter(permission => permission.startsWith('!')),
+            privateWindowAllowed: configs.incognitoAllowedExternalAddons.includes(sender.id)
+          };
         })();
 
       case kUNREGISTER_SELF:
