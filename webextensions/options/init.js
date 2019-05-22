@@ -373,6 +373,10 @@ window.addEventListener('DOMContentLoaded', () => {
           else
             updatedValue.delete(addon.id);
           configs.incognitoAllowedExternalAddons = Array.from(updatedValue);
+          browser.runtime.sendMessage({
+            type: TSTAPI.kCOMMAND_NOTIFY_PERMISSION_CHANGED,
+            id:   addon.id
+          });
         });
 
         container.appendChild(row);
