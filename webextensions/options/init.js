@@ -327,6 +327,12 @@ window.addEventListener('DOMContentLoaded', () => {
     browser.runtime.sendMessage({
       type: TSTAPI.kCOMMAND_GET_ADDONS
     }).then(addons => {
+      const description = document.getElementById('externalAddonPermissionsGroupDescription');
+      const range = document.createRange();
+      range.selectNodeContents(description);
+      description.appendChild(range.createContextualFragment(browser.i18n.getMessage('config_externaladdonpermissions_description')));
+      range.detach();
+
       const container = document.getElementById('externalAddonPermissions');
       for (const addon of addons) {
         if (addon.permissions.length == 0)
