@@ -702,7 +702,7 @@ export function sanitizeMessage(message, params) {
     return message;
 
   const permissions = new Set(addon.grantedPermissions);
-  if (configs.grantedExternalAddonPermissions.includes(addon.id))
+  if (configs.incognitoAllowedExternalAddons.includes(addon.id))
     permissions.add(kPERMISSION_INCOGNITO);
 
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
@@ -799,7 +799,7 @@ export function canSendIncognitoInfo(addonId, params) {
   const tab = params.tab;
   const window = params.windowId && TabsStore.windows.get(params.windowId);
   const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
-  return !hasIncognitoInfo || configs.grantedExternalAddonPermissions.includes(addonId);
+  return !hasIncognitoInfo || configs.incognitoAllowedExternalAddons.includes(addonId);
 }
 
 

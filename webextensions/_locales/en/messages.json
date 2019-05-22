@@ -405,6 +405,8 @@
 
   "config_externaladdonpermissions_label": { "message": "Permissions for API Call from Other Addons" },
   "config_externaladdonpermissions_description": { "message": "Addons allowed here may access your privacy data <em>through Tree Style Tab's permissions</em>, even if the addon ifself is forbidden by Firefox to access such information. <em>Please don't give permission for addons if you cannot trust.</em>" },
+  "config_externalAddonPermissions_header_main": { "message": "Addon Name" },
+  "config_externalAddonPermissions_header_incognito": { "message": "Notify Messages from Private Windows" },
 
 
   "config_debug_caption": { "message": "Development" },

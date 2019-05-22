@@ -337,8 +337,10 @@ window.addEventListener('DOMContentLoaded', () => {
       for (const addon of addons) {
         if (addon.permissions.length == 0)
           continue;
-        const item = document.createElement('li');
-        const label = item.appendChild(document.createElement('label'));
+        const row = document.createElement('tr');
+
+        const mainCell = row.appendChild(document.createElement('td'));
+        const label = mainCell.appendChild(document.createElement('label'));
         const checkbox = label.appendChild(document.createElement('input'));
         checkbox.setAttribute('type', 'checkbox');
         checkbox.checked = addon.permissionsGranted;
@@ -358,7 +360,22 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         }).join(', ');
         label.appendChild(document.createTextNode(`${addon.label} (${permissionNames})`));
-        container.appendChild(item);
+
+        const incognitoCell = row.appendChild(document.createElement('td'));
+        const incognitoLabel = incognitoCell.appendChild(document.createElement('label'));
+        const incognitoCheckbox = incognitoLabel.appendChild(document.createElement('input'));
+        incognitoCheckbox.setAttribute('type', 'checkbox');
+        incognitoCheckbox.checked = configs.incognitoAllowedExternalAddons.includes(addon.id);
+        incognitoCheckbox.addEventListener('change', () => {
+          const updatedValue = new Set(configs.incognitoAllowedExternalAddons);
+          if (incognitoCheckbox.checked)
+            updatedValue.add(addon.id);
+          else
+            updatedValue.delete(addon.id);
+          configs.incognitoAllowedExternalAddons = Array.from(updatedValue);
+        });
+
+        container.appendChild(row);
       }
     });
 

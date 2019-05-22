@@ -146,6 +146,15 @@ label input[type="checkbox"] ~ img {
 }
 
 
+#externalAddonPermissionsGroup table td:last-child {
+  text-align: center;
+}
+#externalAddonPermissionsGroup table td:last-child input[type="checkbox"] {
+  margin-left: 3em;
+  margin-right: 3em;
+}
+
+
 fieldset.collapsible.collapsed > *:not(legend) {
   display: none;
 }
