@@ -203,6 +203,7 @@ export const configs = new Configs({
   ],
   cachedExternalAddons: [],
   grantedExternalAddonPermissions: {},
+  incognitoAllowedExternalAddons: [],
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,

@@ -184,7 +184,6 @@
     }},
   "api_requestedPermissions_type_activeTab": { "message": "Access active browser tab" },
   "api_requestedPermissions_type_tabs":      { "message": "Access browser tabs" },
-  "api_requestedPermissions_type_incognito": { "message": "Access tabs in private browsing windows" },
   "api_requestedPermissions_type_cookies":   { "message": "Detect container of browser tabs" },
 
 

@@ -130,8 +130,8 @@ export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permiss
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
 const kPERMISSION_ACTIVE_TAB = 'activeTab';
 const kPERMISSION_TABS       = 'tabs';
-const kPERMISSION_INCOGNITO  = 'incognito';
 const kPERMISSION_COOKIES    = 'cookies';
+const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
 
 const mAddons = new Map();
 let mScrollLockedBy    = {};
@@ -202,13 +202,15 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
     message: browser.i18n.getMessage('api_requestedPermissions_message', [
       addon.name || addon.title || addon.id,
       Array.from(requestedPermissions, permission => {
+        if (permission == kPERMISSION_INCOGNITO)
+          return null;
         try {
           return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
         }
         catch(_error) {
           return permission;
         }
-      }).join('\n')
+      }).filter(permission => !!permission).join('\n')
     ])
   });
   mPermissionNotificationForAddon.set(addon.id, id);
@@ -699,8 +701,11 @@ export function sanitizeMessage(message, params) {
       addon.bypassPermissionCheck)
     return message;
 
+  const permissions = new Set(addon.grantedPermissions);
+  if (configs.grantedExternalAddonPermissions.includes(addon.id))
+    permissions.add(kPERMISSION_INCOGNITO);
+
   const sanitizedMessage = JSON.parse(JSON.stringify(message));
-  const permissions = addon.grantedPermissions;
   if (params.contextTabProperties) {
     for (const name of params.contextTabProperties) {
       const value = sanitizedMessage[name];
@@ -794,7 +799,7 @@ export function canSendIncognitoInfo(addonId, params) {
   const tab = params.tab;
   const window = params.windowId && TabsStore.windows.get(params.windowId);
   const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
-  return !hasIncognitoInfo || getAddon(addonId).grantedPermissions.has(kPERMISSION_INCOGNITO);
+  return !hasIncognitoInfo || configs.grantedExternalAddonPermissions.includes(addonId);
 }
 
 
