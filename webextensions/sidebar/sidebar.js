@@ -109,7 +109,11 @@ export async function init() {
   UserOperationBlocker.setProgress(0);
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
-      const tabs = await MetricsData.addAsync('browser.tabs.query', browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()));
+      const window = await MetricsData.addAsync('browser.windows.getCurrent', browser.windows.getCurrent({ populate: true })).catch(ApiTabs.createErrorHandler());
+      const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
+      trackedWindow.incognito = window.incognito;
+
+      const tabs = window.tabs;
       preloadCache(tabs[tabs.length-1].id);
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);

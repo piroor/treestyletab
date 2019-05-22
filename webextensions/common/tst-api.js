@@ -646,20 +646,20 @@ function* spawnMessages(targetSet, params) {
 
   const messageVariations = {};
 
-  let tab;
+  const incognitoParams = { windowId: message.windowId || message.window };
   for (const key of tabProperties.concat(contextTabProperties)) {
     if (!message[key])
       continue;
     if (Array.isArray(message[key]))
-      tab = message[key][0];
+      incognitoParams.tab = message[key][0];
     else
-      tab = message[key];
+      incognitoParams.tab = message[key];
     break;
   }
 
   const send = async (id) => {
     try {
-      if (!canSendTabInformation(id, tab))
+      if (!canSendIncognitoInfo(id, incognitoParams))
         return {
           id,
           result: undefined
@@ -788,12 +788,11 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
   return tab;
 }
 
-function canSendTabInformation(addonId, tab) {
-  return (
-    !tab ||
-    !tab.incognito ||
-    getAddon(addonId).grantedPermissions.has(kPERMISSION_INCOGNITO)
-  );
+function canSendIncognitoInfo(addonId, params) {
+  const tab = params.tab;
+  const window = params.windowId && TabsStore.windows.get(params.windowId);
+  const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
+  return !hasIncognitoInfo || getAddon(addonId).grantedPermissions.has(kPERMISSION_INCOGNITO);
 }
 
 

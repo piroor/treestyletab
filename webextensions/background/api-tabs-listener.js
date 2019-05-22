@@ -62,6 +62,7 @@ export function init() {
   browser.tabs.onMoved.addListener(onMoved);
   browser.tabs.onAttached.addListener(onAttached);
   browser.tabs.onDetached.addListener(onDetached);
+  browser.windows.onCreated.addListener(onWindowCreated);
   browser.windows.onRemoved.addListener(onWindowRemoved);
 }
 
@@ -81,6 +82,7 @@ export function destroy() {
   browser.tabs.onMoved.removeListener(onMoved);
   browser.tabs.onAttached.removeListener(onAttached);
   browser.tabs.onDetached.removeListener(onDetached);
+  browser.windows.onCreated.removeListener(onWindowCreated);
   browser.windows.onRemoved.removeListener(onWindowRemoved);
 }
 
@@ -889,6 +891,11 @@ async function onDetached(tabId, detachInfo) {
     console.log(e);
     onCompleted();
   }
+}
+
+async function onWindowCreated(window) {
+  const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
+  trackedWindow.incognito = window.incognito;
 }
 
 async function onWindowRemoved(windowId) {
