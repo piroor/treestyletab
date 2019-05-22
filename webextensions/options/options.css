@@ -145,13 +145,18 @@ label input[type="checkbox"] ~ img {
   margin-right: 1.5em;
 }
 
-
-#externalAddonPermissionsGroup table td:last-child {
+#externalAddonPermissionsGroup table {
+  border-collapse: collapse;
+}
+#externalAddonPermissionsGroup td:nth-child(2) {
   text-align: center;
 }
-#externalAddonPermissionsGroup table td:last-child input[type="checkbox"] {
+#externalAddonPermissionsGroup td:nth-child(2) input[type="checkbox"] {
   margin-left: 3em;
   margin-right: 3em;
+}
+#externalAddonPermissionsGroup tbody tr {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 

@@ -401,7 +401,8 @@
 
   "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
   "config_externaladdonpermissions_description": { "message": "ここでチェックを入れたアドオンは、Firefox自体がそのアドオンにプライバシー情報へのアクセスを禁止していても、<em>ツリー型タブの権限で</em>プライバシー情報にアクセスできるようになります。<em>信用できないアドオンに対しては絶対に権限を与えないで下さい。<em>" },
-  "config_externalAddonPermissions_header_main": { "message": "アドオン名" },
+  "config_externalAddonPermissions_header_name": { "message": "アドオン名" },
+  "config_externalAddonPermissions_header_permissions": { "message": "許可する特別な操作" },
   "config_externalAddonPermissions_header_incognito": { "message": "プライベートウィンドウからのメッセージを通知する" },
 
 

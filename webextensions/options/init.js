@@ -335,35 +335,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const container = document.getElementById('externalAddonPermissions');
       for (const addon of addons) {
-        if (addon.permissions.length == 0)
+        if (addon.id == browser.runtime.id)
           continue;
         const row = document.createElement('tr');
 
-        const mainCell = row.appendChild(document.createElement('td'));
-        const label = mainCell.appendChild(document.createElement('label'));
-        const checkbox = label.appendChild(document.createElement('input'));
-        checkbox.setAttribute('type', 'checkbox');
-        checkbox.checked = addon.permissionsGranted;
-        checkbox.addEventListener('change', () => {
-          browser.runtime.sendMessage({
-            type:        TSTAPI.kCOMMAND_SET_API_PERMISSION,
-            id:          addon.id,
-            permissions: checkbox.checked ? addon.permissions : addon.permissions.map(permission => `!${permission}`)
-          });
-        });
-        const permissionNames = addon.permissions.map(permission => {
-          try {
-            return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
-          }
-          catch(_error) {
-            return permission;
-          }
-        }).join(', ');
-        label.appendChild(document.createTextNode(`${addon.label} (${permissionNames})`));
+        const nameCell = row.appendChild(document.createElement('td'));
+        const nameLabel = nameCell.appendChild(document.createElement('label'));
+        nameLabel.appendChild(document.createTextNode(addon.label));
+        const controlledId = `api-permissions-${encodeURIComponent(addon.id)}`;
+        nameLabel.setAttribute('for', controlledId);
 
         const incognitoCell = row.appendChild(document.createElement('td'));
         const incognitoLabel = incognitoCell.appendChild(document.createElement('label'));
         const incognitoCheckbox = incognitoLabel.appendChild(document.createElement('input'));
+        if (addon.permissions.length == 0)
+          incognitoCheckbox.setAttribute('id', controlledId);
         incognitoCheckbox.setAttribute('type', 'checkbox');
         incognitoCheckbox.checked = configs.incognitoAllowedExternalAddons.includes(addon.id);
         incognitoCheckbox.addEventListener('change', () => {
@@ -378,6 +364,31 @@ window.addEventListener('DOMContentLoaded', () => {
             id:   addon.id
           });
         });
+
+        const permissionsCell = row.appendChild(document.createElement('td'));
+        if (addon.permissions.length > 0) {
+          const permissionsLabel = permissionsCell.appendChild(document.createElement('label'));
+          const permissionsCheckbox = permissionsLabel.appendChild(document.createElement('input'));
+          permissionsCheckbox.setAttribute('id', controlledId);
+          permissionsCheckbox.setAttribute('type', 'checkbox');
+          permissionsCheckbox.checked = addon.permissionsGranted;
+          permissionsCheckbox.addEventListener('change', () => {
+            browser.runtime.sendMessage({
+              type:        TSTAPI.kCOMMAND_SET_API_PERMISSION,
+              id:          addon.id,
+              permissions: permissionsCheckbox.checked ? addon.permissions : addon.permissions.map(permission => `!  ${permission}`)
+            });
+          });
+          const permissionNames = addon.permissions.map(permission => {
+            try {
+              return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
+            }
+            catch(_error) {
+              return permission;
+            }
+          }).join(', ');
+          permissionsLabel.appendChild(document.createTextNode(permissionNames));
+        }
 
         container.appendChild(row);
       }
