@@ -755,40 +755,40 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
     'ancestorTabIds',
 
     // basic tabs.Tab properties
-      'active',
-      'attention',
-      'audible',
-      'autoDiscardable',
-      'discarded',
-      'height',
-      'hidden',
-      'highlighted',
-      'incognito',
-      'index',
-      'isArticle',
-      'isInReaderMode',
-      'lastAccessed',
-      'mutedInfo',
-      'openerTabId',
-      'pinned',
-      'selected',
-      'sessionId',
-      'sharingState',
-      'status',
-      'successorId',
-      'width',
-      'windowId',
+    'active',
+    'attention',
+    'audible',
+    'autoDiscardable',
+    'discarded',
+    'height',
+    'hidden',
+    'highlighted',
+    'incognito',
+    'index',
+    'isArticle',
+    'isInReaderMode',
+    'lastAccessed',
+    'mutedInfo',
+    'openerTabId',
+    'pinned',
+    'selected',
+    'sessionId',
+    'sharingState',
+    'status',
+    'successorId',
+    'width',
+    'windowId',
   ];
-    if (permissions.has(kPERMISSION_TABS) ||
-        (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
-      allowedProperties = allowedProperties.concat([
-        'favIconUrl',
-        'title',
-        'url',
-        'effectiveFavIconUrl' // TST specific property
-      ]);
-    if (permissions.has(kPERMISSION_COOKIES))
-      allowedProperties.push('cookieStoreId');
+  if (permissions.has(kPERMISSION_TABS) ||
+      (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
+    allowedProperties = allowedProperties.concat([
+      'favIconUrl',
+      'title',
+      'url',
+      'effectiveFavIconUrl' // TST specific property
+    ]);
+  if (permissions.has(kPERMISSION_COOKIES))
+    allowedProperties.push('cookieStoreId');
 
   allowedProperties = new Set(allowedProperties);
   for (const key of Object.keys(tab)) {
