@@ -788,7 +788,7 @@ function sanitizeTabValue(tab, permissions, isContextTab = false) {
   return tab;
 }
 
-function canSendIncognitoInfo(addonId, params) {
+export function canSendIncognitoInfo(addonId, params) {
   const tab = params.tab;
   const window = params.windowId && TabsStore.windows.get(params.windowId);
   const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);

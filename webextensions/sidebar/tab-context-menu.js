@@ -347,12 +347,12 @@ async function onCommand(item, event) {
       srcUrl:           null,
       wasChecked
     },
-    tab: contextTab && contextTab.$TST.sanitized|| null
+    tab: contextTab && contextTab.$TST.sanitized || null
   };
   const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-  else
+  else if (TSTAPI.canSendIncognitoInfo(owner.id, { tab: contextTab, windowId: TabsStore.getWindow() }))
     await browser.runtime.sendMessage(owner, TSTAPI.sanitizeMessage(message, { id: owner.id, contextTabProperties: ['tab'] })).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {
@@ -425,7 +425,8 @@ async function onShown(contextTab) {
       menuIds:          [],
       viewType:         'sidebar'
     },
-    tab: contextTab && contextTab.$TST.sanitized || null
+    tab: contextTab && contextTab.$TST.sanitized || null,
+    windowId: TabsStore.getWindow()
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
@@ -435,7 +436,8 @@ async function onShown(contextTab) {
 
 async function onHidden() {
   const message = {
-    type: TSTAPI.kCONTEXT_MENU_HIDDEN
+    type: TSTAPI.kCONTEXT_MENU_HIDDEN,
+    windowId: TabsStore.getWindow()
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
