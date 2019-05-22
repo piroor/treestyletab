@@ -61,10 +61,8 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs and operate them at a time.
  * [TST-MiddleClick](https://addons.mozilla.org/firefox/addon/tst-middleclick/) allows you to run "undo close tab" command on middle click on the sidebar.
  * [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) allows you to switch active tab by wheel scrolling.
- * [Tree Style Tab Open in Private](https://addons.mozilla.org/firefox/addon/tree-style-tab-open-in-private/) allows you to move the tab to a private mode window.
- * [Tree Style Tab Closed Tabs](https://addons.mozilla.org/firefox/addon/tree-style-tab-closed-tabs/) allows you to restore closed tabs from a menu.
  * [Tab flip for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/) allows you to move focus to the tab previously focused, by clicking on the active tab.
- * [Tree Style Tab Focus Preceding Tab on Close](https://github.com/giantoppai/TST-Focus-Preceding-Tab-On-Close) focuses the previous tab instead of the next tab when a tab is closed.
+ * [Tree Style Tab Focus Preceding Tab on Close](https://addons.mozilla.org/firefox/addon/tst-focus-preceding-tab/) focuses the previous tab instead of the next tab when a tab is closed.
  * [Tab Unloader for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-unload-for-tree-style-tab/) allows you to unload tabs by clicking on them in the sidebar.
  * [Move unloaded tabs for Tree Style Tab](https://addons.mozilla.org/firefox/addon/move-unloaded-tabs-for-tst/) allows you to move tabs in the sidebar without them becoming active.
  * [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/) allows you to open the Tree Style Tab sidebar page in a new window.
