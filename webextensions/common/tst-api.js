@@ -232,6 +232,8 @@ function notifyPermissionChanged(addon) {
     id:   addon.id,
     permissions
   });
+  if (addon.id == browser.runtime.id)
+    return;
   browser.runtime.sendMessage(addon.id, {
     type:                 kNOTIFY_PERMISSIONS_CHANGED,
     grantedPermissions:   permissions.filter(permission => permission.startsWith('!')),
