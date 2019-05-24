@@ -332,8 +332,10 @@ async function onCommand(item, event) {
   }
   if (event.shiftKey)
     modifiers.push('Shift');
+  const owner      = item.getAttribute('data-item-owner-id');
   const checked    = item.matches('.radio, .checkbox:not(.checked)');
   const wasChecked = item.matches('.radio.checked, .checkbox.checked');
+  const tab        = contextTab && (await (new TSTAPI.TreeItem(contextTab, { isContextTab: true })).exportFor(owner)) || null
   const message = {
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
@@ -350,13 +352,12 @@ async function onCommand(item, event) {
       srcUrl:           null,
       wasChecked
     },
-    tab: contextTab && contextTab.$TST.sanitized || null
+    tab
   };
-  const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   else if (TSTAPI.canSendIncognitoInfo(owner.id, { tab: contextTab, windowId: TabsStore.getWindow() }))
-    await browser.runtime.sendMessage(owner, TSTAPI.sanitizeMessage(message, { id: owner.id, contextTabProperties: ['tab'] })).catch(ApiTabs.createErrorSuppressor());
+    await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {
     item.classList.toggle('checked');
@@ -428,12 +429,12 @@ async function onShown(contextTab) {
       menuIds:          [],
       viewType:         'sidebar'
     },
-    tab: contextTab && contextTab.$TST.sanitized || null,
+    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
     windowId: TabsStore.getWindow()
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message, { contextTabProperties: ['tab'] })
+    TSTAPI.sendMessage(message, { tabProperties: ['tab'] })
   ]);
 }
 

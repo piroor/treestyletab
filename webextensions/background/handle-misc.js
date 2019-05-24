@@ -331,10 +331,10 @@ function onMessage(message, sender) {
           return;
 
         logMouseEvent('Sending message to listeners');
-        const serializedTab = TSTAPI.serializeTab(tab);
+        const treeItem = new TSTAPI.TreeItem(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
           type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          tab:  serializedTab
+          tab:  treeItem
         }), { tabProperties: ['tab'] });
 
         // We must send tab-mouseup after tab-mousedown is notified.
@@ -343,7 +343,7 @@ function onMessage(message, sender) {
           results = results.concat(
             await TSTAPI.sendMessage(Object.assign({}, message, {
               type: TSTAPI.kNOTIFY_TAB_CLICKED,
-              tab:  serializedTab
+              tab:  treeItem
             }), { tabProperties: ['tab'] })
           );
           if (results.some(result => result && result.result))
@@ -410,12 +410,11 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
-          tabs,
-          tab => TSTAPI.serializeTabWithEffectiveFavIconUrl(tab, message.interval),
-          message.interval
+        return TSTAPI.formatTabResult(
+          tabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
+          message,
+          sender.id
         );
-        return TSTAPI.formatTabResult(results, message, sender.id);
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
@@ -626,9 +625,12 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        const reopenedTabs = await Commands.reopenInContainer(tabsArray, message.containerId || 'firefox-default');
-        return TSTAPI.formatTabResult(reopenedTabs, message, sender.id);
+        const reopenedTabs = await Commands.reopenInContainer(tabs, message.containerId || 'firefox-default');
+        return TSTAPI.formatTabResult(
+          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
+          message,
+          sender.id
+        );
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:

@@ -99,7 +99,7 @@ export function isCapturingForDragging() {
 }
 
 export function endMultiDrag(tab, coordinates) {
-  const serializedTab = tab && TSTAPI.serializeTab(tab);
+  const treeItem = tab && new TSTAPI.TreeItem(tab);
   if (mCapturingForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
@@ -107,7 +107,7 @@ export function endMultiDrag(tab, coordinates) {
 
     TSTAPI.sendMessage({
       type:    TSTAPI.kNOTIFY_TAB_DRAGEND,
-      tab:     serializedTab,
+      tab:     treeItem,
       window:  tab && tab.windowId,
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
@@ -119,7 +119,7 @@ export function endMultiDrag(tab, coordinates) {
   else if (mReadyToCaptureMouseEvents) {
     TSTAPI.sendMessage({
       type:    TSTAPI.kNOTIFY_TAB_DRAGCANCEL,
-      tab:     serializedTab,
+      tab:     treeItem,
       window:  tab && tab.windowId,
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
@@ -642,7 +642,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     const windowId = TabsStore.getWindow();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-      tab:    TSTAPI.serializeTab(tab),
+      tab:    new TSTAPI.TreeItem(tab),
       window: windowId,
       windowId,
       startOnClosebox
@@ -740,7 +740,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
 
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
-    tab:      TSTAPI.serializeTab(tab),
+    tab:      new TSTAPI.TreeItem(tab),
     windowId: TabsStore.getWindow()
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
@@ -1142,7 +1142,7 @@ function onTSTAPIDragEnter(event) {
     if (target != mLastDragEnteredTarget) {
       TSTAPI.sendMessage({
         type:     TSTAPI.kNOTIFY_TAB_DRAGENTER,
-        tab:      TSTAPI.serializeTab(tab),
+        tab:      new TSTAPI.TreeItem(tab),
         window:   tab.windowId,
         windowId: tab.windowId
       }, { tabProperties: ['tab'] }).catch(_error => {});
@@ -1166,7 +1166,7 @@ function onTSTAPIDragExit(event) {
     delete target.onTSTAPIDragExitTimeout;
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_DRAGEXIT,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      new TSTAPI.TreeItem(tab),
       window:   tab.windowId,
       windowId: tab.windowId
     }, { tabProperties: ['tab'] }).catch(_error => {});

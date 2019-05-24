@@ -179,8 +179,8 @@ export async function attachTabTo(child, parent, options = {}) {
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED))
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
-        tab:    TSTAPI.serializeTab(child),
-        parent: TSTAPI.serializeTab(parent)
+        tab:    new TSTAPI.TreeItem(child),
+        parent: new TSTAPI.TreeItem(parent)
       }, { tabProperties: ['tab', 'parent'] }).catch(_error => {});
   }
 
@@ -325,8 +325,8 @@ export function detachTab(child, options = {}) {
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED))
       TSTAPI.sendMessage({
         type:      TSTAPI.kNOTIFY_TREE_DETACHED,
-        tab:       TSTAPI.serializeTab(child),
-        oldParent: TSTAPI.serializeTab(parent)
+        tab:       new TSTAPI.TreeItem(child),
+        oldParent: new TSTAPI.TreeItem(parent)
       }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
   }
   // We don't need to clear its parent information, because the old parent's

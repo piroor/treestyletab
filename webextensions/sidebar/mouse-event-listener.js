@@ -138,7 +138,7 @@ function onMouseMove(event) {
   if (tab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      new TSTAPI.TreeItem(tab),
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -164,7 +164,7 @@ function onMouseOver(event) {
   if (enterTabFromAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      new TSTAPI.TreeItem(tab),
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -190,7 +190,7 @@ function onMouseOut(event) {
   if (leaveTabToAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      new TSTAPI.TreeItem(tab),
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -334,12 +334,12 @@ async function onMouseUp(event) {
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
-  const serializedTab = livingTab && TSTAPI.serializeTab(livingTab);
+  const treeItem = livingTab && new TSTAPI.TreeItem(livingTab);
   let promisedCanceled = Promise.resolve(false);
-  if (serializedTab && lastMousedown) {
+  if (treeItem && lastMousedown) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
       type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
-      tab:     serializedTab,
+      tab:     treeItem,
       window:  mTargetWindow,
       windowId: mTargetWindow
     }), { tabProperties: ['tab'] });

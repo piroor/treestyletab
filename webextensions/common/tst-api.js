@@ -133,6 +133,11 @@ const kPERMISSION_ACTIVE_TAB = 'activeTab';
 const kPERMISSION_TABS       = 'tabs';
 const kPERMISSION_COOKIES    = 'cookies';
 const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
+const kPERMISSIONS_ALL = new Set([
+  kPERMISSION_TABS,
+  kPERMISSION_COOKIES,
+  kPERMISSION_INCOGNITO
+]);
 
 const mAddons = new Map();
 let mScrollLockedBy    = {};
@@ -140,6 +145,105 @@ let mGroupingBlockedBy = {};
 
 const mIsBackend  = location.href.startsWith(browser.extension.getURL('background/background.html'));
 const mIsFrontend = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
+
+export class TreeItem {
+  constructor(tab, options = {}) {
+    this.tab                  = tab;
+    this.variations           = {};
+    this.effectiveFavIconUrls = {};
+    this.isContextTab         = !!options.isContextTab;
+    this.interval             = options.interval || 0;
+
+    this.exportTab = this.exportTab.bind(this);
+  }
+
+  async exportFor(addonId) {
+    if (addonId == browser.runtime.id)
+      return this.exportTab(this.tab, kPERMISSIONS_ALL);
+
+    const permissions = new Set(getAddon(addonId).grantedPermissions);
+    if (configs.incognitoAllowedExternalAddons.includes(addonId))
+      permissions.add(kPERMISSION_INCOGNITO);
+    const permissionsKey = Array.from(permissions).sort().join(',');
+    return this.variations[permissionsKey] || (this.variations[permissionsKey] = this.exportTab(this.tab, permissions));
+  }
+
+  async exportTab(sourceTab, permissions) {
+    if (!sourceTab ||
+        (sourceTab.incognito &&
+         !permissions.has(kPERMISSION_INCOGNITO)))
+      return null;
+
+    const exportedTab = {
+      states:         Array.from(Constants.kTAB_SAFE_STATES).filter(state => sourceTab.$TST.states.has(state)),
+      indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
+      ancestorTabIds: sourceTab.$TST.ancestors.map(tab => tab.id)
+    };
+
+    let allowedProperties = [
+      // basic tabs.Tab properties
+      'active',
+      'attention',
+      'audible',
+      'autoDiscardable',
+      'discarded',
+      'height',
+      'hidden',
+      'highlighted',
+      'id',
+      'incognito',
+      'index',
+      'isArticle',
+      'isInReaderMode',
+      'lastAccessed',
+      'mutedInfo',
+      'openerTabId',
+      'pinned',
+      'selected',
+      'sessionId',
+      'sharingState',
+      'status',
+      'successorId',
+      'width',
+      'windowId'
+    ];
+    if (permissions.has(kPERMISSION_TABS) ||
+        (permissions.has(kPERMISSION_ACTIVE_TAB) &&
+         (sourceTab.active ||
+          (sourceTab == this.tab && this.isContextTab))))
+      allowedProperties = allowedProperties.concat([
+        // specially allowed with "tabs" or "activeTab" permission
+        'favIconUrl',
+        'title',
+        'url'
+      ]);
+    if (permissions.has(kPERMISSION_COOKIES))
+      allowedProperties.push('cookieStoreId');
+
+    allowedProperties = new Set(allowedProperties);
+    for (const key of allowedProperties) {
+      if (key in sourceTab)
+        exportedTab[key] = sourceTab[key];
+    }
+
+    const [effectiveFavIconUrl, children] = await Promise.all([
+      (sourceTab.id in this.effectiveFavIconUrls) ? this.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
+      doProgressively(
+        sourceTab.$TST.children,
+        child => this.exportTab(child, permissions),
+        this.interval
+      )
+    ]);
+
+    if (!(sourceTab.id in this.effectiveFavIconUrls))
+      this.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
+
+    exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
+    exportedTab.children            = children;
+
+    return exportedTab;
+  }
+}
 
 export function getAddon(id) {
   return mAddons.get(id);
@@ -549,10 +653,11 @@ export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
   const window  = TabsStore.getWindow();
+  const allTreeItems = Tab.getTabs(window).map(tab => new TreeItem(tab));
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
-    tab:  tab && serializeTab(tab),
-    tabs: Tab.getTabs(window).map(serializeTab),
+    tab:  tab && allTreeItems.find(treeItem => treeItem.tab.id == tab.id),
+    tabs: allTreeItems,
     window,
     windowId: window,
 
@@ -606,13 +711,11 @@ export async function sendMessage(message, options = {}) {
     uniqueTargets.add(addon.id);
   }
   const tabProperties = options.tabProperties || [];
-  const contextTabProperties = options.contextTabProperties || [];
   log(`sendMessage: sending message for ${message.type}: `, {
     message,
     listenerAddons,
     targets: options.targets,
-    tabProperties,
-    contextTabProperties
+    tabProperties
   });
   if (options.targets) {
     if (!Array.isArray(options.targets))
@@ -622,7 +725,7 @@ export async function sendMessage(message, options = {}) {
     }
   }
 
-  const promisedResults = spawnMessages(uniqueTargets, { message, tabProperties, contextTabProperties });
+  const promisedResults = spawnMessages(uniqueTargets, { message, tabProperties });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
     return results;
@@ -632,18 +735,15 @@ export async function sendMessage(message, options = {}) {
 function* spawnMessages(targetSet, params) {
   const message = params.message;
   const tabProperties = params.tabProperties || [];
-  const contextTabProperties = params.contextTabProperties || [];
-
-  const messageVariations = {};
 
   const incognitoParams = { windowId: message.windowId || message.window };
-  for (const key of tabProperties.concat(contextTabProperties)) {
+  for (const key of tabProperties) {
     if (!message[key])
       continue;
     if (Array.isArray(message[key]))
-      incognitoParams.tab = message[key][0];
+      incognitoParams.tab = message[key][0].tab;
     else
-      incognitoParams.tab = message[key];
+      incognitoParams.tab = message[key].tab;
     break;
   }
 
@@ -655,9 +755,7 @@ function* spawnMessages(targetSet, params) {
           result: undefined
         };
 
-      const permissionsKey = Array.from(getAddon(id).grantedPermissions).sort().join(',');
-      const allowedMessage = messageVariations[permissionsKey] || (messageVariations[permissionsKey] = sanitizeMessage(message, { id, tabProperties, contextTabProperties }));
-
+      const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
       const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
       return {
         id,
@@ -686,158 +784,34 @@ export function canSendIncognitoInfo(addonId, params) {
   return !hasIncognitoInfo || configs.incognitoAllowedExternalAddons.includes(addonId);
 }
 
-export function sanitizeMessage(message, params) {
+async function sanitizeMessage(message, params) {
   const addon = getAddon(params.id);
   if (!message ||
-      (!params.tabProperties &&
-       !params.contextTabProperties) ||
-      (params.tabProperties &&
-       params.tabProperties.length == 0 &&
-       params.contextTabProperties &&
-       params.contextTabProperties.length == 0) ||
+      !params.tabProperties ||
+      params.tabProperties.length == 0 ||
       addon.bypassPermissionCheck)
     return message;
 
-  const permissions = new Set(addon.grantedPermissions);
-  if (configs.incognitoAllowedExternalAddons.includes(addon.id))
-    permissions.add(kPERMISSION_INCOGNITO);
-
-  const sanitizedMessage = JSON.parse(JSON.stringify(message));
-  if (params.contextTabProperties) {
-    for (const name of params.contextTabProperties) {
-      const value = sanitizedMessage[name];
-      if (!value)
-        continue;
-      if (Array.isArray(value))
-        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions, true)).filter(tab => !!tab);
-      else
-        sanitizedMessage[name] = sanitizeTabValue(value, permissions, true);
-    }
-  }
+  const sanitizedProperties = {};
+  const tasks = [];
   if (params.tabProperties) {
     for (const name of params.tabProperties) {
-      const value = sanitizedMessage[name];
-      if (!value)
+      const treeItem = message[name];
+      if (!treeItem)
         continue;
-      if (Array.isArray(value))
-        sanitizedMessage[name] = value.map(tab => sanitizeTabValue(tab, permissions)).filter(tab => !!tab);
+      if (Array.isArray(treeItem))
+        tasks.push((async treeItems => {
+          const tabs = await Promise.all(treeItems.map(treeItem => treeItem.exportFor(addon.id)))
+          sanitizedProperties[name] = tabs.filter(tab => !!tab);
+        })(treeItem));
       else
-        sanitizedMessage[name] = sanitizeTabValue(value, permissions);
+        tasks.push((async () => {
+          sanitizedProperties[name] = await treeItem.exportFor(addon.id);
+        })());
     }
   }
-  return sanitizedMessage;
-}
-
-/* Utilities to export tabs safely */
-
-export function serializeTab(tab) {
-  tab = Tab.get(tab.id);
-  const serialized = serializeTabInternal(tab);
-  serialized.children = tab.$TST.children.map(serializeTab);
-  return serialized;
-}
-
-export async function serializeTabAsync(tab, interval) {
-  tab = Tab.get(tab.id);
-  const serialized = serializeTabInternal(tab);
-  serialized.children = await doProgressively(
-    tab.$TST.children,
-    tab => serializeTabAsync(tab, interval),
-    interval
-  );
-  return serialized;
-}
-
-function serializeTabInternal(tab) {
-  tab = Tab.get(tab.id);
-  const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
-  const serialized     = Object.assign({}, tab.$TST.sanitized, {
-    states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.has(state)),
-    indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
-    ancestorTabIds
-  });
-  // console.log(serialized, new Error().stack);
-  return serialized;
-}
-
-export async function serializeTabWithEffectiveFavIconUrl(tab, interval) {
-  const serializedRoot = await serializeTabAsync(tab, interval);
-  const promises = [];
-  const preparePromiseForEffectiveFavIcon = serializedOneTab => {
-    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(serializedOneTab).then(url => {
-      serializedOneTab.effectiveFavIconUrl = url;
-    }));
-    serializedOneTab.children.map(preparePromiseForEffectiveFavIcon);
-  };
-  preparePromiseForEffectiveFavIcon(serializedRoot);
-  await Promise.all(promises);
-  return serializedRoot;
-}
-
-function sanitizeTabValue(tab, permissions, isContextTab = false) {
-  if (!tab ||
-      (tab.incognito &&
-       !permissions.has(kPERMISSION_INCOGNITO)))
-    return null;
-
-  let allowedProperties = [
-    'id',
-
-    // basic tabs.Tab properties
-    'active',
-    'attention',
-    'audible',
-    'autoDiscardable',
-    'discarded',
-    'height',
-    'hidden',
-    'highlighted',
-    'incognito',
-    'index',
-    'isArticle',
-    'isInReaderMode',
-    'lastAccessed',
-    'mutedInfo',
-    'openerTabId',
-    'pinned',
-    'selected',
-    'sessionId',
-    'sharingState',
-    'status',
-    'successorId',
-    'width',
-    'windowId',
-
-    // TST specific properties
-    'states',
-    'indent',
-    'children',
-    'ancestorTabIds'
-  ];
-  if (permissions.has(kPERMISSION_TABS) ||
-      (permissions.has(kPERMISSION_ACTIVE_TAB) && (tab.active || isContextTab)))
-    allowedProperties = allowedProperties.concat([
-      // specially allowed with "tabs" or "activeTab" permission
-      'favIconUrl',
-      'title',
-      'url',
-      'effectiveFavIconUrl' // TST specific property
-    ]);
-  if (permissions.has(kPERMISSION_COOKIES))
-    allowedProperties.push('cookieStoreId');
-
-  allowedProperties = new Set(allowedProperties);
-  for (const key of Object.keys(tab)) {
-    if (!allowedProperties.has(key))
-      delete tab[key];
-  }
-
-  tab.states = tab.states.filter(state => Constants.kTAB_SAFE_STATES.has(state));
-
-  if (tab.children)
-    tab.children = tab.children.map(child => sanitizeTabValue(child, permissions));
-
-  return tab;
+  await Promise.all(tasks);
+  return Object.assign({}, message, sanitizedProperties);
 }
 
 
@@ -899,7 +873,7 @@ async function getTabsFromWrongIds(ids, sender) {
       case 'prevsibling':
         return Tab.getActiveTab(activeWindow.id).$TST.previousSiblingTab;
       case 'sendertab':
-        return sender.tab || null;
+        return sender.tab && Tab.get(sender.tab.id) || null;
       case 'highlighted':
       case 'multiselected':
         return Tab.getHighlightedTabs(activeWindow.id);
@@ -936,10 +910,10 @@ export function formatResult(results, originalMessage) {
   return results;
 }
 
-export function formatTabResult(results, originalMessage, senderId) {
+export async function formatTabResult(treeItems, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return sanitizeMessage({ tabs: results }, { id: senderId, tabProperties: ['tabs'] }).tabs.filter(tab => !!tab);
-  return sanitizeMessage({ tab: results[0] }, { id: senderId, tabProperties: ['tab'] }).tab || null;
+    return Promise.all(treeItems.map(treeItem => treeItem.exportFor(senderId))).then(tabs => tabs.filter(tab => !!tab));
+  return treeItems[0].exportFor(senderId);
 }
