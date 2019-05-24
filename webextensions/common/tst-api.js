@@ -764,7 +764,7 @@ function* spawnMessages(targetSet, params) {
       };
     }
     catch(e) {
-      console.log(`Error on sending message to ${id}`, e);
+      console.log(`Error on sending message to ${id}`, allowedMessage, e);
       return {
         id,
         error: e

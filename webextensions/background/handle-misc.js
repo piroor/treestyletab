@@ -411,7 +411,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         return TSTAPI.formatTabResult(
-          tabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
+          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
           message,
           sender.id
         );
@@ -511,8 +511,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        await Commands.moveTabsToStart(tabsArray);
+        await Commands.moveTabsToStart(Array.from(tabs));
         return true;
       })();
 
@@ -530,8 +529,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        await Commands.moveTabsToEnd(tabsArray);
+        await Commands.moveTabsToEnd(Array.from(tabs));
         return true;
       })();
 
@@ -608,15 +606,13 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        return TabsGroup.groupTabs(tabsArray, { broadcast: true });
+        return TabsGroup.groupTabs(Array.from(tabs), { broadcast: true });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        const windowId = await Commands.openTabsInWindow(tabsArray, {
+        const windowId = await Commands.openTabsInWindow(Array.from(tabs), {
           multiselected: false
         });
         return windowId;
@@ -625,7 +621,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const reopenedTabs = await Commands.reopenInContainer(tabs, message.containerId || 'firefox-default');
+        const reopenedTabs = await Commands.reopenInContainer(Array.from(tabs), message.containerId || 'firefox-default');
         return TSTAPI.formatTabResult(
           reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
           message,
@@ -636,15 +632,13 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        return Promise.resolve(Tree.getTreeStructureFromTabs(tabsArray));
+        return Promise.resolve(Tree.getTreeStructureFromTabs(Array.from(tabs)));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        await Tree.applyTreeStructureToTabs(tabsArray, message.structure, {
+        await Tree.applyTreeStructureToTabs(Array.from(tabs), message.structure, {
           broadcast: true
         });
         return Promise.resolve(true);
@@ -697,8 +691,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGRANT_TO_REMOVE_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
-        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabsArray.filter(TabsStore.ensureLivingTab).map(tab => tab.id));
+        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(Array.from(tabs).filter(TabsStore.ensureLivingTab).map(tab => tab.id));
         configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
         return true;
       })();
