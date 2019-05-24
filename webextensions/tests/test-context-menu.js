@@ -26,7 +26,7 @@ export async function teardown() {
 }
 
 
-export async function testGroupMultiselectedTabsViaContextMenuCommand() {
+export async function testGroupMultiselectedTabs() {
   let tabs = await Utils.createTabs({
     A: { index: 1 },
     B: { index: 2 },
@@ -82,5 +82,67 @@ export async function testGroupMultiselectedTabsViaContextMenuCommand() {
     ], Utils.treeStructure([A, GroupTab, B, C, D]),
        'multiselected tabs must be bundled under the group tab');
   }
+}
+
+export async function testCloseTabsToBottomTabs() {
+  await Utils.setConfigs({
+    warnOnCloseTabs: false
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2 },
+    C: { index: 3 },
+    D: { index: 4 }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  await browser.runtime.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_CLICK,
+    info: {
+      menuItemId: 'context_closeTabsToTheEnd'
+    },
+    tab: tabs.B.$TST.sanitized
+  });
+  await wait(1000);
+
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is([],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.C.id || id == tabs.D.id),
+     'tabs must be closed');
+  is([tabs.A.id, tabs.B.id],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.B.id),
+     'specified tab must be open');
+}
+
+export async function testCloseOtherTabs() {
+  await Utils.setConfigs({
+    warnOnCloseTabs: false
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2 },
+    C: { index: 3 },
+    D: { index: 4 }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  await browser.runtime.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_CLICK,
+    info: {
+      menuItemId: 'context_closeOtherTabs'
+    },
+    tab: tabs.B.$TST.sanitized
+  });
+  await wait(1000);
+
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is([],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.C.id || id == tabs.D.id),
+     'tabs must be closed');
+  is([tabs.B.id],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.B.id),
+     'specified tab must be open');
 }
 

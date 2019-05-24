@@ -13,7 +13,7 @@ import {
 import * as ApiTabsListener from '/background/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
 
-import * as TestGroup from './test-group.js';
+import * as TestContextMenu from './test-context-menu.js';
 import * as TestHidden from './test-hidden.js';
 import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
@@ -52,7 +52,7 @@ async function restoreConfigs(values) {
 
 async function runAll() {
   const testCases = [
-    TestGroup,
+    TestContextMenu,
     TestHidden,
     TestNewTab,
     TestSuccessor,
