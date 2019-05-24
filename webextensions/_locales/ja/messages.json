@@ -401,7 +401,7 @@
   "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他のアドオン" },
   "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加する事ができます。" },
-  "config_addons_description_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
+  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
   "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
   "config_externaladdonpermissions_description": { "message": "ここでチェックを入れたアドオンは、Firefox自体がそのアドオンにタブの詳細情報やプライベートウィンドウのタブへのアクセスを禁止していても、<em>ツリー型タブの権限で</em>それらにアクセスできるようになります。<em>信用できないアドオンに対しては絶対に権限を与えないで下さい。<em>" },
