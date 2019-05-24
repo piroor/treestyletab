@@ -707,13 +707,13 @@ async function onClick(info, contextTab) {
           continue;
         }
         if (after && !tab.pinned)
-          closeTabs.push(Tab.get(tab.id).$TST.sanitized);
+          closeTabs.push(Tab.get(tab.id));
       }
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs: closeTabs,
+        tabs: closeTabs.map(tab => tab.$TST.sanitized),
         windowId
-      }).catch(ApiTabs.createErrorHandler())) === false
+      }).catch(ApiTabs.createErrorHandler())) === false;
       if (canceled)
         break;
       TabsInternalOperation.removeTabs(closeTabs);
@@ -725,12 +725,12 @@ async function onClick(info, contextTab) {
           multiselectedTabs.map(tab => tab.id) :
           [contextTab.id]
       );
-      const closeTabs = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => Tab.get(tab.id).$TST.sanitized);
+      const closeTabs = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => Tab.get(tab.id));
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs: closeTabs,
+        tabs: closeTabs.map(tab => tab.$TST.sanitized),
         windowId
-      }).catch(ApiTabs.createErrorHandler())) === false
+      }).catch(ApiTabs.createErrorHandler())) === false;
       if (canceled)
         break;
       TabsInternalOperation.removeTabs(closeTabs);
