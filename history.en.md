@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Close tabs with "Close Tabs to Bottom" and "Close Other Tabs" imitated context menu commands correctly. (regression on 3.0.12)
  - 3.0.12 (2019.5.24)
    * Clearly declare the license of this addon: mixed licenses MPL1.1 and MPL2.0.
    * Auto-expand tree while dragging of tabs correctly.
