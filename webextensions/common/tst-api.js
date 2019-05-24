@@ -181,10 +181,23 @@ export class TreeItem {
     if (cacheKey in this.cache.tabs)
       return this.cache.tabs[cacheKey];
 
+    const [effectiveFavIconUrl, children] = await Promise.all([
+      (sourceTab.id in this.cache.effectiveFavIconUrls) ? this.cache.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
+      doProgressively(
+        sourceTab.$TST.children,
+        child => this.exportTab(child, permissions, commonCacheKey),
+        this.interval
+      )
+    ]);
+
+    if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
+      this.cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
+
     const exportedTab = {
       states:         Array.from(Constants.kTAB_SAFE_STATES).filter(state => sourceTab.$TST.states.has(state)),
       indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
-      ancestorTabIds: sourceTab.$TST.ancestors.map(tab => tab.id)
+      ancestorTabIds: sourceTab.$TST.ancestors.map(tab => tab.id),
+      children
     };
 
     let allowedProperties = [
@@ -217,13 +230,15 @@ export class TreeItem {
     if (permissions.has(kPERMISSION_TABS) ||
         (permissions.has(kPERMISSION_ACTIVE_TAB) &&
          (sourceTab.active ||
-          (sourceTab == this.tab && this.isContextTab))))
+          (sourceTab == this.tab && this.isContextTab)))) {
       allowedProperties = allowedProperties.concat([
         // specially allowed with "tabs" or "activeTab" permission
         'favIconUrl',
         'title',
         'url'
       ]);
+      exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
+    }
     if (permissions.has(kPERMISSION_COOKIES))
       allowedProperties.push('cookieStoreId');
 
@@ -232,21 +247,6 @@ export class TreeItem {
       if (key in sourceTab)
         exportedTab[key] = sourceTab[key];
     }
-
-    const [effectiveFavIconUrl, children] = await Promise.all([
-      (sourceTab.id in this.cache.effectiveFavIconUrls) ? this.cache.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
-      doProgressively(
-        sourceTab.$TST.children,
-        child => this.exportTab(child, permissions, commonCacheKey),
-        this.interval
-      )
-    ]);
-
-    if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
-      this.cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
-
-    exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
-    exportedTab.children            = children;
 
     this.cache.tabs[cacheKey] = exportedTab;
 
