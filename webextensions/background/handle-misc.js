@@ -410,8 +410,9 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const cache = {};
         return TSTAPI.formatTabResult(
-          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
+          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, { interval: message.interval, cache })),
           message,
           sender.id
         );
@@ -622,8 +623,9 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const reopenedTabs = await Commands.reopenInContainer(Array.from(tabs), message.containerId || 'firefox-default');
+        const cache = {};
         return TSTAPI.formatTabResult(
-          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval })),
+          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval, cache })),
           message,
           sender.id
         );

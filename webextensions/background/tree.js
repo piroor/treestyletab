@@ -176,12 +176,14 @@ export async function attachTabTo(child, parent, options = {}) {
       removedChildIds: [],
       newlyAttached
     });
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED))
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED)) {
+      const cache = {};
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
-        tab:    new TSTAPI.TreeItem(child),
-        parent: new TSTAPI.TreeItem(parent)
+        tab:    new TSTAPI.TreeItem(child, { cache }),
+        parent: new TSTAPI.TreeItem(parent, { cache })
       }, { tabProperties: ['tab', 'parent'] }).catch(_error => {});
+    }
   }
 
   onAttached.dispatch(child, Object.assign({}, options, {
@@ -322,12 +324,14 @@ export function detachTab(child, options = {}) {
       removedChildIds: [child.id],
       detached: true
     });
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED))
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
+      const cache = {};
       TSTAPI.sendMessage({
         type:      TSTAPI.kNOTIFY_TREE_DETACHED,
-        tab:       new TSTAPI.TreeItem(child),
-        oldParent: new TSTAPI.TreeItem(parent)
+        tab:       new TSTAPI.TreeItem(child, { cache }),
+        oldParent: new TSTAPI.TreeItem(parent, { cache })
       }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
+    }
   }
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child

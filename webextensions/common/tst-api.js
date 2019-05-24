@@ -148,11 +148,14 @@ const mIsFrontend = location.href.startsWith(browser.extension.getURL('sidebar/s
 
 export class TreeItem {
   constructor(tab, options = {}) {
-    this.tab                  = tab;
-    this.variations           = {};
-    this.effectiveFavIconUrls = {};
-    this.isContextTab         = !!options.isContextTab;
-    this.interval             = options.interval || 0;
+    this.tab          = tab;
+    this.isContextTab = !!options.isContextTab;
+    this.interval     = options.interval || 0;
+    this.cache        = options.cache || {};
+    if (!this.cache.tabs)
+      this.cache.tabs = {};
+    if (!this.cache.effectiveFavIconUrls)
+      this.cache.effectiveFavIconUrls = {};
 
     this.exportTab = this.exportTab.bind(this);
   }
@@ -164,15 +167,19 @@ export class TreeItem {
     const permissions = new Set(getAddon(addonId).grantedPermissions);
     if (configs.incognitoAllowedExternalAddons.includes(addonId))
       permissions.add(kPERMISSION_INCOGNITO);
-    const permissionsKey = Array.from(permissions).sort().join(',');
-    return this.variations[permissionsKey] || (this.variations[permissionsKey] = this.exportTab(this.tab, permissions));
+    const cacheKey = Array.from(permissions).sort().join(',');
+    return this.exportTab(this.tab, permissions, cacheKey);
   }
 
-  async exportTab(sourceTab, permissions) {
+  async exportTab(sourceTab, permissions, commonCacheKey = '') {
     if (!sourceTab ||
         (sourceTab.incognito &&
          !permissions.has(kPERMISSION_INCOGNITO)))
       return null;
+
+    const cacheKey = `${sourceTab.id}:${commonCacheKey}`;
+    if (cacheKey in this.cache.tabs)
+      return this.cache.tabs[cacheKey];
 
     const exportedTab = {
       states:         Array.from(Constants.kTAB_SAFE_STATES).filter(state => sourceTab.$TST.states.has(state)),
@@ -227,19 +234,21 @@ export class TreeItem {
     }
 
     const [effectiveFavIconUrl, children] = await Promise.all([
-      (sourceTab.id in this.effectiveFavIconUrls) ? this.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
+      (sourceTab.id in this.cache.effectiveFavIconUrls) ? this.cache.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
       doProgressively(
         sourceTab.$TST.children,
-        child => this.exportTab(child, permissions),
+        child => this.exportTab(child, permissions, commonCacheKey),
         this.interval
       )
     ]);
 
-    if (!(sourceTab.id in this.effectiveFavIconUrls))
-      this.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
+    if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
+      this.cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
 
     exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
     exportedTab.children            = children;
+
+    this.cache.tabs[cacheKey] = exportedTab;
 
     return exportedTab;
   }
@@ -653,7 +662,8 @@ export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
   const window  = TabsStore.getWindow();
-  const allTreeItems = Tab.getTabs(window).map(tab => new TreeItem(tab));
+  const cache   = {};
+  const allTreeItems = Tab.getTabs(window).map(tab => new TreeItem(tab, { cache }));
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
     tab:  tab && allTreeItems.find(treeItem => treeItem.tab.id == tab.id),
