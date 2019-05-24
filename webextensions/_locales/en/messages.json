@@ -399,6 +399,15 @@
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Following custom properties are also available via \"var()\", based on the current browser theme:" },
 
+
+
+  "config_addons_caption": { "message": "Collaboration with Other Addons" },
+
+  "config_addons_description_before": { "message": "There are " },
+  "config_addons_description_link_label": { "message": "addons which extend TST itself" },
+  "config_addons_description_after": { "message": ". Check them out if you need more features on TST's sidebar." },
+  "config_addons_description_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
+
   "config_externaladdonpermissions_label": { "message": "Permissions for API Call from Other Addons" },
   "config_externaladdonpermissions_description": { "message": "Addons allowed here may access detailed tab data or tabs in private windows, <em>through Tree Style Tab's permissions</em>, even if the addon ifself is forbidden by Firefox to access them. <em>Please don't give permission for addons if you cannot trust them.</em>" },
   "config_externalAddonPermissions_header_name": { "message": "Addon Name" },
