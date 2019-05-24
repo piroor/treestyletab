@@ -1,6 +1,20 @@
 # History
 
  - master/HEAD
+   * Clearly declare the license of this addon: mixed licenses MPL1.1 and MPL2.0.
+   * Auto-expand tree while dragging of tabs correctly.
+   * Update tooltip of parent tabs correctly after it is collapsed/expanded.
+   * Show a confirmation dialog when multiple tabs are closed with commands in the context menu on the sidebar, before they are closed.
+   * Initialize indent of tree on the startup more correctly.
+   * Never attach tabs opened from a bookmark folder to existing tabs, even if the last existing tab was a child.
+   * Never group new tabs automatically if they are opened from a pinned tab in a different window.
+   * Never make group tabs `unread`.
+   * Set title of the tab to the attribute `data-title` always for each tab.
+   * Expose a custom property `--indent-size`.
+   * API for other addons: Add new notification message types [`tree-attached` and `tree-detached`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-structure-is-modified).
+   * API for other addons: [Notification messages from private windows won't be delivered to other addons by default](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#information-in-private-windows). You may need to re-initialize your addon on [`permissions-changed` notifications are delivered](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-permissions-for-your-addon-are-changed).
+   * API for other addons: [Sensitive information of tabs are not exposed anymore by default](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format). If you need to get full information of tabs, you may need to [request special permissions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#extra-permissions).
+   * Update `de` locale by SammysHP. Thanks!
  - 3.0.11 (2019.5.4)
    * Prevent infinitly reloading when missynchronized tabs are detected.
    * Show confirmation dialog in the sidebar for grouping, when a required permission is not granted.

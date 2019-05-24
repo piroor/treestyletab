@@ -1,6 +1,20 @@
 # 更新履歴
 
  - master/HEAD
+   * MPL1.1とMPL2.0の混在ライセンスである事を明記
+   * ドラッグ操作中にタブを自動展開する挙動が働かなくなっていたのを修正
+   * ツリーの開閉後にタブのツールチップが更新されなくなっていたのを修正
+   * サイドバー上のコンテキストメニューのコマンドから複数のタブを閉じる時に、タブが実際に閉じられるより前に確認を表示するようにした
+   * 起動時にツリーのインデントが正しく初期化されないことがあったのを修正
+   * 既存の最後のタブが何らかのタブの子である場合に、ブックマークフォルダから開かれた複数のタブが意図せず既存のタブの子になってしまっていたのを修正
+   * 異なるウィンドウのピン留めされたタブから複数のタブが開かれた時に、自動でグループ化を試みないようにした
+   * グループ化用のタブは `unread` にならないようにした
+   * ページのタイトル文字列を常に `data-title` 属性で各タブに設定するようにした
+   * インデントの深さを示すカスタムプロパティ `--indent-size` を定義するようにした
+   * 他のアドオン向けAPI：ツリー構造が変化した時に [`tree-attached` および `tree-detached`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-structure-is-modified) を通知するようにした
+   * 他のアドオン向けAPI：[プライベートウィンドウ由来の通知メッセージは初期状態では通知しないようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#information-in-private-windows)（[`permissions-changed` が通知されたタイミング](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-permissions-for-your-addon-are-changed)でアドオンの再初期化などが必要になるかも知れません）
+   * 他のアドオン向けAPI：[タブの詳細な情報は初期状態では公開しないようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)（タブの完全な情報が常に必要な場合は、[特別なパーミッション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#extra-permissions)を要求する必要があります）
+   * `de`ロケール更新（by SammysHP, thanks!）
  - 3.0.11 (2019.5.4)
    * タブの同期が崩れた際の復帰処理において、無限再読み込みが発生する場合があったのを修正
    * スクリプト実行権限が許可されていない時にタブのグループ化の確認ダイアログが表示されない問題を修正
