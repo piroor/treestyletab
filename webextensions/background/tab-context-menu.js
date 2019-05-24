@@ -202,7 +202,7 @@ export async function init() {
     const item = mItemsById[id];
     item.id          = id;
     item.lastTitle   = item.title;
-    item.lastVisible = true;
+    item.lastVisible = false;
     item.lastEnabled = true;
     if (item.type == 'separator') {
       let beforeSeparator = true;
@@ -243,6 +243,7 @@ export async function init() {
       type:     item.type || 'normal',
       contexts: ['tab'],
       viewTypes: ['sidebar'],
+      visible:  false, // hide all by default
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (item.parentId)
