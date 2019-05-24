@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.12 (2019.5.24)
    * Clearly declare the license of this addon: mixed licenses MPL1.1 and MPL2.0.
    * Auto-expand tree while dragging of tabs correctly.
    * Update tooltip of parent tabs correctly after it is collapsed/expanded.
