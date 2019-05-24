@@ -401,7 +401,7 @@
 
 
 
-  "config_addons_caption": { "message": "Collaboration with Other Addons" },
+  "config_addons_caption": { "message": "Extra Features via Other Addons" },
 
   "config_addons_description_before": { "message": "There are " },
   "config_addons_description_link_label": { "message": "addons which extend TST itself" },

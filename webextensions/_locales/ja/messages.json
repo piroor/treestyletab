@@ -396,7 +396,7 @@
   "config_userStyleRules_themeRules_description": { "message": "現在のブラウザのテーマに基づいて、「var()」で以下のカスタムプロパティも使用できます：" },
 
 
-  "config_addons_caption": { "message": "他のアドオンとの連携" },
+  "config_addons_caption": { "message": "他のアドオンによる機能追加" },
 
   "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他のアドオン" },
