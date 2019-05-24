@@ -748,14 +748,15 @@ function* spawnMessages(targetSet, params) {
   }
 
   const send = async (id) => {
-    try {
-      if (!canSendIncognitoInfo(id, incognitoParams))
-        return {
-          id,
-          result: undefined
-        };
+    if (!canSendIncognitoInfo(id, incognitoParams))
+      return {
+        id,
+        result: undefined
+      };
 
-      const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
+    const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
+
+    try {
       const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
       return {
         id,
@@ -763,6 +764,7 @@ function* spawnMessages(targetSet, params) {
       };
     }
     catch(e) {
+      console.log(`Error on sending message to ${id}`, e);
       return {
         id,
         error: e
