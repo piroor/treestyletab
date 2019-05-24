@@ -155,14 +155,10 @@
   "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },
 
-  "message_startup_description_1": { "message": "Firefox 57以降のバージョン向けに、ツリー型タブがWebExtensionsベースで生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
+  "message_startup_description_1": { "message": "ツリー型タブの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },
   "message_startup_description_3": { "message": "」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示して下さい。" },
-  "message_startup_migrateSessions_before": { "message": "Firefox 56以前のバージョンでのタブのツリー構造は、自動的には移行されません。詳しくは" },
-  "message_startup_migrateSessions_link_label": { "message": "手動でのツリー情報の移行手順" },
-  "message_startup_migrateSessions_after": { "message": "を参照して下さい。" },
-  "migrateSessions_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86" },
 
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
