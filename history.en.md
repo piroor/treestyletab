@@ -4,6 +4,7 @@
  - 3.0.13 (2019.5.25)
    * Close tabs with "Close Tabs to Bottom" and "Close Other Tabs" imitated context menu commands correctly. (regression on 3.0.12)
  - 3.0.12 (2019.5.24)
+   * IMPORTANT SECURITY NOTE: All versions TST 2.x and TST 3.x older than TST 3.0.12 had a data breach problem via API for other addons. Sensitive tab information including private window tabs were unintentionally exposed to untrusted addons, regardless they were not have permissions to access those information via WebExtensions API. I strongly recommend you to update to TST 3.0.12 and later.
    * Clearly declare the license of this addon: mixed licenses MPL1.1 and MPL2.0.
    * Auto-expand tree while dragging of tabs correctly.
    * Update tooltip of parent tabs correctly after it is collapsed/expanded.
