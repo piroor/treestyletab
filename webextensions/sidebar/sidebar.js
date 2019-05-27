@@ -813,15 +813,11 @@ function onConfigChange(changedKey) {
       break;
 
     case 'scrollbarMode':
-      rootClasses.remove(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
       rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
       rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
       switch (configs.scrollbarMode) {
         default:
         case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_NARROW:
-          rootClasses.add(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
           break;
         case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
           rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);

@@ -102,8 +102,7 @@
   --tab-text: HighlightText;
 }
 
-/* Mac OS workaround */
-
+/* macOS workaround */
 :root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }

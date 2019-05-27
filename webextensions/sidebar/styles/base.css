@@ -40,6 +40,7 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
 
+  /* macOS workaround */
   --scrollbar-placeholder-size: 1em;
 
   --multiselected-color: transparent;
@@ -134,7 +135,7 @@ button {
   direction: ltr;
 }
 
-:root.narrow-scrollbar #tabbar {
+:root #tabbar {
   scrollbar-width: thin;
 }
 

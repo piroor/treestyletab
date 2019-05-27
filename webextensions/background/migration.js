@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 5;
+const kCONFIGS_VERSION = 6;
 const kFEATURES_VERSION = 3;
 
 export function migrateConfigs() {
@@ -46,6 +46,10 @@ export function migrateConfigs() {
       configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
       configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
       configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
+
+    case 5:
+      if (configs.scrollbarMode == 1) // narrow-scrollbar
+        configs.scrollbarMode = Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

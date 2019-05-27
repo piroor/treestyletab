@@ -216,7 +216,6 @@
 
   "config_scrollbarMode_caption": { "message": "Scrollbar:" },
   "config_scrollbarMode_default": { "message": "Default" },
-  "config_scrollbarMode_narrow":  { "message": "Narrow" },
   "config_scrollbarMode_overlay": { "message": "Overlay" },
   "config_scrollbarMode_hide":    { "message": "Hide" },
   "config_scrollbarMode_descriptionForMac": { "message": "*Only \"Overlay\" will effective on lately versions of macOS." },

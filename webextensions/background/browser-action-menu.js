@@ -129,12 +129,6 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_scrollbarMode_narrow'),
-            key:   'scrollbarMode',
-            value: Constants.kTABBAR_SCROLLBAR_MODE_NARROW,
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_scrollbarMode_overlay'),
             key:   'scrollbarMode',
             value: Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY,
