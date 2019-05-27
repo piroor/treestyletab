@@ -167,12 +167,17 @@
 
     window.l10n.updateDocument();
 
-    updateTree();
-
     browser.runtime.sendMessage({
       type: 'treestyletab:get-config-value',
-      key:  'showAutoGroupOptionHint'
-    }).then(show => {
+      keys: [
+        'renderTreeInGroupTabs',
+        'showAutoGroupOptionHint'
+      ]
+    }).then(configs => {
+      updateTree.enabled = configs.renderTreeInGroupTabs;
+      updateTree();
+
+      let show = configs.showAutoGroupOptionHint;
       if (!isTemporary() && !isTemporaryAggressive())
         show = false;
 
@@ -239,6 +244,9 @@
     range.deleteContents();
     range.detach();
 
+    if (!updateTree.enabled)
+      return;
+
     document.documentElement.classList.add('updating');
 
     const tabs = await browser.runtime.sendMessage({
@@ -268,6 +276,7 @@
 
     document.documentElement.classList.remove('updating');
   }
+  updateTree.enabled = true;
 
   function reflow() {
     const container = document.getElementById('tabs');

@@ -318,6 +318,7 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirm to group tabs" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab" },
+  "config_renderTreeInGroupTabs_label": { "message": "Render tree in group tabs" },
 
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Inherit the container of the parent tab to a new blank tab (*Please note that the new tab won't inherit the container of the previously active tab, if it is opened as an independent tab)" },
 

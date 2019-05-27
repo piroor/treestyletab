@@ -294,6 +294,13 @@ function onMessage(message, sender) {
       })();
 
     case Constants.kCOMMAND_GET_CONFIG_VALUE:
+      if (Array.isArray(message.keys)) {
+        const values = {};
+        for (const key of message.keys) {
+          values[key] = configs[key];
+        }
+        return Promise.resolve(values);
+      }
       return Promise.resolve(configs[message.key]);
 
     case Constants.kCOMMAND_SET_CONFIG_VALUE:

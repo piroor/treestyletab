@@ -570,6 +570,11 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
         key:   'autoGroupNewTabsFromPinned',
         type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_renderTreeInGroupTabs_label'),
+        key:   'renderTreeInGroupTabs',
+        type:  'checkbox'
       }
     ]
   },
