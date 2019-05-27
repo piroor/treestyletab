@@ -84,7 +84,7 @@ export function migrateConfigs() {
           configs.userStyleRules += `
 
 /* put scrollbar rightside */
-#tabbar { direction: ltr; }`;
+:root.left #tabbar { direction: ltr; }`;
           break;
         case 3: // overlay (macOS)
           break;

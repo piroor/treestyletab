@@ -127,11 +127,11 @@ button {
 }
 
 /* put scrollbar leftside */
-#tabbar {
+:root.left #tabbar {
   direction: rtl;
 }
-#all-tabs,
-#tabbar .after-tabs {
+:root.left #all-tabs,
+:root.left #tabbar .after-tabs {
   direction: ltr;
 }
 
