@@ -2,6 +2,8 @@
 
  - master/HEAD
    * Re-activate context menu on the blank area in the sidebar. (regression on 3.0.12)
+   * Add an option to deactivate tree rendering in group tabs.
+   * Show scrollbar in the sidebar with narrow width by default. (Please use a user stylesheet `#tabbar { scrollbar-width: auto; }` to show it with regular width, or `#tabbar { scrollbar-width: none; }` to hide it.)
  - 3.0.14 (2019.5.25)
    * IMPORTANT SECURITY NOTE: All versions TST 2.x and TST 3.x older than TST 3.0.14 had a data disclosure problem via API for other addons. Sensitive tab information including private window tabs were unintentionally exposed to untrusted addons, regardless they were not have permissions to access those information via WebExtensions API. I strongly recommend you to update to TST 3.0.14 and later. Please see [detailed information](https://github.com/piroor/treestyletab/issues/2288#issuecomment-495756992) also.
    * Remove obsolete information from the startup page.
