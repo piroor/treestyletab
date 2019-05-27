@@ -214,12 +214,6 @@
   "config_sidebarDirection_ltr": { "message": "LTR" },
   "config_sidebarDirection_rtl": { "message": "RTL" },
 
-  "config_scrollbarMode_caption": { "message": "Scrollbar:" },
-  "config_scrollbarMode_default": { "message": "Default" },
-  "config_scrollbarMode_overlay": { "message": "Overlay" },
-  "config_scrollbarMode_hide":    { "message": "Hide" },
-  "config_scrollbarMode_descriptionForMac": { "message": "*Only \"Overlay\" will effective on lately versions of macOS." },
-
   "config_style_caption": { "message": "Theme" },
   "config_style_plain": { "message": "Plain" },
   "config_style_plain_dark": { "message": "Plain Dark" },
@@ -439,10 +433,6 @@
   "config_acceleratedTabDuplication_label": { "message": "Accelerate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Abort tab duplication when it takes" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "milliseconds or more." },
-  "config_sidebarScrollbarPosition_caption": { "message": "Position of the scrollbar:" },
-  "config_sidebarScrollbarPosition_auto": { "message": "Auto" },
-  "config_sidebarScrollbarPosition_left": { "message": "Left side" },
-  "config_sidebarScrollbarPosition_right": { "message": "Right side" },
   "config_labelOverflowStyle_caption": { "message": "Too long label of tabs:" },
   "config_labelOverflowStyle_fade":    { "message": "Fade Out (Better Visibility)" },
   "config_labelOverflowStyle_crop":    { "message": "Crop with \"..\" (Better Performance)" },

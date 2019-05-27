@@ -210,12 +210,6 @@
   "config_sidebarDirection_ltr": { "message": "LTR" },
   "config_sidebarDirection_rtl": { "message": "RTL" },
 
-  "config_scrollbarMode_caption": { "message": "スクロールバーの表示:" },
-  "config_scrollbarMode_default": { "message": "通常表示" },
-  "config_scrollbarMode_overlay": { "message": "重ねて表示" },
-  "config_scrollbarMode_hide":    { "message": "なし" },
-  "config_scrollbarMode_descriptionForMac": { "message": "※macOSの新しめのバージョンでは「重ねて表示」のみ有効に機能します。" },
-
   "config_style_caption": { "message": "テーマ" },
   "config_style_plain": { "message": "Plain" },
   "config_style_plain_dark": { "message": "Plain Dark" },
@@ -434,10 +428,6 @@
   "config_acceleratedTabDuplication_label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
-  "config_sidebarScrollbarPosition_caption": { "message": "スクロールバーの表示位置:" },
-  "config_sidebarScrollbarPosition_auto": { "message": "自動" },
-  "config_sidebarScrollbarPosition_left": { "message": "左側" },
-  "config_sidebarScrollbarPosition_right": { "message": "右側" },
   "config_labelOverflowStyle_caption": { "message": "タブのラベルが長すぎる場合:" },
   "config_labelOverflowStyle_fade":    { "message": "フェードアウトする（視認性を重視）" },
   "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },
