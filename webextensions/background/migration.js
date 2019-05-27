@@ -64,13 +64,12 @@ export function migrateConfigs() {
 #tabbar { scrollbar-width: none; }
 
 /* cancel spaces for macOS overlay scrollbar */
-:root.left-scrollbar.platform-mac #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac.left-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-left: 0;
 }
-:root.right-scrollbar.platform-mac #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac.right-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-right: 0;
-}
-`;
+}`;
           break;
         case 3: // overlay (macOS)
           break;
