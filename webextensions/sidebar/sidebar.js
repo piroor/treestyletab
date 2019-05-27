@@ -80,6 +80,11 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
     configs.$loaded.then(() => applyStyle());
 
   configs.$loaded.then(applyUserStyleRules);
+
+  if (/^Mac/i.test(navigator.platform))
+    document.documentElement.classList.add('platform-mac');
+  else
+    document.documentElement.classList.remove('platform-mac');
 }
 
 UserOperationBlocker.block({ throbber: true });

@@ -23,10 +23,11 @@
   padding-left: 0.35em;
 }
 
-:root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+/* macOS workaround */
+:root.platform-mac.left-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac.right-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 

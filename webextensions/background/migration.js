@@ -64,11 +64,11 @@ export function migrateConfigs() {
 #tabbar { scrollbar-width: none; }
 
 /* cancel spaces for macOS overlay scrollbar */
-:root.left-scrollbar #tabbar.overflow .tab:not(.pinned) {
-  padding-left: 0 !important;
+:root.left-scrollbar.platform-mac #tabbar.overflow .tab:not(.pinned) {
+  padding-left: 0;
 }
-:root.right-scrollbar #tabbar.overflow .tab:not(.pinned) {
-  padding-right: 0 !important;
+:root.right-scrollbar.platform-mac #tabbar.overflow .tab:not(.pinned) {
+  padding-right: 0;
 }
 `;
           break;
