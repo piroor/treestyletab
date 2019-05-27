@@ -430,7 +430,6 @@
   "config_useCachedTree_label": { "message": "Optimize tree restoration with cache" },
   "config_useCachedTree_description": { "message": "*Please try unchecking and re-checking this to refresh the cache, when the behavior around tree is unstable." },
   "config_acceleratedTabCreation_label": { "message": "Accelerate operations around newly opened tabs (*NOTE: You'll see unstable behavior around tabs.)" },
-  "config_acceleratedTabDuplication_label": { "message": "Accelerate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Abort tab duplication when it takes" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "milliseconds or more." },
   "config_labelOverflowStyle_caption": { "message": "Too long label of tabs:" },

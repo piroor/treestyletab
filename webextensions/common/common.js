@@ -183,7 +183,6 @@ export const configs = new Configs({
   defaultSearchEngine: 'https://www.google.com/search?q=%s',
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
-  acceleratedTabDuplication: false,
   enableWorkaroundForBug1409262: false,
   simulateCloseTabByDblclick: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,

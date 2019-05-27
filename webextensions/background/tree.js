@@ -1006,35 +1006,7 @@ export async function moveTabs(tabs, options = {}) {
               log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, tabs.map(dumpTab));
               return tabs;
             });
-            if (configs.acceleratedTabDuplication) {
-              // So, I collect duplicating tabs in different way.
-              // This promise will be resolved when they actually
-              // appear in the tab bar. This hack should be removed
-              // after the bug 1394376 is fixed.
-              const promisedDuplicatingTabs = (async () => {
-                while (true) {
-                  await wait(100);
-                  const tabs = Tab.getDuplicatingTabs(windowId);
-                  UserOperationBlocker.setProgress(Math.round(tabs.length / movedTabIds.length * 50), windowId);
-                  if (tabs.length < movedTabIds.length)
-                    continue; // not opened yet
-                  const tabIds = tabs.map(tab => tab.id);
-                  if (tabIds.join(',') == tabIds.sort().join(','))
-                    continue; // not sorted yet
-                  return tabs;
-                }
-              })().then(tabs => {
-                log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, tabs.map(tab => tab.id));
-                return tabs;
-              });
-              movedTabs = await Promise.race([
-                promisedDuplicatedTabs,
-                promisedDuplicatingTabs
-              ]);
-            }
-            else {
-              movedTabs = await promisedDuplicatedTabs;
-            }
+            movedTabs = await promisedDuplicatedTabs;
             UserOperationBlocker.setProgress(50, windowId);
             movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
