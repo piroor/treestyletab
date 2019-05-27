@@ -135,12 +135,8 @@ button {
   direction: ltr;
 }
 
-:root #tabbar {
+#tabbar {
   scrollbar-width: thin;
-}
-
-:root.no-scrollbar #tabbar {
-  scrollbar-width: none;
 }
 
 

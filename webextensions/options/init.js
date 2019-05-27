@@ -121,11 +121,6 @@ async function showLogs() {
 
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
-  if (/^Mac/i.test(navigator.platform))
-    document.documentElement.classList.add('platform-mac');
-  else
-    document.documentElement.classList.remove('platform-mac');
-
   if (typeof browser.tabs.moveInSuccession == 'function')
     document.documentElement.classList.add('successor-tab-support');
   else

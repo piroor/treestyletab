@@ -48,8 +48,24 @@ export function migrateConfigs() {
       configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
 
     case 5:
-      if (configs.scrollbarMode == 1) // narrow-scrollbar
-        configs.scrollbarMode = Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT;
+      switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
+        case 0: // default, refular width
+          configs.userStyleRules += `
+
+/* regular width scrollbar */
+#tabbar { scrollbar-width: auto; }`;
+          break;
+        case 1: // narrow width
+          break;
+        case 2: // hide
+          configs.userStyleRules += `
+
+/* hide scrollbar */
+#tabbar { scrollbar-width: none; }`;
+          break;
+        case 3: // overlay (macOS)
+          break;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

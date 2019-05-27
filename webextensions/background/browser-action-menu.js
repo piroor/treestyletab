@@ -120,30 +120,6 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_scrollbarMode_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_scrollbarMode_default'),
-            key:   'scrollbarMode',
-            value: Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_scrollbarMode_overlay'),
-            key:   'scrollbarMode',
-            value: Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY,
-            type:  'radio',
-            visible: isMac
-          },
-          {
-            title: browser.i18n.getMessage('config_scrollbarMode_hide'),
-            key:   'scrollbarMode',
-            value: Constants.kTABBAR_SCROLLBAR_MODE_HIDE,
-            type:  'radio'
-          }
-        ]
-      },
-      {
         title:    browser.i18n.getMessage('config_sidebarScrollbarPosition_caption'),
         children: [
           {

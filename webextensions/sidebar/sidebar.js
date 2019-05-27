@@ -194,7 +194,6 @@ export async function init() {
       onConfigChange('sidebarPosition');
       onConfigChange('sidebarDirection');
       onConfigChange('sidebarScrollbarPosition');
-      onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
 
@@ -812,22 +811,6 @@ function onConfigChange(changedKey) {
       location.reload();
       break;
 
-    case 'scrollbarMode':
-      rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
-      rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
-      switch (configs.scrollbarMode) {
-        default:
-        case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
-          rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY:
-          rootClasses.add(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
-          break;
-      }
-      break;
-
     case 'colorScheme':
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
@@ -837,10 +820,6 @@ function onConfigChange(changedKey) {
         browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       else
         applyBrowserTheme();
-      break;
-
-    case 'narrowScrollbarSize':
-      location.reload();
       break;
 
     case 'userStyleRules':

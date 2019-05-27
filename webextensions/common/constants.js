@@ -201,8 +201,6 @@ export const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
 export const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 export const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
 export const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable';
-export const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
-export const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
 export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
@@ -231,10 +229,6 @@ export const kTABBAR_DIRECTION_RTL = 2;
 export const kTABBAR_SCROLLBAR_POSITION_AUTO  = 0;
 export const kTABBAR_SCROLLBAR_POSITION_LEFT  = 1;
 export const kTABBAR_SCROLLBAR_POSITION_RIGHT = 2;
-
-export const kTABBAR_SCROLLBAR_MODE_DEFAULT = 0;
-export const kTABBAR_SCROLLBAR_MODE_HIDE    = 2;
-export const kTABBAR_SCROLLBAR_MODE_OVERLAY = 3;
 
 export const kACTION_MOVE   = 1 << 0;
 export const kACTION_ATTACH = 1 << 10;

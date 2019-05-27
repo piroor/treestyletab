@@ -22,6 +22,8 @@ export const configs = new Configs({
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
   sidebarScrollbarPosition: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
 
+  scrollbarMode: -1, // obsolete, migrated to user stylesheet
+
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
       'mixed',
@@ -40,8 +42,6 @@ export const configs = new Configs({
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
   labelOverflowStyle: 'fade',
-
-  scrollbarMode: /^Mac/i.test(navigator.platform) ? Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY : Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT,
 
   showContextualIdentitiesSelector: false,
   showNewTabActionSelector: true,
@@ -315,8 +315,6 @@ export const configs = new Configs({
     faviconizedTabScale
     baseIndent
     minIndent
-    scrollbarMode
-    narrowScrollbarSize
     lastConfirmedToCloseTabs
     grantedRemovingTabIds
     subMenuOpenDelay
