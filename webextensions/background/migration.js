@@ -61,7 +61,16 @@ export function migrateConfigs() {
           configs.userStyleRules += `
 
 /* hide scrollbar */
-#tabbar { scrollbar-width: none; }`;
+#tabbar { scrollbar-width: none; }
+
+/* cancel spaces for macOS overlay scrollbar */
+:root.left-scrollbar #tabbar.overflow .tab:not(.pinned) {
+  padding-left: 0 !important;
+}
+:root.right-scrollbar #tabbar.overflow .tab:not(.pinned) {
+  padding-right: 0 !important;
+}
+`;
           break;
         case 3: // overlay (macOS)
           break;
