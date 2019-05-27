@@ -86,8 +86,6 @@ export function migrateConfigs() {
 /* put scrollbar rightside */
 :root.left #tabbar { direction: ltr; }`;
           break;
-        case 3: // overlay (macOS)
-          break;
       }
   }
   configs.configsVersion = kCONFIGS_VERSION;
