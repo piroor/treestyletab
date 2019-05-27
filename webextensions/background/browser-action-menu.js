@@ -17,7 +17,6 @@ function log(...args) {
   internalLogger('background/browser-action-menu', ...args);
 }
 
-const isMac = /^Mac/i.test(navigator.platform);
 const delimiter = browser.i18n.getMessage('config_terms_delimiter');
 
 function indent(level = 1) {
