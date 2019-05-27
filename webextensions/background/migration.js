@@ -64,12 +64,27 @@ export function migrateConfigs() {
 #tabbar { scrollbar-width: none; }
 
 /* cancel spaces for macOS overlay scrollbar */
-:root.platform-mac.left-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
   padding-left: 0;
 }
-:root.platform-mac.right-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
   padding-right: 0;
 }`;
+          break;
+        case 3: // overlay (macOS)
+          break;
+      }
+      switch (configs.sidebarScrollbarPosition) {
+        default:
+        case 0: // auto
+        case 1: // left
+          break;
+          break;
+        case 2: // right
+          configs.userStyleRules += `
+
+/* put scrollbar rightside */
+#tabbar { direction: ltr; }`;
           break;
         case 3: // overlay (macOS)
           break;

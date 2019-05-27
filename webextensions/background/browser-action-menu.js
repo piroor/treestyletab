@@ -119,29 +119,6 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_sidebarScrollbarPosition_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_sidebarScrollbarPosition_auto'),
-            key:   'sidebarScrollbarPosition',
-            value: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_sidebarScrollbarPosition_left'),
-            key:   'sidebarScrollbarPosition',
-            value: Constants.kTABBAR_SCROLLBAR_POSITION_LEFT,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_sidebarScrollbarPosition_right'),
-            key:   'sidebarScrollbarPosition',
-            value: Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT,
-            type:  'radio'
-          }
-        ]
-      },
-      {
         title:    browser.i18n.getMessage('config_labelOverflowStyle_caption'),
         children: [
           {

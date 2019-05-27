@@ -20,8 +20,8 @@ export const configs = new Configs({
   // appearance
   sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
-  sidebarScrollbarPosition: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
 
+  sidebarScrollbarPosition: 0, // obsolete, migrated to user stylesheet
   scrollbarMode: -1, // obsolete, migrated to user stylesheet
 
   style:

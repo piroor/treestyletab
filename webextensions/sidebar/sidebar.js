@@ -198,7 +198,6 @@ export async function init() {
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
       onConfigChange('sidebarDirection');
-      onConfigChange('sidebarScrollbarPosition');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
 
@@ -788,21 +787,6 @@ function onConfigChange(changedKey) {
         rootClasses.remove('rtl');
       }
       break;
-
-    case 'sidebarScrollbarPosition': {
-      let position = configs.sidebarScrollbarPosition;
-      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_AUTO)
-        position = configs.sidebarPosition;
-      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT) {
-        rootClasses.add('right-scrollbar');
-        rootClasses.remove('left-scrollbar');
-      }
-      else {
-        rootClasses.add('left-scrollbar');
-        rootClasses.remove('right-scrollbar');
-      }
-      Indent.update({ force: true });
-    }; break;
 
     case 'baseIndent':
     case 'minIndent':
