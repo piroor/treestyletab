@@ -238,6 +238,8 @@
   "config_maxTreeLevel_after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
   "config_faviconizePinnedTabs_label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "一行に" },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": "個までタブを表示（※0以下で自動折り返し）" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
   "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する" },

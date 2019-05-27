@@ -242,6 +242,8 @@
   "config_maxTreeLevel_after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Show pinned tabs only with their icon" },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Show " },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " or less tabs for each row (*0 or less means auto-calculation)" },
   "config_animation_label": { "message": "Enable animation effects" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_applyThemeColorToIcon_label": { "message": "Apply theme color to the toolbar button" },

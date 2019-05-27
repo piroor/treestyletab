@@ -29,6 +29,7 @@ export const configs = new Configs({
   applyBrowserTheme: true,
 
   faviconizePinnedTabs: true,
+  maxFaviconizedPinnedTabsInOneRow: 0, // auto
   faviconizedTabScale: 1.75,
 
   counterRole: Constants.kCOUNTER_ROLE_CONTAINED_TABS,
