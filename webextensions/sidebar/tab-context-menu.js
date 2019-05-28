@@ -356,7 +356,7 @@ async function onCommand(item, event) {
   };
   if (owner == browser.runtime.id)
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-  else if (TSTAPI.canSendIncognitoInfo(owner.id, { tab: contextTab, windowId: TabsStore.getWindow() }))
+  else if (TSTAPI.canSendIncognitoInfo(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
     await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {
