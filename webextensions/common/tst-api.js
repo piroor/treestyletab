@@ -614,6 +614,10 @@ export async function initAsFrontend() {
   }
   importAddons(response.addons);
   for (const [id, addon] of getAddons()) {
+    // Install stylesheet always, even if the addon is not allowed to access
+    // private windows, because the client addon can be alloed on private
+    // windows by Firefox itself and extra context menu commands may be called
+    // via Firefox's native context menu (or shortcuts).
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
