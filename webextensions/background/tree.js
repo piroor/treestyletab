@@ -923,6 +923,13 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
   window.subTreeMovingCount--;
 }
 
+// before https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 is fixed (Firefox 67 or older)
+let mSlowDuplication = false;
+browser.runtime.getBrowserInfo().then(browserInfo => {
+  if (parseInt(browserInfo.version.split('.')[0]) < 68)
+    mSlowDuplication = true;
+});
+
 export async function moveTabs(tabs, options = {}) {
   tabs = tabs.filter(TabsStore.ensureLivingTab);
   if (tabs.length == 0)
@@ -947,6 +954,7 @@ export async function moveTabs(tabs, options = {}) {
   log('original tree structure: ', structure);
 
   if (isAcrossWindows || options.duplicate) {
+    if (mSlowDuplication)
     UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
       let window;
@@ -1006,6 +1014,7 @@ export async function moveTabs(tabs, options = {}) {
               return tabs;
             });
             movedTabs = await promisedDuplicatedTabs;
+            if (mSlowDuplication)
             UserOperationBlocker.setProgress(50, windowId);
             movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
@@ -1060,6 +1069,7 @@ export async function moveTabs(tabs, options = {}) {
       while (Date.now() - startTime < maxDelay) {
         newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
         newTabs = newTabs.filter(tab => !!tab);
+        if (mSlowDuplication)
         UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
           log('retrying: ', movedTabIds, newTabs.length, tabs.length);
@@ -1091,6 +1101,7 @@ export async function moveTabs(tabs, options = {}) {
       throw e;
     }
     finally {
+      if (mSlowDuplication)
       UserOperationBlocker.unblockIn(windowId, { throbber: true });
     }
   }
