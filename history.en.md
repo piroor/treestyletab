@@ -7,6 +7,7 @@
    * Remove the option for the positioning of scrollbar in the sidebar, and scrollbar is now shown at left edge by default for leftside sidebar. (Please use a user sytlesheet `:root.left #tabbar { direction: ltr; }` to show it at right edge.)
    * Duplicate tabs with the "Duplicate Tab" command in the context menu on the sidebar correctly.
    * Don't block operations while tabs are duplicating on Firefox 68 and later.
+   * Ignore dropping of tabs to themselves.
    * API for other addons: Send `fake-contextMenu-click` notifications correctly. (regression on recent versions)
  - 3.0.14 (2019.5.25)
    * IMPORTANT SECURITY NOTE: All versions TST 2.x and TST 3.x older than TST 3.0.14 had a data disclosure problem via API for other addons. Sensitive tab information including private window tabs were unintentionally exposed to untrusted addons, regardless they were not have permissions to access those information via WebExtensions API. I strongly recommend you to update to TST 3.0.14 and later. Please see [detailed information](https://github.com/piroor/treestyletab/issues/2288#issuecomment-495756992) also.
