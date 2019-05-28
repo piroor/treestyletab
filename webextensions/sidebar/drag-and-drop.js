@@ -988,6 +988,12 @@ function onDrop(event) {
   }
 
   const dropActionInfo = getDropAction(event);
+
+  if (!dropActionInfo.canDrop) {
+    log('undroppable');
+    return;
+  }
+
   const dt = event.dataTransfer;
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
