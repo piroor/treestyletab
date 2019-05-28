@@ -972,7 +972,6 @@ export async function moveTabs(tabs, options = {}) {
         prepareWindow();
       }
 
-      let movedTabs   = tabs;
       let movedTabIds = tabs.map(tab => tab.id);
       await Promise.all([
         newWindow,
@@ -1014,14 +1013,12 @@ export async function moveTabs(tabs, options = {}) {
         })()
       ]);
       log('moveTabs: all windows and tabs are ready, ', movedTabIds, destinationWindowId);
-      // we must put moved tab at the first position by default, because pinned tabs cannot be placed after regular tabs.
-      let toIndex = 0; // Tab.getAllTabs(destinationWindowId).length;
+      let toIndex = (tabs.some(tab => tab.pinned) ? Tab.getPinnedTabs(destinationWindowId) : Tab.getAllTabs(destinationWindowId)).length;
       log('toIndex = ', toIndex);
       if (options.insertBefore &&
           options.insertBefore.windowId == destinationWindowId) {
         try {
-          const latestTab = await browser.tabs.get(options.insertBefore.id).catch(ApiTabs.createErrorHandler());
-          toIndex = latestTab.index;
+          toIndex = Tab.get(options.insertBefore.id).index;
         }
         catch(e) {
           ApiTabs.handleMissingTabError(e);
@@ -1031,8 +1028,7 @@ export async function moveTabs(tabs, options = {}) {
       else if (options.insertAfter &&
                options.insertAfter.windowId == destinationWindowId) {
         try {
-          const latestTab = await browser.tabs.get(options.insertAfter.id).catch(ApiTabs.createErrorHandler());
-          toIndex = latestTab.index + 1;
+          toIndex = Tab.get(options.insertAfter.id).index + 1;
         }
         catch(e) {
           ApiTabs.handleMissingTabError(e);
@@ -1040,7 +1036,7 @@ export async function moveTabs(tabs, options = {}) {
         }
       }
       if (!isAcrossWindows &&
-          tabs[0].index < toIndex)
+          movedTabs[0].index < toIndex)
         toIndex--;
       log(' => ', toIndex);
       if (isAcrossWindows) {
