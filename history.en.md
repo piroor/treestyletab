@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.15 (2019.5.28)
    * Re-activate context menu on the blank area in the sidebar. (regression on 3.0.12)
    * Add an option to deactivate tree rendering in group tabs.
    * Remove the option for the vibisility of scrollbar in the sidebar, and scrollbar is now shown with narrow width by default. (Please use a user stylesheet `#tabbar { scrollbar-width: auto; }` to show it with regular width, or `#tabbar { scrollbar-width: none; }` to hide it.)
