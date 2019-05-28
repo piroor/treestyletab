@@ -85,7 +85,7 @@ async function rebuild() {
   const extraItemNodes = document.createDocumentFragment();
   const incognitoParams = { windowId: TabsStore.getWindow() };
   for (const [id, extraItems] of mExtraItems.entries()) {
-    if (!TSTAPI.canSendIncognitoInfo(id, incognitoParams))
+    if (!TSTAPI.isSafeAtIncognito(id, incognitoParams))
       continue;
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
@@ -356,7 +356,7 @@ async function onCommand(item, event) {
   };
   if (owner == browser.runtime.id)
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-  else if (TSTAPI.canSendIncognitoInfo(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
+  else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
     await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {

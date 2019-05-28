@@ -758,7 +758,7 @@ function* spawnMessages(targetSet, params) {
   }
 
   const send = async (id) => {
-    if (!canSendIncognitoInfo(id, incognitoParams))
+    if (!isSafeAtIncognito(id, incognitoParams))
       return {
         id,
         result: undefined
@@ -787,7 +787,7 @@ function* spawnMessages(targetSet, params) {
   }
 }
 
-export function canSendIncognitoInfo(addonId, params) {
+export function isSafeAtIncognito(addonId, params) {
   if (addonId == browser.runtime.id)
     return true;
   const tab = params.tab;
