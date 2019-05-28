@@ -955,7 +955,7 @@ export async function moveTabs(tabs, options = {}) {
 
   if (isAcrossWindows || options.duplicate) {
     if (mSlowDuplication)
-    UserOperationBlocker.blockIn(windowId, { throbber: true });
+      UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
       let window;
       const prepareWindow = () => {
@@ -1015,7 +1015,7 @@ export async function moveTabs(tabs, options = {}) {
             });
             movedTabs = await promisedDuplicatedTabs;
             if (mSlowDuplication)
-            UserOperationBlocker.setProgress(50, windowId);
+              UserOperationBlocker.setProgress(50, windowId);
             movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
           }
@@ -1070,7 +1070,7 @@ export async function moveTabs(tabs, options = {}) {
         newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
         newTabs = newTabs.filter(tab => !!tab);
         if (mSlowDuplication)
-        UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
+          UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
           log('retrying: ', movedTabIds, newTabs.length, tabs.length);
           await wait(100);
@@ -1102,7 +1102,7 @@ export async function moveTabs(tabs, options = {}) {
     }
     finally {
       if (mSlowDuplication)
-      UserOperationBlocker.unblockIn(windowId, { throbber: true });
+        UserOperationBlocker.unblockIn(windowId, { throbber: true });
     }
   }
 
