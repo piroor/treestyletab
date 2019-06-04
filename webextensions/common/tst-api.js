@@ -164,7 +164,7 @@ export class TreeItem {
     if (addonId == browser.runtime.id)
       return this.exportTab(this.tab, kPERMISSIONS_ALL);
 
-    const permissions = new Set(getAddon(addonId).grantedPermissions);
+    const permissions = new Set(getGrantedPermissionsForAddon(addonId));
     if (configs.incognitoAllowedExternalAddons.includes(addonId))
       permissions.add(kPERMISSION_INCOGNITO);
     const cacheKey = Array.from(permissions).sort().join(',');
@@ -256,6 +256,11 @@ export class TreeItem {
 
 export function getAddon(id) {
   return mAddons.get(id);
+}
+
+export function getGrantedPermissionsForAddon(id) {
+  const addon = getAddon(id);
+  return addon && addon.grantedPermissions || new Set();
 }
 
 function registerAddon(id, addon) {
@@ -548,7 +553,7 @@ function onMessageExternal(message, sender) {
           if (index < 0)
             configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
           return {
-            grantedPermissions:   Array.from(getAddon(sender.id).grantedPermissions).filter(permission => permission.startsWith('!')),
+            grantedPermissions:   Array.from(getGrantedPermissionsForAddon(sender.id)).filter(permission => permission.startsWith('!')),
             privateWindowAllowed: configs.incognitoAllowedExternalAddons.includes(sender.id)
           };
         })();
