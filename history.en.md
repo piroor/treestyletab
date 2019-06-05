@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * API for other addons: Allow to call APIs from addons without registering. (regression)
+   * API for other addons: Send `ready` notifications for last registered addons correctly. If you have any uninitialized helper addons, you need to reload them manually to re-register. (regression)
  - 3.0.15 (2019.5.28)
    * Re-activate context menu on the blank area in the sidebar. (regression on 3.0.12)
    * Add an option to deactivate tree rendering in group tabs.
