@@ -462,6 +462,10 @@ export async function initAsBackend() {
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
+
+  // Don't start listening of messages from other addons until TST itself is initialized.
+  // See also: https://github.com/piroor/treestyletab/issues/2300
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
@@ -604,7 +608,6 @@ function onMessageExternal(message, sender) {
       return Promise.resolve(true);
   }
 }
-browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
 function exportAddons() {
   const exported = {};
@@ -633,6 +636,10 @@ export async function initAsFrontend() {
   }
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
+
+  // Don't start listening of messages from other addons until TST itself is initialized.
+  // See also: https://github.com/piroor/treestyletab/issues/2300
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
 function importAddons(addons) {
