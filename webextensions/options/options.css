@@ -164,7 +164,7 @@ label input[type="checkbox"] ~ img {
 }
 
 
-fieldset.collapsible.collapsed > *:not(legend) {
+fieldset.collapsible.collapsed > *:not(legend):not(div) /* "div" is for the container of "import" and "export" buttons */ {
   display: none;
 }
 
