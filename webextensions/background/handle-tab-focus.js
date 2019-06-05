@@ -132,6 +132,11 @@ function handleNewActiveTab(tab, info = {}) {
 }
 
 async function tryHighlightBundledTab(tab, info) {
+  const bundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
+  for (const tab of bundledTabs.values()) {
+    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+  }
+
   let bundledTab;
   if (tab.pinned)
     bundledTab = Tab.getGroupTabForOpener(tab);
@@ -141,9 +146,12 @@ async function tryHighlightBundledTab(tab, info) {
   if (!bundledTab)
     return;
 
+  bundledTab.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+
   await wait(100);
   if (!tab.active || // ignore tab already inactivated while waiting
-      tab.$TST.hasOtherHighlighted) // ignore manual highlighting
+      tab.$TST.hasOtherHighlighted || // ignore manual highlighting
+      bundledTab.pinned)
     return;
 
   if (bundledTab.$TST.hasChild &&
@@ -155,15 +163,15 @@ async function tryHighlightBundledTab(tab, info) {
     highlighted: true
   });
 
-  await wait(100);
+  await wait(configs.delayToApplyHighlightedState + 100);
   if (bundledTab.active || // ignore tab explicitly activated while waiting
       !bundledTab.highlighted) // ignore tab explicitly unhighlighted while waiting
     return;
 
+  // clear real highlighted state to avoid troubles like "the pinned tab is closed by closing of   the bundled gorup tab"
   browser.tabs.update(bundledTab.id, {
     highlighted: false
   });
-  await wait(configs.delayToApplyHighlightedState);
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {

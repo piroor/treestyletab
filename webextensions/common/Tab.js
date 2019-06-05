@@ -716,6 +716,10 @@ export default class Tab {
         else
           TabsStore.removeSubtreeCollapsableTab(this.tab);
         break;
+
+      case Constants.kTAB_STATE_BUNDLED_ACTIVE:
+        TabsStore.addBundledActiveTab(this.tab);
+        break;
     }
 
     if (options.broadcast)
@@ -748,6 +752,10 @@ export default class Tab {
           TabsStore.addSubtreeCollapsableTab(this.tab);
         else
           TabsStore.removeSubtreeCollapsableTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_BUNDLED_ACTIVE:
+        TabsStore.addBundledActiveTab(this.tab);
         break;
     }
 

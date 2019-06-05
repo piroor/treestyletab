@@ -269,7 +269,7 @@ ul {
   top: 0;
 }
 
-.tab:not(.highlighted) .highlighter,
+.tab:not(.highlighted):not(.bundled-active) .highlighter,
 .tab:not(.bursting) .burster {
   display: none;
 }

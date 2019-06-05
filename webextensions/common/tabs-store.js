@@ -306,6 +306,7 @@ function fixupQuery(query) {
 
 export const activeTabInWindow       = new Map();
 export const activeTabsInWindow      = new Map();
+export const bundledActiveTabsInWindow = new Map();
 export const livingTabsInWindow      = new Map();
 export const controllableTabsInWindow = new Map();
 export const removingTabsInWindow    = new Map();
@@ -336,6 +337,7 @@ function createMapWithName(name) {
 
 export function prepareIndexesForWindow(windowId) {
   activeTabsInWindow.set(windowId, new Set());
+  bundledActiveTabsInWindow.set(windowId, createMapWithName(`bundled active tabs in window ${windowId}`));
   livingTabsInWindow.set(windowId, createMapWithName(`living tabs in window ${windowId}`));
   controllableTabsInWindow.set(windowId, createMapWithName(`controllable tabs in window ${windowId}`));
   removingTabsInWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
@@ -362,6 +364,7 @@ export function prepareIndexesForWindow(windowId) {
 export function unprepareIndexesForWindow(windowId) {
   activeTabInWindow.delete(windowId);
   activeTabsInWindow.delete(windowId);
+  bundledActiveTabsInWindow.delete(windowId);
   livingTabsInWindow.delete(windowId);
   controllableTabsInWindow.delete(windowId);
   removingTabsInWindow.delete(windowId);
@@ -452,9 +455,15 @@ export function updateIndexesForTab(tab) {
     addLoadingTab(tab);
   else
     removeLoadingTab(tab);
+
+  if (tab.$TST.states.has(Constants.kTAB_STATE_BUNDLED_ACTIVE))
+    addBundledActiveTab(tab);
+  else
+    removeBundledActiveTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
+  removeBundledActiveTab(tab);
   removeLivingTab(tab);
   removeControllableTab(tab);
   removeRemovingTab(tab);
@@ -640,6 +649,13 @@ export function addUnsynchronizedTab(tab) {
 }
 export function removeUnsynchronizedTab(tab) {
   removeTabFromIndex(tab, unsynchronizedTabsInWindow);
+}
+
+export function addBundledActiveTab(tab) {
+  addTabToIndex(tab, bundledActiveTabsInWindow);
+}
+export function removeBundledActiveTab(tab) {
+  removeTabFromIndex(tab, bundledActiveTabsInWindow);
 }
 
 

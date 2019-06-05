@@ -154,6 +154,7 @@ export const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 export const kTAB_STATE_FAVICONIZED               = 'faviconized';
 export const kTAB_STATE_UNREAD                    = 'unread';
 export const kTAB_STATE_HIGHLIGHTED               = 'highlighted';
+export const kTAB_STATE_BUNDLED_ACTIVE            = 'bundled-active';
 export const kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED = 'some-descendants-highlighted';
 export const kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED  = 'all-descendants-highlighted';
 export const kTAB_STATE_ATTENTION                 = 'attention';
