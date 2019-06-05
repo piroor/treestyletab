@@ -437,14 +437,17 @@ function reserveToSaveScrollPosition() {
   }, 150);
 }
 
-function reserveToScrollToTab(tab) {
+function reserveToScrollToTab(tab, options = {}) {
   if (reserveToScrollToTab.reserved)
     clearTimeout(reserveToScrollToTab.reserved);
   reserveToScrollToTab.reservedTabId = tab.id;
+  reserveToScrollToTab.reservedOptions = options;
   reserveToScrollToTab.reserved = setTimeout(() => {
+    const options = reserveToScrollToTab.reservedOptions;
     delete reserveToScrollToTab.reservedTabId;
+    delete reserveToScrollToTab.reservedOptions;
     delete reserveToScrollToTab.reserved;
-    scrollToTab(tab);
+    scrollToTab(tab, options);
   }, 100);
 }
 
@@ -543,16 +546,31 @@ async function onBackgroundMessage(message) {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED:
-    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
       await Tab.waitUntilTracked(message.tabId, { element: true });
       reserveToScrollToTab(Tab.get(message.tabId));
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (message.updatedProperties &&
+          message.updatedProperties.highlighted &&
+          tab &&
+          !tab.active) {
+        const activeTab = Tab.getActiveTab(tab.windowId);
+        reserveToScrollToTab(tab, {
+          anchor:            !tab.pinned && isTabInViewport(activeTab) && activeTab,
+          notifyOnOutOfView: true
+        });
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
-    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED:
       await Tab.waitUntilTracked(message.tabId, { element: true });
       reReserveScrollingForTab(Tab.get(message.tabId));
-    }; break;
+      break;
   }
 }
 
