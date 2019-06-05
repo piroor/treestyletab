@@ -441,18 +441,23 @@ export async function initAsBackend() {
     notifiedAddons[id] = true;
     try {
       id = await new Promise((resolve, reject) => {
+        let responded = false;
         browser.runtime.sendMessage(id, {
           type: kNOTIFY_READY
-        }).then(() => resolve(id)).catch(ApiTabs.createErrorHandler(reject));
+        }).then(() => {
+          responded = true;
+          resolve(id);
+        }).catch(ApiTabs.createErrorHandler(reject));
         setTimeout(() => {
-          reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
+          if (!responded)
+            reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
         }, 3000);
       });
       if (id)
         respondedAddons.push(id);
     }
     catch(e) {
-      console.log(`failed to send "ready" message to "${id}":`, e);
+      console.log(`TSTAPI.initAsBackend: failed to send "ready" message to "${id}":`, e);
     }
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
