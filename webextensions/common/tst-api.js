@@ -412,6 +412,12 @@ function getAddons() {
 const mConnections = new Map();
 
 export async function initAsBackend() {
+  // We must listen API messages from other addons after configs are loaded
+  // and TST's background page is completely initialized, to prevent troubles
+  // like breakage of `configs.cachedExternalAddons`.
+  // See also: https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370
+  browser.runtime.onMessageExternal.addListener(onBackendCommand);
+
   const manifest = browser.runtime.getManifest();
   registerAddon(browser.runtime.id, {
     id:         browser.runtime.id,
@@ -462,12 +468,6 @@ export async function initAsBackend() {
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
-
-  // We must listen API messages from other addons after configs are loaded
-  // and TST's background page is completely initialized, to prevent troubles
-  // like breakage of `configs.cachedExternalAddons`.
-  // See also: https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370
-  browser.runtime.onMessageExternal.addListener(onBackendCommand);
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
