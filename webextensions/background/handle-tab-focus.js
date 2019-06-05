@@ -131,7 +131,7 @@ function handleNewActiveTab(tab, info = {}) {
   }
 }
 
-function tryHighlightBundledTab(tab, info) {
+async function tryHighlightBundledTab(tab, info) {
   let bundledTab;
   if (tab.pinned)
     bundledTab = Tab.getGroupTabForOpener(tab);
@@ -141,18 +141,19 @@ function tryHighlightBundledTab(tab, info) {
   if (!bundledTab)
     return;
 
-  setTimeout(() => {
-    if (!tab.active)
-      return;
-    if (bundledTab.$TST.hasChild &&
-        bundledTab.$TST.subtreeCollapsed &&
-        !info.shouldSkipCollapsed)
-      handleNewActiveTab(bundledTab, info);
-    browser.tabs.update(bundledTab.id, {
-      active:      false,
-      highlighted: true
-    });
-  }, 100);
+  await wait(100);
+  if (!tab.active || // ignore tab already inactivated while waiting
+      tab.$TST.hasOtherHighlighted) // ignore manual highlighting
+    return;
+
+  if (bundledTab.$TST.hasChild &&
+      bundledTab.$TST.subtreeCollapsed &&
+      !info.shouldSkipCollapsed)
+    handleNewActiveTab(bundledTab, info);
+  browser.tabs.update(bundledTab.id, {
+    active:      false,
+    highlighted: true
+  });
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
