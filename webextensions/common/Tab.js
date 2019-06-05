@@ -704,15 +704,18 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
 
-    if (state == Constants.kTAB_STATE_SELECTED)
-      TabsStore.addSelectedTab(this.tab);
+    switch (state) {
+      case Constants.kTAB_STATE_SELECTED:
+        TabsStore.addSelectedTab(this.tab);
+        break;
 
-    if (state == Constants.kTAB_STATE_COLLAPSED ||
-        state == Constants.kTAB_STATE_SUBTREE_COLLAPSED) {
-      if (this.isSubtreeCollapsable)
-        TabsStore.addSubtreeCollapsableTab(this.tab);
-      else
-        TabsStore.removeSubtreeCollapsableTab(this.tab);
+      case Constants.kTAB_STATE_COLLAPSED:
+      case Constants.kTAB_STATE_SUBTREE_COLLAPSED:
+        if (this.isSubtreeCollapsable)
+          TabsStore.addSubtreeCollapsableTab(this.tab);
+        else
+          TabsStore.removeSubtreeCollapsableTab(this.tab);
+        break;
     }
 
     if (options.broadcast)
@@ -734,15 +737,18 @@ export default class Tab {
     if (this.states)
       this.states.delete(state);
 
-    if (state == Constants.kTAB_STATE_SELECTED)
-      TabsStore.removeSelectedTab(this.tab);
+    switch (state) {
+      case Constants.kTAB_STATE_SELECTED:
+        TabsStore.removeSelectedTab(this.tab);
+        break;
 
-    if (state == Constants.kTAB_STATE_COLLAPSED ||
-        state == Constants.kTAB_STATE_SUBTREE_COLLAPSED) {
-      if (this.isSubtreeCollapsable)
-        TabsStore.addSubtreeCollapsableTab(this.tab);
-      else
-        TabsStore.removeSubtreeCollapsableTab(this.tab);
+      case Constants.kTAB_STATE_COLLAPSED:
+      case Constants.kTAB_STATE_SUBTREE_COLLAPSED:
+        if (this.isSubtreeCollapsable)
+          TabsStore.addSubtreeCollapsableTab(this.tab);
+        else
+          TabsStore.removeSubtreeCollapsableTab(this.tab);
+        break;
     }
 
     if (options.broadcast)
