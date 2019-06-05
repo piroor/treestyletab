@@ -15,6 +15,12 @@
   opacity: 0.5;
 }
 
+.tab.bundled-active {
+  background: var(--tab-surface);
+  --tab-surface: var(--tab-surface-active-hover);
+}
+
+
 
 /* hide regular active tab marker */
 .highlighter::before {

@@ -112,6 +112,6 @@
 
 
 /* hide regular active tab marker */
-.highlighter::before {
+.tab:not(.bundled-active) .highlighter::before {
   display: none !important;
 }

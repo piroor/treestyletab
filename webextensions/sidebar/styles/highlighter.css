@@ -82,7 +82,7 @@
 
 
 .tab.bundled-active:not(.highlighted) .highlighter::before {
-  opacity: 0.65;
+  opacity: 0.6;
 }
 
 .tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
