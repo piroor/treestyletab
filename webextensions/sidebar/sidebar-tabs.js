@@ -1131,7 +1131,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const window = TabsStore.windows.get(message.windowId);
       if (!window || !window.element)
         return;
-      if (message.tabIds.lengt > 1)
+      if (message.tabIds.length > 1)
         window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
       else
         window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
