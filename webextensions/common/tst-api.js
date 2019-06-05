@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK ***** 
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -462,10 +462,6 @@ export async function initAsBackend() {
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
-
-  // Don't start listening of messages from other addons until TST itself is initialized.
-  // See also: https://github.com/piroor/treestyletab/issues/2300
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
@@ -609,6 +605,12 @@ function onMessageExternal(message, sender) {
   }
 }
 
+// Load `configs` before registering so `cachedExternalAddons` doesn't get overwritten.
+// See https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370
+configs.$loaded.then(() => {
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+});
+
 function exportAddons() {
   const exported = {};
   for (const [id, addon] of getAddons()) {
@@ -636,10 +638,6 @@ export async function initAsFrontend() {
   }
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
-
-  // Don't start listening of messages from other addons until TST itself is initialized.
-  // See also: https://github.com/piroor/treestyletab/issues/2300
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
 function importAddons(addons) {
