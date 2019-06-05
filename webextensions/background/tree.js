@@ -1349,14 +1349,14 @@ function snapshotTree(targetTab, tabs) {
 
   const snapshotById = {};
   function snapshotChild(tab) {
-    if (!TabsStore.ensureLivingTab(tab) || tab.pinned || tab.hidden)
+    if (!TabsStore.ensureLivingTab(tab) || tab.pinned)
       return null;
     return snapshotById[tab.id] = {
       id:            tab.id,
       url:           tab.url,
       cookieStoreId: tab.cookieStoreId,
       active:        tab.active,
-      children:      tab.$TST.children.filter(child => !child.hidden).map(child => child.id),
+      children:      tab.$TST.children.map(child => child.id),
       collapsed:     tab.$TST.subtreeCollapsed,
       pinned:        tab.pinned,
       level:         parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)
