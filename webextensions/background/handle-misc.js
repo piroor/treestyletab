@@ -16,7 +16,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
-import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
@@ -38,24 +37,6 @@ function logMouseEvent(...args) {
 
 
 let mInitialized = false;
-
-
-Tab.onPinned.addListener(tab => {
-  Tree.collapseExpandSubtree(tab, {
-    collapsed: false,
-    broadcast: true
-  });
-  Tree.detachAllChildren(tab, {
-    behavior: TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
-      keepChildren: true
-    }),
-    broadcast: true
-  });
-  Tree.detachTab(tab, {
-    broadcast: true
-  });
-  Tree.collapseExpandTabAndSubtree(tab, { collapsed: false });
-});
 
 
 /* message observer */

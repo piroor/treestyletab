@@ -21,6 +21,7 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
@@ -279,6 +280,30 @@ Tab.onLabelUpdated.addListener(tab => {
 
 Tab.onActivating.addListener((tab, _info = {}) => {
   tryInitGroupTab(tab);
+});
+
+Tab.onPinned.addListener(tab => {
+  Tree.collapseExpandSubtree(tab, {
+    collapsed: false,
+    broadcast: true
+  });
+  const children = tab.$TST.children;
+  Tree.detachAllChildren(tab, {
+    behavior: TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
+      keepChildren: true
+    }),
+    broadcast: true
+  });
+  Tree.detachTab(tab, {
+    broadcast: true
+  });
+
+  if (configs.autoGroupNewTabsFromPinned)
+    TabsGroup.groupTabs(children, {
+      title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
+      temporary:   true,
+      openerTabId: tab.$TST.uniqueId.id
+    });
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {
