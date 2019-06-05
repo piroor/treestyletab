@@ -452,7 +452,7 @@ export async function initAsBackend() {
         respondedAddons.push(id);
     }
     catch(e) {
-      console.log(e);
+      console.log(`failed to send "ready" message to "${id}":`, e);
     }
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
