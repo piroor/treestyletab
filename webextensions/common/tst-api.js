@@ -425,7 +425,7 @@ export async function initAsBackend() {
     mConnections.set(sender.id, port);
     port.onDisconnect.addListener(_message => {
       mConnections.delete(sender.id);
-      onMessageExternal({
+      onBackendCommand({
         type: kUNREGISTER_SELF,
         sender
       }).catch(ApiTabs.createErrorSuppressor());
@@ -465,7 +465,7 @@ export async function initAsBackend() {
 
   // Don't start listening of messages from other addons until TST itself is initialized.
   // See also: https://github.com/piroor/treestyletab/issues/2300
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  browser.runtime.onMessageExternal.addListener(onBackendCommand);
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
@@ -537,13 +537,11 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
   window.addEventListener('beforeunload', () => resolve());
 });
 
-function onMessageExternal(message, sender) {
+function onBackendCommand(message, sender) {
   if (!message ||
       typeof message.type != 'string')
     return;
 
-  if (mIsBackend) {
-    log('backend API message ', message, sender);
     switch (message.type) {
       case kPING:
         return Promise.resolve(true);
@@ -581,14 +579,16 @@ function onMessageExternal(message, sender) {
 
       case kWAIT_FOR_SHUTDOWN:
         return mPromisedOnBeforeUnload;
+
+      default:
+        return onCommonCommand(message, sender);
     }
-  }
-  else if (mIsFrontend) {
-    log('frontend API message ', message, sender);
-  }
-  else {
+}
+
+function onCommonCommand(message, sender) {
+  if (!message ||
+      typeof message.type != 'string')
     return;
-  }
 
   switch (message.type) {
     case kSCROLL_LOCK:
@@ -639,7 +639,7 @@ export async function initAsFrontend() {
 
   // Don't start listening of messages from other addons until TST itself is initialized.
   // See also: https://github.com/piroor/treestyletab/issues/2300
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  browser.runtime.onMessageExternal.addListener(onCommonCommand);
 }
 
 function importAddons(addons) {
