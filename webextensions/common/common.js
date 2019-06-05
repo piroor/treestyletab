@@ -196,6 +196,7 @@ export const configs = new Configs({
   startDragTimeout: 400, // obsolete, migrated to longPressDuration
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
+  delayToApplyHighlightedState: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,

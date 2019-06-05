@@ -305,7 +305,7 @@ async function onHighlighted(highlightInfo) {
       windowId: highlightInfo.windowId,
       tabIds:   highlightInfo.tabIds
     });
-  }, 50);
+  }, configs.delayToApplyHighlightedState);
   mTabsHighlightedTimers.set(highlightInfo.windowId, timer);
 }
 

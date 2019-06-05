@@ -154,6 +154,16 @@ async function tryHighlightBundledTab(tab, info) {
     active:      false,
     highlighted: true
   });
+
+  await wait(100);
+  if (bundledTab.active || // ignore tab explicitly activated while waiting
+      !bundledTab.highlighted) // ignore tab explicitly unhighlighted while waiting
+    return;
+
+  browser.tabs.update(bundledTab.id, {
+    highlighted: false
+  });
+  await wait(configs.delayToApplyHighlightedState);
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
