@@ -213,9 +213,9 @@ export function scrollToNewTab(tab, options = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    const current = Tab.getActiveTab(TabsStore.getWindow());
+    const activeTab = Tab.getActiveTab(TabsStore.getWindow());
     scrollToTab(tab, Object.assign({}, options, {
-      anchor:            isTabInViewport(current) && current,
+      anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
       notifyOnOutOfView: true
     }));
   }
