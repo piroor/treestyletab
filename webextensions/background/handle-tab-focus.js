@@ -158,20 +158,6 @@ async function tryHighlightBundledTab(tab, info) {
       bundledTab.$TST.subtreeCollapsed &&
       !info.shouldSkipCollapsed)
     handleNewActiveTab(bundledTab, info);
-  browser.tabs.update(bundledTab.id, {
-    active:      false,
-    highlighted: true
-  });
-
-  await wait(configs.delayToApplyHighlightedState + 100);
-  if (bundledTab.active || // ignore tab explicitly activated while waiting
-      !bundledTab.highlighted) // ignore tab explicitly unhighlighted while waiting
-    return;
-
-  // clear real highlighted state to avoid troubles like "the pinned tab is closed by closing of   the bundled gorup tab"
-  browser.tabs.update(bundledTab.id, {
-    highlighted: false
-  });
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {

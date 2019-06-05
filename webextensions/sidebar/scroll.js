@@ -566,6 +566,21 @@ async function onBackgroundMessage(message) {
       }
     }; break;
 
+    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
+      if (!message.tabIds.length ||
+          message.tabIds.length > 1 ||
+          !message.add ||
+          !message.add.includes(Constants.kTAB_STATE_BUNDLED_ACTIVE))
+        break;
+      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      const tab       = Tab.get(message.tabIds[0]);
+      const activeTab = Tab.getActiveTab(tab.windowId);
+      reserveToScrollToTab(tab, {
+        anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
+        notifyOnOutOfView: true
+      });
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED:
       await Tab.waitUntilTracked(message.tabId, { element: true });
