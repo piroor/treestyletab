@@ -554,16 +554,16 @@ async function onBackgroundMessage(message) {
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (message.updatedProperties &&
-          message.updatedProperties.highlighted &&
-          tab &&
-          !tab.active) {
-        const activeTab = Tab.getActiveTab(tab.windowId);
-        reserveToScrollToTab(tab, {
-          anchor:            !tab.pinned && isTabInViewport(activeTab) && activeTab,
-          notifyOnOutOfView: true
-        });
-      }
+      if (!message.updatedProperties ||
+          !message.updatedProperties.highlighted ||
+          !tab ||
+          tab.active)
+        break;
+      const activeTab = Tab.getActiveTab(tab.windowId);
+      reserveToScrollToTab(tab, {
+        anchor:            !tab.pinned && isTabInViewport(activeTab) && activeTab,
+        notifyOnOutOfView: true
+      });
     }; break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
@@ -573,7 +573,10 @@ async function onBackgroundMessage(message) {
           !message.add.includes(Constants.kTAB_STATE_BUNDLED_ACTIVE))
         break;
       await Tab.waitUntilTracked(message.tabIds, { element: true });
-      const tab       = Tab.get(message.tabIds[0]);
+      const tab = Tab.get(message.tabIds[0]);
+      if (!tab ||
+          tab.active)
+        break;
       const activeTab = Tab.getActiveTab(tab.windowId);
       reserveToScrollToTab(tab, {
         anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
