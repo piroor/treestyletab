@@ -103,10 +103,15 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
   }
   delete tab.$TST.discardOnCompletelyLoaded;
   window.lastActiveTab = tab.id;
+
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
+  else
+    tryHighlightBundledTab(tab, Object.assign({}, info, { shouldSkipCollapsed }));
+
   return true;
 });
+
 function handleNewActiveTab(tab, info = {}) {
   log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
@@ -124,6 +129,30 @@ function handleNewActiveTab(tab, info = {}) {
         broadcast: true
       });
   }
+}
+
+function tryHighlightBundledTab(tab, info) {
+  let bundledTab;
+  if (tab.pinned)
+    bundledTab = Tab.getGroupTabForOpener(tab);
+  else if (tab.$TST.isGroupTab)
+    bundledTab = Tab.getOpenerFromGroupTab(tab);
+
+  if (!bundledTab)
+    return;
+
+  setTimeout(() => {
+    if (!tab.active)
+      return;
+    if (bundledTab.$TST.hasChild &&
+        bundledTab.$TST.subtreeCollapsed &&
+        !info.shouldSkipCollapsed)
+      handleNewActiveTab(bundledTab, info);
+    browser.tabs.update(bundledTab.id, {
+      active:      false,
+      highlighted: true
+    });
+  }, 100);
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
