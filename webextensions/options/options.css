@@ -184,16 +184,6 @@ body > section.collapsed > h1:first-child::before {
 }
 
 
-:root:not(.debugging) #debug-configs {
-  max-height: 0;
-  overflow: hidden;
-}
-
-:root:not(.debugging) #debug-configs * {
-  -moz-user-focus: ignore;
-  -moz-user-input: disabled;
-}
-
 :root.successor-tab-support .without-successor-tab-support,
 :root:not(.successor-tab-support) .with-successor-tab-support {
   display: none;

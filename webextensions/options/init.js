@@ -31,13 +31,6 @@ if (location.hash && location.hash != '#')
 function onConfigChanged(key) {
   const value = configs[key];
   switch (key) {
-    case 'debug':
-      if (value)
-        document.documentElement.classList.add('debugging');
-      else
-        document.documentElement.classList.remove('debugging');
-      break;
-
     case 'successorTabControlLevel': {
       const checkbox = document.getElementById('simulateSelectOwnerOnClose');
       const label = checkbox.parentNode;
@@ -390,7 +383,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
-    onConfigChanged('debug');
     onConfigChanged('successorTabControlLevel');
 
     if (focusedItem)
