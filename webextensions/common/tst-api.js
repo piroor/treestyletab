@@ -463,8 +463,10 @@ export async function initAsBackend() {
   log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
 
-  // Don't start listening of messages from other addons until TST itself is initialized.
-  // See also: https://github.com/piroor/treestyletab/issues/2300
+  // We must listen API messages from other addons after configs are loaded
+  // and TST's background page is completely initialized, to prevent troubles
+  // like breakage of `configs.cachedExternalAddons`.
+  // See also: https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370
   browser.runtime.onMessageExternal.addListener(onBackendCommand);
 }
 
@@ -637,8 +639,6 @@ export async function initAsFrontend() {
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
 
-  // Don't start listening of messages from other addons until TST itself is initialized.
-  // See also: https://github.com/piroor/treestyletab/issues/2300
   browser.runtime.onMessageExternal.addListener(onCommonCommand);
 }
 
