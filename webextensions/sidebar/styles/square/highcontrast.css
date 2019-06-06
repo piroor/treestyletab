@@ -115,3 +115,7 @@
 .tab:not(.bundled-active) .highlighter::before {
   display: none !important;
 }
+
+.tab.bundled-active:not(.highlighted) .highlighter::before {
+  opacity: 1;
+}

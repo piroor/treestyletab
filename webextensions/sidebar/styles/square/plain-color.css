@@ -84,6 +84,7 @@
   --tab-text: var(--tab-text-active);
   --tab-text-inverted: var(--tab-text-active-inverted);
 }
+.tab.bundled-active,
 .tab.active:hover {
   --tab-surface: var(--tab-surface-active-hover);
 }

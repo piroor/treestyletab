@@ -54,7 +54,8 @@
   --tab-surface: var(--tab-surface-active);
 }
 
-.tab.active:hover {
+.tab.active:hover,
+.tab.bundled-active {
   --tab-surface: var(--tab-surface-active-hover);
 }
 
@@ -105,13 +106,13 @@
 }
 
 
-.tab:not(.active):not(.highlighted):hover .highlighter::before {
+.tab:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
   background-color: transparent;
   --tab-highlighter-start: rgba(0, 20, 20, 0.015);
   --tab-highlighter-end: rgba(0, 20, 20, 0.2);
 }
 
-:root.left .tab:not(.faviconized):not(.active):not(.highlighted):hover .highlighter::before {
+:root.left .tab:not(.faviconized):not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to right,
                       var(--tab-highlighter-start) 0,
@@ -119,7 +120,7 @@
                     );
 }
 
-:root.right .tab:not(.faviconized):not(.active):not(.highlighted):hover .highlighter::before {
+:root.right .tab:not(.faviconized):not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to left,
                       var(--tab-highlighter-start) 0,
@@ -127,7 +128,7 @@
                     );
 }
 
-.tab.faviconized:not(.active):not(.highlighted):hover .highlighter::before {
+.tab.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to bottom,
                       var(--tab-highlighter-start) 0,
