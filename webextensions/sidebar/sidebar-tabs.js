@@ -780,6 +780,101 @@ function maybeNewTabIsMoved(tabId) {
 }
 
 
+const mPendingUpdates = new Map();
+
+function setupPendingUpdate(update) {
+  const pendingUpdate = mPendingUpdates.get(update.tabId) || { tabId: update.tabId };
+
+  update.addedStates       = new Set(update.addedStates || []);
+  update.removedStates     = new Set(update.removedStates || []);
+  update.removedAttributes = new Set(update.removedAttributes || []);
+  update.addedAttributes   = update.addedAttributes || {};
+  update.updatedProperties = update.updatedProperties || {};
+
+  pendingUpdate.updatedProperties = Object.assign({}, pendingUpdate.updatedProperties || {}, update.updatedProperties);
+
+  if (update.removedAttributes.size > 0) {
+    pendingUpdate.removedAttributes = new Set([...(pendingUpdate.removedAttributes || []), ...update.removedAttributes]);
+    if (pendingUpdate.addedAttributes)
+      for (const attribute of update.removedAttributes) {
+        delete pendingUpdate.addedAttributes[attribute];
+      }
+  }
+
+  if (Object.keys(update.addedAttributes).length > 0) {
+    pendingUpdate.addedAttributes = Object.assign({}, pendingUpdate.addedAttributes || {}, update.addedAttributes);
+    if (pendingUpdate.removedAttributes)
+      for (const attribute of Object.keys(update.removedAttributes)) {
+        pendingUpdate.removedAttributes.delete(attribute);
+      }
+  }
+
+  if (update.removedStates.size > 0) {
+    pendingUpdate.removedStates = new Set([...(pendingUpdate.removedStates || []), ...update.removedStates]);
+    if (pendingUpdate.addedStates)
+      for (const state of update.removedStates) {
+        pendingUpdate.addedStates.delete(state);
+      }
+  }
+
+  if (update.addedStates.size > 0) {
+    pendingUpdate.addedStates = new Set([...(pendingUpdate.addedStates || []), ...update.addedStates]);
+    if (pendingUpdate.removedStates)
+      for (const state of update.addedStates) {
+        pendingUpdate.removedStates.delete(state);
+      }
+  }
+
+  pendingUpdate.soundStateChanged = pendingUpdate.soundStateChanged || update.soundStateChanged;
+
+  mPendingUpdates.set(update.tabId, pendingUpdate);
+}
+
+function tryApplyUpdate(update) {
+  const tab = Tab.get(update.tabId);
+  if (!tab)
+    return;
+
+  if (update.updatedProperties) {
+    for (const key of Object.keys(update.updatedProperties)) {
+      if (Tab.UNSYNCHRONIZABLE_PROPERTIES.has(key))
+        continue;
+      tab[key] = update.updatedProperties[key];
+    }
+  }
+
+  if (update.addedAttributes) {
+    for (const key of Object.keys(update.addedAttributes)) {
+      tab.$TST.setAttribute(key, update.addedAttributes[key]);
+    }
+  }
+
+  if (update.removedAttributes) {
+    for (const key of update.removedAttributes) {
+      tab.$TST.removeAttribute(key, );
+    }
+  }
+
+  if (update.addedStates) {
+    for (const state of update.addedStates) {
+      tab.$TST.addState(state);
+    }
+  }
+
+  if (update.removedStates) {
+    for (const state of update.removedStates) {
+      tab.$TST.removeState(state);
+    }
+  }
+
+  if (update.soundStateChanged) {
+    const parent = tab.$TST.parent;
+    if (parent)
+      parent.$TST.inheritSoundStateFromChildren();
+  }
+}
+
+
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_SYNC_TABS_ORDER:
@@ -892,45 +987,32 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
+      // See also: https://github.com/piroor/treestyletab/issues/2275
+
+      const alreadyTracked = mPendingUpdates.has(message.tabId);
+
+      // Updates may be notified before the tab element is actually created,
+      // so we should apply updates ASAP. We can update already tracked tab
+      // while "creating" is notified and waiting for "created".
+      tryApplyUpdate(message);
+      setupPendingUpdate(message);
+
+      // Already pending update will be processed later, so we don't need
+      // process this update.
+      if (alreadyTracked)
+        return;
+
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
 
-      const highlightedChanged = message.updatedProperties && 'highlighted' in message.updatedProperties;
-      if (message.updatedProperties) {
-        for (const key of Object.keys(message.updatedProperties)) {
-          if (Tab.UNSYNCHRONIZABLE_PROPERTIES.has(key))
-            continue;
-          tab[key] = message.updatedProperties[key];
-        }
-      }
-      if (message.addedAttributes) {
-        for (const key of Object.keys(message.addedAttributes)) {
-          tab.$TST.setAttribute(key, message.addedAttributes[key]);
-        }
-      }
-      if (message.removedAttributes) {
-        for (const key of message.removedAttributes) {
-          tab.$TST.removeAttribute(key, );
-        }
-      }
-      if (message.addedStates) {
-        for (const state of message.addedStates) {
-          tab.$TST.addState(state);
-        }
-      }
-      if (message.removedStates) {
-        for (const state of message.removedStates) {
-          tab.$TST.removeState(state);
-        }
-      }
+      const update = mPendingUpdates.get(message.tabId) || message;
+      mPendingUpdates.delete(update.tabId);
 
-      if (message.soundStateChanged) {
-        const parent = tab.$TST.parent;
-        if (parent)
-          parent.$TST.inheritSoundStateFromChildren();
-      }
+      const highlightedChanged = 'highlighted' in update.updatedProperties;
+
+      tryApplyUpdate(update);
 
       TabsStore.updateIndexesForTab(tab);
 
