@@ -119,6 +119,8 @@ export const configs = new Configs({
 
   fixupTreeOnTabVisibilityChanged: false,
 
+  scrollToExpandedTree: true,
+
 
   // grouping
   autoGroupNewTabs: true,

@@ -605,6 +605,8 @@ function onMessageExternal(message, _aSender) {
 }
 
 CollapseExpand.onUpdating.addListener((tab, options) => {
+  if (!configs.scrollToExpandedTree)
+    return;
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
@@ -613,6 +615,8 @@ CollapseExpand.onUpdating.addListener((tab, options) => {
 });
 
 CollapseExpand.onUpdated.addListener((tab, options) => {
+  if (!configs.scrollToExpandedTree)
+    return;
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
