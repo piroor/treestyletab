@@ -551,22 +551,6 @@ async function onBackgroundMessage(message) {
       reserveToScrollToTab(Tab.get(message.tabId));
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      if (!message.updatedProperties ||
-          !message.updatedProperties.highlighted ||
-          !tab ||
-          tab.active)
-        break;
-      const firstHighlightedNormalTab = Tab.getHighlightedTabs(tab.windowId, { first: true, pinned: false })[0];
-      const anchorTab                 = firstHighlightedNormalTab || Tab.getActiveTab(tab.windowId);
-      reserveToScrollToTab(tab, {
-        anchor:            !anchorTab.pinned && isTabInViewport(anchorTab) && anchorTab,
-        notifyOnOutOfView: true
-      });
-    }; break;
-
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
       if (!message.tabIds.length ||
           message.tabIds.length > 1 ||
