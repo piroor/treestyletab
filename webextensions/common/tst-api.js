@@ -628,6 +628,7 @@ export async function initAsFrontend() {
       break;
     await wait(10);
   }
+  browser.runtime.onMessageExternal.addListener(onCommonCommand);
   importAddons(response.addons);
   for (const [id, addon] of getAddons()) {
     // Install stylesheet always, even if the addon is not allowed to access
@@ -639,8 +640,6 @@ export async function initAsFrontend() {
   }
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
-
-  browser.runtime.onMessageExternal.addListener(onCommonCommand);
 }
 
 function importAddons(addons) {
