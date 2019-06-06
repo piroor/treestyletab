@@ -987,19 +987,18 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
-      // See also: https://github.com/piroor/treestyletab/issues/2275
-
-      const alreadyTracked = mPendingUpdates.has(message.tabId);
+      const hasPendingUpdate = mPendingUpdates.has(message.tabId);
 
       // Updates may be notified before the tab element is actually created,
       // so we should apply updates ASAP. We can update already tracked tab
       // while "creating" is notified and waiting for "created".
+      // See also: https://github.com/piroor/treestyletab/issues/2275
       tryApplyUpdate(message);
       setupPendingUpdate(message);
 
       // Already pending update will be processed later, so we don't need
       // process this update.
-      if (alreadyTracked)
+      if (hasPendingUpdate)
         return;
 
       await Tab.waitUntilTracked(message.tabId, { element: true });
