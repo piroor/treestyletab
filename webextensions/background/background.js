@@ -486,6 +486,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
         configs.warnOnCloseTabs = false;
       configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
+      reserveToClearGrantedRemovingTabs();
       return true;
     default:
       return false;
@@ -494,6 +495,14 @@ export async function confirmToCloseTabs(tabs, options = {}) {
 Commands.onTabsClosing.addListener((tabIds, options = {}) => {
   return confirmToCloseTabs(tabIds, options);
 });
+
+function reserveToClearGrantedRemovingTabs() {
+  const lastGranted = configs.grantedRemovingTabIds.join(',');
+  setTimeout(() => {
+    if (configs.grantedRemovingTabIds.join(',') == lastGranted)
+      configs.grantedRemovingTabIds = [];
+  }, 1000);
+}
 
 Tab.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)

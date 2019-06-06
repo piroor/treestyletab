@@ -574,12 +574,21 @@ export async function confirmToCloseTabs(tabs, _options = {}) {
       configs.lastConfirmedToCloseTabs = Date.now();
       configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
+      reserveToClearGrantedRemovingTabs();
       return true;
     default:
       return false;
   }
 }
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
+
+function reserveToClearGrantedRemovingTabs() {
+  const lastGranted = configs.grantedRemovingTabIds.join(',');
+  setTimeout(() => {
+    if (configs.grantedRemovingTabIds.join(',') == lastGranted)
+      configs.grantedRemovingTabIds = [];
+  }, 1000);
+}
 
 async function confirmToAutoGroupNewTabs(tabIds) {
   const count = tabIds.length;
