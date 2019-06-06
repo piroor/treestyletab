@@ -559,9 +559,10 @@ async function onBackgroundMessage(message) {
           !tab ||
           tab.active)
         break;
-      const activeTab = Tab.getActiveTab(tab.windowId);
+      const firstHighlightedNormalTab = Tab.getHighlightedTabs(tab.windowId, { first: true, pinned: false })[0];
+      const anchorTab                 = firstHighlightedNormalTab || Tab.getActiveTab(tab.windowId);
       reserveToScrollToTab(tab, {
-        anchor:            !tab.pinned && isTabInViewport(activeTab) && activeTab,
+        anchor:            !anchorTab.pinned && isTabInViewport(anchorTab) && anchorTab,
         notifyOnOutOfView: true
       });
     }; break;
