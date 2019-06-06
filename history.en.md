@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.0.16 (2019.6.7)
    * Auto-group children of a tab with a temporary group tab, when it is going to be pinned.
    * Bundle a pinned tab with a group tab for children of the pinned tab more tightly, and highlight (and treat similar to active) each other when one of them is active.
    * Calculate tree structure for moved/inserted tabs more correctly when there is any hidden child tab. This is mainly environments with a Firefox preference `browser.tabs.insertAfterCurrent`=true.
