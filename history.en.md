@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Auto-group children of a tab with a temporary group tab, when it is going to be pinned.
+   * Bundle a pinned tab with a group tab for children of the pinned tab more tightly, and highlight (and treat similar to active) each other when one of them is active.
+   * Calculate tree structure for moved/inserted tabs more correctly when there is any hidden child tab. This is mainly environments with a Firefox preference `browser.tabs.insertAfterCurrent`=true.
+   * Scroll the sidebar to multiselected inactive tabs if possible.
+   * Reveal deeply hidden debug options (including "Import" and "Export" buttons for all configs) just under the "Development" section of the options page directly.
+   * Show internal ID on each tab in the debug mode by default, without default user stylesheet.
+   * Unhighlight non-multiselected tabs on Sidebar, Metal and Vertigo theme correctly. (regression)
+   * Show active pinned faviconized tab with active background color on the Metal theme. (regression)
    * API for other addons: Allow to call APIs from addons without registering. (regression)
    * API for other addons: Send `ready` notifications for last registered addons correctly. If you have any uninitialized helper addons, you need to reload them manually to re-register. (regression)
  - 3.0.15 (2019.5.28)
