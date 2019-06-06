@@ -132,16 +132,18 @@ function handleNewActiveTab(tab, info = {}) {
 }
 
 async function tryHighlightBundledTab(tab, info) {
-  const bundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
-  for (const tab of bundledTabs.values()) {
-    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
-  }
-
   let bundledTab;
   if (tab.pinned)
     bundledTab = Tab.getGroupTabForOpener(tab);
   else if (tab.$TST.isGroupTab)
     bundledTab = Tab.getOpenerFromGroupTab(tab);
+
+  const oldBundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
+  for (const tab of oldBundledTabs.values()) {
+    if (tab == bundledTab)
+      continue;
+    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+  }
 
   if (!bundledTab)
     return;
