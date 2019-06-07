@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.0.17 (2019.6.7)
+   * Apply updated tab properties to sidebar tabs more correctly. (regression on 3.0.16)
+   * Update `de` locale by SammysHP. Thanks!
  - 3.0.16 (2019.6.7)
    * Auto-group children of a tab with a temporary group tab, when it is going to be pinned.
    * Bundle a pinned tab with a group tab for children of the pinned tab more tightly, and highlight (and treat similar to active) each other when one of them is active.
