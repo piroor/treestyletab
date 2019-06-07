@@ -138,25 +138,6 @@ button {
   transition: margin-top var(--collapse-animation);
 }
 
-#subpanel-container {
-  top: auto;
-}
-
-#subpanel-container iframe {
-  border: none;
-  bottom: 0;
-  height: auto;
-  left: 0;
-  max-height: none;
-  max-width: 100%;
-  min-height: 0;
-  min-width: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-}
-
 #background {
   background-color: -moz-dialog; /* This is required to cover dummy elements. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
   pointer-events: none;
@@ -640,6 +621,41 @@ ul {
   animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
   display: block;
 }
+
+
+/* sub panel */
+
+#subpanel-container {
+  top: auto;
+  --resizer-size: 3px;
+}
+
+iframe#subpanel {
+  border: none;
+  bottom: 0;
+  height: auto;
+  left: 0;
+  max-height: none;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  position: absolute;
+  right: 0;
+  top: var(--resizer-size);
+  width: 100%;
+}
+
+#subpanel-resizer {
+  background: var(--tab-surface);
+  border-top: 1px solid var(--tab-border);
+  cursor: ns-resize;
+  height: calc(var(--resizer-size) - 1px);
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 
 
 /* fake context menu */
