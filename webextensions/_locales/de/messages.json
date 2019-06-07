@@ -19,7 +19,7 @@
   "command_focusFirstChild":       { "message": "Zum ersten untergeordneten Tab wechseln" },
   "command_focusLastChild":        { "message": "Zum letzten untergeordneten Tab wechseln" },
   "command_focusPreviousSibling":  { "message": "Zum vorherigen benachbarten Tab wechseln" },
-  "command_focusNextSibling":      { "message": "Zum vnächsten benachbarten Tab wechseln" },
+  "command_focusNextSibling":      { "message": "Zum nächsten benachbarten Tab wechseln" },
   "command_tabbarUp":              { "message": "Zeilenweise in Tabs nach oben scrollen" },
   "command_tabbarPageUp":          { "message": "Seitenweise in Tabs nach oben scrollen" },
   "command_tabbarHome":            { "message": "Zum ersten Tab scrollen" },
@@ -159,10 +159,6 @@
   "message_startup_description_key": { "message": "\"F1\" Taste" },
   "message_startup_description_2": { "message": " oder klicke auf den " },
   "message_startup_description_3": { "message": " Button in der Symbolleiste um die Sidebar zu aktivieren." },
-  "message_startup_migrateSessions_before": { "message": "Die Baumstruktur von Tabs, die mit Firefox 56 oder älter erstellt wurden, wird nicht automatisch übernommen. Siehe " },
-  "message_startup_migrateSessions_link_label": { "message": "die Anleitung zur manuellen Migration der Baum-Inhalte" },
-  "message_startup_migrateSessions_after": { "message": "." },
-  "migrateSessions_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
 
   "message_startup_requestPermissions_description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
@@ -218,13 +214,6 @@
   "config_sidebarDirection_ltr": { "message": "Von links nach rechts" },
   "config_sidebarDirection_rtl": { "message": "Von rechts nach links" },
 
-  "config_scrollbarMode_caption": { "message": "Bildlaufleiste:" },
-  "config_scrollbarMode_default": { "message": "Standard" },
-  "config_scrollbarMode_narrow":  { "message": "Schmal" },
-  "config_scrollbarMode_overlay": { "message": "Überlagert" },
-  "config_scrollbarMode_hide":    { "message": "Ausblenden" },
-  "config_scrollbarMode_descriptionForMac": { "message": "*\"Overlay\" funktioniert nur bei neueren Versionen von macOS." },
-
   "config_style_caption": { "message": "Design" },
   "config_style_plain": { "message": "Pur" },
   "config_style_plain_dark": { "message": "Pur dunkel" },
@@ -246,6 +235,8 @@
   "config_maxTreeLevel_after": { "message": "Stufen (*Negative Werte bedeuten \"unbegrenzt\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Zeige " },
+  "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " oder weniger Tabs für jede Reihe (*0 oder weniger bedeutet automatische Bestimmung)" },
   "config_animation_label": { "message": "Animationen aktivieren" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Eingeklappte untergeordnete Tabs als Tooltip anzeigen" },
   "config_applyThemeColorToIcon_label": { "message": "Wende Designfarbe auf die Toolbar-Schaltfläche an" },
@@ -322,6 +313,7 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "Bestätige Gruppierung von Tabs" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Tabs automatisch gruppieren, die aus dem gleichen angehefteten Tab heraus geöffnet werden" },
+  "config_renderTreeInGroupTabs_label": { "message": "Zeige Baum in Gruppen-Tab" },
 
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Die Tab-Umgebung des übergeordneten Tabs an einen neuen leeren Tab vererben" },
 
@@ -396,12 +388,21 @@
   "config_simulateCloseTabByDblclick_label": { "message": "Tabs per Doppelklick schließen (*Simuliert Firefox eingebautes Verhalten für \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Verwende Schnittstelle zur Mehrfachauswahl von Tabs um den Tab-Fokus zu steuern (*hängt von der eingebauten Einstellung von Firefox \"browser.tabs.multiselect\"=\"true\" ab)" },
 
-  "config_userStyleRules_label": { "message": "Style-Regeln für Sidebar-Inhalte" },
+  "config_userStyleRules_label": { "message": "Zusätzliche Style-Regeln für Sidebar-Inhalte" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
   "config_userStyleRules_description_link_label": { "message": "Codebeispiele im TST Wiki" },
   "config_userStyleRules_description_after": { "message": "." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Folgende Eigenschaften sind per \"var()\" basierend auf dem aktuellen Browser-Design verfügbar:" },
+
+
+
+  "config_addons_caption": { "message": "Zusätzliche Funktionen über andere Erweiterungen" },
+
+  "config_addons_description_before": { "message": "Es existieren " },
+  "config_addons_description_link_label": { "message": "Erweiterungen, welche TST erweitern" },
+  "config_addons_description_after": { "message": ". Probiere sie aus, wenn Du mehr Funktionen in der Sidebar von TST haben möchtest." },
+  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
   "config_externaladdonpermissions_label": { "message": "Berechtigungen für API-Zugriffe von anderen Erweiterungen" },
   "config_externaladdonpermissions_description": { "message": "Hier zugelassene Erweiterungen erhalten Zugriff auf detaillierte Tab-Informationen und Tabs in privaten Fenstern, <em>durch die Berechtigungen von Tree Style Tab</em>, auch wenn die Berechtigungen der Erweiterung selbst durch Firefox nicht erteilt wurden. <em>Berechtigungen nicht erteilen, wenn der Erweiterung nicht vertraut wird.</em>" },
@@ -429,13 +430,8 @@
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
   "config_useCachedTree_description": { "message": "*Sollte es zu instabilem Verhalten der Baumstruktur kommen, kann es helfen, diese Einstellung zu deaktivieren und wieder zu aktivieren, um den Cache zu erneuern." },
   "config_acceleratedTabCreation_label": { "message": "Operationen zu neu geöffneten Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
-  "config_acceleratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "Millisekunden dauert." },
-  "config_sidebarScrollbarPosition_caption": { "message": "Position der Bildlaufleiste:" },
-  "config_sidebarScrollbarPosition_auto": { "message": "Automatisch" },
-  "config_sidebarScrollbarPosition_left": { "message": "Links" },
-  "config_sidebarScrollbarPosition_right": { "message": "Rechts" },
   "config_labelOverflowStyle_caption": { "message": "Zu lange Beschriftung von Tabs:" },
   "config_labelOverflowStyle_fade":    { "message": "Ausblenden (bessere Sichtbarkeit)" },
   "config_labelOverflowStyle_crop":    { "message": "Abschneiden mit \"..\" (bessere Leistung)" },
