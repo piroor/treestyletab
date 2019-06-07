@@ -17,26 +17,36 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 export const onResized = new EventListenerManager();
 
 let mTargetWindow;
+let mInitialized = false;
 
 const mTabBarContainer = document.querySelector('#tabbar-container');
-const mSubPanel        = document.querySelector('#subpanel');
 const mContainer       = document.querySelector('#subpanel-container');
 const mResizer         = document.querySelector('#subpanel-resizer');
 
-mSubPanel.style.height = 0;
+// Don't put iframe statically, because it predefined iframe produces
+// reflowing on the startup unexpectedly.
+const mSubPanel = document.createElement('iframe');
+mSubPanel.setAttribute('id', 'subpanel');
+mSubPanel.setAttribute('type', 'content');
+mSubPanel.setAttribute('src', 'about:blank');
 
 let mHeight = 0;
 let mDragStartY = 0;
 let mDragStartHeight = 0;
 
+applyHeight();
+
 export async function init() {
   mTargetWindow = TabsStore.getWindow();
+  mInitialized = true;
 
   const [url, height] = await Promise.all([
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_URL).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch(ApiTabs.createErrorHandler())
   ]);
-  mHeight = height || 1;
+  mHeight = height || 0;
+
+  mContainer.appendChild(mSubPanel);
 
   load({ url });
   applyHeight();
@@ -51,6 +61,8 @@ function applyHeight() {
   mContainer.style.height = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
   mSubPanel.style.height = `${mHeight}px`;
   mTabBarContainer.style.bottom = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+  if (!mInitialized)
+    return;
   onResized.dispatch();
   browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
 }
