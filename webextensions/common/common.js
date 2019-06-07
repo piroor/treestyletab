@@ -49,6 +49,8 @@ export const configs = new Configs({
   zoomable: false,
   showCollapsedDescendantsByTooltip: true,
 
+  subPanelResizerSize: '0.25em',
+
 
   // context menu
   fakeContextMenu: true, // obsolete, migrated to emulateDefaultContextMenu

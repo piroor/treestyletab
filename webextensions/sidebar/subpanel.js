@@ -23,9 +23,7 @@ const mSubPanel        = document.querySelector('#subpanel');
 const mContainer       = document.querySelector('#subpanel-container');
 const mResizer         = document.querySelector('#subpanel-resizer');
 
-mContainer.style.height = mSubPanel.style.height = 0;
-
-const MIN_HEIGHT = 3;
+mSubPanel.style.height = 0;
 
 let mHeight = 0;
 let mDragStartY = 0;
@@ -33,25 +31,6 @@ let mDragStartHeight = 0;
 
 export async function init() {
   mTargetWindow = TabsStore.getWindow();
-
-  mResizer.addEventListener('mousedown', event => {
-    event.stopPropagation();
-    event.preventDefault();
-    mResizer.setCapture(true);
-    mDragStartY = event.clientY;
-    mDragStartHeight = mHeight;
-    mResizer.addEventListener('mousemove', onMouseMove);
-  });
-
-  mResizer.addEventListener('mouseup', event => {
-    mResizer.removeEventListener('mousemove', onMouseMove);
-    event.stopPropagation();
-    event.preventDefault();
-    document.releaseCapture();
-    mHeight = Math.max(MIN_HEIGHT, mDragStartHeight - (event.clientY - mDragStartY));
-    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
-    applyHeight();
-  });
 
   const [url, height] = await Promise.all([
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_URL).catch(ApiTabs.createErrorHandler()),
@@ -68,15 +47,45 @@ export function load(params = {}) {
 }
 
 function applyHeight() {
-  mContainer.style.height = `${mHeight}px`;
-  mSubPanel.style.height = `calc(${mHeight}px - var(--resizer-size))`;
-  mTabBarContainer.style.bottom = `${mHeight}px`;
+  mHeight = Math.max(0, mHeight);
+  mContainer.style.height = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+  mSubPanel.style.height = `${mHeight}px`;
+  mTabBarContainer.style.bottom = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
   onResized.dispatch();
+  browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
 }
+
+mResizer.addEventListener('mousedown', event => {
+  event.stopPropagation();
+  event.preventDefault();
+  mResizer.setCapture(true);
+  mDragStartY = event.clientY;
+  mDragStartHeight = mHeight;
+  mResizer.addEventListener('mousemove', onMouseMove);
+});
+
+mResizer.addEventListener('mouseup', event => {
+  mResizer.removeEventListener('mousemove', onMouseMove);
+  event.stopPropagation();
+  event.preventDefault();
+  document.releaseCapture();
+  mHeight = mDragStartHeight - (event.clientY - mDragStartY);
+  applyHeight();
+});
+
+mResizer.addEventListener('dblclick', async event => {
+  event.stopPropagation();
+  event.preventDefault();
+  const lastEffectiveHeight = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT).catch(ApiTabs.createErrorHandler());
+  if (mHeight > 0)
+    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
+  mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || Math.floor(window.innerHeight * 0.5));
+  applyHeight();
+});
 
 function onMouseMove(event) {
   event.stopPropagation();
   event.preventDefault();
-  mHeight = Math.max(MIN_HEIGHT, mDragStartHeight - (event.clientY - mDragStartY));
+  mHeight = mDragStartHeight - (event.clientY - mDragStartY);
   applyHeight();
 }
