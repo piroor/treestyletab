@@ -835,7 +835,7 @@ function tryApplyUpdate(update) {
   if (!tab)
     return;
 
-  const highlightedChanged = 'highlighted' in update.updatedProperties;
+  const highlightedChanged = update.updatedProperties && 'highlighted' in update.updatedProperties;
 
   if (update.updatedProperties) {
     for (const key of Object.keys(update.updatedProperties)) {
