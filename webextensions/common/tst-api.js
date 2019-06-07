@@ -405,7 +405,7 @@ function unregisterAddon(id) {
   delete mGroupingBlockedBy[id];
 }
 
-function getAddons() {
+export function getAddons() {
   return mAddons.entries();
 }
 

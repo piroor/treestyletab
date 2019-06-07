@@ -649,16 +649,32 @@ iframe#subpanel {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  line-height: 1;
   margin: 0;
-  padding: 0.2em;
+  padding: 0.3em 0.2em 0.2em;
 }
 
-#subpanel-chooser {
+#subpanel-header-main {
   flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis:
+}
+
+#subpanel-selector-anchor,
+#subpanel-toggler {
+  background: none;
+  border: none;
+  color: var(--tab-text);
+  padding: 0 auto;
+}
+
+#subpanel-selector-anchor {
+  cursor: default;
 }
 
 #subpanel-toggler {
   cursor: default;
+  max-width: 1.5em;
 }
 
 #subpanel-container.collapsed #subpanel-toggler::before {

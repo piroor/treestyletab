@@ -15,6 +15,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
+import MenuUI from '/extlib/MenuUI.js';
 
 export const onResized = new EventListenerManager();
 
@@ -24,6 +25,8 @@ let mInitialized = false;
 const mTabBarContainer = document.querySelector('#tabbar-container');
 const mContainer       = document.querySelector('#subpanel-container');
 const mHeader          = document.querySelector('#subpanel-header');
+const mSelector        = document.querySelector('#subpanel-selector');
+const mSelectorAnchor  = document.querySelector('#subpanel-selector-anchor');
 const mToggler         = document.querySelector('#subpanel-toggler');
 
 // Don't put iframe statically, because it predefined iframe produces
@@ -51,6 +54,7 @@ export async function init() {
   mHeight = height || 0;
 
   mContainer.appendChild(mSubPanel);
+  updateSelector();
 
   applyProvider(providerId);
 
@@ -90,7 +94,14 @@ function applyProvider(id) {
   if (provider &&
       provider.subPanel) {
     mProviderId = id;
+    for (const item of mSelector.querySelectorAll('.radio')) {
+      item.classList.remove('checked');
+    }
+    const activeItem = mSelector.querySelector(`[data-value="${id}"]`);
+    if (activeItem)
+      activeItem.classList.add('checked');
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
+    mSelectorAnchor.textContent = provider.subPanel.title || provider.name || provider.id;
     load(provider.subPanel);
   }
   else {
@@ -152,7 +163,7 @@ async function toggle() {
 }
 
 mHeader.addEventListener('mousedown', event => {
-  if (event.target == mToggler)
+  if (event.target.localName == 'button')
     return;
   event.stopPropagation();
   event.preventDefault();
@@ -163,7 +174,7 @@ mHeader.addEventListener('mousedown', event => {
 });
 
 mHeader.addEventListener('mouseup', event => {
-  if (event.target == mToggler)
+  if (event.target.localName == 'button')
     return;
   mHeader.removeEventListener('mousemove', onMouseMove);
   event.stopPropagation();
@@ -174,7 +185,7 @@ mHeader.addEventListener('mouseup', event => {
 });
 
 mHeader.addEventListener('dblclick', event => {
-  if (event.target == mToggler)
+  if (event.target.localName == 'button')
     return;
   event.stopPropagation();
   event.preventDefault();
@@ -192,4 +203,44 @@ function onMouseMove(event) {
   event.preventDefault();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
   update();
+}
+
+
+function updateSelector() {
+  const range = document.createRange();
+  range.selectNodeContents(mSelector);
+  range.deleteContents();
+
+  const items = [];
+  for (const [id, addon] of TSTAPI.getAddons()) {
+    if (!addon.subPanel)
+      continue;
+    const item = document.createElement('li');
+    item.classList.add('radio');
+    item.dataset.value = id;
+    item.textContent   = addon.subPanel.title || addon.name || id;
+    items.push(item);
+  }
+
+  items.sort((a, b) => a.textContent < b.textContent ? -1 : 1);
+
+  const itemsFragment = document.createDocumentFragment();
+  for (const item of items) {
+    itemsFragment.appendChild(item);
+  }
+  range.insertNode(itemsFragment);
+  range.detach();
+}
+
+mSelector.ui = new MenuUI({
+  root:       mSelector,
+  appearance: 'panel',
+  onCommand:  onSelect,
+  animationDuration: configs.animation ? configs.collapseDuration : 0.001
+});
+
+function onSelect(item, event) {
+  if (item.dataset.value)
+    applyProvider(item.dataset.value);
+  mSelector.ui.close();
 }
