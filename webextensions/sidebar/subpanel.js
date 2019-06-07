@@ -49,11 +49,11 @@ export async function init() {
   mContainer.appendChild(mSubPanel);
 
   load({ url });
-  applyHeight();
 }
 
 export function load(params = {}) {
   mSubPanel.setAttribute('src', params.url || 'about:blank');
+  applyHeight();
 }
 
 function applyHeight() {
