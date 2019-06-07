@@ -590,7 +590,8 @@ ul {
 }
 
 .newtab-action-selector-anchor::before,
-.contextual-identities-selector-anchor::before {
+.contextual-identities-selector-anchor::before,
+#subpanel-toggler::before {
   content: "▼";
   font-size: 0.65em;
   margin: 0.125em;
@@ -641,13 +642,27 @@ iframe#subpanel {
   width: 100%;
 }
 
-#subpanel-resizer {
+#subpanel-header {
   background: var(--tab-surface);
   border-top: 1px solid var(--tab-border);
   cursor: ns-resize;
-  height: calc(var(--subpanel-resizer-size) - 1px);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   margin: 0;
-  padding: 0;
+  padding: 0.2em;
+}
+
+#subpanel-chooser {
+  flex-grow: 1;
+}
+
+#subpanel-toggler {
+  cursor: default;
+}
+
+#subpanel-container.collapsed #subpanel-toggler::before {
+  content: "▲";
 }
 
 

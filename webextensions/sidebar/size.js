@@ -70,7 +70,5 @@ export function init() {
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
-
-    --subpanel-resizer-size: ${configs.subPanelResizerSize};
   }`;
 }

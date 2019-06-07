@@ -23,7 +23,8 @@ let mInitialized = false;
 
 const mTabBarContainer = document.querySelector('#tabbar-container');
 const mContainer       = document.querySelector('#subpanel-container');
-const mResizer         = document.querySelector('#subpanel-resizer');
+const mHeader          = document.querySelector('#subpanel-header');
+const mToggler         = document.querySelector('#subpanel-toggler');
 
 // Don't put iframe statically, because it predefined iframe produces
 // reflowing on the startup unexpectedly.
@@ -116,15 +117,21 @@ function update() {
   const isBlank = mSubPanel.src == '' || mSubPanel.src == 'about:blank';
 
   if (isBlank) {
+    mContainer.classList.add('collapsed');
     mContainer.style.visibility = mSubPanel.style.visibility = 'collapse';
     mTabBarContainer.style.bottom = 0;
   }
   else {
     mHeight = Math.max(0, mHeight);
+    if (mHeight == 0)
+      mContainer.classList.add('collapsed');
+    else
+      mContainer.classList.remove('collapsed');
     mContainer.style.visibility = mSubPanel.style.visibility = 'visible';
-    mContainer.style.height = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+    const headerSize = mHeader.getBoundingClientRect().height;
+    mContainer.style.height = `${mHeight + headerSize}px`;
     mSubPanel.style.height = `${mHeight}px`;
-    mTabBarContainer.style.bottom = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+    mTabBarContainer.style.bottom = `${mHeight + headerSize}px`;
   }
 
   if (!mInitialized)
@@ -136,17 +143,29 @@ function update() {
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
 }
 
-mResizer.addEventListener('mousedown', event => {
+async function toggle() {
+  const lastEffectiveHeight = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT).catch(ApiTabs.createErrorHandler());
+  if (mHeight > 0)
+    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
+  mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || getDefaultHeight());
+  update();
+}
+
+mHeader.addEventListener('mousedown', event => {
+  if (event.target == mToggler)
+    return;
   event.stopPropagation();
   event.preventDefault();
-  mResizer.setCapture(true);
+  mHeader.setCapture(true);
   mDragStartY = event.clientY;
   mDragStartHeight = mHeight;
-  mResizer.addEventListener('mousemove', onMouseMove);
+  mHeader.addEventListener('mousemove', onMouseMove);
 });
 
-mResizer.addEventListener('mouseup', event => {
-  mResizer.removeEventListener('mousemove', onMouseMove);
+mHeader.addEventListener('mouseup', event => {
+  if (event.target == mToggler)
+    return;
+  mHeader.removeEventListener('mousemove', onMouseMove);
   event.stopPropagation();
   event.preventDefault();
   document.releaseCapture();
@@ -154,14 +173,18 @@ mResizer.addEventListener('mouseup', event => {
   update();
 });
 
-mResizer.addEventListener('dblclick', async event => {
+mHeader.addEventListener('dblclick', event => {
+  if (event.target == mToggler)
+    return;
   event.stopPropagation();
   event.preventDefault();
-  const lastEffectiveHeight = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT).catch(ApiTabs.createErrorHandler());
-  if (mHeight > 0)
-    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
-  mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || getDefaultHeight());
-  update();
+  toggle();
+});
+
+mToggler.addEventListener('click', event => {
+  event.stopPropagation();
+  event.preventDefault();
+  toggle();
 });
 
 function onMouseMove(event) {
