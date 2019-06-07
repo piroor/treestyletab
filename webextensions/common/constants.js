@@ -206,6 +206,9 @@ export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
+export const kWINDOW_STATE_SUBPANEL_PROVIDER_ID = 'subpanel-provider-id';
+export const kWINDOW_STATE_SUBPANEL_HEIGHT = 'subpanel-height';
+export const kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT = 'subpanel-effective-height';
 export const kWINDOW_STATE_CACHED_TABS     = 'cached-tabs';
 export const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
 export const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';
