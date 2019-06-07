@@ -41,7 +41,7 @@ let mDragStartY = 0;
 let mDragStartHeight = 0;
 let mProviderId = null;
 
-update();
+updateLayout();
 
 export async function init() {
   mTargetWindow = TabsStore.getWindow();
@@ -56,7 +56,16 @@ export async function init() {
   mContainer.appendChild(mSubPanel);
   updateSelector();
 
-  applyProvider(providerId);
+  if (providerId) {
+    applyProvider(providerId);
+  }
+  else {
+    const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
+    if (lastProvider && lastProvider.subPanel)
+      applyProvider(lastProvider.id);
+    else if (mSelector.hasChildNodes())
+      applyProvider(mSelector.firstChild.dataset.value);
+  }
 
   browser.runtime.onMessage.addListener((message, _sender, _respond) => {
     if (!message ||
@@ -102,7 +111,10 @@ function applyProvider(id) {
       activeItem.classList.add('checked');
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
     mSelectorAnchor.textContent = provider.subPanel.title || provider.name || provider.id;
-    load(provider.subPanel);
+    if (mHeight > 0)
+      load(provider.subPanel);
+    else
+      load();
   }
   else {
     load();
@@ -121,13 +133,11 @@ async function load(params) {
     await wait(0);
   }
   mSubPanel.src = url;
-  update();
+  updateLayout();
 }
 
-function update() {
-  const isBlank = mSubPanel.src == '' || mSubPanel.src == 'about:blank';
-
-  if (isBlank) {
+function updateLayout() {
+  if (!mProviderId && !mSelector.hasChildNodes()) {
     mContainer.classList.add('collapsed');
     mContainer.style.visibility = mSubPanel.style.visibility = 'collapse';
     mTabBarContainer.style.bottom = 0;
@@ -143,6 +153,13 @@ function update() {
     mContainer.style.height = `${mHeight + headerSize}px`;
     mSubPanel.style.height = `${mHeight}px`;
     mTabBarContainer.style.bottom = `${mHeight + headerSize}px`;
+
+    if (mHeight > 0 &&
+        (!mSubPanel.src || mSubPanel.src == 'about:blank')) {
+      // delayed load
+      const provider = TSTAPI.getAddon(mProviderId);
+      load(provider && provider.subPanel);
+    }
   }
 
   if (!mInitialized)
@@ -150,7 +167,7 @@ function update() {
 
   onResized.dispatch();
 
-  if (!isBlank)
+  if (mProviderId)
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
 }
 
@@ -159,7 +176,7 @@ async function toggle() {
   if (mHeight > 0)
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
   mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || getDefaultHeight());
-  update();
+  updateLayout();
 }
 
 mHeader.addEventListener('mousedown', event => {
@@ -181,7 +198,7 @@ mHeader.addEventListener('mouseup', event => {
   event.preventDefault();
   document.releaseCapture();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
-  update();
+  updateLayout();
 });
 
 mHeader.addEventListener('dblclick', event => {
@@ -202,7 +219,7 @@ function onMouseMove(event) {
   event.stopPropagation();
   event.preventDefault();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
-  update();
+  updateLayout();
 }
 
 
