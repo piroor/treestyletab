@@ -57,14 +57,27 @@ export function load(params = {}) {
 }
 
 function applyHeight() {
-  mHeight = Math.max(0, mHeight);
-  mContainer.style.height = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
-  mSubPanel.style.height = `${mHeight}px`;
-  mTabBarContainer.style.bottom = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+  const isBlank = mSubPanel.src == '' || mSubPanel.src == 'about:blank';
+
+  if (isBlank) {
+    mContainer.style.visibility = mSubPanel.style.visibility = 'collapse';
+    mTabBarContainer.style.bottom = 0;
+  }
+  else {
+    mHeight = Math.max(0, mHeight);
+    mContainer.style.visibility = mSubPanel.style.visibility = 'visible';
+    mContainer.style.height = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+    mSubPanel.style.height = `${mHeight}px`;
+    mTabBarContainer.style.bottom = `calc(${mHeight}px + var(--subpanel-resizer-size))`;
+  }
+
   if (!mInitialized)
     return;
+
   onResized.dispatch();
-  browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
+
+  if (!isBlank)
+    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
 }
 
 mResizer.addEventListener('mousedown', event => {
