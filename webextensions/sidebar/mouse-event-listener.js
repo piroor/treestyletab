@@ -36,6 +36,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -47,6 +48,8 @@ import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+import * as HandleTabMultiselect from '/background/handle-tab-multiselect.js';
 
 function log(...args) {
   internalLogger('sidebar/mouse-event-listener', ...args);
@@ -331,37 +334,62 @@ async function onMouseUp(event) {
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
-  if (lastMousedown)
-    await lastMousedown.promisedMousedownNotified;
+  if (!lastMousedown)
+    return;
 
   const treeItem = livingTab && new TSTAPI.TreeItem(livingTab);
-  let promisedCanceled = Promise.resolve(false);
-  if (treeItem && lastMousedown) {
-    const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-      type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
-      tab:     treeItem,
-      window:  mTargetWindow,
-      windowId: mTargetWindow
-    }), { tabProperties: ['tab'] });
-    // don't wait here, because we need process following common operations
-    // even if this mouseup event is canceled.
-    promisedCanceled = results.then(results => results.some(result => result && result.result));
-  }
+  let promisedCanceled = null;
+  if (treeItem)
+    promisedCanceled = Promise.all([
+      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+        type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
+        tab:     treeItem,
+        window:  mTargetWindow,
+        windowId: mTargetWindow
+      }), { tabProperties: ['tab'] }),
 
-  if (!lastMousedown ||
-      lastMousedown.expired ||
+      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+        type: TSTAPI.kNOTIFY_TAB_CLICKED,
+        tab:  treeItem
+      }), { tabProperties: ['tab'] }),
+
+      lastMousedown.promisedMousedownNotified
+    ])
+      .then(results => results.flat())
+      .then(results => results.some(result => result && result.result));
+
+  if (lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
       (livingTab && livingTab != Tab.get(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);
 
-  if (await promisedCanceled) {
+  if (promisedCanceled && await promisedCanceled) {
     log('onMouseUp: canceled / by other addons');
     return;
   }
 
   if (livingTab) {
+    log('Ready to handle click action on the tab');
+    // not canceled, then fallback to default behavior
+    const onRegularArea = (
+      !lastMousedown.detail.twisty &&
+      !lastMousedown.detail.soundButton &&
+      !lastMousedown.detail.closebox
+    );
+    const wasMultiselectionAction = (
+      onRegularArea &&
+      await HandleTabMultiselect.updateSelectionByTabClick(livingTab, lastMousedown.detail)
+    );
+    log(' => ', { onRegularArea, wasMultiselectionAction });
+    if (lastMousedown.detail.button == 0 &&
+        onRegularArea &&
+        !wasMultiselectionAction)
+      TabsInternalOperation.activateTab(livingTab, {
+        keepMultiselection: livingTab.highlighted
+      });
+
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
       const tabs = TreeBehavior.getClosingTabsFromParent(livingTab, {
