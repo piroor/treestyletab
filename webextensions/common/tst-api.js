@@ -554,14 +554,14 @@ function onBackendCommand(message, sender) {
         message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         message.id = sender.id;
         message.subPanel = message.subPanel || message.subpanel || null;
+        message.newlyInstalled = !configs.cachedExternalAddons.includes(sender.id);
         registerAddon(sender.id, message);
         browser.runtime.sendMessage({
           type:    kCOMMAND_BROADCAST_API_REGISTERED,
           sender:  sender,
           message: message
         }).catch(ApiTabs.createErrorSuppressor());
-        const index = configs.cachedExternalAddons.indexOf(sender.id);
-        if (index < 0)
+        if (message.newlyInstalled)
           configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
         return {
           grantedPermissions:   Array.from(getGrantedPermissionsForAddon(sender.id)).filter(permission => permission.startsWith('!')),

@@ -51,14 +51,7 @@ export async function init() {
 
   mContainer.appendChild(mSubPanel);
 
-  const provider = TSTAPI.getAddon(providerId);
-  if (provider && provider.subPanel) {
-    mProviderId = providerId;
-    load(provider.subPanel);
-  }
-  else {
-    load();
-  }
+  applyProvider(providerId);
 
   browser.runtime.onMessage.addListener((message, _sender, _respond) => {
     if (!message ||
@@ -71,9 +64,10 @@ export async function init() {
       case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
         wait(0).then(() => { // wait until addons are updated
           const provider = TSTAPI.getAddon(message.sender.id);
-          if (provider && provider.subPanel) {
-            mProviderId = message.sender.id;
-            load(provider.subPanel);
+          if (provider &&
+              (mProviderId == provider.id ||
+               provider.newlyInstalled)) {
+            applyProvider(provider.id);
           }
         });
         break;
@@ -88,9 +82,27 @@ export async function init() {
   });
 }
 
-export function load(params) {
+function applyProvider(id) {
+  const provider = TSTAPI.getAddon(id);
+  if (provider &&
+      provider.subPanel) {
+    mProviderId = id;
+    browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
+    load(provider.subPanel);
+  }
+  else {
+    load();
+  }
+}
+
+async function load(params) {
   params = params || {};
-  mSubPanel.setAttribute('src', params.url || 'about:blank');
+  const url = params.url || 'about:blank';
+  if (url == mSubPanel.src) {
+    mSubPanel.src = 'about:blank?'; // force reload
+    await wait(0);
+  }
+  mSubPanel.src = url;
   applyHeight();
 }
 
