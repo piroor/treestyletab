@@ -49,7 +49,7 @@ export const configs = new Configs({
   zoomable: false,
   showCollapsedDescendantsByTooltip: true,
 
-  subPanelResizerSize: '0.25em',
+  subPanelResizerSize: '0.3em',
 
 
   // context menu
