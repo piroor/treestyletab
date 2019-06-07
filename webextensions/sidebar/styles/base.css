@@ -107,8 +107,10 @@ button {
   font: message-box; /* this is same to Firefox's UI. */
 }
 
+#tabbar-container,
 #tabbar,
-#background {
+#background,
+#subpanel-container {
   bottom: 0;
   left: 0;
   margin: 0;
@@ -119,6 +121,11 @@ button {
   top: 0;
   z-index: 100;
 }
+
+#tabbar {
+  position: absolute;
+}
+
 #tabbar.overflow {
   overflow-y: scroll;
 }
@@ -129,6 +136,25 @@ button {
 
 :root.animation #tabbar {
   transition: margin-top var(--collapse-animation);
+}
+
+#subpanel-container {
+  top: auto;
+}
+
+#subpanel-container iframe {
+  border: none;
+  bottom: 0;
+  height: auto;
+  left: 0;
+  max-height: none;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
 }
 
 #background {
@@ -496,7 +522,7 @@ ul {
   justify-content: flex-end;
   left: 0;
   overflow: visible;
-  position: fixed;
+  position: absolute;
   right: 0;
   z-index: 100;
 }

@@ -41,6 +41,7 @@ import * as Color from './color.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
+import * as SubPanel from './subpanel.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -239,6 +240,10 @@ export async function init() {
         SidebarCache.reserveToUpdateCachedTabbar();
       }
       updateTabbarLayout({ justNow: true });
+      SubPanel.onResized.addListener(() => {
+        updateTabbarLayout();
+      });
+      SubPanel.init();
 
       SidebarTabs.init();
       Indent.reserveToUpdateVisualMaxTreeLevel();
