@@ -553,6 +553,7 @@ function onBackendCommand(message, sender) {
       return (async () => {
         message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         message.id = sender.id;
+        message.subPanel = message.subPanel || message.subpanel || null;
         registerAddon(sender.id, message);
         browser.runtime.sendMessage({
           type:    kCOMMAND_BROADCAST_API_REGISTERED,

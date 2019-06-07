@@ -6,11 +6,13 @@
 'use strict';
 
 import {
+  wait,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -33,6 +35,7 @@ mSubPanel.setAttribute('src', 'about:blank');
 let mHeight = 0;
 let mDragStartY = 0;
 let mDragStartHeight = 0;
+let mProviderId = null;
 
 applyHeight();
 
@@ -40,18 +43,53 @@ export async function init() {
   mTargetWindow = TabsStore.getWindow();
   mInitialized = true;
 
-  const [url, height] = await Promise.all([
-    browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_URL).catch(ApiTabs.createErrorHandler()),
+  const [providerId, height] = await Promise.all([
+    browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch(ApiTabs.createErrorHandler())
   ]);
   mHeight = height || 0;
 
   mContainer.appendChild(mSubPanel);
 
-  load({ url });
+  const provider = TSTAPI.getAddon(providerId);
+  if (provider && provider.subPanel) {
+    mProviderId = providerId;
+    load(provider.subPanel);
+  }
+  else {
+    load();
+  }
+
+  browser.runtime.onMessage.addListener((message, _sender, _respond) => {
+    if (!message ||
+        typeof message.type != 'string' ||
+        message.type.indexOf('treestyletab:') != 0)
+      return;
+
+    //log('onMessage: ', message, sender);
+    switch (message.type) {
+      case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
+        wait(0).then(() => { // wait until addons are updated
+          const provider = TSTAPI.getAddon(message.sender.id);
+          if (provider && provider.subPanel) {
+            mProviderId = message.sender.id;
+            load(provider.subPanel);
+          }
+        });
+        break;
+
+      case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
+        wait(0).then(() => { // wait until addons are updated
+          if (message.sender.id == mProviderId)
+            load();
+        });
+        break;
+    }
+  });
 }
 
-export function load(params = {}) {
+export function load(params) {
+  params = params || {};
   mSubPanel.setAttribute('src', params.url || 'about:blank');
   applyHeight();
 }
