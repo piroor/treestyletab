@@ -37,7 +37,7 @@ let mDragStartY = 0;
 let mDragStartHeight = 0;
 let mProviderId = null;
 
-applyHeight();
+update();
 
 export async function init() {
   mTargetWindow = TabsStore.getWindow();
@@ -67,6 +67,8 @@ export async function init() {
           if (provider &&
               (mProviderId == provider.id ||
                provider.newlyInstalled)) {
+            if (mHeight == 0)
+              mHeight = getDefaultHeight();
             applyProvider(provider.id);
           }
         });
@@ -95,6 +97,10 @@ function applyProvider(id) {
   }
 }
 
+function getDefaultHeight() {
+  return Math.floor(window.innerHeight * 0.5);
+}
+
 async function load(params) {
   params = params || {};
   const url = params.url || 'about:blank';
@@ -103,10 +109,10 @@ async function load(params) {
     await wait(0);
   }
   mSubPanel.src = url;
-  applyHeight();
+  update();
 }
 
-function applyHeight() {
+function update() {
   const isBlank = mSubPanel.src == '' || mSubPanel.src == 'about:blank';
 
   if (isBlank) {
@@ -145,7 +151,7 @@ mResizer.addEventListener('mouseup', event => {
   event.preventDefault();
   document.releaseCapture();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
-  applyHeight();
+  update();
 });
 
 mResizer.addEventListener('dblclick', async event => {
@@ -154,13 +160,13 @@ mResizer.addEventListener('dblclick', async event => {
   const lastEffectiveHeight = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT).catch(ApiTabs.createErrorHandler());
   if (mHeight > 0)
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
-  mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || Math.floor(window.innerHeight * 0.5));
-  applyHeight();
+  mHeight = mHeight > 0 ? 0 : (lastEffectiveHeight || getDefaultHeight());
+  update();
 });
 
 function onMouseMove(event) {
   event.stopPropagation();
   event.preventDefault();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
-  applyHeight();
+  update();
 }
