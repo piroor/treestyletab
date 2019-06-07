@@ -232,6 +232,9 @@ function onMouseDown(event) {
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(event),
     tab:           tab && tab.id,
+    tabId:         tab && tab.id,
+    window:        mTargetWindow,
+    windowId:      mTargetWindow,
     twisty:        EventUtils.isEventFiredOnTwisty(event),
     soundButton:   EventUtils.isEventFiredOnSoundButton(event),
     closebox:      EventUtils.isEventFiredOnClosebox(event),
@@ -259,12 +262,25 @@ function onMouseDown(event) {
     promisedMousedownNotified: Promise.resolve()
   };
 
-  mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
-    type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
-    window:   mTargetWindow,
-    windowId: mTargetWindow,
-    tabId:    tab && tab.id
-  })).catch(ApiTabs.createErrorHandler());
+  mousedown.promisedMousedownNotified = Promise.all([
+    browser.runtime.sendMessage({type: Constants.kNOTIFY_TAB_MOUSEDOWN })
+      .catch(ApiTabs.createErrorHandler()),
+
+    (async () => {
+      log('Constants.kNOTIFY_TAB_MOUSEDOWN');
+      await Tab.waitUntilTracked(mousedownDetail.tab);
+      const tab = Tab.get(mousedownDetail.tab)
+      if (!tab)
+        return [];
+
+      log('Sending message to listeners');
+      const treeItem = new TSTAPI.TreeItem(tab);
+      return await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
+        type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+        tab:  treeItem
+      }), { tabProperties: ['tab'] });
+    })()
+  ]).then(results => results[1]);
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {

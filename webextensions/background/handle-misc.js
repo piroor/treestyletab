@@ -30,10 +30,6 @@ import * as Commands from './commands.js';
 function log(...args) {
   internalLogger('background/handle-misc', ...args);
 }
-function logMouseEvent(...args) {
-  internalLogger('sidebar/mouse-event-listener', ...args);
-}
-
 
 let mInitialized = false;
 
@@ -307,22 +303,6 @@ function onMessage(message, sender) {
         }
         const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
         return { structure };
-      })();
-
-    case Constants.kNOTIFY_TAB_MOUSEDOWN:
-      return (async () => {
-        logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
-        await Tab.waitUntilTracked(message.tabId);
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return Promise.resolve([]);
-
-        logMouseEvent('Sending message to listeners');
-        const treeItem = new TSTAPI.TreeItem(tab);
-        return TSTAPI.sendMessage(Object.assign({}, message, {
-          type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          tab:  treeItem
-        }), { tabProperties: ['tab'] });
       })();
 
     case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
