@@ -676,6 +676,27 @@ iframe#subpanel {
   cursor: default;
 }
 
+#subpanel-selector-anchor > * {
+  pointer-events: none;
+}
+
+#subpanel-selector-anchor span.icon > img,
+#subpanel-selector span.icon > img {
+  height: 1em;
+  max-height: 1em;
+  max-width: 1em;
+  width: 1em;
+}
+
+#subpanel-selector-anchor span.icon > img:not([src]),
+#subpanel-selector span.icon > :not([src]) {
+  visibility: hidden;
+}
+
+#subpanel-selector span.icon {
+  margin-right: 0.25em;
+}
+
 #subpanel-toggler {
   cursor: default;
   max-width: 1.5em;

@@ -149,7 +149,15 @@ function applyProvider(id) {
     if (activeItem)
       activeItem.classList.add('checked');
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
-    mSelectorAnchor.textContent = provider.subPanel.title || provider.name || provider.id;
+
+    const icon = mSelectorAnchor.querySelector('.icon > img');
+    if (provider.icons && provider.icons['16'])
+      icon.src = provider.icons['16'];
+    else
+      icon.removeAttribute('src');
+
+    mSelectorAnchor.querySelector('.label').textContent = provider.subPanel.title || provider.name || provider.id;
+
     if (mHeight > 0)
       load(provider.subPanel);
     else
@@ -283,7 +291,12 @@ function updateSelector() {
     const item = document.createElement('li');
     item.classList.add('radio');
     item.dataset.value = id;
-    item.textContent   = addon.subPanel.title || addon.name || id;
+    const iconContainer = item.appendChild(document.createElement('span'));
+    iconContainer.classList.add('icon');
+    const icon = iconContainer.appendChild(document.createElement('img'));
+    if (addon.icons && addon.icons['16'])
+      icon.src = addon.icons['16'];
+    item.appendChild(document.createTextNode(addon.subPanel.title || addon.name || id));
     items.push(item);
   }
 
