@@ -268,7 +268,7 @@ mSelector.ui = new MenuUI({
   animationDuration: configs.animation ? configs.collapseDuration : 0.001
 });
 
-function onSelect(item, event) {
+function onSelect(item, _event) {
   if (item.dataset.value)
     applyProvider(item.dataset.value);
   mSelector.ui.close();
