@@ -29,8 +29,8 @@ const mSelector        = document.querySelector('#subpanel-selector');
 const mSelectorAnchor  = document.querySelector('#subpanel-selector-anchor');
 const mToggler         = document.querySelector('#subpanel-toggler');
 
-// Don't put iframe statically, because it predefined iframe produces
-// reflowing on the startup unexpectedly.
+// Don't put iframe statically, because statically embedded iframe
+// produces reflowing on the startup unexpectedly.
 const mSubPanel = document.createElement('iframe');
 mSubPanel.setAttribute('id', 'subpanel');
 mSubPanel.setAttribute('sandbox', [
