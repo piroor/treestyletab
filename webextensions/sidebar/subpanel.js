@@ -117,8 +117,8 @@ export async function init() {
 
     //log('onMessage: ', message, sender);
     switch (message.type) {
-      case TSTAPI.kTRY_OVERRIDE_CONTEXT:
-        prepareOverrideContext(message);
+      case TSTAPI.kSET_OVERRIDE_CONTEXT:
+        setOverrideContext(message);
         break;
     }
   });
@@ -153,6 +153,7 @@ function getDefaultHeight() {
 
 async function load(params) {
   params = params || {};
+  clearOverrideContext();
   const url = params.url || 'about:blank';
   if (url == mSubPanel.src) {
     mSubPanel.src = 'about:blank?'; // force reload
@@ -289,7 +290,7 @@ function onSelect(item, _event) {
 }
 
 
-function prepareOverrideContext(message) {
+function setOverrideContext(message) {
   mScreen.style.pointerEvents = 'auto';
   const dataset = mScreen.dataset;
   dataset.contextMenuContext = message.context;
