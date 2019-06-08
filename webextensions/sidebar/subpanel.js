@@ -28,6 +28,7 @@ const mHeader          = document.querySelector('#subpanel-header');
 const mSelector        = document.querySelector('#subpanel-selector');
 const mSelectorAnchor  = document.querySelector('#subpanel-selector-anchor');
 const mToggler         = document.querySelector('#subpanel-toggler');
+const mScreen          = document.querySelector('#subpanel-screen');
 
 // Don't put iframe statically, because statically embedded iframe
 // produces reflowing on the startup unexpectedly.
@@ -105,6 +106,19 @@ export async function init() {
           if (message.sender.id == mProviderId)
             load();
         });
+        break;
+    }
+  });
+
+  browser.runtime.onMessageExternal.addListener((message, sender) => {
+    if (!message ||
+        typeof message.type != 'string')
+      return;
+
+    //log('onMessage: ', message, sender);
+    switch (message.type) {
+      case TSTAPI.kTRY_OVERRIDE_CONTEXT:
+        prepareOverrideContext(message);
         break;
     }
   });
@@ -273,3 +287,53 @@ function onSelect(item, _event) {
     applyProvider(item.dataset.value);
   mSelector.ui.close();
 }
+
+
+function prepareOverrideContext(message) {
+  mScreen.style.pointerEvents = 'auto';
+  const dataset = mScreen.dataset;
+  dataset.contextMenuContext = message.context;
+  if ('bookmarkId' in message)
+    dataset.contextMenuBookmarkId = message.bookmarkId;
+  if ('showDefaults' in message)
+    dataset.contextMenuShowDefaults = message.showDefaults;
+  if ('tabId' in message)
+    dataset.contextMenuTabId = message.tabId;
+}
+
+export function tryOverrideContext(event) {
+  if (event.target != mScreen)
+    return false;
+
+  setTimeout(clearOverrideContext, 150);
+
+  const dataset = mScreen.dataset;
+  if (dataset.contextMenuContext) {
+    const contextOptions = {
+      context: dataset.contextMenuContext
+    };
+    if (dataset.contextMenuBookmarkId)
+      contextOptions.bookmarkId = dataset.contextMenuBookmarkId;
+    if (dataset.contextMenuShowDefaults)
+      contextOptions.showDefaults = dataset.contextMenuShowDefaults == 'true';
+    if (dataset.contextMenuTabId)
+      contextOptions.tabId = parseInt(dataset.contextMenuTabId);
+
+    browser.menus.overrideContext(contextOptions);
+    return true;
+  }
+  return false;
+}
+
+function clearOverrideContext() {
+  mScreen.style.pointerEvents = 'none';
+  const dataset = mScreen.dataset;
+  delete dataset.contextMenuBookmarkId;
+  delete dataset.contextMenuContext;
+  delete dataset.contextMenuShowDefaults;
+  delete dataset.contextMenuTabId;
+}
+
+mScreen.addEventListener('mousedown', () => {
+  clearOverrideContext();
+});
