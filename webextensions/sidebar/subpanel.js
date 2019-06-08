@@ -327,6 +327,8 @@ export function tryOverrideContext(event) {
   if (event.target != mScreen)
     return false;
 
+  // This delay is required because hiding of the context element
+  // blocks opening of the context menu.
   setTimeout(clearOverrideContext, 150);
 
   const dataset = mScreen.dataset;
@@ -357,5 +359,8 @@ function clearOverrideContext() {
 }
 
 mScreen.addEventListener('mousedown', () => {
-  clearOverrideContext();
+  // This delay is required to override context on macOS,
+  // because the context menu is shown just after this
+  // mousedown event.
+  setTimeout(clearOverrideContext, 150);
 });
