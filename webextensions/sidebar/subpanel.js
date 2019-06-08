@@ -41,10 +41,10 @@ mSubPanel.setAttribute('sandbox', [
   'allow-popups',
   //'allow-popups-to-escape-sandbox',
   'allow-presentation',
-  'allow-same-origin', // this must be alloed to run scripts of the subpanel itself
-  'allow-scripts'//, // this must be alloed to run scripts of the subpanel itself
-  //'allow-top-navigation', // this must be disallowed to prevent replacing the sidebar itself
-  //'allow-top-navigation-by-user-activation' // this must be disallowed to prevent replacing the sidebar itself
+  'allow-same-origin', // this must be alloed to run scripts in the subpanel itself
+  'allow-scripts'//, // this must be alloed to run scripts in the subpanel itself
+  //'allow-top-navigation', // this must be disallowed to prevent replacing the sidebar itself via "target" attribute of links or forms
+  //'allow-top-navigation-by-user-activation' // this must be disallowed to prevent replacing the sidebar itself via "target" attribute of links or forms
 ].join(' '));
 mSubPanel.setAttribute('src', 'about:blank');
 
