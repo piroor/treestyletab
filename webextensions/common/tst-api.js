@@ -27,6 +27,7 @@
 'use strict';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   log as internalLogger,
@@ -43,6 +44,8 @@ import Tab from './Tab.js';
 function log(...args) {
   internalLogger('common/tst-api', ...args);
 }
+
+export const onInitialized = new EventListenerManager();
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
@@ -470,6 +473,8 @@ export async function initAsBackend() {
   }));
   log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
+
+  onInitialized.dispatch();
 }
 
 browser.runtime.onMessage.addListener((message, _sender) => {
@@ -642,6 +647,8 @@ export async function initAsFrontend() {
   }
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
+
+  onInitialized.dispatch();
 }
 
 function importAddons(addons) {

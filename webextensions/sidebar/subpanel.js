@@ -57,8 +57,10 @@ let mProviderId = null;
 updateLayout();
 
 export async function init() {
-  mTargetWindow = TabsStore.getWindow();
+  if (mInitialized)
+    return;
   mInitialized = true;
+  mTargetWindow = TabsStore.getWindow();
 
   const [providerId, height] = await Promise.all([
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),
@@ -69,16 +71,10 @@ export async function init() {
   mContainer.appendChild(mSubPanel);
   updateSelector();
 
-  if (providerId) {
+  if (providerId)
     applyProvider(providerId);
-  }
-  else {
-    const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
-    if (lastProvider && lastProvider.subPanel)
-      applyProvider(lastProvider.id);
-    else if (mSelector.hasChildNodes())
-      applyProvider(mSelector.firstChild.dataset.value);
-  }
+  else
+    restoreLastProvider();
 
   browser.runtime.onMessage.addListener((message, _sender, _respond) => {
     if (!message ||
@@ -90,6 +86,7 @@ export async function init() {
     switch (message.type) {
       case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
         wait(0).then(() => { // wait until addons are updated
+          updateSelector();
           const provider = TSTAPI.getAddon(message.sender.id);
           if (provider &&
               (mProviderId == provider.id ||
@@ -98,13 +95,19 @@ export async function init() {
               mHeight = getDefaultHeight();
             applyProvider(provider.id);
           }
+          else {
+            restoreLastProvider();
+          }
         });
         break;
 
       case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
         wait(0).then(() => { // wait until addons are updated
-          if (message.sender.id == mProviderId)
+          updateSelector();
+          if (message.sender.id == mProviderId) {
             load();
+            restoreLastProvider();
+          }
         });
         break;
     }
@@ -124,11 +127,21 @@ export async function init() {
   });
 }
 
+TSTAPI.onInitialized.addListener(async () => {
+  await init();
+
+  const providerId = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler());
+  if (providerId)
+    applyProvider(providerId);
+  else
+    restoreLastProvider();
+});
+
 function applyProvider(id) {
   const provider = TSTAPI.getAddon(id);
   if (provider &&
       provider.subPanel) {
-    mProviderId = id;
+    configs.lastSelectedSubPanelProviderId = mProviderId = id;
     for (const item of mSelector.querySelectorAll('.radio')) {
       item.classList.remove('checked');
     }
@@ -145,6 +158,14 @@ function applyProvider(id) {
   else {
     load();
   }
+}
+
+function restoreLastProvider() {
+  const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
+  if (lastProvider && lastProvider.subPanel)
+    applyProvider(lastProvider.id);
+  else if (mSelector.hasChildNodes())
+    applyProvider(mSelector.firstChild.dataset.value);
 }
 
 function getDefaultHeight() {
