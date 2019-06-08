@@ -654,6 +654,10 @@ iframe#subpanel {
   padding: 0.3em 0.2em 0.2em;
 }
 
+#subpanel-container:not(.collapsed) #subpanel-header {
+  border-bottom: 1px solid var(--tab-border);
+}
+
 #subpanel-header-main {
   flex-grow: 1;
   overflow: hidden;
