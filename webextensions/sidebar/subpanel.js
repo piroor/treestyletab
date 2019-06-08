@@ -110,7 +110,7 @@ export async function init() {
     }
   });
 
-  browser.runtime.onMessageExternal.addListener((message, sender) => {
+  browser.runtime.onMessageExternal.addListener((message, _sender) => {
     if (!message ||
         typeof message.type != 'string')
       return;
