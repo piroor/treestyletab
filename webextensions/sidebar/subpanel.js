@@ -33,7 +33,19 @@ const mToggler         = document.querySelector('#subpanel-toggler');
 // reflowing on the startup unexpectedly.
 const mSubPanel = document.createElement('iframe');
 mSubPanel.setAttribute('id', 'subpanel');
-mSubPanel.setAttribute('type', 'content');
+mSubPanel.setAttribute('sandbox', [
+  'allow-forms',
+  'allow-modals',
+  //'allow-orientation-lock',
+  'allow-pointer-lock',
+  'allow-popups',
+  //'allow-popups-to-escape-sandbox',
+  'allow-presentation',
+  'allow-same-origin',
+  'allow-scripts'//,
+  //'allow-top-navigation',
+  //'allow-top-navigation-by-user-activation'
+].join(' '));
 mSubPanel.setAttribute('src', 'about:blank');
 
 let mHeight = 0;
