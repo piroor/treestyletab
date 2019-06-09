@@ -688,7 +688,10 @@ iframe#subpanel {
   width: 1em;
 }
 
-#subpanel-selector-anchor span.icon > img:not([src]),
+#subpanel-selector-anchor span.icon > img:not([src]) {
+  display: none;
+}
+
 #subpanel-selector span.icon > :not([src]) {
   visibility: hidden;
 }
