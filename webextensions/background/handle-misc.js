@@ -26,15 +26,10 @@ import * as Background from './background.js';
 import * as TabsGroup from './tabs-group.js';
 import * as Tree from './tree.js';
 import * as Commands from './commands.js';
-import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
 function log(...args) {
   internalLogger('background/handle-misc', ...args);
 }
-function logMouseEvent(...args) {
-  internalLogger('sidebar/mouse-event-listener', ...args);
-}
-
 
 let mInitialized = false;
 
@@ -308,61 +303,6 @@ function onMessage(message, sender) {
         }
         const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
         return { structure };
-      })();
-
-    case Constants.kNOTIFY_TAB_MOUSEDOWN:
-      return (async () => {
-        logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
-        await Tab.waitUntilTracked(message.tabId);
-        const tab = Tab.get(message.tabId);
-        if (!tab)
-          return;
-
-        logMouseEvent('Sending message to listeners');
-        const treeItem = new TSTAPI.TreeItem(tab);
-        const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
-          type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          tab:  treeItem
-        }), { tabProperties: ['tab'] });
-
-        // We must send tab-mouseup after tab-mousedown is notified.
-        // So, we return to the caller process and do this post process asynchronously.
-        mousedownNotified.then(async (results) => {
-          results = results.concat(
-            await TSTAPI.sendMessage(Object.assign({}, message, {
-              type: TSTAPI.kNOTIFY_TAB_CLICKED,
-              tab:  treeItem
-            }), { tabProperties: ['tab'] })
-          );
-          if (results.some(result => result && result.result))
-            return SidebarConnection.sendMessage({
-              type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
-              windowId: message.windowId,
-              button:   message.button
-            });
-
-          logMouseEvent('Ready to handle click action on the tab');
-
-          // not canceled, then fallback to default behavior
-          const onRegularArea = (
-            !message.twisty &&
-            !message.soundButton &&
-            !message.closebox
-          );
-          const wasMultiselectionAction = (
-            onRegularArea &&
-            await HandleTabMultiselect.updateSelectionByTabClick(tab, message)
-          );
-          logMouseEvent(' => ', { onRegularArea, wasMultiselectionAction });
-          if (message.button == 0 &&
-              onRegularArea &&
-              !wasMultiselectionAction)
-            TabsInternalOperation.activateTab(tab, {
-              keepMultiselection: tab.highlighted
-            });
-        });
-
-        return true;
       })();
 
     case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:

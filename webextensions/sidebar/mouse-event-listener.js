@@ -31,11 +31,13 @@ import MenuUI from '/extlib/MenuUI.js';
 import {
   log as internalLogger,
   wait,
+  dumpTab,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -229,6 +231,9 @@ function onMouseDown(event) {
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(event),
     tab:           tab && tab.id,
+    tabId:         tab && tab.id,
+    window:        mTargetWindow,
+    windowId:      mTargetWindow,
     twisty:        EventUtils.isEventFiredOnTwisty(event),
     soundButton:   EventUtils.isEventFiredOnSoundButton(event),
     closebox:      EventUtils.isEventFiredOnClosebox(event),
@@ -256,12 +261,25 @@ function onMouseDown(event) {
     promisedMousedownNotified: Promise.resolve()
   };
 
-  mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
-    type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
-    window:   mTargetWindow,
-    windowId: mTargetWindow,
-    tabId:    tab && tab.id
-  })).catch(ApiTabs.createErrorHandler());
+  mousedown.promisedMousedownNotified = Promise.all([
+    browser.runtime.sendMessage({type: Constants.kNOTIFY_TAB_MOUSEDOWN })
+      .catch(ApiTabs.createErrorHandler()),
+
+    (async () => {
+      log('Constants.kNOTIFY_TAB_MOUSEDOWN');
+      await Tab.waitUntilTracked(mousedownDetail.tab);
+      const tab = Tab.get(mousedownDetail.tab)
+      if (!tab)
+        return [];
+
+      log('Sending message to listeners');
+      const treeItem = new TSTAPI.TreeItem(tab);
+      return await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
+        type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+        tab:  treeItem
+      }), { tabProperties: ['tab'] });
+    })()
+  ]).then(results => results[1]);
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {
@@ -331,37 +349,62 @@ async function onMouseUp(event) {
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
-  if (lastMousedown)
-    await lastMousedown.promisedMousedownNotified;
+  if (!lastMousedown)
+    return;
 
   const treeItem = livingTab && new TSTAPI.TreeItem(livingTab);
-  let promisedCanceled = Promise.resolve(false);
-  if (treeItem && lastMousedown) {
-    const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-      type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
-      tab:     treeItem,
-      window:  mTargetWindow,
-      windowId: mTargetWindow
-    }), { tabProperties: ['tab'] });
-    // don't wait here, because we need process following common operations
-    // even if this mouseup event is canceled.
-    promisedCanceled = results.then(results => results.some(result => result && result.result));
-  }
+  let promisedCanceled = null;
+  if (treeItem)
+    promisedCanceled = Promise.all([
+      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+        type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
+        tab:     treeItem,
+        window:  mTargetWindow,
+        windowId: mTargetWindow
+      }), { tabProperties: ['tab'] }),
 
-  if (!lastMousedown ||
-      lastMousedown.expired ||
+      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+        type: TSTAPI.kNOTIFY_TAB_CLICKED,
+        tab:  treeItem
+      }), { tabProperties: ['tab'] }),
+
+      lastMousedown.promisedMousedownNotified
+    ])
+      .then(results => results.flat())
+      .then(results => results.some(result => result && result.result));
+
+  if (lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
       (livingTab && livingTab != Tab.get(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);
 
-  if (await promisedCanceled) {
+  if (promisedCanceled && await promisedCanceled) {
     log('onMouseUp: canceled / by other addons');
     return;
   }
 
   if (livingTab) {
+    log('Ready to handle click action on the tab');
+    // not canceled, then fallback to default behavior
+    const onRegularArea = (
+      !lastMousedown.detail.twisty &&
+      !lastMousedown.detail.soundButton &&
+      !lastMousedown.detail.closebox
+    );
+    const wasMultiselectionAction = (
+      onRegularArea &&
+      updateMultiselectionByTabClick(livingTab, lastMousedown.detail)
+    );
+    log(' => ', { onRegularArea, wasMultiselectionAction });
+    if (lastMousedown.detail.button == 0 &&
+        onRegularArea &&
+        !wasMultiselectionAction)
+      TabsInternalOperation.activateTab(livingTab, {
+        keepMultiselection: livingTab.highlighted
+      });
+
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
       const tabs = TreeBehavior.getClosingTabsFromParent(livingTab, {
@@ -472,6 +515,149 @@ async function onMouseUp(event) {
   }
 }
 onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
+
+const mLastClickedTabInWindow = new Map();
+const mIsInSelectionSession   = new Map();
+
+function updateMultiselectionByTabClick(tab, event) {
+  const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
+  const activeTab          = Tab.getActiveTab(tab.windowId);
+  const highlightedTabIds  = new Set(Tab.getHighlightedTabs(tab.windowId).map(tab => tab.id));
+  const inSelectionSession = mIsInSelectionSession.get(tab.windowId);
+  log('updateMultiselectionByTabClick ', { ctrlKeyPressed, activeTab, highlightedTabIds, inSelectionSession });
+  if (event.shiftKey) {
+    // select the clicked tab and tabs between last activated tab
+    const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;
+    const betweenTabs      = Tab.getTabsBetween(lastClickedTab, tab);
+    const targetTabs       = new Set([lastClickedTab].concat(betweenTabs));
+    targetTabs.add(tab);
+
+    log(' => ', { lastClickedTab, betweenTabs, targetTabs });
+
+    try {
+      if (!ctrlKeyPressed) {
+        const alreadySelectedTabs = Tab.getSelectedTabs(tab.windowId, { iterator: true });
+        log('clear old selection by shift-click: ', configs.debug && Array.from(alreadySelectedTabs, dumpTab));
+        for (const alreadySelectedTab of alreadySelectedTabs) {
+          if (!targetTabs.has(alreadySelectedTab))
+            highlightedTabIds.delete(alreadySelectedTab.id);
+        }
+      }
+
+      log('set selection by shift-click: ', configs.debug && Array.from(targetTabs, dumpTab));
+      for (const toBeSelectedTab of targetTabs) {
+        highlightedTabIds.add(toBeSelectedTab.id);
+      }
+
+      const rootTabs = [tab];
+      if (tab != activeTab &&
+          !inSelectionSession)
+        rootTabs.push(activeTab);
+      for (const root of rootTabs) {
+        if (!root.$TST.subtreeCollapsed)
+          continue;
+        for (const descendant of root.$TST.descendants) {
+          highlightedTabIds.add(descendant.id);
+        }
+      }
+
+      // for better performance, we should not call browser.tabs.update() for each tab.
+      const indices = Array.from(highlightedTabIds)
+        .filter(id => id != activeTab.id)
+        .map(id => Tab.get(id).index);
+      if (highlightedTabIds.has(activeTab.id))
+        indices.unshift(activeTab.index);
+      browser.tabs.highlight({
+        windowId: tab.windowId,
+        populate: false,
+        tabs:     indices
+      }).catch(ApiTabs.createErrorSuppressor());
+    }
+    catch(_e) { // not implemented on old Firefox
+      return false;
+    }
+    mIsInSelectionSession.set(tab.windowId, true);
+    return true;
+  }
+  else if (ctrlKeyPressed) {
+    try {
+      log('change selection by ctrl-click: ', dumpTab(tab));
+      /* Special operation to toggle selection of collapsed descendants for the active tab.
+         - When there is no other multiselected foreign tab
+           => toggle multiselection only descendants.
+         - When there is one or more multiselected foreign tab
+           => toggle multiselection of the active tab and descendants.
+              => one of multiselected foreign tabs will be activated.
+         - When a foreign tab is highlighted and there is one or more unhighlighted descendants 
+           => highlight all descendants (to prevent only the root tab is dragged).
+       */
+      const activeTabDescendants = activeTab.$TST.descendants;
+      let toBeHighlighted = !tab.highlighted;
+      log('toBeHighlighted: ', toBeHighlighted);
+      if (tab == activeTab &&
+          tab.$TST.subtreeCollapsed &&
+          activeTabDescendants.length > 0) {
+        const highlightedCount  = activeTabDescendants.filter(tab => tab.highlighted).length;
+        const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
+        toBeHighlighted = partiallySelected || !activeTabDescendants[0].highlighted;
+        log(' => ', toBeHighlighted, { partiallySelected });
+      }
+      if (toBeHighlighted)
+        highlightedTabIds.add(tab.id);
+      else
+        highlightedTabIds.delete(tab.id);
+
+      if (tab.$TST.subtreeCollapsed) {
+        const descendants = tab == activeTab ? activeTabDescendants : tab.$TST.descendants;
+        for (const descendant of descendants) {
+          if (toBeHighlighted)
+            highlightedTabIds.add(descendant.id);
+          else
+            highlightedTabIds.delete(descendant.id);
+        }
+      }
+
+      if (tab == activeTab) {
+        if (highlightedTabIds.size == 0) {
+          log('Don\'t unhighlight only one highlighted active tab!');
+          highlightedTabIds.add(tab.id);
+        }
+      }
+      else if (!inSelectionSession) {
+        log('Select active tab and its descendants, for new selection session');
+        highlightedTabIds.add(activeTab.id);
+        if (activeTab.$TST.subtreeCollapsed) {
+          for (const descendant of activeTabDescendants) {
+            highlightedTabIds.add(descendant.id);
+          }
+        }
+      }
+
+      // for better performance, we should not call browser.tabs.update() for each tab.
+      const indices = Array.from(highlightedTabIds)
+        .filter(id => id != activeTab.id)
+        .map(id => Tab.get(id).index);
+      if (highlightedTabIds.has(activeTab.id))
+        indices.unshift(activeTab.index);
+      browser.tabs.highlight({
+        windowId: tab.windowId,
+        populate: false,
+        tabs:     indices
+      }).catch(ApiTabs.createErrorSuppressor());
+    }
+    catch(_e) { // not implemented on old Firefox
+      return false;
+    }
+    mLastClickedTabInWindow.set(tab.windowId, tab);
+    mIsInSelectionSession.set(tab.windowId, true);
+    return true;
+  }
+  else {
+    mLastClickedTabInWindow.set(tab.windowId, tab);
+    mIsInSelectionSession.delete(tab.windowId);
+    return false;
+  }
+}
 
 function onClick(_event) {
   // clear unexpectedly left "dragging" state
@@ -601,11 +787,6 @@ function onMessage(message, _sender, _respond) {
 
 function onBackgroundMessage(message) {
   switch (message.type) {
-    case Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED:
-      if (message.windowId == mTargetWindow)
-        EventUtils.cancelHandleMousedown(message.button || 0);
-      break;
-
     case Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED:
       if (message.windowId == mTargetWindow) {
         const lastMousedown = EventUtils.getLastMousedown(message.button || 0);
