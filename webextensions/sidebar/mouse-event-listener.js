@@ -330,11 +330,11 @@ function getMouseEventTargetType(event) {
 }
 
 async function onMouseUp(event) {
-  const tab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
-  const livingTab = EventUtils.getTabFromEvent(event);
-  log('onMouseUp: ', tab, { living: !!livingTab });
+  const unsafeTab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
+  const tab       = EventUtils.getTabFromEvent(event);
+  log('onMouseUp: ', unsafeTab, { living: !!tab });
 
-  DragAndDrop.endMultiDrag(livingTab, event);
+  DragAndDrop.endMultiDrag(unsafeTab, event);
 
   if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
       EventUtils.isEventFiredOnAnchor(event))
@@ -345,7 +345,7 @@ async function onMouseUp(event) {
   if (!lastMousedown)
     return;
 
-  const treeItem = livingTab && new TSTAPI.TreeItem(livingTab);
+  const treeItem = tab && new TSTAPI.TreeItem(tab);
   let promisedCanceled = null;
   if (treeItem)
     promisedCanceled = Promise.all([
@@ -365,109 +365,24 @@ async function onMouseUp(event) {
       .then(results => results.some(result => result && result.result));
 
   if (lastMousedown.expired ||
-      lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (livingTab && livingTab != Tab.get(lastMousedown.detail.tab)))
+      lastMousedown.detail.targetType != getMouseEventTargetType(event) || // when the cursor was moved before mouseup
+      (tab && tab != Tab.get(lastMousedown.detail.tab))) // when the tab was already removed
     return;
-
-  log('onMouseUp ', lastMousedown.detail);
 
   if (promisedCanceled && await promisedCanceled) {
     log('onMouseUp: canceled / by other addons');
     return;
   }
 
-  if (livingTab) {
-    log('Ready to handle click action on the tab');
-    // not canceled, then fallback to default behavior
-    const onRegularArea = (
-      !lastMousedown.detail.twisty &&
-      !lastMousedown.detail.soundButton &&
-      !lastMousedown.detail.closebox
-    );
-    const wasMultiselectionAction = (
-      onRegularArea &&
-      updateMultiselectionByTabClick(livingTab, lastMousedown.detail)
-    );
-    log(' => ', { onRegularArea, wasMultiselectionAction });
-    if (lastMousedown.detail.button == 0 &&
-        onRegularArea &&
-        !wasMultiselectionAction)
-      TabsInternalOperation.activateTab(livingTab, {
-        keepMultiselection: livingTab.highlighted
-      });
+  // not canceled, then fallback to default behavior
+  return handleDefaultMouseUp(lastMousedown, tab);
+}
+onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 
-    if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-      log('onMouseUp: middle click on a tab');
-      const tabs = TreeBehavior.getClosingTabsFromParent(livingTab, {
-        byInternalOperation: true
-      });
-      Sidebar.confirmToCloseTabs(tabs.map(tab => tab.$TST.sanitized))
-        .then(confirmed => {
-          if (confirmed)
-            BackgroundConnection.sendMessage({
-              type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-              tabIds: [livingTab.id]
-            });
-        });
-    }
-    else if (lastMousedown.detail.twisty) {
-      log('clicked on twisty');
-      if (tab.$TST.hasChild)
-        BackgroundConnection.sendMessage({
-          type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
-          tabId:           tab.id,
-          collapsed:       !tab.$TST.subtreeCollapsed,
-          manualOperation: true,
-          stack:           configs.debug && new Error().stack
-        });
-    }
-    else if (lastMousedown.detail.soundButton) {
-      log('clicked on sound button');
-      BackgroundConnection.sendMessage({
-        type:  Constants.kCOMMAND_SET_SUBTREE_MUTED,
-        tabId: tab.id,
-        muted: tab.$TST.maybeSoundPlaying
-      });
-    }
-    else if (lastMousedown.detail.closebox) {
-      log('clicked on closebox');
-      //if (!warnAboutClosingTabSubtreeOf(tab)) {
-      //  event.stopPropagation();
-      //  event.preventDefault();
-      //  return;
-      //}
-      const multiselected  = tab.$TST.multiselected;
-      const tabsToBeClosed = multiselected ?
-        Tab.getSelectedTabs(tab.windowId) :
-        TreeBehavior.getClosingTabsFromParent(tab, {
-          byInternalOperation: true
-        }) ;
-      Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.$TST.sanitized))
-        .then(confirmed => {
-          if (!confirmed)
-            return;
-          BackgroundConnection.sendMessage({
-            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id]
-          });
-        });
-    }
-    else if (lastMousedown.detail.button == 0 &&
-             !lastMousedown.detail.altKey &&
-             !lastMousedown.detail.ctrlKey &&
-             !lastMousedown.detail.metaKey &&
-             !lastMousedown.detail.shiftKey &&
-             typeof browser.tabs.highlight == 'function') {
-      // clear selection by left click
-      browser.tabs.highlight({
-        windowId: tab.windowId,
-        tabs:     [tab.index],
-        populate: false
-      }).catch(ApiTabs.createErrorSuppressor());
-    }
-    return;
-  }
-  else if (tab) // ignore mouseup on closing tab or something
+async function handleDefaultMouseUp(lastMousedown, tab) {
+  log('handleDefaultMouseUp ', lastMousedown.detail);
+
+  if (tab && handleDefaultMouseUpOnTab(lastMousedown, tab))
     return;
 
   // following codes are for handlig of click event on the tab bar itself.
@@ -505,7 +420,89 @@ async function onMouseUp(event) {
     });
   }
 }
-onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
+handleDefaultMouseUp = EventUtils.wrapWithErrorHandler(handleDefaultMouseUp);
+
+async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
+  log('Ready to handle click action on the tab');
+
+  const onRegularArea = (
+    !lastMousedown.detail.twisty &&
+    !lastMousedown.detail.soundButton &&
+    !lastMousedown.detail.closebox
+  );
+  const wasMultiselectionAction = (
+    onRegularArea &&
+    updateMultiselectionByTabClick(tab, lastMousedown.detail)
+  );
+  log(' => ', { onRegularArea, wasMultiselectionAction });
+
+  if (lastMousedown.detail.button == 0 &&
+      onRegularArea &&
+      !wasMultiselectionAction)
+    TabsInternalOperation.activateTab(tab, {
+      keepMultiselection: false // tab.highlighted
+    });
+
+  if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
+    log('onMouseUp: middle click on a tab');
+    const tabs = TreeBehavior.getClosingTabsFromParent(tab, {
+      byInternalOperation: true
+    });
+    Sidebar.confirmToCloseTabs(tabs.map(tab => tab.$TST.sanitized))
+      .then(confirmed => {
+        if (confirmed)
+          BackgroundConnection.sendMessage({
+            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+            tabIds: [tab.id]
+          });
+      });
+  }
+  else if (lastMousedown.detail.twisty) {
+    log('clicked on twisty');
+    if (tab.$TST.hasChild)
+      BackgroundConnection.sendMessage({
+        type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
+        tabId:           tab.id,
+        collapsed:       !tab.$TST.subtreeCollapsed,
+        manualOperation: true,
+        stack:           configs.debug && new Error().stack
+      });
+  }
+  else if (lastMousedown.detail.soundButton) {
+    log('clicked on sound button');
+    BackgroundConnection.sendMessage({
+      type:  Constants.kCOMMAND_SET_SUBTREE_MUTED,
+      tabId: tab.id,
+      muted: tab.$TST.maybeSoundPlaying
+    });
+  }
+  else if (lastMousedown.detail.closebox) {
+    log('clicked on closebox');
+    //if (!warnAboutClosingTabSubtreeOf(tab)) {
+    //  event.stopPropagation();
+    //  event.preventDefault();
+    //  return;
+    //}
+    const multiselected  = tab.$TST.multiselected;
+    const tabsToBeClosed = multiselected ?
+      Tab.getSelectedTabs(tab.windowId) :
+      TreeBehavior.getClosingTabsFromParent(tab, {
+        byInternalOperation: true
+      }) ;
+    Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.$TST.sanitized))
+      .then(confirmed => {
+        if (!confirmed)
+          return;
+        BackgroundConnection.sendMessage({
+          type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+          tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id]
+        });
+      });
+  }
+
+  return true;
+}
+handleDefaultMouseUpOnTab = EventUtils.wrapWithErrorHandler(handleDefaultMouseUpOnTab);
 
 const mLastClickedTabInWindow = new Map();
 const mIsInSelectionSession   = new Map();
