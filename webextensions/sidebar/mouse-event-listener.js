@@ -331,7 +331,7 @@ function getMouseEventTargetType(event) {
 
 async function onMouseUp(event) {
   const unsafeTab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
-  const tab       = EventUtils.getTabFromEvent(event);
+  const tab       = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
   log('onMouseUp: ', unsafeTab, { living: !!tab });
 
   DragAndDrop.endMultiDrag(unsafeTab, event);

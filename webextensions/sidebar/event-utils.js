@@ -88,6 +88,15 @@ export function getTabFromEvent(event, options = {}) {
   return SidebarTabs.getTabFromDOMNode(event.target, options);
 }
 
+function getTabbarFromEvent(event) {
+  let node = event.target;
+  if (!node)
+    return null;
+  if (!(node instanceof Element))
+    node = node.parentNode;
+  return node && node.closest('.tabs');
+}
+
 export function getTabFromTabbarEvent(event, options = {}) {
   if (!configs.shouldDetectClickOnIndentSpaces ||
       isEventFiredOnClickable(event))
@@ -96,12 +105,11 @@ export function getTabFromTabbarEvent(event, options = {}) {
 }
 
 function getTabFromCoordinates(event, options = {}) {
-  let tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(event.clientX, event.clientY), options);
+  const tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(event.clientX, event.clientY), options);
   if (tab)
     return tab;
 
-  tab = SidebarTabs.getTabFromDOMNode(event.target);
-  const container = tab && tab.$TST.element.parentNode;
+  const container = getTabbarFromEvent(event);
   if (!container)
     return null;
 
