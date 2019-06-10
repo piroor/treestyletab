@@ -350,8 +350,8 @@ async function onMouseUp(event) {
   if (treeItem)
     promisedCanceled = Promise.all([
       TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-        type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
-        tab:     treeItem
+        type: TSTAPI.kNOTIFY_TAB_MOUSEUP,
+        tab:  treeItem
       }), { tabProperties: ['tab'] }),
 
       TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
