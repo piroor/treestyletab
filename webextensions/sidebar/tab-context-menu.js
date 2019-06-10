@@ -18,7 +18,6 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 import * as BackgroundConnection from './background-connection.js';
-import * as SubPanel from './subpanel.js';
 
 import Tab from '/common/Tab.js';
 
@@ -505,19 +504,14 @@ async function onContextMenu(event) {
 
   const tab = EventUtils.getTabFromEvent(event);
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
-  if (!modifierKeyPressed &&
+  if (tab &&
+      !modifierKeyPressed &&
       typeof browser.menus.overrideContext == 'function') {
-    if (tab) {
-      browser.menus.overrideContext({
-        context: 'tab',
-        tabId: tab.id
-      });
-      return;
-    }
-
-    // subpanel screen
-    if (SubPanel.tryOverrideContext(event))
-      return;
+    browser.menus.overrideContext({
+      context: 'tab',
+      tabId: tab.id
+    });
+    return;
   }
   if (!configs.emulateDefaultContextMenu)
     return;

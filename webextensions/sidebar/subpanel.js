@@ -28,7 +28,6 @@ const mHeader          = document.querySelector('#subpanel-header');
 const mSelector        = document.querySelector('#subpanel-selector');
 const mSelectorAnchor  = document.querySelector('#subpanel-selector-anchor');
 const mToggler         = document.querySelector('#subpanel-toggler');
-const mScreen          = document.querySelector('#subpanel-screen');
 
 // Don't put iframe statically, because statically embedded iframe
 // produces reflowing on the startup unexpectedly.
@@ -112,19 +111,6 @@ export async function init() {
         break;
     }
   });
-
-  browser.runtime.onMessageExternal.addListener((message, _sender) => {
-    if (!message ||
-        typeof message.type != 'string')
-      return;
-
-    //log('onMessage: ', message, sender);
-    switch (message.type) {
-      case TSTAPI.kSET_OVERRIDE_CONTEXT:
-        setOverrideContext(message);
-        break;
-    }
-  });
 }
 
 TSTAPI.onInitialized.addListener(async () => {
@@ -182,7 +168,6 @@ function getDefaultHeight() {
 
 async function load(params) {
   params = params || {};
-  clearOverrideContext();
   const url = params.url || 'about:blank';
   if (url == mSubPanel.src) {
     mSubPanel.src = 'about:blank?'; // force reload
@@ -322,58 +307,3 @@ function onSelect(item, _event) {
     applyProvider(item.dataset.value);
   mSelector.ui.close();
 }
-
-
-function setOverrideContext(message) {
-  mScreen.style.pointerEvents = 'auto';
-  const dataset = mScreen.dataset;
-  dataset.contextMenuContext = message.context;
-  if ('bookmarkId' in message)
-    dataset.contextMenuBookmarkId = message.bookmarkId;
-  if ('showDefaults' in message)
-    dataset.contextMenuShowDefaults = message.showDefaults;
-  if ('tabId' in message)
-    dataset.contextMenuTabId = message.tabId;
-}
-
-export function tryOverrideContext(event) {
-  if (event.target != mScreen)
-    return false;
-
-  // This delay is required because hiding of the context element
-  // blocks opening of the context menu.
-  setTimeout(clearOverrideContext, 150);
-
-  const dataset = mScreen.dataset;
-  if (dataset.contextMenuContext) {
-    const contextOptions = {
-      context: dataset.contextMenuContext
-    };
-    if (dataset.contextMenuBookmarkId)
-      contextOptions.bookmarkId = dataset.contextMenuBookmarkId;
-    if (dataset.contextMenuShowDefaults)
-      contextOptions.showDefaults = dataset.contextMenuShowDefaults == 'true';
-    if (dataset.contextMenuTabId)
-      contextOptions.tabId = parseInt(dataset.contextMenuTabId);
-
-    browser.menus.overrideContext(contextOptions);
-    return true;
-  }
-  return false;
-}
-
-function clearOverrideContext() {
-  mScreen.style.pointerEvents = 'none';
-  const dataset = mScreen.dataset;
-  delete dataset.contextMenuBookmarkId;
-  delete dataset.contextMenuContext;
-  delete dataset.contextMenuShowDefaults;
-  delete dataset.contextMenuTabId;
-}
-
-mScreen.addEventListener('mousedown', () => {
-  // This delay is required to override context on macOS,
-  // because the context menu is shown just after this
-  // mousedown event.
-  setTimeout(clearOverrideContext, 150);
-});
