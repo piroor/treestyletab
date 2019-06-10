@@ -35,13 +35,13 @@ const mScreen          = document.querySelector('#subpanel-screen');
 const mSubPanel = document.createElement('iframe');
 mSubPanel.setAttribute('id', 'subpanel');
 mSubPanel.setAttribute('sandbox', [
-  'allow-forms',
-  'allow-modals',
+  //'allow-forms', // To avoid XSS.
+  //'allow-modals', // To avoid XSS. See also: http://hasegawa.hatenablog.com/entry/20160109/p1
   //'allow-orientation-lock',
   'allow-pointer-lock',
-  'allow-popups',
+  //'allow-popups', // To avoid XSS. See also: http://hasegawa.hatenablog.com/entry/20160109/p1
   //'allow-popups-to-escape-sandbox',
-  'allow-presentation',
+  //'allow-presentation', // To avoid XSS.
   'allow-same-origin', // this must be alloed to run scripts in the subpanel itself
   'allow-scripts'//, // this must be alloed to run scripts in the subpanel itself
   //'allow-top-navigation', // this must be disallowed to prevent replacing the sidebar itself via "target" attribute of links or forms
