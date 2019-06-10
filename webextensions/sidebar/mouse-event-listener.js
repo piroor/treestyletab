@@ -264,14 +264,7 @@ function onMouseDown(event) {
   mousedown.promisedMousedownNotified = Promise.all([
     browser.runtime.sendMessage({type: Constants.kNOTIFY_TAB_MOUSEDOWN })
       .catch(ApiTabs.createErrorHandler()),
-
     (async () => {
-      log('Constants.kNOTIFY_TAB_MOUSEDOWN');
-      await Tab.waitUntilTracked(mousedownDetail.tab);
-      const tab = Tab.get(mousedownDetail.tab)
-      if (!tab)
-        return [];
-
       log('Sending message to listeners');
       const treeItem = new TSTAPI.TreeItem(tab);
       return await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
