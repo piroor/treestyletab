@@ -146,7 +146,7 @@
   "warnOnAutoGroupNewTabs_cancel":    { "message": "そのままにする" },
 
   "bookmarkDialog_title":    { "message": "名前:" },
-  "bookmarkDialog_url":      { "message": "場所:" },
+  "bookmarkDialog_url":      { "message": "URL:" },
   "bookmarkDialog_parentId": { "message": "フォルダー:" },
   "bookmarkDialog_accept":   { "message": "保存" },
   "bookmarkDialog_cancel":   { "message": "キャンセル" },
