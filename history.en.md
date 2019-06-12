@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.0 (2019.6.13)
    * Add ability to embed arbitary contents provided by helper addons as a "sub panel" in the sidebar, via the [SubPanel API](https://github.com/piroor/treestyletab/wiki/SubPanel-API).
    * Add commands to operate ths subpanel with custom keyboard shortcuts. By default `F2` is mapped to toggle the subpanel frame.
    * Treat clicking on the indent area as clicking on the corresponding tab. (regression)
