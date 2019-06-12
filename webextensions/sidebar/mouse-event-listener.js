@@ -382,7 +382,9 @@ onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 async function handleDefaultMouseUp(lastMousedown, tab) {
   log('handleDefaultMouseUp ', lastMousedown.detail);
 
-  if (tab && handleDefaultMouseUpOnTab(lastMousedown, tab))
+  if (tab &&
+      lastMousedown.detail.button != 2 &&
+      handleDefaultMouseUpOnTab(lastMousedown, tab))
     return;
 
   // following codes are for handlig of click event on the tab bar itself.
