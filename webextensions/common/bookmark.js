@@ -146,6 +146,7 @@ export async function bookmarkTabs(tabs, options = {}) {
           initFolderChoolser(container.querySelector('button'), {
             defaultValue: folderParams.parentId
           });
+          container.querySelector('[name="title"]').select();
         },
         buttons: [
           browser.i18n.getMessage('bookmarkDialog_accept'),
