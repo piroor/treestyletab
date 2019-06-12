@@ -483,6 +483,10 @@ async function syncTabsOrder() {
         break;
     }
   }
+
+  // Tabs can be moved while processing by other addons like Simple Tab Groups,
+  // so resync until they are completely synchronized.
+  reserveToSyncTabsOrder();
 }
 
 Window.onInitialized.addListener(windowId => {
