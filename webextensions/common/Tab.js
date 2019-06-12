@@ -47,6 +47,7 @@ export default class Tab {
     tab.$TST = this;
     this.tab = tab;
     this.id  = tab.id;
+    this.trackedAt = Date.now();
 
     this.element = null;
     this.classList = null;

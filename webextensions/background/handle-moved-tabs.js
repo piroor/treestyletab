@@ -237,7 +237,8 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   else if (prevLevel > nextLevel) {
     log('=> moved to end of existing tree');
     if (!target.active &&
-        target.children.length == 0) {
+        target.children.length == 0 &&
+        (Date.now() - target.trackedAt) < 500) {
       log('=> maybe newly opened tab');
       newParent = prevParent;
     }
