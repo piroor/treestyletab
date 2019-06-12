@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Add ability to embed arbitary contents provided by helper addons as a "sub panel" in the sidebar, via the [SubPanel API](https://github.com/piroor/treestyletab/wiki/SubPanel-API).
+   * Add commands to operate ths subpanel with custom keyboard shortcuts. By default `F2` is mapped to toggle the subpanel frame.
+   * Treat clicking on the indent area as clicking on the corresponding tab. (regression)
+   * Synchronize order of tabs more correctly even if tabs are rearranged by other addons while synchronizing.
+   * Select contents of the title field in bookmarks dialog by default.
+   * API for other addons: [`tab-clicked` notification is now delivered after `tab-mouseup`](https://github.com/piroor/treestyletab/pull/2306). (by xzn, thanks!)
  - 3.0.17 (2019.6.7)
    * Apply updated tab properties to sidebar tabs more correctly. (regression on 3.0.16)
    * Update `de` locale by SammysHP. Thanks!
