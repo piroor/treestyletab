@@ -26,6 +26,9 @@
   "command_tabbarDown":            { "message": "タブの一覧を1行下にスクロール" },
   "command_tabbarPageDown":        { "message": "タブの一覧を1ページ下にスクロール" },
   "command_tabbarEnd":             { "message": "タブの一覧を末尾までスクロール" },
+  "command_toggleSubPanel":        { "message": "サイドバー内のサブパネルの表示・非表示を切り替える" },
+  "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
+  "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
   "command_groupSelectedTabs":     { "message": "選択中のタブを新しいグループにする" },
 
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },

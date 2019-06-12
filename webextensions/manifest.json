@@ -190,6 +190,15 @@
     },
     "tabbarEnd": {
       "description": "__MSG_command_tabbarEnd__ (Alt+Shift+End)"
+    },
+    "toggleSubPanel": {
+      "description": "__MSG_command_toggleSubPanel__ (F2)"
+    },
+    "increaseSubPanel": {
+      "description": "__MSG_command_increaseSubPanel__"
+    },
+    "decreaseSubPanel": {
+      "description": "__MSG_command_decreaseSubPanel__"
     }
   },
   "options_ui": {

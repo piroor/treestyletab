@@ -246,6 +246,25 @@ async function onShortcutCommand(command) {
         to:       'bottom'
       });
       return;
+
+    case 'toggleSubPanel':
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_TOGGLE_SUBPANEL,
+        windowId: activeTab.windowId
+      });
+      return;
+    case 'increaseSubPanel':
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_INCREASE_SUBPANEL,
+        windowId: activeTab.windowId
+      });
+      return;
+    case 'decreaseSubPanel':
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_DECREASE_SUBPANEL,
+        windowId: activeTab.windowId
+      });
+      return;
   }
 }
 

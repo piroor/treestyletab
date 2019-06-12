@@ -26,6 +26,9 @@
   "command_tabbarDown":            { "message": "Scroll Tabs Down by Line" },
   "command_tabbarPageDown":        { "message": "Scroll Tabs Down by Page" },
   "command_tabbarEnd":             { "message": "Scroll Tabs to End" },
+  "command_toggleSubPanel":        { "message": "Toggle Sub Panel in the Sidebar" },
+  "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
+  "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
   "command_groupSelectedTabs":     { "message": "Create New Group from Selected Tabs" },
 
   "tab_closebox_tab_tooltip": { "message": "Close tab" },

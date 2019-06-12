@@ -17,6 +17,9 @@ import * as TSTAPI from '/common/tst-api.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 import MenuUI from '/extlib/MenuUI.js';
 
+import * as BackgroundConnection from './background-connection.js';
+import * as Size from './size.js';
+
 export const onResized = new EventListenerManager();
 
 let mTargetWindow;
@@ -307,3 +310,21 @@ function onSelect(item, _event) {
     applyProvider(item.dataset.value);
   mSelector.ui.close();
 }
+
+BackgroundConnection.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_TOGGLE_SUBPANEL:
+      toggle();
+      break;
+
+    case Constants.kCOMMAND_INCREASE_SUBPANEL:
+      mHeight += Size.getTabHeight();
+      updateLayout();
+      break;
+
+    case Constants.kCOMMAND_DECREASE_SUBPANEL:
+      mHeight -= Size.getTabHeight();
+      updateLayout();
+      break;
+  }
+});
