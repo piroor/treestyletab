@@ -172,7 +172,8 @@ function getDefaultHeight() {
 async function load(params) {
   params = params || {};
   const url = params.url || 'about:blank';
-  if (url == mSubPanel.src) {
+  if (url == mSubPanel.src &&
+      url != 'about:blank') {
     mSubPanel.src = 'about:blank?'; // force reload
     await wait(0);
   }
@@ -202,7 +203,11 @@ function updateLayout() {
         (!mSubPanel.src || mSubPanel.src == 'about:blank')) {
       // delayed load
       const provider = TSTAPI.getAddon(mProviderId);
-      load(provider && provider.subPanel);
+      if (provider && provider.subPanel)
+        mSubPanel.src = provider.subPanel.url;
+    }
+    else if (mHeight == 0) {
+      mSubPanel.src = 'about:blank';
     }
   }
 
