@@ -390,15 +390,28 @@ function applyBrowserTheme(theme) {
 
 function updateContextualIdentitiesStyle() {
   const definitions = [];
+  const customColors = [];
   ContextualIdentities.forEach(identity => {
     if (!identity.colorCode)
       return;
+    let colorValue = identity.colorCode;
+    if (identity.color) {
+      const customColor = `--contextual-identity-color-${identity.color}`;
+      customColors.push(`${customColor}: ${identity.colorCode};`);
+      colorValue = `var(${customColor})`;
+    }
     definitions.push(`
       .tab.contextual-identity-${identity.cookieStoreId} .contextual-identity-marker {
-        background-color: ${identity.colorCode};
+        background-color: ${colorValue};
       }
     `);
   });
+
+  // This is required to map different color for color names.
+  // See also: https://github.com/piroor/treestyletab/issues/2296
+  if (customColors.length > 0)
+    definitions.push(`:root { ${customColors.join('\n')} }`);
+
   mContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
