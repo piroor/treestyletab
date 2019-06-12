@@ -194,6 +194,9 @@
     "toggleSubPanel": {
       "description": "__MSG_command_toggleSubPanel__ (F2)"
     },
+    "switchSubPanel": {
+      "description": "__MSG_command_switchSubPanel__"
+    },
     "increaseSubPanel": {
       "description": "__MSG_command_increaseSubPanel__"
     },

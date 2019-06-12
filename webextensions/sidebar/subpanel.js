@@ -322,6 +322,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       toggle();
       break;
 
+    case Constants.kCOMMAND_SWITCH_SUBPANEL:
+      mSelector.ui.open({ anchor: mSelectorAnchor });
+      break;
+
     case Constants.kCOMMAND_INCREASE_SUBPANEL:
       mHeight += Size.getTabHeight();
       updateLayout();

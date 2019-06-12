@@ -253,6 +253,12 @@ async function onShortcutCommand(command) {
         windowId: activeTab.windowId
       });
       return;
+    case 'switchSubPanel':
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_SWITCH_SUBPANEL,
+        windowId: activeTab.windowId
+      });
+      return;
     case 'increaseSubPanel':
       SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_INCREASE_SUBPANEL,

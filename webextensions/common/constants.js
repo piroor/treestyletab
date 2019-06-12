@@ -64,6 +64,7 @@ export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-c
 export const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
 export const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
 export const kCOMMAND_TOGGLE_SUBPANEL                = 'treestyletab:toggle-subpanel';
+export const kCOMMAND_SWITCH_SUBPANEL                = 'treestyletab:switch-subpanel';
 export const kCOMMAND_INCREASE_SUBPANEL              = 'treestyletab:increase-subpanel';
 export const kCOMMAND_DECREASE_SUBPANEL              = 'treestyletab:decrease-subpanel';
 export const kCOMMAND_REQUEST_QUERY_LOGS             = 'treestyletab:request-query-logs';
