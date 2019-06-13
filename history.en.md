@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.1.1 (2019.6.13)
+   * Handle middle click on blank area of the sidebar correctly. (regression on 3.1.0)
+   * Don't close a tab with middle click on its indent area.
  - 3.1.0 (2019.6.13)
    * Add ability to embed arbitary contents provided by helper addons as a "sub panel" in the sidebar, via the [SubPanel API](https://github.com/piroor/treestyletab/wiki/SubPanel-API).
    * Add commands to operate ths subpanel with custom keyboard shortcuts. By default `F2` is mapped to toggle the subpanel frame.
