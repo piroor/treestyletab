@@ -403,14 +403,14 @@ async function handleDefaultMouseUp({ lastMousedown, tab, treeItem, event }) {
 
   log('onMouseUp: notify as a blank area click to other addons');
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-    type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    window: mTargetWindow,
+    type:     TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+    window:   mTargetWindow,
     windowId: mTargetWindow,
     tab:      treeItem
   }), { tabProperties: ['tab'] });
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-    type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    window: mTargetWindow,
+    type:     TSTAPI.kNOTIFY_TABBAR_CLICKED,
+    window:   mTargetWindow,
     windowId: mTargetWindow,
     tab:      treeItem
   }), { tabProperties: ['tab'] }));
