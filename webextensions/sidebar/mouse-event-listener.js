@@ -347,7 +347,7 @@ async function onMouseUp(event) {
 
   const treeItem = tab && new TSTAPI.TreeItem(tab);
   let promisedCanceled = null;
-  if (treeItem)
+  if (treeItem && lastMousedown.detail.targetType == 'tab')
     promisedCanceled = Promise.all([
       TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
         type: TSTAPI.kNOTIFY_TAB_MOUSEUP,
@@ -447,6 +447,8 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
     log('onMouseUp: middle click on a tab');
+    if (lastMousedown.detail.targetType != 'tab') // ignore middle click on blank area
+      return false;
     const tabs = TreeBehavior.getClosingTabsFromParent(tab, {
       byInternalOperation: true
     });
