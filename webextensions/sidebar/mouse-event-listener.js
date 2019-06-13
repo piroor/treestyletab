@@ -375,16 +375,16 @@ async function onMouseUp(event) {
   }
 
   // not canceled, then fallback to default behavior
-  return handleDefaultMouseUp(lastMousedown, tab);
+  return handleDefaultMouseUp({ lastMousedown, tab, treeItem, event });
 }
 onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 
-async function handleDefaultMouseUp(lastMousedown, tab) {
+async function handleDefaultMouseUp({ lastMousedown, tab, treeItem, event }) {
   log('handleDefaultMouseUp ', lastMousedown.detail);
 
   if (tab &&
       lastMousedown.detail.button != 2 &&
-      handleDefaultMouseUpOnTab(lastMousedown, tab))
+      await handleDefaultMouseUpOnTab(lastMousedown, tab))
     return;
 
   // following codes are for handlig of click event on the tab bar itself.
@@ -405,12 +405,14 @@ async function handleDefaultMouseUp(lastMousedown, tab) {
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: mTargetWindow,
-    windowId: mTargetWindow
+    windowId: mTargetWindow,
+    tab:      treeItem
   }), { tabProperties: ['tab'] });
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
     window: mTargetWindow,
-    windowId: mTargetWindow
+    windowId: mTargetWindow,
+    tab:      treeItem
   }), { tabProperties: ['tab'] }));
   if (results.some(result => result.result))// canceled
     return;
