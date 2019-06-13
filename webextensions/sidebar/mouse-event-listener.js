@@ -258,6 +258,7 @@ function onMouseDown(event) {
 
   const mousedown = {
     detail: mousedownDetail,
+    treeItem: new TSTAPI.TreeItem(tab),
     promisedMousedownNotified: Promise.resolve()
   };
 
@@ -265,11 +266,12 @@ function onMouseDown(event) {
     browser.runtime.sendMessage({type: Constants.kNOTIFY_TAB_MOUSEDOWN })
       .catch(ApiTabs.createErrorHandler()),
     (async () => {
+      if (mousedownDetail.targetType != 'tab')
+        return;
       log('Sending message to listeners');
-      const treeItem = new TSTAPI.TreeItem(tab);
-      return await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
+      return TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
         type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-        tab:  treeItem
+        tab:  mousedown.treeItem
       }), { tabProperties: ['tab'] });
     })()
   ]).then(results => results[1]);
@@ -345,18 +347,17 @@ async function onMouseUp(event) {
   if (!lastMousedown)
     return;
 
-  const treeItem = tab && new TSTAPI.TreeItem(tab);
   let promisedCanceled = null;
-  if (treeItem && lastMousedown.detail.targetType == 'tab')
+  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
     promisedCanceled = Promise.all([
       TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
         type: TSTAPI.kNOTIFY_TAB_MOUSEUP,
-        tab:  treeItem
+        tab:  lastMousedown.treeItem
       }), { tabProperties: ['tab'] }),
 
       TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
         type: TSTAPI.kNOTIFY_TAB_CLICKED,
-        tab:  treeItem
+        tab:  lastMousedown.treeItem
       }), { tabProperties: ['tab'] }),
 
       lastMousedown.promisedMousedownNotified
@@ -375,11 +376,11 @@ async function onMouseUp(event) {
   }
 
   // not canceled, then fallback to default behavior
-  return handleDefaultMouseUp({ lastMousedown, tab, treeItem, event });
+  return handleDefaultMouseUp({ lastMousedown, tab, event });
 }
 onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 
-async function handleDefaultMouseUp({ lastMousedown, tab, treeItem, event }) {
+async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   log('handleDefaultMouseUp ', lastMousedown.detail);
 
   if (tab &&
@@ -406,13 +407,13 @@ async function handleDefaultMouseUp({ lastMousedown, tab, treeItem, event }) {
     type:     TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window:   mTargetWindow,
     windowId: mTargetWindow,
-    tab:      treeItem
+    tab:      lastMousedown.treeItem
   }), { tabProperties: ['tab'] });
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:     TSTAPI.kNOTIFY_TABBAR_CLICKED,
     window:   mTargetWindow,
     windowId: mTargetWindow,
-    tab:      treeItem
+    tab:      lastMousedown.treeItem
   }), { tabProperties: ['tab'] }));
   if (results.some(result => result.result))// canceled
     return;
