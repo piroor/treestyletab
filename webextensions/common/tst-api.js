@@ -399,6 +399,67 @@ if (mIsBackend) {
       windowId
     });
   });
+
+  /*
+  // This mechanism doesn't work actually.
+  // See also: https://github.com/piroor/treestyletab/issues/2128#issuecomment-454650407
+
+  const mConnectionsForAddons = new Map();
+
+  browser.runtime.onConnectExternal.addListener(port => {
+    const sender = port.sender;
+    log('Connected: ', sender.id);
+
+    const connections = mConnectionsForAddons.get(sender.id) || new Set();
+    connections.add(port);
+
+    const addon = getAddon(sender.id);
+    if (!addon) { // treat as register-self
+      const message = {
+        id:             sender.id,
+        internalId:     sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
+        newlyInstalled: !configs.cachedExternalAddons.includes(sender.id)
+      };
+      registerAddon(sender.id, message);
+      browser.runtime.sendMessage({
+        type: kCOMMAND_BROADCAST_API_REGISTERED,
+        sender,
+        message
+      }).catch(ApiTabs.createErrorSuppressor());
+      if (message.newlyInstalled)
+        configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
+    }
+
+    const onMessage = message => {
+      onBackendCommand(message, sender);
+    };
+    port.onMessage.addListener(onMessage);
+
+    const onDisconnected = _message => {
+      log('Disconnected: ', sender.id);
+      port.onMessage.removeListener(onMessage);
+      port.onDisconnect.removeListener(onDisconnected);
+
+      connections.delete(port);
+      if (connections.size > 0)
+        return;
+
+      setTimeout(() => {
+        // if it is not re-registered while 10sec, it may be uninstalled.
+        if (getAddon(sender.id))
+          return;
+        configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
+      }, 10 * 1000);
+      browser.runtime.sendMessage({
+        type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+        sender
+      }).catch(ApiTabs.createErrorSuppressor());
+      unregisterAddon(sender.id);
+      mConnectionsForAddons.delete(sender.id);
+    }
+    port.onDisconnect.addListener(onDisconnected);
+  });
+  */
 }
 
 function unregisterAddon(id) {
