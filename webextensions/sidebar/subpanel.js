@@ -106,10 +106,8 @@ export async function init() {
       case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
         wait(0).then(() => { // wait until addons are updated
           updateSelector();
-          if (message.sender.id == mProviderId) {
-            load();
+          if (message.sender.id == mProviderId)
             restoreLastProvider();
-          }
         });
         break;
     }
@@ -153,6 +151,9 @@ function applyProvider(id) {
       load();
   }
   else {
+    const icon = mSelectorAnchor.querySelector('.icon > img');
+    icon.removeAttribute('src');
+    mSelectorAnchor.querySelector('.label').textContent = '';
     load();
   }
 }
@@ -163,6 +164,8 @@ function restoreLastProvider() {
     applyProvider(lastProvider.id);
   else if (mSelector.hasChildNodes())
     applyProvider(mSelector.firstChild.dataset.value);
+  else
+    applyProvider(mProviderId = null);
 }
 
 function getDefaultHeight() {
