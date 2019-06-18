@@ -606,6 +606,8 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
   window.addEventListener('beforeunload', () => resolve());
 });
 
+const mWaitingShutdownMessages = new Map();
+
 function onBackendCommand(message, sender) {
   if (!message ||
       typeof message.type != 'string')
@@ -629,6 +631,47 @@ function onBackendCommand(message, sender) {
         }).catch(ApiTabs.createErrorSuppressor());
         if (message.newlyInstalled)
           configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
+        if (message.listeningTypes &&
+            message.listeningTypes.includes(kWAIT_FOR_SHUTDOWN) &&
+            !mWaitingShutdownMessages.has(sender.id)) {
+          const onShutdown = () => {
+            const storedShutdown = mWaitingShutdownMessages.get(sender.id);
+            // eslint-disable-next-line no-use-before-define
+            if (storedShutdown && storedShutdown !== promisedShutdown)
+              return; // it is obsolete
+
+            setTimeout(() => {
+              // if it is not re-registered while 10sec, it may be uninstalled.
+              if (getAddon(sender.id))
+                return;
+              configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
+            }, 10 * 1000);
+
+            browser.runtime.sendMessage({
+              type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+              sender
+            }).catch(ApiTabs.createErrorSuppressor());
+            unregisterAddon(sender.id);
+          };
+          const promisedShutdown = (async () => {
+            try {
+              const shouldUninit = await browser.runtime.sendMessage(sender.id, {
+                type: kWAIT_FOR_SHUTDOWN
+              });
+              if (!shouldUninit)
+                return;
+            }
+            catch (_error) {
+              // Extension was disabled.
+            }
+            finally {
+              mWaitingShutdownMessages.delete(sender.id);
+            }
+            onShutdown();
+          })();
+          mWaitingShutdownMessages.set(sender.id, promisedShutdown);
+          promisedShutdown.catch(onShutdown);
+        }
         return {
           grantedPermissions:   Array.from(getGrantedPermissionsForAddon(sender.id)).filter(permission => permission.startsWith('!')),
           privateWindowAllowed: configs.incognitoAllowedExternalAddons.includes(sender.id)
