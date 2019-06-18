@@ -410,11 +410,29 @@ export async function notify(params = {}) {
     message: params.message
   });
 
+  let onClicked;
+  if (params.url) {
+    onClicked = notificationId => {
+      if (notificationId != id)
+        return;
+      browser.tabs.create({
+        url: params.url
+      });
+      browser.notifications.onClicked.removeListener(onClicked);
+      onClicked = null;
+    };
+    browser.notifications.onClicked.addListener(onClicked);
+  }
+
   let timeout = params.timeout;
   if (typeof timeout != 'number')
     timeout = configs.notificationTimeout;
   if (timeout >= 0)
     await wait(timeout);
 
+  if (onClicked) {
+    browser.notifications.onClicked.removeListener(onClicked);
+    onClicked = null;
+  }
   await browser.notifications.clear(id);
 }

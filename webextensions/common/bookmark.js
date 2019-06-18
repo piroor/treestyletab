@@ -43,7 +43,8 @@ export async function bookmarkTab(tab, options = {}) {
   catch(_e) {
     notify({
       title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
-      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
+      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message'),
+      url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionSection`
     });
     return null;
   }
@@ -105,7 +106,8 @@ export async function bookmarkTabs(tabs, options = {}) {
   catch(_e) {
     notify({
       title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
-      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
+      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message'),
+      url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionSection`
     });
     return null;
   }
