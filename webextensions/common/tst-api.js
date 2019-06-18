@@ -305,6 +305,7 @@ function registerAddon(id, addon) {
       addon.grantedPermissions.size != addon.requestedPermissions.size)
     notifyPermissionRequest(addon, addon.requestedPermissions);
 
+  addon.lastRegistered = Date.now();
   mAddons.set(id, addon);
 }
 
@@ -640,18 +641,22 @@ function onBackendCommand(message, sender) {
             if (storedShutdown && storedShutdown !== promisedShutdown)
               return; // it is obsolete
 
+            const addon          = getAddon(sender.id);
+            const lastRegistered = addon && addon.lastRegistered;
             setTimeout(() => {
-              // if it is not re-registered while 10sec, it may be uninstalled.
-              if (getAddon(sender.id))
+              // if it is re-registered immediately, it was updated or reloaded.
+              const addon = getAddon(sender.id);
+              if (addon &&
+                  addon.lastRegistered != lastRegistered)
                 return;
+              // otherwise it is uninstalled.
+              browser.runtime.sendMessage({
+                type: kCOMMAND_BROADCAST_API_UNREGISTERED,
+                sender
+              }).catch(ApiTabs.createErrorSuppressor());
+              unregisterAddon(sender.id);
               configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
-            }, 10 * 1000);
-
-            browser.runtime.sendMessage({
-              type: kCOMMAND_BROADCAST_API_UNREGISTERED,
-              sender
-            }).catch(ApiTabs.createErrorSuppressor());
-            unregisterAddon(sender.id);
+            }, 350);
           };
           const promisedShutdown = (async () => {
             try {
