@@ -581,7 +581,6 @@ function onBackendCommand(message, sender) {
           sender
         }).catch(ApiTabs.createErrorSuppressor());
         unregisterAddon(sender.id);
-        delete mScrollLockedBy[sender.id];
         configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
         return true;
       })();
