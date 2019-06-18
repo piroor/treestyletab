@@ -107,7 +107,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "権限のエラー" },
-  "bookmark_notification_notPermitted_message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。ツリー型タブの設定画面で権限を設定して下さい。" },
+  "bookmark_notification_notPermitted_message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
 
   "dropLinksOnTabBehavior_message": { "message": "どのように開きますか？" },
   "dropLinksOnTabBehavior_save":    { "message": "今後も同じ動作を行う" },

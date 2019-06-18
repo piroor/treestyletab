@@ -80,7 +80,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "權限錯誤" },
-  "bookmark_notification_notPermitted_message": { "message": "無法取得創建書籤的權限，請至 Tree Style Tab 的設定頁面設定權限。" },
+  "bookmark_notification_notPermitted_message": { "message": "無法取得創建書籤的權限。Please click here to grant extra permissions." },
 
   "dropLinksOnTabBehavior_message": { "message": "如何開啟？" },
   "dropLinksOnTabBehavior_save":    { "message": "永遠如此" },

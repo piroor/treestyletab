@@ -91,7 +91,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешения" },
-  "bookmark_notification_notPermitted_message": { "message": "Не удалось получить разрешение на создание закладок. Пожалуйста, получите разрешение через конфигурацию Tree Style Tab." },
+  "bookmark_notification_notPermitted_message": { "message": "Не удалось получить разрешение на создание закладок. Please click here to grant extra permissions." },
 
   "dropLinksOnTabBehavior_message": { "message": "Как это открыть?" },
   "dropLinksOnTabBehavior_save":    { "message": "Выбирать этот вариант в дальнейшем" },

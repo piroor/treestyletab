@@ -107,7 +107,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Permission error" },
-  "bookmark_notification_notPermitted_message": { "message": "Failed to get permissions to create bookmarks. Please grant permissions via the configurations of Tree Style Tab." },
+  "bookmark_notification_notPermitted_message": { "message": "Failed to get permissions to create bookmarks. Please click here to grant extra permissions." },
 
   "dropLinksOnTabBehavior_message": { "message": "How to open this?" },
   "dropLinksOnTabBehavior_save":    { "message": "Do same choice hereafter" },

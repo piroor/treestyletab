@@ -218,7 +218,7 @@
         "hash": "5648aca0df76cc07ac7f3cf1b709dff2"
     },
     "bookmark_notification_notPermitted_message": {
-        "message": "获取创建书签的权限失败。请通过 Tree Style Tab 的配置授予权限。",
+        "message": "获取创建书签的权限失败。Please click here to grant extra permissions.",
         "hash": "8f7aa162ccaa13b8a1404b0955132851"
     },
     "dropLinksOnTabBehavior_message": {

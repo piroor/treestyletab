@@ -80,7 +80,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Помилка дозволу" },
-  "bookmark_notification_notPermitted_message": { "message": "Не вдалося отримати дозвіл на створення закладок. Будь ласка, отримайте дозвіл через конфігурацію Tree Style Tab." },
+  "bookmark_notification_notPermitted_message": { "message": "Не вдалося отримати дозвіл на створення закладок. Please click here to grant extra permissions." },
 
   "dropLinksOnTabBehavior_message": { "message": "Як це відкрити?" },
   "dropLinksOnTabBehavior_save":    { "message": "Обирати цей варіант і надалі" },
