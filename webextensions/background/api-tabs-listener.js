@@ -346,12 +346,12 @@ async function onNewTabTracked(tab, info) {
   if (info.type == 'onCreated')
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
 
-  const positionedBySomeone = !positionedBySelf && tab.index < window.tabs.size - 1;
-  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab, { window, positionedBySelf, positionedBySomeone, duplicatedInternally, maybeOrphan, activeTab });
+  const mayBeReplacedWithContainer = tab.$TST.mayBeReplacedWithContainer;
+  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab, { window, positionedBySelf, mayBeReplacedWithContainer, duplicatedInternally, maybeOrphan, activeTab });
 
   Tab.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
-    positionedBySomeone,
+    mayBeReplacedWithContainer,
     maybeOrphan,
     activeTab
   });
@@ -445,7 +445,7 @@ async function onNewTabTracked(tab, info) {
 
     let moved = Tab.onCreating.dispatch(tab, {
       positionedBySelf,
-      positionedBySomeone,
+      mayBeReplacedWithContainer,
       maybeOrphan,
       restored,
       duplicated,
@@ -487,7 +487,7 @@ async function onNewTabTracked(tab, info) {
 
     Tab.onCreated.dispatch(tab, {
       positionedBySelf,
-      positionedBySomeone,
+      mayBeReplacedWithContainer,
       movedBySelfWhileCreation: moved,
       skipFixupTree: !nextTab,
       restored,

@@ -1360,7 +1360,8 @@ function snapshotTree(targetTab, tabs) {
       collapsed:     tab.$TST.subtreeCollapsed,
       pinned:        tab.pinned,
       level:         parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
-      trackedAt:     tab.$TST.trackedAt
+      trackedAt:     tab.$TST.trackedAt,
+      mayBeReplacedWithContainer: tab.$TST.mayBeReplacedWithContainer
     };
   }
   const snapshotArray = allTabs.map(tab => snapshotChild(tab));

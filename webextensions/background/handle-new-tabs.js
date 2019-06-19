@@ -89,7 +89,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
-      dontMove:  info.positionedBySelf || info.positionedBySomeone,
+      dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -140,7 +140,7 @@ Tab.onCreated.addListener((tab, info = {}) => {
     Tree.behaveAutoAttachedTab(tab, {
       baseTab:   original,
       behavior:  configs.autoAttachOnDuplicated,
-      dontMove:  info.positionedBySelf || info.movedBySelfWhileCreation || info.positionedBySomeone,
+      dontMove:  info.positionedBySelf || info.movedBySelfWhileCreation || info.mayBeReplacedWithContainer,
       broadcast: true
     });
   }

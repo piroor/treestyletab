@@ -273,6 +273,19 @@ export default class Tab {
     return /[&?]temporaryAggressive=true/.test(this.tab.url);
   }
 
+  // Firefox Multi-Account Containers
+  // https://addons.mozilla.org/firefox/addon/multi-account-containers/
+  // Temporary Containers
+  // https://addons.mozilla.org/firefox/addon/temporary-containers/
+  get mayBeReplacedWithContainer() {
+    const prevTab = this.unsafePreviousTab;
+    return (
+      !!prevTab &&
+      this.tab.cookieStoreId != prevTab.cookieStoreId &&
+      this.tab.url == prevTab.url
+    );
+  }
+
   get selected() {
     return this.states.has(Constants.kTAB_STATE_SELECTED) ||
              (this.hasOtherHighlighted && !!(this.tab && this.tab.highlighted));

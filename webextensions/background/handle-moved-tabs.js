@@ -31,7 +31,7 @@ function logApiTabs(...args) {
 
 
 Tab.onCreated.addListener((tab, info = {}) => {
-  if (!info.positionedBySomeone &&
+  if (!info.mayBeReplacedWithContainer &&
       (info.duplicated ||
        info.restored ||
        info.skipFixupTree ||
@@ -199,11 +199,8 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   const oldParent = tree.tabsById[target.parent];
   let newParent = null;
 
-  if (prevTab &&
-      target.cookieStoreId != prevTab.cookieStoreId &&
-      target.url == prevTab.url) {
-    // https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
-    log('=> replaced by Firefox Multi-Acount Containers');
+  if (target.mayBeReplacedWithContainer) {
+    log('=> replaced by Firefox Multi-Acount Containers or Temporary Containers');
     newParent = prevLevel < nextLevel ? prevTab : prevParent;
   }
   else if (oldParent &&
