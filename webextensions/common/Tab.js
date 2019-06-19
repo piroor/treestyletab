@@ -48,7 +48,12 @@ export default class Tab {
     this.tab = tab;
     this.id  = tab.id;
     this.trackedAt = Date.now();
-    this.updatingOpenerTabIds = [];
+
+    this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
+    this.soundPlayingChildrenIds = new Set();
+    this.maybeSoundPlayingChildrenIds = new Set();
+    this.mutedChildrenIds = new Set();
+    this.maybeMutedChildrenIds = new Set();
 
     this.element = null;
     this.classList = null;
@@ -409,6 +414,14 @@ export default class Tab {
     if (parent) {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
+      if (this.states.has(Constants.kTAB_STATE_SOUND_PLAYING))
+        parent.$TST.soundPlayingChildrenIds.add(this.tab.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER))
+        parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+      if (this.states.has(Constants.kTAB_STATE_MUTED))
+        parent.$TST.mutedChildrenIds.add(this.tab.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER))
+        parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
       parent.$TST.inheritSoundStateFromChildren();
       TabsStore.removeRootTab(this.tab);
     }
@@ -416,8 +429,13 @@ export default class Tab {
       this.removeAttribute(Constants.kPARENT);
       TabsStore.addRootTab(this.tab);
     }
-    if (oldParent && oldParent.id != this.parentId)
+    if (oldParent && oldParent.id != this.parentId) {
+      oldParent.$TST.soundPlayingChildrenIds.delete(this.tab.id);
+      oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
+      oldParent.$TST.mutedChildrenIds.delete(this.tab.id);
+      oldParent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
       oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.tab.id);
+    }
     return tab;
   }
   get parent() {
@@ -735,6 +753,30 @@ export default class Tab {
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
         TabsStore.addBundledActiveTab(this.tab);
         break;
+
+      case Constants.kTAB_STATE_SOUND_PLAYING: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.soundPlayingChildrenIds.add(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_MUTED: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.mutedChildrenIds.add(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
+      } break;
     }
 
     if (options.broadcast)
@@ -772,6 +814,30 @@ export default class Tab {
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
         TabsStore.addBundledActiveTab(this.tab);
         break;
+
+      case Constants.kTAB_STATE_SOUND_PLAYING: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.soundPlayingChildrenIds.delete(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_MUTED: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.mutedChildrenIds.delete(this.tab.id);
+      } break;
+
+      case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+      } break;
     }
 
     if (options.broadcast)
@@ -802,14 +868,12 @@ export default class Tab {
       if (!TabsStore.ensureLivingTab(this.tab))
         return;
 
-      const children = this.children;
-
-      if (children.some(child => child.$TST.maybeSoundPlaying))
+      if (this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size > 0)
         this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
       else
         this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-      if (children.some(child => child.$TST.maybeMuted))
+      if (this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size > 0)
         this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
       else
         this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
