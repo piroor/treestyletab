@@ -40,7 +40,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
         tab.$TST.parent == Tab.get(tab.openerTabId))))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
-  if (!info.movedBySelfWhileCreation &&
+  if (!(info.positionedBySelf ||
+        info.movedBySelfWhileCreation) &&
       (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
        tab.$TST.nearestCompletelyOpenedNormalPrecedingTab ||
        (info.treeForActionDetection &&
