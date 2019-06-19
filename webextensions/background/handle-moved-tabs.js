@@ -33,11 +33,11 @@ function logApiTabs(...args) {
 Tab.onCreated.addListener((tab, info = {}) => {
   if (!info.positionedBySomeone &&
       (info.duplicated ||
-      info.restored ||
-      info.skipFixupTree ||
-      // do nothing for already attached tabs
-      (tab.openerTabId &&
-       tab.$TST.parent == Tab.get(tab.openerTabId))))
+       info.restored ||
+       info.skipFixupTree ||
+       // do nothing for already attached tabs
+       (tab.openerTabId &&
+        tab.$TST.parent == Tab.get(tab.openerTabId))))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.movedBySelfWhileCreation &&
