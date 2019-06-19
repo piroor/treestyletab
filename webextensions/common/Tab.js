@@ -48,6 +48,7 @@ export default class Tab {
     this.tab = tab;
     this.id  = tab.id;
     this.trackedAt = Date.now();
+    this.updatingOpenerTabIds = [];
 
     this.element = null;
     this.classList = null;

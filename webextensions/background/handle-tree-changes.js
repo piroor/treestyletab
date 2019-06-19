@@ -8,6 +8,7 @@
 import {
   log as internalLogger,
   dumpTab,
+  wait,
   configs
 } from '/common/common.js';
 
@@ -35,9 +36,14 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   if (tab.openerTabId != parent.id &&
       configs.syncParentTabAndOpenerTab) {
     tab.openerTabId = parent.id;
+    tab.$TST.updatingOpenerTabIds.push(parent.id);
     tab.$TST.updatedOpenerTabId = tab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(tab.id, { openerTabId: parent.id })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    wait(200).then(() => {
+      const index = tab.$TST.updatingOpenerTabIds.findIndexOf(parent.id);
+      tab.$TST.updatingOpenerTabIds.splice(index, 1);
+    });
   }
 
   // Because the tab is possibly closing for "reopen" operation,

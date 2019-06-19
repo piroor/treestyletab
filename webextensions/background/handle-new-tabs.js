@@ -89,7 +89,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
-      dontMove:  info.positionedBySelf,
+      dontMove:  info.positionedBySelf || info.positionedBySomeone,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -140,7 +140,7 @@ Tab.onCreated.addListener((tab, info = {}) => {
     Tree.behaveAutoAttachedTab(tab, {
       baseTab:   original,
       behavior:  configs.autoAttachOnDuplicated,
-      dontMove:  info.positionedBySelf,
+      dontMove:  info.positionedBySelf || info.movedBySelfWhileCreation || info.positionedBySomeone,
       broadcast: true
     });
   }
@@ -148,7 +148,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
 
 Tab.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo &&
-      configs.syncParentTabAndOpenerTab) {
+      configs.syncParentTabAndOpenerTab &&
+      !tab.$TST.updatingOpenerTabIds.includes(changeInfo.openerTabId) /* accept only changes from outside of TST */) {
     Tab.waitUntilTrackedAll(tab.windowId).then(() => {
       const parent = tab.$TST.openerTab;
       if (!parent ||

@@ -31,15 +31,16 @@ function logApiTabs(...args) {
 
 
 Tab.onCreated.addListener((tab, info = {}) => {
-  if (info.duplicated ||
+  if (!info.positionedBySomeone &&
+      (info.duplicated ||
       info.restored ||
       info.skipFixupTree ||
       // do nothing for already attached tabs
       (tab.openerTabId &&
-       tab.$TST.parent == Tab.get(tab.openerTabId)))
+       tab.$TST.parent == Tab.get(tab.openerTabId))))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
-  if (!info.positionedBySelf &&
+  if (!info.movedBySelfWhileCreation &&
       (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
        tab.$TST.nearestCompletelyOpenedNormalPrecedingTab ||
        (info.treeForActionDetection &&
@@ -203,7 +204,7 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
       target.url == prevTab.url) {
     // https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
     log('=> replaced by Firefox Multi-Acount Containers');
-    newParent = prevParent;
+    newParent = prevLevel < nextLevel ? prevTab : prevParent;
   }
   else if (oldParent &&
            prevTab &&

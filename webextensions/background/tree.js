@@ -193,7 +193,7 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   }));
 
-  return moved;
+  return !options.dontMove && moved;
 }
 
 export function getReferenceTabsForNewChild(child, parent, options = {}) {
