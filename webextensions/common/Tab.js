@@ -30,6 +30,8 @@ const mClosedWhileActiveResolvers = new Map();
 
 const mIncompletelyTrackedTabs = new Map();
 const mMovingTabs              = new Map();
+const mPromisedTrackedTabs     = new Map();
+
 
 browser.windows.onRemoved.addListener(windowId => {
   mIncompletelyTrackedTabs.delete(windowId);
@@ -105,6 +107,9 @@ export default class Tab {
   }
 
   destroy() {
+    mPromisedTrackedTabs.delete(`${this.tab.id}:true`);
+    mPromisedTrackedTabs.delete(`${this.tab.id}:false`);
+
     Tab.onDestroyed.dispatch(this.tab);
     this.detach();
 
@@ -1156,11 +1161,12 @@ async function waitUntilTracked(tabId, options = {}) {
   });
 };
 
-const mPromisedTrackedTabs = new Map();
-
 Tab.waitUntilTracked = async (tabId, options = {}) => {
   if (!tabId)
     return null;
+
+  if (Array.isArray(tabId))
+    return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
 
   const windowId = TabsStore.getWindow();
   if (windowId) {
@@ -1168,8 +1174,6 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
     if (tabs && tabs.has(tabId))
       return null; // already removed tab
   }
-  if (Array.isArray(tabId))
-    return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
 
   const key = `${tabId}:${!!options.element}`;
   if (mPromisedTrackedTabs.has(key))
