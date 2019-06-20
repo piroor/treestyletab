@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Go to the options page to help granting of the permission, when a notification message about missing permission is clicked.
+   * Hide the subpanel header when the last subpanel is unregistered.
+   * Keep tree structure after a tab is reopened by other addons like Temporary Containers.
+   * Keep tree structure of tabs moved between windows, even if they were moved across windows again and again.
+   * Don't open (or keep opened) needless group tabs for closed parent tabs, when all children are closed together with their parent.
+   * Optimize operations to update "sound playing" and "muted" state of tabs.
+   * Add a link to open the options page itself in a tab, under the "Development" section of the options page.
+   * API for other addons: [`wait-for-shutdown` notification is now delivered](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#unregister-from-TST). It allows helper addons to notify their uninstallation (or just disabled) to TST.
  - 3.1.1 (2019.6.13)
    * Handle middle click on blank area of the sidebar correctly. (regression on 3.1.0)
    * Don't close a tab with middle click on its indent area.
