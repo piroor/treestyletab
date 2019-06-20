@@ -1306,6 +1306,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       window.untrackTab(message.tabId);
       if (tab.$TST.element && tab.$TST.element.parentNode)
         tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+      // Allow to move tabs to this window again, after a timeout.
+      // https://github.com/piroor/treestyletab/issues/2316
+      wait(500).then(() => TabsStore.removeRemovedTab(tab));
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {

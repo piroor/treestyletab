@@ -528,7 +528,7 @@ export function addRemovedTab(tab) {
     windowId: tab.windowId
   });
 }
-function removeRemovedTab(tab) {
+export function removeRemovedTab(tab) {
   removeTabFromIndex(tab, removedTabsInWindow);
 }
 
