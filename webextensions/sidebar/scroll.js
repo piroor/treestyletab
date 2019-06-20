@@ -438,6 +438,8 @@ function reserveToSaveScrollPosition() {
 }
 
 function reserveToScrollToTab(tab, options = {}) {
+  if (!tab)
+    return;
   if (reserveToScrollToTab.reserved)
     clearTimeout(reserveToScrollToTab.reserved);
   reserveToScrollToTab.reservedTabId = tab.id;
@@ -452,6 +454,8 @@ function reserveToScrollToTab(tab, options = {}) {
 }
 
 function reserveToScrollToNewTab(tab) {
+  if (!tab)
+    return;
   if (reserveToScrollToNewTab.reserved)
     clearTimeout(reserveToScrollToNewTab.reserved);
   reserveToScrollToNewTab.reservedTabId = tab.id;
@@ -464,6 +468,8 @@ function reserveToScrollToNewTab(tab) {
 
 
 function reReserveScrollingForTab(tab) {
+  if (!tab)
+    return;
   if (reserveToScrollToTab.reservedTabId == tab.id)
     reserveToScrollToTab(tab);
   if (reserveToScrollToNewTab.reservedTabId == tab.id)
