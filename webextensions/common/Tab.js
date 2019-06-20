@@ -50,6 +50,11 @@ export default class Tab {
     this.trackedAt = Date.now();
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
+
+    this.lastSoundStateCounts = {
+      soundPlaying: 0,
+      muted:        0
+    };
     this.soundPlayingChildrenIds = new Set();
     this.maybeSoundPlayingChildrenIds = new Set();
     this.mutedChildrenIds = new Set();
@@ -863,20 +868,36 @@ export default class Tab {
     // this is called too many times on a session restoration, so this should be throttled for better performance
     if (this.delayedInheritSoundStateFromChildren)
       clearTimeout(this.delayedInheritSoundStateFromChildren);
+
     this.delayedInheritSoundStateFromChildren = setTimeout(() => {
       delete this.delayedInheritSoundStateFromChildren;
       if (!TabsStore.ensureLivingTab(this.tab))
         return;
 
-      if (this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size > 0)
-        this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      else
-        this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+      let modifiedCount = 0;
 
-      if (this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size > 0)
-        this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-      else
-        this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      const soundPlayingCount = this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size;
+      if (soundPlayingCount != this.lastSoundStateCounts.soundPlaying) {
+        this.lastSoundStateCounts.soundPlaying = soundPlayingCount;
+        if (soundPlayingCount > 0)
+          this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+        else
+          this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+        modifiedCount++;
+      }
+
+      const mutedCount = this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size;
+      if (mutedCount != this.lastSoundStateCounts.muted) {
+        this.lastSoundStateCounts.muted = mutedCount;
+        if (mutedCount > 0)
+          this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+        else
+          this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+        modifiedCount++;
+      }
+
+      if (modifiedCount == 0)
+        return;
 
       const parent = this.parent;
       if (parent)
