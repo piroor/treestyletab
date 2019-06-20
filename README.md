@@ -173,6 +173,16 @@ Natural operations for GUI objects shoud be optimized for most major usecases.
 
 Too high customizability for such rare usecases would make just you happy, but others including me won't - they are just confused that "why are there so many choices to make?"
 
+### Adding new context menu command to go to the options page
+
+Do you use the toolbar button of TST itself? Then you can go to TST's options page directly from the context menu on the button. Firefox provides a "Manage Extension" command globally at the context menu on toolbar buttons provided by addons. Moreover, TST privately provides more commands like the options dialog at the menu for a shortcut.
+
+On the other hand, I'm negative to provide a command like "TST Options" at the context menu on tabs, with some reasons:
+
+* The command is fundamentally unrelated to the context: "what command do you want to invoke for the tab?"
+* If you need to change TST's options too frequently on your daily use, something wrong. For example, a failure auto-detection of TST for your action's context. I believe that such a problem should be fixed on TST side like improvements of auto-detection, instead of providing easy way for workaround.
+
+
 ### Auto hide of the sidebar
 
 Due to limitations of WebExtensions APIs, it is impossible.
@@ -181,6 +191,9 @@ Due to limitations of WebExtensions APIs, it is impossible.
 WebExtensions only allows to toggle visibility of the sidebar for [limited keyboard shortcuts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#Key_combinations) or the toolbar button.
 Other arbitrary timing are disallowed, including `mouseover` and long-press of a key.
 
+### I want to use "Bookmarks" sidebar panel parallelly with TST's tabs
+
+[TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) is now available for TST 3.1.0 and later. It provides a cloned version of the "Bookmarks" sidebar panel below TST's tabs.
 
 ### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), [renaming of tabs](https://github.com/piroor/treestyletab/issues/794), and so on
 
