@@ -874,32 +874,44 @@ export default class Tab {
       if (!TabsStore.ensureLivingTab(this.tab))
         return;
 
+      const parent = this.parent;
       let modifiedCount = 0;
 
       const soundPlayingCount = this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size;
       if (soundPlayingCount != this.lastSoundStateCounts.soundPlaying) {
         this.lastSoundStateCounts.soundPlaying = soundPlayingCount;
-        if (soundPlayingCount > 0)
+        if (soundPlayingCount > 0) {
           this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-        else
+          if (parent)
+            parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+        }
+        else {
           this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+          if (parent)
+            parent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
+        }
         modifiedCount++;
       }
 
       const mutedCount = this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size;
       if (mutedCount != this.lastSoundStateCounts.muted) {
         this.lastSoundStateCounts.muted = mutedCount;
-        if (mutedCount > 0)
+        if (mutedCount > 0) {
           this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-        else
+          if (parent)
+            parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
+        }
+        else {
           this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+          if (parent)
+            parent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+        }
         modifiedCount++;
       }
 
       if (modifiedCount == 0)
         return;
 
-      const parent = this.parent;
       if (parent)
         parent.$TST.inheritSoundStateFromChildren();
 
