@@ -439,6 +439,7 @@ export default class Tab {
       oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
       oldParent.$TST.mutedChildrenIds.delete(this.tab.id);
       oldParent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+      oldParent.$TST.inheritSoundStateFromChildren();
       oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.tab.id);
     }
     return tab;
