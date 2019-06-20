@@ -41,7 +41,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     browser.tabs.update(tab.id, { openerTabId: parent.id })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     wait(200).then(() => {
-      const index = tab.$TST.updatingOpenerTabIds.findIndexOf(parent.id);
+      const index = tab.$TST.updatingOpenerTabIds.findIndex(parent.id);
       tab.$TST.updatingOpenerTabIds.splice(index, 1);
     });
   }
