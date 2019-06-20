@@ -59,7 +59,8 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     await closeChildTabs(tab);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      tab.$TST.childIds.length > 1) {
+      tab.$TST.childIds.length > 1 &&
+      tab.$TST.children.filter(child => !child.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)).length > 1) {
     log('trying to replace the closing tab with a new group tab');
     const firstChild = tab.$TST.firstChild;
     const uri = TabsGroup.makeGroupTabURI({
@@ -81,6 +82,10 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast:    true
     });
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    // This can be triggered on closing of multiple tabs,
+    // so we should cleanup it on such cases for safety.
+    // https://github.com/piroor/treestyletab/issues/2317
+    wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
   }
 
   Tree.detachAllChildren(tab, {

@@ -82,6 +82,7 @@ export function removeTabs(tabs) {
   if (window) {
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
+      tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
     }
   }
