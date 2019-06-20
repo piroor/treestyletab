@@ -12,6 +12,8 @@ import {
 import * as Constants from '/common/constants.js';
 
 import Tab from '/common/Tab.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 
 import * as TabsOpen from './tabs-open.js';
 import * as TabsMove from './tabs-move.js';
@@ -62,4 +64,48 @@ export async function groupTabs(tabs, options = {}) {
     });
   }
   return groupTab;
+}
+
+export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
+  const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
+  for (const tab of tabs) {
+    if (!TabsStore.ensureLivingTab(tab))
+      continue;
+    if (tab.$TST.reservedCleanupNeedlessGroupTab)
+      clearTimeout(tab.$TST.reservedCleanupNeedlessGroupTab);
+    tab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      if (!tab.$TST)
+        return;
+      delete tab.$TST.reservedCleanupNeedlessGroupTab;
+      cleanupNeedlssGroupTab(tab);
+    }, 100);
+  }
+}
+
+function cleanupNeedlssGroupTab(tabs) {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
+  const tabsToBeRemoved = [];
+  for (const tab of tabs) {
+    if (tab.$TST.isTemporaryGroupTab) {
+      if (tab.$TST.childIds.length > 1)
+        break;
+      const lastChild = tab.$TST.firstChild;
+      if (lastChild &&
+          !lastChild.$TST.isTemporaryGroupTab &&
+          !lastChild.$TST.isTemporaryAggressiveGroupTab)
+        break;
+    }
+    else if (tab.$TST.isTemporaryAggressiveGroupTab) {
+      if (tab.$TST.childIds.length > 1)
+        break;
+    }
+    else {
+      break;
+    }
+    tabsToBeRemoved.push(tab);
+  }
+  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+  TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }

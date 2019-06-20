@@ -17,7 +17,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
@@ -84,50 +83,6 @@ export async function tryInitGroupTab(tab) {
       removedStates: [Constants.kTAB_STATE_UNREAD]
     });
   }
-}
-
-export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
-  const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
-  for (const tab of tabs) {
-    if (!TabsStore.ensureLivingTab(tab))
-      continue;
-    if (tab.$TST.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.$TST.reservedCleanupNeedlessGroupTab);
-    tab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      delete tab.$TST.reservedCleanupNeedlessGroupTab;
-      cleanupNeedlssGroupTab(tab);
-    }, 100);
-  }
-}
-
-function cleanupNeedlssGroupTab(tabs) {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
-  const tabsToBeRemoved = [];
-  for (const tab of tabs) {
-    if (tab.$TST.isTemporaryGroupTab) {
-      if (tab.$TST.childIds.length > 1)
-        break;
-      const lastChild = tab.$TST.firstChild;
-      if (lastChild &&
-          !lastChild.$TST.isTemporaryGroupTab &&
-          !lastChild.$TST.isTemporaryAggressiveGroupTab)
-        break;
-    }
-    else if (tab.$TST.isTemporaryAggressiveGroupTab) {
-      if (tab.$TST.childIds.length > 1)
-        break;
-    }
-    else {
-      break;
-    }
-    tabsToBeRemoved.push(tab);
-  }
-  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-  TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }
 
 export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
@@ -201,7 +156,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
 Tab.onRemoved.addListener((tab, _closeInfo = {}) => {
   const ancestors = tab.$TST.ancestors;
   wait(0).then(() => {
-    reserveToCleanupNeedlessGroupTab(ancestors);
+    TabsGroup.reserveToCleanupNeedlessGroupTab(ancestors);
   });
 });
 
@@ -314,7 +269,7 @@ Tree.onDetached.addListener((_tab, detachInfo) => {
   if (!detachInfo.oldParentTab)
     return;
   if (detachInfo.oldParentTab.$TST.isGroupTab)
-    reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
+    TabsGroup.reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
   reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab, ['tree']);
 });
 
