@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.2 (2019.6.21)
    * Go to the options page to help granting of the permission, when a notification message about missing permission is clicked.
    * Hide the subpanel header when the last subpanel is unregistered.
    * Keep tree structure after a tab is reopened by other addons like Temporary Containers.
