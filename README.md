@@ -182,6 +182,14 @@ On the other hand, I'm negative to provide a command like "TST Options" at the c
 * The command is fundamentally unrelated to the context: "what command do you want to invoke for the tab?"
 * If you need to change TST's options too frequently on your daily use, something wrong. For example, a failure auto-detection of TST for your action's context. I believe that such a problem should be fixed on TST side like improvements of auto-detection, instead of providing easy way for workaround.
 
+If you really need to access TST's options page very frequently due to some reasons, as a workaround you can bookmark the page, with these steps:
+
+1. Go to `about:debugging`.
+2. Find the "Internal UUID" of Tree Style Tab. It should be an UUID like `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX`.
+3. Create a new blank bookmark, and set its URL as `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/options/options.html#!`. The UUID is TST's internal UUID.
+
+Then you can open the options page in a tab.
+
 
 ### Auto hide of the sidebar
 
