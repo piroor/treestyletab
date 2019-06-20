@@ -36,7 +36,12 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  let closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+  let closeParentBehavior;
+  if (tab.$TST.mayBeOriginalOfReplacedWithContainer)
+    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  else
+    closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+
   if (!SidebarConnection.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       tab.$TST.subtreeCollapsed)

@@ -295,6 +295,13 @@ export default class Tab {
       this.tab.url == prevTab.url
     );
   }
+  get mayBeOriginalOfReplacedWithContainer() {
+    const firstChild = this.firstChild;
+    return (
+      !!firstChild &&
+      firstChild.$TST.mayBeReplacedWithContainer
+    );
+  }
 
   get selected() {
     return this.states.has(Constants.kTAB_STATE_SELECTED) ||
