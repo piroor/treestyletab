@@ -575,9 +575,12 @@ Tree.onDetached.addListener((tab, detachInfo) => {
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
-// This section should be removed and define those context-fill icons
-// statically on manifest.json on future versions of Firefox.
-// See also: https://github.com/piroor/treestyletab/issues/2053
+// This section should be removed and define those flexible SVG icons
+// statically on manifest.json on future versions of Firefox, after
+// theming of extension icons are officially supported.
+// See also:
+//   https://github.com/piroor/treestyletab/issues/2053
+//   https://bugzilla.mozilla.org/show_bug.cgi?id=1367042
 function applyThemeColorToIcon() {
   if (configs.applyThemeColorToIcon) {
     const icons = { path: browser.runtime.getManifest().variable_color_icons };
