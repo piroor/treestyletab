@@ -1054,24 +1054,37 @@ async function onDragEnd(event) {
     return;
   }
 
-  const windowX = window.mozInnerScreenX * window.devicePixelRatio;
-  const windowY = window.mozInnerScreenY * window.devicePixelRatio;
-  const offset  = dragData.tab.$TST.element.getBoundingClientRect().height * window.devicePixelRatio / 2;
+  const windowX = window.mozInnerScreenX;
+  const windowY = window.mozInnerScreenY;
+  const windowW = window.innerWidth;
+  const windowH = window.innerHeight;
+  const offset  = dragData.tab.$TST.element.getBoundingClientRect().height / 2;
+  // I don't know why, but sometimes event.screenX/Y are returned as
+  // device pixel values unexpectedly, so we need to fix them manually.
+  const fixedEventScreenX = event.screenX / window.devicePixelRatio;
+  const fixedEventScreenY = event.screenY / window.devicePixelRatio;
   log('dragend at: ', {
     windowX,
     windowY,
-    windowW: window.innerWidth,
-    windowH: window.innerHeight,
+    windowW,
+    windowH,
     eventScreenX: event.screenX,
     eventScreenY: event.screenY,
     eventClientX: event.clientX,
     eventClientY: event.clientY,
+    fixedEventScreenX,
+    fixedEventScreenY,
+    devicePixelRatio: window.devicePixelRatio,
     offset
   });
-  if (event.screenX >= windowX - offset &&
-      event.screenY >= windowY - offset &&
-      event.screenX <= windowX + window.innerWidth + offset &&
-      event.screenY <= windowY + window.innerHeight + offset) {
+  if ((event.screenX >= windowX - offset &&
+       event.screenY >= windowY - offset &&
+       event.screenX <= windowX + windowW + offset &&
+       event.screenY <= windowY + windowH + offset) ||
+      (fixedEventScreenX >= windowX - offset &&
+       fixedEventScreenY >= windowY - offset &&
+       fixedEventScreenX <= windowX + windowW + offset &&
+       fixedEventScreenY <= windowY + windowH + offset)) {
     log('dropped near the tab bar (from coordinates): detaching is canceled');
     return;
   }
