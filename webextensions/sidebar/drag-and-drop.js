@@ -1059,8 +1059,7 @@ async function onDragEnd(event) {
   const windowW = window.innerWidth;
   const windowH = window.innerHeight;
   const offset  = dragData.tab.$TST.element.getBoundingClientRect().height / 2;
-  // I don't know why, but sometimes event.screenX/Y are returned as
-  // device pixel values unexpectedly, so we need to fix them manually.
+  // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
   const fixedEventScreenX = event.screenX / window.devicePixelRatio;
   const fixedEventScreenY = event.screenY / window.devicePixelRatio;
   log('dragend at: ', {
@@ -1081,6 +1080,7 @@ async function onDragEnd(event) {
        event.screenY >= windowY - offset &&
        event.screenX <= windowX + windowW + offset &&
        event.screenY <= windowY + windowH + offset) ||
+      // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
       (fixedEventScreenX >= windowX - offset &&
        fixedEventScreenY >= windowY - offset &&
        fixedEventScreenX <= windowX + windowW + offset &&
