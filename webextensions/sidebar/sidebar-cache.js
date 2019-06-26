@@ -59,7 +59,7 @@ const mPreloadedCaches = new Map();
 
 export async function tryPreload(tab = null) {
   if (!tab) {
-    const tabs = (await browser.tabs.query({ currentWindow: true })).catch(ApiTabs.createErrorHandler());
+    const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
     if (tabs)
       tab = tabs.filter(tab => !tab.pinned)[0] || tabs[0];
   }
