@@ -98,7 +98,7 @@ export async function getEffectiveWindowCache(options = {}) {
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      const preloadedCache = mPreloadedCaches.get(configs.storeCacheForWindow ? `window${mLastWindowCacheOwner.windowId}` : `tab${mLastWindowCacheOwner.id}`);
+      const preloadedCache = mPreloadedCaches.get(configs.storeCacheAsWindowValue ? `window${mLastWindowCacheOwner.windowId}` : `tab${mLastWindowCacheOwner.id}`);
       [cache, tabsDirty, collapsedDirty] = preloadedCache || await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
@@ -416,13 +416,13 @@ function updateWindowCache(key, value) {
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
-    if (configs.storeCacheForWindow)
+    if (configs.storeCacheAsWindowValue)
       return browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorSuppressor());
     return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
   }
   else {
     //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
-    if (configs.storeCacheForWindow)
+    if (configs.storeCacheAsWindowValue)
       return browser.sessions.setWindowValue(mLastWindowCacheOwner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
     return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
   }
@@ -447,7 +447,7 @@ export function markWindowCacheDirty(key) {
 async function getWindowCache(key) {
   if (!mLastWindowCacheOwner)
     return null;
-  if (configs.storeCacheForWindow)
+  if (configs.storeCacheAsWindowValue)
     return browser.sessions.getWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorHandler());
   return browser.sessions.getTabValue(mLastWindowCacheOwner.id, key).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }

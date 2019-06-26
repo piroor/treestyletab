@@ -267,7 +267,7 @@ async function updateWindowCache(owner, key, value) {
     return;
   if (value === undefined) {
     try {
-      if (configs.storeCacheForWindow)
+      if (configs.storeCacheAsWindowValue)
         return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
       return browser.sessions.removeTabValue(owner.id || owner, key).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
     }
@@ -277,7 +277,7 @@ async function updateWindowCache(owner, key, value) {
   }
   else {
     try {
-      if (configs.storeCacheForWindow)
+      if (configs.storeCacheAsWindowValue)
         return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
       return browser.sessions.setTabValue(owner.id || owner, key, value).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
     }
@@ -300,7 +300,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  if (configs.storeCacheForWindow)
+  if (configs.storeCacheAsWindowValue)
     return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
   return browser.sessions.getTabValue(owner.id, key).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
