@@ -303,7 +303,7 @@ async function getWindowCache(owner, key) {
 }
 
 function getWindowCacheOwner(windowId) {
-  const tab = Tab.getLastTab(windowId);
+  const tab = Tab.getFirstNormalTab(windowId) || Tab.getFirstTab(windowId);
   if (!tab)
     return null;
   return {

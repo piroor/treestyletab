@@ -421,7 +421,7 @@ async function getWindowCache(key) {
 }
 
 function getWindowCacheOwner() {
-  return Tab.getLastTab(mTargetWindow);
+  return Tab.getFirstNormalTab(mTargetWindow) || Tab.getFirstTab(mTargetWindow);
 }
 
 export async function reserveToUpdateCachedTabbar() {
