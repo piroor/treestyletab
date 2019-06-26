@@ -362,6 +362,11 @@ export function autoScrollOnMouseEvent(event) {
   if (!mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
+  if (autoScrollOnMouseEvent.timer)
+    clearTimeout(autoScrollOnMouseEvent.timer);
+
+  autoScrollOnMouseEvent.timer = setTimeout(() => {
+    autoScrollOnMouseEvent.timer = null;
   const tabbarRect = mTabBar.getBoundingClientRect();
   const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
   if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
@@ -372,8 +377,10 @@ export function autoScrollOnMouseEvent(event) {
     if (mTabBar.scrollTop < mTabBar.scrollTopMax)
       mTabBar.scrollTop += scrollPixels;
   }
+  }, 0);
 }
 autoScrollOnMouseEvent.areaSize = 20;
+autoScrollOnMouseEvent.timer = null;
 
 
 async function notifyOutOfViewTab(tab) {
