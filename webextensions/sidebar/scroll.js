@@ -367,16 +367,16 @@ export function autoScrollOnMouseEvent(event) {
 
   autoScrollOnMouseEvent.timer = setTimeout(() => {
     autoScrollOnMouseEvent.timer = null;
-  const tabbarRect = mTabBar.getBoundingClientRect();
-  const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
-  if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
-    if (mTabBar.scrollTop > 0)
-      mTabBar.scrollTop -= scrollPixels;
-  }
-  else if (event.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
-    if (mTabBar.scrollTop < mTabBar.scrollTopMax)
-      mTabBar.scrollTop += scrollPixels;
-  }
+    const tabbarRect = mTabBar.getBoundingClientRect();
+    const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
+    if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
+      if (mTabBar.scrollTop > 0)
+        mTabBar.scrollTop -= scrollPixels;
+    }
+    else if (event.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
+      if (mTabBar.scrollTop < mTabBar.scrollTopMax)
+        mTabBar.scrollTop += scrollPixels;
+    }
   }, 0);
 }
 autoScrollOnMouseEvent.areaSize = 20;
