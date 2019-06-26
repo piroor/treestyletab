@@ -90,26 +90,13 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
 
 UserOperationBlocker.block({ throbber: true });
 
-const mPreloadedCaches = new Map();
-
-function preloadCache(tabId) {
-  Promise.all([
-    browser.sessions.getTabValue(tabId, Constants.kWINDOW_STATE_CACHED_SIDEBAR),
-    browser.sessions.getTabValue(tabId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    browser.sessions.getTabValue(tabId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-  ]).catch(ApiTabs.createErrorSuppressor())
-    .then(cache => mPreloadedCaches.set(tabId, cache));
-}
-
 export async function init() {
   MetricsData.add('init: start');
   log('initialize sidebar on load');
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
-  browser.tabs.query({ currentWindow: true })
-    .catch(ApiTabs.createErrorHandler())
-    .then(tabs => preloadCache(tabs[tabs.length - 1].id));
+  SidebarCache.tryPreload();
 
   let promisedAllTabsTracked;
   UserOperationBlocker.setProgress(0);
@@ -120,7 +107,7 @@ export async function init() {
       trackedWindow.incognito = window.incognito;
 
       const tabs = window.tabs;
-      preloadCache(tabs[tabs.length-1].id);
+      SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);
       mPromisedTargetWindowResolver(mTargetWindow);
@@ -183,8 +170,7 @@ export async function init() {
   await Promise.all([
     MetricsData.addAsync('parallel initialization: main', async () => {
       if (configs.useCachedTree)
-        cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs, caches: mPreloadedCaches }));
-      mPreloadedCaches.clear();
+        cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs }));
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedTabs, cachedContents && cachedContents.tabbar));
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
