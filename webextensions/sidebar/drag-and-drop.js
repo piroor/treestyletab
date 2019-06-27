@@ -610,6 +610,7 @@ async function getDroppedLinksOnTabBehavior() {
 /* DOM event listeners */
 
 let mFinishCanceledDragOperation;
+let mLastDragStartTime = 0;
 
 export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
@@ -743,6 +744,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     tab:      new TSTAPI.TreeItem(tab),
     windowId: TabsStore.getWindow()
   }, { tabProperties: ['tab'] }).catch(_error => {});
+
+  mLastDragStartTime = Date.now();
 
   log('onDragStart: started');
 });
@@ -1084,7 +1087,11 @@ async function onDragEnd(event) {
       (fixedEventScreenX >= windowX - offset &&
        fixedEventScreenY >= windowY - offset &&
        fixedEventScreenX <= windowX + windowW + offset &&
-       fixedEventScreenY <= windowY + windowH + offset)) {
+       fixedEventScreenY <= windowY + windowH + offset) ||
+      // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
+      (Date.now() - mLastDragStartTime < 100 &&
+       event.screenX == 0 &&
+       event.screenY == 0)) {
     log('dropped near the tab bar (from coordinates): detaching is canceled');
     return;
   }
