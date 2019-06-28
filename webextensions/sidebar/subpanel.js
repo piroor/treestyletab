@@ -198,9 +198,10 @@ function updateLayout() {
       mContainer.classList.remove('collapsed');
     mContainer.style.visibility = mSubPanel.style.visibility = 'visible';
     const headerSize = mHeader.getBoundingClientRect().height;
-    mContainer.style.height = `${mHeight + headerSize}px`;
-    mSubPanel.style.height = `${mHeight}px`;
-    mTabBarContainer.style.bottom = `${mHeight + headerSize}px`;
+    const appliedHeight = Math.min(window.innerHeight * 0.66, mHeight);
+    mContainer.style.height = `${appliedHeight + headerSize}px`;
+    mSubPanel.style.height = `${appliedHeight}px`;
+    mTabBarContainer.style.bottom = `${appliedHeight + headerSize}px`;
 
     if (mHeight > 0 &&
         (!mSubPanel.src || mSubPanel.src == 'about:blank')) {
@@ -265,6 +266,10 @@ mToggler.addEventListener('click', event => {
   event.stopPropagation();
   event.preventDefault();
   toggle();
+});
+
+window.addEventListener('resize', _event => {
+  updateLayout();
 });
 
 function onMouseMove(event) {
