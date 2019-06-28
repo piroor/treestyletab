@@ -42,18 +42,40 @@ Tab.onCreating.addListener((tab, info = {}) => {
   }
   else {
     if (!info.maybeOrphan &&
-        possibleOpenerTab &&
-        /* New tab opened with browser.tabs.insertAfterCurrent=true may have
-           next tab. In this case the tab is expected to be placed next to the
-           active tab always, so we should skip all repositioning behavior.
-           See also: https://github.com/piroor/treestyletab/issues/2054 */
-        !tab.$TST.nextTab) {
+        possibleOpenerTab) {
+      let autoAttachBehavior = configs.autoAttachOnNewTabCommand;
+      let dontMove           = false;
+      if (tab.$TST.nextTab &&
+          possibleOpenerTab == tab.$TST.previousTab) {
+        // New tab opened with browser.tabs.insertAfterCurrent=true may have
+        // next tab. In this case the tab is expected to be placed next to the
+        // active tab always, so we should change the behavior specially.
+        // See also:
+        //   https://github.com/piroor/treestyletab/issues/2054
+        //   https://github.com/piroor/treestyletab/issues/2194#issuecomment-505272940
+        dontMove = true;
+        switch (autoAttachBehavior) {
+          case Constants.kNEWTAB_OPEN_AS_ORPHAN:
+          case Constants.kNEWTAB_OPEN_AS_SIBLING:
+          case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING:
+            if (possibleOpenerTab.$TST.hasChild)
+              autoAttachBehavior = Constants.kNEWTAB_OPEN_AS_CHILD;
+            else
+              autoAttachBehavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
+            break;
+
+          case Constants.kNEWTAB_OPEN_AS_CHILD:
+          default:
+            break;
+        }
+      }
       if (tab.$TST.isNewTabCommandTab) {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
           return handleNewTabFromActiveTab(tab, {
             activeTab:                 possibleOpenerTab,
-            autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+            autoAttachBehavior,
+            dontMove,
             inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
           }).then(moved => !moved);
         }
@@ -102,7 +124,8 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
     behavior:  params.autoAttachBehavior,
-    broadcast: true
+    broadcast: true,
+    dontMove:  params.dontMove || false
   });
   const parent = tab.$TST.parent;
   if (!parent ||
