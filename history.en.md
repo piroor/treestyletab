@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Respect option for treatment of new blank tabs opened from outside of TST, event when `browser.tabs.insertAfterCurrent` is configured to `true` by the user.
+   * Restrict maximum height of the subpanel.
+   * Prevent too frequent detaching of clicked/dragged tab on Windows and macOS. This change is just a workaround, and we still need to wait for complete fix of the [bug 1561522](https://bugzilla.mozilla.org/show_bug.cgi?id=1561522) and [1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879) on Firefox side.
+   * Store chache of tree to first tabs in windows instead of last tabs, to reduce broated session data.
+   * Add ability to store cache of tree to windows instead of tabs to more reduce broated session data, but disabled by default for safety.
+   * Prevent too much autoscroll while tab dragging. (If you see too slow autoscrolling and want more speedy scroll, [please shake your mouse on the edge of the scrollable area.](https://github.com/piroor/treestyletab/issues/2321#issuecomment-506667779))
  - 3.1.2 (2019.6.21)
    * Go to the options page to help granting of the permission, when a notification message about missing permission is clicked.
    * Hide the subpanel header when the last subpanel is unregistered.
