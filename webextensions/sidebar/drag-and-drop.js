@@ -206,11 +206,15 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTab', () => {
     const dragData = info.dragData;
+    if (dragData && dragData.instanceId != mInstanceId)
+      return null;
     const tab      = dragData && dragData.tab;
     return tab && Tab.get(tab.id) || tab;
   });
   info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
+    if (dragData && dragData.instanceId != mInstanceId)
+      return [];
     const tabs     = dragData && dragData.tabs;
     return tabs && tabs.map(tab => tab && Tab.get(tab.id) || tab).filter(tab => !!tab) || [];
   });
