@@ -8,6 +8,7 @@
    * Store chache of tree to first tabs in windows instead of last tabs, to reduce bloated session data.
    * Add ability to store cache of tree to windows instead of tabs to more reduce bloated session data, but disabled by default for safety.
    * Prevent too much autoscroll while tab dragging. (If you see too slow autoscrolling and want more speedy scroll, [please shake your mouse on the edge of the scrollable area.](https://github.com/piroor/treestyletab/issues/2321#issuecomment-506667779))
+   * Show favicons for new blank tabs correctly. (regression on 3.1.2)
  - 3.1.2 (2019.6.21)
    * Go to the options page to help granting of the permission, when a notification message about missing permission is clicked.
    * Hide the subpanel header when the last subpanel is unregistered.
