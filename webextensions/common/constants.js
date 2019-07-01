@@ -8,6 +8,7 @@
 export const kBACKGROUND_CONTENTS_VERSION = 5;
 export const kSIDEBAR_CONTENTS_VERSION    = 9;
 
+export const kCOMMAND_GET_INSTANCE_ID                = 'treestyletab:get-instance-id';
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
 export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';

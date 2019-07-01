@@ -172,3 +172,60 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   }
   throw new Error('calculateReferenceTabsFromInsertionPosition requires one of insertBefore or insertAfter parameter!');
 }
+
+export function getTreeStructureFromTabs(tabs, options = {}) {
+  if (!tabs || !tabs.length)
+    return [];
+
+  /* this returns...
+    [A]     => -1 (parent is not in this tree)
+      [B]   => 0 (parent is 1st item in this tree)
+      [C]   => 0 (parent is 1st item in this tree)
+        [D] => 2 (parent is 2nd in this tree)
+    [E]     => -1 (parent is not in this tree, and this creates another tree)
+      [F]   => 0 (parent is 1st item in this another tree)
+  */
+  const tabIds = tabs.map(tab => tab.id);
+  return cleanUpTreeStructureArray(
+    tabs.map((tab, index) => {
+      const parentId = tab.$TST.parentId;
+      const indexInGivenTabs = parent ? tabIds.indexOf(parentId) : -1 ;
+      return indexInGivenTabs >= index ? -1 : indexInGivenTabs ;
+    }),
+    -1
+  ).map((parentIndex, index) => {
+    const tab = tabs[index];
+    const item = {
+      id:        tab.$TST.uniqueId.id,
+      parent:    parentIndex,
+      collapsed: tab.$TST.subtreeCollapsed
+    };
+    if (options.full) {
+      item.title  = tab.title;
+      item.url    = tab.url;
+      item.pinned = tab.pinned;
+    }
+    return item;
+  });
+}
+function cleanUpTreeStructureArray(treeStructure, defaultParent) {
+  let offset = 0;
+  treeStructure = treeStructure
+    .map((position, index) => {
+      return (position == index) ? -1 : position ;
+    })
+    .map((position, index) => {
+      if (position == -1) {
+        offset = index;
+        return position;
+      }
+      return position - offset;
+    });
+
+  /* The final step, this validates all of values.
+     Smaller than -1 is invalid, so it becomes to -1. */
+  treeStructure = treeStructure.map(index => {
+    return index < -1 ? defaultParent : index ;
+  });
+  return treeStructure;
+}

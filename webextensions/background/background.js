@@ -49,6 +49,8 @@ export const onReady   = new EventListenerManager();
 export const onDestroy = new EventListenerManager();
 export const onTreeCompletelyAttached = new EventListenerManager();
 
+export const instanceId = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+
 let mInitialized = false;
 const mPreloadedCaches = new Map();
 

@@ -79,6 +79,7 @@ let mDragTargetIsClosebox  = false;
 let mCurrentDragData       = null;
 
 let mDragBehaviorNotification;
+let mInstanceId;
 
 export function init() {
   document.addEventListener('dragstart', onDragStart); // eslint-disable-line no-use-before-define
@@ -91,6 +92,8 @@ export function init() {
   browser.runtime.onMessage.addListener(onMessage);
 
   mDragBehaviorNotification = document.getElementById('tab-drag-notification');
+
+  browser.runtime.sendMessage({ type: Constants.kCOMMAND_GET_INSTANCE_ID }).then(id => mInstanceId = id);
 }
 
 
@@ -142,12 +145,17 @@ function getDragDataFromOneTab(tab) {
     return {
       tab:      null,
       tabs:     [],
-      windowId: null
+      windowId: null,
+      instanceId: mInstanceId,
+      structure:  []
     };
+  const tabs = getDraggedTabsFromOneTab(tab);
   return {
-    tab:      tab,
-    tabs:     getDraggedTabsFromOneTab(tab),
-    windowId: tab.windowId
+    tab,
+    tabs,
+    structure:  TreeBehavior.getTreeStructureFromTabs(tabs),
+    windowId:   tab.windowId,
+    instanceId: mInstanceId
   };
 }
 
@@ -161,8 +169,10 @@ function sanitizeDragData(dragData) {
   return {
     tab:      dragData.tab && dragData.tab.$TST.sanitized,
     tabs:     dragData.tabs.map(tab => tab && tab.$TST.sanitized),
-    windowId: dragData.windowId,
-    behavior: dragData.behavior,
+    structure:  dragData.structure,
+    windowId:   dragData.windowId,
+    instanceId: dragData.instanceId,
+    behavior:   dragData.behavior,
     individualOnOutside: dragData.individualOnOutside
   };
 }
@@ -1009,16 +1019,19 @@ function onDrop(event) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
+    const fromOtherProfile = dropActionInfo.dragData.instanceId != mInstanceId;
     BackgroundConnection.sendMessage({
       type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
       windowId:            dropActionInfo.dragData.windowId,
-      tabIds:              dropActionInfo.dragData.tabs.map(tab => tab.id),
+      tabs:                dropActionInfo.dragData.tabs,
+      structure:           dropActionInfo.dragData.structure,
       action:              dropActionInfo.action,
       attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
       insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
       insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
       destinationWindowId: TabsStore.getWindow(),
-      duplicate:           dt.dropEffect == 'copy'
+      duplicate:           !fromOtherProfile && dt.dropEffect == 'copy',
+      import:              fromOtherProfile
     });
     return;
   }

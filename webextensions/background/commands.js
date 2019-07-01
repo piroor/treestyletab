@@ -9,6 +9,7 @@ import {
   log as internalLogger,
   dumpTab,
   notify,
+  wait,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -288,7 +289,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   if (!movedTabs.length)
     return [];
 
-  let movedRoots = Tab.collectRootTabs(movedTabs);
+  let movedRoots = params.import ? [] : Tab.collectRootTabs(movedTabs);
 
   const movedWholeTree = [].concat(movedRoots);
   for (const movedRoot of movedRoots) {
@@ -320,7 +321,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   if (movedTabs[0].incognito != Tab.getFirstTab(destinationWindowId).incognito)
     return [];
 
-  if (movedWholeTree.length != movedTabs.length) {
+  if (!params.import && movedWholeTree.length != movedTabs.length) {
     log('=> partially moved');
     if (!params.duplicate)
       await Tree.detachTabsFromTree(movedTabs, {
@@ -328,7 +329,43 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       });
   }
 
-  if (params.duplicate ||
+  if (params.import) {
+    const window = TabsStore.windows.get(destinationWindowId);
+    const initialIndex = params.insertBefore ? params.insertBefore.index :
+      params.insertAfter ? params.insertAfter.index+1 :
+        window.tabs.size;
+    window.toBeOpenedOrphanTabs += tabs.length;
+    movedTabs = [];
+    let index = 0;
+    for (const tab of tabs) {
+      let importedTab;
+      const createParams = {
+        url:      tab.url,
+        windowId: destinationWindowId,
+        index:    initialIndex + index,
+        active:   index == 0
+      };
+      try {
+        importedTab = await browser.tabs.create(createParams);
+      }
+      catch(error) {
+        console.log(error);
+      }
+      if (!importedTab)
+        importedTab = await browser.tabs.create(Object.assign({}, createParams, {
+          url:      'about:blank'
+        }));
+      movedTabs.push(importedTab);
+      index++;
+    }
+    await wait(100); // wait for all imported tabs are tracked
+    movedTabs = movedTabs.map(tab => Tab.get(tab.id));
+    await Tree.applyTreeStructureToTabs(movedTabs, params.structure, {
+      broadcast: true
+    });
+    movedRoots = Tab.collectRootTabs(movedTabs);
+  }
+  else if (params.duplicate ||
       windowId != destinationWindowId) {
     movedTabs = await Tree.moveTabs(movedTabs, {
       destinationWindowId,
@@ -713,19 +750,20 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         });
     }; break;
 
-    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
-      await Tab.waitUntilTracked(message.tabIds.concat([
+    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP: {
+      const draggedTabIds = message.import ? [] : message.tabs.map(tab => tab.id);
+      await Tab.waitUntilTracked(draggedTabIds.concat([
         message.attachToId,
         message.insertBeforeId,
         message.insertAfterId
       ]));
       log('perform tabs dragdrop requested: ', message);
       performTabsDragDrop(Object.assign({}, message, {
-        tabs:         message.tabIds.map(id => Tab.get(id)),
+        tabs:         message.import ? message.tabs : draggedTabIds.map(id => Tab.get(id)),
         attachTo:     message.attachToId && Tab.get(message.attachToId),
         insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
         insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
       }));
-      break;
+    }; break;
   }
 });

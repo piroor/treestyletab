@@ -19,6 +19,7 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
@@ -284,6 +285,9 @@ function onMessage(message, sender) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
+    case Constants.kCOMMAND_GET_INSTANCE_ID:
+      return Promise.resolve(Background.instanceId);
+
     case Constants.kCOMMAND_RELOAD:
       return Background.reload({ all: message.all });
 
@@ -326,7 +330,7 @@ function onMessage(message, sender) {
         while (!mInitialized) {
           await wait(10);
         }
-        const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
+        const structure = TreeBehavior.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
         return { structure };
       })();
 
@@ -587,7 +591,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return Promise.resolve(Tree.getTreeStructureFromTabs(Array.from(tabs)));
+        return Promise.resolve(TreeBehavior.getTreeStructureFromTabs(Array.from(tabs)));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:

@@ -17,6 +17,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
@@ -62,7 +63,7 @@ async function saveTreeStructure(windowId) {
   if (!window)
     return;
 
-  const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(windowId));
+  const structure = TreeBehavior.getTreeStructureFromTabs(Tab.getAllTabs(windowId));
   browser.sessions.setWindowValue(
     windowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
