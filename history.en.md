@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.3 (2019.7.1)
    * Allow to import dragged tree from other Firefox instances.
    * Respect option for treatment of new blank tabs opened from outside of TST, event when `browser.tabs.insertAfterCurrent` is configured to `true` by the user.
    * Restrict maximum height of the subpanel.
