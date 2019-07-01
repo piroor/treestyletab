@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * 他のFirefoxのインスタンスからツリーがドラッグ＆ドロップされた時に、ツリーをインポートするようにした
    * `browser.tabs.insertAfterCurrent`が`true`の時でも、TST以外によって開かれた新しい空のタブの取り扱いの設定を可能な限り尊重するようにした
    * サブパネルの高さを一定以下に制限するようにした
    * WindowsとmacOSでタブが頻繁にウィンドウから切り離されてしまう問題について軽減（あくまで暫定的な対策で、完全な解決はFirefox側での[bug 1561522](https://bugzilla.mozilla.org/show_bug.cgi?id=1561522)と[1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879)の解消を待つ必要があります）

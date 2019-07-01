@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Allow to import dragged tree from other Firefox instances.
    * Respect option for treatment of new blank tabs opened from outside of TST, event when `browser.tabs.insertAfterCurrent` is configured to `true` by the user.
    * Restrict maximum height of the subpanel.
    * Prevent too frequent detaching of clicked/dragged tab on Windows and macOS. This change is just a workaround, and we still need to wait for complete fix of the [bug 1561522](https://bugzilla.mozilla.org/show_bug.cgi?id=1561522) and [1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879) on Firefox side.
