@@ -427,6 +427,9 @@ function getDropAction(event) {
 function getDropEffectFromDropAction(actionInfo) {
   if (!actionInfo.canDrop)
     return 'none';
+  if (actionInfo.dragData &&
+      actionInfo.dragData.instanceId != mInstanceId)
+    return 'copy';
   if (!actionInfo.draggedTab)
     return 'link';
   if (actionInfo.isCopyAction)
