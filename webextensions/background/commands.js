@@ -353,7 +353,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       }
       if (!importedTab)
         importedTab = await browser.tabs.create(Object.assign({}, createParams, {
-          url:      'about:blank'
+          url: `about:blank?${tab.url}`
         }));
       movedTabs.push(importedTab);
       index++;
