@@ -8,12 +8,12 @@
 @import url("border.css");
 
 :root {
-  --tab-like-surface: Background;
+  --tab-like-surface: ThreeDFace;
   --tab-surface: var(--tab-like-surface);
-  --tab-text: CaptionText;
-  --tab-text-inverted: Caption;
+  --tab-text: ButtonText;
+  --tab-text-inverted: CaptionText;
   --tab-border: ThreeDHighlight;
-  --tab-dropmarker: CaptionText;
+  --tab-dropmarker: ButtonText;
 }
 
 
