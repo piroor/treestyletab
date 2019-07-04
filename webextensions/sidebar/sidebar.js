@@ -103,6 +103,8 @@ export async function init() {
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
       const window = await MetricsData.addAsync('browser.windows.getCurrent', browser.windows.getCurrent({ populate: true })).catch(ApiTabs.createErrorHandler());
+      if (window.active)
+        document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
       trackedWindow.incognito = window.incognito;
 
@@ -988,4 +990,12 @@ BackgroundConnection.onMessage.addListener(async message => {
       Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
       break;
   }
+});
+
+
+browser.windows.onFocusChanged.addListener(windowId => {
+  if (windowId == mTargetWindow)
+    document.documentElement.classList.add('active');
+  else
+    document.documentElement.classList.remove('active');
 });

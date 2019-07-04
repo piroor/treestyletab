@@ -65,8 +65,8 @@
   background: var(--bg-color);
 }
 
-:root:-moz-window-inactive,
-:root:-moz-window-inactive #background {
+:root:not(.active),
+:root:not(.active) #background {
   background: var(--bg-color-inactive);
 }
 
@@ -74,14 +74,14 @@
 :root.left {
   border-right: 1px solid var(--shadow-color);
 }
-:root:-moz-window-inactive.left {
+:root:not(.active).left {
   border-right-color: var(--shadow-color-inactive);
 }
 
 :root.right {
   border-left: 1px solid var(--shadow-color);
 }
-:root:-moz-window-inactive.right {
+:root:not(.active).right {
   border-left-color: var(--shadow-color-inactive);
 }
 
@@ -111,7 +111,7 @@
   background: var(--tab-surface-active-gradient-pale);
 }
 
-:-moz-window-inactive .tab.active {
+:root:not(.active) .tab.active {
   border-top: 1px solid var(--tab-surface-active-color-inactive);
   background: var(--tab-surface-active-gradient-inactive);
 }
@@ -187,10 +187,10 @@
   color: var(--badge-bg-color);
 }
 
-:-moz-window-inactive .counter {
+:root:not(.active) .counter {
   background-color: var(--badge-bg-color-inactive);
 }
-:-moz-window-inactive .tab.active .counter {
+:root:not(.active) .tab.active .counter {
   background-color: var(--tab-text-active);
   color: var(--badge-color-inactive);
 }
