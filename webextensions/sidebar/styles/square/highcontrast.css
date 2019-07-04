@@ -12,7 +12,7 @@
   --tab-surface: var(--tab-like-surface);
   --tab-text: ButtonText;
   --tab-text-inverted: CaptionText;
-  --tab-border: ThreeDHighlight;
+  --tab-border: ButtonShadow;
   --tab-dropmarker: ButtonText;
 }
 
@@ -21,7 +21,7 @@
 
 :root,
 #background {
-  background: Background;
+  background: AppWorkspace;
 }
 
 #background::after {
@@ -72,7 +72,7 @@
 }
 
 .newtab-button-box {
-  border-color: ThreeDHighlight;
+  border-color: var(--tab-border);
   border-style: solid;
   border-width: 1px;
 }
