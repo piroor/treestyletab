@@ -121,8 +121,9 @@
 .favicon-image:not([src]),
 .tab[data-current-uri^="chrome:"] .favicon-image,
 .tab[data-current-uri^="about:addons"] .favicon-image,
+.tab[data-current-uri^="about:debugging"] .favicon-image,
 .tab[data-current-uri^="about:preferences"] .favicon-image,
-.tab:not(.group-tab):not([data-current-uri^="chrome:"]):not([data-current-uri^="about:addons"]):not([data-current-uri^="about:preferences"])
+.tab:not(.group-tab):not([data-current-uri^="chrome:"]):not([data-current-uri^="about:addons"]):not([data-current-uri^="about:debugging"]):not([data-current-uri^="about:preferences"])
   .favicon-image[src]:not(.error) ~ .favicon-builtin::before,
 .tab.loading .favicon-image,
 .tab.loading .favicon-builtin::before {
