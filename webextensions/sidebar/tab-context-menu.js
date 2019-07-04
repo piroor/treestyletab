@@ -221,10 +221,7 @@ function buildExtraItem(item, ownerAddonId) {
     itemNode.appendChild(document.createTextNode(item.title));
     itemNode.setAttribute('title', item.title);
   }
-  if (item.enabled === false)
-    itemNode.classList.add('disabled');
-  else
-    itemNode.classList.remove('disabled');;
+  itemNode.classList.toggle('disabled', item.enabled === false);
   const addon = TSTAPI.getAddon(ownerAddonId) || {};
   const icon = chooseIconForAddon({
     id:         ownerAddonId,
@@ -395,12 +392,8 @@ async function onCommand(item, event) {
       for (const itemData of radioItems) {
         itemData.checked = itemData.id == item.dataset.itemId;
         const radioItem = document.getElementById(`${item.dataset.itemOwnerId}-${itemData.id}`);
-        if (radioItem) {
-          if (itemData.checked)
-            radioItem.classList.add('checked');
-          else
-            radioItem.classList.remove('checked');
-        }
+        if (radioItem)
+          radioItem.classList.toggle('checked', itemData.checked);
         browser.runtime.sendMessage({
           type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
           id:      item.dataset.itemId,

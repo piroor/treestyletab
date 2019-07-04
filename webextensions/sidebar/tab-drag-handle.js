@@ -90,10 +90,7 @@ function doShow(tab) {
   }
 
   mTargetTabId = tab.id;
-  if (tab.$TST.hasChild)
-    mHandle.classList.add('has-child');
-  else
-    mHandle.classList.remove('has-child');
+  mHandle.classList.toggle('has-child', tab.$TST.hasChild);
 
   const x = mLastX;
   const y = mLastY;

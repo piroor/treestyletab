@@ -192,10 +192,7 @@ function updateLayout() {
   }
   else {
     mHeight = Math.max(0, mHeight);
-    if (mHeight == 0)
-      mContainer.classList.add('collapsed');
-    else
-      mContainer.classList.remove('collapsed');
+    mContainer.classList.toggle('collapsed', mHeight == 0);
     mContainer.style.visibility = mSubPanel.style.visibility = 'visible';
     const headerSize = mHeader.getBoundingClientRect().height;
     const appliedHeight = Math.min(window.innerHeight * 0.66, mHeight);

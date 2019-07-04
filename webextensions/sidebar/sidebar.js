@@ -82,10 +82,7 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
 
   configs.$loaded.then(applyUserStyleRules);
 
-  if (/^Mac/i.test(navigator.platform))
-    document.documentElement.classList.add('platform-mac');
-  else
-    document.documentElement.classList.remove('platform-mac');
+  document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
 }
 
 UserOperationBlocker.block({ throbber: true });
@@ -994,8 +991,5 @@ BackgroundConnection.onMessage.addListener(async message => {
 
 
 browser.windows.onFocusChanged.addListener(windowId => {
-  if (windowId == mTargetWindow)
-    document.documentElement.classList.add('active');
-  else
-    document.documentElement.classList.remove('active');
+  document.documentElement.classList.toggle('active', windowId == mTargetWindow);
 });

@@ -271,10 +271,7 @@ async function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (Tab.hasLoadingTab(TabsStore.getWindow()))
-    document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
-  else
-    document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_LOADING_TAB, Tab.hasLoadingTab(TabsStore.getWindow()));
 }
 
 async function synchronizeThrobberAnimation() {
@@ -356,11 +353,7 @@ export function updateLabelOverflow(tab) {
   const label = getLabel(tab);
   if (!label)
     return;
-  if (!tab.pinned &&
-      label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
-    label.classList.add('overflow');
-  else
-    label.classList.remove('overflow');
+  label.classList.toggle('overflow', !tab.pinned && label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width);
   tab.$TST.tooltipIsDirty = true;
 }
 
@@ -637,10 +630,7 @@ export function applyStatesToElement(tab) {
   for (const state of NATIVE_STATES) {
     if (tab[state] == classList.contains(state))
       continue;
-    if (tab[state])
-      classList.add(state);
-    else
-      classList.remove(state);
+    classList.toggle(state, tab[state]);
   }
 
   if (tab.$TST.childIds.length > 0)
@@ -1216,10 +1206,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const window = TabsStore.windows.get(message.windowId);
       if (!window || !window.element)
         return;
-      if (message.tabIds.length > 1)
-        window.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-      else
-        window.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+      window.classList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED: {
