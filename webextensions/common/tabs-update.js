@@ -257,7 +257,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const state of tab.$TST.states) {
-      if (state.indexOf('contextual-identity-') == 0) {
+      if (String(state).startsWith('contextual-identity-')) {
         tab.$TST.removeState(state);
         removedStates.push(state);
       }
