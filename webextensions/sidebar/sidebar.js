@@ -100,7 +100,7 @@ export async function init() {
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
       const window = await MetricsData.addAsync('browser.windows.getCurrent', browser.windows.getCurrent({ populate: true })).catch(ApiTabs.createErrorHandler());
-      if (window.active)
+      if (window.focused)
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
       trackedWindow.incognito = window.incognito;
