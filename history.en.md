@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Use more safe combination of system colors on the "High Contrast" skin.
+   * Apply style rules for active/inactive windows on the "Sidebar" skin.
+   * Fill SVG icon with the color of tab labels correctly for `about:debugging` tabs.
+   * Expose "(no control)" choice for options about new tab positions, and set it as the new default value for new tabs opened with the "New Tab" button or the Ctrl-T keyboard shortcut.
  - 3.1.3 (2019.7.1)
    * Allow to import dragged tree from other Firefox instances.
    * Respect option for treatment of new blank tabs opened from outside of TST, event when `browser.tabs.insertAfterCurrent` is configured to `true` by the user.
