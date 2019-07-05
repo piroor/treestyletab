@@ -263,6 +263,7 @@
 
   "config_newTabAction_caption": { "message": "新しいタブを開く操作の挙動（その他のツールバーボタン、キーボードショートカットなど）" },
   "config_autoAttachOnNewTabCommand_before": { "message": "新しい空のタブを" },
+  "config_autoAttachOnNewTabCommand_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnNewTabCommand_child": { "message": "現在のタブの子として" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "現在のタブと同階層に" },
@@ -272,6 +273,7 @@
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "であるタブが開かれた場合、新しい空のタブが開かれたとみなす" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中クリックした時、新しい空のタブを" },
+  "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "現在のタブの子として" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "現在のタブと同階層に" },
@@ -279,6 +281,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
   "config_autoAttachOnDuplicated_before": { "message": "「再読み込み」ボタンを中クリックした時、複製されたタブを" },
+  "config_autoAttachOnDuplicated_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnDuplicated_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnDuplicated_child": { "message": "現在のタブの子として" },
   "config_autoAttachOnDuplicated_sibling": { "message": "現在のタブと同階層に" },
@@ -287,6 +290,7 @@
 
   "config_sameSiteOrphan_caption": { "message": "現在のタブと同じWebサイトのタブがロケーションバーなどから開かれた場合" },
   "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
+  "config_autoAttachSameSiteOrphan_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "独立したタブとして" },
   "config_autoAttachSameSiteOrphan_child": { "message": "現在のタブの子として" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "現在のタブと同階層に" },

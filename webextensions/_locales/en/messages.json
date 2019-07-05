@@ -267,6 +267,7 @@
 
   "config_newTabAction_caption": { "message": "Behavior for new tab actions (other toolbar buttons, keyboard shortcuts, and others)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Open new blank tab as" },
+  "config_autoAttachOnNewTabCommand_noControl": { "message": "(no control)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "an independent tab" },
   "config_autoAttachOnNewTabCommand_child": { "message": "a child of the current tab" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "a sibling of the current tab" },
@@ -276,6 +277,7 @@
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "For middle click, open new blank tab as" },
+  "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(no control)" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "an independent tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "a child of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "a sibling of the current tab" },
@@ -283,6 +285,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnDuplicated_before": { "message": "For middle click on the \"Reload\" button, duplicate the tab as" },
+  "config_autoAttachOnDuplicated_noControl": { "message": "(no control)" },
   "config_autoAttachOnDuplicated_independent": { "message": "an independent tab" },
   "config_autoAttachOnDuplicated_child": { "message": "a child of the current tab" },
   "config_autoAttachOnDuplicated_sibling": { "message": "a sibling of the current tab" },
@@ -291,6 +294,7 @@
 
   "config_sameSiteOrphan_caption": { "message": "When new tab with a website same to the current tab is opened from the location bar (or others)" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
+  "config_autoAttachSameSiteOrphan_noControl": { "message": "(no control)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
   "config_autoAttachSameSiteOrphan_child": { "message": "a child of the current tab" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "a sibling of the current tab" },

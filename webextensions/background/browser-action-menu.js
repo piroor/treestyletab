@@ -291,6 +291,12 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_before'),
         children: [
           {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            key:   'autoAttachOnNewTabButtonMiddleClick',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
+          {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
@@ -358,6 +364,12 @@ const mItems = [
         title:    indent() + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before'),
         children: [
           {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
+          {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
@@ -386,6 +398,12 @@ const mItems = [
       {
         title:    indent() + browser.i18n.getMessage('config_autoAttachOnDuplicated_before'),
         children: [
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
+            key:   'autoAttachOnDuplicated',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
@@ -421,6 +439,12 @@ const mItems = [
       {
         title:    browser.i18n.getMessage('config_sameSiteOrphan_caption'),
         children: [
+          {
+            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
+            key:   'autoAttachSameSiteOrphan',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_independent') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
