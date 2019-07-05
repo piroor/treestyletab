@@ -141,7 +141,7 @@ export const configs = new Configs({
 
   autoAttach: true,
   autoAttachOnOpenedWithOwner: Constants.kNEWTAB_OPEN_AS_CHILD,
-  autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+  autoAttachOnNewTabCommand: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
   autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
   autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
