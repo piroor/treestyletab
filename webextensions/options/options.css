@@ -109,7 +109,7 @@ label input[type="checkbox"] ~ img {
   transition: opacity 0.25s ease-out;
   width: 120px /*80px*/;
 }
-.has-preview-image:hover .preview-image {
+.has-preview-image:not([data-value="-1"]):hover .preview-image {
   opacity: 1;
 }
 .has-preview-image[data-value="0"] .preview-image {
