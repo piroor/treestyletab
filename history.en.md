@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.4 (2019.7.5)
    * Use more safe combination of system colors on the "High Contrast" skin.
    * Apply style rules for active/inactive windows on the "Sidebar" skin.
    * Fill SVG icon with the color of tab labels correctly for `about:debugging` tabs.
