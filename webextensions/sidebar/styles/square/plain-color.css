@@ -46,7 +46,7 @@
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
 :root[color-scheme="system-color"] #background::after {
-  background: var(--browser-bg-darker, ThreeDDarkShadow);
+  background: var(--browser-bg-darker, AppWorkspace);
   opacity: 0.15;
 
   bottom: 0;
