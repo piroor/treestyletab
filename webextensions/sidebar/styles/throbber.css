@@ -9,6 +9,7 @@
   --throbber-color: var(--browser-loading-indicator, Highlight);
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
+  --throbber-animation-steps: steps(60);
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
@@ -49,7 +50,7 @@
 :root:not(.throbber-synchronizing).have-loading-tab #master-throbber,
 :root.have-loading-tab #sync-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
-  animation: throbber 1.05s steps(60) infinite;
+  animation: throbber 1.05s var(--throbber-animation-steps) infinite;
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before,
