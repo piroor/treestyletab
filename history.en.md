@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.1.5 (2019.7.9)
+   * Make subpanels more secure.
+   * Provide `--throbber-animation-steps` custom property to [allow customization for animation frames of throbbers](https://github.com/piroor/treestyletab/issues/2328#issuecomment-508901706).
  - 3.1.4 (2019.7.5)
    * Use more safe combination of system colors on the "High Contrast" skin.
    * Apply style rules for active/inactive windows on the "Sidebar" skin.
