@@ -36,19 +36,6 @@ const mToggler         = document.querySelector('#subpanel-toggler');
 // produces reflowing on the startup unexpectedly.
 const mSubPanel = document.createElement('iframe');
 mSubPanel.setAttribute('id', 'subpanel');
-mSubPanel.setAttribute('sandbox', [
-  //'allow-forms', // To avoid XSS.
-  //'allow-modals', // To avoid XSS. See also: http://hasegawa.hatenablog.com/entry/20160109/p1
-  //'allow-orientation-lock',
-  'allow-pointer-lock',
-  //'allow-popups', // To avoid XSS. See also: http://hasegawa.hatenablog.com/entry/20160109/p1
-  //'allow-popups-to-escape-sandbox',
-  //'allow-presentation', // To avoid XSS.
-  'allow-same-origin', // this must be alloed to run scripts in the subpanel itself
-  'allow-scripts'//, // this must be alloed to run scripts in the subpanel itself
-  //'allow-top-navigation', // this must be disallowed to prevent replacing the sidebar itself via "target" attribute of links or forms
-  //'allow-top-navigation-by-user-activation' // this must be disallowed to prevent replacing the sidebar itself via "target" attribute of links or forms
-].join(' '));
 mSubPanel.setAttribute('src', 'about:blank');
 
 let mHeight = 0;
