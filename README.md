@@ -78,10 +78,11 @@ Some addons provide extended behavior to TST's sidebar panel:
 
 ## Similar projects
 
-### Vertical tab bar with tree, and more features
+### Vertical tab bar with tree (and more features)
 
 * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
 * [Sidebery](https://addons.mozilla.org/firefox/addon/sidebery/)
+* [ftt](https://addons.mozilla.org/firefox/addon/ftt/)
 
 ### Vertical tab bar with grouping
 
