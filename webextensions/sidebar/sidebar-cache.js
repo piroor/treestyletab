@@ -304,7 +304,7 @@ async function restoreTabsFromCacheInternal(params) {
     const fragment = insertionPoint.createContextualFragment(source);
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
-    tabElements = Array.slice(container.childNodes, -matched.length);
+    tabElements = Array.from(container.childNodes).slice(-matched.length);
   }
   else {
     if (container && container.parentNode)
