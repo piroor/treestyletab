@@ -43,6 +43,13 @@ function onConfigChanged(key) {
         label.removeAttribute('disabled');
       }
     }; break;
+
+    case 'closeParentBehaviorMode': {
+      const nodes = document.querySelectorAll('#closeParentBehaviorModeGroup > ul > li > :not(label)');
+      for (const node of nodes) {
+        node.style.display = node.parentNode.querySelector('input[type="radio"]').checked ? '' : 'none';
+      }
+    }; break;
   }
 }
 
@@ -385,6 +392,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('successorTabControlLevel');
+    wait(0).then(() => {
+      onConfigChanged('closeParentBehaviorMode');
+    });
 
     if (focusedItem)
       focusedItem.scrollIntoView();
