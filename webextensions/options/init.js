@@ -48,6 +48,14 @@ function onConfigChanged(key) {
       const nodes = document.querySelectorAll('#closeParentBehaviorModeGroup > ul > li > :not(label)');
       for (const node of nodes) {
         node.style.display = node.parentNode.querySelector('input[type="radio"]').checked ? '' : 'none';
+        const chosen = node.querySelector(`[type="radio"][data-config-key="closeParentBehavior"][value="${configs.closeParentBehavior}"]`);
+        if (chosen) {
+          chosen.checked = true;
+          continue;
+        }
+        const chooser = node.querySelector('[data-config-key="closeParentBehavior"]');
+        if (chooser)
+          chooser.value = configs.closeParentBehavior;
       }
     }; break;
   }
