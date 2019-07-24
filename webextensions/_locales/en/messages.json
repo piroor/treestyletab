@@ -346,7 +346,7 @@
 
   "config_closeParentBehaviorMode_caption":           { "message": "When a parent tab is closed or moved just as a solo tab" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Recommended behavior for people who still use the native tab bar of Firefox itself also" },
-  "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Keep the tree structure and numbed of tabs if possible, for operations while the tree sidebar is invisible." },
+  "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Keep tree structures and the number of tabs if possible, for operations while the tree sidebar is invisible." },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar":    { "message": "When the tree sidebar is visible:" },
   "config_closeParentBehaviorMode_withoutNativeTabs": { "message": "Recommended behavior for people who never use the native tab bar of Firefox itself" },
   "config_closeParentBehaviorMode_withoutNativeTabs_caption":    { "message": "Regardless the visibility of the tree sidebar, for any operation:" },
