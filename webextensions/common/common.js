@@ -106,8 +106,6 @@ export const configs = new Configs({
 
   skipCollapsedTabsForTabSwitchingShortcuts: false,
 
-  parentTabBehaviorForChanges: Constants.kPARENT_TAB_BEHAVIOR_ALWAYS,
-
   syncParentTabAndOpenerTab: true,
 
   dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
@@ -152,8 +150,12 @@ export const configs = new Configs({
 
 
   // behavior around closed tab
-  closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  promoteFirstChildForClosedRoot: true,
+  closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+  closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  promoteFirstChildForClosedRoot:     true, // obsolete, migrated to Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  parentTabBehaviorForChanges:        Constants.kPARENT_TAB_BEHAVIOR_ALWAYS, // obsolete, migrated to closeParentBehaviorMode
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   moveFocusInTreeForClosedActiveTab: true, // obsolete, migrated to "successorTabControlLevel"

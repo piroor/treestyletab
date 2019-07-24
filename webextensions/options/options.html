@@ -395,42 +395,135 @@
                       type="checkbox">
                __MSG_config_simulateSelectOwnerOnClose_label__</label></p>
     </fieldset>
-    <fieldset>
-      <legend>__MSG_config_closeParentBehavior_caption__</legend>
+    <fieldset id="closeParentBehaviorModeGroup">
+      <legend>__MSG_config_closeParentBehaviorMode_caption__</legend>
       <ul>
         <li><label><input type="radio"
-                          name="closeParentBehavior" value="2">
-              __MSG_config_closeParentBehavior_close__</label></li>
+                          name="closeParentBehaviorMode" value="0">
+              __MSG_config_closeParentBehaviorMode_withNativeTabs__</label>
+            <div class="sub">
+            <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar__</p>
+            <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar__</p>
+            <ul>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior0" value="5">
+                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior0" value="3">
+                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior0" value="0">
+                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior0" value="6">
+                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+            </ul>
+            </div>
+        </li>
         <li><label><input type="radio"
-                          name="closeParentBehavior" value="5">
-              __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+                          name="closeParentBehaviorMode" value="1">
+              __MSG_config_closeParentBehaviorMode_withoutNativeTabs__</label>
+            <div class="sub">
+            <p>__MSG_config_closeParentBehaviorMode_withoutNativeTabs_caption__</p>
+            <ul>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior1" value="5">
+                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior1" value="3">
+                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior1" value="0">
+                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior1" value="6">
+                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+            </ul>
+            </div>
+        </li>
         <li><label><input type="radio"
-                          name="closeParentBehavior" value="3">
-              __MSG_config_closeParentBehavior_promoteFirst__</label></li>
-        <li><label><input type="radio"
-                          name="closeParentBehavior" value="0">
-              __MSG_config_closeParentBehavior_promoteAll__</label>
-            <p class="sub">
-               <label><input id="promoteFirstChildForClosedRoot"
-                             type="checkbox">
-                     __MSG_config_promoteFirstChildForClosedRoot_label__</label></p></li>
-        <li><label><input type="radio"
-                          name="closeParentBehavior" value="1">
-              __MSG_config_closeParentBehavior_detach__</label></li>
-      </ul>
-    </fieldset>
-    <fieldset>
-      <legend>__MSG_config_parentTabBehaviorForChanges_caption__</legend>
-      <ul>
-        <li><label><input type="radio"
-                          name="parentTabBehaviorForChanges" value="0">
-              __MSG_config_parentTabBehaviorForChanges_always__</label></li>
-        <li><label><input type="radio"
-                          name="parentTabBehaviorForChanges" value="1">
-              __MSG_config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible__</label></li>
-        <li><label><input type="radio"
-                          name="parentTabBehaviorForChanges" value="2">
-              __MSG_config_parentTabBehaviorForChanges_onlyInSidebar__</label></li>
+                          name="closeParentBehaviorMode" value="-1">
+              __MSG_config_closeParentBehaviorMode_custom__</label>
+            <div class="sub">
+            <p>__MSG_config_closeParentBehaviorMode_custom_caption_insideSidebar__</p>
+            <ul>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="2">
+                    __MSG_config_closeParentBehavior_close__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="5">
+                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="3">
+                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="0">
+                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="6">
+                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+              <li><label><input type="radio"
+                                data-config-key="closeParentBehavior"
+                                name="closeParentBehavior2" value="1">
+                    __MSG_config_closeParentBehavior_detach__</label></li>
+            </ul>
+            <p>__MSG_config_closeParentBehaviorMode_custom_caption_outsideSidebar__</p>
+            <ul>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="2">
+                    __MSG_config_closeParentBehavior_close__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="5">
+                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="3">
+                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="0">
+                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="6">
+                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_outsideSidebar" value="1">
+                    __MSG_config_closeParentBehavior_detach__</label></li>
+            </ul>
+            <p>__MSG_config_closeParentBehaviorMode_custom_caption_noSidebar__</p>
+            <ul>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="2">
+                    __MSG_config_closeParentBehavior_close__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="5">
+                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="3">
+                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="0">
+                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="6">
+                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+              <li><label><input type="radio"
+                                name="closeParentBehavior_noSidebar" value="1">
+                    __MSG_config_closeParentBehavior_detach__</label></li>
+            </ul>
+            </div>
+        </li>
       </ul>
     </fieldset>
     <fieldset>

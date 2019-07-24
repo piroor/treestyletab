@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 6;
+const kCONFIGS_VERSION = 7;
 const kFEATURES_VERSION = 3;
 
 export function migrateConfigs() {
@@ -85,6 +85,24 @@ export function migrateConfigs() {
 
 /* put scrollbar rightside */
 :root.left #tabbar { direction: ltr; }`;
+          break;
+      }
+
+    case 6:
+      if (configs.promoteFirstChildForClosedRoot &&
+          configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+        configs.closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+      switch (configs.parentTabBehaviorForChanges) {
+        case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
+          break;
+        default:
+        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR;
+          break;
+        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM;
+          configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.closeParentBehavior;
           break;
       }
   }

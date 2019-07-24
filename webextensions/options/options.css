@@ -32,11 +32,13 @@ ul li {
   list-style: none;
 }
 
-p.sub {
+p.sub,
+div.sub {
   margin-left: 2em;
 }
 
-ul p.sub {
+ul p.sub,
+ul div.sub p {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -124,6 +126,7 @@ label input[type="checkbox"] ~ img {
 .has-preview-image[data-value="3"] .preview-image {
   background-image: url("as-next-sibling.png");
 }
+
 
 
 #browserThemeCustomRules {

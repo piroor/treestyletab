@@ -17,13 +17,13 @@ function log(...args) {
 }
 
 export function shouldApplyTreeBehavior(params = {}) {
-  switch (configs.parentTabBehaviorForChanges) {
-    case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
+  switch (configs.closeParentBehaviorMode) {
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ALWAYS
       return true;
-    case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return SidebarConnection.isInitialized() ? (params.windowId && SidebarConnection.isOpen(params.windowId)) : true ;
     default:
-    case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE
+      return SidebarConnection.isInitialized() ? (params.windowId && SidebarConnection.isOpen(params.windowId)) : true ;
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
       return !!params.byInternalOperation;
   }
 }
@@ -31,21 +31,33 @@ export function shouldApplyTreeBehavior(params = {}) {
 export function getCloseParentBehaviorForTab(tab, options = {}) {
   if (!options.asIndividualTab &&
       tab.$TST.subtreeCollapsed &&
-      !options.keepChildren)
+      !options.applyTreeBehavior)
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
-  let behavior = configs.closeParentBehavior;
+  const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
+  let behavior;
+  switch (configs.closeParentBehaviorMode) {
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR:
+      behavior = configs.closeParentBehavior;
+      break;
+    default:
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR:
+      behavior = sidebarVisible ? configs.closeParentBehavior : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+      if (behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+          behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+        behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
+      break;
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
+      behavior = options.byInternalOperation ? configs.closeParentBehavior :
+        sidebarVisible ? configs.closeParentBehavior_outsideSidebar :
+          configs.closeParentBehavior_noSidebar;
+      break;
+  }
   const parentTab = options.parent || tab.$TST.parent;
 
-  if (options.keepChildren &&
-      behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
-      behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
-    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-
-  if (!parentTab &&
-      behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
-      configs.promoteFirstChildForClosedRoot)
-    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY)
+    behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   // Promote all children to upper level, if this is the last child of the parent.
   // This is similar to "taking by representation".
@@ -59,15 +71,15 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
 }
 
 export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
-  const keepChildren = (
-    removeInfo.keepChildren ||
+  const applyTreeBehavior = (
+    removeInfo.applyTreeBehavior ||
     !shouldApplyTreeBehavior({
       windowId:            removeInfo.windowId || tab.windowId,
       byInternalOperation: removeInfo.byInternalOperation
     })
   );
-  log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, keepChildren });
-  return getCloseParentBehaviorForTab(tab, { keepChildren });
+  log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, applyTreeBehavior });
+  return getCloseParentBehaviorForTab(tab, { applyTreeBehavior });
 }
 
 export function getClosingTabsFromParent(tab, removeInfo = {}) {

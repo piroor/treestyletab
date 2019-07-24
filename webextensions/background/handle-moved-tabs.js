@@ -80,7 +80,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   if (!TreeBehavior.shouldApplyTreeBehavior(moveInfo)) {
     Tree.detachAllChildren(tab, {
       behavior: TreeBehavior.getCloseParentBehaviorForTab(tab, {
-        keepChildren: true
+        applyTreeBehavior: true
       }),
       broadcast: true
     });
