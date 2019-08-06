@@ -556,6 +556,8 @@ Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
 });
 
 Tab.onMoved.addListener((tab, moveInfo) => {
+  if (!moveInfo.isSubstantiallyMoved)
+    return;
   reserveToUpdateInsertionPosition([
     tab,
     moveInfo.oldPreviousTab,

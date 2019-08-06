@@ -63,6 +63,7 @@ Tab.onMoving.addListener((tab, moveInfo) => {
   if (isNewlyOpenedTab &&
       !moveInfo.byInternalOperation &&
       !moveInfo.alreadyMoved &&
+      !moveInfo.isSubstantiallyMoved &&
       positionControlled) {
     const opener = tab.$TST.openerTab;
     // if there is no valid opener, it can be a restored initial tab in a restored window
@@ -124,6 +125,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
 
 Tab.onMoved.addListener((tab, moveInfo = {}) => {
   if (!moveInfo.byInternalOperation &&
+      !moveInfo.isSubstantiallyMoved &&
       !tab.$TST.duplicating) {
     log('process moved tab');
     tryFixupTreeForInsertedTab(tab, moveInfo);

@@ -537,6 +537,12 @@ async function onNewTabTracked(tab, info) {
         previousTabId: currentActiveTab.id
       });
 
+    tab.$TST.memorizeNeighbors();
+    if (tab.$TST.unsafePreviousTab)
+      tab.$TST.unsafePreviousTab.$TST.memorizeNeighbors();
+    if (tab.$TST.unsafeNextTab)
+      tab.$TST.unsafeNextTab.$TST.memorizeNeighbors();
+
     return tab;
   }
   catch(e) {
@@ -592,6 +598,8 @@ async function onRemoved(tabId, removeInfo) {
     }
 
     log('tabs.onRemoved, tab is found: ', oldTab);
+
+    const nearestTabs = [oldTab.$TST.unsafePreviousTab, oldTab.$TST.unsafeNextTab];
 
     // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
     TabsStore.removeHighlightedTab(oldTab);
@@ -650,6 +658,13 @@ async function onRemoved(tabId, removeInfo) {
       byInternalOperation
     });
     oldTab.$TST.destroy();
+
+    for (const tab of nearestTabs) {
+      if (!tab || !tab.$TST)
+        continue;
+      tab.$TST.memorizeNeighbors();
+    }
+
     onCompleted();
   }
   catch(e) {
@@ -717,7 +732,8 @@ async function onMoved(tabId, moveInfo) {
       byInternalOperation: maybeInternalOperation,
       alreadyMoved,
       oldPreviousTab,
-      oldNextTab
+      oldNextTab,
+      isSubstantiallyMoved: movedTab.$TST.isSubstantiallyMoved
     });
     log('tabs.onMoved: ', movedTab, extendedMoveInfo);
 
@@ -768,6 +784,17 @@ async function onMoved(tabId, moveInfo) {
     if (maybeInternalOperation)
       window.internalMovingTabs.delete(tabId);
     completelyMoved();
+
+    movedTab.$TST.memorizeNeighbors();
+    if (movedTab.$TST.unsafePreviousTab)
+      movedTab.$TST.unsafePreviousTab.$TST.memorizeNeighbors();
+    if (movedTab.$TST.unsafeNextTab)
+      movedTab.$TST.unsafeNextTab.$TST.memorizeNeighbors();
+
+    if (oldPreviousTab)
+      oldPreviousTab.$TST.memorizeNeighbors();
+    if (oldNextTab)
+      oldNextTab.$TST.memorizeNeighbors();
   }
   catch(e) {
     console.log(e);

@@ -981,6 +981,26 @@ export default class Tab {
     return resolver;
   }
 
+  memorizeNeighbors() {
+    const previousTab = this.unsafePreviousTab;
+    this.lastPreviousTabId = previousTab && previousTab.id;
+
+    const nextTab = this.unsafeNextTab;
+    this.lastNextTabId = nextTab && nextTab.id;
+  }
+
+  get isSubstantiallyMoved() {
+    const previousTab = this.unsafePreviousTab;
+    if (this.lastPreviousTabId != (previousTab && previousTab.id))
+      return true;
+
+    const nextTab = this.unsafeNextTab;
+    if (this.lastNextTabId != (nextTab && nextTab.id))
+      return true;
+
+    return false;
+  }
+
   get sanitized() {
     const sanitized = Object.assign({}, this.tab, {
       '$TST': null
