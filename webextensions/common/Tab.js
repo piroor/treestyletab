@@ -523,6 +523,18 @@ export default class Tab {
   }
 
   set children(tabs) {
+    const ancestorsOfSelf = this.ancestors;
+    tabs = tabs.filter(tab => {
+      if (!ancestorsOfSelf.includes(tab))
+        return true;
+      console.log('FATAL ERROR: Cyclic tree structure has detected and prevented. ', {
+        ancestorsOfSelf,
+        tabs,
+        tab,
+        stack: new Error().stack
+      });
+      return false;
+    });
     const oldChildren = this.children;
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
     this.sortChildren();
