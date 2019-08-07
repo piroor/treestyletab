@@ -113,7 +113,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [TARGET]
          +-----------------------------------------------------
     */
-    const prevTab = params.insertBefore && params.insertBefore.$TST.nearestVisiblePrecedingTab;
+    const prevTab = params.insertBefore && (configs.fixupTreeOnTabVisibilityChanged ? params.insertBefore.$TST.nearestVisiblePrecedingTab : params.insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
     if (!prevTab) {
       // allow to move pinned tab to beside of another pinned tab
       if (!tab ||
@@ -158,10 +158,10 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [      ]
          +-----------------------------------------------------
     */
-    const nextTab = params.insertAfter && params.insertAfter.$TST.nearestVisibleFollowingTab;
     // We need to refer unsafeNearestExpandedFollowingTab instead of a visible tab, to avoid
     // placing the tab after hidden tabs (it is too far from the target).
     const unsafeNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
+    const nextTab = params.insertAfter && (configs.fixupTreeOnTabVisibilityChanged ? params.insertAfter.$TST.nearestVisibleFollowingTab : unsafeNextTab);
     if (!nextTab) {
       return {
         parent:      params.insertAfter && params.insertAfter.$TST.parent,

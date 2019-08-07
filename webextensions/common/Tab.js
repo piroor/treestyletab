@@ -419,6 +419,16 @@ export default class Tab {
     });
   }
 
+  get unsafeNearestExpandedPrecedingTab() { // not-collapsed, possibly hidden
+    return TabsStore.query({
+      windowId: this.tab.windowId,
+      tabs:     TabsStore.expandedTabsInWindow.get(this.tab.windowId),
+      fromId:   this.tab.id,
+      index:    (index => index < this.tab.index),
+      last:     true
+    });
+  }
+
   //===================================================================
   // tree relations
   //===================================================================
