@@ -603,65 +603,211 @@ const mItems = [
         }
       },
       {
-        title:    browser.i18n.getMessage('config_closeParentBehavior_caption'),
+        title:    browser.i18n.getMessage('config_closeParentBehaviorMode_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_closeParentBehavior_close'),
-            key:   'closeParentBehavior',
-            value: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+            title: browser.i18n.getMessage('config_closeParentBehaviorMode_withNativeTabs'),
+            key:   'closeParentBehaviorMode',
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
-            key:   'closeParentBehavior',
-            value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar')
+          },
+          {
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteIntelligently'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+                type:  'radio'
+              }
+            ]
+          },
+          { type: 'separator' },
+          {
+            title: browser.i18n.getMessage('config_closeParentBehaviorMode_withoutNativeTabs'),
+            key:   'closeParentBehaviorMode',
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
-            key:   'closeParentBehavior',
-            value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_withoutNativeTabs_caption'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteIntelligently'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+                type:  'radio'
+              }
+            ]
+          },
+          { type: 'separator' },
+          {
+            title: browser.i18n.getMessage('config_closeParentBehaviorMode_custom'),
+            key:   'closeParentBehaviorMode',
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
-            key:   'closeParentBehavior',
-            value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
-            type:  'radio'
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_custom_caption_insideSidebar'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_close'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteIntelligently'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_detach'),
+                key:   'closeParentBehavior',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+                type:  'radio'
+              }
+            ]
           },
           {
-            title: indent() + browser.i18n.getMessage('config_promoteFirstChildForClosedRoot_label'),
-            key:   'promoteFirstChildForClosedRoot',
-            type:  'checkbox'
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_custom_caption_outsideSidebar'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_close'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteIntelligently'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_detach'),
+                key:   'closeParentBehavior_outsideSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+                type:  'radio'
+              }
+            ]
           },
           {
-            title: browser.i18n.getMessage('config_closeParentBehavior_detach'),
-            key:   'closeParentBehavior',
-            value: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-            type:  'radio'
-          }
-        ]
-      },
-      {
-        title:    browser.i18n.getMessage('config_parentTabBehaviorForChanges_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_always'),
-            key:   'parentTabBehaviorForChanges',
-            value: Constants.kPARENT_TAB_BEHAVIOR_ALWAYS,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible'),
-            key:   'parentTabBehaviorForChanges',
-            value: Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_onlyInSidebar'),
-            key:   'parentTabBehaviorForChanges',
-            value: Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR,
-            type:  'radio'
+            title: indent() + browser.i18n.getMessage('config_closeParentBehaviorMode_custom_caption_noSidebar'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_close'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_promoteIntelligently'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_closeParentBehavior_detach'),
+                key:   'closeParentBehavior_noSidebar',
+                value: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+                type:  'radio'
+              }
+            ]
           }
         ]
       },
