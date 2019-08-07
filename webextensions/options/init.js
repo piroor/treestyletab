@@ -25,7 +25,8 @@ log.context = 'Options';
 const options = new Options(configs);
 
 document.title = browser.i18n.getMessage('config_title');
-if (location.hash && location.hash != '#')
+if ((location.hash && location.hash != '#') ||
+    /independent=true/.test(location.search))
   document.body.classList.add('independent');
 
 function onConfigChanged(key) {

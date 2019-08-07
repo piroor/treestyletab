@@ -578,7 +578,7 @@ function retrieveURIsFromData(data, type) {
         .trim()
         .split('\n')
         .map(line => {
-          return /^\w+:\/\/.+/.test(line) ? line : `about:treestyletab-search?${line}`;
+          return /^\w+:\/\/.+/.test(line) ? line : `ext+treestyletab:search:${line}`;
         });
   }
   return [];

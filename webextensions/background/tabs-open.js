@@ -44,7 +44,7 @@ function log(...args) {
   internalLogger('background/tabs-open', ...args);
 }
 
-const SEARCH_PREFIX_MATCHER = /^about:treestyletab-search\?/;
+const SEARCH_PREFIX_MATCHER = /^(ext\+treestyletab:search:|about:treestyletab-search\?)/;
 
 export async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
