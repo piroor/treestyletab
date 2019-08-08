@@ -434,6 +434,9 @@ export default class Tab {
   //===================================================================
 
   set parent(tab) {
+    if ((tab && tab.id) == this.parentId)
+      return tab;
+
     const oldParent = this.parent;
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     this.invalidateCachedAncestors();
@@ -545,8 +548,13 @@ export default class Tab {
       });
       return false;
     });
+
+    const newChildIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    if (newChildIds.join('|') == this.childIds.join('|'))
+      return tabs;
+
     const oldChildren = this.children;
-    this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    this.childIds = newChildIds;
     this.sortChildren();
     if (this.childIds.length > 0) {
       this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
