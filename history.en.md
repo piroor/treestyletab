@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.6 (2019.8.8)
    * Introduce new custom URI `ext+treestyletab:group` to open a blank dummy tab for grouping of tabs, which replaces `about:treestyletab-group`.
    * Restructure config UI for the behavior around closed parent tab.
    * Optimize tree restoration on the startup.

@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.1.6 (2019.8.8)
    * `about:treestyletab-group` の代わりとして機能するカスタムURIとして `ext+treestyletab:group` を実装した
    * 親のタブを閉じた時の挙動に関する設定UIを整理した
    * 起動時のツリー構造の復元処理をより最適化した
