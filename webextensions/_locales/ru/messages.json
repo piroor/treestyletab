@@ -423,7 +423,7 @@
   "config_externalAddonPermissions_header_incognito": { "message": "Уведомлять из приватных окон" },
 
 
-  "config_debug_caption": { "message": "Разработка },
+  "config_debug_caption": { "message": "Разработка" },
 
   "config_link_startupPage_label": { "message": "Стартовая страница" },
   "config_link_groupPage_label":   { "message": "Страница для группы вкладок" },
