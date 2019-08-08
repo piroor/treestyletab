@@ -390,7 +390,12 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   }
   MetricsData.add('fixupTabsRestoredFromCache: step 1 finished');
   // step 2: restore information of tabElements
-  for (const tabElement of tabElements) {
+  // Do this from bottom to top, to reduce post operations for modified trees.
+  // (Attaching a tab to an existing tree will trigger "update" task for
+  // existing ancestors, but attaching existing subtree to a solo tab won't
+  // trigger such tasks.)
+  for (let i = tabElements.length - 1; i > -1; i--) {
+    const tabElement = tabElements[i];
     const tab = tabElement.apiTab;
     SidebarTabs.applyStatesToElement(tab);
     SidebarTabs.applyCollapseExpandStateToElement(tab);
