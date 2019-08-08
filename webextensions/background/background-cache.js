@@ -212,6 +212,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
   // (Attaching a tab to an existing tree will trigger "update" task for
   // existing ancestors, but attaching existing subtree to a solo tab won't
   // trigger such tasks.)
+  // See also: https://github.com/piroor/treestyletab/issues/2278#issuecomment-519387792
   for (let i = tabs.length - 1; i > -1; i--) {
     fixupTabRestoredFromCache(tabs[i], permanentStates[i], cachedTabs[i], idMap);
   }
