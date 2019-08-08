@@ -434,11 +434,12 @@ export default class Tab {
   //===================================================================
 
   set parent(tab) {
-    if ((tab && tab.id) == this.parentId)
+    const newParentId = tab && (typeof tab == 'number' ? tab : tab.id);
+    if (newParentId == this.parentId)
       return tab;
 
     const oldParent = this.parent;
-    this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
+    this.parentId = newParentId;
     this.invalidateCachedAncestors();
     const parent = this.parent;
     if (parent) {
