@@ -425,7 +425,7 @@
 
   "tabContextMenu_pin_label":         { "message": "Закрепить вкладку" },
   "tabContextMenu_unpin_label":       { "message": "Открепить вкладку" },
-  "tabContextMenu_duplicate_label":   { "message": "Дублировать вкладку" },
+  "tabConфtextMenu_duplicate_label":   { "message": "Дублировать вкладку" },
   "tabContextMenu_selectAllTabs_label": { "message": "Выбрать все вкладки" },
   "tabContextMenu_bookmark_label":    { "message": "Добавить вкладку в закладки" },
   "tabContextMenu_reopenInContainer_label":             { "message": "Открыть в контейнере" },
