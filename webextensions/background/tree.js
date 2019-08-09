@@ -309,11 +309,12 @@ export function detachTab(child, options = {}) {
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
 
-  if (!parent)
+  if (!parent) {
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
+    return;
+  }
 
   // we need to set children and parent via setters, to invalidate cached information.
-  if (parent) {
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
     log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
     SidebarConnection.sendMessage({
@@ -333,7 +334,6 @@ export function detachTab(child, options = {}) {
         oldParent: new TSTAPI.TreeItem(parent, { cache })
       }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
     }
-  }
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child
   // automatically.
