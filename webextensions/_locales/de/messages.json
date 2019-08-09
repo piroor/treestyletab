@@ -26,6 +26,10 @@
   "command_tabbarDown":            { "message": "Zeilenweise in Tabs nach unten scrollen" },
   "command_tabbarPageDown":        { "message": "Seitenweise in Tabs nach unten scrollen" },
   "command_tabbarEnd":             { "message": "Zum letzten Tab scrollen" },
+  "command_toggleSubPanel":        { "message": "Sichtbarkeit des Unter-Bedienfelds umschalten" },
+  "command_switchSubPanel":        { "message": "Inhalt des Unter-Bedienfelds wechseln" },
+  "command_increaseSubPanel":      { "message": "Größe des Unter-Bedienfeld erhöhen" },
+  "command_decreaseSubPanel":      { "message": "Größe des Unter-Bedienfeld verringern" },
   "command_groupSelectedTabs":     { "message": "Neue Gruppe mit ausgewählten Tabs erstellen" },
 
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
@@ -103,7 +107,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Berechtigungs-Fehler" },
-  "bookmark_notification_notPermitted_message": { "message": "Fehlende Berechtigung zum Erstellen von Lesezeichen. Please click here to grant extra permissions." },
+  "bookmark_notification_notPermitted_message": { "message": "Fehlende Berechtigung zum Erstellen von Lesezeichen. Bitte hier klicken um Berechtigungen zu erteilen." },
 
   "dropLinksOnTabBehavior_message": { "message": "Wie soll der Link geöffnet werden?" },
   "dropLinksOnTabBehavior_save":    { "message": "Die Auswahl beim nächsten Mal beibehalten" },
@@ -263,6 +267,7 @@
 
   "config_newTabAction_caption": { "message": "Verhalten für Aktionen, die einen neuen Tab öffnen (andere Symbolleisten-Schaltflächen, Tastenkombinationen und andere)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
+  "config_autoAttachOnNewTabCommand_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnNewTabCommand_child": { "message": "untergeordneten Tab des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
@@ -272,6 +277,7 @@
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
+  "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
@@ -279,6 +285,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Beim Klick mit der mittleren Maustaste auf die Schaltfläche \"Aktualisieren\" den Tab duplizieren als" },
+  "config_autoAttachOnDuplicated_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnDuplicated_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnDuplicated_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnDuplicated_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
@@ -287,6 +294,7 @@
 
   "config_sameSiteOrphan_caption": { "message": "Wenn über die Adressleiste (oder andere) ein neuer Tab geöffnet wird mit der gleichen Website wie im aktuellen Tab" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Öffnen als" },
+  "config_autoAttachSameSiteOrphan_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "unabhängigen Tab" },
   "config_autoAttachSameSiteOrphan_child": { "message": "untergeordneten Tab des aktuellen Tab" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
@@ -322,15 +330,10 @@
 
   "config_successorTabControlLevel_caption": { "message": "Wenn der aktive Tab als letzter verbleibender untergeordneter Tab geschlossen wird" },
   "config_successorTabControlLevel_inTree": { "message": "Zum vorherigen Tab im Zweig wechseln" },
-  "config_successorTabControlLevel_simulateDefault": { "message": "Immer zum nächsten Tab wechseln (Firefox' Standardverhalten)" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "Immer zum nächsten Tab wechseln (Firefox Standardverhalten)" },
   "config_successorTabControlLevel_never": { "message": "Den Fokus niemals steuern (Steuerung von Firefox oder anderer Erweiterungen respektieren)" },
-  "config_successorTabControlLevel_legacyDescription": { "message": "*Firefox' eingebautes Verhalten für \"browser.tabs.selectOwnerOnClose\"=\"true\" hat Priorität vor dieser Einstellung." },
+  "config_successorTabControlLevel_legacyDescription": { "message": "*Firefox eingebautes Verhalten für \"browser.tabs.selectOwnerOnClose\"=\"true\" hat Priorität vor dieser Einstellung." },
   "config_simulateSelectOwnerOnClose_label": { "message": "Wenn möglich, setze den Fokus auf den öffnenden Tab, wenn der aktuelle Tab geschlossen wird (*Simulation von Firefox eingebautem Verhalten für \"browser.tabs.selectOwnerOnClose\"=\"true\", vor der obigen Einstellung)" },
-
-  "config_parentTabBehaviorForChanges_caption": { "message": "Wenn ein übergeordneter Tab von außerhalb der Baum-Sidebar verschoben oder geschlossen wird" },
-  "config_parentTabBehaviorForChanges_always": { "message": "Immer als übergeordneten Tab behandeln (alle untergeordneten Tabs zusammen ebenfalls verschieben oder schließen), egal ob die Sidebar sichtbar ist oder nicht." },
-  "config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible": { "message": "Immer als übergeordneten Tab behandeln, wenn die Sidebar sichtbar ist. / Als eigenständigen Tab behandeln, wenn die Sidebar unsichtbar ist." },
-  "config_parentTabBehaviorForChanges_onlyInSidebar": { "message": "Als übergeordneten Tab behandeln bei Operationen innerhalb der Baum-Sidebar. / Als eigenständigen Tab behandeln bei Operationen außerhalb der Sidebar." },
 
   "config_fixupTreeOnTabVisibilityChanged_caption": { "message": "Wenn die Sichtbarkeit von Tabs von anderen Erweiterungen geändert wird" },
   "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "Automatisch die Baumstruktur mit den sichtbaren Tabs aktualisieren (*Empfohlen bei der Verwendung von anderen Erweiterungen um Tab-Gruppen zu wechseln)" },
@@ -341,13 +344,22 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Es sei denn, dass das Auswählen des Tabs durch das Schließen des aktiven Tabs verursacht wird" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Aus-/einklappen eines Zweigs durch Doppelklick auf einen Tab" },
 
-  "config_closeParentBehavior_caption": { "message": "Wenn ein übergeordneter Tab mit ausgeklappten Zweigen geschlossen wird" },
-  "config_closeParentBehavior_close": { "message": "Untergeordnete Tabs ebenfalls schließen" },
-  "config_closeParentBehavior_replaceWithGroupTab": { "message": "Den geschlossenen übergeordneten Tab durch einen Platzhalter ersetzen, damit der Zweig erhalten bleibt" },
-  "config_closeParentBehavior_promoteFirst": { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
-  "config_closeParentBehavior_promoteAll": { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
-  "config_promoteFirstChildForClosedRoot_label": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, falls der geschlossene Tab keinen übergeordneten Tab besitzt" },
-  "config_closeParentBehavior_detach": { "message": "Untergeordnete Tabs vom Zweig lösen" },
+  "config_closeParentBehaviorMode_caption":           { "message": "Wenn ein übergeordneter Tab geschlossen oder als eigenständiger Tab verschoben wird" },
+  "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Empfohlenes Verhalten für Nutzer, welche auch die eingebaute Tableiste von Firefox verwenden" },
+  "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Versuche Baumstruktur und Anzahl der Tabs beizubehalten, während die Seitenleiste versteckt ist." },
+  "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar":    { "message": "Wenn die Seitenleiste sichtbar ist:" },
+  "config_closeParentBehaviorMode_withoutNativeTabs": { "message": "Empfohlenes Verhalten für Nutzer, welche die eingebaute Tableiste von Firefox nicht verwenden" },
+  "config_closeParentBehaviorMode_withoutNativeTabs_caption":    { "message": "Für alle Operationen, unabhängig von der Sichtbarkeit der Seitenleiste:" },
+  "config_closeParentBehaviorMode_custom":            { "message": "Benutzerdefiniert" },
+  "config_closeParentBehaviorMode_custom_caption_insideSidebar":  { "message": "Für Operationen innerhalb der Seitenleiste:" },
+  "config_closeParentBehaviorMode_custom_caption_outsideSidebar": { "message": "Für Operationen in der eingebauten Tableiste, Tastenkombinationen oder andere Erweiterungen während die Seitenleiste sichtbar ist:" },
+  "config_closeParentBehaviorMode_custom_caption_noSidebar":      { "message": "Für Operationen in der eingebauten Tableiste, Tastenkombinationen oder andere Erweiterungen" },
+  "config_closeParentBehavior_close":                { "message": "Untergeordnete Tabs ebenfalls schließen" },
+  "config_closeParentBehavior_replaceWithGroupTab":  { "message": "Den geschlossenen übergeordneten Tab durch einen Platzhalter ersetzen, damit der Zweig erhalten bleibt" },
+  "config_closeParentBehavior_promoteFirst":         { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
+  "config_closeParentBehavior_promoteAll":           { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
+  "config_closeParentBehavior_promoteIntelligently": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
+  "config_closeParentBehavior_detach":               { "message": "Untergeordnete Tabs vom Zweig lösen" },
 
   "config_warnOnCloseTabs_label": { "message": "Warnen, wenn mehrere Tabs geschlossen werden sollen" },
 
@@ -429,6 +441,7 @@
   "config_simulateSVGContextFill_label": { "message": "Workaround für Bug 1388193 und Bug 1421329 aktivieren um SVG-Icons zu simulieren (*Kann die CPU-Last erhöhen. Um diese Option zu deaktivieren, aktiviere \"svg.context-properties.content.enabled\" via \"about:config\", bis diese Bugs behoben sind.)" },
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
   "config_useCachedTree_description": { "message": "*Sollte es zu instabilem Verhalten der Baumstruktur kommen, kann es helfen, diese Einstellung zu deaktivieren und wieder zu aktivieren, um den Cache zu erneuern." },
+  "config_storeCacheAsWindowValue_label": { "message": "Zwischenspeicher beim Fenster speichern anstatt bei jedem Tab (dies verhindert das Anfüllen der Sitzungsdaten, führt aber möglicherweise zu Problemen beim Wiederherstellen der Baumstruktur)" },
   "config_acceleratedTabCreation_label": { "message": "Operationen zu neu geöffneten Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "Millisekunden dauert." },
