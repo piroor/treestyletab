@@ -121,6 +121,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
 async function handleNewTabFromActiveTab(tab, params = {}) {
   const activeTab = params.activeTab;
   log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), params);
+  if (activeTab &&
+      activeTab.$TST.ancestors.includes(tab)) {
+    log(' => ignore restored ancestor tab');
+    return;
+  }
   const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
     behavior:  params.autoAttachBehavior,
