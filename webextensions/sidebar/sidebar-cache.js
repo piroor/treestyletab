@@ -474,10 +474,6 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tab.needToWaitTracked(null))
     await Tab.waitUntilTrackedAll(null, { element: true });
 
-  const window = TabsStore.windows.get(mTargetWindow);
-  if (window.allTabsRestored)
-    return;
-
   log('reserveToUpdateCachedTabbar ', { stack: configs.debug && new Error().stack });
   // clear dirty cache
   clearWindowCache();
@@ -502,10 +498,7 @@ async function updateCachedTabbar() {
     return;
   if (Tab.needToWaitTracked(mTargetWindow))
     await Tab.waitUntilTrackedAll(mTargetWindow);
-  const window    = TabsStore.windows.get(mTargetWindow);
   const signature = getWindowSignature(Tab.getAllTabs(mTargetWindow));
-  if (window.allTabsRestored)
-    return;
   log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {

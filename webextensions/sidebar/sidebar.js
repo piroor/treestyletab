@@ -941,14 +941,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       log('Tabs.onWindowRestoring');
       const window = TabsStore.windows.get(mTargetWindow);
-      const restoredCount = await window.allTabsRestored;
-      if (restoredCount == 1) {
-        log('Tabs.onWindowRestoring: single tab restored');
-        UserOperationBlocker.unblock({ throbber: true });
-        return;
-      }
-
-      log('Tabs.onWindowRestoring: continue');
       const cache = await SidebarCache.getEffectiveWindowCache({
         ignorePinnedTabs: true
       });
