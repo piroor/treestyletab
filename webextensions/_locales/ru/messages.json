@@ -407,8 +407,6 @@
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
 
-
-
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
 
   "config_addons_description_before": { "message": "Имеются " },
@@ -423,7 +421,7 @@
   "config_externalAddonPermissions_header_incognito": { "message": "Уведомлять из приватных окон" },
 
 
-  "config_debug_caption": { "message": "Разработка" },
+  "config_debug_caption": { "message": "Разработка },
 
   "config_link_startupPage_label": { "message": "Стартовая страница" },
   "config_link_groupPage_label":   { "message": "Страница для группы вкладок" },
@@ -462,8 +460,8 @@
 
 
   "tabContextMenu_reload_label":      { "message": "Обновить вкладку" },
-  "tabContextMenu_mute_label":        { "message": "Выкл.звук" },
-  "tabContextMenu_unmute_label":      { "message": "Вкл.звук" },
+  "tabContextMenu_mute_label":        { "message": "Выключить звук" },
+  "tabContextMenu_unmute_label":      { "message": "Включить звук" },
 
   "tabContextMenu_pin_label":         { "message": "Закрепить вкладку" },
   "tabContextMenu_unpin_label":       { "message": "Открепить вкладку" },
@@ -483,7 +481,7 @@
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки снизу" },
   "tabContextMenu_closeOther_label":  { "message": "Закрыть другие вкладки" },
 
-  "tabContextMenu_undoClose_label":   { "message": "Восстановить закрытую вкладки" },
+  "tabContextMenu_undoClose_label":   { "message": "Восстановить закрытую вкладку" },
   "tabContextMenu_close_label":       { "message": "Закрыть вкладку" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "Обновить выбранные вкладки" },
