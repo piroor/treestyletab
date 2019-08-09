@@ -407,8 +407,6 @@
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
 
-
-
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
 
   "config_addons_description_before": { "message": "Имеются " },

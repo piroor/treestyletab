@@ -1,6 +1,16 @@
 # History
 
  - master/HEAD
+ - 3.1.6 (2019.8.8)
+   * Introduce new custom URI `ext+treestyletab:group` to open a blank dummy tab for grouping of tabs, which replaces `about:treestyletab-group`.
+   * Restructure config UI for the behavior around closed parent tab.
+   * Optimize tree restoration on the startup.
+   * Don't try to "fix" tree structure when multiple tabs are moved at a time as a set. This should improve compatibility with other addons which switch visible tab sets.
+   * Introduce a guard for cyclic reference about the tree structure.
+   * Disallow to put unrelated tab inside a tree including hidden parent tabs.
+   * Remove obsolete codes deprecated on Firefox 70.
+   * Update `fr` locale by narzb. Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.1.5 (2019.7.9)
    * Make subpanels more secure.
    * Provide `--throbber-animation-steps` custom property to [allow customization for animation frames of throbbers](https://github.com/piroor/treestyletab/issues/2328#issuecomment-508901706).
