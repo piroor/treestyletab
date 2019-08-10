@@ -316,6 +316,12 @@ ul {
   z-index: 10;
 }
 
+.tab .left-edge {
+  display: none;
+  position: absolute;
+  left: 0;
+}
+
 
 /* pinned tabs */
 

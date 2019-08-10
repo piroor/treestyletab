@@ -93,6 +93,7 @@ export function update(options = {}) {
       indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
       for (const indent of indents) {
         definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
+        definitions.push(`${indentSet[indent].join(' .left-edge,\n')} .left-edge { left: -${indent}; }`);
       }
     }
     mIndentDefinition.textContent = indentUnitDefinitions.concat(definitions).join('\n');

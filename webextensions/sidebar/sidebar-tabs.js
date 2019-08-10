@@ -564,6 +564,10 @@ Tab.onInitialized.addListener((tab, _info) => {
   identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
   tabElement.appendChild(identityMarker);
 
+  const leftEdge = document.createElement('span');
+  leftEdge.classList.add('left-edge');
+  tabElement.appendChild(leftEdge);
+
   const extraItemsContainerBehind = document.createElement('span');
   extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
   extraItemsContainerBehind.classList.add('behind');
