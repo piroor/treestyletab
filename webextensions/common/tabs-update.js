@@ -77,8 +77,12 @@ export function updateTab(tab, newState = {}, options = {}) {
     let visibleLabel = newState.title;
     if (newState && newState.cookieStoreId) {
       const identity = ContextualIdentities.get(newState.cookieStoreId);
-      if (identity)
+      if (identity) {
         visibleLabel = `${newState.title} - ${identity.name}`;
+        const identityName = `contextual-identity-${identity.name.replace(/[^\w]/g, '')}`;
+        tab.$TST.addState(identityName);
+        addedStates.push(identityName);
+      }
     }
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
@@ -263,9 +267,16 @@ export function updateTab(tab, newState = {}, options = {}) {
       }
     }
     if (newState.cookieStoreId) {
-      const state = `contextual-identity-${newState.cookieStoreId}`;
-      tab.$TST.addState(state);
-      addedStates.push(state);
+      const identityId = `contextual-identity-${newState.cookieStoreId}`;
+      tab.$TST.addState(identityId);
+      addedStates.push(identityId);
+
+      const identity = ContextualIdentities.get(newState.cookieStoreId);
+      if (identity) {
+        const identityName = `contextual-identity-${identity.name.replace(/[^\w]/g, '')}`;
+        tab.$TST.addState(identityName);
+        addedStates.push(identityName);
+      }
     }
   }
 

@@ -419,6 +419,7 @@ function updateContextualIdentitiesSelector() {
   ContextualIdentities.forEach(identity => {
     const item = document.createElement('li');
     item.dataset.value = identity.cookieStoreId;
+    item.dataset.name = identity.name.replace(/[^\w]/g, '');
     item.textContent = identity.name;
     item.dataset.icon = identity.iconUrl;
     fragment.appendChild(item);
