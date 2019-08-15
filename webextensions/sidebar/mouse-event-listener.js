@@ -460,7 +460,7 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
         if (confirmed)
           BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds: [tab.id]
+            tabIds: tabs.map(tab => tab.id)
           });
       });
   }
@@ -502,7 +502,7 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
           return;
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds: multiselected ? tabsToBeClosed.map(tab => tab.id) : [tab.id]
+          tabIds: tabsToBeClosed.map(tab => tab.id)
         });
       });
   }
