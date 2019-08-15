@@ -393,8 +393,20 @@ async function onNewTabTracked(tab, info) {
       forceApply: true
     });
 
-    // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
-    const treeForActionDetection = Tree.snapshotForActionDetection(tab);
+    const duplicated = duplicatedInternally || uniqueId.duplicated;
+    const restored   = uniqueId.restored;
+    const skipFixupTree = !nextTab;
+
+    const maybeNeedToFixupTree = (
+      (info.mayBeReplacedWithContainer ||
+       (!duplicated &&
+        !restored &&
+        !skipFixupTree)) &&
+      !info.positionedBySelf
+    );
+    // Tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
+    // This operation takes too much time so it should be skipped if unnecessary.
+    const treeForActionDetection = maybeNeedToFixupTree ? Tree.snapshotForActionDetection(tab) : null;
 
     if (positionedBySelf)
       window.toBeOpenedTabsWithPositions--;
@@ -403,8 +415,6 @@ async function onNewTabTracked(tab, info) {
     if (duplicatedInternally)
       window.duplicatingTabsCount--;
 
-    const duplicated = duplicatedInternally || uniqueId.duplicated;
-    const restored   = uniqueId.restored;
     if (restored) {
       window.restoredCount = window.restoredCount || 0;
       window.restoredCount++;
@@ -489,7 +499,7 @@ async function onNewTabTracked(tab, info) {
       positionedBySelf,
       mayBeReplacedWithContainer,
       movedBySelfWhileCreation: moved,
-      skipFixupTree: !nextTab,
+      skipFixupTree,
       restored,
       duplicated,
       duplicatedInternally,
