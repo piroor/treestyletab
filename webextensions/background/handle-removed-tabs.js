@@ -93,6 +93,9 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
+  // We should skip needless operation if it is a bulk tab close
+  const window = TabsStore.windows.get(tab.windowId);
+  if (!window.internalClosingTabs.has(tab.$TST.parentId))
   Tree.detachTab(tab, {
     dontUpdateIndent: true,
     broadcast:        true
@@ -191,9 +194,7 @@ async function closeChildTabs(parent) {
 
   //markAsClosedSet([parent].concat(tabs));
   // close bottom to top!
-  await Promise.all(tabs.reverse().map(tab => {
-    return TabsInternalOperation.removeTab(tab);
-  }));
+  await TabsInternalOperation.removeTabs(tabs.reverse());
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 

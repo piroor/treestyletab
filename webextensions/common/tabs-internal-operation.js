@@ -68,7 +68,10 @@ export function removeTab(tab) {
 }
 
 export function removeTabs(tabs) {
-  tabs = tabs.filter(TabsStore.ensureLivingTab);
+  const window = TabsStore.windows.get(tabs[0].windowId);
+  tabs = tabs.filter(tab => {
+    return (!window || !window.internalClosingTabs.has(tab.id)) && TabsStore.ensureLivingTab(tab);
+  });
   if (!tabs.length)
     return;
   log('removeTabsInternally: ', tabs.map(dumpTab));
@@ -78,7 +81,6 @@ export function removeTabs(tabs) {
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
     });
-  const window = TabsStore.windows.get(tabs[0].windowId);
   if (window) {
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
