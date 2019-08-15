@@ -96,10 +96,10 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   // We should skip needless operation if it is a bulk tab close
   const window = TabsStore.windows.get(tab.windowId);
   if (!window.internalClosingTabs.has(tab.$TST.parentId))
-  Tree.detachTab(tab, {
-    dontUpdateIndent: true,
-    broadcast:        true
-  });
+    Tree.detachTab(tab, {
+      dontUpdateIndent: true,
+      broadcast:        true
+    });
 });
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {
