@@ -1001,6 +1001,9 @@ export default class Tab {
   }
 
   memorizeNeighbors() {
+    if (!this.tab) // already closed tab
+      return;
+
     const previousTab = this.unsafePreviousTab;
     this.lastPreviousTabId = previousTab && previousTab.id;
 
