@@ -406,6 +406,7 @@ async function onNewTabTracked(tab, info) {
     );
     // Tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
     // This operation takes too much time so it should be skipped if unnecessary.
+    // See also: https://github.com/piroor/treestyletab/issues/2278#issuecomment-521534290
     const treeForActionDetection = maybeNeedToFixupTree ? Tree.snapshotForActionDetection(tab) : null;
 
     if (positionedBySelf)
