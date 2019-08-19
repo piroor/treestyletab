@@ -29,6 +29,7 @@
 import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
+  filterMap,
   log as internalLogger,
   wait,
   dumpTab,
@@ -1075,8 +1076,7 @@ export async function moveTabs(tabs, options = {}) {
       const startTime = Date.now();
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
-        newTabs = newTabs.filter(tab => !!tab);
+        newTabs = movedTabs.filterMap(Tab.get(TabIdFixer.fixTab(tab).id) || undefined);
         if (mSlowDuplication)
           UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
@@ -1115,8 +1115,7 @@ export async function moveTabs(tabs, options = {}) {
   }
 
 
-  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
-  movedTabs = movedTabs.filter(tab => !!tab);
+  movedTabs = movedTabs.filterMap(tab => Tab.get(tab.id) || undefined);
   if (options.insertBefore) {
     await TabsMove.moveTabsBefore(
       movedTabs,
@@ -1136,8 +1135,7 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
-  movedTabs = movedTabs.filter(tab => !!tab);
+  movedTabs = movedTabs.filterMap(tab => Tab.get(tab.id) || undefined);
 
   return movedTabs;
 }
@@ -1176,9 +1174,8 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       log('moved tabs: ', movedTabs.map(dumpTab));
       const movedTabIds     = movedTabs.map(tab => tab.id);
       const allTabsInWindow = window.tabs.map(tab => TabIdFixer.fixTab(tab));
-      const removeTabs      = allTabsInWindow
-        .filter(tab => !movedTabIds.includes(tab.id))
-        .map(tab => Tab.get(tab.id));
+      const removeTabs      = filterMap(allTabsInWindow, tab =>
+        !movedTabIds.includes(tab.id) ? Tab.get(tab.id) : undefined);
       log('removing tabs: ', removeTabs.map(dumpTab));
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);

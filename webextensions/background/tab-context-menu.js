@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  filterMap,
   log as internalLogger,
   configs
 } from '/common/common.js';
@@ -673,7 +674,7 @@ async function onClick(info, contextTab) {
       browser.tabs.highlight({
         windowId,
         populate: false,
-        tabs:     [activeTab.index].concat(tabs.filter(tab => !tab.active).map(tab => tab.index))
+        tabs:     [activeTab.index].concat(filterMap(tabs, tab => !tab.active ? tab.index : undefined))
       }).catch(ApiTabs.createErrorSuppressor());
     }; break;
     case 'context_bookmarkTab':
@@ -725,7 +726,7 @@ async function onClick(info, contextTab) {
           multiselectedTabs.map(tab => tab.id) :
           [contextTab.id]
       );
-      const closeTabs = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => Tab.get(tab.id));
+      const closeTabs = filterMap(tabs, tab => !tab.pinned && !keptTabIds.has(tab.id) ? Tab.get(tab.id) : undefined);
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
         tabs: closeTabs.map(tab => tab.$TST.sanitized),
