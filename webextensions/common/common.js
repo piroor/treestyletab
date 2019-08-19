@@ -305,7 +305,7 @@ export const configs = new Configs({
 
   testKey: 0 // for tests/utils.js
 }, {
-  localKeys: `
+  localKeys: filterMap(`
     optionsExpandedSections
     sidebarPosition
     sidebarDirection
@@ -324,7 +324,10 @@ export const configs = new Configs({
     requestingPermissions
     requestingPermissionsNatively
     testKey
-  `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
+  `.trim().split('\n'), key => {
+    key = key.trim();
+    return key.indexOf('//') != 0 ? key : undefined;
+  })
 });
 
 configs.$loaded.then(() => {
@@ -332,6 +335,41 @@ configs.$loaded.then(() => {
   if (!configs.debug)
     log.logs = [];
 });
+
+
+export function filterMap(arr, callback, thisArg) {
+  if (arr == null) {
+    throw new TypeError('arr is null or undefined');
+  }
+
+  arr = Object(arr);
+  const maxi = arr.length >>> 0;
+
+  if (typeof callback !== 'function')
+    throw new TypeError(`${callback} is not a function`);
+
+  callback = callback.bind(thisArg == undefined ? arr : thisArg);
+
+  const newArr = new Array(maxi);
+  let counti = 0,
+      i = 0,
+      value,
+      newValue;
+
+  while (i < maxi) {
+    if (i in arr) {
+      value = arr[i];
+      newValue = callback(value, i, arr);
+      if (newValue !== undefined) {
+        newArr[counti++] = newValue;
+      }
+      i++;
+    }
+  }
+
+  newArr.length = counti;
+  return newArr;
+}
 
 
 export function log(module, ...args)

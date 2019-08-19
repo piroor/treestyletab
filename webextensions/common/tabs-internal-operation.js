@@ -8,6 +8,7 @@
 // internal operations means operations bypassing WebExtensions' tabs APIs.
 
 import {
+  filterMap,
   log as internalLogger,
   dumpTab,
   configs
@@ -46,8 +47,8 @@ export async function activateTab(tab, options = {}) {
       const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
       if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
         // switch active tab with highlighted state
-        const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab.id != tab.id);
-        tabs = tabs.concat(otherTabs.map(tab => tab.index));
+        tabs = filterMap(highlightedTabs, highlightedTab =>
+          highlightedTab.id != tab.id ? tab.index : undefined);
       }
     }
     if (tabs.length == 1)

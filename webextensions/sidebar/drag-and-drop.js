@@ -28,6 +28,7 @@
 import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
+  filterMap,
   log as internalLogger,
   wait,
   configs
@@ -216,7 +217,7 @@ function getDropAction(event) {
     if (dragData && dragData.instanceId != mInstanceId)
       return [];
     const tabs     = dragData && dragData.tabs;
-    return tabs && tabs.map(tab => tab && Tab.get(tab.id) || tab).filter(tab => !!tab) || [];
+    return tabs && filterMap(tabs, tab => tab && Tab.get(tab.id) || tab || undefined) || [];
   });
   info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(tab => tab.id);

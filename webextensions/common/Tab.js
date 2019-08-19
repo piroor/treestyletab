@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  filterMap,
   log as internalLogger,
   dumpTab,
   configs
@@ -481,7 +482,8 @@ export default class Tab {
   get ancestors() {
     if (!this.cachedAncestorIds)
       return this.updateAncestors();
-    return this.cachedAncestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return filterMap(this.cachedAncestorIds, id =>
+      TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   updateAncestors() {
@@ -550,7 +552,8 @@ export default class Tab {
       return false;
     });
 
-    const newChildIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    const newChildIds = filterMap(tabs, tab =>
+      (typeof tab == 'number' ? tab : tab.id) || undefined);
     if (newChildIds.join('|') == this.childIds.join('|'))
       return tabs;
 
@@ -575,7 +578,8 @@ export default class Tab {
     return tabs;
   }
   get children() {
-    return this.childIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return filterMap(this.childIds, id =>
+      TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   get firstChild() {
@@ -600,7 +604,8 @@ export default class Tab {
   get descendants() {
     if (!this.cachedDescendantIds)
       return this.updateDescendants();
-    return this.cachedDescendantIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return filterMap(this.cachedDescendantIds, id =>
+      TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   updateDescendants() {
@@ -1141,15 +1146,9 @@ Tab.needToWaitTracked = (windowId) => {
 };
 
 Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
-  const tabSets = [];
-  if (windowId) {
-    tabSets.push(mIncompletelyTrackedTabs.get(windowId));
-  }
-  else {
-    for (const tabs of mIncompletelyTrackedTabs.values()) {
-      tabSets.push(tabs);
-    }
-  }
+  const tabSets = windowId ?
+    [mIncompletelyTrackedTabs.get(windowId)] :
+    [...mIncompletelyTrackedTabs.values()];
   return Promise.all(tabSets.map(tabs => {
     if (!tabs)
       return;
