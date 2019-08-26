@@ -257,7 +257,7 @@ export async function performTabsDragDrop(params = {}) {
   const windowId = params.windowId || TabsStore.getWindow();
   const destinationWindowId = params.destinationWindowId || windowId;
 
-  log('performTabsDragDrop ', {
+  log('performTabsDragDrop ', () => ({
     tabs:                params.tabs.map(dumpTab),
     attachTo:            dumpTab(params.attachTo),
     insertBefore:        dumpTab(params.insertBefore),
@@ -265,7 +265,7 @@ export async function performTabsDragDrop(params = {}) {
     windowId:            params.windowId,
     destinationWindowId: params.destinationWindowId,
     action:              params.action
-  });
+  }));
 
   const movedTabs = await moveTabsWithStructure(params.tabs, Object.assign({}, params, {
     windowId, destinationWindowId,
@@ -283,7 +283,7 @@ export async function performTabsDragDrop(params = {}) {
 
 // useful utility for general purpose
 export async function moveTabsWithStructure(tabs, params = {}) {
-  log('moveTabsWithStructure ', tabs.map(dumpTab));
+  log('moveTabsWithStructure ', () => tabs.map(dumpTab));
 
   let movedTabs = tabs.filter(tab => !!tab);
   if (!movedTabs.length)
@@ -299,7 +299,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
         movedWholeTree.push(descendant);
     }
   }
-  log('=> movedTabs: ', movedTabs.map(dumpTab).join(' / '));
+  log('=> movedTabs: ', () => movedTabs.map(dumpTab).join(' / '));
 
   while (params.insertBefore &&
          movedWholeTree.includes(params.insertBefore)) {
@@ -394,7 +394,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
     });
   }
 
-  log('=> moving tabs ', movedTabs.map(dumpTab));
+  log('=> moving tabs ', () => movedTabs.map(dumpTab));
   if (params.insertBefore)
     await TabsMove.moveTabsBefore(
       movedTabs,
@@ -441,7 +441,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 }
 
 async function attachTabsWithStructure(tabs, parent, options = {}) {
-  log('attachTabsWithStructure: start ', tabs.map(dumpTab), dumpTab(parent));
+  log('attachTabsWithStructure: start ', () => [tabs.map(dumpTab), dumpTab(parent)]);
   if (parent &&
       !options.insertBefore &&
       !options.insertAfter) {
@@ -485,7 +485,7 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 }
 
 function detachTabsWithStructure(tabs, options = {}) {
-  log('detachTabsWithStructure: start ', tabs.map(dumpTab));
+  log('detachTabsWithStructure: start ', () => tabs.map(dumpTab));
   for (const tab of tabs) {
     Tree.detachTab(tab, options);
     Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, options, {

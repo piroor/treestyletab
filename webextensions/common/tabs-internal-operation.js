@@ -77,7 +77,7 @@ export function removeTabs(tabs) {
   });
   if (!tabs.length)
     return;
-  log('removeTabsInternally: ', tabs.map(dumpTab));
+  log('removeTabsInternally: ', () => tabs.map(dumpTab));
   if (SidebarConnection.isInitialized()) // in background
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,

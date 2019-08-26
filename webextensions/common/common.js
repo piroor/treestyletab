@@ -348,6 +348,8 @@ export function log(module, ...args)
   if (!logging)
     return;
 
+  args = args.map(arg => typeof arg == 'function' ? arg() : arg);
+
   const nest = (new Error()).stack.split('\n').length;
   let indent = '';
   for (let i = 0; i < nest; i++) {

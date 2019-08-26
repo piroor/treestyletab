@@ -37,7 +37,7 @@ export async function groupTabs(tabs, options = {}) {
   if (rootTabs.length <= 0)
     return null;
 
-  log('groupTabs: ', tabs.map(dumpTab));
+  log('groupTabs: ', () => tabs.map(dumpTab));
 
   const uri = makeGroupTabURI(Object.assign({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),
@@ -85,7 +85,7 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
 function cleanupNeedlssGroupTab(tabs) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
+  log('trying to clanup needless temporary group tabs from ', () => tabs.map(dumpTab));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
     if (tab.$TST.isTemporaryGroupTab) {
@@ -106,6 +106,6 @@ function cleanupNeedlssGroupTab(tabs) {
     }
     tabsToBeRemoved.push(tab);
   }
-  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+  log('=> to be removed: ', () => tabsToBeRemoved.map(dumpTab));
   TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }

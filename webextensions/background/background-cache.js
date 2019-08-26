@@ -49,7 +49,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
   const tabs = options.tabs || await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   if (configs.debug)
-    log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, () => tabs.map(dumpTab));
   const actualSignature = getWindowSignature(tabs);
   let cache = options.caches && options.caches.get(owner.id) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
   if (!cache) {
@@ -195,7 +195,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
   MetricsData.add('fixupTabsRestoredFromCache: start');
   if (tabs.length != cachedTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
-  log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(dumpTab), cachedTabs });
+  log('fixupTabsRestoredFromCache start ', () => ({ tabs: tabs.map(dumpTab), cachedTabs }));
   const idMap = new Map();
   // step 1: build a map from old id to new id
   tabs = tabs.map((tab, index) => {

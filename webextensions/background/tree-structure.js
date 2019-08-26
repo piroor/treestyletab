@@ -199,12 +199,12 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   insertAfter  = Tab.getByUniqueId(insertAfter);
   ancestors    = ancestors.map(Tab.getByUniqueId);
   children     = children.map(Tab.getByUniqueId);
-  log(' => references: ', {
+  log(' => references: ', () => ({
     insertBefore: dumpTab(insertBefore),
     insertAfter:  dumpTab(insertAfter),
     ancestors:    ancestors.map(dumpTab).join(', '),
     children:     children.map(dumpTab).join(', ')
-  });
+  }));
 
   // clear wrong positioning information
   if (tab.pinned ||

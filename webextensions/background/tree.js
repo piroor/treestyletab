@@ -374,7 +374,7 @@ export function detachAllChildren(tab, options = {}) {
   const children = options.children ? options.children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
   if (!children.length)
     return;
-  log(' => children to be detached: ', children.map(dumpTab));
+  log(' => children to be detached: ', () => children.map(dumpTab));
 
   if (!('behavior' in options))
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
@@ -943,7 +943,7 @@ export async function moveTabs(tabs, options = {}) {
   if (tabs.length == 0)
     return [];
 
-  log('moveTabs: ', tabs.map(dumpTab), options);
+  log('moveTabs: ', () => ({ tabs: tabs.map(dumpTab), options }));
 
   const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
 
@@ -1018,7 +1018,7 @@ export async function moveTabs(tabs, options = {}) {
                 return null;
               }
             })).then(tabs => {
-              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, tabs.map(dumpTab));
+              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, () => tabs.map(dumpTab));
               return tabs;
             });
             movedTabs = await promisedDuplicatedTabs;
@@ -1209,7 +1209,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
   MetricsData.add('applyTreeStructureToTabs: start');
 
-  log('applyTreeStructureToTabs: ', tabs.map(dumpTab), treeStructure, options);
+  log('applyTreeStructureToTabs: ', () => ({ tabs: tabs.map(dumpTab), treeStructure, options }));
   tabs = tabs.slice(0, treeStructure.length);
   treeStructure = treeStructure.slice(0, tabs.length);
 

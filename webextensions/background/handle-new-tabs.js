@@ -239,12 +239,12 @@ Tab.onAttached.addListener(async (tab, info = {}) => {
 
   log('Tabs.onAttached ', dumpTab(tab), info);
 
-  log('descendants of attached tab: ', info.descendants.map(dumpTab));
+  log('descendants of attached tab: ', () => info.descendants.map(dumpTab));
   const movedTabs = await Tree.moveTabs(info.descendants, {
     destinationWindowId: tab.windowId,
     insertAfter:         tab
   });
-  log('moved descendants: ', movedTabs.map(dumpTab));
+  log('moved descendants: ', () => movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
     Tree.attachTabTo(movedTab, tab, {
       broadcast: true,
