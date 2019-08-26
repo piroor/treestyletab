@@ -594,7 +594,10 @@ export default class Tab {
   }
 
   sortChildren() {
-    this.childIds = Tab.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab && tab.id);
+    // Tab.get(tabId) calls into TabsStore.tabs.get(tabId), which is just a
+    // Map. This is acceptable to repeat in order to avoid two array copies,
+    // especially on larger tab sets.
+    this.childIds.sort((a, b) => Tab.compare(Tab.get(a), Tab.get(b)));
     this.invalidateCachedDescendants();
   }
 
@@ -1794,11 +1797,9 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
   return addedTabs.map(tab => Tab.get(tab.id));
 };
 
-Tab.sort = tabs => {
-  if (tabs.length == 0)
-    return tabs;
-  return tabs.sort((a, b) => a.index - b.index);
-};
+Tab.compare = (a, b) => a.index - b.index;
+
+Tab.sort = tabs => tabs.length == 0 ? tabs : tabs.sort(Tab.compare);
 
 Tab.dumpAll = windowId => {
   if (!configs.debug)
