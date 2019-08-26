@@ -595,7 +595,11 @@ function updateMultiselectionByTabClick(tab, event) {
       if (tab == activeTab &&
           tab.$TST.subtreeCollapsed &&
           activeTabDescendants.length > 0) {
-        const highlightedCount  = activeTabDescendants.filter(tab => tab.highlighted).length;
+        const highlightedCount  = activeTabDescendants.reduce((count, tab) => {
+          if (tab.highlighted)
+            count++;
+          return count;
+        }, 0);
         const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
         toBeHighlighted = partiallySelected || !activeTabDescendants[0].highlighted;
         log(' => ', toBeHighlighted, { partiallySelected });

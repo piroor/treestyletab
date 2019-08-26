@@ -158,7 +158,11 @@ export function setLastMousedown(button, details) {
 
 export function cancelHandleMousedown(button = null) {
   if (!button && button !== 0) {
-    return Array.from(lastMousedown.keys()).filter(button => cancelHandleMousedown(button)).length > 0;
+    return Array.from(lastMousedown.keys()).reduce((count, button) => {
+      if (cancelHandleMousedown(button))
+        count++;
+      return count;
+    }, 0) > 0;
   }
 
   const lastMousedownForButton = lastMousedown.get(button);

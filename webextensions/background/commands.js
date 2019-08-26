@@ -620,10 +620,17 @@ export async function moveTabsToStart(movedTabs) {
     return;
   const tab       = movedTabs[0];
   const allTabs   = tab.pinned ? Tab.getPinnedTabs(tab.windowId) : Tab.getUnpinnedTabs(tab.windowId);
-  const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
-  if (otherTabs.length > 0)
+  const movedTabsSet = new Set(movedTabs);
+  let firstOtherTab;
+  for (const tab of allTabs) {
+    if (movedTabsSet.has(tab))
+      continue;
+    firstOtherTab = tab;
+    break;
+  }
+  if (firstOtherTab)
     await moveTabsWithStructure(movedTabs, {
-      insertBefore: otherTabs[0],
+      insertBefore: firstOtherTab,
       broadcast:    true
     });
 }
@@ -638,10 +645,18 @@ export async function moveTabsToEnd(movedTabs) {
     return;
   const tab       = movedTabs[0];
   const allTabs   = tab.pinned ? Tab.getPinnedTabs(tab.windowId) : Tab.getUnpinnedTabs(tab.windowId);
-  const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
-  if (otherTabs.length > 0)
+  const movedTabsSet = new Set(movedTabs);
+  let lastOtherTabs;
+  for (let i = allTabs.length - 1; i > -1; i--) {
+    const tab = allTabs[i];
+    if (movedTabsSet.has(tab))
+      continue;
+    lastOtherTabs = tab;
+    break;
+  }
+  if (lastOtherTabs)
     await moveTabsWithStructure(movedTabs, {
-      insertAfter: otherTabs[otherTabs.length-1],
+      insertAfter: lastOtherTabs,
       broadcast:   true
     });
 }

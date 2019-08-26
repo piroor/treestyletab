@@ -60,7 +60,11 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       tab.$TST.childIds.length > 1 &&
-      tab.$TST.children.filter(child => !child.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)).length > 1) {
+      tab.$TST.children.reduce((count, tab) => {
+        if (!tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED))
+          count++;
+        return count;
+      }, 0) > 1) {
     log('trying to replace the closing tab with a new group tab');
     const firstChild = tab.$TST.firstChild;
     const uri = TabsGroup.makeGroupTabURI({
@@ -126,17 +130,25 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
     const closingTabIds = new Set(self.closingTabIds);
+    let allClosingTabs = new Set();
+    allClosingTabs.add(tab);
     self.closingTabIds = Array.from(closingTabIds);
-    self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !closingTabIds.has(id))
-    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
-    let allClosingTabs = [tab].concat(self.closingDescendantTabIds.map(id => Tab.get(id)));
-    allClosingTabs = Array.from(new Set(allClosingTabs));
+    self.closingDescendantTabIds = Array.from(self.closingDescendantTabIds.reduce((ids, id) => {
+      if (!closingTabIds.has(id)) {
+        ids.add(id);
+        allClosingTabs.add(Tab.get(id));
+      }
+      return ids;
+    }, new Set()));
+    allClosingTabs = Array.from(allClosingTabs);
     shouldRestoreCount = self.closingTabIds.length;
-    const restorableClosingTabs = allClosingTabs.filter(tab => (
-      tab.url != 'about:blank' &&
-      tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl
-    ));
-    if (restorableClosingTabs.length > 0) {
+    const restorableClosingTabsCount = allClosingTabs.reduce((count, tab) => {
+      if (tab.url != 'about:blank' &&
+          tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl)
+        count++;
+      return count;
+    }, 0);
+    if (restorableClosingTabsCount > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
       return Background.confirmToCloseTabs(allClosingTabs.map(tab => tab.$TST.sanitized), {
         windowId: tab.windowId
