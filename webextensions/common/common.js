@@ -324,7 +324,12 @@ export const configs = new Configs({
     requestingPermissions
     requestingPermissionsNatively
     testKey
-  `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
+  `.trim().split('\n').reduce((keys, key) => {
+      key = key.trim();
+      if (key && key.indexOf('//') != 0)
+        keys.push(key);
+      return keys;
+    }, [])
 });
 
 configs.$loaded.then(() => {
