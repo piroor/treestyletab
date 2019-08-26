@@ -175,27 +175,32 @@ function matchedWithQuery(tab, query) {
     if (attribute in query &&
         !matched(tab[attribute], query[attribute]))
       return false;
-    if (`!${attribute}` in query &&
-        matched(tab[attribute], query[`!${attribute}`]))
+    const invertedAttribute = `!${attribute}`;
+    if (invertedAttribute in query &&
+        matched(tab[attribute], query[invertedAttribute]))
       return false;
   }
 
   if (!tab.$TST)
     return false;
 
-  if ('states' in query && tab.$TST.states) {
-    for (let i = 0, maxi = query.states.length; i < maxi; i += 2) {
-      const state   = query.states[i];
-      const pattern = query.states[i+1];
-      if (!matched(tab.$TST.states.has(state), pattern))
+  const tabStates = tab.$TST.states;
+  if ('states' in query && tabStates) {
+    const queryStates = query.states;
+    for (let i = 0, maxi = queryStates.length; i < maxi; i += 2) {
+      const state   = queryStates[i];
+      const pattern = queryStates[i+1];
+      if (!matched(tabStates.has(state), pattern))
         return false;
     }
   }
-  if ('attributes' in query && tab.$TST.attributes) {
-    for (let i = 0, maxi = query.attributes.length; i < maxi; i += 2) {
-      const attribute = query.attributes[i];
-      const pattern   = query.attributes[i+1];
-      if (!matched(tab.$TST.attributes[attribute], pattern))
+  const tabAttributes = tab.$TST.attributes;
+  if ('attributes' in query && tabAttributes) {
+    const queryAttributes = query.attributes;
+    for (let i = 0, maxi = queryAttributes.length; i < maxi; i += 2) {
+      const attribute = queryAttributes[i];
+      const pattern   = queryAttributes[i+1];
+      if (!matched(tabAttributes[attribute], pattern))
         return false;
     }
   }
@@ -205,18 +210,18 @@ function matchedWithQuery(tab, query) {
     return false;
   if (query.normal &&
       (tab.hidden ||
-       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING) ||
+       tabStates.has(Constants.kTAB_STATE_SHOWING) ||
        tab.pinned))
     return false;
   if (query.visible &&
-      ((tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) &&
-        !tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING)) ||
+      ((tabStates.has(Constants.kTAB_STATE_COLLAPSED) &&
+        !tabStates.has(Constants.kTAB_STATE_EXPANDING)) ||
        tab.hidden ||
-       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
+       tabStates.has(Constants.kTAB_STATE_SHOWING)))
     return false;
   if (query.controllable &&
       (tab.hidden ||
-       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
+       tabStates.has(Constants.kTAB_STATE_SHOWING)))
     return false;
   if ('hasChild' in query &&
       query.hasChild != tab.$TST.hasChild)
