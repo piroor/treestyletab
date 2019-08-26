@@ -72,8 +72,15 @@ export function removeTab(tab) {
 
 export function removeTabs(tabs) {
   const window = TabsStore.windows.get(tabs[0].windowId);
+  const tabIds = [];
   tabs = tabs.filter(tab => {
-    return (!window || !window.internalClosingTabs.has(tab.id)) && TabsStore.ensureLivingTab(tab);
+    if ((!window ||
+         !window.internalClosingTabs.has(tab.id)) &&
+        TabsStore.ensureLivingTab(tab)) {
+      tabIds.push(tab.id);
+      return true;
+    }
+    return false;
   });
   if (!tabs.length)
     return;
@@ -82,7 +89,7 @@ export function removeTabs(tabs) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       windowId: tabs[0].windowId,
-      tabIds:   tabs.map(tab => tab.id)
+      tabIds
     });
   if (window) {
     for (const tab of tabs) {
@@ -93,7 +100,7 @@ export function removeTabs(tabs) {
   }
   if (!SidebarConnection.isInitialized()) // in sidebar
     return;
-  return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  return browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 export function setTabActive(tab) {

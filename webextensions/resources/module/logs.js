@@ -16,10 +16,13 @@ window.addEventListener('DOMContentLoaded', () => {
       case Constants.kCOMMAND_RESPONSE_QUERY_LOGS: {
         if (!message.logs || message.logs.length < 1)
           return;
-        document.getElementById('queryLogs').textContent += message.logs.filter(log => !!log).map(log => {
-          log.windowId = message.windowId || 'background';
-          return JSON.stringify(log);
-        }).join(',\n')+',\n';
+        document.getElementById('queryLogs').textContent += message.logs.reduce((output, log, index) => {
+          if (log) {
+            log.windowId = message.windowId || 'background';
+            output += `${index == 0 ? '' : ',\n'}${JSON.stringify(log)}`;
+          }
+          return output;
+        }, '') + ',\n';
         analyzeQueryLogs();
       }; break;
 

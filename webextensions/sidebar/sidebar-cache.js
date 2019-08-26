@@ -174,7 +174,11 @@ export async function getEffectiveWindowCache(options = {}) {
     MetricsData.add('getEffectiveWindowCache: validity check: actual signature failed.');
   }
   else {
-    cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(part => !!part).length;
+    cache.offset= actualSignature.replace(cachedSignature, '').trim().split('\n').reduce((count, part) => {
+      if (part)
+        count++;
+      return count;
+    }, 0);
     cache.actualSignature = actualSignature;
     log('getEffectiveWindowCache: success ');
     MetricsData.add('getEffectiveWindowCache: validity check: actual signature passed.');
@@ -185,7 +189,10 @@ export async function getEffectiveWindowCache(options = {}) {
 
 function getWindowSignature(tabs) {
   const tabIds = tabs.map(tab => tab.id);
-  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`).join('\n');
+  return tabs.reduce((signature, tab, index) => {
+    signature += `${index == 0 ? '' : '\n'}${tab.openerTabId ? tabIds.indexOf(tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`;
+    return signature;
+  }, '');
 }
 
 function trimSignature(signature, ignoreCount) {
@@ -230,7 +237,10 @@ function signatureFromTabsCache(cachedTabs) {
       pinned:        pinnedMatcher.test(classes)
     };
   });
-  return tabs.map(tab => `${tab.parentId ? tabIds.indexOf(tab.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`).join('\n');
+  return tabs.reduce((signature, tab, index) => {
+    signature += `${index == 0 ? '' : '\n'}${tab.parentId ? tabIds.indexOf(tab.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`;
+    return signature;
+  }, '');
 }
 
 

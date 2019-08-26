@@ -221,22 +221,23 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
 
 function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   tab.$TST.clear();
-  tab.$TST.states = new Set([...cachedTab.$TST.states, ...permanentStates]);
+  const tabStates = new Set([...cachedTab.$TST.states, ...permanentStates]);
   for (const state of Constants.kTAB_TEMPORARY_STATES) {
-    tab.$TST.states.delete(state);
+    tabStates.delete(state);
   }
+  tab.$TST.states = tabStates;
   tab.$TST.attributes = cachedTab.$TST.attributes;
 
   log('fixupTabRestoredFromCache children: ', cachedTab.$TST.childIds);
-  const childTabs = cachedTab.$TST.childIds.reduce((tabs, oldId) => {
+  const childIds = cachedTab.$TST.childIds.reduce((ids, oldId) => {
     const tab = idMap.get(oldId);
     if (tab)
-      tabs.push(tab);
-    return tabs;
+      ids.push(tab.id);
+    return ids;
   }, []);
-  tab.$TST.children = childTabs;
-  if (childTabs.length > 0)
-    tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);
+  tab.$TST.children = childIds;
+  if (childIds.length > 0)
+    tab.$TST.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
   else
     tab.$TST.removeAttribute(Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tab.$TST.childIds);

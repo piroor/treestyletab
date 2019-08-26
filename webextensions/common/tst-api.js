@@ -196,10 +196,11 @@ export class TreeItem {
     if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
       this.cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
 
+    const tabStates = sourceTab.$TST.states;
     const exportedTab = {
-      states:         Array.from(Constants.kTAB_SAFE_STATES).filter(state => sourceTab.$TST.states.has(state)),
+      states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
       indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
-      ancestorTabIds: sourceTab.$TST.ancestors.map(tab => tab.id),
+      ancestorTabIds: sourceTab.$TST.ancestorIds,
       children
     };
 
@@ -1063,6 +1064,7 @@ export async function formatTabResult(treeItems, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return Promise.all(treeItems.map(treeItem => treeItem.exportFor(senderId))).then(tabs => tabs.filter(tab => !!tab));
+    return Promise.all(treeItems.map(treeItem => treeItem.exportFor(senderId)))
+      .then(tabs => tabs.filter(tab => !!tab));
   return treeItems.length > 0 ? treeItems[0].exportFor(senderId) : null ;
 }

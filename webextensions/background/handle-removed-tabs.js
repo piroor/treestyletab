@@ -125,8 +125,9 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
-    self.closingTabIds = Array.from(new Set(self.closingTabIds));
-    self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))
+    const closingTabIds = new Set(self.closingTabIds);
+    self.closingTabIds = Array.from(closingTabIds);
+    self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !closingTabIds.has(id))
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
     let allClosingTabs = [tab].concat(self.closingDescendantTabIds.map(id => Tab.get(id)));
     allClosingTabs = Array.from(new Set(allClosingTabs));

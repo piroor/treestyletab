@@ -1799,11 +1799,18 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
     tabsQueryOptions.windowId = windowId;
   }
   const beforeTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
-  const beforeIds  = beforeTabs.map(tab => tab.id);
+  const beforeIds  = beforeTabs.reduce((tabs, tab) => {
+    tabs.add(tab.id);
+    return tabs;
+  }, new Set());
   await asyncTask();
   const afterTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
-  const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
-  return addedTabs.map(tab => Tab.get(tab.id));
+  const addedTabs = afterTabs.reduce((tabs, tab) => {
+    if (!beforeIds.has(tab.id))
+      tabs.push(Tab.get(tab.id));
+    return tabs;
+  }, []);
+  return addedTabs;
 };
 
 Tab.compare = (a, b) => a.index - b.index;
@@ -1813,12 +1820,14 @@ Tab.sort = tabs => tabs.length == 0 ? tabs : tabs.sort(Tab.compare);
 Tab.dumpAll = windowId => {
   if (!configs.debug)
     return;
-  const output = ['dumpAllTabs'];
+  let output = 'dumpAllTabs';
   for (const tab of Tab.getAllTabs(windowId, {iterator: true })) {
-    output.push(tab.$TST.ancestors.reverse().concat([tab])
-      .map(tab => tab.id + (tab.pinned ? ' [pinned]' : ''))
-      .join(' => '));
+    output += '\n' + [...tab.$TST.ancestors.reverse(), tab]
+      .reduce((output, tab, index) => {
+        output += `${index == 0 ? '' : ' => '}${tab.id}${tab.pinned ? ' [pinned]' : ''}`;
+        return output;
+      }, '');
   }
-  log(output.join('\n'));
+  log(output);
 };
 

@@ -553,8 +553,14 @@ async function importTabsFromBackground() {
 
 
 export async function confirmToCloseTabs(tabs, _options = {}) {
-  tabs = tabs.filter(tab => !configs.grantedRemovingTabIds.includes(tab.id));
-  const tabIds = tabs.map(tab => tab.id);
+  const tabIds = [];
+  tabs = tabs.filter(tab => {
+    if (!configs.grantedRemovingTabIds.includes(tab.id)) {
+      tabIds.push(tab.id);
+      return true;
+    }
+    return false;
+  });
   log('confirmToCloseTabs: ', tabIds);
   const count = tabIds.length;
   if (count <= 1 ||

@@ -365,7 +365,10 @@ export function log(module, ...args)
   if (useConsole)
     console.log(line, ...args);
 
-  log.logs.push(`${line} ${args.map(arg => uneval(arg)).join(', ')}`);
+  log.logs.push(`${line} ${args.reduce((output, arg, index) => {
+    output += `${index == 0 ? '' : ', '}${uneval(arg)}`;
+    return output;
+  }, '')}`);
   log.logs = log.logs.slice(-log.max);
 }
 log.context = '?';

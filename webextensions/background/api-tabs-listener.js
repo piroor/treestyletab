@@ -775,8 +775,10 @@ async function onMoved(tabId, moveInfo) {
         window.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.from(window.getOrderedTabs())
-            .map(tab => ' - '+tab.index+': '+tab.id+(tab.id == movedTab.id ? '[MOVED]' : ''))
-            .join('\n')),
+            .reduce((output, tab, index) => {
+              output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tab.id == movedTab.id ? '[MOVED]' : ''}`;
+              return output;
+            }, '')),
             { moveInfo });
       }
       const onMovedResult = Tab.onMoved.dispatch(movedTab, extendedMoveInfo);

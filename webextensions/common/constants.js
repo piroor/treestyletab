@@ -201,6 +201,7 @@ export const kTAB_SAFE_STATES = new Set([
   kTAB_STATE_SUBTREE_COLLAPSED,
   kTAB_STATE_GROUP_TAB
 ]);
+export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';

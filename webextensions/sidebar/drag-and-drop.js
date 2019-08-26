@@ -540,11 +540,11 @@ function retrieveURIsFromDragEvent(event) {
       break;
   }
   log(' => retrieved: ', urls);
-  urls = urls.filter(uRI =>
-    uRI &&
-      uRI.length &&
-      uRI.indexOf(kBOOKMARK_FOLDER) == 0 ||
-      !/^\s*(javascript|data):/.test(uRI)
+  urls = urls.filter(uri =>
+    uri &&
+      uri.length &&
+      uri.indexOf(kBOOKMARK_FOLDER) == 0 ||
+      !/^\s*(javascript|data):/.test(uri)
   );
   log('  => filtered: ', urls);
 

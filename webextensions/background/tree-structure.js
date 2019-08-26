@@ -92,7 +92,11 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         uniqueIds = uniqueIds.map(id => id.id);
         let tabsOffset;
         if (structure[0].id) {
-          tabsOffset = uniqueIds.join('\n').indexOf(structure.map(item => item.id).join('\n'));
+          const structureSignature = structure.reduce((signature, item, index) => {
+            signature += `${index == 0 ? '' : '\n'}${item.id}`;
+            return signature;
+          }, '');
+          tabsOffset = uniqueIds.join('\n').indexOf(structureSignature);
           windowStateCompletelyApplied = tabsOffset > -1;
         }
         else {
