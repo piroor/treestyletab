@@ -99,7 +99,7 @@ export async function attachTabTo(child, parent, options = {}) {
     log('=> could not attach tab to a parent in different window');
     return false;
   }
-  const ancestors = [parent].concat(child.$TST.ancestors);
+  const ancestors = [parent].concat(parent.$TST.ancestors);
   if (ancestors.includes(child)) {
     log('=> canceled for recursive request');
     return false;
