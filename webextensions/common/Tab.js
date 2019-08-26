@@ -478,10 +478,14 @@ export default class Tab {
     return !!this.parentId;
   }
 
-  get ancestors() {
+  get ancestorIds() {
     if (!this.cachedAncestorIds)
-      return this.updateAncestors();
-    return this.cachedAncestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+      this.updateAncestors();
+    return this.cachedAncestorIds;
+  }
+
+  get ancestors() {
+    return this.ancestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
   }
 
   updateAncestors() {
@@ -537,20 +541,21 @@ export default class Tab {
   }
 
   set children(tabs) {
-    const ancestorsOfSelf = this.ancestors;
-    tabs = tabs.filter(tab => {
-      if (!ancestorsOfSelf.includes(tab))
-        return true;
+    const ancestorIds = this.ancestorIds;
+    const newChildIds = tabs.reduce((newChildIds, tab, index, tabs) => {
+      const id = typeof tab == 'number' ? tab : tab && tab.id;
+      if (!ancestorIds.includes(id)) {
+        newChildIds.push(id);
+        return newChildIds;
+      }
       console.log('FATAL ERROR: Cyclic tree structure has detected and prevented. ', {
-        ancestorsOfSelf,
+        ancestorsOfSelf: this.ancestors,
         tabs,
         tab,
         stack: new Error().stack
       });
-      return false;
-    });
-
-    const newChildIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+      return newChildIds;
+    }, []);
     if (newChildIds.join('|') == this.childIds.join('|'))
       return tabs;
 
