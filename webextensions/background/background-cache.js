@@ -228,9 +228,12 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   tab.$TST.attributes = cachedTab.$TST.attributes;
 
   log('fixupTabRestoredFromCache children: ', cachedTab.$TST.childIds);
-  const childTabs = cachedTab.$TST.childIds
-    .map(oldId => idMap.get(oldId))
-    .filter(tab => !!tab);
+  const childTabs = cachedTab.$TST.childIds.reduce((tabs, oldId) => {
+    const tab = idMap.get(oldId);
+    if (tab)
+      tabs.push(tab);
+    return tabs;
+  }, []);
   tab.$TST.children = childTabs;
   if (childTabs.length > 0)
     tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);

@@ -485,7 +485,12 @@ export default class Tab {
   }
 
   get ancestors() {
-    return this.ancestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return this.ancestorIds.reduce((tabs, id) => {
+      const tab = TabsStore.ensureLivingTab(Tab.get(id));
+      if (tab)
+        tabs.push(tab);
+      return tabs;
+    }, []);
   }
 
   updateAncestors() {
@@ -542,7 +547,7 @@ export default class Tab {
 
   set children(tabs) {
     const ancestorIds = this.ancestorIds;
-    const newChildIds = tabs.reduce((newChildIds, tab, index, tabs) => {
+    const newChildIds = tabs.reduce((newChildIds, tab) => {
       const id = typeof tab == 'number' ? tab : tab && tab.id;
       if (!ancestorIds.includes(id)) {
         newChildIds.push(id);
@@ -580,7 +585,12 @@ export default class Tab {
     return tabs;
   }
   get children() {
-    return this.childIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return this.childIds.reduce((tabs, id) => {
+      const tab = TabsStore.ensureLivingTab(Tab.get(id));
+      if (tab)
+        tabs.push(tab);
+      return tabs;
+    }, []);
   }
 
   get firstChild() {
@@ -608,7 +618,12 @@ export default class Tab {
   get descendants() {
     if (!this.cachedDescendantIds)
       return this.updateDescendants();
-    return this.cachedDescendantIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    return this.cachedDescendantIds.reduce((tabs, id) => {
+      const tab = TabsStore.ensureLivingTab(Tab.get(id));
+      if (tab)
+        tabs.push(tab);
+      return tabs;
+    }, []);
   }
 
   updateDescendants() {
@@ -1149,15 +1164,9 @@ Tab.needToWaitTracked = (windowId) => {
 };
 
 Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
-  const tabSets = [];
-  if (windowId) {
-    tabSets.push(mIncompletelyTrackedTabs.get(windowId));
-  }
-  else {
-    for (const tabs of mIncompletelyTrackedTabs.values()) {
-      tabSets.push(tabs);
-    }
-  }
+  const tabSets = windowId ?
+    [mIncompletelyTrackedTabs.get(windowId)] :
+    [...mIncompletelyTrackedTabs.values()];
   return Promise.all(tabSets.map(tabs => {
     if (!tabs)
       return;

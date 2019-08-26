@@ -650,8 +650,13 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGRANT_TO_REMOVE_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(Array.from(tabs).filter(TabsStore.ensureLivingTab).map(tab => tab.id));
-        configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
+        const grantedTabIds = configs.grantedRemovingTabIds.concat(Array.from(tabs)).reduce((ids, tab) => {
+          tab = TabsStore.ensureLivingTab(tab);
+          if (tab)
+            ids.push(tab.id);
+          return ids;
+        }, new Set())
+        configs.grantedRemovingTabIds = Array.from(grantedTabIds);
         return true;
       })();
 

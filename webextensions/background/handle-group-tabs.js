@@ -364,24 +364,22 @@ async function tryGroupNewTabs() {
   tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs
-    let tabs = tabReferences.map(tabReference => {
+    const tabs = tabReferences.reduce((tabs, tabReference) => {
       const tab = Tab.get(tabReference.id);
       if (!tab)
-        return null;
+        return tabs;
       // We should check the config here, because to-be-grouped tabs should be
       // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
       const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
       if (!shouldBeGrouped)
-        return null;
+        return tabs;
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
-      return tab;
-    }).filter(tab => !!tab);
-    const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
-    tabs = tabs.filter((id, index) => {
-      const uniqueId = uniqueIds[index];
-      return !uniqueId.duplicated && !uniqueId.restored;
-    });
+      const uniqueId = tab.$TST.uniqueId;
+      if (!uniqueId.duplicated && !uniqueId.restored)
+        tabs.push(tab);
+      return tabs;
+    }, []);
     Tab.sort(tabs);
 
     let newRootTabs = Tab.collectRootTabs(tabs)

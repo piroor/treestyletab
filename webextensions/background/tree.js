@@ -1075,8 +1075,12 @@ export async function moveTabs(tabs, options = {}) {
       const startTime = Date.now();
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
-        newTabs = newTabs.filter(tab => !!tab);
+        newTabs = movedTabs.reduce((tabs, tab) => {
+          tab = Tab.get(TabIdFixer.fixTab(tab).id);
+          if (tab)
+            tabs.push(tab);
+          return tabs;
+        }, []);
         if (mSlowDuplication)
           UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
@@ -1115,8 +1119,12 @@ export async function moveTabs(tabs, options = {}) {
   }
 
 
-  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
-  movedTabs = movedTabs.filter(tab => !!tab);
+  movedTabs = movedTabs.reduce((tabs, tab) => {
+    tab = Tab.get(tab.id);
+    if (tab)
+      tabs.push(tab);
+    return tabs;
+  }, []);
   if (options.insertBefore) {
     await TabsMove.moveTabsBefore(
       movedTabs,
@@ -1136,8 +1144,12 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
-  movedTabs = movedTabs.filter(tab => !!tab);
+  movedTabs = movedTabs.reduce((tabs, tab) => {
+    tab = Tab.get(tab.id);
+    if (tab)
+      tabs.push(tab);
+    return tabs;
+  }, []);
 
   return movedTabs;
 }
@@ -1173,13 +1185,15 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
     .then(window => {
-      log('moved tabs: ', movedTabs.map(dumpTab));
-      const movedTabIds     = movedTabs.map(tab => tab.id);
-      const allTabsInWindow = window.tabs.map(tab => TabIdFixer.fixTab(tab));
-      const removeTabs      = allTabsInWindow
-        .filter(tab => !movedTabIds.includes(tab.id))
-        .map(tab => Tab.get(tab.id));
-      log('removing tabs: ', removeTabs.map(dumpTab));
+      const movedTabIds = new Set(movedTabs.map(tab => tab.id));
+      log('moved tabs: ', movedTabIds);
+      const removeTabs = window.tabs.reduce((tabs, tab) => {
+        tab = TabIdFixer.fixTab(tab);
+        if (!movedTabIds.has(tab.id))
+          tabs.push(tab);
+        return tabs;
+      }, [])
+      log('removing tabs: ', removeTabs);
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);
     })

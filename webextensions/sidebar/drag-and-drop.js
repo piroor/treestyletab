@@ -215,8 +215,13 @@ function getDropAction(event) {
     const dragData = info.dragData;
     if (dragData && dragData.instanceId != mInstanceId)
       return [];
-    const tabs     = dragData && dragData.tabs;
-    return tabs && tabs.map(tab => tab && Tab.get(tab.id) || tab).filter(tab => !!tab) || [];
+    const tabIds = dragData && dragData.tabs;
+    return !tabIds ? [] : tabIds.reduce((tabs, id) => {
+      const tab = Tab.get(id);
+      if (tab)
+        tabs.push(tab);
+      return tabs;
+    }, []);
   });
   info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(tab => tab.id);
