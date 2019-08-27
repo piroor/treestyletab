@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  mapAndFilterUniq,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -67,15 +68,9 @@ export function sendMessage(message) {
       mReservedMessages = [];
       mConnectionPort.postMessage(messages);
       if (configs.debug) {
-        const types = new Set();
-        const output = messages.reduce((output, message, index) => {
-          if (!types.has(message.type)) {
-            output += `${index == 0 ? '' : ', '}${message.type}`;
-            types.add(message.type);
-          }
-          return output;
-        }, '')
-        log(`${messages.length} messages sent (${output}):`, messages);
+        const types = mapAndFilterUniq(messages,
+                                       message => message.type).join(', ');
+        log(`${messages.length} messages sent (${types}):`, messages);
       }
     };
     // Because sidebar is always visible, we may not need to avoid using

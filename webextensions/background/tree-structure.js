@@ -8,6 +8,7 @@
 import {
   log as internalLogger,
   dumpTab,
+  toLines,
   configs
 } from '/common/common.js';
 
@@ -92,10 +93,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         uniqueIds = uniqueIds.map(id => id.id);
         let tabsOffset;
         if (structure[0].id) {
-          const structureSignature = structure.reduce((signature, item, index) => {
-            signature += `${index == 0 ? '' : '\n'}${item.id}`;
-            return signature;
-          }, '');
+          const structureSignature = toLines(structure, item => item.id);
           tabsOffset = uniqueIds.join('\n').indexOf(structureSignature);
           windowStateCompletelyApplied = tabsOffset > -1;
         }

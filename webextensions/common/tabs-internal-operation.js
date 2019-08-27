@@ -10,6 +10,7 @@
 import {
   log as internalLogger,
   dumpTab,
+  mapAndFilter,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -46,11 +47,8 @@ export async function activateTab(tab, options = {}) {
       const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
       if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
         // switch active tab with highlighted state
-        tabs = tabs.concat(highlightedTabs.reduce((otherTabIndices, highlightedTab) => {
-          if (highlightedTab.id != tab.id)
-            otherTabIndices.push(highlightedTab.index);
-          return otherTabIndices;
-        }, []));
+        tabs = tabs.concat(mapAndFilter(highlightedTabs,
+                                        highlightedTab => highlightedTab.id != tab.id && highlightedTab.index));
       }
     }
     if (tabs.length == 1)

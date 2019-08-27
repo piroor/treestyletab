@@ -11,6 +11,7 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
+  mapAndFilter,
   configs
 } from '/common/common.js';
 
@@ -364,22 +365,20 @@ async function tryGroupNewTabs() {
   tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs
-    const tabs = tabReferences.reduce((tabs, tabReference) => {
+    const tabs = mapAndFilter(tabReferences, tabReference => {
       const tab = Tab.get(tabReference.id);
       if (!tab)
-        return tabs;
+        return undefined;
       // We should check the config here, because to-be-grouped tabs should be
       // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
       const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
       if (!shouldBeGrouped)
-        return tabs;
+        return undefined;
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       const uniqueId = tab.$TST.uniqueId;
-      if (!uniqueId.duplicated && !uniqueId.restored)
-        tabs.push(tab);
-      return tabs;
-    }, []);
+      return !uniqueId.duplicated && !uniqueId.restored && tab;
+    });
     Tab.sort(tabs);
 
     let newRootTabs = Tab.collectRootTabs(tabs)

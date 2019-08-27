@@ -30,6 +30,7 @@ import RichConfirm from '/extlib/RichConfirm.js';
 import {
   log as internalLogger,
   wait,
+  mapAndFilter,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -216,12 +217,7 @@ function getDropAction(event) {
     if (dragData && dragData.instanceId != mInstanceId)
       return [];
     const tabIds = dragData && dragData.tabs;
-    return !tabIds ? [] : tabIds.reduce((tabs, id) => {
-      const tab = Tab.get(id);
-      if (tab)
-        tabs.push(tab);
-      return tabs;
-    }, []);
+    return !tabIds ? [] : mapAndFilter(tabIds, id => Tab.get(id));
   });
   info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(tab => tab.id);

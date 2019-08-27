@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  countMatched,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -158,11 +159,8 @@ export function setLastMousedown(button, details) {
 
 export function cancelHandleMousedown(button = null) {
   if (!button && button !== 0) {
-    return Array.from(lastMousedown.keys()).reduce((count, button) => {
-      if (cancelHandleMousedown(button))
-        count++;
-      return count;
-    }, 0) > 0;
+    return countMatched(Array.from(lastMousedown.keys()),
+                        button => cancelHandleMousedown(button)) > 0;
   }
 
   const lastMousedownForButton = lastMousedown.get(button);

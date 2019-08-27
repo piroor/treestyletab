@@ -32,6 +32,7 @@ import {
   log as internalLogger,
   wait,
   dumpTab,
+  mapAndFilter,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -1075,12 +1076,8 @@ export async function moveTabs(tabs, options = {}) {
       const startTime = Date.now();
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = movedTabs.reduce((tabs, tab) => {
-          tab = Tab.get(TabIdFixer.fixTab(tab).id);
-          if (tab)
-            tabs.push(tab);
-          return tabs;
-        }, []);
+        newTabs = mapAndFilter(movedTabs,
+                               tab => Tab.get(TabIdFixer.fixTab(tab).id));
         if (mSlowDuplication)
           UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
@@ -1119,12 +1116,7 @@ export async function moveTabs(tabs, options = {}) {
   }
 
 
-  movedTabs = movedTabs.reduce((tabs, tab) => {
-    tab = Tab.get(tab.id);
-    if (tab)
-      tabs.push(tab);
-    return tabs;
-  }, []);
+  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id));
   if (options.insertBefore) {
     await TabsMove.moveTabsBefore(
       movedTabs,
@@ -1144,12 +1136,7 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.reduce((tabs, tab) => {
-    tab = Tab.get(tab.id);
-    if (tab)
-      tabs.push(tab);
-    return tabs;
-  }, []);
+  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id));
 
   return movedTabs;
 }
@@ -1187,12 +1174,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     .then(window => {
       const movedTabIds = new Set(movedTabs.map(tab => tab.id));
       log('moved tabs: ', movedTabIds);
-      const removeTabs = window.tabs.reduce((tabs, tab) => {
+      const removeTabs = mapAndFilter(window.tabs, tab => {
         tab = TabIdFixer.fixTab(tab);
-        if (!movedTabIds.has(tab.id))
-          tabs.push(tab);
-        return tabs;
-      }, [])
+        return !movedTabIds.has(tab.id) && tab;
+      });
       log('removing tabs: ', removeTabs);
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);

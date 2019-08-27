@@ -29,6 +29,7 @@
 import {
   log as internalLogger,
   wait,
+  toLines,
   configs
 } from '/common/common.js';
 
@@ -130,11 +131,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        () => Array.from(window.getOrderedTabs())
-          .reduce((output, tab, index) => {
-            output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`;
-            return output;
-          }, '')));
+        () => toLines(Array.from(window.getOrderedTabs()),
+                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -240,11 +238,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        () => Array.from(window.getOrderedTabs())
-          .reduce((output, tab, index) => {
-            output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`;
-            return output;
-          }, '')));
+        () => toLines(Array.from(window.getOrderedTabs()),
+                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.

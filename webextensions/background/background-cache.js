@@ -9,6 +9,7 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
+  mapAndFilter,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -229,12 +230,10 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   tab.$TST.attributes = cachedTab.$TST.attributes;
 
   log('fixupTabRestoredFromCache children: ', cachedTab.$TST.childIds);
-  const childIds = cachedTab.$TST.childIds.reduce((ids, oldId) => {
+  const childIds = mapAndFilter(cachedTab.$TST.childIds, oldId => {
     const tab = idMap.get(oldId);
-    if (tab)
-      ids.push(tab.id);
-    return ids;
-  }, []);
+    return tab && tab.id;
+  });
   tab.$TST.children = childIds;
   if (childIds.length > 0)
     tab.$TST.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);

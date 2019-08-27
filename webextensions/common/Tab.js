@@ -8,6 +8,9 @@
 import {
   log as internalLogger,
   dumpTab,
+  mapAndFilter,
+  mapAndFilterUniq,
+  toLines,
   configs
 } from './common.js';
 
@@ -485,12 +488,8 @@ export default class Tab {
   }
 
   get ancestors() {
-    return this.ancestorIds.reduce((tabs, id) => {
-      const tab = TabsStore.ensureLivingTab(Tab.get(id));
-      if (tab)
-        tabs.push(tab);
-      return tabs;
-    }, []);
+    return mapAndFilter(this.ancestorIds,
+                        id => TabsStore.ensureLivingTab(Tab.get(id)));
   }
 
   updateAncestors() {
@@ -547,20 +546,18 @@ export default class Tab {
 
   set children(tabs) {
     const ancestorIds = this.ancestorIds;
-    const newChildIds = tabs.reduce((newChildIds, tab) => {
+    const newChildIds = mapAndFilter(tabs, tab => {
       const id = typeof tab == 'number' ? tab : tab && tab.id;
-      if (!ancestorIds.includes(id)) {
-        newChildIds.push(id);
-        return newChildIds;
-      }
+      if (!ancestorIds.includes(id))
+        return id;
       console.log('FATAL ERROR: Cyclic tree structure has detected and prevented. ', {
         ancestorsOfSelf: this.ancestors,
         tabs,
         tab,
         stack: new Error().stack
       });
-      return newChildIds;
-    }, []);
+      return undefined;
+    });
     if (newChildIds.join('|') == this.childIds.join('|'))
       return tabs;
 
@@ -585,12 +582,8 @@ export default class Tab {
     return tabs;
   }
   get children() {
-    return this.childIds.reduce((tabs, id) => {
-      const tab = TabsStore.ensureLivingTab(Tab.get(id));
-      if (tab)
-        tabs.push(tab);
-      return tabs;
-    }, []);
+    return mapAndFilter(this.childIds,
+                        id => TabsStore.ensureLivingTab(Tab.get(id)));
   }
 
   get firstChild() {
@@ -618,12 +611,8 @@ export default class Tab {
   get descendants() {
     if (!this.cachedDescendantIds)
       return this.updateDescendants();
-    return this.cachedDescendantIds.reduce((tabs, id) => {
-      const tab = TabsStore.ensureLivingTab(Tab.get(id));
-      if (tab)
-        tabs.push(tab);
-      return tabs;
-    }, []);
+    return mapAndFilter(this.cachedDescendantIds,
+                        id => TabsStore.ensureLivingTab(Tab.get(id)));
   }
 
   updateDescendants() {
@@ -1799,17 +1788,11 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
     tabsQueryOptions.windowId = windowId;
   }
   const beforeTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
-  const beforeIds  = beforeTabs.reduce((tabs, tab) => {
-    tabs.add(tab.id);
-    return tabs;
-  }, new Set());
+  const beforeIds  = mapAndFilterUniq(beforeTabs, tab => tab.id);
   await asyncTask();
   const afterTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
-  const addedTabs = afterTabs.reduce((tabs, tab) => {
-    if (!beforeIds.has(tab.id))
-      tabs.push(Tab.get(tab.id));
-    return tabs;
-  }, []);
+  const addedTabs = mapAndFilter(afterTabs,
+                                 tab => !beforeIds.has(tab.id) && Tab.get(tab.id));
   return addedTabs;
 };
 
@@ -1822,11 +1805,9 @@ Tab.dumpAll = windowId => {
     return;
   let output = 'dumpAllTabs';
   for (const tab of Tab.getAllTabs(windowId, {iterator: true })) {
-    output += '\n' + [...tab.$TST.ancestors.reverse(), tab]
-      .reduce((output, tab, index) => {
-        output += `${index == 0 ? '' : ' => '}${tab.id}${tab.pinned ? ' [pinned]' : ''}`;
-        return output;
-      }, '');
+    output += '\n' + toLines([...tab.$TST.ancestors.reverse(), tab],
+                             tab => `${tab.id}${tab.pinned ? ' [pinned]' : ''}`,
+                             ' => ');
   }
   log(output);
 };

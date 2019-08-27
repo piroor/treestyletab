@@ -31,6 +31,7 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 import {
   log as internalLogger,
   dumpTab,
+  toLines,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -774,11 +775,8 @@ async function onMoved(tabId, moveInfo) {
         movedTab.reindexedBy = `tabs.onMoved (${movedTab.index})`;
         window.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
-          Array.from(window.getOrderedTabs())
-            .reduce((output, tab, index) => {
-              output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tab.id == movedTab.id ? '[MOVED]' : ''}`;
-              return output;
-            }, '')),
+          toLines(Array.from(window.getOrderedTabs()),
+                  tab => ` - ${tab.index}: ${tab.id}${tab.id == movedTab.id ? '[MOVED]' : ''}`)),
             { moveInfo });
       }
       const onMovedResult = Tab.onMoved.dispatch(movedTab, extendedMoveInfo);

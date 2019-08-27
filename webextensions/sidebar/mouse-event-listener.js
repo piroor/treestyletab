@@ -32,6 +32,8 @@ import {
   log as internalLogger,
   wait,
   dumpTab,
+  mapAndFilter,
+  countMatched,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -557,12 +559,8 @@ function updateMultiselectionByTabClick(tab, event) {
       }
 
       // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = Array.from(highlightedTabIds)
-        .reduce((indices, id) => {
-          if (id != activeTab.id)
-            indices.push(Tab.get(id).index);
-          return indices;
-        }, []);
+      const indices = mapAndFilter(Array.from(highlightedTabIds),
+                                   id => id != activeTab.id && Tab.get(id).index);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({
@@ -595,11 +593,7 @@ function updateMultiselectionByTabClick(tab, event) {
       if (tab == activeTab &&
           tab.$TST.subtreeCollapsed &&
           activeTabDescendants.length > 0) {
-        const highlightedCount  = activeTabDescendants.reduce((count, tab) => {
-          if (tab.highlighted)
-            count++;
-          return count;
-        }, 0);
+        const highlightedCount  = countMatched(activeTabDescendants, tab => tab.highlighted);
         const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
         toBeHighlighted = partiallySelected || !activeTabDescendants[0].highlighted;
         log(' => ', toBeHighlighted, { partiallySelected });
@@ -636,12 +630,8 @@ function updateMultiselectionByTabClick(tab, event) {
       }
 
       // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = Array.from(highlightedTabIds)
-        .reduce((indices, id) => {
-          if (id != activeTab.id)
-            indices.push(Tab.get(id).index);
-          return indices;
-        }, []);
+      const indices = mapAndFilter(Array.from(highlightedTabIds),
+                                   id => id != activeTab.id && Tab.get(id).index);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({
