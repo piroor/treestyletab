@@ -133,6 +133,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         () => Array.from(window.getOrderedTabs())
           .reduce((output, tab, index) => {
             output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`;
+            return output;
           }, '')));
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
@@ -242,6 +243,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         () => Array.from(window.getOrderedTabs())
           .reduce((output, tab, index) => {
             output += `${index == 0 ? '' : '\n'} - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`;
+            return output;
           }, '')));
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
