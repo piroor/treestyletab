@@ -89,7 +89,7 @@ function sendMessageToPort(port, message) {
       if (configs.debug) {
         const types = new Set();
         const output = messages.reduce((output, message, index) => {
-          if (!messages.has(message.type)) {
+          if (!types.has(message.type)) {
             output += `${index == 0 ? '' : ', '}${message.type}`;
             types.add(message.type);
           }
