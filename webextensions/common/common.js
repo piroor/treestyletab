@@ -480,14 +480,15 @@ export function mapAndFilter(values, mapper) {
   return mappedValues;
 }
 
-export function mapAndFilterUniq(values, mapper) {
+export function mapAndFilterUniq(values, mapper, options = {}) {
   let mappedValue;
-  return Array.from(values.reduce((mappedValues, value) => {
+  const mappedValues = values.reduce((mappedValues, value) => {
     mappedValue = mapper(value);
     if (mappedValue)
       mappedValues.add(mappedValue);
     return mappedValues;
-  }, new Set()));
+  }, new Set());
+  return options.set ? mappedValues : Array.from(mappedValues);
 }
 
 export function countMatched(values, matcher) {

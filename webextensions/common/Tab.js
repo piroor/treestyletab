@@ -1788,7 +1788,7 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
     tabsQueryOptions.windowId = windowId;
   }
   const beforeTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
-  const beforeIds  = mapAndFilterUniq(beforeTabs, tab => tab.id);
+  const beforeIds  = mapAndFilterUniq(beforeTabs, tab => tab.id, { set: true });
   await asyncTask();
   const afterTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
   const addedTabs = mapAndFilter(afterTabs,
