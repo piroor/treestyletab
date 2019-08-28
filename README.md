@@ -92,6 +92,7 @@ Some addons provide extended behavior to TST's sidebar panel:
 
 ### Vertical tab bar without tree or grouping
 
+* [Tab Center Reborn](https://addons.mozilla.org/firefox/addon/tabcenter-reborn/)
 * [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/)
 * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
 * [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
