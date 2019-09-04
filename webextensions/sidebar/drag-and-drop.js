@@ -53,6 +53,7 @@ function log(...args) {
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
+const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
 
 const kDROP_BEFORE  = 'before';
@@ -525,6 +526,7 @@ function retrieveURIsFromDragEvent(event) {
   const types = [
     kTYPE_URI_LIST,
     kTYPE_X_MOZ_URL,
+    kTYPE_MOZ_TEXT_INTERNAL,
     'text/plain'
   ];
   let urls = [];
@@ -571,6 +573,13 @@ function retrieveURIsFromData(data, type) {
         .filter((_line, index) => {
           return index % 2 == 0;
         });
+
+    case kTYPE_MOZ_TEXT_INTERNAL:
+      return data
+        .replace(/\r/g, '\n')
+        .replace(/\n\n+/g, '\n')
+        .trim()
+        .split('\n');
 
     case 'text/plain':
       return data
