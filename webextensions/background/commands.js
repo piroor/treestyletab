@@ -253,7 +253,7 @@ export async function outdent(tab, options = {}) {
 }
 
 // drag and drop helper
-export async function performTabsDragDrop(params = {}) {
+async function performTabsDragDrop(params = {}) {
   const windowId = params.windowId || TabsStore.getWindow();
   const destinationWindowId = params.destinationWindowId || windowId;
 
