@@ -54,7 +54,6 @@ const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
 const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
-const kTYPE_TAB_DROP    = 'application/x-moz-tabbrowser-tab';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
 
 const kDROP_BEFORE  = 'before';
@@ -1054,8 +1053,7 @@ function onDrop(event) {
     return;
   }
 
-  if (dt.types.includes(kTYPE_TAB_DROP) &&
-      dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL)) {
+  if (dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL)) {
     log('there are dragged native tabs');
     const url = dt.getData(kTYPE_MOZ_TEXT_INTERNAL);
     browser.tabs.query({ url }).then(tabs => {
