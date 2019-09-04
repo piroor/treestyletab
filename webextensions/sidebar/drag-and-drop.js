@@ -1053,7 +1053,8 @@ function onDrop(event) {
     return;
   }
 
-  if (dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL)) {
+  if (dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL) &&
+      configs.guessDraggedNativeTabs) {
     log('there are dragged native tabs');
     const url = dt.getData(kTYPE_MOZ_TEXT_INTERNAL);
     browser.tabs.query({ url }).then(tabs => {

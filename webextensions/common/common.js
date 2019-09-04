@@ -114,6 +114,7 @@ export const configs = new Configs({
   tabDragBehavior:      Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
   showTabDragBehaviorNotification: true,
+  guessDraggedNativeTabs: true,
 
   fixupTreeOnTabVisibilityChanged: false,
 
