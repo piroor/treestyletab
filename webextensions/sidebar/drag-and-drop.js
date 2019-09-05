@@ -1018,6 +1018,7 @@ function onDrop(event) {
   }
 
   const dropActionInfo = getDropAction(event);
+  log('onDrop ', dropActionInfo, event.dataTransfer);
 
   if (!dropActionInfo.canDrop) {
     log('undroppable');
