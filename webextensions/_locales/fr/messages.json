@@ -6,7 +6,7 @@
   "sidebarToggleDescription": { "message": "Activer/Désactiver le panneau « Tree Style Tab »" },
 
   "command_indent":                { "message": "Indenter l'onglet courant" },
-  "command_outdent":               { "message": "Désindenter Current Tab" },
+  "command_outdent":               { "message": "Désindenter l'onglet courant" },
   "command_tabMoveUp":             { "message": "Déplace l'onglet courant vers le haut" },
   "command_treeMoveUp":            { "message": "Déplace l'arbre courant vers le haut" },
   "command_tabMoveDown":           { "message": "Déplace l'onglet courant vers le bas" },
@@ -84,7 +84,7 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "arbre ajouté aux marque-pages avec succès" },
+  "bookmarkTree_notification_success_title": { "message": "Arbre ajouté aux marque-pages avec succès" },
   "bookmarkTree_notification_success_message": { "message": "$COUNT$ onglets dont « $TITLE$ » ont été ajoutés en marque-pages dans un nouveau dossier « $PARENT$ ».",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
@@ -107,7 +107,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Erreur de permission" },
-  "bookmark_notification_notPermitted_message": { "message": "Échec d'obtention des permissions pour créer des marques-page. Cliquez ici pour accorder des permissions supplémentaires." },
+  "bookmark_notification_notPermitted_message": { "message": "Échec de l'obtention des permissions pour créer des marques-page. Cliquez ici pour accorder des permissions supplémentaires." },
 
   "dropLinksOnTabBehavior_message": { "message": "Comment ouvrir ceci ?" },
   "dropLinksOnTabBehavior_save":    { "message": "Toujours faire cette action" },
@@ -182,7 +182,7 @@
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }
     }},
-  "api_requestedPermissions_type_activeTab": { "message": "Accéder à l'onglet active du navigateur" },
+  "api_requestedPermissions_type_activeTab": { "message": "Accéder à l'onglet actif du navigateur" },
   "api_requestedPermissions_type_tabs":      { "message": "Accéder aux onglets du navigateur" },
   "api_requestedPermissions_type_cookies":   { "message": "Détecter les conteneurs des onglets du navigateur" },
 
@@ -445,7 +445,7 @@
   "config_acceleratedTabCreation_label": { "message": "Accélérer les opérations autour des onglets nouvellement ouverts (*NOTE : Vous observerez des comportements instables relatifs aux onglets.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Annuler la duplication d'un onglet si elle prend" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "millisecondes ou plus." },
-  "config_labelOverflowStyle_caption": { "message": "Titre d'onglet trop long :" },
+  "config_labelOverflowStyle_caption": { "message": "Titre d'onglet trop long :" },
   "config_labelOverflowStyle_fade":    { "message": "Fondu (Meilleure visibilité)" },
   "config_labelOverflowStyle_crop":    { "message": "Tronque avec « .. » (Meilleure performance)" },
 
