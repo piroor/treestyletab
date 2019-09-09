@@ -59,8 +59,8 @@
 
   "tabDragHandle_tree_tearoff_tooltip":  { "message": "Glissez pour détacher cet arbre de la fenêtre" },
   "tabDragHandle_tree_bookmark_tooltip": { "message": "Glissez pour ajouter cet arbre aux marque-pages" },
-  "tabDragHandle_tab_tearoff_tooltip":   { "message": "Glissez pour détacher cet unique onglet de la fenêtre" },
-  "tabDragHandle_tab_bookmark_tooltip":  { "message": "Glissez pour ajouter cet unique onglet aux marque-pages" },
+  "tabDragHandle_tab_tearoff_tooltip":   { "message": "Glissez pour détacher cet onglet seul de la fenêtre" },
+  "tabDragHandle_tab_bookmark_tooltip":  { "message": "Glissez pour ajouter cet onglet seul aux marque-pages" },
 
   "groupTab_label": { "message": "$TITLE$ et plus",
     "placeholders": {
@@ -372,8 +372,8 @@
   "config_tabDragBehaviorShift_label":    { "message": "Maj-glisser :" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Détacher l'arbre de la fenêtre (mais impossible de créer de marque-pages)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Créer des liens et marque-pages pour l'arbre entier (mais impossible de le détacher de la fenêtre)" },
-  "config_tabDragBehavior_tearoff_tab":   { "message": "Détacher un unique onglet de la fenêtre (mais impossible de créer un marque-page)" },
-  "config_tabDragBehavior_bookmark_tab":  { "message": "Créer un lien ou un marque-page pour un unique onglet (mais impossible de le détacher de la fenêtre)" },
+  "config_tabDragBehavior_tearoff_tab":   { "message": "Détacher un onglet seul de la fenêtre (mais impossible de créer un marque-page)" },
+  "config_tabDragBehavior_bookmark_tab":  { "message": "Créer un lien ou un marque-page pour un onglet seul (mais impossible de le détacher de la fenêtre)" },
   "config_tabDragBehavior_none":          { "message": "Ne rien faire" },
   "config_showTabDragHandle_label":       { "message": "Montrer une poignée au bord de chaque onglet, pour choisir l'opération" },
   "config_showTabDragBehaviorNotification_label": { "message": "Afficher pendant le déplacement ce qui arrivera aux onglets déposés en dehors" },
