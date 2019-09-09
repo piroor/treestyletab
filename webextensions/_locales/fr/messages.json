@@ -209,7 +209,7 @@
 
   "config_appearance_caption": { "message": "Apparence" },
 
-  "config_sidebarPosition_caption": { "message": "Style du contenu pour la position du panneau :" },
+  "config_sidebarPosition_caption": { "message": "Style du contenu relatif à la position du panneau :" },
   "config_sidebarPosition_left": { "message": "À gauche" },
   "config_sidebarPosition_right": { "message": "À droite" },
   "config_sidebarPosition_description": { "message": "*Cette configuration ne changera pas la position du panneau latéral lui-même. Vous devez sur le bouton dans l'entête du panneau latéral et cliquer sur « déplacer le panneau latéral à droite » manuellement." },
