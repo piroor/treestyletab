@@ -42,7 +42,8 @@ Tab.onCreating.addListener((tab, info = {}) => {
   }
   else {
     if (!info.maybeOrphan &&
-        possibleOpenerTab) {
+        possibleOpenerTab &&
+        !info.restored) {
       let autoAttachBehavior = configs.autoAttachOnNewTabCommand;
       let dontMove           = false;
       if (tab.$TST.nextTab &&
