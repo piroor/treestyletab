@@ -928,6 +928,21 @@ BackgroundConnection.onMessage.addListener(async message => {
       });
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+      if (message.tabId)
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+      reserveToUpdateTabbarLayout({
+        reason: Constants.kTABBAR_UPDATE_REASON_TAB_OPEN
+      });
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      reserveToUpdateTabbarLayout({
+        reason: Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE
+      });
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING: {
       if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
         return;
