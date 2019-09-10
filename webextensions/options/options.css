@@ -79,6 +79,15 @@ label[disabled="true"] button {
   max-width: 100px;
 }
 
+#style-radiogroup li {
+  margin-left: 2em;
+  text-indent: -2em;
+}
+
+.style-name {
+  white-space: pre;
+}
+
 #applyThemeColorToIcon ~ img {
   max-width: 85px;
 }
