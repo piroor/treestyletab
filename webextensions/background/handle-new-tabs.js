@@ -145,7 +145,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   // by the "multiple tab opened in XXX msec" feature.
   const window = TabsStore.windows.get(tab.windowId);
   window.openedNewTabs.delete(tab.id);
-  await TabsOpen.openNewTab({
+  await TabsOpen.openURIInTab(params.url || null, {
     windowId: activeTab.windowId,
     parent,
     insertBefore: tab,
@@ -222,6 +222,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
           log('behave as a tab opened from same site (delayed)');
           handleNewTabFromActiveTab(tab, {
+            url:                       tab.url,
             activeTab:                 possibleOpenerTab,
             autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
             inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
