@@ -184,14 +184,14 @@
   "config_showNewTabActionSelector_label":               { "message": "Показувати кнопку вибору на кнопці \"Нова вкладка\", щоб вказати, де відкривається нова вкладка" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Показувати кнопку вибору контейнера на кнопці \"Нова вкладка\" " },
 
-  "config_newTabAction_caption": { "message": "Поведінка маніпуляцій з новою вкладкою (інші кнопки панелі інструментів, гарячі клавіші та інше)" },
+  "__OLD__config_newTabAction_caption": { "message": "Поведінка маніпуляцій з новою вкладкою (інші кнопки панелі інструментів, гарячі клавіші та інше)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Відкрити нову порожню вкладку як" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "окрему вкладку" },
   "config_autoAttachOnNewTabCommand_child": { "message": "дочірню поточній" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "однорівневий елемент поточної вкладки" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "наступний однорівневий елемент поточної вкладки" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Визначити знову відкриту вкладку, відкриту з допомогою дії \"Нова вкладка\", коли вона відкривається з URL-ом: " },
+  "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Визначити знову відкриту вкладку, відкриту з допомогою дії \"Нова вкладка\", коли вона відкривається з URL-ом: " },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Кліком коліщатка миші відкрити нову порожню вкладку як " },
@@ -201,14 +201,14 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "наступний однорівневий елемент поточної вкладки" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "config_autoAttachOnDuplicated_before": { "message": "Кліком коліщатка миші на кнопку \"Перезавантажити\", копіювати вкладку як" },
+  "__OLD__config_autoAttachOnDuplicated_before": { "message": "Кліком коліщатка миші на кнопку \"Перезавантажити\", копіювати вкладку як" },
   "config_autoAttachOnDuplicated_independent": { "message": "окрему вкладку" },
   "config_autoAttachOnDuplicated_child": { "message": "дочірню поточній" },
   "config_autoAttachOnDuplicated_sibling": { "message": "однорівневий елемент поточної вкладки" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "наступний однорівневий елемент поточної вкладки" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Коли нова вкладка із сайтом, аналогічним поточній вкладці, відкривається з адресного рядка (чи інше)" },
+  "__OLD__config_sameSiteOrphan_caption": { "message": "Коли нова вкладка із сайтом, аналогічним поточній вкладці, відкривається з адресного рядка (чи інше)" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Відкрити як" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "окрему вкладку" },
   "config_autoAttachSameSiteOrphan_child": { "message": "дочірню поточній" },
@@ -235,6 +235,7 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автоматично групувати вкладки відкриті із однієї закріпленої вкладки" },
 
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Успадковувати контейнер батьківської вкладки новою порожньою вкладкою" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "\u200b" },
 
 
   "config_treeBehavior_caption": { "message": "Поведінка дерева" },

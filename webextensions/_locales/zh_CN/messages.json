@@ -548,7 +548,7 @@
         "message": "在“新标签页”按钮上显示容器选择器按钮",
         "hash": "0d17c9f3e3fa174dc905042e7c80ac9d"
     },
-    "config_newTabAction_caption": {
+    "__OLD__config_newTabAction_caption": {
         "message": "新建标签页的行为（其他工具栏按钮、键盘快捷键所带来）",
         "hash": "d8b0ffdf90e488e7654b43de02fcb7a0"
     },
@@ -576,7 +576,7 @@
         "message": "\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
-    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
+    "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
         "message": "新标签页带有下列网址时，猜测它是通过“新建标签页”命令（例如键盘快捷键）打开：",
         "hash": "973eb0f005c681793a1ddb11df8e6834"
     },
@@ -608,7 +608,7 @@
         "message": "\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
-    "config_autoAttachOnDuplicated_before": {
+    "__OLD__config_autoAttachOnDuplicated_before": {
         "message": "中键单击“重新载入”按钮时，复制标签页为",
         "hash": "042d298099acd3146d4127ed84a71bce"
     },
@@ -632,7 +632,7 @@
         "message": "\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
-    "config_sameSiteOrphan_caption": {
+    "__OLD__config_sameSiteOrphan_caption": {
         "message": "通过地址栏或其他方法在新标签页打开同一网站的网页时",
         "hash": "621d7d60f97d5334f1a2473923175f0f"
     },
@@ -719,6 +719,10 @@
     "config_inheritContextualIdentityToNewChildTab_label": {
         "message": "将父标签页的容器继承到新的空白标签页",
         "hash": "be907fb73317eb2667f34326bb9d5cfa"
+    },
+    "config_inheritContextualIdentityToNewChildTab_description": {
+        "message": "\u200b",
+        "hash": ""
     },
     "config_treeBehavior_caption": {
         "message": "树行为",

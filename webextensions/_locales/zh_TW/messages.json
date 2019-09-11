@@ -177,14 +177,14 @@
   "config_showNewTabActionSelector_label":               { "message": "顯示特定位置開新分頁按鈕" },
   "config_showContextualIdentitiesSelector_label":       { "message": "顯示新容器分頁按鈕" },
 
-  "config_newTabAction_caption": { "message": "開新分頁動作(其他工具按鈕、快捷鍵等)" },
+  "__OLD__config_newTabAction_caption": { "message": "開新分頁動作(其他工具按鈕、快捷鍵等)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "將新的空白頁開啟為" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "獨立分頁" },
   "config_autoAttachOnNewTabCommand_child": { "message": "目前分頁下層分頁" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "目前分頁同層相鄰分頁" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "網址為" },
+  "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "網址為" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "的分頁開啟時，視為以快捷鍵等方式開啟的新分頁" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中鍵點擊「開啟新分頁」按鈕時，將新的空白頁開啟為" },
@@ -194,7 +194,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "目前分頁同層相鄰分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "config_autoAttachOnDuplicated_before": { "message": "中鍵點擊「重新載入目前頁面」按鈕時，將複製分面開啟為" },
+  "__OLD__config_autoAttachOnDuplicated_before": { "message": "中鍵點擊「重新載入目前頁面」按鈕時，將複製分面開啟為" },
   "config_autoAttachOnDuplicated_independent": { "message": "獨立分頁" },
   "config_autoAttachOnDuplicated_child": { "message": "目前分頁下層分頁" },
   "config_autoAttachOnDuplicated_sibling": { "message": "目前分頁同層分頁" },
@@ -219,6 +219,7 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "同個釘選分頁開啟的分頁自動群組" },
 
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "開新分頁時，自動繼承父分頁的容器類別" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "\u200b" },
 
 
   "config_treeBehavior_caption": { "message": "樹行為"},
