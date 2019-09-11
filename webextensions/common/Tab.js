@@ -267,7 +267,25 @@ export default class Tab {
   get isNewTabCommandTab() {
     if (!configs.guessNewOrphanTabAsOpenedByNewTabCommand)
       return false;
-    return this.tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+
+    const newTabUrl = configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+    if (this.tab.url != newTabUrl)
+      return false;
+
+    // Firefox always opens a blank tab as the placeholder, when trying to
+    // open a bookmark in a new tab. So, we cannot determine is the tab
+    // really opened as a new blank tab or just as a placeholder for an
+    // "Open in New Tab" operation, when the user choose the "Blank Page"
+    // as the new tab page.
+    // But, when "Blank Page" is chosen as the new tab page, Firefox loads
+    // "about:blank" into a newly opened blank tab. As the result both current
+    // URL and the previous URL become "about:blank". This is an important
+    // difference between "a new blank tab" and "a blank tab opened for an
+    // Open in New Tab command".
+    if (newTabUrl == 'about:blank')
+      return this.tab.previousUrl == 'about:blank';
+
+    return true;
   }
 
   get isGroupTab() {
