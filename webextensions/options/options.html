@@ -13,70 +13,99 @@
     <h1>__MSG_config_appearance_caption__</h1>
 
     <p>__MSG_config_sidebarPosition_caption__
-       <label><input type="radio"
-                     name="sidebarPosition" value="1">
-         __MSG_config_sidebarPosition_left__</label>
-             <label><input type="radio"
-                           name="sidebarPosition" value="2">
-               __MSG_config_sidebarPosition_right__</label>
+       <label class="has-radio inline"
+             ><input type="radio"
+                     name="sidebarPosition"
+                     value="1">
+              __MSG_config_sidebarPosition_left__</label>
+       <label class="has-radio inline"
+                   ><input type="radio"
+                           name="sidebarPosition"
+                           value="2">
+              __MSG_config_sidebarPosition_right__</label>
     </p>
     <p class="sub">__MSG_config_sidebarPosition_description__</p>
     <p>__MSG_config_sidebarDirection_caption__
-       <label><input type="radio"
-                     name="sidebarDirection" value="1">
-         __MSG_config_sidebarDirection_ltr__</label>
-             <label><input type="radio"
-                           name="sidebarDirection" value="2">
-               __MSG_config_sidebarDirection_rtl__</label>
+       <label class="has-radio inline"
+             ><input type="radio"
+                     name="sidebarDirection"
+                     value="1">
+              __MSG_config_sidebarDirection_ltr__</label>
+       <label class="has-radio inline"
+             ><input type="radio"
+                     name="sidebarDirection"
+                     value="2">
+              __MSG_config_sidebarDirection_rtl__</label>
     </p>
     <fieldset>
       <legend>__MSG_config_style_caption__</legend>
       <ul id="style-radiogroup">
-        <li><label><input type="radio"
-                          name="style" value="plain">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="plain">
               <img src="style-plain.png" alt=""/>
               <span class="style-name">__MSG_config_style_plain__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="plain-dark">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="plain-dark">
               <img src="style-plain-dark.png" alt=""/>
               <span class="style-name">__MSG_config_style_plain_dark__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="vertigo">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="vertigo">
               <img src="style-vertigo.png" alt=""/>
               <span class="style-name">__MSG_config_style_vertigo__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="mixed">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="mixed">
               <img src="style-mixed.png" alt=""/>
               <span class="style-name">__MSG_config_style_mixed__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="metal">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="metal">
               <img src="style-metal.png" alt=""/>
               <span class="style-name">__MSG_config_style_metal__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="sidebar">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="sidebar">
               <img src="style-sidebar.png" alt=""/>
               <span class="style-name">__MSG_config_style_sidebar__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="highcontrast">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="highcontrast">
               <img src="style-highcontrast.png" alt=""/>
               <span class="style-name">__MSG_config_style_highcontrast__</span></label></li>
-        <li><label><input type="radio"
-                          name="style" value="none">
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="none">
               __MSG_config_style_none__
               __MSG_config_style_none_info__</label></li>
       </ul>
       <hr>
-      <p><label><input id="applyBrowserTheme"
+      <p><label class="has-checkbox"
+               ><input id="applyBrowserTheme"
                        type="checkbox">
            <img src="browser-theme.png" alt=""/>
            __MSG_config_applyBrowserTheme_label__</label></p>
     </fieldset>
     <p>__MSG_config_labelOverflowStyle_caption__
-       <label><input type="radio"
-                     name="labelOverflowStyle" value="fade">
+       <label class="has-radio inline"
+             ><input type="radio"
+                     name="labelOverflowStyle"
+                     value="fade">
          __MSG_config_labelOverflowStyle_fade__</label>
-       <label><input type="radio"
-                     name="labelOverflowStyle" value="crop">
+       <label class="has-radio inline"
+             ><input type="radio"
+                     name="labelOverflowStyle"
+                     value="crop">
          __MSG_config_labelOverflowStyle_crop__</label>
     </p>
     <p><label>__MSG_config_maxTreeLevel_before__
@@ -84,7 +113,8 @@
                      type="number"
                      size="3">
              __MSG_config_maxTreeLevel_after__</label></p>
-    <p><label><input id="faviconizePinnedTabs"
+    <p><label class="has-checkbox"
+             ><input id="faviconizePinnedTabs"
                      type="checkbox">
              __MSG_config_faviconizePinnedTabs_label__</label></p>
     <p class="sub"><label>__MSG_config_maxFaviconizedPinnedTabsInOneRow_label_before__
@@ -92,13 +122,16 @@
                      type="number"
                      size="3">
              __MSG_config_maxFaviconizedPinnedTabsInOneRow_label_after__</label></p>
-    <p><label><input id="animation"
+    <p><label class="has-checkbox"
+             ><input id="animation"
                      type="checkbox">
              __MSG_config_animation_label__</label></p>
-    <p><label><input id="showCollapsedDescendantsByTooltip"
+    <p><label class="has-checkbox"
+             ><input id="showCollapsedDescendantsByTooltip"
                      type="checkbox">
              __MSG_config_showCollapsedDescendantsByTooltip_label__</label></p>
-    <p><label><input id="applyThemeColorToIcon"
+    <p><label class="has-checkbox"
+             ><input id="applyThemeColorToIcon"
                      type="checkbox">
              <img src="theme-color-icon.png" alt=""/>
              __MSG_config_applyThemeColorToIcon_label__
@@ -202,8 +235,9 @@
     </div>
     </fieldset>
     <fieldset id="bookmarksPermissionSection">
-    <legend><label><input id="bookmarksPermissionGranted"
-                                 type="checkbox">
+    <legend><label class="has-checkbox"
+                  ><input id="bookmarksPermissionGranted"
+                          type="checkbox">
                           __MSG_config_requestPermissions_bookmarks__</label></legend>
     <p class="with-bookmarks-permission"><label>__MSG_config_bookmarkTreeFolderName_before__
                           <input id="bookmarkTreeFolderName"
@@ -240,10 +274,12 @@
                 <option value="">__MSG_config_longPressOnNewTabButton_none__</option>
               </select>
               __MSG_config_longPressOnNewTabButton_after__</label></p>
-    <p><label><input id="showNewTabActionSelector"
+    <p><label class="has-checkbox"
+             ><input id="showNewTabActionSelector"
                      type="checkbox">
              __MSG_config_showNewTabActionSelector_label__</label></p>
-    <p><label><input id="showContextualIdentitiesSelector"
+    <p><label class="has-checkbox"
+             ><input id="showContextualIdentitiesSelector"
                      type="checkbox">
              __MSG_config_showContextualIdentitiesSelector_label__</label></p>
     </fieldset>
@@ -259,7 +295,8 @@
               </select>
               __MSG_config_autoAttachOnNewTabCommand_after__
               <span class="preview-image"></span></label></p>
-    <p class="sub"><label><input id="guessNewOrphanTabAsOpenedByNewTabCommand"
+    <p class="sub"><label class="has-checkbox"
+                         ><input id="guessNewOrphanTabAsOpenedByNewTabCommand"
                                  type="checkbox">
                           __MSG_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before__
                           <input id="guessNewOrphanTabAsOpenedByNewTabCommandUrl"
@@ -291,14 +328,16 @@
                 </select>
                 __MSG_config_autoAttachSameSiteOrphan_after__
               <span class="preview-image"></span></label></p>
-      <p><label><input id="inheritContextualIdentityToSameSiteOrphan"
+      <p><label class="has-checkbox"
+               ><input id="inheritContextualIdentityToSameSiteOrphan"
                        type="checkbox">
                 __MSG_config_inheritContextualIdentityToSameSiteOrphan_label__</label></p>
     </fieldset>
 
     <fieldset>
       <legend>__MSG_config_newTabContainer_caption__</legend>
-    <p><label><input id="inheritContextualIdentityToNewChildTab"
+    <p><label class="has-checkbox"
+             ><input id="inheritContextualIdentityToNewChildTab"
                      type="checkbox">
               __MSG_config_inheritContextualIdentityToNewChildTab_label__
               <br>__MSG_config_inheritContextualIdentityToNewChildTab_description__</label></p>
@@ -307,13 +346,16 @@
     <fieldset>
       <legend>__MSG_config_insertNewChildAt_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewChildAt" value="-1">
               __MSG_config_insertNewChildAt_noControl__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewChildAt" value="0">
               __MSG_config_insertNewChildAt_first__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewChildAt" value="1">
               __MSG_config_insertNewChildAt_end__</label></li>
       </ul>
@@ -322,13 +364,16 @@
     <fieldset>
       <legend>__MSG_config_insertNewTabFromPinnedTabAt_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="-1">
               __MSG_config_insertNewTabFromPinnedTabAt_noControl__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="0">
               __MSG_config_insertNewTabFromPinnedTabAt_first__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="1">
               __MSG_config_insertNewTabFromPinnedTabAt_end__</label></li>
       </ul>
@@ -336,7 +381,8 @@
 
     <fieldset id="autoGroupNewTabsSection">
       <legend>__MSG_config_groupTab_caption__</legend>
-      <p><label><input id="autoGroupNewTabs"
+      <p><label class="has-checkbox"
+               ><input id="autoGroupNewTabs"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabs_before__
                 <input id="autoGroupNewTabsTimeout"
@@ -348,14 +394,17 @@
                                    type="number"
                                    size="3">
                             __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
-      <p class="sub"><label><input id="warnOnAutoGroupNewTabs"
+      <p class="sub"><label class="has-checkbox"
+                           ><input id="warnOnAutoGroupNewTabs"
                                    type="checkbox">
                             __MSG_config_warnOnAutoGroupNewTabs_label__</label></p>
 
-      <p><label><input id="autoGroupNewTabsFromPinned"
+      <p><label class="has-checkbox"
+               ><input id="autoGroupNewTabsFromPinned"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromPinned_label__</p>
-      <p><label><input id="renderTreeInGroupTabs"
+      <p><label class="has-checkbox"
+               ><input id="renderTreeInGroupTabs"
                        type="checkbox">
                 __MSG_config_renderTreeInGroupTabs_label__</p>
     </fieldset>
@@ -366,98 +415,123 @@
     <section id="section-treeBehavior">
     <h1>__MSG_config_treeBehavior_caption__</h1>
 
-    <p><label><input id="autoCollapseExpandSubtreeOnAttach"
+    <p><label class="has-checkbox"
+             ><input id="autoCollapseExpandSubtreeOnAttach"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnAttach_label__</label></p>
-    <p><label><input id="autoCollapseExpandSubtreeOnSelect"
+    <p><label class="has-checkbox"
+             ><input id="autoCollapseExpandSubtreeOnSelect"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
     <p class="sub">
-       <label><input id="autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove"
+       <label class="has-checkbox"
+             ><input
+                     id="autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label__</label></p>
-    <p><label><input id="collapseExpandSubtreeByDblClick"
+    <p><label class="has-checkbox"
+             ><input id="collapseExpandSubtreeByDblClick"
                      type="checkbox">
              __MSG_config_collapseExpandSubtreeByDblClick_label__</label></p>
-    <p><label><input id="allUrlsPermissionGranted"
+    <p><label class="has-checkbox"
+             ><input id="allUrlsPermissionGranted"
                      type="checkbox">
               __MSG_config_requestPermissions_allUrls__</label></p>
 
     <fieldset>
       <legend>__MSG_config_successorTabControlLevel_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="successorTabControlLevel" value="2">
               __MSG_config_successorTabControlLevel_inTree__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input
+                          type="radio"
                           name="successorTabControlLevel" value="1">
               __MSG_config_successorTabControlLevel_simulateDefault__</label></li>
-        <li class="with-successor-tab-support"><label><input type="radio"
+        <li class="with-successor-tab-support"><label class="has-radio"
+                  ><input type="radio"
                           name="successorTabControlLevel" value="0">
               __MSG_config_successorTabControlLevel_never__</label></li>
       </ul>
       <p class="without-successor-tab-support">__MSG_config_successorTabControlLevel_legacyDescription__</p>
       <p class="with-successor-tab-support">
-        <label><input id="simulateSelectOwnerOnClose"
+        <label class="has-checkbox"
+              ><input id="simulateSelectOwnerOnClose"
                       type="checkbox">
                __MSG_config_simulateSelectOwnerOnClose_label__</label></p>
     </fieldset>
     <fieldset id="closeParentBehaviorModeGroup">
       <legend>__MSG_config_closeParentBehaviorMode_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="closeParentBehaviorMode" value="0">
               __MSG_config_closeParentBehaviorMode_withNativeTabs__</label>
             <div class="sub">
             <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar__</p>
             <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar__</p>
             <ul>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input
+                                type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior0" value="5">
                     __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior0" value="3">
                     __MSG_config_closeParentBehavior_promoteFirst__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior0" value="0">
                     __MSG_config_closeParentBehavior_promoteAll__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior0" value="6">
                     __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
             </ul>
             </div>
         </li>
-        <li><label><input type="radio"
-                          name="closeParentBehaviorMode" value="1">
+        <li><label class="has-radio"
+                  ><input
+                    type="radio"
+                    name="closeParentBehaviorMode" value="1">
               __MSG_config_closeParentBehaviorMode_withoutNativeTabs__</label>
             <div class="sub">
             <p>__MSG_config_closeParentBehaviorMode_withoutNativeTabs_caption__</p>
             <ul>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior1" value="5">
                     __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior1" value="3">
                     __MSG_config_closeParentBehavior_promoteFirst__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior1" value="0">
                     __MSG_config_closeParentBehavior_promoteAll__</label></li>
-              <li><label><input type="radio"
+              <li><label class="has-radio"
+                        ><input type="radio"
                                 data-config-key="closeParentBehavior"
                                 name="closeParentBehavior1" value="6">
                     __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
             </ul>
             </div>
         </li>
-        <li><label><input type="radio"
-                          name="closeParentBehaviorMode" value="-1">
+        <li><label class="has-radio"
+                  ><input
+                    type="radio"
+                    name="closeParentBehaviorMode" value="-1">
               __MSG_config_closeParentBehaviorMode_custom__</label>
             <div class="sub">
             <p>
@@ -503,10 +577,12 @@
     <fieldset>
       <legend>__MSG_config_fixupTreeOnTabVisibilityChanged_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="fixupTreeOnTabVisibilityChanged" value="true">
               __MSG_config_fixupTreeOnTabVisibilityChanged_fix__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="fixupTreeOnTabVisibilityChanged" value="false">
               __MSG_config_fixupTreeOnTabVisibilityChanged_keep__</label></li>
       </ul>
@@ -535,11 +611,13 @@
            <option value="2">__MSG_config_tabDragBehavior_bookmark_tab__</option>
            <option value="0">__MSG_config_tabDragBehavior_none__</option>
          </select></p>
-      <p><label><input id="showTabDragHandle"
+      <p><label class="has-checkbox"
+               ><input id="showTabDragHandle"
                        type="checkbox">
                <img src="tab-drag-handle.png" alt=""/>
                __MSG_config_showTabDragHandle_label__</label></p>
-      <p><label><input id="showTabDragBehaviorNotification"
+      <p><label class="has-checkbox"
+               ><input id="showTabDragBehaviorNotification"
                        type="checkbox">
                <img src="tab-drag-behavior-notification.png" alt=""/>
                __MSG_config_showTabDragBehaviorNotification_label__</label></p>
@@ -547,13 +625,16 @@
     <fieldset>
       <legend>__MSG_config_dropLinksOnTabBehavior_caption__</legend>
       <ul>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="dropLinksOnTabBehavior" value="0">
               __MSG_config_dropLinksOnTabBehavior_ask__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="dropLinksOnTabBehavior" value="1">
               __MSG_config_dropLinksOnTabBehavior_load__</label></li>
-        <li><label><input type="radio"
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="dropLinksOnTabBehavior" value="2">
               __MSG_config_dropLinksOnTabBehavior_newtab__</label></li>
       </ul>
@@ -570,20 +651,25 @@
 
     <section id="section-advanced">
     <h1>__MSG_config_advanced_caption__</h1>
-    <p><label><input id="warnOnCloseTabs"
+    <p><label class="has-checkbox"
+             ><input id="warnOnCloseTabs"
                      type="checkbox">
               __MSG_config_warnOnCloseTabs_label__</label></p>
-    <p><label><input id="useCachedTree"
+    <p><label class="has-checkbox"
+             ><input id="useCachedTree"
                      type="checkbox">
              __MSG_config_useCachedTree_label__</label></p>
     <p class="sub">__MSG_config_useCachedTree_description__</p>
-    <p class="sub"><label><input id="storeCacheAsWindowValue"
+    <p class="sub"><label class="has-checkbox"
+                         ><input id="storeCacheAsWindowValue"
                                  type="checkbox">
                           __MSG_config_storeCacheAsWindowValue_label__</label></p>
-    <p><label><input id="simulateCloseTabByDblclick"
+    <p><label class="has-checkbox"
+             ><input id="simulateCloseTabByDblclick"
                      type="checkbox">
               __MSG_config_simulateCloseTabByDblclick_label__</label></p>
-    <p><label><input id="supportTabsMultiselect"
+    <p><label class="has-checkbox"
+             ><input id="supportTabsMultiselect"
                      type="checkbox">
               __MSG_config_supportTabsMultiselect_label__</label></p>
     <fieldset>
@@ -632,24 +718,29 @@
       <li><a id="link-groupPage" target="_blank">__MSG_config_link_groupPage_label__</a></li>
       <li><a id="link-runTests" target="_blank">__MSG_config_runTests_label__</a>
         <ul>
-          <li><label><input id="tabHidePermissionGranted"
+          <li><label class="has-checkbox"
+                    ><input id="tabHidePermissionGranted"
                             type="checkbox">
                 __MSG_config_requestPermissions_tabHide__</label></li>
         </ul>
       </li>
     </ul>
-    <p><label><input id="simulateSVGContextFill"
+    <p><label class="has-checkbox"
+             ><input id="simulateSVGContextFill"
                      type="checkbox">
              __MSG_config_simulateSVGContextFill_label__</label></p>
     <p>__MSG_config_colorScheme_caption__
-       <label><input type="radio"
+       <label class="has-radio"
+             ><input type="radio"
                      name="colorScheme" value="photon">
          __MSG_config_colorScheme_photon__</label>
-       <label><input type="radio"
+       <label class="has-radio"
+             ><input type="radio"
                      name="colorScheme" value="system-color">
          __MSG_config_colorScheme_systemColor__</label>
     </p>
-    <p><label><input id="acceleratedTabCreation"
+    <p><label class="has-checkbox"
+             ><input id="acceleratedTabCreation"
                      type="checkbox">
              __MSG_config_acceleratedTabCreation_label__</label></p>
     <p><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
@@ -657,80 +748,85 @@
                      type="number"
                      size="6">
              __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
-    <p><label><input id="loggingQueries"
+    <p><label class="has-checkbox"
+             ><input id="loggingQueries"
                      type="checkbox">
               __MSG_config_loggingQueries_label__</label>
-       <label><input id="loggingConnectionMessages"
+       <label class="has-checkbox"
+             ><input id="loggingConnectionMessages"
                      type="checkbox">
               __MSG_config_loggingConnectionMessages_label__</label>
        <button id="showLogsButton">__MSG_config_showLogsButton_label__</button></p>
-    <p><label><input id="debug"
+    <p><label class="has-checkbox"
+             ><input id="debug"
                      type="checkbox">
              __MSG_config_debug_label__</label></p>
     <fieldset id="group-logFor" class="collapsible collapsed">
       <legend>__MSG_config_log_caption__</legend>
-      <p><label><input id="logTimestamp"
+      <p><label class="has-checkbox"
+               ><input id="logTimestamp"
                        type="checkbox">
                __MSG_config_logTimestamp_label__</label></p>
-      <!-- <p>git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -r -e 's;^(.+)$;            <p><label><input id="logFor-\1" type="checkbox">\1</label></p>;' -->
+      <!-- <p>git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -r -e 's;^(.+)$;            <p><label class="has-checkbox"><input
+                     id="logFor-\1" type="checkbox">\1</label></p>;' -->
       <fieldset>
-        <legend><label><input id="logFor-common" type="checkbox">__MSG_config_logFor_common__</label></legend>
-          <p><label><input id="logFor-common/Tab" type="checkbox">common/Tab</label></p>
-          <p><label><input id="logFor-common/Window" type="checkbox">common/Window</label></p>
-          <p><label><input id="logFor-common/api-tabs" type="checkbox">common/api-tabs</label></p>
-          <p><label><input id="logFor-common/bookmarks" type="checkbox">common/bookmarks</label></p>
-          <p><label><input id="logFor-common/contextual-identities" type="checkbox">common/contextual-identities</label></p>
-          <p><label><input id="logFor-common/permissions" type="checkbox">common/permissions</label></p>
-          <p><label><input id="logFor-common/sidebar-connection" type="checkbox">common/sidebar-connection</label></p>
-          <p><label><input id="logFor-common/tabs-internal-operation" type="checkbox">common/tabs-internal-operation</label></p>
-          <p><label><input id="logFor-common/tabs-update" type="checkbox">common/tabs-update</label></p>
-          <p><label><input id="logFor-common/tree-behavior" type="checkbox">common/tree-behavior</label></p>
-          <p><label><input id="logFor-common/tst-api" type="checkbox">common/tst-api</label></p>
-          <p><label><input id="logFor-common/unique-id" type="checkbox">common/unique-id</label></p>
-          <p><label><input id="logFor-common/user-operation-blocker" type="checkbox">common/user-operation-blocker</label></p>
+        <legend><label class="has-checkbox"><input id="logFor-common" type="checkbox">__MSG_config_logFor_common__</label></legend>
+          <p><label class="has-checkbox"><input id="logFor-common/Tab" type="checkbox">common/Tab</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/Window" type="checkbox">common/Window</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/api-tabs" type="checkbox">common/api-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/bookmarks" type="checkbox">common/bookmarks</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/contextual-identities" type="checkbox">common/contextual-identities</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/permissions" type="checkbox">common/permissions</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/sidebar-connection" type="checkbox">common/sidebar-connection</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/tabs-internal-operation" type="checkbox">common/tabs-internal-operation</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/tabs-update" type="checkbox">common/tabs-update</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/tree-behavior" type="checkbox">common/tree-behavior</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/tst-api" type="checkbox">common/tst-api</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/unique-id" type="checkbox">common/unique-id</label></p>
+          <p><label class="has-checkbox"><input id="logFor-common/user-operation-blocker" type="checkbox">common/user-operation-blocker</label></p>
       </fieldset>
       <fieldset>
-        <legend><label><input id="logFor-background" type="checkbox">__MSG_config_logFor_background__</label></legend>
-          <p><label><input id="logFor-background/api-tabs-listener" type="checkbox">background/api-tabs-listener</label></p>
-          <p><label><input id="logFor-background/background-cache" type="checkbox">background/background-cache</label></p>
-          <p><label><input id="logFor-background/background" type="checkbox">background/background</label></p>
-          <p><label><input id="logFor-background/browser-action-menu" type="checkbox">background/browser-action-menu</label></p>
-          <p><label><input id="logFor-background/commands" type="checkbox">background/commands</label></p>
-          <p><label><input id="logFor-background/context-menu" type="checkbox">background/context-menu</label></p>
-          <p><label><input id="logFor-background/handle-group-tabs" type="checkbox">background/handle-group-tabs</label></p>
-          <p><label><input id="logFor-background/handle-misc" type="checkbox">background/handle-misc</label></p>
-          <p><label><input id="logFor-background/handle-moved-tabs" type="checkbox">background/handle-moved-tabs</label></p>
-          <p><label><input id="logFor-background/handle-new-tabs" type="checkbox">background/handle-new-tabs</label></p>
-          <p><label><input id="logFor-background/handle-removed-tabs" type="checkbox">background/handle-removed-tabs</label></p>
-          <p><label><input id="logFor-background/handle-tab-focus" type="checkbox">background/handle-tab-focus</label></p>
-          <p><label><input id="logFor-background/handle-tab-multiselect" type="checkbox">background/handle-tab-multiselect</label></p>
-          <p><label><input id="logFor-background/handle-tree-changes" type="checkbox">background/handle-tree-changes</label></p>
-          <p><label><input id="logFor-background/migration" type="checkbox">background/migration</label></p>
-          <p><label><input id="logFor-background/successor-tab" type="checkbox">background/successor-tab</label></p>
-          <p><label><input id="logFor-background/tab-context-menu" type="checkbox">background/tab-context-menu</label></p>
-          <p><label><input id="logFor-background/tabs-group" type="checkbox">background/tabs-group</label></p>
-          <p><label><input id="logFor-background/tabs-move" type="checkbox">background/tabs-move</label></p>
-          <p><label><input id="logFor-background/tabs-open" type="checkbox">background/tabs-open</label></p>
-          <p><label><input id="logFor-background/tree" type="checkbox">background/tree</label></p>
-          <p><label><input id="logFor-background/tree-structure" type="checkbox">background/tree-structure</label></p>
+        <legend><label class="has-checkbox"><input id="logFor-background" type="checkbox">__MSG_config_logFor_background__</label></legend>
+          <p><label class="has-checkbox"><input id="logFor-background/api-tabs-listener" type="checkbox">background/api-tabs-listener</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/background-cache" type="checkbox">background/background-cache</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/background" type="checkbox">background/background</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/browser-action-menu" type="checkbox">background/browser-action-menu</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/commands" type="checkbox">background/commands</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/context-menu" type="checkbox">background/context-menu</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-group-tabs" type="checkbox">background/handle-group-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-misc" type="checkbox">background/handle-misc</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-moved-tabs" type="checkbox">background/handle-moved-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-new-tabs" type="checkbox">background/handle-new-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-removed-tabs" type="checkbox">background/handle-removed-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-tab-focus" type="checkbox">background/handle-tab-focus</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-tab-multiselect" type="checkbox">background/handle-tab-multiselect</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/handle-tree-changes" type="checkbox">background/handle-tree-changes</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/migration" type="checkbox">background/migration</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/successor-tab" type="checkbox">background/successor-tab</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tab-context-menu" type="checkbox">background/tab-context-menu</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tabs-group" type="checkbox">background/tabs-group</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tabs-move" type="checkbox">background/tabs-move</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tabs-open" type="checkbox">background/tabs-open</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tree" type="checkbox">background/tree</label></p>
+          <p><label class="has-checkbox"><input id="logFor-background/tree-structure" type="checkbox">background/tree-structure</label></p>
       </fieldset>
       <fieldset>
-        <legend><label><input id="logFor-sidebar" type="checkbox">__MSG_config_logFor_sidebar__</label></legend>
-          <p><label><input id="logFor-sidebar/background-connection" type="checkbox">sidebar/background-connection</label></p>
-          <p><label><input id="logFor-sidebar/collapse-expand" type="checkbox">sidebar/collapse-expand</label></p>
-          <p><label><input id="logFor-sidebar/color" type="checkbox">sidebar/color</label></p>
-          <p><label><input id="logFor-sidebar/drag-and-drop" type="checkbox">sidebar/drag-and-drop</label></p>
-          <p><label><input id="logFor-sidebar/event-utils" type="checkbox">sidebar/event-utils</label></p>
-          <p><label><input id="logFor-sidebar/indent" type="checkbox">sidebar/indent</label></p>
-          <p><label><input id="logFor-sidebar/mouse-event-listener" type="checkbox">sidebar/mouse-event-listener</label></p>
-          <p><label><input id="logFor-sidebar/pinned-tabs" type="checkbox">sidebar/pinned-tabs</label></p>
-          <p><label><input id="logFor-sidebar/scroll" type="checkbox">sidebar/scroll</label></p>
-          <p><label><input id="logFor-sidebar/sidebar-cache" type="checkbox">sidebar/sidebar-cache</label></p>
-          <p><label><input id="logFor-sidebar/sidebar-tabs" type="checkbox">sidebar/sidebar-tabs</label></p>
-          <p><label><input id="logFor-sidebar/sidebar" type="checkbox">sidebar/sidebar</label></p>
-          <p><label><input id="logFor-sidebar/size" type="checkbox">sidebar/size</label></p>
-          <p><label><input id="logFor-sidebar/tab-context-menu" type="checkbox">sidebar/tab-context-menu</label></p>
-          <p><label><input id="logFor-sidebar/tab-drag-handle" type="checkbox">sidebar/tab-drag-handle</label></p>
+        <legend><label class="has-checkbox"><input id="logFor-sidebar" type="checkbox">__MSG_config_logFor_sidebar__</label></legend>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/background-connection" type="checkbox">sidebar/background-connection</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/collapse-expand" type="checkbox">sidebar/collapse-expand</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/color" type="checkbox">sidebar/color</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/drag-and-drop" type="checkbox">sidebar/drag-and-drop</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/event-utils" type="checkbox">sidebar/event-utils</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/indent" type="checkbox">sidebar/indent</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/mouse-event-listener" type="checkbox">sidebar/mouse-event-listener</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/pinned-tabs" type="checkbox">sidebar/pinned-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/scroll" type="checkbox">sidebar/scroll</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar-cache" type="checkbox">sidebar/sidebar-cache</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar-tabs" type="checkbox">sidebar/sidebar-tabs</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar" type="checkbox">sidebar/sidebar</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/size" type="checkbox">sidebar/size</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/tab-context-menu" type="checkbox">sidebar/tab-context-menu</label></p>
+          <p><label class="has-checkbox"><input id="logFor-sidebar/tab-drag-handle" type="checkbox">sidebar/tab-drag-handle</label></p>
       </fieldset>
     </fieldset>
     <fieldset id="group-allConfigs" class="collapsible collapsed">

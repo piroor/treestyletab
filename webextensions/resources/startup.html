@@ -30,8 +30,11 @@
     margin-left: 8%;
     margin-right: 8%;
   }
-  p.checkbox {
-    text-indent: -1.5em;
+  label.has-checkbox:not(.inline),
+  label.has-radio:not(.inline) {
+    margin-left: 2em;
+    text-indent: -2em;
+    display: block;
   }
   label[disabled="true"] {
     opacity: 0.5;
@@ -108,13 +111,13 @@
 
 <p>__MSG_message_startup_requestPermissions_description__</p>
 <div class="permissions">
-  <p class="checkbox">
-    <label><input id="bookmarksPermissionGranted"
-                  type="checkbox">
+  <p><label class="has-checkbox"
+           ><input id="bookmarksPermissionGranted"
+                   type="checkbox">
            __MSG_message_startup_requestPermissions_bookmarks__</label></p>
-  <p class="checkbox">
-    <label><input id="allUrlsPermissionGranted"
-                  type="checkbox">
+  <p><label class="has-checkbox"
+           ><input id="allUrlsPermissionGranted"
+                   type="checkbox">
            __MSG_message_startup_requestPermissions_allUrls__</label></p>
 </div>
 

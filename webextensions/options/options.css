@@ -55,6 +55,14 @@ label[disabled="true"] button {
   opacity: 1;
 }
 
+label.has-checkbox:not(.inline),
+label.has-radio:not(.inline) {
+  margin-left: 2em;
+  text-indent: -2em;
+  display: block;
+}
+
+
 #style-radiogroup {
   align-content: flex-start;
   align-items: center;
@@ -77,11 +85,6 @@ label[disabled="true"] button {
 #style-radiogroup li img,
 #applyBrowserTheme ~ img {
   max-width: 100px;
-}
-
-#style-radiogroup li {
-  margin-left: 2em;
-  text-indent: -2em;
 }
 
 .style-name {
