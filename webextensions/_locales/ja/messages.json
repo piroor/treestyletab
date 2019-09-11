@@ -261,7 +261,7 @@
   "config_showNewTabActionSelector_label":               { "message": "ボタンをポイントした時に、関係を指定して新しいタブを開くためのボタンを表示する" },
   "config_showContextualIdentitiesSelector_label":       { "message": "ボタンをポイントした時に、コンテナータブを選択するためのボタンを表示する" },
 
-  "config_newTabAction_caption": { "message": "新しいタブを開く操作の挙動（その他のツールバーボタン、キーボードショートカットなど）" },
+  "config_newTabAction_caption": { "message": "その他の操作で開かれた新しい空のタブ（ツールバーボタン、キーボードショートカットなど）" },
   "config_autoAttachOnNewTabCommand_before": { "message": "新しい空のタブを" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "独立したタブとして" },
@@ -280,7 +280,9 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
-  "config_autoAttachOnDuplicated_before": { "message": "「再読み込み」ボタンを中クリックした時、複製されたタブを" },
+  "config_duplicateTabAction_caption": { "message": "複製されたタブ（「再読み込み」ボタンの中クリックなど）" },
+
+  "config_autoAttachOnDuplicated_before": { "message": "複製されたタブを" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnDuplicated_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnDuplicated_child": { "message": "現在のタブの子として" },
@@ -288,7 +290,7 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnDuplicated_after": { "message": "開く" },
 
-  "config_sameSiteOrphan_caption": { "message": "現在のタブと同じWebサイトのタブがロケーションバーなどから開かれた場合" },
+  "config_sameSiteOrphan_caption": { "message": "ロケーションバーまたはFirefoxの外から開かれた、現在のタブと同じWebサイトのタブ" },
   "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "独立したタブとして" },
@@ -319,7 +321,9 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
   "config_renderTreeInGroupTabs_label": { "message": "グループ化用のタブにツリーを表示する" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する（※新しいタブが独立したタブとして開かれた場合、直前までアクティブだったタブのコンテナーは継承しません）" },
+  "config_newTabContainer_caption": { "message": "新しい空の子タブのコンテナー" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "（※新しいタブが独立したタブとして開かれた場合、直前までアクティブだったタブのコンテナーは継承しません）" },
 
 
   "config_treeBehavior_caption": { "message": "ツリーの挙動" },
