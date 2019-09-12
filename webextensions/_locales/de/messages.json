@@ -265,7 +265,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
 
-  "__OLD__config_newTabAction_caption": { "message": "Verhalten für Aktionen, die einen neuen Tab öffnen (andere Symbolleisten-Schaltflächen, Tastenkombinationen und andere)" },
+  "config_newTabAction_caption": { "message": "Andere \"Neuer leerer Tab\"-Aktionen (Symbolleisten-Schaltflächen, Tastenkombinationen usw.)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "eigenständigen Tab" },
@@ -273,7 +273,7 @@
   "config_autoAttachOnNewTabCommand_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "öffnen" },
-  "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer Tab\" geöffnet worden, wenn der mit dieser URL geöffnet wird:" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer leerer Tab\" geöffnet worden, wenn er mit dieser URL geöffnet wird:" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
@@ -284,7 +284,9 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "__OLD__config_autoAttachOnDuplicated_before": { "message": "Beim Klick mit der mittleren Maustaste auf die Schaltfläche \"Aktualisieren\" den Tab duplizieren als" },
+  "config_duplicateTabAction_caption": { "message": "Tabs duplizieren (Mittelklick auf die \"Neu laden\"-Schaltfläche usw.)" },
+
+  "config_autoAttachOnDuplicated_before": { "message": "Den Tab duplizieren als" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnDuplicated_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnDuplicated_child": { "message": "untergeordneten Tab des aktiven Tabs" },
@@ -292,7 +294,7 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "__OLD__config_sameSiteOrphan_caption": { "message": "Wenn über die Adressleiste (oder andere) ein neuer Tab geöffnet wird mit der gleichen Website wie im aktuellen Tab" },
+  "config_sameSiteOrphan_caption": { "message": "Neuer Tab mit der gleichen Webseite wie der aktuelle Tab über die Adressleiste oder außerhalb von Firefox" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Öffnen als" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "unabhängigen Tab" },
@@ -323,8 +325,9 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Tabs automatisch gruppieren, die aus dem gleichen angehefteten Tab heraus geöffnet werden" },
   "config_renderTreeInGroupTabs_label": { "message": "Zeige Baum in Gruppen-Tab" },
 
+  "config_newTabContainer_caption": { "message": "Tab-Umgebung von neuen leeren untergeordneten Tabs" },
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Die Tab-Umgebung des übergeordneten Tabs an einen neuen leeren Tab vererben" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "message": "\u200b" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "(*Bitte beachten, dass der neue Tab nicht die Tab-Umgebung des vorher aktiven Tabs erbt, wenn er als unabhängiger Tab geöffnet wird.)" },
 
 
   "config_treeBehavior_caption": { "message": "Verhalten der Zweige" },
