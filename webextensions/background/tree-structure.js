@@ -275,6 +275,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     });
   }
   if (options.children && !options.bulk) {
+    let firstInTree = tab.$TST.firstChild || tab;
+    let lastInTree  = tab.$TST.lastDescendant || tab;
     for (const child of children) {
       if (!child)
         continue;
@@ -282,8 +284,13 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
         dontExpand:  !child.active,
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
+        dontMove:    child.index >= firstInTree.index && child.index <= lastInTree.index + 1,
         broadcast:   true
       });
+      if (child.index < firstInTree.index)
+        firstInTree = child;
+      else if (child.index > lastInTree.index)
+        lastInTree = child;
     }
   }
 
