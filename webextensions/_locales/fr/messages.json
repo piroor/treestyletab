@@ -159,7 +159,7 @@
   "bookmarkFolderChooser_blank":         { "message": "(sans titre)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Utiliser ce dossier" },
 
-  "message_startup_description_1": { "message": "La barre d'onglets de Tree Style Tab est l'un des choix de panneau latéral disponibles. Si vous ne le voyez pas encore, appuyez sur la " },
+  "message_startup_description_1": { "message": "La barre d'onglets de Tree Style Tab est l'un des choix possibles pour le panneau latéral. Si vous ne le voyez pas encore, appuyez sur la " },
   "message_startup_description_key": { "message": "touche « F1 »" },
   "message_startup_description_2": { "message": " ou cliquez sur le bouton " },
   "message_startup_description_3": { "message": " dans la barre d'outils, pour activer le panneau latéral." },
@@ -265,15 +265,15 @@
   "config_showNewTabActionSelector_label":               { "message": "Montrer le bouton du sélecteur pour spécifier où ouvrir le nouvel onglet, quand le bouton « Nouvel onglet » est survolé" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Montrer le bouton du sélecteur de conteneur, quand le bouton « Nouvel onglet » est survolé" },
 
-  "config_newTabAction_caption": { "message": "Comportement des actions nouvel onglet (autre boutons de barre d'outils, raccourcis clavier, et d'autres)" },
-  "config_autoAttachOnNewTabCommand_before": { "message": "Ouvrir un nouvel onglet vierge comme" },
+  "config_newTabAction_caption": { "message": "« Nouvel onglet vide » ouvert depuis autre part (boutons de barre d'outils, raccourcis clavier, etc.)" },
+  "config_autoAttachOnNewTabCommand_before": { "message": "Ouvrir un nouvel onglet vide comme" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(aucun contrôle)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "un onglet indépendant" },
   "config_autoAttachOnNewTabCommand_child": { "message": "un enfant de l'onglet courant" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "au même niveau que l'onglet courant" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Devine qu'un onglet nouvellement ouvert a été ouvert par une action « Nouvel onglet », quand elle est ouverte avec l'URL " },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Deviner qu'un nouvel onglet est un « nouvel onglet vide » quand son URL est :" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Avec le clic du milieu, ouvrir un nouvel onglet vierge comme" },
@@ -284,7 +284,9 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "config_autoAttachOnDuplicated_before": { "message": "Clic du milieu sur le bouton « Actualiser » duplique l'onglet comme" },
+  "config_duplicateTabAction_caption": { "message": "Dupliquer l'onglet (clic du milieu sur le bouton « Actualiser », etc.)" },
+
+  "config_autoAttachOnDuplicated_before": { "message": "Dupliquer l'onglet comme" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(aucun contrôle)" },
   "config_autoAttachOnDuplicated_independent": { "message": "un onglet indépendant" },
   "config_autoAttachOnDuplicated_child": { "message": "un enfant de l'onglet courant" },
@@ -292,7 +294,7 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Quand un nouvel onglet du même site que l'onglet courant est ouvert depuis la barre d'adresse (ou autre)" },
+  "config_sameSiteOrphan_caption": { "message": "Nouvel onglet du même site que l'onglet courant depuis la barre d'adresse ou en dehors de Firefox" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Ouvrir comme" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(aucun contrôle)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "un onglet indépendant" },
@@ -317,13 +319,15 @@
   "config_autoGroupNewTabs_before": { "message": "Grouper automatiquement les onglets ouverts durant" },
   "config_autoGroupNewTabs_after": { "message": "msec" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Mais ne pas grouper les nouveaux onglets ouverts durant" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec quand une nouvelle fenêtre est ouverte, faisant partie des onglets ouverts comme « Page d'accueil »." },
+  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec quand une nouvelle fenêtre est ouverte, s'ils font partie des onglets ouverts comme « Page d'accueil »." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirmer le groupement d'onglets" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Grouper automatiquement les onglets ouverts depuis le même onglet épinglé" },
   "config_renderTreeInGroupTabs_label": { "message": "Afficher les arbres dans les onglets de groupe" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Hériter du conteneur de l'onglet parent pour un nouvel onglet vierge (*Veuillez noter que le nouvel onglet n'héritera pas du conteneur de l'onglet précédemment actif, s'il est ouvert comme un onglet indépendant)" },
+  "config_newTabContainer_caption": { "message": "Conteneur des nouveaux onglets vides" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Hériter du conteneur de l'onglet parent pour un nouvel onglet vide" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "(*Veuillez noter que le nouvel onglet n'héritera pas du conteneur de l'onglet précédemment actif, s'il est ouvert comme un onglet indépendant)" },
 
 
   "config_treeBehavior_caption": { "message": "Comportement de l'arbre" },
