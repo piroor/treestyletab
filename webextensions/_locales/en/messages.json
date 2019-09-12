@@ -85,7 +85,7 @@
     }},
 
   "bookmarkTree_notification_success_title": { "message": "Tree is Successfully Bookmarked" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$.",
+  "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$\".",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
@@ -173,7 +173,7 @@
   "message_startup_userChromeCss_description_link_label": { "message": "customization examples by userChrome.css" },
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": ". But " },
-  "message_startup_userChromeCss_description_note": { "message": "note that it is very low level customization, thus there is no guarantee and it can cause troubles on future versions of Firefox. Please try it at your own risk, only when you know what you are doing and if you are confident that you can resolve such troubles by yourself." },
+  "message_startup_userChromeCss_description_note": { "message": "note that it is very low level customization, thus there is no guarantee and it can cause troubles on future versions of Firefox. Please try it at your own risk, only when you know what you are doing and if you are confident that you can resolve such troubles by yourself" },
   "message_startup_userChromeCss_description_3": { "message": "." },
 
   "api_requestedPermissions_title": { "message": "Request for Extra Permissions" },
