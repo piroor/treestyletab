@@ -171,7 +171,7 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 
 async function attachTabFromRestoredInfo(tab, options = {}) {
-  log('attachTabFromRestoredInfo ', tab);
+  log('attachTabFromRestoredInfo ', tab, options);
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
