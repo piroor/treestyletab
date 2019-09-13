@@ -1139,6 +1139,15 @@ export async function moveTabs(tabs, options = {}) {
   // refresh the array of tabs.
   movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id));
 
+  if (isAcrossWindows) {
+    for (const tab of movedTabs) {
+      if (tab.$TST.parent ||
+          parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0) == 0)
+        continue;
+      updateTabIndent(tab, 0);
+    }
+  }
+
   return movedTabs;
 }
 
