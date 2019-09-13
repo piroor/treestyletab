@@ -1,6 +1,21 @@
 # History
 
  - master/HEAD
+   * Optimize internal operations for better performance and less memory usage. (Some ideas are contributed by bb010g. Thanks!)
+   * Become more safe to accidental recursive references of tree structures.
+   * Reopen same site tab with the container inherited from the current tab correctly, when the tab is opened as a child of the current the.
+   * Don't apply special new tab behaviors (ex. auto-attach to the current tab) to restored single tabs.
+   * Don't apply special new tab behaviors for Ctrl-T or other commands, to tabs opened with URL (ex. opened from bookmarks or the location bar), even if the `about:blank` is choses for the default page of new tabs.
+   * Don't invert children order for a restored parent tab.
+   * Apply custom behavior of closed parent tab correctly when a parent tab is closed as a solo tab by an action inside the sidebar.
+   * Accept dragged tabs from another Firefox instance as URLs.
+   * Treat a tab dragged from the native tab bar to the sidebar as is instead of as a URL string, if possible. (You can deactivate this new behavior with setting `guessDraggedNativeTabs` to `false`.)
+   * Update visibility of the scrollbar when tabs are shown or hidden, for better compatibility with other addons like the [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/).
+   * Brush up appearance of some UI elements in the options page.
+   * Restructure some options under the "New Tabs Behavior" section for better findability.
+   * Update `de` locale by SammysHP. Thanks!
+   * Update `fr` locale by ariasuni (and DarckCrystale.) Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.1.7 (2019.8.9)
    * Introduce guards for cyclic reference around restored parent tabs.
    * Update `ru` locale by wvxwxvw. Thanks!
