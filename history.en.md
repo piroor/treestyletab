@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.1.8 (2019.9.13)
    * Optimize internal operations for better performance and less memory usage. (Some ideas are contributed by bb010g. Thanks!)
    * Become more safe to accidental recursive references of tree structures.
    * Reopen same site tab with the container inherited from the current tab correctly, when the tab is opened as a child of the current the.
