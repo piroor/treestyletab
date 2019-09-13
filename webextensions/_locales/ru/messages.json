@@ -209,7 +209,7 @@
 
   "config_appearance_caption": { "message": "Внешний вид" },
 
-  "config_sidebarPosition_caption": { "message": "Стиль позиции содержимого боковой панели:" },
+  "config_sidebarPosition_caption": { "message": "Позиция содержимого боковой панели:" },
   "config_sidebarPosition_left": { "message": "Слева" },
   "config_sidebarPosition_right": { "message": "Справа" },
   "config_sidebarPosition_description": { "message": "*Эта настройка не меняет положение боковой панели. Если нужно переместить саму панель, то в меню заголовка боковой панели выберите \"Переместить боковую панель...\"." },
@@ -257,7 +257,7 @@
   "config_newTab_caption": { "message": "Поведение новой вкладки" },
 
   "config_newTabButton_caption": { "message": "Кнопка \"Новая вкладка\" " },
-  "config_longPressOnNewTabButton_before":               { "message": "Долгое зажатие кнопки \"Новая вкладка\", чтобы " },
+  "config_longPressOnNewTabButton_before":               { "message": "Длительное нажатие кнопки \"Новая вкладка\", чтобы " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "указать, где откроется новая вкладка" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "выбрать контейнер" },
   "config_longPressOnNewTabButton_none":                 { "message": "(ничего)" },
@@ -265,7 +265,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Показывать кнопку выбора на кнопке \"Новая вкладка\", чтобы указать, где открывается новая вкладка" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Показывать кнопку выбора контейнера на кнопке \"Новая вкладка\" " },
 
-  "config_newTabAction_caption": { "message": "Манипуляции с новой вкладкой (другие кнопки панели, горячие клавиши и прочее)" },
+  "config_newTabAction_caption": { "message": "Другие действия с \"Новой вкладкой\" (кнопки панели, горячие клавиши и прочее)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(не контролировать)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "отдельную вкладку" },
@@ -273,7 +273,7 @@
   "config_autoAttachOnNewTabCommand_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Считать новой открытой вкладку, открытую действием \"Новая вкладка\", когда она открывается с URL: " },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Считать недавно открытой вкладку, открытую действием \"Новая вкладка\", если она открывается с URL: " },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Кликом колесика мыши открыть новую пустую вкладку как" },
@@ -284,7 +284,9 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "config_autoAttachOnDuplicated_before": { "message": "Кликом колесика мыши на кнопку \"Перезагрузить\", дублировать вкладку как" },
+  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и прочее)" },
+
+  "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(не контролировать)" },
   "config_autoAttachOnDuplicated_independent": { "message": "отдельную вкладку" },
   "config_autoAttachOnDuplicated_child": { "message": "дочернюю текущей" },
@@ -292,7 +294,7 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, аналогичным текущей вкладке, открывается из адресной строки (или иначе)" },
+  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки или передается извне " },
   "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(не контролировать)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "отдельную вкладку" },
@@ -323,7 +325,9 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автоматически группировать вкладки, открытые с одной закрепленной вкладки" },
   "config_renderTreeInGroupTabs_label": { "message": "Создание дерева в группе вкладок" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Наследовать контейнер родительской вкладки новой пустой вкладкой" },
+  "config_newTabContainer_caption": { "message": "Контейнер новой пустой дочерней вкладки" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Наследовать контейнер родительской вкладки новой пустой дочерней вкладкой" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "(* Обратите внимание, что новая вкладка не будет наследовать контейнер активной вкладки, если она открыта как независимая вкладка.)" },
 
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },
