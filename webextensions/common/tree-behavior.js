@@ -17,11 +17,11 @@ function log(...args) {
 }
 
 export function shouldApplyTreeBehavior(params = {}) {
-  log('shouldApplyTreeBehavior ', configs.debug && {
+  log('shouldApplyTreeBehavior ', () => ({
     closeParentBehaviorMode: configs.closeParentBehaviorMode,
     params,
     stack: new Error().stack
-  });
+  }));
   switch (configs.closeParentBehaviorMode) {
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ALWAYS
       return true;

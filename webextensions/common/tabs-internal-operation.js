@@ -69,6 +69,7 @@ export function removeTab(tab) {
 }
 
 export function removeTabs(tabs) {
+  log('removeTabsInternally: ', () => tabs.map(dumpTab));
   const window = TabsStore.windows.get(tabs[0].windowId);
   const tabIds = [];
   tabs = tabs.filter(tab => {
@@ -80,9 +81,9 @@ export function removeTabs(tabs) {
     }
     return false;
   });
+  log(' => ', () => tabs.map(dumpTab));
   if (!tabs.length)
     return;
-  log('removeTabsInternally: ', () => tabs.map(dumpTab));
   if (SidebarConnection.isInitialized()) // in background
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
