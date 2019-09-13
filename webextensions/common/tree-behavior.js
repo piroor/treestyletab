@@ -29,6 +29,7 @@ export function shouldApplyTreeBehavior(params = {}) {
 }
 
 export function getCloseParentBehaviorForTab(tab, options = {}) {
+  log('getCloseParentBehaviorForTab ', tab, options);
   if (!options.asIndividualTab &&
       tab.$TST.subtreeCollapsed &&
       !options.applyTreeBehavior)
@@ -38,10 +39,12 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
   let behavior;
   switch (configs.closeParentBehaviorMode) {
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR:
+      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR');
       behavior = configs.closeParentBehavior;
       break;
     default:
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR:
+      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR');
       behavior = sidebarVisible ? configs.closeParentBehavior : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
       if (behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
           behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
@@ -49,6 +52,7 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
 
       break;
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
+      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM');
       behavior = options.byInternalOperation ? configs.closeParentBehavior :
         sidebarVisible ? configs.closeParentBehavior_outsideSidebar :
           configs.closeParentBehavior_noSidebar;
@@ -56,16 +60,22 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
   }
   const parentTab = options.parent || tab.$TST.parent;
 
-  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY)
+  log(' => behavior: ', behavior);
+
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY) {
     behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    log(' => intelligent behavior: ', behavior);
+  }
 
   // Promote all children to upper level, if this is the last child of the parent.
   // This is similar to "taking by representation".
   if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
       parentTab &&
       parentTab.$TST.childIds.length == 1 &&
-      configs.promoteAllChildrenWhenClosedParentIsLastChild)
+      configs.promoteAllChildrenWhenClosedParentIsLastChild) {
     behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+    log(' => blast child ehavior: ', behavior);
+  }
 
   return behavior;
 }
