@@ -51,7 +51,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
     tryFixupTreeForInsertedTab(tab, {
       toIndex:   tab.index,
       fromIndex: Tab.getLastTab(tab.windowId).index,
-      treeForActionDetection: info.treeForActionDetection
+      treeForActionDetection: info.treeForActionDetection,
+      isTabCreating: true
     });
 });
 
@@ -78,7 +79,8 @@ Tab.onMoving.addListener((tab, moveInfo) => {
 });
 
 async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
-  if (!TreeBehavior.shouldApplyTreeBehavior(moveInfo)) {
+  if (!moveInfo.isTabCreating &&
+      !TreeBehavior.shouldApplyTreeBehavior(moveInfo)) {
     Tree.detachAllChildren(tab, {
       behavior: TreeBehavior.getCloseParentBehaviorForTab(tab, {
         applyTreeBehavior: true
