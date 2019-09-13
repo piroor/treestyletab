@@ -1177,7 +1177,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       log('moved tabs: ', movedTabIds);
       const removeTabs = mapAndFilter(window.tabs, tab => {
         tab = TabIdFixer.fixTab(tab);
-        return !movedTabIds.has(tab.id) && tab;
+        return !movedTabIds.has(tab.id) && Tab.get(tab.id);
       });
       log('removing tabs: ', removeTabs);
       TabsInternalOperation.removeTabs(removeTabs);
