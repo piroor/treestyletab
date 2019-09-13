@@ -14,6 +14,7 @@
    * [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/)などのいくつかのアドオンとの併用時の互換性向上のために、タブの表示・非表示が切り替わったタイミングでスクロールバーの表示状態もそれに併せて更新するようにした
    * 設定画面のいくつかのUI要素の外観をより見やすく調整した
    * 「新しいタブの挙動」配下の設定項目について、検索性を高めるために順番や構成を見直した
+   * タイトルを指定してグループ化用のタブを開くためのURLとして `ext+treestyletab:group?(title)` を使えるようにした
    * `de`ロケール更新（by SammysHP. Thanks!）
    * `fr`ロケール更新（by ariasuni and DarckCrystale. Thanks!）
    * `ru`ロケール更新（by wvxwxvw. Thanks!）
