@@ -15,6 +15,7 @@
    * 設定画面のいくつかのUI要素の外観をより見やすく調整した
    * 「新しいタブの挙動」配下の設定項目について、検索性を高めるために順番や構成を見直した
    * タイトルを指定してグループ化用のタブを開くためのURLとして `ext+treestyletab:group?(title)` を使えるようにした
+   * 既定のテーマ以外の時に文字の視認性を高めるための文字の影を正しい色で表示するように修正
    * `de`ロケール更新（by SammysHP. Thanks!）
    * `fr`ロケール更新（by ariasuni and DarckCrystale. Thanks!）
    * `ru`ロケール更新（by wvxwxvw. Thanks!）

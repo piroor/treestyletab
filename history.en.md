@@ -15,6 +15,7 @@
    * Brush up appearance of some UI elements in the options page.
    * Restructure some options under the "New Tabs Behavior" section for better findability.
    * URL like `ext+treestyletab:group?(title)` is available to open a group tab with specific title.
+   * Show text-shadow with correct color for better readability of text with non-default theme.
    * Update `de` locale by SammysHP. Thanks!
    * Update `fr` locale by ariasuni (and DarckCrystale.) Thanks!
    * Update `ru` locale by wvxwxvw. Thanks!
