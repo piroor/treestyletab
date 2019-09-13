@@ -10,6 +10,7 @@
    * Apply custom behavior of closed parent tab correctly when a parent tab is closed as a solo tab by an action inside the sidebar.
    * Accept dragged tabs from another Firefox instance as URLs.
    * Treat a tab dragged from the native tab bar to the sidebar as is instead of as a URL string, if possible. (You can deactivate this new behavior with setting `guessDraggedNativeTabs` to `false`.)
+   * Refresh indent level of tabs detached from a window by drag and drop correctly.
    * Update visibility of the scrollbar when tabs are shown or hidden, for better compatibility with other addons like the [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/).
    * Brush up appearance of some UI elements in the options page.
    * Restructure some options under the "New Tabs Behavior" section for better findability.
