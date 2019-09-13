@@ -89,7 +89,10 @@ export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo
     })
   );
   log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, applyTreeBehavior });
-  return getCloseParentBehaviorForTab(tab, { applyTreeBehavior });
+  return getCloseParentBehaviorForTab(tab, {
+    byInternalOperation: removeInfo.byInternalOperation,
+    applyTreeBehavior
+  });
 }
 
 export function getClosingTabsFromParent(tab, removeInfo = {}) {
