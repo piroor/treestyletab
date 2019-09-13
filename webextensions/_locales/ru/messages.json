@@ -327,7 +327,7 @@
 
   "config_newTabContainer_caption": { "message": "Контейнер новой пустой дочерней вкладки" },
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Наследовать контейнер родительской вкладки новой пустой дочерней вкладкой" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "(* Обратите внимание, что новая вкладка не будет наследовать контейнер активной вкладки, если она открыта как независимая вкладка.)" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "(* Обратите внимание, что новая вкладка не будет наследовать контейнер активной вкладки, если она открыта как независимая вкладка.)" },
 
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },
