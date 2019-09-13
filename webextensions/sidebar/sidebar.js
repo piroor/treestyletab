@@ -334,7 +334,7 @@ function applyBrowserTheme(theme) {
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
       extraColors.push('--browser-bg-active-for-header-image: rgba(255, 255, 255, 0.4)');
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/toolkit/themes/windows/global/global.css#138
-      if (Color.isBrightColor(themeFrameColor))
+      if (Color.isBrightColor(inactiveTextColor))
         extraColors.push('--browser-textshadow-for-header-image: 1px 1px 1.5px black'); // for bright text
       else
         extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white'); // for dark text
