@@ -653,7 +653,7 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         configs.grantedRemovingTabIds = mapAndFilterUniq(configs.grantedRemovingTabIds.concat(tabs), tab => {
           tab = TabsStore.ensureLivingTab(tab);
-          return tab && tab.id;
+          return tab && tab.id || undefined;
         });
         return true;
       })();

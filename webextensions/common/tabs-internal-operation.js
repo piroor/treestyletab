@@ -48,7 +48,7 @@ export async function activateTab(tab, options = {}) {
       if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
         // switch active tab with highlighted state
         tabs = tabs.concat(mapAndFilter(highlightedTabs,
-                                        highlightedTab => highlightedTab.id != tab.id && highlightedTab.index));
+                                        highlightedTab => highlightedTab.id != tab.id && highlightedTab.index || undefined));
       }
     }
     if (tabs.length == 1)

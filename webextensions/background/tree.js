@@ -1078,7 +1078,7 @@ export async function moveTabs(tabs, options = {}) {
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
         newTabs = mapAndFilter(movedTabs,
-                               tab => Tab.get(TabIdFixer.fixTab(tab).id));
+                               tab => Tab.get(TabIdFixer.fixTab(tab).id) || undefined);
         if (mSlowDuplication)
           UserOperationBlocker.setProgress(Math.round(newTabs.length / tabs.length * 50) + 50, windowId);
         if (newTabs.length < tabs.length) {
@@ -1117,7 +1117,7 @@ export async function moveTabs(tabs, options = {}) {
   }
 
 
-  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id));
+  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id) || undefined);
   if (options.insertBefore) {
     await TabsMove.moveTabsBefore(
       movedTabs,
@@ -1137,7 +1137,7 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id));
+  movedTabs = mapAndFilter(movedTabs, tab => Tab.get(tab.id) || undefined);
 
   if (isAcrossWindows) {
     for (const tab of movedTabs) {
@@ -1186,7 +1186,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       log('moved tabs: ', movedTabIds);
       const removeTabs = mapAndFilter(window.tabs, tab => {
         tab = TabIdFixer.fixTab(tab);
-        return !movedTabIds.has(tab.id) && Tab.get(tab.id);
+        return !movedTabIds.has(tab.id) && Tab.get(tab.id) || undefined;
       });
       log('removing tabs: ', removeTabs);
       TabsInternalOperation.removeTabs(removeTabs);

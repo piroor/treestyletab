@@ -507,7 +507,7 @@ export default class Tab {
 
   get ancestors() {
     return mapAndFilter(this.ancestorIds,
-                        id => TabsStore.ensureLivingTab(Tab.get(id)));
+                        id => TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   updateAncestors() {
@@ -601,7 +601,7 @@ export default class Tab {
   }
   get children() {
     return mapAndFilter(this.childIds,
-                        id => TabsStore.ensureLivingTab(Tab.get(id)));
+                        id => TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   get firstChild() {
@@ -630,7 +630,7 @@ export default class Tab {
     if (!this.cachedDescendantIds)
       return this.updateDescendants();
     return mapAndFilter(this.cachedDescendantIds,
-                        id => TabsStore.ensureLivingTab(Tab.get(id)));
+                        id => TabsStore.ensureLivingTab(Tab.get(id)) || undefined);
   }
 
   updateDescendants() {
@@ -1810,7 +1810,7 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
   await asyncTask();
   const afterTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
   const addedTabs = mapAndFilter(afterTabs,
-                                 tab => !beforeIds.has(tab.id) && Tab.get(tab.id));
+                                 tab => !beforeIds.has(tab.id) && Tab.get(tab.id) || undefined);
   return addedTabs;
 };
 

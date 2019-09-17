@@ -69,7 +69,7 @@ export function sendMessage(message) {
       mConnectionPort.postMessage(messages);
       if (configs.debug) {
         const types = mapAndFilterUniq(messages,
-                                       message => message.type).join(', ');
+                                       message => message.type || undefined).join(', ');
         log(`${messages.length} messages sent (${types}):`, messages);
       }
     };

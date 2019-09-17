@@ -728,7 +728,7 @@ async function onClick(info, contextTab) {
           [contextTab.id]
       );
       const closeTabs = mapAndFilter(tabs,
-                                     tab => !tab.pinned && !keptTabIds.has(tab.id) && Tab.get(tab.id));
+                                     tab => !tab.pinned && !keptTabIds.has(tab.id) && Tab.get(tab.id) || undefined);
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
         tabs: closeTabs.map(tab => tab.$TST.sanitized),

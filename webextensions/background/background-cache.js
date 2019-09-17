@@ -232,7 +232,7 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   log('fixupTabRestoredFromCache children: ', cachedTab.$TST.childIds);
   const childIds = mapAndFilter(cachedTab.$TST.childIds, oldId => {
     const tab = idMap.get(oldId);
-    return tab && tab.id;
+    return tab && tab.id || undefined;
   });
   tab.$TST.children = childIds;
   if (childIds.length > 0)

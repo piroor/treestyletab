@@ -560,7 +560,7 @@ function updateMultiselectionByTabClick(tab, event) {
 
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = mapAndFilter(Array.from(highlightedTabIds),
-                                   id => id != activeTab.id && Tab.get(id).index);
+                                   id => id != activeTab.id && Tab.get(id).index || undefined);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({
@@ -631,7 +631,7 @@ function updateMultiselectionByTabClick(tab, event) {
 
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = mapAndFilter(Array.from(highlightedTabIds),
-                                   id => id != activeTab.id && Tab.get(id).index);
+                                   id => id != activeTab.id && Tab.get(id).index || undefined);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({

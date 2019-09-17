@@ -395,7 +395,7 @@ export async function updateTabsHighlighted(highlightInfo) {
   });
   const highlightedTabs = mapAndFilter(tabIds, id => {
     const tab = window.tabs.get(id);
-    return tab && !tab.highlighted && tab;
+    return tab && !tab.highlighted && tab || undefined;
   });
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);

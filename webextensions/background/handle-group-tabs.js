@@ -377,7 +377,7 @@ async function tryGroupNewTabs() {
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       const uniqueId = tab.$TST.uniqueId;
-      return !uniqueId.duplicated && !uniqueId.restored && tab;
+      return !uniqueId.duplicated && !uniqueId.restored && tab || undefined;
     });
     Tab.sort(tabs);
 
