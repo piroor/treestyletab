@@ -166,13 +166,13 @@ export async function bookmarkTabs(tabs, options = {}) {
     }
   }
 
-  const minLevel = options.saveStructure ? Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL)))) : 0;
+  const minLevel = options.saveStructure ? Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0'))) : 0;
   const folder = await browser.bookmarks.create(folderParams).catch(ApiTabs.createErrorHandler());
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
     let title = tab.title;
     if (options.saveStructure) {
-      const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL)) - minLevel;
+      const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
       let prefix = '';
       for (let j = 0; j < level; j++) {
         prefix += '>';
