@@ -71,6 +71,9 @@ const mContextMenuItemsById = {
   'bookmarkTree': {
     title: browser.i18n.getMessage('context_bookmarkTree_label')
   },
+  'bookmarkTreeWithStructure': {
+    title: browser.i18n.getMessage('context_bookmarkTreeWithStructure_label')
+  },
   'groupTabs': {
     title: browser.i18n.getMessage('context_groupTabs_label'),
     requireMultiselected: true
@@ -294,6 +297,10 @@ export const onClick = (info, tab) => {
 
     case 'bookmarkTree':
       Commands.bookmarkTree(contextTab);
+      break;
+
+    case 'bookmarkTreeWithStructure':
+      Commands.bookmarkTree(contextTab, { saveStructure: true });
       break;
 
     case 'groupTabs':

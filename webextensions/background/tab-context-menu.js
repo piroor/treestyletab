@@ -76,6 +76,9 @@ const mItemsById = {
   'context_topLevel_bookmarkTree': {
     title: browser.i18n.getMessage('context_bookmarkTree_label')
   },
+  'context_topLevel_bookmarkTreeWithStructure': {
+    title: browser.i18n.getMessage('context_bookmarkTreeWithStructure_label')
+  },
   'context_reopenInContainer': {
     title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
   },
@@ -453,6 +456,9 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_bookmarkTree', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_bookmarkTree
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_bookmarkTreeWithStructure', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_bookmarkTreeWithStructure
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;

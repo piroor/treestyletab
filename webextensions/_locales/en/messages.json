@@ -197,6 +197,7 @@
   "context_expandTree_label": { "message": "Exp&and this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
+  "context_bookmarkTreeWithStructure_label": { "message": "&Bookmark this Tree with Structure…" },
   "context_groupTabs_label":    { "message": "Create New &Group from tabs" },
   "context_topLevel_prefix": { "message": "Top level item: " },
 

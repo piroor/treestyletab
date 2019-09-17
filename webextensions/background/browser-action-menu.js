@@ -215,6 +215,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_bookmarkTreeWithStructure_label'),
+        key:   'context_topLevel_bookmarkTreeWithStructure',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_groupTabs_label'),
         key:   'context_topLevel_groupTabs',
         type:  'checkbox'
@@ -272,6 +277,11 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_label'),
         key:   'context_bookmarkTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_bookmarkTreeWithStructure_label'),
+        key:   'context_bookmarkTreeWithStructure',
         type:  'checkbox'
       },
       {

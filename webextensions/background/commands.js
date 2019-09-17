@@ -127,7 +127,8 @@ export async function bookmarkTree(root, options = {}) {
     return SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
-      tabIds:   tabs.map(tab => tab.id)
+      tabIds:   tabs.map(tab => tab.id),
+      options
     });
   }
 

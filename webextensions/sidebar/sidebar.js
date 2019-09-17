@@ -993,13 +993,15 @@ BackgroundConnection.onMessage.addListener(async message => {
       MetricsData.add('Tabs.onWindowRestoring restore end');
     }; break;
 
-    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
-      Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
-      break;
+    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG: {
+      const options = Object.assign({}, message.options || {}, { showDialog: true });
+      Bookmark.bookmarkTab(Tab.get(message.tabId), options);
+    }; break;
 
-    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
-      Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
-      break;
+    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG: {
+      const options = Object.assign({}, message.options || {}, { showDialog: true });
+      Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), options);
+    }; break;
   }
 });
 

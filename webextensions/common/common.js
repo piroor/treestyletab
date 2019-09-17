@@ -64,6 +64,7 @@ export const configs = new Configs({
   context_expandTree: false,
   context_expandAll: true,
   context_bookmarkTree: true,
+  context_bookmarkTreeWithStructure: true,
   context_groupTabs: true,
 
   context_topLevel_reloadTree: false,
@@ -76,6 +77,7 @@ export const configs = new Configs({
   context_topLevel_expandTree: false,
   context_topLevel_expandAll: false,
   context_topLevel_bookmarkTree: false,
+  context_topLevel_bookmarkTreeWithStructure: false,
   context_topLevel_groupTabs: false,
 
   context_closeTabOptions_closeTree: false, // obsolete, migrated to context_topLevel_closeTree
