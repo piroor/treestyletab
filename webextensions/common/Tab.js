@@ -567,7 +567,7 @@ export default class Tab {
     const newChildIds = mapAndFilter(tabs, tab => {
       const id = typeof tab == 'number' ? tab : tab && tab.id;
       if (!ancestorIds.includes(id))
-        return id;
+        return TabsStore.ensureLivingTab(Tab.get(id)) ? id : undefined;
       console.log('FATAL ERROR: Cyclic tree structure has detected and prevented. ', {
         ancestorsOfSelf: this.ancestors,
         tabs,

@@ -11,6 +11,7 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 import {
   log as internalLogger,
   nextFrame,
+  mapAndFilter,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -895,7 +896,7 @@ BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds, { element: true });
-      TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)));
+      TabsInternalOperation.removeTabs(mapAndFilter(message.tabIds, id => Tab.get(id)));
       break;
 
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
@@ -1000,7 +1001,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG: {
       const options = Object.assign({}, message.options || {}, { showDialog: true });
-      Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), options);
+      Bookmark.bookmarkTabs(mapAndFilter(message.tabIds, id => Tab.get(id)), options);
     }; break;
   }
 });

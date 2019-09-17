@@ -70,6 +70,9 @@ export function removeTab(tab) {
 
 export function removeTabs(tabs) {
   log('removeTabsInternally: ', () => tabs.map(dumpTab));
+  if (tabs.length == 0)
+    return;
+
   const window = TabsStore.windows.get(tabs[0].windowId);
   const tabIds = [];
   tabs = tabs.filter(tab => {
