@@ -505,7 +505,7 @@ export function countMatched(values, matcher) {
   let count = 0,
       value; // this must be defined outside of the loop, to avoid needless re-allocation
   for (value of values) {
-    if (matcher(value) !== undefined)
+    if (matcher(value))
       count++;
   }
   return count;
