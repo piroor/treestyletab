@@ -12,7 +12,7 @@ const matched = uri && uri.match(Constants.kSHORTHAND_CUSTOM_URI);
 if (matched) {
   const name = matched[1];
   const params = matched[2] || '';
-  switch (name) {
+  switch (name.toLowerCase()) {
     case 'group':
       location.href = `${Constants.kSHORTHAND_URIS.group}?${params}`;
       break;
@@ -22,6 +22,7 @@ if (matched) {
       break;
 
     case 'test-runner':
+    case 'testrunner':
       location.href = Constants.kSHORTHAND_URIS.testRunner;
       break;
 

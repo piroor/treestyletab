@@ -97,6 +97,7 @@ export async function init() {
   EventListenerManager.debug = configs.debug;
 
   Migration.migrateConfigs();
+  Migration.migrateBookmarkUrls();
   configs.grantedRemovingTabIds = []; // clear!
   MetricsData.add('init: Migration.migrateConfigs');
 

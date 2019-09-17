@@ -132,3 +132,32 @@ export async function notifyNewFeatures() {
     active: true
   }).catch(ApiTabs.createErrorSuppressor());
 }
+
+
+export async function migrateBookmarkUrls() {
+  const urls = new Set(configs.migratedBookmarkUrls);
+  const migrations = [];
+  const updates = [];
+  for (const key in Constants.kSHORTHAND_URIS) {
+    const url = Constants.kSHORTHAND_URIS[key].split('?')[0];
+    if (urls.has(url))
+      continue;
+
+    const shorthand = `ext+treestyletab:${key.toLowerCase()}`;
+    migrations.push(browser.bookmarks.search({ query: url })
+      .then(bookmarks => {
+        for (const bookmark of bookmarks) {
+          updates.push(browser.bookmarks.update(bookmark.id, {
+            url: bookmark.url.replace(url, shorthand)
+          }));
+        }
+      }));
+    urls.add(url);
+  }
+  if (migrations.length > 0)
+    await Promise.all(migrations);
+  if (updates.length > 0)
+    await Promise.all(updates);
+  if (urls.size > configs.migratedBookmarkUrls.length)
+    configs.migratedBookmarkUrls = Array.from(urls);
+}
