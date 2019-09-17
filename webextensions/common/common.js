@@ -466,29 +466,29 @@ export function mapAndFilter(values, mapper) {
     return mappedValues;
   }, []);
   */
-  const maxi = values.length >>> 0; // define as unsigned int
+  const maxi = ('length' in values ? values.length : values.size) >>> 0; // define as unsigned int
   const mappedValues = new Array(maxi); // prepare with enough size at first, to avoid needless re-allocation
   let count = 0,
-      i = 0,
+      value, // this must be defined outside of the loop, to avoid needless re-allocation
       mappedValue; // this must be defined outside of the loop, to avoid needless re-allocation
-  while (i < maxi) { // use "while" loop instead "for" loop, for better performance
-    mappedValue = mapper(values[i]);
-    if (mappedValue)
+  for (value of values) {
+    mappedValue = mapper(value);
+    if (mappedValue !== undefined)
       mappedValues[count++] = mappedValue;
-    i++;
   }
   mappedValues.length = count; // shrink the array at last
   return mappedValues;
 }
 
 export function mapAndFilterUniq(values, mapper, options = {}) {
-  let mappedValue;
-  const mappedValues = values.reduce((mappedValues, value) => {
+  const mappedValues = new Set();
+  let value, // this must be defined outside of the loop, to avoid needless re-allocation
+      mappedValue; // this must be defined outside of the loop, to avoid needless re-allocation
+  for (value of values) {
     mappedValue = mapper(value);
-    if (mappedValue)
+    if (mappedValue !== undefined)
       mappedValues.add(mappedValue);
-    return mappedValues;
-  }, new Set());
+ }
   return options.set ? mappedValues : Array.from(mappedValues);
 }
 
@@ -500,13 +500,11 @@ export function countMatched(values, matcher) {
     return count;
   }, 0);
   */
-  const maxi = values.length >>> 0; // define as unsigned int
   let count = 0,
-      i = 0;
-  while (i < maxi) { // use "while" loop instead "for" loop, for better performance
-    if (matcher(values[i]))
+      value; // this must be defined outside of the loop, to avoid needless re-allocation
+  for (value of values) {
+    if (matcher(value) !== undefined)
       count++;
-    i++;
   }
   return count;
 }
