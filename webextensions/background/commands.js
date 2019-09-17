@@ -787,7 +787,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 });
 
 
-const DESCENDANT_MATCHER = /^[>]+ /;
+const DESCENDANT_MATCHER = /^(>+) /;
 
 export async function openAllBookmarksWithStructure(id) {
   let item = await browser.bookmarks.get(id);
@@ -805,7 +805,9 @@ export async function openAllBookmarksWithStructure(id) {
   const items = await browser.bookmarks.getChildren(item.id);
   if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
     for (const item of items) {
-      item.title = `${item.title.charAt(0) == '>' ? '>' : '> '}${item.title}`;
+      item.title = DESCENDANT_MATCHER.test(item.title) ?
+        item.title.replace(DESCENDANT_MATCHER, '>$1 ') :
+        `> ${item.title}`;
     }
     items.unshift({
       title: '',
@@ -821,10 +823,8 @@ export async function openAllBookmarksWithStructure(id) {
   const structure = items.reduce((result, item, index) => {
     let level = 0;
     if (lastItemIndicesWithLevel.size > 0 &&
-        DESCENDANT_MATCHER.test(item.title)) {
-      while (item.title.charAt(level) == '>') {
-        level++;
-      }
+        item.title.match(DESCENDANT_MATCHER)) {
+      level = RegExp.$1.length;
       if (level - lastMaxLevel > 1) {
         level = lastMaxLevel + 1;
       }
