@@ -199,6 +199,8 @@
   "context_groupTabs_label": { "message": "これらのタブを新しいグループにする(&G)" },
   "context_topLevel_prefix": { "message": "トップレベルの項目: " },
 
+  "context_openAllBookmarksWithStructure_label": { "message": "ツリーとしてすべて開く(&A)" },
+
 
 
   "config_title": { "message": "ツリー型タブの設定" },
