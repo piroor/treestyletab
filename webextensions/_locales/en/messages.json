@@ -204,7 +204,7 @@
   "context_pinnedTab_label": { "message": "Pinned (for testing of a radio type menu)" },
   "context_unpinnedTab_label": { "message": "Unpinned (for testing of a radio type menu)" },
 
-  "context_openAllBookmarksWithStructure_label": { "message": "Open All as a Tree" },
+  "context_openAllBookmarksWithStructure_label": { "message": "Open &All as a Tree" },
 
 
   "config_title": { "message": "Tree Style Tab Options" },
