@@ -488,7 +488,7 @@ export function mapAndFilterUniq(values, mapper, options = {}) {
     mappedValue = mapper(value);
     if (mappedValue !== undefined)
       mappedValues.add(mappedValue);
- }
+  }
   return options.set ? mappedValues : Array.from(mappedValues);
 }
 
