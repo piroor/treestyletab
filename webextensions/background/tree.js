@@ -1198,6 +1198,15 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
+/* "treeStructure" is an array of integers, meaning:
+  [A]     => -1 (parent is not in this tree)
+    [B]   => 0 (parent is 1st item in this tree)
+    [C]   => 0 (parent is 1st item in this tree)
+      [D] => 2 (parent is 2nd in this tree)
+  [E]     => -1 (parent is not in this tree, and this creates another tree)
+    [F]   => 0 (parent is 1st item in this another tree)
+  See also getTreeStructureFromTabs() in tree-behavior.js
+*/
 export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}) {
   if (!tabs || !treeStructure)
     return;

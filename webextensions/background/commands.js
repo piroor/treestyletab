@@ -10,6 +10,7 @@ import {
   dumpTab,
   notify,
   wait,
+  countMatched,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -24,6 +25,7 @@ import Tab from '/common/Tab.js';
 
 import * as TabsOpen from './tabs-open.js';
 import * as TabsMove from './tabs-move.js';
+import * as TabsGroup from './tabs-group.js';
 import * as Tree from './tree.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -783,3 +785,70 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
     }; break;
   }
 });
+
+
+const DESCENDANT_MATCHER = /^[>]+ /;
+
+export async function openAllBookmarksWithStructure(id) {
+  let item = await browser.bookmarks.get(id);
+  if (Array.isArray(item))
+    item = item[0];
+  if (!item)
+    return;
+
+  if (item.type != 'folder') {
+    item = await browser.bookmarks.get(item.parentId);
+    if (Array.isArray(item))
+      item = item[0];
+  }
+
+  const items = await browser.bookmarks.getChildren(item.id);
+  if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
+    for (const item of items) {
+      item.title = `${item.title.charAt(0) == '>' ? '>' : '> '}${item.title}`;
+    }
+    items.unshift({
+      title: '',
+      url:   TabsGroup.makeGroupTabURI({
+        title:               item.title,
+        temporaryAggressive: true
+      })
+    });
+  }
+
+  const lastItemIndicesWithLevel = new Map();
+  let lastMaxLevel = 0;
+  const structure = items.reduce((result, item, index) => {
+    let level = 0;
+    if (lastItemIndicesWithLevel.size > 0 &&
+        DESCENDANT_MATCHER.test(item.title)) {
+      while (item.title.charAt(level) == '>') {
+        level++;
+      }
+      if (level - lastMaxLevel > 1) {
+        level = lastMaxLevel + 1;
+      }
+      else {
+        while (lastMaxLevel > level) {
+          lastItemIndicesWithLevel.delete(lastMaxLevel--);
+        }
+      }
+      lastItemIndicesWithLevel.set(level, index);
+      lastMaxLevel = level;
+      result.push(lastItemIndicesWithLevel.get(level - 1) - lastItemIndicesWithLevel.get(0));
+    }
+    else {
+      result.push(-1);
+      lastItemIndicesWithLevel.clear();
+      lastItemIndicesWithLevel.set(0, index);
+    }
+    return result;
+  }, []);
+
+  const tabs = await TabsOpen.openURIsInTabs(items.map(item => item.url), {
+    windowId:     TabsStore.getWindow() || (await browser.windows.getCurrent()).id,
+    isOrphan:     true,
+    inBackground: true
+  });
+  Tree.applyTreeStructureToTabs(tabs, structure);
+}

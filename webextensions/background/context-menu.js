@@ -115,6 +115,12 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   }));
 }
 
+browser.menus.create({
+  id:       'openAllBookmarksWithStructure',
+  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+  contexts: ['bookmark']
+});
+
 // for Firefox 63 and later
 let mInitialized = false;
 
@@ -159,7 +165,7 @@ function initItems() {
       type:     item.type,
       checked:  item.checked,
       title:    item.title,
-      contexts: ['tab'],
+      contexts: item.contexts || ['tab'],
       visible:  item.visible
     };
     if (item.parentId)
@@ -254,7 +260,16 @@ function updateItems() {
   return updated;
 }
 
-export const onClick = (info, tab) => {
+export function onClick(info, tab) {
+  if (info.bookmarkId)
+    return onBookmarkItemClick(info);
+  else
+    return onTabItemClick(info, tab);
+}
+browser.menus.onClicked.addListener(onClick);
+TabContextMenu.onTSTItemClick.addListener(onClick);
+
+function onTabItemClick(info, tab) {
   // Extra context menu commands won't be available on the blank area of the tab bar.
   if (!tab)
     return;
@@ -330,9 +345,15 @@ export const onClick = (info, tab) => {
     default:
       break;
   }
-};
-browser.menus.onClicked.addListener(onClick);
-TabContextMenu.onTSTItemClick.addListener(onClick);
+}
+
+function onBookmarkItemClick(info) {
+  switch (info.menuItemId) {
+    case 'openAllBookmarksWithStructure':
+      Commands.openAllBookmarksWithStructure(info.bookmarkId);
+      break;
+  }
+}
 
 function onShown(info, tab) {
   if (!info.contexts.includes('tab'))
