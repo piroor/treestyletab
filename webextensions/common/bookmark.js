@@ -171,13 +171,13 @@ export async function bookmarkTabs(tabs, options = {}) {
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
     let title = tab.title;
-      const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
-      let prefix = '';
-      for (let j = 0; j < level; j++) {
-        prefix += '>';
-      }
-      if (prefix)
-        title = `${prefix} ${title}`;
+    const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
+    let prefix = '';
+    for (let j = 0; j < level; j++) {
+      prefix += '>';
+    }
+    if (prefix)
+      title = `${prefix} ${title}`;
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,
