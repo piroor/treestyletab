@@ -100,6 +100,10 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         checkbox.checked = true;
         if (options.onChanged)
           options.onChanged(true);
+        browser.runtime.sendMessage({
+          type: Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          permissions
+        }).catch(_error => {});
         return;
       }
 
@@ -135,8 +139,8 @@ export function requestPostProcess() {
       log('permission requested: ', permissions, granted);
       if (granted)
         browser.runtime.sendMessage({
-          type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-          permissions: permissions
+          type: Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          permissions
         }).catch(_error => {});
     })
     .catch(ApiTabs.createErrorSuppressor())

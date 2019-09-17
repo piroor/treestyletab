@@ -148,7 +148,7 @@ export async function migrateBookmarkUrls() {
   if (!granted)
     return;
 
-  tryStartBookmarksUrlAutoMigration();
+  startBookmarksUrlAutoMigration();
 
   const urls = new Set(configs.migratedBookmarkUrls);
   const migrations = [];
@@ -192,12 +192,8 @@ async function migrateBookmarkUrl(bookmark) {
 
 let mObservingBookmarks = false;
 
-export async function tryStartBookmarksUrlAutoMigration() {
+async function startBookmarksUrlAutoMigration() {
   if (mObservingBookmarks)
-    return;
-
-  const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
-  if (!granted)
     return;
 
   mObservingBookmarks = true;
