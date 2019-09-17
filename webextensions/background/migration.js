@@ -11,6 +11,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Permissions from '/common/permissions.js';
 
 import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
@@ -134,7 +135,21 @@ export async function notifyNewFeatures() {
 }
 
 
+// Auto-migration of bookmarked internal URLs
+//
+// Internal URLs like "moz-extension://(UUID)/..." are runtime environment
+// dependent and unavailable when such bookmarks are loaded in different
+// runtime environment, for example they are synchronized from other devices.
+// Thus we should migrate such internal URLs to universal shorthand URIs like
+// "ext+treestyletab:(name)".
+
 export async function migrateBookmarkUrls() {
+  const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
+  if (!granted)
+    return;
+
+  tryStartBookmarksUrlAutoMigration();
+
   const urls = new Set(configs.migratedBookmarkUrls);
   const migrations = [];
   const updates = [];
@@ -160,4 +175,46 @@ export async function migrateBookmarkUrls() {
     await Promise.all(updates);
   if (urls.size > configs.migratedBookmarkUrls.length)
     configs.migratedBookmarkUrls = Array.from(urls);
+}
+
+async function migrateBookmarkUrl(bookmark) {
+  for (const key in Constants.kSHORTHAND_URIS) {
+    const url = Constants.kSHORTHAND_URIS[key].split('?')[0];
+    if (!bookmark.url.startsWith(url))
+      continue;
+
+    const shorthand = `ext+treestyletab:${key.toLowerCase()}`;
+    return browser.bookmarks.update(bookmark.id, {
+      url: bookmark.url.replace(url, shorthand)
+    });
+  }
+}
+
+let mObservingBookmarks = false;
+
+export async function tryStartBookmarksUrlAutoMigration() {
+  if (mObservingBookmarks)
+    return;
+
+  const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
+  if (!granted)
+    return;
+
+  mObservingBookmarks = true;
+
+  browser.bookmarks.onCreated.addListener((id, bookmark) => {
+    if (bookmark.url)
+      migrateBookmarkUrl(bookmark);
+  });
+
+  browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
+    if (changeInfo.url &&
+        changeInfo.url.startsWith(browser.extension.getURL(''))) {
+      const bookmark = await browser.bookmarks.get(id);
+      if (Array.isArray(bookmark))
+        bookmark.forEach(migrateBookmarkUrl);
+      else
+        migrateBookmarkUrl(bookmark);
+    }
+  });
 }
