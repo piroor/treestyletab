@@ -178,6 +178,8 @@ export async function bookmarkTabs(tabs, options = {}) {
     }
     if (prefix)
       title = `${prefix} ${title}`;
+    else
+      title = title.replace(/^>+ /, ''); // if the page title has marker-like prefix, we need to remove it.
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,
