@@ -802,6 +802,7 @@ export async function openAllBookmarksWithStructure(id) {
       item = item[0];
   }
 
+  let indexToBeActive = 0;
   const items = await browser.bookmarks.getChildren(item.id);
   if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
     for (const item of items) {
@@ -816,6 +817,7 @@ export async function openAllBookmarksWithStructure(id) {
         temporaryAggressive: true
       })
     });
+    indexToBeActive = 1;
   }
 
   const lastItemIndicesWithLevel = new Map();
@@ -850,5 +852,8 @@ export async function openAllBookmarksWithStructure(id) {
     isOrphan:     true,
     inBackground: true
   });
-  Tree.applyTreeStructureToTabs(tabs, structure);
+  if (tabs.length == structure.length)
+    Tree.applyTreeStructureToTabs(tabs, structure);
+  if (tabs.length > indexToBeActive)
+    TabsInternalOperation.activateTab(tabs[indexToBeActive]);
 }
