@@ -110,9 +110,6 @@
     "bookmarkTree": {
       "description": "__MSG_context_bookmarkTree_label__"
     },
-    "bookmarkTreeWithStructure": {
-      "description": "__MSG_context_bookmarkTreeWithStructure_label__"
-    },
     "newIndependentTab": {
       "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_independent_label__"
     },

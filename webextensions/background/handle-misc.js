@@ -119,9 +119,6 @@ async function onShortcutCommand(command) {
     case 'bookmarkTree':
       Commands.bookmarkTree(activeTab);
       return;
-    case 'bookmarkTreeWithStructure':
-      Commands.bookmarkTree(activeTab, { saveStructure: true });
-      return;
 
     case 'newIndependentTab':
       Commands.openNewTabAs({
