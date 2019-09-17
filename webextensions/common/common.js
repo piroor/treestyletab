@@ -466,7 +466,7 @@ export function mapAndFilter(values, mapper) {
     return mappedValues;
   }, []);
   */
-  const maxi = values.length >>> 0; // define as unsingned int
+  const maxi = values.length >>> 0; // define as unsigned int
   const mappedValues = new Array(maxi); // prepare with enough size at first, to avoid needless re-allocation
   let count = 0,
       i = 0,
@@ -500,7 +500,7 @@ export function countMatched(values, matcher) {
     return count;
   }, 0);
   */
-  const maxi = values.length >>> 0; // define as unsingned int
+  const maxi = values.length >>> 0; // define as unsigned int
   let count = 0,
       i = 0;
   while (i < maxi) { // use "while" loop instead "for" loop, for better performance
@@ -518,7 +518,7 @@ export function toLines(values, mapper, separator = '\n') {
     return output;
   }, '');
   */
-  const maxi = values.length >>> 0; // define as unsingned int
+  const maxi = values.length >>> 0; // define as unsigned int
   let i = 0,
       lines = '';
   while (i < maxi) { // use "while" loop instead "for" loop, for better performance
