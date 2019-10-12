@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * Version: MPL 1.1
  * 
  * The contents of these files are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use these files except in compliance with
@@ -14,34 +14,26 @@
  * The Original Code is the SidebarStyleTab.
  * 
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2017
+ * Portions created by the Initial Developer are Copyright (C) 2010-2019
  * the Initial Developer. All Rights Reserved.
  * 
  * Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
  *                 YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
  * 
- * Alternatively, the contents of these files may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of these files only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of these files under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of these files under
- * the terms of any one of the MPL, the GPL or the LGPL.
- * 
  * ***** END LICENSE BLOCK ***** */
 
 :root {
   --bg-color: #d4dde5;
-  --bg-color-nactive: #e8e8e8;
+  --bg-color-inactive: #e8e8e8;
   --shadow-color: #404040;
   --shadow-color-inactive: #868686;
+  --tab-like-surface: #d4dde5;
+  --tab-surface: transparent;
   --tab-surface-active-color: #94A1C0;
-  --tab-surface-active-gradient: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x;
-  --tab-surface-active-gradient-inactive: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x;
+  --tab-surface-active-color-pale: #B4C1E0;
+  --tab-surface-active-gradient: linear-gradient(to bottom, #A0B0CF, #7386AB) repeat-x;
+  --tab-surface-active-gradient-pale: linear-gradient(to bottom, #C0D0EF, #93A6CB) repeat-x;
+  --tab-surface-active-gradient-inactive: linear-gradient(to bottom, #B4B4B4, #8A8A8A) repeat-x;
   --tab-text: black;
   --tab-text-inverted: white;
   --tab-text-active: white;
@@ -56,6 +48,9 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--dropmarker-border-color);
   --tab-highlighted-base: var(--bg-color);
+
+  --multiselected-color: var(--tab-surface-active-gradient);
+  --multiselected-color-opacity: 0.35;
 }
 
 .tab:not(.active) {
@@ -70,23 +65,23 @@
   background: var(--bg-color);
 }
 
-:root:-moz-window-inactive,
-:root:-moz-window-inactive #background {
-  background: var(--bg-color-nactive);
+:root:not(.active),
+:root:not(.active) #background {
+  background: var(--bg-color-inactive);
 }
 
 /* Use the splitter to display the border of .tabs */
 :root.left {
   border-right: 1px solid var(--shadow-color);
 }
-:root:-moz-window-inactive.left {
+:root:not(.active).left {
   border-right-color: var(--shadow-color-inactive);
 }
 
 :root.right {
   border-left: 1px solid var(--shadow-color);
 }
-:root:-moz-window-inactive.right {
+:root:not(.active).right {
   border-left-color: var(--shadow-color-inactive);
 }
 
@@ -98,10 +93,11 @@
   z-index: 0;
 }
 
-:root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+/* macOS workaround */
+:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
@@ -110,7 +106,12 @@
   background: var(--tab-surface-active-gradient);
 }
 
-:-moz-window-inactive .tab.active {
+.tab.bundled-active {
+  border-top: 1px solid var(--tab-surface-active-color-pale);
+  background: var(--tab-surface-active-gradient-pale);
+}
+
+:root:not(.active) .tab.active {
   border-top: 1px solid var(--tab-surface-active-color-inactive);
   background: var(--tab-surface-active-gradient-inactive);
 }
@@ -151,7 +152,8 @@
   text-align: start;
   text-shadow: none;
   margin-bottom: 1px;
-  padding: 0.2em 0 0.2em 0.25em;
+  margin-left: 0.25em;
+  padding: 0 0 0.25em 0;
 }
 
 .tab.active .label {
@@ -185,10 +187,10 @@
   color: var(--badge-bg-color);
 }
 
-:-moz-window-inactive .counter {
+:root:not(.active) .counter {
   background-color: var(--badge-bg-color-inactive);
 }
-:-moz-window-inactive .tab.active .counter {
+:root:not(.active) .tab.active .counter {
   background-color: var(--tab-text-active);
   color: var(--badge-color-inactive);
 }
@@ -220,6 +222,11 @@
 }
 
 
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
+}
+
+
 
 /* changed from original SidebarStyleTab */
 
@@ -240,4 +247,28 @@
 /* for Multiple Tab Handler */
 .tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] .closebox {
   visibility: visible;
+}
+
+
+
+/* hide regular active tab marker */
+.highlighter::before {
+  display: none !important;
+}
+
+
+/* multiselection of tabs */
+
+.mutiple-highlighted > .tab.highlighted::after {
+  background: var(--multiselected-color);
+  bottom: 0;
+  content: " ";
+  display: block;
+  left: 0;
+  opacity: var(--multiselected-color-opacity);
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
 }

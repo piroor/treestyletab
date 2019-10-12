@@ -6,15 +6,16 @@
 */
 
 :root {
-  --throbber-color: Highlight;
+  --throbber-color: var(--browser-loading-indicator, Highlight);
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
+  --throbber-animation-steps: steps(60);
   --tab-burster-size: 5px;
-  --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
+  --tab-burster-translation: translate(calc(var(--tab-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
 .tab.faviconized {
-  --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
+  --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
 @keyframes throbber {
@@ -47,8 +48,9 @@
 
 :root:not(.throbber-synchronizing) .tab:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
 :root:not(.throbber-synchronizing).have-loading-tab #master-throbber,
+:root.have-loading-tab #sync-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
-  animation: throbber 1.05s steps(60) infinite;
+  animation: throbber 1.05s var(--throbber-animation-steps) infinite;
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before,
@@ -109,6 +111,20 @@
 }
 :root.simulate-svg-context-fill.blocking-throbber  #blocking-screen .throbber::before {
   background: white;
+}
+
+#blocking-screen progress {
+  display: none;
+}
+
+:root.blocking-throbber #blocking-screen progress.shown {
+  display: block;
+  --progressbar-width: calc(var(--throbber-size) * 8);
+  max-height: calc(var(--throbber-size) / 2);
+  max-width: var(--progressbar-width);
+  position: absolute;
+  top: calc(50% + var(--throbber-size));
+  left: calc((100% - var(--progressbar-width)) / 2);
 }
 
 

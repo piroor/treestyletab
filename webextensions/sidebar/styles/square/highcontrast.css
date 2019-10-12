@@ -8,11 +8,12 @@
 @import url("border.css");
 
 :root {
-  --tab-surface: Background;
-  --tab-text: CaptionText;
-  --tab-text-inverted: Caption;
-  --tab-border: ThreeDHighlight;
-  --tab-dropmarker: CaptionText;
+  --tab-like-surface: ThreeDFace;
+  --tab-surface: var(--tab-like-surface);
+  --tab-text: ButtonText;
+  --tab-text-inverted: CaptionText;
+  --tab-border: ButtonShadow;
+  --tab-dropmarker: ButtonText;
 }
 
 
@@ -20,7 +21,7 @@
 
 :root,
 #background {
-  background: Background;
+  background: AppWorkspace;
 }
 
 #background::after {
@@ -63,7 +64,7 @@
   --throbber-color: HighlightText;
   --tab-border: Highlight;
   --tab-text: HighlightText;
-  --tab-text-inverted: Highligh;
+  --tab-text-inverted: Highlight;
 }
 
 .tab:not(.active) {
@@ -71,7 +72,7 @@
 }
 
 .newtab-button-box {
-  border-color: ThreeDHighlight;
+  border-color: var(--tab-border);
   border-style: solid;
   border-width: 1px;
 }
@@ -101,11 +102,20 @@
   --tab-text: HighlightText;
 }
 
-/* Mac OS workaround */
-
-:root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+/* macOS workaround */
+:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+
+
+/* hide regular active tab marker */
+.tab:not(.bundled-active) .highlighter::before {
+  display: none !important;
+}
+
+.tab.bundled-active:not(.highlighted) .highlighter::before {
+  opacity: 1;
 }

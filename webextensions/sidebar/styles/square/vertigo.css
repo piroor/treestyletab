@@ -10,3 +10,14 @@
 .after-tabs button {
   border: 0 none;
 }
+
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
+}
+
+
+
+/* hide regular active tab marker */
+.highlighter::before {
+  display: none !important;
+}

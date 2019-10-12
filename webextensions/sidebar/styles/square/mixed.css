@@ -6,18 +6,19 @@
 
 @import url("base.css");
 @import url("border.css");
-@import url("active-tab-marker.css");
 @import url("plain-color.css");
 @import url("vertigo-color.css");
 @import url("shadow.css");
 
 :root:not([color-scheme="system-color"]) {
-  --tab-active-marker: #0a84ff;
+  --tab-highlighter: var(--browser-tab-highlighter, #0a84ff);
 }
 
 :root {
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.4);
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
+
+  --multiselected-color-opacity: 0.15;
 }
 :root .tab:not(.active):hover {
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.25);
@@ -35,14 +36,16 @@
 
 :root,
 #background {
-  background: var(--tabbar-bg);
+  background-color: var(--browser-background, var(--tabbar-bg));
+  background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
-.tab {
+.tab,
+.after-tabs button {
   background-color: var(--tab-surface);
 }
 
-.tab:not(.collapsed):hover,
+.tab:hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
 }
@@ -51,83 +54,84 @@
   --tab-surface: var(--tab-surface-active);
 }
 
-.tab.active:not(.collapsed):hover {
+.tab.active:hover,
+.tab.bundled-active {
   --tab-surface: var(--tab-surface-active-hover);
 }
 
 
 :root.left .tab:not(.faviconized).active {
-  background-image: -moz-linear-gradient(
-                      left,
+  background-image: linear-gradient(
+                      to right,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.left .tab:not(.faviconized):not(.collapsed):hover {
-  background-image: -moz-linear-gradient(
-                      left,
+:root.left .tab:not(.faviconized):hover {
+  background-image: linear-gradient(
+                      to right,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 50%
                     );
 }
 
 :root.right .tab:not(.faviconized).active {
-  background-image: -moz-linear-gradient(
-                      right,
+  background-image: linear-gradient(
+                      to left,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.right .tab:not(.faviconized):not(.collapsed):hover {
-  background-image: -moz-linear-gradient(
-                      right,
+:root.right .tab:not(.faviconized):hover {
+  background-image: linear-gradient(
+                      to left,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 50%
                     );
 }
 
 .tab.faviconized.active {
-  background-image: -moz-linear-gradient(
-                      top,
+  background-image: linear-gradient(
+                      to bottom,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 40%
                     );
 }
 .tab.faviconized:hover {
-  background-image: -moz-linear-gradient(
-                      top,
+  background-image: linear-gradient(
+                      to bottom,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 60%
                     );
 }
 
 
-.tab:not(.active):hover .active-marker::before {
+.tab:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
   background-color: transparent;
-  --tab-active-marker-start: rgba(0, 20, 20, 0.015);
-  --tab-active-marker-end: rgba(0, 20, 20, 0.2);
+  --tab-highlighter-start: rgba(0, 20, 20, 0.015);
+  --tab-highlighter-end: rgba(0, 20, 20, 0.2);
 }
 
-:root.left .tab:not(.faviconized):not(.active):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      left,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+:root.left .tab:not(.faviconized):not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+  background-image: linear-gradient(
+                      to right,
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }
 
-:root.right .tab:not(.faviconized):not(.active):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      right,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+:root.right .tab:not(.faviconized):not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+  background-image: linear-gradient(
+                      to left,
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }
 
-.tab.faviconized:not(.active):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      top,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+.tab.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+  background-image: linear-gradient(
+                      to bottom,
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }

@@ -10,8 +10,10 @@
   --dropmarker-color: white;
   --throbber-color: white;
   --throbber-shadow-color: rgba(0, 0, 0, 0.45);
-  --tab-surface: #9d9d9d;
+  --tab-like-surface: #9d9d9d;
+  --tab-surface: var(--tab-like-surface);
   --tab-surface-active: #b3b2b3;
+  --tab-surface-active-pale: #939293;
   --tab-text: black;
   --tab-text-inverted: white;
 
@@ -22,7 +24,7 @@
 
 .tab,
 .tab *,
-.tab:not(.collapsed):hover,
+.tab:hover,
 .after-tabs button {
   color: val(--tab-text);
 }
@@ -38,6 +40,10 @@
   border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 10px;
 }
 
+:root.left .tab:not(.faviconized).bundled-active {
+  border-image: url("tab-half-active-l.png") 10 5 10 10 fill / 10px 5px 10px 10px;
+}
+
 :root.right .tab:not(.faviconized),
 :root.right .after-tabs button {
   border-image: url("tab-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
@@ -49,10 +55,15 @@
   border-image: url("tab-active-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
 }
 
-:root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.right .tab:not(.faviconized).bundled-active {
+  border-image: url("tab-half-active-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
+}
+
+/* macOS workaround */
+:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
@@ -88,12 +99,18 @@
   margin: 1px 0 0 1px;
   padding: 2px 4px 2px 3px;
 }
-.tab.faviconized:not(.unread) {
-  background: var(--tab-surface);
+
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before {
+  left: calc(var(--attention-marker-x-offset) + 3px);
 }
 
-.tab.faviconized:not(.unread).active {
-  background-color: var(--tab-surface-active);
+.tab.faviconized.active {
+  background: var(--tab-surface-active);
+}
+
+.tab.faviconized.bundled-active {
+  background: var(--tab-surface-active-pale);
 }
 
 
@@ -171,3 +188,15 @@
   .newtab-action-selector-anchor:hover {
   border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 0;
 }
+
+
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
+}
+
+
+/* hide regular active tab marker */
+.highlighter::before {
+  display: none !important;
+}
+

@@ -5,44 +5,18 @@
 <html class="left initializing">
   <head>
     <meta charset="UTF-8">
-    <script type="application/javascript" src="/common/tree/constants.js"></script>
-    <script type="application/javascript" src="/common/MenuUI.js"></script>
-    <script type="application/javascript" src="/common/fake-context-menu/constants.js"></script>
-    <script type="application/javascript" src="/common/handle-accel-key.js"></script>
-    <script type="application/javascript" src="/common/Configs.js"></script>
-    <script type="application/javascript" src="/common/common.js"></script>
-    <script type="application/javascript" src="/common/l10n.js"></script>
-    <script type="application/javascript" src="/common/xpath.js"></script>
-    <script type="application/javascript" src="/common/TabIdFixer.js"></script>
-    <script type="application/javascript" src="/common/TabFavIconHelper.js"></script>
-    <script type="application/javascript" src="/common/permissions.js"></script>
-    <script type="application/javascript" src="/common/RichConfirm.js"></script>
-    <script type="application/javascript" src="/common/MetricsData.js"></script>
-    <script type="application/javascript" src="/common/tree/base.js"></script>
-    <script type="application/javascript" src="/common/tree/api-tabs.js"></script>
-    <script type="application/javascript" src="/common/tree/get-tabs.js"></script>
-    <script type="application/javascript" src="/common/tree/tab-information.js"></script>
-    <script type="application/javascript" src="/common/tree/tree-operations.js"></script>
-    <script type="application/javascript" src="/common/tree/cache.js"></script>
-    <script type="application/javascript" src="/common/tree/contextual-identities.js"></script>
-    <script type="application/javascript" src="/common/tree/handlers.js"></script>
-    <script type="application/javascript" src="/common/commands.js"></script>
-    <script type="application/javascript" src="/sidebar/color.js"></script>
-    <script type="application/javascript" src="/sidebar/cache.js"></script>
-    <script type="application/javascript" src="/sidebar/scroll.js"></script>
-    <script type="application/javascript" src="/sidebar/pinned-tabs.js"></script>
-    <script type="application/javascript" src="/sidebar/handlers.js"></script>
-    <script type="application/javascript" src="/sidebar/drag-and-drop.js"></script>
-    <link rel="stylesheet" type="text/css" href="/sidebar/sidebar.css"/>
-    <script type="application/javascript" src="/common/fake-context-menu/sidebar.js"></script>
-    <link rel="stylesheet" type="text/css" href="/common/fake-context-menu/sidebar.css"/>
+    <script type="module" src="./index.js"></script>
+    <script type="module" src="/common/handle-accel-key.js"></script>
+    <link rel="stylesheet" type="text/css" href="./sidebar.css"/>
     <style id="size-definition" type="text/css"></style>
     <style id="contextual-identity-styling" type="text/css"></style>
     <link id="style-loader" rel="stylesheet" type="text/css" href=""/>
     <style id="browser-theme-definition" type="text/css"></style>
+    <style id="addons-style-rules" type="text/css"></style><!-- this is just a dummy to determine insertion position of actual style definitions -->
     <style id="user-style-rules" type="text/css"></style>
   </head>
   <body>
+    <div id="tabbar-container">
     <div id="tabbar" class="vbox">
       <div id="all-tabs">
       </div>
@@ -72,6 +46,20 @@
                 title="__MSG_tabbar_newTabButton_tooltip__"></button>
       </div>
     </div>
+    </div>
+    <div id="subpanel-container">
+      <div id="subpanel-header">
+        <span id="subpanel-header-main">
+          <button id="subpanel-selector-anchor"
+                  data-menu-ui="subpanel-selector">
+            <span class="icon"><img></span>
+            <span class="label"></span>
+          </button>
+        </span>
+        <button id="subpanel-toggler"></button>
+      </div>
+    </div>
+    <ul id="subpanel-selector"></ul>
     <ul id="newtab-action-selector">
       <li data-value="independent">__MSG_tabbar_newTabAction_independent_label__</li>
       <li data-value="child">__MSG_tabbar_newTabAction_child_label__</li>
@@ -83,14 +71,31 @@
     <div class="tab-drop-blocker" id="tab-drop-blocker-right"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-bottom"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-left"></div>
+    <div id="tab-drag-handle">
+      <span id="tab-drag-handle-tree-tearoff"
+            draggable="true"
+            title="__MSG_tabDragHandle_tree_tearoff_tooltip__"></span>
+      <span id="tab-drag-handle-tree-bookmark"
+            draggable="true"
+            class="allowBookmark"
+            title="__MSG_tabDragHandle_tree_bookmark_tooltip__"></span>
+      <span id="tab-drag-handle-tab-tearoff"
+            draggable="true"
+            class="shouldIgnoreDescendants"
+            title="__MSG_tabDragHandle_tab_tearoff_tooltip__"></span>
+      <span id="tab-drag-handle-tab-bookmark"
+            draggable="true"
+            class="allowBookmark shouldIgnoreDescendants"
+            title="__MSG_tabDragHandle_tab_bookmark_tooltip__"></span>
+    </div>
+    <div id="tab-drag-notification"><span></span></div>
     <div id="background"></div><!-- This is required to hide dummy elements without offscreen rendering outside of the viewport. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 -->
     <ul id="dummy-tabs">
       <span id="dummy-favicon-size-box"></span>
       <span id="dummy-highlight-color-box"></span>
+      <span class="throbber"><span id="sync-throbber"></span></span>
       <li id="dummy-tab" class="tab">
-        <span class="favicon">
-          <span class="throbber" id="master-throbber-container"><span id="master-throbber"></span></span>
-        </span>
+        <span class="favicon"><span class="throbber" id="master-throbber-container"><span id="master-throbber"></span></span></span>
         <span class="label">-</span>
         <span class="counter">0</span>
         <span class="closebox"></button>
@@ -98,43 +103,10 @@
     </ul>
     <div id="blocking-screen">
       <span class="throbber"></span>
+      <progress max="100" value="0"></progress>
     </div>
 
-    <!-- Workaround until native context menu becomes available.
-         I have very less motivation to maintain this for future versions.
-         See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
-                   https://bugzilla.mozilla.org/show_bug.cgi?id=1396031 -->
     <ul id="tabContextMenu">
-      <li id="context_reloadTab" class="require-context-tab"
-          title="__MSG_tabContextMenu_reload_label__">__MSG_tabContextMenu_reload_label__</li>
-      <li id="context_toggleMuteTab-mute" class="require-context-tab"
-          title="__MSG_tabContextMenu_mute_label__">__MSG_tabContextMenu_mute_label__</li>
-      <li id="context_toggleMuteTab-unmute" class="require-context-tab"
-          title="__MSG_tabContextMenu_unmute_label__">__MSG_tabContextMenu_unmute_label__</li>
-      <li class="separator require-context-tab"></li>
-      <li id="context_pinTab" class="require-context-tab"
-          title="__MSG_tabContextMenu_pin_label__">__MSG_tabContextMenu_pin_label__</li>
-      <li id="context_unpinTab" class="require-context-tab"
-          title="__MSG_tabContextMenu_unpin_label__">__MSG_tabContextMenu_unpin_label__</li>
-      <li id="context_duplicateTab" class="require-context-tab"
-          title="__MSG_tabContextMenu_duplicate_label__">__MSG_tabContextMenu_duplicate_label__</li>
-      <li id="context_openTabInWindow" class="require-context-tab require-multiple-tabs"
-          title="__MSG_tabContextMenu_tearOff_label__">__MSG_tabContextMenu_tearOff_label__</li>
-      <li class="separator require-context-tab"></li>
-      <li id="context_reloadAllTabs" class="require-multiple-tabs"
-          title="__MSG_tabContextMenu_reloadAll_label__">__MSG_tabContextMenu_reloadAll_label__</li>
-      <li id="context_bookmarkAllTabs" class="require-normal-tabs"
-          title="__MSG_tabContextMenu_bookmarkAll_label__">__MSG_tabContextMenu_bookmarkAll_label__</li>
-      <li id="context_closeTabsToTheEnd" class="require-context-tab require-multiple-normal-tabs"
-          title="__MSG_tabContextMenu_closeAfter_label__">__MSG_tabContextMenu_closeAfter_label__</li>
-      <li id="context_closeOtherTabs" class="require-context-tab require-multiple-normal-tabs"
-          title="__MSG_tabContextMenu_closeOther_label__">__MSG_tabContextMenu_closeOther_label__</li>
-      <li class="separator"></li>
-      <li id="context_undoCloseTab"
-          title="__MSG_tabContextMenu_undoClose_label__">__MSG_tabContextMenu_undoClose_label__</li>
-      <li id="context_closeTab" class="require-context-tab"
-          title="__MSG_tabContextMenu_close_label__">__MSG_tabContextMenu_close_label__</li>
     </ul>
-    <script type="application/javascript" src="/sidebar/sidebar.js"></script>
   </body>
 </html>

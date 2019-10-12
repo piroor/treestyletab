@@ -49,7 +49,8 @@
 }
 
 .tab .label {
-  padding: 0.25em 0 0.25em 0.25em;
+  margin-left: 0.25em;
+  padding: 0 0 0.25em 0;
 }
 
 .tab.pinned {
@@ -58,4 +59,15 @@
 
 .tab.pinned.last-row {
   border-bottom-width: 0;
+}
+
+
+/* show more-highlighter like as tree */
+
+.tab:not(.faviconized) .highlighter::after {
+   top: calc(var(--tab-highlighter-size) * 2);
+}
+
+.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
+  width: calc(var(--tab-highlighter-size) * 2);
 }

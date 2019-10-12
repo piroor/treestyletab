@@ -1,6 +1,546 @@
 # History
 
  - master/HEAD
+ - 3.1.8 (2019.9.13)
+   * Optimize internal operations for better performance and less memory usage. (Some ideas are contributed by bb010g. Thanks!)
+   * Become more safe to accidental recursive references of tree structures.
+   * Reopen same site tab with the container inherited from the current tab correctly, when the tab is opened as a child of the current the.
+   * Don't apply special new tab behaviors (ex. auto-attach to the current tab) to restored single tabs.
+   * Don't apply special new tab behaviors for Ctrl-T or other commands, to tabs opened with URL (ex. opened from bookmarks or the location bar), even if the `about:blank` is choses for the default page of new tabs.
+   * Don't invert children order for a restored parent tab.
+   * Apply custom behavior of closed parent tab correctly when a parent tab is closed as a solo tab by an action inside the sidebar.
+   * Accept dragged tabs from another Firefox instance as URLs.
+   * Treat a tab dragged from the native tab bar to the sidebar as is instead of as a URL string, if possible. (You can deactivate this new behavior with setting `guessDraggedNativeTabs` to `false`.)
+   * Refresh indent level of tabs detached from a window by drag and drop correctly.
+   * Update visibility of the scrollbar when tabs are shown or hidden, for better compatibility with other addons like the [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/).
+   * Brush up appearance of some UI elements in the options page.
+   * Restructure some options under the "New Tabs Behavior" section for better findability.
+   * URL like `ext+treestyletab:group?(title)` is available to open a group tab with specific title.
+   * Show text-shadow with correct color for better readability of text with non-default theme.
+   * Update `de` locale by SammysHP. Thanks!
+   * Update `fr` locale by ariasuni (and DarckCrystale.) Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
+ - 3.1.7 (2019.8.9)
+   * Introduce guards for cyclic reference around restored parent tabs.
+   * Update `ru` locale by wvxwxvw. Thanks!
+ - 3.1.6 (2019.8.8)
+   * Introduce new custom URI `ext+treestyletab:group` to open a blank dummy tab for grouping of tabs, which replaces `about:treestyletab-group`.
+   * Restructure config UI for the behavior around closed parent tab.
+   * Optimize tree restoration on the startup.
+   * Don't try to "fix" tree structure when multiple tabs are moved at a time as a set. This should improve compatibility with other addons which switch visible tab sets.
+   * Introduce a guard for cyclic reference about the tree structure.
+   * Disallow to put unrelated tab inside a tree including hidden parent tabs.
+   * Remove obsolete codes deprecated on Firefox 70.
+   * Update `fr` locale by narzb. Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
+ - 3.1.5 (2019.7.9)
+   * Make subpanels more secure.
+   * Provide `--throbber-animation-steps` custom property to [allow customization for animation frames of throbbers](https://github.com/piroor/treestyletab/issues/2328#issuecomment-508901706).
+ - 3.1.4 (2019.7.5)
+   * Use more safe combination of system colors on the "High Contrast" skin.
+   * Apply style rules for active/inactive windows on the "Sidebar" skin.
+   * Fill SVG icon with the color of tab labels correctly for `about:debugging` tabs.
+   * Expose "(no control)" choice for options about new tab positions, and set it as the new default value for new tabs opened with the "New Tab" button or the Ctrl-T keyboard shortcut.
+ - 3.1.3 (2019.7.1)
+   * Allow to import dragged tree from other Firefox instances.
+   * Respect option for treatment of new blank tabs opened from outside of TST, event when `browser.tabs.insertAfterCurrent` is configured to `true` by the user.
+   * Restrict maximum height of the subpanel.
+   * Prevent too frequent detaching of clicked/dragged tab on Windows and macOS. This change is just a workaround, and we still need to wait for complete fix of the [bug 1561522](https://bugzilla.mozilla.org/show_bug.cgi?id=1561522) and [1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879) on Firefox side.
+   * Store chache of tree to first tabs in windows instead of last tabs, to reduce bloated session data.
+   * Add ability to store cache of tree to windows instead of tabs to more reduce bloated session data, but disabled by default for safety.
+   * Prevent too much autoscroll while tab dragging. (If you see too slow autoscrolling and want more speedy scroll, [please shake your mouse on the edge of the scrollable area.](https://github.com/piroor/treestyletab/issues/2321#issuecomment-506667779))
+   * Show favicons for new blank tabs correctly. (regression on 3.1.2)
+ - 3.1.2 (2019.6.21)
+   * Go to the options page to help granting of the permission, when a notification message about missing permission is clicked.
+   * Hide the subpanel header when the last subpanel is unregistered.
+   * Keep tree structure after a tab is reopened by other addons like Temporary Containers.
+   * Keep tree structure of tabs moved between windows, even if they were moved across windows again and again.
+   * Don't open (or keep opened) needless group tabs for closed parent tabs, when all children are closed together with their parent.
+   * Optimize operations to update "sound playing" and "muted" state of tabs.
+   * Add a link to open the options page itself in a tab, under the "Development" section of the options page.
+   * API for other addons: [`wait-for-shutdown` notification is now delivered](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#unregister-from-TST). It allows helper addons to notify their uninstallation (or just disabled) to TST.
+ - 3.1.1 (2019.6.13)
+   * Handle middle click on blank area of the sidebar correctly. (regression on 3.1.0)
+   * Don't close a tab with middle click on its indent area.
+ - 3.1.0 (2019.6.13)
+   * Add ability to embed arbitary contents provided by helper addons as a "sub panel" in the sidebar, via the [SubPanel API](https://github.com/piroor/treestyletab/wiki/SubPanel-API).
+   * Add commands to operate ths subpanel with custom keyboard shortcuts. By default `F2` is mapped to toggle the subpanel frame.
+   * Treat clicking on the indent area as clicking on the corresponding tab. (regression)
+   * Synchronize order of tabs more correctly even if tabs are rearranged by other addons while synchronizing.
+   * Select contents of the title field in bookmarks dialog by default.
+   * API for other addons: [`tab-clicked` notification is now delivered after `tab-mouseup`](https://github.com/piroor/treestyletab/pull/2306). (by xzn, thanks!)
+ - 3.0.17 (2019.6.7)
+   * Apply updated tab properties to sidebar tabs more correctly. (regression on 3.0.16)
+   * Update `de` locale by SammysHP. Thanks!
+ - 3.0.16 (2019.6.7)
+   * Auto-group children of a tab with a temporary group tab, when it is going to be pinned.
+   * Bundle a pinned tab with a group tab for children of the pinned tab more tightly, and highlight (and treat similar to active) each other when one of them is active.
+   * Calculate tree structure for moved/inserted tabs more correctly when there is any hidden child tab. This is mainly environments with a Firefox preference `browser.tabs.insertAfterCurrent`=true.
+   * Don't produce "forever loading" tab when loading of a tab is canceled immediately just after it is opened.
+   * Reveal deeply hidden debug options (including "Import" and "Export" buttons for all configs) just under the "Development" section of the options page directly.
+   * Show internal ID on each tab in the debug mode by default, without default user stylesheet.
+   * Unhighlight non-multiselected tabs on Sidebar, Metal and Vertigo theme correctly. (regression)
+   * Show active pinned faviconized tab with active background color on the Metal theme. (regression)
+   * Show confirmation dialog for closing multiple tabs more certainly.
+   * A new secret option: `scrollToExpandedTree` to deactivate scrolling of the sidebar contents when an expanded tree is larger than the height of the visible area.
+   * API for other addons: Allow to call APIs from addons without registering. (regression)
+   * API for other addons: Send `ready` notifications for last registered addons correctly. If you have any uninitialized helper addons, you need to reload them manually to re-register. (regression)
+ - 3.0.15 (2019.5.28)
+   * Re-activate context menu on the blank area in the sidebar. (regression on 3.0.12)
+   * Add an option to deactivate tree rendering in group tabs.
+   * Remove the option for the vibisility of scrollbar in the sidebar, and scrollbar is now shown with narrow width by default. (Please use a user stylesheet `#tabbar { scrollbar-width: auto; }` to show it with regular width, or `#tabbar { scrollbar-width: none; }` to hide it.)
+   * Remove the option for the positioning of scrollbar in the sidebar, and scrollbar is now shown at left edge by default for leftside sidebar. (Please use a user sytlesheet `:root.left #tabbar { direction: ltr; }` to show it at right edge.)
+   * Duplicate tabs with the "Duplicate Tab" command in the context menu on the sidebar correctly.
+   * Don't block operations while tabs are duplicating on Firefox 68 and later.
+   * Ignore dropping of tabs to themselves.
+   * API for other addons: Send `fake-contextMenu-click` notifications correctly. (regression on recent versions)
+ - 3.0.14 (2019.5.25)
+   * IMPORTANT SECURITY NOTE: All versions TST 2.x and TST 3.x older than TST 3.0.14 had a data disclosure problem via API for other addons. Sensitive tab information including private window tabs were unintentionally exposed to untrusted addons, regardless they were not have permissions to access those information via WebExtensions API. I strongly recommend you to update to TST 3.0.14 and later. Please see [detailed information](https://github.com/piroor/treestyletab/issues/2288#issuecomment-495756992) also.
+   * Remove obsolete information from the startup page.
+   * Add a new section in the options page and the startup page, for helper addons.
+   * API for other addons: Don't expose `effectiveFavIconUrl` by default.
+ - 3.0.13 (2019.5.25)
+   * Close tabs with "Close Tabs to Bottom" and "Close Other Tabs" imitated context menu commands correctly. (regression on 3.0.12)
+ - 3.0.12 (2019.5.24)
+   * Clearly declare the license of this addon: mixed licenses MPL1.1 and MPL2.0.
+   * Auto-expand tree while dragging of tabs correctly.
+   * Update tooltip of parent tabs correctly after it is collapsed/expanded.
+   * Show a confirmation dialog when multiple tabs are closed with commands in the context menu on the sidebar, before they are closed.
+   * Initialize indent of tree on the startup more correctly.
+   * Never attach tabs opened from a bookmark folder to existing tabs, even if the last existing tab was a child.
+   * Never group new tabs automatically if they are opened from a pinned tab in a different window.
+   * Never make group tabs `unread`.
+   * Set title of the tab to the attribute `data-title` always for each tab.
+   * Expose a custom property `--indent-size`.
+   * API for other addons: Add new notification message types [`tree-attached` and `tree-detached`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-structure-is-modified).
+   * API for other addons: [Notification messages from private windows won't be delivered to other addons by default](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#information-in-private-windows). You may need to re-initialize your addon on [`permissions-changed` notifications are delivered](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-permissions-for-your-addon-are-changed).
+   * API for other addons: [Sensitive information of tabs are not exposed anymore by default](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format). If you need to get full information of tabs, you may need to [request special permissions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#extra-permissions).
+   * Update `de` locale by SammysHP. Thanks!
+ - 3.0.11 (2019.5.4)
+   * Prevent infinitly reloading when missynchronized tabs are detected.
+   * Show confirmation dialog in the sidebar for grouping, when a required permission is not granted.
+   * Restore tree structure around recycled active tab more correctly, on manual session restoration.
+   * Close temporary group tab when there is one or less child, if it was opened as a successor of a closed parent tab.
+   * Fix odd behavior of tabs after a tab is detached from its window by drag and drop.
+   * Don't produce multiple active tabs after a tab is attached to an existing window.
+   * Add example style rule for debugging.
+   * Update `de` locale by SammysHP. Thanks!
+ - 3.0.10 (2019.5.2)
+   * Reduce wrong tab focus on clicked, caused with broken internal index of tabs.
+   * Reduce stuck on sidebar initialization triggered with timing issue.
+   * Show confirmation dialog correctly when multiple tabs are closed with operations inside the sidebar, even if TST is configured to treat tabs closed with operations outside of the sidebar as solo tabs.
+   * Show confirmation dialog correctly when multiple tabs are closed with operations outside of the sidebar, if TST is configured to handle them, [due to a restriction of WebExtensions-based addon](https://github.com/piroor/treestyletab/issues/2249#issuecomment-488266835).
+   * Don't show confirmation dialog for closing multiple tabs when they are closed with any operation outside of TST and there is only one or less restorable tabs.
+   * Support special favicon for `about:debugging` and `about:debugging-new` on Nightly 68.0a1.
+   * Output timestamp of debug logs with more debuggable format: `(hours):(minutes):(seconds).(milliseconds)`. Years, months, days, and the timezone are omitted.
+   * Update `de` locale by SammysHP. Thanks!
+ - 3.0.9 (2019.4.30)
+   * Tree structure is restored after auto-fix triggered with corruption of tabs information.
+   * More stabilized initialization of sidebar contents.
+ - 3.0.8 (2019.4.25)
+   * Prevent producing of untracked tabs more aggressively (including auto-fix feature [proposed by Dan Moorehead](https://github.com/piroor/treestyletab/pull/2239)), which are opened while TST is initializing. They might to cause various problems.
+   * Add ability to show all extra context menu commands as top level context menu items.
+   * Fix "never completely loaded" appearance of tabs opened while TST is initializing.
+   * Update layout of pinned tabs correctly after any pinned tab is detached from an window.
+   * Add new commands for user defined keyboard shortcuts: "Focus to Last Child Tab", "Focus to Previous Sibling Tab", and "Focus to Next Sibling Tab" ([by Sinkerine, thanks!](https://github.com/piroor/treestyletab/pull/2237))
+ - 3.0.7 (2019.4.18)
+   * Show color sampels of custom CSS properties more correctly.
+   * Open duplicated tab as an independent or a next sibling tab more correctly.
+   * Don't attach a tab to the current tab even if they have same domain, when those tabs are opened in a time.
+   * Clear "dragging" state and drop-position-marker more aggressively while drag-and-drop opeartions.
+   * Confusable checkboxes related to the color scheme of the browser theme now have description screenshots.
+ - 3.0.6 (2019.4.12)
+   * Fix one of hanging up cases on the startup. (regression on 3.0)
+   * Select tabs with Shift-click correctly. (regression on recent versions)
+   * Open new blank tab as a child of the active tab, at the position next to the parent tab correctly, even if there is any tab marked as "hidden".
+   * Open tabs at correct position even if they are opened at a time, for example, [Snap Links Plus](https://addons.mozilla.org/firefox/addon/snaplinksplus/).
+   * Add a hint to suppress auto-grouping for tabs opened at a time.
+   * Add confirmation to group tabs opened at a time.
+   * Add safeguard for tabs opened with wrong index, to avoid wrong tab focus. (See also the [bug 1504775](https://bugzilla.mozilla.org/show_bug.cgi?id=1504775).)
+   * Don't group multiple tabs restored or duplicated at a time.
+   * Don't collapse other trees, with a dragover on an expanded tree.
+   * Make more compatible with themes including new color names.
+ - 3.0.5 (2019.4.3)
+   * Fix "broken/mismatched index" problem of tabs triggered with a new tab opened before a pinned tab. Annoying behavior like focusing another tab with clicking on a tab is reduced.
+   * Determine positions to place new tabs considering existence of hidden tabs, for environments that hidden tabs are revealed by other addons or the user stylesheet.
+   * Add ability logging with timestamp at the debug mode.
+   * Add more error handling around the startup process, to reduce hanging up.
+   * Fix wrongly deep indent level of attached child tabs.
+ - 3.0.4 (2019.4.2)
+   * Apply tab surface color on the "High Contrast" skin. (regression on 3.0.3)
+   * Highlight tabs more again, when they have collapsed but highlighted descendants. (regression on 3.0)
+   * Fix sidebar breakage on undoing close tab with `browser.tabs.closeWindowWithLastTab`=`false`.
+   * Add "Do nothing" as a choice of actions on tabs dropped outside the sidebar.
+   * Use `scrollbar-width` CSS property to control the scrollbar in the sidebar.
+ - 3.0.3 (2019.3.31)
+   * Attach/detach tabs to/from existing windows correctly. (regression)
+   * Don't produce "invisible expanded children" with disabled animation effect. (regression)
+   * Apply the header image of the current browser theme more aggressively, on "Plain", "Vertigo" and "Mixed" theme.
+   * Define custom CSS properties to use the color scheme of the current browser theme, for user stylesheets.
+   * Clear needless cache data for tree restoration for closing or moved tabs, if possible.
+ - 3.0.2 (2019.3.29)
+   * Open new tabs at correct position even if there is any hidden tab.
+   * Don't produce invisible/inaccessible tab after auto-fixing of tree for hidden tabs.
+   * Fix unclosability of the tab which notifies updated features of TST itself. (regression)
+   * Don't destroy sidebar after the last tab is closed with `browser.tabs.closeWindowWithLastTab`=`false`. (regression)
+ - 3.0.1 (2019.3.29)
+   * Update layout for pinned tabs correctly after pinnde tab is moved or detached (regression on 3.0)
+   * Apply burst animation correctly (regression on 3.0)
+ - 3.0 (2019.3.29)
+   * Stabilize handling of tabs based on asynchronous WebExtensions API. At old versions, tabs were handled on both the background page and sidebar pages separately, so they were sometimes mis-synchronized. Now all tabs are always handled only on the background page, and a sidebar page works just like a canvas to show tabs.
+   * Restore tree of reopened window, even if there are large number of tabs and it takes very long time (until 10 minutes).
+   * Add an option to deactivate browser theme color.
+   * Show a `about:performance` tab with the favicon same to Firefox's native tab.
+   * Restore tree structure for a reopened window more certainly.
+   * Add ability to collect logs about internal messages for future performance tuning.
+   * Drop support of migration about data from legacy versions.
+ - 2.8.7 (2019.3.20)
+   * Optimize performance of messaging between the background page and sidebar contents.
+   * Optimize performance of initialization processes.
+   * Fix startup failure when the background page is initialized with cached tabs and the sidebar is initialized without cache.
+   * Show toolbar icons correctly when the option to show icons with theme color is active.
+   * Show "muted" and "sound playing" icon on the parent of a collapsed tree when any descendant has those status.
+   * Show progressbar on the sidebar while initialization.
+ - 2.8.6 (2019.3.16)
+   * Officially drop support for Firefox ESR60, and all 2.8.x versions are now marked as unsupported for ESR60.
+   * Fix unexpectedly visible (expanded) tabs under logically collapsed tree on the startup session restoration.
+   * Dragging of a parent tab now always move whole tree when it is dropped inside sidebar area, even if you configure TST to detach/drop only the dragged individual tab.
+   * Dragged multiselected tabs or individual tab are now safely detached from the original tree, when dragged tabs are going to be detached to a new window.
+   * Add preview images for some options.
+ - 2.8.5 (2019.3.14)
+   * Restore collapsed state of subtree more stably with large number of tabs.
+   * Optimize startup process with cached data.
+   * Prevent to move restored tabs to a place impossible to be placed. This sometimes produced permanently broken tree which was unfixable even if you disable the cache.
+   * Prevent to open needless group tab when a new blank tab is reopened with a container inherited from the active tab.
+   * Show throbber while waiting on group tabs.
+   * Reduce freezing while updating contents of group tabs.
+ - 2.8.4 (2019.3.12)
+   * Context menu on blank area in the sidebar came back. (regression on recent versions)
+   * Context menu commands work again on Firefox ESR60. (regression on recent versions)
+   * Extra context menu commands correctly work for multiselected tabs, not for all tabs. (regression on recent versions)
+   * New tab opened with Ctrl-T is correctly reopened with the container same to its parent tab. (regression on recent versions)
+   * New tab is opened as a child of the active tab as specified, on Firefox ESR60. (regression on recent versions)
+   * Control successor tabs for the active tab correctly, on Firefox ESR60. (regression on recent versions)
+   * Update tooltip of tabs correctly, on the "crop" mode. (regression on recent versions)
+   * On Firefox ESR60, focus to previously visible tab instead of previous sibling tab when the last child tab is closed. (This has been the new behavior at TST 2.8.0, on Firefox 65 and later.)
+ - 2.8.3 (2019.3.7)
+   * Tabs moved from any other window were misdetected as internally invisible and not used as a successor of other tabs. (regression on 2.8.0)
+   * Don't produce needless scrolling of the sidebar when a new tab is opened outside of the visible area and moved into the visible area immediately.
+   * Don't open needless duplicated group tabs to bind three or more child tabs opened from same pinned tab.
+   * Add a shortcut config menu item for the overflow style of tab label.
+   * Import/export configs via the common file dialog.
+ - 2.8.2 (2019.3.6)
+   * Fix ability to open new tab as a child of the current tab. (regression on 2.8.0)
+   * Fix ability to open context menu on the sidebar, at Firefox ESR60. (regression on 2.8.0)
+   * Don't attach new tab to the old current tab when they have same domain but the new tab is opened with position, for example a link dropped to the sidebar.
+   * Don't highlight two tabs on the initial startup: old active tab and newly opened notification tab.
+ - 2.8.1 (2019.3.6)
+   * Fix behavior around newly opened tabs depending on old active tab information. The previous active tab was unexpectedly misdetected. (regression on 2.8.0)
+   * Mute/unmute by clicking on the "sound playing" icon in each tab correctly. (regression on 2.8.0)
+   * Tree strucutre is correctly maintained when new tab is opened at middle of existing tree. (regression on 2.8.0)
+   * Update shortcut config menu items on the toolbar button, following to changes on 2.8.0.
+ - 2.8.0 (2019.3.5)
+   * Drop support for Firefox ESR60.
+   * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
+   * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
+   * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
+   * Add ability to change overflow style of too long tab label, for better performance.
+   * Add ability to fix up tree structure with visible tabs when tabs are hidden by other addons. (*Please remind that the option is disabled by default and you need to activate it manually.)
+   * Add ability to export and import all configurations except keyboard shortcuts. (TST's options => "Development" => "Debug mode" => "All Configs" => "Import/Export")
+   * Better compatibility with [Conex](https://addons.mozilla.org/firefox/addon/conex/).
+   * Add new APIs [`move-before` and `move-after`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position) to move tabs safely.
+ - 2.7.23 (2019.2.22)
+   * Don't move focus to a tab in a collapsed tree and expand collapsed tree when a collapsed child is focused, when the session was restored.
+ - 2.7.22 (2019.2.20)
+   * Fix unavailable menu commands and shortcuts. (regression on 2.7.21)
+ - 2.7.21 (2019.2.20)
+   * Don't produce needless scrolling when new active tab is inserted at non-last position. (regression on 2.7.19)
+   * Move focus to a visible child tab instead of a visible next sibling tab at first, when the active tab is closed. (regression on 2.7.20)
+ - 2.7.20 (2019.2.19)
+   * Add ability to deactivate focus control based on Successor Tabs API by TST completely.
+   * Better simulation of `browser.tabs.selectOwnerOnClose`=`true` behavior on Firefox 65 and later.
+   * Use "Mixed" theme as the default theme on Linux.
+ - 2.7.19 (2019.2.19)
+   * Disallow to drop a pinned tab after any unpinned tab / disallow to drop an unpinned tab before any pinned tab.
+   * Restore original tree structure after a tree is moved to a new window via the "Move to New Window" command.
+   * Fix broken focus of tabs after a tab is detached from a window.
+   * Handle new tab opened as the active tab more correctly.
+   * Reduce needless operations around saving tree structure for a closing window.
+   * Give more highlighted appearance for multiselected tabs. This change respecs Firefox's new appearance introduced by [the bug 1515686](https://bugzilla.mozilla.org/show_bug.cgi?id=1515686).
+   * ru locale is updated by trueR3W1ND, thanks!
+ - 2.7.18 (2019.1.30)
+   * Fix odd tab focus behavior after duplicating of pinned tabs via middle-click on the "Reload" button.
+ - 2.7.17 (2019.1.30)
+   * Attach tabs opened from dropped links and bookmarks to existing tree correctly.
+   * Reduce needless margin around pinned but not faviconized tabs.
+   * Apply `discarded` status of restored tabs correctly.
+   * Cancel delayed scroll to specific tab, when the sidebar is scrolled by mouse wheel.
+   * Add screenshots for configs about drag and drop behavior.
+   * Track tabs opened with invalid (too large) index by other addons more safely.
+   * Update fade-out effect of too long tab labels, when tabs are expanded or restored.
+   * Show confirmation for closing multiple tabs on the active window when it is triggered with a keyboard shortcut.
+   * Introduce new API: [`wait-for-shutdown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#wait-for-shutdown-type-message).
+ - 2.7.16 (2019.1.13)
+   * Fix fatal error around API implementation. (regression on 2.7.15)
+ - 2.7.15 (2019.1.13)
+   * Add advanced option to support environments with Firefox's preference `browser.tabs.multiselect`=`false`.
+   * Show confirmation dialog for closing multiple tabs only on the target window.
+   * Send API messages to the listener addon correctly even if it is initially registered with some listening message types and re-registered without the information.
+ - 2.7.14 (2019.1.12)
+   * Fix inifinite recursion function call at synchronizing of tabs order.
+   * More optimize reindexing of synchronized tabs.
+   * Highlight tabs more when they have collapsed but highlighted descendants.
+   * Rename the class for the blue bar of active and highlighted tabs: `active-marker` to `highlighter`. You may need to update your custom user stylesheet.
+ - 2.7.13 (2019.1.11)
+   * More stabilize synchronizing of tabs order.
+   * Wait until confirmation for closing of multiple tabs is done correctly.
+ - 2.7.12 (2019.1.11)
+   * Optimize synchronizing of tabs order by sequence matcher.
+ - 2.7.11 (2019.1.11)
+   * Fix broken order and focus of tabs after multiple tabs are opened at a time. (regression)
+   * Fix broken order and focus of tabs reopened immediately after they are opened. (regression)
+   * Fix odd multiselection behavior on Ctrl/Shift-click on collapsed tree. (regression)
+   * Fix broken tree after "Close Other Tabs" command.
+   * Show confirmation for closing multiple tabs correctly for context menu commands on the sidebar. (regression)
+ - 2.7.10 (2019.1.7)
+   * Fix broken focus of tabs after closing of tabs on slow environments. (regression on recent versions)
+   * Fix broken order of multiple tabs opened at a time.
+   * Deactivate configuration UI around bookmarks when the permission to access bookmarks is not granted.
+ - 2.7.9 (2019.1.4)
+   * Fix broken focus of tabs after tabs are rearranged by others. (regression on recent versions)
+ - 2.7.8 (2019.1.3)
+   * Hide all imitation context menu commands when simulation of context menu is disabled, instead of disabling whole the context menu.
+   * Allow to drag already-multiselected tabs with long press even if Multiple Tab Handler is installed.
+   * Fix broken behavior around closing of tabs on Firefox ESR60.
+   * [Allow to cancel default behavior of clicking on twisty, sound button, and closebox on tabs via API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)
+ - 2.7.7 (2018.12.28)
+   * Don't restore unrelated closed tabs in a rest window, when a window is closed with tabs.
+   * Fix broken handling of tabs updated after opened. (regression on 2.7.6)
+   * Activate top-level "Close Tree" and "Close Other Tree" commands in the context menu for tabs with no child.
+ - 2.7.6 (2018.12.26)
+   * Better handling of positioning for new tabs. On Firefox ESR60 running at a high-power PC, a tab moved by Firefox immediately after it was opened was placed to wrong position.
+ - 2.7.5 (2018.12.25)
+   * "Close Tree" and other top level extra context menu items work correctly again. (regression on recent versions)
+   * Better compatibility with other addons which modify `successorTabId` of tabs. (Note that you need to choose "Tree Behavior" => "When the current tab is closed as a last child" => "Focus to the next tab always (Firefox's default)" manually to deactivate controlling by TST.)
+   * Control visibility of extra context menu items more correctly.
+ - 2.7.4 (2018.12.22)
+   * Keep active tab while operations for multiselection.
+   * On Firefox ESR60, new tabs opened from links were wrongly placed at the end of the tab bar.
+   * Don't show needless separator in the context menu.
+   * "Bookmark Selected Tabs" and "Reload Selected Tabs" in the context menu on non-tab area work correcty.
+ - 2.7.3 (2018.12.20)
+   * Better restoration of tree structure for tabs restored by "Undo Close Tab" feature.
+   * Don't show confirmation multiple times for a set of closing tabs.
+   * Stabilize menu item position for Firefox 64 and later.
+   * Add new option to similate `browser.tabs.closeTabByDblclick`=`true` on Firefox 61 and later.
+   * Add new API `grant-to-remove-tabs` to suppress confirmation dialog.
+ - 2.7.2 (2018.12.18)
+   * Show colored icons for container selector on the new tab button again with Firefox 66 and later.
+   * Opened new tab from non-last tab were not attached to the opener tab unexlectedly. (regression on 2.7.0)
+ - 2.7.1 (2018.12.15)
+   * More optimization around tracking of tab updates and highlighitings (by Lej77, thanks!)
+ - 2.7.0 (2018.12.14)
+   * Add "Group Tabs" context menu item and keyboard shortcut command. They are moved from "Multiple Tab Handler".
+   * Better performance around multiselection of large number of tabs.
+   * Redune needlessly duplicated separator in the context menu on Firefox 64 and later.
+   * Reduce unexpected focusing to the next/previous when the current tab is closed, on Firefox 65 and later.
+   * Show "attention" mark for unpinned tabs.
+   * Optimize handling for updated "highlighted" status of tabs.
+   * Activate context menu commands for selected tabs: "Reopen in Container" and "Duplicate Tabs".
+   * Never detach dropped tabs to new window if the drag action is started just for bookmarks or links.
+   * Automatically re-discard accidentaly restored tabs for Ctrl-Tab/Ctrl-Shift-Tab.
+   * On Firefox 64 and later at macOS, new style context menu is available for Control-click. (Opening context menu with pressed ⌘ key will show old style context menu. On Windows or Linux, pression Ctrl key works as.)
+   * Activate last active tab correctly when multiple active tabs are opened at a time.
+   * Synchronize order of Firefox's native tabs and TST's sidebar more correctly when multiple tabs are opened at a time.
+   * Fix impossibility of logging in to giffgaff.com and some websites. (again)
+   * Tabs won't be detached to new window unexpectedly anymrore when tabs are dropped on the dragged tabs themselves.
+   * Open new tab as the next sibling correctly, even if the the active tab is a child tab and there is no more following tab.
+   * Use last effective favicon for discarded tabs in group tabs.
+   * Return last effective favicon information for discarded tabs, as a part of `get-tree` API responses.
+   * Show favicons with fixed size, in group tabs.
+   * Follow to changes of tab context menu introduced by the [bug 1502083](https://bugzilla.mozilla.org/show_bug.cgi?id=1502083).
+   * Add ability to change settings of TST from the context menu on the toolbar button.
+   * Suppress errors from blank context menu.
+   * Add new APIs for other addons: `move-to-start`, `move-to-end`, `open-in-new-window` and `reopen-in-container`. They will help you to implement imitated tab context menu compatible to TST.
+   * Add new aliases `highlighted` and `multiselected` to specify tabs via APIs (available only on Firefox 63 and later.)
+   * The `as` option of the `duplicate` API respects TST's configuration about duplicated tabs by default.
+   * Some APIs now return window's id as `windowId`. For backward compatibility `window` is still available for those APIs.
+ - 2.6.8 (2018.11.5)
+   * Add ability to append "Close Tree" and similar items to the "Close Tab Options" submenu on the sidebar.
+   * Hide needless "Tree Style Tab" item in the tab context menu if all items are deactivated.
+   * Don't highlight (multiselect) collapsed children of a parent tab, when it is activated as a successor of a closed current tab or activated from a to-be-collapsed descendant.
+ - 2.6.7 (2018.11.3)
+   * Toggle multiselection state of collapsed descendants under the active tab by Ctrl-click, when there is no selection in different tree.
+   * Select collapsed descendants under the active tab always, when non-active tab is Shift-clicked.
+   * Introduce timeout for waiting other addons initialized via API. This change will fix freezing of the startup triggered by illegal API responses from other addons.
+ - 2.6.6 (2018.10.31)
+   * Better compatibility with other addons using `documentUrlPatterns` with `moz-extension:` patterns.
+   * Fix wrong value of tabs' `highlighted` attribute gotten via TST's APIs.
+ - 2.6.5 (2018.10.30)
+   * Fix inaccessibility of "Reopen in Container" sub menu when there is only one container.
+   * Fix broken context menu "Tree Stye Tab" after visibility of custom menu items are changed.
+   * Fix impossibility of logging in to giffgaff.com and some websites.
+   * Don't detach tab to window when dragging operation is canceled by ESC key.
+   * Explain more details by the scrolling message, about what happens when dragged tabs are dropped.
+   * Fix compatibility problem of the API: remove menu items recirsively if it has any child item.
+ - 2.6.4 (2018.10.19)
+   * Reintroduce "Bookmark All Tabs" and "Reload All Tabs" for Firefox 62 and older. (They won't appear on Firefox 63 and later.)
+   * Apply theme color to toolbar button icon only when it is intentionally activated with `svg.context-properties.content.enabled` = `true`.
+ - 2.6.3 (2018.10.18)
+   * Show notification message at bottom of the sidebar to describe what will happen when you drop tabs outside of the sidebar, while you are dragging tabs.
+   * Deactivate tab drag handle by default.
+   * Match color of icon for toolbar button and sidebar panel switcher to the current theme on Firefox 62 and later.
+ - 2.6.2 (2018.10.18)
+   * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window. (regression on 2.6.0)
+   * Never show tab drag handle on the half left or right side of a faviconized tab.
+   * Never show tab drag handle after the tab is clicked before the handle is shown.
+   * Never show needless separater in bookmark folder chooser.
+   * Activate accesskey of context menu items if possible.
+   * Respect behavior for new tabs triggered by `browser.tabs.insertAfterCurrent`=`true` (introduced at Firefox 61): when a new tab is opened next to the current tab by the config, TST always ignores "new tab position" configs of TST itself.
+ - 2.6.1 (2018.10.17)
+   * Search dropped non-URL text by the default search engine, if possible.
+   * Hide [unexpectedly exposed dummy elements](https://github.com/piroor/treestyletab/issues/2050) correctly when any custom theme is applied.
+ - 2.6.0 (2018.10.16)
+   * [Better compatibility with extra context menu commands for tabs added by other addons, on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm) And now imitated context menu have items compatible to Firefox 64 and later.
+   * Add ability to change behavior of dragged tab to outside of the sidebar for each case: regular drag and Shift-drag. Shfit-drag of a tab will create bookmarks or links from all tabs in the tree, by default.
+   * Add [tab drag handler to start dragging of tabs with specific purpose](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422757008). It will appear by pointing for a while around edge of each tab.
+   * Show dialog for commands to create bookmarks.
+   * Add ability to change the default folder that new bookmarks are created in.
+   * Sidebar panel is reloaded immediately after the cache system is disabled.
+   * Deactivate a context menu command "Duplicate Tab" for multiselected tabs. This respects to the behavior of Firefox's native one.
+   * Open new tab as specified relation correctly.
+   * Faster sync for tab loading throbbers. (by Lej77, thanks!)
+   * Add "Reset All Shortcuts" button to the options page.
+   * Never apply cached indent definition for different direction.
+ - 2.5.4 (2018.9.10)
+   * Initialize tabs more safely on the startup.
+   * Allow to tear off dragged tree from the window by default, and now you need to do Shift-drag to create bookmarks/links from tabs dragged to outside.
+   * Default and shift-drag behavior for tabs dragged to outside are now switchable.
+   * [`tab-mouseover` and `tab-mouseout` API messages are now delivered correctly on edge cases, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * Update `de` locale (by sicherist, thanks!)
+ - 2.5.3 (2018.8.30)
+   * Support native multiselection of tabs on Firefox 63 and later (after the [bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050) is fixed).
+   * Support "Reopen in Container" in the fake context menu on the sidebar.
+   * Make tabs draggable on Firefox 63 and later (after the [bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153) is fixed).
+   * Apply `attention` attribute of tabs to sidebar's contents, on Firefox 63 and later (after the [bug 1396684](https://bugzilla.mozilla.org/show_bug.cgi?id=1396684) is fixed).
+   * Fix gramatical mistake in en-US locale.
+   * Don't tear off dragged tab(s) from the window when the dropped position is very near to the sidebar area itself.
+   * Allow to drag a tree and drop it as a list of URLs.
+   * Allow to open dropped URIs as tabs on the tree sidebar.
+   * Load embedded SVG images correctly as favicon.
+   * [Allow to get permission without toolbar button, by Lej77. Thanks!](https://github.com/piroor/treestyletab/pull/2011)
+   * [`tab-mouseout` API message is now delivered at correct timing, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * Add `soundButton` attribute to notified API messages of `tab-mousedown`, `tab-mouseup` and `tab-clicked`. It indicates that the mute/unmute button is clicked or not.
+ - 2.5.2 (2018.8.20)
+   * Some context menu commands become robust on slow situation.
+ - 2.5.1 (2018.8.19)
+   * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
+   * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
+   * All keyboard shortcuts are now deassignable by hitting the Escape key on each field.
+   * Fix misordernig of input fields to define keyboard shortcuts. (regression on 2.5.0)
+   * `tab-mouseout` API message is now delivered at correct timing.
+   * Updated zh-CN locale by YFdyh000, thanks!
+ - 2.5.0 (2018.8.17)
+   * Totally reconstructed as ES modules, for better maintainability.
+   * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
+   * New commands "Collapse this Tree" and "Expand this Tree" for the context menu on tabs.
+   * New commands "Collapse this Tree", "Expand this Tree", "Focus to Parent Tab" and "Focus to First Child Tab" are now available for keybaord shortcuts.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands (for keyboard shortcuts) circulate focus of tabs.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands (for keyboard shortcuts) focus to actual previous/next tabs, instead of previous/next sibling tabs.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands now have default keyboard shortcut.
+   * Place small favicon for group tabs from pinned tabs over "folder" icon correctly.
+   * The parent group tab won't be bookmarked by the "Bookmark this Tree" command anymore.
+   * Add ability to configure default bookmark folder name, and it includes the date created at by default.
+   * Any pinned tab is now possible to be dragged and dropped between unpinned tabs. Opposite is also available.
+   * Pinned tabs are now possible to be teared off from the window by drag and drop.
+   * Restore group tabs more safely. In old versions, restored group tab can lose its content.
+   * Updating of group tabs is now done without reloading of the tab itself.
+   * Unfocusing from the input field of the title of a group tab now applies the current value as its new title, instead of cancelling.
+   * Tabs opened from a bookmark folder are correctly grouped. (It was a regression on recent versions.)
+   * When a new tab is opened from a pinned tab, the tab bar will be scrolled to the new tab if possible.
+   * Focus to closest ancestor tab when the active tab is going to be collapsed correctly.
+   * Show specified favicon as the tab icon, for a tab with an image file.
+   * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
+   * Introduce 32px icons.
+   * Show toolbar button icons with opacity (by asamuzaK, thanks!)
+   * Clear "dragging" state of tabs more aggressively.
+   * Introduce a failsafe for unexpectedly visible descendant tabs under collapsed tree on restored sesssions.
+   * Add ability to output log for each module.
+   * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
+   * Keep tree expanded after restoration, for restoration without cache.
+   * Support [checkbox and radio type context menu items](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs) and [`browser.menus.onShown`/`browser.menus.onHidden`-like APIs](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item).
+   * Remove non-free color profile from some image files.
+   * Update `de` locale (by sicherist, thanks!)
+   * Add `ru` and `uk` locales (by perdolka, thanks!)
+ - 2.4.24 (2018.6.3)
+   * Some context menu commands didn't work when animation effect is disabled, on 2.4.22 and 2.4.23. (regression)
+   * Fix 100% CPU usage problem on loading `about;treestyletab-group` on any existing group tab.
+   * Fix incompatibility with Conex. When Conex is installed, new tabs opened from dropped links were unexpectedly closed immediately.
+ - 2.4.23 (2018.6.1)
+   * Add [new API to notify sidebar is shown or hidden](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-sidebar-is-shownhidden) for other addons.
+   * Apply correct favicon for restored tabs.
+   * Fix freezing after a tab is detached from a window by drag and drop.
+   * Make tabs more easily detachable by drag and drop.
+ - 2.4.22 (2018.5.30)
+   * Initialize sidebar more safely on browser's startup.
+   * Prevent needless flashing of the vertical scrollbar.
+   * Open new tabs from Ctrl-T as configured position more correctly.
+   * Don't attach new same site tab if it is originally opened as a blank tab intentionally.
+   * Close the fake context menu immediately when any item is clicked.
+   * Keyboard operations affects correctly for the fake context menu even if the cursor is on any separator.
+   * Refresh context menu automatically when items are modified while open.
+   * Remove extra context menu items if an external addon is unregistered.
+   * Make "Plain" theme more respectful of Firefox's default theme.
+   * More respect Firefox's default favicons for tabs without site-specific favicon.
+   * Add ability to collect logs while browser's startup process. You can print logs by running `log.logs.join('\n')` in the remote debugger, if you're running TST in the debug mode.
+   * Update `de` locale (by sicherist, thanks!)
+ - 2.4.21 (2018.5.16)
+   * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
+   * Add ability to collapse/expand configuration sections.
+   * Execute command in the fake context menu, by an access key without Enter, when there is no other command with same access key.
+   * Keyboard shortcuts to scroll tab bar never affect to non-active windows anymore.
+   * Don't reload restored group tab until it is activated.
+   * Control next focused tab for closed current tab correctly (regression)
+ - 2.4.20 (2018.5.14)
+   * Apply specified color for tab label correctly with style rules written for old versions. (regression)
+   * New tabs reopened by [Conex](https://addons.mozilla.org/firefox/addon/conex/) appears in the tab bar correctly. (regression?)
+   * Don't show multiple "active" tabs at once when a new active tab is opened.
+ - 2.4.19 (2018.5.13)
+   * [New APIs for other addons to observe moving of mouse pointer on tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
+   * Add ability to change text direction in the sidebar.
+   * Add ability to change visibility of collapsed descendants in a tooltip on collapsed tree.
+   * Tooltip on a tab will appear only when it is necessary for too long title.
+   * Disable animation effect of the fake context menu and other menu-like UI, if animation effects in TST is disabled.
+   * Handle keyboard operations around the fake context menu and fake confirmation dialog on `keydown`. This behavior is same to native UI.
+   * Show confirmation dialog only once, when multiple tree are closed at a time. And it won't be shown by "Close Tabs to the Right" and "Close Other Tabs", because the action is already accepted by the user.
+   * Show confirmation dialog in the content area of the current tab if possible, when multiple tabs are closed by keyboard shortcut command.
+   * Apply "insert new child at first" configuration for tabs grouped for their pinned parent.
+   * Allow to drop tab before the first tab, when there is no pinned tab. (regression on recent versions)
+   * Detach moved tab from existing tree when it is moved by Ctrl-Shift-PageDown. (regression on recent versions)
+   * Unexpected bumping of scroll position is disappeared, for most cases around focued tabs.
+   * Don't re-focus to a dragged tab after it is dropped, to allow dragging of background tabs as is. (Inspired from codes by Lej77, thanks!)
+   * Allow to cancel closing of middle-clicked tab via API. (Inspired from codes by Lej77, thanks!)
+   * Mouseup and mouseup events on the sidebar are now handled as a pair with same button (by Lej77, thanks!)
+   * Fade out tab labels instead of ellipsis (by Keith94m thanks!)
+   * Update `de` locale (by sicherist, thanks!)
+ - 2.4.18 (2018.3.22)
+   * Support `enable` and `icons` parameters for extra menu items of the fake context menu.
+   * [Support `icons` parameter for the `register-self` API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
+   * Newly opened child tabs are placed to the correct position.
+   * Expose detailed options for scrollbar and cache.
+   * Collapse large input fields in the "Advanced" section of the options.
+ - 2.4.17 (2018.3.7)
+   * Use default favicon of tabs same to Firexo 60.
+   * Use Firefox-compatible favicon for addon manager and options tabs.
+   * Add an option to deactivate fake context menu in the sidebar.
+   * Optimize internal processes to collect ancestor tabs from a tab.
+   * Synchronize title and favicon of a parent pinned tab to its related group tab.
+   * Open new independent tab correctly by the command, when new tab are configured to be opened as children or sibling.
+   * Don't cancel drag action on a tab for long press when there is no listener for "tab-dragready" API message.
+   * Accept extra context menu items added by other addons without the name of the addon.
+   * Set the value of `HTTP_USER_AGENT` to the `data-user-agent` attribute of the root element, for easy platform-specific styling.
+   * [`get-tree` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format) now returns `ancestorTabIds` for each tab.
+   * Notify event messagess via the API only for addons which intentionally listens the message type. (However, all known message types on 2.4.16 are delivered to the addon if it doesn't declare listening event types, for backward compatibility.)
  - 2.4.16 (2018.2.12)
    * Make default shortcuts avoidable from Firefox's built-in shortcuts. Now you can scroll Tree Style Tab's sidebar by Alt-Shift-Up, Alt-Shift-Down, Alt-Shift-PageUp, Alt-Shift-PageDown, Alt-Shift-Home, and Alt-Shift-End.
    * Shortcuts for "scroll sidebar by line" now scrolls for three lines on each time.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK ***** 
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * Version: MPL 1.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2017
+ * Portions created by the Initial Developer are Copyright (C) 2011-2019
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -23,70 +23,83 @@
  *                 Xidorn Quan <https://github.com/upsuper> (Firefox 40+ support)
  *                 lv7777 (https://github.com/lv7777)
  *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-function positionPinnedTabs(aOptions = {}) {
-  //log('positionPinnedTabs');
-  var pinnedTabs = getPinnedTabs(gTargetWindow);
-  if (!pinnedTabs.length) {
-    resetPinnedTabs();
+import {
+  log as internalLogger,
+  configs
+} from '/common/common.js';
+
+import * as Constants from '/common/constants.js';
+import * as TabsStore from '/common/tabs-store.js';
+import Tab from '/common/Tab.js';
+import * as Size from './size.js';
+import * as BackgroundConnection from './background-connection.js';
+
+// eslint-disable-next-line no-unused-vars
+function log(...args) {
+  internalLogger('sidebar/pinned-tabs', ...args);
+}
+
+let mTargetWindow;
+let mTabBar;
+
+export function init() {
+  mTargetWindow = TabsStore.getWindow();
+  mTabBar       = document.querySelector('#tabbar');
+  configs.$addObserver(onConfigChange);
+}
+
+export function reposition(options = {}) {
+  //log('reposition');
+  const pinnedTabs = Tab.getPinnedTabs(mTargetWindow);
+  if (pinnedTabs.length == 0) {
+    reset();
     document.documentElement.classList.remove('have-pinned-tabs');
     return;
   }
 
   document.documentElement.classList.add('have-pinned-tabs');
 
-  var containerWidth = gTabBar.getBoundingClientRect().width;
-  var maxWidth       = containerWidth;
-  var faviconized    = configs.faviconizePinnedTabs;
+  const containerWidth = mTabBar.getBoundingClientRect().width;
+  const maxWidth       = containerWidth;
+  const faviconized    = configs.faviconizePinnedTabs;
 
-  var width  = faviconized ? gFaviconizedTabSize : maxWidth ;
-  var height = faviconized ? gFaviconizedTabSize : gTabHeight ;
-  var maxCol = Math.max(1, Math.floor(maxWidth / width));
-  var maxRow = Math.ceil(pinnedTabs.length / maxCol);
-  var col    = 0;
-  var row    = 0;
+  const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
+  const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
+  const maxCol = faviconized ? Math.max(1, configs.maxFaviconizedPinnedTabsInOneRow > 0 ? configs.maxFaviconizedPinnedTabsInOneRow : Math.floor(maxWidth / width)) : 1;
+  const maxRow = Math.ceil(pinnedTabs.length / maxCol);
+  let col    = 0;
+  let row    = 0;
 
-  gTabBar.style.marginTop = `${height * maxRow}px`;
-  for (let item of pinnedTabs) {
-    let style = item.style;
-    if (aOptions.justNow)
-      item.classList.remove(kTAB_STATE_ANIMATION_READY);
+  mTabBar.style.marginTop = `${height * maxRow + (faviconized ? 0 : Size.getTabYOffset())}px`;
+  for (const tab of pinnedTabs) {
+    const style = tab.$TST.element.style;
+    if (options.justNow)
+      tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
-      item.classList.add(kTAB_STATE_FAVICONIZED);
+      tab.$TST.addState(Constants.kTAB_STATE_FAVICONIZED);
     else
-      item.classList.remove(kTAB_STATE_FAVICONIZED);
+      tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
 
     if (row == maxRow - 1)
-      item.classList.add(kTAB_STATE_LAST_ROW);
+      tab.$TST.addState(Constants.kTAB_STATE_LAST_ROW);
     else
-      item.classList.remove(kTAB_STATE_LAST_ROW);
+      tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
 
     style.bottom = 'auto';
     style.left   = `${width * col}px`;
     style.right  = faviconized ? 'auto' : 0 ;
     style.top    = `${height * row}px`;
 
-    if (aOptions.justNow)
-      item.classList.add(kTAB_STATE_ANIMATION_READY);
+    if (options.justNow)
+      tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
 
     /*
     log('pinned tab: ', {
-      tab:    dumpTab(item),
+      tab:    dumpTab(tab),
       col:    col,
       width:  width,
       height: height
@@ -102,24 +115,75 @@ function positionPinnedTabs(aOptions = {}) {
   }
 }
 
-function reserveToPositionPinnedTabs(aOptions = {}) {
-  if (reserveToPositionPinnedTabs.waiting)
-    clearTimeout(reserveToPositionPinnedTabs.waiting);
-  reserveToPositionPinnedTabs.waiting = setTimeout(() => {
-    delete reserveToPositionPinnedTabs.waiting;
-    positionPinnedTabs(aOptions);
+export function reserveToReposition(options = {}) {
+  if (reserveToReposition.waiting)
+    clearTimeout(reserveToReposition.waiting);
+  reserveToReposition.waiting = setTimeout(() => {
+    delete reserveToReposition.waiting;
+    reposition(options);
   }, 10);
 }
 
-function resetPinnedTabs(aHint) {
-  gTabBar.style.marginTop = '';
-  var pinnedTabs = getPinnedTabs(gTargetWindow);
-  pinnedTabs.forEach(clearPinnedStyle);
+function reset() {
+  mTabBar.style.marginTop = '';
+  for (const tab of Tab.getPinnedTabs(mTargetWindow, { iterator: true })) {
+    clearStyle(tab);
+  }
 }
 
-function clearPinnedStyle(aTab) {
-  aTab.classList.remove(kTAB_STATE_FAVICONIZED);
-  aTab.classList.remove(kTAB_STATE_LAST_ROW);
-  let style = aTab.style;
+function clearStyle(tab) {
+  tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
+  tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
+  const style = tab.$TST.element.style;
   style.left = style.right = style.top = style.bottom;
+}
+
+BackgroundConnection.onMessage.addListener(async message => {
+  switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      if (tab.pinned)
+        reserveToReposition();
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+      // don't wait until tracked here, because removing or detaching tab will become untracked!
+      const tab = Tab.get(message.tabId);
+      if (tab && tab.pinned)
+        reserveToReposition();
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
+    case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
+      reserveToReposition();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+      if (message.wasPinned)
+        reserveToReposition();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      clearStyle(tab);
+      reserveToReposition();
+    }; break;
+  }
+});
+
+function onConfigChange(key) {
+  switch (key) {
+    case 'faviconizePinnedTabs':
+      reserveToReposition();
+      break;
+  }
 }

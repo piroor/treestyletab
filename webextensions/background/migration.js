@@ -5,274 +5,212 @@
 */
 'use strict';
 
-const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
-const kFEATURES_VERSION = 3;
+import {
+  log as internalLogger,
+  configs
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Permissions from '/common/permissions.js';
 
-function migrateLegacyConfigs() {
-  var values = configs.importedConfigsFromLegacy;
-  if (!values ||
-      typeof values != 'object')
-    return;
+import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
-  try {
-
-    var migrated = false;
-    switch (configs.legacyConfigsNextMigrationVersion) {
-      case 0:
-      case 1:
-        // appearance
-        migrateLegacyConfig('style', values['extensions.treestyletab.tabbar.style']);
-        migrateLegacyConfig('defaultStyle', values['extensions.treestyletab.platform.default.tabbar.style']);
-        migrateLegacyConfig('defaultStyleOnDarwin', values['extensions.treestyletab.platform.default.tabbar.style']);
-        migrateLegacyConfig('defaultStyleOnLinux', values['extensions.treestyletab.platform.Linux.tabbar.style']);
-
-        migrateLegacyConfig('faviconizePinnedTabs', values['extensions.treestyletab.pinnedTab.faviconized']);
-
-        migrateLegacyConfig('counterRole', values['extensions.treestyletab.counter.role.vertical']);
-
-        migrateLegacyConfig('baseIndent', values['extensions.treestyletab.indent.vertical']);
-        migrateLegacyConfig('minIndent', values['extensions.treestyletab.indent.min.vertical']);
-        migrateLegacyConfig('maxTreeLevel', values['extensions.treestyletab.maxTreeLevel.vertical']);
-        migrateLegacyConfig('indentAutoShrink', values['extensions.treestyletab.indent.autoShrink']);
-        migrateLegacyConfig('indentAutoShrinkOnlyForVisible', values['extensions.treestyletab.indent.autoShrink.onlyForVisible']);
-
-        // context menu
-        migrateLegacyConfig('context_reloadTree', values['extensions.treestyletab.show.context-item-reloadTabSubtree']);
-        migrateLegacyConfig('context_reloadDescendants', values['extensions.treestyletab.show.context-item-reloadDescendantTabs']);
-        migrateLegacyConfig('context_closeTree', values['extensions.treestyletab.show.context-item-removeTabSubtree']);
-        migrateLegacyConfig('context_closeDescendants', values['extensions.treestyletab.show.context-item-removeDescendantTabs']);
-        migrateLegacyConfig('context_closeOthers', values['extensions.treestyletab.show.context-item-removeAllTabsButThisTree']);
-        migrateLegacyConfig('context_collapseAll', values['extensions.treestyletab.show.context-item-collapseAllSubtree']);
-        migrateLegacyConfig('context_expandAll', values['extensions.treestyletab.show.context-item-expandAllSubtree']);
-        migrateLegacyConfig('context_bookmarkTree', values['extensions.treestyletab.show.context-item-bookmarkTabSubtree']);
-
-        // tree behavior
-        migrateLegacyConfig('shouldDetectClickOnIndentSpaces', values['extensions.treestyletab.clickOnIndentSpaces.enabled']);
-
-        migrateLegacyConfig('autoCollapseExpandSubtreeOnAttach', values['extensions.treestyletab.autoCollapseExpandSubtreeOnAttach']);
-        migrateLegacyConfig('autoCollapseExpandSubtreeOnSelect', values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect']);
-        migrateLegacyConfig('autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove', !values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove']);
-
-        migrateLegacyConfig('autoExpandIntelligently', values['extensions.treestyletab.autoExpand.intelligently']);
-        migrateLegacyConfig('autoExpandOnCollapsedChildFocused', values['extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused']);
-        migrateLegacyConfig('autoExpandOnLongHover', values['extensions.treestyletab.autoExpand.enabled']);
-        migrateLegacyConfig('autoExpandOnLongHoverDelay', values['extensions.treestyletab.autoExpand.delay']);
-        migrateLegacyConfig('autoExpandOnLongHoverRestoreIniitalState', values['extensions.treestyletab.autoExpand.collapseFinally']);
-
-        // behavior around newly opened tabs
-        migrateLegacyConfig('insertNewChildAt', values['extensions.treestyletab.insertNewChildAt']);
-
-        migrateLegacyConfig('scrollToNewTabMode', values['extensions.treestyletab.tabbar.scrollToNewTab.mode']);
-
-        migrateLegacyConfig('autoAttach', values['extensions.treestyletab.autoAttach']);
-        migrateLegacyConfig('autoAttachOnOpenedWithOwner', values['extensions.treestyletab.autoAttach.fromCurrent']);
-        migrateLegacyConfig('autoAttachOnNewTabCommand', values['extensions.treestyletab.autoAttach.newTabCommand']);
-        migrateLegacyConfig('autoAttachOnNewTabButtonMiddleClick', values['extensions.treestyletab.autoAttach.newTabButton']);
-        migrateLegacyConfig('autoAttachOnDuplicated', values['extensions.treestyletab.autoAttach.duplicateTabCommand']);
-
-        // behavior around closed tab
-        migrateLegacyConfig('closeParentBehavior', values['extensions.treestyletab.closeParentBehavior']);
-        migrateLegacyConfig('promoteFirstChildForClosedRoot', values['extensions.treestyletab.closeRootBehavior'] == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD);
-        migrateLegacyConfig('moveTabsToBottomWhenDetachedFromClosedParent', values['extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom']);
-        migrateLegacyConfig('promoteAllChildrenWhenClosedParentIsLastChild', values['extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild']);
-
-        // animation
-        migrateLegacyConfig('smoothScrollEnabled', values['extensions.treestyletab.tabbar.scroll.smooth']);
-        migrateLegacyConfig('smoothScrollDuration', values['extensions.treestyletab.tabbar.scroll.duration']);
-        migrateLegacyConfig('indentDuration', values['extensions.treestyletab.animation.indent.duration']);
-        migrateLegacyConfig('collapseDuration', values['extensions.treestyletab.animation.collapse.duration']);
-
-      case 2:
-        migrateLegacyConfig('collapseExpandSubtreeByDblClick', values['extensions.treestyletab.collapseExpandSubtree.dblclick']);
-
-      case 3:
-        migrateLegacyConfig('scrollbarMode', values['extensions.treestyletab.tabbar.narrowScrollbar'] ? kTABBAR_SCROLLBAR_MODE_NARROW : kTABBAR_SCROLLBAR_MODE_DEFAULT);
-        migrateLegacyConfig('narrowScrollbarSize', values['extensions.treestyletab.tabbar.narrowScrollbar.width']);
-
-        // case 4:
-        // case 5:
-        migrated = true;
-
-      default:
-        break;
-    }
-
-    if (migrated)
-      notify({
-        title:   browser.i18n.getMessage('migration_configs_notification_title'),
-        message: browser.i18n.getMessage('migration_configs_notification_message'),
-        icon:    kNOTIFICATION_DEFAULT_ICON,
-        timeout: -1
-      });
-
-  }
-  catch(e) {
-    log('failed to migrate tree: ', String(e), e.stack);
-    notify({
-      title:   browser.i18n.getMessage('migration_configsFailed_notification_title'),
-      message: `${browser.i18n.getMessage('migration_configsFailed_notification_message')}\n${String(e)}`,
-      icon:    kNOTIFICATION_DEFAULT_ICON,
-      timeout: -1
-    });
-  }
-
-  configs.legacyConfigsNextMigrationVersion = kLEGACY_CONFIGS_MIGRATION_VERSION + 1;
+// eslint-disable-next-line no-unused-vars
+function log(...args) {
+  internalLogger('background/migration', ...args);
 }
 
-function migrateLegacyConfig(aKey, aValue) {
-  if (aValue === undefined)
-    return;
-  configs[aKey] = aValue;
+const kCONFIGS_VERSION = 7;
+const kFEATURES_VERSION = 4;
+
+export function migrateConfigs() {
+  switch (configs.configsVersion) {
+    case 0:
+      ShortcutCustomizeUI.setDefaultShortcuts();
+
+    case 1:
+      configs.longPressDuration = configs.startDragTimeout;
+      configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
+
+    case 2:
+      if (!configs.simulateSelectOwnerOnClose)
+        configs.successorTabControlLevel = Constants.kSUCCESSOR_TAB_CONTROL_NEVER;
+
+    case 3:
+      if (!(configs.tabDragBehavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK))
+        configs.tabDragBehavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+      if (!(configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK))
+        configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+
+    case 4:
+      configs.emulateDefaultContextMenu = true; // activate by default
+      configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
+      configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
+      configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
+
+    case 5:
+      switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
+        case 0: // default, refular width
+          configs.userStyleRules += `
+
+/* regular width scrollbar */
+#tabbar { scrollbar-width: auto; }`;
+          break;
+        case 1: // narrow width
+          break;
+        case 2: // hide
+          configs.userStyleRules += `
+
+/* hide scrollbar */
+#tabbar { scrollbar-width: none; }
+
+/* cancel spaces for macOS overlay scrollbar */
+:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
+  padding-left: 0;
+}
+:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
+  padding-right: 0;
+}`;
+          break;
+        case 3: // overlay (macOS)
+          break;
+      }
+      switch (configs.sidebarScrollbarPosition) {
+        default:
+        case 0: // auto
+        case 1: // left
+          break;
+          break;
+        case 2: // right
+          configs.userStyleRules += `
+
+/* put scrollbar rightside */
+:root.left #tabbar { direction: ltr; }`;
+          break;
+      }
+
+    case 6:
+      if (configs.promoteFirstChildForClosedRoot &&
+          configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+        configs.closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+      switch (configs.parentTabBehaviorForChanges) {
+        case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
+          break;
+        default:
+        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR;
+          break;
+        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
+          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM;
+          configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.closeParentBehavior;
+          break;
+      }
+  }
+  configs.configsVersion = kCONFIGS_VERSION;
 }
 
-async function migrateLegacyTreeStructure() {
-  var structures = configs.importedTreeStructureFromLegacy;
-  if (!structures ||
-      !Array.isArray(structures) ||
-      !configs.migrateLegacyTreeStructure)
-    return;
-
+export async function notifyNewFeatures() {
   /*
-    Expected format of the "structures":
-    [ // top level: array of windows
-      [ // second level: array of tabs
-        { title:     "Example.com",
-          url:       "http://www.example.com/",
-          pinned:    true },
-        { title:     "Example.net",
-          url:       "http://www.example.net/",
-          pinned:    false,
-          parent:    -1,
-          collapsed: false },
-        { title:     "Example.jp",
-          url:       "http://www.example.jp/",
-          pinned:    false,
-          parent:    0,
-          collapsed: false }
-      ],
-      [...],
-      [...]
-    ]
-    "parent" and "collapsed" are compatible to the format of
-    getTreeStructureFromTabs() / applyTreeStructureToTabs().
+  let featuresVersionOffset = 0;
+  const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
+  // "search" permission becomes available!
+  if (parseInt(browserInfo.version.split('.')[0]) >= 63)
+    featuresVersionOffset++;
+  // "menus.overrideContext" permission becomes available!
+  if (parseInt(browserInfo.version.split('.')[0]) >= 64)
+    featuresVersionOffset++;
   */
 
-  try {
-    var getWindowSignatureFromTabs = (aTabs) => {
-      return aTabs.map(aTab =>
-        `${aTab.title}\n${aTab.url}\npinned=${aTab.pinned}`
-      ).join('\n');
-    };
+  const featuresVersion = kFEATURES_VERSION /*+ featuresVersionOffset*/;
 
-    var structureSignatures = structures.map(getWindowSignatureFromTabs);
+  if (configs.notifiedFeaturesVersion >= featuresVersion)
+    return;
+  configs.notifiedFeaturesVersion = featuresVersion;
 
-    var messages = [];
-
-    var apiWindows = await browser.windows.getAll({
-      populate:     true,
-      windowTypes: ['normal']
-    });
-    var restoredCountWithSession = 0;
-    for (let apiWindow of apiWindows) {
-      let signature = getWindowSignatureFromTabs(apiWindow.tabs);
-      let index     = structureSignatures.indexOf(signature);
-      if (index < 0)
-        continue;
-
-      // found: apply only structure case
-      let structure = structures[index];
-      let tabs      = getAllTabs(apiWindow.id);
-      await applyTreeStructureToTabs(tabs, structure);
-
-      restoredCountWithSession++;
-
-      structureSignatures.splice(index, 1);
-      structures.splice(index, 1);
-    }
-    if (restoredCountWithSession > 0)
-      messages.push(
-        browser.i18n.getMessage(
-          'migration_tree_notification_message_withSession',
-          restoredCountWithSession
-        )
-      );
-
-    // not found: try to restore windows from structures
-    await Promise.all(structures.map(async aStructure => {
-    // prepare new window with tabs
-      var apiWindow = await browser.windows.create({
-        url: 'about:blank'
-      });
-      var container = getTabsContainer(apiWindow.id);
-      incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
-      // restore tree
-      var uris = aStructure.map(aItem => aItem.url);
-      uris = uris.map(aURI => {
-        if (!/^about:blank($|\?|#)/.test(aURI) &&
-            /^(about|resource|chrome|file):/.test(aURI))
-          return `about:blank?${aURI}`;
-        return aURI;
-      });
-      var tabs = await openURIsInTabs(uris, {
-        windowId: apiWindow.id
-      });
-      applyTreeStructureToTabs(tabs, aStructure);
-      // close initial blank tab
-      apiWindow = await browser.windows.get(apiWindow.id, {
-        populate: true
-      });
-      var restApiTabs = apiWindow.tabs.slice(1);
-      try {
-        await removeTabInternally(getTabById(apiWindow.tabs[0]));
-        // apply pinned state
-        for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
-          if (!aStructure[i].pinned)
-            break;
-          await browser.tabs.update(restApiTabs[i].id, {
-            pinned: true
-          });
-        }
-      }
-      catch(e) {
-        handleMissingTabError(e);
-      }
-    }));
-    if (structures.length > 0)
-      messages.push(
-        browser.i18n.getMessage(
-          'migration_tree_notification_message_withoutSession',
-          structures.length
-        )
-      );
-
-    notify({
-      title:   browser.i18n.getMessage('migration_tree_notification_title'),
-      message: messages.join('\n'),
-      icon:    kNOTIFICATION_DEFAULT_ICON,
-      timeout: -1
-    });
-
-  }
-  catch(e) {
-    log('failed to migrate tree: ', String(e), e.stack);
-    notify({
-      title:   browser.i18n.getMessage('migration_treeFailed_notification_title'),
-      message: `${browser.i18n.getMessage('migration_treeFailed_notification_message')}\n${String(e)}`,
-      icon:    kNOTIFICATION_DEFAULT_ICON,
-      timeout: -1
-    });
-  }
-
-  configs.migrateLegacyTreeStructure = false;
+  return browser.tabs.create({
+    url:    Constants.kSHORTHAND_URIS.startup,
+    active: true
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
-async function notifyNewFeatures() {
-  if (configs.notifiedFeaturesVersion >= kFEATURES_VERSION)
-    return;
-  configs.notifiedFeaturesVersion = kFEATURES_VERSION;
 
-  browser.tabs.create({
-    url:    kSHORTHAND_URIS.startup,
-    active: true
+// Auto-migration of bookmarked internal URLs
+//
+// Internal URLs like "moz-extension://(UUID)/..." are runtime environment
+// dependent and unavailable when such bookmarks are loaded in different
+// runtime environment, for example they are synchronized from other devices.
+// Thus we should migrate such internal URLs to universal shorthand URIs like
+// "ext+treestyletab:(name)".
+
+export async function migrateBookmarkUrls() {
+  const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
+  if (!granted)
+    return;
+
+  startBookmarksUrlAutoMigration();
+
+  const urls = new Set(configs.migratedBookmarkUrls);
+  const migrations = [];
+  const updates = [];
+  for (const key in Constants.kSHORTHAND_URIS) {
+    const url = Constants.kSHORTHAND_URIS[key].split('?')[0];
+    if (urls.has(url))
+      continue;
+
+    const shorthand = `ext+treestyletab:${key.toLowerCase()}`;
+    migrations.push(browser.bookmarks.search({ query: url })
+      .then(bookmarks => {
+        for (const bookmark of bookmarks) {
+          updates.push(browser.bookmarks.update(bookmark.id, {
+            url: bookmark.url.replace(url, shorthand)
+          }));
+        }
+      }));
+    urls.add(url);
+  }
+  if (migrations.length > 0)
+    await Promise.all(migrations);
+  if (updates.length > 0)
+    await Promise.all(updates);
+  if (urls.size > configs.migratedBookmarkUrls.length)
+    configs.migratedBookmarkUrls = Array.from(urls);
+}
+
+async function migrateBookmarkUrl(bookmark) {
+  for (const key in Constants.kSHORTHAND_URIS) {
+    const url = Constants.kSHORTHAND_URIS[key].split('?')[0];
+    if (!bookmark.url.startsWith(url))
+      continue;
+
+    const shorthand = `ext+treestyletab:${key.toLowerCase()}`;
+    return browser.bookmarks.update(bookmark.id, {
+      url: bookmark.url.replace(url, shorthand)
+    });
+  }
+}
+
+let mObservingBookmarks = false;
+
+async function startBookmarksUrlAutoMigration() {
+  if (mObservingBookmarks)
+    return;
+
+  mObservingBookmarks = true;
+
+  browser.bookmarks.onCreated.addListener((id, bookmark) => {
+    if (bookmark.url)
+      migrateBookmarkUrl(bookmark);
+  });
+
+  browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
+    if (changeInfo.url &&
+        changeInfo.url.startsWith(browser.extension.getURL(''))) {
+      const bookmark = await browser.bookmarks.get(id);
+      if (Array.isArray(bookmark))
+        bookmark.forEach(migrateBookmarkUrl);
+      else
+        migrateBookmarkUrl(bookmark);
+    }
   });
 }

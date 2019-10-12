@@ -5,9 +5,9 @@ All rights reserved.
 
 This project includes files licensed under different type licenses:
 
- * MPL 2.0
- * Triple-icense: MPL 1.1/GPL 2.0/LGPL 2.1
-   - allows redistribution of the licensed file under the tri-license as-is, or choose one of these three licenses.
- * MIT and other BSD-style licenses
+ * Mozilla Public License 2.0 (MPL 2.0)
+ * Mozilla Public License MPL 1.1 (MPL 1.1)
+ * MIT License
+ * Python Software Foundation License (PSFL)
 
-Please note that MPL 1.1, MPL 2.0, MIT and other BSD-style licenses are "per-file". In most cases each file includes a license header in itself. If a file has no license header due to some reasons (for example, image files), please see a file named "license.txt" in closest parent directory. Otherwise please treat the file is licensed under the default license declared at the top of this file.
+Please note that these licenses are applied "per-file". In most cases each file includes a license header in itself. If a file has no license header due to some reasons (for example, image files), please see a file named "license.txt" in closest parent directory. Otherwise please treat the file is licensed under the default license declared at the top of this file.

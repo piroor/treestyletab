@@ -2,6 +2,7 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<html>
 <meta charset="UTF-8">
 <link rel="favicon" href="">
 <title></title>
@@ -37,7 +38,7 @@
     display: inline-block;
     height: 1.25em;
     margin-right: 0.25em;
-    mask: url("/sidebar/styles/icons/folder-16.svg") no-repeat center / 100%;
+    mask: url("./icons/folder-16.svg") no-repeat center / 100%;
     width: 1.25em;
   }
 
@@ -65,13 +66,28 @@
     padding: 0 1em 0 0;
   }
 
-  #tabs img {
+  #tabs li img,
+  #tabs li.use-default-favicon a::before,
+  #tabs li.favicon-loading a::before {
     height: 16px;
     max-width: 16px;
     max-height: 16px;
-    position: relative;
-    top: 0.25em;
+    min-width: 16px;
     width: 16px;
+  }
+
+  #tabs li.use-default-favicon img,
+  #tabs li.favicon-loading img {
+    display: none;
+  }
+
+  #tabs li.use-default-favicon a::before,
+  #tabs li.favicon-loading a::before {
+    background: ButtonText;
+    display: none;
+    content: "";
+    display: inline-block;
+    mask: url("./icons/globe-16.svg") no-repeat center / 100%;
   }
 
   #tabs li {
@@ -106,17 +122,101 @@
     margin: 0 0 0 20px;
     padding: 0;
   }
+
+
+  :root {
+    --throbber-size: 1em;
+  }
+
+  @keyframes throbber {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  :root:not(.updating) .throbber {
+    display: none !important;
+  }
+
+  :root.updating .throbber {
+    display: inline-block;
+    font-size: var(--throbber-size);
+    height: var(--throbber-size);
+    max-height: var(--throbber-size);
+    max-width: var(--throbber-size);
+    overflow: hidden;
+    padding: 0;
+    pointer-events: none;
+    position: relative;
+    width: var(--throbber-size);
+
+    position: absolute;
+    top: calc(50% - var(--throbber-size));
+    left: calc(50% - var(--throbber-size));
+    transform: scale(2, 2);
+  }
+
+  :root.updating .throbber::before {
+    animation: throbber 1.05s steps(60) infinite;
+    background: Highlight;
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+    content: "";
+    fill: Highlight;
+    height: var(--throbber-size);
+    position: absolute;
+    width: calc(var(--throbber-size) * 60);
+    mask: url("/sidebar/styles/throbber.svg") no-repeat left center / 100%;
+  }
+
+
+  #optionHint {
+    background: #0c0c0dCC;
+    border-radius: 0.5em;
+    box-shadow: 0.2em 0.2em 0.5em rgba(0, 0, 0, 0.35);
+    color: #efefef;
+    display: none;
+    line-height: 1;
+    margin: 1em 0 0 1em;
+    opacity: 0.75;
+    padding: 0.5em;
+    position: fixed;
+    right: 0.5em;
+    top: 0.5em;
+    transition: opacity 150ms ease-out;
+    z-idnex: 1000;
+  }
+  #optionHint:hover {
+    opacity: 1;
+  }
+
+  #optionHint a {
+    color: white;
+  }
+
+  #dismissOptionHint {
+    background: white;
+    border: none;
+    display: inline-block;
+    height: 1em;
+    mask: url("/sidebar/styles/icons/close-16.svg") no-repeat center / 100%;
+    vertical-align: text-bottom;
+    width: 1em;
+  }
 </style>
 <!--
   Don't load scripts dynamically, to prevent the tab is closed by Firefox.
   See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
-<script type="application/javascript" src="/common/l10n.js"></script>
-<script type="application/javascript" src="./group-tab.js"></script>
+<script defer type="application/javascript" src="/common/l10n.js"></script>
+<script defer type="application/javascript" src="./group-tab.js"></script>
 -->
 <main>
 <header>
 <h1><span id="title"></span><input id="title-field" type="text"></h1>
-<p><label><input id="temporary" type="checkbox">__MSG_groupTab_temporary_label__</label></p>
+<p><label><input id="temporary" type="checkbox">__MSG_groupTab_temporary_label__</label>
+   <label><input id="temporaryAggressive" type="checkbox">__MSG_groupTab_temporaryAggressive_label__</label></p>
+<p id="optionHint"><a href="#">__MSG_groupTab_options_label__</a>
+                   <button id="dismissOptionHint" title="__MSG_groupTab_options_dismiss__"></button></p>
 </header>
 <div id="tabs"></div>
+<span class="throbber"></span>
 </main>
+</html>

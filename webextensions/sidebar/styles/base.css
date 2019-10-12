@@ -8,7 +8,7 @@
 :root {
   /* default size, they will be overridden. */
   --favicon-size: 16px;
-  --tab-height: 32px;
+  --tab-size: 32px;
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
 
@@ -40,18 +40,24 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
 
+  /* macOS workaround */
   --scrollbar-placeholder-size: 1em;
-}
 
-.tab.faviconized {
-  --unread-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                 var(--tab-highlighted-highlight) 3%,
-                                                 var(--tab-highlighted-glow) 10%,
-                                                 var(--tab-surface) 20%);
-  --unread-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                       var(--tab-highlighted-highlight) 3%,
-                                                       var(--tab-highlighted-glow) 10%,
-                                                       var(--tab-surface) 23%);
+  --multiselected-color: transparent;
+  --multiselected-color-opacity: 0.15;
+}
+.tab {
+  --tab-current-size: var(--tab-size);
+  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
+  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
+  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                               var(--tab-highlighted-highlight) 3%,
+                                               var(--tab-highlighted-glow) 10%,
+                                               rgba(255, 255, 255, 0) 20%);
+  --attention-marker-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                                     var(--tab-highlighted-highlight) 3%,
+                                                     var(--tab-highlighted-glow) 10%,
+                                                     rgba(255, 255, 255, 0) 23%);
 }
 
 @keyframes blink {
@@ -62,6 +68,17 @@
 
 :root.debug * {
   outline: 1px dotted rgba(255, 0, 0, 0.5);
+}
+
+/* Show internal tab id in the debug mode */
+:root.debug .tab::after {
+  content: attr(data-tab-id);
+  opacity: 0.65;
+}
+:root.debug .tab.faviconized::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 
 /* This is required to prevent dragging of images (ex. favicon).
@@ -90,8 +107,10 @@ button {
   font: message-box; /* this is same to Firefox's UI. */
 }
 
+#tabbar-container,
 #tabbar,
-#background {
+#background,
+#subpanel-container {
   bottom: 0;
   left: 0;
   margin: 0;
@@ -102,8 +121,17 @@ button {
   top: 0;
   z-index: 100;
 }
+
+#tabbar {
+  position: absolute;
+}
+
 #tabbar.overflow {
   overflow-y: scroll;
+}
+
+:root.initializing #tabbar {
+  opacity: 0;
 }
 
 :root.animation #tabbar {
@@ -117,32 +145,16 @@ button {
 }
 
 /* put scrollbar leftside */
-:root.left-scrollbar #tabbar {
+:root.left #tabbar {
   direction: rtl;
 }
-:root.left-scrollbar #all-tabs,
-:root.left-scrollbar #tabbar .after-tabs {
+:root.left #all-tabs,
+:root.left #tabbar .after-tabs {
   direction: ltr;
 }
 
-/* narrow scrollbar */
-
-:root.left-scrollbar.narrow-scrollbar #tabbar.overflow {
-  margin-left: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
-}
-
-:root.right-scrollbar.narrow-scrollbar #tabbar.overflow {
-  margin-right: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
-}
-
-/* no scrollbar */
-
-:root.left-scrollbar.no-scrollbar #tabbar.overflow {
-  margin-left: calc(0px - var(--scrollbar-size));
-}
-
-:root.right-scrollbar.no-scrollbar #tabbar.overflow {
-  margin-right: calc(0px - var(--scrollbar-size));
+#tabbar {
+  scrollbar-width: thin;
 }
 
 
@@ -233,13 +245,13 @@ ul {
 .tab.removing,
 .tab:not(.pinned).collapsed,
 .tab.duplicating {
-  margin-top: calc(0px - var(--tab-height));
+  margin-top: calc(0px - var(--tab-size));
   opacity: 0;
   pointer-events: none;
   z-index: -100;
 }
 
-.tab:not(.pinned).collapsed-completely {
+.tab:not(.pinned).collapsed.collapsed-completely {
   visibility: collapse;
 }
 
@@ -262,8 +274,10 @@ ul {
   order: -1;
 }
 
-.tab .active-marker,
+.tab .highlighter,
 .tab .burster,
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before,
 .tab .extra-items-container.behind {
   bottom: 0;
   left: 0;
@@ -273,12 +287,29 @@ ul {
   top: 0;
 }
 
-.tab .active-marker {
+.tab:not(.highlighted):not(.bundled-active) .highlighter,
+.tab:not(.bursting) .burster {
+  display: none;
+}
+
+.tab .highlighter {
   z-index: 5000;
 }
 
 .tab .burster {
   z-index: 4000;
+}
+
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before {
+  bottom: auto;
+  content: '';
+  height: var(--faviconized-tab-size);
+  left: var(--attention-marker-x-offset);
+  right: auto;
+  top: var(--attention-marker-y-offset);
+  width: var(--faviconized-tab-size);
+  z-index: 10;
 }
 
 .tab .extra-items-container.behind {
@@ -302,11 +333,12 @@ ul {
 }
 
 .tab.faviconized {
-  height: var(--faviconized-tab-size);
-  max-height: var(--faviconized-tab-size);
-  max-width: var(--faviconized-tab-size);
-  width: var(--faviconized-tab-size);
-  padding: calc((var(--faviconized-tab-size) - var(--favicon-size)) / 2);
+  --tab-current-size: var(--faviconized-tab-size);
+  height: var(--tab-current-size);
+  max-height: var(--tab-current-size);
+  max-width: var(--tab-current-size);
+  width: var(--tab-current-size);
+  padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 
 .tab.pinned .closebox,
@@ -317,12 +349,14 @@ ul {
   display: none;
 }
 
-.tab.faviconized.unread:not(.active):not(:hover) {
-  background-image: var(--unread-faviconized-gradient);
+.tab.faviconized.unread:not(.active):not(:hover) .favicon::before,
+.tab.attention:not(:hover) .favicon::before {
+  background-image: var(--attention-marker-gradient);
 }
 
-.tab.faviconized.unread:not(.active):hover {
-  background-image: var(--unread-faviconized-gradient-hover);
+.tab.faviconized.unread:not(.active):hover .favicon::before,
+.tab.attention:hover .favicon::before {
+  background-image: var(--attention-marker-gradient-hover);
 }
 
 
@@ -331,8 +365,25 @@ ul {
 .tab .label {
   flex-grow: 1;
   overflow: hidden;
-  text-overflow: ".."; /*ellipsis*/;
   white-space: nowrap;
+}
+
+:root:not([data-label-overflow="fade"]) .tab .label {
+  text-overflow: ".."; /*ellipsis*/;
+}
+
+:root[data-label-overflow="fade"] .tab .label.overflow {
+  mask-image: linear-gradient(to left, transparent 0, black 2em);
+}
+:root[data-label-overflow="fade"] .tab .label.overflow:dir(rtl),
+:root[data-label-overflow="fade"].rtl .tab .label.overflow {
+  direction: rtl;
+  mask-image: linear-gradient(to right, transparent 0, black 2em);
+}
+
+/* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
+.tab .label-content {
+  color: inherit;
 }
 
 .tab:not([data-child-ids]) .counter,
@@ -452,7 +503,7 @@ ul {
   justify-content: flex-end;
   left: 0;
   overflow: visible;
-  position: fixed;
+  position: absolute;
   right: 0;
   z-index: 100;
 }
@@ -539,30 +590,29 @@ ul {
 }
 
 .newtab-action-selector-anchor::before,
-.contextual-identities-selector-anchor::before {
+.contextual-identities-selector-anchor::before,
+#subpanel-toggler::before {
   content: "▼";
   font-size: 0.65em;
   margin: 0.125em;
 }
 
-#contextual-identities-selector .icon {
-  display: inline-block;
-  height: 1em;
-  margin-right: 0.2em;
-  width: 1em;
+#contextual-identities-selector li {
+  /* (default padding defined in MenuUI.js) + (icon size) + (margin between icon and label) */
+  padding-left: calc((1em - 16px + 0.5em) + var(--favicon-size) + 0.2em);
 }
 
 
 #out-of-view-tab-notifier {
   background: transparent repeat-x bottom;
-  background-image: -moz-linear-gradient(
-                      bottom,
+  background-image: linear-gradient(
+                      to top,
                       var(--tab-highlighted-glow) 0,
                       transparent 100%
                     );
   display: none;
-  margin-top: calc(0 - var(--tab-height));
-  min-height: var(--tab-height);
+  margin-top: calc(0 - var(--tab-size));
+  min-height: var(--tab-size);
   pointer-events: none;
   position: relative;
   opacity: 0;
@@ -571,6 +621,108 @@ ul {
 #out-of-view-tab-notifier.notifying {
   animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
   display: block;
+}
+
+
+/* sub panel */
+
+#subpanel-container {
+  top: auto;
+}
+
+iframe#subpanel {
+  border: none;
+  height: auto;
+  margin: 0;
+  max-height: none;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#subpanel-header {
+  background: var(--tab-surface);
+  border-top: 1px solid var(--tab-border);
+  cursor: ns-resize;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  line-height: 1;
+  margin: 0;
+  padding: 0.3em 0.2em 0.2em;
+}
+
+#subpanel-container:not(.collapsed) #subpanel-header {
+  border-bottom: 1px solid var(--tab-border);
+}
+
+#subpanel-header-main {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#subpanel-selector-anchor,
+#subpanel-toggler {
+  background: none;
+  border: none;
+  color: var(--tab-text);
+  padding: 0 auto;
+}
+
+#subpanel-selector-anchor {
+  cursor: default;
+}
+
+#subpanel-selector-anchor > * {
+  pointer-events: none;
+}
+
+#subpanel-selector-anchor span.icon > img,
+#subpanel-selector span.icon > img {
+  height: 1em;
+  max-height: 1em;
+  max-width: 1em;
+  width: 1em;
+}
+
+#subpanel-selector-anchor span.icon > img:not([src]) {
+  display: none;
+}
+
+#subpanel-selector span.icon > :not([src]) {
+  visibility: hidden;
+}
+
+#subpanel-selector span.icon {
+  margin-right: 0.25em;
+}
+
+#subpanel-toggler {
+  cursor: default;
+  max-width: 1.5em;
+}
+
+#subpanel-container.collapsed #subpanel-toggler::before {
+  content: "▲";
+}
+
+
+
+/* fake context menu */
+
+#tabContextMenu:not([data-tab-id]) li.extra {
+  display: none !important;
+}
+
+
+/* bookmark dialog */
+
+.rich-confirm .bookmark-dialog input[type="text"],
+.rich-confirm .bookmark-dialog button {
+  max-width: 100%;
 }
 
 

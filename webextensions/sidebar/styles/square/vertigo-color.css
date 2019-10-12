@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK ***** 
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * Version: MPL 1.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -14,23 +14,11 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2017
+ * Portions created by the Initial Developer are Copyright (C) 2007-2019
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
  *                 lv7777 (https://github.com/lv7777)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
 
@@ -40,72 +28,90 @@
   --toolbar-non-lwt-bgcolor: #f9f9fa;
   --toolbar-non-lwt-textcolor: #0c0c0d;
 
-  --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-lighter, white);
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-active-text-inverted: var(--browser-bg-more-lighter, white);
-  --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
-  --tab-surface-hover: var(--browser-bg-less-lighter, #e0e8f6);
-  --tab-surface-active: var(--browser-bg-lighter, #c1d2ee);
-  --tab-surface-active-hover: var(--browser-bg-more-lighter, #d1e2fe);
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-less-lighter, #e0e8f6));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, #c1d2ee));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #d1e2fe));
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
   --tab-highlighted-base: var(--tab-surface);
 
-  --throbber-color: var(--browser-bg-lightest, --tab-highlighted-glow);
+  --throbber-color: var(--browser-loading-indicator, var(--browser-bg-lightest, var(--tab-highlighted-glow)));
+
+  --multiselected-color-opacity: 0.25;
 }
 
 :root,
 #background {
-  background: var(--tab-surface);
+  background-color: var(--browser-background, var(--tab-surface));
+  background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
 :root[color-scheme="system-color"] {
-  --tab-surface: var(--browser-bg-base, -moz-dialog);
-  --tab-surface-hover: var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter));
-  --tab-surface-active: var(--browser-bg-lighter, var(--face-highlight-lighter));
-  --tab-surface-active-hover: var(--browser-bg-more-lighter, var(--face-highlight-more-lighter));
+  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter)));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, var(--face-highlight-lighter)));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-lighter)));
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-lighter, -moz-dialog);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
   --tab-active-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
-  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 }
 
 .tab,
 .after-tabs button {
-  background: var(--tab-surface);
+  background: transparent;
   color: var(--tab-text);
+  text-shadow: var(--browser-textshadow-for-header-image, none);
+}
+
+.tab.active,
+.tab.bundled-active,
+.tab:hover {
+  background: var(--tab-surface);
 }
 
 .tab * {
   color: var(--tab-text);
 }
 
-.tab:not(.collapsed):not(.active):hover,
+.tab:not(.active):not(.bundled-active):hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
 }
 
-.tab.active {
-  --tab-surface: var(--tab-surface-active);
-  --throbber-color: var(--tab-highlighted-glow);
+.tab.active,
+.tab.bundled-active {
+  --throbber-color: var(--browser-loading-indicator, var(--tab-highlighted-glow));
   --tab-text: var(--tab-active-text);
   --tab-text-inverted: var(--tab-active-text-inverted);
 }
-.tab:not(.collapsed).active:hover {
+.tab.active {
+  --tab-surface: var(--tab-surface-active);
+}
+.tab.active:hover,
+.tab.bundled-active {
   --tab-surface: var(--tab-surface-active-hover);
 }
-
-.tab:not(.active) {
-  --throbber-color: ThreeDDarkShadow;
+.tab.bundled-active:hover {
+  --tab-surface: var(--tab-surface-hover);
 }
 
-.tab:not(.active) .burster {
-  --throbber-color: #B5C5E0;
+.tab:not(.active):not(.bundled-active):not(.bundled-active) {
+  --throbber-color: var(--browser-loading-indicator, ThreeDDarkShadow);
+}
+
+.tab:not(.active):not(.bundled-active):not(.bundled-active) .burster {
+  --throbber-color: var(--browser-loading-indicator, #B5C5E0);
 }
