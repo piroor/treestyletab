@@ -156,7 +156,7 @@
   }
 
   :root.updating .throbber::before {
-    animation: throbber 1.05s steps(60) infinite;
+    animation: throbber 1.05s steps(30) infinite; /* The FPS is reduced from 60 to 30 at https://bugzilla.mozilla.org/show_bug.cgi?id=1511095 */
     background: Highlight;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
     content: "";

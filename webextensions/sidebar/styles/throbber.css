@@ -9,7 +9,7 @@
   --throbber-color: var(--browser-loading-indicator, Highlight);
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
-  --throbber-animation-steps: steps(60);
+  --throbber-animation-steps: steps(30); /* The FPS is reduced from 60 to 30 at https://bugzilla.mozilla.org/show_bug.cgi?id=1511095 */
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
