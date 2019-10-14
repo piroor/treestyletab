@@ -106,7 +106,7 @@
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
-  "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешения" },
+  "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
   "bookmark_notification_notPermitted_message": { "message": "Нет разрешения на создание закладок. Нажмите здесь, чтобы предоставить разрешения." },
 
   "dropLinksOnTabBehavior_message": { "message": "Как это открыть?" },
@@ -203,6 +203,8 @@
   "context_collapsed_label": { "message": "Свернуто (проверка меню типа флажок" },
   "context_pinnedTab_label": { "message": "Прикреплено (проверка меню типа переключатель" },
   "context_unpinnedTab_label": { "message": "Откреплено (проверка меню типа переключатель" },
+
+  "context_openAllBookmarksWithStructure_label": { "message": "Открыть все как дерево" },
 
 
   "config_title": { "message": "Настройки Tree Style Tab" },
@@ -410,6 +412,8 @@
   "config_userStyleRules_description_after": { "message": " вики." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
+
+
 
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
 
