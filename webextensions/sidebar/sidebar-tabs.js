@@ -27,7 +27,11 @@ import * as CollapseExpand from './collapse-expand.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { TabCloseBoxElement, CloseBoxTooltipType } from './components/TabCloseBoxElement.js';
+import {
+  kTAB_CLOSE_BOX_ELEMENT_NAME,
+  TabCloseBoxElement,
+  CloseBoxTooltipType,
+} from './components/TabCloseBoxElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -51,7 +55,7 @@ export function init() {
   // I have not concluded the best practice about it yet,
   // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
   // in the application initialization phase.
-  window.customElements.define(Constants.kTAB_CLOSE_BOX_ELEMENT, TabCloseBoxElement);
+  TabCloseBoxElement.define();
 
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
@@ -107,7 +111,7 @@ function getDescendantsCounter(tab) {
 }
 
 export function getClosebox(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(Constants.kTAB_CLOSE_BOX_ELEMENT);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
 }
 
 
@@ -559,7 +563,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   soundButton.classList.add(Constants.kSOUND_BUTTON);
   tabElement.appendChild(soundButton);
 
-  const closebox = document.createElement(Constants.kTAB_CLOSE_BOX_ELEMENT);
+  const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
   tabElement.appendChild(closebox);
 
   const burster = document.createElement('span');
