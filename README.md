@@ -124,7 +124,7 @@ All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyle
 
 Please read some important points of this project at first:
 
- * *TST is basically designed to be used as an alternative permanently-shown tab bar, instead of Firefox's native tab bar.*
+ * *TST is basically designed to be used as an permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
    * To avoid users' confusion, TST respects Firefox's built-in behavior and features around the tab bar - tab context menu, gestures, and so on.
  * And, of course *TST is designed to work with "tree of tabs"*.
    * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess relation of tabs automatically, from the context.
@@ -143,6 +143,10 @@ Note that some topics are just about "legacy" versions of TST.
  * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on, is [available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
 
 And more:
+
+### I don't want to see the regular horizontal tab bar (top tab bar) of Firefox itself
+
+This is because, since major changes in Firefox 57, there is no way for the extension itself to hide the built-in tab strip. [As a workaround, you can hide it yourself by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
 
 ### I don't need automatically organized tree, instead I just want to organize tree by myself
 
