@@ -318,5 +318,3 @@ export const kSHORTHAND_URIS = {
 };
 
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
-
-export const kTAB_CLOSE_BOX_ELEMENT = 'tab-closebox';

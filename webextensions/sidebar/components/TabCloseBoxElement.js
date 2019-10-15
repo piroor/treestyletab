@@ -21,7 +21,13 @@ function getTooltipLabelKey(tooltipType) {
   }
 }
 
+export const kTAB_CLOSE_BOX_ELEMENT_NAME = 'tab-closebox';
+
 export class TabCloseBoxElement extends HTMLElement {
+  static define() {
+    window.customElements.define(kTAB_CLOSE_BOX_ELEMENT_NAME, TabCloseBoxElement);
+  }
+
   constructor() {
     super();
 

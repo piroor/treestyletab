@@ -14,6 +14,8 @@ import * as Constants from '/common/constants.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
+import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('sidebar/event-utils', ...args);
@@ -61,7 +63,7 @@ export function isEventFiredOnSoundButton(event) {
 
 export function isEventFiredOnClosebox(event) {
   const target = getElementTarget(event);
-  return target && target.closest && !!target.closest(Constants.kTAB_CLOSE_BOX_ELEMENT);
+  return target && target.closest && !!target.closest(kTAB_CLOSE_BOX_ELEMENT_NAME);
 }
 
 export function isEventFiredOnNewTabButton(event) {
