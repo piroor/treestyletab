@@ -27,7 +27,7 @@ import * as CollapseExpand from './collapse-expand.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { TSTCloseBoxElement, CloseBoxTooltipType } from './components/TSTCloseBoxElement.js';
+import { TabCloseBoxElement, CloseBoxTooltipType } from './components/TabCloseBoxElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -51,7 +51,7 @@ export function init() {
   // I have not concluded the best practice about it yet,
   // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
   // in the application initialization phase.
-  window.customElements.define(Constants.kTAB_CLOSE_BOX_ELEMENT, TSTCloseBoxElement);
+  window.customElements.define(Constants.kTAB_CLOSE_BOX_ELEMENT, TabCloseBoxElement);
 
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 

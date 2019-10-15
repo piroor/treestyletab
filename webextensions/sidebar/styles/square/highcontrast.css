@@ -78,13 +78,13 @@
 }
 
 
-/* tst-tab-closebox */
+/* tab-closebox */
 
-.tab tst-tab-closebox:hover {
+.tab tab-closebox:hover {
   --tab-text: HighlightText;
   opacity: 0.75;
 }
-.tab tst-tab-closebox:hover::before {
+.tab tab-closebox:hover::before {
   --tab-text: Highlight;
   border-radius: 0;
   height: calc(var(--svg-small-icon-size) + 0.3em);
@@ -94,11 +94,11 @@
   width: calc(var(--svg-small-icon-size) + 0.3em);
 }
 
-.tab.active tst-tab-closebox:hover {
+.tab.active tab-closebox:hover {
   --tab-text: Highlight;
   opacity: 0.5;
 }
-.tab.active tst-tab-closebox:hover::before {
+.tab.active tab-closebox:hover::before {
   --tab-text: HighlightText;
 }
 

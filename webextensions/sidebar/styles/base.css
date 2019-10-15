@@ -263,14 +263,14 @@ ul {
 :root.left .tab .twisty {
   order: -1;
 }
-:root.left .tab tst-tab-closebox {
+:root.left .tab tab-closebox {
   order: 10000;
 }
 
 :root.right .tab .twisty {
   order: 10000;
 }
-:root.right .tab tst-tab-closebox {
+:root.right .tab tab-closebox {
   order: -1;
 }
 
@@ -341,7 +341,7 @@ ul {
   padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 
-.tab.pinned tst-tab-closebox,
+.tab.pinned tab-closebox,
 .tab.faviconized :-moz-any(
   .twisty,
   .label
@@ -400,15 +400,15 @@ ul {
 }
 
 
-/* tst-tab-closebox */
+/* tab-closebox */
 
-tst-tab-closebox {
+tab-closebox {
   line-height: 0;
   opacity: var(--button-opacity);
   position: relative;
 }
 
-tst-tab-closebox::after {
+tab-closebox::after {
   /*
     There are some possible characters for this purpose:
     https://en.wikipedia.org/wiki/X_mark
@@ -449,17 +449,17 @@ tst-tab-closebox::after {
   height: var(--svg-small-icon-size);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill tst-tab-closebox::after {
+:root.simulate-svg-context-fill tab-closebox::after {
   background: var(--tab-text);
   mask: url("./icons/close-16.svg") no-repeat center / 100%;
 }
 
 
-.tab:not(.collapsed) tst-tab-closebox:hover {
+.tab:not(.collapsed) tab-closebox:hover {
   opacity: var(--button-hover-opacity);
 }
 
-.tab:not(.collapsed) tst-tab-closebox:active {
+.tab:not(.collapsed) tab-closebox:active {
   opacity: var(--button-active-opacity);
 }
 
