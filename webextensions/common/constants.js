@@ -124,7 +124,6 @@ export const kSOUND_BUTTON    = 'sound-button';
 export const kTWISTY          = 'twisty';
 export const kLABEL           = 'label';
 export const kCOUNTER         = 'counter';
-export const kCLOSEBOX        = 'closebox';
 export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';

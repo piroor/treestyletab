@@ -1,5 +1,3 @@
-import * as Constants from '/common/constants.js';
-
 export class TSTCloseBoxElement extends HTMLElement {
   constructor() {
     super();
@@ -19,7 +17,6 @@ export class TSTCloseBoxElement extends HTMLElement {
     //      "6. If result has children, then throw a "NotSupportedError" DOMException."
     //  * `connectedCallback()` may be called multiple times by append/remove operations.
     //  * `browser.i18n.getMessage()` might be a costly operation.
-    this.classList.add(Constants.kCLOSEBOX);
     this.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
     this.setAttribute('draggable', true); // this is required to cancel click by dragging
 
