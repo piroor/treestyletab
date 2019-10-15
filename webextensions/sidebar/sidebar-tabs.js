@@ -27,6 +27,8 @@ import * as CollapseExpand from './collapse-expand.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
+import { TSTCloseBoxElement } from './components/TSTCloseBoxElement.js';
+
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
 }
@@ -41,6 +43,16 @@ export const wholeContainer = document.querySelector('#all-tabs');
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
+  // If we call `window.customElements.define(localName, constructor)`;` from a file defining a custom element,
+  // it would be a side-effect and happen accidentally that defining a custom element
+  // when we import a new file which defines a new custom element.
+  // It causes a complex side-effect relations and usually causes a bug. It's tough to fix.
+  //
+  // I have not concluded the best practice about it yet,
+  // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
+  // in the application initialization phase.
+  window.customElements.define(Constants.kTAB_CLOSE_BOX_ELEMENT, TSTCloseBoxElement);
+
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
@@ -95,7 +107,7 @@ function getDescendantsCounter(tab) {
 }
 
 export function getClosebox(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kCLOSEBOX}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(Constants.kTAB_CLOSE_BOX_ELEMENT);
 }
 
 
@@ -546,10 +558,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   soundButton.classList.add(Constants.kSOUND_BUTTON);
   tabElement.appendChild(soundButton);
 
-  const closebox = document.createElement('span');
-  closebox.classList.add(Constants.kCLOSEBOX);
-  closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
-  closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
+  const closebox = document.createElement(Constants.kTAB_CLOSE_BOX_ELEMENT);
   tabElement.appendChild(closebox);
 
   const burster = document.createElement('span');

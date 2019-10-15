@@ -48,13 +48,13 @@
 }
 
 /* expand closebox to fill full height of tab */
-.tab .closebox {
+.tab tst-tab-closebox {
   margin-bottom: var(--tab-closebox-negative-offset);
   margin-top: var(--tab-closebox-negative-offset);
   padding: var(--tab-closebox-offset) 0.25em;
 }
 
-.tab .closebox::before {
+.tab tst-tab-closebox::before {
   border-radius: 10%;
   content: "";
   display: inline-block;
@@ -65,17 +65,17 @@
   position: absolute;
 }
 
-.tab .closebox:hover::before {
+.tab tst-tab-closebox:hover::before {
   background: var(--tab-text);
   box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
   opacity: 0.1;
 }
 
-.tab.active .closebox:hover::before {
+.tab.active tst-tab-closebox:hover::before {
   background: var(--tab-text);
 }
 
-.tab .closebox::after {
+.tab tst-tab-closebox::after {
   position: relative;
 }
 

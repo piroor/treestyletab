@@ -89,7 +89,7 @@
   --tab-surface: var(--tab-surface-active-hover);
 }
 
-.closebox {
+tst-tab-closebox {
   background: none transparent;
   border: none 0 transparent;
   margin: 0;
