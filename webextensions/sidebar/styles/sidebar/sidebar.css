@@ -117,10 +117,10 @@
 }
 
 /* Keep the close button at a safe distance from the tab label. */
-tst-tab-closebox::after {
+tab-closebox::after {
   display: none;
 }
-tst-tab-closebox {
+tab-closebox {
   width: 1.5em;
   min-width: 1.5em;
   height: 1.5em;
@@ -130,16 +130,16 @@ tst-tab-closebox {
   border: 0 none;
 }
 
-tst-tab-closebox:active {
+tab-closebox:active {
   opacity: 0.46;  /* turn black into #8a8a8a */
 }
 
-.tab.active tst-tab-closebox {
+.tab.active tab-closebox {
   background-image: url("closetab-white.png");
   opacity: 1;
 }
 
-.tab:not(.active):not(:hover) tst-tab-closebox {
+.tab:not(.active):not(:hover) tab-closebox {
   display: none;
 }
 
@@ -238,14 +238,14 @@ tst-tab-closebox:active {
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
 :root
   .tab:not(:hover):not(.active)
-  tst-tab-closebox {
+  tab-closebox {
   display: -moz-box !important;
   visibility: collapse !important;
 }
 
 
 /* for Multiple Tab Handler */
-.tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] tst-tab-closebox {
+.tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] tab-closebox {
   visibility: visible;
 }
 

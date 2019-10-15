@@ -21,7 +21,7 @@ function getTooltipLabelKey(tooltipType) {
   }
 }
 
-export class TSTCloseBoxElement extends HTMLElement {
+export class TabCloseBoxElement extends HTMLElement {
   constructor() {
     super();
 
