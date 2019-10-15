@@ -27,7 +27,7 @@ import * as CollapseExpand from './collapse-expand.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { TSTCloseBoxElement } from './components/TSTCloseBoxElement.js';
+import { TSTCloseBoxElement, CloseBoxTooltipType } from './components/TSTCloseBoxElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -145,14 +145,15 @@ export async function reserveToUpdateCloseboxTooltip(tab) {
 }
 
 function updateCloseboxTooltip(tab) {
-  let tooltip;
+  let tooltipType;
   if (tab.$TST.multiselected)
-    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip_multiselected');
+    tooltipType = CloseBoxTooltipType.MultiSelected;
   else if (tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
-    tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
+    tooltipType = CloseBoxTooltipType.Tree;
   else
-    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
-  getClosebox(tab).setAttribute('title', tooltip);
+    tooltipType = CloseBoxTooltipType.Normal;
+
+  getClosebox(tab).updateTooltip(tooltipType);
 }
 
 function updateDescendantsCount(tab) {
