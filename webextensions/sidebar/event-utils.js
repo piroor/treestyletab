@@ -61,7 +61,7 @@ export function isEventFiredOnSoundButton(event) {
 
 export function isEventFiredOnClosebox(event) {
   const target = getElementTarget(event);
-  return target && target.closest && !!target.closest(`.${Constants.kCLOSEBOX}`);
+  return target && target.closest && !!target.closest(Constants.kTAB_CLOSE_BOX_ELEMENT);
 }
 
 export function isEventFiredOnNewTabButton(event) {
