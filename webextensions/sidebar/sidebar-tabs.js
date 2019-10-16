@@ -550,13 +550,6 @@ Tab.onInitialized.addListener((tab, _info) => {
   tabElement.insertBefore(twisty, label);
 
   const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-  const faviconImage = favicon.appendChild(document.createElement('img'));
-  faviconImage.classList.add(Constants.kFAVICON_IMAGE);
-  const defaultIcon = favicon.appendChild(document.createElement('span'));
-  defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
-  defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
-  const throbber = favicon.appendChild(document.createElement('span'));
-  throbber.classList.add(Constants.kTHROBBER);
   tabElement.insertBefore(favicon, label);
 
   const counter = document.createElement('span');
