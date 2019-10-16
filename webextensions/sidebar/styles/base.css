@@ -276,8 +276,8 @@ ul {
 
 .tab .highlighter,
 .tab .burster,
-.tab.faviconized.unread .favicon::before,
-.tab.attention .favicon::before,
+.tab.faviconized.unread tab-favicon::before,
+.tab.attention tab-favicon::before,
 .tab .extra-items-container.behind {
   bottom: 0;
   left: 0;
@@ -300,8 +300,8 @@ ul {
   z-index: 4000;
 }
 
-.tab.faviconized.unread .favicon::before,
-.tab.attention .favicon::before {
+.tab.faviconized.unread tab-favicon::before,
+.tab.attention tab-favicon::before {
   bottom: auto;
   content: '';
   height: var(--faviconized-tab-size);
@@ -349,13 +349,13 @@ ul {
   display: none;
 }
 
-.tab.faviconized.unread:not(.active):not(:hover) .favicon::before,
-.tab.attention:not(:hover) .favicon::before {
+.tab.faviconized.unread:not(.active):not(:hover) tab-favicon::before,
+.tab.attention:not(:hover) tab-favicon::before {
   background-image: var(--attention-marker-gradient);
 }
 
-.tab.faviconized.unread:not(.active):hover .favicon::before,
-.tab.attention:hover .favicon::before {
+.tab.faviconized.unread:not(.active):hover tab-favicon::before,
+.tab.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 

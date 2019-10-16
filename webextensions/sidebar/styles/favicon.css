@@ -5,7 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-.favicon {
+tab-favicon {
   display: inline-block;
   font-size: var(--favicon-size);
   height: var(--favicon-size);
@@ -19,11 +19,11 @@
   white-space: pre;
   width: var(--favicon-size);
 }
-.tab .favicon,
-.tab .favicon * {
+.tab tab-favicon,
+.tab tab-favicon * {
   vertical-align: baseline;
 }
-.tab .favicon * {
+.tab tab-favicon * {
   position: relative;
   z-index: 20;
 }

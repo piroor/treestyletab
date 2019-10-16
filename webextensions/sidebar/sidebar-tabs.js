@@ -104,7 +104,7 @@ function getTwisty(tab) {
 }
 
 function getFavIcon(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kFAVICON}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_FAVICON_ELEMENT_NAME);
 }
 
 function getSoundButton(tab) {
@@ -550,7 +550,6 @@ Tab.onInitialized.addListener((tab, _info) => {
   tabElement.insertBefore(twisty, label);
 
   const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-  favicon.classList.add(Constants.kFAVICON);
   const faviconImage = favicon.appendChild(document.createElement('img'));
   faviconImage.classList.add(Constants.kFAVICON_IMAGE);
   const defaultIcon = favicon.appendChild(document.createElement('span'));

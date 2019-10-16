@@ -67,7 +67,7 @@
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
-.favicon {
+tab-favicon {
   background: url("icon-bg.png") no-repeat bottom;
   background-size: 100%;
   padding: 0 3px 3px;
@@ -100,8 +100,8 @@ tab-closebox {
   padding: 2px 4px 2px 3px;
 }
 
-.tab.faviconized.unread .favicon::before,
-.tab.attention .favicon::before {
+.tab.faviconized.unread tab-favicon::before,
+.tab.attention tab-favicon::before {
   left: calc(var(--attention-marker-x-offset) + 3px);
 }
 
