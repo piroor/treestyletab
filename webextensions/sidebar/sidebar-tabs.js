@@ -29,12 +29,10 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   kTAB_CLOSE_BOX_ELEMENT_NAME,
-  TabCloseBoxElement,
   CloseBoxTooltipType,
 } from './components/TabCloseBoxElement.js';
 import {
   kTAB_FAVICON_ELEMENT_NAME,
-  TabFaviconElement,
 } from './components/TabFaviconElement.js';
 
 function log(...args) {
@@ -51,17 +49,6 @@ export const wholeContainer = document.querySelector('#all-tabs');
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
-  // If we call `window.customElements.define(localName, constructor)`;` from a file defining a custom element,
-  // it would be a side-effect and happen accidentally that defining a custom element
-  // when we import a new file which defines a new custom element.
-  // It causes a complex side-effect relations and usually causes a bug. It's tough to fix.
-  //
-  // I have not concluded the best practice about it yet,
-  // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
-  // in the application initialization phase.
-  TabCloseBoxElement.define();
-  TabFaviconElement.define();
-
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);

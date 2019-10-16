@@ -29,6 +29,10 @@ import * as MetricsData from '/common/metrics-data.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
+
+import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
+import { TabFaviconElement } from './components/TabFaviconElement.js';
+
 import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -91,6 +95,21 @@ UserOperationBlocker.block({ throbber: true });
 export async function init() {
   MetricsData.add('init: start');
   log('initialize sidebar on load');
+
+  // If we call `window.customElements.define(localName, constructor)`;` from a file defining a custom element,
+  // it would be a side-effect and happen accidentally that defining a custom element
+  // when we import a new file which defines a new custom element.
+  // It causes a complex side-effect relations and usually causes a bug. It's tough to fix.
+  //
+  // I have not concluded the best practice about it yet,
+  // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
+  // in the application initialization phase.
+  //
+  // XXX:
+  //  We define our custom elements at first to avoid a problem which calls a method of custom element
+  //  which has not been defined yet.
+  TabCloseBoxElement.define();
+  TabFaviconElement.define();
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
