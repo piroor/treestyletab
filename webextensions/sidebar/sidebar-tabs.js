@@ -32,6 +32,10 @@ import {
   TabCloseBoxElement,
   CloseBoxTooltipType,
 } from './components/TabCloseBoxElement.js';
+import {
+  kTAB_FAVICON_ELEMENT_NAME,
+  TabFaviconElement,
+} from './components/TabFaviconElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -56,6 +60,7 @@ export function init() {
   // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
   // in the application initialization phase.
   TabCloseBoxElement.define();
+  TabFaviconElement.define();
 
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
@@ -544,7 +549,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   tabElement.insertBefore(twisty, label);
 
-  const favicon = document.createElement('span');
+  const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
   favicon.classList.add(Constants.kFAVICON);
   const faviconImage = favicon.appendChild(document.createElement('img'));
   faviconImage.classList.add(Constants.kFAVICON_IMAGE);

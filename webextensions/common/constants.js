@@ -6,7 +6,7 @@
 'use strict';
 
 export const kBACKGROUND_CONTENTS_VERSION = 5;
-export const kSIDEBAR_CONTENTS_VERSION    = 10;
+export const kSIDEBAR_CONTENTS_VERSION    = 11;
 
 export const kCOMMAND_GET_INSTANCE_ID                = 'treestyletab:get-instance-id';
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
