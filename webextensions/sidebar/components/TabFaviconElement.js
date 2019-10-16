@@ -44,4 +44,8 @@ export class TabFaviconElement extends HTMLElement {
 
     this._isInitialized = true;
   }
+
+  getImageElement() {
+    return this.firstElementChild;
+  }
 }
