@@ -71,7 +71,7 @@ export class TabCloseBoxElement extends HTMLElement {
   }
 
   updateTooltip(tooltipType) {
-    const key = getTooltipLabelKey(tooltipType);
+    const key     = getTooltipLabelKey(tooltipType);
     const tooltip = browser.i18n.getMessage(key);
     this.setAttribute('title', tooltip);
   }
