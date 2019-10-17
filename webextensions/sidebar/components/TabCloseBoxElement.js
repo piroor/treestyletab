@@ -1,3 +1,9 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
 const NORMAL_TOOLTIP = 'tab_closebox_tab_tooltip';
 const MULTISELECTED_TOOLTIP = 'tab_closebox_tab_tooltip_multiselected';
 const TREE_TOOLTIP = 'tab_closebox_tree_tooltip';
