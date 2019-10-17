@@ -2,6 +2,8 @@ import * as Constants from '/common/constants.js';
 
 export const kTAB_FAVICON_ELEMENT_NAME = 'tab-favicon';
 
+const KFAVICON_CLASS_NAME = 'favicon';
+
 export class TabFaviconElement extends HTMLElement {
   static define() {
     window.customElements.define(kTAB_FAVICON_ELEMENT_NAME, TabFaviconElement);
@@ -33,6 +35,10 @@ export class TabFaviconElement extends HTMLElement {
     //      * This includes that we need to move almost CSS code into this file as a string.
     //    * I'm not sure about that whether we should require [CSS Shadow Parts](https://bugzilla.mozilla.org/show_bug.cgi?id=1559074).
     //      * I suspect we can resolve almost problems by using CSS Custom Properties.
+
+    // We preserve this class for backward compatibility with other addons.
+    this.classList.add(KFAVICON_CLASS_NAME);
+
     const faviconImage = this.appendChild(document.createElement('img'));
     faviconImage.classList.add(Constants.kFAVICON_IMAGE);
     const defaultIcon = this.appendChild(document.createElement('span'));
