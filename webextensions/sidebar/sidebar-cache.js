@@ -34,6 +34,8 @@ function log(...args) {
   internalLogger('sidebar/sidebar-cache', ...args);
 }
 
+const kCONTENTS_VERSION = 11;
+
 export const onRestored = new EventListenerManager();
 
 let mTracking = false;
@@ -137,7 +139,7 @@ export async function getEffectiveWindowCache(options = {}) {
         version: cache && cache.version
       }));
       log('getEffectiveWindowCache: verify cache (1)', { cache, tabsDirty, collapsedDirty });
-      if (cache && cache.version == Constants.kSIDEBAR_CONTENTS_VERSION) {
+      if (cache && cache.version == kCONTENTS_VERSION) {
         log('getEffectiveWindowCache: restore sidebar from cache');
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
@@ -507,7 +509,7 @@ async function updateCachedTabbar() {
   log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
-    version: Constants.kSIDEBAR_CONTENTS_VERSION,
+    version: kCONTENTS_VERSION,
     tabbar: {
       contents:        SidebarTabs.wholeContainer.innerHTML,
       style:           mTabBar.getAttribute('style'),

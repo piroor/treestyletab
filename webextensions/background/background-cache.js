@@ -27,6 +27,8 @@ function log(...args) {
   internalLogger('background/background-cache', ...args);
 }
 
+const kCONTENTS_VERSION = 5;
+
 let mActivated = false;
 
 export function activate() {
@@ -95,7 +97,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
-      cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
+      cache.version != kCONTENTS_VERSION ||
       !signatureMatched) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
     TabsInternalOperation.clearCache(owner);
@@ -151,7 +153,7 @@ function signatureFromTabsCache(cachedTabs) {
 
 async function restoreTabsFromCache(windowId, params = {}) {
   if (!params.cache ||
-      params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
+      params.cache.version != kCONTENTS_VERSION)
     return false;
 
   return (await restoreTabsFromCacheInternal({
@@ -376,7 +378,7 @@ async function cacheTree(windowId) {
     return;
   log('cacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
-    version:         Constants.kBACKGROUND_CONTENTS_VERSION,
+    version:         kCONTENTS_VERSION,
     tabs:            TabsStore.windows.get(windowId).export(true),
     pinnedTabsCount: Tab.getPinnedTabs(windowId).length,
     signature
