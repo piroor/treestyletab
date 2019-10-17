@@ -26,7 +26,7 @@ export class TabFaviconElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (this.querySelector(`.${Constants.kFAVICON_IMAGE}`)) {
+    if (this.initialized) {
       return;
     }
 
@@ -60,6 +60,10 @@ export class TabFaviconElement extends HTMLElement {
 
     const throbber = this.appendChild(document.createElement('span'));
     throbber.classList.add(Constants.kTHROBBER);
+  }
+
+  get initialized() {
+    return !!this.querySelector(`.${Constants.kFAVICON_IMAGE}`);
   }
 
   attributeChangedCallback(name, oldValue, newValue, _namespace) {
