@@ -62,7 +62,7 @@ export class TabCloseBoxElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLOSE_BOX_CLASS_NAME);
 
-    this.setAttribute('title', browser.i18n.getMessage(NORMAL_TOOLTIP));
+    this.updateTooltip(CloseBoxTooltipType.Normal);
     this.setAttribute('draggable', true); // this is required to cancel click by dragging
 
     this._initialized = true;
