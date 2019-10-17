@@ -18,10 +18,13 @@ function getTooltipLabelKey(tooltipType) {
   switch (tooltipType) {
     case CloseBoxTooltipType.Normal:
       return NORMAL_TOOLTIP;
+
     case CloseBoxTooltipType.MultiSelected:
       return MULTISELECTED_TOOLTIP;
+
     case CloseBoxTooltipType.Tree:
       return TREE_TOOLTIP;
+
     default:
       throw new RangeError(`${tooltipType} is not unknown TooltipType`);
   }
@@ -47,9 +50,8 @@ export class TabCloseBoxElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (this.initialized) {
+    if (this.initialized)
       return;
-    }
 
     // I make ensure to call these operation only once conservatively because:
     //  * If we do these operations in a constructor of this class, Gecko throws `NotSupportedError: Operation is not supported`.

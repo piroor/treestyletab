@@ -26,9 +26,8 @@ export class TabFaviconElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (this.initialized) {
+    if (this.initialized)
       return;
-    }
 
     // I make ensure to call these operation only once conservatively because:
     //  * If we do these operations in a constructor of this class, Gecko throws `NotSupportedError: Operation is not supported`.
@@ -72,10 +71,10 @@ export class TabFaviconElement extends HTMLElement {
     }
 
     switch (name) {
-      case kATTR_NAME_SRC: {
+      case kATTR_NAME_SRC:
         this._updateSrc(newValue);
         break;
-      }
+
       default:
         throw new RangeError(`Handling \`${name}\` attribute has not been defined.`);
     }
@@ -83,9 +82,8 @@ export class TabFaviconElement extends HTMLElement {
 
   _updateSrc(newValue) {
     const img = this._getImageElement();
-    if (!img) {
+    if (!img)
       return;
-    }
     img.setAttribute(kATTR_NAME_SRC, newValue);
   }
 
