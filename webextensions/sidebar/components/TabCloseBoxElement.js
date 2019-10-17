@@ -42,11 +42,7 @@ export class TabCloseBoxElement extends HTMLElement {
   constructor() {
     super();
 
-    this._initialized = false;
-  }
-
-  get initialized() {
-    return this._initialized;
+    this.initialized = false;
   }
 
   connectedCallback() {
@@ -67,7 +63,7 @@ export class TabCloseBoxElement extends HTMLElement {
     this.updateTooltip(CloseBoxTooltipType.Normal);
     this.setAttribute('draggable', true); // this is required to cancel click by dragging
 
-    this._initialized = true;
+    this.initialized = true;
   }
 
   updateTooltip(tooltipType) {
