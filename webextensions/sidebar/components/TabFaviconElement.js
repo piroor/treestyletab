@@ -4,9 +4,15 @@ export const kTAB_FAVICON_ELEMENT_NAME = 'tab-favicon';
 
 const KFAVICON_CLASS_NAME = 'favicon';
 
+const kATTR_NAME_SRC = 'src';
+
 export class TabFaviconElement extends HTMLElement {
   static define() {
     window.customElements.define(kTAB_FAVICON_ELEMENT_NAME, TabFaviconElement);
+  }
+
+  static get observedAttributes() {
+    return [kATTR_NAME_SRC];
   }
 
   constructor() {
@@ -41,6 +47,9 @@ export class TabFaviconElement extends HTMLElement {
 
     const faviconImage = this.appendChild(document.createElement('img'));
     faviconImage.classList.add(Constants.kFAVICON_IMAGE);
+    const src = this.getAttribute(kATTR_NAME_SRC);
+    faviconImage.setAttribute(kATTR_NAME_SRC, src);
+
     const defaultIcon = this.appendChild(document.createElement('span'));
     defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
     defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
@@ -51,7 +60,35 @@ export class TabFaviconElement extends HTMLElement {
     this._isInitialized = true;
   }
 
-  getImageElement() {
+  attributeChangedCallback(name, oldValue, newValue, _namespace) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    switch (name) {
+      case kATTR_NAME_SRC: {
+        this._updateSrc(newValue);
+        break;
+      }
+      default:
+        throw new RangeError(`Handling \`${name}\` attribute has not been defined.`);
+    }
+  }
+
+  _updateSrc(newValue) {
+    const img = this._getImageElement();
+    if (!img) {
+      return;
+    }
+    img.setAttribute(kATTR_NAME_SRC, newValue);
+  }
+
+  _getImageElement() {
     return this.firstElementChild;
+  }
+
+  // These setter/getter is required by webextensions-lib-tab-favicon-helper
+  set src(value) {
+    this.setAttribute(kATTR_NAME_SRC, value);
   }
 }

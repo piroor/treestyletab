@@ -107,7 +107,7 @@ tab-favicon {
 }
 
 
-.tab.group-tab .favicon-image[src]:not(.error) {
+.tab.group-tab tab-favicon:not(.error) .favicon-image[src] {
   bottom: 0;
   max-height: 10px;
   max-width: 10px;
@@ -117,14 +117,14 @@ tab-favicon {
 }
 
 
-.favicon-image.error,
+tab-favicon.error .favicon-image,
 .favicon-image:not([src]),
 .tab[data-current-uri^="chrome:"] .favicon-image,
 .tab[data-current-uri^="about:addons"] .favicon-image,
 .tab[data-current-uri^="about:debugging"] .favicon-image,
 .tab[data-current-uri^="about:preferences"] .favicon-image,
 .tab:not(.group-tab):not([data-current-uri^="chrome:"]):not([data-current-uri^="about:addons"]):not([data-current-uri^="about:debugging"]):not([data-current-uri^="about:preferences"])
-  .favicon-image[src]:not(.error) ~ .favicon-builtin::before,
+  tab-favicon:not(.error) .favicon-image[src] ~ .favicon-builtin::before,
 .tab.loading .favicon-image,
 .tab.loading .favicon-builtin::before {
   display: none !important;

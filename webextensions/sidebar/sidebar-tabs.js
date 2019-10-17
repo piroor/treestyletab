@@ -606,7 +606,7 @@ export function applyStatesToElement(tab) {
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab).getImageElement(),
+    image: getFavIcon(tab),
     tab,
     url: openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl
   });
@@ -1176,7 +1176,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.favIconUrl = message.favIconUrl;
       TabFavIconHelper.loadToImage({
-        image: getFavIcon(tab).getImageElement(),
+        image: getFavIcon(tab),
         tab,
         url: message.favIconUrl
       });
