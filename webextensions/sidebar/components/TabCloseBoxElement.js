@@ -4,14 +4,14 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-const NORMAL_TOOLTIP = 'tab_closebox_tab_tooltip';
+const NORMAL_TOOLTIP        = 'tab_closebox_tab_tooltip';
 const MULTISELECTED_TOOLTIP = 'tab_closebox_tab_tooltip_multiselected';
-const TREE_TOOLTIP = 'tab_closebox_tree_tooltip';
+const TREE_TOOLTIP          = 'tab_closebox_tree_tooltip';
 
 export const CloseBoxTooltipType = Object.freeze({
-  Normal: 'normal',
+  Normal:        'normal',
   MultiSelected: 'multiselected',
-  Tree: 'tree',
+  Tree:          'tree',
 });
 
 function getTooltipLabelKey(tooltipType) {
