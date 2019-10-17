@@ -29,9 +29,11 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   kTAB_CLOSE_BOX_ELEMENT_NAME,
-  TabCloseBoxElement,
   CloseBoxTooltipType,
 } from './components/TabCloseBoxElement.js';
+import {
+  kTAB_FAVICON_ELEMENT_NAME,
+} from './components/TabFaviconElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -47,16 +49,6 @@ export const wholeContainer = document.querySelector('#all-tabs');
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
-  // If we call `window.customElements.define(localName, constructor)`;` from a file defining a custom element,
-  // it would be a side-effect and happen accidentally that defining a custom element
-  // when we import a new file which defines a new custom element.
-  // It causes a complex side-effect relations and usually causes a bug. It's tough to fix.
-  //
-  // I have not concluded the best practice about it yet,
-  // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
-  // in the application initialization phase.
-  TabCloseBoxElement.define();
-
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
@@ -99,7 +91,7 @@ function getTwisty(tab) {
 }
 
 function getFavIcon(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kFAVICON}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_FAVICON_ELEMENT_NAME);
 }
 
 function getSoundButton(tab) {
@@ -544,15 +536,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   tabElement.insertBefore(twisty, label);
 
-  const favicon = document.createElement('span');
-  favicon.classList.add(Constants.kFAVICON);
-  const faviconImage = favicon.appendChild(document.createElement('img'));
-  faviconImage.classList.add(Constants.kFAVICON_IMAGE);
-  const defaultIcon = favicon.appendChild(document.createElement('span'));
-  defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
-  defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
-  const throbber = favicon.appendChild(document.createElement('span'));
-  throbber.classList.add(Constants.kTHROBBER);
+  const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
   tabElement.insertBefore(favicon, label);
 
   const counter = document.createElement('span');
@@ -622,7 +606,7 @@ export function applyStatesToElement(tab) {
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab).firstChild,
+    image: getFavIcon(tab),
     tab,
     url: openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl
   });
@@ -1192,7 +1176,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.favIconUrl = message.favIconUrl;
       TabFavIconHelper.loadToImage({
-        image: getFavIcon(tab).firstChild,
+        image: getFavIcon(tab),
         tab,
         url: message.favIconUrl
       });

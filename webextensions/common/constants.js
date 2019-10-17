@@ -6,7 +6,7 @@
 'use strict';
 
 export const kBACKGROUND_CONTENTS_VERSION = 5;
-export const kSIDEBAR_CONTENTS_VERSION    = 10;
+export const kSIDEBAR_CONTENTS_VERSION    = 11;
 
 export const kCOMMAND_GET_INSTANCE_ID                = 'treestyletab:get-instance-id';
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
@@ -113,7 +113,6 @@ export const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed'; // obsolete
 export const kPERSISTENT_ORIGINAL_OPENER_TAB_ID            = 'data-original-opener-tab-id';
 export const kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER = 'data-already-grouped-for-pinned-opener';
 
-export const kFAVICON         = 'favicon';
 export const kFAVICON_IMAGE   = 'favicon-image';
 export const kFAVICON_BUILTIN = 'favicon-builtin';
 export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions

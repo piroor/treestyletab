@@ -23,6 +23,8 @@ function getTooltipLabelKey(tooltipType) {
 
 export const kTAB_CLOSE_BOX_ELEMENT_NAME = 'tab-closebox';
 
+const kTAB_CLOSE_BOX_CLASS_NAME = 'closebox';
+
 export class TabCloseBoxElement extends HTMLElement {
   static define() {
     window.customElements.define(kTAB_CLOSE_BOX_ELEMENT_NAME, TabCloseBoxElement);
@@ -46,6 +48,10 @@ export class TabCloseBoxElement extends HTMLElement {
     //      "6. If result has children, then throw a "NotSupportedError" DOMException."
     //  * `connectedCallback()` may be called multiple times by append/remove operations.
     //  * `browser.i18n.getMessage()` might be a costly operation.
+
+    // We preserve this class for backward compatibility with other addons.
+    this.classList.add(kTAB_CLOSE_BOX_CLASS_NAME);
+
     this.setAttribute('title', browser.i18n.getMessage(NORMAL_TOOLTIP));
     this.setAttribute('draggable', true); // this is required to cancel click by dragging
 
