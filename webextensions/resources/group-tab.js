@@ -310,6 +310,10 @@
       item.classList.add('use-default-favicon');
     }
 
+    if (Array.isArray(tab.states) &&
+        tab.states.includes('group-tab'))
+      item.classList.add('group-tab');
+
     const label = link.appendChild(document.createElement('span'));
     label.classList.add('label');
     label.textContent = tab.title;
