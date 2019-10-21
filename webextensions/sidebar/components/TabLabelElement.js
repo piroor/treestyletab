@@ -74,6 +74,10 @@ export class TabLabelElement extends HTMLElement {
     }
   }
 
+  get _tab() {
+    return this.closest('.tab');
+  }
+
   updateTextContent() {
     const content = this._content;
     if (!content)
@@ -82,7 +86,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   updateOverflow() {
-    const tab = this.closest('.tab');
+    const tab = this._tab;
     this.classList.toggle('overflow', tab && !tab.pinned && this._content.getBoundingClientRect().width > this.getBoundingClientRect().width);
   }
 

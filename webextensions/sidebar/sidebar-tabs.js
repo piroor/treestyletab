@@ -29,7 +29,6 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   kTAB_CLOSE_BOX_ELEMENT_NAME,
-  CloseBoxTooltipType,
 } from './components/TabCloseBoxElement.js';
 import {
   kTAB_FAVICON_ELEMENT_NAME,
@@ -128,27 +127,7 @@ function updateTwistyTooltip(tab) {
 }
 
 export async function reserveToUpdateCloseboxTooltip(tab) {
-  if (tab.$TST.reservedUpdateCloseboxTooltip)
-    return;
-  tab.$TST.reservedUpdateCloseboxTooltip = () => {
-    delete tab.$TST.reservedUpdateCloseboxTooltip;
-    updateCloseboxTooltip(tab);
-  };
-  const element = await tab.$TST.promisedElement;
-  if (element)
-    element.addEventListener('mouseover', tab.$TST.reservedUpdateCloseboxTooltip, { once: true });
-}
-
-function updateCloseboxTooltip(tab) {
-  let tooltipType;
-  if (tab.$TST.multiselected)
-    tooltipType = CloseBoxTooltipType.MultiSelected;
-  else if (tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
-    tooltipType = CloseBoxTooltipType.Tree;
-  else
-    tooltipType = CloseBoxTooltipType.Normal;
-
-  getClosebox(tab).updateTooltip(tooltipType);
+  getClosebox(tab).invalidate();
 }
 
 function updateDescendantsCount(tab) {
