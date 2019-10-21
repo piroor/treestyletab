@@ -1223,6 +1223,14 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addControllableTab(tab);
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      reserveToUpdateCloseboxTooltip(tab);
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
       if (message.collapsed)
         return;
