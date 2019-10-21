@@ -26,8 +26,10 @@ export class TabFaviconElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (this.initialized)
+    if (this.initialized) {
+      this.applySrc();
       return;
+    }
 
     // I make ensure to call these operation only once conservatively because:
     //  * If we do these operations in a constructor of this class, Gecko throws `NotSupportedError: Operation is not supported`.
@@ -59,10 +61,12 @@ export class TabFaviconElement extends HTMLElement {
 
     const throbber = this.appendChild(document.createElement('span'));
     throbber.classList.add(Constants.kTHROBBER);
+
+    this.applySrc();
   }
 
   get initialized() {
-    return !!this.querySelector(`.${Constants.kFAVICON_IMAGE}`);
+    return !!this._imgElement;
   }
 
   attributeChangedCallback(name, oldValue, newValue, _namespace) {
@@ -72,7 +76,7 @@ export class TabFaviconElement extends HTMLElement {
 
     switch (name) {
       case kATTR_NAME_SRC:
-        this._updateSrc(newValue);
+        this.applySrc();
         break;
 
       default:
@@ -80,14 +84,14 @@ export class TabFaviconElement extends HTMLElement {
     }
   }
 
-  _updateSrc(newValue) {
-    const img = this._getImageElement();
+  applySrc() {
+    const img = this._imgElement;
     if (!img)
       return;
-    img.setAttribute(kATTR_NAME_SRC, newValue);
+    img.setAttribute(kATTR_NAME_SRC, this.getAttribute(kATTR_NAME_SRC));
   }
 
-  _getImageElement() {
+  get _imgElement() {
     return this.firstElementChild;
   }
 
