@@ -75,12 +75,12 @@ tab-favicon {
   left: -3px;
 }
 
-.tab .label,
+.tab tab-label,
 .tab .counter {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-.tab .label {
+.tab tab-label {
   margin-left: 0.25em;
 }
 

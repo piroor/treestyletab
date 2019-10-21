@@ -344,7 +344,7 @@ ul {
 .tab.pinned tab-closebox,
 .tab.faviconized :-moz-any(
   .twisty,
-  .label
+  tab-label
 ) {
   display: none;
 }
@@ -362,27 +362,27 @@ ul {
 
 /* tab label */
 
-.tab .label {
+.tab tab-label {
   flex-grow: 1;
   overflow: hidden;
   white-space: nowrap;
 }
 
-:root:not([data-label-overflow="fade"]) .tab .label {
+:root:not([data-label-overflow="fade"]) .tab tab-label {
   text-overflow: ".."; /*ellipsis*/;
 }
 
-:root[data-label-overflow="fade"] .tab .label.overflow {
+:root[data-label-overflow="fade"] .tab tab-label.overflow {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
-:root[data-label-overflow="fade"] .tab .label.overflow:dir(rtl),
-:root[data-label-overflow="fade"].rtl .tab .label.overflow {
+:root[data-label-overflow="fade"] .tab tab-label.overflow:dir(rtl),
+:root[data-label-overflow="fade"].rtl .tab tab-label.overflow {
   direction: rtl;
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
-.tab .label-content {
+.tab tab-label-content {
   color: inherit;
 }
 
