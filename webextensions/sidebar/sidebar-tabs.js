@@ -34,6 +34,9 @@ import {
 import {
   kTAB_FAVICON_ELEMENT_NAME,
 } from './components/TabFaviconElement.js';
+import {
+  kTAB_LABEL_ELEMENT_NAME,
+} from './components/TabLabelElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -79,11 +82,7 @@ export function getTabFromDOMNode(node, options = {}) {
 }
 
 function getLabel(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kLABEL}`);
-}
-
-function getLabelContent(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kLABEL}-content`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_LABEL_ELEMENT_NAME);
 }
 
 function getTwisty(tab) {
@@ -362,7 +361,7 @@ export function updateLabelOverflow(tab) {
   const label = getLabel(tab);
   if (!label)
     return;
-  label.classList.toggle('overflow', !tab.pinned && label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width);
+  label.updateOverflow();
   tab.$TST.tooltipIsDirty = true;
 }
 
@@ -525,10 +524,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
   tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
 
-  const label = document.createElement('span');
-  label.classList.add(Constants.kLABEL);
-  const labelContent = label.appendChild(document.createElement('span'));
-  labelContent.classList.add(`${Constants.kLABEL}-content`);
+  const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
   tabElement.appendChild(label);
 
   const twisty = document.createElement('span');
@@ -596,7 +592,7 @@ export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
   const classList = tab.$TST.classList;
 
-  getLabelContent(tab).textContent = tab.title;
+  getLabel(tab).value = tab.title;
   tab.$TST.element.dataset.title = tab.title;
   tab.$TST.tooltipIsDirty = true;
   if (configs.labelOverflowStyle == 'fade' &&
@@ -1161,7 +1157,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.$TST.label = message.label;
       tab.$TST.element.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
-      getLabelContent(tab).textContent = message.title;
+      getLabel(tab).value = message.title;
       tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
           !tab.$TST.labelIsDirty &&

@@ -32,6 +32,7 @@ import Window from '/common/Window.js';
 
 import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
 import { TabFaviconElement } from './components/TabFaviconElement.js';
+import { TabLabelElement } from './components/TabLabelElement.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
@@ -110,6 +111,7 @@ export async function init() {
   //  which has not been defined yet.
   TabCloseBoxElement.define();
   TabFaviconElement.define();
+  TabLabelElement.define();
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
