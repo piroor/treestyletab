@@ -126,7 +126,7 @@ function updateTwistyTooltip(tab) {
   getTwisty(tab).setAttribute('title', tooltip);
 }
 
-export async function reserveToUpdateCloseboxTooltip(tab) {
+function invalidateClosebox(tab) {
   getClosebox(tab).invalidate();
 }
 
@@ -308,7 +308,7 @@ export function updateAll() {
   // updateDescendantsHighlighted() refers results of descendants.
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
     reserveToUpdateTwistyTooltip(tab);
-    reserveToUpdateCloseboxTooltip(tab);
+    invalidateClosebox(tab);
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
     tab.$TST.tooltipIsDirty = true;
@@ -846,7 +846,7 @@ function tryApplyUpdate(update) {
   tab.$TST.tooltiplIsDirty = true;
 
   if (highlightedChanged) {
-    reserveToUpdateCloseboxTooltip(tab);
+    invalidateClosebox(tab);
     for (const ancestor of tab.$TST.ancestors) {
       updateDescendantsHighlighted(ancestor);
     }
@@ -857,7 +857,7 @@ function tryApplyUpdate(update) {
       const activeTab = Tab.getActiveTab(tab.windowId);
       if (activeTab) {
         reserveToUpdateSoundButtonTooltip(activeTab);
-        reserveToUpdateCloseboxTooltip(activeTab);
+        invalidateClosebox(activeTab);
       }
     }, 50);
   }
@@ -1228,7 +1228,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      reserveToUpdateCloseboxTooltip(tab);
+      invalidateClosebox(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
@@ -1242,7 +1242,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
       reserveToUpdateTwistyTooltip(tab);
-      reserveToUpdateCloseboxTooltip(tab);
+      invalidateClosebox(tab);
       if (mPromisedInitialized)
         await mPromisedInitialized;
       tab.$TST.tooltipIsDirty = true;
@@ -1327,7 +1327,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.children = message.childIds;
 
       reserveToUpdateTwistyTooltip(tab);
-      reserveToUpdateCloseboxTooltip(tab);
+      invalidateClosebox(tab);
       if (message.newlyAttached || message.detached) {
         const ancestors = [tab].concat(tab.$TST.ancestors);
         for (const ancestor of ancestors) {
