@@ -24,15 +24,15 @@ import Window from '/common/Window.js';
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
 
-import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
-import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
-import { kTAB_FAVICON_ELEMENT_NAME } from './components/TabFaviconElement.js';
 import { kTAB_LABEL_ELEMENT_NAME } from './components/TabLabelElement.js';
-import { kTAB_COUNTER_ELEMENT_NAME } from './components/TabCounterElement.js';
-import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './components/TabSoundButtonElement.js';
+
+import {
+  kTAB_ELEMENT_NAME,
+  TabInvalidationTarget,
+  TabUpdateTarget,
+} from './components/TabElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -81,38 +81,6 @@ function getLabel(tab) {
   return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_LABEL_ELEMENT_NAME);
 }
 
-function getTwisty(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_TWISTY_ELEMENT_NAME);
-}
-
-function getFavIcon(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_FAVICON_ELEMENT_NAME);
-}
-
-function getSoundButton(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-}
-
-function getDescendantsCounter(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_COUNTER_ELEMENT_NAME);
-}
-
-export function getClosebox(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
-}
-
-
-function invalidateTwisty(tab) {
-  getTwisty(tab).invalidate();
-}
-
-function invalidateClosebox(tab) {
-  getClosebox(tab).invalidate();
-}
-
-function updateDescendantsCount(tab) {
-  getDescendantsCounter(tab).update();
-}
 
 function updateDescendantsHighlighted(tab) {
   const children = tab.$TST.children;
@@ -250,10 +218,6 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-function invalidateSoundButton(tab) {
-  getSoundButton(tab).invalidate();
-}
-
 
 export function updateAll() {
   updateLoadingState();
@@ -261,9 +225,8 @@ export function updateAll() {
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
-    invalidateTwisty(tab);
-    invalidateClosebox(tab);
-    updateDescendantsCount(tab);
+    tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
+    tab.$TST.updateElement(TabUpdateTarget.Counter);
     updateDescendantsHighlighted(tab);
     tab.$TST.tooltipIsDirty = true;
     if (configs.labelOverflowStyle == 'fade' &&
@@ -447,52 +410,12 @@ Tab.onInitialized.addListener((tab, _info) => {
     return;
   }
 
-  tabElement = document.createElement('li');
+  tabElement = document.createElement(kTAB_ELEMENT_NAME);
   tab.$TST.bindElement(tabElement);
-  tabElement.$TST = tab.$TST;
-  tabElement.apiTab = tab;
 
-  tab.$TST.classList.add('tab');
   tab.$TST.setAttribute('id', id);
   tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
   tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-
-  const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
-  tabElement.appendChild(label);
-
-  const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
-  tabElement.insertBefore(twisty, label);
-
-  const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-  tabElement.insertBefore(favicon, label);
-
-  const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
-  tabElement.appendChild(counter);
-
-  const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-  tabElement.appendChild(soundButton);
-
-  const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
-  tabElement.appendChild(closebox);
-
-  const burster = document.createElement('span');
-  burster.classList.add(Constants.kBURSTER);
-  tabElement.appendChild(burster);
-
-  const activeMarker = document.createElement('span');
-  activeMarker.classList.add(Constants.kHIGHLIGHTER);
-  tabElement.appendChild(activeMarker);
-
-  const identityMarker = document.createElement('span');
-  identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-  tabElement.appendChild(identityMarker);
-
-  const extraItemsContainerBehind = document.createElement('span');
-  extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
-  extraItemsContainerBehind.classList.add('behind');
-  tabElement.appendChild(extraItemsContainerBehind);
-
-  tabElement.setAttribute('draggable', true);
 
   applyStatesToElement(tab);
 
@@ -521,8 +444,7 @@ export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
   const classList = tab.$TST.classList;
 
-  getLabel(tab).value = tab.title;
-  tab.$TST.element.dataset.title = tab.title;
+  tab.$TST.element.title = tab.title;
   tab.$TST.tooltipIsDirty = true;
   if (configs.labelOverflowStyle == 'fade' &&
       !tab.$TST.labelIsDirty &&
@@ -530,11 +452,7 @@ export function applyStatesToElement(tab) {
     tab.$TST.labelIsDirty = true;
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
-  TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab),
-    tab,
-    url: openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl
-  });
+  tab.$TST.favIconUrl = openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl;
 
   for (const state of classList) {
     if (IGNORE_CLASS_STATES.has(state) ||
@@ -792,11 +710,11 @@ function tryApplyUpdate(update) {
       parent.$TST.inheritSoundStateFromChildren();
   }
 
-  invalidateSoundButton(tab);
+  tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
   tab.$TST.tooltiplIsDirty = true;
 
   if (highlightedChanged) {
-    invalidateClosebox(tab);
+    tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     for (const ancestor of tab.$TST.ancestors) {
       updateDescendantsHighlighted(ancestor);
     }
@@ -805,10 +723,7 @@ function tryApplyUpdate(update) {
     mReservedUpdateActiveTab = setTimeout(() => {
       mReservedUpdateActiveTab = null;
       const activeTab = Tab.getActiveTab(tab.windowId);
-      if (activeTab) {
-        invalidateSoundButton(activeTab);
-        invalidateClosebox(activeTab);
-      }
+      activeTab.$TST.invalidateElement(TabInvalidationTarget.SoundButton | TabInvalidationTarget.CloseBox);
     }, 50);
   }
 }
@@ -840,7 +755,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
             modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
             modified.includes(Constants.kTAB_STATE_MUTED)) {
-          invalidateSoundButton(tab);
+          tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
         }
       }
     }; break;
@@ -1100,11 +1015,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       tab.favIconUrl = message.favIconUrl;
-      TabFavIconHelper.loadToImage({
-        image: getFavIcon(tab),
-        tab,
-        url: message.favIconUrl
-      });
+      tab.$TST.favIconUrl = message.favIconUrl;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
@@ -1120,7 +1031,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-      invalidateSoundButton(tab);
+      tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
@@ -1178,7 +1089,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      invalidateClosebox(tab);
+      tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
@@ -1191,8 +1102,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      invalidateTwisty(tab);
-      invalidateClosebox(tab);
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
       if (mPromisedInitialized)
         await mPromisedInitialized;
       tab.$TST.tooltipIsDirty = true;
@@ -1276,12 +1186,11 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       tab.$TST.children = message.childIds;
 
-      invalidateTwisty(tab);
-      invalidateClosebox(tab);
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
       if (message.newlyAttached || message.detached) {
         const ancestors = [tab].concat(tab.$TST.ancestors);
         for (const ancestor of ancestors) {
-          updateDescendantsCount(ancestor);
+          ancestor.$TST.updateElement(TabUpdateTarget.Counter);
           updateDescendantsHighlighted(ancestor);
         }
       }

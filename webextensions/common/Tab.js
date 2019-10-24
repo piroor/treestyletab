@@ -153,6 +153,8 @@ export default class Tab {
   }
 
   bindElement(element) {
+    element.$TST   = this;
+    element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
     setTimeout(() => { // wait until initialization processes are completed
@@ -1095,6 +1097,24 @@ export default class Tab {
     this.children = exported.$TST.childIds || [];
 
     TabsStore.updateIndexesForTab(this.tab);
+  }
+
+
+  /* element utilities */
+
+  invalidateElement(targets) {
+    if (this.element && this.element.invalidate)
+      this.element.invalidate(targets);
+  }
+
+  updateElement(targets) {
+    if (this.element && this.element.update)
+      this.element.update(targets);
+  }
+
+  set favIconUrl(url) {
+    if (this.element && 'favIconUrl' in this.element)
+      this.element.favIconUrl = url;
   }
 }
 

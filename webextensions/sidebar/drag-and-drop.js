@@ -666,7 +666,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     mLastDragEnteredTarget = tab.$TST.element;
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
+      mLastDragEnteredTarget = tab.$TST.element.closeBoxElement;
     const windowId = TabsStore.getWindow();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
@@ -1221,7 +1221,7 @@ function onTSTAPIDragEnter(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab);
+    target = tab.$TST.element.closeBoxElement;
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!mDragTargetIsClosebox ||
@@ -1247,7 +1247,7 @@ function onTSTAPIDragExit(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab);
+    target = tab.$TST.element.closeBoxElement;
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;

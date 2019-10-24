@@ -36,6 +36,7 @@ import { TabFaviconElement } from './components/TabFaviconElement.js';
 import { TabLabelElement } from './components/TabLabelElement.js';
 import { TabCounterElement } from './components/TabCounterElement.js';
 import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
+import { TabElement } from './components/TabElement.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
@@ -118,6 +119,7 @@ export async function init() {
   TabLabelElement.define();
   TabCounterElement.define();
   TabSoundButtonElement.define();
+  TabElement.define();
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
