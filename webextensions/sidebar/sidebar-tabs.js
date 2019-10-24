@@ -26,8 +26,6 @@ import * as CollapseExpand from './collapse-expand.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { kTAB_LABEL_ELEMENT_NAME } from './components/TabLabelElement.js';
-
 import {
   kTAB_ELEMENT_NAME,
   TabInvalidationTarget,
@@ -51,8 +49,6 @@ export function init() {
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
-  if (configs.labelOverflowStyle == 'fade')
-    startObserveTabsOverflow();
 
   window.addEventListener('mouseover', event => {
     const tab = getTabFromDOMNode(event.target);
@@ -75,10 +71,6 @@ export function getTabFromDOMNode(node, options = {}) {
   if (options.force)
     return tab && tab.apiTab;
   return TabsStore.ensureLivingTab(tab && tab.apiTab);
-}
-
-function getLabel(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_LABEL_ELEMENT_NAME);
 }
 
 
@@ -167,8 +159,7 @@ windowId = ${tab.windowId}
     return;
   }
 
-  const label = getLabel(tab);
-  if (tab.pinned || label.classList.contains('overflow')) {
+  if (tab.pinned || tab.$TST.element.overflow) {
     tab.$TST.setAttribute('title', tab.$TST.tooltip);
   }
   else {
@@ -235,52 +226,9 @@ export function updateAll() {
   }
 }
 
-function startObserveTabsOverflow() {
-  const tabbar = document.getElementById('tabbar');
-  if (tabbar.$observingTabsOverflow)
-    return;
-  tabbar.addEventListener('overflow', onOverflow);
-  tabbar.addEventListener('underflow', onUnderflow);
-  tabbar.$observingTabsOverflow = true;
-}
-
-function endObserveTabsOverflow() {
-  const tabbar = document.getElementById('tabbar');
-  if (!tabbar.$observingTabsOverflow)
-    return;
-  tabbar.removeEventListener('overflow', onOverflow);
-  tabbar.removeEventListener('underflow', onUnderflow);
-  tabbar.$observingTabsOverflow = false;
-}
-
 export function updateLabelOverflow(tab) {
-  const label = getLabel(tab);
-  if (!label)
-    return;
-  label.updateOverflow();
+  tab.$TST.updateElement(TabUpdateTarget.Overflow);
   tab.$TST.tooltipIsDirty = true;
-}
-
-function onOverflow(event) {
-  const tab   = getTabFromDOMNode(event.target);
-  const label = getLabel(tab);
-  if (!label)
-    return;
-  if (event.target == label && !tab.pinned) {
-    label.classList.add('overflow');
-    tab.$TST.tooltipIsDirty = true;
-  }
-}
-
-function onUnderflow(event) {
-  const tab   = getTabFromDOMNode(event.target);
-  const label = getLabel(tab);
-  if (!label)
-    return;
-  if (event.target == label && !tab.pinned) {
-    label.classList.remove('overflow');
-    tab.$TST.tooltipIsDirty = true;
-  }
 }
 
 
@@ -565,10 +513,6 @@ configs.$addObserver(async changedKey => {
         for (const tab of Tab.getVisibleTabs(TabsStore.getWindow())) {
           updateLabelOverflow(tab);
         }
-        startObserveTabsOverflow();
-      }
-      else {
-        endObserveTabsOverflow();
       }
       break;
   }
@@ -999,9 +943,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      tab.$TST.label = message.label;
+      tab.$TST.label = tab.$TST.element.label = message.label;
       tab.$TST.element.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
-      getLabel(tab).value = message.title;
       tab.$TST.tooltipIsDirty = true;
       if (configs.labelOverflowStyle == 'fade' &&
           !tab.$TST.labelIsDirty &&

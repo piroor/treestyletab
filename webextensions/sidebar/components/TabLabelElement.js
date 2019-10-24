@@ -27,6 +27,7 @@ export class TabLabelElement extends HTMLElement {
   connectedCallback() {
     if (this.initialized) {
       this.updateTextContent();
+      this._startListening();
       return;
     }
 
@@ -53,6 +54,11 @@ export class TabLabelElement extends HTMLElement {
     content.classList.add(kCONTENT_CLASS_NAME);
 
     this.updateTextContent();
+    this._startListening();
+  }
+
+  disconnectedCallback() {
+    this._endListening();
   }
 
   get initialized() {
@@ -97,5 +103,43 @@ export class TabLabelElement extends HTMLElement {
   // These setter/getter is required by webextensions-lib-tab-label-helper
   set value(value) {
     this.setAttribute(kATTR_NAME_VALUE, value);
+  }
+
+  get overflow() {
+    return this.classList.contains('overflow');
+  }
+
+  _startListening() {
+    if (this.__onOverflow)
+      return;
+    this.addEventListener('overflow', this.__onOverflow = this._onOverflow.bind(this));
+    this.addEventListener('underflow', this.__onUnderflow = this._onUnderflow.bind(this));
+  }
+
+  _endListening() {
+    if (!this.__onOverflow)
+      return;
+    this.removeEventListener('overflow', this.__onOverflow);
+    this.removeEventListener('underflow', this.__onUnderflow);
+    delete this.__onOverflow;
+    delete this.__onUnderflow;
+  }
+
+  _onOverflow(_event) {
+    const tab = this._tab;
+    if (!tab || tab.$TST.tab.pinned)
+      return;
+
+    this.classList.add('overflow');
+    tab.$TST.tooltipIsDirty = true;
+  }
+
+  _onUnderflow(_event) {
+    const tab = this._tab;
+    if (!tab || tab.$TST.tab.pinned)
+      return;
+
+    this.classList.remove('overflow');
+    tab.$TST.tooltipIsDirty = true;
   }
 }
