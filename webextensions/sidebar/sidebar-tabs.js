@@ -39,6 +39,9 @@ import {
 import {
   kTAB_LABEL_ELEMENT_NAME,
 } from './components/TabLabelElement.js';
+import {
+  kTAB_COUNTER_ELEMENT_NAME,
+} from './components/TabCounterElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -100,7 +103,7 @@ function getSoundButton(tab) {
 }
 
 function getDescendantsCounter(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kCOUNTER}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_COUNTER_ELEMENT_NAME);
 }
 
 export function getClosebox(tab) {
@@ -117,14 +120,7 @@ function invalidateClosebox(tab) {
 }
 
 function updateDescendantsCount(tab) {
-  const counter = getDescendantsCounter(tab);
-  if (!counter)
-    return;
-  const descendants = tab.$TST.descendants;
-  let count = descendants.length;
-  if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
-    count += 1;
-  counter.textContent = count;
+  getDescendantsCounter(tab).update();
 }
 
 function updateDescendantsHighlighted(tab) {
@@ -498,8 +494,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
   tabElement.insertBefore(favicon, label);
 
-  const counter = document.createElement('span');
-  counter.classList.add(Constants.kCOUNTER);
+  const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
   tabElement.appendChild(counter);
 
   const soundButton = document.createElement('button');
