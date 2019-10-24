@@ -131,7 +131,7 @@ export class TabLabelElement extends HTMLElement {
       return;
 
     this.classList.add('overflow');
-    tab.$TST.tooltipIsDirty = true;
+    tab.invalidateTooltip();
   }
 
   _onUnderflow(_event) {
@@ -140,6 +140,6 @@ export class TabLabelElement extends HTMLElement {
       return;
 
     this.classList.remove('overflow');
-    tab.$TST.tooltipIsDirty = true;
+    tab.invalidateTooltip();
   }
 }

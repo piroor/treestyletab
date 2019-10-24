@@ -40,6 +40,8 @@ import * as BackgroundConnection from './background-connection.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
+import { TabInvalidationTarget } from './components/TabElement.js';
+
 function log(...args) {
   internalLogger('sidebar/collapse-expand', ...args);
 }
@@ -204,7 +206,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-      tab.$TST.tooltipIsDirty = true;
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.Tooltip);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {

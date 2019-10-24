@@ -50,12 +50,6 @@ export function init() {
 
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
 
-  window.addEventListener('mouseover', event => {
-    const tab = getTabFromDOMNode(event.target);
-    if (tab)
-      updateTabAndAncestorsTooltip(tab);
-  });
-
   mPromisedInitializedResolver();
   mPromisedInitialized = mPromisedInitializedResolver = null;
 }
@@ -114,70 +108,6 @@ function updateDescendantsHighlighted(tab) {
 }
 
 
-function updateTabAndAncestorsTooltip(tab) {
-  if (!TabsStore.ensureLivingTab(tab))
-    return;
-  for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
-    updateTooltip(updateTab);
-  }
-}
-
-function updateTooltip(tab) {
-  if (!TabsStore.ensureLivingTab(tab) ||
-      !tab.$TST.tooltipIsDirty)
-    return;
-
-  // on the "fade" mode, overflow style was already updated,
-  // so we don' need to update the status here.
-  if (configs.labelOverflowStyle != 'fade')
-    updateLabelOverflow(tab);
-
-  tab.$TST.tooltipIsDirty = false;
-
-  if (configs.debug) {
-    tab.$TST.tooltip = `
-${tab.title}
-#${tab.id}
-(${tab.$TST.element.className})
-uniqueId = <${tab.$TST.uniqueId.id}>
-duplicated = <${!!tab.$TST.uniqueId.duplicated}> / <${tab.$TST.uniqueId.originalTabId}> / <${tab.$TST.uniqueId.originalId}>
-restored = <${!!tab.$TST.uniqueId.restored}>
-tabId = ${tab.id}
-windowId = ${tab.windowId}
-`.trim();
-    tab.$TST.setAttribute('title', tab.$TST.tooltip);
-    return;
-  }
-
-  tab.$TST.tooltip = tab.title;
-  tab.$TST.tooltipWithDescendants = getTooltipWithDescendants(tab);
-
-  if (configs.showCollapsedDescendantsByTooltip &&
-      tab.$TST.subtreeCollapsed &&
-      tab.$TST.hasChild) {
-    tab.$TST.setAttribute('title', tab.$TST.tooltipWithDescendants);
-    return;
-  }
-
-  if (tab.pinned || tab.$TST.element.overflow) {
-    tab.$TST.setAttribute('title', tab.$TST.tooltip);
-  }
-  else {
-    tab.$TST.removeAttribute('title');
-  }
-}
-
-function getTooltipWithDescendants(tab) {
-  const tooltip = [`* ${tab.$TST.tooltip || tab.title}`];
-  for (const child of tab.$TST.children) {
-    if (!child.$TST.tooltipWithDescendants)
-      child.$TST.tooltipWithDescendants = getTooltipWithDescendants(child);
-    tooltip.push(child.$TST.tooltipWithDescendants.replace(/^/gm, '  '));
-  }
-  return tooltip.join('\n');
-}
-
-
 async function reserveToUpdateLoadingState() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
@@ -216,19 +146,12 @@ export function updateAll() {
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
-    tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
+    tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter);
     updateDescendantsHighlighted(tab);
-    tab.$TST.tooltipIsDirty = true;
-    if (configs.labelOverflowStyle == 'fade' &&
-        !tab.$TST.collapsed)
-      updateLabelOverflow(tab);
+    if (!tab.$TST.collapsed)
+      tab.$TST.updateElement(TabUpdateTarget.Overflow);
   }
-}
-
-export function updateLabelOverflow(tab) {
-  tab.$TST.updateElement(TabUpdateTarget.Overflow);
-  tab.$TST.tooltipIsDirty = true;
 }
 
 
@@ -393,11 +316,9 @@ export function applyStatesToElement(tab) {
   const classList = tab.$TST.classList;
 
   tab.$TST.element.title = tab.title;
-  tab.$TST.tooltipIsDirty = true;
-  if (configs.labelOverflowStyle == 'fade' &&
-      !tab.$TST.labelIsDirty &&
-      tab.$TST.collapsed)
-    tab.$TST.labelIsDirty = true;
+  tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
+  if (tab.$TST.collapsed)
+    tab.$TST.invalidateElement(TabInvalidationTarget.Overflow);
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   tab.$TST.favIconUrl = openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl;
@@ -485,35 +406,10 @@ export function applyCollapseExpandStateToElement(tab) {
 
 let mReservedUpdateActiveTab;
 
-let mDelayedResized = null;
-window.addEventListener('resize', () => {
-  if (mDelayedResized)
-    clearTimeout(mDelayedResized);
-  mDelayedResized = setTimeout(() => {
-    mDelayedResized = null;
-    for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
-      tab.$TST.tooltipIsDirty = true;
-    }
-  }, 250);
-});
-
 configs.$addObserver(async changedKey => {
   switch (changedKey) {
-    case 'showCollapsedDescendantsByTooltip':
-      if (mPromisedInitialized)
-        await mPromisedInitialized;
-      for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
-        tab.$TST.tooltipIsDirty = true;
-      }
-      break;
-
     case 'labelOverflowStyle':
       document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
-      if (configs.labelOverflowStyle == 'fade') {
-        for (const tab of Tab.getVisibleTabs(TabsStore.getWindow())) {
-          updateLabelOverflow(tab);
-        }
-      }
       break;
   }
 });
@@ -654,8 +550,7 @@ function tryApplyUpdate(update) {
       parent.$TST.inheritSoundStateFromChildren();
   }
 
-  tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
-  tab.$TST.tooltiplIsDirty = true;
+  tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton | TabInvalidationTarget.Tooltip);
 
   if (highlightedChanged) {
     tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
@@ -823,7 +718,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (mPromisedInitialized)
         await mPromisedInitialized;
       if (tab.$TST.parent)
-        tab.$TST.parent.$TST.tooltipIsDirty = true;
+        tab.$TST.parent.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
 
       tab.$TST.addState(Constants.kTAB_STATE_MOVING);
 
@@ -945,11 +840,9 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.$TST.label = tab.$TST.element.label = message.label;
       tab.$TST.element.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
-      tab.$TST.tooltipIsDirty = true;
-      if (configs.labelOverflowStyle == 'fade' &&
-          !tab.$TST.labelIsDirty &&
-          tab.$TST.collapsed)
-        tab.$TST.labelIsDirty = true;
+      tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
+      if (tab.$TST.collapsed)
+        tab.$TST.invalidateElement(TabInvalidationTarget.Overflow);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
@@ -1045,15 +938,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
-      if (mPromisedInitialized)
-        await mPromisedInitialized;
-      tab.$TST.tooltipIsDirty = true;
-      if (configs.labelOverflowStyle == 'fade' &&
-          tab.$TST.labelIsDirty) {
-        updateLabelOverflow(tab);
-        delete tab.$TST.labelIsDirty;
-      }
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
+      tab.$TST.updateElement(TabUpdateTarget.Overflow);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
@@ -1070,7 +956,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
-      tab.$TST.tooltipIsDirty = true;
+      tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
       tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
       const window = TabsStore.windows.get(message.windowId);
@@ -1129,7 +1015,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       tab.$TST.children = message.childIds;
 
-      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox);
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
       if (message.newlyAttached || message.detached) {
         const ancestors = [tab].concat(tab.$TST.ancestors);
         for (const ancestor of ancestors) {
@@ -1137,7 +1023,6 @@ BackgroundConnection.onMessage.addListener(async message => {
           updateDescendantsHighlighted(ancestor);
         }
       }
-      tab.$TST.tooltipIsDirty = true;
     }; break;
   }
 });

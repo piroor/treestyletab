@@ -36,7 +36,10 @@ import { TabFaviconElement } from './components/TabFaviconElement.js';
 import { TabLabelElement } from './components/TabLabelElement.js';
 import { TabCounterElement } from './components/TabCounterElement.js';
 import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
-import { TabElement } from './components/TabElement.js';
+import {
+  TabElement,
+  TabInvalidationTarget,
+} from './components/TabElement.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
@@ -798,7 +801,7 @@ function onConfigChange(changedKey) {
         // breaking of initialized tab states.
         for (const tab of Tab.getAllTabs(mTargetWindow, { iterator: true })) {
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
-          tab.$TST.tooltipIsDirty = true;
+          tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
         }
       }
       if (configs.debug)

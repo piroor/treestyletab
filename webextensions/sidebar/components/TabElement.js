@@ -4,7 +4,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+import {
+  configs
+} from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as TabsStore from '/common/tabs-store.js';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
@@ -22,7 +26,8 @@ export const TabInvalidationTarget = Object.freeze({
   SoundButton: 1 << 1,
   CloseBox:    1 << 2,
   Tooltip:     1 << 3,
-  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,
+  Overflow:    1 << 4,
+  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,
 });
 
 export const TabUpdateTarget = Object.freeze({
@@ -46,6 +51,7 @@ export class TabElement extends HTMLElement {
     if (this.initialized) {
       this.invalidate(TabInvalidationTarget.All);
       this._applyAttributes();
+      this._startListening();
       return;
     }
 
@@ -107,6 +113,11 @@ export class TabElement extends HTMLElement {
 
     this.invalidate(TabInvalidationTarget.All);
     this._applyAttributes();
+    this._startListening();
+  }
+
+  disconnectedCallback() {
+    this._endListening();
   }
 
   get initialized() {
@@ -171,6 +182,23 @@ export class TabElement extends HTMLElement {
       if (closeBox)
         closeBox.invalidate();
     }
+
+    if (targets & TabInvalidationTarget.Tooltip)
+      this.invalidateTooltip();
+
+    if (targets & TabInvalidationTarget.Overflow)
+      this._needToUpdateOverflow = true;
+  }
+
+  invalidateTooltip() {
+    if (this._reservedUpdateTooltip)
+      return;
+
+    this._reservedUpdateTooltip = () => {
+      delete this._reservedUpdateTooltip;
+      this._updateTooltip();
+    };
+    this.addEventListener('mouseover', this._reservedUpdateTooltip, { once: true });
   }
 
   update(targets) {
@@ -183,10 +211,116 @@ export class TabElement extends HTMLElement {
         counter.update();
     }
 
-    if (targets & TabUpdateTarget.Overflow) {
-      const label = this._labelElement;
-      if (label)
-        label.updateOverflow();
+    if (targets & TabUpdateTarget.Overflow)
+      this._updateOverflow();
+  }
+
+  updateOverflow() {
+    if (this._needToUpdateOverflow || configs.labelOverflowStyle == 'fade')
+      this._updateOverflow();
+    this.invalidateTooltip();
+  }
+
+  _updateOverflow() {
+    this._needToUpdateOverflow = false;
+    const label = this._labelElement;
+    if (label)
+      label.updateOverflow();
+  }
+
+  _updateTooltip() {
+    const tab = this.$TST.tab;
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
+
+    if (configs.debug) {
+      this.tooltip = `
+${tab.title}
+#${tab.id}
+(${this.$TST.element.className})
+uniqueId = <${this.$TST.uniqueId.id}>
+duplicated = <${!!this.$TST.uniqueId.duplicated}> / <${this.$TST.uniqueId.originalTabId}> / <${this.$TST.uniqueId.originalId}>
+restored = <${!!this.$TST.uniqueId.restored}>
+tabId = ${tab.id}
+windowId = ${tab.windowId}
+`.trim();
+      this.$TST.setAttribute('title', this.tooltip);
+      return;
+    }
+
+    this.tooltip = tab.title;
+    this.tooltipWithDescendants = this._getTooltipWithDescendants(tab);
+
+    if (configs.showCollapsedDescendantsByTooltip &&
+        this.$TST.subtreeCollapsed &&
+        this.$TST.hasChild) {
+      this.$TST.setAttribute('title', this.tooltipWithDescendants);
+    }
+    else if (tab.pinned || this.overflow) {
+      this.$TST.setAttribute('title', this.tooltip);
+    }
+    else {
+      this.$TST.removeAttribute('title');
+    }
+  }
+  _getTooltipWithDescendants(tab) {
+    const tooltip = [`* ${tab.$TST.element.tooltip || tab.title}`];
+    for (const child of tab.$TST.children) {
+      if (!child.$TST.element.tooltipWithDescendants)
+        child.$TST.element.tooltipWithDescendants = this._getTooltipWithDescendants(child);
+      tooltip.push(child.$TST.element.tooltipWithDescendants.replace(/^/gm, '  '));
+    }
+    return tooltip.join('\n');
+  }
+
+  _startListening() {
+    if (this.__onMouseOver)
+      return;
+    this.addEventListener('mouseover', this.__onMouseOver = this._onMouseOver.bind(this));
+    window.addEventListener('resize', this.__onWindowResize = this._onWindowResize.bind(this));
+    configs.$addObserver(this.__onConfigChange = this._onConfigChange.bind(this));
+  }
+
+  _endListening() {
+    if (!this.__onMouseOver)
+      return;
+    this.removeEventListener('mouseover', this.__onMouseOver);
+    delete this.__onMouseOver;
+    window.removeEventListener('resize', this.__onWindowResize);
+    delete this.__onWindowResize;
+    configs.$removeObserver(this.__onConfigChange);
+    delete this.__onConfigChange;
+  }
+
+  _onMouseOver(_event) {
+    this._updateTabAndAncestorsTooltip(this.$TST.tab);
+  }
+
+  _onWindowResize(_event) {
+    this.invalidateTooltip();
+  }
+
+  _onConfigChange(changedKey) {
+    switch (changedKey) {
+      case 'showCollapsedDescendantsByTooltip':
+        this.invalidateTooltip();
+        break;
+
+      case 'labelOverflowStyle':
+        this.updateOverflow();
+        break;
+    }
+  }
+
+  _updateTabAndAncestorsTooltip(tab) {
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
+    for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
+      updateTab.$TST.element.invalidateTooltip();
+      // on the "fade" mode, overflow style was already updated,
+      // so we don' need to update the status here.
+      if (configs.labelOverflowStyle != 'fade')
+        updateTab.$TST.element.updateOverflow();
     }
   }
 
