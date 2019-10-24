@@ -47,7 +47,7 @@ export class TabCounterElement extends HTMLElement {
   }
 
   get _tab() {
-    return this.closest('.tab');
+    return this.closest('tab-item');
   }
 
   update() {

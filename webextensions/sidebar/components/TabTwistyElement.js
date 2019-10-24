@@ -45,7 +45,7 @@ export class TabTwistyElement extends HTMLElement {
   }
 
   get _tab() {
-    return this.closest('.tab');
+    return this.closest('tab-item');
   }
 
   invalidate() {
