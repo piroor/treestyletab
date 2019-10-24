@@ -260,14 +260,14 @@ ul {
 }
 
 
-:root.left .tab .twisty {
+:root.left .tab tab-twisty {
   order: -1;
 }
 :root.left .tab tab-closebox {
   order: 10000;
 }
 
-:root.right .tab .twisty {
+:root.right .tab tab-twisty {
   order: 10000;
 }
 :root.right .tab tab-closebox {
@@ -343,7 +343,7 @@ ul {
 
 .tab.pinned tab-closebox,
 .tab.faviconized :-moz-any(
-  .twisty,
+  tab-twisty,
   tab-label
 ) {
   display: none;

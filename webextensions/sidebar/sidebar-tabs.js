@@ -28,6 +28,9 @@ import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
+  kTAB_TWISTY_ELEMENT_NAME,
+} from './components/TabTwistyElement.js';
+import {
   kTAB_CLOSE_BOX_ELEMENT_NAME,
 } from './components/TabCloseBoxElement.js';
 import {
@@ -85,7 +88,7 @@ function getLabel(tab) {
 }
 
 function getTwisty(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kTWISTY}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_TWISTY_ELEMENT_NAME);
 }
 
 function getFavIcon(tab) {
@@ -105,25 +108,8 @@ export function getClosebox(tab) {
 }
 
 
-export async function reserveToUpdateTwistyTooltip(tab) {
-  if (tab.$TST.reservedUpdateTwistyTooltip)
-    return;
-  tab.$TST.reservedUpdateTwistyTooltip = () => {
-    delete tab.$TST.reservedUpdateTwistyTooltip;
-    updateTwistyTooltip(tab);
-  };
-  const element = await tab.$TST.promisedElement;
-  if (element)
-    element.addEventListener('mouseover', tab.$TST.reservedUpdateTwistyTooltip, { once: true });
-}
-
-function updateTwistyTooltip(tab) {
-  let tooltip;
-  if (tab.$TST.subtreeCollapsed)
-    tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
-  else
-    tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
-  getTwisty(tab).setAttribute('title', tooltip);
+function invalidateTwisty(tab) {
+  getTwisty(tab).invalidate();
 }
 
 function invalidateClosebox(tab) {
@@ -307,7 +293,7 @@ export function updateAll() {
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
-    reserveToUpdateTwistyTooltip(tab);
+    invalidateTwisty(tab);
     invalidateClosebox(tab);
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
@@ -506,9 +492,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
   tabElement.appendChild(label);
 
-  const twisty = document.createElement('span');
-  twisty.classList.add(Constants.kTWISTY);
-  twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
+  const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
   tabElement.insertBefore(twisty, label);
 
   const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
@@ -1241,7 +1225,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      reserveToUpdateTwistyTooltip(tab);
+      invalidateTwisty(tab);
       invalidateClosebox(tab);
       if (mPromisedInitialized)
         await mPromisedInitialized;
@@ -1326,7 +1310,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       tab.$TST.children = message.childIds;
 
-      reserveToUpdateTwistyTooltip(tab);
+      invalidateTwisty(tab);
       invalidateClosebox(tab);
       if (message.newlyAttached || message.detached) {
         const ancestors = [tab].concat(tab.$TST.ancestors);

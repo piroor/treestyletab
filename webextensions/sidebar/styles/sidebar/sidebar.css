@@ -162,7 +162,7 @@ tab-closebox:active {
   text-shadow: 0 1px var(--shadow-color);
 }
 
-.tab.active .twisty {
+.tab.active tab-twisty {
   color: white;
 }
 

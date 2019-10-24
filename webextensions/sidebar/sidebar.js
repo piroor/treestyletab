@@ -30,6 +30,7 @@ import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 
+import { TabTwistyElement } from './components/TabTwistyElement.js';
 import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
 import { TabFaviconElement } from './components/TabFaviconElement.js';
 import { TabLabelElement } from './components/TabLabelElement.js';
@@ -109,6 +110,7 @@ export async function init() {
   // XXX:
   //  We define our custom elements at first to avoid a problem which calls a method of custom element
   //  which has not been defined yet.
+  TabTwistyElement.define();
   TabCloseBoxElement.define();
   TabFaviconElement.define();
   TabLabelElement.define();

@@ -14,6 +14,7 @@ import * as Constants from '/common/constants.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
+import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -53,7 +54,7 @@ export function isEventFiredOnTwisty(event) {
     return false;
 
   const target = getElementTarget(event);
-  return target && target.closest && !!target.closest(`.${Constants.kTWISTY}`);
+  return target && target.closest && !!target.closest(kTAB_TWISTY_ELEMENT_NAME);
 }
 
 export function isEventFiredOnSoundButton(event) {
