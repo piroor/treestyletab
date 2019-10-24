@@ -26,8 +26,7 @@ export const TabInvalidationTarget = Object.freeze({
   SoundButton: 1 << 1,
   CloseBox:    1 << 2,
   Tooltip:     1 << 3,
-  Overflow:    1 << 4,
-  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,
+  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,
 });
 
 export const TabUpdateTarget = Object.freeze({
@@ -352,5 +351,10 @@ windowId = ${tab.windowId}
     const label = this._labelElement;
     if (label)
       label.value = value;
+
+    this.dataset.title = value; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
+    this.invalidateTooltip();
+    if (this.$TST.collapsed)
+      this._needToUpdateOverflow = true;
   }
 }

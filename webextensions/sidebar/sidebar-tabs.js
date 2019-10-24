@@ -315,10 +315,7 @@ export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
   const classList = tab.$TST.classList;
 
-  tab.$TST.element.title = tab.title;
-  tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
-  if (tab.$TST.collapsed)
-    tab.$TST.invalidateElement(TabInvalidationTarget.Overflow);
+  tab.$TST.element.label = tab.title;
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   tab.$TST.favIconUrl = openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl;
@@ -839,10 +836,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       tab.$TST.label = tab.$TST.element.label = message.label;
-      tab.$TST.element.dataset.title = message.title; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
-      tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
-      if (tab.$TST.collapsed)
-        tab.$TST.invalidateElement(TabInvalidationTarget.Overflow);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
