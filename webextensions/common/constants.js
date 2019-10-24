@@ -116,7 +116,6 @@ export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatib
 export const kTHROBBER        = 'throbber';
 export const kHIGHLIGHTER     = 'highlighter';
 export const kBURSTER         = 'burster';
-export const kSOUND_BUTTON    = 'sound-button';
 export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';

@@ -42,6 +42,9 @@ import {
 import {
   kTAB_COUNTER_ELEMENT_NAME,
 } from './components/TabCounterElement.js';
+import {
+  kTAB_SOUND_BUTTON_ELEMENT_NAME,
+} from './components/TabSoundButtonElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
@@ -99,7 +102,7 @@ function getFavIcon(tab) {
 }
 
 function getSoundButton(tab) {
-  return tab && tab.$TST.element && tab.$TST.element.querySelector(`.${Constants.kSOUND_BUTTON}`);
+  return tab && tab.$TST.element && tab.$TST.element.querySelector(kTAB_SOUND_BUTTON_ELEMENT_NAME);
 }
 
 function getDescendantsCounter(tab) {
@@ -259,27 +262,8 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-async function reserveToUpdateSoundButtonTooltip(tab) {
-  if (tab.$TST.reservedUpdateSoundButtonTooltip)
-    return;
-  tab.$TST.reservedUpdateSoundButtonTooltip = () => {
-    delete tab.$TST.reservedUpdateSoundButtonTooltip;
-    updateSoundButtonTooltip(tab);
-  };
-  const element = await tab.$TST.promisedElement;
-  if (element)
-    element.addEventListener('mouseover', tab.$TST.reservedUpdateSoundButtonTooltip, { once: true });
-}
-
-function updateSoundButtonTooltip(tab) {
-  let tooltip = '';
-  const suffix = tab.$TST.multiselected ? '_multiselected' : '' ;
-  if (tab.$TST.maybeMuted)
-    tooltip = browser.i18n.getMessage(`tab_soundButton_muted_tooltip${suffix}`);
-  else if (tab.$TST.maybeSoundPlaying)
-    tooltip = browser.i18n.getMessage(`tab_soundButton_playing_tooltip${suffix}`);
-
-  getSoundButton(tab).setAttribute('title', tooltip);
+function invalidateSoundButton(tab) {
+  getSoundButton(tab).invalidate();
 }
 
 
@@ -497,8 +481,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
   tabElement.appendChild(counter);
 
-  const soundButton = document.createElement('button');
-  soundButton.classList.add(Constants.kSOUND_BUTTON);
+  const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
   tabElement.appendChild(soundButton);
 
   const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
@@ -821,7 +804,7 @@ function tryApplyUpdate(update) {
       parent.$TST.inheritSoundStateFromChildren();
   }
 
-  reserveToUpdateSoundButtonTooltip(tab);
+  invalidateSoundButton(tab);
   tab.$TST.tooltiplIsDirty = true;
 
   if (highlightedChanged) {
@@ -835,7 +818,7 @@ function tryApplyUpdate(update) {
       mReservedUpdateActiveTab = null;
       const activeTab = Tab.getActiveTab(tab.windowId);
       if (activeTab) {
-        reserveToUpdateSoundButtonTooltip(activeTab);
+        invalidateSoundButton(activeTab);
         invalidateClosebox(activeTab);
       }
     }, 50);
@@ -869,7 +852,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
             modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
             modified.includes(Constants.kTAB_STATE_MUTED)) {
-          reserveToUpdateSoundButtonTooltip(tab);
+          invalidateSoundButton(tab);
         }
       }
     }; break;
@@ -1149,7 +1132,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-      reserveToUpdateSoundButtonTooltip(tab);
+      invalidateSoundButton(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {

@@ -16,6 +16,7 @@ import * as Size from './size.js';
 
 import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './components/TabSoundButtonElement.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -59,7 +60,7 @@ export function isEventFiredOnTwisty(event) {
 
 export function isEventFiredOnSoundButton(event) {
   const target = getElementTarget(event);
-  return target && target.closest && !!target.closest(`.${Constants.kSOUND_BUTTON}`);
+  return target && target.closest && !!target.closest(kTAB_SOUND_BUTTON_ELEMENT_NAME);
 }
 
 export function isEventFiredOnClosebox(event) {
