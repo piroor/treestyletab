@@ -27,24 +27,12 @@ import * as CollapseExpand from './collapse-expand.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import {
-  kTAB_TWISTY_ELEMENT_NAME,
-} from './components/TabTwistyElement.js';
-import {
-  kTAB_CLOSE_BOX_ELEMENT_NAME,
-} from './components/TabCloseBoxElement.js';
-import {
-  kTAB_FAVICON_ELEMENT_NAME,
-} from './components/TabFaviconElement.js';
-import {
-  kTAB_LABEL_ELEMENT_NAME,
-} from './components/TabLabelElement.js';
-import {
-  kTAB_COUNTER_ELEMENT_NAME,
-} from './components/TabCounterElement.js';
-import {
-  kTAB_SOUND_BUTTON_ELEMENT_NAME,
-} from './components/TabSoundButtonElement.js';
+import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
+import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+import { kTAB_FAVICON_ELEMENT_NAME } from './components/TabFaviconElement.js';
+import { kTAB_LABEL_ELEMENT_NAME } from './components/TabLabelElement.js';
+import { kTAB_COUNTER_ELEMENT_NAME } from './components/TabCounterElement.js';
+import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './components/TabSoundButtonElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
