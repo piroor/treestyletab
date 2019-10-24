@@ -10,17 +10,17 @@
   --dropmarker-color: -moz-fieldtext;
 }
 
-.tab.dragging {
+tab-item.dragging {
   opacity: 0.5 !important;
 }
 
-.tab[data-drop-position="self"] {
+tab-item[data-drop-position="self"] {
   outline: var(--dropmarker-size) solid var(--dropmarker-color) !important;
   outline-offset: calc(0px - var(--dropmarker-size));
   -moz-outline-radius: calc(var(--dropmarker-size) * 2);
 }
 
-.tab[data-drop-position]:not([data-drop-position="self"])::before {
+tab-item[data-drop-position]:not([data-drop-position="self"])::before {
   content: "";
   display: block;
   max-height: var(--dropmarker-size);
@@ -31,39 +31,39 @@
   position: absolute;
   z-index: 10000;
 }
-.tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
+tab-item[data-drop-position]:not([data-drop-position="self"]).pinned::before {
   max-height: none;
   max-width: var(--dropmarker-size);
   min-height: 0;
   min-width: var(--dropmarker-size);
 }
 
-.tab:not(.pinned)[data-drop-position="before"]::before {
+tab-item:not(.pinned)[data-drop-position="before"]::before {
   left: 0;
   right: 0;
   top: 0;
 }
 
-.tab:not(.pinned)[data-drop-position="after"]::before {
+tab-item:not(.pinned)[data-drop-position="after"]::before {
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-.tab.pinned[data-drop-position="before"]::before {
+tab-item.pinned[data-drop-position="before"]::before {
   bottom: 0;
   left: 0;
   top: 0;
 }
 
-.tab.pinned[data-drop-position="after"]::before {
+tab-item.pinned[data-drop-position="after"]::before {
   bottom: 0;
   right: 0;
   top: 0;
 }
 
 
-.tab-drop-blocker {
+tab-item-drop-blocker {
   display: none;
   min-height: calc(var(--favicon-size) / 5);
   min-width: calc(var(--favicon-size) / 5);
@@ -71,34 +71,34 @@
   z-index: 100000;
 }
 
-:root.debug .tab-drop-blocker {
+:root.debug tab-item-drop-blocker {
   background: rgba(255, 0, 0, 0.5);
 }
 
-:root.tab-dragging .tab-drop-blocker,
-:root.link-dragging .tab-drop-blocker {
+:roottab-item-dragging tab-item-drop-blocker,
+:root.link-dragging tab-item-drop-blocker {
   display: block;
 }
 
-.tab-drop-blocker#tab-drop-blocker-top {
+tab-item-drop-blocker#tab-drop-blocker-top {
   left: 0;
   right: 0;
   top: 0;
 }
 
-.tab-drop-blocker#tab-drop-blocker-right {
+tab-item-drop-blocker#tab-drop-blocker-right {
   bottom: 0;
   right: 0;
   top: 0;
 }
 
-.tab-drop-blocker#tab-drop-blocker-bottom {
+tab-item-drop-blocker#tab-drop-blocker-bottom {
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-.tab-drop-blocker#tab-drop-blocker-left {
+tab-item-drop-blocker#tab-drop-blocker-left {
   bottom: 0;
   left: 0;
   top: 0;

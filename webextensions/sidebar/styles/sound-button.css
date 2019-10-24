@@ -23,7 +23,7 @@ tab-sound-button {
   width: var(--sound-button-size);
 }
 
-.tab.faviconized tab-sound-button::before,
+tab-item.faviconized tab-sound-button::before,
 tab-sound-button::after {
   -moz-context-properties: fill;
   background: none no-repeat center / 100%;
@@ -36,7 +36,7 @@ tab-sound-button::after {
   top: 0;
   width: var(--sound-button-size);
 }
-:root.simulate-svg-context-fill .tab.faviconized tab-sound-button::before,
+:root.simulate-svg-context-fill tab-item.faviconized tab-sound-button::before,
 :root.simulate-svg-context-fill tab-sound-button::after {
   background: var(--tab-text);
   mask-position: center;
@@ -44,44 +44,44 @@ tab-sound-button::after {
   mask-size: 100%;
 }
 
-.tab.faviconized tab-sound-button::before {
+tab-item.faviconized tab-sound-button::before {
   fill: var(--tab-text-inverted);
   transform: scale(1.3, 1.3);
 }
-:root.simulate-svg-context-fill .tab.faviconized tab-sound-button::before {
+:root.simulate-svg-context-fill tab-item.faviconized tab-sound-button::before {
   background: var(--tab-text-inverted);
 }
 
-.tab:not(.collapsed) tab-sound-button:hover {
+tab-item:not(.collapsed) tab-sound-button:hover {
   opacity: var(--button-hover-opacity);
 }
 
-.tab:not(.collapsed) tab-sound-button:active {
+tab-item:not(.collapsed) tab-sound-button:active {
   opacity: var(--button-active-opacity);
 }
 
-.tab:not(.collapsed).sound-playing tab-sound-button,
-.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed).sound-playing tab-sound-button,
+tab-item:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   tab-sound-button,
-.tab:not(.collapsed).muted tab-sound-button,
-.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed).muted tab-sound-button,
+tab-item:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   tab-sound-button {
   display: inline-block;
 }
 
-.tab:not(.collapsed).muted.faviconized tab-sound-button::before,
-.tab:not(.collapsed).muted tab-sound-button::after,
-.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids].faviconized
+tab-item:not(.collapsed).muted.faviconized tab-sound-button::before,
+tab-item:not(.collapsed).muted tab-sound-button::after,
+tab-item:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids].faviconized
   tab-sound-button::before,
-.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   tab-sound-button::after {
   background-image: url("./icons/audio-16-mute.svg");
 }
-:root.simulate-svg-context-fill .tab:not(.collapsed).muted.faviconized tab-sound-button::before,
-:root.simulate-svg-context-fill .tab:not(.collapsed).muted tab-sound-button::after,
-:root.simulate-svg-context-fill .tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids].faviconized
+:root.simulate-svg-context-fill tab-item:not(.collapsed).muted.faviconized tab-sound-button::before,
+:root.simulate-svg-context-fill tab-item:not(.collapsed).muted tab-sound-button::after,
+:root.simulate-svg-context-fill tab-item:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids].faviconized
   tab-sound-button::before,
-:root.simulate-svg-context-fill .tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
+:root.simulate-svg-context-fill tab-item:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   tab-sound-button::after {
   background-image: none;
   mask-image: url("./icons/audio-16-mute.svg");
@@ -90,25 +90,25 @@ tab-sound-button::after {
 /* put style definition for sound-playing tab after muted tab,
    because "sound-playing" is more important than muted for
    mixed state tree. */
-.tab:not(.collapsed).sound-playing:not(.muted).faviconized tab-sound-button::before,
-.tab:not(.collapsed).sound-playing:not(.muted) tab-sound-button::after,
-.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids].faviconized
+tab-item:not(.collapsed).sound-playing:not(.muted).faviconized tab-sound-button::before,
+tab-item:not(.collapsed).sound-playing:not(.muted) tab-sound-button::after,
+tab-item:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids].faviconized
   tab-sound-button::before,
-.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   tab-sound-button::after {
   background-image: url("./icons/audio-16.svg");
 }
-:root.simulate-svg-context-fill .tab:not(.collapsed).sound-playing:not(.muted).faviconized tab-sound-button::before,
-:root.simulate-svg-context-fill .tab:not(.collapsed).sound-playing:not(.muted) tab-sound-button::after,
-:root.simulate-svg-context-fill .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids].faviconized
+:root.simulate-svg-context-fill tab-item:not(.collapsed).sound-playing:not(.muted).faviconized tab-sound-button::before,
+:root.simulate-svg-context-fill tab-item:not(.collapsed).sound-playing:not(.muted) tab-sound-button::after,
+:root.simulate-svg-context-fill tab-item:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids].faviconized
   tab-sound-button::before,
-:root.simulate-svg-context-fill .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
+:root.simulate-svg-context-fill tab-item:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   tab-sound-button::after {
   background-image: none;
   mask-image: url("./icons/audio-16.svg");
 }
 
-.tab.faviconized tab-sound-button:hover::before {
+tab-item.faviconized tab-sound-button:hover::before {
   background-color: var(--tab-text-inverted);
   background-image: none !important;
   mask-image: none !important;
@@ -116,7 +116,7 @@ tab-sound-button::after {
   transform: scale(1.1, 1.1);
 }
 
-.tab.faviconized tab-sound-button {
+tab-item.faviconized tab-sound-button {
   transform: scale(0.9, 0.9);
   padding: 0;
   position: absolute;

@@ -9,11 +9,11 @@
   --shadow-blur: 0.2em;
 }
 
-:root.left .tab:not(.pinned):not(collapsed) {
+:root.left tab-item:not(.pinned):not(collapsed) {
   box-shadow: -0.3em 0.3em var(--shadow-blur) var(--shadow-color);
 }
 
-:root.right .tab:not(.pinned):not(collapsed) {
+:root.right tab-item:not(.pinned):not(collapsed) {
   box-shadow: 0.3em 0.3em var(--shadow-blur) var(--shadow-color);
 }
 
@@ -33,7 +33,7 @@
 
 /* Transparent tabs are shown above solid tabs.
    We have to set z-index to show all tabs in the same layer. */
-.tab {
+tab-item {
   z-index: auto;
 }
 
