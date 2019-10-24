@@ -63,11 +63,13 @@ export class TabCloseBoxElement extends HTMLElement {
 
   _updateTooltip() {
     const tab = this._tab;
+    if (!tab || !tab.$TST)
+      return;
 
     let key;
-    if (tab && tab.$TST.multiselected)
+    if (tab.$TST.multiselected)
       key = MULTISELECTED_TOOLTIP;
-    else if (tab && tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
+    else if (tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
       key = TREE_TOOLTIP;
     else
       key = NORMAL_TOOLTIP;

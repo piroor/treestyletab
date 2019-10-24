@@ -52,7 +52,7 @@ export class TabCounterElement extends HTMLElement {
 
   update() {
     const tab = this._tab;
-    if (!tab)
+    if (!tab || !tab.$TST)
       return;
 
     const descendants = tab.$TST.descendants;
