@@ -41,10 +41,6 @@ export class TabSoundButtonElement extends HTMLElement {
     this.initialized = true;
   }
 
-  get _tab() {
-    return this.closest('tab-item');
-  }
-
   invalidate() {
     if (this._reservedUpdate)
       return;
@@ -57,7 +53,7 @@ export class TabSoundButtonElement extends HTMLElement {
   }
 
   _updateTooltip() {
-    const tab = this._tab;
+    const tab = this.owner;
     if (!tab || !tab.$TST)
       return;
 

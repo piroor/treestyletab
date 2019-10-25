@@ -83,18 +83,22 @@ export class TabElement extends HTMLElement {
 
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
     this.insertBefore(twisty, label);
+    twisty.owner = this;
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
     this.insertBefore(favicon, label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
     this.appendChild(counter);
+    counter.owner = this;
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
     this.appendChild(soundButton);
+    soundButton.owner = this;
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
     this.appendChild(closebox);
+    closebox.owner = this;
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);

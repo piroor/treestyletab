@@ -44,10 +44,6 @@ export class TabTwistyElement extends HTMLElement {
     this.initialized = true;
   }
 
-  get _tab() {
-    return this.closest('tab-item');
-  }
-
   invalidate() {
     if (this._reservedUpdate)
       return;
@@ -60,7 +56,7 @@ export class TabTwistyElement extends HTMLElement {
   }
 
   _updateTooltip() {
-    const tab = this._tab;
+    const tab = this.owner;
 
     let key;
     if (tab && tab.$TST.subtreeCollapsed)

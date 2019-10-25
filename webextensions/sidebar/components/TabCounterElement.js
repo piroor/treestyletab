@@ -46,12 +46,8 @@ export class TabCounterElement extends HTMLElement {
     this.initialized = true;
   }
 
-  get _tab() {
-    return this.closest('tab-item');
-  }
-
   update() {
-    const tab = this._tab;
+    const tab = this.owner;
     if (!tab || !tab.$TST)
       return;
 
