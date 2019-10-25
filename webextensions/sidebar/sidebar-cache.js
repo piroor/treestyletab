@@ -30,6 +30,8 @@ import * as CollapseExpand from './collapse-expand.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
+import { TabUpdateTarget } from './components/TabElement.js';
+
 function log(...args) {
   internalLogger('sidebar/sidebar-cache', ...args);
 }
@@ -406,7 +408,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     const tabElement = tabElements[i];
     const tab = tabElement.apiTab;
     SidebarTabs.applyStatesToElement(tab);
-    SidebarTabs.applyCollapseExpandStateToElement(tab);
+    tab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {

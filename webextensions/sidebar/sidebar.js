@@ -39,6 +39,7 @@ import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
 import {
   TabElement,
   TabInvalidationTarget,
+  TabUpdateTarget,
 } from './components/TabElement.js';
 
 import * as BackgroundConnection from './background-connection.js';
@@ -531,7 +532,7 @@ export async function rebuildAll(importedTabs, cache) {
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
-    SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
+    trackedTab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {

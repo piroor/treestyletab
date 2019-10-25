@@ -30,9 +30,11 @@ export const TabInvalidationTarget = Object.freeze({
 });
 
 export const TabUpdateTarget = Object.freeze({
-  Counter:  1 << 0,
-  Overflow: 1 << 1,
-  All:      1 << 0 || 1 << 1,
+  Counter:                1 << 0,
+  Overflow:               1 << 1,
+  DescendantsHighlighted: 1 << 2,
+  CollapseExpandState:    1 << 3,
+  All:                    1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,
 });
 
 const kTAB_CLASS_NAME = 'tab';
@@ -221,6 +223,12 @@ export class TabElement extends HTMLElement {
 
     if (targets & TabUpdateTarget.Overflow)
       this._updateOverflow();
+
+    if (targets & TabUpdateTarget.DescendantsHighlighted)
+      this._updateDescendantsHighlighted();
+
+    if (targets & TabUpdateTarget.CollapseExpandState)
+      this._updateCollapseExpandState();
   }
 
   updateOverflow() {
@@ -329,6 +337,65 @@ windowId = ${tab.windowId}
       // so we don' need to update the status here.
       if (configs.labelOverflowStyle != 'fade')
         updateTab.$TST.element.updateOverflow();
+    }
+  }
+
+  _updateDescendantsHighlighted() {
+    const children = this.$TST.children;
+    if (!this.$TST.hasChild) {
+      this.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+      this.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      return;
+    }
+    let someHighlighted = false;
+    let allHighlighted  = true;
+    for (const child of children) {
+      if (child.$TST.states.has(Constants.kTAB_STATE_HIGHLIGHTED)) {
+        someHighlighted = true;
+        allHighlighted = (
+          allHighlighted &&
+          (!child.$TST.hasChild ||
+           child.$TST.states.has(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
+        );
+      }
+      else {
+        if (!someHighlighted &&
+            child.$TST.states.has(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
+          someHighlighted = true;
+        }
+        allHighlighted = false;
+      }
+    }
+    if (someHighlighted) {
+      this.$TST.addState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+      if (allHighlighted)
+        this.$TST.addState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      else
+        this.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    }
+    else {
+      this.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+      this.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    }
+  }
+
+  _updateCollapseExpandState() {
+    const classList = this.$TST.classList;
+    const parent = this.$TST.parent;
+    if (this.$TST.collapsed ||
+        (parent &&
+         (parent.$TST.collapsed ||
+          parent.$TST.subtreeCollapsed))) {
+      if (!classList.contains(Constants.kTAB_STATE_COLLAPSED))
+        classList.add(Constants.kTAB_STATE_COLLAPSED);
+      if (!classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
+        classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+    }
+    else {
+      if (classList.contains(Constants.kTAB_STATE_COLLAPSED))
+        classList.remove(Constants.kTAB_STATE_COLLAPSED);
+      if (classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
+        classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
     }
   }
 

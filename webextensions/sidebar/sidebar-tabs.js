@@ -68,46 +68,6 @@ export function getTabFromDOMNode(node, options = {}) {
 }
 
 
-function updateDescendantsHighlighted(tab) {
-  const children = tab.$TST.children;
-  if (!tab.$TST.hasChild) {
-    tab.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-    return;
-  }
-  let someHighlighted = false;
-  let allHighlighted  = true;
-  for (const child of children) {
-    if (child.$TST.states.has(Constants.kTAB_STATE_HIGHLIGHTED)) {
-      someHighlighted = true;
-      allHighlighted = (
-        allHighlighted &&
-        (!child.$TST.hasChild ||
-         child.$TST.states.has(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
-      );
-    }
-    else {
-      if (!someHighlighted &&
-          child.$TST.states.has(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
-        someHighlighted = true;
-      }
-      allHighlighted = false;
-    }
-  }
-  if (someHighlighted) {
-    tab.$TST.addState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    if (allHighlighted)
-      tab.$TST.addState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-  }
-  else {
-    tab.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-  }
-}
-
-
 async function reserveToUpdateLoadingState() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
@@ -144,11 +104,10 @@ export function updateAll() {
   updateLoadingState();
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
-  // updateDescendantsHighlighted() refers results of descendants.
+  // TabUpdateTarget.DescendantsHighlighted refers results of descendants.
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
     tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-    tab.$TST.updateElement(TabUpdateTarget.Counter);
-    updateDescendantsHighlighted(tab);
+    tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
     if (!tab.$TST.collapsed)
       tab.$TST.updateElement(TabUpdateTarget.Overflow);
   }
@@ -380,26 +339,6 @@ export function applyStatesToElement(tab) {
   }
 }
 
-export function applyCollapseExpandStateToElement(tab) {
-  const classList = tab.$TST.classList;
-  const parent = tab.$TST.parent;
-  if (tab.$TST.collapsed ||
-      (parent &&
-       (parent.$TST.collapsed ||
-        parent.$TST.subtreeCollapsed))) {
-    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED))
-      classList.add(Constants.kTAB_STATE_COLLAPSED);
-    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
-      classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
-  }
-  else {
-    if (classList.contains(Constants.kTAB_STATE_COLLAPSED))
-      classList.remove(Constants.kTAB_STATE_COLLAPSED);
-    if (classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
-      classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
-  }
-}
-
 
 let mReservedUpdateActiveTab;
 
@@ -552,7 +491,7 @@ function tryApplyUpdate(update) {
   if (highlightedChanged) {
     tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     for (const ancestor of tab.$TST.ancestors) {
-      updateDescendantsHighlighted(ancestor);
+      ancestor.$TST.updateElement(TabUpdateTarget.DescendantsHighlighted);
     }
     if (mReservedUpdateActiveTab)
       clearTimeout(mReservedUpdateActiveTab);
@@ -1012,8 +951,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (message.newlyAttached || message.detached) {
         const ancestors = [tab].concat(tab.$TST.ancestors);
         for (const ancestor of ancestors) {
-          ancestor.$TST.updateElement(TabUpdateTarget.Counter);
-          updateDescendantsHighlighted(ancestor);
+          ancestor.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
         }
       }
     }; break;
