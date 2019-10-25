@@ -153,6 +153,20 @@ export class TabElement extends HTMLElement {
     return !!this._labelElement;
   }
 
+  get tab() {
+    return this._tab || (this._tab = Tab.get(this.getAttribute(Constants.kAPI_TAB_ID)));
+  }
+  set tab(value) {
+    return this._tab = value;
+  }
+
+  get $TST() {
+    return this._$TST || (this._$TST = this.tab && this.tab.$TST);
+  }
+  set $TST(value) {
+    return this._$TST = value;
+  }
+
   get _twistyElement() {
     return this.querySelector(kTAB_TWISTY_ELEMENT_NAME);
   }
@@ -259,6 +273,9 @@ export class TabElement extends HTMLElement {
   }
 
   _updateTooltip() {
+    if (!this.$TST) // called before binding on restoration from cache
+      return;
+
     const tab = this.$TST.tab;
     if (!TabsStore.ensureLivingTab(tab))
       return;
@@ -355,6 +372,9 @@ windowId = ${tab.windowId}
   }
 
   _updateDescendantsHighlighted() {
+    if (!this.$TST) // called before binding on restoration from cache
+      return;
+
     const children = this.$TST.children;
     if (!this.$TST.hasChild) {
       this.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
@@ -394,6 +414,9 @@ windowId = ${tab.windowId}
   }
 
   _updateCollapseExpandState() {
+    if (!this.$TST) // called before binding on restoration from cache
+      return;
+
     const classList = this.$TST.classList;
     const parent = this.$TST.parent;
     if (this.$TST.collapsed ||
@@ -414,6 +437,9 @@ windowId = ${tab.windowId}
   }
 
   _updateTabProperties() {
+    if (!this.$TST) // called before binding on restoration from cache
+      return;
+
     const tab       = this.$TST.tab;
     const classList = this.classList;
 
@@ -512,6 +538,10 @@ windowId = ${tab.windowId}
       label.value = value;
 
     this.dataset.title = value; // for custom CSS https://github.com/piroor/treestyletab/issues/2242
+
+    if (!this.$TST) // called before binding on restoration from cache
+      return;
+
     this.invalidateTooltip();
     if (this.$TST.collapsed)
       this._needToUpdateOverflow = true;
