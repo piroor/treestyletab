@@ -75,6 +75,9 @@ export class TabElement extends HTMLElement {
 
     const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
     this.appendChild(label);
+    label.addOverflowChangeListener(() => {
+      this.invalidateTooltip();
+    });
 
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
     this.insertBefore(twisty, label);

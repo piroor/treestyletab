@@ -58,6 +58,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this._overflowChangeListeners.clear();
     this._endListening();
   }
 
@@ -131,7 +132,9 @@ export class TabLabelElement extends HTMLElement {
       return;
 
     this.classList.add('overflow');
-    tab.invalidateTooltip();
+    for (const listener of this._overflowChangeListeners) {
+      listener();
+    }
   }
 
   _onUnderflow(_event) {
@@ -140,6 +143,20 @@ export class TabLabelElement extends HTMLElement {
       return;
 
     this.classList.remove('overflow');
-    tab.invalidateTooltip();
+    for (const listener of this._overflowChangeListeners) {
+      listener();
+    }
+  }
+
+  addOverflowChangeListener(listener) {
+    this._overflowChangeListeners.add(listener);
+  }
+
+  removeOverflowChangeListener(listener) {
+    this._overflowChangeListeners.delete(listener);
+  }
+
+  get _overflowChangeListeners() {
+    return this.__overflowChangeListeners || (this.__overflowChangeListeners = new Set());
   }
 }
