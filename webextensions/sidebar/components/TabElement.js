@@ -177,14 +177,6 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
   }
 
-  set title(value) {
-    const label = this._labelElement;
-    if (label)
-      label.value = value;
-
-    this.dataset.title = value;
-  }
-
   _applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
