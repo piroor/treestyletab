@@ -81,10 +81,6 @@ export class TabLabelElement extends HTMLElement {
     }
   }
 
-  get _tab() {
-    return this.closest('tab-item');
-  }
-
   updateTextContent() {
     const content = this._content;
     if (!content)
@@ -127,10 +123,6 @@ export class TabLabelElement extends HTMLElement {
   }
 
   _onOverflow(_event) {
-    const tab = this._tab;
-    if (!tab || tab.$TST.tab.pinned)
-      return;
-
     this.classList.add('overflow');
     for (const listener of this._overflowChangeListeners) {
       listener();
@@ -138,10 +130,6 @@ export class TabLabelElement extends HTMLElement {
   }
 
   _onUnderflow(_event) {
-    const tab = this._tab;
-    if (!tab || tab.$TST.tab.pinned)
-      return;
-
     this.classList.remove('overflow');
     for (const listener of this._overflowChangeListeners) {
       listener();
