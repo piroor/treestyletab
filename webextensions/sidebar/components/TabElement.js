@@ -9,6 +9,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+import Tab from '/common/Tab.js';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
@@ -34,10 +35,26 @@ export const TabUpdateTarget = Object.freeze({
   Overflow:               1 << 1,
   DescendantsHighlighted: 1 << 2,
   CollapseExpandState:    1 << 3,
-  All:                    1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,
+  TabProperties:          1 << 4,
+  All:                    1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,
 });
 
 const kTAB_CLASS_NAME = 'tab';
+
+const NATIVE_PROPERTIES = new Set([
+  'active',
+  'attention',
+  'audible',
+  'discarded',
+  'hidden',
+  'highlighted',
+  'pinned'
+]);
+const IGNORE_CLASSES = new Set([
+  'tab',
+  Constants.kTAB_STATE_ANIMATION_READY,
+  Constants.kTAB_STATE_SUBTREE_COLLAPSED
+]);
 
 export class TabElement extends HTMLElement {
   static define() {
@@ -51,6 +68,7 @@ export class TabElement extends HTMLElement {
   connectedCallback() {
     if (this.initialized) {
       this.invalidate(TabInvalidationTarget.All);
+      this.update(TabUpdateTarget.TabProperties);
       this._applyAttributes();
       this._startListening();
       return;
@@ -122,6 +140,7 @@ export class TabElement extends HTMLElement {
     this.setAttribute('draggable', true);
 
     this.invalidate(TabInvalidationTarget.All);
+    this.update(TabUpdateTarget.TabProperties);
     this._applyAttributes();
     this._startListening();
   }
@@ -229,6 +248,9 @@ export class TabElement extends HTMLElement {
 
     if (targets & TabUpdateTarget.CollapseExpandState)
       this._updateCollapseExpandState();
+
+    if (targets & TabUpdateTarget.TabProperties)
+      this._updateTabProperties();
   }
 
   updateOverflow() {
@@ -396,6 +418,75 @@ windowId = ${tab.windowId}
         classList.remove(Constants.kTAB_STATE_COLLAPSED);
       if (classList.contains(Constants.kTAB_STATE_COLLAPSED_DONE))
         classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    }
+  }
+
+  _updateTabProperties() {
+    const tab       = this.$TST.tab;
+    const classList = this.classList;
+
+    this.label = tab.title;
+
+    const openerOfGroupTab = this.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
+    this.favIconUrl = openerOfGroupTab && openerOfGroupTab.favIconUrl || tab.favIconUrl;
+
+    for (const state of classList) {
+      if (IGNORE_CLASSES.has(state) ||
+          NATIVE_PROPERTIES.has(state))
+        continue;
+      if (!this.$TST.states.has(state))
+        classList.remove(state);
+    }
+    for (const state of this.$TST.states) {
+      if (IGNORE_CLASSES.has(state))
+        continue;
+      if (!classList.contains(state))
+        classList.add(state);
+    }
+
+    for (const state of NATIVE_PROPERTIES) {
+      if (tab[state] == classList.contains(state))
+        continue;
+      classList.toggle(state, tab[state]);
+    }
+
+    if (this.$TST.childIds.length > 0)
+      this.setAttribute(Constants.kCHILDREN, `|${this.$TST.childIds.join('|')}|`);
+    else
+      this.removeAttribute(Constants.kCHILDREN);
+
+    if (this.$TST.parentId)
+      this.setAttribute(Constants.kPARENT, this.$TST.parentId);
+    else
+      this.removeAttribute(Constants.kPARENT);
+
+    const alreadyGrouped = this.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '';
+    if (this.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) != alreadyGrouped)
+      this.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, alreadyGrouped);
+
+    const opener = this.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '';
+    if (this.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) != opener)
+      this.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener);
+
+    const uri = this.$TST.getAttribute(Constants.kCURRENT_URI) || tab.url;
+    if (this.getAttribute(Constants.kCURRENT_URI) != uri)
+      this.setAttribute(Constants.kCURRENT_URI, uri);
+
+    const level = this.$TST.getAttribute(Constants.kLEVEL) || 0;
+    if (this.getAttribute(Constants.kLEVEL) != level)
+      this.setAttribute(Constants.kLEVEL, level);
+
+    const id = this.$TST.uniqueId.id;
+    if (this.getAttribute(Constants.kPERSISTENT_ID) != id)
+      this.setAttribute(Constants.kPERSISTENT_ID, id);
+
+    if (this.$TST.subtreeCollapsed) {
+      if (!classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+        classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    }
+    else {
+      if (classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+        classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
     }
   }
 

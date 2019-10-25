@@ -407,8 +407,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   for (let i = tabElements.length - 1; i > -1; i--) {
     const tabElement = tabElements[i];
     const tab = tabElement.apiTab;
-    SidebarTabs.applyStatesToElement(tab);
-    tab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
+    tab.$TST.updateElement(TabUpdateTarget.CollapseExpandState | TabUpdateTarget.TabProperties);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
