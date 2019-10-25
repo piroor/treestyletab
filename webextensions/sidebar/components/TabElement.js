@@ -153,6 +153,8 @@ export class TabElement extends HTMLElement {
     return !!this._labelElement;
   }
 
+  // Elements restored from cache are initialized without bundled tabs.
+  // Thus we provide abiltiy to get tab and service objects from cached/restored information.
   get tab() {
     return this._tab || (this._tab = Tab.get(this.getAttribute(Constants.kAPI_TAB_ID)));
   }
