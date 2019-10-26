@@ -22,6 +22,8 @@ export class TabLabelElement extends HTMLElement {
 
   constructor() {
     super();
+    this.__onOverflow = null;
+    this.__onUnderflow = null;
   }
 
   connectedCallback() {
@@ -118,8 +120,8 @@ export class TabLabelElement extends HTMLElement {
       return;
     this.removeEventListener('overflow', this.__onOverflow);
     this.removeEventListener('underflow', this.__onUnderflow);
-    delete this.__onOverflow;
-    delete this.__onUnderflow;
+    this.__onOverflow = null;
+    this.__onUnderflow = null;
   }
 
   _onOverflow(_event) {

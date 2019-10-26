@@ -63,6 +63,10 @@ export class TabElement extends HTMLElement {
 
   constructor() {
     super();
+    this._reservedUpdateTooltip = null;
+    this.__onMouseOver = null;
+    this.__onWindowResize = null;
+    this.__onConfigChange = null;
   }
 
   connectedCallback() {
@@ -232,7 +236,7 @@ export class TabElement extends HTMLElement {
       return;
 
     this._reservedUpdateTooltip = () => {
-      delete this._reservedUpdateTooltip;
+      this._reservedUpdateTooltip = null;
       this._updateTooltip();
     };
     this.addEventListener('mouseover', this._reservedUpdateTooltip, { once: true });
@@ -334,11 +338,11 @@ windowId = ${tab.windowId}
     if (!this.__onMouseOver)
       return;
     this.removeEventListener('mouseover', this.__onMouseOver);
-    delete this.__onMouseOver;
+    this.__onMouseOver = null;
     window.removeEventListener('resize', this.__onWindowResize);
-    delete this.__onWindowResize;
+    this.__onWindowResize = null;
     configs.$removeObserver(this.__onConfigChange);
-    delete this.__onConfigChange;
+    this.__onConfigChange = null;
   }
 
   _onMouseOver(_event) {
