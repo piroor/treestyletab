@@ -27,7 +27,7 @@ export class TabFaviconElement extends HTMLElement {
 
   connectedCallback() {
     if (this.initialized) {
-      this.applySrc();
+      this._applySrc();
       return;
     }
 
@@ -62,7 +62,7 @@ export class TabFaviconElement extends HTMLElement {
     const throbber = this.appendChild(document.createElement('span'));
     throbber.classList.add(Constants.kTHROBBER);
 
-    this.applySrc();
+    this._applySrc();
   }
 
   get initialized() {
@@ -76,7 +76,7 @@ export class TabFaviconElement extends HTMLElement {
 
     switch (name) {
       case kATTR_NAME_SRC:
-        this.applySrc();
+        this._applySrc();
         break;
 
       default:
@@ -84,7 +84,7 @@ export class TabFaviconElement extends HTMLElement {
     }
   }
 
-  applySrc() {
+  _applySrc() {
     const img = this._imgElement;
     if (!img)
       return;
