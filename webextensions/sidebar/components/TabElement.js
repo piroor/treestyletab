@@ -540,6 +540,10 @@ windowId = ${tab.windowId}
     return label && label.overflow;
   }
 
+  get label() {
+    const label = this._labelElement;
+    return label ? label.value : null;
+  }
   set label(value) {
     const label = this._labelElement;
     if (label)

@@ -101,7 +101,9 @@ export class TabLabelElement extends HTMLElement {
     return this.querySelector(`.${kCONTENT_CLASS_NAME}`);
   }
 
-  // These setter/getter is required by webextensions-lib-tab-label-helper
+  get value() {
+    return this.getAttribute(kATTR_NAME_VALUE);
+  }
   set value(value) {
     this.setAttribute(kATTR_NAME_VALUE, value);
   }
