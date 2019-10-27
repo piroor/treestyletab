@@ -107,6 +107,9 @@ export default class Tab {
       incompletelyTrackedTabsPerWindow.delete(tab);
       Tab.onTracked.dispatch(tab);
     });
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
+    this.delayedInheritSoundStateFromChildren = null;
   }
 
   destroy() {
@@ -131,15 +134,14 @@ export default class Tab {
       if (this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
       }
-      delete this.element.$TST;
-      delete this.element.apiTab;
-      delete this.element;
-      delete this.classList;
+      this.element.$TST = null;
+      this.element.apiTab = null;
+      this.element = null;
+      this.classList = null;
     }
-    delete this;
-    delete this.tab;
-    delete this.promisedUniqueId;
-    delete this.uniqueId;
+    this.tab = null;
+    this.promisedUniqueId = null;
+    this.uniqueId = null;
   }
 
   clear() {
@@ -946,7 +948,7 @@ export default class Tab {
       clearTimeout(this.delayedInheritSoundStateFromChildren);
 
     this.delayedInheritSoundStateFromChildren = setTimeout(() => {
-      delete this.delayedInheritSoundStateFromChildren;
+      this.delayedInheritSoundStateFromChildren = null;
       if (!TabsStore.ensureLivingTab(this.tab))
         return;
 

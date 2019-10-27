@@ -60,6 +60,9 @@ export default class Window {
 
     TabsStore.windows.set(windowId, this);
     TabsStore.prepareIndexesForWindow(windowId);
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
+    this.delayedDestroy = null;
   }
 
   destroy() {
@@ -79,9 +82,9 @@ export default class Window {
       }
     }
 
-    delete this.tabs;
-    delete this.order;
-    delete this.id;
+    this.tabs = null;
+    this.order = null;
+    this.id = null;
   }
 
   clear() {
@@ -148,7 +151,7 @@ export default class Window {
 
     if (this.delayedDestroy) {
       clearTimeout(this.delayedDestroy);
-      delete this.delayedDestroy;
+      this.delayedDestroy = null;
     }
 
     const order = this.order;
