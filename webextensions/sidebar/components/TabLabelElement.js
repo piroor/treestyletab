@@ -22,6 +22,8 @@ export class TabLabelElement extends HTMLElement {
 
   constructor() {
     super();
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
     this.__onOverflow = null;
     this.__onUnderflow = null;
   }

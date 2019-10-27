@@ -63,6 +63,8 @@ export class TabElement extends HTMLElement {
 
   constructor() {
     super();
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
     this._reservedUpdateTooltip = null;
     this.__onMouseOver = null;
     this.__onWindowResize = null;

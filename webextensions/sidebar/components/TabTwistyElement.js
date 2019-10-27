@@ -18,6 +18,8 @@ export class TabTwistyElement extends HTMLElement {
 
   constructor() {
     super();
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
     this._reservedUpdate = null;
 
     this.initialized = false;
