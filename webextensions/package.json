@@ -14,9 +14,7 @@
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-import": "^2.17.2",
     "jsonlint-cli": "*",
-    "lodash": ">=4.17.13"
-  },
-  "dependencies": {
-    "tunnel-agent": "^0.6.0"
+    "lodash": ">=4.17.13",
+    "tunnel-agent": ">=0.6.0"
   }
 }
