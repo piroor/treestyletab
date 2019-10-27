@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Re-implement the view with custom elements (Web Components) for better maintainability. (Thanks to saneyuki!)
+   * Save tree structure to bookmarks when multiple bookmarks are created from a tree, via commands provided by TST itself.
+   * Add a new context menu command "Open All as a Tree" for bookmarks.
+   * Migrate bookmarked internal URLs (like `moz-extension://...`) to shorthand URLs (like `ext+treestyletab:...`) automatically, for better mobility.
+   * Restore collapsed state of tabs correctly even if they are placed under an expanded tree and the parent is placed under a collapsed tree.
+   * Reduce FPS of throbber animations from 60 to 30. (See also [the bug 1511095](https://bugzilla.mozilla.org/show_bug.cgi?id=1511095).)
+   * Show group-tab items with folder icon, in the contents area of a group tab.
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.1.8 (2019.9.13)
    * Optimize internal operations for better performance and less memory usage. (Some ideas are contributed by bb010g. Thanks!)
    * Become more safe to accidental recursive references of tree structures.
