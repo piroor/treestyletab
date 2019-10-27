@@ -425,7 +425,7 @@ windowId = ${tab.windowId}
     if (!this.$TST) // called before binding on restoration from cache
       return;
 
-    const classList = this.$TST.classList;
+    const classList = this.classList;
     const parent = this.$TST.parent;
     if (this.$TST.collapsed ||
         (parent &&
