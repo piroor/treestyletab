@@ -18,6 +18,7 @@ export class TabTwistyElement extends HTMLElement {
 
   constructor() {
     super();
+    this._reservedUpdate = null;
 
     this.initialized = false;
   }
@@ -49,7 +50,7 @@ export class TabTwistyElement extends HTMLElement {
       return;
 
     this._reservedUpdate = () => {
-      delete this._reservedUpdate;
+      this._reservedUpdate = null;
       this._updateTooltip();
     };
     this.addEventListener('mouseover', this._reservedUpdate, { once: true });
