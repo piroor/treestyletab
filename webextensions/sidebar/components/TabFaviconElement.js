@@ -88,7 +88,11 @@ export class TabFaviconElement extends HTMLElement {
     const img = this._imgElement;
     if (!img)
       return;
-    img.setAttribute(kATTR_NAME_SRC, this.getAttribute(kATTR_NAME_SRC));
+    const url = this.src;
+    if (url)
+      img.setAttribute('src', url);
+    else
+      img.removeAttribute('src');
   }
 
   get _imgElement() {
@@ -96,7 +100,13 @@ export class TabFaviconElement extends HTMLElement {
   }
 
   // These setter/getter is required by webextensions-lib-tab-favicon-helper
+  get src() {
+    return this.getAttribute(kATTR_NAME_SRC);
+  }
   set src(value) {
-    this.setAttribute(kATTR_NAME_SRC, value);
+    if (value)
+      this.setAttribute(kATTR_NAME_SRC, value);
+    else
+      this.removeAttribute(kATTR_NAME_SRC);
   }
 }
