@@ -309,4 +309,9 @@ export const kSHORTHAND_URIS = {
   'test-runner': browser.extension.getURL('tests/runner.html')
 };
 
+export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
+  { opener: /^about:addons/,
+    child:  /^https:\/\/addons.mozilla.org\/([^\/]+\/)?[^\/]+\/search\// }
+];
+
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';

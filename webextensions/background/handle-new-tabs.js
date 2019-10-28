@@ -245,6 +245,20 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       });
       return;
     }
+
+    log('checking special openers (delayed)', { opener: possibleOpenerTab.url, child: tab.url });
+    for (const rule of Constants.kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL) {
+      if (rule.opener.test(possibleOpenerTab.url) &&
+          rule.child.test(tab.url)) {
+        log('behave as a tab opened from special opener (delayed)', { rule });
+        handleNewTabFromActiveTab(tab, {
+          url:                tab.url,
+          activeTab:          possibleOpenerTab,
+          autoAttachBehavior: Constants.kNEWTAB_OPEN_AS_CHILD
+        });
+        return;
+      }
+    }
   }
 });
 
