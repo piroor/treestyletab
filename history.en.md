@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Separate an option to control new tabs from outside Firefox.
+   * Open search result tabs opened from `about:addons` tab as children.
    * Save tree structure to bookmarks when multiple bookmarks are created from a tree, via commands provided by TST itself.
    * Add a new context menu command "Open All as a Tree" for bookmarks.
    * Migrate bookmarked internal URLs (like `moz-extension://...`) to shorthand URLs (like `ext+treestyletab:...`) automatically, for better mobility.
