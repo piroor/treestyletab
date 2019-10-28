@@ -54,6 +54,8 @@ function logUpdated(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
+let mAppIsActive = false;
+
 export function init() {
   browser.tabs.onActivated.addListener(onActivated);
   browser.tabs.onUpdated.addListener(onUpdated);
@@ -65,6 +67,10 @@ export function init() {
   browser.tabs.onDetached.addListener(onDetached);
   browser.windows.onCreated.addListener(onWindowCreated);
   browser.windows.onRemoved.addListener(onWindowRemoved);
+
+  browser.windows.getAll({}).then(windows => {
+    mAppIsActive = windows.some(window => window.focused);
+  });
 }
 
 let mPromisedStartedResolver;
@@ -324,6 +330,7 @@ async function onNewTabTracked(tab, info) {
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
+  const fromExternalApplication = !mAppIsActive;
 
   // New tab's index can become invalid because the value of "index" is same to
   // the one given to browser.tabs.create() (new tab) or the original index
@@ -354,7 +361,8 @@ async function onNewTabTracked(tab, info) {
     positionedBySelf,
     mayBeReplacedWithContainer,
     maybeOrphan,
-    activeTab
+    activeTab,
+    fromExternalApplication
   });
 
   if (Tab.needToWaitTracked(tab.windowId, { exceptionTabId: tab.id }))
@@ -462,7 +470,8 @@ async function onNewTabTracked(tab, info) {
       restored,
       duplicated,
       duplicatedInternally,
-      activeTab
+      activeTab,
+      fromExternalApplication
     });
     // don't do await if not needed, to process things synchronously
     if (moved instanceof Promise)
@@ -506,7 +515,8 @@ async function onNewTabTracked(tab, info) {
       duplicated,
       duplicatedInternally,
       originalTab: duplicated && Tab.get(uniqueId.originalTabId),
-      treeForActionDetection
+      treeForActionDetection,
+      fromExternalApplication
     });
     tab.$TST.resolveOpened();
 
@@ -967,3 +977,7 @@ async function onWindowRemoved(windowId) {
   }
 }
 
+
+browser.windows.onFocusChanged.addListener(windowId => {
+  mAppIsActive = windowId > 0;
+});
