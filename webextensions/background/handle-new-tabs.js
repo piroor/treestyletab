@@ -225,8 +225,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
           autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
           inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
         });
+        return;
       }
-      else {
         const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
         const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
         const newTabSite    = tab.url.match(siteMatcher);
@@ -238,8 +238,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
             autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
             inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
           });
+          return;
         }
-      }
     }
   }
 });
