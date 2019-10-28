@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.0 (2019.10.28)
    * Separate an option to control new tabs from outside Firefox.
    * Open search result tabs opened from `about:addons` tab as children.
    * Save tree structure to bookmarks when multiple bookmarks are created from a tree, via commands provided by TST itself.
