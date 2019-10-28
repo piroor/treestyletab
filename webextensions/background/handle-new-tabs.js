@@ -41,11 +41,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
     TabsStore.addToBeGroupedTab(tab);
   }
   else {
+    let dontMove = false;
     if (!info.maybeOrphan &&
         possibleOpenerTab &&
         !info.restored) {
       let autoAttachBehavior = configs.autoAttachOnNewTabCommand;
-      let dontMove           = false;
       if (tab.$TST.nextTab &&
           possibleOpenerTab == tab.$TST.previousTab) {
         // New tab opened with browser.tabs.insertAfterCurrent=true may have
@@ -85,7 +85,17 @@ Tab.onCreating.addListener((tab, info = {}) => {
       else if (possibleOpenerTab != tab) {
         tab.$TST.possibleOpenerTab = possibleOpenerTab.id;
       }
-      tab.$TST.isNewTab = true;
+      tab.$TST.isNewTab = !info.fromExternal;
+    }
+    if (info.fromExternal) {
+      log('behave as a tab opened from external application');
+      return Tree.behaveAutoAttachedTab(tab, {
+        baseTab:   possibleOpenerTab,
+        behavior:  configs.autoAttachOnOpenedFromExternal,
+        dontMove,
+        inheritContextualIdentity: configs.inheritContextualIdentityToTabsFromExternal,
+        broadcast: true
+      }).then(moved => !moved);
     }
     log('behave as a tab opened with any URL');
     tab.$TST.positionedBySelf = info.positionedBySelf;
@@ -111,8 +121,9 @@ Tab.onCreating.addListener((tab, info = {}) => {
   else if (!info.maybeOrphan && configs.autoAttach) {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
-      behavior:  configs.autoAttachOnOpenedWithOwner,
+      behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
+      inheritContextualIdentity: info.fromExternal ? configs.inheritContextualIdentityToTabsFromExternal : false,
       broadcast: true
     }).then(moved => !moved);
   }

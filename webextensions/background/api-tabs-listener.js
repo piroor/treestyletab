@@ -330,7 +330,7 @@ async function onNewTabTracked(tab, info) {
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
-  const fromExternalApplication = !mAppIsActive;
+  const fromExternal         = !mAppIsActive;
 
   // New tab's index can become invalid because the value of "index" is same to
   // the one given to browser.tabs.create() (new tab) or the original index
@@ -362,7 +362,7 @@ async function onNewTabTracked(tab, info) {
     mayBeReplacedWithContainer,
     maybeOrphan,
     activeTab,
-    fromExternalApplication
+    fromExternal
   });
 
   if (Tab.needToWaitTracked(tab.windowId, { exceptionTabId: tab.id }))
@@ -471,7 +471,7 @@ async function onNewTabTracked(tab, info) {
       duplicated,
       duplicatedInternally,
       activeTab,
-      fromExternalApplication
+      fromExternal
     });
     // don't do await if not needed, to process things synchronously
     if (moved instanceof Promise)
@@ -516,7 +516,7 @@ async function onNewTabTracked(tab, info) {
       duplicatedInternally,
       originalTab: duplicated && Tab.get(uniqueId.originalTabId),
       treeForActionDetection,
-      fromExternalApplication
+      fromExternal
     });
     tab.$TST.resolveOpened();
 

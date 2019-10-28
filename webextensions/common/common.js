@@ -144,6 +144,7 @@ export const configs = new Configs({
   autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
   autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
   autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
