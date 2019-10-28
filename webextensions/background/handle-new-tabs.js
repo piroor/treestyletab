@@ -221,29 +221,30 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       log(' => no need to control');
       return;
     }
-      if (tab.$TST.isNewTabCommandTab) {
-        log('behave as a tab opened by new tab command (delayed)');
-        handleNewTabFromActiveTab(tab, {
-          activeTab:                 possibleOpenerTab,
-          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
-          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
-        });
-        return;
-      }
 
-      const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
-      const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
-      const newTabSite    = tab.url.match(siteMatcher);
-      if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
-        log('behave as a tab opened from same site (delayed)');
-        handleNewTabFromActiveTab(tab, {
-          url:                       tab.url,
-          activeTab:                 possibleOpenerTab,
-          autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
-          inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
-        });
-        return;
-      }
+    if (tab.$TST.isNewTabCommandTab) {
+      log('behave as a tab opened by new tab command (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        activeTab:                 possibleOpenerTab,
+        autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+        inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+      });
+      return;
+    }
+
+    const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+    const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
+    const newTabSite    = tab.url.match(siteMatcher);
+    if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
+      log('behave as a tab opened from same site (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        url:                       tab.url,
+        activeTab:                 possibleOpenerTab,
+        autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+        inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+      });
+      return;
+    }
   }
 });
 
