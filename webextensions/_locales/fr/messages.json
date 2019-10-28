@@ -294,7 +294,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Nouvel onglet du même site que l'onglet courant depuis la barre d'adresse ou en dehors de Firefox" },
+  "config_fromExternal_caption": { "message": "Nouvel onglet du en dehors de Firefox" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "Ouvrir comme" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(aucun contrôle)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "un onglet indépendant" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "un enfant de l'onglet courant" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "au même niveau que l'onglet courant" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Hériter du conteneur de l'onglet courant" },
+
+  "config_sameSiteOrphan_caption": { "message": "Nouvel onglet du même site que l'onglet courant depuis la barre d'adresse" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Ouvrir comme" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(aucun contrôle)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "un onglet indépendant" },

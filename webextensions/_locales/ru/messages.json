@@ -296,7 +296,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки или передается извне " },
+  "config_fromExternal_caption": { "message": "Когда новая вкладка передается извне" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "Открыть как" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(не контролировать)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "отдельную вкладку" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "дочернюю текущей" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "одноуровневую вкладку" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "следующую одноуровневую вкладку" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Наследовать контейнер текущей вкладки" },
+
+  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки, bookmarks, histories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(не контролировать)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "отдельную вкладку" },

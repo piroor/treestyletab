@@ -296,7 +296,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "New tab with the same website as the current tab from the location bar or from outside Firefox" },
+  "config_fromExternal_caption": { "message": "New tab from outside Firefox" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "Open as" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(no control)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "an independent tab" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "a child of the current tab" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "a sibling of the current tab" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "the next sibling of the current tab" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Inherit the container of the current tab" },
+
+  "config_sameSiteOrphan_caption": { "message": "New tab with the same website as the current tab from the location bar, bookmarks, hitories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(no control)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
