@@ -213,11 +213,14 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const window = TabsStore.windows.get(tab.windowId);
     log('window.openedNewTabs ', window.openedNewTabs);
-    if (!tab.$TST.parent &&
-        possibleOpenerTab &&
-        !window.openedNewTabs.has(tab.id) &&
-        !tab.$TST.openedWithOthers &&
-        !tab.$TST.positionedBySelf) {
+    if (tab.$TST.parent ||
+        !possibleOpenerTab ||
+        window.openedNewTabs.has(tab.id) ||
+        tab.$TST.openedWithOthers ||
+        tab.$TST.positionedBySelf) {
+      log(' => no need to control');
+      return;
+    }
       if (tab.$TST.isNewTabCommandTab) {
         log('behave as a tab opened by new tab command (delayed)');
         handleNewTabFromActiveTab(tab, {
@@ -227,6 +230,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         });
         return;
       }
+
       const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
       const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
       const newTabSite    = tab.url.match(siteMatcher);
@@ -240,7 +244,6 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         });
         return;
       }
-    }
   }
 });
 
