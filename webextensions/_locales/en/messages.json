@@ -286,6 +286,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
+  "config_autoAttachWithURL_caption": { "message": "Non-blank new tabs" },
+
   "config_duplicateTabAction_caption": { "message": "Duplicate Tabs (middle click on the \"Reload\" button, etc.)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Duplicate the tab as" },

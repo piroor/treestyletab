@@ -282,6 +282,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
+  "config_autoAttachWithURL_caption": { "message": "空でない新しいタブ" },
+
   "config_duplicateTabAction_caption": { "message": "複製されたタブ（「再読み込み」ボタンの中クリックなど）" },
 
   "config_autoAttachOnDuplicated_before": { "message": "複製されたタブを" },
