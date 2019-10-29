@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.1 (2019.10.29)
    * Apply the option to control inheritance of the container from the current tab to a tab opened from outside Firefox.
  - 3.2.0 (2019.10.28)
    * Separate an option to control new tabs from outside Firefox.
