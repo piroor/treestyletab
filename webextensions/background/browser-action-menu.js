@@ -513,7 +513,7 @@ const mItems = [
           { type: 'separator' },
           {
             title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternal_label'),
-            key:   'inheritContextualIdentityToSameSiteOrphan',
+            key:   'inheritContextualIdentityToTabsFromExternal',
             type:  'checkbox'
           }
         ]

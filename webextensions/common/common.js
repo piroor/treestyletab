@@ -149,6 +149,7 @@ export const configs = new Configs({
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
   inheritContextualIdentityToSameSiteOrphan: true,
+  inheritContextualIdentityToTabsFromExternal: false,
 
 
   // behavior around closed tab
