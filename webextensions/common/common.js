@@ -234,7 +234,7 @@ export const configs = new Configs({
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
-.tab.unread .label-content {
+tab-item.unread .label-content {
   color: red !important;
   font-style: italic !important;
 }
@@ -242,7 +242,7 @@ export const configs = new Configs({
 
 /* Add private browsing indicator per tab */
 /*
-.tab.private-browsing tab-label:before {
+tab-item.private-browsing tab-label:before {
   content: "🕶";
 }
 */
