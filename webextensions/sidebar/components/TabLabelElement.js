@@ -94,7 +94,8 @@ export class TabLabelElement extends HTMLElement {
 
   updateOverflow() {
     const tab = this._tab;
-    this.classList.toggle('overflow', tab && !tab.pinned && this._content.getBoundingClientRect().width > this.getBoundingClientRect().width);
+    const overflow = tab && !tab.pinned && this._content.getBoundingClientRect().width > this.getBoundingClientRect().width;
+    this.classList.toggle('overflow', overflow);
   }
 
   get _content() {
