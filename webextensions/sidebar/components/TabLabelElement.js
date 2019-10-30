@@ -30,8 +30,8 @@ export class TabLabelElement extends HTMLElement {
 
   connectedCallback() {
     if (this.initialized) {
-      this.updateTextContent();
       this._startListening();
+      this.updateTextContent();
       return;
     }
 
@@ -57,8 +57,8 @@ export class TabLabelElement extends HTMLElement {
     const content = this.appendChild(document.createElement('span'));
     content.classList.add(kCONTENT_CLASS_NAME);
 
-    this.updateTextContent();
     this._startListening();
+    this.updateTextContent();
   }
 
   disconnectedCallback() {
@@ -93,7 +93,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   updateOverflow() {
-    const tab = this._tab;
+    const tab = this.owner;
     const overflow = tab && !tab.pinned && this._content.getBoundingClientRect().width > this.getBoundingClientRect().width;
     this.classList.toggle('overflow', overflow);
   }

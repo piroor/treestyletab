@@ -101,6 +101,7 @@ export class TabElement extends HTMLElement {
 
     const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
     this.appendChild(label);
+    label.owner = this;
     label.addOverflowChangeListener(() => {
       if (this.$TST.tab.pinned)
         return;
