@@ -109,7 +109,7 @@ export function updateAll() {
     tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
     if (!tab.$TST.collapsed)
-      tab.$TST.updateElement(TabUpdateTarget.Overflow);
+      tab.$TST.element.updateOverflow();
   }
 }
 
@@ -785,7 +785,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
       tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-      tab.$TST.updateElement(TabUpdateTarget.Overflow);
+      tab.$TST.element.updateOverflow();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
