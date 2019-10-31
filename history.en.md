@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Duplicate tabs as a sibling of the source tab correctly even if the source tab was active.
    * Highlight active tabs correctly on some edge cases.
    * Update overflow state of tab labels more correctly. (regression on 3.2.0)
    * Update `ru` locale by wvxwxvw. Thanks!
