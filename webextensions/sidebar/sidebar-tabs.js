@@ -417,6 +417,19 @@ function tryApplyUpdate(update) {
   }
 }
 
+async function activateRealActiveTab(windowId) {
+  const tabs = await browser.tabs.query({ active: true, windowId });
+  if (tabs.length <= 0)
+    throw new Error(`FATAL ERROR: No active tab in the window ${windowId}`);
+  const id = tabs[0].id;
+  await Tab.waitUntilTracked(id, { element: true });
+  const tab = Tab.get(id);
+  if (!tab)
+    throw new Error(`FATAL ERROR: Active tab ${id} in the window ${windowId} is not tracked`);
+  TabsStore.activeTabInWindow.set(windowId, tab);
+  TabsInternalOperation.setTabActive(tab);
+}
+
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -664,6 +677,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addRemovingTab(tab);
       TabsStore.addRemovedTab(tab); // reserved
       reserveToUpdateLoadingState();
+      if (tab.active) {
+        // This should not, but sometimes happens on some edge cases for example:
+        // https://github.com/piroor/treestyletab/issues/2385
+        activateRealActiveTab(message.windowId);
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVED: {
@@ -671,6 +689,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       if (!tab)
         return;
+      if (tab.active) {
+        // This should not, but sometimes happens on some edge cases for example:
+        // https://github.com/piroor/treestyletab/issues/2385
+        activateRealActiveTab(message.windowId);
+      }
       if (!tab.$TST.collapsed &&
           configs.animation) {
         const tabRect = tab.$TST.element.getBoundingClientRect();
