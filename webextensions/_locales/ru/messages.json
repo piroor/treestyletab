@@ -286,6 +286,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
+  "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
+
   "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и прочее)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
@@ -370,12 +372,12 @@
   "config_closeParentBehaviorMode_custom_caption_insideSidebar":  { "message": "Для операций внутри боковой панели:" },
   "config_closeParentBehaviorMode_custom_caption_outsideSidebar": { "message": "Для операций на нативной панели вкладок, сочетаниях клавиш или др. аддонов, при видимой боковой панели:" },
   "config_closeParentBehaviorMode_custom_caption_noSidebar":      { "message": "Для операций на нативной панели вкладок, сочетаниях клавиш или др. аддонах" },
-  "config_closeParentBehavior_close": { "message": "Также закрыть дочерние вкладки" },
-  "config_closeParentBehavior_replaceWithGroupTab": { "message": "Заменить закрытую родительскую вкладку пустой и сохранить дерево" },
-  "config_closeParentBehavior_promoteFirst": { "message": "Назначить первую дочернюю вкладку новой родительской" },
-  "config_closeParentBehavior_promoteAll": { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
+  "config_closeParentBehavior_close":                { "message": "Также закрыть дочерние вкладки" },
+  "config_closeParentBehavior_replaceWithGroupTab":  { "message": "Заменить закрытую родительскую вкладку пустой и сохранить дерево" },
+  "config_closeParentBehavior_promoteFirst":         { "message": "Назначить первую дочернюю вкладку новой родительской" },
+  "config_closeParentBehavior_promoteAll":           { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
   "config_closeParentBehavior_promoteIntelligently": { "message": "Повысить первую дочернюю, когда корневая вкладка закрыта, иначе повысить все дочерние" },
-  "config_closeParentBehavior_detach": { "message": "Освободить дочерние вкладки из дерева" },
+  "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
 
@@ -463,7 +465,7 @@
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "миллисекунд или больше." },
   "config_labelOverflowStyle_caption": { "message": "Слишком длинный заголовок вкладок:" },
   "config_labelOverflowStyle_fade":    { "message": "Увядание (лучшая видимость)" },
-  "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучшая производительность)" },
+  "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
 
   "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
   "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки, переключая фокус горячими клавишами (*Необходимо разрешить скрипты на веб-страницах.)" },
