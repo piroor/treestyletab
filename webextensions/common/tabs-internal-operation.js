@@ -93,8 +93,8 @@ export function removeTabs(tabs) {
 
   if (window) {
     // Flag tabs to be closed at a time. With this flag TST skips some
-    // destruction operations about closing tabs, and it accelerates
-    // bulk closes for very large number of tabs.
+    // operations on tab close (for example, opening a group tab to replace
+    // a closed parent tab to keep the tree structure).
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
