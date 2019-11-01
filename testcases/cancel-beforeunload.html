@@ -6,11 +6,12 @@
   <head>
     <meta charset="UTF-8">
     <script type="application/javascript"><!--
-      window.addEventListener('beforeunload', function(event) {
+      function onBeforeUnload(event) {
         console.log('beforeunload');
         event.preventDefault();
         event.returnValue = '';
-      });
+      }
+      window.addEventListener('beforeunload', onBeforeUnload);
       console.log('beforeunload listener is registered.');
 
       function openTabs(url, count) {
@@ -23,6 +24,10 @@
   </head>
   <body>
     <p>This page should show a confirmation before closed or reloaded.</p>
+    <p><button onclick="window.removeEventListener('beforeunload', onBeforeUnload)"
+               onkeypress="if (event.key == 'Enter') window.removeEventListener('beforeunload', onBeforeUnload);"
+               >Clear unload listener</button></p>
+    <hr>
     <p><button data-count="5"
                data-url="about:blank"
                onclick="openTabs(this.dataset.url, this.dataset.count)"
