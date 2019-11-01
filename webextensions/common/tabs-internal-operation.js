@@ -103,8 +103,11 @@ export function removeTabs(tabs) {
       clearCache(tab);
     }
     setTimeout(() => {
-      if (tabs.every(tab => !tab.$TST || tab.$TST.destroyed))
+      const canceledTabs = tabs.filter(tab => tab.$TST && !tab.$TST.destroyed);
+      log(`Timeout: ${canceledTabs.length} tabs may be canceled to close.`);
+      if (canceledTabs.length == 0)
         return;
+      log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
       // The "browser.tabs.remove()" operation can be canceled by the user
       // when the page cancels "beforeunload" events. Thus we need to clear
       // the flag for the next try.
