@@ -100,18 +100,22 @@ export function removeTabs(tabs) {
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
-      setTimeout(() => {
-        if (tab.$TST.destroyed)
-          return;
-        // The "browser.tabs.remove()" operation can be canceled by the user
-        // when the page cancels "beforeunload" events. Thus we need to clear
-        // the flag for the next try.
-        // See also: https://github.com/piroor/treestyletab/issues/2384
-        tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
-        window.internalClosingTabs.delete(tab.id);
-      }, 1000);
       clearCache(tab);
     }
+    setTimeout(() => {
+      if (tabs.every(tab => !tab.$TST || tab.$TST.destroyed))
+        return;
+      // The "browser.tabs.remove()" operation can be canceled by the user
+      // when the page cancels "beforeunload" events. Thus we need to clear
+      // the flag for the next try.
+      // See also: https://github.com/piroor/treestyletab/issues/2384
+      for (const tab of tabs) {
+        if (!tab.$TST || tab.$TST.destroyed)
+          continue;
+        tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
+        window.internalClosingTabs.delete(tab.id);
+      }
+    }, 1000);
   }
   if (!SidebarConnection.isInitialized()) // in sidebar
     return;
