@@ -94,9 +94,22 @@ export function removeTabs(tabs) {
       tabIds
     });
   if (window) {
+    // Flag tabs to be closed at a time. With this flag TST skips some
+    // destruction operations about closing tabs, and it accelerates
+    // bulk closes for very large number of tabs.
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
+      setTimeout(() => {
+        if (!tab.$TST)
+          return;
+        // The "browser.tabs.remove()" operation can be canceled by the user
+        // when the page cancels "beforeunload" events. Thus we need to clear
+        // the flag for the next try.
+        // See also: https://github.com/piroor/treestyletab/issues/2384
+        tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
+        window.internalClosingTabs.delete(tab.id);
+      }, 1000);
       clearCache(tab);
     }
   }

@@ -139,6 +139,7 @@ export default class Tab {
       this.element = null;
       this.classList = null;
     }
+    this.tab.$TST = null;
     this.tab = null;
     this.promisedUniqueId = null;
     this.uniqueId = null;
