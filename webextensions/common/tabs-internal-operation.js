@@ -103,6 +103,7 @@ export function removeTabs(tabs) {
   }
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  if (window) {
   promisedRemoved.then(() => {
     // "beforeunload" listeners in tabs blocks the operation and the
     // returned promise is resolved after all "beforeunload" listeners
@@ -121,6 +122,7 @@ export function removeTabs(tabs) {
       window.internalClosingTabs.delete(tab.id);
     }
   });
+  }
   return promisedRemoved;
 }
 
