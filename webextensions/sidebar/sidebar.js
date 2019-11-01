@@ -927,11 +927,6 @@ function onMessage(message, _sender, _respond) {
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
-    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
-      TabsInternalOperation.removeTabs(mapAndFilter(message.tabIds, id => Tab.get(id)));
-      break;
-
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
       UserOperationBlocker.blockIn(mTargetWindow, message);
       break;
