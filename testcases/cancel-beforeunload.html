@@ -12,9 +12,16 @@
         event.returnValue = '';
       });
       console.log('beforeunload listener is registered.');
+
+      function openTabs() {
+        for (let i = 0, maxi = 5; i != maxi; i++) {
+          window.open(`#child${i}`, "_blank");
+        }
+      }
     //--></script>
   </head>
   <body>
     <p>This page should show a confirmation before closed or reloaded.</p>
+    <p><button onclick="openTabs()" onkeypress="if (event.key == 'Enter') openTabs();">Prepare child tabs</button></p>
   </body>
 </html>
