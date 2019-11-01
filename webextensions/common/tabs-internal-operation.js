@@ -104,24 +104,24 @@ export function removeTabs(tabs) {
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (window) {
-  promisedRemoved.then(() => {
-    // "beforeunload" listeners in tabs blocks the operation and the
-    // returned promise is resolved after all "beforeunload" listeners
-    // are processed and "browser.tabs.onRemoved()" listeners are
-    // processed for really closed tabs.
-    // In other words, there may be some "canceled tab close"s and
-    // we need to clear "to-be-closed" flags for such tabs.
-    // See also: https://github.com/piroor/treestyletab/issues/2384
-    const canceledTabs = tabs.filter(tab => tab.$TST && !tab.$TST.destroyed);
-    log(`${canceledTabs.length} tabs may be canceled to close.`);
-    if (canceledTabs.length == 0)
-      return;
-    log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
-    for (const tab of canceledTabs) {
-      tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
-      window.internalClosingTabs.delete(tab.id);
-    }
-  });
+    promisedRemoved.then(() => {
+      // "beforeunload" listeners in tabs blocks the operation and the
+      // returned promise is resolved after all "beforeunload" listeners
+      // are processed and "browser.tabs.onRemoved()" listeners are
+      // processed for really closed tabs.
+      // In other words, there may be some "canceled tab close"s and
+      // we need to clear "to-be-closed" flags for such tabs.
+      // See also: https://github.com/piroor/treestyletab/issues/2384
+      const canceledTabs = tabs.filter(tab => tab.$TST && !tab.$TST.destroyed);
+      log(`${canceledTabs.length} tabs may be canceled to close.`);
+      if (canceledTabs.length == 0)
+        return;
+      log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
+      for (const tab of canceledTabs) {
+        tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
+        window.internalClosingTabs.delete(tab.id);
+      }
+    });
   }
   return promisedRemoved;
 }
