@@ -5,6 +5,7 @@
    * Highlight active tabs correctly on some edge cases.
    * Update overflow state of tab labels more correctly. (regression on 3.2.0)
    * Better backward compatibility for old custom user styles.
+   * Allow to close tabs after a tab close was canceled on a `beforeunload` event. (regression on recent versions)
    * Update `ru` locale by wvxwxvw. Thanks!
  - 3.2.1 (2019.10.29)
    * Apply the option to control inheritance of the container from the current tab to a tab opened from outside Firefox.
