@@ -101,7 +101,7 @@ export function removeTabs(tabs) {
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       setTimeout(() => {
-        if (!tab.$TST)
+        if (tab.$TST.destroyed)
           return;
         // The "browser.tabs.remove()" operation can be canceled by the user
         // when the page cancels "beforeunload" events. Thus we need to clear

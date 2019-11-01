@@ -139,10 +139,11 @@ export default class Tab {
       this.element = null;
       this.classList = null;
     }
-    this.tab.$TST = null;
+    // this.tab.$TST = null; // tab.$TST is used by destruction processes.
     this.tab = null;
     this.promisedUniqueId = null;
     this.uniqueId = null;
+    this.destroyed = true;
   }
 
   clear() {
