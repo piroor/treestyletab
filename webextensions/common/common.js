@@ -185,6 +185,10 @@ export const configs = new Configs({
   tabDragHandleFeedbackDuration: 1000,
 
 
+  // subpanel
+  lastSelectedSubPanelProviderId: null,
+
+
   // misc.
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
