@@ -141,6 +141,12 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "warnOnCloseTabs_notification_title":   { "message": "直近の操作によって複数 ($NUMBER$) のタブが閉じられました。",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_notification_message": { "message": "意図しない結果でしたか？ 操作を取り消す場合はこの通知をクリックしてください。" },
+
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ 個のタブが一度に開かれました。グループとして1つのツリーにまとめますか？",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }

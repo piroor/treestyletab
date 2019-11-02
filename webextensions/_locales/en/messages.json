@@ -141,6 +141,12 @@
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
+  "warnOnCloseTabs_notification_title":   { "message": "$NUMBER$ tabs have been closed by the last action.",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_notification_message": { "message": "Were you sure you want to close them? If not, click here to cancel the operation." },
+
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ tabs are opened in a time. Do you want them to be grouped in a tree?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }

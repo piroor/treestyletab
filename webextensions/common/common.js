@@ -166,6 +166,7 @@ export const configs = new Configs({
   simulateSelectOwnerOnClose: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,
+  warnOnCloseTabsNotificationTimeout: 20 * 1000,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
 
@@ -402,7 +403,7 @@ export async function wait(task = 0, timeout = 0) {
     timeout = task;
     task    = null;
   }
-  return new Promise((resolve, _aReject) => {
+  return new Promise((resolve, _reject) => {
     setTimeout(async () => {
       if (task)
         await task();
@@ -412,7 +413,7 @@ export async function wait(task = 0, timeout = 0) {
 }
 
 export function nextFrame() {
-  return new Promise((resolve, _aReject) => {
+  return new Promise((resolve, _reject) => {
     window.requestAnimationFrame(resolve);
   });
 }
@@ -426,30 +427,49 @@ export async function notify(params = {}) {
   });
 
   let onClicked;
-  if (params.url) {
+  let onClosed;
+  return new Promise(async (resolve, _reject) => {
+    let resolved = false;
+
     onClicked = notificationId => {
       if (notificationId != id)
         return;
-      browser.tabs.create({
-        url: params.url
-      });
-      browser.notifications.onClicked.removeListener(onClicked);
-      onClicked = null;
+      if (params.url) {
+        browser.tabs.create({
+          url: params.url
+        });
+      }
+      resolved = true;
+      resolve(true);
     };
     browser.notifications.onClicked.addListener(onClicked);
-  }
 
-  let timeout = params.timeout;
-  if (typeof timeout != 'number')
-    timeout = configs.notificationTimeout;
-  if (timeout >= 0)
-    await wait(timeout);
+    onClosed = notificationId => {
+      if (notificationId != id)
+        return;
+      if (!resolved) {
+        resolved = true;
+        resolve(false);
+      }
+    };
+    browser.notifications.onClosed.addListener(onClosed);
 
-  if (onClicked) {
+    let timeout = params.timeout;
+    if (typeof timeout != 'number')
+      timeout = configs.notificationTimeout;
+    if (timeout >= 0) {
+      await wait(timeout);
+    }
+    await browser.notifications.clear(id);
+    if (!resolved)
+      resolve(false);
+  }).then(clicked => {
     browser.notifications.onClicked.removeListener(onClicked);
     onClicked = null;
-  }
-  await browser.notifications.clear(id);
+    browser.notifications.onClosed.removeListener(onClosed);
+    onClosed = null;
+    return clicked;
+  });
 }
 
 
