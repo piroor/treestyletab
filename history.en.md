@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.2 (2019.11.3)
    * Show notification when multiple tabs are closed by one action without any confirmation. It allows you to cancel the operation by clicking it.
    * Duplicate tabs as a sibling of the source tab correctly even if the source tab was active.
    * Highlight active tabs correctly on some edge cases.
