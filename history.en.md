@@ -4,6 +4,7 @@
    * Show notification when multiple tabs are closed by one action without any confirmation. It allows you to cancel the operation by clicking it.
    * Duplicate tabs as a sibling of the source tab correctly even if the source tab was active.
    * Highlight active tabs correctly on some edge cases.
+   * Allow to detach dragged tabs more ceratainly from the window when tabs are dropped outside the sidebar. This is based on [a workaround](https://github.com/piroor/treestyletab/issues/2256#issuecomment-549072345) for the [bug 1548949](https://bugzilla.mozilla.org/show_bug.cgi?id=1548949), and as a trade-off this change introduced a new intentonal regression on a edge case: tabs are duplicated when tabs are dropped to another Firefox instance (tabs imported to the receiver Firefox and tabs are also detached to a new window on the source Firefox).
    * Update overflow state of tab labels and tooltips more correctly. (regression on 3.2.0)
    * Fix backward compatibility for old custom user styles. (regression on 3.2.0)
    * Allow to close tabs after a tab close was canceled on a `beforeunload` event. (regression on recent versions)
