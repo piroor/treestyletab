@@ -368,12 +368,6 @@ tab-item tab-label {
   white-space: nowrap;
 }
 
-/* This is required to apply color specified for the tab-label itself.
-   See also: https://github.com/piroor/treestyletab/issues/2401 */
-tab-item .label-content {
-  color: inherit;
-}
-
 :root:not([data-label-overflow="fade"]) tab-item tab-label {
   text-overflow: ".."; /*ellipsis*/;
 }
@@ -388,7 +382,7 @@ tab-item .label-content {
 }
 
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
-tab-item tab-label-content {
+tab-item .label-content {
   color: inherit;
 }
 
