@@ -141,7 +141,7 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
-  "warnOnCloseTabs_notification_message": { "message": "操作を取り消す場合はこの通知をクリックしてください。\n続行して問題がなければ、$TIMEOUT$ 秒後またはこの通知を閉じた時点で残りのタブも閉じられます。",
+  "warnOnCloseTabs_notification_message": { "message": "操作を取り消す場合はこの通知をクリックしてください。\n続行して問題がなければ、$TIMEOUT$ 秒後に残りのタブも閉じられます。",
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},

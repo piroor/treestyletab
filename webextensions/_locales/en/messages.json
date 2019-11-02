@@ -141,7 +141,7 @@
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
-  "warnOnCloseTabs_notification_message": { "message": "If not, click here to cancel the operation.\nOtherwise rest tabs are closed at $TIMEOUT$ seconds later or immediately when this is closed.",
+  "warnOnCloseTabs_notification_message": { "message": "If not, click here to cancel the operation.\nOtherwise rest tabs are closed at $TIMEOUT$ seconds later.",
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
