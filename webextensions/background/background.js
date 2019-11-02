@@ -478,8 +478,8 @@ export async function confirmToCloseTabs(tabs, options = {}) {
        SidebarConnection.hasFocus(options.windowId))) {
     if (!SidebarConnection.isOpen(options.windowId)) {
       const clicked = await notify({
-        title:   browser.i18n.getMessage('warnOnCloseTabs_notification_title', [count]),
-        message: browser.i18n.getMessage('warnOnCloseTabs_notification_message'),
+        title:   browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
+        message: browser.i18n.getMessage('warnOnCloseTabs_notification_message', [Math.floor(configs.warnOnCloseTabsNotificationTimeout / 1000)]),
         timeout: configs.warnOnCloseTabsNotificationTimeout
       });
       return !clicked;
