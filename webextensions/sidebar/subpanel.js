@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  log as internalLogger,
   wait,
   configs
 } from '/common/common.js';
@@ -19,6 +20,10 @@ import MenuUI from '/extlib/MenuUI.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as Size from './size.js';
+
+function log(...args) {
+  internalLogger('sidebar/subpanel', ...args);
+}
 
 export const onResized = new EventListenerManager();
 

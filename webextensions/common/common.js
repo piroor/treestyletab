@@ -305,6 +305,7 @@ tab-item.private-browsing tab-label:before {
     'sidebar/sidebar-tabs': false,
     'sidebar/sidebar': false,
     'sidebar/size': false,
+    'sidebar/subpanel': false,
     'sidebar/tab-context-menu': false,
     'sidebar/tab-drag-handle': false
   },
