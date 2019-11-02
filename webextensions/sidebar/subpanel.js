@@ -62,6 +62,8 @@ export async function init() {
   ]);
   mHeight = height || 0;
 
+  log('initialize ', { providerId, height: mHeight });
+
   mContainer.appendChild(mSubPanel);
   updateSelector();
 
@@ -118,8 +120,10 @@ TSTAPI.onInitialized.addListener(async () => {
 
 function applyProvider(id) {
   const provider = TSTAPI.getAddon(id);
+  log('applyProvider ', id, provider);
   if (provider &&
       provider.subPanel) {
+    log('applyProvider: load ', id);
     configs.lastSelectedSubPanelProviderId = mProviderId = id;
     for (const item of mSelector.querySelectorAll('.radio')) {
       item.classList.remove('checked');
@@ -143,6 +147,7 @@ function applyProvider(id) {
       load();
   }
   else {
+    log('applyProvider: unload missing/invalid provider ', id);
     const icon = mSelectorAnchor.querySelector('.icon > img');
     icon.removeAttribute('src');
     mSelectorAnchor.querySelector('.label').textContent = '';
@@ -152,6 +157,7 @@ function applyProvider(id) {
 
 function restoreLastProvider() {
   const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
+  log('restoreLastProvider ', lastProvider);
   if (lastProvider && lastProvider.subPanel)
     applyProvider(lastProvider.id);
   else if (mSelector.hasChildNodes())
