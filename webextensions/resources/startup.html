@@ -6,18 +6,39 @@
 <link rel="icon" href="./16x16.svg">
 <title></title>
 <style type="text/css">
+  :root {
+    --bg-color: #f9f9fa;
+    --text-color: #0c0c0d;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-color: #474749; /* same to --tab-surface-active in Plain Dark */
+      --text-color: #f9f9fa; /* same to --tab-text-active in Plain Dark */
+    }
+
+    :link,
+    :visited {
+      color: var(--text-color);
+    }
+  }
+
   body {
-    background: #f9f9fa;
-    color: #0c0c0d;
+    background: var(--bg-color);
+    color: var(--text-color);
     padding: 2em 12%;
     text-align: center;
     font: message-box;
   }
 
-  #icon {
+  #icon::before {
+    background: var(--text-color);
+    content: "";
+    display: inline-block;
+    height: 10em;
+    mask: url("24x24-light.svg") no-repeat center / 100%;
     opacity: 0.7;
     width: 10em;
-    height: 10em;
   }
 
   em {
@@ -98,7 +119,7 @@
 <script type="module" src="./module/startup.js"></script>
 
 <h1 id="title">__MSG_extensionName__</h1>
-<div><img id="icon" src="24x24-light.svg" alt=""></div>
+<div id="icon"></div>
 <p>__MSG_message_startup_description_1__<em
   >__MSG_message_startup_description_key__</em
   >__MSG_message_startup_description_2__<em

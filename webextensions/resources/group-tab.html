@@ -8,10 +8,20 @@
 <title></title>
 <style type="text/css">
   :root {
-    background: -moz-dialog;
-    color: -moz-dialogtext;
+    --bg-color: -moz-dialog;
+    --text-color: -moz-dialogtext;
+
+    background: var(--bg-color);
+    color: var(--text-color);
     font: message-box;
     line-height: 1.2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-color: #474749; /* same to --tab-surface-active in Plain Dark */
+      --text-color: #f9f9fa; /* same to --tab-text-active in Plain Dark */
+    }
   }
 
   main {
@@ -33,7 +43,7 @@
   }
 
   h1::before {
-    background: ButtonText;
+    background: var(--text-color);
     content: "";
     display: inline-block;
     height: 1.25em;
@@ -83,7 +93,7 @@
 
   #tabs li.use-default-favicon a::before,
   #tabs li.favicon-loading a::before {
-    background: ButtonText;
+    background: --text-color;
     display: none;
     content: "";
     display: inline-block;
