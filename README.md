@@ -153,7 +153,7 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
   
-  [as a workaround, you need to do it by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
+  [As a workaround, you need to do it by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
   But please remind that such an usage is not recommended by the original author of TST, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*.
   </details>
 * <details><summary>Support for horizontal tab bar</summary>
@@ -184,7 +184,7 @@ If you need any new API, please file API proposals to the issue tracker.
   
   After that TST never attach new tabs to existing tree automatically.
   
-  If you want to drag multiple tabs at once to organize tree, [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) will help you.
+  If you want to drag multiple tabs at once to organize tree, Shift/Ctrl-click to select multiple tabs (and [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) for more feature) will help you.
   </details>
 * <details><summary>Adding new minor (trivial) options more and more</summary>
   
@@ -211,13 +211,7 @@ If you need any new API, please file API proposals to the issue tracker.
   * The command is fundamentally unrelated to the context: "what command do you want to invoke for the tab?"
   * If you need to change TST's options too frequently on your daily use, something wrong. For example, a failure auto-detection of TST for your action's context. I believe that such a problem should be fixed on TST side like improvements of auto-detection, instead of providing easy way for workaround.
   
-  If you really need to access TST's options page very frequently due to some reasons, as a workaround you can bookmark the page, with these steps:
-  
-  1. Go to `about:debugging`.
-  2. Find the "Internal UUID" of Tree Style Tab. It should be an UUID like `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX`.
-  3. Create a new blank bookmark, and set its URL as `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/options/options.html#!`. The UUID is TST's internal UUID.
-  
-  Then you can open the options page in a tab.
+  If you really need to access TST's options page very frequently due to some reasons, as a workaround you can bookmark the page with the URL `ext+treestyletab:options`. It allows you to open the options page in a tab.
   </details>
 * <details><summary>Auto hide of the sidebar</summary>
   
