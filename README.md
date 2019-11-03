@@ -126,10 +126,7 @@ Some addons provide extended behavior to TST's sidebar panel:
 All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).
 But please read FAQ below, before you post any new feature request.
 
-
-## FAQ / frequently rejected requests/proposals
-
-Please read some important points of this project at first:
+### Basics
 
  * *TST is basically designed to be used as an permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
    * To avoid users' confusion, TST respects Firefox's built-in behavior and features around the tab bar - tab context menu, gestures, and so on.
@@ -138,10 +135,13 @@ Please read some important points of this project at first:
    * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
 
 Any feature request unrelated to these points may be rejected, even if many people love it.
-Instead of adding more built-in features, I hope to make TST compatible with other tab related addons.
+
+Instead of adding more built-in features, I hope to make TST *compatible with other tab related addons*.
 If it is required for more better compatibility I add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations using this API](#addons-extend-tst).
 
 If you need any new API, please file API proposals to the issue tracker.
+
+### FAQ / frequently rejected requests/proposals
 
 * <details><summary>Support for <a href="https://github.com/piroor/treestyletab/issues/1043">Pale Moon, Waterfox, and other Firefox forks</a></summary>
   
