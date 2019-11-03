@@ -478,6 +478,48 @@ const mItems = [
         ]
       },
       {
+        title:    browser.i18n.getMessage('config_fromExternal_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
+            key:   'autoAttachOnOpenedFromExternal',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
+            key:   'autoAttachOnOpenedFromExternal',
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
+            key:   'autoAttachOnOpenedFromExternal',
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
+            key:   'autoAttachOnOpenedFromExternal',
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
+            key:   'autoAttachOnOpenedFromExternal',
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+            type:  'radio'
+          },
+          { type: 'separator' },
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternal_label'),
+            key:   'inheritContextualIdentityToTabsFromExternal',
+            type:  'checkbox'
+          }
+        ]
+      },
+      { type: 'separator' },
+      {
         title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
         children: [
           {

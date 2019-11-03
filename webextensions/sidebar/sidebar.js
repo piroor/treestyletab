@@ -29,6 +29,19 @@ import * as MetricsData from '/common/metrics-data.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
+
+import { TabTwistyElement } from './components/TabTwistyElement.js';
+import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
+import { TabFaviconElement } from './components/TabFaviconElement.js';
+import { TabLabelElement } from './components/TabLabelElement.js';
+import { TabCounterElement } from './components/TabCounterElement.js';
+import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
+import {
+  TabElement,
+  TabInvalidationTarget,
+  TabUpdateTarget,
+} from './components/TabElement.js';
+
 import * as BackgroundConnection from './background-connection.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -91,6 +104,26 @@ UserOperationBlocker.block({ throbber: true });
 export async function init() {
   MetricsData.add('init: start');
   log('initialize sidebar on load');
+
+  // If we call `window.customElements.define(localName, constructor)`;` from a file defining a custom element,
+  // it would be a side-effect and happen accidentally that defining a custom element
+  // when we import a new file which defines a new custom element.
+  // It causes a complex side-effect relations and usually causes a bug. It's tough to fix.
+  //
+  // I have not concluded the best practice about it yet,
+  // but I think that it's safely to call `window.customElements.define(localName, constructor)` separately
+  // in the application initialization phase.
+  //
+  // XXX:
+  //  We define our custom elements at first to avoid a problem which calls a method of custom element
+  //  which has not been defined yet.
+  TabTwistyElement.define();
+  TabCloseBoxElement.define();
+  TabFaviconElement.define();
+  TabLabelElement.define();
+  TabCounterElement.define();
+  TabSoundButtonElement.define();
+  TabElement.define();
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
@@ -499,7 +532,7 @@ export async function rebuildAll(importedTabs, cache) {
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
-    SidebarTabs.applyCollapseExpandStateToElement(trackedTab);
+    trackedTab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
@@ -769,7 +802,7 @@ function onConfigChange(changedKey) {
         // breaking of initialized tab states.
         for (const tab of Tab.getAllTabs(mTargetWindow, { iterator: true })) {
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
-          tab.$TST.tooltipIsDirty = true;
+          tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
         }
       }
       if (configs.debug)
@@ -894,11 +927,6 @@ function onMessage(message, _sender, _respond) {
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
-    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
-      TabsInternalOperation.removeTabs(mapAndFilter(message.tabIds, id => Tab.get(id)));
-      break;
-
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
       UserOperationBlocker.blockIn(mTargetWindow, message);
       break;

@@ -69,49 +69,49 @@
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 }
 
-.tab,
+tab-item,
 .after-tabs button {
   background: transparent;
   color: var(--tab-text);
   text-shadow: var(--browser-textshadow-for-header-image, none);
 }
 
-.tab.active,
-.tab.bundled-active,
-.tab:hover {
+tab-item.active,
+tab-item.bundled-active,
+tab-item:hover {
   background: var(--tab-surface);
 }
 
-.tab * {
+tab-item * {
   color: var(--tab-text);
 }
 
-.tab:not(.active):not(.bundled-active):hover,
+tab-item:not(.active):not(.bundled-active):hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
 }
 
-.tab.active,
-.tab.bundled-active {
+tab-item.active,
+tab-item.bundled-active {
   --throbber-color: var(--browser-loading-indicator, var(--tab-highlighted-glow));
   --tab-text: var(--tab-active-text);
   --tab-text-inverted: var(--tab-active-text-inverted);
 }
-.tab.active {
+tab-item.active {
   --tab-surface: var(--tab-surface-active);
 }
-.tab.active:hover,
-.tab.bundled-active {
+tab-item.active:hover,
+tab-item.bundled-active {
   --tab-surface: var(--tab-surface-active-hover);
 }
-.tab.bundled-active:hover {
+tab-item.bundled-active:hover {
   --tab-surface: var(--tab-surface-hover);
 }
 
-.tab:not(.active):not(.bundled-active):not(.bundled-active) {
+tab-item:not(.active):not(.bundled-active):not(.bundled-active) {
   --throbber-color: var(--browser-loading-indicator, ThreeDDarkShadow);
 }
 
-.tab:not(.active):not(.bundled-active):not(.bundled-active) .burster {
+tab-item:not(.active):not(.bundled-active):not(.bundled-active) .burster {
   --throbber-color: var(--browser-loading-indicator, #B5C5E0);
 }

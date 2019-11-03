@@ -294,7 +294,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Neuer Tab mit der gleichen Webseite wie der aktuelle Tab über die Adressleiste oder außerhalb von Firefox" },
+  "config_fromExternal_caption": { "message": "Neuer Tab außerhalb von Firefox" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "Öffnen als" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(keine Steuerung)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "unabhängigen Tab" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "untergeordneten Tab des aktuellen Tab" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Die Tab-Umgebung vom aktuellen Tab erben" },
+
+  "config_sameSiteOrphan_caption": { "message": "Neuer Tab mit der gleichen Webseite wie der aktuelle Tab über die Adressleiste, bookmarks, histories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Öffnen als" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "unabhängigen Tab" },

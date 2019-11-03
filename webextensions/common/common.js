@@ -144,10 +144,12 @@ export const configs = new Configs({
   autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
   autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
   autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
   inheritContextualIdentityToSameSiteOrphan: true,
+  inheritContextualIdentityToTabsFromExternal: false,
 
 
   // behavior around closed tab
@@ -164,6 +166,7 @@ export const configs = new Configs({
   simulateSelectOwnerOnClose: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,
+  warnOnCloseTabsNotificationTimeout: 20 * 1000,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
 
@@ -182,6 +185,10 @@ export const configs = new Configs({
   tabDragHandleFeedbackDuration: 1000,
 
 
+  // subpanel
+  lastSelectedSubPanelProviderId: null,
+
+
   // misc.
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
@@ -189,6 +196,8 @@ export const configs = new Configs({
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
   enableWorkaroundForBug1409262: false,
+  enableWorkaroundForBug1548949: true,
+  workaroundForBug1548949DroppedTabs: null,
   simulateCloseTabByDblclick: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   maximumDelayUntilTabIsTracked: 10 * 60 * 1000,
@@ -232,7 +241,7 @@ export const configs = new Configs({
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
-.tab.unread .label {
+tab-item.unread .label-content {
   color: red !important;
   font-style: italic !important;
 }
@@ -240,7 +249,7 @@ export const configs = new Configs({
 
 /* Add private browsing indicator per tab */
 /*
-.tab.private-browsing .label:before {
+tab-item.private-browsing tab-label:before {
   content: "🕶";
 }
 */
@@ -298,6 +307,7 @@ export const configs = new Configs({
     'sidebar/sidebar-tabs': false,
     'sidebar/sidebar': false,
     'sidebar/size': false,
+    'sidebar/subpanel': false,
     'sidebar/tab-context-menu': false,
     'sidebar/tab-drag-handle': false
   },
@@ -400,7 +410,7 @@ export async function wait(task = 0, timeout = 0) {
     timeout = task;
     task    = null;
   }
-  return new Promise((resolve, _aReject) => {
+  return new Promise((resolve, _reject) => {
     setTimeout(async () => {
       if (task)
         await task();
@@ -410,7 +420,7 @@ export async function wait(task = 0, timeout = 0) {
 }
 
 export function nextFrame() {
-  return new Promise((resolve, _aReject) => {
+  return new Promise((resolve, _reject) => {
     window.requestAnimationFrame(resolve);
   });
 }
@@ -424,30 +434,49 @@ export async function notify(params = {}) {
   });
 
   let onClicked;
-  if (params.url) {
+  let onClosed;
+  return new Promise(async (resolve, _reject) => {
+    let resolved = false;
+
     onClicked = notificationId => {
       if (notificationId != id)
         return;
-      browser.tabs.create({
-        url: params.url
-      });
-      browser.notifications.onClicked.removeListener(onClicked);
-      onClicked = null;
+      if (params.url) {
+        browser.tabs.create({
+          url: params.url
+        });
+      }
+      resolved = true;
+      resolve(true);
     };
     browser.notifications.onClicked.addListener(onClicked);
-  }
 
-  let timeout = params.timeout;
-  if (typeof timeout != 'number')
-    timeout = configs.notificationTimeout;
-  if (timeout >= 0)
-    await wait(timeout);
+    onClosed = notificationId => {
+      if (notificationId != id)
+        return;
+      if (!resolved) {
+        resolved = true;
+        resolve(false);
+      }
+    };
+    browser.notifications.onClosed.addListener(onClosed);
 
-  if (onClicked) {
+    let timeout = params.timeout;
+    if (typeof timeout != 'number')
+      timeout = configs.notificationTimeout;
+    if (timeout >= 0) {
+      await wait(timeout);
+    }
+    await browser.notifications.clear(id);
+    if (!resolved)
+      resolve(false);
+  }).then(clicked => {
     browser.notifications.onClicked.removeListener(onClicked);
     onClicked = null;
-  }
-  await browser.notifications.clear(id);
+    browser.notifications.onClosed.removeListener(onClosed);
+    onClosed = null;
+    return clicked;
+  });
 }
 
 

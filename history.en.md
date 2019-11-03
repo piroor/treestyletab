@@ -1,6 +1,28 @@
 # History
 
  - master/HEAD
+ - 3.2.2 (2019.11.3)
+   * Show notification when multiple tabs are closed by one action without any confirmation. It allows you to cancel the operation by clicking it.
+   * Duplicate tabs as a sibling of the source tab correctly even if the source tab was active.
+   * Highlight active tabs correctly on some edge cases.
+   * Allow to detach dragged tabs more ceratainly from the window when tabs are dropped outside the sidebar. This is based on [a workaround](https://github.com/piroor/treestyletab/issues/2256#issuecomment-549072345) for the [bug 1548949](https://bugzilla.mozilla.org/show_bug.cgi?id=1548949), and as a trade-off this change introduced a new intentonal regression on a edge case: tabs are duplicated when tabs are dropped to another Firefox instance (tabs imported to the receiver Firefox and tabs are also detached to a new window on the source Firefox).
+   * Update overflow state of tab labels and tooltips more correctly. (regression on 3.2.0)
+   * Fix backward compatibility for old custom user styles. (regression on 3.2.0)
+   * Allow to close tabs after a tab close was canceled on a `beforeunload` event. (regression on recent versions)
+   * Update `ru` locale by wvxwxvw. Thanks!
+ - 3.2.1 (2019.10.29)
+   * Apply the option to control inheritance of the container from the current tab to a tab opened from outside Firefox.
+ - 3.2.0 (2019.10.28)
+   * Separate an option to control new tabs from outside Firefox.
+   * Open search result tabs opened from `about:addons` tab as children.
+   * Save tree structure to bookmarks when multiple bookmarks are created from a tree, via commands provided by TST itself.
+   * Add a new context menu command "Open All as a Tree" for bookmarks.
+   * Migrate bookmarked internal URLs (like `moz-extension://...`) to shorthand URLs (like `ext+treestyletab:...`) automatically, for better mobility.
+   * Restore collapsed state of tabs correctly even if they are placed under an expanded tree and the parent is placed under a collapsed tree.
+   * Reduce FPS of throbber animations from 60 to 30. (See also [the bug 1511095](https://bugzilla.mozilla.org/show_bug.cgi?id=1511095).)
+   * Show group-tab items with folder icon, in the contents area of a group tab.
+   * Re-implement the view with custom elements (Web Components) for better maintainability. (Thanks to saneyuki!)
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.1.8 (2019.9.13)
    * Optimize internal operations for better performance and less memory usage. (Some ideas are contributed by bb010g. Thanks!)
    * Become more safe to accidental recursive references of tree structures.

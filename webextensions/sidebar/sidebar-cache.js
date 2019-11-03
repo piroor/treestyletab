@@ -30,9 +30,13 @@ import * as CollapseExpand from './collapse-expand.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
+import { TabUpdateTarget } from './components/TabElement.js';
+
 function log(...args) {
   internalLogger('sidebar/sidebar-cache', ...args);
 }
+
+const kCONTENTS_VERSION = 16;
 
 export const onRestored = new EventListenerManager();
 
@@ -137,7 +141,7 @@ export async function getEffectiveWindowCache(options = {}) {
         version: cache && cache.version
       }));
       log('getEffectiveWindowCache: verify cache (1)', { cache, tabsDirty, collapsedDirty });
-      if (cache && cache.version == Constants.kSIDEBAR_CONTENTS_VERSION) {
+      if (cache && cache.version == kCONTENTS_VERSION) {
         log('getEffectiveWindowCache: restore sidebar from cache');
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
@@ -403,8 +407,7 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   for (let i = tabElements.length - 1; i > -1; i--) {
     const tabElement = tabElements[i];
     const tab = tabElement.apiTab;
-    SidebarTabs.applyStatesToElement(tab);
-    SidebarTabs.applyCollapseExpandStateToElement(tab);
+    tab.$TST.updateElement(TabUpdateTarget.CollapseExpandState | TabUpdateTarget.TabProperties);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
@@ -507,7 +510,7 @@ async function updateCachedTabbar() {
   log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
-    version: Constants.kSIDEBAR_CONTENTS_VERSION,
+    version: kCONTENTS_VERSION,
     tabbar: {
       contents:        SidebarTabs.wholeContainer.innerHTML,
       style:           mTabBar.getAttribute('style'),

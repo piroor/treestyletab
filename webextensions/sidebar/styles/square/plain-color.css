@@ -61,35 +61,35 @@
   z-index: 20;
 }
 
-.tab,
+tab-item,
 .after-tabs button {
   background: var(--tab-surface);
   color: var(--tab-text);
   text-shadow: var(--browser-textshadow-for-header-image, none);
 }
 
-.tab * {
+tab-item * {
   color: var(--tab-text);
 }
 
-.tab:not(.active):hover,
+tab-item:not(.active):hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
   color: var(--tab-text);
 }
 
-.tab.active {
+tab-item.active {
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--browser-loading-indicator, var(--tab-text-active));
   --tab-text: var(--tab-text-active);
   --tab-text-inverted: var(--tab-text-active-inverted);
 }
-.tab.bundled-active,
-.tab.active:hover {
+tab-item.bundled-active,
+tab-item.active:hover {
   --tab-surface: var(--tab-surface-active-hover);
 }
 
-.closebox {
+tab-closebox {
   background: none transparent;
   border: none 0 transparent;
   margin: 0;

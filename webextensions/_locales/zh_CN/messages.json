@@ -632,6 +632,38 @@
         "message": "\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
+    "__OLD__config_fromExternal_caption": {
+        "message": "通过地址栏或其他方法在新标签页打开同一网站的网页时",
+        "hash": "621d7d60f97d5334f1a2473923175f0f"
+    },
+    "config_autoAttachOnOpenedFromExternal_before": {
+        "message": "打开为",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachOnOpenedFromExternal_independent": {
+        "message": "一个独立标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnOpenedFromExternal_child": {
+        "message": "当前标签页的后代",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnOpenedFromExternal_sibling": {
+        "message": "与当前标签页同级",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnOpenedFromExternal_nextSibling": {
+        "message": "与当前标签页同级的下一项",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnOpenedFromExternal_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_inheritContextualIdentityToTabsFromExternal_label": {
+        "message": "继承当前标签页的容器",
+        "hash": "05b8f966c86567dfc6b764aac8a83701"
+    },
     "__OLD__config_sameSiteOrphan_caption": {
         "message": "通过地址栏或其他方法在新标签页打开同一网站的网页时",
         "hash": "621d7d60f97d5334f1a2473923175f0f"

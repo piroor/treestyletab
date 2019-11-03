@@ -54,6 +54,8 @@ function logUpdated(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
+let mAppIsActive = false;
+
 export function init() {
   browser.tabs.onActivated.addListener(onActivated);
   browser.tabs.onUpdated.addListener(onUpdated);
@@ -65,6 +67,10 @@ export function init() {
   browser.tabs.onDetached.addListener(onDetached);
   browser.windows.onCreated.addListener(onWindowCreated);
   browser.windows.onRemoved.addListener(onWindowRemoved);
+
+  browser.windows.getAll({}).then(windows => {
+    mAppIsActive = windows.some(window => window.focused);
+  });
 }
 
 let mPromisedStartedResolver;
@@ -324,6 +330,8 @@ async function onNewTabTracked(tab, info) {
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
+  const fromExternal         = !mAppIsActive;
+  const initialOpenerTabId   = tab.openerTabId;
 
   // New tab's index can become invalid because the value of "index" is same to
   // the one given to browser.tabs.create() (new tab) or the original index
@@ -354,7 +362,8 @@ async function onNewTabTracked(tab, info) {
     positionedBySelf,
     mayBeReplacedWithContainer,
     maybeOrphan,
-    activeTab
+    activeTab,
+    fromExternal
   });
 
   if (Tab.needToWaitTracked(tab.windowId, { exceptionTabId: tab.id }))
@@ -462,7 +471,8 @@ async function onNewTabTracked(tab, info) {
       restored,
       duplicated,
       duplicatedInternally,
-      activeTab
+      activeTab,
+      fromExternal
     });
     // don't do await if not needed, to process things synchronously
     if (moved instanceof Promise)
@@ -506,7 +516,8 @@ async function onNewTabTracked(tab, info) {
       duplicated,
       duplicatedInternally,
       originalTab: duplicated && Tab.get(uniqueId.originalTabId),
-      treeForActionDetection
+      treeForActionDetection,
+      fromExternal
     });
     tab.$TST.resolveOpened();
 
@@ -531,10 +542,31 @@ async function onNewTabTracked(tab, info) {
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
     if (!renewedTab)
       throw new Error(`tab ${tab.id} is closed while tracking`);
+    const updatedOpenerTabId = tab.openerTabId;
     const changedProps = {};
     for (const key of Object.keys(renewedTab)) {
       if (tab[key] != renewedTab[key])
         changedProps[key] = renewedTab[key];
+    }
+
+    // When the active tab is duplicated, Firefox creates a duplicated tab
+    // with its `openerTabId` filled with the ID of the source tab.
+    // It is the `initialOpenerTabId`.
+    // On the other hand, TST may attach the duplicated tab to any other
+    // parent while it is initializing, based on a configuration
+    // `configs.autoAttachOnDuplicated`. It is the `updatedOpenerTabId`.
+    // At this scenario `renewedTab.openerTabId` becomes `initialOpenerTabId`
+    // and `updatedOpenerTabId` is lost.
+    // Thus we need to re-apply `updatedOpenerTabId` as the `openerTabId` of
+    // the tab again, to keep the tree structure managed by TST.
+    // See also: https://github.com/piroor/treestyletab/issues/2388
+    if (duplicated &&
+        tab.active &&
+        'openerTabId' in changedProps &&
+        changedProps.openerTabId == initialOpenerTabId &&
+        changedProps.openerTabId != updatedOpenerTabId) {
+      delete changedProps.openerTabId;
+      browser.tabs.update(tab.id, { openerTabId: updatedOpenerTabId });
     }
 
     if (Object.keys(renewedTab).length > 0)
@@ -967,3 +999,7 @@ async function onWindowRemoved(windowId) {
   }
 }
 
+
+browser.windows.onFocusChanged.addListener(windowId => {
+  mAppIsActive = windowId > 0;
+});

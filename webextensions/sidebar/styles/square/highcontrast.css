@@ -43,23 +43,23 @@
 
 /* Tab */
 
-.tab,
+tab-item,
 .after-tabs button {
   background: var(--tab-surface);
   color: var(--tab-text);
 }
 
-.tab * {
+tab-item * {
   color: var(--tab-text);
 }
 
-.tab:not(.collapsed):hover,
+tab-item:not(.collapsed):hover,
 .after-tabs button:hover {
   opacity: 0.7;
   /*mix-blend-mode: multiply;*/
 }
 
-.tab.active {
+tab-item.active {
   --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
@@ -67,7 +67,7 @@
   --tab-text-inverted: Highlight;
 }
 
-.tab:not(.active) {
+tab-item:not(.active) {
   --throbber-color: Highlight;
 }
 
@@ -78,13 +78,13 @@
 }
 
 
-/* Closebox */
+/* tab-closebox */
 
-.tab .closebox:hover {
+tab-item tab-closebox:hover {
   --tab-text: HighlightText;
   opacity: 0.75;
 }
-.tab .closebox:hover::before {
+tab-item tab-closebox:hover::before {
   --tab-text: Highlight;
   border-radius: 0;
   height: calc(var(--svg-small-icon-size) + 0.3em);
@@ -94,28 +94,28 @@
   width: calc(var(--svg-small-icon-size) + 0.3em);
 }
 
-.tab.active .closebox:hover {
+tab-item.active tab-closebox:hover {
   --tab-text: Highlight;
   opacity: 0.5;
 }
-.tab.active .closebox:hover::before {
+tab-item.active tab-closebox:hover::before {
   --tab-text: HighlightText;
 }
 
 /* macOS workaround */
-:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow tab-item:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
 
 /* hide regular active tab marker */
-.tab:not(.bundled-active) .highlighter::before {
+tab-item:not(.bundled-active) .highlighter::before {
   display: none !important;
 }
 
-.tab.bundled-active:not(.highlighted) .highlighter::before {
+tab-item.bundled-active:not(.highlighted) .highlighter::before {
   opacity: 1;
 }

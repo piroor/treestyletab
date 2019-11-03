@@ -11,6 +11,7 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 import {
   log as internalLogger,
   wait,
+  notify,
   configs
 } from '/common/common.js';
 
@@ -474,13 +475,21 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   if (!granted ||
       /^(about|chrome|resource):/.test(activeTabs[0].url) ||
       (!options.showInTab &&
-       SidebarConnection.isOpen(options.windowId) &&
-       SidebarConnection.hasFocus(options.windowId)))
+       SidebarConnection.hasFocus(options.windowId))) {
+    if (!SidebarConnection.isOpen(options.windowId)) {
+      const clicked = await notify({
+        title:   browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
+        message: browser.i18n.getMessage('warnOnCloseTabs_notification_message', [Math.floor(configs.warnOnCloseTabsNotificationTimeout / 1000)]),
+        timeout: configs.warnOnCloseTabsNotificationTimeout
+      });
+      return !clicked;
+    }
     return browser.runtime.sendMessage({
       type: Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       tabs,
       windowId: options.windowId
     }).catch(ApiTabs.createErrorHandler());
+  }
 
   const result = await RichConfirm.showInTab(activeTabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),

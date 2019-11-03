@@ -53,7 +53,7 @@
   --multiselected-color-opacity: 0.35;
 }
 
-.tab:not(.active) {
+tab-item:not(.active) {
   --throbber-color: var(--dropmarker-border-color);
   --throbber-shadow-color: white;
 }
@@ -70,7 +70,7 @@
   background: var(--bg-color-inactive);
 }
 
-/* Use the splitter to display the border of .tabs */
+/* Use the splitter to display the border of tab-items */
 :root.left {
   border-right: 1px solid var(--shadow-color);
 }
@@ -86,7 +86,7 @@
 }
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
-.tab {
+tab-item {
   border-top: 1px solid transparent;
   height: 2.2em;     /* height including border! */
   padding: 0.075em 3px 0.075em 2px;
@@ -94,33 +94,33 @@
 }
 
 /* macOS workaround */
-:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow tab-item:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
-.tab.active {
+tab-item.active {
   border-top: 1px solid var(--tab-surface-active-color);
   background: var(--tab-surface-active-gradient);
 }
 
-.tab.bundled-active {
+tab-item.bundled-active {
   border-top: 1px solid var(--tab-surface-active-color-pale);
   background: var(--tab-surface-active-gradient-pale);
 }
 
-:root:not(.active) .tab.active {
+:root:not(.active) tab-item.active {
   border-top: 1px solid var(--tab-surface-active-color-inactive);
   background: var(--tab-surface-active-gradient-inactive);
 }
 
 /* Keep the close button at a safe distance from the tab label. */
-.closebox::after {
+tab-closebox::after {
   display: none;
 }
-.closebox {
+tab-closebox {
   width: 1.5em;
   min-width: 1.5em;
   height: 1.5em;
@@ -130,22 +130,22 @@
   border: 0 none;
 }
 
-.closebox:active {
+tab-closebox:active {
   opacity: 0.46;  /* turn black into #8a8a8a */
 }
 
-.tab.active .closebox {
+tab-item.active tab-closebox {
   background-image: url("closetab-white.png");
   opacity: 1;
 }
 
-.tab:not(.active):not(:hover) .closebox {
+tab-item:not(.active):not(:hover) tab-closebox {
   display: none;
 }
 
 /* Tab label is without special decoration except when selected: then
    the text is white and bold. */
-.tab .label {
+tab-item tab-label {
   font-weight: normal;
   line-height: 1.4;
   color: var(--tab-text);
@@ -156,13 +156,13 @@
   padding: 0 0 0.25em 0;
 }
 
-.tab.active .label {
+tab-item.active tab-label {
   font-weight: bold;
   color: var(--tab-text-active);
   text-shadow: 0 1px var(--shadow-color);
 }
 
-.tab.active .twisty {
+tab-item.active tab-twisty {
   color: white;
 }
 
@@ -182,7 +182,7 @@
   text-shadow: none;
 }
 
-.tab.active .counter {
+tab-item.active .counter {
   background-color: var(--tab-text-active);
   color: var(--badge-bg-color);
 }
@@ -190,7 +190,7 @@
 :root:not(.active) .counter {
   background-color: var(--badge-bg-color-inactive);
 }
-:root:not(.active) .tab.active .counter {
+:root:not(.active) tab-item.active .counter {
   background-color: var(--tab-text-active);
   color: var(--badge-color-inactive);
 }
@@ -200,7 +200,7 @@
 /* Drag'n'drop styling */
 
 /* Round blue rectangle around tabs that are dropping targets. */
-.tab[data-drop-position="self"] {
+tab-item[data-drop-position="self"] {
   background: var(--dropmarker-bg-color);
   border: 2px solid var(--dropmarker-border-color); /* not OSX's colour but Firefox's */
   border-radius: 0.3em;
@@ -209,7 +209,7 @@
 }
 
 /* White-blue-white separator for drop indicator. */
-.tab[data-drop-position]:not([data-drop-position="self"])::before {
+tab-item[data-drop-position]:not([data-drop-position="self"])::before {
   background: transparent !important;
   max-height: 6px;
   min-height: 6px;
@@ -217,12 +217,12 @@
   border-image-outset: 6px 0 0 0;
 }
 
-.tab:not(.faviconized)[data-drop-position="before"]::before {
+tab-item:not(.faviconized)[data-drop-position="before"]::before {
   top: 6px;
 }
 
 
-.mutiple-highlighted .tab:not(.highlighted) {
+.mutiple-highlighted tab-item:not(.highlighted) {
   opacity: 0.5;
 }
 
@@ -237,15 +237,15 @@
 
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
 :root
-  .tab:not(:hover):not(.active)
-  .closebox {
+  tab-item:not(:hover):not(.active)
+  tab-closebox {
   display: -moz-box !important;
   visibility: collapse !important;
 }
 
 
 /* for Multiple Tab Handler */
-.tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] .closebox {
+tab-item:not(:hover):not(.active)[multipletab-ready-to-close="true"] tab-closebox {
   visibility: visible;
 }
 
@@ -259,7 +259,7 @@
 
 /* multiselection of tabs */
 
-.mutiple-highlighted > .tab.highlighted::after {
+.mutiple-highlighted > tab-item.highlighted::after {
   background: var(--multiselected-color);
   bottom: 0;
   content: " ";

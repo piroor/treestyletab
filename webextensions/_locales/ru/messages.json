@@ -106,7 +106,7 @@
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
-  "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешения" },
+  "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
   "bookmark_notification_notPermitted_message": { "message": "Нет разрешения на создание закладок. Нажмите здесь, чтобы предоставить разрешения." },
 
   "dropLinksOnTabBehavior_message": { "message": "Как это открыть?" },
@@ -204,6 +204,8 @@
   "context_pinnedTab_label": { "message": "Прикреплено (проверка меню типа переключатель" },
   "context_unpinnedTab_label": { "message": "Откреплено (проверка меню типа переключатель" },
 
+  "context_openAllBookmarksWithStructure_label": { "message": "Открыть все как дерево" },
+
 
   "config_title": { "message": "Настройки Tree Style Tab" },
 
@@ -284,6 +286,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
+  "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
+
   "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и прочее)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
@@ -294,7 +298,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "следующую одноуровневую вкладку" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки или передается извне " },
+  "config_fromExternal_caption": { "message": "Когда новая вкладка передается извне" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "Открыть как" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(не контролировать)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "отдельную вкладку" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "дочернюю текущей" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "одноуровневую вкладку" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "следующую одноуровневую вкладку" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Наследовать контейнер текущей вкладки" },
+
+  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки, bookmarks, histories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(не контролировать)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "отдельную вкладку" },
@@ -358,12 +372,12 @@
   "config_closeParentBehaviorMode_custom_caption_insideSidebar":  { "message": "Для операций внутри боковой панели:" },
   "config_closeParentBehaviorMode_custom_caption_outsideSidebar": { "message": "Для операций на нативной панели вкладок, сочетаниях клавиш или др. аддонов, при видимой боковой панели:" },
   "config_closeParentBehaviorMode_custom_caption_noSidebar":      { "message": "Для операций на нативной панели вкладок, сочетаниях клавиш или др. аддонах" },
-  "config_closeParentBehavior_close": { "message": "Также закрыть дочерние вкладки" },
-  "config_closeParentBehavior_replaceWithGroupTab": { "message": "Заменить закрытую родительскую вкладку пустой и сохранить дерево" },
-  "config_closeParentBehavior_promoteFirst": { "message": "Назначить первую дочернюю вкладку новой родительской" },
-  "config_closeParentBehavior_promoteAll": { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
+  "config_closeParentBehavior_close":                { "message": "Также закрыть дочерние вкладки" },
+  "config_closeParentBehavior_replaceWithGroupTab":  { "message": "Заменить закрытую родительскую вкладку пустой и сохранить дерево" },
+  "config_closeParentBehavior_promoteFirst":         { "message": "Назначить первую дочернюю вкладку новой родительской" },
+  "config_closeParentBehavior_promoteAll":           { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
   "config_closeParentBehavior_promoteIntelligently": { "message": "Повысить первую дочернюю, когда корневая вкладка закрыта, иначе повысить все дочерние" },
-  "config_closeParentBehavior_detach": { "message": "Освободить дочерние вкладки из дерева" },
+  "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
 
@@ -411,6 +425,8 @@
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
 
+
+
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
 
   "config_addons_description_before": { "message": "Имеются " },
@@ -449,7 +465,7 @@
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "миллисекунд или больше." },
   "config_labelOverflowStyle_caption": { "message": "Слишком длинный заголовок вкладок:" },
   "config_labelOverflowStyle_fade":    { "message": "Увядание (лучшая видимость)" },
-  "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучшая производительность)" },
+  "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
 
   "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
   "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки, переключая фокус горячими клавишами (*Необходимо разрешить скрипты на веб-страницах.)" },

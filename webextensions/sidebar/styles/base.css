@@ -46,7 +46,7 @@
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.15;
 }
-.tab {
+tab-item {
   --tab-current-size: var(--tab-size);
   --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
   --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
@@ -71,11 +71,11 @@
 }
 
 /* Show internal tab id in the debug mode */
-:root.debug .tab::after {
+:root.debug tab-item::after {
   content: attr(data-tab-id);
   opacity: 0.65;
 }
-:root.debug .tab.faviconized::after {
+:root.debug tab-item.faviconized::after {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -197,7 +197,7 @@ ul {
 
 /* tabs */
 
-.tab {
+tab-item {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -216,69 +216,69 @@ ul {
   top: 0;
 }
 
-.tab,
-.tab * {
+tab-item,
+tab-item * {
   vertical-align: middle;
 }
 
-.tab > * {
+tab-item > * {
   position: relative;
   z-index: 100;
 }
 
-.tab.hidden {
+tab-item.hidden {
   pointer-events: none;
   position: fixed;
   visibility: collapse;
 }
 
-:root.animation .tab.animation-ready,
+:root.animation tab-item.animation-ready,
 :root.animation .after-tabs button {
   transition: var(--tab-animation);
 }
-:root.animation .tab.animation-ready:not(.expanding),
-:root.animation .tab.animation-ready.expanding.moving {
+:root.animation tab-item.animation-ready:not(.expanding),
+:root.animation tab-item.animation-ready.expanding.moving {
   transition: var(--tab-animation),
               var(--tab-indent-animation);
 }
 
-.tab.removing,
-.tab:not(.pinned).collapsed,
-.tab.duplicating {
+tab-item.removing,
+tab-item:not(.pinned).collapsed,
+tab-item.duplicating {
   margin-top: calc(0px - var(--tab-size));
   opacity: 0;
   pointer-events: none;
   z-index: -100;
 }
 
-.tab:not(.pinned).collapsed.collapsed-completely {
+tab-item:not(.pinned).collapsed.collapsed-completely {
   visibility: collapse;
 }
 
-.tab.duplicating {
+tab-item.duplicating {
   transition: none;
 }
 
 
-:root.left .tab .twisty {
+:root.left tab-item tab-twisty {
   order: -1;
 }
-:root.left .tab .closebox {
+:root.left tab-item tab-closebox {
   order: 10000;
 }
 
-:root.right .tab .twisty {
+:root.right tab-item tab-twisty {
   order: 10000;
 }
-:root.right .tab .closebox {
+:root.right tab-item tab-closebox {
   order: -1;
 }
 
-.tab .highlighter,
-.tab .burster,
-.tab.faviconized.unread .favicon::before,
-.tab.attention .favicon::before,
-.tab .extra-items-container.behind {
+tab-item .highlighter,
+tab-item .burster,
+tab-item.faviconized.unread tab-favicon::before,
+tab-item.attention tab-favicon::before,
+tab-item .extra-items-container.behind {
   bottom: 0;
   left: 0;
   pointer-events: none;
@@ -287,21 +287,21 @@ ul {
   top: 0;
 }
 
-.tab:not(.highlighted):not(.bundled-active) .highlighter,
-.tab:not(.bursting) .burster {
+tab-item:not(.highlighted):not(.bundled-active) .highlighter,
+tab-item:not(.bursting) .burster {
   display: none;
 }
 
-.tab .highlighter {
+tab-item .highlighter {
   z-index: 5000;
 }
 
-.tab .burster {
+tab-item .burster {
   z-index: 4000;
 }
 
-.tab.faviconized.unread .favicon::before,
-.tab.attention .favicon::before {
+tab-item.faviconized.unread tab-favicon::before,
+tab-item.attention tab-favicon::before {
   bottom: auto;
   content: '';
   height: var(--faviconized-tab-size);
@@ -312,14 +312,14 @@ ul {
   z-index: 10;
 }
 
-.tab .extra-items-container.behind {
+tab-item .extra-items-container.behind {
   z-index: 10;
 }
 
 
 /* pinned tabs */
 
-.tab.pinned {
+tab-item.pinned {
   border-top: none;
   border-left: none;
   margin: 0;
@@ -327,12 +327,12 @@ ul {
   z-index: 1; /* this is required to make pinned tabs clickable */
 }
 
-.tab.pinned:not(.faviconized) {
+tab-item.pinned:not(.faviconized) {
   left: 0;
   right: 0;
 }
 
-.tab.faviconized {
+tab-item.faviconized {
   --tab-current-size: var(--faviconized-tab-size);
   height: var(--tab-current-size);
   max-height: var(--tab-current-size);
@@ -341,53 +341,53 @@ ul {
   padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 
-.tab.pinned .closebox,
-.tab.faviconized :-moz-any(
-  .twisty,
-  .label
+tab-item.pinned tab-closebox,
+tab-item.faviconized :-moz-any(
+  tab-twisty,
+  tab-label
 ) {
   display: none;
 }
 
-.tab.faviconized.unread:not(.active):not(:hover) .favicon::before,
-.tab.attention:not(:hover) .favicon::before {
+tab-item.faviconized.unread:not(.active):not(:hover) tab-favicon::before,
+tab-item.attention:not(:hover) tab-favicon::before {
   background-image: var(--attention-marker-gradient);
 }
 
-.tab.faviconized.unread:not(.active):hover .favicon::before,
-.tab.attention:hover .favicon::before {
+tab-item.faviconized.unread:not(.active):hover tab-favicon::before,
+tab-item.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 
 
 /* tab label */
 
-.tab .label {
+tab-item tab-label {
   flex-grow: 1;
   overflow: hidden;
   white-space: nowrap;
 }
 
-:root:not([data-label-overflow="fade"]) .tab .label {
+:root:not([data-label-overflow="fade"]) tab-item tab-label {
   text-overflow: ".."; /*ellipsis*/;
 }
 
-:root[data-label-overflow="fade"] .tab .label.overflow {
+:root[data-label-overflow="fade"] tab-item tab-label.overflow {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
-:root[data-label-overflow="fade"] .tab .label.overflow:dir(rtl),
-:root[data-label-overflow="fade"].rtl .tab .label.overflow {
+:root[data-label-overflow="fade"] tab-item tab-label.overflow:dir(rtl),
+:root[data-label-overflow="fade"].rtl tab-item tab-label.overflow {
   direction: rtl;
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
-.tab .label-content {
+tab-item .label-content {
   color: inherit;
 }
 
-.tab:not([data-child-ids]) .counter,
-.tab:not(.subtree-collapsed) .counter {
+tab-item:not([data-child-ids]) .counter,
+tab-item:not(.subtree-collapsed) .counter {
   display: none;
 }
 
@@ -400,15 +400,15 @@ ul {
 }
 
 
-/* closebox */
+/* tab-closebox */
 
-.closebox {
+tab-closebox {
   line-height: 0;
   opacity: var(--button-opacity);
   position: relative;
 }
 
-.closebox::after {
+tab-closebox::after {
   /*
     There are some possible characters for this purpose:
     https://en.wikipedia.org/wiki/X_mark
@@ -449,17 +449,17 @@ ul {
   height: var(--svg-small-icon-size);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill .closebox::after {
+:root.simulate-svg-context-fill tab-closebox::after {
   background: var(--tab-text);
   mask: url("./icons/close-16.svg") no-repeat center / 100%;
 }
 
 
-.tab:not(.collapsed) .closebox:hover {
+tab-item:not(.collapsed) tab-closebox:hover {
   opacity: var(--button-hover-opacity);
 }
 
-.tab:not(.collapsed) .closebox:active {
+tab-item:not(.collapsed) tab-closebox:active {
   opacity: var(--button-active-opacity);
 }
 
@@ -471,19 +471,19 @@ ul {
   position: absolute;
 }
 
-:root.left .tab:not(.faviconized) .contextual-identity-marker {
+:root.left tab-item:not(.faviconized) .contextual-identity-marker {
   right: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
 
-:root.right .tab:not(.faviconized) .contextual-identity-marker {
+:root.right tab-item:not(.faviconized) .contextual-identity-marker {
   left: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
 
-.tab.faviconized .contextual-identity-marker {
+tab-item.faviconized .contextual-identity-marker {
   height: calc(var(--favicon-size) / 6);
   left: 0;
   right: 0;

@@ -41,11 +41,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
     TabsStore.addToBeGroupedTab(tab);
   }
   else {
+    let dontMove = false;
     if (!info.maybeOrphan &&
         possibleOpenerTab &&
         !info.restored) {
       let autoAttachBehavior = configs.autoAttachOnNewTabCommand;
-      let dontMove           = false;
       if (tab.$TST.nextTab &&
           possibleOpenerTab == tab.$TST.previousTab) {
         // New tab opened with browser.tabs.insertAfterCurrent=true may have
@@ -85,7 +85,17 @@ Tab.onCreating.addListener((tab, info = {}) => {
       else if (possibleOpenerTab != tab) {
         tab.$TST.possibleOpenerTab = possibleOpenerTab.id;
       }
-      tab.$TST.isNewTab = true;
+      tab.$TST.isNewTab = !info.fromExternal;
+    }
+    if (info.fromExternal) {
+      log('behave as a tab opened from external application');
+      return Tree.behaveAutoAttachedTab(tab, {
+        baseTab:   possibleOpenerTab,
+        behavior:  configs.autoAttachOnOpenedFromExternal,
+        dontMove,
+        inheritContextualIdentity: configs.inheritContextualIdentityToTabsFromExternal,
+        broadcast: true
+      }).then(moved => !moved);
     }
     log('behave as a tab opened with any URL');
     tab.$TST.positionedBySelf = info.positionedBySelf;
@@ -111,8 +121,9 @@ Tab.onCreating.addListener((tab, info = {}) => {
   else if (!info.maybeOrphan && configs.autoAttach) {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
-      behavior:  configs.autoAttachOnOpenedWithOwner,
+      behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
+      inheritContextualIdentity: info.fromExternal ? configs.inheritContextualIdentityToTabsFromExternal : false,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -202,32 +213,50 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const window = TabsStore.windows.get(tab.windowId);
     log('window.openedNewTabs ', window.openedNewTabs);
-    if (!tab.$TST.parent &&
-        possibleOpenerTab &&
-        !window.openedNewTabs.has(tab.id) &&
-        !tab.$TST.openedWithOthers &&
-        !tab.$TST.positionedBySelf) {
-      if (tab.$TST.isNewTabCommandTab) {
-        log('behave as a tab opened by new tab command (delayed)');
+    if (tab.$TST.parent ||
+        !possibleOpenerTab ||
+        window.openedNewTabs.has(tab.id) ||
+        tab.$TST.openedWithOthers ||
+        tab.$TST.positionedBySelf) {
+      log(' => no need to control');
+      return;
+    }
+
+    if (tab.$TST.isNewTabCommandTab) {
+      log('behave as a tab opened by new tab command (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        activeTab:                 possibleOpenerTab,
+        autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+        inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+      });
+      return;
+    }
+
+    const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+    const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
+    const newTabSite    = tab.url.match(siteMatcher);
+    if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
+      log('behave as a tab opened from same site (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        url:                       tab.url,
+        activeTab:                 possibleOpenerTab,
+        autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+        inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+      });
+      return;
+    }
+
+    log('checking special openers (delayed)', { opener: possibleOpenerTab.url, child: tab.url });
+    for (const rule of Constants.kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL) {
+      if (rule.opener.test(possibleOpenerTab.url) &&
+          rule.child.test(tab.url)) {
+        log('behave as a tab opened from special opener (delayed)', { rule });
         handleNewTabFromActiveTab(tab, {
-          activeTab:                 possibleOpenerTab,
-          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
-          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+          url:                tab.url,
+          activeTab:          possibleOpenerTab,
+          autoAttachBehavior: Constants.kNEWTAB_OPEN_AS_CHILD
         });
-      }
-      else {
-        const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
-        const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
-        const newTabSite    = tab.url.match(siteMatcher);
-        if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
-          log('behave as a tab opened from same site (delayed)');
-          handleNewTabFromActiveTab(tab, {
-            url:                       tab.url,
-            activeTab:                 possibleOpenerTab,
-            autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
-            inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
-          });
-        }
+        return;
       }
     }
   }

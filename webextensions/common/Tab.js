@@ -107,6 +107,9 @@ export default class Tab {
       incompletelyTrackedTabsPerWindow.delete(tab);
       Tab.onTracked.dispatch(tab);
     });
+
+    // We should initialize private properties with blank value for better performance with a fixed shape.
+    this.delayedInheritSoundStateFromChildren = null;
   }
 
   destroy() {
@@ -131,15 +134,16 @@ export default class Tab {
       if (this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
       }
-      delete this.element.$TST;
-      delete this.element.apiTab;
-      delete this.element;
-      delete this.classList;
+      this.element.$TST = null;
+      this.element.apiTab = null;
+      this.element = null;
+      this.classList = null;
     }
-    delete this;
-    delete this.tab;
-    delete this.promisedUniqueId;
-    delete this.uniqueId;
+    // this.tab.$TST = null; // tab.$TST is used by destruction processes.
+    this.tab = null;
+    this.promisedUniqueId = null;
+    this.uniqueId = null;
+    this.destroyed = true;
   }
 
   clear() {
@@ -153,6 +157,8 @@ export default class Tab {
   }
 
   bindElement(element) {
+    element.$TST   = this;
+    element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
     setTimeout(() => { // wait until initialization processes are completed
@@ -944,7 +950,7 @@ export default class Tab {
       clearTimeout(this.delayedInheritSoundStateFromChildren);
 
     this.delayedInheritSoundStateFromChildren = setTimeout(() => {
-      delete this.delayedInheritSoundStateFromChildren;
+      this.delayedInheritSoundStateFromChildren = null;
       if (!TabsStore.ensureLivingTab(this.tab))
         return;
 
@@ -1095,6 +1101,24 @@ export default class Tab {
     this.children = exported.$TST.childIds || [];
 
     TabsStore.updateIndexesForTab(this.tab);
+  }
+
+
+  /* element utilities */
+
+  invalidateElement(targets) {
+    if (this.element && this.element.invalidate)
+      this.element.invalidate(targets);
+  }
+
+  updateElement(targets) {
+    if (this.element && this.element.update)
+      this.element.update(targets);
+  }
+
+  set favIconUrl(url) {
+    if (this.element && 'favIconUrl' in this.element)
+      this.element.favIconUrl = url;
   }
 }
 

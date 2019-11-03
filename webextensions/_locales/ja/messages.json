@@ -141,6 +141,11 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "warnOnCloseTabs_notification_message": { "message": "操作を取り消す場合はこの通知をクリックしてください。\n続行して問題がなければ、$TIMEOUT$ 秒後に残りのタブも閉じられます。",
+    "placeholders": {
+      "TIMEOUT": { "content": "$1", "example": "10" }
+    }},
+
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ 個のタブが一度に開かれました。グループとして1つのツリーにまとめますか？",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -282,6 +287,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
+  "config_autoAttachWithURL_caption": { "message": "空でない新しいタブ" },
+
   "config_duplicateTabAction_caption": { "message": "複製されたタブ（「再読み込み」ボタンの中クリックなど）" },
 
   "config_autoAttachOnDuplicated_before": { "message": "複製されたタブを" },
@@ -292,7 +299,17 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnDuplicated_after": { "message": "開く" },
 
-  "config_sameSiteOrphan_caption": { "message": "ロケーションバーまたはFirefoxの外から開かれた、現在のタブと同じWebサイトのタブ" },
+  "config_fromExternal_caption": { "message": "Firefoxの外から開かれたタブ" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "\u200b" },
+  "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(制御せず既定の位置に)" },
+  "config_autoAttachOnOpenedFromExternal_independent": { "message": "独立したタブとして" },
+  "config_autoAttachOnOpenedFromExternal_child": { "message": "現在のタブの子として" },
+  "config_autoAttachOnOpenedFromExternal_sibling": { "message": "現在のタブと同階層に" },
+  "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "開く" },
+  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "現在のタブのコンテナーを継承する" },
+
+  "config_sameSiteOrphan_caption": { "message": "ロケーションバー、ブックマーク、履歴、およびその他のきっかけから開かれた、現在のタブと同じWebサイトのタブ" },
   "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "独立したタブとして" },

@@ -69,7 +69,10 @@ export function removeTab(tab) {
 }
 
 export function removeTabs(tabs) {
-  log('removeTabsInternally: ', () => tabs.map(dumpTab));
+  if (!SidebarConnection.isInitialized())
+    throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page.');
+
+  log('TabsInternalOperation.removeTabs: ', () => tabs.map(dumpTab));
   if (tabs.length == 0)
     return;
 
@@ -87,22 +90,40 @@ export function removeTabs(tabs) {
   log(' => ', () => tabs.map(dumpTab));
   if (!tabs.length)
     return;
-  if (SidebarConnection.isInitialized()) // in background
-    SidebarConnection.sendMessage({
-      type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-      windowId: tabs[0].windowId,
-      tabIds
-    });
+
   if (window) {
+    // Flag tabs to be closed at a time. With this flag TST skips some
+    // operations on tab close (for example, opening a group tab to replace
+    // a closed parent tab to keep the tree structure).
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
     }
   }
-  if (!SidebarConnection.isInitialized()) // in sidebar
-    return;
-  return browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+
+  const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  if (window) {
+    promisedRemoved.then(() => {
+      // "beforeunload" listeners in tabs blocks the operation and the
+      // returned promise is resolved after all "beforeunload" listeners
+      // are processed and "browser.tabs.onRemoved()" listeners are
+      // processed for really closed tabs.
+      // In other words, there may be some "canceled tab close"s and
+      // we need to clear "to-be-closed" flags for such tabs.
+      // See also: https://github.com/piroor/treestyletab/issues/2384
+      const canceledTabs = tabs.filter(tab => tab.$TST && !tab.$TST.destroyed);
+      log(`${canceledTabs.length} tabs may be canceled to close.`);
+      if (canceledTabs.length == 0)
+        return;
+      log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
+      for (const tab of canceledTabs) {
+        tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
+        window.internalClosingTabs.delete(tab.id);
+      }
+    });
+  }
+  return promisedRemoved;
 }
 
 export function setTabActive(tab) {

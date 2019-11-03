@@ -642,6 +642,8 @@ let mLastDragStartTime = 0;
 export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
+  if (configs.enableWorkaroundForBug1548949)
+    configs.workaroundForBug1548949DroppedTabs = '';
 
   const behavior = 'behavior' in options ? options.behavior :
     event.shiftKey ? configs.tabDragBehaviorShift :
@@ -666,7 +668,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     mLastDragEnteredTarget = tab.$TST.element;
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
+      mLastDragEnteredTarget = tab.$TST.element.closeBoxElement;
     const windowId = TabsStore.getWindow();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
@@ -1037,6 +1039,10 @@ function onDrop(event) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
+    if (configs.enableWorkaroundForBug1548949) {
+      configs.workaroundForBug1548949DroppedTabs = dropActionInfo.dragData.tabs.map(tab => `${mInstanceId}/${tab.id}`).join('\n');
+      log('workaround for bug 1548949: setting last dropped tabs: ', configs.workaroundForBug1548949DroppedTabs);
+    }
     const fromOtherProfile = dropActionInfo.dragData.instanceId != mInstanceId;
     BackgroundConnection.sendMessage({
       type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
@@ -1066,6 +1072,10 @@ function onDrop(event) {
       }
       log('=> possible dragged tabs: ', tabs);
       tabs = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
+      if (configs.enableWorkaroundForBug1548949) {
+        configs.workaroundForBug1548949DroppedTabs = tabs.map(tab => `${mInstanceId}/${tab.id}`).join('\n');
+        log('workaround for bug 1548949: setting last dropped tabs: ', configs.workaroundForBug1548949DroppedTabs);
+      }
       const recentTab = tabs[0];
       BackgroundConnection.sendMessage({
         type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
@@ -1090,7 +1100,7 @@ function onDrop(event) {
 onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 async function onDragEnd(event) {
-  log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs });
+  log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs, dropEffect: event.dataTransfer.dropEffect });
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
@@ -1105,13 +1115,35 @@ async function onDragEnd(event) {
   if (!(dragData.behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF))
     return;
 
+  let handledBySomeone = event.dataTransfer.dropEffect != 'none';
+
   if (event.dataTransfer.getData(kTYPE_URI_LIST)) {
     log('do nothing by TST for dropping just for bookmarking or linking');
     return;
   }
+  else if (configs.enableWorkaroundForBug1548949) {
+    // Due to the bug 1548949, "dropEffect" can become "move" even if no one
+    // actually handles the drop. Basically kTREE_DROP_TYPE is not processible
+    // by anyone except TST, so, we can treat the dropend as "dropped outside
+    // the sidebar" when all dragged tabs are exact same to last tabs dropped
+    // to a sidebar on this Firefox instance.
+    // The only one exception is the case: tabs have been dropped to a TST
+    // sidebar on any other Firefox instance. In this case tabs dropped to the
+    // foreign Firefox will become duplicated: imported to the foreign Firefox
+    // and teared off from the source window. This is clearly undesider
+    // behavior from misdetection, but I decide to ignore it because it looks
+    // quite rare case.
+    await wait(250); // wait until "workaroundForBug1548949DroppedTabs" is synchronized
+    const draggedTabs = dragData.tabs.map(tab => `${mInstanceId}/${tab.id}`).join('\n');
+    const lastDroppedTabs = configs.workaroundForBug1548949DroppedTabs;
+    handledBySomeone = draggedTabs == lastDroppedTabs;
+    log('workaround for bug 1548949: detect dragged tabs are handled by me or not.',
+        { handledBySomeone, draggedTabs, lastDroppedTabs });
+    configs.workaroundForBug1548949DroppedTabs = null;
+  }
 
   if (event.dataTransfer.mozUserCancelled ||
-      event.dataTransfer.dropEffect != 'none' ||
+      handledBySomeone ||
       //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
       !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
     log('dragged items are processed by someone: ', event.dataTransfer.dropEffect);
@@ -1122,7 +1154,7 @@ async function onDragEnd(event) {
   const windowY = window.mozInnerScreenY;
   const windowW = window.innerWidth;
   const windowH = window.innerHeight;
-  const offset  = dragData.tab.$TST.element.getBoundingClientRect().height / 2;
+  const offset  = dragData.tab.$TST.element && dragData.tab.$TST.element.getBoundingClientRect().height / 2;
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
   const fixedEventScreenX = event.screenX / window.devicePixelRatio;
   const fixedEventScreenY = event.screenY / window.devicePixelRatio;
@@ -1221,7 +1253,7 @@ function onTSTAPIDragEnter(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab);
+    target = tab.$TST.element.closeBoxElement;
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!mDragTargetIsClosebox ||
@@ -1247,7 +1279,7 @@ function onTSTAPIDragExit(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab);
+    target = tab.$TST.element.closeBoxElement;
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;

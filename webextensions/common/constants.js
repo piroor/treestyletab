@@ -5,9 +5,6 @@
 */
 'use strict';
 
-export const kBACKGROUND_CONTENTS_VERSION = 5;
-export const kSIDEBAR_CONTENTS_VERSION    = 9;
-
 export const kCOMMAND_GET_INSTANCE_ID                = 'treestyletab:get-instance-id';
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
 export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
@@ -113,18 +110,12 @@ export const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed'; // obsolete
 export const kPERSISTENT_ORIGINAL_OPENER_TAB_ID            = 'data-original-opener-tab-id';
 export const kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER = 'data-already-grouped-for-pinned-opener';
 
-export const kFAVICON         = 'favicon';
 export const kFAVICON_IMAGE   = 'favicon-image';
 export const kFAVICON_BUILTIN = 'favicon-builtin';
 export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions
 export const kTHROBBER        = 'throbber';
 export const kHIGHLIGHTER     = 'highlighter';
 export const kBURSTER         = 'burster';
-export const kSOUND_BUTTON    = 'sound-button';
-export const kTWISTY          = 'twisty';
-export const kLABEL           = 'label';
-export const kCOUNTER         = 'counter';
-export const kCLOSEBOX        = 'closebox';
 export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
@@ -317,5 +308,10 @@ export const kSHORTHAND_URIS = {
   testRunner:    browser.extension.getURL('tests/runner.html'),
   'test-runner': browser.extension.getURL('tests/runner.html')
 };
+
+export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
+  { opener: /^about:addons/,
+    child:  /^https:\/\/addons.mozilla.org\/([^\/]+\/)?[^\/]+\/search\// }
+];
 
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';

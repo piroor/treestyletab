@@ -5,7 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-.tab .twisty {
+tab-item tab-twisty {
   display: inline-block;
   font-size: 0.65em;
   height: 1.5em;
@@ -21,20 +21,20 @@
   width: 1.5em;
 }
 
-:root.animation .tab:not(.collapsed) .twisty {
+:root.animation tab-item:not(.collapsed) tab-twisty {
   transition: transform 0.2s ease-out,
               opacity 0.15s ease-out,
               text-shadow 0.15s ease-out;
 }
 
-.tab:not([data-child-ids]) .twisty,
-.tab.pinned .twisty,
-.tab.collapsed .twisty {
+tab-item:not([data-child-ids]) tab-twisty,
+tab-item.pinned tab-twisty,
+tab-item.collapsed tab-twisty {
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-.tab:not(.collapsed) .twisty::before {
+tab-item:not(.collapsed) tab-twisty::before {
   color: val(--tab-text);
   content: "▼";
   display: inline-block;
@@ -47,36 +47,36 @@
   top: calc((var(--favicon-size) - 1em) / 2);
 }
 
-.tab:not(.collapsed).subtree-collapsed
-  .twisty {
+tab-item:not(.collapsed).subtree-collapsed
+  tab-twisty {
   text-shadow: -0.1em 0.1em 0.1em transparent;
   transform: rotatez(-90deg);
 }
 :root.right
-  .tab:not(.collapsed).subtree-collapsed
-  .twisty {
+  tab-item:not(.collapsed).subtree-collapsed
+  tab-twisty {
   transform: rotatez(90deg);
 }
 
-.tab:not(.collapsed).subtree-collapsed
-  .twisty:hover {
+tab-item:not(.collapsed).subtree-collapsed
+  tab-twisty:hover {
   text-shadow: -0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 :root.right
-  .tab:not(.collapsed).subtree-collapsed
-  .twisty {
+  tab-item:not(.collapsed).subtree-collapsed
+  tab-twisty {
   text-shadow: 0.1em -0.1em 0.1em transparent;
 }
 :root.right
-  .tab:not(.collapsed).subtree-collapsed
-  .twisty:hover {
+  tab-item:not(.collapsed).subtree-collapsed
+  tab-twisty:hover {
   text-shadow: 0.1em -0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-.tab:not(.collapsed):not(.subtree-collapsed) .twisty {
+tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty {
   text-shadow: 0.1em 0.1em 0.1em transparent;
   transform: rotatez(0);
 }
-.tab:not(.collapsed):not(.subtree-collapsed) .twisty:hover {
+tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty:hover {
   text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }

@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-.tab,
+tab-item,
 .after-tabs button {
   padding: 0.3em 0.25em;
 }
@@ -13,48 +13,48 @@
   padding: 0em;
 }
 
-:root.left .tab:not(.pinned),
+:root.left tab-item:not(.pinned),
 :root.left .after-tabs button {
   padding-right: 0.35em;
 }
 
-:root.right .tab:not(.pinned),
+:root.right tab-item:not(.pinned),
 :root.right .after-tabs button {
   padding-left: 0.35em;
 }
 
 /* macOS workaround */
-:root.platform-mac #tabbar:dir(rtl).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
+:root.platform-mac #tabbar:dir(ltr).overflow tab-item:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
 
-.tab .label {
+tab-item tab-label {
   margin-left: 0.25em;
   padding: 0 0 0.25em 0;
 }
 
-.tab .favicon {
+tab-item tab-favicon {
   margin-bottom: 0.25em;
   margin-top: 0.25em;
 }
 
-.tab {
+tab-item {
   --tab-closebox-offset: calc((var(--tab-size) - 1em) / 2);
   --tab-closebox-negative-offset: calc((1em - var(--tab-size)) / 2);
 }
 
 /* expand closebox to fill full height of tab */
-.tab .closebox {
+tab-item tab-closebox {
   margin-bottom: var(--tab-closebox-negative-offset);
   margin-top: var(--tab-closebox-negative-offset);
   padding: var(--tab-closebox-offset) 0.25em;
 }
 
-.tab .closebox::before {
+tab-item tab-closebox::before {
   border-radius: 10%;
   content: "";
   display: inline-block;
@@ -65,17 +65,17 @@
   position: absolute;
 }
 
-.tab .closebox:hover::before {
+tab-item tab-closebox:hover::before {
   background: var(--tab-text);
   box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
   opacity: 0.1;
 }
 
-.tab.active .closebox:hover::before {
+tab-item.active tab-closebox:hover::before {
   background: var(--tab-text);
 }
 
-.tab .closebox::after {
+tab-item tab-closebox::after {
   position: relative;
 }
 
@@ -86,7 +86,7 @@
   --multiselected-color: Highlight;
 }
 
-.mutiple-highlighted > .tab.highlighted::after {
+.mutiple-highlighted > tab-item.highlighted::after {
   background: var(--multiselected-color);
   bottom: 0;
   content: " ";

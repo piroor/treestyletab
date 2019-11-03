@@ -27,6 +27,8 @@ function log(...args) {
   internalLogger('background/background-cache', ...args);
 }
 
+const kCONTENTS_VERSION = 5;
+
 let mActivated = false;
 
 export function activate() {
@@ -95,7 +97,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
-      cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
+      cache.version != kCONTENTS_VERSION ||
       !signatureMatched) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
     TabsInternalOperation.clearCache(owner);
@@ -151,7 +153,7 @@ function signatureFromTabsCache(cachedTabs) {
 
 async function restoreTabsFromCache(windowId, params = {}) {
   if (!params.cache ||
-      params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
+      params.cache.version != kCONTENTS_VERSION)
     return false;
 
   return (await restoreTabsFromCacheInternal({
@@ -217,6 +219,13 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
   for (let i = tabs.length - 1; i > -1; i--) {
     fixupTabRestoredFromCache(tabs[i], permanentStates[i], cachedTabs[i], idMap);
   }
+  // step 3: restore collapsed/expanded state of tabs and finalize the
+  // restoration process
+  // Do this from top to bottom, because a tab can be placed under an
+  // expanded parent but the parent can be placed under a collapsed parent.
+  for (const tab of tabs) {
+    fixupTabRestoredFromCachePostProcess(tab);
+  }
   MetricsData.add('fixupTabsRestoredFromCache: step 2 done.');
 }
 
@@ -249,7 +258,10 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
+}
 
+function fixupTabRestoredFromCachePostProcess(tab) {
+  const parentTab = tab.$TST.parent;
   if (parentTab &&
       (parentTab.$TST.collapsed ||
        parentTab.$TST.subtreeCollapsed)) {
@@ -376,7 +388,7 @@ async function cacheTree(windowId) {
     return;
   log('cacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
-    version:         Constants.kBACKGROUND_CONTENTS_VERSION,
+    version:         kCONTENTS_VERSION,
     tabs:            TabsStore.windows.get(windowId).export(true),
     pinnedTabsCount: Tab.getPinnedTabs(windowId).length,
     signature

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script type="application/javascript"><!--
+      function onBeforeUnload(event) {
+        console.log('beforeunload');
+        event.preventDefault();
+        event.returnValue = '';
+      }
+      window.addEventListener('beforeunload', onBeforeUnload);
+      console.log('beforeunload listener is registered.');
+
+      function openTabs(url, count) {
+        count = parseInt(count);
+        for (let i = 0; i != count; i++) {
+          window.open(`${url}#child${i}`, "_blank");
+        }
+      }
+    //--></script>
+  </head>
+  <body>
+    <p>This page should show a confirmation before closed or reloaded.</p>
+    <p><button onclick="window.removeEventListener('beforeunload', onBeforeUnload)"
+               onkeypress="if (event.key == 'Enter') window.removeEventListener('beforeunload', onBeforeUnload);"
+               >Clear unload listener</button></p>
+    <hr>
+    <p><button data-count="5"
+               data-url="about:blank"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 5 child tabs, with blank page</button></p>
+    <p><button data-count="10"
+               data-url="about:blank"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 10 child tabs, with blank page</button></p>
+    <p><button data-count="50"
+               data-url="about:blank"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 50 child tabs, with blank page</button></p>
+    <p><button data-count="100"
+               data-url="about:blank"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 100 child tabs, with blank page</button></p>
+    <hr>
+    <p><button data-count="5"
+               data-url="#"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 5 child tabs, with canceling beforeunload</button></p>
+    <p><button data-count="10"
+               data-url="#"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 10 child tabs, with canceling beforeunload</button></p>
+    <p><button data-count="50"
+               data-url="#"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 50 child tabs, with canceling beforeunload</button></p>
+    <p><button data-count="100"
+               data-url="#"
+               onclick="openTabs(this.dataset.url, this.dataset.count)"
+               onkeypress="if (event.key == 'Enter') openTabs(this.dataset.url, this.dataset.count);"
+               >Prepare 100 child tabs, with canceling beforeunload</button></p>
+  </body>
+</html>

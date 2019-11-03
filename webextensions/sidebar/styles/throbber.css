@@ -9,12 +9,12 @@
   --throbber-color: var(--browser-loading-indicator, Highlight);
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
-  --throbber-animation-steps: steps(60);
+  --throbber-animation-steps: steps(30); /* The FPS is reduced from 60 to 30 at https://bugzilla.mozilla.org/show_bug.cgi?id=1511095 */
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
-.tab.faviconized {
+tab-item.faviconized {
   --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
@@ -26,14 +26,14 @@
 
 :root:not(.blocking-throbber) #blocking-screen .throbber,
 :root:not(.have-loading-tab) #tabbar .throbber,
-#tabbar .tab:not(.loading) .throbber,
-#tabbar .tab.collapsed .throbber {
+#tabbar tab-item:not(.loading) .throbber,
+#tabbar tab-item.collapsed .throbber {
   display: none !important;
 }
 
 
 #blocking-screen .throbber,
-.tab:not(.collapsed) .throbber {
+tab-item:not(.collapsed) .throbber {
   display: inline-block;
   font-size: var(--throbber-size);
   height: var(--throbber-size);
@@ -46,7 +46,7 @@
   width: var(--throbber-size);
 }
 
-:root:not(.throbber-synchronizing) .tab:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
+:root:not(.throbber-synchronizing) tab-item:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
 :root:not(.throbber-synchronizing).have-loading-tab #master-throbber,
 :root.have-loading-tab #sync-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
@@ -54,7 +54,7 @@
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before,
-#tabbar .tab:not(.collapsed).loading .throbber::before,
+#tabbar tab-item:not(.collapsed).loading .throbber::before,
 :root.have-loading-tab #master-throbber {
   content: "";
   height: var(--throbber-size);
@@ -64,31 +64,31 @@
 
 
 :root.blocking-throbber #blocking-screen .throbber::before,
-#tabbar .tab:not(.collapsed).loading .throbber::before {
+#tabbar tab-item:not(.collapsed).loading .throbber::before {
   fill: var(--throbber-color);
   box-shadow: 0 0 2px var(--throbber-shadow-color);
 }
 :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
-:root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading .throbber::before,
-#tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
+:root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before,
+#tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   background: var(--throbber-color);
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before,
-#tabbar .tab:not(.collapsed).loading .throbber::before {
+#tabbar tab-item:not(.collapsed).loading .throbber::before {
   -moz-context-properties: fill;
   background: url("./throbber.svg") no-repeat;
 }
 :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
-:root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading .throbber::before {
+:root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
   mask: url("./throbber.svg") no-repeat left center / 100%;
 }
 
-#tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
+#tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   background-image: none;
   mask: -moz-element(#master-throbber) no-repeat left center / 100%;
 }
-:root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
+:root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   mask: -moz-element(#master-throbber-container) no-repeat;
 }
 
@@ -139,7 +139,7 @@
   100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
 }
 
-:root.animation .tab:not(.collapsed).bursting .burster::before {
+:root.animation tab-item:not(.collapsed).bursting .burster::before {
   animation: tab-burst-animation var(--tab-burst-duration) cubic-bezier(0, 0, 0.58, 1);
   background: var(--throbber-color);
   border-radius: 100%;
@@ -150,6 +150,6 @@
   transform-origin: 50% 50%;
 }
 
-:root.animation .tab:not(.collapsed).not-activated-since-load.bursting .burster::before {
+:root.animation tab-item:not(.collapsed).not-activated-since-load.bursting .burster::before {
   animation-name: tab-burst-animation-light;
 }

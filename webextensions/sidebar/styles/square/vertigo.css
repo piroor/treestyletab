@@ -11,7 +11,7 @@
   border: 0 none;
 }
 
-.mutiple-highlighted .tab:not(.highlighted) {
+.mutiple-highlighted tab-item:not(.highlighted) {
   opacity: 0.5;
 }
 

@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-.tab,
+tab-item,
 .after-tabs button {
   border: 1px solid var(--tab-border);
   border-width: 1px 0;
@@ -20,8 +20,8 @@
   border-top: 1px solid var(--tab-border);
 }
 
-#tabbar .tab.pinned + .tab:not(.pinned),
-#tabbar .tab:not(.pinned):first-of-type {
+#tabbar tab-item.pinned + tab-item:not(.pinned),
+#tabbar tab-item:not(.pinned):first-of-type {
   border-top: none;
 }
 
@@ -29,45 +29,45 @@
   border-bottom: none;
 }
 
-:root.left .tab:not(.pinned) {
+:root.left tab-item:not(.pinned) {
   padding-right: 0.35em;
 }
-:root.left .tab:not(.pinned)[data-parent-id] {
+:root.left tab-item:not(.pinned)[data-parent-id] {
   border-left-width: 1px;
 }
 
-:root.right .tab:not(.pinned) {
+:root.right tab-item:not(.pinned) {
   padding-left: 0.35em;
 }
-:root.right .tab:not(.pinned)[data-parent-id] {
+:root.right tab-item:not(.pinned)[data-parent-id] {
   border-right-width: 1px;
 }
 
-.tab .favicon {
+tab-item tab-favicon {
   margin-bottom: 0.25em;
   margin-top: 0.25em;
 }
 
-.tab .label {
+tab-item tab-label {
   margin-left: 0.25em;
   padding: 0 0 0.25em 0;
 }
 
-.tab.pinned {
+tab-item.pinned {
   border-width: 0 1px 1px 0;
 }
 
-.tab.pinned.last-row {
+tab-item.pinned.last-row {
   border-bottom-width: 0;
 }
 
 
 /* show more-highlighter like as tree */
 
-.tab:not(.faviconized) .highlighter::after {
+tab-item:not(.faviconized) .highlighter::after {
    top: calc(var(--tab-highlighter-size) * 2);
 }
 
-.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
+tab-item[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
   width: calc(var(--tab-highlighter-size) * 2);
 }

@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  log as internalLogger,
   wait,
   configs
 } from '/common/common.js';
@@ -19,6 +20,10 @@ import MenuUI from '/extlib/MenuUI.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as Size from './size.js';
+
+function log(...args) {
+  internalLogger('sidebar/subpanel', ...args);
+}
 
 export const onResized = new EventListenerManager();
 
@@ -56,6 +61,8 @@ export async function init() {
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch(ApiTabs.createErrorHandler())
   ]);
   mHeight = height || 0;
+
+  log('initialize ', { providerId, height: mHeight });
 
   mContainer.appendChild(mSubPanel);
   updateSelector();
@@ -113,8 +120,10 @@ TSTAPI.onInitialized.addListener(async () => {
 
 function applyProvider(id) {
   const provider = TSTAPI.getAddon(id);
+  log('applyProvider ', id, provider);
   if (provider &&
       provider.subPanel) {
+    log('applyProvider: load ', id);
     configs.lastSelectedSubPanelProviderId = mProviderId = id;
     for (const item of mSelector.querySelectorAll('.radio')) {
       item.classList.remove('checked');
@@ -138,6 +147,7 @@ function applyProvider(id) {
       load();
   }
   else {
+    log('applyProvider: unload missing/invalid provider ', id);
     const icon = mSelectorAnchor.querySelector('.icon > img');
     icon.removeAttribute('src');
     mSelectorAnchor.querySelector('.label').textContent = '';
@@ -147,6 +157,7 @@ function applyProvider(id) {
 
 function restoreLastProvider() {
   const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
+  log('restoreLastProvider ', lastProvider);
   if (lastProvider && lastProvider.subPanel)
     applyProvider(lastProvider.id);
   else if (mSelector.hasChildNodes())
