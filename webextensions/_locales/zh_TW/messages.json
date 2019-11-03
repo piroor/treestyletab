@@ -11,10 +11,10 @@
   "command_treeMoveUp":            { "message": "目前樹向上移動 1 個" },
   "command_tabMoveDown":           { "message": "目前分頁向下移動 1 個" },
   "command_treeMoveDown":          { "message": "目前樹向下移動 1 個" },
-  "command_focusPrevious":         { "message": "切換到前個分頁(會展開樹)" },
-  "command_focusPreviousSilently": { "message": "切換到前個分頁(不展開樹)" },
-  "command_focusNext":             { "message": "切換到下個分頁(會展開樹)" },
-  "command_focusNextSilently":     { "message": "切換到下個分頁(不展開樹)" },
+  "command_focusPrevious":         { "message": "移至上個分頁(會展開樹)" },
+  "command_focusPreviousSilently": { "message": "移至上個分頁(不展開樹)" },
+  "command_focusNext":             { "message": "移至下個分頁(會展開樹)" },
+  "command_focusNextSilently":     { "message": "移至下個分頁(不展開樹)" },
   "command_tabbarUp":              { "message": "分頁一覽向上捲動 1 行" },
   "command_tabbarPageUp":          { "message": "分頁一覽向上捲動 1 頁" },
   "command_tabbarHome":            { "message": "分面一覽捲動至開頭" },
@@ -72,7 +72,7 @@
     }},
 
   "bookmarkTabs_notification_success_title": { "message": "多個分頁已加入書籤" },
-  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入「$PARENT$」內的新資料夾中",
+  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入書籤內的新資料夾「$PARENT$」。",
     "placeholders": {
       "title": { "content": "$1", "example": "標題" },
       "count": { "content": "$2", "example": "2" },
@@ -80,7 +80,7 @@
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "權限錯誤" },
-  "bookmark_notification_notPermitted_message": { "message": "無法取得創建書籤的權限。Please click here to grant extra permissions." },
+  "bookmark_notification_notPermitted_message": { "message": "沒有權限創建書籤。點此允許相關權限。" },
 
   "dropLinksOnTabBehavior_message": { "message": "如何開啟？" },
   "dropLinksOnTabBehavior_save":    { "message": "永遠如此" },
@@ -122,9 +122,9 @@
   "context_closeTree_label": { "message": "關閉此樹(&C)" },
   "context_closeDescendants_label": { "message": "關閉所有子分頁(&L)" },
   "context_closeOthers_label": { "message": "關閉此樹外的所有分頁(&O)" },
-  "context_collapseAll_label": { "message": "全部折疊(&P)" },
-  "context_expandAll_label": { "message": "全部展開(&X)" },
-  "context_bookmarkTree_label": { "message": "此樹加入晝籤(&B)…" },
+  "context_collapseAll_label": { "message": "收合所有樹(&P)" },
+  "context_expandAll_label": { "message": "開展所有樹(&X)" },
+  "context_bookmarkTree_label": { "message": "此樹加入晝籤(&B)……" },
 
 
   "config_appearance_caption": { "message": "外觀" },
@@ -148,11 +148,11 @@
   "config_style_mixed": { "message": "Mixed" },
   "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
-  "config_style_highcontrast": { "message": "High Contrast" },
+  "config_style_highcontrast": { "message": "高對比" },
   "config_style_none": { "message": "無裝飾" },
   "config_style_none_info": { "message": "(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
-  "config_colorScheme_caption": { "message": "配色方案:" },
+  "config_colorScheme_caption": { "message": "配色:" },
   "config_colorScheme_photon": { "message": "Photon" },
   "config_colorScheme_systemColor": { "message": "系統配色" },
 
@@ -163,7 +163,7 @@
   "config_animation_label": { "message": "啟用動畫效果" },
 
 
-  "config_extraItems_caption": { "message": "額外右鍵選單項" },
+  "config_extraItems_caption": { "message": "額外快捷選單項" },
 
 
   "config_newTab_caption": { "message": "新分頁行為" },
@@ -177,55 +177,55 @@
   "config_showNewTabActionSelector_label":               { "message": "顯示特定位置開新分頁按鈕" },
   "config_showContextualIdentitiesSelector_label":       { "message": "顯示新容器分頁按鈕" },
 
-  "__OLD__config_newTabAction_caption": { "message": "開新分頁動作(其他工具按鈕、快捷鍵等)" },
-  "config_autoAttachOnNewTabCommand_before": { "message": "將新的空白頁開啟為" },
+  "config_newTabAction_caption": { "message": "其他動作開啟的新分頁(工具列按鈕、鍵盤快捷鍵等)" },
+  "config_autoAttachOnNewTabCommand_before": { "message": "開啟新分頁為" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "獨立分頁" },
-  "config_autoAttachOnNewTabCommand_child": { "message": "目前分頁下層分頁" },
+  "config_autoAttachOnNewTabCommand_child": { "message": "目前分頁之子分頁" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "目前分頁同層相鄰分頁" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "網址為" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "的分頁開啟時，視為以快捷鍵等方式開啟的新分頁" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "䦒啟的分頁網址為" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "時，視同以其他動作開新分頁" },
 
-  "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中鍵點擊「開啟新分頁」按鈕時，將新的空白頁開啟為" },
+  "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中鍵點擊「開啟新分頁」按鈕時，開新分頁為" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "獨立分頁" },
-  "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "目前分頁下層分頁" },
+  "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "目前分頁之子分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "目前分頁同層相鄰分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
-  "__OLD__config_autoAttachOnDuplicated_before": { "message": "中鍵點擊「重新載入目前頁面」按鈕時，將複製分面開啟為" },
+  "config_autoAttachOnDuplicated_before": { "message": "複製分頁為" },
   "config_autoAttachOnDuplicated_independent": { "message": "獨立分頁" },
-  "config_autoAttachOnDuplicated_child": { "message": "目前分頁下層分頁" },
+  "config_autoAttachOnDuplicated_child": { "message": "目前分頁之子分頁" },
   "config_autoAttachOnDuplicated_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "目前分頁同層相鄰分頁" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_insertNewChildAt_caption": { "message": "新子分頁開啟於" },
-  "config_insertNewChildAt_noControl": { "message": "不處理(由 Firefox 或其他附加元件決定)" },
+  "config_insertNewChildAt_noControl": { "message": "不控制(由 Firefox 或其他附加元件決定)" },
   "config_insertNewChildAt_first": { "message": "樹的前端" },
   "config_insertNewChildAt_end": { "message": "樹的末尾" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "由釘選分開啟的新分頁開啟於" },
-  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "不處理(由 Firefox 或其他附加元件決定)" },
+  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "不控制(由 Firefox 或其他附加元件決定)" },
   "config_insertNewTabFromPinnedTabAt_first": { "message": "樹的前端" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "樹的末尾" },
 
   "config_autoGroupNewTabs_before": { "message": "\u200b" },
-  "config_autoGroupNewTabs_after": { "message": "亳秒內開連續開啟的分頁自動群組" },
+  "config_autoGroupNewTabs_after": { "message": "亳秒內開連續開啟的分頁自動聚合" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "但開新視窗時，在" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "亳秒內開啟的分頁視為「首頁」而不自動群組" },
+  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "亳秒內開啟的分頁視為「首頁」而不自動聚合" },
 
-  "config_autoGroupNewTabsFromPinned_label": { "message": "同個釘選分頁開啟的分頁自動群組" },
+  "config_autoGroupNewTabsFromPinned_label": { "message": "同個釘選分頁開啟的分頁自動聚合" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "開新分頁時，自動繼承父分頁的容器類別" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "message": "\u200b" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "開新分頁時，自動繼承父分頁的容器" },
+  "config_inheritContextualIdentityToNewChildTab_description": { "message": "(※開新分頁為獨立分頁時，不會繼承上一個分頁的容器)" },
 
 
-  "config_treeBehavior_caption": { "message": "樹行為"},
+  "config_treeBehavior_caption": { "message": "樹行為" },
 
   "config_successorTabControlLevel_caption": { "message": "關閉目前分頁時，若為最後一個子分頁則" },
-  "config_successorTabControlLevel_inTree": { "message": "切換到前一個分頁" },
+  "config_successorTabControlLevel_inTree": { "message": "切換到上一個分頁" },
   "config_successorTabControlLevel_simulateDefault": { "message": "切換到下一個分頁(Firefox 預設)" },
   "config_successorTabControlLevel_legacyDescription": { "message": "※ Firefox 內建設定「browser.tabs.selectOwnerOnClose」=「true」的行為優先於本設定。" },
 
@@ -235,17 +235,17 @@
   "config_parentTabBehaviorForChanges_onlyInSidebar": { "message": "側邊欄內的操作隨父分頁聯動 / 側邊欄外的操作無動作" },
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "創建新樹時自動折疊其他樹" },
-  "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "切換分頁時，自動展開該樹並折疊其他樹" },
+  "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "切換分頁時，自動開展該樹並折疊其他樹" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "雙擊分頁開關該樹" },
 
   "config_closeParentBehavior_caption": { "message": "關閉展開樹的父分頁時" },
-  "config_closeParentBehavior_close": { "message": "一併關閉子分頁" },
-  "config_closeParentBehavior_replaceWithGroupTab": { "message": "以群組用虛擬分頁代之，維持樹狀結構" },
-  "config_closeParentBehavior_promoteFirst": { "message": "提升首個子分頁為新父分頁" },
-  "config_closeParentBehavior_promoteAll": { "message": "提升所有子分頁至父分頁的同層" },
+  "config_closeParentBehavior_close":                { "message": "一併關閉子孫分頁" },
+  "config_closeParentBehavior_replaceWithGroupTab":  { "message": "以群組分頁代之並維持結構" },
+  "config_closeParentBehavior_promoteFirst":         { "message": "以首子分頁昇格代之" },
+  "config_closeParentBehavior_promoteAll":           { "message": "昇格全部子分頁" },
   "config_promoteFirstChildForClosedRoot_label": { "message": "只有關閉最上層的父分頁時，才提升首個子分頁為新父分頁" },
-  "config_closeParentBehavior_detach": { "message": "釋放該樹所有子分頁" },
+  "config_closeParentBehavior_detach":               { "message": "獨立全部子分頁" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "拖曳連結或 URL 字串至分頁時" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "每次詢問" },
@@ -296,7 +296,7 @@
   "config_debug_caption": { "message": "開發用" },
 
   "config_debug_label": { "message": "除錯模式" },
-  "config_log_caption":               { "message": "詳細日誌" },
+  "config_log_caption":               { "message": "詳細記錄" },
   "config_logOnUpdated_label":        { "message": "輸出 tabs.onUpdated 的相關日誌" },
   "config_logOnMouseEvent_label":     { "message": "輸出滑鼠操作的相關日誌" },
   "config_logOnScroll_label":         { "message": "輸出自動捲動的相關日誌" },
@@ -311,8 +311,8 @@
   "config_sidebarScrollbarPosition_left": { "message": "左側" },
   "config_sidebarScrollbarPosition_right": { "message": "右側" },
 
-  "config_requestPermissions_bookmarks": { "message": "允許閱讀和創建書籤" },
-  "config_requestPermissions_allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(需要允許在網頁中執行腳本)。" },
+  "config_requestPermissions_bookmarks": { "message": "允許讀取和創建書籤" },
+  "config_requestPermissions_allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(※需要允許在網頁中執行腳本)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "點擊「Tree Style Tab」的工具列按鈕" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "由於 Firefox 的問題，不能由此頁頁要求權限，點擊工具列上的「Tree Style Tab」按鈕以給予權限。" },
@@ -325,8 +325,8 @@
   "tabContextMenu_unmute_label":      { "message": "取消分頁靜音(&M)" },
 
   "tabContextMenu_pin_label":         { "message": "釘選分頁(&P)" },
-  "tabContextMenu_unpin_label":       { "message": "還原成普通分頁(&B)" },
-  "tabContextMenu_duplicate_label":   { "message": "複制分頁(&D)" },
+  "tabContextMenu_unpin_label":       { "message": "還原成普通分頁(&P)" },
+  "tabContextMenu_duplicate_label":   { "message": "複製分頁(&D)" },
   "tabContextMenu_tearOff_label":     { "message": "移動到新視窗(&W)" },
 
   "tabContextMenu_reloadAll_label":   { "message": "重新載入所有分頁(&A)" },
