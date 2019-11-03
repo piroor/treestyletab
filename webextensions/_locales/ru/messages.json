@@ -141,6 +141,11 @@
   "warnOnCloseTabs_close":     { "message": "Закрыть вкладки" },
   "warnOnCloseTabs_cancel":    { "message": "Отмена" },
 
+  "warnOnCloseTabs_notification_message": { "message": "Если нет, то нажмите здесь, чтобы отменить операцию.\nИначе остальные вкладки закроются через $TIMEOUT$ секунд.",
+    "placeholders": {
+      "TIMEOUT": { "content": "$1", "example": "10" }
+    }},
+
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ вкладок открываются одновременно. Сгруппировать их?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
