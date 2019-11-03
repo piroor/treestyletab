@@ -135,6 +135,7 @@ But please read FAQ below, before you post any new feature request.
    * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
 
 Any feature request unrelated to these points may be rejected, even if many people love it.
+For example: [session management](https://addons.mozilla.org/firefox/addon/tab-session-manager/), [search field](https://addons.mozilla.org/firefox/addon/tab_search/), detailed focus control of tabs, and so on.
 
 Instead of adding more built-in features, I hope to make TST *compatible with other tab related addons*.
 If it is required for more better compatibility I add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations using this API](#addons-extend-tst).
