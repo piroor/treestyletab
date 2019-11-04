@@ -25,6 +25,17 @@
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
+    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
+  }
+  :root tab-item:not(.active):hover {
+    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.25);
+    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
+  }
+}
+
 :root[color-scheme="system-color"] {
   --tab-surface-active-gradient-start: var(--face-gradient-start-active);
   --tab-surface-active-gradient-end:   var(--face-gradient-end);

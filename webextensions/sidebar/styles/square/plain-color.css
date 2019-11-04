@@ -61,6 +61,33 @@
   z-index: 20;
 }
 
+@media (prefers-color-scheme: dark) {
+  /* this color scheme is same to plain-color-dark */
+  :root,
+  :root[color-scheme="system-color"] {
+    --tab-like-surface: #252526;
+    --tab-surface: var(--tab-like-surface);
+    --tab-text: #efefef;
+    --tab-text-inverted: black;
+    --tab-text-active: #f9f9fa;
+    --tab-text-active-inverted: black;
+    --tab-border: #3c3c3d;
+    --tab-surface-hover: #5a5a5b;
+    --tab-surface-active: #474749;
+    --tab-surface-active-hover: #707071;
+    --tab-highlighter: #0a84ff;
+    --tab-highlighter-inactive: rgba(255, 255, 255, 0.2);
+    --dropmarker-color: var(--tab-text);
+    --throbber-color: var(--tab-text);
+
+    --tab-highlighted-glow: var(--tab-highlighter);
+    --tab-highlighted-highlight: white;
+    --tabbar-bg: #0c0c0d;
+
+    --multiselected-color: var(--tab-highlighter);
+  }
+}
+
 tab-item,
 .after-tabs button {
   background: var(--tab-surface);
