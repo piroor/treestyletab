@@ -110,8 +110,8 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) {
   --throbber-color: var(--browser-loading-indicator, ThreeDDarkShadow);
 }
 
-tab-item:not(.active):not(.bundled-active):not(.highlighted) .burster {
-  --throbber-color: var(--browser-loading-indicator, #B5C5E0 /* --grey-90 + #a9b9d3, (parseInt('0c0c0d', 16) + parseInt('a9b9d3', 16)).toString(16) */);
+tab-item .burster {
+  --throbber-color: var(--tab-loading-fill);
 }
 
 
@@ -132,9 +132,5 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) .burster {
 
   tab-item:not(.active):not(.bundled-active):not(.highlighted) {
     --throbber-color: var(--browser-loading-indicator, #afafaf);
-  }
-
-  tab-item:not(.active):not(.bundled-active):not(.highlighted) .burster {
-    --throbber-color: var(--browser-loading-indicator, #4a4a4d);
   }
 }
