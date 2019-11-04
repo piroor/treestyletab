@@ -111,7 +111,7 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) {
 }
 
 tab-item:not(.active):not(.bundled-active):not(.highlighted) .burster {
-  --throbber-color: var(--browser-loading-indicator, #B5C5E0 /* #0c0c0d + #a9b9d3, (parseInt('0c0c0d', 16) + parseInt('a9b9d3', 16)).toString(16) */);
+  --throbber-color: var(--browser-loading-indicator, #B5C5E0 /* --grey-90 + #a9b9d3, (parseInt('0c0c0d', 16) + parseInt('a9b9d3', 16)).toString(16) */);
 }
 
 
