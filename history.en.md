@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Apply dark color scheme on Plain, Vertigo and Mixed, when the default color sheme of the platform is dark.
    * Apply dark color scheme for options in tab, group tab, and startup tab, when the default color sheme of the platform is dark.
    * Update `zh-TW` locale by Bo-Sian Li. Thanks!
  - 3.2.2 (2019.11.3)
