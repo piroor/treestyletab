@@ -107,6 +107,9 @@
   --dark-toolbar-field-separator: #5F6670;
   --dark-toolbar-field-text: rgb(249, 249, 250);
 
+  /* https://searchfox.org/mozilla-central/rev/35873cfc312a6285f54aa5e4ec2d4ab911157522/browser/themes/shared/tabs.inc.css#24 */
+  --tab-loading-fill: #0A84FF;
+
 
   --bg-color: var(--grey-10);
   --text-color: var(--grey-90);

@@ -115,3 +115,7 @@ tab-closebox {
   margin: 0;
   padding: 0.1em;
 }
+
+tab-item .burster {
+  --throbber-color: var(--tab-loading-fill);
+}
