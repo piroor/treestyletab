@@ -12,7 +12,7 @@
 @import url("shadow.css");
 
 :root:not([color-scheme="system-color"]) {
-  --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
+  --tab-highlighter: var(--browser-tab-highlighter, var(--blue-50));
 }
 
 :root {
@@ -24,17 +24,6 @@
 :root tab-item:not(.active):hover {
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.25);
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
-    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
-  }
-  :root tab-item:not(.active):hover {
-    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.25);
-    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
-  }
 }
 
 :root[color-scheme="system-color"] {
@@ -146,4 +135,25 @@ tab-item.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .
                       var(--tab-highlighter-start) 0,
                       var(--tab-highlighter-end) 30%
                     );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
+    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
+    --tab-highlighter-inactive: var(--grey-10-a20);
+  }
+  :root tab-item:not(.active):hover {
+    --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.25);
+    --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
+  }
+
+  :root:not([color-scheme="system-color"]) {
+    --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
+  }
+
+  tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+    --tab-highlighter-start: var(--grey-10-a015);
+    --tab-highlighter-end: var(--grey-10-a20);
+  }
 }

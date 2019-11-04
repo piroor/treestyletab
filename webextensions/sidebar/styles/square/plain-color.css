@@ -78,6 +78,8 @@
     --tab-surface-active: var(--in-content-button-background-mixed);
     --tab-surface-active-hover: var(--in-content-button-background-active-mixed);
     --tab-dropmarker: var(--toolbar-non-lwt-textcolor);
+
+    --tab-highlighter-inactive: var(--grey-10-a20);
   }
 }
 
