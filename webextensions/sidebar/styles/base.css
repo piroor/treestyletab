@@ -287,7 +287,6 @@ tab-item .extra-items-container.behind {
   top: 0;
 }
 
-tab-item:not(.highlighted):not(.bundled-active) .highlighter,
 tab-item:not(.bursting) .burster {
   display: none;
 }
