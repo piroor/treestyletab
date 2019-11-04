@@ -5,19 +5,19 @@
 */
 
 :root {
-  --toolbar-non-lwt-bgcolor: var(--grey-10);
-  --toolbar-non-lwt-textcolor: var(--grey-90);
+  --toolbar-non-lwt-bgcolor: var(--in-content-page-background);
+  --toolbar-non-lwt-textcolor: var(--in-content-page-color);
 
   --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-text-active: var(--tab-text);
-  --tab-text-active-inverted: Highlight;
-  --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--grey-40)));
-  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */));
-  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, Highlight));
-  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, Highlight));
+  --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-more-lighter, var(--in-content-box-background-hover)));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, var(--in-content-button-background-mixed)));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, var(--in-content-button-background-active-mixed)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
 
@@ -63,26 +63,21 @@
   /* this color scheme is same to plain-color-dark */
   :root,
   :root[color-scheme="system-color"] {
-    --tab-like-surface: #252526;
-    --tab-surface: var(--tab-like-surface);
-    --tab-text: #efefef;
-    --tab-text-inverted: black;
-    --tab-text-active: var(--grey-10);
-    --tab-text-active-inverted: black;
-    --tab-border: #3c3c3d;
-    --tab-surface-hover: #5a5a5b;
-    --tab-surface-active: #474749;
-    --tab-surface-active-hover: #707071;
-    --tab-highlighter: var(--blue-50);
-    --tab-highlighter-inactive: rgba(255, 255, 255, 0.2);
-    --dropmarker-color: var(--tab-text);
-    --throbber-color: var(--tab-text);
-
-    --tab-highlighted-glow: var(--tab-highlighter);
+    --tab-highlighter: var(--dark-tab-line);
     --tab-highlighted-highlight: white;
-    --tabbar-bg: var(--grey-90);
+    --tabbar-bg: var(--dark-frame);
 
-    --multiselected-color: var(--tab-highlighter);
+    --tab-like-surface: var(--toolbar-non-lwt-bgcolor);
+    --tab-surface: var(--tab-like-surface);
+    --tab-text: var(--toolbar-non-lwt-textcolor);
+    --tab-text-inverted: var(--toolbar-non-lwt-bgcolor);
+    --tab-text-active: var(--tab-text);
+    --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
+    --tab-border: var(--in-content-box-border-color-mixed);
+    --tab-surface-hover: var(--in-content-box-background-hover);
+    --tab-surface-active: var(--in-content-button-background-mixed);
+    --tab-surface-active-hover: var(--in-content-button-background-active-mixed);
+    --tab-dropmarker: var(--toolbar-non-lwt-textcolor);
   }
 }
 
