@@ -4,6 +4,7 @@
    * Apply dark color scheme on Plain, Vertigo and Mixed, when the default color sheme of the platform is dark.
    * Apply dark color scheme for options in tab, group tab, and startup tab, when the default color sheme of the platform is dark.
    * Update color scheme of Plain, Plain Dark, Vertigo and Mixed as more friendly for Photon Design System and Firefox's default color scheme.
+   * Show highlighter of hovered background tabs with Plain type themes correctly. (regression on 3.0.x)
    * Update `zh-TW` locale by Bo-Sian Li. Thanks!
    * Update `ru` locale by wvxwxvw. Thanks!
  - 3.2.2 (2019.11.3)
