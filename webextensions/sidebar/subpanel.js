@@ -60,7 +60,7 @@ export async function init() {
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch(ApiTabs.createErrorHandler())
   ]);
-  mHeight = height || 0;
+  mHeight = typeof height == 'number' ? height : Math.max(configs.lastSubPanelHeight, 0);
 
   log('initialize ', { providerId, height: mHeight });
 
@@ -227,6 +227,11 @@ async function toggle() {
   updateLayout();
 }
 
+// We should save the last height only when it is changed by the user intentonally.
+function saveLastHeight() {
+  configs.lastSubPanelHeight = mContainer.classList.contains('collapsed') ? 0 : mHeight;
+}
+
 mHeader.addEventListener('mousedown', event => {
   if (event.target.localName == 'button')
     return;
@@ -247,20 +252,23 @@ mHeader.addEventListener('mouseup', event => {
   document.releaseCapture();
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
   updateLayout();
+  saveLastHeight();
 });
 
-mHeader.addEventListener('dblclick', event => {
+mHeader.addEventListener('dblclick', async event => {
   if (event.target.localName == 'button')
     return;
   event.stopPropagation();
   event.preventDefault();
-  toggle();
+  await toggle();
+  saveLastHeight();
 });
 
-mToggler.addEventListener('click', event => {
+mToggler.addEventListener('click', async event => {
   event.stopPropagation();
   event.preventDefault();
-  toggle();
+  await toggle();
+  saveLastHeight();
 });
 
 window.addEventListener('resize', _event => {
@@ -314,8 +322,10 @@ mSelector.ui = new MenuUI({
 });
 
 function onSelect(item, _event) {
-  if (item.dataset.value)
+  if (item.dataset.value) {
     applyProvider(item.dataset.value);
+    saveLastHeight();
+  }
   mSelector.ui.close();
 }
 

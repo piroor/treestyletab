@@ -187,6 +187,7 @@ export const configs = new Configs({
 
   // subpanel
   lastSelectedSubPanelProviderId: null,
+  lastSubPanelHeight: 0,
 
 
   // misc.
