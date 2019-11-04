@@ -5,10 +5,8 @@
 */
 
 :root {
-  /* https://dxr.mozilla.org/mozilla-central/rev/b056526be38e96b3e381b7e90cd8254ad1d96d9d/browser/themes/windows/browser.css#45 */
-  /* http://design.firefox.com/photon/visuals/color.html */
-  --toolbar-non-lwt-bgcolor: #f9f9fa;
-  --toolbar-non-lwt-textcolor: #0c0c0d;
+  --toolbar-non-lwt-bgcolor: var(--grey-10);
+  --toolbar-non-lwt-textcolor: var(--grey-90);
 
   --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
@@ -16,7 +14,7 @@
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: Highlight;
-  --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--grey-40)));
   --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */));
   --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, Highlight));
   --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, Highlight));
@@ -69,20 +67,20 @@
     --tab-surface: var(--tab-like-surface);
     --tab-text: #efefef;
     --tab-text-inverted: black;
-    --tab-text-active: #f9f9fa;
+    --tab-text-active: var(--grey-10);
     --tab-text-active-inverted: black;
     --tab-border: #3c3c3d;
     --tab-surface-hover: #5a5a5b;
     --tab-surface-active: #474749;
     --tab-surface-active-hover: #707071;
-    --tab-highlighter: #0a84ff;
+    --tab-highlighter: var(--blue-50);
     --tab-highlighter-inactive: rgba(255, 255, 255, 0.2);
     --dropmarker-color: var(--tab-text);
     --throbber-color: var(--tab-text);
 
     --tab-highlighted-glow: var(--tab-highlighter);
     --tab-highlighted-highlight: white;
-    --tabbar-bg: #0c0c0d;
+    --tabbar-bg: var(--grey-90);
 
     --multiselected-color: var(--tab-highlighter);
   }

@@ -4,22 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-:root {
-  --bg-color: -moz-dialog;
-  --text-color: #222426;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #474749; /* same to --tab-surface-active in Plain Dark */
-    --text-color: #f9f9fa; /* same to --tab-text-active in Plain Dark */
-  }
-
-  :link,
-  :visited {
-    color: var(--text-color);
-  }
-}
+@import url(/resources/ui-color.css);
 
 body.independent {
   background: var(--bg-color);

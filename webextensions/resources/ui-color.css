@@ -1,0 +1,71 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+/* Photon colors from http://design.firefox.com/photon/visuals/color.html */
+:root {
+  --blue-40: #45a1ff;
+  --blue-50: #0a84ff;
+  --blue-60: #0060df;
+  --blue-70: #003eaa;
+  --blue-80: #002275;
+  --grey-10: #f9f9fa;
+  --grey-20: #ededf0;
+  --grey-30: #d7d7db;
+  --grey-40: #b1b1b3;
+  --grey-50: #737373;
+  --grey-60: #4a4a4f;
+  --grey-70: #38383d;
+  --grey-80: #2a2a2e;
+  --grey-90: #0c0c0d;
+  --teal-10: #a7fffe;
+  --teal-60: #00c8d7;
+  --teal-70: #008ea4;
+  --teal-80: #005a71;
+  --red-60: #d70022;
+  --yellow-50: #ffe900;
+  --violet-20: #cb9eff;
+  --magenta-70: #b5007f
+}
+
+
+:root {
+  --bg-color: var(--grey-10);
+  --text-color: var(--grey-90);
+
+  --link-color: var(--blue-60);
+  --link-visited-color: var(--magenta-70);
+  --link-hover-color: var(--teal-60);
+  --link-active-color: var(--red-60);
+}
+
+:link {
+  color: var(--link-color);
+}
+:visited {
+  color: var(--link-visited-color);
+}
+
+:link:hover,
+:visited:hover {
+  color: var(--link-hover-color);
+}
+
+:link:active,
+:visited:active {
+  color: var(--link-active-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #474749; /* same to --tab-surface-active in Plain Dark */
+    --text-color: #f9f9fa; /* same to --tab-text-active in Plain Dark */
+
+    --link-color: var(--blue-40);
+    --link-visited-color: var(--violet-20);
+    --link-hover-color: var(--teal-10);
+    --link-active-color: var(--red-60);
+  }
+}

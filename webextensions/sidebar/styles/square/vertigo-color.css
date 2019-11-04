@@ -23,12 +23,10 @@
  * ***** END LICENSE BLOCK ******/
 
 :root {
-  /* https://dxr.mozilla.org/mozilla-central/rev/b056526be38e96b3e381b7e90cd8254ad1d96d9d/browser/themes/windows/browser.css#45 */
-  /* http://design.firefox.com/photon/visuals/color.html */
-  --toolbar-non-lwt-bgcolor: #f9f9fa;
-  --toolbar-non-lwt-textcolor: #0c0c0d;
+  --toolbar-non-lwt-bgcolor: var(--grey-10);
+  --toolbar-non-lwt-textcolor: var(--grey-90);
   --toolbar-non-lwt-inverted-textcolor: white;
-  --toolbar-non-lwt-border-color: #b1b1b3 /* ThreeDShadow */;
+  --toolbar-non-lwt-border-color: var(--grey-40);
 
   --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
@@ -39,9 +37,9 @@
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--toolbar-non-lwt-border-color)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
-  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-less-lighter, #e0e8f6 /* #f9f9fa - #191104, (parseInt('f9f9fa', 16) - parseInt('191104', 16)).toString(16) */));
-  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, #c1d2ee /* #f9f9fa - #38270c, (parseInt('f9f9fa', 16) - parseInt('38270c', 16)).toString(16) */));
-  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #d1e2fe /* #f9f9fa - #281600 + #000004, (parseInt('f9f9fa', 16) - parseInt('281600', 16) + parseInt('000004', 16)).toString(16) */));
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-less-lighter, #e0e8f6 /* #grey-10 - #191104, (parseInt('f9f9fa', 16) - parseInt('191104', 16)).toString(16) */));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, #c1d2ee /* #grey-10 - #38270c, (parseInt('f9f9fa', 16) - parseInt('38270c', 16)).toString(16) */));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #d1e2fe /* #grey-10 - #281600 + #000004, (parseInt('f9f9fa', 16) - parseInt('281600', 16) + parseInt('000004', 16)).toString(16) */));
 
   --tab-highlighted-highlight: var(--toolbar-non-lwt-inverted-textcolor);
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
