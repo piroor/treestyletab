@@ -189,6 +189,10 @@ ul {
   min-height: 16px;
 }
 
+#dummy-tab-color-box {
+  background: -moz-dialog;
+}
+
 #dummy-highlight-color-box {
   background: Highlight;
   color: HighlightText;

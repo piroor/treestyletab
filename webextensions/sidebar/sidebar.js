@@ -336,7 +336,7 @@ function applyUserStyleRules() {
 function applyBrowserTheme(theme) {
   log('applying theme ', theme);
 
-  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-tab'), null).backgroundColor);
+  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-tab-color-box'), null).backgroundColor);
   const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   const defaultColors = `:root {
     --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};

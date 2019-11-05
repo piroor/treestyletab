@@ -84,7 +84,8 @@
 }
 
 tab-item,
-.after-tabs button {
+.after-tabs button,
+#dummy-tab-color-box {
   background: var(--tab-surface);
   color: var(--tab-text);
   text-shadow: var(--browser-textshadow-for-header-image, none);
