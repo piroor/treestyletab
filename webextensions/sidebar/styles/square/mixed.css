@@ -108,7 +108,7 @@ tab-item.faviconized:hover {
 
 
 tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
-  background-color: transparent;
+  background-color: var(--browser-bg-active-for-header-image, var(--browser-bg-less-darker, transparent));
   --tab-highlighter-start: rgba(0, 20, 20, 0.015);
   --tab-highlighter-end: rgba(0, 20, 20, 0.2);
 }
