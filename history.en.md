@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.3 (2019.11.5)
    * Apply dark color scheme on Plain, Vertigo and Mixed, when the default color sheme of the platform is dark.
    * Apply dark color scheme for options in tab, group tab, and startup tab, when the default color sheme of the platform is dark.
    * Update color scheme of Plain, Plain Dark, Vertigo and Mixed as more friendly for Photon Design System and Firefox's default color scheme.
