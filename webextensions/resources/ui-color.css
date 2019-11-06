@@ -138,7 +138,20 @@ textarea,
 input,
 select {
   background: var(--in-content-box-background);
+  border: 1px solid var(--in-content-box-border-color-mixed);
   color: var(--in-content-text-color);
+}
+textarea:hover,
+input:hover,
+select:hover {
+  border-color: var(--in-content-border-hover-mixed);
+}
+textarea:focus,
+input:focus,
+select:focus {
+  border-color: var(--in-content-border-focus);
+  box-shadow: 0 0 0 1px var(--in-content-border-active),
+              0 0 0 4px var(--in-content-border-active-shadow);
 }
 
 @media (prefers-color-scheme: dark) {
