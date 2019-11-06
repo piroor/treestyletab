@@ -671,6 +671,9 @@ function onMessageExternal(message, sender) {
           button:   message.button || 0
         });
       })();
+
+    case TSTAPI.kOPEN_ALL_BOOKMARKS_WITH_STRUCTURE:
+      return Commands.openAllBookmarksWithStructure(message.id || message.bookmarkId);
   }
 }
 
