@@ -122,6 +122,8 @@ tab-item .burster {
     --toolbar-non-lwt-textcolor: #efefef;
     --toolbar-non-lwt-inverted-textcolor: black;
     --toolbar-non-lwt-border-color: #4a4a4d;
+
+    --tab-highlighted-highlight: white;
   }
 
   :root {
