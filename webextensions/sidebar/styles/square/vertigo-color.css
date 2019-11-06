@@ -116,8 +116,7 @@ tab-item .burster {
 
 
 @media (prefers-color-scheme: dark) {
-  :root,
-  :root[color-scheme="system-color"] {
+  :root:not([color-scheme="system-color"]) {
     --toolbar-non-lwt-bgcolor: #252526;
     --toolbar-non-lwt-textcolor: #efefef;
     --toolbar-non-lwt-inverted-textcolor: black;
@@ -126,13 +125,14 @@ tab-item .burster {
     --tab-highlighted-highlight: white;
   }
 
-  :root {
+  :root:not([color-scheme="system-color"]) {
     --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-less-lighter, #29363f /* #252526 + #041119 (switched R and B from #191104), (parseInt('252526', 16) + parseInt('041119', 16)).toString(16) */));
     --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, #314c5e /* #252526 + #0c2738 (switched R and B from #38270c), (parseInt('252526', 16) + parseInt('0c2738', 16)).toString(16) */));
     --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #293b4e /* #252526 + #041628 (switched R and B from #281600 + #00004), (parseInt('252526', 16) + parseInt('041628', 16)).toString(16) */));
   }
 
-  tab-item:not(.active):not(.bundled-active):not(.highlighted) {
+  :root:not([color-scheme="system-color"])
+    tab-item:not(.active):not(.bundled-active):not(.highlighted) {
     --throbber-color: var(--browser-loading-indicator, #afafaf);
   }
 }

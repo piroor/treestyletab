@@ -61,8 +61,7 @@
 
 @media (prefers-color-scheme: dark) {
   /* this color scheme is same to plain-color-dark */
-  :root,
-  :root[color-scheme="system-color"] {
+  :root:not([color-scheme="system-color"]) {
     --tab-highlighter: var(--dark-tab-line);
     --tab-highlighted-highlight: white;
     --tabbar-bg: var(--dark-frame);
