@@ -263,7 +263,7 @@
 
   "config_newTab_caption": { "message": "New Tabs Behavior" },
 
-  "config_newTabButton_caption": { "message": "\"New Tab\" button" },
+  "config_newTabButton_caption": { "message": "Special actions on the \"New Tab\" button" },
   "config_longPressOnNewTabButton_before":               { "message": "Long-press on the \"New Tab\" button to " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "specify where the new tab is opened in" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "choose container" },
@@ -272,7 +272,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in, when the button is pointed" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Show container selector button on the \"New Tab\" button, when the button is pointed" },
 
-  "config_newTabAction_caption": { "message": "Other \"New Blank Tab\" actions (toolbar buttons, keyboard shortcuts, etc.)" },
+  "config_newTabAction_caption": { "message": "Basic control for New Blank Tabs" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Open new blank tab as" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(no control)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "an independent tab" },

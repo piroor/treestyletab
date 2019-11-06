@@ -259,7 +259,7 @@
 
   "config_newTab_caption": { "message": "新しいタブの挙動" },
 
-  "config_newTabButton_caption": { "message": "「新しいタブ」ボタン" },
+  "config_newTabButton_caption": { "message": "「新しいタブ」ボタンの特殊操作" },
   "config_longPressOnNewTabButton_before":               { "message": "ボタンの長押しで" },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "関係を指定して新しいタブを開く" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "コンテナータブを開く" },
@@ -268,7 +268,7 @@
   "config_showNewTabActionSelector_label":               { "message": "ボタンをポイントした時に、関係を指定して新しいタブを開くためのボタンを表示する" },
   "config_showContextualIdentitiesSelector_label":       { "message": "ボタンをポイントした時に、コンテナータブを選択するためのボタンを表示する" },
 
-  "config_newTabAction_caption": { "message": "その他の操作で開かれた新しい空のタブ（ツールバーボタン、キーボードショートカットなど）" },
+  "config_newTabAction_caption": { "message": "新しい空のタブの基本的な取り扱い" },
   "config_autoAttachOnNewTabCommand_before": { "message": "新しい空のタブを" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "独立したタブとして" },

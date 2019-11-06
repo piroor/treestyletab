@@ -259,7 +259,7 @@
 
   "config_newTab_caption": { "message": "新分頁行為" },
 
-  "config_newTabButton_caption": { "message": "「開新分頁」按鈕" },
+  "config_newTabButton_caption__": { "message": "「開新分頁」按鈕" },
   "config_longPressOnNewTabButton_before":               { "message": "長按按鈕" },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "開新分頁於特定位置" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "開新容器分頁" },
@@ -268,7 +268,7 @@
   "config_showNewTabActionSelector_label":               { "message": "顯示特定位置開新分頁按鈕" },
   "config_showContextualIdentitiesSelector_label":       { "message": "顯示新容器分頁按鈕" },
 
-  "config_newTabAction_caption": { "message": "其他動作開啟的新分頁(工具列按鈕、鍵盤快捷鍵等)" },
+  "config_newTabAction_caption__": { "message": "其他動作開啟的新分頁(工具列按鈕、鍵盤快捷鍵等)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "開啟新分頁為" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(不控制)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "獨立分頁" },

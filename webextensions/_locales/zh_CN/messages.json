@@ -516,7 +516,7 @@
         "message": "新建标签页行为",
         "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
     },
-    "config_newTabButton_caption": {
+    "config_newTabButton_caption__": {
         "message": "“新标签页”按钮",
         "hash": "59ffaaeaad123e56d04093b0ac284848"
     },

@@ -263,7 +263,7 @@
 
   "config_newTab_caption": { "message": "Поведение новой вкладки" },
 
-  "config_newTabButton_caption": { "message": "Кнопка \"Новая вкладка\" " },
+  "config_newTabButton_caption__": { "message": "Кнопка \"Новая вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Длительное нажатие кнопки \"Новая вкладка\", чтобы " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "указать, где откроется новая вкладка" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "выбрать контейнер" },
@@ -272,7 +272,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Показывать кнопку выбора на кнопке \"Новая вкладка\", чтобы указать, где открывается новая вкладка" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Показывать кнопку выбора контейнера на кнопке \"Новая вкладка\" " },
 
-  "config_newTabAction_caption": { "message": "Другие действия с \"Новой вкладкой\" (кнопки панели, горячие клавиши и прочее)" },
+  "config_newTabAction_caption__": { "message": "Другие действия с \"Новой вкладкой\" (кнопки панели, горячие клавиши и прочее)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(не контролировать)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "отдельную вкладку" },

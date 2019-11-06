@@ -175,7 +175,7 @@
 
   "config_newTab_caption": { "message": "Поведінка нової вкладки" },
 
-  "config_newTabButton_caption": { "message": "кнопка \"Нова вкладка\" " },
+  "config_newTabButton_caption__": { "message": "кнопка \"Нова вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Тривале затискання кнопки \"Нова вкладка\", щоб " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "вказати, де відкриється нова вкладка" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "оберіть контейнер" },

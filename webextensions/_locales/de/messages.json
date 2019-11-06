@@ -256,7 +256,7 @@
 
   "config_newTab_caption": { "message": "Verhalten für neue Tabs" },
 
-  "config_newTabButton_caption": { "message": "\"Neuer Tab\" Schaltfläche" },
+  "config_newTabButton_caption__": { "message": "\"Neuer Tab\" Schaltfläche" },
   "config_longPressOnNewTabButton_before":               { "message": "Die Schaltfläche \"Neuer Tab\" lang gedrückt halten, um " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "auszuwählen, wo der neue Tab geöffnet werden soll" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "eine Tab-Umgebung auszuwählen" },
@@ -265,7 +265,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
 
-  "config_newTabAction_caption": { "message": "Andere \"Neuer leerer Tab\"-Aktionen (Symbolleisten-Schaltflächen, Tastenkombinationen usw.)" },
+  "config_newTabAction_caption__": { "message": "Andere \"Neuer leerer Tab\"-Aktionen (Symbolleisten-Schaltflächen, Tastenkombinationen usw.)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "eigenständigen Tab" },

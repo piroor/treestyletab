@@ -256,7 +256,7 @@
 
   "config_newTab_caption": { "message": "Comportement des nouveaux onglets" },
 
-  "config_newTabButton_caption": { "message": "Bouton « Nouvel onglet »" },
+  "config_newTabButton_caption__": { "message": "Bouton « Nouvel onglet »" },
   "config_longPressOnNewTabButton_before":               { "message": "Faire un appui long sur le bouton « Nouvel onglet » pour " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "spécifier où ouvrir le nouvel onglet" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "choisir le conteneur" },
@@ -265,7 +265,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Montrer le bouton du sélecteur pour spécifier où ouvrir le nouvel onglet, quand le bouton « Nouvel onglet » est survolé" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Montrer le bouton du sélecteur de conteneur, quand le bouton « Nouvel onglet » est survolé" },
 
-  "config_newTabAction_caption": { "message": "« Nouvel onglet vide » ouvert depuis autre part (boutons de barre d'outils, raccourcis clavier, etc.)" },
+  "config_newTabAction_caption__": { "message": "« Nouvel onglet vide » ouvert depuis autre part (boutons de barre d'outils, raccourcis clavier, etc.)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Ouvrir un nouvel onglet vide comme" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(aucun contrôle)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "un onglet indépendant" },
