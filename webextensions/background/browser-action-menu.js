@@ -285,7 +285,53 @@ const mItems = [
     title:    browser.i18n.getMessage('config_newTab_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('config_newTabButton_caption')
+        title: browser.i18n.getMessage('config_newTabAction_caption'),
+        enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            key:   'autoAttachOnNewTabCommand',
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title: browser.i18n.getMessage('config_inheritContextualIdentityToNewChildTab_label'),
+        key:   'inheritContextualIdentityToNewChildTab',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_newTabButton_caption'),
+        enabled: false
       },
       {
         title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_before'),
@@ -357,43 +403,8 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_newTabAction_caption'),
+        title: browser.i18n.getMessage('config_autoAttachWithURL_caption'),
         enabled: false
-      },
-      {
-        title:    indent() + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
-            key:   'autoAttachOnNewTabCommand',
-            value: Constants.kNEWTAB_DO_NOTHING,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
-            key:   'autoAttachOnNewTabCommand',
-            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
-            key:   'autoAttachOnNewTabCommand',
-            value: Constants.kNEWTAB_OPEN_AS_CHILD,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
-            key:   'autoAttachOnNewTabCommand',
-            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
-            key:   'autoAttachOnNewTabCommand',
-            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-            type:  'radio'
-          }
-        ]
       },
       {
         title:    indent() + browser.i18n.getMessage('config_autoAttachOnDuplicated_before'),
@@ -431,13 +442,7 @@ const mItems = [
         ]
       },
       {
-        title: browser.i18n.getMessage('config_inheritContextualIdentityToNewChildTab_label'),
-        key:   'inheritContextualIdentityToNewChildTab',
-        type:  'checkbox'
-      },
-      { type: 'separator' },
-      {
-        title:    browser.i18n.getMessage('config_sameSiteOrphan_caption'),
+        title:    indent() + browser.i18n.getMessage('config_sameSiteOrphan_caption'),
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
@@ -478,7 +483,7 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_fromExternal_caption'),
+        title:    indent() + browser.i18n.getMessage('config_fromExternal_caption'),
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after'),
