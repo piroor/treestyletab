@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Apply dark color scheme for options in `about:addons`, when the default color sheme of the platform is dark.
+   * Rearrange and relabel options for general New Tab actions and special actions for more understandability.
+   * Show attention color correctly on Vertigo and Mixed with the Dark color scheme. (regression on 3.2.3)
+   * Show default favicons in group tabs with the text color. (regression on 3.2.3)
+   * Apply system colors and Firefox theme correctly even if the default color scheme of the platform is dark on Linux. (regression on 3.2.3)
+   * Add a new API command [`open-all-bookmarks-with-structure`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-bookmarks-with-structure) to open bookmarks in the specified folder with tree structure.
  - 3.2.3 (2019.11.5)
    * Apply dark color scheme on Plain, Vertigo and Mixed, when the default color sheme of the platform is dark.
    * Apply dark color scheme for options in tab, group tab, and startup tab, when the default color sheme of the platform is dark.
