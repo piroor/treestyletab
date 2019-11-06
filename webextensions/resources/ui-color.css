@@ -138,7 +138,7 @@
 textarea,
 input {
   background: var(--in-content-box-background);
-  border: 1px solid var(--in-content-box-border-color-mixed);
+  border: thin solid var(--in-content-box-border-color-mixed);
   color: var(--in-content-text-color);
 }
 textarea:hover,
@@ -181,11 +181,11 @@ option:hover {
 
 fieldset,
 hr {
-  border: 1px solid var(--in-content-box-border-color-mixed);
+  border: thin solid var(--in-content-box-border-color-mixed);
 }
 
 hr {
-  border-width: 1px 0 0 0;
+  border-width: thin 0 0 0;
 }
 
 @media (prefers-color-scheme: dark) {
