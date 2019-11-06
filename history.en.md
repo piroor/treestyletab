@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.4 (2019.11.7)
    * Apply dark color scheme for options in `about:addons`, when the default color sheme of the platform is dark.
    * Rearrange and relabel options for general New Tab actions and special actions for more understandability.
    * Show attention color correctly on Vertigo and Mixed with the Dark color scheme. (regression on 3.2.3)
