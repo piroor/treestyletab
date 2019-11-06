@@ -6,6 +6,20 @@
 
 @import url(/resources/ui-color.css);
 
+/*
+body {
+  background: var(--in-content-box-background);
+  color: var(--text-color);
+}
+*/
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--in-content-box-background);
+    color: var(--text-color);
+  }
+}
+
 body.independent {
   background: var(--bg-color);
   box-sizing: border-box;
