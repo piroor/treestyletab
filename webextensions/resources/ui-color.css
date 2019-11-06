@@ -184,6 +184,10 @@ hr {
   border: 1px solid var(--in-content-box-border-color-mixed);
 }
 
+hr {
+  border-width: 1px 0 0 0;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     /* https://hg.mozilla.org/mozilla-central/raw-file/tip/toolkit/themes/shared/in-content/common.inc.css */
