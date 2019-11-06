@@ -18,6 +18,7 @@
   --in-content-box-border-color-mixed: rgb(calc((249 * 0.7) + (12 * 0.3)), calc((249 * 0.7) + (12 * 0.3)), calc((250 * 0.7) + (13 * 0.3)));
   --in-content-box-info-background: var(--grey-20);
   --in-content-item-hover: rgba(69, 161, 255, 0.2); /* blue 40 a20 */
+  --in-content-item-hover-mixed: rgb(calc((249 * 0.8) + (69 * 0.2)), calc((249 * 0.8) + (161 * 0.2)), calc((250 * 0.8) + (255 * 0.2)));
   --in-content-item-selected: var(--blue-50);
   --in-content-border-highlight: var(--blue-50);
   --in-content-border-focus: var(--blue-50);
@@ -135,23 +136,47 @@
 }
 
 textarea,
-input,
-select {
+input {
   background: var(--in-content-box-background);
   border: 1px solid var(--in-content-box-border-color-mixed);
   color: var(--in-content-text-color);
 }
 textarea:hover,
-input:hover,
-select:hover {
+input:hover {
   border-color: var(--in-content-border-hover-mixed);
 }
 textarea:focus,
-input:focus,
-select:focus {
+input:focus {
   border-color: var(--in-content-border-focus);
   box-shadow: 0 0 0 1px var(--in-content-border-active),
               0 0 0 4px var(--in-content-border-active-shadow);
+}
+button,
+select {
+  background: var(--in-content-button-background-mixed);
+  border: 0 none transparent;
+  color: var(--in-content-text-color);
+}
+button:hover,
+select:hover {
+  background: var(--in-content-button-background-hover-mixed);
+}
+button:focus,
+select:focus {
+  background: var(--in-content-button-background-active-mixed);
+  box-shadow: 0 0 0 1px var(--in-content-border-active),
+              0 0 0 4px var(--in-content-border-active-shadow);
+}
+option {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+option:active,
+option:focus {
+  background: var(--in-content-item-selected);
+}
+option:hover {
+  background: var(--in-content-item-hover-mixed);
 }
 
 @media (prefers-color-scheme: dark) {

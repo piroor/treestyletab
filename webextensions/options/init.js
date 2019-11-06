@@ -405,15 +405,6 @@ window.addEventListener('DOMContentLoaded', () => {
       onConfigChanged('closeParentBehaviorMode');
     });
 
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1465256
-    for (const element of document.querySelectorAll('button, textarea, select')) {
-      element.classList.add('browser-style');
-    }
-    for (const element of document.querySelectorAll('label, input')) {
-      if (element.parentNode.localName != 'label')
-        element.parentNode.classList.add('browser-style');
-    }
-
     if (focusedItem)
       focusedItem.scrollIntoView();
   });
