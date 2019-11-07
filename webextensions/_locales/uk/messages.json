@@ -37,9 +37,13 @@
 
   "tabbar_newTabAction_tooltip":           { "message": "Відкрити нову вкладку як…" },
   "tabbar_newTabAction_independent_label": { "message": "Окрему вкладку" },
+  "tabbar_newTabAction_independent_command": { "message": "Окрему вкладку" },
   "tabbar_newTabAction_child_label":       { "message": "Дочірню вкладку" },
+  "tabbar_newTabAction_child_command":       { "message": "Дочірню вкладку" },
   "tabbar_newTabAction_sibling_label":     { "message": "Однорівневу вкладку" },
+  "tabbar_newTabAction_sibling_command":     { "message": "Однорівневу вкладку" },
   "tabbar_newTabAction_nextSibling_label": { "message": "Наступну однорівневу вкладку" },
+  "tabbar_newTabAction_nextSibling_command": { "message": "Наступну однорівневу вкладку" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Нова вкладка контейнера" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "За замовч." },
@@ -118,13 +122,21 @@
 
 
   "context_reloadTree_label": { "message": "Перезавантажити це дерево" },
+  "context_reloadTree_command": { "message": "Перезавантажити це дерево" },
   "context_reloadDescendants_label": { "message": "Перезавантажити дочірні" },
+  "context_reloadDescendants_command": { "message": "Перезавантажити дочірні" },
   "context_closeTree_label": { "message": "Закрити це дерево" },
+  "context_closeTree_command": { "message": "Закрити це дерево" },
   "context_closeDescendants_label": { "message": "Закрити дочірні" },
+  "context_closeDescendants_command": { "message": "Закрити дочірні" },
   "context_closeOthers_label": { "message": "Закрити інші вкладки, крім цього дерева" },
+  "context_closeOthers_command": { "message": "Закрити інші вкладки, крім цього дерева" },
   "context_collapseAll_label": { "message": "Згорнути всі" },
+  "context_collapseAll_command": { "message": "Згорнути всі" },
   "context_expandAll_label": { "message": "Розгорнути всі" },
+  "context_expandAll_command": { "message": "Розгорнути всі" },
   "context_bookmarkTree_label": { "message": "Додати це дерево до закладок…" },
+  "context_bookmarkTree_command": { "message": "Додати це дерево до закладок…" },
 
 
   "config_appearance_caption": { "message": "Вигляд" },

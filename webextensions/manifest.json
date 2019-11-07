@@ -81,46 +81,46 @@
       "description": "__MSG_sidebarToggleDescription__ (F1)"
     },
     "reloadTree": {
-      "description": "__MSG_context_reloadTree_label__"
+      "description": "__MSG_context_reloadTree_command__"
     },
     "reloadDescendants": {
-      "description": "__MSG_context_reloadDescendants_label__"
+      "description": "__MSG_context_reloadDescendants_command__"
     },
     "closeTree": {
-      "description": "__MSG_context_closeTree_label__"
+      "description": "__MSG_context_closeTree_command__"
     },
     "closeDescendants": {
-      "description": "__MSG_context_closeDescendants_label__"
+      "description": "__MSG_context_closeDescendants_command__"
     },
     "closeOthers": {
-      "description": "__MSG_context_closeOthers_label__"
+      "description": "__MSG_context_closeOthers_command__"
     },
     "collapseTree": {
-      "description": "__MSG_context_collapseTree_label__"
+      "description": "__MSG_context_collapseTree_command__"
     },
     "collapseAll": {
-      "description": "__MSG_context_collapseAll_label__"
+      "description": "__MSG_context_collapseAll_command__"
     },
     "expandTree": {
-      "description": "__MSG_context_expandTree_label__"
+      "description": "__MSG_context_expandTree_command__"
     },
     "expandAll": {
-      "description": "__MSG_context_expandAll_label__"
+      "description": "__MSG_context_expandAll_command__"
     },
     "bookmarkTree": {
-      "description": "__MSG_context_bookmarkTree_label__"
+      "description": "__MSG_context_bookmarkTree_command__"
     },
     "newIndependentTab": {
-      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_independent_label__"
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_independent_command__"
     },
     "newChildTab": {
-      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_child_label__"
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_child_command__"
     },
     "newSiblingTab": {
-      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_sibling_label__"
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_sibling_command__"
     },
     "newNextSiblingTab": {
-      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_nextSibling_label__"
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_nextSibling_command__"
     },
     "newContainerTab": {
       "description": "__MSG_tabbar_newTabWithContexualIdentity_tooltip__"

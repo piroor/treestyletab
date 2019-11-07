@@ -135,17 +135,33 @@
         "message": "独立标签页(&I)",
         "hash": "ca4bd2b91e4654e46c36a6ac97117a41"
     },
+    "tabbar_newTabAction_independent_command": {
+        "message": "独立标签页",
+        "hash": ""
+    },
     "tabbar_newTabAction_child_label": {
         "message": "子标签页(&C)",
         "hash": "7e09eb4867cc73c54adaf0616cf2cc09"
+    },
+    "tabbar_newTabAction_child_command": {
+        "message": "子标签页",
+        "hash": ""
     },
     "tabbar_newTabAction_sibling_label": {
         "message": "同级标签页(&S)",
         "hash": "9a62ae35cd5efe267ad44685ffc0dd8c"
     },
+    "tabbar_newTabAction_sibling_command": {
+        "message": "同级标签页",
+        "hash": ""
+    },
     "tabbar_newTabAction_nextSibling_label": {
         "message": "同级标签页（下一项）(&N)",
         "hash": "fd32d2228b14e2742ef6fd21f643416a"
+    },
+    "tabbar_newTabAction_nextSibling_command": {
+        "message": "同级标签页（下一项）",
+        "hash": ""
     },
     "tabbar_newTabWithContexualIdentity_tooltip": {
         "message": "新建身份标签页",
@@ -332,45 +348,89 @@
         "message": "重新载入此树(&R)",
         "hash": "bf043d3ae4b48903d9d6e067bdf04963"
     },
+    "context_reloadTree_command": {
+        "message": "重新载入此树",
+        "hash": ""
+    },
     "context_reloadDescendants_label": {
         "message": "重新载入子项(&E)",
         "hash": "e541119f39ec9f6294ba83c996bc07ed"
+    },
+    "context_reloadDescendants_command": {
+        "message": "重新载入子项",
+        "hash": ""
     },
     "context_closeTree_label": {
         "message": "关闭此树(&C)",
         "hash": "80429baecee5e9ff1db23f3e19d6fc26"
     },
+    "context_closeTree_command": {
+        "message": "关闭此树",
+        "hash": ""
+    },
     "context_closeDescendants_label": {
         "message": "关闭子项(&L)",
         "hash": "1067ddc54adc2501e74a65ecddf98ec7"
+    },
+    "context_closeDescendants_command": {
+        "message": "关闭子项",
+        "hash": ""
     },
     "context_closeOthers_label": {
         "message": "关闭其他标签页（不含此树）(&O)",
         "hash": "430ee315b4b7d5f7b3ef7043574ecb5c"
     },
+    "context_closeOthers_command": {
+        "message": "关闭其他标签页（不含此树）",
+        "hash": ""
+    },
     "context_collapseTree_label": {
         "message": "折叠此树",
         "hash": "ec430e447b0faaf9c19f29c5a4aeca0d"
+    },
+    "context_collapseTree_command": {
+        "message": "折叠此树",
+        "hash": ""
     },
     "context_collapseAll_label": {
         "message": "全部折叠(&P)",
         "hash": "a4afcd42a5e734361d983f6f07b785fc"
     },
+    "context_collapseAll_command": {
+        "message": "全部折叠",
+        "hash": ""
+    },
     "context_expandTree_label": {
         "message": "展开此树(&A)",
         "hash": "d304de6771a35b0a1a8427d21ae6cd73"
+    },
+    "context_expandTree_command": {
+        "message": "展开此树",
+        "hash": ""
     },
     "context_expandAll_label": {
         "message": "全部展开(&X)",
         "hash": "f7c1013fa700568a2d6d13707c8aa179"
     },
+    "context_expandAll_command": {
+        "message": "全部展开",
+        "hash": ""
+    },
     "context_bookmarkTree_label": {
         "message": "将此树加入书签(&B)…",
         "hash": "3ebdc5bea63419b433495f0e2468a70f"
     },
+    "context_bookmarkTree_command": {
+        "message": "将此树加入书签…",
+        "hash": ""
+    },
     "context_groupTabs_label": {
         "message": "创建新组(&G)",
         "hash": "e21f9144d4903adf990ecfe83b197bb0"
+    },
+    "context_groupTabs_command": {
+        "message": "创建新组",
+        "hash": ""
     },
     "config_appearance_caption": {
         "message": "外观",
