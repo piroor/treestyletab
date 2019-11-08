@@ -48,6 +48,8 @@
   --throbber-color: var(--browser-loading-indicator, var(--browser-bg-lightest, var(--tab-highlighted-glow)));
 
   --multiselected-color-opacity: 0.25;
+
+  --dropmarker-color: var(--toolbar-non-lwt-textcolor);
 }
 
 :root,
