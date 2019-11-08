@@ -82,6 +82,15 @@
 
     --tab-highlighter-inactive: var(--grey-10-a20);
   }
+
+  /* Firefox applies dark colors to scrollbars in its in-content UI, when a
+     Dark theme is applied by the platform. On the other hand, dark colors
+     aren't applied to scrollbars in the sidebar also by default. Thus we need
+     to imitate dark scrollbar manually. See also:
+     https://github.com/piroor/treestyletab/issues/2373 */
+  #tabbar {
+    scrollbar-color: var(--in-content-button-background-active-mixed) var(--in-content-box-background);
+  }
 }
 
 tab-item,
