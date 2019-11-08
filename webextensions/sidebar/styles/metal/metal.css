@@ -7,7 +7,7 @@
 /* tabs */
 
 :root {
-  --dropmarker-color: white;
+  --tab-dropmarker: white;
   --throbber-color: white;
   --throbber-shadow-color: rgba(0, 0, 0, 0.45);
   --tab-like-surface: #9d9d9d;

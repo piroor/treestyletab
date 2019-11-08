@@ -22,8 +22,6 @@
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
-
-  --dropmarker-color: var(--toolbar-non-lwt-textcolor);
 }
 
 :root,

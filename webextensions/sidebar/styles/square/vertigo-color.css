@@ -48,8 +48,6 @@
   --throbber-color: var(--browser-loading-indicator, var(--browser-bg-lightest, var(--tab-highlighted-glow)));
 
   --multiselected-color-opacity: 0.25;
-
-  --dropmarker-color: var(--toolbar-non-lwt-textcolor);
 }
 
 :root,
@@ -125,6 +123,7 @@ tab-item .burster {
     --toolbar-non-lwt-border-color: #4a4a4d;
 
     --tab-highlighted-highlight: white;
+    --tab-dropmarker: var(--toolbar-non-lwt-textcolor);
   }
 
   :root:not([color-scheme="system-color"]) {
