@@ -2,7 +2,7 @@
 
 ## Translation on a web service
 
-The [Web Extension Translator](https://lusito.github.io/web-ext-translator/) helps you. Steps:
+The [Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
 
 1. Click the "Load from GitHub" button (an octcat icon).
 2. Input an URL `https://github.com/piroor/treestyletab` in to the field and click the "OK" button.
