@@ -4,6 +4,7 @@
    * Show drop marker with visible color even when a dark color scheme is applied.
    * Show the scrollbar in the sidebar with dark color when a dark color scheme is applied on some themes: Plain, (Plain Dark,) Vertigo and Mixed.
    * Don't show accesskeys for command names on the keyboard shortcut manager of Firefox itself.
+   * Update `de` locale by SammysHP. Thanks!
  - 3.2.4 (2019.11.7)
    * Apply dark color scheme for options in `about:addons`, when the default color sheme of the platform is dark.
    * Rearrange and relabel options for general New Tab actions and special actions for more understandability.
