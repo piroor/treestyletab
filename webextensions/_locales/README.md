@@ -28,7 +28,7 @@ The [Web Extension Translator](https://lusito.github.io/web-ext-translator/) wil
 There are some helper utilities for translations.
 
  * [ChromeExtensionI18nHelper for Sublime Text plug-in](https://github.com/Harurow/sublime_chromeextensioni18nhelper): it is designed for Google Chrome extensions, but it is also available WebExtensions-based Firefox addons.
- * [web-ext-translator](https://www.npmjs.com/package/web-ext-translator): a Java-based editor for translators.
+ * [web-ext-translator](https://www.npmjs.com/package/web-ext-translator): a Java-based web editor for translator UI. Offline version of the [Web Extension Translator](https://lusito.github.io/web-ext-translator/).
 
 If you want to know changes in the main `en` locale, you can compare the latest code with any specific version. For example, changes from the version 3.2.0 is: [https://github.com/piroor/treestyletab/compare/3.2.0...master](https://github.com/piroor/treestyletab/compare/3.2.0...master)
 
