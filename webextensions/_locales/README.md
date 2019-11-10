@@ -17,7 +17,7 @@ The [Web Extension Translator](https://lusito.github.io/web-ext-translator/) wil
    For example [`webextensions/_locales/ja/messages.json`](https://github.com/piroor/treestyletab/blob/master/webextensions/_locales/ja/messages.json) for Japanese language.
 10. Click the "Edit" button (an pencil icon). Then you'll see an edit form for the file.
 11. Select all, delete it, and paste your translation from the clipboard to the form.
-12. Remove needless prefix `\`\`\`json` and suffix `\`\`\``.
+12. Remove needless prefix and suffix: `'''json` and `'''` (three backquotes actually).
 13. Input a commit message like `Update Japanese translation` into the input field below the heading "Propose file change".
 14. Click the "Propose file change" button. Then you'll see difference of the change.
 15. Click the "Create pull request" button. Then you'll see a form to create a new pull request.
