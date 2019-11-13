@@ -226,7 +226,7 @@ export async function init() {
       window.addEventListener('resize', onResize);
       mTabBar.addEventListener('transitionend', onTransisionEnd);
 
-        browser.theme.onUpdated.addListener(onBrowserThemeChanged);
+      browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
       browser.runtime.onMessage.addListener(onMessage);
 
@@ -857,7 +857,7 @@ function onConfigChange(changedKey) {
       break;
 
     case 'applyBrowserTheme':
-        browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
+      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       break;
 
     case 'userStyleRules':
