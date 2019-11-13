@@ -226,7 +226,6 @@ export async function init() {
       window.addEventListener('resize', onResize);
       mTabBar.addEventListener('transitionend', onTransisionEnd);
 
-      if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
       browser.runtime.onMessage.addListener(onMessage);
@@ -858,10 +857,7 @@ function onConfigChange(changedKey) {
       break;
 
     case 'applyBrowserTheme':
-      if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
-      else
-        applyBrowserTheme();
       break;
 
     case 'userStyleRules':

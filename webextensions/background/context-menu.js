@@ -118,7 +118,6 @@ browser.menus.create({
   contexts: ['bookmark']
 });
 
-// for Firefox 63 and later
 let mInitialized = false;
 
 const mSeparator = {
