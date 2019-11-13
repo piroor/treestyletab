@@ -228,6 +228,13 @@ export async function init() {
 
       browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
+      // We need to re-calculate mixed colors when the system color scheme is changed.
+      // See also: https://github.com/piroor/treestyletab/issues/2314
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(async _event => {
+        const theme = await browser.theme.getCurrent(mTargetWindow);
+        applyBrowserTheme(theme);
+      });
+
       browser.runtime.onMessage.addListener(onMessage);
 
       onBuilt.dispatch();
