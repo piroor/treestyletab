@@ -204,8 +204,8 @@
   "context_closeTree_command": { "message": "Закрыть это дерево" },
   "context_closeDescendants_label": { "message": "Закрыть дочерние" },
   "context_closeDescendants_command": { "message": "Закрыть дочерние" },
-  "context_closeOthers_label": { "message": "Закрыть другие вкладки, кроме этого дерева" },
-  "context_closeOthers_command": { "message": "Закрыть другие вкладки, кроме этого дерева" },
+  "context_closeOthers_label": { "message": "Закрыть все, кроме этого дерева" },
+  "context_closeOthers_command": { "message": "Закрыть все, кроме этого дерева" },
   "context_collapseTree_label": { "message": "Свернуть это дерево" },
   "context_collapseTree_command": { "message": "Свернуть это дерево" },
   "context_collapseAll_label": { "message": "Свернуть все" },
@@ -499,44 +499,44 @@
   "config_terms_delimiter": { "message": " " },
 
 
-  "tabContextMenu_reload_label":      { "message": "Обновить вкладку" },
-  "tabContextMenu_mute_label":        { "message": "Выключить звук" },
-  "tabContextMenu_unmute_label":      { "message": "Включить звук" },
+  "tabContextMenu_reload_label":      { "message": "&Обновить вкладку" },
+  "tabContextMenu_mute_label":        { "message": "Выключить зв&ук" },
+  "tabContextMenu_unmute_label":      { "message": "Включить зв&ук" },
 
-  "tabContextMenu_pin_label":         { "message": "Закрепить вкладку" },
-  "tabContextMenu_unpin_label":       { "message": "Открепить вкладку" },
-  "tabContextMenu_duplicate_label":   { "message": "Дублировать вкладку" },
-  "tabContextMenu_selectAllTabs_label": { "message": "Выбрать все вкладки" },
-  "tabContextMenu_bookmark_label":    { "message": "Добавить вкладку в закладки" },
-  "tabContextMenu_reopenInContainer_label":             { "message": "Переоткрыть в контейнере" },
-  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Переоткрыть без контейнера" },
-  "tabContextMenu_moveTab_label":     { "message": "Переместить вкладку" },
-  "tabContextMenu_moveTabToStart_label": { "message": "Переместить в начало" },
-  "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в конец" },
-  "tabContextMenu_tearOff_label":     { "message": "Переместить в новое окно" },
+  "tabContextMenu_pin_label":         { "message": "Закрепи&ть вкладку" },
+  "tabContextMenu_unpin_label":       { "message": "Открепи&ть вкладку" },
+  "tabContextMenu_duplicate_label":   { "message": "&Дублировать вкладку" },
+  "tabContextMenu_selectAllTabs_label": { "message": "&Выбрать все вкладки" },
+  "tabContextMenu_bookmark_label":    { "message": "Добавить вкладку в зак&ладки" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "Переоткрыть в &контейнере" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Переоткрыть &без контейнера" },
+  "tabContextMenu_moveTab_label":     { "message": "П&ереместить вкладку" },
+  "tabContextMenu_moveTabToStart_label": { "message": "Переместить в &начало" },
+  "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в &конец" },
+  "tabContextMenu_tearOff_label":        { "message": "Переместить в новое &окно" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкладки" },
+  "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкл&адки" },
   "tabContextMenu_bookmarkAll_label": { "message": "Добавить все в закладки…" },
 
-  "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки снизу" },
-  "tabContextMenu_closeOther_label":  { "message": "Закрыть другие вкладки" },
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки &снизу" },
+  "tabContextMenu_closeOther_label":  { "message": "&Закрыть другие вкладки" },
 
-  "tabContextMenu_undoClose_label":   { "message": "Восстановить закрытую вкладку" },
-  "tabContextMenu_close_label":       { "message": "Закрыть вкладку" },
+  "tabContextMenu_undoClose_label":   { "message": "Восстанов&ить закрытую вкладку" },
+  "tabContextMenu_close_label":       { "message": "Закр&ыть вкладку" },
 
-  "tabContextMenu_reload_label_multiselected":      { "message": "Обновить выбранные вкладки" },
-  "tabContextMenu_mute_label_multiselected":        { "message": "Выключить звук на выбранных" },
-  "tabContextMenu_unmute_label_multiselected":      { "message": "Включить звук на выбранных" },
+  "tabContextMenu_reload_label_multiselected":      { "message": "&Обновить выбранные вкладки" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "Выключить зв&ук на выбранных" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Включить зв&ук на выбранных" },
 
-  "tabContextMenu_pin_label_multiselected":         { "message": "Закрепить вкладки" },
-  "tabContextMenu_unpin_label_multiselected":       { "message": "Открепить вкладки" },
+  "tabContextMenu_pin_label_multiselected":         { "message": "Закрепи&ть вкладки" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "Открепи&ть вкладки" },
 
-  "tabContextMenu_duplicate_label_multiselected":   { "message": "Дублировать вкладки" },
+  "tabContextMenu_duplicate_label_multiselected":   { "message": "&Дублировать вкладки" },
 
-  "tabContextMenu_moveTab_label_multiselected": { "message": "Переместить вкладки" },
+  "tabContextMenu_moveTab_label_multiselected": { "message": "П&ереместить вкладки" },
 
-  "tabContextMenu_bookmark_label_multiselected": { "message": "Добавить вкладки в закладки…" },
-  "tabContextMenu_bookmarkSelected_label":       { "message": "Добавить выбранные в закладки…" },
+  "tabContextMenu_bookmark_label_multiselected": { "message": "Добавить вкладки в зак&ладки…" },
+  "tabContextMenu_bookmarkSelected_label":       { "message": "Добавить выб&ранные в закладки…" },
 
-  "tabContextMenu_close_label_multiselected":       { "message": "Закрыть выбраные вкладки" }
+  "tabContextMenu_close_label_multiselected":       { "message": "Закрыть в&ыбранные вкладки" }
 }
