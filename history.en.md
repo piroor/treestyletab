@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.5 (2019.11.14)
    * Show drop marker with visible color even when a dark color scheme is applied.
    * Show the scrollbar in the sidebar with dark color when a dark color scheme is applied on some themes: Plain, (Plain Dark,) Vertigo and Mixed.
    * Don't show accesskeys for command names on the keyboard shortcut manager of Firefox itself.
