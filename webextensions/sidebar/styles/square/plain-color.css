@@ -61,7 +61,7 @@
 
 @media (prefers-color-scheme: dark) {
   /* this color scheme is same to plain-color-dark */
-  :root:not([color-scheme="system-color"]) {
+  :root.apply-browser-theme:not([color-scheme="system-color"]) {
     --tab-highlighter: var(--dark-tab-line);
     --tab-highlighted-highlight: white;
     --tabbar-bg: var(--dark-frame);
@@ -86,7 +86,7 @@
      aren't applied to scrollbars in the sidebar also by default. Thus we need
      to imitate dark scrollbar manually. See also:
      https://github.com/piroor/treestyletab/issues/2373 */
-  #tabbar {
+  :root.apply-browser-theme #tabbar {
     scrollbar-color: var(--in-content-button-background-active-mixed) var(--in-content-box-background);
   }
 }

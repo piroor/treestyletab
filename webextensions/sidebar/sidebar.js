@@ -864,6 +864,7 @@ function onConfigChange(changedKey) {
       break;
 
     case 'applyBrowserTheme':
+      document.documentElement.classList.toggle('apply-browser-theme', configs.applyBrowserTheme);
       browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       break;
 
