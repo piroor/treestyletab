@@ -4,7 +4,10 @@
    * Show drop marker with visible color even when a dark color scheme is applied.
    * Show the scrollbar in the sidebar with dark color when a dark color scheme is applied on some themes: Plain, (Plain Dark,) Vertigo and Mixed.
    * Don't show accesskeys for command names on the keyboard shortcut manager of Firefox itself.
+   * Re-calculate some colors dyanmically when the system color scheme is changed.
+   * Return a tab object of the opened group tab for an API call of the [`group-tab` command](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#create-new-group-from-given-tabs) correctly.
    * Update `de` locale by SammysHP. Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.2.4 (2019.11.7)
    * Apply dark color scheme for options in `about:addons`, when the default color sheme of the platform is dark.
    * Rearrange and relabel options for general New Tab actions and special actions for more understandability.
