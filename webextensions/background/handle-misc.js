@@ -570,7 +570,11 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return TabsGroup.groupTabs(Array.from(tabs), { broadcast: true });
+        const tab = await TabsGroup.groupTabs(Array.from(tabs), { broadcast: true });
+        if (!tab)
+          return null;
+        const treeItem = new TSTAPI.TreeItem(tab);
+        return treeItem.exportFor(sender.id);
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
