@@ -111,3 +111,54 @@ export async function testTryToOpenUnpinnedTabBeforePinnedTab() {
   is(1, newTabs.length, 'a new tab must be opened');
   is(2, newTabs[0].index, 'a new tab must be placed after pinned tabs');
 }
+
+export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCreating() {
+  let tabs = await Utils.createTabs({
+    A: { index: 1, active: true },
+    B: { index: 2 }
+  }, { windowId: win.id });
+
+  let onCreated;
+  const promisedTabReopenedByAnotherAddon = new Promise((resolve, _reject) => {
+    onCreated = async tab => {
+      browser.tabs.onCreated.removeListener(onCreated);
+      // wait until the tab is attached by TST
+      while (true) {
+        tab = await browser.tabs.get(tab.id);
+        if (tab.openerTabId)
+          break;
+        await wait(1);
+      }
+      // one more wait, to simulate behavior by another addon
+      await wait(1);
+      const reopeningTab = browser.tabs.create({
+        url:   'about:blank?reopened',
+        index: 2
+      });
+      browser.tabs.remove(tab.id);
+      resolve(await reopeningTab);
+    };
+  });
+  browser.tabs.onCreated.addListener(onCreated);
+  browser.tabs.create({
+    url:         'about:blank?newchild',
+    openerTabId: tabs.A.id,
+    index:       2
+  });
+
+  const reopenedTab = await promisedTabReopenedByAnotherAddon;
+
+  // wait until TST's operation is finished
+  await wait(1000);
+  tabs = await Utils.refreshTabs({
+    A: tabs.A,
+    B: tabs.B,
+    reopened: reopenedTab
+  });
+  is([
+    `${tabs.A.id}`,
+    `${tabs.A.id} => ${tabs.reopened.id}`,
+    `${tabs.B.id}`,
+  ], Utils.treeStructure([tabs.A, tabs.reopened, tabs.B]),
+     'reopened tab must be attached from its position');
+}
