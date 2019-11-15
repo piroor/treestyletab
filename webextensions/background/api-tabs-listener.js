@@ -375,6 +375,23 @@ async function onNewTabTracked(tab, info) {
 
   log(`onNewTabTracked(${dumpTab(tab)}): start to create tab element`);
 
+  // Cached tree information may be expired when there are multiple new tabs
+  // opened at just same time and some of others are attached on listeners of
+  // "onCreating" and other points. Thus we need to refresh cached information
+  // dynamically.
+  // See also: https://github.com/piroor/treestyletab/issues/2419
+  let treeForActionDetection;
+  const onTreeModified = (_child, _info) => {
+    if (!treeForActionDetection)
+      return;
+    treeForActionDetection = Tree.snapshotForActionDetection(tab);
+    log('Tree modification is detected while waiting. Cached tree for action detection is updated: ', treeForActionDetection);
+  };
+  // We should refresh ceched information only when tabs are creaetd and
+  // attached, because the cacheed information was originally introduced for
+  // failsafe around problems from tabs closed while waiting.
+  Tree.onAttached.addListener(onTreeModified);
+
   try {
     tab = Tab.init(tab, { inBackground: false });
 
@@ -417,7 +434,7 @@ async function onNewTabTracked(tab, info) {
     // Tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
     // This operation takes too much time so it should be skipped if unnecessary.
     // See also: https://github.com/piroor/treestyletab/issues/2278#issuecomment-521534290
-    const treeForActionDetection = maybeNeedToFixupTree ? Tree.snapshotForActionDetection(tab) : null;
+    treeForActionDetection = maybeNeedToFixupTree ? Tree.snapshotForActionDetection(tab) : null;
 
     if (positionedBySelf)
       window.toBeOpenedTabsWithPositions--;
@@ -461,6 +478,7 @@ async function onNewTabTracked(tab, info) {
       onCompleted(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
+      Tree.onAttached.removeListener(onTreeModified);
       return;
     }
 
@@ -502,6 +520,7 @@ async function onNewTabTracked(tab, info) {
       onCompleted(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
+      Tree.onAttached.removeListener(onTreeModified);
       return;
     }
 
@@ -587,12 +606,15 @@ async function onNewTabTracked(tab, info) {
     if (tab.$TST.unsafeNextTab)
       tab.$TST.unsafeNextTab.$TST.memorizeNeighbors();
 
+    Tree.onAttached.removeListener(onTreeModified);
+
     return tab;
   }
   catch(e) {
     console.log(e, e.stack);
     onCompleted();
     tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
+    Tree.onAttached.removeListener(onTreeModified);
   }
 }
 

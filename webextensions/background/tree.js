@@ -125,6 +125,7 @@ export async function attachTabTo(child, parent, options = {}) {
     insertAfter:  options.insertAfter
   });
 
+  if (!options.synchronously)
   await Tab.waitUntilTrackedAll(child.windowId);
 
   parent = TabsStore.ensureLivingTab(parent);
@@ -165,9 +166,8 @@ export async function attachTabTo(child, parent, options = {}) {
     // "children" setter updates the child itself automatically.
 
     const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
-    if (!options.dontUpdateIndent) {
-      updateTabsIndent(child, parentLevel + 1);
-    }
+    if (!options.dontUpdateIndent)
+      updateTabsIndent(child, parentLevel + 1, { justNow: options.synchronously });
 
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
@@ -581,7 +581,7 @@ export async function behaveAutoAttachedTabs(tabs, options = {}) {
   }
 }
 
-function updateTabsIndent(tabs, level = undefined) {
+function updateTabsIndent(tabs, level = undefined, options = {}) {
   if (!tabs)
     return;
 
@@ -599,31 +599,38 @@ function updateTabsIndent(tabs, level = undefined) {
     if (!item || item.pinned)
       continue;
 
-    updateTabIndent(item, level);
+    updateTabIndent(item, level, options);
   }
 }
 
 // this is called multiple times on a session restoration, so this should be throttled for better performance
-function updateTabIndent(tab, level = undefined) {
+function updateTabIndent(tab, level = undefined, options = {}) {
   let timer = updateTabIndent.delayed.get(tab.id);
   if (timer)
     clearTimeout(timer);
+  if (options.justNow) {
+    return updateTabIndentNow(tab, level, options);
+  }
   timer = setTimeout(() => {
     updateTabIndent.delayed.delete(tab.id);
+    updateTabIndentNow(tab, level);
+  }, 100);
+  updateTabIndent.delayed.set(tab.id, timer);
+}
+updateTabIndent.delayed = new Map();
+
+function updateTabIndentNow(tab, level = undefined, options = {}) {
     if (!TabsStore.ensureLivingTab(tab))
       return;
     tab.$TST.setAttribute(Constants.kLEVEL, level);
-    updateTabsIndent(tab.$TST.children, level + 1);
+    updateTabsIndent(tab.$TST.children, level + 1, options);
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
       windowId: tab.windowId,
       tabId:    tab.id,
       level
     });
-  }, 100);
-  updateTabIndent.delayed.set(tab.id, timer);
 }
-updateTabIndent.delayed = new Map();
 
 
 // collapse/expand tabs
