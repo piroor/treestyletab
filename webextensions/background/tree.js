@@ -126,7 +126,7 @@ export async function attachTabTo(child, parent, options = {}) {
   });
 
   if (!options.synchronously)
-  await Tab.waitUntilTrackedAll(child.windowId);
+    await Tab.waitUntilTrackedAll(child.windowId);
 
   parent = TabsStore.ensureLivingTab(parent);
   child = TabsStore.ensureLivingTab(child);
@@ -620,16 +620,16 @@ function updateTabIndent(tab, level = undefined, options = {}) {
 updateTabIndent.delayed = new Map();
 
 function updateTabIndentNow(tab, level = undefined, options = {}) {
-    if (!TabsStore.ensureLivingTab(tab))
-      return;
-    tab.$TST.setAttribute(Constants.kLEVEL, level);
-    updateTabsIndent(tab.$TST.children, level + 1, options);
-    SidebarConnection.sendMessage({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
-      windowId: tab.windowId,
-      tabId:    tab.id,
-      level
-    });
+  if (!TabsStore.ensureLivingTab(tab))
+    return;
+  tab.$TST.setAttribute(Constants.kLEVEL, level);
+  updateTabsIndent(tab.$TST.children, level + 1, options);
+  SidebarConnection.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    level
+  });
 }
 
 
