@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: build xpi
+    - name: lint
       run: |
         npm install
-        make
+        make lint
