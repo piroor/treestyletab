@@ -271,9 +271,9 @@
 
   "config_context_caption": { "message": "Контекстное меню" },
   "config_emulateDefaultContextMenu_label": { "message": "Имитация контекстного меню вкладок на боковой панели" },
-  "config_extraItems_caption": { "message": "Дополнительные пункты контекстного меню" },
-  "config_extraItems_topLevel": { "message": "Верхний уровень" },
-  "config_extraItems_subMenu": { "message": "Вложенное меню" },
+  "config_extraItems_tabs_caption": { "message": "Дополнительные пункты контекстного меню" },
+  "config_extraItems_tabs_topLevel": { "message": "Верхний уровень" },
+  "config_extraItems_tabs_subMenu": { "message": "Вложенное меню" },
 
 
   "config_newTab_caption": { "message": "Поведение новой вкладки" },

@@ -141,14 +141,13 @@
 
     <section id="section-contextMenu">
     <h1>__MSG_config_context_caption__</h1>
-    <fieldset>
-    <legend>__MSG_config_extraItems_caption__</legend>
-    <div id="contextConfigs">
+    <fieldset class="contextConfigs">
+    <legend>__MSG_config_extraItems_tabs_caption__</legend>
     <table>
       <thead>
         <tr>
-          <th>__MSG_config_extraItems_topLevel__</th>
-          <th>__MSG_config_extraItems_subMenu__</th>
+          <th>__MSG_config_extraItems_tabs_topLevel__</th>
+          <th>__MSG_config_extraItems_tabs_subMenu__</th>
           <td></td>
         </tr>
       </thead>
@@ -232,7 +231,15 @@
         </tr>
       </tbody>
     </table>
-    </div>
+    </fieldset>
+    <fieldset class="contextConfigs">
+      <legend>__MSG_config_extraItems_bookmarks_caption__</legend>
+      <p><label><input id="context_openAllBookmarksWithStructure"
+                            type="checkbox">
+                __MSG_context_openAllBookmarksWithStructure_label__</label></p>
+      <p><label><input id="context_openAllBookmarksWithStructureRecursively"
+                            type="checkbox">
+                __MSG_context_openAllBookmarksWithStructureRecursively_label__</label></p>
     </fieldset>
     <fieldset id="bookmarksPermissionSection">
     <legend><label class="has-checkbox"

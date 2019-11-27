@@ -112,10 +112,34 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   }));
 }
 
-browser.menus.create({
-  id:       'openAllBookmarksWithStructure',
-  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-  contexts: ['bookmark']
+configs.$loaded.then(() => {
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructure',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+    contexts: ['bookmark'],
+    visible:  configs.context_openAllBookmarksWithStructure
+  });
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructureRecursively',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+    contexts: ['bookmark'],
+    visible:  configs.context_openAllBookmarksWithStructureRecursively
+  });
+
+  configs.$addObserver(key => {
+    if (!key.startsWith('context_'))
+      return;
+    const id = key.replace(/^context_/, '');
+    switch (id) {
+      case 'openAllBookmarksWithStructure':
+      case 'openAllBookmarksWithStructureRecursively':
+        browser.menus.update(id, { visible: configs[key] });
+        return;
+
+      default:
+        return;
+    }
+  });
 });
 
 let mInitialized = false;
@@ -342,7 +366,10 @@ function onTabItemClick(info, tab) {
 function onBookmarkItemClick(info) {
   switch (info.menuItemId) {
     case 'openAllBookmarksWithStructure':
-      Commands.openAllBookmarksWithStructure(info.bookmarkId);
+      Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: false });
+      break;
+    case 'openAllBookmarksWithStructureRecursively':
+      Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: true });
       break;
   }
 }

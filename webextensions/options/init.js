@@ -135,7 +135,7 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('successor-tab-support');
 
-  for (const label of document.querySelectorAll('#contextConfigs label')) {
+  for (const label of document.querySelectorAll('.contextConfigs label')) {
     removeAccesskeyMark(label.lastChild);
   }
 

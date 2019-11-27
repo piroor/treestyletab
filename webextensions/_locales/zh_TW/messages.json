@@ -267,9 +267,9 @@
 
   "config_context_caption": { "message": "快捷選單" },
   "config_emulateDefaultContextMenu_label": { "message": "模擬分頁列上的快捷選單" },
-  "config_extraItems_caption": { "message": "額外快捷選單項" },
-  "config_extraItems_topLevel": { "message": "頂層" },
-  "config_extraItems_subMenu": { "message": "子選單" },
+  "config_extraItems_tabs_caption": { "message": "額外快捷選單項" },
+  "config_extraItems_tabs_topLevel": { "message": "頂層" },
+  "config_extraItems_tabs_subMenu": { "message": "子選單" },
 
 
   "config_newTab_caption": { "message": "新分頁行為" },

@@ -86,6 +86,9 @@ export const configs = new Configs({
   context_pinnedTab: false,
   context_unpinnedTab: false,
 
+  context_openAllBookmarksWithStructure: true,
+  context_openAllBookmarksWithStructureRecursively: false,
+
 
   // tree behavior
   shouldDetectClickOnIndentSpaces: true,

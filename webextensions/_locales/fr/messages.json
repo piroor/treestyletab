@@ -264,9 +264,9 @@
 
   "config_context_caption": { "message": "Menu contextuel" },
   "config_emulateDefaultContextMenu_label": { "message": "Simuler le menu contextuel sur le panneau latéral" },
-  "config_extraItems_caption": { "message": "Éléments additionnels du menu contextuel" },
-  "config_extraItems_topLevel": { "message": "Premier niveau" },
-  "config_extraItems_subMenu": { "message": "Sous-menu" },
+  "config_extraItems_tabs_caption": { "message": "Éléments additionnels du menu contextuel" },
+  "config_extraItems_tabs_topLevel": { "message": "Premier niveau" },
+  "config_extraItems_tabs_subMenu": { "message": "Sous-menu" },
 
 
   "config_newTab_caption": { "message": "Comportement des nouveaux onglets" },

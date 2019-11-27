@@ -271,9 +271,9 @@
 
   "config_context_caption": { "message": "Kontexmenü" },
   "config_emulateDefaultContextMenu_label": { "message": "Tab-Kontextmenü in der Sidebar simulieren" },
-  "config_extraItems_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
-  "config_extraItems_topLevel": { "message": "Oberste Ebene" },
-  "config_extraItems_subMenu": { "message": "Untermenü" },
+  "config_extraItems_tabs_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
+  "config_extraItems_tabs_topLevel": { "message": "Oberste Ebene" },
+  "config_extraItems_tabs_subMenu": { "message": "Untermenü" },
 
 
   "config_newTab_caption": { "message": "Verhalten für neue Tabs" },

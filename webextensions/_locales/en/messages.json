@@ -225,6 +225,7 @@
   "context_unpinnedTab_label": { "message": "Unpinned (for testing of a radio type menu)" },
 
   "context_openAllBookmarksWithStructure_label": { "message": "Open &All as a Tree" },
+  "context_openAllBookmarksWithStructureRecursively_label": { "message": "Open &All as a Tree including subfolders" },
 
 
   "config_title": { "message": "Tree Style Tab Options" },
@@ -271,9 +272,10 @@
 
   "config_context_caption": { "message": "Context Menu" },
   "config_emulateDefaultContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
-  "config_extraItems_caption": { "message": "Additional Context Menu Items" },
-  "config_extraItems_topLevel": { "message": "Top Level" },
-  "config_extraItems_subMenu": { "message": "Sub Menu" },
+  "config_extraItems_tabs_caption": { "message": "Additional Tab Context Menu Items" },
+  "config_extraItems_tabs_topLevel": { "message": "Top Level" },
+  "config_extraItems_tabs_subMenu": { "message": "Sub Menu" },
+  "config_extraItems_bookmarks_caption": { "message": "Additional Bookmarks Context Menu Items" },
 
 
   "config_newTab_caption": { "message": "New Tabs Behavior" },

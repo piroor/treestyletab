@@ -568,9 +568,9 @@
         "message": "在侧栏上模拟标签页右键菜单",
         "hash": "b869272d848c5a4292a0a62f1609d15b"
     },
-    "config_extraItems_caption": {
+    "config_extraItems_tabs_caption": {
         "message": "额外右键菜单",
-        "hash": "a83ac69758c16df4fa1ff646c14f0ac4"
+        "hash": ""
     },
     "config_newTab_caption": {
         "message": "新建标签页行为",

@@ -182,7 +182,7 @@
 
   "config_context_caption": { "message": "Контекстне меню" },
   "config_emulateDefaultContextMenu_label": { "message": "Імітація контекстного меню вкладок на бічній панелі" },
-  "config_extraItems_caption": { "message": "Додаткові пункти контекстного меню" },
+  "config_extraItems_tabs_caption": { "message": "Додаткові пункти контекстного меню" },
 
 
   "config_newTab_caption": { "message": "Поведінка нової вкладки" },

@@ -163,16 +163,16 @@ label input[type="checkbox"] ~ img {
 }
 
 
-#contextConfigs th {
+.contextConfigs th {
   font-weight: normal;
   text-align: left;
 }
 
-#contextConfigs td {
+.contextConfigs td {
   text-align: center;
 }
 
-#contextConfigs table input[type="checkbox"] {
+.contextConfigs table input[type="checkbox"] {
   margin-left: 1.5em;
   margin-right: 1.5em;
 }
