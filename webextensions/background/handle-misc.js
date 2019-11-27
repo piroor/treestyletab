@@ -677,7 +677,9 @@ function onMessageExternal(message, sender) {
       })();
 
     case TSTAPI.kOPEN_ALL_BOOKMARKS_WITH_STRUCTURE:
-      return Commands.openAllBookmarksWithStructure(message.id || message.bookmarkId);
+      return Commands.openAllBookmarksWithStructure(message.id || message.bookmarkId, {
+        discarded: message.discarded
+      });
   }
 }
 

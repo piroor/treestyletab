@@ -223,6 +223,7 @@ export const configs = new Configs({
   grantedExternalAddonPermissions: {},
   incognitoAllowedExternalAddons: [],
   notifiedFeaturesVersion: 0,
+  openAllBookmarksWithStructureDiscarded: true,
 
   useCachedTree: true,
   storeCacheAsWindowValue: false,

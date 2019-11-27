@@ -789,7 +789,9 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 
 const DESCENDANT_MATCHER = /^(>+) /;
 
-export async function openAllBookmarksWithStructure(id) {
+export async function openAllBookmarksWithStructure(id, { discarded } = {}) {
+  if (typeof discarded == 'undefined')
+    discarded = configs.openAllBookmarksWithStructureDiscarded;
   let item = await browser.bookmarks.get(id);
   if (Array.isArray(item))
     item = item[0];
@@ -851,7 +853,8 @@ export async function openAllBookmarksWithStructure(id) {
   const tabs = await TabsOpen.openURIsInTabs(items.map(item => item.url), {
     windowId:     TabsStore.getWindow() || (await browser.windows.getCurrent()).id,
     isOrphan:     true,
-    inBackground: true
+    inBackground: true,
+    discarded
   });
   if (tabs.length == structure.length)
     Tree.applyTreeStructureToTabs(tabs, structure);

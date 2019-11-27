@@ -148,6 +148,8 @@ export async function openURIsInTabs(uris, options = {}) {
         };
         Tab.onCreating.addListener(listener);
       });
+      if (options.discarded && index > 0)
+        params.discarded = true;
       const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
       await Promise.all([
         promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
