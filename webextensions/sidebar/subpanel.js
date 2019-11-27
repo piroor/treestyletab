@@ -232,8 +232,15 @@ function saveLastHeight() {
   configs.lastSubPanelHeight = mContainer.classList.contains('collapsed') ? 0 : mHeight;
 }
 
+function isFiredOnClickable(event) {
+  let target = event.target;
+  if (!(target instanceof Element))
+    target = target.parentNode;
+  return !!target.closest('.clickable');
+}
+
 mHeader.addEventListener('mousedown', event => {
-  if (event.target.localName == 'button')
+  if (isFiredOnClickable(event))
     return;
   event.stopPropagation();
   event.preventDefault();
@@ -244,7 +251,7 @@ mHeader.addEventListener('mousedown', event => {
 });
 
 mHeader.addEventListener('mouseup', event => {
-  if (event.target.localName == 'button')
+  if (isFiredOnClickable(event))
     return;
   mHeader.removeEventListener('mousemove', onMouseMove);
   event.stopPropagation();
@@ -256,7 +263,7 @@ mHeader.addEventListener('mouseup', event => {
 });
 
 mHeader.addEventListener('dblclick', async event => {
-  if (event.target.localName == 'button')
+  if (isFiredOnClickable(event))
     return;
   event.stopPropagation();
   event.preventDefault();
