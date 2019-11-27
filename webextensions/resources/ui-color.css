@@ -189,7 +189,8 @@ hr {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root#sidebar.apply-browser-theme,
+  :root:not(#sidebar) {
     /* https://hg.mozilla.org/mozilla-central/raw-file/tip/toolkit/themes/shared/in-content/common.inc.css */
     --in-content-page-background: #2A2A2E /* rgb(42, 42, 46) */;
     --in-content-page-color: rgb(249, 249, 250);
