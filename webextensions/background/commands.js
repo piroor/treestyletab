@@ -803,7 +803,8 @@ export async function openAllBookmarksWithStructure(id) {
   }
 
   let indexToBeActive = 0;
-  const items = await browser.bookmarks.getChildren(item.id);
+  let items = await browser.bookmarks.getChildren(item.id);
+  items = items.filter(item => item.type == 'bookmark');
   if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
     for (const item of items) {
       item.title = DESCENDANT_MATCHER.test(item.title) ?
