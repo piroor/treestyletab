@@ -9,13 +9,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - uses: helaili/jq-action@master
-    - name: build
+    - name: backup manifest.json
+      run: |
+        cp manifest.json manifest.json.bak
+    - name: prepare manifest.json
+      uses: helaili/jq-action@master
+      env:
+        OUTPUT_FILE: manifest.json
+      with:
+        args: ".version |= \"$(cat manifest.json | jq -r ".version" | sed -r -e "s/$/.$(git log --oneline | wc -l)/")\"" manifest.json.bak
+    - name: build xpi
       run: |
         npm install
-        cp manifest.json manifest.json.bak
-        version=$(cat manifest.json | jq -r ".version" | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
-        cat manifest.json.bak | jq ".version |= \"$version\"" > manifest.json
         make
     - uses: actions/upload-artifact@master
       with:
