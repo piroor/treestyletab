@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on: [push]
 
@@ -9,7 +9,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: lint
+    - name: build
       run: |
         npm install
-        make lint
+        make
+    - uses: actions/upload-artifact@master
+      with:
+        name: treestyletab-we.xpi
+        path: treestyletab-we.xpi
