@@ -89,6 +89,8 @@ export const configs = new Configs({
   context_openAllBookmarksWithStructure: true,
   context_openAllBookmarksWithStructureRecursively: false,
 
+  openAllBookmarksWithStructureDiscarded: true,
+
 
   // tree behavior
   shouldDetectClickOnIndentSpaces: true,
@@ -226,7 +228,6 @@ export const configs = new Configs({
   grantedExternalAddonPermissions: {},
   incognitoAllowedExternalAddons: [],
   notifiedFeaturesVersion: 0,
-  openAllBookmarksWithStructureDiscarded: true,
 
   useCachedTree: true,
   storeCacheAsWindowValue: false,

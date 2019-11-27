@@ -153,7 +153,7 @@ export async function openURIsInTabs(uris, options = {}) {
         };
         Tab.onCreating.addListener(listener);
       });
-      if (options.discarded && index > 0)
+      if (options.discarded && !params.active)
         params.discarded = true;
       const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
       await Promise.all([
