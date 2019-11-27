@@ -9,24 +9,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: extract version
-      uses: helaili/jq-action@master
-      env:
-        OUTPUT_FILE: version.txt
-      with:
-        args:
-        - "-r .version manifest.json"
-    - name: prepare version
-      run: export VERSION=$(cat version.txt | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
-    - name: backup manifest.json
-      run: cp manifest.json manifest.json.bak
-    - name: prepare manifest.json
-      uses: helaili/jq-action@master
-      env:
-        OUTPUT_FILE: manifest.json
-      with:
-        args:
-        - "\".version |= \\\"$VERSION\\\"\" manifest.json.bak"
+    - name: prepare manifest.json with a revision number
+      run: |
+        cp manifest.json manifest.json.bak
+        version=$(cat manifest.json | jq -r ".version" | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
+        cat manifest.json.bak | jq ".version |= \"$version\"" > manifest.json
     - name: build xpi
       run: |
         npm install
