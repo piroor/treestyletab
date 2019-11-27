@@ -829,8 +829,6 @@ async function collectBookmarkItems(root, recursively) {
 export async function openAllBookmarksWithStructure(id, { discarded, recursively } = {}) {
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
-  if (typeof recursively == 'undefined')
-    recursively = configs.openAllBookmarksWithStructureRecursively;
 
   let item = await browser.bookmarks.get(id);
   if (Array.isArray(item))
