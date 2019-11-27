@@ -15,7 +15,7 @@ jobs:
         OUTPUT_FILE: version.txt
       with:
         args:
-        - -r
+        - "-r"
         - .version
         - manifest.json
     - name: prepare version
@@ -28,7 +28,7 @@ jobs:
         OUTPUT_FILE: manifest.json
       with:
         args:
-        - .version |= "$VERSION"
+        - ".version |= \"$VERSION\""
         - manifest.json.bak
     - name: build xpi
       run: |
