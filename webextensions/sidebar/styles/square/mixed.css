@@ -141,8 +141,6 @@ tab-item.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .
   :root.apply-browser-theme:not([color-scheme="system-color"]) {
     --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
     --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
-    --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
-    --tab-highlighter-inactive: var(--grey-10-a20);
   }
   :root.apply-browser-theme:not([color-scheme="system-color"])
     tab-item:not(.active):hover {
