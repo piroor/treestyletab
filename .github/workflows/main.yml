@@ -18,7 +18,7 @@ jobs:
         OUTPUT_FILE: manifest.json
       with:
         args:
-        - ".version |= \"$(cat manifest.json | jq -r ".version" | sed -r -e "s/$/.$(git log --oneline | wc -l)/")\""
+        - ".version |= \\\"$(cat manifest.json | jq -r \".version\" | sed -r -e \"s/$/.$(git log --oneline | wc -l)/\")\\\""
         - manifest.json.bak
     - name: build xpi
       run: |
