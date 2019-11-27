@@ -789,9 +789,49 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 
 const DESCENDANT_MATCHER = /^(>+) /;
 
-export async function openAllBookmarksWithStructure(id, { discarded } = {}) {
+async function collectBookmarkItems(root, recursively) {
+  let items = await browser.bookmarks.getChildren(root.id);
+  if (recursively) {
+    let expandedItems = [];
+    for (const item of items) {
+      switch (item.type) {
+        case 'bookmark':
+          expandedItems.push(item);
+          break;
+        case 'folder':
+          expandedItems = expandedItems.concat(await collectBookmarkItems(item, recursively));
+          break;
+      }
+    }
+    items = expandedItems;
+  }
+  else {
+    items = items.filter(item => item.type == 'bookmark');
+  }
+  if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
+    for (const item of items) {
+      item.title = DESCENDANT_MATCHER.test(item.title) ?
+        item.title.replace(DESCENDANT_MATCHER, '>$1 ') :
+        `> ${item.title}`;
+    }
+    items.unshift({
+      title: '',
+      url:   TabsGroup.makeGroupTabURI({
+        title:               root.title,
+        temporaryAggressive: true
+      }),
+      group: true
+    });
+  }
+  return items;
+}
+
+export async function openAllBookmarksWithStructure(id, { discarded, recursively } = {}) {
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
+  if (typeof recursively == 'undefined')
+    recursively = configs.openAllBookmarksWithStructureRecursively;
+
   let item = await browser.bookmarks.get(id);
   if (Array.isArray(item))
     item = item[0];
@@ -804,24 +844,8 @@ export async function openAllBookmarksWithStructure(id, { discarded } = {}) {
       item = item[0];
   }
 
-  let indexToBeActive = 0;
-  let items = await browser.bookmarks.getChildren(item.id);
-  items = items.filter(item => item.type == 'bookmark');
-  if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
-    for (const item of items) {
-      item.title = DESCENDANT_MATCHER.test(item.title) ?
-        item.title.replace(DESCENDANT_MATCHER, '>$1 ') :
-        `> ${item.title}`;
-    }
-    items.unshift({
-      title: '',
-      url:   TabsGroup.makeGroupTabURI({
-        title:               item.title,
-        temporaryAggressive: true
-      })
-    });
-    indexToBeActive = 1;
-  }
+  const items = await collectBookmarkItems(item, recursively);
+  const indexToBeActive = items.findIndex(item => !item.group);
 
   const lastItemIndicesWithLevel = new Map();
   let lastMaxLevel = 0;
@@ -841,6 +865,7 @@ export async function openAllBookmarksWithStructure(id, { discarded } = {}) {
       lastItemIndicesWithLevel.set(level, index);
       lastMaxLevel = level;
       result.push(lastItemIndicesWithLevel.get(level - 1) - lastItemIndicesWithLevel.get(0));
+      item.title = item.title.replace(DESCENDANT_MATCHER, '')
     }
     else {
       result.push(-1);
@@ -850,7 +875,7 @@ export async function openAllBookmarksWithStructure(id, { discarded } = {}) {
     return result;
   }, []);
 
-  const tabs = await TabsOpen.openURIsInTabs(items.map(item => item.url), {
+  const tabs = await TabsOpen.openURIsInTabs(items, {
     windowId:     TabsStore.getWindow() || (await browser.windows.getCurrent()).id,
     isOrphan:     true,
     inBackground: true,

@@ -115,6 +115,11 @@ export async function openURIsInTabs(uris, options = {}) {
         windowId: options.windowId,
         active:   index == 0 && !options.inBackground
       };
+      if (uri && typeof uri == 'object') {
+        if (uri.title)
+          params.title = uri.title;
+        uri = uri.uri || uri.url;
+      }
       let searchQuery = null;
       if (uri) {
         if (SEARCH_PREFIX_MATCHER.test(uri)) {
