@@ -11,13 +11,11 @@ jobs:
     - uses: actions/checkout@v1
     - name: prepare manifest.json with a revision number
       run: |
-        cp manifest.json manifest.json.bak
+        cp webextensions/manifest.json ./
         version=$(cat manifest.json | jq -r ".version" | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
-        cat manifest.json.bak | jq ".version |= \"$version\"" > manifest.json
+        cat manifest.json | jq ".version |= \"$version\"" > webextensions/manifest.json
     - name: build xpi
-      run: |
-        npm install
-        make
+      run: make
     - uses: actions/upload-artifact@master
       with:
         name: treestyletab-we.xpi
