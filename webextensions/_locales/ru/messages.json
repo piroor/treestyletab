@@ -225,6 +225,7 @@
   "context_unpinnedTab_label": { "message": "Откреплено (проверка меню типа переключатель" },
 
   "context_openAllBookmarksWithStructure_label": { "message": "Открыть все как дерево" },
+  "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все как дерево (с подпапками)" },
 
 
   "config_title": { "message": "Настройки Tree Style Tab" },
@@ -249,7 +250,7 @@
   "config_style_sidebar": { "message": "Боковая панель" },
   "config_style_highcontrast": { "message": "Контрастная" },
   "config_style_none": { "message": "Без стиля" },
-  "config_style_none_info": { "message": " (*Пожалуйста, украсьте все самостоятельно через \"Дополнительные стили боковой панели\")" },
+  "config_style_none_info": { "message": " (* Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
 
   "config_colorScheme_caption": { "message": "Цветовая схема:" },
   "config_colorScheme_photon": { "message": "Фотон" },
@@ -274,11 +275,13 @@
   "config_extraItems_tabs_caption": { "message": "Дополнительные пункты контекстного меню" },
   "config_extraItems_tabs_topLevel": { "message": "Верхний уровень" },
   "config_extraItems_tabs_subMenu": { "message": "Вложенное меню" },
+  "config_extraItems_bookmarks_caption": { "message": "Пункты TST контекстного меню закладок" },
+  "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Открывать незагруженными" },
 
 
   "config_newTab_caption": { "message": "Поведение новой вкладки" },
 
-  "config_newTabButton_caption__": { "message": "Кнопка \"Новая вкладка\" " },
+  "config_newTabButton_caption": { "message": "Специальные действия для кнопки \"Новая вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Длительное нажатие кнопки \"Новая вкладка\", чтобы " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "указать, где откроется новая вкладка" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "выбрать контейнер" },
@@ -287,7 +290,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Показывать кнопку выбора на кнопке \"Новая вкладка\", чтобы указать, где открывается новая вкладка" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Показывать кнопку выбора контейнера на кнопке \"Новая вкладка\" " },
 
-  "config_newTabAction_caption__": { "message": "Другие действия с \"Новой вкладкой\" (кнопки панели, горячие клавиши и прочее)" },
+  "config_newTabAction_caption": { "message": "Управляющие элементы \"Новой вкладкой\" (кнопки панели, горячие клавиши и прочее)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(не контролировать)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "отдельную вкладку" },
@@ -308,7 +311,7 @@
 
   "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
 
-  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и прочее)" },
+  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и т.п.)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(не контролировать)" },
@@ -328,7 +331,7 @@
   "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Наследовать контейнер текущей вкладки" },
 
-  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки, bookmarks, histories, or other cases" },
+  "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка с сайтом, как в текущей вкладке, открывается из адресной строки, закладок, истории и т.п." },
   "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(не контролировать)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "отдельную вкладку" },
