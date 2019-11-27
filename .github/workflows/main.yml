@@ -15,7 +15,8 @@ jobs:
         OUTPUT_FILE: version.txt
       with:
         args:
-        - ".version |= \\\"$VERSION\\\""
+        - -r
+        - .version
         - manifest.json
     - name: prepare version
       run: export VERSION=$(cat version.txt | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
@@ -27,7 +28,7 @@ jobs:
         OUTPUT_FILE: manifest.json
       with:
         args:
-        - ".version |= \\\"$VERSION\\\""
+        - .version |= "$VERSION"
         - manifest.json.bak
     - name: build xpi
       run: |
