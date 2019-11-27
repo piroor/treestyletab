@@ -15,7 +15,7 @@ jobs:
         OUTPUT_FILE: version.txt
       with:
         args:
-        - -r .version manifest.json
+        - "-r .version manifest.json"
     - name: prepare version
       run: export VERSION=$(cat version.txt | sed -r -e "s/$/.$(git log --oneline | wc -l)/")
     - name: backup manifest.json
@@ -26,7 +26,7 @@ jobs:
         OUTPUT_FILE: manifest.json
       with:
         args:
-        - \".version |= \\\"$VERSION\\\"\" manifest.json.bak
+        - "\".version |= \\\"$VERSION\\\"\" manifest.json.bak"
     - name: build xpi
       run: |
         npm install
