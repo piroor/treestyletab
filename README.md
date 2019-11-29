@@ -25,7 +25,8 @@ Please enjoy as you like!
 
 ## Development builds
 
-There is an [automated buildd based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi).
+There is an [automated build based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi).
+Builds for each commit are avilable at ["Artifacts" of the CI/CD action](https://github.com/piroor/treestyletab/actions?query=workflow%3ACI%2FCD).
 
 <details>
 <p><summary>It is not signed, so you need to load it by non-regular way. (Please click this section to see instructions.)</summary></p>
