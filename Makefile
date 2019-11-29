@@ -9,7 +9,7 @@ xpi:
 	cp webextensions/$(PACKAGE_NAME)*.xpi ./
 
 install_hook:
-	echo -e '#!/bin/sh\nmake lint' > "$(CURDIR)/.git/hooks/pre-commit" && chmod +x "$(CURDIR)/.git/hooks/pre-commit"
+	echo '#!/bin/sh\nmake lint' > "$(CURDIR)/.git/hooks/pre-commit" && chmod +x "$(CURDIR)/.git/hooks/pre-commit"
 
 lint:
 	cd webextensions && $(MAKE) $@
