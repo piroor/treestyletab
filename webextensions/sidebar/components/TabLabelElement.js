@@ -7,7 +7,6 @@
 export const kTAB_LABEL_ELEMENT_NAME = 'tab-label';
 
 const KLABEL_CLASS_NAME   = 'label';
-const kCONTENT_CLASS_NAME = `${KLABEL_CLASS_NAME}-content`;
 
 const kPART_LABEL_TEXT = 'label-text';
 
@@ -35,7 +34,6 @@ export class TabLabelElement extends HTMLElement {
 
     const label = document.createElement('span');
     shadow.appendChild(label);
-    label.classList.add(kCONTENT_CLASS_NAME);
     label.setAttribute('part', kPART_LABEL_TEXT);
   }
 
@@ -107,7 +105,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   get _content() {
-    return this.shadowRoot.querySelector(`.${kCONTENT_CLASS_NAME}`);
+    return this.shadowRoot.querySelector(`[part=${kPART_LABEL_TEXT}]`);
   }
 
   get value() {
