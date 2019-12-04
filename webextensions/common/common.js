@@ -247,7 +247,7 @@ export const configs = new Configs({
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
-tab-item.unread .label-content {
+tab-label::part(label-text) {
   color: red !important;
   font-style: italic !important;
 }

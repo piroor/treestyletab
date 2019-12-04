@@ -385,7 +385,7 @@ tab-item tab-label {
 }
 
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
-tab-item .label-content {
+tab-label::part(label-text) {
   color: inherit;
 }
 

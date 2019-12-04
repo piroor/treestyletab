@@ -9,6 +9,8 @@ export const kTAB_LABEL_ELEMENT_NAME = 'tab-label';
 const KLABEL_CLASS_NAME   = 'label';
 const kCONTENT_CLASS_NAME = `${KLABEL_CLASS_NAME}-content`;
 
+const kPART_LABEL_TEXT = 'label-text';
+
 const kATTR_NAME_VALUE = 'value';
 
 export class TabLabelElement extends HTMLElement {
@@ -26,6 +28,15 @@ export class TabLabelElement extends HTMLElement {
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.__onOverflow = null;
     this.__onUnderflow = null;
+
+    const shadow = this.attachShadow({
+      mode: 'open',
+    });
+
+    const label = document.createElement('span');
+    shadow.appendChild(label);
+    label.classList.add(kCONTENT_CLASS_NAME);
+    label.setAttribute('part', kPART_LABEL_TEXT);
   }
 
   connectedCallback() {
@@ -53,9 +64,6 @@ export class TabLabelElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(KLABEL_CLASS_NAME);
-
-    const content = this.appendChild(document.createElement('span'));
-    content.classList.add(kCONTENT_CLASS_NAME);
 
     this._startListening();
     this.updateTextContent();
@@ -99,7 +107,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   get _content() {
-    return this.querySelector(`.${kCONTENT_CLASS_NAME}`);
+    return this.shadowRoot.querySelector(`.${kCONTENT_CLASS_NAME}`);
   }
 
   get value() {
