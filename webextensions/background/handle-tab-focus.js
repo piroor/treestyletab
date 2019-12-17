@@ -132,12 +132,7 @@ function handleNewActiveTab(tab, info = {}) {
 }
 
 async function tryHighlightBundledTab(tab, info) {
-  let bundledTab;
-  if (tab.pinned)
-    bundledTab = Tab.getGroupTabForOpener(tab);
-  else if (tab.$TST.isGroupTab)
-    bundledTab = Tab.getOpenerFromGroupTab(tab);
-
+  const bundledTab = tab.$TST.bundledTab;
   const oldBundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
   for (const tab of oldBundledTabs.values()) {
     if (tab == bundledTab)

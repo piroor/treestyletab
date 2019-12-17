@@ -202,7 +202,8 @@ export class TreeItem {
       states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
       indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
       ancestorTabIds: sourceTab.$TST.ancestorIds,
-      children
+      children,
+      bundledTabId:   sourceTab.$TST.bundledTabId
     };
 
     let allowedProperties = [

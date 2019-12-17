@@ -744,6 +744,19 @@ export default class Tab {
     return opener && opener.pinned;
   }
 
+  get bundledTab() {
+    if (this.tab.pinned)
+      return Tab.getGroupTabForOpener(this.tab);
+    if (this.isGroupTab)
+      return Tab.getOpenerFromGroupTab(this.tab);
+    return null;
+  }
+
+  get bundledTabId() {
+    const tab = this.bundledTab;
+    return tab ? tab.id : -1;
+  }
+
   findSuccessor(options = {}) {
     if (typeof options != 'object')
       options = {};
