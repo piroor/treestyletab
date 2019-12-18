@@ -1036,6 +1036,13 @@ export async function moveTabs(tabs, options = {}) {
             movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
           }
+          else {
+            for (const tab of movedTabs) {
+              if (tab.$TST.parent &&
+                  !movedTabs.includes(tab.$TST.parent))
+                detachTab(tab);
+            }
+          }
         })()
       ]);
       log('moveTabs: all windows and tabs are ready, ', movedTabIds, destinationWindowId);
