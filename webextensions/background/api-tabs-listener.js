@@ -709,7 +709,9 @@ async function onRemoved(tabId, removeInfo) {
     oldTab.$TST.addState(Constants.kTAB_STATE_REMOVING);
     TabsStore.addRemovingTab(oldTab);
 
-    TabsStore.windows.get(removeInfo.windowId).detachTab(oldTab.id);
+    TabsStore.windows.get(removeInfo.windowId).detachTab(oldTab.id, {
+      toBeRemoved: true
+    });
 
     const onRemovedReuslt = Tab.onRemoved.dispatch(oldTab, removeInfo);
     // don't do await if not needed, to process things synchronously
@@ -967,7 +969,9 @@ async function onDetached(tabId, detachInfo) {
     });
 
     TabsStore.addRemovedTab(oldTab);
-    oldWindow.detachTab(oldTab.id);
+    oldWindow.detachTab(oldTab.id, {
+      toBeDetached: true
+    });
     if (!TabsStore.getWindow() && // only in the background page - the sidebar has no need to destroy itself manually.
         oldWindow.tabs &&
         oldWindow.tabs.size == 0) { // not destroyed yet case
