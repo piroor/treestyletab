@@ -340,10 +340,13 @@ export function detachTab(child, options = {}) {
   // "children" setter removes the parent ifself from the detached child
   // automatically.
 
+  if (!options.toBeRemoved && !options.toBeDetached)
   updateTabsIndent(child);
 
   onDetached.dispatch(child, {
-    oldParentTab: parent
+    oldParentTab: parent,
+    toBeRemoved:  !!options.toBeRemoved,
+    toBeDetached: !!options.toBeDetached
   });
 }
 
@@ -1040,7 +1043,10 @@ export async function moveTabs(tabs, options = {}) {
             for (const tab of movedTabs) {
               if (tab.$TST.parent &&
                   !movedTabs.includes(tab.$TST.parent))
-                detachTab(tab);
+                detachTab(tab, {
+                  broadcast:    true,
+                  toBeDetached: true
+                });
             }
           }
         })()
