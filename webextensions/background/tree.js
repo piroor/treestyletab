@@ -341,7 +341,7 @@ export function detachTab(child, options = {}) {
   // automatically.
 
   if (!options.toBeRemoved && !options.toBeDetached)
-  updateTabsIndent(child);
+    updateTabsIndent(child);
 
   onDetached.dispatch(child, {
     oldParentTab: parent,
