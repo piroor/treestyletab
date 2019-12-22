@@ -1,18 +1,18 @@
 {
     "extensionName": {
-        "message": "树状标签页",
+        "message": "Tree Style Tab - 树状标签页管理",
         "hash": "94c80eccdd67c127e1de28b71af57aee"
     },
     "extensionDescription": {
-        "message": "树状显示标签页。",
+        "message": "在侧栏中以树状图形显示标签页。",
         "hash": "1cf26efef213812fa419388efe44fea2"
     },
     "sidebarTitle": {
-        "message": "树状标签页",
+        "message": "Tree Style Tab",
         "hash": "94c80eccdd67c127e1de28b71af57aee"
     },
     "sidebarToggleDescription": {
-        "message": "切换 “树状标签页” 侧栏",
+        "message": "切换 “Tree Style Tab” 侧栏",
         "hash": "732286e74bb15a20b9999410d4be514c"
     },
     "command_indent": {
@@ -455,7 +455,7 @@
         "hash": "36612e37af337e8ffe66ebd20a89f8f9"
     },
     "message_startup_description_1": {
-        "message": "树状标签页提供一个侧栏以作为可选用的垂直标签栏。如果您没看到，按 ",
+        "message": "Tree Style Tab 提供一个侧栏以作为可选用的垂直标签栏。如果您没看到，按 ",
         "hash": "77072da9342e0bbfc72df3969455dc51"
     },
     "message_startup_description_key": {
@@ -487,7 +487,7 @@
         "hash": "991184685e856081ec9ee06431fda2d2"
     },
     "message_startup_userChromeCss_description_1": {
-        "message": "由于 WebExtensions 的限制，树状标签页无法控制在 Firefox 顶部的标签页栏以及侧栏的标题。如果您十分需要定制它们，参见",
+        "message": "由于 WebExtensions 的限制，Tree Style Tab 无法控制在 Firefox 顶部的标签页栏以及侧栏的标题。如果您十分需要定制它们，参见",
         "hash": "2b5b9b8f63740c72ef3201e1f04c9c1a"
     },
     "message_startup_userChromeCss_description_link_label": {
@@ -647,7 +647,7 @@
         "hash": "b977fd26ec4bf634094fe7b6a57a1759"
     },
     "config_title": {
-        "message": "树状标签页选项",
+        "message": "Tree Style Tab 选项",
         "hash": "ac0a723c76133d1744f7fda57e510329"
     },
     "config_appearance_caption": {
@@ -1155,11 +1155,11 @@
         "hash": "f4c5eca1aa702ad5ebc4c142a6f293e4"
     },
     "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": {
-        "message": "当树状标签页侧栏不可见时，尽可能保持树结构和标签数量",
+        "message": "当 Tree Style Tab 侧栏不可见时，尽可能保持树结构和标签数量",
         "hash": "5fed46d5f197881f1264acddd89dbc3e"
     },
     "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar": {
-        "message": "当树状标签页侧栏可见时：",
+        "message": "当 Tree Style Tab 侧栏可见时：",
         "hash": "966b2948e5a282ae55b262d4f18f9152"
     },
     "config_closeParentBehaviorMode_withoutNativeTabs": {
@@ -1175,11 +1175,11 @@
         "hash": "1685452bc68395b620b0ce1fb9b76da5"
     },
     "config_closeParentBehaviorMode_custom_caption_insideSidebar": {
-        "message": "对于通过树状标签页侧栏进行的操作",
+        "message": "对于通过 Tree Style Tab 侧栏进行的操作",
         "hash": "4fc075578744df222867556e93af5f19"
     },
     "config_closeParentBehaviorMode_custom_caption_outsideSidebar": {
-        "message": "当树状标签页侧栏可见时，通过原生标签栏、键盘快捷键、或其他附加组件的操作：",
+        "message": "当 Tree Style Tab 侧栏可见时，通过原生标签栏、键盘快捷键、或其他附加组件的操作：",
         "hash": "e618479e7cbe39903dea5656e88789fc"
     },
     "config_closeParentBehaviorMode_custom_caption_noSidebar": {
@@ -1351,7 +1351,7 @@
         "hash": "9003599648d97da3215830dbf6d548b8"
     },
     "config_addons_description_link_label": {
-        "message": "一些附加组件可以扩展树状标签页",
+        "message": "一些附加组件可以扩展 Tree Style Tab",
         "hash": "add235fb13460dbf96732a534e49170b"
     },
     "config_addons_description_after": {
@@ -1367,7 +1367,7 @@
         "hash": "aeb03789ab0fef10dbbec9f26318fc6c"
     },
     "config_externaladdonpermissions_description": {
-        "message": "在此处允许的附加组件<em>通过树状标签页的权限</em>来访问详细的标签页信息或隐私窗口标签页，而无视 Firefox 对其的权限控制。<em>不要授权给任何你不信任的附加组件。</em>",
+        "message": "在此处允许的附加组件<em>通过 Tree Style Tab 的权限</em>来访问详细的标签页信息或隐私窗口标签页，而无视 Firefox 对其的权限控制。<em>不要授权给任何你不信任的附加组件。</em>",
         "hash": "56449868ee71aab4e26da112b40cf642"
     },
     "config_externalAddonPermissions_header_name": {
@@ -1487,11 +1487,11 @@
         "hash": "f858aeed5852f32d912562432f5b4369"
     },
     "config_requestPermissions_fallbackToToolbarButton_title": {
-        "message": "点击 “树状标签页” 的工具栏按钮",
+        "message": "点击 “Tree Style Tab” 的工具栏按钮",
         "hash": "faffac27406925eaf44308423fce1d21"
     },
     "config_requestPermissions_fallbackToToolbarButton_message": {
-        "message": "由于 Firefox 的问题，您无法从此画面请求权限。请单击 “树状标签页” 的工具栏按钮以授予权限。",
+        "message": "由于 Firefox 的问题，您无法从此画面请求权限。请单击 “Tree Style Tab” 的工具栏按钮以授予权限。",
         "hash": "00b8ca01e816366e976d197677b7c497"
     },
     "config_all_caption": {
