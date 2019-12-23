@@ -1,5 +1,5 @@
 {
-  "extensionName": { "message": "ツリー型タブ" },
+  "extensionName": { "message": "Tree Style Tab - ツリー型タブ" },
   "extensionDescription": { "message": "タブをツリー状に表示します。" },
 
   "sidebarTitle": { "message": "ツリー型タブ" },
@@ -168,7 +168,7 @@
   "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },
 
-  "message_startup_description_1": { "message": "ツリー型タブの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
+  "message_startup_description_1": { "message": "Tree Style Tabの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },
   "message_startup_description_3": { "message": "」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示して下さい。" },
@@ -178,7 +178,7 @@
   "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
-  "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、Firefoxのタブバーとサイドバーのヘッダーはツリー型タブから制御できません。これらを隠したい場合は" },
+  "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、FirefoxのタブバーとサイドバーのヘッダーはTree Style Tabから制御できません。これらを隠したい場合は" },
   "message_startup_userChromeCss_description_link_label": { "message": "userChrome.cssでのカスタマイズ例" },
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": "を参照して下さい。ただし、" },
@@ -186,7 +186,7 @@
   "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
   "api_requestedPermissions_title": { "message": "アクセス権の要求" },
-  "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がツリー型タブのAPIを経由して以下の事をしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
+  "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下の事をしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
     "placeholders": {
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }
@@ -224,7 +224,7 @@
 
 
 
-  "config_title": { "message": "ツリー型タブの設定" },
+  "config_title": { "message": "Tree Style Tabの設定" },
 
   "config_appearance_caption": { "message": "外観" },
 
@@ -453,7 +453,7 @@
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
   "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
-  "config_externaladdonpermissions_description": { "message": "ここでチェックを入れたアドオンは、Firefox自体がそのアドオンにタブの詳細情報やプライベートウィンドウのタブへのアクセスを禁止していても、<em>ツリー型タブの権限で</em>それらにアクセスできるようになります。<em>信用できないアドオンに対しては絶対に権限を与えないで下さい。<em>" },
+  "config_externaladdonpermissions_description": { "message": "ここでチェックを入れたアドオンは、Firefox自体がそのアドオンにタブの詳細情報やプライベートウィンドウのタブへのアクセスを禁止していても、<em>Tree Style Tabの権限で</em>それらにアクセスできるようになります。<em>信用できないアドオンに対しては絶対に権限を与えないで下さい。<em>" },
   "config_externalAddonPermissions_header_name": { "message": "アドオン名" },
   "config_externalAddonPermissions_header_permissions": { "message": "許可する特別な操作" },
   "config_externalAddonPermissions_header_incognito": { "message": "プライベートウィンドウからのメッセージを通知する" },
