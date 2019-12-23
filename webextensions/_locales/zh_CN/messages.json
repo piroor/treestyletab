@@ -8,11 +8,11 @@
         "hash": "1cf26efef213812fa419388efe44fea2"
     },
     "sidebarTitle": {
-        "message": "Tree Style Tab",
+        "message": "树状标签页",
         "hash": "94c80eccdd67c127e1de28b71af57aee"
     },
     "sidebarToggleDescription": {
-        "message": "切换 “Tree Style Tab” 侧栏",
+        "message": "切换 “树状标签页” 侧栏",
         "hash": "732286e74bb15a20b9999410d4be514c"
     },
     "command_indent": {
@@ -1155,11 +1155,11 @@
         "hash": "f4c5eca1aa702ad5ebc4c142a6f293e4"
     },
     "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": {
-        "message": "当 Tree Style Tab 侧栏不可见时，尽可能保持树结构和标签数量",
+        "message": "当树状标签页侧栏不可见时，尽可能保持树结构和标签数量",
         "hash": "5fed46d5f197881f1264acddd89dbc3e"
     },
     "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar": {
-        "message": "当 Tree Style Tab 侧栏可见时：",
+        "message": "当树状标签页侧栏可见时：",
         "hash": "966b2948e5a282ae55b262d4f18f9152"
     },
     "config_closeParentBehaviorMode_withoutNativeTabs": {
@@ -1175,11 +1175,11 @@
         "hash": "1685452bc68395b620b0ce1fb9b76da5"
     },
     "config_closeParentBehaviorMode_custom_caption_insideSidebar": {
-        "message": "对于通过 Tree Style Tab 侧栏进行的操作",
+        "message": "对于通过树状标签页侧栏进行的操作",
         "hash": "4fc075578744df222867556e93af5f19"
     },
     "config_closeParentBehaviorMode_custom_caption_outsideSidebar": {
-        "message": "当 Tree Style Tab 侧栏可见时，通过原生标签栏、键盘快捷键、或其他附加组件的操作：",
+        "message": "当树状标签页侧栏可见时，通过原生标签栏、键盘快捷键、或其他附加组件的操作：",
         "hash": "e618479e7cbe39903dea5656e88789fc"
     },
     "config_closeParentBehaviorMode_custom_caption_noSidebar": {
@@ -1487,11 +1487,11 @@
         "hash": "f858aeed5852f32d912562432f5b4369"
     },
     "config_requestPermissions_fallbackToToolbarButton_title": {
-        "message": "点击 “Tree Style Tab” 的工具栏按钮",
+        "message": "点击 “树状标签页” 的工具栏按钮",
         "hash": "faffac27406925eaf44308423fce1d21"
     },
     "config_requestPermissions_fallbackToToolbarButton_message": {
-        "message": "由于 Firefox 的问题，您无法从此画面请求权限。请单击 “Tree Style Tab” 的工具栏按钮以授予权限。",
+        "message": "由于 Firefox 的问题，您无法从此画面请求权限。请单击 “树状标签页” 的工具栏按钮以授予权限。",
         "hash": "00b8ca01e816366e976d197677b7c497"
     },
     "config_all_caption": {
