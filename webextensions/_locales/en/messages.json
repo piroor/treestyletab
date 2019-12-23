@@ -196,6 +196,8 @@
   "api_requestedPermissions_type_cookies":   { "message": "Detect container of browser tabs" },
 
 
+  "context_menu_label": { "message": "Tree of tabs" },
+
   "context_reloadTree_label": { "message": "&Reload this Tree" },
   "context_reloadTree_command": { "message": "Reload this Tree" },
   "context_reloadDescendants_label": { "message": "R&eload Descendants" },

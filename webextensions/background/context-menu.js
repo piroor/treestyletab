@@ -157,7 +157,7 @@ const mRootItem = {
   id:       kROOT_ITEM,
   type:     'normal',
   contexts: ['tab'],
-  title:    manifest.name,
+  title:    browser.i18n.getMessage('context_menu_label'),
   icons:    manifest.icons,
   visible:  false
 };

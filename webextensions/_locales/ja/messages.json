@@ -195,6 +195,8 @@
   "api_requestedPermissions_type_tabs":      { "message": "ブラウザーのタブへのアクセス" },
   "api_requestedPermissions_type_cookies":   { "message": "ブラウザーのタブのコンテナーの識別" },
 
+  "context_menu_label": { "message": "タブのツリーを操作" },
+
   "context_reloadTree_label": { "message": "このツリーを再読み込み(&R)" },
   "context_reloadTree_command": { "message": "このツリーを再読み込み" },
   "context_reloadDescendants_label": { "message": "このタブの配下のタブをすべて再読み込み(&E)" },
