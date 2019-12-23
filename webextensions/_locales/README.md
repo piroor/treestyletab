@@ -3,7 +3,7 @@
 ## Policy about translation (See also [#2434](https://github.com/piroor/treestyletab/pull/2434))
 
 * You should not translate the name of the name of this addon itself "Tree Style Tab", instead you can add a translated name after that like "Tree Style Tab - ツリー型タブ" (this just repeats "Tree Style Tab" in Japanese).
-  * This is for better findability on the Mozilla Add-ons website and on the addons manager.
+  * This is for better findability on the Mozilla Add-ons website and the addons manager.
   * Here is [the commit to revert localized addon name to the global name](https://github.com/piroor/treestyletab/commit/73cee9a81882b1f09de149e8a549620b24fe31e7).
     The term "Tree Style Tab" in these messages means this addon itself.
 * You still can translate the title of the sidebar panel "Tree Style Tab" in your language, for more natural user experience.
