@@ -811,7 +811,9 @@ export async function notifyScrolled(params = {}) {
     window,
     windowId: window,
 
+    deltaX:       params.event.deltaX,
     deltaY:       params.event.deltaY,
+    deltaZ:       params.event.deltaZ,
     deltaMode:    params.event.deltaMode,
     scrollTop:    params.scrollContainer.scrollTop,
     scrollTopMax: params.scrollContainer.scrollTopMax,
