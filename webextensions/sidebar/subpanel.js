@@ -85,14 +85,12 @@ export async function init() {
           updateSelector();
           const provider = TSTAPI.getAddon(message.sender.id);
           if (provider &&
+              provider.subPanel &&
               (mProviderId == provider.id ||
                provider.newlyInstalled)) {
             if (mHeight == 0)
               mHeight = getDefaultHeight();
             applyProvider(provider.id);
-          }
-          else {
-            restoreLastProvider();
           }
         });
         break;
