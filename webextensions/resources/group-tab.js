@@ -101,8 +101,11 @@
         event.stopPropagation();
       }
     });
-    gTitleField.addEventListener('keyup', event => {
-      if (hasModifier(event))
+    gTitleField.addEventListener('keydown', event => {
+      // Event.isComposing for the Enter key to finish composition is always
+      // "false" on keyup, so we need to handle this on keydown.
+      if (hasModifier(event) ||
+          event.isComposing)
         return;
 
       switch (event.key) {
