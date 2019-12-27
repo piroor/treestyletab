@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.2.6 (2019.12.27)
    * Apply dark color scheme to the sidebar only when the "Apply Browser Theme" option is active.
    * Give higher priority to the color scheme defined by the theme.
    * Don't break tree when multiple tabs are opened in the middle of an existing tree at just same time.
