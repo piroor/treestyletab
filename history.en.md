@@ -1,6 +1,20 @@
 # History
 
  - master/HEAD
+   * Apply dark color scheme to the sidebar only when the "Apply Browser Theme" option is active.
+   * Give higher priority to the color scheme defined by the theme.
+   * Don't break tree when multiple tabs are opened in the middle of an existing tree at just same time.
+   * Add a new context menu command "Open All as a Tree including subfolders" for bookmark folders to open them recursively.
+   * Don't open needless tabs for non-bookmark items by the "Open All as a Tree" command.
+   * Open tabs from the "Open All as a Tree" command as discarded by default.
+   * Update descendant tabs counter correctly when a child tab is detached from a window.
+   * Add `bundledTabId` property to the [tab item returned/notified via the API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format).
+   * Add new proxied properties `deltaX` and `deltaZ` to [notified `scrolled` messages via the API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#messages-notified-by-mouse-wheel-rotation).
+   * Unlocalize the name of this addon in Japanese, for better findability. As the result the parent context menu item for extra commands is renamed to "Tree of tabs".
+   * Don't finish title editing of a group tab by hitting the Enter key to finish a text composition.
+   * Don't refresh the subpanel when a helper addon is registered with no subpanel.
+   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `zh_CN` locale by Siyuan Xu. Thanks!
  - 3.2.5 (2019.11.14)
    * Show drop marker with visible color even when a dark color scheme is applied.
    * Show the scrollbar in the sidebar with dark color when a dark color scheme is applied on some themes: Plain, (Plain Dark,) Vertigo and Mixed.
