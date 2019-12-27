@@ -289,6 +289,7 @@ function onMouseMove(event) {
 
 
 function updateSelector() {
+  log('updateSelector start');
   const range = document.createRange();
   range.selectNodeContents(mSelector);
   range.deleteContents();
@@ -297,6 +298,7 @@ function updateSelector() {
   for (const [id, addon] of TSTAPI.getAddons()) {
     if (!addon.subPanel)
       continue;
+    log('  subpanel provider detected: ', addon);
     const item = document.createElement('li');
     item.classList.add('radio');
     item.dataset.value = id;
@@ -317,6 +319,7 @@ function updateSelector() {
   }
   range.insertNode(itemsFragment);
   range.detach();
+  log('updateSelector end');
 }
 
 mSelector.ui = new MenuUI({

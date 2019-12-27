@@ -738,6 +738,7 @@ function exportAddons() {
 }
 
 export async function initAsFrontend() {
+  log('initAsFrontend: start');
   let response;
   while (true) {
     response = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_INITIALIZE });
@@ -746,6 +747,7 @@ export async function initAsFrontend() {
     await wait(10);
   }
   browser.runtime.onMessageExternal.addListener(onCommonCommand);
+  log('initAsFrontend: response = ', response);
   importAddons(response.addons);
   for (const [id, addon] of getAddons()) {
     // Install stylesheet always, even if the addon is not allowed to access
@@ -759,6 +761,7 @@ export async function initAsFrontend() {
   mGroupingBlockedBy = response.groupingLocked;
 
   onInitialized.dispatch();
+  log('initAsFrontend: finish');
 }
 
 function importAddons(addons) {
