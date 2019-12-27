@@ -13,6 +13,8 @@
    * Unlocalize the name of this addon in Japanese, for better findability. As the result the parent context menu item for extra commands is renamed to "Tree of tabs".
    * Don't finish title editing of a group tab by hitting the Enter key to finish a text composition.
    * Don't refresh the subpanel when a helper addon is registered with no subpanel.
+   * Fill the list of subpanels correctly after the sidebar is reloaded.
+   * Pinned tab is now marked as "unread" only when their title is really changed in the background.
    * Update `ru` locale by wvxwxvw. Thanks!
    * Update `zh_CN` locale by Siyuan Xu. Thanks!
  - 3.2.5 (2019.11.14)
