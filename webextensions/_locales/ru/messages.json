@@ -196,6 +196,8 @@
   "api_requestedPermissions_type_cookies":   { "message": "Обнаружение контейнера вкладок браузера" },
 
 
+  "context_menu_label": { "message": "Дерево вкладок" },
+
   "context_reloadTree_label": { "message": "Обновить это дерево" },
   "context_reloadTree_command": { "message": "Обновить это дерево" },
   "context_reloadDescendants_label": { "message": "Обновить дочерние" },
@@ -220,12 +222,12 @@
   "context_groupTabs_command":    { "message": "Создать новую группу из вкладок" },
   "context_topLevel_prefix": { "message": "Верхний элемент: " },
 
-  "context_collapsed_label": { "message": "Свернуто (проверка меню типа флажок" },
-  "context_pinnedTab_label": { "message": "Прикреплено (проверка меню типа переключатель" },
-  "context_unpinnedTab_label": { "message": "Откреплено (проверка меню типа переключатель" },
+  "context_collapsed_label": { "message": "Свернут (проверка меню типа флажок)" },
+  "context_pinnedTab_label": { "message": "Прикреплен (проверка меню типа переключатель)" },
+  "context_unpinnedTab_label": { "message": "Откреплен (проверка меню типа переключатель)" },
 
   "context_openAllBookmarksWithStructure_label": { "message": "Открыть все как дерево" },
-  "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все как дерево (с подпапками)" },
+  "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все с подпапками" },
 
 
   "config_title": { "message": "Настройки Tree Style Tab" },
@@ -370,11 +372,11 @@
   "config_treeBehavior_caption": { "message": "Поведение дерева" },
 
   "config_successorTabControlLevel_caption": { "message": "Когда текущая вкладка закрывается как последняя дочерняя" },
-  "config_successorTabControlLevel_inTree": { "message": "Вернуться к предыдущей вкладке дерева" },
-  "config_successorTabControlLevel_simulateDefault": { "message": "Всегда возвращаться на следующую вкладку (как в Firefox)" },
-  "config_successorTabControlLevel_never": { "message": "Не контролировать фокус (отдать контроль Firefox или другим аддонам)" },
-  "config_successorTabControlLevel_legacyDescription": { "message": "*Поведение Firefox's по умолчанию для \"browser.tabs.selectOwnerOnClose\"=\"true\" сработает раньше этой конфигурации." },
-  "config_simulateSelectOwnerOnClose_label": { "message": "Переместить фокус назад на родительскую вкладку, после закрытия текущей (*Моделирование встроенного в Firefox поведения для \"browser.tabs.selectOwnerOnClose\"=\"true\", приорететно для настроек выше)" },
+  "config_successorTabControlLevel_inTree": { "message": "Перейти на предыдущую вкладку дерева" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "Перейти на следующую вкладку (как в Firefox)" },
+  "config_successorTabControlLevel_never": { "message": "Не контролировать фокус (решает Firefox или другие аддоны)" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "*Поведение Firefox \"browser.tabs.selectOwnerOnClose\"=\"true\" сработает раньше этой конфигурации." },
+  "config_simulateSelectOwnerOnClose_label": { "message": "Переместить фокус на вкладку, из которой открыта закрываемая ( * моделирование встроенного поведения  \"browser.tabs.selectOwnerOnClose\"=\"true\", приорететно для настроек выше)" },
 
   "config_fixupTreeOnTabVisibilityChanged_caption": { "message": "Когда видимость вкладок изменяется другими аддонами" },
   "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "Исправить древья с видимыми вкладками (*Рекомендуется, если есть другие аддоны для переключения группировки вкладок)" },
