@@ -161,7 +161,7 @@ const mItems = [
     title:    browser.i18n.getMessage('config_context_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('config_extraItems_topLevel'),
+        title: browser.i18n.getMessage('config_extraItems_tabs_topLevel'),
         enabled: false
       },
       {
@@ -221,7 +221,7 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_extraItems_subMenu'),
+        title: browser.i18n.getMessage('config_extraItems_tabs_subMenu'),
         enabled: false
       },
       {
@@ -277,6 +277,27 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_groupTabs_label'),
         key:   'context_groupTabs',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_extraItems_bookmarks_caption'),
+        enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+        key:   'context_openAllBookmarksWithStructure',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+        key:   'context_openAllBookmarksWithStructureRecursively',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title: indent() + browser.i18n.getMessage('config_openAllBookmarksWithStructureDiscarded_label'),
+        key:   'openAllBookmarksWithStructureDiscarded',
         type:  'checkbox'
       }
     ]
