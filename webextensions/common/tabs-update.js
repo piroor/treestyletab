@@ -50,6 +50,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   const removedAttributes = [];
   const addedStates       = [];
   const removedStates     = [];
+  const oldState          = options.old || {};
 
   if ('url' in newState) {
     tab.$TST.setAttribute(Constants.kCURRENT_URI, addedAttributes[Constants.kCURRENT_URI] = newState.url);
@@ -74,7 +75,8 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
-      'title' in newState) {
+      ('title' in newState &&
+       newState.title != oldState.title)) {
     let visibleLabel = newState.title;
     if (newState && newState.cookieStoreId) {
       const identity = ContextualIdentities.get(newState.cookieStoreId);

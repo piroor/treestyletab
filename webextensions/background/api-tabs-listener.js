@@ -235,6 +235,8 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     logUpdated('tabs.onUpdated ', tabId, changeInfo, tab, updatedTab);
 
+    const oldState = {};
+
     if ('url' in changeInfo)
       changeInfo.previousUrl = updatedTab.url;
     /*
@@ -246,8 +248,11 @@ async function onUpdated(tabId, changeInfo, tab) {
       outside of TST (in other words, by any other addon.)
     */
     for (const key of Object.keys(changeInfo)) {
-      if (key != 'index')
-        updatedTab[key] = changeInfo[key];
+      if (key == 'index')
+        continue;
+      if ('key' in updatedTab)
+        oldState[key] = updatedTab[key];
+      updatedTab[key] = changeInfo[key];
     }
     if (changeInfo.url ||
         changeInfo.status == 'complete') {
@@ -268,7 +273,7 @@ async function onUpdated(tabId, changeInfo, tab) {
       updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = changeInfo.openerTabId = tab.openerTabId;
     }
 
-    TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
+    TabsUpdate.updateTab(updatedTab, changeInfo, { tab, old: oldState });
 
     const onUpdatedResult = Tab.onUpdated.dispatch(updatedTab, changeInfo);
     // don't do await if not needed, to process things synchronously
