@@ -65,12 +65,6 @@ export async function init() {
   log('initialize ', { providerId, height: mHeight });
 
   mContainer.appendChild(mSubPanel);
-  updateSelector();
-
-  if (providerId)
-    applyProvider(providerId);
-  else
-    restoreLastProvider();
 
   browser.runtime.onMessage.addListener((message, _sender, _respond) => {
     if (!message ||
@@ -104,10 +98,13 @@ export async function init() {
         break;
     }
   });
+
+  log('initialize: finish ');
 }
 
 TSTAPI.onInitialized.addListener(async () => {
   await init();
+  updateSelector();
 
   const providerId = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler());
   if (providerId)
