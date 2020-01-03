@@ -6,7 +6,6 @@
 'use strict';
 
 import RichConfirm from '/extlib/RichConfirm.js';
-import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
@@ -237,7 +236,6 @@ async function rebuildAll(windows) {
         trackedWindow = Window.init(window.id);
 
       for (const tab of window.tabs) {
-        TabIdFixer.fixTab(tab);
         Tab.track(tab);
         Tab.init(tab, { existing: true });
         tryStartHandleAccelKeyOnTab(tab);
