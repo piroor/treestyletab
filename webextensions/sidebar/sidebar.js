@@ -6,7 +6,6 @@
 'use strict';
 
 import RichConfirm from '/extlib/RichConfirm.js';
-import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
@@ -148,7 +147,6 @@ export async function init() {
 
       // Track only the first tab for now, because it is required to initialize
       // the container and it will be used by the SidebarCache module.
-      TabIdFixer.fixTab(tabs[0]);
       Tab.track(tabs[0]);
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
@@ -156,7 +154,6 @@ export async function init() {
         let count = 0;
         const maxCount = tabs.length - 1;
         for (const tab of tabs.slice(1)) {
-          TabIdFixer.fixTab(tab);
           Tab.track(tab);
           if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
             UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs

@@ -4,7 +4,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 import '/extlib/l10n.js';
-import '/extlib/TabIdFixer.js';
 
 import {
   log,

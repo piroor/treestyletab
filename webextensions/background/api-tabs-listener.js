@@ -26,8 +26,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabIdFixer from '/extlib/TabIdFixer.js';
-
 import {
   log as internalLogger,
   dumpTab,
@@ -213,9 +211,6 @@ async function onActivated(activeInfo) {
 async function onUpdated(tabId, changeInfo, tab) {
   if (mPromisedStarted)
     await mPromisedStarted;
-
-  TabIdFixer.fixTab(tab);
-  tabId = tab.id;
 
   if (!Tab.isTracked(tabId))
     await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
@@ -886,7 +881,7 @@ async function onAttached(tabId, attachInfo) {
 
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
-    let tab = Tab.get(tabId);
+    const tab = Tab.get(tabId);
     const attachedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler());
     if (!attachedTab) {
       onCompleted();
@@ -897,10 +892,6 @@ async function onAttached(tabId, attachInfo) {
       tab.windowId = attachInfo.newWindowId
       tab.index    = attachedTab.index;
       tab.reindexedBy = `tabs.onAttached (${tab.index})`;
-    }
-    else {
-      tab = attachedTab;
-      TabIdFixer.fixTab(tab);
     }
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
