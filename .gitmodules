@@ -19,9 +19,6 @@
 [submodule "submodules/webextensions-lib-tab-favicon-helper"]
 	path = submodules/webextensions-lib-tab-favicon-helper
 	url = https://github.com/piroor/webextensions-lib-tab-favicon-helper.git
-[submodule "submodules/webextensions-lib-tab-id-fixer"]
-	path = submodules/webextensions-lib-tab-id-fixer
-	url = https://github.com/piroor/webextensions-lib-tab-id-fixer.git
 [submodule "submodules/webextensions-lib-rich-confirm"]
 	path = submodules/webextensions-lib-rich-confirm
 	url = https://github.com/piroor/webextensions-lib-rich-confirm.git
