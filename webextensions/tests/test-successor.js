@@ -259,7 +259,7 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
     A: { index: 1, active: false },
     B: { index: 2, openerTabId: 'A', active: false },
     C: { index: 3, openerTabId: 'B', active: false },
-    D: { index: 3, active: false }
+    D: { index: 4, active: false }
   }, { windowId: win.id });
   await browser.tabs.update(tabs.B.id, { active: true });
   await browser.tabs.update(tabs.C.id, { active: true });
