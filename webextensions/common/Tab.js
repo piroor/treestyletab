@@ -528,8 +528,8 @@ export default class Tab {
   }
 
   get nearestLoadedSiblingTab() {
-    const parentId = this.parentId;
-    if (!parentId)
+    const parent = this.parent;
+    if (!parent)
       return null;
     const tabs = TabsStore.visibleTabsInWindow.get(this.tab.windowId);
     return (
@@ -537,9 +537,10 @@ export default class Tab {
       TabsStore.query({
         windowId:  this.tab.windowId,
         tabs,
-        childOf:   parentId,
+        childOf:   parent.id,
         discarded: false,
         fromId:    this.tab.id,
+        toId:      parent.$TST.lastChild.id,
         visible:   true,
         index:     (index => index > this.tab.index)
       }) ||
@@ -547,9 +548,10 @@ export default class Tab {
       TabsStore.query({
         windowId:  this.tab.windowId,
         tabs,
-        childOf:   parentId,
+        childOf:   parent.id,
         discarded: false,
         fromId:    this.tab.id,
+        toId:      parent.$TST.firstChild.id,
         visible:   true,
         index:     (index => index < this.tab.index),
         last:      true
