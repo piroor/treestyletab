@@ -207,10 +207,7 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
   await browser.tabs.update(tabs.D.id, { active: true });
   await browser.tabs.update(tabs.E.id, { active: true });
   await browser.tabs.update(tabs.F.id, { active: true });
-  await Promise.all([
-    browser.tabs.discard(tabs.B.id),
-    browser.tabs.discard(tabs.E.id)
-  ]);
+  await browser.tabs.discard([tabs.B.id, tabs.E.id]);
   await wait(50);
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -293,10 +290,7 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
   });
   await wait(1000);
   await browser.tabs.update(tabs.C.id, { active: true });
-  await Promise.all([
-    browser.tabs.discard(tabs.A.id),
-    browser.tabs.discard(tabs.B.id)
-  ]);
+  await browser.tabs.discard([tabs.A.id, tabs.B.id]);
   is('C', await getActiveTabName(tabs),
      'the last child tab must be active');
 
