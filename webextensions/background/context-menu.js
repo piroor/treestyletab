@@ -287,7 +287,6 @@ export function onClick(info, tab) {
     return onTabItemClick(info, tab);
 }
 browser.menus.onClicked.addListener(onClick);
-TabContextMenu.onTSTItemClick.addListener(onClick);
 
 function onTabItemClick(info, tab) {
   // Extra context menu commands won't be available on the blank area of the tab bar.
@@ -362,6 +361,7 @@ function onTabItemClick(info, tab) {
       break;
   }
 }
+TabContextMenu.onTSTItemClick.addListener(onTabItemClick);
 
 function onBookmarkItemClick(info) {
   switch (info.menuItemId) {
