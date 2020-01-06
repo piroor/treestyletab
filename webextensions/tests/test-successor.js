@@ -186,7 +186,6 @@ export async function testSimulateSelectOwnerOnCloseCleared() {
 }
 
 
-testAvoidDiscardedTabToBeActivatedAsSuccessor.runnable = true;
 export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
   await Utils.setConfigs({
     successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
@@ -251,7 +250,6 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
      'nearest loaded tab in the tree must become the successor.');
 }
 
-testAvoidDiscardedTabToBeActivatedOnCollapsed.runnable = true;
 export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
   await Utils.setConfigs({
     avoidDiscardedTabToBeActivatedIfPossible: true
