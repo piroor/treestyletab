@@ -475,7 +475,7 @@ export default class Tab {
         discarded: false,
         fromId:    this.tab.id,
         visible:   true,
-        index:     (index => index > this.tab.index),
+        index:     (index => index < this.tab.index),
         last:      true
       })
     );
@@ -509,7 +509,7 @@ export default class Tab {
           '!id':        this.tab.id,
           fromId:       tab.id,
           visible:      true,
-          index:        (index => index > tab.index),
+          index:        (index => index < tab.index),
           last:         true
         })
       );
@@ -546,7 +546,7 @@ export default class Tab {
         discarded: false,
         fromId:    this.tab.id,
         visible:   true,
-        index:     (index => index > this.tab.index),
+        index:     (index => index < this.tab.index),
         last:      true
       })
     );
