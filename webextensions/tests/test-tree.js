@@ -194,3 +194,151 @@ export async function testIgnoreCreatingTabsOnTreeStructureAutoFix() {
        'new tabs opened in a time must not be attached');
   }
 }
+
+testNearestLoadedTabInTree.runnable = true;
+export async function testNearestLoadedTabInTree() {
+  /*
+    * A
+    * B
+      * C
+        * D
+      * E
+        * F
+          * G
+        * H <= test target
+          * I
+        * J
+          * K
+      * L
+        * M
+    * N
+  */
+  let tabs = await Utils.createTabs({
+    A: { index: 1, active: false },
+    B: { index: 2, active: false },
+    C: { index: 3, openerTabId: 'B', active: false },
+    D: { index: 4, openerTabId: 'C', active: false },
+    E: { index: 5, openerTabId: 'B', active: false },
+    F: { index: 6, openerTabId: 'E', active: false },
+    G: { index: 7, openerTabId: 'F', active: false },
+    H: { index: 8, openerTabId: 'E', active: false },
+    I: { index: 9, openerTabId: 'H', active: false },
+    J: { index: 10, openerTabId: 'E', active: false },
+    K: { index: 11, openerTabId: 'J', active: false },
+    L: { index: 12, openerTabId: 'B', active: false },
+    M: { index: 13, openerTabId: 'L', active: false },
+    N: { index: 14, active: false }
+  }, { windowId: win.id });
+  await browser.tabs.update(tabs.H.id, { active: true });
+  await browser.tabs.discard([
+    tabs.A.id,
+    tabs.B.id,
+    tabs.C.id,
+    tabs.D.id,
+    tabs.E.id,
+    tabs.F.id,
+    tabs.G.id,
+    tabs.I.id,
+    tabs.J.id,
+    tabs.K.id,
+    tabs.L.id,
+    tabs.M.id
+  ]);
+  await wait(50);
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H, I, J, K, L, M, N } = tabs;
+    is([
+      `${A.id}`,
+      `${B.id}`,
+      `${B.id} => ${C.id}`,
+      `${B.id} => ${C.id} => ${D.id}`,
+      `${B.id} => ${E.id}`,
+      `${B.id} => ${E.id} => ${F.id}`,
+      `${B.id} => ${E.id} => ${F.id} => ${G.id}`,
+      `${B.id} => ${E.id} => ${H.id}`,
+      `${B.id} => ${E.id} => ${H.id} => ${I.id}`,
+      `${B.id} => ${E.id} => ${J.id}`,
+      `${B.id} => ${E.id} => ${J.id} => ${K.id}`,
+      `${B.id} => ${L.id}`,
+      `${B.id} => ${L.id} => ${M.id}`,
+      `${N.id}`
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs must be initialized with specified structure');
+  }
+  await wait(1000);
+
+  const tabNameById = {};
+  const promisedExpanded = [];
+  for (const name of Object.keys(tabs)) {
+    tabNameById[tabs[name].id] = name;
+    promisedExpanded.push(browser.runtime.sendMessage({
+      type:  'treestyletab:api:expand-tree',
+      tabId: tabs[name].id
+    }));
+  }
+  await Promise.all(promisedExpanded);
+
+  is(null,
+     tabs.H.$TST.nearestLoadedTabInTree &&
+       tabNameById[tabs.H.$TST.nearestLoadedTabInTree.id],
+     'No tab should be found');
+  is('N', tabNameById[tabs.H.$TST.nearestLoadedTab.id],
+     'Next root tab should be found');
+
+  const followingTabs = [
+    tabs.I,
+    tabs.J,
+    tabs.K,
+    tabs.L,
+    tabs.M
+  ];
+  let lastTab;
+  for (let i = 0; i < followingTabs.length - 1; i++) {
+    const nextTab = followingTabs[i];
+    await Promise.all([
+      lastTab && browser.tabs.discard(lastTab.id),
+      browser.tabs.reload(nextTab.id)
+    ]);
+    await wait(500);
+    tabs = await Utils.refreshTabs(tabs);
+    is(tabNameById[nextTab.id],
+       tabs.H.$TST.nearestLoadedTabInTree &&
+         tabNameById[tabs.H.$TST.nearestLoadedTabInTree.id],
+       'A following loaded tab in the tree should be found');
+    is(tabNameById[nextTab.id],
+       tabs.H.$TST.nearestLoadedTab &&
+         tabNameById[tabs.H.$TST.nearestLoadedTab.id],
+       'A following loaded tab should be found');
+    lastTab = nextTab;
+  }
+  await browser.tabs.discard([lastTab.id, tabs.N.id]);
+
+  const precedingTabs = [
+    tabs.B,
+    tabs.C,
+    tabs.D,
+    tabs.E,
+    tabs.F,
+    tabs.G
+  ].reverse();
+  lastTab = null;
+  for (let i = 0; i < precedingTabs.length - 1; i++) {
+    const nextTab = precedingTabs[i];
+    await Promise.all([
+      lastTab && browser.tabs.discard(lastTab.id),
+      browser.tabs.reload(nextTab.id)
+    ]);
+    await wait(500);
+    tabs = await Utils.refreshTabs(tabs);
+    is(tabNameById[nextTab.id],
+       tabs.H.$TST.nearestLoadedTabInTree &&
+         tabNameById[tabs.H.$TST.nearestLoadedTabInTree.id],
+       'A preceding loaded tab in the tree should be found');
+    is(tabNameById[nextTab.id],
+       tabs.H.$TST.nearestLoadedTab &&
+         tabNameById[tabs.H.$TST.nearestLoadedTab.id],
+       'A preceding loaded tab should be found');
+    lastTab = nextTab;
+  }
+}
