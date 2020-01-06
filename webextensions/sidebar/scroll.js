@@ -603,8 +603,15 @@ function onMessageExternal(message, _aSender) {
             return;
         }
         else {
-          if (message.window != currentWindow)
+          const windowId = message.window || message.windowId;
+          if (windowId == 'active') {
+            const currentWindow = await browser.windows.getCurrent();
+            if (!currentWindow.focused)
+              return;
+          }
+          else if (windowId != currentWindow) {
             return;
+          }
           if ('delta' in message)
             params.delta = message.delta;
           if ('position' in message)
