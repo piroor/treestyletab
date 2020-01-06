@@ -1025,6 +1025,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
+        key:   'warnOnCloseTabsByClosebox',
+        type:  'checkbox'
+      },
+      {
         title: browser.i18n.getMessage('config_useCachedTree_label'),
         key:   'useCachedTree',
         type:  'checkbox'

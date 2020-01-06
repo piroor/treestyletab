@@ -402,6 +402,7 @@
   "config_closeParentBehavior_detach":               { "message": "子孫のタブをツリーから解放する" },
 
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
+  "config_warnOnCloseTabsByClosebox_label": { "message": "クローズボックスの通常のクリック操作で同時に複数のタブを閉じるときは確認する" },
 
 
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },

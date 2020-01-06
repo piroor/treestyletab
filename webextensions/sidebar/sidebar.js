@@ -589,8 +589,9 @@ async function importTabsFromBackground() {
 }
 
 
-export async function confirmToCloseTabs(tabs, _options = {}) {
+export async function confirmToCloseTabs(tabs, options = {}) {
   const tabIds = [];
+  const configKey = options.configKey || 'warnOnCloseTabs';
   tabs = tabs.filter(tab => {
     if (!configs.grantedRemovingTabIds.includes(tab.id)) {
       tabIds.push(tab.id);
@@ -601,7 +602,7 @@ export async function confirmToCloseTabs(tabs, _options = {}) {
   log('confirmToCloseTabs: ', tabIds);
   const count = tabIds.length;
   if (count <= 1 ||
-      !configs.warnOnCloseTabs)
+      !configs[configKey])
     return true;
 
   const confirm = new RichConfirm({
@@ -617,7 +618,7 @@ export async function confirmToCloseTabs(tabs, _options = {}) {
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)
-        configs.warnOnCloseTabs = false;
+        configs[configKey] = false;
       configs.lastConfirmedToCloseTabs = Date.now();
       configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);

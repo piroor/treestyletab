@@ -498,7 +498,9 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
       TreeBehavior.getClosingTabsFromParent(tab, {
         byInternalOperation: true
       }) ;
-    Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.$TST.sanitized))
+    Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.$TST.sanitized), {
+      configKey: 'warnOnCloseTabsByClosebox'
+    })
       .then(confirmed => {
         if (!confirmed)
           return;

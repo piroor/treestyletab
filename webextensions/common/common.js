@@ -172,6 +172,7 @@ export const configs = new Configs({
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,
   warnOnCloseTabsNotificationTimeout: 20 * 1000,
+  warnOnCloseTabsByClosebox: true,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
 
