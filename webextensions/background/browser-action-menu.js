@@ -640,8 +640,8 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('config_dontFocusToDiscardedTabIfPossible_label'),
-        key:   'dontFocusToDiscardedTabIfPossible',
+        title: browser.i18n.getMessage('config_avoidDiscardedTabToBeActivatedIfPossible_label'),
+        key:   'avoidDiscardedTabToBeActivatedIfPossible',
         type:  'checkbox'
       },
       {

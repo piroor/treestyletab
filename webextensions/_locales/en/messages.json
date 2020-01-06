@@ -386,7 +386,7 @@
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-click on a tab to collapse/expand tree" },
-  "config_dontFocusToDiscardedTabIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsings" },
+  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsings" },
 
   "config_closeParentBehaviorMode_caption":           { "message": "When a parent tab is closed or moved just as a solo tab" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Recommended behavior for people who still use the native tab bar of Firefox itself also" },

@@ -382,7 +382,7 @@
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "タブのダブルクリックでツリーを開閉する" },
-  "config_dontFocusToDiscardedTabIfPossible_label": { "message": "現在のタブを閉じたりツリーを折り畳んだりしたときに、なるべく待機状態のタブが選択されないようにする" },
+  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折り畳んだりしたときに、なるべく待機状態のタブが選択されないようにする" },
 
   "config_closeParentBehaviorMode_caption":           { "message": "親タブを単独で閉じたり移動したりした時の挙動" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Firefox自身のタブバーを併用する場合向けの動作にする" },

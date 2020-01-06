@@ -108,7 +108,7 @@ async function updateInternal(tabId) {
       log(`  possible successor: ${dumpTab(tab)}`);
       if (successor &&
           successor.discarded &&
-          configs.dontFocusToDiscardedTabIfPossible) {
+          configs.avoidDiscardedTabToBeActivatedIfPossible) {
         log(`  ${dumpTab(successor)} is discarded.`);
         successor = tab.$TST.nearestLoadedSiblingTab ||
                       tab.$TST.nearestLoadedTabInTree ||
@@ -122,7 +122,7 @@ async function updateInternal(tabId) {
       log(`  possible successor: ${dumpTab(tab)}`);
       if (successor &&
           successor.discarded &&
-          configs.dontFocusToDiscardedTabIfPossible) {
+          configs.avoidDiscardedTabToBeActivatedIfPossible) {
         log(`  ${dumpTab(successor)} is discarded.`);
         successor = tab.$TST.nearestLoadedTab ||
                       successor;

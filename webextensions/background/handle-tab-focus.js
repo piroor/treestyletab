@@ -80,13 +80,13 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         successor = successor.$TST.nearestVisibleFollowingTab;
         if (successor &&
             successor.discarded &&
-            configs.dontFocusToDiscardedTabIfPossible)
+            configs.avoidDiscardedTabToBeActivatedIfPossible)
           successor = successor.$TST.nearestLoadedTab || successor;
         if (!successor)
           successor = Tab.getFirstVisibleTab(tab.windowId);
       }
       else if (successor.discarded &&
-               configs.dontFocusToDiscardedTabIfPossible) {
+               configs.avoidDiscardedTabToBeActivatedIfPossible) {
         successor = successor.$TST.nearestLoadedTab || successor;
       }
       window.lastActiveTab = successor.id;
