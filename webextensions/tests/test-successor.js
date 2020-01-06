@@ -73,11 +73,11 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
   });
 
   let tabs = await Utils.createTabs({
-    A: { index: 1, active: false },
-    B: { index: 2, openerTabId: 'A', active: false },
-    C: { index: 3, openerTabId: 'B', active: false },
-    D: { index: 3, openerTabId: 'A', active: false },
-    E: { index: 5, active: false }
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'B' },
+    D: { index: 3, openerTabId: 'A' },
+    E: { index: 5 }
   }, { windowId: win.id });
   // deactivate the effect of the "browser.tabs.selectOwnerOnClose"
   await browser.tabs.update(tabs.D.id, { active: true });
@@ -121,8 +121,8 @@ export async function testSimulateSelectOwnerOnClose() {
     A: { index: 1, active: true }
   });
   const childTabs = await Utils.createTabs({
-    B: { index: 2, openerTabId: tabs.A.id, active: false },
-    C: { index: 3, openerTabId: tabs.A.id, active: false }
+    B: { index: 2, openerTabId: tabs.A.id },
+    C: { index: 3, openerTabId: tabs.A.id }
   }, { windowId: win.id });
   tabs = await Utils.refreshTabs({ A: tabs.A, B: childTabs.B, C: childTabs.C });
   {
@@ -156,8 +156,8 @@ export async function testSimulateSelectOwnerOnCloseCleared() {
     A: { index: 1, active: true }
   });
   const childTabs = await Utils.createTabs({
-    B: { index: 2, openerTabId: tabs.A.id, active: false },
-    C: { index: 3, openerTabId: tabs.A.id, active: false }
+    B: { index: 2, openerTabId: tabs.A.id },
+    C: { index: 3, openerTabId: tabs.A.id }
   }, { windowId: win.id });
   tabs = await Utils.refreshTabs({ A: tabs.A, B: childTabs.B, C: childTabs.C });
   {
@@ -193,13 +193,13 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
   });
 
   let tabs = await Utils.createTabs({
-    A: { index: 1, active: false },
-    B: { index: 2, openerTabId: 'A', active: false },
-    C: { index: 3, openerTabId: 'B', active: false },
-    D: { index: 4, openerTabId: 'A', active: false },
-    E: { index: 5, openerTabId: 'A', active: false },
-    F: { index: 6, openerTabId: 'A', active: false },
-    G: { index: 7, active: false }
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'B' },
+    D: { index: 4, openerTabId: 'A' },
+    E: { index: 5, openerTabId: 'A' },
+    F: { index: 6, openerTabId: 'A' },
+    G: { index: 7 }
   }, { windowId: win.id });
   await browser.tabs.update(tabs.A.id, { active: true });
   await browser.tabs.update(tabs.B.id, { active: true });
@@ -253,10 +253,10 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
   });
 
   let tabs = await Utils.createTabs({
-    A: { index: 1, active: false },
-    B: { index: 2, openerTabId: 'A', active: false },
-    C: { index: 3, openerTabId: 'B', active: false },
-    D: { index: 4, active: false }
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'B' },
+    D: { index: 4 }
   }, { windowId: win.id });
   await browser.tabs.update(tabs.B.id, { active: true });
   await browser.tabs.update(tabs.C.id, { active: true });

@@ -213,20 +213,20 @@ export async function testNearestLoadedTabInTree() {
     * N
   */
   let tabs = await Utils.createTabs({
-    A: { index: 1, active: false },
-    B: { index: 2, active: false },
-    C: { index: 3, openerTabId: 'B', active: false },
-    D: { index: 4, openerTabId: 'C', active: false },
-    E: { index: 5, openerTabId: 'B', active: false },
-    F: { index: 6, openerTabId: 'E', active: false },
-    G: { index: 7, openerTabId: 'F', active: false },
-    H: { index: 8, openerTabId: 'E', active: false },
-    I: { index: 9, openerTabId: 'H', active: false },
-    J: { index: 10, openerTabId: 'E', active: false },
-    K: { index: 11, openerTabId: 'J', active: false },
-    L: { index: 12, openerTabId: 'B', active: false },
-    M: { index: 13, openerTabId: 'L', active: false },
-    N: { index: 14, active: false }
+    A: { index: 1 },
+    B: { index: 2 },
+    C: { index: 3, openerTabId: 'B' },
+    D: { index: 4, openerTabId: 'C' },
+    E: { index: 5, openerTabId: 'B' },
+    F: { index: 6, openerTabId: 'E' },
+    G: { index: 7, openerTabId: 'F' },
+    H: { index: 8, openerTabId: 'E' },
+    I: { index: 9, openerTabId: 'H' },
+    J: { index: 10, openerTabId: 'E' },
+    K: { index: 11, openerTabId: 'J' },
+    L: { index: 12, openerTabId: 'B' },
+    M: { index: 13, openerTabId: 'L' },
+    N: { index: 14 }
   }, { windowId: win.id });
   await browser.tabs.update(tabs.H.id, { active: true });
   await browser.tabs.discard([
