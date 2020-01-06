@@ -375,9 +375,14 @@ function onBookmarkItemClick(info) {
 }
 
 function onShown(info, tab) {
-  if (!info.contexts.includes('tab'))
-    return;
+  if (info.contexts.includes('tab'))
+    onTabContextMenuShown(info, tab);
+  else if (info.contexts.includes('bookmark'))
+    onBookmarkContextMenuShown(info);
+}
+browser.menus.onShown.addListener(onShown);
 
+function onTabContextMenuShown(info, tab) {
   let updated = false;
   if (mNativeContextMenuAvailable) {
     initItems();
@@ -437,5 +442,22 @@ function onShown(info, tab) {
   if (updated)
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
-browser.menus.onShown.addListener(onShown);
-TabContextMenu.onTSTTabContextMenuShown.addListener(onShown);
+TabContextMenu.onTSTTabContextMenuShown.addListener(onTabContextMenuShown);
+
+async function onBookmarkContextMenuShown(info) {
+  let isFolder = true;
+  if (info.bookmarkId) {
+    let item = await browser.bookmarks.get(info.bookmarkId);
+    if (Array.isArray(item))
+      item = item[0];
+    isFolder = item.type == 'folder';
+  }
+
+  browser.menus.update('openAllBookmarksWithStructure', {
+    visible: isFolder && configs.context_openAllBookmarksWithStructure
+  });
+  browser.menus.update('openAllBookmarksWithStructureRecursively', {
+    visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
+  });
+  browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+}
