@@ -153,6 +153,12 @@ If you need any new API, please file API proposals to the issue tracker.
   "Waterfox Current" looks based on Firefox ESR68 and you can install TST 2.0 and later to it.
   However "Waterfox Classic" based on Firefox 56 is never supported.
   </details>
+* <details><summary>Support for Google Chrome and other Chromium based browsers</a></summary>
+  
+  TST can't be ported to Chrome because it depends on some Firefox specific API like `sidebar`, so it needs to be re-implemented completely.
+  Sorry but I won't re-implement TST as a Chrome extension by myself because I still use Firefox.
+  (But [there are some alternatives developed by someone not me](#similar-projects).)
+  </details>
 * <details><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
   
   [As a workaround, you need to do it by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
