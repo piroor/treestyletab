@@ -482,32 +482,44 @@ export default class Tab {
   }
 
   get nearestLoadedTabInTree() {
-    const parentId = this.parentId;
-    if (!parentId)
-      return null;
-    return (
-      // nearest following tab
-      TabsStore.query({
-        windowId:     this.tab.windowId,
-        tabs:         TabsStore.visibleTabsInWindow.get(this.tab.windowId),
-        descendantOf: parentId,
-        discarded:    false,
-        fromId:       this.tab.id,
-        visible:      true,
-        index:        (index => index > this.tab.index)
-      }) ||
-      // nearest preceding tab
-      TabsStore.query({
-        windowId:     this.tab.windowId,
-        tabs:         TabsStore.visibleTabsInWindow.get(this.tab.windowId),
-        descendantOf: parentId,
-        discarded:    false,
-        fromId:       this.tab.id,
-        visible:      true,
-        index:        (index => index > this.tab.index),
-        last:         true
-      })
-    );
+    let tab = this.tab;
+    const tabs = TabsStore.visibleTabsInWindow.get(tab.windowId);
+    while (tab) {
+      const parent = tab.$TST.parent;
+      if (!parent)
+        return null;
+      const loadedTab = (
+        // nearest following tab
+        TabsStore.query({
+          windowId:     tab.windowId,
+          tabs,
+          descendantOf: parent.id,
+          discarded:    false,
+          '!id':        this.tab.id,
+          fromId:       this.tab.id,
+          visible:      true,
+          index:        (index => index > this.tab.index)
+        }) ||
+        // nearest preceding tab
+        TabsStore.query({
+          windowId:     tab.windowId,
+          tabs,
+          descendantOf: parent.id,
+          discarded:    false,
+          '!id':        this.tab.id,
+          fromId:       tab.id,
+          visible:      true,
+          index:        (index => index > tab.index),
+          last:         true
+        })
+      );
+      if (loadedTab)
+        return loadedTab;
+      if (!parent.discarded)
+        return parent;
+      tab = tab.$TST.parent;
+    }
+    return null;
   }
 
   get nearestLoadedSiblingTab() {
