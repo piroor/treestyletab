@@ -77,7 +77,17 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         return false;
       if (shouldSkipCollapsed &&
           window.lastActiveTab == successor.id) {
-        successor = successor.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(tab.windowId);
+        successor = successor.$TST.nearestVisibleFollowingTab;
+        if (successor &&
+            successor.discarded &&
+            configs.dontFocusToDiscardedTabIfPossible)
+          successor = successor.$TST.nearestLoadedTab || successor;
+        if (!successor)
+          successor = Tab.getFirstVisibleTab(tab.windowId);
+      }
+      else if (successor.discarded &&
+               configs.dontFocusToDiscardedTabIfPossible) {
+        successor = successor.$TST.nearestLoadedTab || successor;
       }
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)

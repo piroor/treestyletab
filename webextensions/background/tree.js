@@ -717,7 +717,9 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   collapseExpandTab(tab, params);
 
   if (params.collapsed && tab.active) {
-    const newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
+    let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
+    if (configs.dontFocusToDiscardedTabIfPossible && newSelection.discarded)
+      newSelection = newSelection.$TST.nearestLoadedTabInTree || newSelection;
     logCollapseExpand('current tab is going to be collapsed, switch to ', newSelection.id);
     TabsInternalOperation.activateTab(newSelection, { silently: true });
   }

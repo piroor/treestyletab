@@ -456,6 +456,88 @@ export default class Tab {
     });
   }
 
+  get nearestLoadedTab() {
+    return (
+      // nearest following tab
+      TabsStore.query({
+        windowId:  this.tab.windowId,
+        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        discarded: false,
+        fromId:    this.tab.id,
+        visible:   true,
+        index:     (index => index > this.tab.index)
+      }) ||
+      // nearest preceding tab
+      TabsStore.query({
+        windowId:  this.tab.windowId,
+        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        discarded: false,
+        fromId:    this.tab.id,
+        visible:   true,
+        index:     (index => index > this.tab.index),
+        last:      true
+      })
+    );
+  }
+
+  get nearestLoadedTabInTree() {
+    const parentId = this.parentId;
+    if (!parentId)
+      return null;
+    return (
+      // nearest following tab
+      TabsStore.query({
+        windowId:     this.tab.windowId,
+        tabs:         TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        descendantOf: parentId,
+        discarded:    false,
+        fromId:       this.tab.id,
+        visible:      true,
+        index:        (index => index > this.tab.index)
+      }) ||
+      // nearest preceding tab
+      TabsStore.query({
+        windowId:     this.tab.windowId,
+        tabs:         TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        descendantOf: parentId,
+        discarded:    false,
+        fromId:       this.tab.id,
+        visible:      true,
+        index:        (index => index > this.tab.index),
+        last:         true
+      })
+    );
+  }
+
+  get nearestLoadedSiblingTab() {
+    const parentId = this.parentId;
+    if (!parentId)
+      return null;
+    return (
+      // nearest following tab
+      TabsStore.query({
+        windowId:  this.tab.windowId,
+        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        childOf:   parentId,
+        discarded: false,
+        fromId:    this.tab.id,
+        visible:   true,
+        index:     (index => index > this.tab.index)
+      }) ||
+      // nearest preceding tab
+      TabsStore.query({
+        windowId:  this.tab.windowId,
+        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        childOf:   parentId,
+        discarded: false,
+        fromId:    this.tab.id,
+        visible:   true,
+        index:     (index => index > this.tab.index),
+        last:      true
+      })
+    );
+  }
+
   //===================================================================
   // tree relations
   //===================================================================

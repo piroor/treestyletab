@@ -220,6 +220,7 @@ export const configs = new Configs({
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
+  dontFocusToDiscardedTabIfPossible: false,
   migratedBookmarkUrls: [],
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'

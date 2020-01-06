@@ -640,6 +640,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: browser.i18n.getMessage('config_dontFocusToDiscardedTabIfPossible_label'),
+        key:   'dontFocusToDiscardedTabIfPossible',
+        type:  'checkbox'
+      },
+      {
         title:    browser.i18n.getMessage('config_successorTabControlLevel_caption'),
         children: [
           {

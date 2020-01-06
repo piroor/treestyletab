@@ -105,9 +105,30 @@ async function updateInternal(tabId) {
         (firstChild && !firstChild.$TST.collapsed && firstChild) ||
         (tab.$TST.nextSiblingTab || tab.$TST.nearestVisiblePrecedingTab)
       );
+      log(`  possible successor: ${dumpTab(tab)}`);
+      if (successor &&
+          successor.discarded &&
+          configs.dontFocusToDiscardedTabIfPossible) {
+        log(`  ${dumpTab(successor)} is discarded.`);
+        successor = tab.$TST.nearestLoadedSiblingTab ||
+                      tab.$TST.nearestLoadedTabInTree ||
+                      tab.$TST.nearestLoadedTab ||
+                      successor;
+        log(`  => redirected successor is: ${dumpTab(successor)}`);
+      }
     }
-    else
+    else {
       successor = tab.$TST.nearestVisibleFollowingTab || tab.$TST.nearestVisiblePrecedingTab;
+      log(`  possible successor: ${dumpTab(tab)}`);
+      if (successor &&
+          successor.discarded &&
+          configs.dontFocusToDiscardedTabIfPossible) {
+        log(`  ${dumpTab(successor)} is discarded.`);
+        successor = tab.$TST.nearestLoadedTab ||
+                      successor;
+        log(`  => redirected successor is: ${dumpTab(successor)}`);
+      }
+    }
   }
   if (successor) {
     log(`  ${dumpTab(tab)} is under control: successor = ${successor.id}`);

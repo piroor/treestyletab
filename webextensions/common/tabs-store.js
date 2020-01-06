@@ -229,6 +229,12 @@ function matchedWithQuery(tab, query) {
   if ('hasParent' in query &&
       query.hasParent != tab.$TST.hasParent)
     return false;
+  if ('childOf' in query &&
+      !tab.$TST.parentId != query.childOf)
+    return false;
+  if ('descendantOf' in query &&
+      !tab.$TST.ancestorIds.includes(query.descendantOf))
+    return false;
 
   return true;
 }
