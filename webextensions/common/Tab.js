@@ -484,10 +484,12 @@ export default class Tab {
   get nearestLoadedTabInTree() {
     let tab = this.tab;
     const tabs = TabsStore.visibleTabsInWindow.get(tab.windowId);
+    let lastLastDescendant;
     while (tab) {
       const parent = tab.$TST.parent;
       if (!parent)
         return null;
+      const lastDescendant = parent.$TST.lastDescendant;
       const loadedTab = (
         // nearest following tab
         TabsStore.query({
@@ -496,7 +498,8 @@ export default class Tab {
           descendantOf: parent.id,
           discarded:    false,
           '!id':        this.tab.id,
-          fromId:       this.tab.id,
+          fromId:       (lastLastDescendant || this.tab).id,
+          toId:         lastDescendant.id,
           visible:      true,
           index:        (index => index > this.tab.index)
         }) ||
@@ -508,6 +511,7 @@ export default class Tab {
           discarded:    false,
           '!id':        this.tab.id,
           fromId:       tab.id,
+          toId:         parent.$TST.firstChild.id,
           visible:      true,
           index:        (index => index < tab.index),
           last:         true
@@ -517,6 +521,7 @@ export default class Tab {
         return loadedTab;
       if (!parent.discarded)
         return parent;
+      lastLastDescendant = lastDescendant;
       tab = tab.$TST.parent;
     }
     return null;
