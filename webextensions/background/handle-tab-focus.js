@@ -81,13 +81,17 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         if (successor &&
             successor.discarded &&
             configs.avoidDiscardedTabToBeActivatedIfPossible)
-          successor = successor.$TST.nearestLoadedTab || successor;
+          successor = successor.$TST.nearestLoadedTabInTree ||
+                        successor.$TST.nearestLoadedTab ||
+                        successor;
         if (!successor)
           successor = Tab.getFirstVisibleTab(tab.windowId);
       }
       else if (successor.discarded &&
                configs.avoidDiscardedTabToBeActivatedIfPossible) {
-        successor = successor.$TST.nearestLoadedTab || successor;
+        successor = successor.$TST.nearestLoadedTabInTree ||
+                      successor.$TST.nearestLoadedTab ||
+                      successor;
       }
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)
