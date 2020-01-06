@@ -195,7 +195,6 @@ export async function testIgnoreCreatingTabsOnTreeStructureAutoFix() {
   }
 }
 
-testNearestLoadedTabInTree.runnable = true;
 export async function testNearestLoadedTabInTree() {
   /*
     * A
