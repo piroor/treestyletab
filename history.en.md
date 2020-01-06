@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Show "Open All as a Tree" in the bookmarks context menu only when the context menu is opened on a folder.
+   * Add an option to avoid pending (discarded) tabs to be activated accidentally when the active tab is closed or an ancestor tree of the active tab is collapsed.
+   * Add support for a special window ID `active` for an API message type [`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar).
+   * Reduce needless dependency to an outdated library [webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer), by adroitwhiz. Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.2.6 (2019.12.27)
    * Apply dark color scheme to the sidebar only when the "Apply Browser Theme" option is active.
    * Give higher priority to the color scheme defined by the theme.

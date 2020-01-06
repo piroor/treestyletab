@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+   * ブックマークフォルダをツリーとして開くコンテキストメニュー項目を、ブックマークフォルダ上でコンテキストメニューを開いた時にだけ表示するようにした
+   * 現在のタブが閉じられたり、現在のタブを含むツリーが折り畳まれたりした時に、待機状態のタブを可能な限り選択しないようにする設定を追加した
+   * APIの[`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar)型のメッセージにおいて、対象ウィンドウを指定する`window`パラメータの値として現在アクティブなウィンドウを指定するキーワード`active`に対応
+   * 不要になったライブラリ[webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer)への依存関係を解消（by adroitwhiz. Thanks!）
+   * `ru`ロケール更新（by wvxwxvw. Thanks!）
  - 3.2.6 (2019.12.27)
    * ブラウザのテーマの配色を反映する設定が有効なときはだけダークカラーを反映するようにした
    * テーマで定義される配色により高い優先度を与えるようにした
