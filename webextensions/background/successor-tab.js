@@ -276,6 +276,14 @@ Tab.onDetached.addListener((_tab, info = {}) => {
   }
 });
 
+Tab.onUpdated.addListener((tab, changeInfo = {}) => {
+  if (!('discarded' in changeInfo))
+    return;
+  const activeTab = Tab.getActiveTab(tab.windowId);
+  if (activeTab)
+    update(activeTab.id);
+});
+
 Tree.onAttached.addListener((child, _info = {}) => {
   const activeTab = Tab.getActiveTab(child.windowId);
   if (activeTab)
