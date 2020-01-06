@@ -457,11 +457,12 @@ export default class Tab {
   }
 
   get nearestLoadedTab() {
+    const tabs = TabsStore.visibleTabsInWindow.get(this.tab.windowId);
     return (
       // nearest following tab
       TabsStore.query({
         windowId:  this.tab.windowId,
-        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        tabs,
         discarded: false,
         fromId:    this.tab.id,
         visible:   true,
@@ -470,7 +471,7 @@ export default class Tab {
       // nearest preceding tab
       TabsStore.query({
         windowId:  this.tab.windowId,
-        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        tabs,
         discarded: false,
         fromId:    this.tab.id,
         visible:   true,
@@ -513,11 +514,12 @@ export default class Tab {
     const parentId = this.parentId;
     if (!parentId)
       return null;
+    const tabs = TabsStore.visibleTabsInWindow.get(this.tab.windowId);
     return (
       // nearest following tab
       TabsStore.query({
         windowId:  this.tab.windowId,
-        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        tabs,
         childOf:   parentId,
         discarded: false,
         fromId:    this.tab.id,
@@ -527,7 +529,7 @@ export default class Tab {
       // nearest preceding tab
       TabsStore.query({
         windowId:  this.tab.windowId,
-        tabs:      TabsStore.visibleTabsInWindow.get(this.tab.windowId),
+        tabs,
         childOf:   parentId,
         discarded: false,
         fromId:    this.tab.id,
