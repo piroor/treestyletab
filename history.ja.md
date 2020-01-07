@@ -3,6 +3,8 @@
  - master/HEAD
    * ブックマークフォルダをツリーとして開くコンテキストメニュー項目を、ブックマークフォルダ上でコンテキストメニューを開いた時にだけ表示するようにした
    * 現在のタブが閉じられたり、現在のタブを含むツリーが折り畳まれたりした時に、待機状態のタブを可能な限り選択しないようにする設定を追加した
+   * 折り畳まれたツリーの親タブのクローズボックスの通常クリックで複数のタブを一度に閉じる場面についての確認ダイアログを表示するかしないか制御する設定を追加
+   * [macOSでのBug 1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879)によって意図せず引き起こされるごく短時間での不正なドラッグ操作を無視する時間を設定で変更可能にした
    * APIの[`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar)型のメッセージにおいて、対象ウィンドウを指定する`window`パラメータの値として現在アクティブなウィンドウを指定するキーワード`active`に対応
    * 不要になったライブラリ[webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer)への依存関係を解消（by adroitwhiz. Thanks!）
    * `ru`ロケール更新（by wvxwxvw. Thanks!）
