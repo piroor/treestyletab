@@ -440,8 +440,8 @@ function onTabContextMenuShown(info, tab) {
     updated = true;
   }
 
-  const canExpand = hasChild && subtreeCollapsed;
-  if (canExpand != mContextMenuItemsById.collapsed.checked) {
+  {
+    const canExpand = hasChild && subtreeCollapsed;
     mContextMenuItemsById.collapsed.checked = canExpand;
     const params = {
       checked: canExpand
@@ -451,8 +451,8 @@ function onTabContextMenuShown(info, tab) {
     updated = true;
   }
 
-  const locked = tab && tab.$TST.lockedCollapsed;
-  if (locked != mContextMenuItemsById.lockCollapsed.checked) {
+  {
+    const locked = tab && tab.$TST.lockedCollapsed;
     mContextMenuItemsById.lockCollapsed.checked = locked;
     const params = {
       checked: locked
