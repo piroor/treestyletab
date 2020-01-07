@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
   "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
   "command_groupSelectedTabs":     { "message": "選択中のタブを新しいグループにする" },
+  "command_toggleLockCollapsed":   { "message": "折りたたみ状態のロックの切り替え" },
 
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
@@ -215,6 +216,7 @@
   "context_expandTree_command": { "message": "このツリーを展開" },
   "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_expandAll_command": { "message": "すべてのツリーを展開" },
+  "context_lockCollapsed_label": { "message": "たたんだ状態でロック(&K)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
   "context_bookmarkTree_command": { "message": "このツリーをブックマーク..." },
   "context_groupTabs_label": { "message": "これらのタブを新しいグループにする(&G)" },

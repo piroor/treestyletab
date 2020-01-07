@@ -98,6 +98,9 @@
     "collapseTree": {
       "description": "__MSG_context_collapseTree_command__"
     },
+    "toggleLockCollapsed": {
+      "description": "__MSG_command_toggleLockCollapsed__"
+    },
     "collapseAll": {
       "description": "__MSG_context_collapseAll_command__"
     },

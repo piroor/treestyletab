@@ -143,6 +143,7 @@ export const kTAB_STATE_COLLAPSED                 = 'collapsed';
 export const kTAB_STATE_COLLAPSED_DONE            = 'collapsed-completely';
 export const kTAB_STATE_COLLAPSING                = 'collapsing';
 export const kTAB_STATE_EXPANDING                 = 'expanding';
+export const kTAB_STATE_LOCKED_COLLAPSED          = 'locked-collapsed';
 export const kTAB_STATE_MOVING                    = 'moving';
 export const kTAB_STATE_SHOWING                   = 'showing';
 export const kTAB_STATE_SUBTREE_COLLAPSED         = 'subtree-collapsed';
@@ -190,6 +191,7 @@ export const kTAB_TEMPORARY_STATES = new Set([
 export const kTAB_SAFE_STATES = new Set([
   kTAB_STATE_COLLAPSED,
   kTAB_STATE_SUBTREE_COLLAPSED,
+  kTAB_STATE_LOCKED_COLLAPSED,
   kTAB_STATE_GROUP_TAB
 ]);
 export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);

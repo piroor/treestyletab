@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
   "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
   "command_groupSelectedTabs":     { "message": "Create New Group from Selected Tabs" },
+  "command_toggleLockCollapsed":   { "message": "Toggle Locking of Collapsed" },
 
   "tab_closebox_tab_tooltip": { "message": "Close tab" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Close tabs" },
@@ -216,6 +217,7 @@
   "context_expandTree_command": { "message": "Expand this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_expandAll_command": { "message": "Expand All" },
+  "context_lockCollapsed_label": { "message": "Loc&k as Collapsed" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
   "context_bookmarkTree_command": { "message": "Bookmark this Tree…" },
   "context_groupTabs_label":    { "message": "Create New &Group from tabs" },

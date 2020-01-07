@@ -258,7 +258,11 @@ export default class Tab {
   }
 
   get isAutoExpandable() {
-    return this.hasChild && this.subtreeCollapsed;
+    return this.hasChild && this.subtreeCollapsed && !this.lockedCollapsed;
+  }
+
+  get lockedCollapsed() {
+    return this.states.has(Constants.kTAB_STATE_LOCKED_COLLAPSED);
   }
 
   get precedesPinnedTab() {
