@@ -59,6 +59,10 @@ function onConfigChanged(key) {
           chooser.value = configs.closeParentBehavior;
       }
     }; break;
+
+    case 'showAdvancedOptions':
+      document.documentElement.classList.toggle('show-advanced-options', configs.showAdvancedOptions);
+      break;
   }
 }
 
@@ -401,6 +405,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('successorTabControlLevel');
+    onConfigChanged('showAdvancedOptions');
     wait(0).then(() => {
       onConfigChanged('closeParentBehaviorMode');
     });

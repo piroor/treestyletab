@@ -197,6 +197,7 @@ export const configs = new Configs({
 
 
   // misc.
+  showAdvancedOptions: false,
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
   defaultSearchEngine: 'https://www.google.com/search?q=%s',

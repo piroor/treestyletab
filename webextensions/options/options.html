@@ -9,6 +9,10 @@
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
+    <p><label class="has-checkbox"
+             ><input id="showAdvancedOptions"
+                     type="checkbox">
+              __MSG_config_showAdvancedOptions_label__</label></p>
     <section id="section-appearance">
     <h1>__MSG_config_appearance_caption__</h1>
 
@@ -89,14 +93,16 @@
               __MSG_config_style_none__
               __MSG_config_style_none_info__</label></li>
       </ul>
+      <div class="advanced">
       <hr>
       <p><label class="has-checkbox"
                ><input id="applyBrowserTheme"
                        type="checkbox">
            <img src="browser-theme.png" alt=""/>
            __MSG_config_applyBrowserTheme_label__</label></p>
+      </div>
     </fieldset>
-    <p>__MSG_config_labelOverflowStyle_caption__
+    <p class="advanced">__MSG_config_labelOverflowStyle_caption__
        <label class="has-radio inline"
              ><input type="radio"
                      name="labelOverflowStyle"
@@ -113,11 +119,11 @@
                      type="number"
                      size="3">
              __MSG_config_maxTreeLevel_after__</label></p>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="faviconizePinnedTabs"
                      type="checkbox">
              __MSG_config_faviconizePinnedTabs_label__</label></p>
-    <p class="sub"><label>__MSG_config_maxFaviconizedPinnedTabsInOneRow_label_before__
+    <p class="sub advanced"><label>__MSG_config_maxFaviconizedPinnedTabsInOneRow_label_before__
               <input id="maxFaviconizedPinnedTabsInOneRow"
                      type="number"
                      size="3">
@@ -126,11 +132,11 @@
              ><input id="animation"
                      type="checkbox">
              __MSG_config_animation_label__</label></p>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="showCollapsedDescendantsByTooltip"
                      type="checkbox">
              __MSG_config_showCollapsedDescendantsByTooltip_label__</label></p>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="applyThemeColorToIcon"
                      type="checkbox">
              <img src="theme-color-icon.png" alt=""/>
@@ -424,7 +430,7 @@
                ><input id="autoGroupNewTabsFromPinned"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromPinned_label__</p>
-      <p><label class="has-checkbox"
+      <p class="advanced"><label class="has-checkbox"
                ><input id="renderTreeInGroupTabs"
                        type="checkbox">
                 __MSG_config_renderTreeInGroupTabs_label__</p>
@@ -444,7 +450,7 @@
              ><input id="autoCollapseExpandSubtreeOnSelect"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
-    <p class="sub">
+    <p class="sub advanced">
        <label class="has-checkbox"
              ><input
                      id="autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove"
@@ -690,7 +696,7 @@
                      type="checkbox">
              __MSG_config_useCachedTree_label__</label></p>
     <p class="sub">__MSG_config_useCachedTree_description__</p>
-    <p class="sub"><label class="has-checkbox"
+    <p class="sub advanced"><label class="has-checkbox"
                          ><input id="storeCacheAsWindowValue"
                                  type="checkbox">
                           __MSG_config_storeCacheAsWindowValue_label__</label></p>
@@ -698,7 +704,7 @@
              ><input id="simulateCloseTabByDblclick"
                      type="checkbox">
               __MSG_config_simulateCloseTabByDblclick_label__</label></p>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="supportTabsMultiselect"
                      type="checkbox">
               __MSG_config_supportTabsMultiselect_label__</label></p>
@@ -755,7 +761,7 @@
         </ul>
       </li>
     </ul>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="simulateSVGContextFill"
                      type="checkbox">
              __MSG_config_simulateSVGContextFill_label__</label></p>
@@ -769,11 +775,11 @@
                      name="colorScheme" value="system-color">
          __MSG_config_colorScheme_systemColor__</label>
     </p>
-    <p><label class="has-checkbox"
+    <p class="advanced"><label class="has-checkbox"
              ><input id="acceleratedTabCreation"
                      type="checkbox">
              __MSG_config_acceleratedTabCreation_label__</label></p>
-    <p><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
+    <p class="advanced"><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
               <input id="maximumAcceptableDelayForTabDuplication"
                      type="number"
                      size="6">

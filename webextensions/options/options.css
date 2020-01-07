@@ -50,7 +50,7 @@ ul li {
 
 p.sub,
 div.sub {
-  margin-left: 2em;
+  padding-left: 2em;
 }
 
 ul p.sub,
@@ -253,4 +253,13 @@ body > section.collapsed > h1:first-child ~ * {
   box-shadow: 0 0 0.5em highlight;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
+}
+
+
+:root:not(.show-advanced-options) .advanced {
+  display: none;
+}
+
+.advanced {
+  background: var(--in-content-category-background-hover);
 }
