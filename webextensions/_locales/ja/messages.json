@@ -427,6 +427,8 @@
   "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
 
+  "config_more_caption": { "message": "その他..." },
+
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
 
   "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },

@@ -28,9 +28,6 @@ function indent(level = 1) {
 }
 
 const mItems = [
-  {
-    title:    browser.i18n.getMessage('config_title'),
-    children: [
       {
         title:    browser.i18n.getMessage('config_appearance_caption'),
         children: [
@@ -1032,72 +1029,79 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_shortcuts_caption'),
+        title:    browser.i18n.getMessage('config_more_caption'),
         children: [
+          {
+            title:   browser.i18n.getMessage('config_shortcuts_caption'),
+            enabled: false,
+            expert:  true
+          },
           {
             dynamicTitle: true,
             get title() {
-              return browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
+              return indent() + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
             },
             key:   'autoExpandOnTabSwitchingShortcuts',
-            type:  'checkbox'
-          }
-        ],
-        expert:   true
-      },
-      {
-        title:    browser.i18n.getMessage('config_advanced_caption') + ' / ' + browser.i18n.getMessage('config_debug_caption'),
-        children: [
+            type:  'checkbox',
+            expert: true
+          },
+          { type: 'separator', expert: true },
           {
-            title: browser.i18n.getMessage('config_warnOnCloseTabs_label'),
+            title:   browser.i18n.getMessage('config_advanced_caption'),
+            enabled: false
+          },
+          {
+            title: indent() + browser.i18n.getMessage('config_warnOnCloseTabs_label'),
             key:   'warnOnCloseTabs',
             type:  'checkbox'
           },
           {
-            title: indent() + browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
+            title: indent(2) + browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
             key:   'warnOnCloseTabsByClosebox',
             type:  'checkbox',
             expert: true
           },
           {
-            title: browser.i18n.getMessage('config_useCachedTree_label'),
+            title: indent() + browser.i18n.getMessage('config_useCachedTree_label'),
             key:   'useCachedTree',
             type:  'checkbox'
           },
           {
-            title: browser.i18n.getMessage('config_simulateCloseTabByDblclick_label'),
+            title: indent() + browser.i18n.getMessage('config_simulateCloseTabByDblclick_label'),
             key:   'simulateCloseTabByDblclick',
             type:  'checkbox'
           },
           {
-            title: browser.i18n.getMessage('config_supportTabsMultiselect_label'),
+            title: indent() + browser.i18n.getMessage('config_supportTabsMultiselect_label'),
             key:   'supportTabsMultiselect',
             type:  'checkbox',
             expert: true
           },
           { type: 'separator' },
           {
-            title: browser.i18n.getMessage('config_loggingQueries_label'),
+            title:   browser.i18n.getMessage('config_debug_caption'),
+            enabled: false
+          },
+          {
+            title: indent() + browser.i18n.getMessage('config_loggingQueries_label'),
             key:   'loggingQueries',
             type:  'checkbox'
           },
           { type: 'separator' },
           {
-            title: browser.i18n.getMessage('config_debug_label'),
+            title: indent() + browser.i18n.getMessage('config_debug_label'),
             key:   'debug',
             type:  'checkbox'
-          }
-        ]
-      },
+          },
       { type: 'separator' },
       {
         title: browser.i18n.getMessage('config_showExpertOptions_label'),
         key:   'showExpertOptions',
         type:  'checkbox'
       }
-    ]
-  }
-];
+        ]
+      }
+    ];
 
 const mItemsById = new Map();
 const mUpdatableItemsById = new Map();
@@ -1128,10 +1132,10 @@ function createItem(id, item, parent) {
   };
   if ('enabled' in item)
     params.enabled = item.enabled;
+  log('create: ', params);
+  id = browser.menus.create(params);
   if (item.expert)
     mExpertItems.add(id);
-  log('create: ', params);
-  browser.menus.create(params);
   if (item.children) {
     for (let i = 0, maxi = item.children.length; i < maxi; i++) {
       const child = item.children[i];

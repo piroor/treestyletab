@@ -431,6 +431,8 @@
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
 
+  "config_more_caption": { "message": "More..." },
+
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
 
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
