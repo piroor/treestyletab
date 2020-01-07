@@ -204,6 +204,7 @@ export const configs = new Configs({
   acceleratedTabCreation: false,
   enableWorkaroundForBug1409262: false,
   enableWorkaroundForBug1548949: true,
+  maximumDelayForBug1561879: 100,
   workaroundForBug1548949DroppedTabs: null,
   simulateCloseTabByDblclick: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
