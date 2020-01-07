@@ -119,13 +119,9 @@ export function expandAll(windowId) {
 }
 
 export function toggleLockCollapsed(tab) {
-  if (tab.$TST.lockedCollapsed) {
-    tab.$TST.removeState(Constants.kTAB_STATE_LOCKED_COLLAPSED, { broadcast: true });
-  }
-  else {
-    tab.$TST.addState(Constants.kTAB_STATE_LOCKED_COLLAPSED, { broadcast: true });
+  tab.$TST.lockedCollapsed = !tab.$TST.lockedCollapsed;
+  if (tab.$TST.lockedCollapsed)
     collapseTree(tab);
-  }
 }
 
 export async function bookmarkTree(root, options = {}) {

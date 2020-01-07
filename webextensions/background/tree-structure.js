@@ -305,6 +305,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     promises.push(promisedDone);
   }
 
+  tab.$TST.lockedCollapsed = states.includes(Constants.kTAB_STATE_LOCKED_COLLAPSED);
+
   if (options.bulk)
     return Promise.all(promises);
 }

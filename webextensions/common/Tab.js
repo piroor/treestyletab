@@ -264,6 +264,21 @@ export default class Tab {
   get lockedCollapsed() {
     return this.states.has(Constants.kTAB_STATE_LOCKED_COLLAPSED);
   }
+  set lockedCollapsed(locked) {
+    if (locked == this.lockedCollapsed)
+      return locked;
+
+    if (locked)
+      this.addState(Constants.kTAB_STATE_LOCKED_COLLAPSED, {
+        permanently: true,
+        broadcast:   true
+      });
+    else
+      this.removeState(Constants.kTAB_STATE_LOCKED_COLLAPSED, {
+        permanently: true,
+        broadcast:   true
+      });
+  }
 
   get precedesPinnedTab() {
     const following = this.nearestVisibleFollowingTab;
