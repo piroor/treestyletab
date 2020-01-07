@@ -220,6 +220,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_lockCollapsed_label'),
+        key:   'context_topLevel_lockCollapsed',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_label'),
         key:   'context_topLevel_bookmarkTree',
         type:  'checkbox'
@@ -277,6 +282,11 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_expandAll_label'),
         key:   'context_expandAll',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_lockCollapsed_label'),
+        key:   'context_lockCollapsed',
         type:  'checkbox'
       },
       {
