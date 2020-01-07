@@ -262,4 +262,7 @@ body > section.collapsed > h1:first-child ~ * {
 
 .expert {
   background: var(--in-content-box-info-background);
+  box-shadow: 0 0 0.5em var(--in-content-box-info-background),
+              0 0 0.5em var(--in-content-box-info-background),
+              0 0 0.5em var(--in-content-box-info-background);
 }

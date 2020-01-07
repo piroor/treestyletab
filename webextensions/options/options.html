@@ -102,7 +102,12 @@
            __MSG_config_applyBrowserTheme_label__</label></p>
       </div>
     </fieldset>
-    <p class="expert">__MSG_config_labelOverflowStyle_caption__
+    <p><label class="has-checkbox"
+             ><input id="animation"
+                     type="checkbox">
+             __MSG_config_animation_label__</label></p>
+    <div class="expert">
+    <p>__MSG_config_labelOverflowStyle_caption__
        <label class="has-radio inline"
              ><input type="radio"
                      name="labelOverflowStyle"
@@ -114,34 +119,31 @@
                      value="crop">
          __MSG_config_labelOverflowStyle_crop__</label>
     </p>
-    <p class="expert"><label>__MSG_config_maxTreeLevel_before__
+    <p><label>__MSG_config_maxTreeLevel_before__
               <input id="maxTreeLevel"
                      type="number"
                      size="3">
              __MSG_config_maxTreeLevel_after__</label></p>
-    <p class="expert"><label class="has-checkbox"
+    <p><label class="has-checkbox"
              ><input id="faviconizePinnedTabs"
                      type="checkbox">
              __MSG_config_faviconizePinnedTabs_label__</label></p>
-    <p class="sub expert"><label>__MSG_config_maxFaviconizedPinnedTabsInOneRow_label_before__
+    <p class="sub"><label>__MSG_config_maxFaviconizedPinnedTabsInOneRow_label_before__
               <input id="maxFaviconizedPinnedTabsInOneRow"
                      type="number"
                      size="3">
              __MSG_config_maxFaviconizedPinnedTabsInOneRow_label_after__</label></p>
     <p><label class="has-checkbox"
-             ><input id="animation"
-                     type="checkbox">
-             __MSG_config_animation_label__</label></p>
-    <p class="expert"><label class="has-checkbox"
              ><input id="showCollapsedDescendantsByTooltip"
                      type="checkbox">
              __MSG_config_showCollapsedDescendantsByTooltip_label__</label></p>
-    <p class="expert"><label class="has-checkbox"
+    <p><label class="has-checkbox"
              ><input id="applyThemeColorToIcon"
                      type="checkbox">
              <img src="theme-color-icon.png" alt=""/>
              __MSG_config_applyThemeColorToIcon_label__
              <br>__MSG_config_applyThemeColorToIcon_label_info__</label></p>
+    </div>
 
     </section>
 
@@ -761,10 +763,6 @@
         </ul>
       </li>
     </ul>
-    <p class="expert"><label class="has-checkbox"
-             ><input id="simulateSVGContextFill"
-                     type="checkbox">
-             __MSG_config_simulateSVGContextFill_label__</label></p>
     <p>__MSG_config_colorScheme_caption__
        <label class="has-radio"
              ><input type="radio"
@@ -775,15 +773,21 @@
                      name="colorScheme" value="system-color">
          __MSG_config_colorScheme_systemColor__</label>
     </p>
-    <p class="expert"><label class="has-checkbox"
+    <div class="expert">
+    <p><label class="has-checkbox"
+             ><input id="simulateSVGContextFill"
+                     type="checkbox">
+             __MSG_config_simulateSVGContextFill_label__</label></p>
+    <p><label class="has-checkbox"
              ><input id="acceleratedTabCreation"
                      type="checkbox">
              __MSG_config_acceleratedTabCreation_label__</label></p>
-    <p class="expert"><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
+    <p><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
               <input id="maximumAcceptableDelayForTabDuplication"
                      type="number"
                      size="6">
              __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
+    </div>
     <p><label class="has-checkbox inline"
              ><input id="loggingQueries"
                      type="checkbox">
