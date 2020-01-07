@@ -29,6 +29,9 @@ function indent(level = 1) {
 
 const mItems = [
   {
+    title:    browser.i18n.getMessage('config_title'),
+    children: [
+  {
     title:    browser.i18n.getMessage('config_appearance_caption'),
     children: [
       {
@@ -1034,16 +1037,16 @@ const mItems = [
       {
         dynamicTitle: true,
         get title() {
-          return indent() + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
+          return browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
         },
         key:   'autoExpandOnTabSwitchingShortcuts',
         type:  'checkbox'
-      },
+      }
     ],
     expert:   true
   },
   {
-    title:    browser.i18n.getMessage('config_advanced_caption') + ' / ' + browser.i18n.getMessage('config_debug_caption'),
+    title:    browser.i18n.getMessage('config_advanced_caption'),
     children: [
       {
         title: browser.i18n.getMessage('config_warnOnCloseTabs_label'),
@@ -1051,9 +1054,10 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
+        title: indent() + browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
         key:   'warnOnCloseTabsByClosebox',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_useCachedTree_label'),
@@ -1070,7 +1074,12 @@ const mItems = [
         key:   'supportTabsMultiselect',
         type:  'checkbox',
         expert: true
-      },
+      }
+    ]
+  },
+  {
+    title:    browser.i18n.getMessage('config_debug_caption'),
+    children: [
       {
         title: browser.i18n.getMessage('config_loggingQueries_label'),
         key:   'loggingQueries',
@@ -1078,14 +1087,16 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_showExpertOptions_label'),
-        key:   'showExpertOptions',
-        type:  'checkbox'
-      },
-      { type: 'separator' },
-      {
         title: browser.i18n.getMessage('config_debug_label'),
         key:   'debug',
+        type:  'checkbox'
+      }
+    ]
+  },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_showExpertOptions_label'),
+        key:   'showExpertOptions',
         type:  'checkbox'
       }
     ]
