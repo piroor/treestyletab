@@ -35,7 +35,7 @@ tab-item.collapsed tab-twisty {
 
 tab-item:not(.collapsed) tab-twisty::before {
   -moz-context-properties: fill;
-  background: url("./icons/ArrowheadDown.svg") no-repeat center / 100%;
+  background: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -44,20 +44,19 @@ tab-item:not(.collapsed) tab-twisty::before {
   margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  scale: 0.6;
   width: var(--svg-small-icon-size);
 }
 :root.simulate-svg-context-fill tab-item:not(.collapsed) tab-twisty::before {
   background: var(--tab-text);
-  mask: url("./icons/ArrowheadDown.svg") no-repeat center / 100%;
+  mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
 
 tab-item:not(.collapsed).locked-collapsed tab-twisty::before {
-  background: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 100%;
+  background: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 60%;
 }
 :root.simulate-svg-context-fill tab-item:not(.collapsed).locked-collapsed tab-twisty::before {
   background: var(--tab-text);
-  mask: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 100%;
+  mask: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 60%;
 }
 
 tab-item:not(.collapsed).subtree-collapsed
