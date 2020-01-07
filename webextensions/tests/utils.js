@@ -56,6 +56,7 @@ export async function createTabs(definitions, commonParams = {}) {
       tabs[name] = await createTab(Object.assign({}, params, {
         active: false // prepare all tabs in background, otherwise they may be misordered!
       }));
+      await wait(100);
       if (definition.active)
         toBeActiveTabId = tabs[name].id;
     }
