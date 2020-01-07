@@ -261,5 +261,5 @@ body > section.collapsed > h1:first-child ~ * {
 }
 
 .advanced {
-  background: var(--in-content-category-background-hover);
+  background: var(--in-content-box-info-background);
 }
