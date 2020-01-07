@@ -334,6 +334,7 @@ tab-item.private-browsing tab-label:before {
     colorScheme
     faviconizedTabScale
     baseIndent
+    maximumDelayForBug1561879
     minIndent
     lastConfirmedToCloseTabs
     grantedRemovingTabIds
