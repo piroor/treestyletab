@@ -256,10 +256,10 @@ body > section.collapsed > h1:first-child ~ * {
 }
 
 
-:root:not(.show-advanced-options) .advanced {
+:root:not(.show-expert-options) .expert {
   display: none;
 }
 
-.advanced {
+.expert {
   background: var(--in-content-box-info-background);
 }

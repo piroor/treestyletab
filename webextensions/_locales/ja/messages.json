@@ -228,7 +228,7 @@
 
   "config_title": { "message": "Tree Style Tabの設定" },
 
-  "config_showAdvancedOptions_label": { "message": "上級者向けの設定をアンロック" },
+  "config_showExpertOptions_label": { "message": "上級者向けの設定をアンロック" },
 
   "config_appearance_caption": { "message": "外観" },
 

@@ -60,8 +60,8 @@ function onConfigChanged(key) {
       }
     }; break;
 
-    case 'showAdvancedOptions':
-      document.documentElement.classList.toggle('show-advanced-options', configs.showAdvancedOptions);
+    case 'showExpertOptions':
+      document.documentElement.classList.toggle('show-expert-options', configs.showExpertOptions);
       break;
   }
 }
@@ -405,7 +405,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('successorTabControlLevel');
-    onConfigChanged('showAdvancedOptions');
+    onConfigChanged('showExpertOptions');
     wait(0).then(() => {
       onConfigChanged('closeParentBehaviorMode');
     });
