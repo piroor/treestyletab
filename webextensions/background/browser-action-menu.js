@@ -1029,6 +1029,20 @@ const mItems = [
     ]
   },
   {
+    title:    browser.i18n.getMessage('config_shortcuts_caption'),
+    children: [
+      {
+        dynamicTitle: true,
+        get title() {
+          return indent() + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
+        },
+        key:   'autoExpandOnTabSwitchingShortcuts',
+        type:  'checkbox'
+      },
+    ],
+    expert:   true
+  },
+  {
     title:    browser.i18n.getMessage('config_advanced_caption') + ' / ' + browser.i18n.getMessage('config_debug_caption'),
     children: [
       {

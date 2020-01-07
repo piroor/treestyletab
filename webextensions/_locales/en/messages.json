@@ -432,6 +432,11 @@
 
 
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
+
+  "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Expand active collapsed tree when the Tab key is pressed over " },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "msec." },
+
   "config_shortcuts_resetAll": { "message": "Reset All Shortcuts" },
 
 
@@ -496,7 +501,6 @@
   "config_labelOverflowStyle_crop":    { "message": "Crop with \"..\" (Better Performance)" },
 
   "config_requestPermissions_bookmarks": { "message": "Allow to read and create bookmarks" },
-  "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
   "config_requestPermissions_tabHide":   { "message": "Allow to show/hide individual tabs (*You must uncheck and re-check this before running tests, to ensure the permission is truly granted.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Click the \"Tree Style Tab\" toolbar button" },

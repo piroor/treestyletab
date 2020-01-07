@@ -428,6 +428,11 @@
 
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
+
+  "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "折り畳まれたツリーにフォーカスがある状態でTabキーを" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "ミリ秒以上押し続けたらツリーを展開する" },
+
   "config_shortcuts_resetAll": { "message": "すべて初期値に戻す" },
 
 
@@ -492,7 +497,6 @@
   "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの読み取りと作成を許可する" },
-  "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
   "config_requestPermissions_tabHide":   { "message": "個々のタブの表示・非表示の制御を許可する（※この操作が許可されている事を確かめるため、テスト実行前には必ずチェックボックスを一旦OFFにしてから再度ONにして下さい）" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },
