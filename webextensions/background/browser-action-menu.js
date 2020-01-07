@@ -1046,7 +1046,7 @@ const mItems = [
         expert:   true
       },
       {
-        title:    browser.i18n.getMessage('config_advanced_caption'),
+        title:    browser.i18n.getMessage('config_advanced_caption') + ' / ' + browser.i18n.getMessage('config_debug_caption'),
         children: [
           {
             title: browser.i18n.getMessage('config_warnOnCloseTabs_label'),
@@ -1074,12 +1074,8 @@ const mItems = [
             key:   'supportTabsMultiselect',
             type:  'checkbox',
             expert: true
-          }
-        ]
-      },
-      {
-        title:    browser.i18n.getMessage('config_debug_caption'),
-        children: [
+          },
+          { type: 'separator' },
           {
             title: browser.i18n.getMessage('config_loggingQueries_label'),
             key:   'loggingQueries',
