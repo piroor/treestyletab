@@ -1029,6 +1029,11 @@ async function getTabsFromWrongIds(ids, sender) {
       case 'previoussibling':
       case 'prevsibling':
         return Tab.getActiveTab(activeWindow.id).$TST.previousSiblingTab;
+      case 'nextvisible':
+        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisibleFollowingTab;
+      case 'previousvisible':
+      case 'prevvisible':
+        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisiblePrecedingTab;
       case 'sendertab':
         return sender.tab && Tab.get(sender.tab.id) || null;
       case 'highlighted':
