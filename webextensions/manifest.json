@@ -98,9 +98,6 @@
     "collapseTree": {
       "description": "__MSG_context_collapseTree_command__"
     },
-    "toggleLockCollapsed": {
-      "description": "__MSG_command_toggleLockCollapsed__"
-    },
     "collapseAll": {
       "description": "__MSG_context_collapseAll_command__"
     },
@@ -109,6 +106,9 @@
     },
     "expandAll": {
       "description": "__MSG_context_expandAll_command__"
+    },
+    "toggleLockCollapsed": {
+      "description": "__MSG_command_toggleLockCollapsed__"
     },
     "bookmarkTree": {
       "description": "__MSG_context_bookmarkTree_command__"
