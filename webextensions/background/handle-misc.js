@@ -406,6 +406,50 @@ function onMessageExternal(message, sender) {
         return true;
       })();
 
+    case TSTAPI.kTOGGLE_TREE_COLLAPSED:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Tree.collapseExpandSubtree(tab, { collapsed: !tab.$TST.subtreeCollapsed, broadcast: true }),
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kLOCK_TREE_COLLAPSED:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => tab.$TST.lockedCollapsed = true,
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kUNLOCK_TREE_COLLAPSED:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => tab.$TST.lockedCollapsed = false,
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kTOGGLE_LOCK_TREE_COLLAPSED:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => tab.$TST.lockedCollapsed = !tab.$TST.lockedCollapsed,
+          message.interval
+        );
+        return true;
+      })();
+
     case TSTAPI.kATTACH:
       return (async () => {
         await Tab.waitUntilTracked([
