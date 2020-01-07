@@ -119,6 +119,17 @@ const mItems = [
         ]
       },
       {
+        title: browser.i18n.getMessage('config_applyBrowserTheme_label'),
+        key:   'applyBrowserTheme',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: browser.i18n.getMessage('config_animation_label'),
+        key:   'animation',
+        type:  'checkbox'
+      },
+      {
         title:    browser.i18n.getMessage('config_labelOverflowStyle_caption'),
         children: [
           {
@@ -133,27 +144,26 @@ const mItems = [
             value: 'crop',
             type:  'radio'
           }
-        ]
+        ],
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_faviconizePinnedTabs_label'),
         key:   'faviconizePinnedTabs',
-        type:  'checkbox'
-      },
-      {
-        title: browser.i18n.getMessage('config_animation_label'),
-        key:   'animation',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_showCollapsedDescendantsByTooltip_label'),
         key:   'showCollapsedDescendantsByTooltip',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_applyThemeColorToIcon_label'),
         key:   'applyThemeColorToIcon',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       }
     ]
   },
@@ -612,7 +622,8 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('config_renderTreeInGroupTabs_label'),
         key:   'renderTreeInGroupTabs',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       }
     ]
   },
@@ -632,7 +643,8 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label'),
         key:   'autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_collapseExpandSubtreeByDblClick_label'),
@@ -1042,11 +1054,18 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_supportTabsMultiselect_label'),
         key:   'supportTabsMultiselect',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
       },
       {
         title: browser.i18n.getMessage('config_loggingQueries_label'),
         key:   'loggingQueries',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_showExpertOptions_label'),
+        key:   'showExpertOptions',
         type:  'checkbox'
       },
       { type: 'separator' },
@@ -1061,6 +1080,7 @@ const mItems = [
 
 const mItemsById = new Map();
 const mUpdatableItemsById = new Map();
+const mExpertItems = new Set();
 
 function createItem(id, item, parent) {
   if (item.visible === false)
@@ -1087,6 +1107,8 @@ function createItem(id, item, parent) {
   };
   if ('enabled' in item)
     params.enabled = item.enabled;
+  if (item.expert)
+    mExpertItems.add(id);
   log('create: ', params);
   browser.menus.create(params);
   if (item.children) {
@@ -1136,3 +1158,16 @@ browser.menus.onClicked.addListener((info, _tab) => {
 
   configs[item.key] = 'value' in item ? item.value : !configs[item.key];
 });
+
+
+function updateExpertOptionsVisibility() {
+  for (const id of mExpertItems) {
+    browser.menus.update(id, { visible: configs.showExpertOptions });
+  }
+  browser.menus.refresh();
+}
+configs.$addObserver(key => {
+  if (key == 'showExpertOptions')
+    updateExpertOptionsVisibility();
+});
+configs.$loaded.then(updateExpertOptionsVisibility);
