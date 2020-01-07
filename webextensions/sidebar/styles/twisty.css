@@ -52,6 +52,14 @@ tab-item:not(.collapsed) tab-twisty::before {
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 100%;
 }
 
+tab-item:not(.collapsed).locked-collapsed tab-twisty::before {
+  background: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill tab-item:not(.collapsed).locked-collapsed tab-twisty::before {
+  background: var(--tab-text);
+  mask: url("./icons/ArrowheadDownDouble.svg") no-repeat center / 100%;
+}
+
 tab-item:not(.collapsed).subtree-collapsed
   tab-twisty {
   opacity: 0.9;
