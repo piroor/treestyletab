@@ -1,10 +1,15 @@
 # History
 
  - master/HEAD
+   * Introduce the "Lock as Collapsed" feature. When the state is locked via the context menu command or a keyboard shortcut, TST keeps the tree collapsed when it or its any descendant get focused.
    * Show "Open All as a Tree" in the bookmarks context menu only when the context menu is opened on a folder.
    * Add an option to avoid pending (discarded) tabs to be activated accidentally when the active tab is closed or an ancestor tree of the active tab is collapsed.
    * Introduce a new option to activate/deactivate the confirmation for closing multiple tabs with a normal click on a closebox of a parent tab with its collapsed subtree.
+   * Change twisty's appearance to Photon-style one.
    * The delay to ignore too short drag action produced by the [bug 1561879 on macOS](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879) become configurable.
+   * Brush up options UI and hide expert options by default.
+   * Add new API message types: [`toggle-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#toggle-collapsed-state-of-tree), [`lock-tree-collapsed`, `unlock-tree-collapsed` and `toggle-lock-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-locked-as-collapsed-state-of-tree).
+   * Add support for special tab aliases `nextVisible`, `previousVisible` (and `prevVisible`) for API messages.
    * Add support for a special window ID `active` for an API message type [`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar).
    * Reduce needless dependency to an outdated library [webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer), by adroitwhiz. Thanks!
    * Update `ru` locale by wvxwxvw. Thanks!
