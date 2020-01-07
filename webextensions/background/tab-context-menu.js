@@ -119,6 +119,10 @@ const mItemsById = {
   'context_topLevel_expandAll': {
     title: browser.i18n.getMessage('context_expandAll_label')
   },
+  'context_topLevel_lockCollapsed': {
+    title: browser.i18n.getMessage('context_lockCollapsed_label'),
+    type:  'checkbox'
+  },
   'context_separator:afterCollapseExpand': {
     type: 'separator'
   },
@@ -351,6 +355,8 @@ function updateItem(id, state = {}) {
     visible: 'visible' in state ? !!state.visible : true,
     enabled: 'enabled' in state ? !!state.enabled : true
   };
+  if ('checked' in state)
+    updateInfo.checked = state.checked;
   const title = state.multiselected ? item.titleMultiselected || item.title : item.title;
   if (title) {
     updateInfo.title = title;
@@ -513,6 +519,10 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_lockCollapsed', {
+    visible: emulate && contextTab && configs.context_topLevel_lockCollapsed,
+    checked: contextTab && contextTab.$TST.lockedCollapsed
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabsToTheEnd', {
