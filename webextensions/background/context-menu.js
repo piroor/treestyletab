@@ -302,7 +302,11 @@ function onTabItemClick(info, tab) {
   const contextTab = Tab.get(tab.id);
   const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [];
 
-  switch (info.menuItemId.replace(/^(?:grouped:|context_topLevel_)/, '')) {
+  const itemId = info.menuItemId.replace(/^(?:grouped:|context_topLevel_)/, '');
+  if (mContextMenuItemsById[itemId].type == 'checkbox')
+    mContextMenuItemsById[itemId].checked = !mContextMenuItemsById[itemId].checked;
+
+  switch (itemId) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;
@@ -448,7 +452,7 @@ function onTabContextMenuShown(info, tab) {
   }
 
   const locked = tab && tab.$TST.lockedCollapsed;
-  if (!tab || locked != mContextMenuItemsById.lockCollapsed.checked) {
+  if (locked != mContextMenuItemsById.lockCollapsed.checked) {
     mContextMenuItemsById.lockCollapsed.checked = locked;
     const params = {
       checked: locked

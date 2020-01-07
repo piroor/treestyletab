@@ -660,6 +660,21 @@ export default class Tab {
     return null;
   }
 
+  get nearestFocusableTabOrSelf() {
+    if (!this.collapsed)
+      return this.tab;
+
+    const lockedCollapsedAncestors = this.ancestors.filter(tab => tab.$TST.lockedCollapsed);
+    if (lockedCollapsedAncestors.length == 0)
+      return this.tab;
+
+    const nearestVisible = lockedCollapsedAncestors.find(tab => !tab.$TST.collapsed);
+    if (nearestVisible)
+      return nearestVisible;
+
+    return lockedCollapsedAncestors[lockedCollapsedAncestors.length - 1];
+  }
+
   get nearestFollowingRootTab() {
     const root = this.rootTab;
     return root && root.$TST.nextSiblingTab;

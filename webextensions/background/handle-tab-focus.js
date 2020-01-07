@@ -44,7 +44,8 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
-    configs.skipCollapsedTabsForTabSwitchingShortcuts
+    (configs.skipCollapsedTabsForTabSwitchingShortcuts ||
+     tab.$TST.nearestFocusableTabOrSelf.$TST.lockedCollapsed)
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
   if (tab.$TST.collapsed) {
@@ -62,11 +63,22 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
     else if (configs.autoExpandOnCollapsedChildActive &&
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildActive');
-      for (const ancestor of tab.$TST.ancestors) {
+      const toBeFocused = tab.$TST.nearestFocusableTabOrSelf;
+      const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
+      for (const ancestor of ancestors) {
+        if (ancestor.$TST.lockedCollapsed)
+          continue;
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
         });
+      }
+      if (toBeFocused != tab) {
+        TabsInternalOperation.activateTab(toBeFocused, { silently: true });
+        log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
+        if (tab.discarded)
+          tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
+        return false;
       }
       handleNewActiveTab(tab, info);
     }
@@ -130,7 +142,7 @@ function handleNewActiveTab(tab, info = {}) {
   log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
-  const canExpandTree           = shouldCollapseExpandNow && !info.silently;
+  const canExpandTree           = shouldCollapseExpandNow && !info.silently && !tab.$TST.lockedCollapsed;
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
