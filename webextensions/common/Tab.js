@@ -1734,6 +1734,11 @@ Tab.getRootTabs = (windowId, options = {}) => {
   }, options));
 };
 
+Tab.getLastRootTab = (windowId, options = {}) => {
+  const tabs = this.getRootTabs(windowId, options);
+  return tabs[tabs.length - 1];
+};
+
 Tab.collectRootTabs = tabs => {
   return tabs.filter(tab => {
     if (!TabsStore.ensureLivingTab(tab))
