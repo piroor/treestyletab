@@ -197,7 +197,7 @@ export async function attachTabTo(child, parent, options = {}) {
 }
 
 export function getReferenceTabsForNewChild(child, parent, options = {}) {
-  log('getReferenceTabsForNewChild ', child, parent, options);
+  log('getReferenceTabsForNewChild ', { child, parent, options });
   let insertAt = options.insertAt;
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
