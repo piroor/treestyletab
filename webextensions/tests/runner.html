@@ -80,10 +80,10 @@
   <body>
     <p>If there are failed tests, debug them with these steps:</p>
     <ol>
-      <li>Go to definitions of failed tests. Assume that `testMoveAttachedTabBeforeHiddenTab` failed.</li>
-      <li>Set test functions' property `.runnable` to `true`, like: `testMoveAttachedTabBeforeHiddenTab.runnable = true;` then only those tests are ran and others are ignored.</li>
+      <li>Go to definitions of failed tests. Assume that <code>testMoveAttachedTabBeforeHiddenTab</code> failed.</li>
+      <li>Set test functions' property <code>.runnable</code> to <code>true</code>, like: <code>testMoveAttachedTabBeforeHiddenTab.runnable = true;</code> then only those tests are ran and others are ignored.</li>
       <li>Debug them until all tests become green.</li>
-      <li>Revert lines setting `.runnable` and run all tests again.</li>
+      <li>Revert lines setting <code>.runnable</code> and run all tests again.</li>
       <li>Back to the step 1 if there is any failed test.</li>
     </ol>
     <hr>
