@@ -389,6 +389,8 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "When a new tree appears, collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
+  "config_autoExpandOnCollapsedChildActive_label": { "message": "When a collapsed tab gets focus, expand its tree automatically" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentaly focused and the focus is redirected immediately" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-click on a tab to collapse/expand tree" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsing" },
 
@@ -415,7 +417,7 @@
 
   "config_drag_caption": { "message": "Drag and Drop" },
 
-  "config_tabDragBehavior_caption":       { "message": "When a tree is dragged outside of the tab bar" },
+  "config_tabDragBehavior_caption":       { "message": "When a tree is dropped outside of the tab bar" },
   "config_tabDragBehavior_description":   { "message": "Due to Firefox's restrictions, you need to decide it when you start dragging: how tabs are treated on dropped outside of TST's sidebar. Shift key pressed on starting of dragging or the \"drag handle\" a small draggable tooltip appearing near the left (or right) edge of each tab are available to switch the action." },
   "config_tabDragBehavior_label":         { "message": "Drag:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Drag:" },
@@ -426,11 +428,16 @@
   "config_tabDragBehavior_none":          { "message": "Do nothing" },
   "config_showTabDragHandle_label":       { "message": "Show drag handle on a edge of each tab, to start dragging for specific purpose" },
   "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Allow to deatch tree dropped outside of the tab bar" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Load to the tab" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
+
+  "config_autoExpandOnLongHoverDelay_before":  { "message": "Expand collapsed tree with hovering over " },
+  "config_autoExpandOnLongHoverDelay_after":  { "message": "msec while dragging" },
+  "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Collapse such trees automatically after drag action is finished" },
 
 
   "config_more_caption": { "message": "More..." },
@@ -439,7 +446,7 @@
 
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Expand active collapsed tree when the Tab key is pressed over " },
-  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "msec." },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "msec" },
 
   "config_shortcuts_resetAll": { "message": "Reset All Shortcuts" },
 

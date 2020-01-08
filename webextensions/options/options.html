@@ -459,12 +459,22 @@
              ><input id="autoCollapseExpandSubtreeOnSelect"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
-    <p class="sub expert">
+    <div class="expert">
+    <p class="sub">
        <label class="has-checkbox"
              ><input
                      id="autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label__</label></p>
+    <p><label class="has-checkbox"
+             ><input id="autoExpandOnCollapsedChildActive"
+                     type="checkbox">
+             __MSG_config_autoExpandOnCollapsedChildActive_label__</label></p>
+    <p><label class="has-checkbox"
+             ><input id="autoDiscardTabForUnexpectedFocus"
+                     type="checkbox">
+             __MSG_config_autoDiscardTabForUnexpectedFocus_label__</label></p>
+    </div>
     <p><label class="has-checkbox"
              ><input id="collapseExpandSubtreeByDblClick"
                      type="checkbox">
@@ -630,6 +640,10 @@
     <h1>__MSG_config_drag_caption__</h1>
     <fieldset>
       <legend>__MSG_config_tabDragBehavior_caption__</legend>
+      <p class="expert"><label class="has-checkbox"
+                              ><input id="moveDroppedTabToNewWindowForUnhandledDragEvent"
+                                      type="checkbox">
+                              __MSG_config_moveDroppedTabToNewWindowForUnhandledDragEvent_label__</label></p>
       <p>__MSG_config_tabDragBehavior_description__</p>
       <p><label>__MSG_config_tabDragBehavior_label__</label>
          <select id="tabDragBehavior">
@@ -675,6 +689,19 @@
               __MSG_config_dropLinksOnTabBehavior_newtab__</label></li>
       </ul>
     </fieldset>
+    <div class="expert">
+    <p><label class="has-checkbox"
+             ><input id="autoExpandOnLongHover"
+                     type="checkbox">
+              __MSG_config_autoExpandOnLongHoverDelay_before__
+              <input id="autoExpandOnLongHoverDelay"
+                     size="20">
+               __MSG_config_autoExpandOnLongHoverDelay_after__</label></p>
+    <p class="sub"><label class="has-checkbox"
+                         ><input id="autoExpandOnLongHoverRestoreIniitalState"
+                                 type="checkbox">
+                          __MSG_config_autoExpandOnLongHoverRestoreIniitalState_label__</label></p>
+    </div>
     </section>
 
 
@@ -684,15 +711,13 @@
              ><input id="allUrlsPermissionGranted"
                      type="checkbox">
               __MSG_config_requestPermissions_allUrls__</label></p>
-    <div class="expert">
-    <p class="sub"><label class="has-checkbox"
+    <p class="sub expert"><label class="has-checkbox"
                          ><input id="autoExpandOnTabSwitchingShortcuts"
                                  type="checkbox">
                           __MSG_config_autoExpandOnTabSwitchingShortcutsDelay_before__
                           <input id="autoExpandOnTabSwitchingShortcutsDelay"
                                  size="20">
                            __MSG_config_autoExpandOnTabSwitchingShortcutsDelay_after__</label></p>
-    </div>
     <hr>
     <p><button id="shortcutsResetAll">__MSG_config_shortcuts_resetAll__</button></p>
     <div id="shortcuts"></div>

@@ -176,7 +176,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」や、他の環境からインポートされたブックマークの内部URLの自動移行（ブックマークの操作の許可が必要）" },
-  "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
+  "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、FirefoxのタブバーとサイドバーのヘッダーはTree Style Tabから制御できません。これらを隠したい場合は" },
@@ -187,7 +187,7 @@
   "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
   "api_requestedPermissions_title": { "message": "アクセス権の要求" },
-  "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下の事をしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
+  "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下のことをしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
     "placeholders": {
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }
@@ -267,7 +267,7 @@
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "一行に" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": "個までタブを表示（※0以下で自動折り返し）" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
-  "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
+  "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折りたたまれた子孫タブの情報を含める" },
   "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する" },
   "config_applyThemeColorToIcon_label_info": { "message": "（※「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
 
@@ -382,11 +382,13 @@
   "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "表示中のタブに基づいてツリー構造を自動的に修正する（※タブのグループを切り替えるアドオンとの併用時に推奨）" },
   "config_fixupTreeOnTabVisibilityChanged_keep":    { "message": "非表示のタブも含めてツリー構造を維持する（※一時的にタブを非表示にするアドオンとの併用時に推奨）" },
 
-  "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
-  "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
+  "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折りたたむ" },
+  "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折りたたむ" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
+  "config_autoExpandOnCollapsedChildActive_label": { "message": "折りたたまれたタブがフォーカスされた時に、そのタブが含まれるツリーを自動的に展開する" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "待機状態のタブが意図せずフォーカスされた後にすぐ別のタブへフォーカスし直された場合、タブを待機状態に戻す" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "タブのダブルクリックでツリーを開閉する" },
-  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折り畳んだりしたときに、なるべく待機状態のタブが選択されないようにする" },
+  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折りたたんだりした時に、なるべく待機状態のタブが選択されないようにする" },
 
   "config_closeParentBehaviorMode_caption":           { "message": "親タブを単独で閉じたり移動したりした時の挙動" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Firefox自身のタブバーを併用する場合向けの動作にする" },
@@ -411,7 +413,7 @@
 
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
-  "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドラッグされた時" },
+  "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドロップされた時" },
   "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。ドロップ後のタブの取り扱いは、ドラッグ開始時に押すShiftキー、またはタブの左（または右）端付近に表示されるドラッグ用つまみによって決定できます。" },
   "config_tabDragBehavior_label":         { "message": "通常のドラッグ:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-ドラッグ:" },
@@ -422,19 +424,24 @@
   "config_tabDragBehavior_none":          { "message": "何もしない" },
   "config_showTabDragHandle_label":       { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
   "config_showTabDragBehaviorNotification_label": { "message": "タブのドラッグ中、サイドバー外にドロップした時の操作説明を表示する" },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "タブバーの外にドロップされたツリーを別ウィンドウに切り離すことを許可する" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "タブにリンクやURL文字列をドロップしたとき" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "どうするか常に訊ねる" },
   "config_dropLinksOnTabBehavior_load":    { "message": "そのタブに読み込む" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
+  "config_autoExpandOnLongHoverDelay_before":  { "message": "ドラッグ操作中、折りたたまれたツリーの上で" },
+  "config_autoExpandOnLongHoverDelay_after":  { "message": "ミリ秒以上経過したらツリーを展開する" },
+  "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "ドラッグ操作の終了後、ツリーを折りたたんだ状態に自動的に戻す" },
+
 
   "config_more_caption": { "message": "その他..." },
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
 
-  "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
-  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "折り畳まれたツリーにフォーカスがある状態でTabキーを" },
+  "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "折りたたまれたツリーにフォーカスがある状態でTabキーを" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "ミリ秒以上押し続けたらツリーを展開する" },
 
   "config_shortcuts_resetAll": { "message": "すべて初期値に戻す" },
@@ -464,7 +471,7 @@
 
   "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他のアドオン" },
-  "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加する事ができます。" },
+  "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加できます。" },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
   "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
@@ -501,7 +508,7 @@
   "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの読み取りと作成を許可する" },
-  "config_requestPermissions_tabHide":   { "message": "個々のタブの表示・非表示の制御を許可する（※この操作が許可されている事を確かめるため、テスト実行前には必ずチェックボックスを一旦OFFにしてから再度ONにして下さい）" },
+  "config_requestPermissions_tabHide":   { "message": "個々のタブの表示・非表示の制御を許可する（※この操作が許可されていることを確かめるため、テスト実行前には必ずチェックボックスを一旦OFFにしてから再度ONにして下さい）" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Firefoxのバグのため、権限をこの画面から要求することができません。ツールバー上の「ツリー型タブ」ボタンをクリックして権限を承認して下さい。" },

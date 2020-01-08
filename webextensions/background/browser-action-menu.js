@@ -657,6 +657,18 @@ const mItems = [
         expert: true
       },
       {
+        title: browser.i18n.getMessage('config_autoExpandOnCollapsedChildActive_label'),
+        key:   'autoExpandOnCollapsedChildActive',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: browser.i18n.getMessage('config_autoDiscardTabForUnexpectedFocus_label'),
+        key:   'autoDiscardTabForUnexpectedFocus',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title: browser.i18n.getMessage('config_collapseExpandSubtreeByDblClick_label'),
         key:   'collapseExpandSubtreeByDblClick',
         type:  'checkbox'
@@ -929,6 +941,13 @@ const mItems = [
     title:    browser.i18n.getMessage('config_drag_caption'),
     children: [
       {
+        title:  browser.i18n.getMessage('config_moveDroppedTabToNewWindowForUnhandledDragEvent_label'),
+        key:    'moveDroppedTabToNewWindowForUnhandledDragEvent',
+        type:   'checkbox',
+        expert: true
+      },
+      { type: 'separator', expert: true },
+      {
         title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
         enabled: false
       },
@@ -1035,6 +1054,22 @@ const mItems = [
             type:  'radio'
           }
         ]
+      },
+      { type: 'separator', expert: true },
+      {
+        dynamicTitle: true,
+        get title() {
+          return browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_before') + delimiter + configs.autoExpandOnLongHoverDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_after');
+        },
+        key:    'autoExpandOnLongHover',
+        type:   'checkbox',
+        expert: true
+      },
+      {
+        title:   indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
+        key:    'autoExpandOnLongHoverRestoreIniitalState',
+        type:   'checkbox',
+        expert: true
       }
     ]
   },
