@@ -117,18 +117,24 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
     A: { index: 1, active: true },
     B: { index: 2 }
   }, { windowId: win.id });
+  await wait(1000);
 
   let onCreated;
+  // Simulation of a feature of something another addon which reopens a new tab with
+  // different container immediately, like Firefox Multi-Account Containers.
   const promisedTabReopenedByAnotherAddon = new Promise((resolve, reject) => {
     onCreated = async tab => {
       browser.tabs.onCreated.removeListener(onCreated);
-      // wait until the tab is attached by TST
-      while (true) {
-        tab = await browser.tabs.get(tab.id);
-        if (tab.openerTabId)
-          break;
-      }
       try {
+        // wait until the tab is attached by TST
+        while (true) {
+          await wait(1);
+          const tabs = await Utils.refreshTabs({ opened: tab });
+          if (!tabs.opened || !tabs.opened.$TST.parent)
+            continue;
+          tab = tabs.opened;
+          break;
+        }
         const preparedTabs = await Utils.refreshTabs({ A: tabs.A, B: tabs.B, C: tab });
         {
           const { A, B, C } = preparedTabs;
@@ -139,26 +145,32 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
           ], Utils.treeStructure([A, C, B]),
              'tabs must be initialized with specified structure');
         }
+        // Firefox Multi-Account Containers reopens a new tab with different container
+        // with a blocking listener for "browser.webRequest.onBeforeRequest".
+        // TST doesn't have a permission to simulate that, so instead I wait until a
+        // content script is executed in the new tab.
+        const reopenedTab = await browser.tabs.create({
+          url:   `${location.origin}/manifest.json?reopened`,
+          index: 2
+        });
+        await browser.tabs.executeScript(reopenedTab.id, {
+          code: 'location.href'
+        });
+        browser.tabs.remove(tab.id);
+        resolve(reopenedTab);
       }
-      catch(e) {
+      catch(e){
         reject(e);
-        return;
       }
-      // one more wait, to simulate behavior by another addon
-      await wait(1);
-      const reopeningTab = browser.tabs.create({
-        url:   'about:blank?reopened',
-        index: 2
-      });
-      browser.tabs.remove(tab.id);
-      resolve(await reopeningTab);
     };
   });
+
   browser.tabs.onCreated.addListener(onCreated);
   browser.tabs.create({
     url:         'about:blank?newchild',
     openerTabId: tabs.A.id,
-    index:       2
+    index:       2,
+    active:      true
   });
 
   const reopenedTab = await promisedTabReopenedByAnotherAddon;
