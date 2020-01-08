@@ -53,6 +53,7 @@ export async function activateTab(tab, options = {}) {
     }
     if (tabs.length == 1)
       window.tabsToBeHighlightedAlone.add(tab.id);
+    log('setting tab highlighted ', configs.debug && tabs.map(index => Tab.getTabAt(tab.windowId, index)));
     return browser.tabs.highlight({
       windowId: tab.windowId,
       tabs,
@@ -60,6 +61,7 @@ export async function activateTab(tab, options = {}) {
     }).catch(ApiTabs.createErrorHandler(onError));
   }
   else {
+    log('setting tab active ', tab);
     return browser.tabs.update(tab.id, { active: true }).catch(ApiTabs.createErrorHandler(onError));
   }
 }

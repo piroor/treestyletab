@@ -15,6 +15,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 
@@ -24,6 +25,7 @@ import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
 import * as Tree from './tree.js';
 import * as TreeStructure from './tree-structure.js';
+import * as TabsMove from './tabs-move.js';
 
 function log(...args) {
   internalLogger('background/handle-tree-changes', ...args);
@@ -46,14 +48,30 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     });
   }
 
+  if (parent.$TST.lockedCollapsed &&
+      parent.$TST.subtreeCollapsed) {
+    if (tab.active) {
+      // Tab move disallows to update highlighted state of tabs
+      // even if they are not moved tabs, so we need to wait
+      // until all tab move is finished.
+      TabsMove.waitUntilSynchronized(tab.windowId).then(() => {
+        TabsInternalOperation.activateTab(parent.$TST.nearestFocusableTabOrSelf, { silently: true });
+      });
+    }
+    Tree.collapseExpandTabAndSubtree(tab, {
+      collapsed: true,
+      justNow:   true,
+      broadcast: true
+    });
+  }
+  else if (info.newlyAttached &&
+           mInitialized) {
   // Because the tab is possibly closing for "reopen" operation,
   // we need to apply "forceExpand" immediately. Otherwise, when
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
-  if (info.newlyAttached &&
-      mInitialized) {
     log('newly attached tab');
-    if (info.parent.$TST.subtreeCollapsed &&
+    if (parent.$TST.subtreeCollapsed &&
         !info.forceExpand) {
       log('  the tree is collapsed, but keep collapsed by forceExpand option');
       Tree.collapseExpandTabAndSubtree(tab, {
