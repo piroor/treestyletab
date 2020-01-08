@@ -625,7 +625,7 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
+        title: indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
         key:   'autoGroupNewTabsFromPinned',
         type:  'checkbox'
       },
