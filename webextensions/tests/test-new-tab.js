@@ -127,7 +127,10 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
       browser.tabs.onCreated.removeListener(onCreated);
       try {
         // wait until the tab is attached by TST
+        const start = Date.now();
         while (true) {
+          if (Date.now() - start > 1000)
+            throw new Error('timeout');
           await wait(1);
           const tabs = await Utils.refreshTabs({ opened: tab });
           if (!tabs.opened || !tabs.opened.$TST.parent)
