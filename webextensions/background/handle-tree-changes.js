@@ -66,10 +66,10 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   }
   else if (info.newlyAttached &&
            mInitialized) {
-  // Because the tab is possibly closing for "reopen" operation,
-  // we need to apply "forceExpand" immediately. Otherwise, when
-  // the tab is closed with "subtree collapsed" state, descendant
-  // tabs are also closed even if "forceExpand" is "true".
+    // Because the tab is possibly closing for "reopen" operation,
+    // we need to apply "forceExpand" immediately. Otherwise, when
+    // the tab is closed with "subtree collapsed" state, descendant
+    // tabs are also closed even if "forceExpand" is "true".
     log('newly attached tab');
     if (parent.$TST.subtreeCollapsed &&
         !info.forceExpand) {
