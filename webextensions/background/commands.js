@@ -122,9 +122,9 @@ export function toggleLockCollapsed(tabs) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
   for (const tab of tabs) {
-  tab.$TST.lockedCollapsed = !tab.$TST.lockedCollapsed;
-  if (tab.$TST.lockedCollapsed)
-    collapseTree(tab);
+    tab.$TST.lockedCollapsed = !tab.$TST.lockedCollapsed;
+    if (tab.$TST.lockedCollapsed)
+      collapseTree(tab);
   }
 }
 
