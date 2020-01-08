@@ -166,17 +166,32 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
 }
 
 export async function testNewTabBeforeHiddenTab() {
-  const tabs = await Utils.createTabs({
-    A: { index: 0, active: true },
-    B: { index: 1 }, // => hidden
-    C: { index: 2 },
-    D: { index: 3, openerTabId: 'C' },
-    E: { index: 4, openerTabId: 'D' },
-    F: { index: 5 }, // => hidden
-    G: { index: 6 }
+  let tabs = await Utils.createTabs({
+    A: { index: 1, active: true },
+    B: { index: 2 }, // => hidden
+    C: { index: 3 },
+    D: { index: 4, openerTabId: 'C' },
+    E: { index: 5, openerTabId: 'D' },
+    F: { index: 6 }, // => hidden
+    G: { index: 7 }
   }, { windowId: win.id });
   await browser.tabs.hide([tabs.B.id, tabs.F.id]);
   await wait(1000);
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G } = tabs;
+    is([
+      `${A.id}`,
+      `${B.id}`,
+      `${C.id}`,
+      `${C.id} => ${D.id}`,
+      `${C.id} => ${D.id} => ${E.id}`,
+      `${F.id}`,
+      `${G.id}`
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs must be initialized with specified structure');
+  }
 
   async function assertNewTabOpenedAs(expectedIndex, baseTab, position) {
     const newTabs = await Utils.doAndGetNewTabs(async () => {
@@ -197,26 +212,43 @@ export async function testNewTabBeforeHiddenTab() {
     await browser.tabs.remove(newTabs[0].id);
     await wait(1000);
   }
-  await assertNewTabOpenedAs(1, tabs.A, Constants.kNEWTAB_OPEN_AS_CHILD);
-  await assertNewTabOpenedAs(1, tabs.A, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
-  await assertNewTabOpenedAs(5, tabs.C, Constants.kNEWTAB_OPEN_AS_CHILD);
-  await assertNewTabOpenedAs(5, tabs.C, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
+  await assertNewTabOpenedAs(tabs.A.index + 1, tabs.A, Constants.kNEWTAB_OPEN_AS_CHILD);
+  await assertNewTabOpenedAs(tabs.A.index + 1, tabs.A, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
+  await assertNewTabOpenedAs(tabs.E.index + 1, tabs.C, Constants.kNEWTAB_OPEN_AS_CHILD);
+  await assertNewTabOpenedAs(tabs.E.index + 1, tabs.C, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
 }
 
 export async function testMoveAttachedTabBeforeHiddenTab() {
   let tabs = await Utils.createTabs({
-    A: { index: 0, active: true },
-    B: { index: 1 }, // => hidden
-    C: { index: 2 },
-    D: { index: 3, openerTabId: 'C' },
-    E: { index: 4, openerTabId: 'D' },
-    F: { index: 5 }, // => hidden
-    G: { index: 6 },
-    H: { index: 7 },
-    I: { index: 8 }
+    A: { index: 1, active: true },
+    B: { index: 2 }, // => hidden
+    C: { index: 3 },
+    D: { index: 4, openerTabId: 'C' },
+    E: { index: 5, openerTabId: 'D' },
+    F: { index: 6 }, // => hidden
+    G: { index: 7 },
+    H: { index: 8 },
+    I: { index: 9 }
   }, { windowId: win.id });
   await browser.tabs.hide([tabs.B.id, tabs.F.id]);
   await wait(1000);
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H, I } = tabs;
+    is([
+      `${A.id}`,
+      `${B.id}`,
+      `${C.id}`,
+      `${C.id} => ${D.id}`,
+      `${C.id} => ${D.id} => ${E.id}`,
+      `${F.id}`,
+      `${G.id}`,
+      `${H.id}`,
+      `${I.id}`
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs must be initialized with specified structure');
+  }
 
   await Utils.callAPI({
     type:   TSTAPI.kATTACH,
