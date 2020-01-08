@@ -118,7 +118,7 @@ async function onShortcutCommand(command) {
       Commands.expandAll(activeTab.windowId);
       return;
     case 'toggleLockCollapsed':
-      Commands.toggleLockCollapsed(activeTab);
+      Commands.toggleLockCollapsed(selectedTabs.length > 1 ? selectedTabs : activeTab);
       return;
     case 'bookmarkTree':
       Commands.bookmarkTree(activeTab);

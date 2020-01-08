@@ -338,7 +338,7 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'lockCollapsed':
-      Commands.toggleLockCollapsed(contextTab);
+      Commands.toggleLockCollapsed(selectedTabs.length > 1 ? selectedTabs : contextTab);
       break;
 
     case 'bookmarkTree':
