@@ -8,8 +8,8 @@
    * ツリーのつまみをPhoton風に変更
    * [macOSでのBug 1561879](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879)によって意図せず引き起こされるごく短時間での不正なドラッグ操作を無視する時間を設定で変更可能にした
    * 設定画面の構成を少し見直し、上級者向けの設定を初期状態では隠すようにした（これに伴い、今までUIを提供していなかった隠し設定のいくつかを上級者向け設定として提供するようにした）
-   * APIで呼び出せる新しいメッセージ型を追加：[`toggle-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#toggle-collapsed-state-of-tree), [`lock-tree-collapsed`, `unlock-tree-collapsed` および `toggle-lock-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-locked-as-collapsed-state-of-tree)
-   * APIでタブを指定する際の別名として `nextVisible`, `previousVisible` （および `prevVisible`）を追加
+   * APIで呼び出せる新しいメッセージ型を追加：[`toggle-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#toggle-collapsed-state-of-tree)、[`lock-tree-collapsed`、`unlock-tree-collapsed` および `toggle-lock-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-locked-as-collapsed-state-of-tree)
+   * APIで[タブを指定する際の別名](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)に `nextVisible`、`previousVisible`（`prevVisible`）、および `Cyclic` が末尾に付くバリエーションを追加
    * APIの[`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar)型のメッセージにおいて、対象ウィンドウを指定する`window`パラメータの値として現在アクティブなウィンドウを指定するキーワード`active`に対応
    * 不要になったライブラリ[webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer)への依存関係を解消（by adroitwhiz. Thanks!）
    * `ru`ロケール更新（by wvxwxvw. Thanks!）

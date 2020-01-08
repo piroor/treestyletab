@@ -9,7 +9,7 @@
    * The delay to ignore too short drag action produced by the [bug 1561879 on macOS](https://bugzilla.mozilla.org/show_bug.cgi?id=1561879) become configurable.
    * Brush up options UI and hide expert options by default. And now more detailed options are exposed in the expert mode.
    * Add new API message types: [`toggle-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#toggle-collapsed-state-of-tree), [`lock-tree-collapsed`, `unlock-tree-collapsed` and `toggle-lock-tree-collapsed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-locked-as-collapsed-state-of-tree).
-   * Add support for special tab aliases `nextVisible`, `previousVisible` (and `prevVisible`) for API messages.
+   * Add more [special tab aliases for some API messages](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs): `nextVisible`, `previousVisible` (`prevVisible`), and versions with the suffix `Cyclic`.
    * Add support for a special window ID `active` for an API message type [`scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar).
    * Reduce needless dependency to an outdated library [webextensions-lib-tab-id-fixer](https://github.com/piroor/webextensions-lib-tab-id-fixer), by adroitwhiz. Thanks!
    * Update `ru` locale by wvxwxvw. Thanks!
