@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.3.0 (2020.1.8)
    * Introduce the "Lock as Collapsed" feature. When the state is locked via the context menu command or a keyboard shortcut, TST keeps the tree collapsed when it or its any descendant get focused.
    * Show "Open All as a Tree" in the bookmarks context menu only when the context menu is opened on a folder.
    * Add an option to avoid pending (discarded) tabs to be activated accidentally when the active tab is closed or an ancestor tree of the active tab is collapsed.
