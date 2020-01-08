@@ -119,7 +119,7 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
   }, { windowId: win.id });
 
   let onCreated;
-  const promisedTabReopenedByAnotherAddon = new Promise((resolve, _reject) => {
+  const promisedTabReopenedByAnotherAddon = new Promise((resolve, reject) => {
     onCreated = async tab => {
       browser.tabs.onCreated.removeListener(onCreated);
       // wait until the tab is attached by TST
@@ -127,7 +127,22 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
         tab = await browser.tabs.get(tab.id);
         if (tab.openerTabId)
           break;
-        await wait(1);
+      }
+      try {
+        const preparedTabs = await Utils.refreshTabs({ A: tabs.A, B: tabs.B, C: tab });
+        {
+          const { A, B, C } = preparedTabs;
+          is([
+            `${A.id}`,
+            `${A.id} => ${C.id}`,
+            `${B.id}`
+          ], Utils.treeStructure([A, C, B]),
+             'tabs must be initialized with specified structure');
+        }
+      }
+      catch(e) {
+        reject(e);
+        return;
       }
       // one more wait, to simulate behavior by another addon
       await wait(1);
