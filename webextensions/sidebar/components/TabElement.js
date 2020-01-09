@@ -73,6 +73,7 @@ export class TabElement extends HTMLElement {
 
   connectedCallback() {
     if (this.initialized) {
+      this.initializeContents();
       this.invalidate(TabInvalidationTarget.All);
       this.update(TabUpdateTarget.TabProperties);
       this._applyAttributes();
@@ -101,31 +102,21 @@ export class TabElement extends HTMLElement {
 
     const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
     this.appendChild(label);
-    label.owner = this;
-    label.addOverflowChangeListener(() => {
-      if (this.$TST.tab.pinned)
-        return;
-      this.invalidateTooltip();
-    });
 
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
     this.insertBefore(twisty, label);
-    twisty.owner = this;
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
     this.insertBefore(favicon, label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
     this.appendChild(counter);
-    counter.owner = this;
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
     this.appendChild(soundButton);
-    soundButton.owner = this;
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
     this.appendChild(closebox);
-    closebox.owner = this;
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);
@@ -146,6 +137,7 @@ export class TabElement extends HTMLElement {
 
     this.setAttribute('draggable', true);
 
+    this.initializeContents();
     this.invalidate(TabInvalidationTarget.All);
     this.update(TabUpdateTarget.TabProperties);
     this._applyAttributes();
@@ -158,6 +150,21 @@ export class TabElement extends HTMLElement {
 
   get initialized() {
     return !!this._labelElement;
+  }
+
+  initializeContents() {
+    if (!this._labelElement.owner) {
+      this._labelElement.addOverflowChangeListener(() => {
+        if (this.$TST.tab.pinned)
+          return;
+        this.invalidateTooltip();
+      });
+    }
+    this._labelElement.owner =
+      this._twistyElement.owner =
+      this._counterElement.owner =
+      this._soundButtonElement.owner =
+      this.closeBoxElement.owner = this;
   }
 
   // Elements restored from cache are initialized without bundled tabs.
