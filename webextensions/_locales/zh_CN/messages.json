@@ -1142,9 +1142,17 @@
         "message": "除非焦点改变由当前标签页关闭引发",
         "hash": "396dc3f5b3e0387681d9b99b46fafefd"
     },
-    "config_collapseExpandSubtreeByDblClick_label": {
-        "message": "双击标签页折叠/展开树",
-        "hash": "5c8c2190a5ac75b7e4e214724becbccb"
+    "config_treeDoubleClickBehavior_caption": {
+        "message": "双击标签页",
+        "hash": "260195e0c6579efe875cd6cda13f8858"
+    },
+    "config_treeDoubleClickBehavior_toggleCollapsed": {
+        "message": "折叠/展开树",
+        "hash": "a6f448837c94b54069a5f7b82589dfa3"
+    },
+    "config_treeDoubleClickBehavior_none": {
+        "message": "什么都不做",
+        "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
     },
     "config_closeParentBehaviorMode_caption": {
         "message": "当一个父标签页被关闭或被单独移动时",
@@ -1281,6 +1289,10 @@
     "config_shortcuts_caption": {
         "message": "键盘快捷键",
         "hash": "3e4c94412820831fbea1494aa4d5ecf4"
+    },
+    "config_requestPermissions_allUrls": {
+        "message": "通过键盘快捷键切换标签页的焦点时，不要展开折叠的树并跳过已折叠的后代。 （*您需要允许在网页上执行脚本。）",
+        "hash": "0b56b4253e7d159f95331e7b7fe84597"
     },
     "config_shortcuts_resetAll": {
         "message": "重置所有快捷键",
@@ -1477,10 +1489,6 @@
     "config_requestPermissions_bookmarks": {
         "message": "允许读写书签",
         "hash": "7478a48fc3307a59c38920d562baf3b2"
-    },
-    "config_requestPermissions_allUrls": {
-        "message": "通过键盘快捷键切换标签页的焦点时，不要展开折叠的树并跳过已折叠的后代。 （*您需要允许在网页上执行脚本。）",
-        "hash": "0b56b4253e7d159f95331e7b7fe84597"
     },
     "config_requestPermissions_tabHide": {
         "message": "允许展示/隐藏单独标签页（你必须在运行测试前取消勾选并再次勾选此选项，以保证权限被正确获取）",
