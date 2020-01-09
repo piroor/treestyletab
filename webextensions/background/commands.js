@@ -118,12 +118,12 @@ export function expandAll(windowId) {
   }
 }
 
-export function toggleLockCollapsed(tabs) {
+export function toggleLockCollapsed(tabs, options = {}) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
   for (const tab of tabs) {
     tab.$TST.lockedCollapsed = !tab.$TST.lockedCollapsed;
-    if (tab.$TST.lockedCollapsed)
+    if (options.collapse && tab.$TST.lockedCollapsed)
       collapseTree(tab);
   }
 }
@@ -793,6 +793,10 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
       }));
     }; break;
+
+    case Constants.kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED:
+      toggleLockCollapsed(Tab.get(message.tabId));
+      break;
   }
 });
 

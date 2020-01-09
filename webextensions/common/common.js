@@ -101,7 +101,8 @@ export const configs = new Configs({
   autoCollapseExpandSubtreeOnSelect: true,
   autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove: true,
 
-  collapseExpandSubtreeByDblClick: false,
+  collapseExpandSubtreeByDblClick: false, // obsolete, migrated to treeDoubleClickBehavior
+  treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED,
 
   autoExpandIntelligently: true,
   autoExpandOnCollapsedChildActive: true,

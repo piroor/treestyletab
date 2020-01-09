@@ -20,7 +20,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 7;
+const kCONFIGS_VERSION = 8;
 const kFEATURES_VERSION = 4;
 
 export function migrateConfigs() {
@@ -106,6 +106,10 @@ export function migrateConfigs() {
           configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.closeParentBehavior;
           break;
       }
+
+    case 7:
+      if (configs.collapseExpandSubtreeByDblClick)
+        configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

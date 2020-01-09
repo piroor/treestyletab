@@ -56,6 +56,7 @@ export const kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED     = 'treestyletab:not
 export const kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED = 'treestyletab:notify-subtree-collapsed-state-changed';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE                   = 'treestyletab:set-subtree-collapsed-state';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR = 'treestyletab:set-subtree-collapsed-state-intelligently-for';
+export const kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED     = 'treestyletab:toggle-lcok-tree-collapsed';
 export const kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED       = 'treestyletab:notify-tab-level-changed';
 export const kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY = 'treestyletab:notify-tab-attached-completely';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
@@ -273,6 +274,10 @@ export const kINSERT_NEAREST    = 2;
 export const kSUCCESSOR_TAB_CONTROL_NEVER            = 0;
 export const kSUCCESSOR_TAB_CONTROL_SIMULATE_DEFAULT = 1;
 export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
+
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_NONE                  = 0;
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED      = 1;
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED = 2;
 
 export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_WHOLE_TREE     = 1 << 0;
