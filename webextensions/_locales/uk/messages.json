@@ -274,8 +274,11 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "Коли з'явиться нове дерево, згорнути інші автоматично" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Коли вкладка отримує фокус, розгорнути її дерево та автоматично згорнути інші " },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За винятком переміщення фокусу, викликаного закриттям поточної вкладки" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "Двічі клацніть вкладку, щоб згорнути/розгорнути дерево" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "Двічі клацніть вкладку" },
+  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Згорнути/розгорнути дерево" },
+  "config_treeDoubleClickBehavior_none":                { "message": "Нічого" },
   "config_closeParentBehavior_caption": { "message": "Коли батьківська вкладка закривається з розгорнутим деревом" },
   "config_closeParentBehavior_close": { "message": "Також закрити дочірні вкладки" },
   "config_closeParentBehavior_replaceWithGroupTab": { "message": "Замінити закриту батьківську вкладку порожньою і зберегти дерево" },

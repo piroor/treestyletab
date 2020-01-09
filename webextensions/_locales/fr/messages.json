@@ -373,6 +373,10 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Sauf lorsque le changement de focus est dû à la fermeture de l'onglet courant" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-cliquer sur l'onglet pour replier/déplier l'arbre" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "Double-cliquer sur l'onglet" },
+  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Replier/déplier l'arbre" },
+  "config_treeDoubleClickBehavior_none":                { "message": "Ne fais rien" },
   "config_closeParentBehaviorMode_caption": { "message": "Quand un onglet parent est fermé ou déplacé en tant qu'onglet seul" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Comportement recommandé si vous utilisez toujours la barre d'onglets native de Firefox en plus" },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Garder les arbre et le nombre d'onglets si possible, pour les opérations effectuées quand le panneau d'onglets en arbre est invisible." },

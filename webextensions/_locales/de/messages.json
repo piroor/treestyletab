@@ -380,8 +380,11 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "Wenn ein neuer Zweig erscheint, alle anderen automatisch einklappen" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Wenn ein Tab ausgewählt wird, automatisch seinen Zweig ausklappen und alle anderen einklappen" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Es sei denn, dass das Auswählen des Tabs durch das Schließen des aktiven Tabs verursacht wird" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "Aus-/einklappen eines Zweigs durch Doppelklick auf einen Tab" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "Doppelklick auf einen Tab" },
+  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Aus-/einklappen eines Zweigs" },
+  "config_treeDoubleClickBehavior_none":                { "message": "Nichts machen" },
   "config_closeParentBehaviorMode_caption":           { "message": "Wenn ein übergeordneter Tab geschlossen oder als eigenständiger Tab verschoben wird" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Empfohlenes Verhalten für Nutzer, welche auch die eingebaute Tableiste von Firefox verwenden" },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Versuche Baumstruktur und Anzahl der Tabs beizubehalten, während die Seitenleiste versteckt ist." },

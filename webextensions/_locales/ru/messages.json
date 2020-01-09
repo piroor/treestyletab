@@ -394,6 +394,10 @@
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Двойной клик, чтобы свернуть/развернуть дерево" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Избегать активации выгруженных вкладок при закрытии текущей вкладки или сворачивании дерева" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "Двойной клик" },
+  "config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "Переключить блокировку свернутых" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Свернуть/развернуть дерево" },
+  "config_treeDoubleClickBehavior_none":                { "message": "Ничего не делать" },
   "config_closeParentBehaviorMode_caption":           { "message": "Когда родительская вкладка закрыта или перемещена как отдельная вкладка" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Рекомендуется для тех, кто все еще используют нативную панель вкладок Firefox" },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Сохранить дерево и количество вкладок, если это возможно, для операций, когда боковая панель невидима." },
