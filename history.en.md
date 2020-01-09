@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.3.1 (2020.1.9)
    * Add ability to toggle locked-collapsed state of a tree by double click.
    * Don't expand locked-collapsed tree when a new child tab is attached.
    * Update counter of collapsed descendants correctly on tabs restored from the cache. (regression on recent versions)
