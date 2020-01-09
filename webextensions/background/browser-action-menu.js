@@ -669,14 +669,32 @@ const mItems = [
         expert: true
       },
       {
-        title: browser.i18n.getMessage('config_collapseExpandSubtreeByDblClick_label'),
-        key:   'collapseExpandSubtreeByDblClick',
-        type:  'checkbox'
-      },
-      {
         title: browser.i18n.getMessage('config_avoidDiscardedTabToBeActivatedIfPossible_label'),
         key:   'avoidDiscardedTabToBeActivatedIfPossible',
         type:  'checkbox'
+      },
+      {
+        title:    browser.i18n.getMessage('config_treeDoubleClickBehavior_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleLockCollapsed'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleCollapsed'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_none'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE,
+            type:  'radio'
+          }
+        ]
       },
       {
         title:    browser.i18n.getMessage('config_successorTabControlLevel_caption'),

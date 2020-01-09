@@ -387,9 +387,12 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
   "config_autoExpandOnCollapsedChildActive_label": { "message": "折りたたまれたタブがフォーカスされた時に、そのタブが含まれるツリーを自動的に展開する" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "待機状態のタブが意図せずフォーカスされた後にすぐ別のタブへフォーカスし直された場合、タブを待機状態に戻す" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "タブのダブルクリックでツリーを開閉する" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折りたたんだりした時に、なるべく待機状態のタブが選択されないようにする" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "タブのダブルクリック" },
+  "config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "ツリーの折りたたみ状態のロックの切り替え" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "ツリーを開閉する" },
+  "config_treeDoubleClickBehavior_none":                { "message": "何もしない" },
   "config_closeParentBehaviorMode_caption":           { "message": "親タブを単独で閉じたり移動したりした時の挙動" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Firefox自身のタブバーを併用する場合向けの動作にする" },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "サイドバー非表示時は、可能な限りツリー構造を維持し、余計なタブは開かない。" },

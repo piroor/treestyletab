@@ -391,9 +391,12 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
   "config_autoExpandOnCollapsedChildActive_label": { "message": "When a collapsed tab gets focus, expand its tree automatically" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentaly focused and the focus is redirected immediately" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-click on a tab to collapse/expand tree" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsing" },
 
+  "config_treeDoubleClickBehavior_caption":             { "message": "Double-click on a tab" },
+  "config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "Toggle Locking of Collapsed" },
+  "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Collapse/expand tree" },
+  "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },
   "config_closeParentBehaviorMode_caption":           { "message": "When a parent tab is closed or moved just as a solo tab" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Recommended behavior for people who still use the native tab bar of Firefox itself also" },
   "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": { "message": "Keep tree structures and the number of tabs if possible, for operations while the tree sidebar is invisible." },

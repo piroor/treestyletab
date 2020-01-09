@@ -476,14 +476,27 @@
              __MSG_config_autoDiscardTabForUnexpectedFocus_label__</label></p>
     </div>
     <p><label class="has-checkbox"
-             ><input id="collapseExpandSubtreeByDblClick"
-                     type="checkbox">
-             __MSG_config_collapseExpandSubtreeByDblClick_label__</label></p>
-    <p><label class="has-checkbox"
              ><input id="avoidDiscardedTabToBeActivatedIfPossible"
                      type="checkbox">
              __MSG_config_avoidDiscardedTabToBeActivatedIfPossible_label__</label></p>
 
+    <fieldset>
+      <legend>__MSG_config_treeDoubleClickBehavior_caption__</legend>
+      <ul>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="treeDoubleClickBehavior" value="2">
+              __MSG_config_treeDoubleClickBehavior_toggleLockCollapsed__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="treeDoubleClickBehavior" value="1">
+              __MSG_config_successorTabControlLevel_toggleCollapsed__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="treeDoubleClickBehavior" value="0">
+              __MSG_config_successorTabControlLevel_none__</label></li>
+      </ul>
+    </fieldset>
     <fieldset>
       <legend>__MSG_config_successorTabControlLevel_caption__</legend>
       <ul>
