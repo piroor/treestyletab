@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.3.2 (2020.1.9)
+   * Ignore double click on any clickable UI in tabs except the closebox, to prevent accidental close or other reactions.
  - 3.3.1 (2020.1.9)
    * Add ability to toggle locked-collapsed state of a tree by double click.
    * Don't expand locked-collapsed tree when a new child tab is attached.
