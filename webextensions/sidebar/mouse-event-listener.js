@@ -687,7 +687,8 @@ function onDblClick(event) {
   log('dblclick tab: ', tab, { living: !!livingTab });
 
   if (livingTab &&
-      !EventUtils.isEventFiredOnTwisty(event)) {
+      !EventUtils.isEventFiredOnTwisty(event) &&
+      !EventUtils.isEventFiredOnSoundButton(event)) {
     if (configs.simulateCloseTabByDblclick &&
         event.button == 0 &&
         !event.altKey &&
