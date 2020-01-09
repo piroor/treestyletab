@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Add ability to toggle locked-collapsed state of a tree by double click.
+   * Don't expand locked-collapsed tree when a new child tab is attached.
+   * Update counter of collapsed descendants correctly on tabs restored from the cache. (regression on recent versions)
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.3.0 (2020.1.8)
    * Introduce the "Lock as Collapsed" feature. When the state is locked via the context menu command or a keyboard shortcut, TST keeps the tree collapsed when it or its any descendant get focused.
    * Show "Open All as a Tree" in the bookmarks context menu only when the context menu is opened on a folder.
