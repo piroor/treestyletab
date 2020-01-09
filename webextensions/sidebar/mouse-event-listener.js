@@ -705,13 +705,13 @@ function onDblClick(event) {
       event.preventDefault();
       switch (configs.treeDoubleClickBehavior) {
         case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
-      BackgroundConnection.sendMessage({
-        type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
-        tabId:           livingTab.id,
-        collapsed:       !livingTab.$TST.subtreeCollapsed,
-        manualOperation: true,
-        stack:           configs.debug && new Error().stack
-      });
+          BackgroundConnection.sendMessage({
+            type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
+            tabId:           livingTab.id,
+            collapsed:       !livingTab.$TST.subtreeCollapsed,
+            manualOperation: true,
+            stack:           configs.debug && new Error().stack
+          });
           break;
         case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED:
           BackgroundConnection.sendMessage({
