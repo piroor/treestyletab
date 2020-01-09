@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "Увеличить размер суб-панели" },
   "command_decreaseSubPanel":      { "message": "Уменьшить размер суб-панели" },
   "command_groupSelectedTabs":     { "message": "Создать новую группу из выбранных вкладок" },
+  "command_toggleLockCollapsed":   { "message": "Переключить блокировку свернутых" },
 
   "tab_closebox_tab_tooltip": { "message": "Закрыть вкладку" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Закрыть вкладки" },
@@ -216,6 +217,7 @@
   "context_expandTree_command": { "message": "Развернуть это дерево" },
   "context_expandAll_label": { "message": "Развернуть все" },
   "context_expandAll_command": { "message": "Развернуть все" },
+  "context_lockCollapsed_label": { "message": "Удерживать свернутые при фокусе" },
   "context_bookmarkTree_label": { "message": "Добавить это дерево в закладки…" },
   "context_bookmarkTree_command": { "message": "Добавить это дерево в закладки…" },
   "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
@@ -231,6 +233,8 @@
 
 
   "config_title": { "message": "Настройки Tree Style Tab" },
+
+  "config_showExpertOptions_label": { "message": "Режим эксперта" },
 
   "config_appearance_caption": { "message": "Внешний вид" },
 
@@ -385,7 +389,10 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "Когда появится новое дерево, свернуть остальные автоматически" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Когда вкладка получает фокус, развернуть её дерево и автоматически свернуть другие" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За исключением перемещения фокуса, вызванного закрытием текущей вкладки" },
+  "config_autoExpandOnCollapsedChildActive_label": { "message": "Когда свернутая вкладка получает фокус, автоматически развернуть ее дерево" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Удерживать вкладки в выгружеными при кратковременном фокусе" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Двойной клик, чтобы свернуть/развернуть дерево" },
+  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Избегать активации выгруженных вкладок при закрытии текущей вкладки или сворачивании дерева" },
 
   "config_closeParentBehaviorMode_caption":           { "message": "Когда родительская вкладка закрыта или перемещена как отдельная вкладка" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Рекомендуется для тех, кто все еще используют нативную панель вкладок Firefox" },
@@ -405,6 +412,7 @@
   "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
+  "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать, когда я попытаюсь закрыть несколько вкладок по крестику закрытия вкладки (свернутое дерево)" },
 
 
   "config_drag_caption": { "message": "Перетаскивание" },
@@ -420,14 +428,26 @@
   "config_tabDragBehavior_none":          { "message": "Ничего не делать" },
   "config_showTabDragHandle_label":       { "message": "Показывать помощника на каждой вкладке. Выберите задачу и начните перетаскивание" },
   "config_showTabDragBehaviorNotification_label": { "message": "Показывать напоминание о том, что произойдет после отпускания вкладки за пределами боковой панели" },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Разрешить открепление дерева, вытянутого за пределы панели вкладок" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL на вкладку" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Загрузить во вкладке" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
 
+  "config_autoExpandOnLongHoverDelay_before":  { "message": "Развернуть свернутое дерево при наведении указателя мыши более " },
+  "config_autoExpandOnLongHoverDelay_after":  { "message": "мс при перетаскивании" },
+  "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Сворачивать такие деревья автоматически после завершения перетаскивания" },
+
+
+  "config_more_caption": { "message": "Больше..." },
 
   "config_shortcuts_caption": { "message": "Горячие клавиши" },
+
+  "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые потомки, переключая фокус вкладок сочетаниями клавиш. (*Вы должны разрешить выполнение сценариев на веб-страницах.)" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Развернуть активное свернутое дерево при удержании клавиши Tab " },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "мс" },
+
   "config_shortcuts_resetAll": { "message": "Сбросить ВСЁ" },
 
 
@@ -449,7 +469,6 @@
   "config_userStyleRules_description_after": { "message": " вики." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
-
 
 
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
@@ -493,7 +512,6 @@
   "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
 
   "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
-  "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки, переключая фокус горячими клавишами (*Необходимо разрешить скрипты на веб-страницах.)" },
   "config_requestPermissions_tabHide":   { "message": "Разрешить показывать / скрывать отдельные вкладки (* Вы должны снять/поставить этот флажок перед запуском тестов, чтобы убедиться, что разрешение получено)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Нажмите \"Tree Style Tab\" кнопку панели инструментов" },
