@@ -686,7 +686,8 @@ function onDblClick(event) {
   const livingTab = EventUtils.getTabFromEvent(event);
   log('dblclick tab: ', tab, { living: !!livingTab });
 
-  if (livingTab) {
+  if (livingTab &&
+      !EventUtils.isEventFiredOnTwisty(event)) {
     if (configs.simulateCloseTabByDblclick &&
         event.button == 0 &&
         !event.altKey &&
