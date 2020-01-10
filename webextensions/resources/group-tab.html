@@ -7,7 +7,16 @@
 <link rel="favicon" href="">
 <title></title>
 <link rel="stylesheet" href="/resources/ui-color.css">
-<style type="text/css">
+<style type="text/css"><!--
+  :root > * {
+    transition: opacity 0.25s ease-out;
+    opacity: 1;
+  }
+
+  :root:not(.initialized) > * {
+    opacity: 0;
+  }
+
   :root {
     background: var(--bg-color);
     color: var(--text-color);
@@ -206,7 +215,7 @@
     vertical-align: text-bottom;
     width: 1em;
   }
-</style>
+--></style>
 <!--
   Don't load scripts dynamically, to prevent the tab is closed by Firefox.
   See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087

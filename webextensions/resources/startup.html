@@ -6,7 +6,16 @@
 <link rel="icon" href="./16x16.svg">
 <title></title>
 <link rel="stylesheet" href="/resources/ui-color.css">
-<style type="text/css">
+<style type="text/css"><!--
+  :root > * {
+    transition: opacity 0.25s ease-out;
+    opacity: 1;
+  }
+
+  :root:not(.initialized) > * {
+    opacity: 0;
+  }
+
   body {
     background: var(--bg-color);
     color: var(--text-color);
@@ -99,7 +108,7 @@
     text-align: center;
     font-weight: bold;
   }
-</style>
+--></style>
 <script type="module" src="./module/startup.js"></script>
 
 <h1 id="title">__MSG_extensionName__</h1>

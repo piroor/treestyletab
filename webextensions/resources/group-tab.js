@@ -234,6 +234,8 @@
     window.setTitle    = window.setTitle || setTitle;
     window.updateTree  = window.updateTree || updateTree;
     window.initialized = true;
+
+    document.documentElement.classList.add('initialized');
   }
   //document.addEventListener('DOMContentLoaded', init, { once: true });
 

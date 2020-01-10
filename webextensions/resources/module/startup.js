@@ -22,4 +22,6 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.BOOKMARKS,
     document.querySelector('#bookmarksPermissionGranted')
   );
+
+  document.documentElement.classList.add('initialized');
 }, { once: true });
