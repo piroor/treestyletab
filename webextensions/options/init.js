@@ -133,7 +133,7 @@ async function showLogs() {
 }
 
 configs.$addObserver(onConfigChanged);
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   if (typeof browser.tabs.moveInSuccession == 'function')
     document.documentElement.classList.add('successor-tab-support');
   else
@@ -202,7 +202,8 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('browserThemeCustomRulesBlock').style.display = rules ? 'block' : 'none';
     });
 
-  configs.$loaded.then(() => {
+  await configs.$loaded;
+
     const focusedItem = document.querySelector(':target');
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {
       if (configs.optionsExpandedGroups.includes(fieldset.id) ||
@@ -406,11 +407,11 @@ window.addEventListener('DOMContentLoaded', () => {
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('successorTabControlLevel');
     onConfigChanged('showExpertOptions');
-    wait(0).then(() => {
-      onConfigChanged('closeParentBehaviorMode');
-    });
+    await wait(0);
+    onConfigChanged('closeParentBehaviorMode');
 
     if (focusedItem)
       focusedItem.scrollIntoView();
-  });
+
+    document.documentElement.classList.add('initialized');
 }, { once: true });
