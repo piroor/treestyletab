@@ -115,10 +115,14 @@ Some addons provide extended behavior to TST's sidebar panel:
   * [Power Tabs](https://addons.mozilla.org/firefox/addon/power-tabs/)
   * [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button with a popup panel also. It has an option to show a search field in the panel by default.
   </details>
-* <details><summary>Google Chrome extensions</summary>
+* <details><summary>for Google Chrome and Chromium</summary>
   
   * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
   * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
+  </details>
+* <details><summary>for Vivaldi</summary>
+  
+  * [Tree Tabs](https://gitlab.com/kroppy/TreeTabs)
   </details>
 
 
