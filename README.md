@@ -122,7 +122,7 @@ Some addons provide extended behavior to TST's sidebar panel:
   </details>
 * <details><summary>for Vivaldi</summary>
   
-  * [Tree Tabs](https://gitlab.com/kroppy/TreeTabs)
+  * [Tree Tabs](https://drive.google.com/drive/folders/0B3jXQpRtOfvSdkN4RW5XN2tOc3c)
   </details>
 
 
