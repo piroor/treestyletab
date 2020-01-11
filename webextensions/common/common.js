@@ -102,6 +102,7 @@ export const configs = new Configs({
 
   autoExpandIntelligently: true,
   autoExpandOnCollapsedChildActive: true,
+  autoExpandOnCollapsedChildActiveUnderLockedCollapsed: true,
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,

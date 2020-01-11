@@ -389,7 +389,8 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "When a new tree appears, collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
-  "config_autoExpandOnCollapsedChildActive_label": { "message": "When a collapsed tab gets focus, expand its tree automatically" },
+  "config_autoExpandOnCollapsedChildActive_label": { "message": "When a tab under a collapsed tree gets focus, expand its tree automatically" },
+  "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "even if it is under a \"Locked as Collapsed\" tree" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentaly focused and the focus is redirected immediately" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsing" },
 

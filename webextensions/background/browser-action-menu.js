@@ -663,6 +663,12 @@ const mItems = [
         expert: true
       },
       {
+        title: indent() + browser.i18n.getMessage('config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label'),
+        key:   'autoExpandOnCollapsedChildActiveUnderLockedCollapsed',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title: browser.i18n.getMessage('config_autoDiscardTabForUnexpectedFocus_label'),
         key:   'autoDiscardTabForUnexpectedFocus',
         type:  'checkbox',
