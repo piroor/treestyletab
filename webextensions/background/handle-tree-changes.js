@@ -254,8 +254,10 @@ function reserveAttachShownTab(tab) {
     reserveAttachShownTab.tabs.clear();
     for (const tab of tabs) {
       if (!TabsStore.ensureLivingTab(tab) ||
-          tab.$TST.hasParent)
+          tab.$TST.hasParent) {
+        tab.$TST.removeState(Constants.kTAB_STATE_SHOWING);
         continue;
+      }
       const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
         insertAfter:  tab.$TST.nearestVisiblePrecedingTab,
         // Instead of nearestFollowingForeignerTab, to avoid placing the tab
