@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Support Firefox versions after the [bug 1565170](https://bugzilla.mozilla.org/show_bug.cgi?id=1565170) is fixed.
+   * Fix confused tab focus after some tabs are hidden and shown.
+   * Don't expand locked-collapsed tree with a long press of the Ctrl key while Ctrl-Tab/Ctrl-Shift-Tab tab switching is in progress.
+   * Allow to expand locked-collapsed tree when a descendant tab gets focus directly.
+   * Hide options and other tab contents until they are initialized.
  - 3.3.2 (2020.1.9)
    * Ignore double click on any clickable UI in tabs except the closebox, to prevent accidental close or other reactions.
  - 3.3.1 (2020.1.9)
