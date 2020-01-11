@@ -7,10 +7,6 @@
 
 import Configs from '/extlib/Configs.js';
 
-/* global
-  uneval: false,
- */
-
 import * as Constants from './constants.js';
 
 export const configs = new Configs({
@@ -399,6 +395,23 @@ log.context = '?';
 log.max  = 2000;
 log.logs = [];
 log.forceStore = true;
+
+// uneval() is no more available after https://bugzilla.mozilla.org/show_bug.cgi?id=1565170
+function uneval(value) {
+  switch (typeof value) {
+    case 'undefined':
+      return 'undefined';
+
+    case 'function':
+      return value.toString();
+
+    case 'object':
+      if (!value)
+        return 'null';
+    default:
+      return JSON.stringify(value);
+  }
+}
 
 function getTimeStamp() {
   const time = new Date();
