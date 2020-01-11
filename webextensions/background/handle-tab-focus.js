@@ -228,7 +228,8 @@ function setupDelayedExpand(tab) {
   TabsStore.removeToBeExpandedTab(tab);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
-      !tab.$TST.subtreeCollapsed)
+      !tab.$TST.subtreeCollapsed ||
+      tab.$TST.lockedCollapsed)
     return;
   TabsStore.addToBeExpandedTab(tab);
   tab.$TST.delayedExpand = setTimeout(() => {
@@ -304,7 +305,8 @@ function onMessage(message, sender) {
           cancelAllDelayedExpand(tab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
-              TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id) {
+              TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id &&
+              !tab.$TST.lockedCollapsed) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
