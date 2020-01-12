@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Reduce accidental modifications of the tree structure after tabs are shown/hidden.
+   * Skip collapsed tabs on Ctrl-Tab/Ctrl-Shift-Tab focus rotation more correctly, just after the active tab was closed.
+   * Add `kr` locale by BoredSomeone. Thanks!
  - 3.3.3 (2020.1.12)
    * Support Firefox versions after the [bug 1565170](https://bugzilla.mozilla.org/show_bug.cgi?id=1565170) is fixed.
    * Fix confused tab focus after some tabs are hidden and shown.
