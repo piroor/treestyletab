@@ -364,6 +364,7 @@ function getDropAction(event) {
     case kDROP_BEFORE: {
       log('drop position = before ', info.targetTab.id);
       const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
+        context: Constants.kINSERTION_CONTEXT_MOVED,
         insertBefore: targetTab
       });
       if (referenceTabs.parent)

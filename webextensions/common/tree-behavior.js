@@ -113,26 +113,44 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 
 export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   if (params.insertBefore) {
-    /* strategy
-         +-----------------------------------------------------
+    /* strategy for moved case
+         +------------------ CASE 1 ---------------------------
          |     <= detach from parent, and move
          |[TARGET  ]
-         +-----------------------------------------------------
+         +------------------ CASE 2 ---------------------------
          |  [      ]
          |     <= attach to the parent of the target, and move
          |[TARGET  ]
-         +-----------------------------------------------------
+         +------------------ CASE 3 ---------------------------
          |[        ]
          |     <= attach to the parent of the target, and move
          |[TARGET  ]
+         +------------------ CASE 4 ---------------------------
+         |[        ]
+         |     <= attach to the parent of the target (previous tab), and move
+         |  [TARGET]
          +-----------------------------------------------------
+    */
+    /* strategy for shown case
+         +------------------ CASE 5 ---------------------------
+         |     <= detach from parent, and move
+         |[TARGET  ]
+         +------------------ CASE 6 ---------------------------
+         |  [      ]
+         |     <= if the inserted tab has a parent and it is not the parent of the target, attach to the parent of the target. Otherwise keep inserted as a root.
+         |[TARGET  ]
+         +------------------ CASE 7 ---------------------------
+         |[        ]
+         |     <= attach to the parent of the target, and move
+         |[TARGET  ]
+         +------------------ CASE 8 ---------------------------
          |[        ]
          |     <= attach to the parent of the target (previous tab), and move
          |  [TARGET]
          +-----------------------------------------------------
     */
     const prevTab = params.insertBefore && (configs.fixupTreeOnTabVisibilityChanged ? params.insertBefore.$TST.nearestVisiblePrecedingTab : params.insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
-    if (!prevTab) {
+    if (!prevTab) { // CASE 1/2
       // allow to move pinned tab to beside of another pinned tab
       if (!tab ||
           tab.pinned == (params.insertBefore && params.insertBefore.pinned)) {
@@ -148,8 +166,21 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const prevLevel   = Number(prevTab.$TST.getAttribute(Constants.kLEVEL) || 0);
       const targetLevel = Number(params.insertBefore.$TST.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
-      if (!tab || !tab.pinned)
-        parent = (prevLevel < targetLevel) ? prevTab : (params.insertBefore && params.insertBefore.$TST.parent);
+      if (!tab || !tab.pinned) {
+        if (prevLevel < targetLevel) {
+          if (params.context == Constants.kINSERTION_CONTEXT_MOVED) // CASE 4
+            parent = prevTab;
+          else // CASE 8
+            parent = tab.$TST.parent && prevTab;
+        }
+        else {
+          const possibleParent = params.insertBefore && params.insertBefore.$TST.parent;
+          if (params.context == Constants.kINSERTION_CONTEXT_MOVED || prevLevel == targetLevel) // CASE 2/3/7
+            parent = possibleParent;
+          else // CASE 6
+            parent = tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent;
+        }
+      }
       return {
         parent,
         insertAfter:  prevTab,
@@ -158,19 +189,37 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     }
   }
   if (params.insertAfter) {
-    /* strategy
-         +-----------------------------------------------------
+    /* strategy for moved case
+         +------------------ CASE 1 ---------------------------
          |[TARGET  ]
          |     <= if the target has a parent, attach to it and and move
-         +-----------------------------------------------------
+         +------------------ CASE 2 ---------------------------
          |  [TARGET]
          |     <= attach to the parent of the target, and move
          |[        ]
-         +-----------------------------------------------------
+         +------------------ CASE 3 ---------------------------
          |[TARGET  ]
          |     <= attach to the parent of the target, and move
          |[        ]
+         +------------------ CASE 4 ---------------------------
+         |[TARGET  ]
+         |     <= attach to the target, and move
+         |  [      ]
          +-----------------------------------------------------
+    */
+    /* strategy for shown case
+         +------------------ CASE 5 ---------------------------
+         |[TARGET  ]
+         |     <= if the inserted tab has a parent, detach. Otherwise keep inserted as a root.
+         +------------------ CASE 6 ---------------------------
+         |  [TARGET]
+         |     <= if the inserted tab has a parent and it is not the parent of the next tab, attach to the parent of the target. Otherwise attach to the parent of the next tab.
+         |[        ]
+         +------------------ CASE 7 ---------------------------
+         |[TARGET  ]
+         |     <= attach to the parent of the target, and move
+         |[        ]
+         +------------------ CASE 8 ---------------------------
          |[TARGET  ]
          |     <= attach to the target, and move
          |  [      ]
@@ -181,18 +230,35 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     const unsafeNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
     const nextTab = params.insertAfter && (configs.fixupTreeOnTabVisibilityChanged ? params.insertAfter.$TST.nearestVisibleFollowingTab : unsafeNextTab);
     if (!nextTab) {
-      return {
-        parent:      params.insertAfter && params.insertAfter.$TST.parent,
-        insertBefore: unsafeNextTab,
-        insertAfter: params.insertAfter
-      };
+      if (params.context == Constants.kINSERTION_CONTEXT_MOVED) // CASE 1
+        return {
+          parent:       params.insertAfter && params.insertAfter.$TST.parent,
+          insertBefore: unsafeNextTab,
+          insertAfter:  params.insertAfter
+        };
+      else // CASE 5
+        return {
+          parent:       tab.$TST.parent && params.insertAfter && params.insertAfter.$TST.parent,
+          insertBefore: unsafeNextTab,
+          insertAfter:  params.insertAfter
+        };
     }
     else {
       const targetLevel = Number(params.insertAfter.$TST.getAttribute(Constants.kLEVEL) || 0);
       const nextLevel   = Number(nextTab.$TST.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
-      if (!tab || !tab.pinned)
-        parent = (targetLevel < nextLevel) ? params.insertAfter : (params.insertAfter && params.insertAfter.$TST.parent) ;
+      if (!tab || !tab.pinned) {
+        if (targetLevel < nextLevel) { // CASE 4/8
+          parent = params.insertAfter;
+        }
+        else  {
+          const possibleParent = params.insertAfter && params.insertAfter.$TST.parent;
+          if (params.context == Constants.kINSERTION_CONTEXT_MOVED || targetLevel == nextLevel) // CASE 2/3/7
+            parent = possibleParent;
+          else // CASE 6
+            parent = tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent;
+        }
+      }
       return {
         parent,
         insertBefore: unsafeNextTab || nextTab,

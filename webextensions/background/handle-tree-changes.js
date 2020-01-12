@@ -259,6 +259,7 @@ function reserveAttachShownTab(tab) {
         continue;
       }
       const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
+        context:      Constants.kINSERTION_CONTEXT_SHOWN,
         insertAfter:  tab.$TST.nearestVisiblePrecedingTab,
         // Instead of nearestFollowingForeignerTab, to avoid placing the tab
         // after hidden tabs (too far from the target)

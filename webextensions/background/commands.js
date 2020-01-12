@@ -549,6 +549,7 @@ export async function moveBefore(tab, options = {}) {
   }
   else {
     const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
+      context: Constants.kINSERTION_CONTEXT_MOVED,
       insertBefore
     });
     if (!referenceTabs.insertBefore &&
@@ -582,6 +583,7 @@ export async function moveAfter(tab, options = {}) {
   }
   else {
     const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tab, {
+      context: Constants.kINSERTION_CONTEXT_MOVED,
       insertAfter
     });
     if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
