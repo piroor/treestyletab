@@ -101,10 +101,13 @@ async function updateInternal(tabId) {
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
       const firstChild = tab.$TST.firstChild;
-      successor = (
-        (firstChild && !firstChild.$TST.collapsed && firstChild) ||
-        (tab.$TST.nextSiblingTab || tab.$TST.nearestVisiblePrecedingTab)
-      );
+      successor = firstChild && !firstChild.$TST.collapsed && !firstChild.hidden && firstChild;
+      if (!successor) {
+        const nextSibling = tab.$TST.nextSiblingTab;
+        successor = nextSibling && !nextSibling.$TST.collapsed && !nextSibling.hidden && nextSibling;
+      }
+      if (!successor)
+        successor = tab.$TST.nearestVisiblePrecedingTab;
       log(`  possible successor: ${dumpTab(tab)}`);
       if (successor &&
           successor.discarded &&
