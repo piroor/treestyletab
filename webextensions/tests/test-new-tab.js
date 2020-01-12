@@ -153,7 +153,10 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
         // TST doesn't have a permission to simulate that, so instead I wait until a
         // content script is executed in the new tab.
         const reopenedTab = await browser.tabs.create({
-          url:   `${location.origin}/manifest.json?reopened`,
+          // This must be an already loaded URL, othwrwise tabs.executeScript()
+          // is called for about:blank page and this test fails with "missing
+          // host permission" error.
+          url:   `${location.origin}/resources/ui-color.css`,
           index: 2
         });
         await browser.tabs.executeScript(reopenedTab.id, {
