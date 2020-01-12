@@ -752,6 +752,11 @@ export default class Tab {
     return children.length > 0 ? children[0] : null ;
   }
 
+  get firstVisibleChild() {
+    const firstChild = this.firstChild;
+    return firstChild && !firstChild.$TST.collapsed && !firstChild.hidden && firstChild;
+  }
+
   get lastChild() {
     const children = this.children;
     return children.length > 0 ? children[children.length - 1] : null ;
@@ -821,6 +826,11 @@ export default class Tab {
         first:     true
       });
     }
+  }
+
+  get nextVisibleSiblingTab() {
+    const nextSibling = this.nextSiblingTab;
+    return nextSibling && !nextSibling.$TST.collapsed && !nextSibling.hidden && nextSibling;
   }
 
   get previousSiblingTab() {
