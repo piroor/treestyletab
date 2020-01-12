@@ -282,6 +282,14 @@ Tab.onUpdated.addListener((tab, changeInfo = {}) => {
   updateActiveTab(tab.windowId);
 });
 
+Tab.onShown.addListener(tab => {
+  updateActiveTab(tab.windowId);
+});
+
+Tab.onHidden.addListener(tab => {
+  updateActiveTab(tab.windowId);
+});
+
 Tree.onAttached.addListener((child, _info = {}) => {
   updateActiveTab(child.windowId);
 });
