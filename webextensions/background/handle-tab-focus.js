@@ -291,10 +291,14 @@ function onMessage(message, sender) {
         mTabSwitchedByShortcut = false;
       break;
 
-    case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH:
+    case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH: {
       log('Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH');
       mMaybeTabSwitchingByShortcut = true;
-      break;
+      if (sender.tab.active) {
+        const window = TabsStore.windows.get(sender.tab.windowId);
+        window.lastActiveTab = sender.tab.id;
+      }
+    }; break;
     case Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH:
       log('Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
