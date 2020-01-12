@@ -88,8 +88,10 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
       let successor = tab.$TST.nearestVisibleAncestorOrSelf;
       if (!successor) // this seems invalid case...
         return false;
+      log('successor = ', successor.id);
       if (shouldSkipCollapsed &&
           window.lastActiveTab == successor.id) {
+        log('=> redirect successor (focus moved from the successor itself)');
         successor = successor.$TST.nearestVisibleFollowingTab;
         if (successor &&
             successor.discarded &&
@@ -99,12 +101,15 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
                         successor;
         if (!successor)
           successor = Tab.getFirstVisibleTab(tab.windowId);
+        log('=> ', successor.id);
       }
       else if (successor.discarded &&
                configs.avoidDiscardedTabToBeActivatedIfPossible) {
+        log('=> redirect successor (successor is discarded)');
         successor = successor.$TST.nearestLoadedTabInTree ||
                       successor.$TST.nearestLoadedTab ||
                       successor;
+        log('=> ', successor.id);
       }
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)
