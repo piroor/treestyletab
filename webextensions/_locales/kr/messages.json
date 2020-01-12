@@ -1,0 +1,1659 @@
+{
+    "extensionName": {
+        "message": "Tree Style Tab - 트리 스타일 탭",
+        "hash": "94c80eccdd67c127e1de28b71af57aee"
+    },
+    "extensionDescription": {
+        "message": "탭을 트리 모양으로 보여줍니다.",
+        "hash": "1cf26efef213812fa419388efe44fea2"
+    },
+    "sidebarTitle": {
+        "message": "트리 스타일 탭",
+        "hash": "94c80eccdd67c127e1de28b71af57aee"
+    },
+    "sidebarToggleDescription": {
+        "message": "트리 스타일 탭의 사이드바를 표시/비표시 변경",
+        "hash": "732286e74bb15a20b9999410d4be514c"
+    },
+    "command_indent": {
+        "message": "현재 탭을 한 단계 내리기",
+        "hash": "f5220f12d533b1a065e02c75f78b3214"
+    },
+    "command_outdent": {
+        "message": "현재 탭을 한 단계 올리기",
+        "hash": "ab5da17f574177cb4f0b19c41530cd98"
+    },
+    "command_tabMoveUp": {
+        "message": "현재 탭만 위로 이동",
+        "hash": "d1ca1602c2ec3af0f04e79210ebe0899"
+    },
+    "command_treeMoveUp": {
+        "message": "현재 트리를 위로 이동",
+        "hash": "696898278f05d19469437e259cbc2e51"
+    },
+    "command_tabMoveDown": {
+        "message": "현재 탭만 아래로 이동",
+        "hash": "bf2abb7937cb71d5a6478069dbd56c8f"
+    },
+    "command_treeMoveDown": {
+        "message": "현재 트리를 아래로 이동",
+        "hash": "d86bb88f7938ac6188285c91bc125b0a"
+    },
+    "command_focusPrevious": {
+        "message": "이전 탭 보기 (트리를 펼침)",
+        "hash": "6f8572d6b05c09124ec9807dde46b7ba"
+    },
+    "command_focusPreviousSilently": {
+        "message": "이전 탭 보기 (트리를 펼치지 않음)",
+        "hash": "8f5030e436d894b555bf73760465c5bd"
+    },
+    "command_focusNext": {
+        "message": "다음 탭 보기 (트리를 펼침)",
+        "hash": "f086055dab3ea389786404afc4ec5ba3"
+    },
+    "command_focusNextSilently": {
+        "message": "다음 탭 보기 (트리를 펼치지 않음)",
+        "hash": "f7f24e9d7ce8b25c9dabefb9ceb73f33"
+    },
+    "command_focusParent": {
+        "message": "상위 탭 보기",
+        "hash": "cfcf84997579f1d1ea13028a39250e5c"
+    },
+    "command_focusFirstChild": {
+        "message": "첫번째 하위 항목을 보기",
+        "hash": "2d322dc8c300823db21ee404cacd68a6"
+    },
+    "command_focusLastChild": {
+        "message": "마지막 하위 항목을 보기",
+        "hash": "9a09a8d347bb5cea4a1ca76136e382c4"
+    },
+    "command_focusPreviousSibling": {
+        "message": "같은 단계 앞의 탭을 보기",
+        "hash": "a0efeaa4c64ed846d9cd90bcb9392c75"
+    },
+    "command_focusNextSibling": {
+        "message": "같은 단계 다음의 탭을 보기",
+        "hash": "01e269347284064cc379067c1ca44790"
+    },
+    "command_tabbarUp": {
+        "message": "탭 목록을 한 줄 위로 스크롤",
+        "hash": "afa2d05acd138481d49861b5b78a68a4"
+    },
+    "command_tabbarPageUp": {
+        "message": "탭 목록을 한 페이지 위로 스크롤",
+        "hash": "bb7ae40b877576642310c562351ab933"
+    },
+    "command_tabbarHome": {
+        "message": "탭 목록을 가장 위로 스크롤",
+        "hash": "a45ccc7cb37a94eff4f2e217f28fd680"
+    },
+    "command_tabbarDown": {
+        "message": "탭 목록을 한 줄 아래로 스크롤",
+        "hash": "28df3e5fae3401ad3de923ef2806f075"
+    },
+    "command_tabbarPageDown": {
+        "message": "탭 목록을 한 페이지 아래로 스크롤",
+        "hash": "6446d1516a1a8804f217321273a5c450"
+    },
+    "command_tabbarEnd": {
+        "message": "탭 목록을 맨 끝으로 스크롤",
+        "hash": "025d1f54e7f530046d46445384cc6a94"
+    },
+    "command_toggleSubPanel": {
+        "message": "보조 패널 표시/비표시",
+        "hash": "9f094ffe88ce2ea3d13b6362c86fbd00"
+    },
+    "command_switchSubPanel": {
+        "message": "보조 패널 내용 전환",
+        "hash": "d2c4fb13522beb38621e61e51053ca7e"
+    },
+    "command_increaseSubPanel": {
+        "message": "보조 패널 크게",
+        "hash": "cc3d83235a066f79634686b2691b3e83"
+    },
+    "command_decreaseSubPanel": {
+        "message": "보조 패널 작게",
+        "hash": "2e42f0e70659cc22cf92167e83b336e7"
+    },
+    "command_groupSelectedTabs": {
+        "message": "선택 중인 탭을 묶음",
+        "hash": "90a2b9f0d172cd3b0f9e2353c6287fe7"
+    },
+    "command_toggleLockCollapsed": {
+        "message": "축소 잠금 켜기/끄기",
+        "hash": "6fde088b8640baa6c970d5c8e9df073c"
+    },
+    "tab_closebox_tab_tooltip": {
+        "message": "탭 닫기",
+        "hash": "d1f1cd1622da31c005a894c0637d041f"
+    },
+    "tab_closebox_tab_tooltip_multiselected": {
+        "message": "선택한 탭 닫기",
+        "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"
+    },
+    "tab_closebox_tree_tooltip": {
+        "message": "트리 닫기",
+        "hash": "c92c35ca25e3c2ed25a49ec66487aa32"
+    },
+    "tab_soundButton_muted_tooltip": {
+        "message": "탭 음소거 해제",
+        "hash": "27c70476ec16e327fb5f54c26837d622"
+    },
+    "tab_soundButton_muted_tooltip_multiselected": {
+        "message": "선택한 탭 음소거 해제",
+        "hash": "4cbd3b2e581593ceae839bf54bcdf730"
+    },
+    "tab_soundButton_playing_tooltip": {
+        "message": "탭 음소거",
+        "hash": "da346469df9a67311c3a3fd311284ca0"
+    },
+    "tab_soundButton_playing_tooltip_multiselected": {
+        "message": "선택한 탭 음소거",
+        "hash": "cf256c5132821025148a089896f6d95b"
+    },
+    "tab_twisty_expanded_tooltip": {
+        "message": "트리 축소",
+        "hash": "75fe738244dff04075cc05be697e9726"
+    },
+    "tab_twisty_collapsed_tooltip": {
+        "message": "트리 확장",
+        "hash": "bb62647dddf7fa646b77daa82c893bd6"
+    },
+    "tab_tree_tooltip": {
+        "message": "$TREE$\n  ...(생략된 탭: $COUNT$개)",
+        "placeholders": {
+            "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
+            "count": { "content": "$2", "example": "3" }
+        },
+        "hash": "f7d2172e715235f06bcb735d83461315"
+    },
+    "tabbar_newTabButton_tooltip": {
+        "message": "새 탭 열기",
+        "hash": "cdeaa496e27f481f501b51c5f07478f9"
+    },
+    "tabbar_newTabAction_tooltip": {
+        "message": "관계를 정하고 새 탭 열기…",
+        "hash": "4595cbc84085b40156711bb0df0f0ab8"
+    },
+    "tabbar_newTabAction_independent_label": {
+        "message": "독립된 탭(&I)",
+        "hash": "ca4bd2b91e4654e46c36a6ac97117a41"
+    },
+    "tabbar_newTabAction_independent_command": {
+        "message": "독립된 탭",
+        "hash": "b72aad49fc5c902f71a0628d5153b591"
+    },
+    "tabbar_newTabAction_child_label": {
+        "message": "하위 탭(&C)",
+        "hash": "7e09eb4867cc73c54adaf0616cf2cc09"
+    },
+    "tabbar_newTabAction_child_command": {
+        "message": "하위 탭",
+        "hash": "bf7b64d585cc31b8caa4b650ea673ad6"
+    },
+    "tabbar_newTabAction_sibling_label": {
+        "message": "같은 단계 탭(&S)",
+        "hash": "9a62ae35cd5efe267ad44685ffc0dd8c"
+    },
+    "tabbar_newTabAction_sibling_command": {
+        "message": "같은 단계 탭",
+        "hash": "3b2fb8c68064fa409d6b35b6d29aec17"
+    },
+    "tabbar_newTabAction_nextSibling_label": {
+        "message": "같은 단계의 옆 탭(&N)",
+        "hash": "fd32d2228b14e2742ef6fd21f643416a"
+    },
+    "tabbar_newTabAction_nextSibling_command": {
+        "message": "같은 단계의 옆 탭",
+        "hash": "a38ae42397e1a9efb03988cb7a2b3304"
+    },
+    "tabbar_newTabWithContexualIdentity_tooltip": {
+        "message": "새 컨테이너 탭",
+        "hash": "939c6fb543496a7a8485c982ad5530ce"
+    },
+    "tabbar_newTabWithContexualIdentity_default": {
+        "message": "기본 값",
+        "hash": "229c53203d001a81c6535deec232da82"
+    },
+    "tabDragHandle_tree_tearoff_tooltip": {
+        "message": "이 트리를 창에서 떼기 위해 드래그",
+        "hash": "b04f870323376ca2ded6087fc449cbc3"
+    },
+    "tabDragHandle_tree_bookmark_tooltip": {
+        "message": "이 트리를 북마크하기 위해 드래그",
+        "hash": "adebb19a61a190f797c581119711bf01"
+    },
+    "tabDragHandle_tab_tearoff_tooltip": {
+        "message": "이 단일 탭을 창에서 떼기 위해 드래그",
+        "hash": "13a4804844126236569da9a74fd03c7c"
+    },
+    "tabDragHandle_tab_bookmark_tooltip": {
+        "message": "이 단일 탭을 북마크하기 위해 드래그",
+        "hash": "b52ee181ba28ee1b1c5c600129b22799"
+    },
+    "groupTab_label": {
+        "message": "$TITLE$ 등",
+        "placeholders": {
+            "title": { "content": "$1", "example": "title" }
+        },
+        "hash": "631f9993dc81eb82f381ffff8c531551"
+    },
+    "groupTab_label_default": {
+        "message": "그룹",
+        "hash": "b5c9f35dc0d4f0c99422a5dd1a3e3b85"
+    },
+    "groupTab_temporary_label": {
+        "message": "하위 항목이 더 이상 없을 때 이 탭 닫기",
+        "hash": "d9fdeb22627334b2f0711a7b005fb672"
+    },
+    "groupTab_temporaryAggressive_label": {
+        "message": "하위 항목이 1개 이하일 때 이 탭 닫기",
+        "hash": "bd20bd503f41b304cbeb9fab15a07f32"
+    },
+    "groupTab_fromPinnedTab_label": {
+        "message": "$TITLE$에서 열린 탭",
+        "placeholders": {
+            "title": { "content": "$1", "example": "title" }
+        },
+        "hash": "4bfbdd0d863b718a743bf1b3e168195c"
+    },
+    "groupTab_options_label": {
+        "message": "설정에서 이 탭을 열지 않도록 할 수 있습니다.",
+        "hash": "716fbbb2f50b6d74be5d36e01a4a63f7"
+    },
+    "groupTab_options_dismiss": {
+        "message": "이 정보를 표시하지 않음",
+        "hash": "4404d3672d98fdfbbb1d183e347d0b3e"
+    },
+    "bookmarkFolder_label_default": {
+        "message": "$TITLE$ 등 (%YEAR%.%MONTH%.%DATE%)",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "year": { "content": "$2", "example": "2018" },
+            "month": { "content": "$3", "example": "06" },
+            "date": { "content": "$4", "example": "21" }
+        },
+        "hash": "b40bb671bfdc9d5b864f508435a929f0"
+    },
+    "bookmarkTree_notification_success_title": {
+        "message": "트리를 북마크 했습니다.",
+        "hash": "44f13d2945d8eea2099b13c8c2c52524"
+    },
+    "bookmarkTree_notification_success_message": {
+        "message": "\"$TITLE$\"을(를) 포함한 $COUNT$개의 탭을 \"$PARENT$\" 폴더를 만들어 북마크 했습니다.",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "count": { "content": "$2", "example": "2" },
+            "parent": { "content": "$3", "example": "Parent Folder" }
+        },
+        "hash": "00f6694c786faa079e550c8b9febc2de"
+    },
+    "bookmarkTab_notification_success_title": {
+        "message": "탭을 북마크 했습니다.",
+        "hash": "ca244987ac78b7d48714b9d9d25c7cad"
+    },
+    "bookmarkTab_notification_success_message": {
+        "message": "\"$TITLE$\"을(를) 북마크 했습니다.",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" }
+        },
+        "hash": "49fe5f59a6250b4514ce1f4dc26f9f12"
+    },
+    "bookmarkTabs_notification_success_title": {
+        "message": "탭 목록을 북마크 했습니다.",
+        "hash": "ab61fa1fa1bf23847df2aba0cc9f8bf9"
+    },
+    "bookmarkTabs_notification_success_message": {
+        "message": "\"$TITLE$\"을(를) 포함한 $COUNT$개의 탭을 \"$PARENT$\" 폴더를 만들어 북마크 했습니다.",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "count": { "content": "$2", "example": "2" },
+            "parent": { "content": "$3", "example": "Parent Folder" }
+        },
+        "hash": "00f6694c786faa079e550c8b9febc2de"
+    },
+    "bookmark_notification_notPermitted_title": {
+        "message": "권한 오류",
+        "hash": "5648aca0df76cc07ac7f3cf1b709dff2"
+    },
+    "bookmark_notification_notPermitted_message": {
+        "message": "북마크 작성에 필요한 권한이 없습니다. 이 글을 클릭해 추가 권한을 허가해 주십시오.",
+        "hash": "28b4612eab50dca2222a9c63fb839d81"
+    },
+    "dropLinksOnTabBehavior_message": {
+        "message": "어떻게 여시겠습니까?",
+        "hash": "ee6b8cf2133e9d31a007ecb60b76d06c"
+    },
+    "dropLinksOnTabBehavior_save": {
+        "message": "다음에도 같은 동작 실행",
+        "hash": "4478a6d39c91e5bfd95e7c3ae49ce6a1"
+    },
+    "dropLinksOnTabBehavior_load": {
+        "message": "이 탭을 불러오기",
+        "hash": "2c74e7c662255ba282ca422212107723"
+    },
+    "dropLinksOnTabBehavior_newtab": {
+        "message": "새 하위 항목 탭 열기",
+        "hash": "ef65d6f472c7fb18957f70ccba02e044"
+    },
+    "tabDragBehaviorNotification_message_duration_single": {
+        "message": "8s",
+        "hash": "c0228b80ff6732ed96243f02183608bc"
+    },
+    "tabDragBehaviorNotification_message_duration_both": {
+        "message": "16s",
+        "hash": "52ec239270293233608512e85cce4ee8"
+    },
+    "tabDragBehaviorNotification_message_base": {
+        "message": "사이드바 밖으로 내보내면, $RESULT$.",
+        "placeholders": {
+            "result": { "content": "$1", "example": "something happen" }
+        },
+        "hash": "e443023e41d97ba6dd508cf8d86d289e"
+    },
+    "tabDragBehaviorNotification_message_inverted_base_with_shift": {
+        "message": "Shift + 드래그를 하면, $RESULT$.",
+        "placeholders": {
+            "result": { "content": "$1", "example": "something happen" }
+        },
+        "hash": "9e3f61f9cf4a6d781ea256425f797dd6"
+    },
+    "tabDragBehaviorNotification_message_inverted_base_without_shift": {
+        "message": "Shift키를 누르지 않고 드래그 하면, $RESULT$.",
+        "placeholders": {
+            "result": { "content": "$1", "example": "something happen" }
+        },
+        "hash": "ee6d9fcb223a49c66d4d44023ffe10a7"
+    },
+    "tabDragBehaviorNotification_message_tree_tearoff": {
+        "message": "모든 탭을 창에서 분리",
+        "hash": "56c18550a0d9624dfb5c1ad4ccbc0fb4"
+    },
+    "tabDragBehaviorNotification_message_tab_tearoff": {
+        "message": "이 탭을 창에서 분리",
+        "hash": "a85a4212c8185f8a194322d65decac42"
+    },
+    "tabDragBehaviorNotification_message_tree_bookmark": {
+        "message": "드롭 위치에 모든 탭에서 링크 또는 북마크 작성",
+        "hash": "fec95673c331315fee6acd81218cb222"
+    },
+    "tabDragBehaviorNotification_message_tab_bookmark": {
+        "message": "드롭 위치에 이 탭에서 링크 또는 북마크 작성",
+        "hash": "80989b319537e780ba90b6b5e6053085"
+    },
+    "warnOnCloseTabs_message": {
+        "message": "$NUMBER$개의 탭을 닫으려고 합니다. 모두 닫아도 괜찮습니까?",
+        "placeholders": {
+            "NUMBER": { "content": "$1", "example": "10" }
+        },
+        "hash": "e3c228fe083b75f07a680e0f2b8cdcfb"
+    },
+    "warnOnCloseTabs_warnAgain": {
+        "message": "동시에 여러 탭을 닫을 때 확인하기",
+        "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
+    },
+    "warnOnCloseTabs_close": {
+        "message": "탭 닫기",
+        "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"
+    },
+    "warnOnCloseTabs_cancel": {
+        "message": "취소",
+        "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "warnOnCloseTabs_notification_message": {
+        "message": "취소하실 경우 이 글을 클릭해주세요.\n문제가 없다면 $TIMEOUT$초 후에 나머지 탭이 닫힘니다.",
+        "placeholders": {
+            "TIMEOUT": { "content": "$1", "example": "10" }
+        },
+        "hash": "37cac4a438e8d5d2a3939a30d81dfe5c"
+    },
+    "warnOnAutoGroupNewTabs_message": {
+        "message": "$NUMBER$개의 탭이 한번에 열렸습니다. 한 개의 트리로 묶으시겠습니까?",
+        "placeholders": {
+            "NUMBER": { "content": "$1", "example": "10" }
+        },
+        "hash": "1166af124a483e11003079ef324faab7"
+    },
+    "warnOnAutoGroupNewTabs_warnAgain": {
+        "message": "여러 개의 탭이 한번에 열릴 때 확인",
+        "hash": "93d92c4f0920ccd2eeaaae11def4a76d"
+    },
+    "warnOnAutoGroupNewTabs_close": {
+        "message": "탭 묶기",
+        "hash": "4e71012e0c6cecb0da9818bee9ad13b2"
+    },
+    "warnOnAutoGroupNewTabs_cancel": {
+        "message": "그대로 두기",
+        "hash": "c304183c3a6fde7c2ae13d76974ea17a"
+    },
+    "bookmarkDialog_title": {
+        "message": "제목:",
+        "hash": "bcc9f177b0a20c395aac47bd88204419"
+    },
+    "bookmarkDialog_url": {
+        "message": "주소:",
+        "hash": "d3304a6af52921ec7fbf6469ba358327"
+    },
+    "bookmarkDialog_parentId": {
+        "message": "폴더:",
+        "hash": "5f43a7c36ca597f9151fdc6df9e1b8a5"
+    },
+    "bookmarkDialog_accept": {
+        "message": "저장",
+        "hash": "aa14043bd4e6f79db542868539be9220"
+    },
+    "bookmarkDialog_cancel": {
+        "message": "취소",
+        "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "bookmarkFolderChooser_unspecified": {
+        "message": "(선택되지 않음)",
+        "hash": "d0a541c3b0ab4bb6c5509f8aaf474d80"
+    },
+    "bookmarkFolderChooser_blank": {
+        "message": "(이름 없음)",
+        "hash": "ec352a3752bf4e3c4acfe6ef8db044c9"
+    },
+    "bookmarkFolderChooser_useThisFolder": {
+        "message": "이 폴더를 선택",
+        "hash": "36612e37af337e8ffe66ebd20a89f8f9"
+    },
+    "message_startup_description_1": {
+        "message": "Tree Style Tab의 세로 탭 막대는 변경 가능한 사이드 바 중 하나입니다. 만약 표시되지 않을 경우,",
+        "hash": "77072da9342e0bbfc72df3969455dc51"
+    },
+    "message_startup_description_key": {
+        "message": "\"F1\"키",
+        "hash": "59740234c0d7b86a96198e49361b2b40"
+    },
+    "message_startup_description_2": {
+        "message": "를 누르거나 도구 모음에서 ",
+        "hash": "0030cd9d75c80a18085a4bda4ed6ac2d"
+    },
+    "message_startup_description_3": {
+        "message": " 버튼을 눌러 트리 스타일 탭 사이드바 패널을 표시하십시오.",
+        "hash": "073245a72ea5cb378794d40c049a9736"
+    },
+    "message_startup_requestPermissions_description": {
+        "message": "⚠아래 기능에는 추기적인 권한이 필요합니다. 이 기능을 원하시는 경우에만 권한을 부여해주세요.",
+        "hash": "579d612ed89439363c1b15dc629175bc"
+    },
+    "message_startup_requestPermissions_bookmarks": {
+        "message": "콘텍스트 메뉴인 \\\"이 트리를 북마크\\\"나 다른 환경에서 내보내진 북마크 내부 URL의 자동 옮기기(북마크 편집 허가 필요)",
+        "hash": "85897cd7e382dc85105661ce607f74ae"
+    },
+    "message_startup_requestPermissions_allUrls": {
+        "message": "키보드 단축키에서 탭 전환 중, 접혀있는 하위 항목을 넘기고, 트리도 펼치지 않습니다.(키 조작을 얻기 위해 웹 페이지 내 스크립트의 실행 허가 필요)",
+        "hash": "3b9fbc8723ec431403379e494588277f"
+    },
+    "message_startup_userChromeCss_notify": {
+        "message": "탭 바와 사이드 바의 헤더를 숨기고 싶은 경우",
+        "hash": "991184685e856081ec9ee06431fda2d2"
+    },
+    "message_startup_userChromeCss_description_1": {
+        "message": "Tree Style Tab은 Firefox의 WebExtensions만으로 탭바와 사이드바의 헤더를 제어할 수 없습니다. 이것들을 숨기고 싶은 경우",
+        "hash": "2b5b9b8f63740c72ef3201e1f04c9c1a"
+    },
+    "message_startup_userChromeCss_description_link_label": {
+        "message": "userChrome.css의 커스터마이즈 예시",
+        "hash": "0e83f18fdc12303add76071fcc95283b"
+    },
+    "message_startup_userChromeCss_description_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss",
+        "hash": "8b48ddee04341ad2483aecd1c23cd16a"
+    },
+    "message_startup_userChromeCss_description_2": {
+        "message": "를 참고하시기 바랍니다. 단, ",
+        "hash": "55d3613f3783aae27280892ae900a32c"
+    },
+    "message_startup_userChromeCss_description_note": {
+        "message": "이 방법은 낮은 수준의 커스터마이즈 수단이기 때문에, Firefox가 업데이트 될 경우 사용할 수 없게 되거나, 문제의 원인이 될 수 있습니다. 자신의 책임과 판단에 따라, 문제 발생 시 해결할 수 있는 경우에만 이 방법을 사용하시기 바랍니다.",
+        "hash": "e7071ae5b062918ec74e5cc5ae50e373"
+    },
+    "message_startup_userChromeCss_description_3": {
+        "message": "\u200b",
+        "hash": "d905a836615e096ddcdd4b5360fef509"
+    },
+    "api_requestedPermissions_title": {
+        "message": "추가 접근 권환 요구",
+        "hash": "00de8906635fae72f5a7f95466c14d54"
+    },
+    "api_requestedPermissions_message": {
+        "message": "⚠확장 기능\\\"$NAME$\\\"이 Tree Style Tab의 API를 통해 다음과 같은 행동을 하려합니다.\n\n$PERMISSIONS$\n\n허가할 경우, 이 글을 클릭하여 확장기능에 권한을 허가해주시기 바랍니다.",
+        "placeholders": {
+            "NAME": { "content": "$1", "example": "foobar" },
+            "PERMISSIONS": { "content": "$2", "example": "tabs" }
+        },
+        "hash": "19fccbf5ec8b53a269aa021cdb5b5557"
+    },
+    "api_requestedPermissions_type_activeTab": {
+        "message": "브라우저의 현재 탭에 접근",
+        "hash": "37651eacd8a1469b336cf05e95a848f5"
+    },
+    "api_requestedPermissions_type_tabs": {
+        "message": "브라우저의 탭에 접근",
+        "hash": "14b8623a0f30072eb0ad2ed7b5a9c7d6"
+    },
+    "api_requestedPermissions_type_cookies": {
+        "message": "브라우저의 탭의 컨테이너 식별",
+        "hash": "3c498ce07f491477e7484e731f59aaf2"
+    },
+    "context_menu_label": {
+        "message": "탭의 트리 제어",
+        "hash": "8d7379195ed66f46fa8a084c80cac51c"
+    },
+    "context_reloadTree_label": {
+        "message": "이 탭을 새로고침(&R)",
+        "hash": "bf043d3ae4b48903d9d6e067bdf04963"
+    },
+    "context_reloadTree_command": {
+        "message": "이 탭을 새로고침",
+        "hash": "36f3cf244910df1af6d4aed93c824f25"
+    },
+    "context_reloadDescendants_label": {
+        "message": "하위 탭 모두 새로고침(&E)",
+        "hash": "e541119f39ec9f6294ba83c996bc07ed"
+    },
+    "context_reloadDescendants_command": {
+        "message": "하위 탭 모두 새로고침",
+        "hash": "225ebe07a83b045112bdddfb8ab9bd29"
+    },
+    "context_closeTree_label": {
+        "message": "이 트리 닫기(&C)",
+        "hash": "80429baecee5e9ff1db23f3e19d6fc26"
+    },
+    "context_closeTree_command": {
+        "message": "이 트리 닫기",
+        "hash": "012719a6967306412b65489d82fd84d3"
+    },
+    "context_closeDescendants_label": {
+        "message": "하위 항목 모두 닫기(&L)",
+        "hash": "1067ddc54adc2501e74a65ecddf98ec7"
+    },
+    "context_closeDescendants_command": {
+        "message": "하위 항목 모두 닫기",
+        "hash": "728e538c9f99dc33708085c2f440bd4a"
+    },
+    "context_closeOthers_label": {
+        "message": "이 트리 외 다른 탭 모두 닫기(&O)",
+        "hash": "430ee315b4b7d5f7b3ef7043574ecb5c"
+    },
+    "context_closeOthers_command": {
+        "message": "이 트리 외 다른 탭 모두 닫기",
+        "hash": "3a2f1ade53ee164ad70bcedcbe762dc8"
+    },
+    "context_collapseTree_label": {
+        "message": "이 트리 축소(&S)",
+        "hash": "ec430e447b0faaf9c19f29c5a4aeca0d"
+    },
+    "context_collapseTree_command": {
+        "message": "이 트리 축소",
+        "hash": "a95425b3c370c1bbb988df427f1d7fc6"
+    },
+    "context_collapseAll_label": {
+        "message": "모든 트리 축소(&P)",
+        "hash": "a4afcd42a5e734361d983f6f07b785fc"
+    },
+    "context_collapseAll_command": {
+        "message": "모든 트리 축소",
+        "hash": "a0afd082d44e3d21550c9c2b9b8721ca"
+    },
+    "context_expandTree_label": {
+        "message": "이 트리 확장(&A)",
+        "hash": "d304de6771a35b0a1a8427d21ae6cd73"
+    },
+    "context_expandTree_command": {
+        "message": "이 트리 확장",
+        "hash": "904fbb34e0e5498cae6331847ae47cdf"
+    },
+    "context_expandAll_label": {
+        "message": "모든 트리 확장(&X)",
+        "hash": "f7c1013fa700568a2d6d13707c8aa179"
+    },
+    "context_expandAll_command": {
+        "message": "모든 트리 확장",
+        "hash": "fdcfbc3af0830393fc5aa481a1b15d19"
+    },
+    "context_lockCollapsed_label": {
+        "message": "축소 상태 잠금(&K)",
+        "hash": "8c3cec70f930b28512423f7a5b5afd24"
+    },
+    "context_bookmarkTree_label": {
+        "message": "이 트리 북마크(&B)…",
+        "hash": "3ebdc5bea63419b433495f0e2468a70f"
+    },
+    "context_bookmarkTree_command": {
+        "message": "이 트리 북마크…",
+        "hash": "480ed67c61391c3d85f233993f19daea"
+    },
+    "context_groupTabs_label": {
+        "message": "이 탭을 새로운 그룹으로(&G)",
+        "hash": "0300ecb3339104512e46cf906e80ed80"
+    },
+    "context_groupTabs_command": {
+        "message": "이 탭을 새로운 그룹으로",
+        "hash": "3e6027e325bd2a64b63af660f3c3fe5f"
+    },
+    "context_topLevel_prefix": {
+        "message": "최고 수준 항목: ",
+        "hash": "65d0a77bb3ec20dd8adc34b112ccfc93"
+    },
+    "context_openAllBookmarksWithStructure_label": {
+        "message": "모두 트리로 열기(&A)",
+        "hash": "764953a77356c4ff886ad85096e3894c"
+    },
+    "context_openAllBookmarksWithStructureRecursively_label": {
+        "message": "보조 폴더도 포함하여 모두 트리로 열기(&A)",
+        "hash": "b977fd26ec4bf634094fe7b6a57a1759"
+    },
+    "config_title": {
+        "message": "Tree Style Tab의 설정",
+        "hash": "ac0a723c76133d1744f7fda57e510329"
+    },
+    "config_showExpertOptions_label": {
+        "message": "전문가용 설정 보기",
+        "hash": "b19e02c05e20c20be54ce37e54fb9ca2"
+    },
+    "config_appearance_caption": {
+        "message": "외형",
+        "hash": "4e916e83dfa642d4d35d88b3910ef1ab"
+    },
+    "config_sidebarPosition_caption": {
+        "message": "사이드바 위치에 맞춘 스타일: ",
+        "hash": "4ebc8117a682499bbea58a0440275635"
+    },
+    "config_sidebarPosition_left": {
+        "message": "좌측용",
+        "hash": "91c14ea7ce7e54653b43b424b06dc84c"
+    },
+    "config_sidebarPosition_right": {
+        "message": "우측용",
+        "hash": "e36652d0c5eff2ca4f3cd7805a979d3f"
+    },
+    "config_sidebarPosition_description": {
+        "message": "※이 설정은 사이드바 자체의 위치를 변경하지 않습니다. 사이드바를 창 오른쪽으로 이동하려면 사이드바 헤더의 전환 메뉴에서 \"사이드바를 오른쪽으로 이동\"을 선택하세요.",
+        "hash": "adbea9fc2751f205418a7f6b10e68b5f"
+    },
+    "config_sidebarDirection_caption": {
+        "message": "글씨 방향에 맞춘 스타일",
+        "hash": "df500379330e44d98c6ab41c6eb09f07"
+    },
+    "config_sidebarDirection_ltr": {
+        "message": "LTR",
+        "hash": "4fb680668e028ece5611db5ae4f2380c"
+    },
+    "config_sidebarDirection_rtl": {
+        "message": "RTL",
+        "hash": "f24b22d165c8a43ef76a792dedb56421"
+    },
+    "config_style_caption": {
+        "message": "테마",
+        "hash": "9da24ca7508eb181c632829fd698be9a"
+    },
+    "config_style_highcontrast": {
+        "message": "하이 콘트라스트",
+        "hash": "eb7e1137e8f98f6a43c7735e56c098cc"
+    },
+    "config_style_none": {
+        "message": "꾸미지 않음",
+        "hash": "fc73fb5ff95b04bc07c426cef2cd7328"
+    },
+    "config_style_none_info": {
+        "message": "(※\"사이드바 내용 추가 스타일 지정\"에서 원하는 장식을 설정해주세요.)",
+        "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
+    },
+    "config_colorScheme_caption": {
+        "message": "배색: ",
+        "hash": "116757b55afc8e038df21da385c437da"
+    },
+    "config_colorScheme_systemColor": {
+        "message": "시스템 색상",
+        "hash": "dab5540a8cd4047f9e3411859792c4eb"
+    },
+    "config_applyBrowserTheme_label": {
+        "message": "브라우저의 현재 색상을 반영(※Plain、Vertigo、Mixed만 적용)",
+        "hash": "794a1641ceddfd61aa784009cebcd7a1"
+    },
+    "config_maxTreeLevel_before": {
+        "message": "트리를",
+        "hash": "f9e353339b4cf89bb31d4d79a6a660b8"
+    },
+    "config_maxTreeLevel_after": {
+        "message": "다음 층까지 들여씀(※음수 값은 \"무한대\")",
+        "hash": "115e5096e63f0299e2f87713d16b9412"
+    },
+    "config_faviconizePinnedTabs_label": {
+        "message": "고정된 탭은 아이콘만 표시",
+        "hash": "9da551bbd5004005faa75eff95cc8391"
+    },
+    "config_maxFaviconizedPinnedTabsInOneRow_label_before": {
+        "message": "한 줄에",
+        "hash": "de15aba5a2a5c843e5263fb0e0737d4f"
+    },
+    "config_maxFaviconizedPinnedTabsInOneRow_label_after": {
+        "message": "개까지 탭 표시(※0개 이하는 자동 표시)",
+        "hash": "d92393eead006c2cee0f66b690df8be0"
+    },
+    "config_animation_label": {
+        "message": "애니메이션 효과",
+        "hash": "67af584b4338ca4351cee724f8b9f0a3"
+    },
+    "config_showCollapsedDescendantsByTooltip_label": {
+        "message": "탭의 툴팁에 축소된 하위 탭의 정보를 포함",
+        "hash": "3023e54eb03305a2f90f23992f792916"
+    },
+    "config_applyThemeColorToIcon_label": {
+        "message": "툴바 버튼에 제목의 색상을 반영",
+        "hash": "5e7505602601db21c833e6487cdb1792"
+    },
+    "config_applyThemeColorToIcon_label_info": {
+        "message": "(※\"about:config\"에서 \"svg.context-properties.content.enabled\"를 \"true\"로 설정할 필요가 있습니다.)",
+        "hash": "6c19e0fe00e7602c77f34fe7d5366cab"
+    },
+    "config_context_caption": {
+        "message": "컨텍스트 메뉴",
+        "hash": "b3bfec7867f2835dbcb05a2f1cf5647f"
+    },
+    "config_emulateDefaultContextMenu_label": {
+        "message": "사이드바에서 콘텍스트 메뉴 사용",
+        "hash": "b869272d848c5a4292a0a62f1609d15b"
+    },
+    "config_extraItems_tabs_caption": {
+        "message": "탭의 콘텍스트 메뉴에 추가할 항목",
+        "hash": "b7f86123cd85643d03aa0dd59fc69e3a"
+    },
+    "config_extraItems_tabs_topLevel": {
+        "message": "최상위 단계",
+        "hash": "8fcbab5cbf53cf09f2d3c0f3668668a9"
+    },
+    "config_extraItems_tabs_subMenu": {
+        "message": "보조 메뉴",
+        "hash": "522d8c2da823fd4d30e6631167896222"
+    },
+    "config_extraItems_bookmarks_caption": {
+        "message": "북마크의 콘텍스트 메뉴에 추가할 항목",
+        "hash": "36dd8dd508816eb6f87ccede44a66b18"
+    },
+    "config_openAllBookmarksWithStructureDiscarded_label": {
+        "message": "읽기를 보류하고 탭을 열기.",
+        "hash": "509c995c21ab51263ec0f69c24e360b5"
+    },
+    "config_newTab_caption": {
+        "message": "새 탭을 실행",
+        "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
+    },
+    "config_newTabButton_caption": {
+        "message": "\"새 탭\" 버튼의 특수 기능",
+        "hash": "4f1c2560363df1c940b58015444eb34f"
+    },
+    "config_longPressOnNewTabButton_before": {
+        "message": "버튼을 길게 누르면",
+        "hash": "89ae44f80ab4bdbfd178d935e407736c"
+    },
+    "config_longPressOnNewTabButton_newTabAction": {
+        "message": "관계를 지정하고 새 탭 열기",
+        "hash": "449f5d27874d1669f920c84d3850d7b8"
+    },
+    "config_longPressOnNewTabButton_contextualIdentities": {
+        "message": "컨테이너 탭 열기",
+        "hash": "6d8ad3e2c064766892f8b6ebb8a0a1de"
+    },
+    "config_longPressOnNewTabButton_none": {
+        "message": "동작 없음",
+        "hash": "cb1e8ee431dcf1087099758e3a26c0ff"
+    },
+    "config_longPressOnNewTabButton_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_showNewTabActionSelector_label": {
+        "message": "버튼을 가리켰을 때 관계를 지정하고 새 탭을 열기 위한 버튼 표시",
+        "hash": "940082a223fdc51c7cf30f1b530b51de"
+    },
+    "config_showContextualIdentitiesSelector_label": {
+        "message": "버튼을 가리켰을 때 컨테이너 탭을 선택하기 위한 버튼 표시",
+        "hash": "f06ed1760ca0ebb143e6371eb1b6f641"
+    },
+    "config_newTabAction_caption": {
+        "message": "빈 새 탭에 대한 기본 설정",
+        "hash": "477c2a150aecc3473f267d37fd706f59"
+    },
+    "config_autoAttachOnNewTabCommand_before": {
+        "message": "빈 새 탭을 ",
+        "hash": "747c61c39b6f945e432226f6d4ab246d"
+    },
+    "config_autoAttachOnNewTabCommand_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnNewTabCommand_independent": {
+        "message": "독립된 탭으로",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnNewTabCommand_child": {
+        "message": "현재 탭 하위로",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnNewTabCommand_sibling": {
+        "message": "현재 탭과 같은 단계에",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnNewTabCommand_nextSibling": {
+        "message": "현재 탭과 같은 단계 옆에",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnNewTabCommand_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
+        "message": "주소가 ",
+        "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
+    },
+    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
+        "message": "에 어떤 탭이 열린 경우, 빈 새 탭이 열린 것으로 취급",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_before": {
+        "message": "중 클릭했을 때 빈 새 탭을",
+        "hash": "e30d945a6f78f16c27b7b6fe9a2cba74"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_independent": {
+        "message": "독립된 탭으로 ",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_child": {
+        "message": "현재 탭의 하위로 ",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_sibling": {
+        "message": "현재 탭과 같은 단계로 ",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": {
+        "message": "현재 탭과 같은 단계의 옆에 ",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_autoAttachWithURL_caption": {
+        "message": "비지 않은 새 탭",
+        "hash": "f8ab82dd3d406acfa35073512648f10f"
+    },
+    "config_duplicateTabAction_caption": {
+        "message": "복제된 탭(새로고침 버튼의 가운데 버튼 클릭 등)",
+        "hash": "ef195743a97cbc9a05b7447d9e686d3c"
+    },
+    "config_autoAttachOnDuplicated_before": {
+        "message": "복제된 탭을",
+        "hash": "6316753107fc79e6fc67a90d0911ca5c"
+    },
+    "config_autoAttachOnDuplicated_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnDuplicated_independent": {
+        "message": "독립된 탭으로 ",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnDuplicated_child": {
+        "message": "현재 탭의 하위로 ",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnDuplicated_sibling": {
+        "message": "현재 탭과 같은 단계로 ",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnDuplicated_nextSibling": {
+        "message": "현재 탭과 같은 단계의 옆에 ",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnDuplicated_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_fromExternal_caption": {
+        "message": "Firefox 밖에서 열린 탭",
+        "hash": "68b7be2c2199f59cd4010c0413d33846"
+    },
+    "config_autoAttachOnOpenedFromExternal_before": {
+        "message": "\u200b",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachOnOpenedFromExternal_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnOpenedFromExternal_independent": {
+        "message": "독립된 탭으로",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnOpenedFromExternal_child": {
+        "message": "현재 탭의 하위로",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnOpenedFromExternal_sibling": {
+        "message": "현재 탭과 같은 단계로",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnOpenedFromExternal_nextSibling": {
+        "message": "현재 탭과 같은 단계 옆에",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnOpenedFromExternal_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_inheritContextualIdentityToTabsFromExternal_label": {
+        "message": "현재 탭의 컨테이너 상속",
+        "hash": "05b8f966c86567dfc6b764aac8a83701"
+    },
+    "config_sameSiteOrphan_caption": {
+        "message": "로케이션 바, 북마크, 방문 기록 및 기타 방법으로 열린 현재의 탭과 같은 웹 사이트 탭",
+        "hash": "4b7da70d79ab2099aceef46815212252"
+    },
+    "config_autoAttachSameSiteOrphan_before": {
+        "message": "\u200b",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachSameSiteOrphan_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachSameSiteOrphan_independent": {
+        "message": "독립된 탭으로",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachSameSiteOrphan_child": {
+        "message": "현재 탭의 하위로",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachSameSiteOrphan_sibling": {
+        "message": "현재 탭과 같은 단계로",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachSameSiteOrphan_nextSibling": {
+        "message": "현재 탭과 같은 단계 옆에",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachSameSiteOrphan_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_inheritContextualIdentityToSameSiteOrphan_label": {
+        "message": "현재 탭의 컨테이너 상속",
+        "hash": "05b8f966c86567dfc6b764aac8a83701"
+    },
+    "config_insertNewChildAt_caption": {
+        "message": "새 하위 탭을 열 때 위치",
+        "hash": "1c30663590c21f4fc422a876cca96a7a"
+    },
+    "config_insertNewChildAt_noControl": {
+        "message": "제어하지 않음(Firefox나 다른 확장 기능의 판단에 맞김)",
+        "hash": "a9ad40068782c9923062b5cc735bdcb2"
+    },
+    "config_insertNewChildAt_first": {
+        "message": "트리의 첫 번째 위치에 넣기",
+        "hash": "e94f2dec1cd7d4578a3257b46a320438"
+    },
+    "config_insertNewChildAt_end": {
+        "message": "트리의 마지막에 추가",
+        "hash": "949c062d31b8dd906735ea113469924b"
+    },
+    "config_insertNewTabFromPinnedTabAt_caption": {
+        "message": "고정된 탭에서 새로운 탭을 열 때 위치",
+        "hash": "1b592c0035e4eba9b82695ac4726df67"
+    },
+    "config_insertNewTabFromPinnedTabAt_noControl": {
+        "message": "제어하지 않음(Firefox나 다른 확장 기능의 판단에 맞김)",
+        "hash": "a9ad40068782c9923062b5cc735bdcb2"
+    },
+    "config_insertNewTabFromPinnedTabAt_first": {
+        "message": "트리의 첫 번째 위치에 넣기",
+        "hash": "e94f2dec1cd7d4578a3257b46a320438"
+    },
+    "config_insertNewTabFromPinnedTabAt_end": {
+        "message": "트리의 마지막에 추가",
+        "hash": "949c062d31b8dd906735ea113469924b"
+    },
+    "config_groupTab_caption": {
+        "message": "탭을 자동으로 묶기",
+        "hash": "998c6484eb3eccfe367c727c71d482ae"
+    },
+    "config_autoGroupNewTabs_before": {
+        "message": "\u200b",
+        "hash": "ee68a8bc30968b8e1744bfa5fab4c600"
+    },
+    "config_autoGroupNewTabs_after": {
+        "message": "밀리초 안에 연속으로 열린 탭을 자동으로 묶습니다.",
+        "hash": "d56ac1ec4670c8c1f4cf3d20bea43c00"
+    },
+    "config_autoGroupNewTabsDelayOnNewWindow_before": {
+        "message": "다만, 새 창이 열리고부터",
+        "hash": "2eb9969ecbaf2144590626aa33b20dff"
+    },
+    "config_autoGroupNewTabsDelayOnNewWindow_after": {
+        "message": "밀리초 안에 열린 탭은 \"홈페이지\"의 일부로 간주해 묶지 않습니다.",
+        "hash": "a6e268352f07d4449db8c955fca074d7"
+    },
+    "config_warnOnAutoGroupNewTabs_label": {
+        "message": "자동으로 묶기 전에 확인",
+        "hash": "bf0d9bbb7f1c65e48bcd6dad00d5fa55"
+    },
+    "config_autoGroupNewTabsFromPinned_label": {
+        "message": "같은 잠긴 탭에서 열린 탭을 자동으로 묶기",
+        "hash": "abba012cab7c175c944f08ff12c9b0c7"
+    },
+    "config_renderTreeInGroupTabs_label": {
+        "message": "묶음용 탭에 트리를 표시",
+        "hash": "a74d45640f37aba2c5820ab9db9dbeae"
+    },
+    "config_newTabContainer_caption": {
+        "message": "빈 새 탭의 하위 컨테이너",
+        "hash": "503cd6c082057aaa3f5530cb097e91de"
+    },
+    "config_inheritContextualIdentityToNewChildTab_label": {
+        "message": "빈 새 탭을 하위 탭으로 열 때 상위 탭의 콘테이너를 상속",
+        "hash": "f6e30954e0578b136171f7e44228f225"
+    },
+    "config_inheritContextualIdentityToNewChildTab_description": {
+        "message": "(※새 탭이 독립된 탭으로 열린 경우, 직전에 활성화 되었던 콘테이너는 상속되지 않습니다.\"",
+        "hash": "d9de888723abfa7de39201222186cf2b"
+    },
+    "config_treeBehavior_caption": {
+        "message": "트리의 동작",
+        "hash": "048b4894caaceb748552f5e7e66385d9"
+    },
+    "config_successorTabControlLevel_caption": {
+        "message": "현재의 탭이 마지막 하위 탭이었을 대, 현재 탭을 닫은 후에",
+        "hash": "00cac5dadd1694410d4ba3e2c89fac88"
+    },
+    "config_successorTabControlLevel_inTree": {
+        "message": "트리 내 1개 앞의 탭을 보기",
+        "hash": "7a2fb5ca87884cd6b92939c501b83821"
+    },
+    "config_successorTabControlLevel_simulateDefault": {
+        "message": "다음 탭을 보기(Firefox 기본 동작)",
+        "hash": "ead4ae943d21148122bca2801a947a26"
+    },
+    "config_successorTabControlLevel_never": {
+        "message": "제어하지 않음(Firefox 또는 다른 확장기능 제어를 따름)",
+        "hash": "38e3dde35d40e6fa606ae5142cf724d6"
+    },
+    "config_successorTabControlLevel_legacyDescription": {
+        "message": "※Firefox 내장 기능인 \"browser.tabs.selectOwnerOnClose\"=\"true\"의 행동이 이 설정보다 우선적으로 반영됩니다.",
+        "hash": "a58ae4efccf268321d400001bdb29baa"
+    },
+    "config_simulateSelectOwnerOnClose_label": {
+        "message": "현재의 탭이 닫혔을 때, 가능하면 기 탭을 연 원래 탭을 보기(※Firefox 내장 기능인 \"browser.tabs.select Owner OnClose=\"true\"의 행동이 이 설정보다 우선적으로 반영됩니다.)",
+        "hash": "253f14a9817d5f509e2c5b3c0cb01570"
+    },
+    "config_fixupTreeOnTabVisibilityChanged_caption": {
+        "message": "탭의 표시/비표시가 다른 확장기능에 의해 전환된 경우",
+        "hash": "85d995b52d2878d655457bdc0b86ab27"
+    },
+    "config_fixupTreeOnTabVisibilityChanged_fix": {
+        "message": "표시 중인 탭에 근거해 트리 구조를 자동으로 수정(※탭의 묶음을 바꾸는 확장기능과 같이 사용할 경우 권장)",
+        "hash": "a96a75f86e5c45870efe35b9ad0947f1"
+    },
+    "config_fixupTreeOnTabVisibilityChanged_keep": {
+        "message": "숨겨진 탭도 포함하여 트리 구조 유지(※일시적으로 탭을 비표시로 하는 확장기능과 같이 사용할 경우 권장)",
+        "hash": "3e0aaa42f20727fc10a01ac1d3a40cdb"
+    },
+    "config_autoCollapseExpandSubtreeOnAttach_label": {
+        "message": "새 트리가 만들어지면 자동으로 다른 트리 접기",
+        "hash": "96828b053684e85e4a60f07605d2cf53"
+    },
+    "config_autoCollapseExpandSubtreeOnSelect_label": {
+        "message": "탭을 전환했을 때 보는 탭의 트리를 자동으로 펼치며, 다른 트리는 접음",
+        "hash": "fb8b0c2873c5f6881d656a7a6abb3a21"
+    },
+    "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": {
+        "message": "현재 탭을 닫을 때 보는 탭이 바뀐 경우 제외",
+        "hash": "396dc3f5b3e0387681d9b99b46fafefd"
+    },
+    "config_autoExpandOnCollapsedChildActive_label": {
+        "message": "접힌 트리 아래 탭을 볼 때 그 탭이 포함된 트리를 자동으로 펼치기",
+        "hash": "16dec8bd7fc89e063f85f8484c6e489c"
+    },
+    "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": {
+        "message": "접힌 상태에서 잠긴 트리 아래 탭일 경우에도 트리를 펼치기",
+        "hash": "6921763246f0dde6ba8c6c91a9e4a69f"
+    },
+    "config_autoDiscardTabForUnexpectedFocus_label": {
+        "message": "대기 상태의 탭이 의도치 않게 보여졋을 때, 바로 다른 탭을 볼 경우 탭을 대기 상태로 되돌림",
+        "hash": "b7ae320623c887ab5289328439cb794a"
+    },
+    "config_avoidDiscardedTabToBeActivatedIfPossible_label": {
+        "message": "현재의 탭을 닫거나 트리를 접었을 때 가능한 대기 상태의 탭이 선택되지 않도록 함",
+        "hash": "8ba34e8b227821236094aaaeb97de941"
+    },
+    "config_treeDoubleClickBehavior_caption": {
+        "message": "탭의 더블 클릭",
+        "hash": "260195e0c6579efe875cd6cda13f8858"
+    },
+    "config_treeDoubleClickBehavior_toggleLockCollapsed": {
+        "message": "트리가 접힌 상태로 잠기도록 함",
+        "hash": "6fde088b8640baa6c970d5c8e9df073c"
+    },
+    "config_treeDoubleClickBehavior_toggleCollapsed": {
+        "message": "트리를 열고 닫음",
+        "hash": "a6f448837c94b54069a5f7b82589dfa3"
+    },
+    "config_treeDoubleClickBehavior_none": {
+        "message": "동작 없음",
+        "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+    },
+    "config_closeParentBehaviorMode_caption": {
+        "message": "상위 탭을 단독으로 닫거나 이동했을 때 행동",
+        "hash": "a7161c671b137ea9be76d23ab611889d"
+    },
+    "config_closeParentBehaviorMode_withNativeTabs": {
+        "message": "Firefox 자신의 탭 바를 같이 사용하는 경우의 동작을 함",
+        "hash": "f4c5eca1aa702ad5ebc4c142a6f293e4"
+    },
+    "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": {
+        "message": "사이드 바가 비표시일 때는 가능한 트리 구조를 유지하고, 불필요한 탭을 닫지 않음",
+        "hash": "5fed46d5f197881f1264acddd89dbc3e"
+    },
+    "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar": {
+        "message": "사이드 바가 표시일 때는",
+        "hash": "966b2948e5a282ae55b262d4f18f9152"
+    },
+    "config_closeParentBehaviorMode_withoutNativeTabs": {
+        "message": "Firefox 자신의 탭 바를 같이 사용하지 않는 경우의 동작을 함",
+        "hash": "ad2c73a0d8820cea704f6b3d7b066d57"
+    },
+    "config_closeParentBehaviorMode_withoutNativeTabs_caption": {
+        "message": "사이드 바의 표시 여부와 관계 없이 ",
+        "hash": "e2f5a3a381dff0c4f676c1f0b470c236"
+    },
+    "config_closeParentBehaviorMode_custom": {
+        "message": "커스텀",
+        "hash": "1685452bc68395b620b0ce1fb9b76da5"
+    },
+    "config_closeParentBehaviorMode_custom_caption_insideSidebar": {
+        "message": "사이트 바 내에서 탭을 조작했을 경우 ",
+        "hash": "4fc075578744df222867556e93af5f19"
+    },
+    "config_closeParentBehaviorMode_custom_caption_outsideSidebar": {
+        "message": "사이드 바 표시일 때 사이드 바 밖에서 탭을 조작했을 경우",
+        "hash": "e618479e7cbe39903dea5656e88789fc"
+    },
+    "config_closeParentBehaviorMode_custom_caption_noSidebar": {
+        "message": "사이드 바 비표시일 때 사이드 바 밖에서 탭을 조작했을 경우",
+        "hash": "4bdee6fa2193415c0d1f308b8f92f9ee"
+    },
+    "config_closeParentBehavior_close": {
+        "message": "하위 항목의 탭도 같이 닫음",
+        "hash": "895074e7f503ce28d4235d73042dae96"
+    },
+    "config_closeParentBehavior_replaceWithGroupTab": {
+        "message": "대신 묶음용 더미 탭을 열고 트리를 유지",
+        "hash": "647fbebbedb16a43f51f65b0d768183d"
+    },
+    "config_closeParentBehavior_promoteFirst": {
+        "message": "항상 첫 하위 항목을 새 상위 항목으로 만듬",
+        "hash": "e441dfb29c1cfc3bd03cdbaca7def11c"
+    },
+    "config_closeParentBehavior_promoteAll": {
+        "message": "항상 모든 하위 항목을 상위 항목으로 만듦",
+        "hash": "1b27f1941ba3947924530632fe4c6ce4"
+    },
+    "config_closeParentBehavior_promoteIntelligently": {
+        "message": "최상위 항목이 닫혔을 때는 최초의 하위 항목을 상위 항목으로 만들고, 그 외에는 모든 하위 탭을 상위 항목으로 만듦",
+        "hash": "de0fb94e9c3528909029d2e9bb7724ba"
+    },
+    "config_closeParentBehavior_detach": {
+        "message": "하위 탭을 트리에서 내보냄",
+        "hash": "1312437055c8720e49ebe347501efb97"
+    },
+    "config_warnOnCloseTabs_label": {
+        "message": "동시에 복수의 탭을 닫을 때는 확인함",
+        "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
+    },
+    "config_warnOnCloseTabsByClosebox_label": {
+        "message": "닫기 버튼의 일반적인 클릭 조작으로 당시에 여러 탭을 닫을 때 확인",
+        "hash": "63cc3d8cd52b7fb540c6e928a131fcc2"
+    },
+    "config_drag_caption": {
+        "message": "드래그&드롭",
+        "hash": "b2c8578361430cf0cdd6ef3978051b33"
+    },
+    "config_tabDragBehavior_caption": {
+        "message": "트리가 탭 바 밖으로 드랍되었을 때",
+        "hash": "5a6aa1a824cdb8486c3ad323b73a3a00"
+    },
+    "config_tabDragBehavior_description": {
+        "message": "Firefox의 제한 때문에 탭 바 밖으로 드롭한 후 탭을 어떻게 취급할지는 드래그를 시작할 때 결정할 필요가 있습니다. 드랍 후 탭을 취급은 드래그를 시작할 때 Shift키를 누르거나 탭의 왼쪽(또는 오른쪽) 끝 부분에 표시되는 드래그용 영역에 의해 결정할 수 있습니다.",
+        "hash": "7e79eeb08585e23403fd461eacea845c"
+    },
+    "config_tabDragBehavior_label": {
+        "message": "일반적인 드래그: ",
+        "hash": "6957fbb9cf5b17c85214d3065e5d9fb3"
+    },
+    "config_tabDragBehaviorShift_label": {
+        "message": "Shift + 드래그: ",
+        "hash": "c26c7dbae02a5f950080f2e84b543a51"
+    },
+    "config_tabDragBehavior_tearoff_tree": {
+        "message": "트리 전체를 다른 창으로 분리 (북마크 작성 불가)",
+        "hash": "4723ca0b18c76b5e9b4a8000d8ac2292"
+    },
+    "config_tabDragBehavior_bookmark_tree": {
+        "message": "트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)",
+        "hash": "356fc53a67e8318e0226f69d53783d6f"
+    },
+    "config_tabDragBehavior_tearoff_tab": {
+        "message": "탭들을 다른 창으로 분리 (북마크 작성 불가)",
+        "hash": "024c0183bb540674a551b18d646d4ef5"
+    },
+    "config_tabDragBehavior_bookmark_tab": {
+        "message": "탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)",
+        "hash": "222b9f01d390b68db03215b3766565a4"
+    },
+    "config_tabDragBehavior_none": {
+        "message": "동작 없음",
+        "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+    },
+    "config_showTabDragHandle_label": {
+        "message": "탭의 가장자리에서 목적을 정하고 드래그 조작을 개시하기 위한 영역을 표시",
+        "hash": "957c178545d857fc3fffb7032df002b5"
+    },
+    "config_showTabDragBehaviorNotification_label": {
+        "message": "탭 드래그 중 사이드 바 밖으로 드롭했을 때의 조작",
+        "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"
+    },
+    "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": {
+        "message": "탭 바 밖에 드롭된 트리를 다른 창으로 분리 허용",
+        "hash": "9b12018454e1dfb157bdb832a15a1c45"
+    },
+    "config_dropLinksOnTabBehavior_caption": {
+        "message": "탭에 링크나 URL을 드랍했을 때",
+        "hash": "1c973ccd4b2729ed3e7e0d8097c0c0e2"
+    },
+    "config_dropLinksOnTabBehavior_ask": {
+        "message": "항상 어떻게 할지 물음",
+        "hash": "5c169bb3439cb70347142770bfba6c32"
+    },
+    "config_dropLinksOnTabBehavior_load": {
+        "message": "그 탭에 읽어들임",
+        "hash": "707fff08c38cc08ff1459f27acbbf4a4"
+    },
+    "config_dropLinksOnTabBehavior_newtab": {
+        "message": "새 하위 탭에서 엶",
+        "hash": "ef65d6f472c7fb18957f70ccba02e044"
+    },
+    "config_autoExpandOnLongHoverDelay_before": {
+        "message": "드래그 조작 중 접힌 트리 위에서",
+        "hash": "f895070a7e603ef11e8528b76616842a"
+    },
+    "config_autoExpandOnLongHoverDelay_after": {
+        "message": "밀리초 이상 지나면 트리를 펼침",
+        "hash": "52b8d25802246e58e4b021a3b8556fac"
+    },
+    "config_autoExpandOnLongHoverRestoreIniitalState_label": {
+        "message": "드래그 조작이 끝난 후 자동으로 트리를 접은 상태로 되돌림",
+        "hash": "1fbd35698999906f8878189d9bfe2592"
+    },
+    "config_more_caption": {
+        "message": "기타...",
+        "hash": "30516b9efbf5fbc17236e4478aba8379"
+    },
+    "config_shortcuts_caption": {
+        "message": "키보드 단축키",
+        "hash": "3e4c94412820831fbea1494aa4d5ecf4"
+    },
+    "config_requestPermissions_allUrls": {
+        "message": "키보드 단축키로 탭 전환 중에는 접힌 하위 항목을 보지 않고 접힌 트리도 펼치지 않음(※Web 페이지 내 스크립트의 실행을 허가가 필요합니다.)",
+        "hash": "0b56b4253e7d159f95331e7b7fe84597"
+    },
+    "config_autoExpandOnTabSwitchingShortcutsDelay_before": {
+        "message": "접힌 트리를 보는 중 Tab키를",
+        "hash": "605d1e93875107d1d873a97c8d9503f3"
+    },
+    "config_autoExpandOnTabSwitchingShortcutsDelay_after": {
+        "message": "밀리초 이상 계속 누르면 트리를 펼침",
+        "hash": "d56ac1ec4670c8c1f4cf3d20bea43c00"
+    },
+    "config_shortcuts_resetAll": {
+        "message": "모두 초기값으로 되돌림",
+        "hash": "afbeebf99b6b57c9321c4d74fe064215"
+    },
+    "config_advanced_caption": {
+        "message": "상세설정",
+        "hash": "61e6f7ef10c721f08bc36bee2b3f9bc0"
+    },
+    "config_bookmarkTreeFolderName_before": {
+        "message": "트리를 북마크할 때 폴더 이름: ",
+        "hash": "46d9ae37bed79016f68a06e41d246291"
+    },
+    "config_bookmarkTreeFolderName_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_bookmarkTreeFolderName_description": {
+        "message": "아래의 입력 창를 사용할 수 있습니다: %TITLE% (첫 번째 탭의 제목), %URL%（첫 번째 탭의 주소, %YEAR% (4자릿수 년, %MONTH% (2자리수 달, %DATE% (2자리수 일）",
+        "hash": "0bd538acab758e5199f3e273f973a86d"
+    },
+    "config_defaultBookmarkParentId_label_before": {
+        "message": "북마크를",
+        "hash": "c0117bbe4fb5cf897e9eaa639761276f"
+    },
+    "config_defaultBookmarkParentId_label_after": {
+        "message": "의 안에 작성",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_simulateCloseTabByDblclick_label": {
+        "message": "더블 클릭으로 탭 닫기 (※Firefox 내장 기능인 \"browser.tabs.closeTabByDblclick\"=\"true\" 기능 재현)",
+        "hash": "048c429260ebd2e366a99b5a3f7472c6"
+    },
+    "config_supportTabsMultiselect_label": {
+        "message": "탭을 보는 것을 제어할 때 복수의 선택 API 사용 (※Firefox의 설정인 \"browser.tabs.multiselect\"=\"true\"에 의존)",
+        "hash": "68ba74a927292849c18ea65fa865c5a2"
+    },
+    "config_userStyleRules_label": {
+        "message": "사이드 바 내용의 추가 스타일 지정",
+        "hash": "0d2ad9050b3b2549d69092af9c751a0b"
+    },
+    "config_userStyleRules_description_before": {
+        "message": "\u200b",
+        "hash": "bc1357f01fd9f60f7fba1eb7fb3ee6c5"
+    },
+    "config_userStyleRules_description_link_label": {
+        "message": "목적별 지정 예시",
+        "hash": "f32796817083629e1c085b1000817dab"
+    },
+    "config_userStyleRules_description_after": {
+        "message": "도 참고해 주세요.",
+        "hash": "f204d2b226ad57ea450044457596d723"
+    },
+    "config_userStyleRules_description_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x",
+        "hash": "82f256d59ff8cbf7d9c455e6f22762fb"
+    },
+    "config_userStyleRules_themeRules_description": {
+        "message": "현재의 브라우저 테마에서 \"var()\"에서 아래의 커스텀 속성도 사용할 수 있습니다.",
+        "hash": "e73fd67e65cb8ab90eb69ce9223fe064"
+    },
+    "config_addons_caption": {
+        "message": "다른 확장기능에 의한 기능 추가",
+        "hash": "903240c121c787c03ebf3d32229d36b8"
+    },
+    "config_addons_description_before": {
+        "message": "\u200b",
+        "hash": "9003599648d97da3215830dbf6d548b8"
+    },
+    "config_addons_description_link_label": {
+        "message": "TST 자체를 확장하는 다른 확장기능",
+        "hash": "add235fb13460dbf96732a534e49170b"
+    },
+    "config_addons_description_after": {
+        "message": "을(를) 같이 사용하면 TST의 사이드바에 기능을 추가할 수 있습니다.",
+        "hash": "59a6e79ef78c82f7ac8ef391e4de01f5"
+    },
+    "helper_addons_list_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst",
+        "hash": "8273bc1584de40aaa4ec5f04b3cd200c"
+    },
+    "config_externaladdonpermissions_label": {
+        "message": "다른 확장기능에서 API 호출에 주는 허가",
+        "hash": "aeb03789ab0fef10dbbec9f26318fc6c"
+    },
+    "config_externaladdonpermissions_description": {
+        "message": "여기에 체크한 확장기능은 Firefox 자체가 그 확장기능에 탭의 상새정보나 사생활 보호 창의 접근을 금지하고 있어도, <em>Tree Style Tab의 권한으로</em> 접근할 수 있게 됩니다. <em>믿을 수 없는 확장기능에는 절대 권한을 부여하지 마십시오.<em>",
+        "hash": "56449868ee71aab4e26da112b40cf642"
+    },
+    "config_externalAddonPermissions_header_name": {
+        "message": "확장기능 이름",
+        "hash": "3d3b68281b755ff2af1cb82e72f0f88f"
+    },
+    "config_externalAddonPermissions_header_permissions": {
+        "message": "허가하는 특별한 조작",
+        "hash": "e4bff33118f61d019298430ea29fd971"
+    },
+    "config_externalAddonPermissions_header_incognito": {
+        "message": "사생활 보호 창에서 보낸 메시지를 알림",
+        "hash": "0a7f0cff5ebb61805de100809bb51159"
+    },
+    "config_debug_caption": {
+        "message": "개발용",
+        "hash": "af84c3ce90181048c533886621f00ac2"
+    },
+    "config_link_startupPage_label": {
+        "message": "처음 사용자용 페이지",
+        "hash": "d1a95f230ad561a550b110eb2b54aa89"
+    },
+    "config_link_groupPage_label": {
+        "message": "묶음용 탭 페이지",
+        "hash": "df27cd54d03effefb5f8a435e1c1a3bc"
+    },
+    "config_runTests_label": {
+        "message": "자동 테스트 실행",
+        "hash": "457bf15be9c7a590c6678ccc7a0a0764"
+    },
+    "config_debug_label": {
+        "message": "디버깅 모드",
+        "hash": "09b9b4dc690b71222315f1191f9a1d1b"
+    },
+    "config_log_caption": {
+        "message": "상세한 로그",
+        "hash": "880217f9f62f4ec7e9b286cf42f011ee"
+    },
+    "config_logTimestamp_label": {
+        "message": "일시를 로그에 작성",
+        "hash": "8d8b30eff95cbe0868520fa3b8414ffc"
+    },
+    "config_logFor_common": {
+        "message": "공통 모듈에서의 로그",
+        "hash": "d4dcd248ed4cba81d650930df2fd7dc1"
+    },
+    "config_logFor_background": {
+        "message": "백그라운드 모듈에서의 로그",
+        "hash": "3a70472f068085a0e6485ae457c37bb2"
+    },
+    "config_logFor_sidebar": {
+        "message": "사이드 바 모듈에서의 로그",
+        "hash": "3d0e771d5954b687e5240901080b990d"
+    },
+    "config_loggingQueries_label": {
+        "message": "탭 검색 처리 로그 수집",
+        "hash": "fa21a63d8911c70a76203871a3db552d"
+    },
+    "config_loggingConnectionMessages_label": {
+        "message": "내부 통신 로그 수집",
+        "hash": "601432dcaa1228bfddc721e72508031c"
+    },
+    "config_showLogsButton_label": {
+        "message": "로그 표시",
+        "hash": "8cc1ca6bb2cf6b3a60055ce8eff432fd"
+    },
+    "config_simulateSVGContextFill_label": {
+        "message": "Bug 1388193 및 Bug 1421329를 피하고, 비슷한 SVG 아이콘을 표시 (※CPU 부하가 높아질 수 있습니다. 이 옵션을 사용하지 않을 경우 이 Bug가 수정될 때 까지 \"about:config\"의 \"svg.context-properties.content.enabled\"를 활성화할 필요가 있습니다.)",
+        "hash": "e065910fa445595488431d7a8f16acab"
+    },
+    "config_useCachedTree_label": {
+        "message": "캐시를 사용하여 트리거의 초기화 고속화",
+        "hash": "9534117353758560c571146bb2bf9997"
+    },
+    "config_useCachedTree_description": {
+        "message": "※캐시의 부정합으로 동작이 불안정해져 있는 경우 이 체크를 OFF로 한 후 다시 ON으로 하면 캐시를 새로고쳐 상황이 개선될 수 있습니다.",
+        "hash": "9d15b5ec84fbfefc2361dfc9b6d07faf"
+    },
+    "config_storeCacheAsWindowValue_label": {
+        "message": "캐시를 탭이 아닌 창에 저장 (세션 데이터의 비대화가 줄어들지만, 트리 복원 처리가 불안해질 수 있습니다.)",
+        "hash": "d642725425d521417c2ac31bc31725a7"
+    },
+    "config_acceleratedTabCreation_label": {
+        "message": "새 탭이 열렸을 때 처리를 고속화 (※동작이 불안정해짐)",
+        "hash": "7ff05a0f0be2c1b3a45ff150d49c4b29"
+    },
+    "config_maximumAcceptableDelayForTabDuplication_before": {
+        "message": "\u200b",
+        "hash": "55dacfa185bc95de8863bf133d726af3"
+    },
+    "config_maximumAcceptableDelayForTabDuplication_after": {
+        "message": "밀리초 안에 탭 복제를 완료하지 못하면 처리를 중단",
+        "hash": "6d3d5376435e2ec0d553be7bf90b615b"
+    },
+    "config_labelOverflowStyle_caption": {
+        "message": "탭의 라벨이 너무 긴 경우: ",
+        "hash": "90260f7e053029f496921a960c64b769"
+    },
+    "config_labelOverflowStyle_fade": {
+        "message": "페이드 아웃 (시각효과 우선)",
+        "hash": "84b0c46c076ae6267a6dd88efb311d09"
+    },
+    "config_labelOverflowStyle_crop": {
+        "message": "\"...\"으로 잘라냄 (동작속도 우선)",
+        "hash": "4c9bd113b08d4430403f8c9f66348a96"
+    },
+    "config_requestPermissions_bookmarks": {
+        "message": "북마크 읽기와 쓰기 허가",
+        "hash": "7478a48fc3307a59c38920d562baf3b2"
+    },
+    "config_requestPermissions_tabHide": {
+        "message": "각 탭의 표시/비표시 제어를 허가 (※이 조작이 허가를 확인하기 위해 테스트 실행 전 반드시 체크박스를 OFF로 한 후 다시 ON으로 해주십시오.)",
+        "hash": "f858aeed5852f32d912562432f5b4369"
+    },
+    "config_requestPermissions_fallbackToToolbarButton_title": {
+        "message": "툴바의 \"트리 스타일 탭\" 버튼을 클릭해주세요.",
+        "hash": "faffac27406925eaf44308423fce1d21"
+    },
+    "config_requestPermissions_fallbackToToolbarButton_message": {
+        "message": "Firefox의 버그 때문에 권한을 이 화면에서 요구할 수 없습니다. 툴바의 \"트리 스타일 탭\" 버튼을 클릭하여 권한을 승인하여 주십시오.",
+        "hash": "00b8ca01e816366e976d197677b7c497"
+    },
+    "config_all_caption": {
+        "message": "모든 설정",
+        "hash": "e0437bb7bd8d7ce28700078c6bb12418"
+    },
+    "tabContextMenu_reload_label": {
+        "message": "탭 새로 고침(&R)",
+        "hash": "b47f1ba4fa9f6689bd27124978684636"
+    },
+    "tabContextMenu_mute_label": {
+        "message": "탭 음소거(&M)",
+        "hash": "1ff23ae0ae540c6635e774388a77ea2f"
+    },
+    "tabContextMenu_unmute_label": {
+        "message": "탭 음소거 해제(&M)",
+        "hash": "c3ae3c72832dfedee6c48d0dc37eb954"
+    },
+    "tabContextMenu_pin_label": {
+        "message": "탭 잠금(&P)",
+        "hash": "84f0158295ff8a14fd6062c7ec19c77c"
+    },
+    "tabContextMenu_unpin_label": {
+        "message": "탭 잠금 해제(&P)",
+        "hash": "60571db0ccb087c30009dadd2042ebd8"
+    },
+    "tabContextMenu_duplicate_label": {
+        "message": "탭 복제(&D)",
+        "hash": "80666f37f8702cba5b66d3e8d816ea5c"
+    },
+    "tabContextMenu_selectAllTabs_label": {
+        "message": "모든 탭 선택(&S)",
+        "hash": "667f807520d10d23768e1f075ae3879b"
+    },
+    "tabContextMenu_bookmark_label": {
+        "message": "탭 북마크(&B)",
+        "hash": "b035ef8b11c8bd09d475dc6a9a678524"
+    },
+    "tabContextMenu_reopenInContainer_label": {
+        "message": "컨테이너 다시 열기(&E)",
+        "hash": "726c943cc0471513b11ea0dd9e83eed0"
+    },
+    "tabContextMenu_reopenInContainer_noContainer_label": {
+        "message": "컨테이너 없음(&N)",
+        "hash": "62484898877c1c17dc4d60b12e127d45"
+    },
+    "tabContextMenu_moveTab_label": {
+        "message": "탭 이동(&V)",
+        "hash": "77e8a303ce434c9e0070b31836010c4c"
+    },
+    "tabContextMenu_moveTabToStart_label": {
+        "message": "맨 앞으로 이동(&S)",
+        "hash": "0e98f182155fd7508ec2a355c24b330d"
+    },
+    "tabContextMenu_moveTabToEnd_label": {
+        "message": "맨 뒤로 이동(&E)",
+        "hash": "e25325b73a53982569896d47395c1d1b"
+    },
+    "tabContextMenu_tearOff_label": {
+        "message": "새 창으로 이동(&W)",
+        "hash": "e73bb254e78fb1b2a161d4c3961065a9"
+    },
+    "tabContextMenu_reloadAll_label": {
+        "message": "모든 탭 새로고침(&A)",
+        "hash": "df293c6903c9c0d90d7e75c6d0eb5f9f"
+    },
+    "tabContextMenu_bookmarkAll_label": {
+        "message": "모든 탭 북마크(&T)",
+        "hash": "da48e2cbed383746950b8eeda47068db"
+    },
+    "tabContextMenu_closeTabsToBottom_label": {
+        "message": "아래 탭 모두 닫기(&B)",
+        "hash": "0689164749139e0495098b167b7b8153"
+    },
+    "tabContextMenu_closeOther_label": {
+        "message": "다른 탭 모두 닫기(&O)",
+        "hash": "5a4db75f9254da8f39e41b929fc2c445"
+    },
+    "tabContextMenu_undoClose_label": {
+        "message": "닫은 탭 복구(&U)",
+        "hash": "21be8c6cad39fbee2150e4110e3c55ce"
+    },
+    "tabContextMenu_close_label": {
+        "message": "탭 닫기(&C)",
+        "hash": "517e4cda82f826395a14d6bda5b1c7a0"
+    },
+    "tabContextMenu_reload_label_multiselected": {
+        "message": "선택한 탭 새로고침(&R)",
+        "hash": "3e5cf0fe27692755cd7ee6980c4cd09a"
+    },
+    "tabContextMenu_mute_label_multiselected": {
+        "message": "탭 음소거(&M)",
+        "hash": "1291adb90de56e6d936a1e486b370a85"
+    },
+    "tabContextMenu_unmute_label_multiselected": {
+        "message": "탭 음소거 해제(&M)",
+        "hash": "c9aec61975e838ae00211e78c365ca82"
+    },
+    "tabContextMenu_pin_label_multiselected": {
+        "message": "탭 잠금(&P)",
+        "hash": "b32691b5170714cfdb1b406b5756149b"
+    },
+    "tabContextMenu_unpin_label_multiselected": {
+        "message": "탭 잠금 해제(&P)",
+        "hash": "b6bb715b523238636abe60c06c9679e6"
+    },
+    "tabContextMenu_duplicate_label_multiselected": {
+        "message": "선택한 탭 복제(&D)",
+        "hash": "0c30a83f8bcc07500df79d0596d99597"
+    },
+    "tabContextMenu_moveTab_label_multiselected": {
+        "message": "선택한 탭 이동(&V)",
+        "hash": "a4f38bcae623c1945a3ebf9ce6bd4e36"
+    },
+    "tabContextMenu_bookmark_label_multiselected": {
+        "message": "탭 북마크(&B)",
+        "hash": "e6936ac5775361879f79f812c1ab0435"
+    },
+    "tabContextMenu_bookmarkSelected_label": {
+        "message": "선택한 탭 북마크(&T)",
+        "hash": "0e8ef863c0adf4a4bad85202c69c8915"
+    },
+    "tabContextMenu_close_label_multiselected": {
+        "message": "선택한 탭 닫기(&S)",
+        "hash": "4b390c9abd8ac915b722d04f8555ce30"
+    },
+
+    "__WET_LOCALE__": { "message": "ko" }
+}
