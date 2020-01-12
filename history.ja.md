@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.3.3 (2020.1.12)
    * [Bug 1565170](https://bugzilla.mozilla.org/show_bug.cgi?id=1565170)が修正されて以後のバージョンのFirefoxに対応
    * タブを非表示にして再表示した後でタブのフォーカス移動がおかしくなっていたのを修正
    * Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替えの間、折りたたみ状態をロックしたツリーを展開しないようにした
