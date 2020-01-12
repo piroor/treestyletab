@@ -211,10 +211,14 @@ Tab.onCreating.addListener((tab, info = {}) => {
   });
 });
 
-Tab.onCreated.addListener((tab, _info = {}) => {
-  const activeTab = Tab.getActiveTab(tab.windowId);
+function updateActiveTab(windowId) {
+  const activeTab = Tab.getActiveTab(windowId);
   if (activeTab)
     update(activeTab.id);
+}
+
+Tab.onCreated.addListener((tab, _info = {}) => {
+  updateActiveTab(tab.windowId);
 });
 
 Tab.onRemoving.addListener((tab, removeInfo = {}) => {
@@ -233,9 +237,8 @@ Tab.onRemoving.addListener((tab, removeInfo = {}) => {
 });
 
 Tab.onRemoved.addListener((tab, info = {}) => {
-  const activeTab = Tab.getActiveTab(info.windowId);
-  if (activeTab && !info.isWindowClosing)
-    update(activeTab.id);
+  updateActiveTab(info.windowId);
+
   const window = TabsStore.windows.get(info.windowId);
   if (!window)
     return;
@@ -245,9 +248,7 @@ Tab.onRemoved.addListener((tab, info = {}) => {
 });
 
 Tab.onMoved.addListener((tab, info = {}) => {
-  const activeTab = Tab.getActiveTab(tab.windowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(tab.windowId);
 
   if (!info.byInternalOperation) {
     log(`clear lastRelatedTabs for ${tab.windowId} by tabs.onMoved`);
@@ -258,15 +259,11 @@ Tab.onMoved.addListener((tab, info = {}) => {
 });
 
 Tab.onAttached.addListener((_tab, info = {}) => {
-  const activeTab = Tab.getActiveTab(info.newWindowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(info.newWindowId);
 });
 
 Tab.onDetached.addListener((_tab, info = {}) => {
-  const activeTab = Tab.getActiveTab(info.oldWindowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(info.oldWindowId);
 
   const window = TabsStore.windows.get(info.oldWindowId);
   if (window) {
@@ -279,25 +276,17 @@ Tab.onDetached.addListener((_tab, info = {}) => {
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
   if (!('discarded' in changeInfo))
     return;
-  const activeTab = Tab.getActiveTab(tab.windowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(tab.windowId);
 });
 
 Tree.onAttached.addListener((child, _info = {}) => {
-  const activeTab = Tab.getActiveTab(child.windowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(child.windowId);
 });
 
 Tree.onDetached.addListener((child, _info = {}) => {
-  const activeTab = Tab.getActiveTab(child.windowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(child.windowId);
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
-  const activeTab = Tab.getActiveTab(tab.windowId);
-  if (activeTab)
-    update(activeTab.id);
+  updateActiveTab(tab.windowId);
 });
