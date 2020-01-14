@@ -410,7 +410,12 @@ function uneval(value) {
       if (!value)
         return 'null';
     default:
-      return JSON.stringify(value);
+      try {
+        return JSON.stringify(value);
+      }
+      catch(e) {
+        return `${String(value)} (couldn't be stringified due to an error: ${String(e)})`;
+      }
   }
 }
 
