@@ -126,6 +126,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
+    window.lastActiveTab = tab.id;
     return true;
   }
   else if (tab.$TST.hasChild &&
