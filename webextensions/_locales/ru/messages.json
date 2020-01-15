@@ -262,7 +262,7 @@
   "config_colorScheme_photon": { "message": "Фотон" },
   "config_colorScheme_systemColor": { "message": "Системные цвета" },
 
-  "config_applyBrowserTheme_label": { "message": "Применить тему браузера (*доступно только для простой, вертиго и смешанной)" },
+  "config_applyBrowserTheme_label": { "message": "Применить тему браузера (* только для простой, вертиго и смешанной)" },
 
   "config_maxTreeLevel_before": { "message": "Отступ вкладок до" },
   "config_maxTreeLevel_after": { "message": "уровней (*Отрицательное значение = \"бесконечно\")" },
@@ -390,8 +390,8 @@
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Когда вкладка получает фокус, развернуть её дерево и автоматически свернуть другие" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За исключением перемещения фокуса, вызванного закрытием текущей вкладки" },
   "config_autoExpandOnCollapsedChildActive_label": { "message": "Когда свернутая вкладка получает фокус, автоматически развернуть ее дерево" },
+  "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "Даже если оно заблокировано как свернутое" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Удерживать вкладки в выгружеными при кратковременном фокусе" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "Двойной клик, чтобы свернуть/развернуть дерево" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Избегать активации выгруженных вкладок при закрытии текущей вкладки или сворачивании дерева" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Двойной клик" },
