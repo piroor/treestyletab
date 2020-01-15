@@ -33,13 +33,14 @@ let mMaybeTabSwitchingByShortcut = false;
 
 
 Tab.onActivating.addListener((tab, info = {}) => { // return false if the activation should be canceled
-  log('Tabs.onActivating ', dumpTab(tab), info);
+  log('Tabs.onActivating ', { tab: dumpTab(tab), info });
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = TabsStore.windows.get(tab.windowId);
+  log('  lastActiveTab: ', window.lastActiveTab);
   cancelDelayedExpand(Tab.get(window.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
