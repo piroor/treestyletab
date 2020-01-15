@@ -175,8 +175,8 @@
   "message_startup_description_3": { "message": " кнопку на панели инструментов, чтобы активировать боковую панель." },
 
   "message_startup_requestPermissions_description": { "message": "⚠Есть некоторые функции, требующие дополнительных разрешений. Если вы хотите активировать их, получите разрешения вручную." },
-  "message_startup_requestPermissions_bookmarks": { "message": "\"Добавить дерево в закладки\" в контекстном меню на вкладках (нужен доступ к закладкам.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки, переключая фокус вкладок с помощью горячих клавиш (для выявления операций с клавиатурой нужно внедрение скрипта на веб-страницы)." },
+  "message_startup_requestPermissions_bookmarks": { "message": "\"Это дерево в закладки…\" в контекстном меню на вкладках (нужен доступ к закладкам.)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами (требуется внедрение скрипта в веб-страницы)." },
 
   "message_startup_userChromeCss_notify": { "message": "Как скрыть верхнюю панель вкладок и заголовок боковой панели?" },
   "message_startup_userChromeCss_description_1": { "message": "Из-за ограничений WebExtensions, TST не может контролировать верхнюю панель вкладок и заголовок боковой панели. Если вам нужно настроить их, см. " },
@@ -217,9 +217,9 @@
   "context_expandTree_command": { "message": "Развернуть это дерево" },
   "context_expandAll_label": { "message": "Развернуть все" },
   "context_expandAll_command": { "message": "Развернуть все" },
-  "context_lockCollapsed_label": { "message": "Удерживать свернутые при фокусе" },
-  "context_bookmarkTree_label": { "message": "Добавить это дерево в закладки…" },
-  "context_bookmarkTree_command": { "message": "Добавить это дерево в закладки…" },
+  "context_lockCollapsed_label": { "message": "Блокировать свернутые" },
+  "context_bookmarkTree_label": { "message": "Это дерево в закладки…" },
+  "context_bookmarkTree_command": { "message": "Это дерево в закладки…" },
   "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
   "context_groupTabs_command":    { "message": "Создать новую группу из вкладок" },
   "context_topLevel_prefix": { "message": "Верхний элемент: " },
@@ -391,7 +391,7 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За исключением перемещения фокуса, вызванного закрытием текущей вкладки" },
   "config_autoExpandOnCollapsedChildActive_label": { "message": "Когда свернутая вкладка получает фокус, автоматически развернуть ее дерево" },
   "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "Даже если оно заблокировано как свернутое" },
-  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Удерживать вкладки в выгружеными при кратковременном фокусе" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Удерживать вкладки выгружеными при кратковременном фокусе" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Избегать активации выгруженных вкладок при закрытии текущей вкладки или сворачивании дерева" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Двойной клик" },
@@ -457,14 +457,14 @@
 
   "config_advanced_caption": { "message": "Расширенные настройки" },
 
-  "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Добавить это дерево в закладки\":" },
+  "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Это дерево в закладки…\":" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным кликом (*имитация Firefox поведения для \"browser.tabs.closeTabByDblclick\"=\"true\")" },
+  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным кликом (*имитация поведения Firefox с \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс (API) выбора нескольких вкладок  (*зависит от встроенной настройки \"browser.tabs.multiselect\"=\"true\" для Firefox 63 и выше)" },
 
   "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },
