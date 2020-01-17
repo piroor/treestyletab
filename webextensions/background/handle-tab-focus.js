@@ -104,7 +104,8 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           successor = Tab.getFirstVisibleTab(tab.windowId);
         log('=> ', successor.id);
       }
-      else if (successor.discarded &&
+      else if (!mTabSwitchedByShortcut && // intentonal focus to a discarded tabs by Ctrl-Tab/Ctrl-Shift-Tab is always allowed!
+               successor.discarded &&
                configs.avoidDiscardedTabToBeActivatedIfPossible) {
         log('=> redirect successor (successor is discarded)');
         successor = successor.$TST.nearestLoadedTabInTree ||
