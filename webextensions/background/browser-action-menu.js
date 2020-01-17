@@ -1094,6 +1094,12 @@ const mItems = [
         key:    'autoExpandOnLongHoverRestoreIniitalState',
         type:   'checkbox',
         expert: true
+      },
+      {
+        title:   indent() + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
+        key:    'autoExpandIntelligently',
+        type:   'checkbox',
+        expert: true
       }
     ]
   },

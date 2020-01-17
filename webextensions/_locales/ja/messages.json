@@ -438,6 +438,7 @@
   "config_autoExpandOnLongHoverDelay_before":  { "message": "ドラッグ操作中、折りたたまれたツリーの上で" },
   "config_autoExpandOnLongHoverDelay_after":  { "message": "ミリ秒以上経過したらツリーを展開する" },
   "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "ドラッグ操作の終了後、ツリーを折りたたんだ状態に自動的に戻す" },
+  "config_autoExpandIntelligently_label":  { "message": "折りたたまれたツリーを自動展開したときに、他のツリーを自動的に折りたたむ" },
 
 
   "config_more_caption": { "message": "その他..." },
