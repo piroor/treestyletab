@@ -442,6 +442,7 @@
   "config_autoExpandOnLongHoverDelay_before":  { "message": "Развернуть свернутое дерево при наведении указателя мыши более " },
   "config_autoExpandOnLongHoverDelay_after":  { "message": "мс при перетаскивании" },
   "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Сворачивать такие деревья автоматически после завершения перетаскивания" },
+  "config_autoExpandIntelligently_label":  { "message": "Свернуть другие деревья, когда свернутое дерево автоматически разворачивается" },
 
 
   "config_more_caption": { "message": "Больше..." },
