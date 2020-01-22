@@ -31,32 +31,32 @@ tab-item[data-drop-position]:not([data-drop-position="self"])::before {
   position: absolute;
   z-index: 10000;
 }
-tab-item[data-drop-position]:not([data-drop-position="self"]).pinned::before {
+tab-item[data-drop-position]:not([data-drop-position="self"]).faviconized::before {
   max-height: none;
   max-width: var(--tab-dropmarker-size);
   min-height: 0;
   min-width: var(--tab-dropmarker-size);
 }
 
-tab-item:not(.pinned)[data-drop-position="before"]::before {
+tab-item:not(.faviconized)[data-drop-position="before"]::before {
   left: 0;
   right: 0;
   top: 0;
 }
 
-tab-item:not(.pinned)[data-drop-position="after"]::before {
+tab-item:not(.faviconized)[data-drop-position="after"]::before {
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-tab-item.pinned[data-drop-position="before"]::before {
+tab-item.faviconized[data-drop-position="before"]::before {
   bottom: 0;
   left: 0;
   top: 0;
 }
 
-tab-item.pinned[data-drop-position="after"]::before {
+tab-item.faviconized[data-drop-position="after"]::before {
   bottom: 0;
   right: 0;
   top: 0;

@@ -312,11 +312,11 @@ function getDropAction(event) {
    * So, if a tab is dragged and the target tab is pinned, then, we
    * have to ignore the [center] area.
    */
-  const onPinnedTab         = targetTab.pinned;
-  const dropAreasCount      = (info.draggedTab && onPinnedTab) ? 2 : 3 ;
+  const onFaviconizedTab    = targetTab.pinned && configs.faviconizePinnedTabs;
+  const dropAreasCount      = (info.draggedTab && onFaviconizedTab) ? 2 : 3 ;
   const targetTabRect       = targetTab.$TST.element.getBoundingClientRect();
-  const targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
-  const targetTabSize       = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
+  const targetTabCoordinate = onFaviconizedTab ? targetTabRect.left : targetTabRect.top ;
+  const targetTabSize       = onFaviconizedTab ? targetTabRect.width : targetTabRect.height ;
   let beforeOrAfterDropAreaSize;
   if (dropAreasCount == 2) {
     beforeOrAfterDropAreaSize = Math.round(targetTabSize / dropAreasCount);
@@ -324,7 +324,7 @@ function getDropAction(event) {
   else { // enlarge the area to dop something on the tab itself
     beforeOrAfterDropAreaSize = Math.round(targetTabSize / 4);
   }
-  const eventCoordinate = onPinnedTab ? event.clientX : event.clientY;
+  const eventCoordinate = onFaviconizedTab ? event.clientX : event.clientY;
   //log('coordinates: ', {
   //  event: eventCoordinate,
   //  targetTab: targetTabCoordinate,
