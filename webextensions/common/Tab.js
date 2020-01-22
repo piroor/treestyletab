@@ -285,6 +285,11 @@ export default class Tab {
     return following && following.pinned;
   }
 
+  get followsUnpinnedTab() {
+    const preceding = this.nearestVisiblePrecedingTab;
+    return preceding && !preceding.pinned;
+  }
+
   get duplicating() {
     return this.states.has(Constants.kTAB_STATE_DUPLICATING);
   }
