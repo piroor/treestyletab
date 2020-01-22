@@ -230,14 +230,17 @@ function getDropAction(event) {
     return Tab.getLastTab(TabsStore.getWindow());
   });
   info.defineGetter('canDrop', () => {
-    if (info.dropPosition == kDROP_IMPOSSIBLE)
+    if (info.dropPosition == kDROP_IMPOSSIBLE) {
+      log('canDrop:undroppable: dropPosition == kDROP_IMPOSSIBLE');
       return false;
+    }
 
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     const isPrivateBrowsingDropTarget = (info.dragOverTab || Tab.getFirstTab(TabsStore.getWindow())).incognito;
     if (draggedTab &&
         isPrivateBrowsingTabDragged != isPrivateBrowsingDropTarget) {
+      log('canDrop:undroppable: mispatched incognito status');
       return false;
     }
     else if (info.draggedTab) {
@@ -247,11 +250,14 @@ function getDropAction(event) {
         }
         if (info.parent &&
             info.parent.id == info.draggedTab.id) {
+          log('canDrop:undroppable: drop on child');
           return false;
         }
         if (info.dragOverTab) {
-          if (info.draggedTabIds.includes(info.dragOverTab.id))
+          if (info.draggedTabIds.includes(info.dragOverTab.id)) {
+            log('canDrop:undroppable: on self');
             return false;
+          }
           const ancestors = info.dragOverTab.$TST.ancestors;
           /* too many function call in this way, so I use alternative way for better performance.
           return !info.draggedTabIds.includes(info.dragOverTab.id) &&
@@ -261,8 +267,10 @@ function getDropAction(event) {
           */
           for (const tab of info.draggedTabs.slice(0).reverse()) {
             const parent = tab.$TST.parent;
-            if (!parent && ancestors.includes(parent))
+            if (!parent && ancestors.includes(parent)) {
+              log('canDrop:undroppable: on descendant');
               return false;
+            }
           }
           return true;
         }
@@ -272,8 +280,10 @@ function getDropAction(event) {
     if (info.dragOverTab &&
         (info.dragOverTab.hidden ||
          (info.dragOverTab.$TST.collapsed &&
-          info.dropPosition != kDROP_AFTER)))
+          info.dropPosition != kDROP_AFTER))) {
+      log('canDrop:undroppable: on hidden tab');
       return false;
+    }
 
     return true;
   });
@@ -290,8 +300,10 @@ function getDropAction(event) {
       info.action       = action;
       if (info.draggedTab &&
           !info.draggedTab.pinned &&
-          info.targetTab.pinned)
+          info.targetTab.pinned) {
+        log('undroppable: above the first tab');
         info.dropPosition = kDROP_IMPOSSIBLE;
+      }
     }
     else if (event.clientY > info.lastTargetTab.$TST.element.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
@@ -300,8 +312,10 @@ function getDropAction(event) {
       info.action       = action;
       if (info.draggedTab &&
           info.draggedTab.pinned &&
-          !info.targetTab.pinned)
+          !info.targetTab.pinned) {
+        log('undroppable: below the last tab');
         info.dropPosition = kDROP_IMPOSSIBLE;
+      }
     }
     return info;
   }
