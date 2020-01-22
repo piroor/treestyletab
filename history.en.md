@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * Don't skip peinding (unloaded) tabs on Ctrl-Shift-Tab.
+   * Skip collapsed tabs on Ctrl-Tab/Ctrl-Shift-Tab focus rotation more correctly, just after the active tab was closed.
+   * Pinned tab is now droppable before the first unpinned tab.
+   * Unnpinned tab is now droppable after the last pinned tab.
+   * Detect drop position on a tab as top or bottom for pinned but not-faviconized tabs.
+   * Add an expert option to control the behavior: collapse other trees when a collapsed tree is auto-expanded by a long-dragover.
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.3.4 (2020.1.14)
    * Fix unexpected error from cyclic references.
    * Reduce accidental modifications of the tree structure after tabs are shown/hidden.
