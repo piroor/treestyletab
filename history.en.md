@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.3.5 (2020.1.24)
    * Don't skip peinding (unloaded) tabs on Ctrl-Shift-Tab.
    * Skip collapsed tabs on Ctrl-Tab/Ctrl-Shift-Tab focus rotation more correctly, just after the active tab was closed.
    * Pinned tab is now droppable before the first unpinned tab.
