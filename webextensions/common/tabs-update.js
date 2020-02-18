@@ -227,7 +227,8 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'mutedInfo' in newState) {
     soundStateChanged = true;
-    if (newState.mutedInfo && newState.mutedInfo.muted) {
+    const muted = newState.mutedInfo && newState.mutedInfo.muted;
+    if (muted) {
       tab.$TST.addState(Constants.kTAB_STATE_MUTED);
       addedStates.push(Constants.kTAB_STATE_MUTED);
     }
@@ -235,6 +236,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
       removedStates.push(Constants.kTAB_STATE_MUTED);
     }
+    Tab.onMutedStateChanged.dispatch(tab, muted);
   }
 
   if (options.forceApply ||

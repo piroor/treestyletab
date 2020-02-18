@@ -561,6 +561,58 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     tryStartHandleAccelKeyOnTab(tab);
 });
 
+Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
+  // Spread muted state of a parent tab to its collapsed descendants
+  if (!root.$TST.subtreeCollapsed ||
+      // We don't need to spread muted state to descendants of multiselected
+      // tabs here, because tabs.update() was called with all multiselected tabs.
+      root.$TST.multiselected ||
+      // We should not spread muted state to descendants of collapsed tab
+      // recursively, because they were already controlled from a visible
+      // ancestor.
+      root.$TST.collapsed)
+    return;
+
+  const tabs = root.$TST.descendants;
+  for (const tab of tabs) {
+    const playing = tab.$TST.soundPlaying;
+    const muted   = tab.$TST.muted;
+    log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
+    if (playing != toBeMuted)
+      continue;
+
+    log(` => set muted=${toBeMuted}`);
+    browser.tabs.update(tab.id, {
+      muted: toBeMuted
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+
+    const add = [];
+    const remove = [];
+    if (toBeMuted) {
+      add.push(Constants.kTAB_STATE_MUTED);
+      tab.$TST.addState(Constants.kTAB_STATE_MUTED);
+    }
+    else {
+      remove.push(Constants.kTAB_STATE_MUTED);
+      tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
+    }
+
+    if (tab.audible && !toBeMuted) {
+      add.push(Constants.kTAB_STATE_SOUND_PLAYING);
+      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
+    }
+    else {
+      remove.push(Constants.kTAB_STATE_SOUND_PLAYING);
+      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
+    }
+
+    // tabs.onUpdated is too slow, so users will be confused
+    // from still-not-updated tabs (in other words, they tabs
+    // are unresponsive for quick-clicks).
+    Tab.broadcastState(tab, { add, remove });
+  }
+});
+
 Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,

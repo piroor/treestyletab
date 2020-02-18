@@ -479,10 +479,18 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
   }
   else if (lastMousedown.detail.soundButton) {
     log('clicked on sound button');
-    BackgroundConnection.sendMessage({
-      type:  Constants.kCOMMAND_SET_MUTED,
-      tabId: tab.id
-    });
+    const multiselected = tab.$TST.multiselected;
+    const tabs = multiselected ?
+      Tab.getSelectedTabs(tab.windowId, { iterator: true }) :
+      [tab] ;
+    const toBeMuted = (!multiselected && tab.$TST.subtreeCollapsed) ?
+      tab.$TST.maybeSoundPlaying :
+      tab.$TST.soundPlaying ;
+    for (const tab of tabs) {
+      browser.tabs.update(tab.id, {
+        muted: toBeMuted
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    }
   }
   else if (lastMousedown.detail.closebox) {
     log('clicked on closebox');

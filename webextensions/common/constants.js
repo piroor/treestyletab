@@ -74,7 +74,6 @@ export const kCOMMAND_NOTIFY_TEST_KEY_CHANGED        = 'treestyletab:notify-test
 export const kCOMMAND_SIMULATE_SIDEBAR_MESSAGE       = 'treestyletab:simulate-sidebar-message';
 
 export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
-export const kCOMMAND_SET_MUTED               = 'treestyletab:set-muted';
 export const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';
 export const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';

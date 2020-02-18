@@ -1925,6 +1925,7 @@ Tab.onHidden           = new EventListenerManager();
 Tab.onShown            = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
+Tab.onMutedStateChanged      = new EventListenerManager();
 
 Tab.onBeforeCreate     = new EventListenerManager();
 Tab.onCreating         = new EventListenerManager();
