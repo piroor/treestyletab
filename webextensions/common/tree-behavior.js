@@ -150,7 +150,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          +-----------------------------------------------------
     */
     const prevTab = params.insertBefore && (configs.fixupTreeOnTabVisibilityChanged ? params.insertBefore.$TST.nearestVisiblePrecedingTab : params.insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
-    if (!prevTab) { // CASE 1/2
+    if (!prevTab) { // CASE 1/5
       // allow to move pinned tab to beside of another pinned tab
       if (!tab ||
           tab.pinned == (params.insertBefore && params.insertBefore.pinned)) {
