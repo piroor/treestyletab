@@ -480,9 +480,8 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
   else if (lastMousedown.detail.soundButton) {
     log('clicked on sound button');
     BackgroundConnection.sendMessage({
-      type:  Constants.kCOMMAND_SET_SUBTREE_MUTED,
-      tabId: tab.id,
-      muted: tab.$TST.maybeSoundPlaying
+      type:  Constants.kCOMMAND_SET_MUTED,
+      tabId: tab.id
     });
   }
   else if (lastMousedown.detail.closebox) {

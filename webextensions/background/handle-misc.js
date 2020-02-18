@@ -733,7 +733,7 @@ function onMessageExternal(message, sender) {
 
 SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
-    case Constants.kCOMMAND_SET_SUBTREE_MUTED: {
+    case Constants.kCOMMAND_SET_MUTED: {
       await Tab.waitUntilTracked(message.tabId);
       log('set muted state: ', message);
       const root = Tab.get(message.tabId);
@@ -742,22 +742,25 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       const multiselected = root.$TST.multiselected;
       const tabs = multiselected ?
         Tab.getSelectedTabs(root.windowId, { iterator: true }) :
-        [root].concat(root.$TST.descendants) ;
+        [root].concat(root.$TST.subtreeCollapsed ? root.$TST.descendants : []) ;
+      const toBeMuted = (!multiselected && root.$TST.subtreeCollapsed) ?
+        root.$TST.maybeSoundPlaying :
+        root.$TST.soundPlaying ;
       for (const tab of tabs) {
         const playing = tab.$TST.soundPlaying;
         const muted   = tab.$TST.muted;
         log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
-        if (!multiselected && playing != message.muted)
+        if (!multiselected && playing != toBeMuted)
           continue;
 
-        log(` => set muted=${message.muted}`);
+        log(` => set muted=${toBeMuted}`);
         browser.tabs.update(tab.id, {
-          muted: message.muted
+          muted: toBeMuted
         }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 
         const add = [];
         const remove = [];
-        if (message.muted) {
+        if (toBeMuted) {
           add.push(Constants.kTAB_STATE_MUTED);
           tab.$TST.addState(Constants.kTAB_STATE_MUTED);
         }
@@ -766,7 +769,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
           tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
         }
 
-        if (tab.audible && !message.muted) {
+        if (tab.audible && !toBeMuted) {
           add.push(Constants.kTAB_STATE_SOUND_PLAYING);
           tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
         }
