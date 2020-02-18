@@ -125,6 +125,8 @@ export const configs = new Configs({
 
   scrollToExpandedTree: true,
 
+  spreadMutedStateOnlyToSoundPlayingTabs: true,
+
 
   // grouping
   autoGroupNewTabs: true,

@@ -27,6 +27,9 @@ export async function teardown() {
 
 
 export async function testInheritMutedState() {
+  await Utils.setConfigs({
+    spreadMutedStateOnlyToSoundPlayingTabs: false
+  });
   let tabs = await Utils.createTabs({
     A: { index: 1 },
     B: { index: 2, openerTabId: 'A' },
@@ -64,6 +67,36 @@ export async function testInheritMutedState() {
     is([true, true, true, false],
        [A, B, C, D].map(tab => tab.$TST.maybeMuted),
        'ancestors must inherit "muted" state from descendant');
+  }
+
+  //await Promise.all(
+  //  [tabs.B.id, tabs.C.id, tabs.D.id].map(id =>
+  //    browser.tabs.update(id, { audible: true }))
+  //);
+
+  await browser.tabs.update(tabs.C.id, { muted: false });
+  await browser.runtime.sendMessage({
+    type:  'treestyletab:api:collapse-tree',
+    tabId: tabs.B.id
+  });
+  await wait(1000);
+  await browser.tabs.update(tabs.B.id, { muted: true });
+  await wait(1000);
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D } = tabs;
+    is([false, true, true, true],
+       [A, B, C, D].map(tab => tab.$TST.muted),
+       'collapsed descendants must be muted too');
+  }
+  await browser.tabs.update(tabs.B.id, { muted: false });
+  await wait(1000);
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D } = tabs;
+    is([false, false, false, false],
+       [A, B, C, D].map(tab => tab.$TST.muted),
+       'collapsed descendants must be unmuted too');
   }
 }
 

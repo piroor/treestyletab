@@ -578,7 +578,9 @@ Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
     const playing = tab.$TST.soundPlaying;
     const muted   = tab.$TST.muted;
     log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
-    if (playing != toBeMuted)
+    if (configs.spreadMutedStateOnlyToSoundPlayingTabs &&
+        !playing &&
+        playing != toBeMuted)
       continue;
 
     log(` => set muted=${toBeMuted}`);
