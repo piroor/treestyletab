@@ -171,7 +171,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           if (params.context == Constants.kINSERTION_CONTEXT_MOVED) // CASE 4
             parent = prevTab;
           else // CASE 8
-            parent = tab.$TST.parent && prevTab;
+            parent = (tab.$TST.parent != prevTab) ? prevTab : null;
         }
         else {
           const possibleParent = params.insertBefore && params.insertBefore.$TST.parent;
