@@ -112,6 +112,11 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 }
 
 export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
+  log('calculateReferenceTabsFromInsertionPosition ', {
+    tab:          tab.id,
+    insertBefore: params.insertBefore && params.insertBefore.id,
+    insertAfter : params.insertAfter && params.insertAfter.id
+  });
   if (params.insertBefore) {
     /* strategy for moved case
          +------------------ CASE 1 ---------------------------
@@ -190,11 +195,13 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           }
         }
       }
-      return {
+      const result = {
         parent,
         insertAfter:  prevTab,
         insertBefore: params.insertBefore
-      }
+      };
+      log(' => ', result);
+      return result;
     }
   }
   if (params.insertAfter) {
@@ -239,9 +246,10 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     const unsafeNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
     const nextTab = params.insertAfter && (configs.fixupTreeOnTabVisibilityChanged ? params.insertAfter.$TST.nearestVisibleFollowingTab : unsafeNextTab);
     if (!nextTab) {
+      let result;
       if (params.context == Constants.kINSERTION_CONTEXT_MOVED) {
         log('calculateReferenceTabsFromInsertionPosition: from insertAfter, CASE 1');
-        return {
+        result = {
           parent:       params.insertAfter && params.insertAfter.$TST.parent,
           insertBefore: unsafeNextTab,
           insertAfter:  params.insertAfter
@@ -249,12 +257,14 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       }
       else {
         log('calculateReferenceTabsFromInsertionPosition: from insertAfter, CASE 5');
-        return {
+        result = {
           parent:       tab.$TST.parent && params.insertAfter && params.insertAfter.$TST.parent,
           insertBefore: unsafeNextTab,
           insertAfter:  params.insertAfter
         };
       }
+      log(' => ', result);
+      return result;
     }
     else {
       const targetLevel = Number(params.insertAfter.$TST.getAttribute(Constants.kLEVEL) || 0);
@@ -277,11 +287,13 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           }
         }
       }
-      return {
+      const result = {
         parent,
         insertBefore: unsafeNextTab || nextTab,
         insertAfter:  params.insertAfter
       };
+      log(' => ', result);
+      return result;
     }
   }
   throw new Error('calculateReferenceTabsFromInsertionPosition requires one of insertBefore or insertAfter parameter!');
