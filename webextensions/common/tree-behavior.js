@@ -154,7 +154,14 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [TARGET]
          +-----------------------------------------------------
     */
-    const prevTab = params.insertBefore && (configs.fixupTreeOnTabVisibilityChanged ? params.insertBefore.$TST.nearestVisiblePrecedingTab : params.insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
+    let prevTab = params.insertBefore &&
+      (configs.fixupTreeOnTabVisibilityChanged ?
+        params.insertBefore.$TST.nearestVisiblePrecedingTab :
+        params.insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
+    if (prevTab == tab) // failsafe
+      prevTab = configs.fixupTreeOnTabVisibilityChanged ?
+        tab.$TST.nearestVisiblePrecedingTab :
+        tab.$TST.unsafeNearestExpandedPrecedingTab;
     if (!prevTab) {
       log('calculateReferenceTabsFromInsertionPosition: from insertBefore, CASE 1/5');
       // allow to move pinned tab to beside of another pinned tab
@@ -243,8 +250,18 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     */
     // We need to refer unsafeNearestExpandedFollowingTab instead of a visible tab, to avoid
     // placing the tab after hidden tabs (it is too far from the target).
-    const unsafeNextTab = params.insertAfter && params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
-    const nextTab = params.insertAfter && (configs.fixupTreeOnTabVisibilityChanged ? params.insertAfter.$TST.nearestVisibleFollowingTab : unsafeNextTab);
+    let unsafeNextTab = params.insertAfter &&
+      params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
+    if (unsafeNextTab == tab) // failsafe
+      unsafeNextTab = tab.$TST.unsafeNearestExpandedFollowingTab;
+    let nextTab = params.insertAfter &&
+      (configs.fixupTreeOnTabVisibilityChanged ?
+        params.insertAfter.$TST.nearestVisibleFollowingTab :
+        unsafeNextTab);
+    if (nextTab == tab) // failsafe
+      nextTab = configs.fixupTreeOnTabVisibilityChanged ?
+        tab.$TST.nearestVisibleFollowingTab :
+        unsafeNextTab;
     if (!nextTab) {
       let result;
       if (params.context == Constants.kINSERTION_CONTEXT_MOVED) {
