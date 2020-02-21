@@ -158,13 +158,13 @@ async function syncTabsOrder() {
   const nativeTabs   = nativeOrder.slice(0).sort().join('\n');
   if (expectedTabs != nativeTabs) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
-    console.error(new Error(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`));
-    reserveToSyncTabsOrder.retryCount = 0;
-    browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_RELOAD,
-      all:  true
-    }).catch(ApiTabs.createErrorSuppressor());
-    return;
+      console.error(new Error(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`));
+      reserveToSyncTabsOrder.retryCount = 0;
+      browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_RELOAD,
+        all:  true
+      }).catch(ApiTabs.createErrorSuppressor());
+      return;
     }
     log('syncTabsOrder: retry');
     reserveToSyncTabsOrder.retryCount++;
