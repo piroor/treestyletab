@@ -806,6 +806,28 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
     case Constants.kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED:
       toggleLockCollapsed(Tab.get(message.tabId));
       break;
+
+    case Constants.kCOMMAND_TOGGLE_MUTED: {
+      await Tab.waitUntilTracked(message.tabId);
+      log('toggle muted state: ', message);
+      const root = Tab.get(message.tabId);
+      if (!root)
+        break;
+
+      const multiselected = root.$TST.multiselected;
+      const tabs = multiselected ?
+        Tab.getSelectedTabs(root.windowId, { iterator: true }) :
+        [root] ;
+      const toBeMuted = (!multiselected && root.$TST.subtreeCollapsed) ?
+        root.$TST.maybeSoundPlaying :
+        root.$TST.soundPlaying ;
+
+      for (const tab of tabs) {
+        browser.tabs.update(tab.id, {
+          muted: toBeMuted
+        }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      }
+    }; break;
   }
 });
 
