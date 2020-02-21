@@ -836,11 +836,11 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       }
       else {
         log('  tabs: ', tabs);
-      for (const tab of tabs) {
-        browser.tabs.update(tab.id, {
-          muted: toBeMuted
-        }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-      }
+        for (const tab of tabs) {
+          browser.tabs.update(tab.id, {
+            muted: toBeMuted
+          }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+        }
       }
     }; break;
   }
