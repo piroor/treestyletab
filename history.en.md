@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * "Bookmark this Tree" context menu command now bookmarks all multiselected tabs and thier descendants.
+   * Open dummy group tab with loaded state always, when it is opened by "Open All as a Tree" context menu command on bookmark folders.
+   * Apply "Mute Tab" and "Unmute Tab" context menu commands to the tree recursively when the target tab has collapsed descendants. If you run these commands on an expanded tree, only target tabs are processed.
+   * Apply muted/unmuted state to the tree recursively by clicking of the sound playing button only on a collapsed tree. If you click buttons on expanded tabs, only clicked tabs are affected.
+   * Fix edge case problem of auto-tree-repair when tabs are switched to shown from hidden.
+   * Fix edge case problem of tree attaching with hidden tabs.
+   * Suppress needless reloading after some tabs are removed immediately after other tabs are moved.
  - 3.3.5 (2020.1.24)
    * Don't skip peinding (unloaded) tabs on Ctrl-Shift-Tab.
    * Skip collapsed tabs on Ctrl-Tab/Ctrl-Shift-Tab focus rotation more correctly, just after the active tab was closed.
