@@ -166,7 +166,7 @@ async function syncTabsOrder() {
       }).catch(ApiTabs.createErrorSuppressor());
       return;
     }
-    log('syncTabsOrder: retry');
+    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
@@ -174,12 +174,13 @@ async function syncTabsOrder() {
   const actualTabs = actualOrder.slice(0).sort().join('\n');
   if (expectedTabs != actualTabs ||
       elementsOrder.length != internalOrder.length) {
+    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.error(new Error(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`));
       reserveToSyncTabsOrder.retryCount = 0;
       return onSyncFailed.dispatch();
     }
-    log('syncTabsOrder: retry');
+    log(`syncTabsOrder: retry / Native tabs are not same to tab elements, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
