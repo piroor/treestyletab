@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.3.6 (2020.2.21)
    * "Bookmark this Tree" context menu command now bookmarks all multiselected tabs and thier descendants.
    * Open dummy group tab with loaded state always, when it is opened by "Open All as a Tree" context menu command on bookmark folders.
    * Apply "Mute Tab" and "Unmute Tab" context menu commands to the tree recursively when the target tab has collapsed descendants. If you run these commands on an expanded tree, only target tabs are processed.
