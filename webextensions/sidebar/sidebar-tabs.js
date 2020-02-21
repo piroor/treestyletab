@@ -166,7 +166,7 @@ async function syncTabsOrder() {
       }).catch(ApiTabs.createErrorSuppressor());
       return;
     }
-    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
+    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen when synchronization and tab removing are done in parallel. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
