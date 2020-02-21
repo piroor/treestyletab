@@ -157,7 +157,7 @@ async function syncTabsOrder() {
   const expectedTabs = internalOrder.slice(0).sort().join('\n');
   const nativeTabs   = nativeOrder.slice(0).sort().join('\n');
   if (expectedTabs != nativeTabs) {
-    console.log(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`);
+    console.error(new Error(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`));
     reserveToSyncTabsOrder.retryCount = 0;
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_RELOAD,
@@ -170,7 +170,7 @@ async function syncTabsOrder() {
   if (expectedTabs != actualTabs ||
       elementsOrder.length != internalOrder.length) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
-      console.log(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`);
+      console.error(new Error(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`));
       reserveToSyncTabsOrder.retryCount = 0;
       return onSyncFailed.dispatch();
     }
