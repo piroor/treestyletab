@@ -822,10 +822,25 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         root.$TST.maybeSoundPlaying :
         root.$TST.soundPlaying ;
 
+      log('  toBeMuted: ', toBeMuted);
+      if (!multiselected &&
+          root.$TST.subtreeCollapsed &&
+          !root.$TST.soundPlaying) {
+        const soundPlayingTabs = root.$TST.descendants.filter(tab => tab.audible && (tab.$TST.soundPlaying == toBeMuted));
+        log('  soundPlayingTabs: ', soundPlayingTabs);
+        for (const tab of soundPlayingTabs) {
+          browser.tabs.update(tab.id, {
+            muted: toBeMuted
+          }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+        }
+      }
+      else {
+        log('  tabs: ', tabs);
       for (const tab of tabs) {
         browser.tabs.update(tab.id, {
           muted: toBeMuted
         }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      }
       }
     }; break;
   }
