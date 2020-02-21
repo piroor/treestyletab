@@ -116,8 +116,10 @@ export async function openURIsInTabs(uris, options = {}) {
         active:   index == 0 && !options.inBackground
       };
       if (uri && typeof uri == 'object') {
-        if (uri.title)
+        if ('title' in uri)
           params.title = uri.title;
+        if ('discarded' in uri)
+          params.discarded = uri.discarded;
         uri = uri.uri || uri.url;
       }
       let searchQuery = null;
@@ -153,7 +155,9 @@ export async function openURIsInTabs(uris, options = {}) {
         };
         Tab.onCreating.addListener(listener);
       });
-      if (options.discarded && !params.active)
+      if (options.discarded &&
+          !params.active &&
+          !('discarded' in params))
         params.discarded = true;
       const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
       await Promise.all([

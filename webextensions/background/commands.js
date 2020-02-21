@@ -843,7 +843,8 @@ async function collectBookmarkItems(root, recursively) {
         title:               root.title,
         temporaryAggressive: true
       }),
-      group: true
+      group: true,
+      discarded: false
     });
   }
   return items;
