@@ -342,7 +342,7 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'bookmarkTree':
-      Commands.bookmarkTree(contextTab);
+      Commands.bookmarkTree(selectedTabs.length > 1 ? selectedTabs : contextTab);
       break;
 
     case 'groupTabs':

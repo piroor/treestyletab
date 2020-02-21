@@ -128,8 +128,15 @@ export function toggleLockCollapsed(tabs, options = {}) {
   }
 }
 
-export async function bookmarkTree(root, options = {}) {
-  const tabs = [root].concat(root.$TST.descendants);
+export async function bookmarkTree(roots, options = {}) {
+  let tabs = [];
+  if (!Array.isArray(roots))
+    roots = [roots];
+  for (const root of roots) {
+    tabs.push(root);
+    tabs = tabs.concat(root.$TST.descendants);
+  }
+  tabs = Array.from(new Set(tabs)).sort(Tab.compare);
   if (tabs.length > 1 &&
       tabs[0].$TST.isGroupTab)
     tabs.shift();
@@ -150,7 +157,7 @@ export async function bookmarkTree(root, options = {}) {
   notify({
     title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
     message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-      root.title,
+      tabs[0].title,
       tabs.length,
       folder.title
     ])

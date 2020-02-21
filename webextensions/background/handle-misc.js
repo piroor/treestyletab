@@ -121,7 +121,7 @@ async function onShortcutCommand(command) {
       Commands.toggleLockCollapsed(selectedTabs.length > 1 ? selectedTabs : activeTab);
       return;
     case 'bookmarkTree':
-      Commands.bookmarkTree(activeTab);
+      Commands.bookmarkTree(selectedTabs.length > 1 ? selectedTabs : activeTab);
       return;
 
     case 'newIndependentTab':
