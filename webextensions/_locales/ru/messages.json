@@ -176,7 +176,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Есть некоторые функции, требующие дополнительных разрешений. Если вы хотите активировать их, получите разрешения вручную." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Это дерево в закладки…\" в контекстном меню на вкладках (нужен доступ к закладкам.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами (требуется внедрение скрипта в веб-страницы)." },
+  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами / Allow to show confirmation dialogs inside tab contents (требуется внедрение скрипта в веб-страницы)." },
 
   "message_startup_userChromeCss_notify": { "message": "Как скрыть верхнюю панель вкладок и заголовок боковой панели?" },
   "message_startup_userChromeCss_description_1": { "message": "Из-за ограничений WebExtensions, TST не может контролировать верхнюю панель вкладок и заголовок боковой панели. Если вам нужно настроить их, см. " },
@@ -449,7 +449,7 @@
 
   "config_shortcuts_caption": { "message": "Горячие клавиши" },
 
-  "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые потомки, переключая фокус вкладок сочетаниями клавиш. (*Вы должны разрешить выполнение сценариев на веб-страницах.)" },
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые потомки, переключая фокус вкладок сочетаниями клавиш. (*Вы должны разрешить выполнение сценариев на веб-страницах.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Развернуть активное свернутое дерево при удержании клавиши Tab " },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "мс" },
 

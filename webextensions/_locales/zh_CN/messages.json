@@ -479,7 +479,7 @@
         "hash": "85897cd7e382dc85105661ce607f74ae"
     },
     "message_startup_requestPermissions_allUrls": {
-        "message": "通过键盘快捷键切换标签页焦点时，不展开折叠的树并且跳过折叠的后代（需要向网页注入脚本以检测键盘快捷键的操作）",
+        "message": "通过键盘快捷键切换标签页焦点时，不展开折叠的树并且跳过折叠的后代 / Allow to show confirmation dialogs inside tab contents（需要向网页注入脚本以检测键盘快捷键的操作）",
         "hash": "118e680b2849b76975f6c98acc93f3b0"
     },
     "message_startup_userChromeCss_notify": {
@@ -1290,7 +1290,7 @@
         "message": "键盘快捷键",
         "hash": "3e4c94412820831fbea1494aa4d5ecf4"
     },
-    "config_requestPermissions_allUrls": {
+    "config_requestPermissions_allUrls_ctrlTabTracking": {
         "message": "通过键盘快捷键切换标签页的焦点时，不要展开折叠的树并跳过已折叠的后代。 （*您需要允许在网页上执行脚本。）",
         "hash": "0b56b4253e7d159f95331e7b7fe84597"
     },

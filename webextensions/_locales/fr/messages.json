@@ -170,7 +170,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Quelques fonctionnalités requièrent des permissions supplémentaires. Si vous voulez les utiliser, acceptez les permissions manuellement." },
   "message_startup_requestPermissions_bookmarks": { "message": "« Ajouter cet arbre aux marque-pages » dans le menu contextuel sur les onglets (requiert l'accès aux marque-pages)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Ne pas déplier les arbres repliés et ignorer les descendants repliés lorsque vous changez d'onglet courant via des raccourcis claviers (nécessite une injection de script dans les pages web pour détecter les appuis de touche)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Ne pas déplier les arbres repliés et ignorer les descendants repliés lorsque vous changez d'onglet courant via des raccourcis claviers / Allow to show confirmation dialogs inside tab contents (nécessite une injection de script dans les pages web pour détecter les appuis de touche)" },
 
   "message_startup_userChromeCss_notify": { "message": "Comment cacher la barre d'onglets du haut et l'entête du panneau latéral ?" },
   "message_startup_userChromeCss_description_1": { "message": "À cause de restrictions de WebExtensions, Tree Style Tab ne peut pas modifier la barre d'onglets du haut ou l'entête du panneau latéral de Firefox. Si vous voulez les modifier, consultez les " },
@@ -483,7 +483,7 @@
   "config_labelOverflowStyle_crop":    { "message": "Tronque avec « .. » (Meilleure performance)" },
 
   "config_requestPermissions_bookmarks": { "message": "Permettre de lire et de créer des marques-pages" },
-  "config_requestPermissions_allUrls":   { "message": "Ne pas déplier l'arbre et ignorer les descendants repliés, lorsque vous changez d'onglet courant via des raccourcis claviers. (*Vous devez autoriser l'exécution de scripts sur les pages web.)" },
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Ne pas déplier l'arbre et ignorer les descendants repliés, lorsque vous changez d'onglet courant via des raccourcis claviers. (*Vous devez autoriser l'exécution de scripts sur les pages web.)" },
   "config_requestPermissions_tabHide":   { "message": "Autoriser à montrer/masquer des onglets individuels (*Vous devez décocher et recocher ceci avant de lancer des tests, pour s'assurer que la permission a vraiment été accordée.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Cliquez sur le bouton « Tree Style Tab » dans la barre d'outils" },

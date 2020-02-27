@@ -175,7 +175,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠下列功能需要額外權限，給予額外的權限以使用。" },
   "message_startup_requestPermissions_bookmarks": { "message": "右鍵選單中「此樹加入書籤」(需要允許書籤存取)。" },
-  "message_startup_requestPermissions_allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹(為偵測盤盤操作，需要允許在網頁中插入腳本執行)。" },
+  "message_startup_requestPermissions_allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹 / Allow to show confirmation dialogs inside tab contents (為偵測盤盤操作，需要允許在網頁中插入腳本執行)。" },
 
   "message_startup_userChromeCss_notify": { "message": "想要隱藏分頁列及側邊欄標題列？" },
   "message_startup_userChromeCss_description_1": { "message": "由於 WebExtensions 限制，Tree Style Tab 無法控制分頁列及側邊欄標題列，若想隱藏詳見" },
@@ -487,7 +487,7 @@
   "config_labelOverflowStyle_crop":    { "message": "截斷並以「..」取代(效能更佳)" },
 
   "config_requestPermissions_bookmarks": { "message": "允許讀取和創建書籤" },
-  "config_requestPermissions_allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(※需要允許在網頁中執行腳本)" },
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(※需要允許在網頁中執行腳本)" },
   "config_requestPermissions_tabHide":   { "message": "允許隱藏 / 顯示個別分頁(※為了確保真的獲得操作權限，在測試前務必取消後重新勾選此項)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "點擊「Tree Style Tab」的工具列按鈕" },

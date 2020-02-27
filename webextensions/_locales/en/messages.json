@@ -176,7 +176,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs, and auto migration of bookmarked internal URLs imported from other environments (requires access to bookmarks)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts / Allow to show confirmation dialogs inside tab contents (requires script injection to webpages for detection of keyboard operations and showing arbitrary contents)" },
 
   "message_startup_userChromeCss_notify": { "message": "How to hide top tab bar and sidebar header?" },
   "message_startup_userChromeCss_description_1": { "message": "Due to restrictions of WebExtensions, Tree Style Tab cannot control Firefox's top tab bar and the sidebar header. If you need to control them, see " },
@@ -449,7 +449,8 @@
 
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
 
-  "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
+  "config_requestPermissions_allUrls_inContentConfirmation": { "message": "Allow to show confirmation dialogs inside tab contents (*You need to allow executing scripts on webpages.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Expand active collapsed tree when the Tab key is pressed over " },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "msec" },
 

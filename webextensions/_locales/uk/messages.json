@@ -110,7 +110,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Є деякі функції, що потребують додаткових дозволів. Якщо ви хочете активувати їх, отримайте дозволи вручну." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Додати дерево до закладок\" у контекстному меню на вкладках (потрібен доступ до закладок)." },
-  "message_startup_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті нащадки, перемикаючи фокус вкладок з допомогою гарячих клавіш (для виявлення операцій з клавіатурою потрібне впровадження скрипта на веб-сторінки)." },
+  "message_startup_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті нащадки, перемикаючи фокус вкладок з допомогою гарячих клавіш / Allow to show confirmation dialogs inside tab contents (для виявлення операцій з клавіатурою потрібне впровадження скрипта на веб-сторінки)." },
 
   "message_startup_userChromeCss_notify": { "message": "Як приховати верхню панель вкладок і заголовок бічної панелі?" },
   "message_startup_userChromeCss_description_1": { "message": "Через обмеження WebExtensions, TST не може контролювати верхню панель вкладок і заголовок бічної панелі. Якщо вам потрібно налаштувати їх, див. " },
@@ -359,7 +359,7 @@
   "config_sidebarScrollbarPosition_right": { "message": "Праворуч" },
 
   "config_requestPermissions_bookmarks": { "message": "Дозволити читання та створення закладок" },
-  "config_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті дочірні вкл., перемикаючи фокус вкладок з допомогою гарячих клавіш. (*Необхідно дозволити виконання скриптів на веб-сторінках.)" },
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті дочірні вкл., перемикаючи фокус вкладок з допомогою гарячих клавіш. (*Необхідно дозволити виконання скриптів на веб-сторінках.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Натисніть \"Tree Style Tab\" кнопку панелі інструментів" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Через баґ Firefox, Ви не зможете запитати дозвіл на цій сторінці. Будь ласка, натисніть \"Tree Style Tab\" кнопку панелі інструментів щоб отримати дозвіл." },
