@@ -96,6 +96,9 @@ export async function openURIInTab(uri, options = {}) {
   return tabs[0];
 }
 
+const FORBIDDEN_URL_MATCHER = /^(about|chrome):/;
+const ALLOWED_URL_MATCHER = /^about:blank(\?|$)/;
+
 export async function openURIsInTabs(uris, options = {}) {
   log('openURIsInTabs: ', { uris, options });
   if (!options.windowId)
@@ -136,6 +139,14 @@ export async function openURIsInTabs(uris, options = {}) {
           params.url = uri;
         }
       }
+      if (params.url &&
+          FORBIDDEN_URL_MATCHER.test(params.url) &&
+          !ALLOWED_URL_MATCHER.test(params.url)) {
+        params.url       = `about:blank?${params.url}`;
+        params.discarded = false; // discarded tab cannot be opened with any about: URL
+      }
+      if (!params.discarded) // title cannot be set for non-discarded tabs
+        params.title = null;
       if (options.opener)
         params.openerTabId = options.opener.id;
       if (startIndex > -1)
