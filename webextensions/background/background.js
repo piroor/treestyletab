@@ -461,8 +461,10 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   log('confirmToCloseTabs ', { tabIds, count, options });
   if (count <= 1 ||
       !configs.warnOnCloseTabs ||
-      Date.now() - configs.lastConfirmedToCloseTabs < 500)
+      Date.now() - configs.lastConfirmedToCloseTabs < 500) {
+    log('confirmToCloseTabs: skip confirmation and treated as granted');
     return true;
+  }
 
   const activeTabs = await browser.tabs.query({
     active:   true,
@@ -475,6 +477,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
       (!options.showInTab &&
        SidebarConnection.hasFocus(options.windowId))) {
     if (!SidebarConnection.isOpen(options.windowId)) {
+      log('confirmToCloseTabs: show confirmation as a notification');
       const clicked = await notify({
         title:   browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
         message: browser.i18n.getMessage('warnOnCloseTabs_notification_message', [Math.floor(configs.warnOnCloseTabsNotificationTimeout / 1000)]),
@@ -482,6 +485,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
       });
       return !clicked;
     }
+    log('confirmToCloseTabs: show confirmation in the sidebar');
     return browser.runtime.sendMessage({
       type: Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       tabs,
@@ -489,6 +493,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     }).catch(ApiTabs.createErrorHandler());
   }
 
+  log('confirmToCloseTabs: show confirmation in the active tab ', activeTabs[0]);
   const result = await RichConfirm.showInTab(activeTabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
@@ -498,6 +503,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
   });
+  log('confirmToCloseTabs: result = ', result);
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)
