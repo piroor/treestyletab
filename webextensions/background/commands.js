@@ -809,8 +809,8 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 
     case Constants.kCOMMAND_TOGGLE_MUTED: {
       await Tab.waitUntilTracked(message.tabId);
-      log('toggle muted state: ', message);
       const root = Tab.get(message.tabId);
+      log('toggle muted state: ', message, root);
       if (!root)
         break;
 
