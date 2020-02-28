@@ -141,10 +141,10 @@ export async function openURIsInTabs(uris, options = {}) {
       }
       if (params.url &&
           FORBIDDEN_URL_MATCHER.test(params.url) &&
-          !ALLOWED_URL_MATCHER.test(params.url)) {
-        params.url       = `about:blank?${params.url}`;
+          !ALLOWED_URL_MATCHER.test(params.url))
+        params.url = `about:blank?${params.url}`;
+      if (/^about:/.test(params.url))
         params.discarded = false; // discarded tab cannot be opened with any about: URL
-      }
       if (!params.discarded) // title cannot be set for non-discarded tabs
         params.title = null;
       if (options.opener)
