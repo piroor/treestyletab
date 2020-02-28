@@ -96,7 +96,7 @@ export async function openURIInTab(uri, options = {}) {
   return tabs[0];
 }
 
-const FORBIDDEN_URL_MATCHER = /^(about|chrome):/;
+const FORBIDDEN_URL_MATCHER = /^(about|chrome|resource):/;
 const ALLOWED_URL_MATCHER = /^about:blank(\?|$)/;
 
 export async function openURIsInTabs(uris, options = {}) {
