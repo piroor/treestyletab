@@ -153,6 +153,9 @@ export class TabElement extends HTMLElement {
   }
 
   initializeContents() {
+    // This can be called after the tab is removed, so
+    // we need to initialize contents safely.
+    if (this._labelElement) {
     if (!this._labelElement.owner) {
       this._labelElement.addOverflowChangeListener(() => {
         if (this.$TST.tab.pinned)
@@ -160,10 +163,15 @@ export class TabElement extends HTMLElement {
         this.invalidateTooltip();
       });
     }
-    this._labelElement.owner =
-      this._twistyElement.owner =
-      this._counterElement.owner =
-      this._soundButtonElement.owner =
+    this._labelElement.owner = this;
+    }
+    if (this._twistyElement)
+      this._twistyElement.owner = this;
+    if (this._counterElement)
+      this._counterElement.owner = this;
+    if (this._soundButtonElement)
+      this._soundButtonElement.owner = this;
+    if (this.closeBoxElement)
       this.closeBoxElement.owner = this;
   }
 

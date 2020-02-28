@@ -701,7 +701,8 @@ BackgroundConnection.onMessage.addListener(async message => {
         activateRealActiveTab(message.windowId);
       }
       if (!tab.$TST.collapsed &&
-          configs.animation) {
+          configs.animation &&
+          tab.$TST.element) {
         const tabRect = tab.$TST.element.getBoundingClientRect();
         tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
         CollapseExpand.setCollapsed(tab, {
