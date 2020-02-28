@@ -249,8 +249,10 @@
     range.deleteContents();
     range.detach();
 
-    if (!updateTree.enabled)
+    if (!updateTree.enabled) {
+      document.documentElement.classList.remove('updating');
       return;
+    }
 
     document.documentElement.classList.add('updating');
 
