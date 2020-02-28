@@ -826,9 +826,21 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       if (!multiselected &&
           root.$TST.subtreeCollapsed &&
           !root.$TST.soundPlaying) {
-        const soundPlayingTabs = root.$TST.descendants.filter(tab => tab.audible && (tab.$TST.soundPlaying == toBeMuted));
-        log('  soundPlayingTabs: ', soundPlayingTabs);
-        for (const tab of soundPlayingTabs) {
+        const toBeUpdatedTabs = root.$TST.descendants.filter(tab =>
+          // The "audible" possibly become "false" when the tab is
+          // really audible but muted.
+          // However, we can think more simply and robustly.
+          //  - We need to mute "audible" tabs.
+          //  - We need to unmute "muted" tabs.
+          // So, tabs which any of "audible" or "muted" is "true"
+          // have enough reason to be updated.
+          (tab.audible || tab.mutedInfo.muted) &&
+            // And we really need to update only tabs not been the
+            // expected state.
+            (tab.$TST.soundPlaying == toBeMuted)
+        );
+        log('  toBeUpdatedTabs: ', toBeUpdatedTabs);
+        for (const tab of toBeUpdatedTabs) {
           browser.tabs.update(tab.id, {
             muted: toBeMuted
           }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
