@@ -366,7 +366,7 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "Подтверждать группировку вкладок" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автоматически группировать вкладки, открытые с одной закрепленной вкладки" },
-  "config_renderTreeInGroupTabs_label": { "message": "Создание дерева в группе вкладок" },
+  "config_renderTreeInGroupTabs_label": { "message": "Отрисовывать дерево во вкладке группы" },
 
   "config_newTabContainer_caption": { "message": "Контейнер новой пустой дочерней вкладки" },
   "config_inheritContextualIdentityToNewChildTab_label": { "message": "Наследовать контейнер родительской вкладки новой пустой дочерней вкладкой" },
