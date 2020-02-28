@@ -108,7 +108,8 @@ export function updateAll() {
   for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
     tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
-    if (!tab.$TST.collapsed)
+    if (!tab.$TST.collapsed &&
+        tab.$TST.element)
       tab.$TST.element.updateOverflow();
   }
 }
