@@ -82,13 +82,55 @@ function setExtraContents(tabElement, id, params) {
   }
 
   let item = container.itemById.get(id);
+  if (!params.contents) {
+    if (item) {
+      container.removeChild(item);
+      container.itemById.delete(id);
+    }
+    return;
+  }
+
   if (!item) {
     item = document.createElement('span');
     item.classList.add('extra-item');
     item.classList.add(id.replace(/[^-a-z0-9_]/g, '_'));
-    container.appendChild(item);
+    container.itemById.set(id, item);
   }
-  item.innerHTML = params.contents || '';
+
+  const range = document.createRange();
+  range.selectNodeContents(item);
+  const contents = range.createContextualFragment(String(params.contents || '').trim());
+
+  // sanitization
+  for (const node of contents.querySelectorAll('*')) {
+    // reject dangerous contents
+    if (/^(script|embed|object|iframe)$/.test(node.localName)) {
+      if (node.src)
+        node.src = '';
+      if (node.textContent)
+        node.textContent = '';
+      continue;
+    }
+
+    for (const attribute of node.attributes) {
+      // reject embedded scripts
+      if (attribute.name.startsWith('on'))
+        attribute.value = '';
+
+      // reject remote resources
+      if (/^(src|srcset)$/.test(attribute.name) &&
+          node[attribute.name] &&
+          !node[attribute.name].startsWith('data:'))
+        node[attribute.name] = '';
+    }
+  }
+
+  range.deleteContents();
+  range.insertNode(contents);
+  range.detach();
+
+  if (!item.parentNode)
+    container.appendChild(item);
 
   mAddonsWithExtraContents.add(id);
 }
