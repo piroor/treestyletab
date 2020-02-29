@@ -59,12 +59,16 @@ export function init() {
   mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
+  const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
+
   log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
     --tab-size: ${mTabHeight}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
+    --tab-label-start-offset: ${labelRect.left - dummyTabRect.left}px;
+    --tab-label-end-offset: ${dummyTabRect.right - labelRect.right}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
