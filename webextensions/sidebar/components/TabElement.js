@@ -137,7 +137,7 @@ export class TabElement extends HTMLElement {
 
     const extraItemsContainerInFront = document.createElement('span');
     extraItemsContainerInFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
-    extraItemsContainerInFront.classList.add('in-front');
+    extraItemsContainerInFront.classList.add('front');
     this.appendChild(extraItemsContainerInFront);
 
     this.setAttribute('draggable', true);

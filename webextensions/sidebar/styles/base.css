@@ -283,7 +283,7 @@ tab-item .burster,
 tab-item.faviconized.unread tab-favicon::before,
 tab-item.attention tab-favicon::before,
 tab-item .extra-items-container.behind,
-tab-item .extra-items-container.in-front {
+tab-item .extra-items-container.front {
   bottom: 0;
   left: 0;
   pointer-events: none;
@@ -292,7 +292,7 @@ tab-item .extra-items-container.in-front {
   top: 0;
 }
 
-tab-item .extra-items-container.in-front {
+tab-item .extra-items-container.front {
   left: var(--tab-label-start-offset);
   pointer-events: auto;
   right: var(--tab-label-end-offset);
