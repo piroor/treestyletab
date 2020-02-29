@@ -113,10 +113,7 @@ function setExtraContents(tabElement, id, params) {
     }
 
     for (const attribute of node.attributes) {
-      // reject embedded scripts
-      if (attribute.name.startsWith('on'))
-        attribute.value = '';
-
+      // inline event handlers are blocked by the CSP mechanism.
       // reject remote resources
       if (/^(src|srcset)$/.test(attribute.name) &&
           node[attribute.name] &&
