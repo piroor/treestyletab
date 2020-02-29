@@ -24,16 +24,16 @@ TSTAPI.onRegistered.addListener(addon => {
   // windows by Firefox itself and extra context menu commands may be called
   // via Firefox's native context menu (or shortcuts).
   if (addon.style)
-    installStyleForAddon(addon.id, addon.style);
+    installStyle(addon.id, addon.style);
 });
 
 TSTAPI.onUnregistered.addListener(adddon => {
-  uninstallStyleForAddon(adddon.id)
+  uninstallStyle(adddon.id)
 });
 
 const mAddonStyles = new Map();
 
-function installStyleForAddon(id, style) {
+function installStyle(id, style) {
   let styleElement = mAddonStyles.get(id);
   if (!styleElement) {
     styleElement = document.createElement('style');
@@ -44,7 +44,7 @@ function installStyleForAddon(id, style) {
   styleElement.textContent = style;
 }
 
-function uninstallStyleForAddon(id) {
+function uninstallStyle(id) {
   const styleElement = mAddonStyles.get(id);
   if (!styleElement)
     return;
