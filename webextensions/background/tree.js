@@ -646,6 +646,13 @@ export async function collapseExpandSubtree(tab, params = {}) {
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
+  if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED)) {
+    TSTAPI.sendMessage({
+      type:      TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED,
+      tab:       new TSTAPI.TreeItem(tab),
+      collapsed: !!params.collapsed
+    }, { tabProperties: ['tab'] }).catch(_error => {});
+  }
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
   if (!params.force &&
