@@ -77,6 +77,7 @@ export class TabElement extends HTMLElement {
       this.invalidate(TabInvalidationTarget.All);
       this.update(TabUpdateTarget.TabProperties);
       this._applyAttributes();
+      this._initExtraItemsContainers();
       this._startListening();
       return;
     }
@@ -135,16 +136,17 @@ export class TabElement extends HTMLElement {
     extraItemsContainerBehind.classList.add('behind');
     this.appendChild(extraItemsContainerBehind);
 
-    const extraItemsContainerInFront = document.createElement('span');
-    extraItemsContainerInFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
-    extraItemsContainerInFront.classList.add('front');
-    this.appendChild(extraItemsContainerInFront);
+    const extraItemsContainerFront = document.createElement('span');
+    extraItemsContainerFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerFront.classList.add('front');
+    this.appendChild(extraItemsContainerFront);
 
     this.setAttribute('draggable', true);
 
     this.initializeContents();
     this.invalidate(TabInvalidationTarget.All);
     this.update(TabUpdateTarget.TabProperties);
+    this._initExtraItemsContainers();
     this._applyAttributes();
     this._startListening();
   }
@@ -218,14 +220,6 @@ export class TabElement extends HTMLElement {
 
   get closeBoxElement() {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
-  }
-
-  get extraItemsContainerBehind() {
-    return this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`);
-  }
-
-  get extraItemsContainerFront() {
-    return this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`);
   }
 
   _applyAttributes() {
@@ -355,6 +349,11 @@ windowId = ${tab.windowId}
       tooltip.push(child.$TST.element.tooltipWithDescendants.replace(/^/gm, '  '));
     }
     return tooltip.join('\n');
+  }
+
+  _initExtraItemsContainers() {
+    this.extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
+    this.extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
   }
 
   _startListening() {
