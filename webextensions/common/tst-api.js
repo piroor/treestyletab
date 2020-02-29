@@ -46,6 +46,8 @@ function log(...args) {
 }
 
 export const onInitialized = new EventListenerManager();
+export const onRegistered   = new EventListenerManager();
+export const onUnregistered = new EventListenerManager();
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
@@ -313,8 +315,11 @@ function registerAddon(id, addon) {
       addon.grantedPermissions.size != addon.requestedPermissions.size)
     notifyPermissionRequest(addon, addon.requestedPermissions);
 
+  addon.id = id;
   addon.lastRegistered = Date.now();
   mAddons.set(id, addon);
+
+  onRegistered.dispatch(addon);
 }
 
 const mPermissionNotificationForAddon = new Map();
@@ -472,7 +477,9 @@ if (mIsBackend) {
 }
 
 function unregisterAddon(id) {
-  log('addon is unregistered: ', id, getAddon(id));
+  const addon = getAddon(id);
+  log('addon is unregistered: ', id, addon);
+  onUnregistered.dispatch(addon);
   mAddons.delete(id);
   delete mScrollLockedBy[id];
   delete mGroupingBlockedBy[id];
@@ -592,12 +599,9 @@ browser.runtime.onMessage.addListener((message, _sender) => {
     switch (message.type) {
       case kCOMMAND_BROADCAST_API_REGISTERED:
         registerAddon(message.sender.id, message.message);
-        if (message.message.style)
-          installStyleForAddon(message.sender.id, message.message.style);
         break;
 
       case kCOMMAND_BROADCAST_API_UNREGISTERED:
-        uninstallStyleForAddon(message.sender.id)
         unregisterAddon(message.sender.id);
         break;
 
@@ -754,13 +758,8 @@ export async function initAsFrontend() {
   browser.runtime.onMessageExternal.addListener(onCommonCommand);
   log('initAsFrontend: response = ', response);
   importAddons(response.addons);
-  for (const [id, addon] of getAddons()) {
-    // Install stylesheet always, even if the addon is not allowed to access
-    // private windows, because the client addon can be alloed on private
-    // windows by Firefox itself and extra context menu commands may be called
-    // via Firefox's native context menu (or shortcuts).
-    if (addon.style)
-      installStyleForAddon(id, addon.style);
+  for (const [, addon] of getAddons()) {
+    onRegistered.dispatch(addon);
   }
   mScrollLockedBy    = response.scrollLocked;
   mGroupingBlockedBy = response.groupingLocked;
@@ -779,28 +778,6 @@ function importAddons(addons) {
     registerAddon(id, addon);
   }
 }
-
-const mAddonStyles = new Map();
-
-function installStyleForAddon(id, style) {
-  let styleElement = mAddonStyles.get(id);
-  if (!styleElement) {
-    styleElement = document.createElement('style');
-    styleElement.setAttribute('type', 'text/css');
-    document.head.insertBefore(styleElement, document.querySelector('#addons-style-rules'));
-    mAddonStyles.set(id, styleElement);
-  }
-  styleElement.textContent = style;
-}
-
-function uninstallStyleForAddon(id) {
-  const styleElement = mAddonStyles.get(id);
-  if (!styleElement)
-    return;
-  document.head.removeChild(styleElement);
-  mAddonStyles.delete(id);
-}
-
 
 export function isScrollLocked() {
   return Object.keys(mScrollLockedBy).length > 0;

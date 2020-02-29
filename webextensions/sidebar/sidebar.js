@@ -55,6 +55,7 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import * as SubPanel from './subpanel.js';
+import './tst-api-frontend.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
