@@ -220,6 +220,14 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
   }
 
+  get extraItemsContainerBehind() {
+    return this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`);
+  }
+
+  get extraItemsContainerFront() {
+    return this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`);
+  }
+
   _applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
