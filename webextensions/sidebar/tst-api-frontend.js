@@ -7,11 +7,12 @@
 
 import * as TSTAPI from '/common/tst-api.js';
 
-/*
 import {
-  log as internalLogger
+//  log as internalLogger,
+  configs
 } from '/common/common.js';
 
+/*
 function log(...args) {
   internalLogger('sidebar/tst-api-frontend', ...args);
 }
