@@ -755,7 +755,11 @@ export async function initAsFrontend() {
       break;
     await wait(10);
   }
-  browser.runtime.onMessageExternal.addListener(onCommonCommand);
+  browser.runtime.onMessageExternal.addListener((message, sender) => {
+    if (configs.incognitoAllowedExternalAddons.includes(sender.id) ||
+        !document.documentElement.classList.contains('incognito'))
+      return onCommonCommand(message, sender);
+  });
   log('initAsFrontend: response = ', response);
   importAddons(response.addons);
   for (const [, addon] of getAddons()) {

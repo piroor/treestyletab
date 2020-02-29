@@ -138,6 +138,8 @@ export async function init() {
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
       trackedWindow.incognito = window.incognito;
+      if (window.incognito)
+        document.documentElement.classList.add('incognito');
 
       const tabs = window.tabs;
       SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
