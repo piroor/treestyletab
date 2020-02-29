@@ -299,6 +299,13 @@ tab-item .extra-items-container.front {
   z-index: 6000;
 }
 
+tab-item .extra-items-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
 tab-item:not(.bursting) .burster {
   display: none;
 }
