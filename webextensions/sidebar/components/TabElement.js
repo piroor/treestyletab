@@ -353,7 +353,9 @@ windowId = ${tab.windowId}
 
   _initExtraItemsContainers() {
     this.extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
+    this.extraItemsContainerBehindRoot.itemById = new Map();
     this.extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
+    this.extraItemsContainerFrontRoot.itemById = new Map();
   }
 
   _startListening() {

@@ -12,11 +12,17 @@ import {
   configs
 } from '/common/common.js';
 
+import {
+  kTAB_ELEMENT_NAME,
+} from './components/TabElement.js';
+
 /*
 function log(...args) {
   internalLogger('sidebar/tst-api-frontend', ...args);
 }
 */
+
+const mAddonsWithExtraContents = new Set();
 
 TSTAPI.onRegistered.addListener(addon => {
   // Install stylesheet always, even if the addon is not allowed to access
@@ -27,9 +33,79 @@ TSTAPI.onRegistered.addListener(addon => {
     installStyle(addon.id, addon.style);
 });
 
-TSTAPI.onUnregistered.addListener(adddon => {
-  uninstallStyle(adddon.id)
+TSTAPI.onUnregistered.addListener(addon => {
+  if (mAddonsWithExtraContents.has(addon.id)) {
+    for (const tabElement of document.querySelector(kTAB_ELEMENT_NAME)) {
+      clearExtraContents(tabElement, addon.id);
+    }
+    mAddonsWithExtraContents.delete(addon.id);
+  }
+
+  uninstallStyle(addon.id)
 });
+
+browser.runtime.onMessageExternal.addListener((message, sender) => {
+  if (!message ||
+      typeof message.type != 'string' ||
+      (!configs.incognitoAllowedExternalAddons.includes(sender.id) &&
+       document.documentElement.classList.contains('incognito')))
+    return;
+
+  const tabElement = document.querySelector(`#tab-${message.id}`);
+  if (!tabElement)
+    return;
+
+  switch (message.type) {
+    case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
+      setExtraContents(tabElement, sender.id, message);
+      break;
+
+    case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
+      clearExtraContents(tabElement, sender.id);
+      break;
+  }
+});
+
+function setExtraContents(tabElement, id, params) {
+  let container;
+  switch (String(params.place).toLowerCase()) {
+    case 'behind':
+      container = tabElement.extraItemsContainerBehindRoot;
+      break;
+
+    case 'front':
+      container = tabElement.extraItemsContainerFrontRoot;
+      break;
+
+    default:
+      return;
+  }
+
+  let item = container.itemById.get(id);
+  if (!item) {
+    item = document.createElement('span');
+    item.classList.add('extra-item');
+    item.classList.add(id.replace(/[^-a-z0-9_]/g, '_'));
+    container.appendChild(item);
+  }
+  item.innerHTML = params.contents || '';
+
+  mAddonsWithExtraContents.add(id);
+}
+
+function clearExtraContents(tabElement, id) {
+  const behindItem = tabElement.extraItemsContainerBehindRoot.itemById.get(id);
+  if (behindItem) {
+    tabElement.extraItemsContainerBehindRoot.removeChild(behindItem);
+    tabElement.extraItemsContainerBehindRoot.itemById.delete(id);
+  }
+
+  const frontItem = tabElement.extraItemsContainerFrontRoot.itemById.get(id);
+  if (frontItem) {
+    tabElement.extraItemsContainerFrontRoot.removeChild(frontItem);
+    tabElement.extraItemsContainerFrontRoot.itemById.delete(id);
+  }
+}
 
 const mAddonStyles = new Map();
 

@@ -115,6 +115,8 @@ export const kBLOCK_GROUPING        = 'block-grouping';
 export const kUNBLOCK_GROUPING      = 'unblock-grouping';
 export const kGRANT_TO_REMOVE_TABS  = 'grant-to-remove-tabs';
 export const kOPEN_ALL_BOOKMARKS_WITH_STRUCTURE = 'open-all-bookmarks-with-structure';
+export const kSET_EXTRA_TAB_CONTENTS   = 'set-extra-tab-contents';
+export const kCLEAR_EXTRA_TAB_CONTENTS = 'clear-extra-tab-contents';
 
 export const kCONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
 export const kCONTEXT_MENU_GET_ITEMS  = 'fake-contextMenu-get-items';
