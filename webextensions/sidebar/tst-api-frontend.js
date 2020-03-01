@@ -66,6 +66,150 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
   }
 });
 
+// https://developer.mozilla.org/docs/Web/HTML/Element
+const SAFE_CONTENTS = `
+a
+abbr
+acronym
+address
+//applet
+area
+article
+aside
+b
+//base
+//basefont
+bdi
+bdo
+//bgsound
+big
+blink
+blockquote
+//body
+br
+button
+canvas
+caption
+center
+cite
+code
+col
+colgroup
+command
+//content
+data
+datalist
+dd
+del
+details
+dfn
+dialog
+dir
+div
+dl
+dt
+//element
+em
+//embed
+fieldset
+figcaption
+figure
+font
+footer
+//form
+//frame
+//frameset
+h1
+//head
+header
+hgroup
+hr
+//html
+i
+//iframe
+image
+img
+input
+ins
+isindex
+kbd
+keygen
+label
+legend
+li
+//link
+listing
+main
+map
+mark
+marquee
+menu
+menuitem
+//meta
+//meter
+multicol
+nav
+nextid
+nobr
+//noembed
+//noframes
+//noscript
+object
+ol
+optgroup
+option
+output
+p
+param
+picture
+plaintext
+pre
+progress
+q
+rb
+rp
+rt
+rtc
+duby
+s
+samp
+//script
+section
+select
+//shadow
+slot
+small
+source
+spacer
+span
+strike
+strong
+//style
+sub
+summary
+sup
+table
+tbody
+td
+template
+textarea
+tfoot
+th
+thead
+time
+title
+tr
+track
+tt
+u
+ul
+var
+//video
+wbr
+xmp
+`.trim().split('\n').filter(selector => !selector.startsWith('//'));
+const DANGEROUS_CONTENTS_SELECTOR = SAFE_CONTENTS.map(selector => `:not(${selector})`).join('');
+
 function setExtraContents(tabElement, id, params) {
   let container;
   switch (String(params.place).toLowerCase()) {
@@ -101,26 +245,21 @@ function setExtraContents(tabElement, id, params) {
   range.selectNodeContents(item);
   const contents = range.createContextualFragment(String(params.contents || '').trim());
 
-  // sanitization
+  // Accept only allowed element types
+  for (const node of contents.querySelectorAll(DANGEROUS_CONTENTS_SELECTOR)) {
+    node.parentNode.removeChild(node);
+  }
+  // Sanitize remote resources
   for (const node of contents.querySelectorAll('*')) {
-    // reject dangerous contents
-    if (/^(script|embed|object|iframe)$/.test(node.localName)) {
-      if (node.src)
-        node.src = '';
-      if (node.textContent)
-        node.textContent = '';
-      continue;
-    }
-
     for (const attribute of node.attributes) {
-      // inline event handlers are blocked by the CSP mechanism.
-      // reject remote resources
       if (/^(src|srcset)$/.test(attribute.name) &&
           node[attribute.name] &&
           !node[attribute.name].startsWith('data:'))
         node[attribute.name] = '';
     }
   }
+  // We don't need to handle inline event handlers because
+  // they are blocked by the CSP mechanism.
 
   range.deleteContents();
   range.insertNode(contents);
