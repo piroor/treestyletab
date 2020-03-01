@@ -304,6 +304,7 @@ tab-item .extra-items-container {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
+  overflow: hidden;
 }
 
 tab-item:not(.bursting) .burster {
