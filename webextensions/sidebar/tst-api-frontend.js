@@ -229,18 +229,24 @@ function setExtraContents(tabElement, id, params) {
   let item = container.itemById.get(id);
   if (!params.contents) {
     if (item) {
+      container.appendChild(item.styleElement);
       container.removeChild(item);
       container.itemById.delete(id);
     }
     return;
   }
 
+  const containerClass = id.replace(/[^-a-z0-9_]/g, '_');
+
   if (!item) {
     item = document.createElement('span');
     item.classList.add('extra-item');
-    item.classList.add(id.replace(/[^-a-z0-9_]/g, '_'));
+    item.classList.add(containerClass);
     item.dataset.owner = id;
     container.itemById.set(id, item);
+    const style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    item.styleElement = style;
   }
 
   const range = document.createRange();
@@ -266,6 +272,9 @@ function setExtraContents(tabElement, id, params) {
   // We don't need to handle inline event handlers because
   // they are blocked by the CSP mechanism.
 
+  if ('style' in params)
+    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/g, `.${containerClass}`);
+
   range.deleteContents();
   range.insertNode(contents);
   range.detach();
@@ -275,6 +284,7 @@ function setExtraContents(tabElement, id, params) {
   }
 
   if (!item.parentNode) {
+    container.appendChild(item.styleElement);
     container.appendChild(item);
   }
 
