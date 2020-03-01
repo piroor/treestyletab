@@ -151,6 +151,26 @@ function getTabFromCoordinates(event, options = {}) {
   return null;
 }
 
+
+export function getOriginalExtraContentsTarget(event) {
+  let target = event.originalTarget;
+  if (target && target.nodeType != Node.ELEMENT_NODE)
+    target = target.parentNode;
+
+  const extraContents = target.closest(`.extra-item`);
+  if (extraContents)
+    return {
+      owner: extraContents.dataset.owner,
+      target
+    };
+
+  return {
+    owner:  null,
+    target: null
+  };
+}
+
+
 const lastMousedown = new Map();
 
 export function getLastMousedown(button) {

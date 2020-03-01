@@ -868,7 +868,12 @@ export async function sendMessage(message, options = {}) {
     }
   }
 
-  const promisedResults = spawnMessages(uniqueTargets, { message, tabProperties });
+  const promisedResults = spawnMessages(uniqueTargets, {
+    message,
+    tabProperties,
+    target: options.target,
+    except: options.except
+  });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
     return results;
@@ -916,6 +921,9 @@ function* spawnMessages(targetSet, params) {
   };
 
   for (const id of targetSet) {
+    if ((params.target && !params.target.has(id)) ||
+        (params.except && params.except.has(id)))
+      continue;
     yield send(id);
   }
 }

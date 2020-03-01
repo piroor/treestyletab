@@ -228,7 +228,16 @@ function onMouseDown(event) {
 
   const target = event.target;
   const tab = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
-  log('onMouseDown: found target tab: ', tab);
+  log('onMouseDown: found target tab: ', tab, event);
+
+  const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
+  if (extraContentsInfo.owner) {
+    const priorityOwners = new Set();
+    priorityOwners.add(extraContentsInfo.owner);
+    if (extraContentsInfo.target)
+      extraContentsInfo.target = extraContentsInfo.target.outerHTML;
+    extraContentsInfo.priorityOwners = priorityOwners;
+  }
 
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(event),
@@ -245,7 +254,8 @@ function onMouseDown(event) {
     altKey:        event.altKey,
     metaKey:       event.metaKey,
     isMiddleClick: EventUtils.isMiddleClick(event),
-    isAccelClick:  EventUtils.isAccelAction(event)
+    isAccelClick:  EventUtils.isAccelAction(event),
+    $extraContentsInfo: extraContentsInfo
   };
   log('onMouseDown ', mousedownDetail);
 
@@ -269,12 +279,28 @@ function onMouseDown(event) {
       .catch(ApiTabs.createErrorHandler()),
     (async () => {
       if (mousedownDetail.targetType != 'tab')
-        return;
+        return undefined;
+
       log('Sending message to listeners');
-      return TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
+      if (extraContentsInfo.priorityOwners) {
+        const results = await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
+          type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+          tab:  mousedown.treeItem,
+          originalTarget: extraContentsInfo.target,
+          $extraContentsInfo: null
+        }), { tabProperties: ['tab'], target: extraContentsInfo.priorityOwners });
+        if (results.flat().some(result => result && result.result))
+          return true;
+      }
+      const results = await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
         type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-        tab:  mousedown.treeItem
-      }), { tabProperties: ['tab'] });
+        tab:  mousedown.treeItem,
+        $extraContentsInfo: null
+      }), { tabProperties: ['tab'], except: extraContentsInfo.priorityOwners });
+      if (results.flat().some(result => result && result.result))
+        return true;
+
+      return false;
     })()
   ]).then(results => results[1]);
 
@@ -350,22 +376,36 @@ async function onMouseUp(event) {
     return;
 
   let promisedCanceled = null;
-  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
-    promisedCanceled = Promise.all([
-      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-        type: TSTAPI.kNOTIFY_TAB_MOUSEUP,
-        tab:  lastMousedown.treeItem
-      }), { tabProperties: ['tab'] }),
+  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab') {
+    promisedCanceled = (async () => {
+      const mouseDownCanceled = await lastMousedown.promisedMousedownNotified;
+      if (mouseDownCanceled)
+        return true;
 
-      TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-        type: TSTAPI.kNOTIFY_TAB_CLICKED,
-        tab:  lastMousedown.treeItem
-      }), { tabProperties: ['tab'] }),
+      const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
+      for (const type of [TSTAPI.kNOTIFY_TAB_MOUSEUP, TSTAPI.kNOTIFY_TAB_CLICKED]) {
+        if (extraContentsInfo.priorityOwners) {
+          const results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+            type,
+            tab: lastMousedown.treeItem,
+            originalTarget:     extraContentsInfo.target,
+            $extraContentsInfo: null
+          }), { tabProperties: ['tab'], target: extraContentsInfo.priorityOwners });
+          if (results.flat().some(result => result && result.result))
+            return true;
+        }
+        const mouseUpResults = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+          type,
+          tab: lastMousedown.treeItem,
+          $extraContentsInfo: null
+        }), { tabProperties: ['tab'], except: extraContentsInfo.priorityOwners });
+        if (mouseUpResults.flat().some(result => result && result.result))
+          return true;
+      }
 
-      lastMousedown.promisedMousedownNotified
-    ])
-      .then(results => results.flat())
-      .then(results => results.some(result => result && result.result));
+      return false;
+    })();
+  }
 
   if (lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) || // when the cursor was moved before mouseup

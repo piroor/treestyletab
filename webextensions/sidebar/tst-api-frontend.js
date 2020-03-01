@@ -240,6 +240,7 @@ function setExtraContents(tabElement, id, params) {
     item = document.createElement('span');
     item.classList.add('extra-item');
     item.classList.add(id.replace(/[^-a-z0-9_]/g, '_'));
+    item.dataset.owner = id;
     container.itemById.set(id, item);
   }
 
