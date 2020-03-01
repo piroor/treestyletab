@@ -53,6 +53,13 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
        document.documentElement.classList.contains('incognito')))
     return;
 
+  if (message.type == TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS) {
+    for (const tabElement of document.querySelector(kTAB_ELEMENT_NAME)) {
+      clearExtraContents(tabElement, sender.id);
+    }
+    return;
+  }
+
   Tab.waitUntilTracked(message.id, { element: true }).then(() => {
     const tabElement = document.querySelector(`#tab-${message.id}`);
     if (!tabElement)
