@@ -222,11 +222,9 @@ function setExtraContents(tabElement, id, params) {
       break;
 
     case 'front':
+    default:
       container = tabElement.extraItemsContainerFrontRoot;
       break;
-
-    default:
-      return;
   }
 
   let item = container.itemById.get(id);
