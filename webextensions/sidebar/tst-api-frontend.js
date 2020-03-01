@@ -37,7 +37,7 @@ TSTAPI.onRegistered.addListener(addon => {
 
 TSTAPI.onUnregistered.addListener(addon => {
   if (mAddonsWithExtraContents.has(addon.id)) {
-    for (const tabElement of document.querySelector(kTAB_ELEMENT_NAME)) {
+    for (const tabElement of document.querySelectorAll(kTAB_ELEMENT_NAME)) {
       clearExtraContents(tabElement, addon.id);
     }
     mAddonsWithExtraContents.delete(addon.id);
