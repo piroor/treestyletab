@@ -16,6 +16,8 @@ import {
   kTAB_ELEMENT_NAME,
 } from './components/TabElement.js';
 
+import Tab from '/common/Tab.js';
+
 /*
 function log(...args) {
   internalLogger('sidebar/tst-api-frontend', ...args);
@@ -51,6 +53,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
        document.documentElement.classList.contains('incognito')))
     return;
 
+  Tab.waitUntilTracked(message.id, { element: true }).then(() => {
   const tabElement = document.querySelector(`#tab-${message.id}`);
   if (!tabElement)
     return;
@@ -64,6 +67,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
       clearExtraContents(tabElement, sender.id);
       break;
   }
+  });
 });
 
 // https://developer.mozilla.org/docs/Web/HTML/Element
