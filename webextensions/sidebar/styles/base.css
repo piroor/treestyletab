@@ -292,19 +292,20 @@ tab-item .extra-items-container.front {
   top: 0;
 }
 
-tab-item .extra-items-container.front {
-  left: var(--tab-label-start-offset);
-  pointer-events: auto;
-  right: var(--tab-label-end-offset);
-  z-index: 6000;
-}
-
 tab-item .extra-items-container {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
   overflow: hidden;
+}
+
+tab-item .extra-items-container.front {
+  justify-content: flex-end;
+  left: var(--tab-label-start-offset);
+  pointer-events: auto;
+  right: var(--tab-label-end-offset);
+  z-index: 6000;
 }
 
 tab-item:not(.bursting) .burster {
