@@ -140,6 +140,7 @@ export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control
 export const kCOMMAND_GET_ADDONS                 = 'treestyletab:get-addons';
 export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permisssion';
 export const kCOMMAND_NOTIFY_PERMISSION_CHANGED  = 'treestyletab:notify-api-permisssion-changed';
+export const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
@@ -379,6 +380,123 @@ function notifyPermissionChanged(addon) {
   }).catch(ApiTabs.createErrorHandler());
 }
 
+function unregisterAddon(id) {
+  const addon = getAddon(id);
+  log('addon is unregistered: ', id, addon);
+  onUnregistered.dispatch(addon);
+  mAddons.delete(id);
+  delete mScrollLockedBy[id];
+  delete mGroupingBlockedBy[id];
+}
+
+export function getAddons() {
+  return mAddons.entries();
+}
+
+const mConnections = new Map();
+
+function onCommonCommand(message, sender) {
+  if (!message ||
+      typeof message.type != 'string')
+    return;
+
+  const addon = getAddon(sender.id);
+
+  switch (message.type) {
+    case kSCROLL_LOCK:
+      mScrollLockedBy[sender.id] = true;
+      if (!addon)
+        registerAddon(sender.id, sender);
+      return Promise.resolve(true);
+
+    case kSCROLL_UNLOCK:
+      delete mScrollLockedBy[sender.id];
+      return Promise.resolve(true);
+
+    case kBLOCK_GROUPING:
+      mGroupingBlockedBy[sender.id] = true;
+      if (!addon)
+        registerAddon(sender.id, sender);
+      return Promise.resolve(true);
+
+    case kUNBLOCK_GROUPING:
+      delete mGroupingBlockedBy[sender.id];
+      return Promise.resolve(true);
+
+    case kSET_EXTRA_TAB_CONTENTS:
+      if (!addon)
+        registerAddon(sender.id, sender);
+      break;
+  }
+}
+
+
+// =======================================================================
+// for backend
+// =======================================================================
+
+export async function initAsBackend() {
+  // We must listen API messages from other addons here beacause:
+  //  * Before notification messages are sent to other addons.
+  //  * After configs are loaded and TST's background page is almost completely initialized.
+  //    (to prevent troubles like breakage of `configs.cachedExternalAddons`, see also:
+  //     https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370 )
+  browser.runtime.onMessageExternal.addListener(onBackendCommand);
+
+  const manifest = browser.runtime.getManifest();
+  registerAddon(browser.runtime.id, {
+    id:         browser.runtime.id,
+    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
+    icons:      manifest.icons,
+    listeningTypes: [],
+    bypassPermissionCheck: true
+  });
+  browser.runtime.onConnectExternal.addListener(port => {
+    const sender = port.sender;
+    mConnections.set(sender.id, port);
+    port.onDisconnect.addListener(_message => {
+      mConnections.delete(sender.id);
+      onBackendCommand({
+        type: kUNREGISTER_SELF,
+        sender
+      }).catch(ApiTabs.createErrorSuppressor());
+    });
+  });
+  const respondedAddons = [];
+  const notifiedAddons = {};
+  const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
+  log('initAsBackend: notifyAddons = ', respondedAddons);
+  await Promise.all(notifyAddons.map(async id => {
+    if (id in notifiedAddons)
+      return;
+    notifiedAddons[id] = true;
+    try {
+      id = await new Promise((resolve, reject) => {
+        let responded = false;
+        browser.runtime.sendMessage(id, {
+          type: kNOTIFY_READY
+        }).then(() => {
+          responded = true;
+          resolve(id);
+        }).catch(ApiTabs.createErrorHandler(reject));
+        setTimeout(() => {
+          if (!responded)
+            reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
+        }, 3000);
+      });
+      if (id)
+        respondedAddons.push(id);
+    }
+    catch(e) {
+      console.log(`TSTAPI.initAsBackend: failed to send "ready" message to "${id}":`, e);
+    }
+  }));
+  log('initAsBackend: respondedAddons = ', respondedAddons);
+  configs.cachedExternalAddons = respondedAddons;
+
+  onInitialized.dispatch();
+}
+
 if (mIsBackend) {
   browser.notifications.onClicked.addListener(notificationId => {
     for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
@@ -477,115 +595,7 @@ if (mIsBackend) {
     port.onDisconnect.addListener(onDisconnected);
   });
   */
-}
 
-function unregisterAddon(id) {
-  const addon = getAddon(id);
-  log('addon is unregistered: ', id, addon);
-  onUnregistered.dispatch(addon);
-  mAddons.delete(id);
-  delete mScrollLockedBy[id];
-  delete mGroupingBlockedBy[id];
-}
-
-export function getAddons() {
-  return mAddons.entries();
-}
-
-const mConnections = new Map();
-
-function onCommonCommand(message, sender) {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
-
-  switch (message.type) {
-    case kSCROLL_LOCK:
-      mScrollLockedBy[sender.id] = true;
-      return Promise.resolve(true);
-
-    case kSCROLL_UNLOCK:
-      delete mScrollLockedBy[sender.id];
-      return Promise.resolve(true);
-
-    case kBLOCK_GROUPING:
-      mGroupingBlockedBy[sender.id] = true;
-      return Promise.resolve(true);
-
-    case kUNBLOCK_GROUPING:
-      delete mGroupingBlockedBy[sender.id];
-      return Promise.resolve(true);
-  }
-}
-
-
-// =======================================================================
-// for backend
-// =======================================================================
-
-export async function initAsBackend() {
-  // We must listen API messages from other addons here beacause:
-  //  * Before notification messages are sent to other addons.
-  //  * After configs are loaded and TST's background page is almost completely initialized.
-  //    (to prevent troubles like breakage of `configs.cachedExternalAddons`, see also:
-  //     https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370 )
-  browser.runtime.onMessageExternal.addListener(onBackendCommand);
-
-  const manifest = browser.runtime.getManifest();
-  registerAddon(browser.runtime.id, {
-    id:         browser.runtime.id,
-    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
-    icons:      manifest.icons,
-    listeningTypes: [],
-    bypassPermissionCheck: true
-  });
-  browser.runtime.onConnectExternal.addListener(port => {
-    const sender = port.sender;
-    mConnections.set(sender.id, port);
-    port.onDisconnect.addListener(_message => {
-      mConnections.delete(sender.id);
-      onBackendCommand({
-        type: kUNREGISTER_SELF,
-        sender
-      }).catch(ApiTabs.createErrorSuppressor());
-    });
-  });
-  const respondedAddons = [];
-  const notifiedAddons = {};
-  const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
-  log('initAsBackend: notifyAddons = ', respondedAddons);
-  await Promise.all(notifyAddons.map(async id => {
-    if (id in notifiedAddons)
-      return;
-    notifiedAddons[id] = true;
-    try {
-      id = await new Promise((resolve, reject) => {
-        let responded = false;
-        browser.runtime.sendMessage(id, {
-          type: kNOTIFY_READY
-        }).then(() => {
-          responded = true;
-          resolve(id);
-        }).catch(ApiTabs.createErrorHandler(reject));
-        setTimeout(() => {
-          if (!responded)
-            reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
-        }, 3000);
-      });
-      if (id)
-        respondedAddons.push(id);
-    }
-    catch(e) {
-      console.log(`TSTAPI.initAsBackend: failed to send "ready" message to "${id}":`, e);
-    }
-  }));
-  log('initAsBackend: respondedAddons = ', respondedAddons);
-  configs.cachedExternalAddons = respondedAddons;
-
-  onInitialized.dispatch();
-}
-
-if (mIsBackend) {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         typeof message.type != 'string')
@@ -624,6 +634,10 @@ if (mIsBackend) {
 
       case kCOMMAND_NOTIFY_PERMISSION_CHANGED:
         notifyPermissionChanged(getAddon(message.id));
+        break;
+
+      case kCOMMAND_UNREGISTER_ADDON:
+        unregisterAddon(message.id);
         break;
     }
   });
@@ -932,6 +946,9 @@ function* spawnMessages(targetSet, params) {
     }
     catch(e) {
       console.log(`Error on sending message to ${id}`, allowedMessage, e);
+      unregisterAddon(id);
+      if (mIsFrontend)
+        browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
       return {
         id,
         error: e
