@@ -245,10 +245,13 @@ function setExtraContents(tabElement, id, params) {
   range.selectNodeContents(item);
   const contents = range.createContextualFragment(String(params.contents || '').trim());
 
-  // Accept only allowed element types
-  for (const node of contents.querySelectorAll(DANGEROUS_CONTENTS_SELECTOR)) {
+  const dangerousContents = contents.querySelectorAll(DANGEROUS_CONTENTS_SELECTOR);
+  for (const node of dangerousContents) {
     node.parentNode.removeChild(node);
   }
+  if (dangerousContents.length > 0)
+    console.log(`Could not include some elements as extra tab contents. tab=#${tabElement.id}, provider=${id}:`, dangerousContents);
+
   // Sanitize remote resources
   for (const node of contents.querySelectorAll('*')) {
     for (const attribute of node.attributes) {
