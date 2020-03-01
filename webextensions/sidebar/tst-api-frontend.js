@@ -201,7 +201,7 @@ tfoot
 th
 thead
 time
-title
+//title
 tr
 track
 tt
