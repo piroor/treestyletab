@@ -61,9 +61,10 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
       });
       handleNewActiveTab(tab, info);
     }
-    else if (configs.autoExpandOnCollapsedChildActive &&
-             !shouldSkipCollapsed) {
-      log('=> reaction for autoExpandOnCollapsedChildActive');
+    else if (!shouldSkipCollapsed) {
+      log('=> reaction for focus given from outside of TST');
+      if (configs.autoExpandOnCollapsedChildActive) {
+      log('  => apply autoExpandOnCollapsedChildActive');
       const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
       const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
       const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
@@ -82,10 +83,11 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
         return false;
       }
+      }
       handleNewActiveTab(tab, info);
     }
     else {
-      log('=> reaction for focusing collapsed descendant');
+      log('=> reaction for focusing collapsed descendant while Ctrl-Tab/Ctrl-Shift-Tab');
       let successor = tab.$TST.nearestVisibleAncestorOrSelf;
       if (!successor) // this seems invalid case...
         return false;
@@ -104,7 +106,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           successor = Tab.getFirstVisibleTab(tab.windowId);
         log('=> ', successor.id);
       }
-      else if (!mTabSwitchedByShortcut && // intentonal focus to a discarded tabs by Ctrl-Tab/Ctrl-Shift-Tab is always allowed!
+      else if (!mTabSwitchedByShortcut && // intentional focus to a discarded tabs by Ctrl-Tab/Ctrl-Shift-Tab is always allowed!
                successor.discarded &&
                configs.avoidDiscardedTabToBeActivatedIfPossible) {
         log('=> redirect successor (successor is discarded)');
