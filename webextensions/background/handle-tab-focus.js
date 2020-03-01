@@ -64,25 +64,25 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
     else if (!shouldSkipCollapsed) {
       log('=> reaction for focus given from outside of TST');
       if (configs.autoExpandOnCollapsedChildActive) {
-      log('  => apply autoExpandOnCollapsedChildActive');
-      const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
-      const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
-      const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
-      for (const ancestor of ancestors) {
-        if (!forceAutoExpand && ancestor.$TST.lockedCollapsed)
-          continue;
-        Tree.collapseExpandSubtree(ancestor, {
-          collapsed: false,
-          broadcast: true
-        });
-      }
-      if (toBeFocused != tab) {
-        TabsInternalOperation.activateTab(toBeFocused, { silently: true });
-        log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
-        if (tab.discarded)
-          tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
-        return false;
-      }
+        log('  => apply autoExpandOnCollapsedChildActive');
+        const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
+        const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
+        const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
+        for (const ancestor of ancestors) {
+          if (!forceAutoExpand && ancestor.$TST.lockedCollapsed)
+            continue;
+          Tree.collapseExpandSubtree(ancestor, {
+            collapsed: false,
+            broadcast: true
+          });
+        }
+        if (toBeFocused != tab) {
+          TabsInternalOperation.activateTab(toBeFocused, { silently: true });
+          log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
+          if (tab.discarded)
+            tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
+          return false;
+        }
       }
       handleNewActiveTab(tab, info);
     }
