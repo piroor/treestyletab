@@ -494,6 +494,35 @@ export function getAddons() {
 
 const mConnections = new Map();
 
+function onCommonCommand(message, sender) {
+  if (!message ||
+      typeof message.type != 'string')
+    return;
+
+  switch (message.type) {
+    case kSCROLL_LOCK:
+      mScrollLockedBy[sender.id] = true;
+      return Promise.resolve(true);
+
+    case kSCROLL_UNLOCK:
+      delete mScrollLockedBy[sender.id];
+      return Promise.resolve(true);
+
+    case kBLOCK_GROUPING:
+      mGroupingBlockedBy[sender.id] = true;
+      return Promise.resolve(true);
+
+    case kUNBLOCK_GROUPING:
+      delete mGroupingBlockedBy[sender.id];
+      return Promise.resolve(true);
+  }
+}
+
+
+// =======================================================================
+// for backend
+// =======================================================================
+
 export async function initAsBackend() {
   // We must listen API messages from other addons here beacause:
   //  * Before notification messages are sent to other addons.
@@ -556,12 +585,12 @@ export async function initAsBackend() {
   onInitialized.dispatch();
 }
 
-browser.runtime.onMessage.addListener((message, _sender) => {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
+if (mIsBackend) {
+  browser.runtime.onMessage.addListener((message, _sender) => {
+    if (!message ||
+        typeof message.type != 'string')
+      return;
 
-  if (mIsBackend) {
     switch (message.type) {
       case kCOMMAND_REQUEST_INITIALIZE:
         return Promise.resolve({
@@ -597,24 +626,8 @@ browser.runtime.onMessage.addListener((message, _sender) => {
         notifyPermissionChanged(getAddon(message.id));
         break;
     }
-  }
-  else if (mIsFrontend) {
-    switch (message.type) {
-      case kCOMMAND_BROADCAST_API_REGISTERED:
-        registerAddon(message.sender.id, message.message);
-        break;
-
-      case kCOMMAND_BROADCAST_API_UNREGISTERED:
-        unregisterAddon(message.sender.id);
-        break;
-
-      case kCOMMAND_BROADCAST_API_PERMISSION_CHANGED: {
-        const addon = getAddon(message.id);
-        addon.grantedPermissions = new Set(message.permissions);
-      }; break;
-    }
-  }
-});
+  });
+}
 
 const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
   // If this promise doesn't do anything then there seems to be a timeout so it only works if TST is disabled within about 10 seconds after this promise is used as a response to a message. After that it will not throw an error for the waiting extension.
@@ -717,30 +730,6 @@ function onBackendCommand(message, sender) {
   }
 }
 
-function onCommonCommand(message, sender) {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
-
-  switch (message.type) {
-    case kSCROLL_LOCK:
-      mScrollLockedBy[sender.id] = true;
-      return Promise.resolve(true);
-
-    case kSCROLL_UNLOCK:
-      delete mScrollLockedBy[sender.id];
-      return Promise.resolve(true);
-
-    case kBLOCK_GROUPING:
-      mGroupingBlockedBy[sender.id] = true;
-      return Promise.resolve(true);
-
-    case kUNBLOCK_GROUPING:
-      delete mGroupingBlockedBy[sender.id];
-      return Promise.resolve(true);
-  }
-}
-
 function exportAddons() {
   const exported = {};
   for (const [id, addon] of getAddons()) {
@@ -748,6 +737,15 @@ function exportAddons() {
   }
   return exported;
 }
+
+export function isGroupingBlocked() {
+  return Object.keys(mGroupingBlockedBy).length > 0;
+}
+
+
+// =======================================================================
+// for frontend
+// =======================================================================
 
 export async function initAsFrontend() {
   log('initAsFrontend: start');
@@ -773,6 +771,29 @@ export async function initAsFrontend() {
 
   onInitialized.dispatch();
   log('initAsFrontend: finish');
+}
+
+if (mIsFrontend) {
+  browser.runtime.onMessage.addListener((message, _sender) => {
+    if (!message ||
+        typeof message.type != 'string')
+      return;
+
+    switch (message.type) {
+      case kCOMMAND_BROADCAST_API_REGISTERED:
+        registerAddon(message.sender.id, message.message);
+        break;
+
+      case kCOMMAND_BROADCAST_API_UNREGISTERED:
+        unregisterAddon(message.sender.id);
+        break;
+
+      case kCOMMAND_BROADCAST_API_PERMISSION_CHANGED: {
+        const addon = getAddon(message.id);
+        addon.grantedPermissions = new Set(message.permissions);
+      }; break;
+    }
+  });
 }
 
 function importAddons(addons) {
@@ -828,12 +849,9 @@ export async function notifyScrolled(params = {}) {
 }
 
 
-export function isGroupingBlocked() {
-  return Object.keys(mGroupingBlockedBy).length > 0;
-}
-
-
-/* Utilities to send notification messages to other addons */
+// =======================================================================
+// Common utilities to send notification messages to other addons
+// =======================================================================
 
 export function hasListenerForMessageType(type) {
   return getListenersForMessageType(type).length > 0;
@@ -969,7 +987,9 @@ async function sanitizeMessage(message, params) {
 }
 
 
-/* Utilities for request-response type API call */
+// =======================================================================
+// Common utilities for request-response type API call
+// =======================================================================
 
 export async function getTargetTabs(message, sender) {
   await Tab.waitUntilTrackedAll(message.window || message.windowId);
