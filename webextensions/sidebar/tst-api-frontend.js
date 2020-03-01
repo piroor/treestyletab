@@ -54,19 +54,19 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
     return;
 
   Tab.waitUntilTracked(message.id, { element: true }).then(() => {
-  const tabElement = document.querySelector(`#tab-${message.id}`);
-  if (!tabElement)
-    return;
+    const tabElement = document.querySelector(`#tab-${message.id}`);
+    if (!tabElement)
+      return;
 
-  switch (message.type) {
-    case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
-      setExtraContents(tabElement, sender.id, message);
-      break;
+    switch (message.type) {
+      case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
+        setExtraContents(tabElement, sender.id, message);
+        break;
 
-    case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
-      clearExtraContents(tabElement, sender.id);
-      break;
-  }
+      case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
+        clearExtraContents(tabElement, sender.id);
+        break;
+    }
   });
 });
 
