@@ -36,13 +36,7 @@ TSTAPI.onRegistered.addListener(addon => {
 });
 
 TSTAPI.onUnregistered.addListener(addon => {
-  if (mAddonsWithExtraContents.has(addon.id)) {
-    for (const tabElement of document.querySelectorAll(kTAB_ELEMENT_NAME)) {
-      clearExtraContents(tabElement, addon.id);
-    }
-    mAddonsWithExtraContents.delete(addon.id);
-  }
-
+  clearAllExtraContents(addon.id);
   uninstallStyle(addon.id)
 });
 
@@ -54,9 +48,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
     return;
 
   if (message.type == TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS) {
-    for (const tabElement of document.querySelector(kTAB_ELEMENT_NAME)) {
-      clearExtraContents(tabElement, sender.id);
-    }
+    clearAllExtraContents(sender.id);
     return;
   }
 
@@ -296,6 +288,16 @@ function clearExtraContents(tabElement, id) {
     tabElement.extraItemsContainerFrontRoot.removeChild(frontItem);
     tabElement.extraItemsContainerFrontRoot.itemById.delete(id);
   }
+}
+
+function clearAllExtraContents(id) {
+  if (!mAddonsWithExtraContents.has(id))
+    return;
+
+  for (const tabElement of document.querySelectorAll(kTAB_ELEMENT_NAME)) {
+    clearExtraContents(tabElement, id);
+  }
+  mAddonsWithExtraContents.delete(id);
 }
 
 const mAddonStyles = new Map();
