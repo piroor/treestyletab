@@ -252,10 +252,10 @@ function setExtraContents(tabElement, id, params) {
   // Sanitize remote resources
   for (const node of contents.querySelectorAll('*')) {
     for (const attribute of node.attributes) {
-      if (/^(src|srcset)$/.test(attribute.name) &&
-          node[attribute.name] &&
-          !node[attribute.name].startsWith('data:'))
-        node[attribute.name] = '';
+      if (/^(href|src|srcset)$/.test(attribute.name) &&
+          attribute.value &&
+          !attribute.value.startsWith('data:'))
+        attribute.value = '#';
     }
   }
   // We don't need to handle inline event handlers because
