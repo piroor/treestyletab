@@ -240,7 +240,7 @@ function setExtraContents(tabElement, id, params) {
 
   if (!item) {
     item = document.createElement('span');
-    item.setAttribute('part', `container-for-${id}`);
+    item.setAttribute('part', `container-for-${containerClass}`);
     item.classList.add('extra-item');
     item.classList.add(containerClass);
     item.dataset.owner = id;
