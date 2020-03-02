@@ -265,7 +265,7 @@ function setExtraContents(tabElement, id, params) {
     for (const attribute of node.attributes) {
       if (/^(href|src|srcset)$/.test(attribute.name) &&
           attribute.value &&
-          !/^(data|resource|chrome|about|moz-extension|ext\+[^:]+):/.test(attribute.value))
+          !/^(data|resource|chrome|about|moz-extension):/.test(attribute.value))
         attribute.value = '#';
     }
   }
