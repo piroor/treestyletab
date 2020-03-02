@@ -385,7 +385,7 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折りたたむ" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折りたたむ" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
-  "config_guardToFocusCollapsedTab_label": { "message": "折りたたまれたツリー配下のタブがフォーカスされた時に、そのタブが含まれるツリーを自動的に展開する" },
+  "config_unfocusableCollapsedTab_label": { "message": "折りたたまれたツリー配下のタブがフォーカスされた時に、そのタブが含まれるツリーを自動的に展開する" },
   "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "折りたたんだ状態でロックされたツリーの配下のタブである場合もツリーを展開する" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "待機状態のタブが意図せずフォーカスされた後にすぐ別のタブへフォーカスし直された場合、タブを待機状態に戻す" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折りたたんだりした時に、なるべく待機状態のタブが選択されないようにする" },

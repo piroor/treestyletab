@@ -63,8 +63,8 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
     }
     else if (!shouldSkipCollapsed) {
       log('=> reaction for focus given from outside of TST');
-      if (configs.guardToFocusCollapsedTab) {
-        log('  => apply guardToFocusCollapsedTab');
+      if (configs.unfocusableCollapsedTab) {
+        log('  => apply unfocusableCollapsedTab');
         const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
         const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
         const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];

@@ -1118,7 +1118,7 @@
         "message": "현재 탭을 닫을 때 보는 탭이 바뀐 경우 제외",
         "hash": "396dc3f5b3e0387681d9b99b46fafefd"
     },
-    "config_guardToFocusCollapsedTab_label": {
+    "config_unfocusableCollapsedTab_label": {
         "message": "접힌 트리 아래 탭을 볼 때 그 탭이 포함된 트리를 자동으로 펼치기",
         "hash": "16dec8bd7fc89e063f85f8484c6e489c"
     },

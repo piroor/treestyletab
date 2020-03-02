@@ -657,8 +657,8 @@ const mItems = [
         expert: true
       },
       {
-        title: browser.i18n.getMessage('config_guardToFocusCollapsedTab_label'),
-        key:   'guardToFocusCollapsedTab',
+        title: browser.i18n.getMessage('config_unfocusableCollapsedTab_label'),
+        key:   'unfocusableCollapsedTab',
         type:  'checkbox',
         expert: true
       },
