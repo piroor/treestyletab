@@ -84,19 +84,19 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           log('  => operation canceled by some helper addon');
         }
         else {
-        for (const ancestor of toBeExpandedAncestors) {
-          Tree.collapseExpandSubtree(ancestor, {
-            collapsed: false,
-            broadcast: true
-          });
-        }
-        if (toBeFocused != tab) {
-          TabsInternalOperation.activateTab(toBeFocused, { silently: true });
-          log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
-          if (tab.discarded)
-            tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
-          return false;
-        }
+          for (const ancestor of toBeExpandedAncestors) {
+            Tree.collapseExpandSubtree(ancestor, {
+              collapsed: false,
+              broadcast: true
+            });
+          }
+          if (toBeFocused != tab) {
+            TabsInternalOperation.activateTab(toBeFocused, { silently: true });
+            log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
+            if (tab.discarded)
+              tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
+            return false;
+          }
         }
       }
       handleNewActiveTab(tab, info);

@@ -738,13 +738,13 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
       logCollapseExpand('=> canceled by some helper addon');
     }
     else {
-    let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
-    if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
-      newSelection = newSelection.$TST.nearestLoadedTabInTree ||
-                       newSelection.$TST.nearestLoadedTab ||
-                       newSelection;
-    logCollapseExpand('=> switch to ', newSelection.id);
-    TabsInternalOperation.activateTab(newSelection, { silently: true });
+      let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
+      if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
+        newSelection = newSelection.$TST.nearestLoadedTabInTree ||
+                         newSelection.$TST.nearestLoadedTab ||
+                         newSelection;
+      logCollapseExpand('=> switch to ', newSelection.id);
+      TabsInternalOperation.activateTab(newSelection, { silently: true });
     }
   }
 
