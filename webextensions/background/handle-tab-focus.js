@@ -72,13 +72,13 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
           { tabProperties: ['tab'] }
         );
         if (allowed) {
-        const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
-        const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
-        const toBeExpandedAncestors = toBeFocused ?
-          [toBeFocused]
-            .concat(toBeFocused.$TST.ancestors)
-            .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
-          [];
+          const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
+          const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
+          const toBeExpandedAncestors = toBeFocused ?
+            [toBeFocused]
+              .concat(toBeFocused.$TST.ancestors)
+              .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
+            [];
           for (const ancestor of toBeExpandedAncestors) {
             Tree.collapseExpandSubtree(ancestor, {
               collapsed: false,
