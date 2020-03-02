@@ -727,16 +727,12 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
       tab.active &&
       configs.unfocusableCollapsedTab) {
     logCollapseExpand('current tree is going to be collapsed');
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE) &&
-        (await TSTAPI.sendMessage({
-          type: TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE,
-          tab:  new TSTAPI.TreeItem(tab)
-        }, { tabProperties: ['tab'] }).catch(_error => {}))
-          .flat()
-          .some(result => result || result.result)) {
-      logCollapseExpand('=> canceled by some helper addon');
-    }
-    else {
+    const allowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE,
+      { tab: new TSTAPI.TreeItem(tab) },
+      { tabProperties: ['tab'] }
+    );
+    if (allowed) {
       let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
       if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
         newSelection = newSelection.$TST.nearestLoadedTabInTree ||

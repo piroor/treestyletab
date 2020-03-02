@@ -66,6 +66,12 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       log('=> reaction for focus given from outside of TST');
       if (configs.unfocusableCollapsedTab) {
         log('  => apply unfocusableCollapsedTab');
+        const allowed = await TSTAPI.tryOperationAllowed(
+          TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
+          { tab: new TSTAPI.TreeItem(tab) },
+          { tabProperties: ['tab'] }
+        );
+        if (allowed) {
         const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
         const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
         const toBeExpandedAncestors = toBeFocused ?
@@ -73,16 +79,6 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
             .concat(toBeFocused.$TST.ancestors)
             .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
           [];
-        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB) &&
-            (await TSTAPI.sendMessage({
-              type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
-              tab:  new TSTAPI.TreeItem(tab)
-            }, { tabProperties: ['tab'] }).catch(_error => {}))
-              .flat()
-              .some(result => result || result.result)) {
-          log('  => operation canceled by some helper addon');
-        }
-        else {
           for (const ancestor of toBeExpandedAncestors) {
             Tree.collapseExpandSubtree(ancestor, {
               collapsed: false,
@@ -169,16 +165,13 @@ async function handleNewActiveTab(tab, info = {}) {
   const canCollapseTree         = shouldCollapseExpandNow;
   const canExpandTree           = shouldCollapseExpandNow && !info.silently && !tab.$TST.lockedCollapsed;
   if (canExpandTree) {
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT) &&
-        (await TSTAPI.sendMessage({
-          type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT,
-          tab:  new TSTAPI.TreeItem(tab)
-        }, { tabProperties: ['tab'] }).catch(_error => {}))
-          .flat()
-          .some(result => result || result.result)) {
-      log('  => operation canceled by some helper addon');
+    const allowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT,
+      { tab: new TSTAPI.TreeItem(tab) },
+      { tabProperties: ['tab'] }
+    );
+    if (!allowed)
       return;
-    }
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
       Tree.collapseExpandTreesIntelligentlyFor(tab, {

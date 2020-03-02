@@ -871,6 +871,17 @@ export async function notifyScrolled(params = {}) {
 // Common utilities to send notification messages to other addons
 // =======================================================================
 
+export async function tryOperationAllowed(type, message = {}, options = {}) {
+  if (!hasListenerForMessageType(type))
+    return true;
+  const results = await sendMessage(Object.assign({}, message, { type }), options).catch(_error => {});
+  if (results.flat().some(result => result && result.result)) {
+    log(`=> ${type}: canceled by some helper addon`);
+    return false;
+  }
+  return true;
+}
+
 export function hasListenerForMessageType(type) {
   return getListenersForMessageType(type).length > 0;
 }
