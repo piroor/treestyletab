@@ -8,9 +8,9 @@
    * Add checkbox to grant a permission required to show in-content confirmation.
    * Rename an option `autoExpandOnCollapsedChildActive` to `unfocusableCollapsedTab` and make effective on cases tabs going to be collapsed by collapsing parent tree.
    * Better support for a special favicon about `about:devtools-toolbox` tabs.
-   * Add new API message types: `set-extra-tab-contents`, `clear-extra-tab-contents` and `clear-all-extra-tab-contents`.
-   * Add new API notification message types: `tab-dblclicked`, `tree-collapsed-state-changed`, `try-move-focus-from-collapsing-tree`, `try-expand-tree-from-focused-parent` and `try-expand-tree-from-focused-collapsed-tab`.
-   * Notifications and operations `tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown` are now canceled by any leading notifications.
+   * Add new API message types: [`set-extra-tab-contents`, `clear-extra-tab-contents` and `clear-all-extra-tab-contents`](https://github.com/piroor/treestyletab/wiki/Tab-Extra-Contents-API).
+   * Add new API notification message types: [`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked), [`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded), [`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst), [`try-expand-tree-from-focused-parent` and `try-expand-tree-from-focused-collapsed-tab`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst).
+   * Notifications and operations [`tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are now canceled by any leading notifications.
    * Don't deliver messages around incognito windows to other addons, if they are not allowed to access incognito windows.
    * Update `ru` locale by wvxwxvw. Thanks!
  - 3.3.6 (2020.2.21)
