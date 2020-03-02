@@ -776,28 +776,28 @@ async function onDblClick(event) {
         return;
 
       if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
-      switch (configs.treeDoubleClickBehavior) {
-        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
-          event.stopPropagation();
-          event.preventDefault();
-          BackgroundConnection.sendMessage({
-            type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
-            tabId:           livingTab.id,
-            collapsed:       !livingTab.$TST.subtreeCollapsed,
-            manualOperation: true,
-            stack:           configs.debug && new Error().stack
-          });
-          break;
-        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED:
-          if (livingTab.$TST.hasChild) {
+        switch (configs.treeDoubleClickBehavior) {
+          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
             event.stopPropagation();
             event.preventDefault();
             BackgroundConnection.sendMessage({
-              type:  Constants.kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED,
-              tabId: livingTab.id
+              type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
+              tabId:           livingTab.id,
+              collapsed:       !livingTab.$TST.subtreeCollapsed,
+              manualOperation: true,
+              stack:           configs.debug && new Error().stack
             });
-          }
-          break;
+            break;
+          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED:
+            if (livingTab.$TST.hasChild) {
+              event.stopPropagation();
+              event.preventDefault();
+              BackgroundConnection.sendMessage({
+                type:  Constants.kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED,
+                tabId: livingTab.id
+              });
+            }
+            break;
         }
       }
     }
