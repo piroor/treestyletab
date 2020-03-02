@@ -73,11 +73,11 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
             .concat(toBeFocused.$TST.ancestors)
             .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
           [];
-        const cache = {};
         if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB) &&
             TSTAPI.sendMessage({
-              type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB
-            })
+              type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
+              tab:  new TSTAPI.TreeItem(tab)
+            }, { tabProperties: ['tab'] })
               .catch(_error => {})
               .flat()
               .some(result => result || result.result)) {
