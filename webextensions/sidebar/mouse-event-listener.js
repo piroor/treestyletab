@@ -259,21 +259,29 @@ function onMouseDown(event) {
 
       log('Sending message to listeners');
       if (extraContentsInfo.owners) {
-        const results = await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
-          type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          tab:  mousedown.treeItem,
-          originalTarget: extraContentsInfo.target,
-          $extraContentsInfo: null
-        }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
-        if (results.flat().some(result => result && result.result))
+        const allowed = await TSTAPI.tryOperationAllowed(
+          TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+          Object.assign({}, mousedownDetail, {
+            tab:                mousedown.treeItem,
+            originalTarget:     extraContentsInfo.target,
+            $extraContentsInfo: null
+          }),
+          { tabProperties: ['tab'],
+            target:        extraContentsInfo.owners }
+        );
+        if (!allowed)
           return true;
       }
-      const results = await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
-        type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-        tab:  mousedown.treeItem,
-        $extraContentsInfo: null
-      }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
-      if (results.flat().some(result => result && result.result))
+      const allowed = await TSTAPI.tryOperationAllowed(
+        TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+        Object.assign({}, mousedownDetail, {
+          tab:                mousedown.treeItem,
+          $extraContentsInfo: null
+        }),
+        { tabProperties: ['tab'],
+          except:        extraContentsInfo.owners }
+      );
+      if (!allowed)
         return true;
 
       return false;
@@ -399,21 +407,30 @@ async function onMouseUp(event) {
       const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
       for (const type of [TSTAPI.kNOTIFY_TAB_MOUSEUP, TSTAPI.kNOTIFY_TAB_CLICKED]) {
         if (extraContentsInfo.owners) {
-          const results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+          const allowed = await TSTAPI.tryOperationAllowed(
             type,
-            tab: lastMousedown.treeItem,
-            originalTarget:     extraContentsInfo.target,
-            $extraContentsInfo: null
-          }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
-          if (results.flat().some(result => result && result.result))
+            Object.assign({}, lastMousedown.detail, {
+              tab:                lastMousedown.treeItem,
+              originalTarget:     extraContentsInfo.target,
+              $extraContentsInfo: null
+            }),
+            { tabProperties: ['tab'],
+              target:        extraContentsInfo.owners }
+          );
+          if (!allowed)
             return true;
         }
-        const mouseUpResults = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+        const allowed = await TSTAPI.tryOperationAllowed(
           type,
-          tab: lastMousedown.treeItem,
-          $extraContentsInfo: null
-        }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
-        if (mouseUpResults.flat().some(result => result && result.result))
+          Object.assign({}, lastMousedown.detail, {
+            tab:                lastMousedown.treeItem,
+            originalTarget:     extraContentsInfo.target,
+            $extraContentsInfo: null
+          }),
+          { tabProperties: ['tab'],
+            except:        extraContentsInfo.owners }
+        );
+        if (!allowed)
           return true;
       }
 
@@ -459,19 +476,30 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   }
 
   log('onMouseUp: notify as a blank area click to other addons');
-  let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-    type:     TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    window:   mTargetWindow,
-    windowId: mTargetWindow,
-    tab:      lastMousedown.treeItem
-  }), { tabProperties: ['tab'] });
-  results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
-    type:     TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    window:   mTargetWindow,
-    windowId: mTargetWindow,
-    tab:      lastMousedown.treeItem
-  }), { tabProperties: ['tab'] }));
-  if (results.some(result => result.result))// canceled
+  const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
+    TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+    Object.assign({}, lastMousedown.detail, {
+      window:             mTargetWindow,
+      windowId:           mTargetWindow,
+      tab:                lastMousedown.treeItem,
+      $extraContentsInfo: null
+    }),
+    { tabProperties: ['tab'] }
+  );
+  if (!mouseUpAllowed)
+    return;
+
+  const clickAllowed = await TSTAPI.tryOperationAllowed(
+    TSTAPI.kNOTIFY_TABBAR_CLICKED,
+    Object.assign({}, lastMousedown.detail, {
+      window:             mTargetWindow,
+      windowId:           mTargetWindow,
+      tab:                lastMousedown.treeItem,
+      $extraContentsInfo: null
+    }),
+    { tabProperties: ['tab'] }
+  );
+  if (!clickAllowed)
     return;
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
@@ -760,19 +788,27 @@ async function onDblClick(event) {
       const treeItem = new TSTAPI.TreeItem(livingTab);
       const extraContentsInfo = getOriginalExtraContentsTarget(event);
       if (extraContentsInfo.owners) {
-        const results = await TSTAPI.sendMessage(Object.assign({}, detail, {
-          type: TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-          tab:  treeItem,
-          originalTarget: extraContentsInfo.target
-        }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
-        if (results.flat().some(result => result && result.result))
+        const allowed = await TSTAPI.tryOperationAllowed(
+          TSTAPI.kNOTIFY_TAB_DBLCLICKED,
+          Object.assign({}, detail, {
+            tab:            treeItem,
+            originalTarget: extraContentsInfo.target
+          }),
+          { tabProperties: ['tab'],
+            target:        extraContentsInfo.owners }
+        );
+        if (!allowed)
           return;
       }
-      const mouseUpResults = await TSTAPI.sendMessage(Object.assign({}, detail, {
-        type: TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-        tab:  treeItem
-      }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
-      if (mouseUpResults.flat().some(result => result && result.result))
+      const allowed = await TSTAPI.tryOperationAllowed(
+        TSTAPI.kNOTIFY_TAB_DBLCLICKED,
+        Object.assign({}, detail, {
+          tab: treeItem
+        }),
+        { tabProperties: ['tab'],
+          except:        extraContentsInfo.owners }
+      );
+      if (!allowed)
         return;
 
       if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
