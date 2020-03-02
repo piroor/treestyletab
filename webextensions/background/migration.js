@@ -20,7 +20,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 8;
+const kCONFIGS_VERSION = 9;
 const kFEATURES_VERSION = 4;
 
 export function migrateConfigs() {
@@ -110,6 +110,10 @@ export function migrateConfigs() {
     case 7:
       if (configs.collapseExpandSubtreeByDblClick)
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED;
+
+    case 8:
+      if (!configs.autoExpandOnCollapsedChildActive)
+        configs.guardToFocusCollapsedTab = configs.autoExpandOnCollapsedChildActive;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

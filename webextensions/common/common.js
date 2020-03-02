@@ -101,7 +101,7 @@ export const configs = new Configs({
   treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED,
 
   autoExpandIntelligently: true,
-  autoExpandOnCollapsedChildActive: true,
+  guardToFocusCollapsedTab: true,
   autoExpandOnCollapsedChildActiveUnderLockedCollapsed: true,
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,

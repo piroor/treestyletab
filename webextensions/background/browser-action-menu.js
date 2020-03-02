@@ -657,8 +657,8 @@ const mItems = [
         expert: true
       },
       {
-        title: browser.i18n.getMessage('config_autoExpandOnCollapsedChildActive_label'),
-        key:   'autoExpandOnCollapsedChildActive',
+        title: browser.i18n.getMessage('config_guardToFocusCollapsedTab_label'),
+        key:   'guardToFocusCollapsedTab',
         type:  'checkbox',
         expert: true
       },

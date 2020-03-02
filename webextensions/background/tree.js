@@ -725,7 +725,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
 
   if (params.collapsed &&
       tab.active &&
-      configs.autoExpandOnCollapsedChildActive) {
+      configs.guardToFocusCollapsedTab) {
     let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
     if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
       newSelection = newSelection.$TST.nearestLoadedTabInTree ||
