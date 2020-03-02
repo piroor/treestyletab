@@ -112,8 +112,7 @@ export function migrateConfigs() {
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED;
 
     case 8:
-      if (!configs.autoExpandOnCollapsedChildActive)
-        configs.guardToFocusCollapsedTab = configs.autoExpandOnCollapsedChildActive;
+      configs.guardToFocusCollapsedTab = configs.autoExpandOnCollapsedChildActive;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
