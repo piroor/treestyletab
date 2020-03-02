@@ -303,7 +303,8 @@ function onTabItemClick(info, tab) {
   const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [];
 
   const itemId = info.menuItemId.replace(/^(?:grouped:|context_topLevel_)/, '');
-  if (mContextMenuItemsById[itemId].type == 'checkbox')
+  if (mContextMenuItemsById[itemId] &&
+      mContextMenuItemsById[itemId].type == 'checkbox')
     mContextMenuItemsById[itemId].checked = !mContextMenuItemsById[itemId].checked;
 
   switch (itemId) {
