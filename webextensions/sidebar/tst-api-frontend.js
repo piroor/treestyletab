@@ -236,11 +236,11 @@ function setExtraContents(tabElement, id, params) {
     return;
   }
 
-  const containerClass = id.replace(/[^-a-z0-9_]/g, '_');
+  const containerClass = safeContainerClassName(id);
 
   if (!item) {
     item = document.createElement('span');
-    item.setAttribute('part', 'container');
+    item.setAttribute('part', `container-for-${id}`);
     item.classList.add('extra-item');
     item.classList.add(containerClass);
     item.dataset.owner = id;
@@ -274,7 +274,7 @@ function setExtraContents(tabElement, id, params) {
   // they are blocked by the CSP mechanism.
 
   if ('style' in params)
-    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/g, `.${containerClass}`);
+    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/gi, `.${containerClass}`);
 
   range.deleteContents();
   range.insertNode(contents);
@@ -290,6 +290,10 @@ function setExtraContents(tabElement, id, params) {
   }
 
   mAddonsWithExtraContents.add(id);
+}
+
+function safeContainerClassName(id) {
+  return id.replace(/[^-a-z0-9_]/g, '_');
 }
 
 function clearExtraContents(tabElement, id) {
