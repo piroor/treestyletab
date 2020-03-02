@@ -230,33 +230,9 @@ function onMouseDown(event) {
   const tab = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
   log('onMouseDown: found target tab: ', tab, event);
 
-  const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
-  if (extraContentsInfo.owner) {
-    const priorityOwners = new Set();
-    priorityOwners.add(extraContentsInfo.owner);
-    if (extraContentsInfo.target)
-      extraContentsInfo.target = extraContentsInfo.target.outerHTML;
-    extraContentsInfo.priorityOwners = priorityOwners;
-  }
-
-  const mousedownDetail = {
-    targetType:    getMouseEventTargetType(event),
-    tab:           tab && tab.id,
-    tabId:         tab && tab.id,
-    window:        mTargetWindow,
-    windowId:      mTargetWindow,
-    twisty:        EventUtils.isEventFiredOnTwisty(event),
-    soundButton:   EventUtils.isEventFiredOnSoundButton(event),
-    closebox:      EventUtils.isEventFiredOnClosebox(event),
-    button:        event.button,
-    ctrlKey:       event.ctrlKey,
-    shiftKey:      event.shiftKey,
-    altKey:        event.altKey,
-    metaKey:       event.metaKey,
-    isMiddleClick: EventUtils.isMiddleClick(event),
-    isAccelClick:  EventUtils.isAccelAction(event),
-    $extraContentsInfo: extraContentsInfo
-  };
+  const extraContentsInfo = getOriginalExtraContentsTarget(event);
+  const mousedownDetail   = getMouseEventDetail(event, tab);
+  mousedownDetail.$extraContentsInfo = extraContentsInfo;
   log('onMouseDown ', mousedownDetail);
 
   if (mousedownDetail.targetType == 'selector')
@@ -282,13 +258,13 @@ function onMouseDown(event) {
         return undefined;
 
       log('Sending message to listeners');
-      if (extraContentsInfo.priorityOwners) {
+      if (extraContentsInfo.owners) {
         const results = await TSTAPI.sendMessage(Object.assign({}, mousedownDetail, {
           type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
           tab:  mousedown.treeItem,
           originalTarget: extraContentsInfo.target,
           $extraContentsInfo: null
-        }), { tabProperties: ['tab'], target: extraContentsInfo.priorityOwners });
+        }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
         if (results.flat().some(result => result && result.result))
           return true;
       }
@@ -296,7 +272,7 @@ function onMouseDown(event) {
         type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
         tab:  mousedown.treeItem,
         $extraContentsInfo: null
-      }), { tabProperties: ['tab'], except: extraContentsInfo.priorityOwners });
+      }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
       if (results.flat().some(result => result && result.result))
         return true;
 
@@ -334,6 +310,44 @@ function onMouseDown(event) {
   }, configs.longPressDuration);
 }
 onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
+
+function getMouseEventDetail(event, tab) {
+  return {
+    targetType:    getMouseEventTargetType(event),
+    tab:           tab && tab.id,
+    tabId:         tab && tab.id,
+    window:        mTargetWindow,
+    windowId:      mTargetWindow,
+    twisty:        EventUtils.isEventFiredOnTwisty(event),
+    soundButton:   EventUtils.isEventFiredOnSoundButton(event),
+    closebox:      EventUtils.isEventFiredOnClosebox(event),
+    button:        event.button,
+    ctrlKey:       event.ctrlKey,
+    shiftKey:      event.shiftKey,
+    altKey:        event.altKey,
+    metaKey:       event.metaKey,
+    isMiddleClick: EventUtils.isMiddleClick(event),
+    isAccelClick:  EventUtils.isAccelAction(event)
+  };
+}
+
+function getOriginalExtraContentsTarget(event) {
+  let target = event.originalTarget;
+  if (target && target.nodeType != Node.ELEMENT_NODE)
+    target = target.parentNode;
+
+  const extraContents = target.closest(`.extra-item`);
+  if (extraContents)
+    return {
+      owners: new Set([extraContents.dataset.owner]),
+      target: target.outerHTML
+    };
+
+  return {
+    owners: new Set(),
+    target: null
+  };
+}
 
 function getMouseEventTargetType(event) {
   if (EventUtils.getTabFromEvent(event))
@@ -384,13 +398,13 @@ async function onMouseUp(event) {
 
       const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
       for (const type of [TSTAPI.kNOTIFY_TAB_MOUSEUP, TSTAPI.kNOTIFY_TAB_CLICKED]) {
-        if (extraContentsInfo.priorityOwners) {
+        if (extraContentsInfo.owners) {
           const results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
             type,
             tab: lastMousedown.treeItem,
             originalTarget:     extraContentsInfo.target,
             $extraContentsInfo: null
-          }), { tabProperties: ['tab'], target: extraContentsInfo.priorityOwners });
+          }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
           if (results.flat().some(result => result && result.result))
             return true;
         }
@@ -398,7 +412,7 @@ async function onMouseUp(event) {
           type,
           tab: lastMousedown.treeItem,
           $extraContentsInfo: null
-        }), { tabProperties: ['tab'], except: extraContentsInfo.priorityOwners });
+        }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
         if (mouseUpResults.flat().some(result => result && result.result))
           return true;
       }
@@ -717,7 +731,7 @@ function handleNewTabAction(event, options = {}) {
   });
 }
 
-function onDblClick(event) {
+async function onDblClick(event) {
   if (EventUtils.isEventFiredOnNewTabButton(event))
     return;
 
@@ -741,7 +755,27 @@ function onDblClick(event) {
         tabIds: [livingTab.id],
       });
     }
-    else if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
+    else {
+      const detail   = getMouseEventDetail(event, livingTab);
+      const treeItem = new TSTAPI.TreeItem(livingTab);
+      const extraContentsInfo = getOriginalExtraContentsTarget(event);
+      if (extraContentsInfo.owners) {
+        const results = await TSTAPI.sendMessage(Object.assign({}, detail, {
+          type: TSTAPI.kNOTIFY_TAB_DBLCLICKED,
+          tab:  treeItem,
+          originalTarget: extraContentsInfo.target
+        }), { tabProperties: ['tab'], target: extraContentsInfo.owners });
+        if (results.flat().some(result => result && result.result))
+          return;
+      }
+      const mouseUpResults = await TSTAPI.sendMessage(Object.assign({}, detail, {
+        type: TSTAPI.kNOTIFY_TAB_DBLCLICKED,
+        tab:  treeItem
+      }), { tabProperties: ['tab'], except: extraContentsInfo.owners });
+      if (mouseUpResults.flat().some(result => result && result.result))
+        return;
+
+      if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
       switch (configs.treeDoubleClickBehavior) {
         case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
           event.stopPropagation();
@@ -764,6 +798,7 @@ function onDblClick(event) {
             });
           }
           break;
+        }
       }
     }
     return;
