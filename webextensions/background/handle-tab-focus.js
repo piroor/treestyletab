@@ -68,14 +68,19 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         log('  => apply unfocusableCollapsedTab');
         const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
         const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
-        const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
+        const toBeExpandedAncestors = toBeFocused ?
+          [toBeFocused]
+            .concat(toBeFocused.$TST.ancestors)
+            .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
+          [];
         const cache = {};
-        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY) &&
+        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_TREE_COLLAPSED_STATE_CHANGE) &&
             TSTAPI.sendMessage({
-              type: TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY,
-              tabs: ancestors
+              type: TSTAPI.kNOTIFY_TRY_TREE_COLLAPSED_STATE_CHANGE,
+              tabs: toBeExpandedAncestors
                 .filter(ancestor => ancestor.$TST.subtreeCollapsed)
                 .map(ancestor => new TSTAPI.TreeItem(ancestor, { cache })),
+              reason:    'focus-on-collapsed-tab',
               collapsed: false
             }, { tabProperties: ['tabs'] })
               .catch(_error => {})
@@ -84,9 +89,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           log('  => operation canceled by some helper addon');
         }
         else {
-        for (const ancestor of ancestors) {
-          if (!forceAutoExpand && ancestor.$TST.lockedCollapsed)
-            continue;
+        for (const ancestor of toBeExpandedAncestors) {
           Tree.collapseExpandSubtree(ancestor, {
             collapsed: false,
             broadcast: true

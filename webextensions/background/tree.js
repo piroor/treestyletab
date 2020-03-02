@@ -727,12 +727,10 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
       tab.active &&
       configs.unfocusableCollapsedTab) {
     logCollapseExpand('current tree is going to be collapsed');
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY) &&
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE) &&
         TSTAPI.sendMessage({
-          type: TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY,
-          tabs: [new TSTAPI.TreeItem(tab)],
-          collapsed: true
-        }, { tabProperties: ['tabs'] })
+          type: TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE
+        })
           .catch(_error => {})
           .flat()
           .some(result => result || result.result)) {
