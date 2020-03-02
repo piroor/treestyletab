@@ -33,7 +33,7 @@ let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
 
-Tab.onActivating.addListener((tab, info = {}) => { // return false if the activation should be canceled
+Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the activation should be canceled
   log('Tabs.onActivating ', { tab: dumpTab(tab), info });
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
@@ -60,7 +60,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         collapsed: false,
         broadcast: true
       });
-      handleNewActiveTab(tab, info);
+      await handleNewActiveTab(tab, info);
     }
     else if (!shouldSkipCollapsed) {
       log('=> reaction for focus given from outside of TST');
@@ -74,11 +74,10 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
             .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
           [];
         if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB) &&
-            TSTAPI.sendMessage({
+            (await TSTAPI.sendMessage({
               type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
               tab:  new TSTAPI.TreeItem(tab)
-            }, { tabProperties: ['tab'] })
-              .catch(_error => {})
+            }, { tabProperties: ['tab'] }).catch(_error => {}))
               .flat()
               .some(result => result || result.result)) {
           log('  => operation canceled by some helper addon');
@@ -99,7 +98,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           }
         }
       }
-      handleNewActiveTab(tab, info);
+      await handleNewActiveTab(tab, info);
     }
     else {
       log('=> reaction for focusing collapsed descendant while Ctrl-Tab/Ctrl-Shift-Tab');
@@ -151,7 +150,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
            tab.$TST.subtreeCollapsed &&
            !shouldSkipCollapsed) {
     log('=> reaction for newly active parent tab');
-    handleNewActiveTab(tab, info);
+    await handleNewActiveTab(tab, info);
   }
   delete tab.$TST.discardOnCompletelyLoaded;
   window.lastActiveTab = tab.id;
@@ -164,12 +163,22 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
   return true;
 });
 
-function handleNewActiveTab(tab, info = {}) {
+async function handleNewActiveTab(tab, info = {}) {
   log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
   const canExpandTree           = shouldCollapseExpandNow && !info.silently && !tab.$TST.lockedCollapsed;
   if (canExpandTree) {
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT) &&
+        (await TSTAPI.sendMessage({
+          type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT,
+          tab:  new TSTAPI.TreeItem(tab)
+        }, { tabProperties: ['tab'] }).catch(_error => {}))
+          .flat()
+          .some(result => result || result.result)) {
+      log('  => operation canceled by some helper addon');
+      return;
+    }
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
       Tree.collapseExpandTreesIntelligentlyFor(tab, {
@@ -206,7 +215,7 @@ async function tryHighlightBundledTab(tab, info) {
   if (bundledTab.$TST.hasChild &&
       bundledTab.$TST.subtreeCollapsed &&
       !info.shouldSkipCollapsed)
-    handleNewActiveTab(bundledTab, info);
+    await handleNewActiveTab(bundledTab, info);
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {

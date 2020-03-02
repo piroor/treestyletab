@@ -654,7 +654,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     }, { tabProperties: ['tab'] }).catch(_error => {});
   }
 }
-function collapseExpandSubtreeInternal(tab, params = {}) {
+async function collapseExpandSubtreeInternal(tab, params = {}) {
   if (!params.force &&
       tab.$TST.subtreeCollapsed == params.collapsed)
     return;
@@ -675,7 +675,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
     if (!params.collapsed &&
         !params.justNow &&
         i == lastExpandedTabIndex) {
-      collapseExpandTabAndSubtree(childTab, {
+      await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
         anchor:    tab,
@@ -684,7 +684,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
       });
     }
     else {
-      collapseExpandTabAndSubtree(childTab, {
+      await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
         broadcast: false
@@ -713,7 +713,7 @@ export function manualCollapseExpandSubtree(tab, params = {}) {
   }
 }
 
-export function collapseExpandTabAndSubtree(tab, params = {}) {
+export async function collapseExpandTabAndSubtree(tab, params = {}) {
   if (!tab)
     return;
 
@@ -728,11 +728,10 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
       configs.unfocusableCollapsedTab) {
     logCollapseExpand('current tree is going to be collapsed');
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE) &&
-        TSTAPI.sendMessage({
+        (await TSTAPI.sendMessage({
           type: TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE,
           tab:  new TSTAPI.TreeItem(tab)
-        }, { tabProperties: ['tab'] })
-          .catch(_error => {})
+        }, { tabProperties: ['tab'] }).catch(_error => {}))
           .flat()
           .some(result => result || result.result)) {
       logCollapseExpand('=> canceled by some helper addon');
@@ -750,17 +749,17 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
 
   if (!tab.$TST.subtreeCollapsed) {
     const children = tab.$TST.children;
-    children.forEach((child, index) => {
+    await Promise.all(children.map((child, index) => {
       const last = params.last &&
                      (index == children.length - 1);
-      collapseExpandTabAndSubtree(child, Object.assign({}, params, {
+      return collapseExpandTabAndSubtree(child, Object.assign({}, params, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
         anchor:    last && params.anchor,
         last:      last,
         broadcast: params.broadcast
       }));
-    });
+    }));
   }
 }
 
