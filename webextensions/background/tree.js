@@ -726,13 +726,27 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   if (params.collapsed &&
       tab.active &&
       configs.unfocusableCollapsedTab) {
+    logCollapseExpand('current tree is going to be collapsed');
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY) &&
+        TSTAPI.sendMessage({
+          type: TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY,
+          tabs: [new TSTAPI.TreeItem(tab)],
+          collapsed: true
+        }, { tabProperties: ['tabs'] })
+          .catch(_error => {})
+          .flat()
+          .some(result => result || result.result)) {
+      logCollapseExpand('=> canceled by some helper addon');
+    }
+    else {
     let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
     if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
       newSelection = newSelection.$TST.nearestLoadedTabInTree ||
                        newSelection.$TST.nearestLoadedTab ||
                        newSelection;
-    logCollapseExpand('current tab is going to be collapsed, switch to ', newSelection.id);
+    logCollapseExpand('=> switch to ', newSelection.id);
     TabsInternalOperation.activateTab(newSelection, { silently: true });
+    }
   }
 
   if (!tab.$TST.subtreeCollapsed) {

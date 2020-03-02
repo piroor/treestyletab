@@ -17,6 +17,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -68,6 +69,21 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
         const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
         const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
         const ancestors   = toBeFocused ? [toBeFocused].concat(toBeFocused.$TST.ancestors) : [];
+        const cache = {};
+        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY) &&
+            TSTAPI.sendMessage({
+              type: TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGING_TRY,
+              tabs: ancestors
+                .filter(ancestor => ancestor.$TST.subtreeCollapsed)
+                .map(ancestor => new TSTAPI.TreeItem(ancestor, { cache })),
+              collapsed: false
+            }, { tabProperties: ['tabs'] })
+              .catch(_error => {})
+              .flat()
+              .some(result => result || result.result)) {
+          log('  => operation canceled by some helper addon');
+        }
+        else {
         for (const ancestor of ancestors) {
           if (!forceAutoExpand && ancestor.$TST.lockedCollapsed)
             continue;
@@ -82,6 +98,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
           if (tab.discarded)
             tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
           return false;
+        }
         }
       }
       handleNewActiveTab(tab, info);
