@@ -242,7 +242,7 @@ function setExtraContents(tabElement, id, params) {
     item = document.createElement('span');
     item.setAttribute('part', `container-for-${containerClass}`);
     item.classList.add('extra-item');
-    item.classList.add(containerClass);
+    item.classList.add(`container-for-${containerClass}`);
     item.dataset.owner = id;
     container.itemById.set(id, item);
     const style = document.createElement('style');
@@ -274,7 +274,7 @@ function setExtraContents(tabElement, id, params) {
   // they are blocked by the CSP mechanism.
 
   if ('style' in params)
-    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/gi, `.${containerClass}`);
+    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/gi, `.container-for-${containerClass}`);
 
   range.deleteContents();
   range.insertNode(contents);
