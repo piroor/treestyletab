@@ -74,15 +74,10 @@ Tab.onActivating.addListener((tab, info = {}) => { // return false if the activa
             .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
           [];
         const cache = {};
-        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_TREE_COLLAPSED_STATE_CHANGE) &&
+        if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB) &&
             TSTAPI.sendMessage({
-              type: TSTAPI.kNOTIFY_TRY_TREE_COLLAPSED_STATE_CHANGE,
-              tabs: toBeExpandedAncestors
-                .filter(ancestor => ancestor.$TST.subtreeCollapsed)
-                .map(ancestor => new TSTAPI.TreeItem(ancestor, { cache })),
-              reason:    'focus-on-collapsed-tab',
-              collapsed: false
-            }, { tabProperties: ['tabs'] })
+              type: TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB
+            })
               .catch(_error => {})
               .flat()
               .some(result => result || result.result)) {
