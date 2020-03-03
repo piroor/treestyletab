@@ -31,7 +31,6 @@
   "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
   "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
   "command_groupSelectedTabs":     { "message": "Create New Group from Selected Tabs" },
-  "command_toggleLockCollapsed":   { "message": "Toggle Locking of Collapsed" },
 
   "tab_closebox_tab_tooltip": { "message": "Close tab" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Close tabs" },
@@ -217,7 +216,6 @@
   "context_expandTree_command": { "message": "Expand this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_expandAll_command": { "message": "Expand All" },
-  "context_lockCollapsed_label": { "message": "Loc&k as Collapsed" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
   "context_bookmarkTree_command": { "message": "Bookmark this Tree…" },
   "context_groupTabs_label":    { "message": "Create New &Group from tabs" },
@@ -390,12 +388,10 @@
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
   "config_unfocusableCollapsedTab_label": { "message": "When a tab under a collapsed tree gets focus, expand its tree automatically" },
-  "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "even if it is under a \"Locked as Collapsed\" tree" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentaly focused and the focus is redirected immediately" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsing" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-click on a tab" },
-  "config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "Toggle Locking of Collapsed" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Collapse/expand tree" },
   "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },
   "config_closeParentBehaviorMode_caption":           { "message": "When a parent tab is closed or moved just as a solo tab" },

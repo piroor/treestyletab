@@ -31,7 +31,6 @@
   "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
   "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
   "command_groupSelectedTabs":     { "message": "選択中のタブを新しいグループにする" },
-  "command_toggleLockCollapsed":   { "message": "折りたたみ状態のロックの切り替え" },
 
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
@@ -216,7 +215,6 @@
   "context_expandTree_command": { "message": "このツリーを展開" },
   "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_expandAll_command": { "message": "すべてのツリーを展開" },
-  "context_lockCollapsed_label": { "message": "たたんだ状態でロック(&K)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
   "context_bookmarkTree_command": { "message": "このツリーをブックマーク..." },
   "context_groupTabs_label": { "message": "これらのタブを新しいグループにする(&G)" },
@@ -386,12 +384,10 @@
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折りたたむ" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
   "config_unfocusableCollapsedTab_label": { "message": "折りたたまれたツリー配下のタブがフォーカスされた時に、そのタブが含まれるツリーを自動的に展開する" },
-  "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": { "message": "折りたたんだ状態でロックされたツリーの配下のタブである場合もツリーを展開する" },
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "待機状態のタブが意図せずフォーカスされた後にすぐ別のタブへフォーカスし直された場合、タブを待機状態に戻す" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "現在のタブを閉じたりツリーを折りたたんだりした時に、なるべく待機状態のタブが選択されないようにする" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "タブのダブルクリック" },
-  "config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "ツリーの折りたたみ状態のロックの切り替え" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "ツリーを開閉する" },
   "config_treeDoubleClickBehavior_none":                { "message": "何もしない" },
   "config_closeParentBehaviorMode_caption":           { "message": "親タブを単独で閉じたり移動したりした時の挙動" },

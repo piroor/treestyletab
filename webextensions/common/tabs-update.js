@@ -104,7 +104,6 @@ export function updateTab(tab, newState = {}, options = {}) {
             removedStates: [Constants.kTAB_STATE_UNREAD]
           });
         }
-        tab.$TST.lockedCollapsed = states.includes(Constants.kTAB_STATE_LOCKED_COLLAPSED);
       });
     }
     else if (tab.$TST.isGroupTab) {

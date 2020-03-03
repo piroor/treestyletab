@@ -824,16 +824,6 @@ async function onDblClick(event) {
               stack:           configs.debug && new Error().stack
             });
             break;
-          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED:
-            if (livingTab.$TST.hasChild) {
-              event.stopPropagation();
-              event.preventDefault();
-              BackgroundConnection.sendMessage({
-                type:  Constants.kCOMMAND_TOGGLE_LOCK_TREE_COLLAPSED,
-                tabId: livingTab.id
-              });
-            }
-            break;
         }
       }
     }

@@ -379,7 +379,6 @@
   "config_collapseExpandSubtreeByDblClick_label": { "message": "" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "雙擊分頁" },
-  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "開關該樹" },
   "config_treeDoubleClickBehavior_none":                { "message": "無動作" },
   "config_closeParentBehaviorMode_caption":           { "message": "單獨關閉或移動父分頁時" },

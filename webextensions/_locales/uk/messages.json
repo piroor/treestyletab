@@ -276,7 +276,6 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За винятком переміщення фокусу, викликаного закриттям поточної вкладки" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Двічі клацніть вкладку" },
-  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Згорнути/розгорнути дерево" },
   "config_treeDoubleClickBehavior_none":                { "message": "Нічого" },
   "config_closeParentBehavior_caption": { "message": "Коли батьківська вкладка закривається з розгорнутим деревом" },

@@ -65,10 +65,6 @@ const mContextMenuItemsById = {
   'expandAll': {
     title: browser.i18n.getMessage('context_expandAll_label')
   },
-  'lockCollapsed': {
-    title: browser.i18n.getMessage('context_lockCollapsed_label'),
-    type:  'checkbox'
-  },
   'separatorAfterCollapseExpand': {
     type: 'separator'
   },
@@ -338,10 +334,6 @@ function onTabItemClick(info, tab) {
       Commands.expandAll(contextTab.windowId);
       break;
 
-    case 'lockCollapsed':
-      Commands.toggleLockCollapsed(selectedTabs.length > 1 ? selectedTabs : contextTab, { collapse: true });
-      break;
-
     case 'bookmarkTree':
       Commands.bookmarkTree(selectedTabs.length > 1 ? selectedTabs : contextTab);
       break;
@@ -449,17 +441,6 @@ function onTabContextMenuShown(info, tab) {
     };
     updateItem('collapsed', params);
     updateItem(`grouped:collapsed`, params);
-    updated = true;
-  }
-
-  {
-    const locked = tab && tab.$TST.lockedCollapsed;
-    mContextMenuItemsById.lockCollapsed.checked = locked;
-    const params = {
-      checked: locked
-    };
-    updateItem('lockCollapsed', params);
-    updateItem(`grouped:lockCollapsed`, params);
     updated = true;
   }
 

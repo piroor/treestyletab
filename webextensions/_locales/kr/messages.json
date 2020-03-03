@@ -119,10 +119,6 @@
         "message": "선택 중인 탭을 묶음",
         "hash": "90a2b9f0d172cd3b0f9e2353c6287fe7"
     },
-    "command_toggleLockCollapsed": {
-        "message": "축소 잠금 켜기/끄기",
-        "hash": "6fde088b8640baa6c970d5c8e9df073c"
-    },
     "tab_closebox_tab_tooltip": {
         "message": "탭 닫기",
         "hash": "d1f1cd1622da31c005a894c0637d041f"
@@ -613,10 +609,6 @@
     "context_expandAll_command": {
         "message": "모든 트리 확장",
         "hash": "fdcfbc3af0830393fc5aa481a1b15d19"
-    },
-    "context_lockCollapsed_label": {
-        "message": "축소 상태 잠금(&K)",
-        "hash": "8c3cec70f930b28512423f7a5b5afd24"
     },
     "context_bookmarkTree_label": {
         "message": "이 트리 북마크(&B)…",
@@ -1122,10 +1114,6 @@
         "message": "접힌 트리 아래 탭을 볼 때 그 탭이 포함된 트리를 자동으로 펼치기",
         "hash": "16dec8bd7fc89e063f85f8484c6e489c"
     },
-    "config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label": {
-        "message": "접힌 상태에서 잠긴 트리 아래 탭일 경우에도 트리를 펼치기",
-        "hash": "6921763246f0dde6ba8c6c91a9e4a69f"
-    },
     "config_autoDiscardTabForUnexpectedFocus_label": {
         "message": "대기 상태의 탭이 의도치 않게 보여졋을 때, 바로 다른 탭을 볼 경우 탭을 대기 상태로 되돌림",
         "hash": "b7ae320623c887ab5289328439cb794a"
@@ -1137,10 +1125,6 @@
     "config_treeDoubleClickBehavior_caption": {
         "message": "탭의 더블 클릭",
         "hash": "260195e0c6579efe875cd6cda13f8858"
-    },
-    "config_treeDoubleClickBehavior_toggleLockCollapsed": {
-        "message": "트리가 접힌 상태로 잠기도록 함",
-        "hash": "6fde088b8640baa6c970d5c8e9df073c"
     },
     "config_treeDoubleClickBehavior_toggleCollapsed": {
         "message": "트리를 열고 닫음",

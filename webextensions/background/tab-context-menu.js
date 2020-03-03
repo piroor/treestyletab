@@ -119,10 +119,6 @@ const mItemsById = {
   'context_topLevel_expandAll': {
     title: browser.i18n.getMessage('context_expandAll_label')
   },
-  'context_topLevel_lockCollapsed': {
-    title: browser.i18n.getMessage('context_lockCollapsed_label'),
-    type:  'checkbox'
-  },
   'context_separator:afterCollapseExpand': {
     type: 'separator'
   },
@@ -519,10 +515,6 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
-  }) && modifiedItemsCount++;
-  updateItem('context_topLevel_lockCollapsed', {
-    visible: emulate && contextTab && configs.context_topLevel_lockCollapsed,
-    checked: contextTab && contextTab.$TST.lockedCollapsed
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabsToTheEnd', {

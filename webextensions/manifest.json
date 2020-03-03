@@ -107,9 +107,6 @@
     "expandAll": {
       "description": "__MSG_context_expandAll_command__"
     },
-    "toggleLockCollapsed": {
-      "description": "__MSG_command_toggleLockCollapsed__"
-    },
     "bookmarkTree": {
       "description": "__MSG_context_bookmarkTree_command__"
     },

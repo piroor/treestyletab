@@ -59,7 +59,6 @@ export const configs = new Configs({
   context_collapseAll: true,
   context_expandTree: false,
   context_expandAll: true,
-  context_lockCollapsed: true,
   context_bookmarkTree: true,
   context_groupTabs: true,
 
@@ -72,7 +71,6 @@ export const configs = new Configs({
   context_topLevel_collapseAll: false,
   context_topLevel_expandTree: false,
   context_topLevel_expandAll: false,
-  context_topLevel_lockCollapsed: false,
   context_topLevel_bookmarkTree: false,
   context_topLevel_groupTabs: false,
 
@@ -98,12 +96,11 @@ export const configs = new Configs({
   autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove: true,
 
   collapseExpandSubtreeByDblClick: false, // obsolete, migrated to treeDoubleClickBehavior
-  treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED,
+  treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE,
 
   autoExpandIntelligently: true,
   unfocusableCollapsedTab: true,
   autoExpandOnCollapsedChildActive: true, // obsolete, migrate to unfocusableCollapsedTab
-  autoExpandOnCollapsedChildActiveUnderLockedCollapsed: true,
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,

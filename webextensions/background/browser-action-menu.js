@@ -220,11 +220,6 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: indent() + browser.i18n.getMessage('context_lockCollapsed_label'),
-        key:   'context_topLevel_lockCollapsed',
-        type:  'checkbox'
-      },
-      {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_label'),
         key:   'context_topLevel_bookmarkTree',
         type:  'checkbox'
@@ -282,11 +277,6 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_expandAll_label'),
         key:   'context_expandAll',
-        type:  'checkbox'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('context_lockCollapsed_label'),
-        key:   'context_lockCollapsed',
         type:  'checkbox'
       },
       {
@@ -663,12 +653,6 @@ const mItems = [
         expert: true
       },
       {
-        title: indent() + browser.i18n.getMessage('config_autoExpandOnCollapsedChildActiveUnderLockedCollapsed_label'),
-        key:   'autoExpandOnCollapsedChildActiveUnderLockedCollapsed',
-        type:  'checkbox',
-        expert: true
-      },
-      {
         title: browser.i18n.getMessage('config_autoDiscardTabForUnexpectedFocus_label'),
         key:   'autoDiscardTabForUnexpectedFocus',
         type:  'checkbox',
@@ -682,12 +666,6 @@ const mItems = [
       {
         title:    browser.i18n.getMessage('config_treeDoubleClickBehavior_caption'),
         children: [
-          {
-            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleLockCollapsed'),
-            key:   'treeDoubleClickBehavior',
-            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_LOCK_COLLAPSED,
-            type:  'radio'
-          },
           {
             title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleCollapsed'),
             key:   'treeDoubleClickBehavior',

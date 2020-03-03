@@ -258,26 +258,7 @@ export default class Tab {
   }
 
   get isAutoExpandable() {
-    return this.hasChild && this.subtreeCollapsed && !this.lockedCollapsed;
-  }
-
-  get lockedCollapsed() {
-    return this.states.has(Constants.kTAB_STATE_LOCKED_COLLAPSED);
-  }
-  set lockedCollapsed(locked) {
-    if (locked == this.lockedCollapsed)
-      return locked;
-
-    if (locked)
-      this.addState(Constants.kTAB_STATE_LOCKED_COLLAPSED, {
-        permanently: true,
-        broadcast:   true
-      });
-    else
-      this.removeState(Constants.kTAB_STATE_LOCKED_COLLAPSED, {
-        permanently: true,
-        broadcast:   true
-      });
+    return this.hasChild && this.subtreeCollapsed;
   }
 
   get precedesPinnedTab() {
@@ -678,21 +659,6 @@ export default class Tab {
     if (!this.collapsed)
       return this;
     return null;
-  }
-
-  get nearestFocusableTabOrSelf() {
-    if (!this.collapsed)
-      return this.tab;
-
-    const lockedCollapsedAncestors = this.ancestors.filter(tab => tab.$TST.lockedCollapsed);
-    if (lockedCollapsedAncestors.length == 0)
-      return this.tab;
-
-    const nearestVisible = lockedCollapsedAncestors.find(tab => !tab.$TST.collapsed);
-    if (nearestVisible)
-      return nearestVisible;
-
-    return lockedCollapsedAncestors[lockedCollapsedAncestors.length - 1];
   }
 
   get nearestFollowingRootTab() {

@@ -374,7 +374,6 @@
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-cliquer sur l'onglet pour replier/déplier l'arbre" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-cliquer sur l'onglet" },
-  "_config_treeDoubleClickBehavior_toggleLockCollapsed": { "message": "" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Replier/déplier l'arbre" },
   "config_treeDoubleClickBehavior_none":                { "message": "Ne fais rien" },
   "config_closeParentBehaviorMode_caption": { "message": "Quand un onglet parent est fermé ou déplacé en tant qu'onglet seul" },

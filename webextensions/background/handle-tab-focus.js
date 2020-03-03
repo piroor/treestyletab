@@ -46,8 +46,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
-    (configs.skipCollapsedTabsForTabSwitchingShortcuts ||
-     tab.$TST.nearestFocusableTabOrSelf.$TST.lockedCollapsed)
+    configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
   if (tab.$TST.collapsed) {
@@ -72,25 +71,12 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
           { tabProperties: ['tab'] }
         );
         if (allowed) {
-          const forceAutoExpand = configs.autoExpandOnCollapsedChildActiveUnderLockedCollapsed;
-          const toBeFocused = forceAutoExpand ? tab : tab.$TST.nearestFocusableTabOrSelf;
-          const toBeExpandedAncestors = toBeFocused ?
-            [toBeFocused]
-              .concat(toBeFocused.$TST.ancestors)
-              .filter(ancestor => forceAutoExpand || !ancestor.$TST.lockedCollapsed) :
-            [];
+          const toBeExpandedAncestors = [tab].concat(tab.$TST.ancestors) ;
           for (const ancestor of toBeExpandedAncestors) {
             Tree.collapseExpandSubtree(ancestor, {
               collapsed: false,
               broadcast: true
             });
-          }
-          if (toBeFocused != tab) {
-            TabsInternalOperation.activateTab(toBeFocused, { silently: true });
-            log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
-            if (tab.discarded)
-              tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
-            return false;
           }
         }
       }
@@ -163,7 +149,7 @@ async function handleNewActiveTab(tab, info = {}) {
   log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
-  const canExpandTree           = shouldCollapseExpandNow && !info.silently && !tab.$TST.lockedCollapsed;
+  const canExpandTree           = shouldCollapseExpandNow && !info.silently;
   if (canExpandTree) {
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT,
@@ -248,7 +234,7 @@ Tab.onStateChanged.addListener(tab => {
   delete tab.$TST.discardOnCompletelyLoaded;
 });
 
-function setupDelayedExpand(tab) {
+async function setupDelayedExpand(tab) {
   if (!tab)
     return;
   cancelDelayedExpand(tab);
@@ -256,7 +242,11 @@ function setupDelayedExpand(tab) {
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed ||
-      tab.$TST.lockedCollapsed)
+      !(await TSTAPI.tryOperationAllowed(
+        TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
+        { tab: new TSTAPI.TreeItem(tab) },
+        { tabProperties: ['tab'] }
+      )))
     return;
   TabsStore.addToBeExpandedTab(tab);
   tab.$TST.delayedExpand = setTimeout(() => {
@@ -337,7 +327,11 @@ function onMessage(message, sender) {
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id &&
-              !tab.$TST.lockedCollapsed) {
+              (await TSTAPI.tryOperationAllowed(
+                TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH,
+                { tab: new TSTAPI.TreeItem(tab) },
+                { tabProperties: ['tab'] }
+              ))) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
