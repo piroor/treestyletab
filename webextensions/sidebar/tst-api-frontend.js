@@ -264,8 +264,10 @@ function setExtraContents(tabElement, id, params) {
         attribute.value += ` ${extraContentsClass}`;
       if (/^(href|src|srcset)$/.test(attribute.name) &&
           attribute.value &&
-          !/^(data|resource|chrome|about|moz-extension):/.test(attribute.value))
+          !/^(data|resource|chrome|about|moz-extension):/.test(attribute.value)) {
         attribute.value = '#';
+        node.setAttribute('part', `${node.getAttribute('part') || ''} sanitized`);
+      }
     }
   }
   // We don't need to handle inline event handlers because
