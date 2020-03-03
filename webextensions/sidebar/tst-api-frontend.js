@@ -32,7 +32,7 @@ TSTAPI.onRegistered.addListener(addon => {
   // windows by Firefox itself and extra context menu commands may be called
   // via Firefox's native context menu (or shortcuts).
   if (addon.style)
-    installStyle(addon.id, (addon.style || '').replace(/%EXTRA_CONTENTS_PART%/gi, extraContentsClassName(addon.id)));
+    installStyle(addon.id, addon.style);
 });
 
 TSTAPI.onUnregistered.addListener(addon => {
@@ -229,7 +229,6 @@ function setExtraContents(tabElement, id, params) {
   let item = container.itemById.get(id);
   if (!params.contents) {
     if (item) {
-      container.appendChild(item.styleElement);
       container.removeChild(item);
       container.itemById.delete(id);
     }
@@ -245,9 +244,6 @@ function setExtraContents(tabElement, id, params) {
     item.classList.add(extraContentsClass);
     item.dataset.owner = id;
     container.itemById.set(id, item);
-    const style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    item.styleElement = style;
   }
 
   const range = document.createRange();
@@ -275,11 +271,6 @@ function setExtraContents(tabElement, id, params) {
   // We don't need to handle inline event handlers because
   // they are blocked by the CSP mechanism.
 
-  if ('style' in params)
-    item.styleElement.textContent = (params.style || '')
-      .replace(/%CONTAINER%/gi, `.${extraContentsClass}`)
-      .replace(/%EXTRA_CONTENTS_PART%/gi, `${extraContentsClass}`);
-
   range.deleteContents();
   range.insertNode(contents);
   range.detach();
@@ -289,7 +280,6 @@ function setExtraContents(tabElement, id, params) {
   }
 
   if (!item.parentNode) {
-    container.appendChild(item.styleElement);
     container.appendChild(item);
   }
 
@@ -334,7 +324,7 @@ function installStyle(id, style) {
     document.head.insertBefore(styleElement, document.querySelector('#addons-style-rules'));
     mAddonStyles.set(id, styleElement);
   }
-  styleElement.textContent = style;
+  styleElement.textContent = (style || '').replace(/%EXTRA_CONTENTS_PART%/gi, extraContentsClassName(id));
 }
 
 function uninstallStyle(id) {
