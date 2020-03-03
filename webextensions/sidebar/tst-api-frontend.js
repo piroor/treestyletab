@@ -32,7 +32,7 @@ TSTAPI.onRegistered.addListener(addon => {
   // windows by Firefox itself and extra context menu commands may be called
   // via Firefox's native context menu (or shortcuts).
   if (addon.style)
-    installStyle(addon.id, addon.style);
+    installStyle(addon.id, (addon.style || '').replace(/%EXTRA_CONTENTS_PART%/gi, extraContentsClassName(addon.id)));
 });
 
 TSTAPI.onUnregistered.addListener(addon => {
@@ -236,13 +236,13 @@ function setExtraContents(tabElement, id, params) {
     return;
   }
 
-  const containerClass = safeContainerClassName(id);
+  const extraContentsClass = extraContentsClassName(id);
 
   if (!item) {
     item = document.createElement('span');
-    item.setAttribute('part', `container-for-${containerClass}`);
+    item.setAttribute('part', `${extraContentsClass} container`);
     item.classList.add('extra-item');
-    item.classList.add(`container-for-${containerClass}`);
+    item.classList.add(extraContentsClass);
     item.dataset.owner = id;
     container.itemById.set(id, item);
     const style = document.createElement('style');
@@ -262,8 +262,10 @@ function setExtraContents(tabElement, id, params) {
     console.log(`Could not include some elements as extra tab contents. tab=#${tabElement.id}, provider=${id}:`, dangerousContents);
 
   // Sanitize remote resources
-  for (const node of contents.querySelectorAll('*')) {
+  for (const node of contents.querySelectorAll('*[href], *[src], *[srcset], *[part]')) {
     for (const attribute of node.attributes) {
+      if (attribute.name == 'part')
+        attribute.value += ` ${extraContentsClass}`;
       if (/^(href|src|srcset)$/.test(attribute.name) &&
           attribute.value &&
           !/^(data|resource|chrome|about|moz-extension):/.test(attribute.value))
@@ -274,7 +276,9 @@ function setExtraContents(tabElement, id, params) {
   // they are blocked by the CSP mechanism.
 
   if ('style' in params)
-    item.styleElement.textContent = (params.style || '').replace(/%CONTAINER%/gi, `.container-for-${containerClass}`);
+    item.styleElement.textContent = (params.style || '')
+      .replace(/%CONTAINER%/gi, `.${extraContentsClass}`)
+      .replace(/%EXTRA_CONTENTS_PART%/gi, `${extraContentsClass}`);
 
   range.deleteContents();
   range.insertNode(contents);
@@ -292,8 +296,8 @@ function setExtraContents(tabElement, id, params) {
   mAddonsWithExtraContents.add(id);
 }
 
-function safeContainerClassName(id) {
-  return id.replace(/[^-a-z0-9_]/g, '_');
+function extraContentsClassName(id) {
+  return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
 }
 
 function clearExtraContents(tabElement, id) {
