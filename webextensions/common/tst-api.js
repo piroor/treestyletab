@@ -199,7 +199,9 @@ export class TreeItem {
       return this.cache.tabs[cacheKey];
 
     const [effectiveFavIconUrl, children] = await Promise.all([
-      (sourceTab.id in this.cache.effectiveFavIconUrls) ? this.cache.effectiveFavIconUrls[sourceTab.id] : TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab),
+      (sourceTab.id in this.cache.effectiveFavIconUrls) ?
+        this.cache.effectiveFavIconUrls[sourceTab.id] :
+        TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab).catch(ApiTabs.handleMissingTabError),
       doProgressively(
         sourceTab.$TST.children,
         child => this.exportTab(child, permissions, commonCacheKey),
