@@ -987,17 +987,6 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
 
-    if (this.element &&
-        this.element.extraItemsContainerBehindRoot &&
-        this.element.extraItemsContainerFrontRoot) {
-      for (const element of this.element.extraItemsContainerBehindRoot.children) {
-        element.classList.add(state);
-      }
-      for (const element of this.element.extraItemsContainerFrontRoot.children) {
-        element.classList.add(state);
-      }
-    }
-
     switch (state) {
       case Constants.kTAB_STATE_SELECTED:
         TabsStore.addSelectedTab(this.tab);
@@ -1058,17 +1047,6 @@ export default class Tab {
       this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
-
-    if (this.element &&
-        this.element.extraItemsContainerBehindRoot &&
-        this.element.extraItemsContainerFrontRoot) {
-      for (const element of this.element.extraItemsContainerBehindRoot.children) {
-        element.classList.remove(state);
-      }
-      for (const element of this.element.extraItemsContainerFrontRoot.children) {
-        element.classList.remove(state);
-      }
-    }
 
     switch (state) {
       case Constants.kTAB_STATE_SELECTED:

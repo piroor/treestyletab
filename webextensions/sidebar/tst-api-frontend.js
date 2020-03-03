@@ -277,10 +277,6 @@ function setExtraContents(tabElement, id, params) {
   range.insertNode(contents);
   range.detach();
 
-  for (const state of tabElement.$TST.states) {
-    item.classList.add(state);
-  }
-
   if (!item.parentNode) {
     container.appendChild(item);
   }
