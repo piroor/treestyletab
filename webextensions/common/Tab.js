@@ -863,6 +863,8 @@ export default class Tab {
   }
 
   get bundledTab() {
+    if (!this.tab)
+      return null;
     if (this.tab.pinned)
       return Tab.getGroupTabForOpener(this.tab);
     if (this.isGroupTab)
