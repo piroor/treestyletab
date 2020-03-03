@@ -63,9 +63,10 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     }
     else if (!shouldSkipCollapsed) {
       log('=> reaction for focus given from outside of TST');
+      let allowed = false;
       if (configs.unfocusableCollapsedTab) {
         log('  => apply unfocusableCollapsedTab');
-        const allowed = await TSTAPI.tryOperationAllowed(
+        allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
           { tab: new TSTAPI.TreeItem(tab) },
           { tabProperties: ['tab'] }
@@ -80,6 +81,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
           }
         }
       }
+      info.allowed = allowed;
       await handleNewActiveTab(tab, info);
     }
     else {
@@ -150,7 +152,8 @@ async function handleNewActiveTab(tab, info = {}) {
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
   const canExpandTree           = shouldCollapseExpandNow && !info.silently;
-  if (canExpandTree) {
+  if (canExpandTree &&
+      info.allowed !== false) {
     const allowed = await TSTAPI.tryOperationAllowed(
       tab.active ?
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
