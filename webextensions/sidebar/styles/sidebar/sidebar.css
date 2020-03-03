@@ -34,6 +34,8 @@
   --tab-surface-active-gradient: linear-gradient(to bottom, #A0B0CF, #7386AB) repeat-x;
   --tab-surface-active-gradient-pale: linear-gradient(to bottom, #C0D0EF, #93A6CB) repeat-x;
   --tab-surface-active-gradient-inactive: linear-gradient(to bottom, #B4B4B4, #8A8A8A) repeat-x;
+  --tab-surface-active: var(--tab-surface-active-gradient);
+  --tab-surface-active-hover: var(--tab-surface-active);
   --tab-text: black;
   --tab-text-inverted: white;
   --tab-text-active: white;
@@ -102,18 +104,21 @@ tab-item {
 }
 
 tab-item.active {
+  --tab-surface: var(--tab-surface-active-gradient);
+  background: var(--tab-surface);
   border-top: 1px solid var(--tab-surface-active-color);
-  background: var(--tab-surface-active-gradient);
 }
 
 tab-item.bundled-active {
+  --tab-surface: var(--tab-surface-active-gradient-pale);
+  background: var(--tab-surface);
   border-top: 1px solid var(--tab-surface-active-color-pale);
-  background: var(--tab-surface-active-gradient-pale);
 }
 
 :root:not(.active) tab-item.active {
+  --tab-surface: var(--tab-surface-active-gradient-inactive);
+  background: var(--tab-surface);
   border-top: 1px solid var(--tab-surface-active-color-inactive);
-  background: var(--tab-surface-active-gradient-inactive);
 }
 
 /* Keep the close button at a safe distance from the tab label. */
