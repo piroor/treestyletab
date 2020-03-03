@@ -229,21 +229,28 @@ function setExtraContents(tabElement, id, params) {
   let item = container.itemById.get(id);
   if (!params.contents) {
     if (item) {
+      if (item.styleElement)
+        container.appendChild(item.styleElement);
       container.removeChild(item);
       container.itemById.delete(id);
     }
     return;
   }
 
-  const extraContentsClass = extraContentsClassName(id);
+  const extraContentsPartName = getExtraContentsPartName(id);
 
   if (!item) {
     item = document.createElement('span');
-    item.setAttribute('part', `${extraContentsClass} container`);
+    item.setAttribute('part', `${extraContentsPartName} container`);
     item.classList.add('extra-item');
-    item.classList.add(extraContentsClass);
+    item.classList.add(extraContentsPartName);
     item.dataset.owner = id;
     container.itemById.set(id, item);
+  }
+  if ('style' in params && !item.styleElement) {
+    const style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    item.styleElement = style;
   }
 
   const range = document.createRange();
@@ -261,7 +268,7 @@ function setExtraContents(tabElement, id, params) {
   for (const node of contents.querySelectorAll('*[href], *[src], *[srcset], *[part]')) {
     for (const attribute of node.attributes) {
       if (attribute.name == 'part')
-        attribute.value += ` ${extraContentsClass}`;
+        attribute.value += ` ${extraContentsPartName}`;
       if (/^(href|src|srcset)$/.test(attribute.name) &&
           attribute.value &&
           !/^(data|resource|chrome|about|moz-extension):/.test(attribute.value)) {
@@ -273,18 +280,24 @@ function setExtraContents(tabElement, id, params) {
   // We don't need to handle inline event handlers because
   // they are blocked by the CSP mechanism.
 
+  if ('style' in params)
+    item.styleElement.textContent = (params.style || '')
+      .replace(/%EXTRA_CONTENTS_PART%/gi, `${extraContentsPartName}`);
+
   range.deleteContents();
   range.insertNode(contents);
   range.detach();
 
   if (!item.parentNode) {
+    if (item.styleElement)
+      container.appendChild(item.styleElement);
     container.appendChild(item);
   }
 
   mAddonsWithExtraContents.add(id);
 }
 
-function extraContentsClassName(id) {
+function getExtraContentsPartName(id) {
   return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
 }
 
@@ -322,7 +335,7 @@ function installStyle(id, style) {
     document.head.insertBefore(styleElement, document.querySelector('#addons-style-rules'));
     mAddonStyles.set(id, styleElement);
   }
-  styleElement.textContent = (style || '').replace(/%EXTRA_CONTENTS_PART%/gi, extraContentsClassName(id));
+  styleElement.textContent = (style || '').replace(/%EXTRA_CONTENTS_PART%/gi, getExtraContentsPartName(id));
 }
 
 function uninstallStyle(id) {
