@@ -46,6 +46,7 @@
   --dropmarker-bg-color: #d0def5;
   --throbber-color: white;
   --throbber-shadow-color: var(--dropmarker-border-color);
+  --tab-text-shadow: 0 1px var(--shadow-color);
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--dropmarker-border-color);
@@ -164,7 +165,7 @@ tab-item tab-label {
 tab-item.active tab-label {
   font-weight: bold;
   color: var(--tab-text-active);
-  text-shadow: 0 1px var(--shadow-color);
+  text-shadow: var(--tab-text-shadow);
 }
 
 tab-item.active tab-twisty {

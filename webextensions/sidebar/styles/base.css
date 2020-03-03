@@ -40,6 +40,8 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
 
+  --tab-text-shadow: none;
+
   /* macOS workaround */
   --scrollbar-placeholder-size: 1em;
 

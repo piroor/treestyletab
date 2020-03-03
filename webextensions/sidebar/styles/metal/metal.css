@@ -16,6 +16,7 @@
   --tab-surface-active-pale: #939293;
   --tab-text: black;
   --tab-text-inverted: white;
+  --tab-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--tab-surface-active);
@@ -77,7 +78,7 @@ tab-favicon {
 
 tab-item tab-label,
 tab-item .counter {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: var(--tab-text-shadow);
 }
 
 tab-item tab-label {
