@@ -81,6 +81,7 @@ export const kNOTIFY_PERMISSIONS_CHANGED = 'permissions-changed';
 export const kSTART_CUSTOM_DRAG     = 'start-custom-drag';
 export const kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE = 'try-move-focus-from-collapsing-tree';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT = 'try-expand-tree-from-focused-parent';
+export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT = 'try-expand-tree-from-focused-bundled-parent';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB = 'try-expand-tree-from-focused-collapsed-tab';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY = 'try-expand-tree-from-long-press-ctrl-key';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH = 'try-expand-tree-from-end-tab-switch';

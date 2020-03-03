@@ -152,7 +152,9 @@ async function handleNewActiveTab(tab, info = {}) {
   const canExpandTree           = shouldCollapseExpandNow && !info.silently;
   if (canExpandTree) {
     const allowed = await TSTAPI.tryOperationAllowed(
-      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT,
+      tab.active ?
+        TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
+        TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT,
       { tab: new TSTAPI.TreeItem(tab) },
       { tabProperties: ['tab'] }
     );
