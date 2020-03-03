@@ -113,7 +113,7 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 
 export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   log('calculateReferenceTabsFromInsertionPosition ', {
-    tab:          tab.id,
+    tab:          tab && tab.id,
     insertBefore: params.insertBefore && params.insertBefore.id,
     insertAfter : params.insertAfter && params.insertAfter.id
   });
