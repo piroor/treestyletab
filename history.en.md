@@ -1,15 +1,17 @@
 # History
 
  - master/HEAD
+   * Remove "Lock as Collapsed" feature.
    * Show in-content confirmations correctly (regression on lately versions of Firefox.)
    * Toggle muted state of descendants of collapsed tree more certainly.
    * Don't show throbber animation in a blank group tab if tree rendering is disabled.
    * More safe for bookmarks with URLs impossible to be opened by an addon.
+   * More safe for non-tab drag data. (regression on recent versions)
    * Add checkbox to grant a permission required to show in-content confirmation.
    * Rename an option `autoExpandOnCollapsedChildActive` to `unfocusableCollapsedTab` and make effective on cases tabs going to be collapsed by collapsing parent tree.
    * Better support for a special favicon about `about:devtools-toolbox` tabs.
    * Add new API message types: [`set-extra-tab-contents`, `clear-extra-tab-contents` and `clear-all-extra-tab-contents`](https://github.com/piroor/treestyletab/wiki/Tab-Extra-Contents-API).
-   * Add new API notification message types: [`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked), [`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded), [`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst), [`try-expand-tree-from-focused-parent` and `try-expand-tree-from-focused-collapsed-tab`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst).
+   * Add new API notification message types: [`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked), [`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded), [`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst), [`try-expand-tree-from-focused-parent`, `try-expand-tree-from-focused-bundled-parent`, `try-expand-tree-from-focused-collapsed-tab`, `try-expand-tree-from-long-press-ctrl-key` and `try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst).
    * Notifications and operations [`tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are now canceled by any leading notifications.
    * Don't deliver messages around incognito windows to other addons, if they are not allowed to access incognito windows.
    * Update `ru` locale by wvxwxvw. Thanks!
