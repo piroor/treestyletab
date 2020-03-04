@@ -28,7 +28,7 @@
   --shadow-color: #404040;
   --shadow-color-inactive: #868686;
   --tab-like-surface: #d4dde5;
-  --tab-surface: transparent;
+  --tab-surface-regular: transparent;
   --tab-surface-active-color: #94A1C0;
   --tab-surface-active-color-pale: #B4C1E0;
   --tab-surface-active-gradient: linear-gradient(to bottom, #A0B0CF, #7386AB) repeat-x;
@@ -36,7 +36,7 @@
   --tab-surface-active-gradient-inactive: linear-gradient(to bottom, #B4B4B4, #8A8A8A) repeat-x;
   --tab-surface-active: var(--tab-surface-active-gradient);
   --tab-surface-active-hover: var(--tab-surface-active);
-  --tab-text: black;
+  --tab-text-regular: black;
   --tab-text-inverted: white;
   --tab-text-active: white;
   --badge-bg-color: #91a0c0;

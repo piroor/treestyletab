@@ -47,6 +47,9 @@
 
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.15;
+
+  --tab-surface: var(--tab-surface-regular);
+  --tab-text: var(--tab-text-regular);
 }
 tab-item {
   --tab-current-size: var(--tab-size);

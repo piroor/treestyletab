@@ -12,10 +12,10 @@
   --throbber-color-active: white;
   --throbber-shadow-color: rgba(0, 0, 0, 0.45);
   --tab-like-surface: #9d9d9d;
-  --tab-surface: var(--tab-like-surface);
+  --tab-surface-regular: var(--tab-like-surface);
   --tab-surface-active: #b3b2b3;
   --tab-surface-active-pale: #939293;
-  --tab-text: black;
+  --tab-text-regular: black;
   --tab-text-inverted: white;
   --tab-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 

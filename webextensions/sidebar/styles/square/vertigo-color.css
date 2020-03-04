@@ -29,8 +29,8 @@
   --toolbar-non-lwt-border-color: var(--grey-40);
 
   --tab-like-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
-  --tab-surface: var(--browser-bg-for-header-image, var(--tab-like-surface));
-  --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+  --tab-surface-regular: var(--browser-bg-for-header-image, var(--tab-like-surface));
+  --tab-text-regular: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-lighter, var(--toolbar-non-lwt-inverted-textcolor));
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-active-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-inverted-textcolor));

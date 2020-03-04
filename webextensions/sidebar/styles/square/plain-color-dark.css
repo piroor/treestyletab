@@ -35,8 +35,8 @@
   --tabbar-bg: var(--dark-frame);
 
   --tab-like-surface: var(--toolbar-non-lwt-bgcolor);
-  --tab-surface: var(--tab-like-surface);
-  --tab-text: var(--toolbar-non-lwt-textcolor);
+  --tab-surface-regular: var(--tab-like-surface);
+  --tab-text-regular: var(--toolbar-non-lwt-textcolor);
   --tab-text-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
