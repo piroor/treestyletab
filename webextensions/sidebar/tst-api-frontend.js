@@ -226,7 +226,17 @@ function setExtraContents(tabElement, id, params) {
       break;
   }
 
+  if (!container)
+    return;
+
   let item = container.itemById.get(id);
+  if (!params.style &&
+      item &&
+      item.styleElement &&
+      item.styleElement.parentNode) {
+    container.removeChild(item.styleElement);
+    item.styleElement = null;
+  }
   if (!params.contents) {
     if (item) {
       if (item.styleElement)
@@ -288,11 +298,11 @@ function setExtraContents(tabElement, id, params) {
   range.insertNode(contents);
   range.detach();
 
-  if (!item.parentNode) {
-    if (item.styleElement)
-      container.appendChild(item.styleElement);
+  if (item.styleElement &&
+      !item.styleElement.parentNode)
+    container.appendChild(item.styleElement);
+  if (!item.parentNode)
     container.appendChild(item);
-  }
 
   mAddonsWithExtraContents.add(id);
 }
@@ -302,17 +312,8 @@ function getExtraContentsPartName(id) {
 }
 
 function clearExtraContents(tabElement, id) {
-  const behindItem = tabElement.extraItemsContainerBehindRoot.itemById.get(id);
-  if (behindItem) {
-    tabElement.extraItemsContainerBehindRoot.removeChild(behindItem);
-    tabElement.extraItemsContainerBehindRoot.itemById.delete(id);
-  }
-
-  const frontItem = tabElement.extraItemsContainerFrontRoot.itemById.get(id);
-  if (frontItem) {
-    tabElement.extraItemsContainerFrontRoot.removeChild(frontItem);
-    tabElement.extraItemsContainerFrontRoot.itemById.delete(id);
-  }
+  setExtraContents(tabElement, id, { place: 'front' });
+  setExtraContents(tabElement, id, { place: 'behind' });
 }
 
 function clearAllExtraContents(id) {
