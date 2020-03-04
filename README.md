@@ -63,7 +63,7 @@ Then you will see new `.xpi` files in the current directory. You can install suc
 TST provides an [API for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
 Some addons provide extended behavior to TST's sidebar panel:
 
- * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs and operate them at a time.
+ * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs with long-press on tabs. It also allows you to close mutiple tabs with long-press on the closebox on tabs.
  * [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.
  * [TST Active Tab in Collapsed Tree](https://github.com/piroor/tst-active-tab-in-collapsed-tree) shows [a small tab on a collapsed tree as an alias for the last active tab under the tree](https://github.com/piroor/treestyletab/issues/2192).
  * [TST Lock Tree Collapsed](https://github.com/piroor/tst-lock-tree-collapsed) allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)
