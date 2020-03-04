@@ -681,6 +681,22 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   if (extraTabContentsDragData) {
     const data = detectOverrideDragData(extraTabContentsDragData, event);
     log('onDragStart: detected override data = ', data);
+    /*
+      expected drag data format:
+        Tab:
+          { type: 'tab',
+            data: { asTree:      (boolean),
+                    allowDetach: (boolean, will detach the tab to new window),
+                    allowLink:   (boolean, will create link/bookmark from the tab) }}
+        other arbitrary types:
+          { type:          'text/plain',
+            data:          'something text',
+            effectAllowed: 'copy' }
+          { type:          'text/x-moz-url',
+            data:          'http://example.com/\nExample Link',
+            effectAllowed: 'copyMove' }
+          ...
+    */
     if (data) {
       switch (data.type) {
         case 'tab':
@@ -691,13 +707,18 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
               behavior   = Constants.kDRAG_BEHAVIOR_NONE;
               if (data.data.allowDetach)
                 behavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
-              else
+              if (data.data.allowLink)
                 behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
               if (data.data.asTree)
                 behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
             }
           }
           break;
+        default: {
+          const dt = event.dataTransfer;
+          dt.effectAllowed = data.effectAllowed || 'copy';
+          dt.setData(String(data.type), String(data.data));
+        }; return;
       }
     }
   }
