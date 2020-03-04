@@ -671,12 +671,38 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   if (configs.enableWorkaroundForBug1548949)
     configs.workaroundForBug1548949DroppedTabs = '';
 
-  const behavior = 'behavior' in options ? options.behavior :
+  let draggedTab = options.tab || EventUtils.getTabFromEvent(event);
+  let behavior = 'behavior' in options ? options.behavior :
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
-  const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
 
-  const dragData = getDragDataFromOneTab(options.tab || EventUtils.getTabFromEvent(event));
+  const extraTabContentsDragData = JSON.parse(event.originalTarget.dataset && event.originalTarget.dataset.dragData || 'null');
+  log('onDragStart: extraTabContentsDragData = ', extraTabContentsDragData);
+  if (extraTabContentsDragData &&
+      extraTabContentsDragData.type &&
+      extraTabContentsDragData.data) {
+    const data = extraTabContentsDragData.data;
+    switch (extraTabContentsDragData.type) {
+      case 'tab':
+        if (data.id) {
+          const tab = Tab.get(data.id);
+          if (tab) {
+            draggedTab = tab;
+            behavior   = Constants.kDRAG_BEHAVIOR_NONE;
+            if (data.allowDetach)
+              behavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+            else
+              behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+            if (data.asTree)
+              behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+          }
+        }
+        break;
+    }
+  }
+
+  const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
+  const dragData = getDragDataFromOneTab(draggedTab);
   dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
   dragData.behavior = behavior;
   if (!dragData.tab) {
