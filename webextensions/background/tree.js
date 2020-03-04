@@ -717,8 +717,9 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
   if (!tab)
     return;
 
-  const parent = tab.$TST.parent;
-  if (!parent)
+  // allow to expand root collapsed tab
+  if (!tab.$TST.collapsed &&
+      !tab.$TST.parent)
     return;
 
   collapseExpandTab(tab, params);
@@ -770,8 +771,11 @@ export async function collapseExpandTab(tab, params = {}) {
   // synchronous "collapse" operation, it can produce an expanded
   // child tab under "subtree-collapsed" parent. So this is a failsafe.
   if (!params.collapsed &&
-      tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
+      tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed)) {
+    log('collapseExpandTab: canceled to avoid expansion under collapsed tree ',
+        tab.$TST.ancestors.find(ancestor => ancestor.$TST.subtreeCollapsed));
     return;
+  }
 
   const stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })

@@ -388,11 +388,13 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   }
 
   log('try attach/detach');
+  let shouldExpand = false;
   if (!params.attachTo) {
     log('=> detach');
     detachTabsWithStructure(movedRoots, {
       broadcast: params.broadcast
     });
+    shouldExpand = true;
   }
   else {
     log('=> attach');
@@ -402,6 +404,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       draggedTabs:  movedTabs,
       broadcast:    params.broadcast
     });
+    shouldExpand = !params.attachTo.$TST.subtreeCollapsed;
   }
 
   log('=> moving tabs ', () => movedTabs.map(dumpTab));
@@ -445,6 +448,20 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   }, 0);
   */
 
+  if (shouldExpand) {
+    log('=> expand dropped tabs');
+    // Collapsed tabs may be moved to the root level,
+    // then we need to expand them.
+    await Promise.all(movedRoots.map(tab => {
+      if (!tab.$TST.collapsed)
+        return;
+      return Tree.collapseExpandTabAndSubtree(tab, {
+        collapsed: false,
+        broadcast: params.broadcast
+      });
+    }));
+  }
+
   log('=> finished');
 
   return movedTabs;
@@ -483,15 +500,15 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
     dontMove:     true,
     forceExpand:  options.draggedTabs.some(tab => tab.active)
   });
-  for (const tab of tabs) {
+  return Promise.all(tabs.map(async tab => {
     if (parent)
-      Tree.attachTabTo(tab, parent, memberOptions);
+      await Tree.attachTabTo(tab, parent, memberOptions);
     else
-      Tree.detachTab(tab, memberOptions);
-    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
+      await Tree.detachTab(tab, memberOptions);
+    return Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
       collapsed: false
     }));
-  }
+  }));
 }
 
 function detachTabsWithStructure(tabs, options = {}) {
