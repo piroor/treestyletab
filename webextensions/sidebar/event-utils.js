@@ -49,6 +49,13 @@ export function getElementTarget(eventOrTarget) {
   return target instanceof Element ? target : null;
 }
 
+export function getElementOriginalTarget(eventOrTarget) {
+  const target = eventOrTarget instanceof Node ? eventOrTarget : eventOrTarget.originalTarget || eventOrTarget.target;
+  if (target.nodeType == Node.TEXT_NODE)
+    return target.parentNode;
+  return target instanceof Element ? target : null;
+}
+
 export function isEventFiredOnTwisty(event) {
   const tab = getTabFromEvent(event);
   if (!tab || !tab.$TST.hasChild)

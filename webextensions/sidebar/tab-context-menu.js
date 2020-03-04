@@ -492,10 +492,16 @@ function onExternalMessage(message, sender) {
 
 
 async function onContextMenu(event) {
-  if (EventUtils.getElementTarget(event).closest('input, textarea'))
+  const target         = EventUtils.getElementTarget(event);
+  const originalTarget = EventUtils.getElementOriginalTarget(event);
+  if (target.closest('input, textarea') ||
+      originalTarget.closest('input, textarea'))
     return;
 
-  const tab = EventUtils.getTabFromEvent(event);
+  const originalTargetTabElement = originalTarget && originalTarget.closest('[data-tab-id]');
+  const tab = originalTargetTabElement ?
+    TabsStore.ensureLivingTab(Tab.get(parseInt(originalTargetTabElement.dataset.tabId))) :
+    EventUtils.getTabFromEvent(event);
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
   if (tab &&
       !modifierKeyPressed &&

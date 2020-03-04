@@ -676,7 +676,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
-  const extraTabContentsDragData = JSON.parse(event.originalTarget.dataset && event.originalTarget.dataset.dragData || 'null');
+  const originalTarget = EventUtils.getElementOriginalTarget(event);
+  const extraTabContentsDragData = originalTarget && JSON.parse(originalTarget.dataset && originalTarget.dataset.dragData || 'null');
   log('onDragStart: extraTabContentsDragData = ', extraTabContentsDragData);
   if (extraTabContentsDragData) {
     const data = detectOverrideDragData(extraTabContentsDragData, event);
