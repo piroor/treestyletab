@@ -678,26 +678,27 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
 
   const extraTabContentsDragData = JSON.parse(event.originalTarget.dataset && event.originalTarget.dataset.dragData || 'null');
   log('onDragStart: extraTabContentsDragData = ', extraTabContentsDragData);
-  if (extraTabContentsDragData &&
-      extraTabContentsDragData.type &&
-      extraTabContentsDragData.data) {
-    const data = extraTabContentsDragData.data;
-    switch (extraTabContentsDragData.type) {
-      case 'tab':
-        if (data.id) {
-          const tab = Tab.get(data.id);
-          if (tab) {
-            draggedTab = tab;
-            behavior   = Constants.kDRAG_BEHAVIOR_NONE;
-            if (data.allowDetach)
-              behavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
-            else
-              behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
-            if (data.asTree)
-              behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+  if (extraTabContentsDragData) {
+    const data = detectOverrideDragData(extraTabContentsDragData, event);
+    log('onDragStart: detected override data = ', data);
+    if (data) {
+      switch (data.type) {
+        case 'tab':
+          if (data.data.id) {
+            const tab = Tab.get(data.data.id);
+            if (tab) {
+              draggedTab = tab;
+              behavior   = Constants.kDRAG_BEHAVIOR_NONE;
+              if (data.data.allowDetach)
+                behavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+              else
+                behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+              if (data.data.asTree)
+                behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+            }
           }
-        }
-        break;
+          break;
+      }
     }
   }
 
@@ -830,6 +831,54 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
 
   log('onDragStart: started');
 });
+
+/* acceptable input:
+  {
+    "default":    { type: ..., data: ... },
+    "Ctrl":       { type: ..., data: ... },
+    "MacCtrl":    { type: ..., data: ... },
+    "Ctrl+Shift": { type: ..., data: ... },
+    "Alt-Shift":  { type: ..., data: ... },
+    ...
+  }
+*/
+const isMac = /^Mac/i.test(navigator.platform);
+function detectOverrideDragData(dataSet, event) {
+  if ('type' in dataSet)
+    return dataSet;
+
+  const keys = [];
+  if (event.altKey)
+    keys.push('alt');
+  if (event.ctrlKey) {
+    if (isMac)
+      keys.push('macctrl');
+    else
+      keys.push('ctrl');
+  }
+  if (event.metaKey) {
+    if (isMac)
+      keys.push('command');
+    else
+      keys.push('meta');
+  }
+  if (event.shiftKey)
+    keys.push('shift');
+  const findKey = keys.sort().join('+') || 'default';
+
+  for (const key of Object.keys(dataSet)) {
+    const normalizedKey = key.split(/[-\+]/).filter(part => !!part).sort().join('+').toLowerCase();
+    console.log({
+    key,
+    normalizedKey,
+    findKey,
+    data:dataSet[key]
+    });
+    if (normalizedKey == findKey)
+      return dataSet[key];
+  }
+  return null;
+}
 
 function getTabDragBehaviorNotificationMessageType(behavior, count) {
   if (behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE && count > 1) {
