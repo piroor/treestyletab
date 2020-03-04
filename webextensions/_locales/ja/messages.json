@@ -61,11 +61,6 @@
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "新しいコンテナータブ" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "既定" },
 
-  "tabDragHandle_tree_tearoff_tooltip":  { "message": "このツリーをウィンドウから切り離すためにドラッグを開始する" },
-  "tabDragHandle_tree_bookmark_tooltip": { "message": "このツリーをブックマークするためにドラッグを開始する" },
-  "tabDragHandle_tab_tearoff_tooltip":   { "message": "この単一のタブをウィンドウから切り離すためにドラッグを開始する" },
-  "tabDragHandle_tab_bookmark_tooltip":  { "message": "この単一のタブをブックマークするためにドラッグを開始する" },
-
   "groupTab_label": { "message": "$TITLE$ など",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" }
@@ -414,7 +409,7 @@
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
   "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドロップされた時" },
-  "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。ドロップ後のタブの取り扱いは、ドラッグ開始時に押すShiftキー、またはタブの左（または右）端付近に表示されるドラッグ用つまみによって決定できます。" },
+  "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。" },
   "config_tabDragBehavior_label":         { "message": "通常のドラッグ:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-ドラッグ:" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "ツリー全体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
@@ -422,7 +417,6 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "タブ単体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "タブ単体からリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
   "config_tabDragBehavior_none":          { "message": "何もしない" },
-  "config_showTabDragHandle_label":       { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
   "config_showTabDragBehaviorNotification_label": { "message": "タブのドラッグ中、サイドバー外にドロップした時の操作説明を表示する" },
   "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "タブバーの外にドロップされたツリーを別ウィンドウに切り離すことを許可する" },
 

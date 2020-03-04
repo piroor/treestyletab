@@ -1024,11 +1024,6 @@ const mItems = [
         ]
       },
       {
-        title: browser.i18n.getMessage('config_showTabDragHandle_label'),
-        key:   'showTabDragHandle',
-        type:  'checkbox'
-      },
-      {
         title: browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
         key:   'showTabDragBehaviorNotification',
         type:  'checkbox'

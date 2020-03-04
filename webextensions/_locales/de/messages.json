@@ -61,11 +61,6 @@
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Neuer Tab in Umgebung" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "Standard" },
 
-  "tabDragHandle_tree_tearoff_tooltip":  { "message": "Ziehen um diesen Zweig vom Fenster abzulösen" },
-  "tabDragHandle_tree_bookmark_tooltip": { "message": "Ziehen um Lesezeichen von diesem Zweig anzulegen" },
-  "tabDragHandle_tab_tearoff_tooltip":   { "message": "Ziehen um diesen einzelnen Tab vom Fenster abzulösen" },
-  "tabDragHandle_tab_bookmark_tooltip":  { "message": "Ziehen um ein Lesezeichen von diesem einzelnen Tab anzulegen" },
-
   "groupTab_label": { "message": "$TITLE$ und mehr",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
@@ -407,7 +402,7 @@
   "config_drag_caption": { "message": "Ziehen und Ablegen" },
 
   "config_tabDragBehavior_caption":       { "message": "Wenn ein Zweig außerhalb der Tableiste gezogen wird" },
-  "config_tabDragBehavior_description":   { "message": "Aufgrund von Firefox Einschränkungen muss beim Beginn des Ziehens bekannt sein, wie Tabs beim Ablegen außerhalb der Seitenleiste von TST behandelt werden sollen. Shift beim Beginn des Ziehens drücken oder der \"Anfasser\", ein kleiner beweglicher Tooltip links (oder rechts) neben jedem Tab, kann genutzt werden, um die Aktion zu wechseln." },
+  "config_tabDragBehavior_description":   { "message": "Aufgrund von Firefox Einschränkungen muss beim Beginn des Ziehens bekannt sein, wie Tabs beim Ablegen außerhalb der Seitenleiste von TST behandelt werden sollen." },
   "config_tabDragBehavior_label":         { "message": "Ziehen:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Ziehen:" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Gesamten Zweig vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
@@ -415,7 +410,6 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_none":          { "message": "Nichts machen" },
-  "config_showTabDragHandle_label":       { "message": "Zeige Anfasser neben Tab, um das Ziehen mit einem bestimmten Ziel zu starten" },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Ziehen und Ablegen auf einen Tab abgelegt wird" },

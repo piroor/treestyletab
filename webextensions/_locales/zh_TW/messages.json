@@ -61,11 +61,6 @@
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "新容器分頁" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "預設" },
 
-  "tabDragHandle_tree_tearoff_tooltip":  { "message": "開始拖曳此樹離視窗" },
-  "tabDragHandle_tree_bookmark_tooltip": { "message": "開始拖曳此樹加入書籤" },
-  "tabDragHandle_tab_tearoff_tooltip":   { "message": "開始拖曳此分頁離視窗" },
-  "tabDragHandle_tab_bookmark_tooltip":  { "message": "開始拖曳此分頁加入書籤中" },
-
   "groupTab_label": { "message": "$TITLE$ 等",
     "placeholders": {
       "title": { "content": "$1", "example": "標題" }
@@ -404,7 +399,7 @@
   "config_drag_caption": { "message": "拖放" },
 
   "config_tabDragBehavior_caption":       { "message": "將樹拖曳之分頁欄外時" },
-  "config_tabDragBehavior_description":   { "message": "由於 Firefox 的限制，在分頁欄位放置時的行為取決於開始拖曳時的操作。按住 Shift 鍵或拖曳分頁左/右側的「拖放圖示」改變行為。" },
+  "config_tabDragBehavior_description":   { "message": "由於 Firefox 的限制，在分頁欄位放置時的行為取決於開始拖曳時的操作。" },
   "config_tabDragBehavior_label":         { "message": "拖曳：" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift + 拖曳：" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "分離整棵樹至新視窗(無法加入書籤)" },
@@ -412,7 +407,6 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "分離單個分頁至新視窗(無法加入書籤)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "加入單個分頁至新視窗(無法分離至新視窗)" },
   "config_tabDragBehavior_none":          { "message": "無動作" },
-  "config_showTabDragHandle_label":       { "message": "在分頁邊綠顯示指定指曳行為的「拖放圖示」" },
   "config_showTabDragBehaviorNotification_label": { "message": "拖曳分頁到分頁欄外期間顯示說明" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "拖曳連結或 URL 字串至分頁時" },

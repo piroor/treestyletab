@@ -306,8 +306,7 @@ function onMouseDown(event) {
       return;
     }
 
-    if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0 ||
-        EventUtils.getElementTarget(event).closest('#tab-drag-handle'))
+    if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0)
       return;
 
     if (event.button == 0 &&

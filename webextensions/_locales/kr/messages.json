@@ -211,22 +211,6 @@
         "message": "기본 값",
         "hash": "229c53203d001a81c6535deec232da82"
     },
-    "tabDragHandle_tree_tearoff_tooltip": {
-        "message": "이 트리를 창에서 떼기 위해 드래그",
-        "hash": "b04f870323376ca2ded6087fc449cbc3"
-    },
-    "tabDragHandle_tree_bookmark_tooltip": {
-        "message": "이 트리를 북마크하기 위해 드래그",
-        "hash": "adebb19a61a190f797c581119711bf01"
-    },
-    "tabDragHandle_tab_tearoff_tooltip": {
-        "message": "이 단일 탭을 창에서 떼기 위해 드래그",
-        "hash": "13a4804844126236569da9a74fd03c7c"
-    },
-    "tabDragHandle_tab_bookmark_tooltip": {
-        "message": "이 단일 탭을 북마크하기 위해 드래그",
-        "hash": "b52ee181ba28ee1b1c5c600129b22799"
-    },
     "groupTab_label": {
         "message": "$TITLE$ 등",
         "placeholders": {
@@ -1215,8 +1199,7 @@
         "hash": "5a6aa1a824cdb8486c3ad323b73a3a00"
     },
     "config_tabDragBehavior_description": {
-        "message": "Firefox의 제한 때문에 탭 바 밖으로 드롭한 후 탭을 어떻게 취급할지는 드래그를 시작할 때 결정할 필요가 있습니다. 드랍 후 탭을 취급은 드래그를 시작할 때 Shift키를 누르거나 탭의 왼쪽(또는 오른쪽) 끝 부분에 표시되는 드래그용 영역에 의해 결정할 수 있습니다.",
-        "hash": "7e79eeb08585e23403fd461eacea845c"
+        "message": "Firefox의 제한 때문에 탭 바 밖으로 드롭한 후 탭을 어떻게 취급할지는 드래그를 시작할 때 결정할 필요가 있습니다."
     },
     "config_tabDragBehavior_label": {
         "message": "일반적인 드래그: ",
@@ -1245,10 +1228,6 @@
     "config_tabDragBehavior_none": {
         "message": "동작 없음",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
-    },
-    "config_showTabDragHandle_label": {
-        "message": "탭의 가장자리에서 목적을 정하고 드래그 조작을 개시하기 위한 영역을 표시",
-        "hash": "957c178545d857fc3fffb7032df002b5"
     },
     "config_showTabDragBehaviorNotification_label": {
         "message": "탭 드래그 중 사이드 바 밖으로 드롭했을 때의 조작",

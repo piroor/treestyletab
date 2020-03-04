@@ -211,22 +211,6 @@
         "message": "默认",
         "hash": "229c53203d001a81c6535deec232da82"
     },
-    "tabDragHandle_tree_tearoff_tooltip": {
-        "message": "开始拖拽来使此树与窗口分离",
-        "hash": "b04f870323376ca2ded6087fc449cbc3"
-    },
-    "tabDragHandle_tree_bookmark_tooltip": {
-        "message": "开始拖拽来将此树加入书签",
-        "hash": "adebb19a61a190f797c581119711bf01"
-    },
-    "tabDragHandle_tab_tearoff_tooltip": {
-        "message": "开始拖拽来使此单独标签页与窗口分离",
-        "hash": "13a4804844126236569da9a74fd03c7c"
-    },
-    "tabDragHandle_tab_bookmark_tooltip": {
-        "message": "开始拖拽来将此单独标签页加入书签",
-        "hash": "b52ee181ba28ee1b1c5c600129b22799"
-    },
     "groupTab_label": {
         "message": "$TITLE$ 及更多",
         "placeholders": {
@@ -1231,8 +1215,7 @@
         "hash": "ddfedf8c4a80cb4e12568d1ec110d269"
     },
     "config_tabDragBehavior_description": {
-        "message": "因为 Firefox 的限制，你必须在开始拖拽时决定：标签页在树形标签页侧栏以外释放时被当作什么。开始拖拽时按下 Shift 或者通过 “拖拽柄” 的小型可拖拽工具提示（靠近左侧或右侧边界）可以改变此动作。",
-        "hash": "7e79eeb08585e23403fd461eacea845c"
+        "message": "因为 Firefox 的限制，你必须在开始拖拽时决定：标签页在树形标签页侧栏以外释放时被当作什么。"
     },
     "config_tabDragBehavior_label": {
         "message": "拖拽：",
@@ -1261,10 +1244,6 @@
     "config_tabDragBehavior_none": {
         "message": "什么都不做",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
-    },
-    "config_showTabDragHandle_label": {
-        "message": "在标签边界处显示拖拽柄以通过特定目的拖拽",
-        "hash": "957c178545d857fc3fffb7032df002b5"
     },
     "config_showTabDragBehaviorNotification_label": {
         "message": "拖拽时显示当前会发生什么的消息提示",

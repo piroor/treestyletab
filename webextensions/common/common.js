@@ -113,7 +113,6 @@ export const configs = new Configs({
 
   dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
-  showTabDragHandle:    false,
   tabDragBehavior:      Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
   showTabDragBehaviorNotification: true,
@@ -187,8 +186,6 @@ export const configs = new Configs({
   outOfViewTabNotifyDuration: 750,
   subMenuOpenDelay: 300,
   subMenuCloseDelay: 300,
-  tabDragHandleDelay: 750,
-  tabDragHandleFeedbackDuration: 1000,
 
 
   // subpanel
@@ -318,8 +315,7 @@ tab-item.private-browsing tab-label:before {
     'sidebar/sidebar': false,
     'sidebar/size': false,
     'sidebar/subpanel': false,
-    'sidebar/tab-context-menu': false,
-    'sidebar/tab-drag-handle': false
+    'sidebar/tab-context-menu': false
   },
   loggingConnectionMessages: false,
 

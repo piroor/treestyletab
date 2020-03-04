@@ -46,7 +46,6 @@ import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as DragAndDrop from './drag-and-drop.js';
-import * as TabDragHandle from './tab-drag-handle.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as CollapseExpand from './collapse-expand.js';
 import * as Size from './size.js';
@@ -240,7 +239,6 @@ export async function init() {
       onBuilt.dispatch();
 
       DragAndDrop.init();
-      TabDragHandle.init();
     }),
     MetricsData.addAsync('parallel initialization: Size', async () => {
       Size.init();

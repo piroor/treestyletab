@@ -118,7 +118,6 @@ label.has-radio:not(.inline) {
   max-width: 85px;
 }
 
-#showTabDragHandle ~ img,
 #showTabDragBehaviorNotification ~ img {
   max-width: 120px;
 }
