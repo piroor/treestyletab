@@ -46,6 +46,7 @@
   --tab-highlighted-base: var(--tab-surface);
 
   --throbber-color: var(--browser-loading-indicator, var(--browser-bg-lightest, var(--tab-highlighted-glow)));
+  --throbber-color-active: var(--browser-loading-indicator, var(--tab-highlighted-glow));
 
   --multiselected-color-opacity: 0.25;
 }
@@ -91,7 +92,7 @@ tab-item:not(.active):not(.bundled-active):hover,
 
 tab-item.active,
 tab-item.bundled-active {
-  --throbber-color: var(--browser-loading-indicator, var(--tab-highlighted-glow));
+  --throbber-color: var(--throbber-color-active);
   --tab-text: var(--tab-active-text);
   --tab-text-inverted: var(--tab-active-text-inverted);
 }

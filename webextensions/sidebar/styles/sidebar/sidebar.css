@@ -45,6 +45,7 @@
   --dropmarker-border-color: #577bf3;
   --dropmarker-bg-color: #d0def5;
   --throbber-color: white;
+  --throbber-color-active: white;
   --throbber-shadow-color: var(--dropmarker-border-color);
   --tab-text-shadow: 0 1px var(--shadow-color);
 
