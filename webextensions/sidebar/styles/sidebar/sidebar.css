@@ -145,7 +145,7 @@ tab-item.active tab-closebox {
   opacity: 1;
 }
 
-tab-item:not(.active):not(:hover) tab-closebox {
+tab-item:not(.active):not(:hover):not(#dummy-tab) tab-closebox {
   display: none;
 }
 
@@ -243,7 +243,7 @@ tab-item:not(.faviconized)[data-drop-position="before"]::before {
 
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
 :root
-  tab-item:not(:hover):not(.active)
+  tab-item:not(:hover):not(.active):not(#dummy-tab)
   tab-closebox {
   display: -moz-box !important;
   visibility: collapse !important;
