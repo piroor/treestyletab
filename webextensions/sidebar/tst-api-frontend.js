@@ -230,7 +230,7 @@ function setExtraContents(tabElement, id, params) {
   if (!params.contents) {
     if (item) {
       if (item.styleElement)
-        container.appendChild(item.styleElement);
+        container.removeChild(item.styleElement);
       container.removeChild(item);
       container.itemById.delete(id);
     }
