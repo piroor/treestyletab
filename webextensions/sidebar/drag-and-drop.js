@@ -868,12 +868,6 @@ function detectOverrideDragData(dataSet, event) {
 
   for (const key of Object.keys(dataSet)) {
     const normalizedKey = key.split(/[-\+]/).filter(part => !!part).sort().join('+').toLowerCase();
-    console.log({
-    key,
-    normalizedKey,
-    findKey,
-    data:dataSet[key]
-    });
     if (normalizedKey == findKey)
       return dataSet[key];
   }
