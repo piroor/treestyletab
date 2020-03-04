@@ -1,7 +1,8 @@
 # History
 
  - master/HEAD
-   * Remove "Lock as Collapsed" feature.
+   * Remove "Lock as Collapsed" feature. Now it is available as a helper addon: [TST Lock Tree Collapsed](https://github.com/piroor/tst-lock-tree-collapsed)
+   * Remove "Tab Drag Handle" feature. Now it is available as a helper addon: [TST Tab Drag Handle](https://github.com/piroor/tst-tab-drag-handle)
    * Show in-content confirmations correctly (regression on lately versions of Firefox.)
    * Toggle muted state of descendants of collapsed tree more certainly.
    * Don't show throbber animation in a blank group tab if tree rendering is disabled.
