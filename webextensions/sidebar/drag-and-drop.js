@@ -679,9 +679,10 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const originalTarget = EventUtils.getElementOriginalTarget(event);
   const extraTabContentsDragData = originalTarget && JSON.parse(originalTarget.dataset && originalTarget.dataset.dragData || 'null');
   log('onDragStart: extraTabContentsDragData = ', extraTabContentsDragData);
+  let dataOverridden = false;
   if (extraTabContentsDragData) {
-    const data = detectOverrideDragData(extraTabContentsDragData, event);
-    log('onDragStart: detected override data = ', data);
+    const dataSet = detectOverrideDragDataSet(extraTabContentsDragData, event);
+    log('onDragStart: detected override data set = ', dataSet);
     /*
       expected drag data format:
         Tab:
@@ -698,7 +699,9 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
             effectAllowed: 'copyMove' }
           ...
     */
-    if (data) {
+    for (const data of dataSet) {
+      if (!data)
+        continue;
       switch (data.type) {
         case 'tab':
           if (data.data.id) {
@@ -719,7 +722,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
           const dt = event.dataTransfer;
           dt.effectAllowed = data.effectAllowed || 'copy';
           dt.setData(String(data.type), String(data.data));
-        }; return;
+          dataOverridden = true;
+        }; break;
       }
     }
   }
@@ -789,6 +793,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dragData: sanitizedDragData
   }).catch(ApiTabs.createErrorSuppressor());
 
+  if (!dataOverridden) {
   const mozUrl  = [];
   const urlList = [];
   for (const draggedTab of dragData.tabs) {
@@ -805,6 +810,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
     log('set kTYPE_URI_LIST');
     dt.setData(kTYPE_URI_LIST, urlList.join('\n'));
+  }
   }
 
   if (options.tab) {
@@ -865,9 +871,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }
 */
 const isMac = /^Mac/i.test(navigator.platform);
-function detectOverrideDragData(dataSet, event) {
+function detectOverrideDragDataSet(dataSet, event) {
+  if (Array.isArray(dataSet))
+    return dataSet.map(oneDataSet => detectOverrideDragDataSet(oneDataSet, event)).flat();
+
   if ('type' in dataSet)
-    return dataSet;
+    return [dataSet];
 
   const keys = [];
   if (event.altKey)
@@ -890,10 +899,14 @@ function detectOverrideDragData(dataSet, event) {
 
   for (const key of Object.keys(dataSet)) {
     const normalizedKey = key.split(/[-\+]/).filter(part => !!part).sort().join('+').toLowerCase();
-    if (normalizedKey == findKey)
+    if (normalizedKey != findKey)
+      continue;
+    if (Array.isArray(dataSet[key]))
       return dataSet[key];
+    else
+      return [dataSet[key]];
   }
-  return null;
+  return [];
 }
 
 function getTabDragBehaviorNotificationMessageType(behavior, count) {
