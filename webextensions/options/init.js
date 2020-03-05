@@ -6,7 +6,6 @@
 'use strict';
 
 import Options from '/extlib/Options.js';
-import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 import '/extlib/l10n.js';
 
 import {
@@ -142,29 +141,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   for (const label of document.querySelectorAll('.contextConfigs label')) {
     removeAccesskeyMark(label.lastChild);
   }
-
-  ShortcutCustomizeUI.build().then(aUI => {
-    document.getElementById('shortcuts').appendChild(aUI);
-
-    for (const item of aUI.querySelectorAll('li > label:first-child')) {
-      removeAccesskeyMark(item.firstChild);
-    }
-  });
-  const resetAll = document.getElementById('shortcutsResetAll');
-  resetAll.addEventListener('click', event => {
-    if (event.button != 0)
-      return;
-    for (const button of document.querySelectorAll('#shortcuts button')) {
-      button.click();
-    }
-  });
-  resetAll.addEventListener('keydown', event => {
-    if (event.key != 'Enter')
-      return;
-    for (const button of document.querySelectorAll('#shortcuts button')) {
-      button.click();
-    }
-  });
 
   const showLogsButton = document.getElementById('showLogsButton');
   showLogsButton.addEventListener('click', event => {
