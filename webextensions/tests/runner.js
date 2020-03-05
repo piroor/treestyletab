@@ -13,6 +13,7 @@ import {
 import * as ApiTabsListener from '/background/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
 
+import * as TestDOMUpdater from './test-dom-updater.js';
 import * as TestContextMenu from './test-context-menu.js';
 import * as TestHidden from './test-hidden.js';
 import * as TestNewTab from './test-new-tab.js';
@@ -52,6 +53,7 @@ async function restoreConfigs(values) {
 
 async function runAll() {
   const testCases = [
+    TestDOMUpdater,
     TestContextMenu,
     TestHidden,
     TestNewTab,
