@@ -794,23 +794,23 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }).catch(ApiTabs.createErrorSuppressor());
 
   if (!dataOverridden) {
-  const mozUrl  = [];
-  const urlList = [];
-  for (const draggedTab of dragData.tabs) {
-    draggedTab.$TST.addState(Constants.kTAB_STATE_DRAGGING);
-    TabsStore.addDraggingTab(draggedTab);
-    if (!dragData.individualOnOutside ||
-        mozUrl.length == 0) {
-      mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
-      urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
+    const mozUrl  = [];
+    const urlList = [];
+    for (const draggedTab of dragData.tabs) {
+      draggedTab.$TST.addState(Constants.kTAB_STATE_DRAGGING);
+      TabsStore.addDraggingTab(draggedTab);
+      if (!dragData.individualOnOutside ||
+          mozUrl.length == 0) {
+        mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
+        urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
+      }
     }
-  }
-  if (allowBookmark) {
-    log('set kTYPE_X_MOZ_URL');
-    dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
-    log('set kTYPE_URI_LIST');
-    dt.setData(kTYPE_URI_LIST, urlList.join('\n'));
-  }
+    if (allowBookmark) {
+      log('set kTYPE_X_MOZ_URL');
+      dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
+      log('set kTYPE_URI_LIST');
+      dt.setData(kTYPE_URI_LIST, urlList.join('\n'));
+    }
   }
 
   if (options.tab) {
