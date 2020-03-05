@@ -312,8 +312,10 @@ function getExtraContentsPartName(id) {
 function applyContents(before, after) {
   if (before.nodeValue !== null ||
       after.nodeValue !== null) {
+    if (before.nodeValue != after.nodeValue) {
     log('node value: ', after.nodeValue);
     before.nodeValue = after.nodeValue;
+    }
     return;
   }
 
