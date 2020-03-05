@@ -114,7 +114,7 @@
   "dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
 
   "tabDragBehaviorNotification_message_duration_single":  { "message": "8s" },
-  "tabDragBehaviorNotification_message_duration":  { "message": "16s" },
+  "tabDragBehaviorNotification_message_duration_both":  { "message": "16s" },
   "tabDragBehaviorNotification_message_base":  { "message": "Перетаскивание за пределы боковой панели $RESULT$.",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }
@@ -177,7 +177,7 @@
   "message_startup_userChromeCss_description_link_label": { "message": "примеры настройки с помощью userChrome.css" },
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": ". Но " },
-  "message_startup_userChromeCss_description_note": { "message": "учтите, что это низкоуровневые настройки, и они могут вызвать проблемы в будущих версиях Firefox. Используйте их на свой страх и риск, если уверены, что сможете потом решить проблемы самостоятельно." },
+  "message_startup_userChromeCss_description_note": { "message": "учтите, что это низкоуровневые настройки, и они могут вызвать проблемы в будущих версиях Firefox. Используйте их на свой страх и риск, если уверены, что сможете потом решить проблемы самостоятельно" },
   "message_startup_userChromeCss_description_3": { "message": "." },
 
   "api_requestedPermissions_title": { "message": "Запрос дополнительных разрешений" },
