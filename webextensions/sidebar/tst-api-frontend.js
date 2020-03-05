@@ -266,6 +266,7 @@ function setExtraContents(tabElement, id, params) {
   const range = document.createRange();
   range.selectNodeContents(item);
   const contents = range.createContextualFragment(String(params.contents || '').trim());
+  range.detach();
 
   const dangerousContents = contents.querySelectorAll(DANGEROUS_CONTENTS_SELECTOR);
   for (const node of dangerousContents) {
@@ -294,9 +295,7 @@ function setExtraContents(tabElement, id, params) {
     item.styleElement.textContent = (params.style || '')
       .replace(/%EXTRA_CONTENTS_PART%/gi, `${extraContentsPartName}`);
 
-  range.deleteContents();
-  range.insertNode(contents);
-  range.detach();
+  applyContents(item, contents);
 
   if (item.styleElement &&
       !item.styleElement.parentNode)
@@ -309,6 +308,14 @@ function setExtraContents(tabElement, id, params) {
 
 function getExtraContentsPartName(id) {
   return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
+}
+
+function applyContents(container, contents) {
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  range.deleteContents();
+  range.insertNode(contents);
+  range.detach();
 }
 
 function clearExtraContents(tabElement, id) {
