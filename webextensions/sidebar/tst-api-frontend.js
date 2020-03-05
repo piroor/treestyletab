@@ -310,6 +310,13 @@ function getExtraContentsPartName(id) {
 }
 
 function applyContents(before, after) {
+  if (before.nodeValue !== null ||
+      after.nodeValue !== null) {
+    log('node value: ', after.nodeValue);
+    before.nodeValue = after.nodeValue;
+    return;
+  }
+
   const beforeNodes = Array.from(before.childNodes, getDiffableNodeString);
   const afterNodes = Array.from(after.childNodes, getDiffableNodeString);
   const nodeOerations = (new SequenceMatcher(beforeNodes, afterNodes)).operations();
@@ -410,9 +417,9 @@ function applyContents(before, after) {
 
 function getDiffableNodeString(node) {
   if (node.nodeType == Node.ELEMENT_NODE)
-    return `element:${node.tagName}#{node.id}.${node.className.trim().replace(/\s+/g, '.')}}`;
+    return `element:${node.tagName}#{node.id}`;
   else
-    return `node:${node.nodeType}:${JSON.stringify(node.nodeValue)}`;
+    return `node:${node.nodeType}`;
 }
 
 function clearExtraContents(tabElement, id) {
