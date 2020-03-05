@@ -14,14 +14,15 @@ function log(...args) {
   internalLogger('common/dom-updater', ...args);
 }
 
-export function update(before, after) {
+export function update(before, after, counter = { count: 0 }) {
   if (before.nodeValue !== null ||
       after.nodeValue !== null) {
     if (before.nodeValue != after.nodeValue) {
       log('node value: ', after.nodeValue);
       before.nodeValue = after.nodeValue;
+      counter.count++;
     }
-    return;
+    return counter.count;
   }
 
   const beforeNodes = Array.from(before.childNodes, getDiffableNodeString);
@@ -35,7 +36,8 @@ export function update(before, after) {
         for (let i = 0, maxi = fromEnd - fromStart; i < maxi; i++) {
           update(
             before.childNodes[fromStart + i],
-            after.childNodes[toStart + i]
+            after.childNodes[toStart + i],
+            counter
           );
         }
         break;
@@ -43,22 +45,24 @@ export function update(before, after) {
         for (let i = fromEnd - 1; i >= fromStart; i--) {
           log('delete: delete node: ', i, before.childNodes[i]);
           before.removeChild(before.childNodes[i]);
+          counter.count++;
         }
         break;
       case 'insert': {
         const reference = before.childNodes[fromStart] || null;
-        console.log({reference});
         for (let i = toStart; i < toEnd; i++) {
           if (!after.childNodes[i])
             continue;
           console.log('insert: insert node: ', i, after.childNodes[i]);
           before.insertBefore(after.childNodes[i].cloneNode(true), reference);
+          counter.count++;
         }
       }; break;
       case 'replace': {
         for (let i = fromEnd - 1; i >= fromStart; i--) {
           log('replace: delete node: ', i, before.childNodes[i]);
           before.removeChild(before.childNodes[i]);
+          counter.count++;
         }
         const reference = before.childNodes[fromStart] || null;
         for (let i = toStart; i < toEnd; i++) {
@@ -66,6 +70,7 @@ export function update(before, after) {
             continue;
           log('replace: insert node: ', i, after.childNodes[i]);
           before.insertBefore(after.childNodes[i].cloneNode(true), reference);
+          counter.count++;
         }
       }; break;
     }
@@ -86,6 +91,7 @@ export function update(before, after) {
             const name = beforeAttrs[i].split(':')[0];
             log('delete: delete attr: ', name);
             before.removeAttribute(name);
+            counter.count++;
           }
           break;
         case 'insert':
@@ -95,6 +101,7 @@ export function update(before, after) {
             const value = attr.slice(1).join(':');
             log('insert: set attr: ', name, value);
             before.setAttribute(name, value);
+            counter.count++;
           }
           break;
         case 'replace':
@@ -106,6 +113,7 @@ export function update(before, after) {
             log('replace: set attr: ', name, value);
             before.setAttribute(name, value);
             insertedAttrs.add(name);
+            counter.count++;
           }
           for (let i = fromStart; i < fromEnd; i++) {
             const name = beforeAttrs[i].split(':')[0];
@@ -113,11 +121,13 @@ export function update(before, after) {
               continue;
             log('replace: delete attr: ', name);
             before.removeAttribute(name);
+            counter.count++;
           }
           break;
       }
     }
   }
+  return counter.count;
 }
 
 function getDiffableNodeString(node) {

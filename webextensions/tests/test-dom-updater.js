@@ -15,10 +15,12 @@ function createNode(source) {
   return node;
 }
 
-function assertUpdated(from, to) {
+function assertUpdated(from, to, steps) {
   const expected = createNode(to.innerHTML);
-  DOMUpdater.update(from, to);
+  const actualSteps = DOMUpdater.update(from, to);
   is(expected.innerHTML, from.innerHTML);
+  if (typeof steps == 'number')
+    is(steps, actualSteps);
 }
 
 export function testUpdateAttributes() {
@@ -28,7 +30,8 @@ export function testUpdateAttributes() {
     `),
     createNode(`
       <span class="class1 class2 class3">contents</span>
-    `)
+    `),
+    1
   );
 }
 
@@ -49,7 +52,8 @@ export function testUpdateNodes() {
       <span anonid="item6">contents</span>
       <span anonid="item7">contents</span>
       <span anonid="item8">contents</span>
-    `)
+    `),
+    4 /* deletion */ + 4 /* insertion */
   );
 }
 
@@ -70,7 +74,10 @@ export function testUpdateNodesAndAttributes() {
       <span anonid="item6" part="active">contents, new active</span>
       <span anonid="item7">contents</span>
       <span anonid="item8">contents</span>
-    `)
+    `),
+    4 /* item deletion */ + 4 /* iteminsertion */ +
+      1 /* remove attr */ + 1 /* replace text */ +
+      1 /* remove attr */ + 1 /* replace text */
   );
 }
 
