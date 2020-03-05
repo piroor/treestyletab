@@ -12,8 +12,11 @@ import { is /*, ok, ng*/ } from '/tests/assert.js';
 import * as DOMUpdater from '/common/dom-updater.js';
 
 function createNode(source) {
+  const range = document.createRange();
+  range.setStart(document.body, 0);
   const node = document.createElement('div');
-  node.innerHTML = source.trim();
+  node.appendChild(range.createContextualFragment(source.trim()));
+  range.detach();
   return node;
 }
 
