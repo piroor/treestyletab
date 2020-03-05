@@ -3,6 +3,7 @@
  - master/HEAD
    * 「ツリーをたたんだ状態でロック」機能を削除した（別アドオンの[TST Lock Tree Collapsed](https://github.com/piroor/tst-lock-tree-collapsed)に機能を分離した）
    * 目的を選んでドラッグ操作を開始するためのつまみを表示する機能を削除した（別アドオンの[TST Tab Drag Handle](https://github.com/piroor/tst-tab-drag-handle)に機能を分離した）
+   * キーボードショートカットのカスタマイズ用UIを設定画面から削除した（Firefox ESR68の時点ですでにそのためのUIがあるため）
    * コンテンツ領域内に確認ダイアログを表示できなくなっていたのを修正（最近のバージョンのFirefoxでの後退バグ）
    * 折りたたまれたツリーに対するミュート・ミュート解除の操作でより適切に音声再生中のタブだけを制御するようにした
    * ツリー表示が無効の時にからのグループタブ内に「初期化中」という事を示すアニメーションが表示されないようにした
@@ -12,7 +13,7 @@
    * 折りたたまれた子タブにフォーカスされたときにツリーを自動展開するかどうかの設定の内部名を、「折りたたまれた子タブにフォーカス可能とするかどうか」という趣旨の名前に変更し、親ツリーが折りたたまれる結果として現在のタブが不可視になる場面にも影響するようにした
    * `about:devtools-toolbox`のタブのアイコンについて適切なアイコンを使うようにした
    * 新しいAPIメッセージを追加した：[`set-extra-tab-contents`、`clear-extra-tab-contents`および`clear-all-extra-tab-contents`](https://github.com/piroor/treestyletab/wiki/Tab-Extra-Contents-API)
-   * 新しい通知型のAPIメッセージを追加した：[`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)、[`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded)、[`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)、[`try-expand-tree-from-focused-parent`、`try-expand-tree-from-focused-bundled-parent`、`try-expand-tree-from-focused-collapsed-tab`、`try-expand-tree-from-long-press-ctrl-key`、および`try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst)
+   * 新しい通知型のAPIメッセージを追加した：[`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)、[`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded)、[`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)、[`try-expand-tree-from-focused-parent`、`try-expand-tree-from-focused-bundled-parent`、`try-expand-tree-from-attached-child`、`try-expand-tree-from-focused-collapsed-tab`、`try-expand-tree-from-long-press-ctrl-key`、および`try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst)
    * [`tab-mousedown`に続く`tab-mouseup`、`tab-clicked`、`tab-dblclicked`の各通知型メッセージ](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)について、前の通知に対するキャンセル操作で確実にキャンセルできるようにした
    * プライベートウィンドウへのアクセスをTST上でも許可されていない限り、他のアドオンにはプライベートウィンドウでのイベントを通知しないようにした
    * `ru`ロケール更新（by wvxwxvw. Thanks!）
