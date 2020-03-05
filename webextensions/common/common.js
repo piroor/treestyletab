@@ -293,6 +293,7 @@ tab-item.private-browsing tab-label:before {
     'common/api-tabs': false,
     'common/bookmarks': false,
     'common/contextual-identities': false,
+    'common/dom-updater': false,
     'common/permissions': false,
     'common/sidebar-connection': false,
     'common/tabs-internal-operation': false,
@@ -315,8 +316,7 @@ tab-item.private-browsing tab-label:before {
     'sidebar/sidebar': false,
     'sidebar/size': false,
     'sidebar/subpanel': false,
-    'sidebar/tab-context-menu': false,
-    'sidebar/tst-api-frontend': false
+    'sidebar/tab-context-menu': false
   },
   loggingConnectionMessages: false,
 
