@@ -85,6 +85,7 @@ export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT = 'try-expand-t
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB = 'try-expand-tree-from-focused-collapsed-tab';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY = 'try-expand-tree-from-long-press-ctrl-key';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH = 'try-expand-tree-from-end-tab-switch';
+export const kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD = 'try-expand-tree-from-attached-child';
 export const kGET_TREE              = 'get-tree';
 export const kATTACH                = 'attach';
 export const kDETACH                = 'detach';

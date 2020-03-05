@@ -17,6 +17,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -72,7 +73,13 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       }));
     }
     if (!info.dontExpand) {
-      if (configs.autoCollapseExpandSubtreeOnAttach &&
+      const allowed = await TSTAPI.tryOperationAllowed(
+        TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
+        { tab: new TSTAPI.TreeItem(tab) },
+        { tabProperties: ['tab'] }
+      );
+      if (allowed) {
+        if (configs.autoCollapseExpandSubtreeOnAttach &&
           (isNewTreeCreatedManually ||
            parent.$TST.isAutoExpandable)) {
         log('  collapse others by collapseExpandTreesIntelligentlyFor');
@@ -80,19 +87,19 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
           broadcast: true
         });
       }
-
-      const newAncestors = [parent].concat(parent.$TST.ancestors);
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           parent.$TST.isAutoExpandable ||
           info.forceExpand) {
         log('  expand ancestor tabs');
+        const newAncestors = [parent].concat(parent.$TST.ancestors);
         newAncestors.filter(ancestor => ancestor.$TST.subtreeCollapsed).forEach(ancestor => {
           Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
             collapsed:    false,
             broadcast:    true
           }));
         });
+      }
       }
       if (parent.$TST.collapsed) {
         log('  collapse tab because the parent is collapsed');
