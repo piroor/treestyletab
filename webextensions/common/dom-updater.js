@@ -27,48 +27,47 @@ export function update(before, after) {
   const beforeNodes = Array.from(before.childNodes, getDiffableNodeString);
   const afterNodes = Array.from(after.childNodes, getDiffableNodeString);
   const nodeOerations = (new SequenceMatcher(beforeNodes, afterNodes)).operations();
-  let nodeOffset = 0;
-  for (const operation of nodeOerations) {
+  // Update from back to front for safety!
+  for (const operation of nodeOerations.reverse()) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     switch (tag) {
       case 'equal':
         for (let i = 0, maxi = fromEnd - fromStart; i < maxi; i++) {
           update(
-            before.childNodes[fromStart + i + nodeOffset],
+            before.childNodes[fromStart + i],
             after.childNodes[toStart + i]
           );
         }
         break;
       case 'delete':
         for (let i = fromEnd - 1; i >= fromStart; i--) {
-          log('delete: delete node: ', before.childNodes[i + nodeOffset]);
-          before.removeChild(before.childNodes[i + nodeOffset]);
+          log('delete: delete node: ', i, before.childNodes[i]);
+          before.removeChild(before.childNodes[i]);
         }
         break;
-      case 'insert':
+      case 'insert': {
+        const reference = before.childNodes[fromStart] || null;
+        console.log({reference});
         for (let i = toStart; i < toEnd; i++) {
-          log('insert: insert node: ', after.childNodes[i]);
-          before.insertBefore(
-            after.childNodes[i].cloneNode(true),
-            before.hasChildNodes() && before.childNodes[fromStart + nodeOffset] || null
-          );
-          nodeOffset++;
+          if (!after.childNodes[i])
+            continue;
+          console.log('insert: insert node: ', i, after.childNodes[i]);
+          before.insertBefore(after.childNodes[i].cloneNode(true), reference);
         }
-        break;
-      case 'replace':
+      }; break;
+      case 'replace': {
         for (let i = fromEnd - 1; i >= fromStart; i--) {
-          log('replace: delete node: ', before.childNodes[i + nodeOffset]);
-          before.removeChild(before.childNodes[i + nodeOffset]);
+          log('replace: delete node: ', i, before.childNodes[i]);
+          before.removeChild(before.childNodes[i]);
         }
+        const reference = before.childNodes[fromStart] || null;
         for (let i = toStart; i < toEnd; i++) {
-          log('replace: insert node: ', after.childNodes[i]);
-          before.insertBefore(
-            after.childNodes[i].cloneNode(true),
-            before.hasChildNodes() && before.childNodes[fromStart + nodeOffset] || null
-          );
-          nodeOffset++;
+          if (!after.childNodes[i])
+            continue;
+          log('replace: insert node: ', i, after.childNodes[i]);
+          before.insertBefore(after.childNodes[i].cloneNode(true), reference);
         }
-        break;
+      }; break;
     }
   }
 
@@ -119,7 +118,6 @@ export function update(before, after) {
       }
     }
   }
-  //log(' => ', configs.debug && before.innerHTML);
 }
 
 function getDiffableNodeString(node) {
