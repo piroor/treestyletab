@@ -142,7 +142,7 @@ function setDragData(dragData) {
 
 /* helpers */
 
-function getDragDataFromOneTab(tab) {
+function getDragDataFromOneTab(tab, options = {}) {
   if (!tab)
     return {
       tab:      null,
@@ -151,7 +151,7 @@ function getDragDataFromOneTab(tab) {
       instanceId: mInstanceId,
       structure:  []
     };
-  const tabs = getDraggedTabsFromOneTab(tab);
+  const tabs = getDraggedTabsFromOneTab(tab, options);
   return {
     tab,
     tabs,
@@ -161,10 +161,12 @@ function getDragDataFromOneTab(tab) {
   };
 }
 
-function getDraggedTabsFromOneTab(tab) {
+function getDraggedTabsFromOneTab(tab, { asTree } = {}) {
   if (tab.$TST.multiselected)
     return Tab.getSelectedTabs(tab.windowId);
-  return [tab].concat(tab.$TST.descendants);
+  if (asTree)
+    return [tab].concat(tab.$TST.descendants);
+  return [tab];
 }
 
 function sanitizeDragData(dragData) {
@@ -729,8 +731,9 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }
 
   const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
-  const dragData = getDragDataFromOneTab(draggedTab);
-  dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  const asTree = !!(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  const dragData = getDragDataFromOneTab(draggedTab, { asTree });
+  dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !asTree
   dragData.behavior = behavior;
   if (!dragData.tab) {
     log('onDragStart: canceled / no dragged tab from drag data');
