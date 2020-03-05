@@ -80,26 +80,26 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       );
       if (allowed) {
         if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually ||
-           parent.$TST.isAutoExpandable)) {
-        log('  collapse others by collapseExpandTreesIntelligentlyFor');
-        Tree.collapseExpandTreesIntelligentlyFor(parent, {
-          broadcast: true
-        });
-      }
-      if (configs.autoCollapseExpandSubtreeOnSelect ||
-          isNewTreeCreatedManually ||
-          parent.$TST.isAutoExpandable ||
-          info.forceExpand) {
-        log('  expand ancestor tabs');
-        const newAncestors = [parent].concat(parent.$TST.ancestors);
-        newAncestors.filter(ancestor => ancestor.$TST.subtreeCollapsed).forEach(ancestor => {
-          Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
-            collapsed:    false,
-            broadcast:    true
-          }));
-        });
-      }
+            (isNewTreeCreatedManually ||
+             parent.$TST.isAutoExpandable)) {
+          log('  collapse others by collapseExpandTreesIntelligentlyFor');
+          Tree.collapseExpandTreesIntelligentlyFor(parent, {
+            broadcast: true
+          });
+        }
+        if (configs.autoCollapseExpandSubtreeOnSelect ||
+            isNewTreeCreatedManually ||
+            parent.$TST.isAutoExpandable ||
+            info.forceExpand) {
+          log('  expand ancestor tabs');
+          const newAncestors = [parent].concat(parent.$TST.ancestors);
+          newAncestors.filter(ancestor => ancestor.$TST.subtreeCollapsed).forEach(ancestor => {
+            Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
+              collapsed:    false,
+              broadcast:    true
+            }));
+          });
+        }
       }
       if (parent.$TST.collapsed) {
         log('  collapse tab because the parent is collapsed');
