@@ -65,7 +65,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     }
 
     const isNewTreeCreatedManually = !info.justNow && parent.$TST.childIds.length == 1;
-    let parentCollasped = parent.$TST.subtreeCollapsed;
+    let parentTreeCollasped = parent.$TST.subtreeCollapsed;
+    let parentCollasped     = parent.$TST.collapsed;
 
     const cache = {};
     const allowed = (info.forceExpand || !!info.dontExpand) && await TSTAPI.tryOperationAllowed(
@@ -80,7 +81,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         collapsed: false,
         broadcast: true
       }));
-      parentCollasped = false;
+      parentTreeCollasped = false;
     }
     if (!info.dontExpand) {
       if (allowed) {
@@ -97,7 +98,9 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
             parent.$TST.isAutoExpandable ||
             info.forceExpand) {
           log('  expand ancestor tabs');
-          [parent].concat(parent.$TST.ancestors).map(async ancestor => {
+          parentTreeCollasped = false;
+          parentCollasped     = false;
+          await Promise.all([parent].concat(parent.$TST.ancestors).map(async ancestor => {
             if (!ancestor.$TST.subtreeCollapsed)
               return;
             const allowed = await TSTAPI.tryOperationAllowed(
@@ -105,14 +108,17 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
               { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
               { tabProperties: ['tab'] }
             );
-            if (!allowed)
+            if (!allowed) {
+              parentTreeCollasped = true;
+              parentCollasped     = true;
               return;
+            }
             Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
               collapsed:    false,
               broadcast:    true
             }));
-            parentCollasped = false;
-          });
+            parentTreeCollasped = false;
+          }));
         }
       }
     }
@@ -124,7 +130,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         broadcast:    true
       }));
     }
-    if (parentCollasped) {
+    if (parentTreeCollasped || parentCollasped) {
       log('  collapse tab because the parent is collapsed');
       Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
         collapsed: true,
