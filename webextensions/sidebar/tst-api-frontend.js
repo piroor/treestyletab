@@ -417,7 +417,7 @@ function applyContents(before, after) {
 
 function getDiffableNodeString(node) {
   if (node.nodeType == Node.ELEMENT_NODE)
-    return `element:${node.tagName}#{node.id}`;
+    return `element:${node.tagName}#${node.id}#${node.getAttribute('anonid')}`;
   else
     return `node:${node.nodeType}`;
 }
