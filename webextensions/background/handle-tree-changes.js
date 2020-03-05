@@ -105,10 +105,10 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
             ).then(allowed => {
               if (!allowed)
                 return;
-            Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
-              collapsed:    false,
-              broadcast:    true
-            }));
+              Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
+                collapsed:    false,
+                broadcast:    true
+              }));
             });
           }
         }
