@@ -403,8 +403,8 @@
 
   "config_tabDragBehavior_caption":       { "message": "Wenn ein Zweig außerhalb der Tableiste gezogen wird" },
   "config_tabDragBehavior_description":   { "message": "Aufgrund von Firefox Einschränkungen muss beim Beginn des Ziehens bekannt sein, wie Tabs beim Ablegen außerhalb der Seitenleiste von TST behandelt werden sollen." },
-  "config_tabDragBehavior_label":         { "message": "Ziehen:" },
-  "config_tabDragBehaviorShift_label":    { "message": "Shift-Ziehen:" },
+  "config_tabDragBehavior_label":         { "message": "Ziehen" },
+  "config_tabDragBehaviorShift_label":    { "message": "Shift-Ziehen" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Gesamten Zweig vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Verweise oder Lesezeichen vom gesamten Zweig erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },

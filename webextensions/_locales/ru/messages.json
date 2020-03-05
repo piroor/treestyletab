@@ -414,8 +414,8 @@
 
   "config_tabDragBehavior_caption":       { "message": "Когда дерево перетаскивается за границы панели вкладок" },
   "config_tabDragBehavior_description":   { "message": "Из-за ограничений Firefox, вам необходимо заранее определить, как обрабатывать вкладки, перетаскиваемые за границы панели TST." },
-  "config_tabDragBehavior_label":         { "message": "Перетаскивание        :" },
-  "config_tabDragBehaviorShift_label":    { "message": "Перетаскивание с Shift:" },
+  "config_tabDragBehavior_label":         { "message": "Перетаскивание" },
+  "config_tabDragBehaviorShift_label":    { "message": "Перетаскивание с Shift" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Перенесет дерево в другое окно (невозможно создать закладку)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Создаст закладки или сслыки из всего дерева (невозможно вынести за пределы окна)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Отсоеденит отдельную вкладку (невозможно создать закладку)" },

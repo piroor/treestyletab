@@ -169,36 +169,42 @@ label input[type="checkbox"] ~ img {
 }
 
 
-.contextConfigs th {
+table {
+  border-collapse: collapse;
+}
+th + *,
+td + * {
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+tbody tr {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+
+.contextConfigs tbody th,
+.tabDragBehaviorConfigs tbody th {
   font-weight: normal;
   text-align: left;
 }
 
-.contextConfigs td {
+.contextConfigs td,
+.tabDragBehaviorConfigs td {
   text-align: center;
 }
 
-.contextConfigs table input[type="checkbox"] {
+.contextConfigs table input[type="checkbox"],
+.tabDragBehaviorConfigs table input[type="radio"] {
   margin-left: 1.5em;
   margin-right: 1.5em;
 }
 
-#externalAddonPermissionsGroup table {
-  border-collapse: collapse;
-}
+
 #externalAddonPermissionsGroup td:nth-child(2) {
   text-align: center;
 }
 #externalAddonPermissionsGroup td:nth-child(2) input[type="checkbox"] {
   margin-left: 3em;
   margin-right: 3em;
-}
-#externalAddonPermissionsGroup th + th,
-#externalAddonPermissionsGroup td + td {
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
-}
-#externalAddonPermissionsGroup tbody tr {
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 

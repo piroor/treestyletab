@@ -400,8 +400,8 @@
 
   "config_tabDragBehavior_caption":       { "message": "將樹拖曳之分頁欄外時" },
   "config_tabDragBehavior_description":   { "message": "由於 Firefox 的限制，在分頁欄位放置時的行為取決於開始拖曳時的操作。" },
-  "config_tabDragBehavior_label":         { "message": "拖曳：" },
-  "config_tabDragBehaviorShift_label":    { "message": "Shift + 拖曳：" },
+  "config_tabDragBehavior_label":         { "message": "拖曳" },
+  "config_tabDragBehaviorShift_label":    { "message": "Shift + 拖曳" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "分離整棵樹至新視窗(無法加入書籤)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "加入整棵樹至書籤(無法分離至新視窗)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "分離單個分頁至新視窗(無法加入書籤)" },

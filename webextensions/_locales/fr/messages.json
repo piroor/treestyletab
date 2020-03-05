@@ -395,8 +395,8 @@
 
   "config_tabDragBehavior_caption":       { "message": "Quand un arbre est glissé en dehors de la barre d'onglet" },
   "config_tabDragBehavior_description":   { "message": "À cause de restrictions de Firefox, vous devez décider quand vous commencez le glisser-déposer : comment les onglets sont traités lorsque déposés en dehors du panneau latéral de TST." },
-  "config_tabDragBehavior_label":         { "message": "Glisser :" },
-  "config_tabDragBehaviorShift_label":    { "message": "Maj-glisser :" },
+  "config_tabDragBehavior_label":         { "message": "Glisser" },
+  "config_tabDragBehaviorShift_label":    { "message": "Maj-glisser" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Détacher l'arbre de la fenêtre (mais impossible de créer de marque-pages)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Créer des liens et marque-pages pour l'arbre entier (mais impossible de le détacher de la fenêtre)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Détacher un onglet seul de la fenêtre (mais impossible de créer un marque-page)" },

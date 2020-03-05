@@ -1218,11 +1218,11 @@
         "message": "因为 Firefox 的限制，你必须在开始拖拽时决定：标签页在树形标签页侧栏以外释放时被当作什么。"
     },
     "config_tabDragBehavior_label": {
-        "message": "拖拽：",
+        "message": "拖拽",
         "hash": "6957fbb9cf5b17c85214d3065e5d9fb3"
     },
     "config_tabDragBehaviorShift_label": {
-        "message": "按住 Shift 拖拽：",
+        "message": "按住 Shift 拖拽",
         "hash": "c26c7dbae02a5f950080f2e84b543a51"
     },
     "config_tabDragBehavior_tearoff_tree": {

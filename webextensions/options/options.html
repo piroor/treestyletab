@@ -650,29 +650,69 @@
 
     <section id="section-drag">
     <h1>__MSG_config_drag_caption__</h1>
-    <fieldset>
+    <fieldset class="tabDragBehaviorConfigs">
       <legend>__MSG_config_tabDragBehavior_caption__</legend>
       <p class="expert"><label class="has-checkbox"
                               ><input id="moveDroppedTabToNewWindowForUnhandledDragEvent"
                                       type="checkbox">
                               __MSG_config_moveDroppedTabToNewWindowForUnhandledDragEvent_label__</label></p>
       <p>__MSG_config_tabDragBehavior_description__</p>
-      <p><label>__MSG_config_tabDragBehavior_label__</label>
-         <select id="tabDragBehavior">
-           <option value="5">__MSG_config_tabDragBehavior_tearoff_tree__</option>
-           <option value="3">__MSG_config_tabDragBehavior_bookmark_tree__</option>
-           <option value="4">__MSG_config_tabDragBehavior_tearoff_tab__</option>
-           <option value="2">__MSG_config_tabDragBehavior_bookmark_tab__</option>
-           <option value="0">__MSG_config_tabDragBehavior_none__</option>
-         </select></p>
-      <p><label>__MSG_config_tabDragBehaviorShift_label__</label>
-         <select id="tabDragBehaviorShift">
-           <option value="5">__MSG_config_tabDragBehavior_tearoff_tree__</option>
-           <option value="3">__MSG_config_tabDragBehavior_bookmark_tree__</option>
-           <option value="4">__MSG_config_tabDragBehavior_tearoff_tab__</option>
-           <option value="2">__MSG_config_tabDragBehavior_bookmark_tab__</option>
-           <option value="0">__MSG_config_tabDragBehavior_none__</option>
-         </select></p>
+      <table>
+        <thead>
+          <tr>
+            <th>__MSG_config_tabDragBehavior_label__</th>
+            <th>__MSG_config_tabDragBehaviorShift_label__</th>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><label><input name="tabDragBehavior" id="tabDragBehavior_tearoff_tree"
+                              type="radio"
+                              value="5"></label></td>
+            <td><label><input name="tabDragBehaviorShift"
+                              type="radio"
+                              value="5"></label></td>
+            <th><label for="tabDragBehavior_tearoff_tree">__MSG_config_tabDragBehavior_tearoff_tree__</label></th>
+          </tr>
+          <tr>
+            <td><label><input name="tabDragBehavior" id="tabDragBehavior_bookmark_tree"
+                              type="radio"
+                              value="3"></label></td>
+            <td><label><input name="tabDragBehaviorShift"
+                              type="radio"
+                              value="3"></label></td>
+            <th><label for="tabDragBehavior_bookmark_tree">__MSG_config_tabDragBehavior_bookmark_tree__</label></th>
+          </tr>
+          <tr>
+            <td><label><input name="tabDragBehavior" id="tabDragBehavior_tearoff_tab"
+                              type="radio"
+                              value="4"></label></td>
+            <td><label><input name="tabDragBehaviorShift"
+                              type="radio"
+                              value="4"></label></td>
+            <th><label for="tabDragBehavior_tearoff_tab">__MSG_config_tabDragBehavior_tearoff_tab__</label></th>
+          </tr>
+          <tr>
+            <td><label><input name="tabDragBehavior" id="tabDragBehavior_bookmark_tab"
+                              type="radio"
+                              value="2"></label></td>
+            <td><label><input name="tabDragBehaviorShift"
+                              type="radio"
+                              value="2"></label></td>
+            <th><label for="tabDragBehavior_bookmark_tab">__MSG_config_tabDragBehavior_bookmark_tab__</label></th>
+          </tr>
+          <tr>
+            <td><label><input name="tabDragBehavior" id="tabDragBehavior_none"
+                              type="radio"
+                              value="0"></label></td>
+            <td><label><input name="tabDragBehaviorShift"
+                              type="radio"
+                              value="0"></label></td>
+            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_none__</label></th>
+          </tr>
+        </tbody>
+      </table>
       <p><label class="has-checkbox"
                ><input id="showTabDragBehaviorNotification"
                        type="checkbox">
