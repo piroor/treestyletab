@@ -65,13 +65,15 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     }
 
     const isNewTreeCreatedManually = !info.justNow && parent.$TST.childIds.length == 1;
+    let parentCollasped = parent.$TST.subtreeCollapsed;
+
     const cache = {};
     const allowed = (info.forceExpand || !!info.dontExpand) && await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
       { tab: new TSTAPI.TreeItem(parent, { cache }) },
       { tabProperties: ['tab'] }
     );
-    let parentCollasped = parent.$TST.subtreeCollapsed;
+
     if (info.forceExpand && allowed) {
       log('  expand by forceExpand option');
       Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
@@ -95,22 +97,22 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
             parent.$TST.isAutoExpandable ||
             info.forceExpand) {
           log('  expand ancestor tabs');
-          for (const ancestor of [parent].concat(parent.$TST.ancestors)) {
+          [parent].concat(parent.$TST.ancestors).map(async ancestor => {
             if (!ancestor.$TST.subtreeCollapsed)
-              continue;
-            TSTAPI.tryOperationAllowed(
+              return;
+            const allowed = await TSTAPI.tryOperationAllowed(
               TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
               { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
               { tabProperties: ['tab'] }
-            ).then(allowed => {
-              if (!allowed)
-                return;
+            );
+            if (!allowed)
+              return;
               Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
                 collapsed:    false,
                 broadcast:    true
               }));
-            });
-          }
+            parentCollasped = false;
+          });
         }
       }
     }
