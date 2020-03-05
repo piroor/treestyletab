@@ -6,8 +6,7 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 import { SequenceMatcher } from './diff.js';
 
