@@ -701,6 +701,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
             effectAllowed: 'copyMove' }
           ...
     */
+    let tabIsGiven = false;
     for (const data of dataSet) {
       if (!data)
         continue;
@@ -709,6 +710,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
           if (data.data.id) {
             const tab = Tab.get(data.data.id);
             if (tab) {
+              tabIsGiven = true;
               draggedTab = tab;
               behavior   = Constants.kDRAG_BEHAVIOR_NONE;
               if (data.data.allowDetach)
@@ -728,6 +730,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
         }; break;
       }
     }
+    if (!tabIsGiven && dataOverridden)
+      return;
   }
 
   const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
