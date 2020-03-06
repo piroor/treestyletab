@@ -21,6 +21,7 @@ tab-sound-button {
   padding: 0;
   position: relative;
   width: var(--sound-button-size);
+  z-index: 9000; /* higher than extra items container */
 }
 
 tab-item.faviconized tab-sound-button::before,
@@ -122,5 +123,4 @@ tab-item.faviconized tab-sound-button {
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 200;
 }

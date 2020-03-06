@@ -312,13 +312,6 @@ tab-item .extra-items-container.front {
   right: var(--tab-label-end-offset);
   z-index: 6000;
 }
-/* Keep sound playing indicator clickable */
-tab-item.sound-playing .extra-items-container.front,
-tab-item.has-sound-playing-member .extra-items-container.front,
-tab-item.muted .extra-items-container.front,
-tab-item.has-muted-member .extra-items-container.front {
-  right: calc(var(--tab-label-end-offset) + var(--sound-button-size));
-}
 
 tab-item:not(.bursting) .burster {
   display: none;
