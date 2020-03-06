@@ -22,6 +22,8 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--tab-surface-active);
   --tab-highlighted-base: var(--tab-surface);
+
+  --bg-color: #797979;
 }
 
 tab-item,
@@ -120,7 +122,7 @@ tab-item.faviconized.bundled-active {
 
 :root,
 #background {
-  background: #797979;
+  background: var(--bg-color);
 }
 
 :root.left #background {
