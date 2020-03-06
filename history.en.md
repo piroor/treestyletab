@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.4.1 (2020.3.6)
+   * Fix unclaickable sound playing indicator problem. (regression on 3.4.0)
  - 3.4.0 (2020.3.6)
    * Remove "Lock as Collapsed" feature. Now it is available as a helper addon: [TST Lock Tree Collapsed](https://github.com/piroor/tst-lock-tree-collapsed)
    * Remove "Tab Drag Handle" feature. Now it is available as a helper addon: [TST Tab Drag Handle](https://github.com/piroor/tst-tab-drag-handle)

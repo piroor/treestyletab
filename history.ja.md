@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.4.1 (2020.3.6)
+   * 音声再生状態を示すインジケータをクリックできなくなっていたのを修正（3.4.0での後退バグ）
  - 3.4.0 (2020.3.6)
    * 「ツリーをたたんだ状態でロック」機能を削除した（別アドオンの[TST Lock Tree Collapsed](https://github.com/piroor/tst-lock-tree-collapsed)に機能を分離した）
    * 目的を選んでドラッグ操作を開始するためのつまみを表示する機能を削除した（別アドオンの[TST Tab Drag Handle](https://github.com/piroor/tst-tab-drag-handle)に機能を分離した）
