@@ -19,6 +19,7 @@ tab-item tab-twisty {
   transform-origin: 50% 50%;
   white-space: pre;
   width: var(--favicon-size);
+  z-index: var(--tab-ui-z-index);
 }
 
 :root.animation tab-item:not(.collapsed) tab-twisty {

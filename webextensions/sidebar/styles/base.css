@@ -49,7 +49,27 @@
 
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.15;
+
+  /* z-index of elements: we should define them here to keep their strict priorities */
+  --invisible-z-index:       -100;
+  --dummy-element-z-index:   1; /* dummy tab */
+  --background-z-index:      10; /* background screen */
+  --accessible-ui-z-index:   100; /* tabbar itself, and others */
+  --over-tabs-z-index:       100; /* buttons after tabs, pinned tabs (required to make pinned tabs clickable) */
+  --over-buttons-z-index:    200; /* buttons on buttons after tabs */
+  --notification-ui-z-index: 9000;
+  --blocking-ui-z-index:     10000; /* frontmost of others */
+
+  --tab-extra-contents-behind-z-index: 10;
+  --tab-base-z-index:                  100;
+  --tab-burster-z-index:               4000;
+  --tab-highlighter-z-index:           5000;
+  --tab-attention-z-index:             5500;
+  --tab-extra-contents-front-z-index:  6000;
+  --tab-ui-z-index:                    9000;
+  --tab-drop-marker-z-index:           10000;
 }
+
 tab-item {
   --tab-current-size: var(--tab-size);
   --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
@@ -123,7 +143,7 @@ button {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 100;
+  z-index: var(--accessible-ui-z-index);
 }
 
 #tabbar {
@@ -145,7 +165,7 @@ button {
 #background {
   background-color: -moz-dialog; /* This is required to cover dummy elements. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
   pointer-events: none;
-  z-index: 10;
+  z-index: var(--background-z-index);
 }
 
 /* put scrollbar leftside */
@@ -179,7 +199,7 @@ ul {
   pointer-events: none;
   position: fixed;
   right: 0;
-  z-index: 1; /* Put it below the background. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
+  z-index: var(--dummy-element-z-index); /* Put it below the background. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
 }
 
 #dummy-favicon-size-box {
@@ -231,7 +251,7 @@ tab-item * {
 
 tab-item > * {
   position: relative;
-  z-index: 100;
+  z-index: var(--tab-base-z-index);
 }
 
 tab-item.hidden {
@@ -256,7 +276,7 @@ tab-item.duplicating {
   margin-top: calc(0px - var(--tab-size));
   opacity: 0;
   pointer-events: none;
-  z-index: -100;
+  z-index: var(--invisible-z-index);
 }
 
 tab-item:not(.pinned).collapsed.collapsed-completely {
@@ -309,7 +329,7 @@ tab-item .extra-items-container.front {
   left: var(--tab-label-start-offset);
   pointer-events: auto;
   right: var(--tab-label-end-offset);
-  z-index: 6000;
+  z-index: var(--tab-extra-contents-front-z-index);
 }
 
 tab-item:not(.bursting) .burster {
@@ -317,11 +337,11 @@ tab-item:not(.bursting) .burster {
 }
 
 tab-item .highlighter {
-  z-index: 5000;
+  z-index: var(--tab-highlighter-z-index);
 }
 
 tab-item .burster {
-  z-index: 4000;
+  z-index: var(--tab-burster-z-index);
 }
 
 tab-item.faviconized.unread tab-favicon::before,
@@ -333,11 +353,11 @@ tab-item.attention tab-favicon::before {
   right: auto;
   top: var(--attention-marker-y-offset);
   width: var(--faviconized-tab-size);
-  z-index: 10;
+  z-index: var(--tab-attention-z-index);
 }
 
 tab-item .extra-items-container.behind {
-  z-index: 10;
+  z-index: var(--tab-extra-contents-behind-z-index);
 }
 
 
@@ -348,7 +368,7 @@ tab-item.pinned {
   border-left: none;
   margin: 0;
   position: fixed;
-  z-index: 1; /* this is required to make pinned tabs clickable */
+  z-index: var(--over-tabs-z-index);
 }
 
 tab-item.pinned:not(.faviconized) {
@@ -430,6 +450,7 @@ tab-closebox {
   line-height: 0;
   opacity: var(--button-opacity);
   position: relative;
+  z-index: var(--tab-ui-z-index);
 }
 
 tab-closebox::after {
@@ -529,7 +550,7 @@ tab-item.faviconized .contextual-identity-marker {
   overflow: visible;
   position: absolute;
   right: 0;
-  z-index: 100;
+  z-index: var(--over-tabs-z-index);
 }
 
 
@@ -592,7 +613,7 @@ tab-item.faviconized .contextual-identity-marker {
   position: absolute;
   top: 0;
   transition: opacity var(--collapse-animation);
-  z-index: 200;
+  z-index: var(--over-buttons-z-index);
 }
 :root.contextual-identity-selectable
   .after-tabs
@@ -761,7 +782,7 @@ iframe#subpanel {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 10000;
+  z-index: var(--blocking-ui-z-index);
 }
 
 :root.blocking-throbber #blocking-screen {

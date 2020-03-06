@@ -18,6 +18,9 @@ tab-favicon {
   position: relative;
   white-space: pre;
   width: var(--favicon-size);
+
+  --favicon-base-z-index:            20;
+  --favicon-preferred-image-z-index: 100;
 }
 tab-item tab-favicon,
 tab-item tab-favicon * {
@@ -25,7 +28,7 @@ tab-item tab-favicon * {
 }
 tab-item tab-favicon * {
   position: relative;
-  z-index: 20;
+  z-index: var(--favicon-base-z-index);
 }
 
 .favicon-image {
@@ -121,7 +124,7 @@ tab-item.group-tab tab-favicon:not(.error) .favicon-image[src] {
   max-width: 10px;
   position: absolute;
   right: 0;
-  z-index: 100;
+  z-index: var(--favicon-preferred-image-z-index);
 }
 
 

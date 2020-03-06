@@ -29,7 +29,7 @@ tab-item[data-drop-position]:not([data-drop-position="self"])::before {
   border-radius: var(--tab-dropmarker-size);
   overflow: hidden;
   position: absolute;
-  z-index: 10000;
+  z-index: var(--tab-drop-marker-z-index);
 }
 tab-item[data-drop-position]:not([data-drop-position="self"]).faviconized::before {
   max-height: none;
@@ -68,7 +68,7 @@ tab-item-drop-blocker {
   min-height: calc(var(--favicon-size) / 5);
   min-width: calc(var(--favicon-size) / 5);
   position: fixed;
-  z-index: 100000;
+  z-index: var(--blocking-ui-z-index);
 }
 
 :root.debug tab-item-drop-blocker {
@@ -122,7 +122,7 @@ tab-item-drop-blocker#tab-drop-blocker-left {
   position: fixed;
   transition: opacity var(--collapse-animation);
   right: 0;
-  z-index: 2000;
+  z-index: var(--notification-ui-z-index);
 }
 
 #tab-drag-notification.shown {
