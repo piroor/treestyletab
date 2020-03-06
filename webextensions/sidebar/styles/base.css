@@ -40,6 +40,8 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
 
+  --tab-surface: var(--tab-surface-regular);
+  --tab-text: var(--tab-text-regular);
   --tab-text-shadow: none;
 
   /* macOS workaround */
@@ -47,9 +49,6 @@
 
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.15;
-
-  --tab-surface: var(--tab-surface-regular);
-  --tab-text: var(--tab-text-regular);
 }
 tab-item {
   --tab-current-size: var(--tab-size);

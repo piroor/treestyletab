@@ -38,7 +38,7 @@
   --tab-surface-regular: var(--tab-like-surface);
   --tab-text-regular: var(--toolbar-non-lwt-textcolor);
   --tab-text-inverted: var(--toolbar-non-lwt-bgcolor);
-  --tab-text-active: var(--tab-text);
+  --tab-text-active: var(--tab-text-regular);
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--in-content-box-border-color-mixed);
   --tab-surface-hover: var(--in-content-box-background-hover);

@@ -35,7 +35,7 @@
   --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
-  --tab-text-active: var(--tab-text);
+  --tab-text-active: var(--tab-text-regular);
   --tab-text-active-inverted: Highlight;
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
   --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, ThreeDHighlight));
@@ -74,10 +74,14 @@
 
 tab-item,
 .after-tabs button,
+#subpanel-container,
 #dummy-tab-color-box {
+  --tab-surface: var(--tab-surface-regular);
+  --tab-text: var(--tab-text-regular);
+  --tab-text-shadow: var(--browser-textshadow-for-header-image, none);
   background: var(--tab-surface);
   color: var(--tab-text);
-  text-shadow: var(--browser-textshadow-for-header-image, none);
+  text-shadow: var(--tab-text-shadow);
 }
 
 tab-item * {
@@ -87,7 +91,7 @@ tab-item * {
 tab-item:not(.active):hover,
 .after-tabs button:hover {
   --tab-surface: var(--tab-surface-hover);
-  color: var(--tab-text);
+  --tab-text: var(--tab-text-regular);
 }
 
 tab-item.active {
