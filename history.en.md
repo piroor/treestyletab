@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.4.2 (2020.3.7)
+   * Fix confused color scheme with the "Plain Dark" theme on Linux. (regression on 3.4.0)
  - 3.4.1 (2020.3.6)
    * Fix unclaickable sound playing indicator problem. (regression on 3.4.0)
  - 3.4.0 (2020.3.6)
