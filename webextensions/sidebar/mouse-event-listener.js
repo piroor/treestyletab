@@ -258,28 +258,10 @@ function onMouseDown(event) {
         return undefined;
 
       log('Sending message to listeners');
-      if (extraContentsInfo.owners) {
-        const allowed = await TSTAPI.tryOperationAllowed(
-          TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          Object.assign({}, mousedownDetail, {
-            tab:                mousedown.treeItem,
-            originalTarget:     extraContentsInfo.target,
-            $extraContentsInfo: null
-          }),
-          { tabProperties: ['tab'],
-            target:        extraContentsInfo.owners }
-        );
-        if (!allowed)
-          return true;
-      }
-      const allowed = await TSTAPI.tryOperationAllowed(
+      const allowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-        Object.assign({}, mousedownDetail, {
-          tab:                mousedown.treeItem,
-          $extraContentsInfo: null
-        }),
-        { tabProperties: ['tab'],
-          except:        extraContentsInfo.owners }
+        mousedown,
+        extraContentsInfo
       );
       if (!allowed)
         return true;
@@ -384,6 +366,37 @@ function getOriginalExtraContentsTarget(event) {
   };
 }
 
+async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraContentsInfo) {
+  if (extraContentsInfo.owners) {
+    const allowed = await TSTAPI.tryOperationAllowed(
+      type,
+      Object.assign({}, mousedown.detail, {
+        tab:                mousedown.treeItem,
+        originalTarget:     extraContentsInfo.target,
+        $extraContentsInfo: null
+      }),
+      { tabProperties: ['tab'],
+        target:        extraContentsInfo.owners }
+    );
+    if (!allowed)
+      return false;
+  }
+  const allowed = await TSTAPI.tryOperationAllowed(
+    type,
+    Object.assign({}, mousedown.detail, {
+      tab:                mousedown.treeItem,
+      $extraContentsInfo: null
+    }),
+    { tabProperties: ['tab'],
+      except:        extraContentsInfo.owners }
+  );
+  if (!allowed)
+    return false;
+  return true;
+}
+
+
+
 function getMouseEventTargetType(event) {
   if (EventUtils.getTabFromEvent(event))
     return 'tab';
@@ -420,8 +433,16 @@ async function onMouseUp(event) {
     return;
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
+  const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
+
+  const allowed = await tryMouseOperationAllowedWithExtraContents(
+    TSTAPI.kNOTIFY_TAB_MOUSEUP,
+    lastMousedown,
+    extraContentsInfo
+  );
+
   EventUtils.cancelHandleMousedown(event.button);
-  if (!lastMousedown)
+  if (!lastMousedown || !allowed)
     return;
 
   let promisedCanceled = null;
@@ -431,35 +452,13 @@ async function onMouseUp(event) {
       if (mouseDownCanceled)
         return true;
 
-      const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
-      for (const type of [TSTAPI.kNOTIFY_TAB_MOUSEUP, TSTAPI.kNOTIFY_TAB_CLICKED]) {
-        if (extraContentsInfo.owners) {
-          const allowed = await TSTAPI.tryOperationAllowed(
-            type,
-            Object.assign({}, lastMousedown.detail, {
-              tab:                lastMousedown.treeItem,
-              originalTarget:     extraContentsInfo.target,
-              $extraContentsInfo: null
-            }),
-            { tabProperties: ['tab'],
-              target:        extraContentsInfo.owners }
-          );
-          if (!allowed)
-            return true;
-        }
-        const allowed = await TSTAPI.tryOperationAllowed(
-          type,
-          Object.assign({}, lastMousedown.detail, {
-            tab:                lastMousedown.treeItem,
-            originalTarget:     extraContentsInfo.target,
-            $extraContentsInfo: null
-          }),
-          { tabProperties: ['tab'],
-            except:        extraContentsInfo.owners }
-        );
-        if (!allowed)
-          return true;
-      }
+      const allowed = await tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_TAB_CLICKED,
+        lastMousedown,
+        extraContentsInfo
+      );
+      if (!allowed)
+        return true;
 
       return false;
     })();
