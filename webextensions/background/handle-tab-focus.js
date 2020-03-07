@@ -43,7 +43,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
   const window = TabsStore.windows.get(tab.windowId);
   log('  lastActiveTab: ', window.lastActiveTab);
   cancelDelayedExpand(Tab.get(window.lastActiveTab));
-  const shouldSkipCollapsed = (
+  let shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
@@ -80,11 +80,16 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
             });
           }
         }
+        else {
+          shouldSkipCollapsed = true;
+          log('  => canceled by someone.');
+        }
       }
       info.allowed = allowed;
+      if (!shouldSkipCollapsed)
       await handleNewActiveTab(tab, info);
     }
-    else {
+    if (shouldSkipCollapsed) {
       log('=> reaction for focusing collapsed descendant while Ctrl-Tab/Ctrl-Shift-Tab');
       let successor = tab.$TST.nearestVisibleAncestorOrSelf;
       if (!successor) // this seems invalid case...
