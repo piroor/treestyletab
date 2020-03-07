@@ -284,9 +284,34 @@ function onMouseDown(event) {
       if (!allowed)
         return true;
 
+      log(' => allowed');
       return false;
     })()
   ]).then(results => results[1]);
+
+  mousedown.promisedMousedownNotified.then(canceled => {
+    if (!EventUtils.getLastMousedown(event.button) ||
+        mousedown.expired ||
+        canceled)
+      return;
+
+    const onRegularArea = (
+      !mousedown.detail.twisty &&
+      !mousedown.detail.soundButton &&
+      !mousedown.detail.closebox
+    );
+    const wasMultiselectionAction = (
+      onRegularArea &&
+      (mousedown.detail.ctrlKey ||
+       mousedown.detail.shiftKey)
+    );
+    if (mousedown.detail.button == 0 &&
+        onRegularArea &&
+        !wasMultiselectionAction)
+      TabsInternalOperation.activateTab(tab, {
+        keepMultiselection: true
+      });
+  });
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {
