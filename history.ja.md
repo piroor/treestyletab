@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+   * mousedownの時点でタブをアクティブにするように挙動を戻した（TST 3.1.0以降での後退バグによって意図せずこの動作が失われていたのを修正）
+   * `tab-mousedown`がキャンセルされても[`tab-mouseup`、`tab-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)を通知するように戻した（キー入力に関するイベントの仕様と混同していた）
  - 3.4.3 (2020.3.7)
    * ユーザースタイルシートによる既知のカスタマイズとの互換性を向上
  - 3.4.2 (2020.3.7)
@@ -21,7 +23,7 @@
    * `about:devtools-toolbox`のタブのアイコンについて適切なアイコンを使うようにした
    * 新しいAPIメッセージを追加した：[`set-extra-tab-contents`、`clear-extra-tab-contents`および`clear-all-extra-tab-contents`](https://github.com/piroor/treestyletab/wiki/Tab-Extra-Contents-API)
    * 新しい通知型のAPIメッセージを追加した：[`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)、[`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded)、[`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)、[`try-expand-tree-from-focused-parent`、`try-expand-tree-from-focused-bundled-parent`、`try-expand-tree-from-attached-child`、`try-expand-tree-from-focused-collapsed-tab`、`try-expand-tree-from-long-press-ctrl-key`、および`try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst)
-   * [`tab-mousedown`に続く`tab-mouseup`、`tab-clicked`、`tab-dblclicked`の各通知型メッセージ](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)について、前の通知に対するキャンセル操作で確実にキャンセルできるようにした
+   * <del>[`tab-mousedown`に続く`tab-mouseup`、`tab-clicked`、`tab-dblclicked`の各通知型メッセージ](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)について、前の通知に対するキャンセル操作で確実にキャンセルできるようにした</del>
    * プライベートウィンドウへのアクセスをTST上でも許可されていない限り、他のアドオンにはプライベートウィンドウでのイベントを通知しないようにした
    * `ru`ロケール更新（by wvxwxvw. Thanks!）
  - 3.3.6 (2020.2.21)

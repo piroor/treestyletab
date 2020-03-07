@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * TST's tab is activated on a mousedown event. This behavior was unexpectedly lost at TST 3.1.0. (regression)
+   * [`tab-mouseup` and `tab-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are notified even if `tab-mousedown` is canceled. I totally confused the spec about mouse events with key and input events.
  - 3.4.3 (2020.3.7)
    * Better compatibility with known custom user styles.
  - 3.4.2 (2020.3.7)
@@ -21,7 +23,7 @@
    * Better support for a special favicon about `about:devtools-toolbox` tabs.
    * Add new API message types: [`set-extra-tab-contents`, `clear-extra-tab-contents` and `clear-all-extra-tab-contents`](https://github.com/piroor/treestyletab/wiki/Tab-Extra-Contents-API).
    * Add new API notification message types: [`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked), [`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded), [`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst), [`try-expand-tree-from-focused-parent`, `try-expand-tree-from-focused-bundled-parent`, `try-expand-tree-from-attached-child`, `try-expand-tree-from-focused-collapsed-tab`, `try-expand-tree-from-long-press-ctrl-key` and `try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst).
-   * Notifications and operations [`tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are now canceled by any leading notifications.
+   * <del>Notifications and operations [`tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are now canceled by any leading notifications.</del>
    * Don't deliver messages around incognito windows to other addons, if they are not allowed to access incognito windows.
    * Update `ru` locale by wvxwxvw. Thanks!
  - 3.3.6 (2020.2.21)
