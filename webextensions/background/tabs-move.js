@@ -37,7 +37,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import { SequenceMatcher } from '/common/diff.js';
+import { SequenceMatcher } from '/extlib/diff.js';
 
 import Tab from '/common/Tab.js';
 

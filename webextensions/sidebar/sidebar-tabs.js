@@ -16,7 +16,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import { SequenceMatcher } from '/common/diff.js';
+import { SequenceMatcher } from '/extlib/diff.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';

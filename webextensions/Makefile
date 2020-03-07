@@ -35,4 +35,6 @@ install_extlib:
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/; echo 'export default l10n;' >> $(EXTERNAL_LIB_DIR)/l10n.js
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/l10n-classic.js; echo 'window.l10n = l10n;' >> $(EXTERNAL_LIB_DIR)/l10n-classic.js
 	cp ../submodules/webextensions-lib-shortcut-customize-ui/ShortcutCustomizeUI.js $(EXTERNAL_LIB_DIR)/; echo 'export default ShortcutCustomizeUI;' >> $(EXTERNAL_LIB_DIR)/ShortcutCustomizeUI.js
+	cp ../submodules/webextensions-lib-dom-updater/diff.js $(EXTERNAL_LIB_DIR)/
+	cp ../submodules/webextensions-lib-dom-updater/dom-updater.js $(EXTERNAL_LIB_DIR)/
 
