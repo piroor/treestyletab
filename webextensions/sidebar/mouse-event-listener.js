@@ -432,35 +432,27 @@ async function onMouseUp(event) {
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
+  EventUtils.cancelHandleMousedown(event.button);
+  if (!lastMousedown)
+    return;
 
-  const allowed = await tryMouseOperationAllowedWithExtraContents(
+  const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
     TSTAPI.kNOTIFY_TAB_MOUSEUP,
     lastMousedown,
     extraContentsInfo
   );
-
-  EventUtils.cancelHandleMousedown(event.button);
-  if (!lastMousedown || !allowed)
-    return;
+  const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+    TSTAPI.kNOTIFY_TAB_CLICKED,
+    lastMousedown,
+    extraContentsInfo
+  );
+  if (!mouseupAllowed ||
+      !clickAllowed)
+    return true;
 
   let promisedCanceled = null;
-  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab') {
-    promisedCanceled = (async () => {
-      const mouseDownCanceled = await lastMousedown.promisedMousedownNotified;
-      if (mouseDownCanceled)
-        return true;
-
-      const allowed = await tryMouseOperationAllowedWithExtraContents(
-        TSTAPI.kNOTIFY_TAB_CLICKED,
-        lastMousedown,
-        extraContentsInfo
-      );
-      if (!allowed)
-        return true;
-
-      return false;
-    })();
-  }
+  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
+    promisedCanceled = lastMousedown.promisedMousedownNotified;
 
   if (lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) || // when the cursor was moved before mouseup
