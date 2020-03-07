@@ -87,7 +87,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       }
       info.allowed = allowed;
       if (!shouldSkipCollapsed)
-      await handleNewActiveTab(tab, info);
+        await handleNewActiveTab(tab, info);
     }
     if (shouldSkipCollapsed) {
       log('=> reaction for focusing collapsed descendant while Ctrl-Tab/Ctrl-Shift-Tab');
