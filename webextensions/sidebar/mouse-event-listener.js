@@ -395,8 +395,6 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
   return true;
 }
 
-
-
 function getMouseEventTargetType(event) {
   if (EventUtils.getTabFromEvent(event))
     return 'tab';
