@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.4.4 (2020.3.8)
    * TST's tab is activated on a mousedown event. This behavior was unexpectedly lost at TST 3.1.0. (regression)
    * Skip collapsed tree while tab switching via Ctrl-Tab/Ctrl-Shift-Tab, including cases they are lcoked as collapsed by some other helper addons.
    * [`tab-mouseup` and `tab-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are notified even if `tab-mousedown` is canceled. I totally confused the spec about mouse events with key and input events. This fixes incompatibility regression with a helper addon [Move unloaded tabs for Tree Style Tab](https://addons.mozilla.org/firefox/addon/move-unloaded-tabs-for-tst/).

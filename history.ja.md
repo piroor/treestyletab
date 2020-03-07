@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.4.4 (2020.3.8)
    * mousedownの時点でタブをアクティブにするように挙動を戻した（TST 3.1.0以降での後退バグによって意図せずこの動作が失われていたのを修正）
    * ヘルパーアドオンにによってツリーが折りたたみ状態で固定されている場合についても、Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え中に、折りたたまれた子孫タブを飛ばすようにした
    * `tab-mousedown`がキャンセルされても[`tab-mouseup`、`tab-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)を通知するように戻した（キー入力に関するイベントの仕様と混同していた）：[Move unloaded tabs for Tree Style Tab](https://addons.mozilla.org/firefox/addon/move-unloaded-tabs-for-tst/)との互換性が損なわれていた後退バグの修正
