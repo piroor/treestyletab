@@ -3,13 +3,13 @@
  original:
    https://github.com/piroor/treestyletab/blob/master/webextensions/tests/test-dom-updater.js
  for:
-   https://github.com/piroor/treestyletab/blob/master/webextensions/common/dom-updater.js
+   https://github.com/piroor/treestyletab/blob/master/webextensions/common/diff.js
 */
 'use strict';
 
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 
-import * as DOMUpdater from '/common/dom-updater.js';
+import { DOMUpdater } from '/common/diff.js';
 
 function createNode(source) {
   const range = document.createRange();

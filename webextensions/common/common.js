@@ -293,7 +293,6 @@ tab-item.private-browsing tab-label:before {
     'common/api-tabs': false,
     'common/bookmarks': false,
     'common/contextual-identities': false,
-    'common/dom-updater': false,
     'common/permissions': false,
     'common/sidebar-connection': false,
     'common/tabs-internal-operation': false,

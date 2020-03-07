@@ -10,7 +10,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import {
   configs
 } from '/common/common.js';
-import * as DOMUpdater from '/common/dom-updater.js';
+import { DOMUpdater } from '/common/diff.js';
 
 import {
   kTAB_ELEMENT_NAME,
