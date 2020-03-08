@@ -118,6 +118,12 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
                       successor;
         log('=> ', successor.id);
       }
+      const allowed = await TSTAPI.tryOperationAllowed(
+        TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_CHILD,
+        { tab: new TSTAPI.TreeItem(tab) },
+        { tabProperties: ['tab'] }
+      );
+      if (allowed) {
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(successor);
@@ -126,6 +132,10 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       if (tab.discarded)
         tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
       return false;
+      }
+      else {
+        log('  => canceled by someone.');
+      }
     }
   }
   else if (info.byActiveTabRemove &&
