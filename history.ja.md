@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * Firefox自身のタブと同じ操作性にするために、開閉つまみ、音声再生ボタン、クローズボックス上でのCtrl-クリックおよびShift-クリックはタブの複数選択の操作として扱うようにした
    * [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/)、[TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr)との併用時の挙動を改善
    * 新しい通知型のAPIメッセージを追加した：[`try-redirect-focus-from-collaped-tab`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)
  - 3.4.4 (2020.3.8)
