@@ -437,19 +437,19 @@ async function onMouseUp(event) {
     return;
 
   if (tab) {
-  const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
-    TSTAPI.kNOTIFY_TAB_MOUSEUP,
-    lastMousedown,
-    extraContentsInfo
-  );
-  const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
-    TSTAPI.kNOTIFY_TAB_CLICKED,
-    lastMousedown,
-    extraContentsInfo
-  );
-  if (!mouseupAllowed ||
-      !clickAllowed)
-    return true;
+    const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_TAB_MOUSEUP,
+      lastMousedown,
+      extraContentsInfo
+    );
+    const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_TAB_CLICKED,
+      lastMousedown,
+      extraContentsInfo
+    );
+    if (!mouseupAllowed ||
+        !clickAllowed)
+      return true;
   }
 
   let promisedCanceled = null;
