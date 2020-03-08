@@ -49,6 +49,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
+  const cache = {};
   if (tab.$TST.collapsed) {
     if (!tab.$TST.parent) {
       // This is invalid case, generally never should happen,
@@ -68,7 +69,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         log('  => apply unfocusableCollapsedTab');
         allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
-          { tab: new TSTAPI.TreeItem(tab) },
+          { tab: new TSTAPI.TreeItem(tab, { cache }) },
           { tabProperties: ['tab'] }
         );
         if (allowed) {
@@ -120,7 +121,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       }
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_CHILD,
-        { tab: new TSTAPI.TreeItem(tab) },
+        { tab: new TSTAPI.TreeItem(tab, { cache }) },
         { tabProperties: ['tab'] }
       );
       if (allowed) {
