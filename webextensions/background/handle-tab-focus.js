@@ -42,13 +42,19 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
   }
   const window = TabsStore.windows.get(tab.windowId);
   log('  lastActiveTab: ', window.lastActiveTab);
-  cancelDelayedExpand(Tab.get(window.lastActiveTab));
+  const lastActiveTab = Tab.get(window.lastActiveTab);
+  cancelDelayedExpand(lastActiveTab);
   let shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
+  const focusDirection = (!lastActiveTab || lastActiveTab.index == 0) ?
+    0 :
+    (lastActiveTab.index > tab.index) ?
+      -1 :
+      1;
   const cache = {};
   if (tab.$TST.collapsed) {
     if (!tab.$TST.parent) {
@@ -69,7 +75,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         log('  => apply unfocusableCollapsedTab');
         allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
-          { tab: new TSTAPI.TreeItem(tab, { cache }) },
+          { tab: new TSTAPI.TreeItem(tab, { cache }),
+            focusDirection },
           { tabProperties: ['tab'] }
         );
         if (allowed) {
@@ -121,7 +128,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       }
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_TAB,
-        { tab: new TSTAPI.TreeItem(tab, { cache }) },
+        { tab: new TSTAPI.TreeItem(tab, { cache }),
+          focusDirection },
         { tabProperties: ['tab'] }
       );
       if (allowed) {
