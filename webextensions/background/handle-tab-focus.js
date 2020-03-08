@@ -124,14 +124,14 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         { tabProperties: ['tab'] }
       );
       if (allowed) {
-      window.lastActiveTab = successor.id;
-      if (mMaybeTabSwitchingByShortcut)
-        setupDelayedExpand(successor);
-      TabsInternalOperation.activateTab(successor, { silently: true });
-      log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
-      if (tab.discarded)
-        tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
-      return false;
+        window.lastActiveTab = successor.id;
+        if (mMaybeTabSwitchingByShortcut)
+          setupDelayedExpand(successor);
+        TabsInternalOperation.activateTab(successor, { silently: true });
+        log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
+        if (tab.discarded)
+          tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
+        return false;
       }
       else {
         log('  => canceled by someone.');
