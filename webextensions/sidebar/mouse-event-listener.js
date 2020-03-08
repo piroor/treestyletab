@@ -286,9 +286,8 @@ function onMouseDown(event) {
       !mousedown.detail.closebox
     );
     const wasMultiselectionAction = (
-      onRegularArea &&
-      (mousedown.detail.ctrlKey ||
-       mousedown.detail.shiftKey)
+      mousedown.detail.ctrlKey ||
+      mousedown.detail.shiftKey
     );
     if (mousedown.detail.button == 0 &&
         onRegularArea &&
@@ -537,10 +536,7 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
     !lastMousedown.detail.soundButton &&
     !lastMousedown.detail.closebox
   );
-  const wasMultiselectionAction = (
-    onRegularArea &&
-    updateMultiselectionByTabClick(tab, lastMousedown.detail)
-  );
+  const wasMultiselectionAction = updateMultiselectionByTabClick(tab, lastMousedown.detail);
   log(' => ', { onRegularArea, wasMultiselectionAction });
 
   // Firefox clears tab multiselection after the mouseup, so
@@ -567,6 +563,12 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
             tabIds: tabs.map(tab => tab.id)
           });
       });
+  }
+  else if (wasMultiselectionAction) {
+    // On Firefox's native tabs, Ctrl-Click or Shift-Click always
+    // ignore actions on closeboxes and sound playing icons.
+    // Thus we should simulate the behavior.
+    return true;
   }
   else if (lastMousedown.detail.twisty) {
     log('clicked on twisty');
