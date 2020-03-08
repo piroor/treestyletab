@@ -105,7 +105,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       log('successor = ', successor.id);
       if (shouldSkipCollapsed &&
           (window.lastActiveTab == successor.id ||
-           successor.$TST.descendants.some(tab => tab.id == window.lastActiveTab))) {
+           successor.$TST.descendants.some(tab => tab.id == window.lastActiveTab)) &&
+          focusDirection > 0) {
         log('=> redirect successor (focus moved from the successor itself or its descendants)');
         successor = successor.$TST.nearestVisibleFollowingTab;
         if (successor &&
