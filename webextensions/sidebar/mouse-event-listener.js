@@ -367,7 +367,7 @@ function getOriginalExtraContentsTarget(event) {
 }
 
 async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraContentsInfo) {
-  if (extraContentsInfo.owners) {
+  if (extraContentsInfo && extraContentsInfo.owners) {
     const allowed = await TSTAPI.tryOperationAllowed(
       type,
       Object.assign({}, mousedown.detail, {
@@ -388,7 +388,7 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
       $extraContentsInfo: null
     }),
     { tabProperties: ['tab'],
-      except:        extraContentsInfo.owners }
+      except:        extraContentsInfo && extraContentsInfo.owners }
   );
   if (!allowed)
     return false;
@@ -431,11 +431,12 @@ async function onMouseUp(event) {
     return;
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
-  const extraContentsInfo = lastMousedown.detail.$extraContentsInfo;
   EventUtils.cancelHandleMousedown(event.button);
+  const extraContentsInfo = lastMousedown.detail && lastMousedown.detail.$extraContentsInfo;
   if (!lastMousedown)
     return;
 
+  if (tab) {
   const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
     TSTAPI.kNOTIFY_TAB_MOUSEUP,
     lastMousedown,
@@ -449,6 +450,7 @@ async function onMouseUp(event) {
   if (!mouseupAllowed ||
       !clickAllowed)
     return true;
+  }
 
   let promisedCanceled = null;
   if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
