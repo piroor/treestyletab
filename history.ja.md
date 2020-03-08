@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+   * [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/)、[TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr)との併用時の挙動を改善
+   * 新しい通知型のAPIメッセージを追加した：[`try-redirect-focus-from-collaped-tab`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)
  - 3.4.4 (2020.3.8)
    * mousedownの時点でタブをアクティブにするように挙動を戻した（TST 3.1.0以降での後退バグによって意図せずこの動作が失われていたのを修正）
    * ヘルパーアドオンにによってツリーが折りたたみ状態で固定されている場合についても、Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え中に、折りたたまれた子孫タブを飛ばすようにした
