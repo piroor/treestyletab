@@ -120,7 +120,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         log('=> ', successor.id);
       }
       const allowed = await TSTAPI.tryOperationAllowed(
-        TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_CHILD,
+        TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_TAB,
         { tab: new TSTAPI.TreeItem(tab, { cache }) },
         { tabProperties: ['tab'] }
       );
