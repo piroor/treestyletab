@@ -9,8 +9,12 @@
 
 :root {
   --tab-like-surface: ThreeDFace;
-  --tab-surface: var(--tab-like-surface);
-  --tab-text: ButtonText;
+  --tab-surface-regular: var(--tab-like-surface);
+  --tab-surface-active: Highlight;
+  --tab-surface-hover: var(--tab-like-surface);
+  --tab-text-regular: ButtonText;
+  --tab-text-active: HighlightText;
+  --tab-text-hover: ButtonText;
   --tab-text-inverted: CaptionText;
   --tab-border: ButtonShadow;
   --tab-dropmarker: ButtonText;
@@ -60,11 +64,11 @@ tab-item:not(.collapsed):hover,
 }
 
 tab-item.active {
-  --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
-  --tab-text: HighlightText;
-  --tab-text-inverted: Highlight;
+  --tab-surface: var(--tab-surface-active);
+  --tab-text: var(--tab-text-active);
+  --tab-text-inverted: var(--tab-surface-active);
 }
 
 tab-item:not(.active) {

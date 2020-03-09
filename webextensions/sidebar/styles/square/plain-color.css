@@ -32,8 +32,8 @@
 }
 
 :root[color-scheme="system-color"] {
-  --tab-surface: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
-  --tab-text: var(--browser-fg, -moz-dialogtext);
+  --tab-surface-regular: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
+  --tab-text-regular: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
   --tab-text-active: var(--tab-text-regular);
   --tab-text-active-inverted: Highlight;
