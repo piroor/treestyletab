@@ -158,6 +158,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
+  document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
 
   if (browser.theme && browser.theme.getCurrent)
     browser.theme.getCurrent().then(theme => {

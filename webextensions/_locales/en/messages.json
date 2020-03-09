@@ -487,6 +487,7 @@
   "config_link_groupPage_label":   { "message": "Page for Group Tab" },
 
   "config_runTests_label": { "message": "Run Automated Tests" },
+  "config_runBenchmark_label": { "message": "Run Benchmark" },
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detailed logging" },
   "config_logTimestamp_label": { "message": "Log with timestamp" },

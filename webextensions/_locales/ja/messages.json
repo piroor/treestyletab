@@ -483,6 +483,7 @@
   "config_link_groupPage_label":   { "message": "グループ化用タブのページ" },
 
   "config_runTests_label": { "message": "自動テストを実行" },
+  "config_runBenchmark_label": { "message": "ベンチマークを実行" },
   "config_debug_label": { "message": "デバッグモード" },
   "config_log_caption":               { "message": "詳細なログ" },
   "config_logTimestamp_label": { "message": "日時をログに付与する" },

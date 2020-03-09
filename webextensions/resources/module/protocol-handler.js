@@ -23,7 +23,7 @@ if (matched) {
 
     case 'test-runner':
     case 'testrunner':
-      location.href = Constants.kSHORTHAND_URIS.testRunner;
+      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${location.search}`;
       break;
 
     case 'options':

@@ -1,109 +1,184 @@
 /*
  license: The MIT License, Copyright (c) 2020 YUKI "Piro" Hiroshi
- original:
-   https://github.com/piroor/treestyletab/blob/master/webextensions/tests/test-dom-updater.js
- for:
-   https://github.com/piroor/treestyletab/blob/master/webextensions/common/diff.js
 */
 'use strict';
 
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 
-import { DOMUpdater } from '/common/diff.js';
+import { DOMUpdater } from '/extlib/dom-updater.js';
+import morphdom from '/node_modules/morphdom/dist/morphdom-esm.js';
+
+const container = document.body.appendChild(document.createElement('div'));
+
+document.body.appendChild(document.createElement('h1')).textContent = 'Benchmark DOMUpdater vs morphdom';
+const result = document.body.appendChild(document.createElement('ul'));
 
 function createNode(source) {
-  const range = document.createRange();
-  range.setStart(document.body, 0);
   const node = document.createElement('div');
-  node.appendChild(range.createContextualFragment(source.trim()));
-  range.detach();
+  node.appendChild(createFragment(source));
   return node;
 }
 
-function assertUpdated(from, to, steps) {
-  const expected = createNode(to.innerHTML);
-  const actualSteps = DOMUpdater.update(from, to);
-  is(expected.innerHTML, from.innerHTML);
-  if (typeof steps == 'number')
-    is(steps, actualSteps);
+function createFragment(source) {
+  const range = document.createRange();
+  range.setStart(document.body, 0);
+  const contents = range.createContextualFragment(source.trim());
+  range.detach();
+  return contents;
 }
 
-export function testUpdateAttributes() {
-  assertUpdated(
-    createNode(`
-      <span class="class1 class2">contents</span>
-    `),
-    createNode(`
-      <span class="class1 class2 class3">contents</span>
-    `),
-    1
+function assertUpdatedWithDOMUpdater(from, to) {
+  const fromNode = createNode(from);
+  container.appendChild(fromNode);
+  const start = Date.now();
+  DOMUpdater.update(fromNode, createFragment(to));
+  const end = Date.now();
+  is(createNode(to).innerHTML, fromNode.innerHTML);
+  return end - start;
+}
+
+function assertUpdatedWithMorphdomString(from, to) {
+  const fromNode = createNode(from);
+  container.appendChild(fromNode);
+  const start = Date.now();
+  morphdom(fromNode, `<div>${to}</div>`);
+  const end = Date.now();
+  is(createNode(to).innerHTML, fromNode.innerHTML);
+  return end - start;
+}
+
+function assertUpdatedWithMorphdomDocumentFragment(from, to) {
+  const fromNode = createNode(from);
+  container.appendChild(fromNode);
+  const start = Date.now();
+  morphdom(fromNode, createNode(to));
+  const end = Date.now();
+  is(createNode(to).innerHTML, fromNode.innerHTML);
+  return end - start;
+}
+
+function benchamrk(from, to) {
+  const range = document.createRange();
+  const tries = 500;
+  {
+    range.selectNodeContents(container);
+    range.deleteContents();
+    let total = 0;
+    for (let i = 0; i < tries; i++) {
+      total += assertUpdatedWithDOMUpdater(from, to);
+    }
+    result.appendChild(document.createElement('li')).textContent = `DOMUpdater: DocumentFragment ${total}`;
+  }
+  {
+    range.selectNodeContents(container);
+    range.deleteContents();
+    let total = 0;
+    for (let i = 0; i < tries; i++) {
+      total += assertUpdatedWithMorphdomString(from, to);
+    }
+    result.appendChild(document.createElement('li')).textContent = `morphdom: string ${total}`;
+  }
+  {
+    range.selectNodeContents(container);
+    range.deleteContents();
+    let total = 0;
+    for (let i = 0; i < tries; i++) {
+      total += assertUpdatedWithMorphdomDocumentFragment(from, to);
+    }
+    result.appendChild(document.createElement('li')).textContent = `morphdom: DocumentFragment ${total}`;
+  }
+  range.selectNodeContents(container);
+  range.deleteContents();
+  range.detach();
+}
+
+export function testBenchmark() {
+  benchamrk(
+    `
+      <span id="item1">contents
+        <span id="item1-1">contents</span>
+        <span id="item1-2">contents</span>
+        <span id="item1-3" part="active">contents, active</span>
+        <span id="item1-4">contents</span>
+        <span id="item1-5">contents</span>
+        <span id="item1-6">contents</span>
+      </span>
+      <span id="item2">contents
+        <span id="item2-1">contents</span>
+        <span id="item2-2">contents</span>
+        <span id="item2-3" part="active">contents, active</span>
+        <span id="item2-4">contents</span>
+        <span id="item2-5">contents</span>
+        <span id="item2-6">contents</span>
+      </span>
+      <span id="item3" part="active">contents, active
+        <span id="item3-1">contents</span>
+        <span id="item3-2">contents</span>
+        <span id="item3-3" part="active">contents, active</span>
+        <span id="item3-4">contents</span>
+        <span id="item3-5">contents</span>
+        <span id="item3-6">contents</span>
+      </span>
+      <span id="item4">contents
+        <span id="item4-1">contents</span>
+        <span id="item4-2">contents</span>
+        <span id="item4-3" part="active">contents, active</span>
+        <span id="item4-4">contents</span>
+        <span id="item4-5">contents</span>
+        <span id="item4-6">contents</span>
+      </span>
+      <span id="item5">contents
+        <span id="item5-1">contents</span>
+        <span id="item5-2">contents</span>
+        <span id="item5-3" part="active">contents, active</span>
+        <span id="item5-4">contents</span>
+        <span id="item5-5">contents</span>
+        <span id="item5-6">contents</span>
+      </span>
+      <span id="item6">contents
+        <span id="item6-1">contents</span>
+        <span id="item6-2">contents</span>
+        <span id="item6-3" part="active">contents, active</span>
+        <span id="item6-4">contents</span>
+        <span id="item6-5">contents</span>
+        <span id="item6-6">contents</span>
+      </span>
+    `.trim(),
+    `
+      <span id="item3">contents, old active
+        <span id="item3-3">contents, old active</span>
+        <span id="item3-4">contents</span>
+        <span id="item3-5">contents</span>
+        <span id="item3-6" part="active">contents, new active</span>
+        <span id="item3-7">contents</span>
+        <span id="item3-8">contents</span>
+      </span>
+      <span id="item4">contents
+        <span id="item4-3">contents, old active</span>
+        <span id="item4-4">contents</span>
+        <span id="item4-5">contents</span>
+        <span id="item4-6" part="active">contents, new active</span>
+        <span id="item4-7">contents</span>
+        <span id="item4-8">contents</span>
+      </span>
+      <span id="item5">contents
+        <span id="item5-3">contents, old active</span>
+        <span id="item5-4">contents</span>
+        <span id="item5-5">contents</span>
+        <span id="item5-6" part="active">contents, new active</span>
+        <span id="item5-7">contents</span>
+        <span id="item5-8">contents</span>
+      </span>
+      <span id="item6" part="active">contents, new active
+        <span id="item6-3">contents, old active</span>
+        <span id="item6-4">contents</span>
+        <span id="item6-5">contents</span>
+        <span id="item6-6" part="active">contents, new active</span>
+        <span id="item6-7">contents</span>
+        <span id="item6-8">contents</span>
+      </span>
+      <span id="item7">contents</span>
+      <span id="item8">contents</span>
+    `.trim()
   );
 }
-
-export function testUpdateNodes() {
-  assertUpdated(
-    createNode(`
-      <span anonid="item1">contents</span>
-      <span anonid="item2">contents</span>
-      <span anonid="item3">contents</span>
-      <span anonid="item4">contents</span>
-      <span anonid="item5">contents</span>
-      <span anonid="item6">contents</span>
-    `),
-    createNode(`
-      <span anonid="item3">contents</span>
-      <span anonid="item4">contents</span>
-      <span anonid="item5">contents</span>
-      <span anonid="item6">contents</span>
-      <span anonid="item7">contents</span>
-      <span anonid="item8">contents</span>
-    `),
-    4 /* deletion */ + 4 /* insertion */
-  );
-}
-
-export function testUpdateNodesAndAttributes() {
-  assertUpdated(
-    createNode(`
-      <span anonid="item1">contents</span>
-      <span anonid="item2">contents</span>
-      <span anonid="item3" part="active">contents, active</span>
-      <span anonid="item4">contents</span>
-      <span anonid="item5">contents</span>
-      <span anonid="item6">contents</span>
-    `),
-    createNode(`
-      <span anonid="item3">contents, old active</span>
-      <span anonid="item4">contents</span>
-      <span anonid="item5">contents</span>
-      <span anonid="item6" part="active">contents, new active</span>
-      <span anonid="item7">contents</span>
-      <span anonid="item8">contents</span>
-    `),
-    4 /* item deletion */ + 4 /* iteminsertion */ +
-      1 /* remove attr */ + 1 /* replace text */ +
-      1 /* remove attr */ + 1 /* replace text */
-  );
-}
-
-export function testUpdateNoHint() {
-  assertUpdated(
-    createNode(`
-      <span>contents 1</span>
-      <span>contents 2</span>
-      <span part="active">contents 3, active</span>
-      <span>contents 4</span>
-      <span>contents 5</span>
-      <span>contents 6</span>
-    `),
-    createNode(`
-      <span>contents 3, old active</span>
-      <span>contents 4</span>
-      <span>contents 5</span>
-      <span part="active">contents 6, new active</span>
-      <span>contents 7</span>
-      <span>contents 8</span>
-    `)
-  );
-}
-

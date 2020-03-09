@@ -52,14 +52,19 @@ async function restoreConfigs(values) {
 }
 
 async function runAll() {
-  const testCases = [
-    TestDOMUpdater,
-    TestContextMenu,
-    TestHidden,
-    TestNewTab,
-    TestSuccessor,
-    TestTree
-  ];
+  const testCases = [];
+  if (/benchmark=true/.test(location.search)) {
+    testCases.push(TestDOMUpdater);
+  }
+  else {
+    testCases.push(
+      TestContextMenu,
+      TestHidden,
+      TestNewTab,
+      TestSuccessor,
+      TestTree
+    );
+  }
   let runOnlyRunnable = false;
   findRunnable:
   for (const tests of testCases) {
