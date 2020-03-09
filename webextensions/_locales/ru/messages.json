@@ -487,6 +487,7 @@
   "config_link_groupPage_label":   { "message": "Страница для группы вкладок" },
 
   "config_runTests_label": { "message": "Запустить автоматические тесты" },
+  "config_runBenchmark_label": { "message": "Запустить бенчмарк" },
   "config_debug_label": { "message": "Режим отладки" },
   "config_log_caption":               { "message": "Детальное логирование" },
   "config_logTimestamp_label": { "message": "Лог с отметками времени" },
