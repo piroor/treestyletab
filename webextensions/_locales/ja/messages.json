@@ -402,6 +402,8 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "最上位の親が閉じられた時は最初の子を昇格させ、それ以外の場合はすべての子タブを昇格させる" },
   "config_closeParentBehavior_detach":               { "message": "子孫のタブをツリーから解放する" },
 
+  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "サイドバー非表示時に、折りたたまれたツリーの親タブを閉じる場合、親タブを単独で閉じようとしているものとして扱う" },
+
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "クローズボックスの通常のクリック操作で同時に複数のタブを閉じるときは確認する" },
 

@@ -34,13 +34,17 @@ export function shouldApplyTreeBehavior(params = {}) {
 }
 
 export function getCloseParentBehaviorForTab(tab, options = {}) {
-  log('getCloseParentBehaviorForTab ', tab, options);
+  const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
+  log('getCloseParentBehaviorForTab ', tab, options, { sidebarVisible });
   if (!options.asIndividualTab &&
       tab.$TST.subtreeCollapsed &&
-      !options.applyTreeBehavior)
+      (sidebarVisible ||
+       !configs.treatTreeAsExpandedOnClosedWithNoSidebar) &&
+      !options.applyTreeBehavior) {
+    log(' => collapsed tree, kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN');
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
+  }
 
-  const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
   let behavior;
   switch (configs.closeParentBehaviorMode) {
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR:

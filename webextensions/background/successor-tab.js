@@ -14,6 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -100,7 +101,11 @@ async function updateInternal(tabId) {
   let successor = null;
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
-      successor = tab.$TST.firstVisibleChild || tab.$TST.nextVisibleSiblingTab || tab.$TST.nearestVisiblePrecedingTab;
+      const firstChild = (
+        configs.treatTreeAsExpandedOnClosedWithNoSidebar &&
+        !SidebarConnection.isOpen(tab.windowId)
+      ) ? tab.$TST.firstChild : tab.$TST.firstVisibleChild;
+      successor = firstChild || tab.$TST.nextVisibleSiblingTab || tab.$TST.nearestVisiblePrecedingTab;
       log(`  possible successor: ${dumpTab(tab)}`);
       if (successor &&
           successor.discarded &&
@@ -293,4 +298,12 @@ Tree.onDetached.addListener((child, _info = {}) => {
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
   updateActiveTab(tab.windowId);
+});
+
+SidebarConnection.onConnected.addListener(windowId => {
+  updateActiveTab(windowId);
+});
+
+SidebarConnection.onDisconnected.addListener(windowId => {
+  updateActiveTab(windowId);
 });

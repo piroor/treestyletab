@@ -406,6 +406,8 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "Promote the first child when a root tab was closed, otherwise promote all children" },
   "config_closeParentBehavior_detach":               { "message": "Liberate child tabs from the tree" },
 
+  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Treat a closing parent tab as a closing solo tab even if it has any collapsed descendant, when the sidebar is invisible" },
+
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warn me when I attempt to close multiple tabs by a normal click on a closebox" },
 
