@@ -60,7 +60,8 @@ function assertUpdatedWithMorphdomDocumentFragment(from, to) {
 function benchamrk(from, to) {
   const range = document.createRange();
   const tries = 500;
-  {
+  const tasks = [
+    (() => {
     range.selectNodeContents(container);
     range.deleteContents();
     let total = 0;
@@ -68,8 +69,8 @@ function benchamrk(from, to) {
       total += assertUpdatedWithDOMUpdater(from, to);
     }
     result.appendChild(document.createElement('li')).textContent = `DOMUpdater: DocumentFragment ${total}`;
-  }
-  {
+    }),
+    (() => {
     range.selectNodeContents(container);
     range.deleteContents();
     let total = 0;
@@ -77,8 +78,8 @@ function benchamrk(from, to) {
       total += assertUpdatedWithMorphdomString(from, to);
     }
     result.appendChild(document.createElement('li')).textContent = `morphdom: string ${total}`;
-  }
-  {
+    }),
+    (() => {
     range.selectNodeContents(container);
     range.deleteContents();
     let total = 0;
@@ -86,6 +87,17 @@ function benchamrk(from, to) {
       total += assertUpdatedWithMorphdomDocumentFragment(from, to);
     }
     result.appendChild(document.createElement('li')).textContent = `morphdom: DocumentFragment ${total}`;
+    })
+  ];
+  // shuffle with Fisher–Yates
+  for (let i = tasks.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    const element = tasks[i];
+    tasks[i] = tasks[randomIndex];
+    tasks[randomIndex] = element;
+  }
+  for (const task of tasks) {
+    task();
   }
   range.selectNodeContents(container);
   range.deleteContents();
