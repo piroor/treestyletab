@@ -62,31 +62,31 @@ function benchamrk(from, to) {
   const tries = 500;
   const tasks = [
     (() => {
-    range.selectNodeContents(container);
-    range.deleteContents();
-    let total = 0;
-    for (let i = 0; i < tries; i++) {
-      total += assertUpdatedWithDOMUpdater(from, to);
-    }
-    result.appendChild(document.createElement('li')).textContent = `DOMUpdater: DocumentFragment ${total}`;
+      range.selectNodeContents(container);
+      range.deleteContents();
+      let total = 0;
+      for (let i = 0; i < tries; i++) {
+        total += assertUpdatedWithDOMUpdater(from, to);
+      }
+      result.appendChild(document.createElement('li')).textContent = `DOMUpdater: DocumentFragment ${total}`;
     }),
     (() => {
-    range.selectNodeContents(container);
-    range.deleteContents();
-    let total = 0;
-    for (let i = 0; i < tries; i++) {
-      total += assertUpdatedWithMorphdomString(from, to);
-    }
-    result.appendChild(document.createElement('li')).textContent = `morphdom: string ${total}`;
+      range.selectNodeContents(container);
+      range.deleteContents();
+      let total = 0;
+      for (let i = 0; i < tries; i++) {
+        total += assertUpdatedWithMorphdomString(from, to);
+      }
+      result.appendChild(document.createElement('li')).textContent = `morphdom: string ${total}`;
     }),
     (() => {
-    range.selectNodeContents(container);
-    range.deleteContents();
-    let total = 0;
-    for (let i = 0; i < tries; i++) {
-      total += assertUpdatedWithMorphdomDocumentFragment(from, to);
-    }
-    result.appendChild(document.createElement('li')).textContent = `morphdom: DocumentFragment ${total}`;
+      range.selectNodeContents(container);
+      range.deleteContents();
+      let total = 0;
+      for (let i = 0; i < tries; i++) {
+        total += assertUpdatedWithMorphdomDocumentFragment(from, to);
+      }
+      result.appendChild(document.createElement('li')).textContent = `morphdom: DocumentFragment ${total}`;
     })
   ];
   // shuffle with Fisher–Yates
