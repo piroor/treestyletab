@@ -86,14 +86,19 @@ export async function closeOthers(rootTab) {
   TabsInternalOperation.removeTabs(closeTabs);
 }
 
-export function collapseTree(rootTab) {
+export function collapseTree(rootTab, options = {}) {
   if (!rootTab.$TST.hasChild ||
       rootTab.$TST.subtreeCollapsed)
     return;
-  Tree.collapseExpandSubtree(rootTab, {
+  const tabs = [rootTab];
+  if (options.recursively)
+    tabs.push(...rootTab.$TST.descendants.filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed));
+  for (const tab of tabs) {
+  Tree.collapseExpandSubtree(tab, {
     collapsed: true,
     broadcast: true
   });
+  }
 }
 
 export function collapseAll(windowId) {
@@ -102,14 +107,19 @@ export function collapseAll(windowId) {
   }
 }
 
-export function expandTree(rootTab) {
+export function expandTree(rootTab, options = {}) {
   if (!rootTab.$TST.hasChild ||
       !rootTab.$TST.subtreeCollapsed)
     return;
-  Tree.collapseExpandSubtree(rootTab, {
+  const tabs = [rootTab];
+  if (options.recursively)
+    tabs.push(...rootTab.$TST.descendants.filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed));
+  for (const tab of tabs) {
+  Tree.collapseExpandSubtree(tab, {
     collapsed: false,
     broadcast: true
   });
+  }
 }
 
 export function expandAll(windowId) {

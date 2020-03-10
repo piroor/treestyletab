@@ -98,11 +98,17 @@
     "collapseTree": {
       "description": "__MSG_context_collapseTree_command__"
     },
+    "collapseTreeRecursively": {
+      "description": "__MSG_context_collapseTreeRecursively_command__"
+    },
     "collapseAll": {
       "description": "__MSG_context_collapseAll_command__"
     },
     "expandTree": {
       "description": "__MSG_context_expandTree_command__"
+    },
+    "expandTreeRecursively": {
+      "description": "__MSG_context_expandTreeRecursively_command__"
     },
     "expandAll": {
       "description": "__MSG_context_expandAll_command__"

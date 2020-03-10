@@ -55,11 +55,19 @@ const mContextMenuItemsById = {
     title:       browser.i18n.getMessage('context_collapseTree_label'),
     requireTree: true,
   },
+  'collapseTreeRecursively': {
+    title:       browser.i18n.getMessage('context_collapseTreeRecursively_label'),
+    requireTree: true,
+  },
   'collapseAll': {
     title: browser.i18n.getMessage('context_collapseAll_label')
   },
   'expandTree': {
     title:       browser.i18n.getMessage('context_expandTree_label'),
+    requireTree: true,
+  },
+  'expandTreeRecursively': {
+    title:       browser.i18n.getMessage('context_expandTreeRecursively_label'),
     requireTree: true,
   },
   'expandAll': {
@@ -324,11 +332,17 @@ function onTabItemClick(info, tab) {
     case 'collapseTree':
       Commands.collapseTree(contextTab);
       break;
+    case 'collapseTreeRecursively':
+      Commands.collapseTree(contextTab, { recursively: true });
+      break;
     case 'collapseAll':
       Commands.collapseAll(contextTab.windowId);
       break;
     case 'expandTree':
       Commands.expandTree(contextTab);
+      break;
+    case 'expandTreeRecursively':
+      Commands.expandTree(contextTab, { recursively: true });
       break;
     case 'expandAll':
       Commands.expandAll(contextTab.windowId);

@@ -205,6 +205,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_collapseTreeRecursively_label'),
+        key:   'context_topLevel_collapseTreeRecursively',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_collapseAll_label'),
         key:   'context_topLevel_collapseAll',
         type:  'checkbox'
@@ -212,6 +217,11 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_expandTree_label'),
         key:   'context_topLevel_expandTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_expandTreeRecursively_label'),
+        key:   'context_topLevel_expandTreeRecursively',
         type:  'checkbox'
       },
       {
@@ -265,6 +275,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_collapseTreeRecursively_label'),
+        key:   'context_collapseTreeRecursively',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_collapseAll_label'),
         key:   'context_collapseAll',
         type:  'checkbox'
@@ -272,6 +287,11 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_expandTree_label'),
         key:   'context_expandTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_expandTreeRecursively_label'),
+        key:   'context_expandTreeRecursively',
         type:  'checkbox'
       },
       {

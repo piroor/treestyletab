@@ -108,11 +108,17 @@ async function onShortcutCommand(command) {
     case 'collapseTree':
       Commands.collapseTree(activeTab);
       return;
+    case 'collapseTreeRecursively':
+      Commands.collapseTree(activeTab, { recursively: true });
+      return;
     case 'collapseAll':
       Commands.collapseAll(activeTab.windowId);
       return;
     case 'expandTree':
       Commands.expandTree(activeTab);
+      return;
+    case 'expandTreeRecursively':
+      Commands.expandTree(activeTab, { recursively: true });
       return;
     case 'expandAll':
       Commands.expandAll(activeTab.windowId);
