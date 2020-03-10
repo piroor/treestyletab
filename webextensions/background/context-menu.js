@@ -342,26 +342,26 @@ function onTabItemClick(info, tab) {
       if (inverted)
         Commands.reloadDescendants(contextTabs);
       else
-      Commands.reloadTree(contextTabs);
+        Commands.reloadTree(contextTabs);
       break;
     case 'reloadDescendants':
       if (inverted)
         Commands.reloadTree(contextTabs);
       else
-      Commands.reloadDescendants(contextTabs);
+        Commands.reloadDescendants(contextTabs);
       break;
 
     case 'closeTree':
       if (inverted)
         Commands.closeDescendants(contextTabs);
       else
-      Commands.closeTree(contextTabs);
+        Commands.closeTree(contextTabs);
       break;
     case 'closeDescendants':
       if (inverted)
         Commands.closeTree(contextTabs);
       else
-      Commands.closeDescendants(contextTabs);
+        Commands.closeDescendants(contextTabs);
       break;
     case 'closeOthers':
       Commands.closeOthers(contextTabs);

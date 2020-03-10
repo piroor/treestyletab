@@ -139,7 +139,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.documentElement.classList.remove('successor-tab-support');
 
   for (const label of document.querySelectorAll('.contextConfigs label')) {
-    removeAccesskeyMark(label.lastChild);
+    for (const child of label.childNodes) {
+      if (child.nodeType == Node.TEXT_NODE)
+        removeAccesskeyMark(child);
+    }
   }
 
   const showLogsButton = document.getElementById('showLogsButton');
