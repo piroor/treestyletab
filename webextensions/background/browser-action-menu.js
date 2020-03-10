@@ -921,6 +921,12 @@ const mItems = [
         ]
       },
       {
+        title: indent() + browser.i18n.getMessage('config_treatTreeAsExpandedOnClosedWithNoSidebar_label'),
+        key:   'treatTreeAsExpandedOnClosedWithNoSidebar',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title:    browser.i18n.getMessage('config_fixupTreeOnTabVisibilityChanged_caption'),
         children: [
           {
