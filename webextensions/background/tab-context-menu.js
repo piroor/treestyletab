@@ -110,11 +110,17 @@ const mItemsById = {
   'context_topLevel_collapseTree': {
     title: browser.i18n.getMessage('context_collapseTree_label')
   },
+  'context_topLevel_collapseTreeRecursively': {
+    title: browser.i18n.getMessage('context_collapseTreeRecursively_label')
+  },
   'context_topLevel_collapseAll': {
     title: browser.i18n.getMessage('context_collapseAll_label')
   },
   'context_topLevel_expandTree': {
     title: browser.i18n.getMessage('context_expandTree_label')
+  },
+  'context_topLevel_expandTreeRecursively': {
+    title: browser.i18n.getMessage('context_expandTreeRecursively_label')
   },
   'context_topLevel_expandAll': {
     title: browser.i18n.getMessage('context_expandAll_label')
@@ -506,11 +512,19 @@ async function onShown(info, contextTab) {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseTree,
     enabled: contextTab && contextTab.$TST.hasChild
   }) && modifiedItemsCount++;
+  updateItem('context_topLevel_collapseTreeRecursively', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseTreeRecursively,
+    enabled: contextTab && contextTab.$TST.hasChild
+  }) && modifiedItemsCount++;
   updateItem('context_topLevel_collapseAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseAll
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandTree', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandTree,
+    enabled: contextTab && contextTab.$TST.hasChild
+  }) && modifiedItemsCount++;
+  updateItem('context_topLevel_expandTreeRecursively', {
+    visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandTreeRecursively,
     enabled: contextTab && contextTab.$TST.hasChild
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandAll', {
