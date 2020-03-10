@@ -336,18 +336,31 @@ function onTabItemClick(info, tab) {
       mContextMenuItemsById[itemId].type == 'checkbox')
     mContextMenuItemsById[itemId].checked = !mContextMenuItemsById[itemId].checked;
 
+  const inverted = info.button == 1;
   switch (itemId) {
     case 'reloadTree':
+      if (inverted)
+        Commands.reloadDescendants(contextTabs);
+      else
       Commands.reloadTree(contextTabs);
       break;
     case 'reloadDescendants':
+      if (inverted)
+        Commands.reloadTree(contextTabs);
+      else
       Commands.reloadDescendants(contextTabs);
       break;
 
     case 'closeTree':
+      if (inverted)
+        Commands.closeDescendants(contextTabs);
+      else
       Commands.closeTree(contextTabs);
       break;
     case 'closeDescendants':
+      if (inverted)
+        Commands.closeTree(contextTabs);
+      else
       Commands.closeDescendants(contextTabs);
       break;
     case 'closeOthers':
@@ -355,19 +368,19 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'collapseTree':
-      Commands.collapseTree(contextTabs);
+      Commands.collapseTree(contextTabs, { recursively: inverted });
       break;
     case 'collapseTreeRecursively':
-      Commands.collapseTree(contextTabs, { recursively: true });
+      Commands.collapseTree(contextTabs, { recursively: !inverted });
       break;
     case 'collapseAll':
       Commands.collapseAll(contextTab.windowId);
       break;
     case 'expandTree':
-      Commands.expandTree(contextTabs);
+      Commands.expandTree(contextTabs, { recursively: inverted });
       break;
     case 'expandTreeRecursively':
-      Commands.expandTree(contextTabs, { recursively: true });
+      Commands.expandTree(contextTabs, { recursively: !inverted });
       break;
     case 'expandAll':
       Commands.expandAll(contextTab.windowId);
