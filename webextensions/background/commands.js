@@ -104,10 +104,10 @@ export function collapseTree(rootTabs, options = {}) {
       Array.isArray(rootTabs) && rootTabs || [rootTabs]
   ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
   for (const tab of tabs) {
-  Tree.collapseExpandSubtree(tab, {
-    collapsed: true,
-    broadcast: true
-  });
+    Tree.collapseExpandSubtree(tab, {
+      collapsed: true,
+      broadcast: true
+    });
   }
 }
 
@@ -124,10 +124,10 @@ export function expandTree(rootTabs, options = {}) {
       Array.isArray(rootTabs) && rootTabs || [rootTabs]
   ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
   for (const tab of tabs) {
-  Tree.collapseExpandSubtree(tab, {
-    collapsed: false,
-    broadcast: true
-  });
+    Tree.collapseExpandSubtree(tab, {
+      collapsed: false,
+      broadcast: true
+    });
   }
 }
 
