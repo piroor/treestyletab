@@ -38,61 +38,71 @@ export const onTabsClosing = new EventListenerManager();
 export const onMoveUp      = new EventListenerManager();
 export const onMoveDown    = new EventListenerManager();
 
-export function reloadTree(rootTab) {
-  const tabs = [rootTab].concat(rootTab.$TST.descendants);
-  for (const tab of tabs) {
+function uniqTabsAndDescendantsSet(tabs) {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(Tab.compare);
+}
+
+export function reloadTree(tabs) {
+  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 }
 
-export function reloadDescendants(rootTab) {
-  const tabs = rootTab.$TST.descendants;
-  for (const tab of tabs) {
+export function reloadDescendants(rootTabs) {
+  const rootTabsSet = new Set(rootTabs);
+  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+    if (rootTabsSet.has(tab))
+      continue;
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 }
 
-export async function closeTree(rootTab) {
-  const tabs = [rootTab].concat(rootTab.$TST.descendants);
-  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
+export async function closeTree(tabs) {
+  tabs = uniqTabsAndDescendantsSet(tabs);
+  const windowId = tabs[0].windowId;
+  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
   TabsInternalOperation.removeTabs(tabs);
 }
 
-export async function closeDescendants(rootTab) {
-  const tabs = rootTab.$TST.descendants;
-  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
+export async function closeDescendants(rootTabs) {
+  const rootTabsSet = new Set(rootTabs);
+  const tabs     = uniqTabsAndDescendantsSet(rootTabs).filter(tab => !rootTabsSet.has(tab));
+  const windowId = rootTabs[0].windowId;
+  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
   TabsInternalOperation.removeTabs(tabs);
 }
 
-export async function closeOthers(rootTab) {
-  const exceptionTabs = [rootTab].concat(rootTab.$TST.descendants);
-  const tabs          = Tab.getNormalTabs(rootTab.windowId, { iterator: true, reversed: true }); // except pinned or hidden tabs, close bottom to top!
+export async function closeOthers(exceptionRoots) {
+  const exceptionTabs = uniqTabsAndDescendantsSet(exceptionRoots);
+  const windowId      = exceptionTabs[0].windowId;
+  const tabs          = Tab.getNormalTabs(windowId, { iterator: true, reversed: true }); // except pinned or hidden tabs, close bottom to top!
   const closeTabs     = [];
   for (const tab of tabs) {
     if (!exceptionTabs.includes(tab))
       closeTabs.push(tab);
   }
-  const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
+  const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
     return;
   TabsInternalOperation.removeTabs(closeTabs);
 }
 
-export function collapseTree(rootTab, options = {}) {
-  if (!rootTab.$TST.hasChild ||
-      rootTab.$TST.subtreeCollapsed)
-    return;
-  const tabs = [rootTab];
-  if (options.recursively)
-    tabs.push(...rootTab.$TST.descendants.filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed));
+export function collapseTree(rootTabs, options = {}) {
+  const tabs = (
+    options.recursively ?
+      uniqTabsAndDescendantsSet(rootTabs) :
+      Array.isArray(rootTabs) && rootTabs || [rootTabs]
+  ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
   for (const tab of tabs) {
   Tree.collapseExpandSubtree(tab, {
     collapsed: true,
@@ -107,13 +117,12 @@ export function collapseAll(windowId) {
   }
 }
 
-export function expandTree(rootTab, options = {}) {
-  if (!rootTab.$TST.hasChild ||
-      !rootTab.$TST.subtreeCollapsed)
-    return;
-  const tabs = [rootTab];
-  if (options.recursively)
-    tabs.push(...rootTab.$TST.descendants.filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed));
+export function expandTree(rootTabs, options = {}) {
+  const tabs = (
+    options.recursively ?
+      uniqTabsAndDescendantsSet(rootTabs) :
+      Array.isArray(rootTabs) && rootTabs || [rootTabs]
+  ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
   for (const tab of tabs) {
   Tree.collapseExpandSubtree(tab, {
     collapsed: false,
@@ -128,15 +137,8 @@ export function expandAll(windowId) {
   }
 }
 
-export async function bookmarkTree(roots, options = {}) {
-  let tabs = [];
-  if (!Array.isArray(roots))
-    roots = [roots];
-  for (const root of roots) {
-    tabs.push(root);
-    tabs = tabs.concat(root.$TST.descendants);
-  }
-  tabs = Array.from(new Set(tabs)).sort(Tab.compare);
+export async function bookmarkTree(rootTabs, options = {}) {
+  const tabs = uniqTabsAndDescendantsSet(rootTabs);
   if (tabs.length > 1 &&
       tabs[0].$TST.isGroupTab)
     tabs.shift();

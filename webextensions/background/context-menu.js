@@ -30,57 +30,69 @@ const kROOT_ITEM = 'treestyletab';
 
 const mContextMenuItemsById = {
   'reloadTree': {
-    title: browser.i18n.getMessage('context_reloadTree_label')
+    title:              browser.i18n.getMessage('context_reloadTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_reloadTree_label_multiselected')
   },
   'reloadDescendants': {
-    title: browser.i18n.getMessage('context_reloadDescendants_label')
+    title:              browser.i18n.getMessage('context_reloadDescendants_label'),
+    titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
   'separatorAfterReload': {
     type: 'separator'
   },
   'closeTree': {
-    title: browser.i18n.getMessage('context_closeTree_label')
+    title:              browser.i18n.getMessage('context_closeTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeTree_label_multiselected')
   },
   'closeDescendants': {
-    title:       browser.i18n.getMessage('context_closeDescendants_label'),
-    requireTree: true,
+    title:              browser.i18n.getMessage('context_closeDescendants_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeDescendants_label_multiselected'),
+    requireTree:        true,
   },
   'closeOthers': {
-    title: browser.i18n.getMessage('context_closeOthers_label')
+    title:              browser.i18n.getMessage('context_closeOthers_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeOthers_label_multiselected')
   },
   'separatorAfterClose': {
     type: 'separator'
   },
   'collapseTree': {
-    title:       browser.i18n.getMessage('context_collapseTree_label'),
+    title:              browser.i18n.getMessage('context_collapseTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_collapseTree_label_multiselected'),
     requireTree: true,
   },
   'collapseTreeRecursively': {
-    title:       browser.i18n.getMessage('context_collapseTreeRecursively_label'),
-    requireTree: true,
+    title:              browser.i18n.getMessage('context_collapseTreeRecursively_label'),
+    titleMultiselected: browser.i18n.getMessage('context_collapseTreeRecursively_label_multiselected'),
+    requireTree:        true,
   },
   'collapseAll': {
-    title: browser.i18n.getMessage('context_collapseAll_label')
+    title:               browser.i18n.getMessage('context_collapseAll_label'),
+    hideOnMultiselected: true
   },
   'expandTree': {
-    title:       browser.i18n.getMessage('context_expandTree_label'),
-    requireTree: true,
+    title:              browser.i18n.getMessage('context_expandTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_expandTree_label_multiselected'),
+    requireTree:       true,
   },
   'expandTreeRecursively': {
-    title:       browser.i18n.getMessage('context_expandTreeRecursively_label'),
-    requireTree: true,
+    title:              browser.i18n.getMessage('context_expandTreeRecursively_label'),
+    titleMultiselected: browser.i18n.getMessage('context_expandTreeRecursively_label_multiselected'),
+    requireTree:        true,
   },
   'expandAll': {
-    title: browser.i18n.getMessage('context_expandAll_label')
+    title:               browser.i18n.getMessage('context_expandAll_label'),
+    hideOnMultiselected: true
   },
   'separatorAfterCollapseExpand': {
     type: 'separator'
   },
   'bookmarkTree': {
-    title: browser.i18n.getMessage('context_bookmarkTree_label')
+    title:              browser.i18n.getMessage('context_bookmarkTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_bookmarkTree_label_multiselected')
   },
   'groupTabs': {
-    title: browser.i18n.getMessage('context_groupTabs_label'),
+    title:                browser.i18n.getMessage('context_groupTabs_label'),
     requireMultiselected: true
   },
   'separatorAfterBookmark': {
@@ -111,8 +123,10 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   // Access key is not supported by WE API.
   // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
   item.titleWithoutAccesskey = item.title && item.title.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+  item.titleMultiselectedWithoutAccesskey = item.titleMultiselected && item.titleMultiselected.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   item.type = item.type || 'normal';
   item.lastVisible = item.visible = false;
+  item.lastTitle = item.title;
   mContextMenuItems.push(item);
   mGroupedContextMenuItems.push(Object.assign({}, item, {
     id:       `grouped:${id}`,
@@ -214,7 +228,7 @@ function updateItem(id, params) {
   }, browser.runtime);
 }
 
-function updateItemsVisibility(items, forceVisible = null) {
+function updateItemsVisibility(items, { forceVisible = null, multiselected = false } = {}) {
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -231,9 +245,12 @@ function updateItemsVisibility(items, forceVisible = null) {
       lastSeparator = item;
     }
     else {
+      const title = multiselected && item.titleMultiselected || item.title;
       let visible = !(item.configKey in configs) || configs[item.configKey];
       if (forceVisible !== null)
         visible = forceVisible;
+      if (item.hideOnMultiselected && multiselected)
+        visible = false;
       if (visible) {
         if (lastSeparator) {
           updateItem(lastSeparator.id, { visible: visibleNormalItemsCount > 0 });
@@ -245,10 +262,18 @@ function updateItemsVisibility(items, forceVisible = null) {
         visibleNormalItemsCount++;
         visibleItemsCount++;
       }
-      if (visible == item.lastVisible)
+      const updatedParams = {};
+      if (visible !== item.lastVisible) {
+        updatedParams.visible = visible;
+        item.lastVisible = visible;
+      }
+      if (title !== item.lastTitle) {
+        updatedParams.title = title;
+        item.lastTitle = title;
+      }
+      if (Object.keys(updatedParams).length == 0)
         continue;
-      updateItem(item.id, { visible });
-      item.lastVisible = visible;
+      updateItem(item.id, updatedParams);
       updated = true;
     }
   }
@@ -260,10 +285,10 @@ function updateItemsVisibility(items, forceVisible = null) {
   return { updated, visibleItemsCount };
 }
 
-function updateItems() {
+function updateItems({ multiselected } = {}) {
   let updated = false;
 
-  const groupedItems = updateItemsVisibility(mGroupedContextMenuItems);
+  const groupedItems = updateItemsVisibility(mGroupedContextMenuItems, { multiselected });
   if (groupedItems.updated)
     updated = true;
 
@@ -281,7 +306,7 @@ function updateItems() {
     updated = true;
   }
 
-  const topLevelItems = updateItemsVisibility(mContextMenuItems, grouped ? false : null);
+  const topLevelItems = updateItemsVisibility(mContextMenuItems, { forceVisible: grouped ? false : null, multiselected });
   if (topLevelItems.updated)
     updated = true;
 
@@ -304,7 +329,7 @@ function onTabItemClick(info, tab) {
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tab.get(tab.id);
-  const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [];
+  const contextTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [contextTab];
 
   const itemId = info.menuItemId.replace(/^(?:grouped:|context_topLevel_)/, '');
   if (mContextMenuItemsById[itemId] &&
@@ -313,48 +338,48 @@ function onTabItemClick(info, tab) {
 
   switch (itemId) {
     case 'reloadTree':
-      Commands.reloadTree(contextTab);
+      Commands.reloadTree(contextTabs);
       break;
     case 'reloadDescendants':
-      Commands.reloadDescendants(contextTab);
+      Commands.reloadDescendants(contextTabs);
       break;
 
     case 'closeTree':
-      Commands.closeTree(contextTab);
+      Commands.closeTree(contextTabs);
       break;
     case 'closeDescendants':
-      Commands.closeDescendants(contextTab);
+      Commands.closeDescendants(contextTabs);
       break;
     case 'closeOthers':
-      Commands.closeOthers(contextTab);
+      Commands.closeOthers(contextTabs);
       break;
 
     case 'collapseTree':
-      Commands.collapseTree(contextTab);
+      Commands.collapseTree(contextTabs);
       break;
     case 'collapseTreeRecursively':
-      Commands.collapseTree(contextTab, { recursively: true });
+      Commands.collapseTree(contextTabs, { recursively: true });
       break;
     case 'collapseAll':
       Commands.collapseAll(contextTab.windowId);
       break;
     case 'expandTree':
-      Commands.expandTree(contextTab);
+      Commands.expandTree(contextTabs);
       break;
     case 'expandTreeRecursively':
-      Commands.expandTree(contextTab, { recursively: true });
+      Commands.expandTree(contextTabs, { recursively: true });
       break;
     case 'expandAll':
       Commands.expandAll(contextTab.windowId);
       break;
 
     case 'bookmarkTree':
-      Commands.bookmarkTree(selectedTabs.length > 1 ? selectedTabs : contextTab);
+      Commands.bookmarkTree(contextTabs);
       break;
 
     case 'groupTabs':
-      if (selectedTabs.length > 1)
-        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
+      if (contextTabs.length > 1)
+        TabsGroup.groupTabs(contextTabs, { broadcast: true });
       break;
 
     case 'collapsed':
@@ -402,16 +427,17 @@ function onShown(info, tab) {
 browser.menus.onShown.addListener(onShown);
 
 function onTabContextMenuShown(info, tab) {
+  tab = tab && Tab.get(tab.id);
+  const multiselected = tab && tab.$TST.multiselected;
+  const contextTabs      = multiselected ? Tab.getSelectedTabs(tab.windowId) : tab ? [tab] : [];
+  const hasChild         = contextTabs.some(tab => tab.$TST.hasChild);
+  const subtreeCollapsed = contextTabs.some(tab => tab.$TST.subtreeCollapsed);
+
   let updated = false;
   if (mNativeContextMenuAvailable) {
     initItems();
-    updated = updateItems();
+    updated = updateItems({ multiselected });
   }
-
-  tab = tab && Tab.get(tab.id);
-  const subtreeCollapsed = tab && tab.$TST.subtreeCollapsed;
-  const hasChild = tab && tab.$TST.hasChild;
-  const multiselected = tab && tab.$TST.multiselected;
 
   for (const item of mContextMenuItems) {
     let newEnabled;

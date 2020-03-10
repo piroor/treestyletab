@@ -38,10 +38,12 @@ const mItemsById = {
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
   },
   'context_topLevel_reloadTree': {
-    title:              browser.i18n.getMessage('context_reloadTree_label')
+    title:              browser.i18n.getMessage('context_reloadTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_reloadTree_label_multiselected')
   },
   'context_topLevel_reloadDescendants': {
-    title:              browser.i18n.getMessage('context_reloadDescendants_label')
+    title:              browser.i18n.getMessage('context_reloadDescendants_label'),
+    titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
   'context_toggleMuteTab-mute': {
     title:              browser.i18n.getMessage('tabContextMenu_mute_label'),
@@ -74,7 +76,8 @@ const mItemsById = {
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
   },
   'context_topLevel_bookmarkTree': {
-    title: browser.i18n.getMessage('context_bookmarkTree_label')
+    title:              browser.i18n.getMessage('context_bookmarkTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_bookmarkTree_label_multiselected')
   },
   'context_reopenInContainer': {
     title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
@@ -108,19 +111,23 @@ const mItemsById = {
     type: 'separator'
   },
   'context_topLevel_collapseTree': {
-    title: browser.i18n.getMessage('context_collapseTree_label')
+    title:              browser.i18n.getMessage('context_collapseTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_collapseTree_label_multiselected')
   },
   'context_topLevel_collapseTreeRecursively': {
-    title: browser.i18n.getMessage('context_collapseTreeRecursively_label')
+    title:              browser.i18n.getMessage('context_collapseTreeRecursively_label'),
+    titleMultiselected: browser.i18n.getMessage('context_collapseTreeRecursively_label_multiselected')
   },
   'context_topLevel_collapseAll': {
     title: browser.i18n.getMessage('context_collapseAll_label')
   },
   'context_topLevel_expandTree': {
-    title: browser.i18n.getMessage('context_expandTree_label')
+    title:              browser.i18n.getMessage('context_expandTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_expandTree_label_multiselected')
   },
   'context_topLevel_expandTreeRecursively': {
-    title: browser.i18n.getMessage('context_expandTreeRecursively_label')
+    title:              browser.i18n.getMessage('context_expandTreeRecursively_label'),
+    titleMultiselected: browser.i18n.getMessage('context_expandTreeRecursively_label_multiselected')
   },
   'context_topLevel_expandAll': {
     title: browser.i18n.getMessage('context_expandAll_label')
@@ -135,13 +142,16 @@ const mItemsById = {
     title: browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
   'context_topLevel_closeTree': {
-    title: browser.i18n.getMessage('context_closeTree_label')
+    title:              browser.i18n.getMessage('context_closeTree_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeTree_label_multiselected')
   },
   'context_topLevel_closeDescendants': {
-    title: browser.i18n.getMessage('context_closeDescendants_label')
+    title:              browser.i18n.getMessage('context_closeDescendants_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeDescendants_label_multiselected')
   },
   'context_topLevel_closeOthers': {
-    title: browser.i18n.getMessage('context_closeOthers_label')
+    title:              browser.i18n.getMessage('context_closeOthers_label'),
+    titleMultiselected: browser.i18n.getMessage('context_closeOthers_label_multiselected')
   },
   'context_undoCloseTab': {
     title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
@@ -359,7 +369,7 @@ function updateItem(id, state = {}) {
   };
   if ('checked' in state)
     updateInfo.checked = state.checked;
-  const title = state.multiselected ? item.titleMultiselected || item.title : item.title;
+  const title = state.multiselected && item.titleMultiselected || item.title;
   if (title) {
     updateInfo.title = title;
     modified = title != item.lastTitle;
@@ -408,6 +418,8 @@ async function onShown(info, contextTab) {
   const hasMultipleTabs       = Tab.hasMultipleTabs(windowId);
   const hasMultipleNormalTabs = Tab.hasMultipleTabs(windowId, { normal: true });
   const multiselected         = contextTab && contextTab.$TST.multiselected;
+  const contextTabs           = multiselected ? Tab.getSelectedTabs(windowId) : [contextTab];
+  const hasChild              = contextTabs.some(tab => tab.$TST.hasChild);
 
   let modifiedItemsCount = 0;
 
@@ -423,11 +435,13 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_reloadTree', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_reloadTree
+    visible: emulate && contextTab && configs.context_topLevel_reloadTree,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_reloadDescendants', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_reloadDescendants,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_reloadDescendants,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
     visible: emulate && contextTab && (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
@@ -460,7 +474,8 @@ async function onShown(info, contextTab) {
     multiselected: multiselected || !contextTab
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_bookmarkTree', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_bookmarkTree
+    visible: emulate && contextTab && configs.context_topLevel_bookmarkTree,
+    multiselected
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
@@ -509,23 +524,27 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_topLevel_collapseTree', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseTree,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_collapseTree,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_collapseTreeRecursively', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseTreeRecursively,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_collapseTreeRecursively,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_collapseAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseAll
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandTree', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandTree,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_expandTree,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandTreeRecursively', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandTreeRecursively,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_expandTreeRecursively,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
@@ -543,14 +562,17 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_topLevel_closeTree', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeTree
+    visible: emulate && contextTab && configs.context_topLevel_closeTree,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_closeDescendants', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeDescendants,
-    enabled: contextTab && contextTab.$TST.hasChild
+    visible: emulate && contextTab && configs.context_topLevel_closeDescendants,
+    enabled: hasChild,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_closeOthers', {
-    visible: emulate && !multiselected && contextTab && configs.context_topLevel_closeOthers
+    visible: emulate && contextTab && configs.context_topLevel_closeOthers,
+    multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_undoCloseTab', {
