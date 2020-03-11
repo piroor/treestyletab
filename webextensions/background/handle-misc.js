@@ -83,7 +83,7 @@ async function onShortcutCommand(command) {
     active:        true,
     currentWindow: true
   }).catch(ApiTabs.createErrorHandler()))[0].id);
-  const selectedTabs = activeTab.$TST.multiselected ? Tab.getSelectedTabs(activeTab.windowId) : [];
+  const selectedTabs = activeTab.$TST.multiselected ? Tab.getSelectedTabs(activeTab.windowId) : [activeTab];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
@@ -91,40 +91,40 @@ async function onShortcutCommand(command) {
       return;
 
     case 'reloadTree':
-      Commands.reloadTree(activeTab);
+      Commands.reloadTree(selectedTabs);
       return;
     case 'reloadDescendants':
-      Commands.reloadDescendants(activeTab);
+      Commands.reloadDescendants(selectedTabs);
       return;
     case 'closeTree':
-      Commands.closeTree(activeTab);
+      Commands.closeTree(selectedTabs);
       return;
     case 'closeDescendants':
-      Commands.closeDescendants(activeTab);
+      Commands.closeDescendants(selectedTabs);
       return;
     case 'closeOthers':
-      Commands.closeOthers(activeTab);
+      Commands.closeOthers(selectedTabs);
       return;
     case 'collapseTree':
-      Commands.collapseTree(activeTab);
+      Commands.collapseTree(selectedTabs);
       return;
     case 'collapseTreeRecursively':
-      Commands.collapseTree(activeTab, { recursively: true });
+      Commands.collapseTree(selectedTabs, { recursively: true });
       return;
     case 'collapseAll':
       Commands.collapseAll(activeTab.windowId);
       return;
     case 'expandTree':
-      Commands.expandTree(activeTab);
+      Commands.expandTree(selectedTabs);
       return;
     case 'expandTreeRecursively':
-      Commands.expandTree(activeTab, { recursively: true });
+      Commands.expandTree(selectedTabs, { recursively: true });
       return;
     case 'expandAll':
       Commands.expandAll(activeTab.windowId);
       return;
     case 'bookmarkTree':
-      Commands.bookmarkTree(selectedTabs.length > 1 ? selectedTabs : activeTab);
+      Commands.bookmarkTree(selectedTabs);
       return;
 
     case 'newIndependentTab':
