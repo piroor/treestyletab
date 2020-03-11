@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.4.6 (2020.3.12)
    * Add "Collapse this Tree Recursively" and "Expand this Tree Recursively" commands for the context menu and keyboard shortcuts.
    * Support inverted actions of some context menu commands with middle click: reload tree / reload descendants, close tree / close descendants, collapse tree one level / recursively, and expand tree one level / recursively.
    * Support multiselected tabs by some context menu commands: reload tree, reload descendants, close tree, close descendants, close others except the tree, collapse tree, and expand tree.
