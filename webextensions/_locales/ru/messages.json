@@ -239,7 +239,7 @@
   "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все с подпапками" },
 
 
-  "config_title": { "message": "Настройки Tree Style Tab" },
+  "config_title": { "message": "Открыть настройки Tree Style Tab в новой вкладке" },
 
   "config_showExpertOptions_label": { "message": "Режим эксперта" },
 
@@ -500,8 +500,8 @@
 
   "config_debug_caption": { "message": "Разработка" },
 
-  "config_link_startupPage_label": { "message": "Стартовая страница" },
-  "config_link_groupPage_label":   { "message": "Страница для группы вкладок" },
+  "config_link_startupPage_label": { "message": "Открыть стартовую страницу Tree Style Tab" },
+  "config_link_groupPage_label":   { "message": "Открыть страницу группы вкладок Tree Style Tab" },
 
   "config_runTests_label": { "message": "Запустить автоматические тесты" },
   "config_runBenchmark_label": { "message": "Запустить бенчмарк" },
