@@ -342,6 +342,7 @@ async function onCommand(item, event) {
       linkUrl:          null,
       mediaType:        null,
       menuItemId:       id,
+      button:           event.button,
       modifiers:        modifiers,
       pageUrl:          null,
       parentMenuItemId: null,
