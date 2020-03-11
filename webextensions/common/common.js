@@ -17,8 +17,8 @@ export const configs = new Configs({
   sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
 
-  sidebarScrollbarPosition: 0, // obsolete, migrated to user stylesheet
-  scrollbarMode: -1, // obsolete, migrated to user stylesheet
+  sidebarScrollbarPosition: null, // obsolete, migrated to user stylesheet
+  scrollbarMode: null, // obsolete, migrated to user stylesheet
 
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
@@ -47,7 +47,7 @@ export const configs = new Configs({
 
 
   // context menu
-  fakeContextMenu: true, // obsolete, migrated to emulateDefaultContextMenu
+  fakeContextMenu: null, // obsolete, migrated to emulateDefaultContextMenu
   emulateDefaultContextMenu: true,
 
   context_reloadTree: true,
@@ -78,9 +78,9 @@ export const configs = new Configs({
   context_topLevel_bookmarkTree: false,
   context_topLevel_groupTabs: false,
 
-  context_closeTabOptions_closeTree: false, // obsolete, migrated to context_topLevel_closeTree
-  context_closeTabOptions_closeDescendants: false, // obsolete, migrated to context_topLevel_closeDescendants
-  context_closeTabOptions_closeOthers: false, // obsolete, migrated to context_topLevel_closeOthers
+  context_closeTabOptions_closeTree: null, // obsolete, migrated to context_topLevel_closeTree
+  context_closeTabOptions_closeDescendants: null, // obsolete, migrated to context_topLevel_closeDescendants
+  context_closeTabOptions_closeOthers: null, // obsolete, migrated to context_topLevel_closeOthers
 
   context_collapsed: false,
   context_pinnedTab: false,
@@ -99,12 +99,12 @@ export const configs = new Configs({
   autoCollapseExpandSubtreeOnSelect: true,
   autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove: true,
 
-  collapseExpandSubtreeByDblClick: false, // obsolete, migrated to treeDoubleClickBehavior
+  collapseExpandSubtreeByDblClick: null, // obsolete, migrated to treeDoubleClickBehavior
   treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE,
 
   autoExpandIntelligently: true,
   unfocusableCollapsedTab: true,
-  autoExpandOnCollapsedChildActive: true, // obsolete, migrate to unfocusableCollapsedTab
+  autoExpandOnCollapsedChildActive: null, // obsolete, migrate to unfocusableCollapsedTab
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,
@@ -165,12 +165,12 @@ export const configs = new Configs({
   closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  promoteFirstChildForClosedRoot:     true, // obsolete, migrated to Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges:        Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE, // obsolete, migrated to closeParentBehaviorMode
+  promoteFirstChildForClosedRoot:     null, // obsolete, migrated to Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  parentTabBehaviorForChanges:        null, // obsolete, migrated to closeParentBehaviorMode
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   treatTreeAsExpandedOnClosedWithNoSidebar: true,
-  moveFocusInTreeForClosedActiveTab: true, // obsolete, migrated to "successorTabControlLevel"
+  moveFocusInTreeForClosedActiveTab: null, // obsolete, migrated to "successorTabControlLevel"
   successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
@@ -218,7 +218,7 @@ export const configs = new Configs({
   acceptableDelayForInternalFocusMoving: 150,
   delayToRetrySyncTabsOrder: 100,
   notificationTimeout: 10 * 1000,
-  startDragTimeout: 400, // obsolete, migrated to longPressDuration
+  startDragTimeout: null, // obsolete, migrated to longPressDuration
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   delayToApplyHighlightedState: 50,

@@ -29,11 +29,14 @@ export function migrateConfigs() {
       ShortcutCustomizeUI.setDefaultShortcuts();
 
     case 1:
+      if (configs.startDragTimeout !== null)
       configs.longPressDuration = configs.startDragTimeout;
+      if (configs.emulateDefaultContextMenu !== null)
       configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
 
     case 2:
-      if (!configs.simulateSelectOwnerOnClose)
+      if (configs.simulateSelectOwnerOnClose !== null &&
+          !configs.simulateSelectOwnerOnClose)
         configs.successorTabControlLevel = Constants.kSUCCESSOR_TAB_CONTROL_NEVER;
 
     case 3:
@@ -43,12 +46,17 @@ export function migrateConfigs() {
         configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
 
     case 4:
-      configs.emulateDefaultContextMenu = true; // activate by default
+      if (configs.fakeContextMenu !== null)
+        configs.emulateDefaultContextMenu = configs.fakeContextMenu;
+      if (configs.context_closeTabOptions_closeTree !== null)
       configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
+      if (configs.context_closeTabOptions_closeDescendants !== null)
       configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
+      if (configs.context_closeTabOptions_closeOthers !== null)
       configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
 
     case 5:
+      if (configs.scrollbarMode !== null) {
       switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
         case 0: // default, refular width
           configs.userStyleRules += `
@@ -75,6 +83,8 @@ export function migrateConfigs() {
         case 3: // overlay (macOS)
           break;
       }
+      }
+      if (configs.sidebarScrollbarPosition !== null) {
       switch (configs.sidebarScrollbarPosition) {
         default:
         case 0: // auto
@@ -88,11 +98,14 @@ export function migrateConfigs() {
 :root.left #tabbar { direction: ltr; }`;
           break;
       }
+      }
 
     case 6:
-      if (configs.promoteFirstChildForClosedRoot &&
+      if (configs.promoteFirstChildForClosedRoot != null &&
+          configs.promoteFirstChildForClosedRoot &&
           configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
         configs.closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+      if (configs.parentTabBehaviorForChanges !== null) {
       switch (configs.parentTabBehaviorForChanges) {
         case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
           configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
@@ -106,12 +119,15 @@ export function migrateConfigs() {
           configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.closeParentBehavior;
           break;
       }
+      }
 
     case 7:
-      if (configs.collapseExpandSubtreeByDblClick)
+      if (configs.collapseExpandSubtreeByDblClick !== null &&
+          configs.collapseExpandSubtreeByDblClick)
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED;
 
     case 8:
+      if (configs.autoExpandOnCollapsedChildActive !== null)
       configs.unfocusableCollapsedTab = configs.autoExpandOnCollapsedChildActive;
   }
   configs.configsVersion = kCONFIGS_VERSION;
