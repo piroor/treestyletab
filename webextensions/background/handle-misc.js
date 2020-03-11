@@ -399,9 +399,8 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         await TSTAPI.doProgressively(
           tabs,
-          tab => Tree.collapseExpandSubtree(tab, {
-            collapsed: true,
-            broadcast: true
+          tab => Commands.collapseTree(tab, {
+            recursively: !!message.recursively
           }),
           message.interval
         );
@@ -413,9 +412,8 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         await TSTAPI.doProgressively(
           tabs,
-          tab => Tree.collapseExpandSubtree(tab, {
-            collapsed: false,
-            broadcast: true
+          tab => Commands.expandTree(tab, {
+            recursively: !!message.recursively
           }),
           message.interval
         );
