@@ -132,7 +132,7 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "создаст ссылку или закладку там где вы отпустите вкладки" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "создаст ссылку или закладку там где вы отпустите вкладку" },
 
-  "warnOnCloseTabs_message":   { "message": "Вы пытаетесь закрыть $NUMBER$ вкладок. Уверены, что хотите продолжить?",
+  "warnOnCloseTabs_message":   { "message": "Вы пытаетесь закрыть $NUMBER$ вкладок. Хотите продолжить?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
     }},
@@ -194,25 +194,39 @@
   "context_menu_label": { "message": "Дерево вкладок" },
 
   "context_reloadTree_label": { "message": "Обновить это дерево" },
+  "context_reloadTree_label_multiselected": { "message": "Обновить эти деревья" },
   "context_reloadTree_command": { "message": "Обновить это дерево" },
   "context_reloadDescendants_label": { "message": "Обновить дочерние" },
+  "context_reloadDescendants_label_multiselected": { "message": "Обновить дочерние этих вкладок" },
   "context_reloadDescendants_command": { "message": "Обновить дочерние" },
   "context_closeTree_label": { "message": "Закрыть это дерево" },
+  "context_closeTree_label_multiselected": { "message": "Закрыть эти деревья" },
   "context_closeTree_command": { "message": "Закрыть это дерево" },
   "context_closeDescendants_label": { "message": "Закрыть дочерние" },
+  "context_closeDescendants_label_multiselected": { "message": "Закрыть дочерние этих вкладок" },
   "context_closeDescendants_command": { "message": "Закрыть дочерние" },
   "context_closeOthers_label": { "message": "Закрыть все, кроме этого дерева" },
+  "context_closeOthers_label_multiselected": { "message": "Закрыть другие, кроме этих деревьев" },
   "context_closeOthers_command": { "message": "Закрыть все, кроме этого дерева" },
   "context_collapseTree_label": { "message": "Свернуть это дерево" },
+  "context_collapseTree_label_multiselected": { "message": "Свернуть эти деревья" },
   "context_collapseTree_command": { "message": "Свернуть это дерево" },
+  "context_collapseTreeRecursively_label": { "message": "Свернуть это дерево рекурсивно" },
+  "context_collapseTreeRecursively_label_multiselected": { "message": "Свернуть эти деревья рекурсивно" },
+  "context_collapseTreeRecursively_command": { "message": "Свернуть это дерево рекурсивн" },
   "context_collapseAll_label": { "message": "Свернуть все" },
   "context_collapseAll_command": { "message": "Свернуть все" },
   "context_expandTree_label": { "message": "Развернуть это дерево" },
+  "context_expandTree_label_multiselected": { "message": "Развернуть эти деревья" },
   "context_expandTree_command": { "message": "Развернуть это дерево" },
+  "context_expandTreeRecursively_label": { "message": "Развернуть это дерево рекурсивно" },
+  "context_expandTreeRecursively_label_multiselected": { "message": "Развернуть эти деревья рекурсивно" },
+  "context_expandTreeRecursively_command": { "message": "Развернуть это дерево рекурсивно" },
   "context_expandAll_label": { "message": "Развернуть все" },
   "context_expandAll_command": { "message": "Развернуть все" },
-  "context_bookmarkTree_label": { "message": "Это дерево в закладки…" },
-  "context_bookmarkTree_command": { "message": "Это дерево в закладки…" },
+  "context_bookmarkTree_label": { "message": "В закладки это дерево…" },
+  "context_bookmarkTree_label_multiselected": { "message": "В закладки эти деревья…" },
+  "context_bookmarkTree_command": { "message": "В закладки это дерево…" },
   "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
   "context_groupTabs_command":    { "message": "Создать новую группу из вкладок" },
   "context_topLevel_prefix": { "message": "Верхний элемент: " },
@@ -272,9 +286,10 @@
   "config_context_caption": { "message": "Контекстное меню" },
   "config_emulateDefaultContextMenu_label": { "message": "Имитация контекстного меню вкладок на боковой панели" },
   "config_extraItems_tabs_caption": { "message": "Дополнительные пункты контекстного меню" },
-  "config_extraItems_tabs_topLevel": { "message": "Верхний уровень" },
+  "config_extraItems_tabs_topLevel": { "message": "Основное меню" },
   "config_extraItems_tabs_subMenu": { "message": "Вложенное меню" },
-  "config_extraItems_bookmarks_caption": { "message": "Пункты TST контекстного меню закладок" },
+  "config_extraItems_tabs_middleClick": { "message": "Действие щелчка СКМ" },
+  "config_extraItems_bookmarks_caption": { "message": "Пункты контекстного меню закладок" },
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Открывать незагруженными" },
 
 
@@ -300,7 +315,7 @@
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Считать недавно открытой вкладку, открытую действием \"Новая вкладка\", если она открывается с URL: " },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
-  "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Кликом колесика мыши открыть новую пустую вкладку как" },
+  "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Щелчком СКМ открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(не контролировать)" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "отдельную вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "дочернюю текущей" },
@@ -310,7 +325,7 @@
 
   "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
 
-  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (кликом СКМ на кнопке \"Перезагрузить\" и т.п.)" },
+  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (щелчком СКМ на кнопке \"Перезагрузить\" и т.п.)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(не контролировать)" },
@@ -386,7 +401,7 @@
   "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Удерживать вкладки выгружеными при кратковременном фокусе" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Избегать активации выгруженных вкладок при закрытии текущей вкладки или сворачивании дерева" },
 
-  "config_treeDoubleClickBehavior_caption":             { "message": "Двойной клик" },
+  "config_treeDoubleClickBehavior_caption":             { "message": "Двойной щелчок" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Свернуть/развернуть дерево" },
   "config_treeDoubleClickBehavior_none":                { "message": "Ничего не делать" },
   "config_closeParentBehaviorMode_caption":           { "message": "Когда родительская вкладка закрыта или перемещена как отдельная вкладка" },
@@ -405,6 +420,8 @@
   "config_closeParentBehavior_promoteAll":           { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
   "config_closeParentBehavior_promoteIntelligently": { "message": "Повысить первую дочернюю, когда корневая вкладка закрыта, иначе повысить все дочерние" },
   "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
+
+  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Рассматривать закрывающуюся родительскую вкладку как одиночную, даже если у нее есть свернутый потомок, при скрытой боковой панели" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать, когда я попытаюсь закрыть несколько вкладок по крестику закрытия вкладки (свернутое дерево)" },
@@ -456,7 +473,7 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным кликом (*имитация поведения Firefox с \"browser.tabs.closeTabByDblclick\"=\"true\")" },
+  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным щелчком (*имитация поведения Firefox с \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс (API) выбора нескольких вкладок  (*зависит от встроенной настройки \"browser.tabs.multiselect\"=\"true\" для Firefox 63 и выше)" },
 
   "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },
@@ -533,7 +550,7 @@
   "tabContextMenu_moveTab_label":     { "message": "П&ереместить вкладку" },
   "tabContextMenu_moveTabToStart_label": { "message": "Переместить в &начало" },
   "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в &конец" },
-  "tabContextMenu_tearOff_label":        { "message": "Переместить в новое &окно" },
+  "tabContextMenu_tearOff_label":     { "message": "Переместить в новое &окно" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкл&адки" },
   "tabContextMenu_bookmarkAll_label": { "message": "Добавить все в закладки…" },
