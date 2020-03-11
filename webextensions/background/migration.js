@@ -30,9 +30,9 @@ export function migrateConfigs() {
 
     case 1:
       if (configs.startDragTimeout !== null)
-      configs.longPressDuration = configs.startDragTimeout;
+        configs.longPressDuration = configs.startDragTimeout;
       if (configs.emulateDefaultContextMenu !== null)
-      configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
+        configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
 
     case 2:
       if (configs.simulateSelectOwnerOnClose !== null &&
@@ -49,25 +49,25 @@ export function migrateConfigs() {
       if (configs.fakeContextMenu !== null)
         configs.emulateDefaultContextMenu = configs.fakeContextMenu;
       if (configs.context_closeTabOptions_closeTree !== null)
-      configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
+        configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
       if (configs.context_closeTabOptions_closeDescendants !== null)
-      configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
+        configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
       if (configs.context_closeTabOptions_closeOthers !== null)
-      configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
+        configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
 
     case 5:
       if (configs.scrollbarMode !== null) {
-      switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
-        case 0: // default, refular width
-          configs.userStyleRules += `
+        switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
+          case 0: // default, refular width
+            configs.userStyleRules += `
 
 /* regular width scrollbar */
 #tabbar { scrollbar-width: auto; }`;
-          break;
-        case 1: // narrow width
-          break;
-        case 2: // hide
-          configs.userStyleRules += `
+            break;
+          case 1: // narrow width
+            break;
+          case 2: // hide
+            configs.userStyleRules += `
 
 /* hide scrollbar */
 #tabbar { scrollbar-width: none; }
@@ -79,25 +79,25 @@ export function migrateConfigs() {
 :root.platform-mac #tabbar:dir(ltr).overflow .tab:not(.pinned) {
   padding-right: 0;
 }`;
-          break;
-        case 3: // overlay (macOS)
-          break;
-      }
+            break;
+          case 3: // overlay (macOS)
+            break;
+        }
       }
       if (configs.sidebarScrollbarPosition !== null) {
-      switch (configs.sidebarScrollbarPosition) {
-        default:
-        case 0: // auto
-        case 1: // left
-          break;
-          break;
-        case 2: // right
-          configs.userStyleRules += `
+        switch (configs.sidebarScrollbarPosition) {
+          default:
+          case 0: // auto
+          case 1: // left
+            break;
+            break;
+          case 2: // right
+            configs.userStyleRules += `
 
 /* put scrollbar rightside */
 :root.left #tabbar { direction: ltr; }`;
-          break;
-      }
+            break;
+        }
       }
 
     case 6:
@@ -106,19 +106,19 @@ export function migrateConfigs() {
           configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
         configs.closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY;
       if (configs.parentTabBehaviorForChanges !== null) {
-      switch (configs.parentTabBehaviorForChanges) {
-        case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
-          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
-          break;
-        default:
-        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR;
-          break;
-        case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
-          configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM;
-          configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.closeParentBehavior;
-          break;
-      }
+        switch (configs.parentTabBehaviorForChanges) {
+          case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
+            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
+            break;
+          default:
+          case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
+            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR;
+            break;
+          case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
+            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM;
+            configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.  closeParentBehavior;
+            break;
+        }
       }
 
     case 7:
@@ -128,7 +128,7 @@ export function migrateConfigs() {
 
     case 8:
       if (configs.autoExpandOnCollapsedChildActive !== null)
-      configs.unfocusableCollapsedTab = configs.autoExpandOnCollapsedChildActive;
+        configs.unfocusableCollapsedTab = configs.autoExpandOnCollapsedChildActive;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
