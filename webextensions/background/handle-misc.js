@@ -188,13 +188,17 @@ async function onShortcutCommand(command) {
     case 'focusPreviousSilently': {
       const nextActive = activeTab.$TST.nearestVisiblePrecedingTab ||
         Tab.getLastVisibleTab(activeTab.windowId);
-      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, {
+        silently: /Silently/.test(command)
+      });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
       const nextActive = activeTab.$TST.nearestVisibleFollowingTab ||
         Tab.getFirstVisibleTab(activeTab.windowId);
-      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, {
+        silently: /Silently/.test(command)
+      });
     }; return;
     case 'focusParent':
       TabsInternalOperation.activateTab(activeTab.$TST.parent);
@@ -381,7 +385,10 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const cache = {};
         return TSTAPI.formatTabResult(
-          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, { interval: message.interval, cache })),
+          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, {
+            interval: message.interval,
+            cache
+          })),
           message,
           sender.id
         );
@@ -392,7 +399,10 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         await TSTAPI.doProgressively(
           tabs,
-          tab => Tree.collapseExpandSubtree(tab, { collapsed: true, broadcast: true }),
+          tab => Tree.collapseExpandSubtree(tab, {
+            collapsed: true,
+            broadcast: true
+          }),
           message.interval
         );
         return true;
@@ -403,7 +413,10 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         await TSTAPI.doProgressively(
           tabs,
-          tab => Tree.collapseExpandSubtree(tab, { collapsed: false, broadcast: true }),
+          tab => Tree.collapseExpandSubtree(tab, {
+            collapsed: false,
+            broadcast: true
+          }),
           message.interval
         );
         return true;
@@ -414,7 +427,10 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         await TSTAPI.doProgressively(
           tabs,
-          tab => Tree.collapseExpandSubtree(tab, { collapsed: !tab.$TST.subtreeCollapsed, broadcast: true }),
+          tab => Tree.collapseExpandSubtree(tab, {
+            collapsed: !tab.$TST.subtreeCollapsed,
+            broadcast: true
+          }),
           message.interval
         );
         return true;
@@ -542,7 +558,9 @@ function onMessageExternal(message, sender) {
         const tabsArray = await TSTAPI.doProgressively(
           tabs,
           tab => {
-            TabsInternalOperation.activateTab(tab, { silently: message.silently });
+            TabsInternalOperation.activateTab(tab, {
+              silently: message.silently
+            });
             return tab;
           },
           message.interval
@@ -587,7 +605,9 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tab = await TabsGroup.groupTabs(Array.from(tabs), { broadcast: true });
+        const tab = await TabsGroup.groupTabs(Array.from(tabs), {
+          broadcast: true
+        });
         if (!tab)
           return null;
         const treeItem = new TSTAPI.TreeItem(tab);
@@ -606,10 +626,16 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const reopenedTabs = await Commands.reopenInContainer(Array.from(tabs), message.containerId || 'firefox-default');
+        const reopenedTabs = await Commands.reopenInContainer(
+          Array.from(tabs),
+          message.containerId || 'firefox-default'
+        );
         const cache = {};
         return TSTAPI.formatTabResult(
-          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, { interval: message.interval, cache })),
+          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, {
+            interval: message.interval,
+            cache
+          })),
           message,
           sender.id
         );
@@ -624,9 +650,11 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Tree.applyTreeStructureToTabs(Array.from(tabs), message.structure, {
-          broadcast: true
-        });
+        await Tree.applyTreeStructureToTabs(
+          Array.from(tabs),
+          message.structure,
+          { broadcast: true }
+        );
         return Promise.resolve(true);
       })();
 
@@ -694,8 +722,9 @@ function onMessageExternal(message, sender) {
       })();
 
     case TSTAPI.kOPEN_ALL_BOOKMARKS_WITH_STRUCTURE:
-      return Commands.openAllBookmarksWithStructure(message.id || message.bookmarkId, {
-        discarded: message.discarded
-      });
+      return Commands.openAllBookmarksWithStructure(
+        message.id || message.bookmarkId,
+        { discarded: message.discarded }
+      );
   }
 }
