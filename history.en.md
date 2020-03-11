@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Add "Collapse this Tree Recursively" and "Expand this Tree Recursively" commands for the context menu and keyboard shortcuts.
+   * Support inverted actions of some extra context menu items with middle click: reload tree / reload descendants, close tree / close descendants, collapse tree one level / recursively, and expand tree one level / recursively.
+   * Support multiselected tabs by some extra context menu commands: reload tree, reload descendants, close tree, close descendants, collapse tree, and expand tree.
+   * Add "Collapse this Tree Recursively" and "Expand this Tree Recursively" commands for the context menu and keyboard shortcuts.
+   * Add an expert option to control the behavior when the current tab is closed with collapsed descendants and hidden sidebar.
+   * Change the default behavior around closing tab without sidebar to "for people who use the native tab bar". It was unexpectedly overwritten by the auto migration mechanism.
+   * Add `recursively` option to [`collapse-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#collapse-expanded-tree) and [`expand-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#expand-collapsed-tree) APIs.
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.4.5 (2020.3.9)
    * Better compatibility to Firefox's native tabs around behavior and user experience about Ctrl-Click and Shift-Click on UI elements in tabs (twisties, sound playing buttons, and closeboxes). Now these actions just changes multizelection state of tabs.
    * Better compatibility with the combination of [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) and [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr).

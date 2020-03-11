@@ -1,6 +1,13 @@
 # 更新履歴
 
  - master/HEAD
+   * コンテキストメニューとキーボードショートカット用コマンドに「ツリーを再帰的にたたむ」「ツリーを再帰的に展開する」を追加した
+   * いくつかのコンテキストメニュー項目で、未読リックによる動作の反転に対応した：ツリーをリロード/配下のタブをリロード、ツリーを閉じる/配下のタブを閉じる、1レベルだけたたむ/再帰的にたたむ、1レベルだけ展開する/再帰的に展開する
+   * いくつかのコンテキストメニュー項目（および対応するキーボードショートカット）で、タブの複数選択に対応した：ツリーをリロード、配下のタブをリロード、ツリーを閉じる、配下のタブを閉じる、ツリーをたたむ、ツリーを展開する
+   * サイドバーが非表示のときに、親タブを閉じる動作をツリー全体ではなく親タブ単独に対してのみ反映する上級者向け設定を追加（既定でON）
+   * 親タブを閉じたときの挙動について、「Firefox本体のタブバーと併用するユーザー」向けの設定が既定になるようにした（そのようになることが期待されていたが、設定の移行処理によって意図せず別の設定になってしまっていた）
+   * APIの[`collapse-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#collapse-expanded-tree)と[`expand-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#expand-collapsed-tree)で、`recursively`オプションで効果を再帰的に反映するかどうかを選択できるようにした
+   * `ru`ロケール更新（by wvxwxvw. Thanks!）
  - 3.4.5 (2020.3.9)
    * Firefox自身のタブと同じ操作性にするために、開閉つまみ、音声再生ボタン、クローズボックス上でのCtrl-クリックおよびShift-クリックはタブの複数選択の操作として扱うようにした
    * [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/)、[TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr)との併用時の挙動を改善
