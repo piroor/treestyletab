@@ -166,7 +166,7 @@ export const configs = new Configs({
   closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   promoteFirstChildForClosedRoot:     true, // obsolete, migrated to Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges:        Constants.kPARENT_TAB_BEHAVIOR_ALWAYS, // obsolete, migrated to closeParentBehaviorMode
+  parentTabBehaviorForChanges:        Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE, // obsolete, migrated to closeParentBehaviorMode
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   treatTreeAsExpandedOnClosedWithNoSidebar: true,
