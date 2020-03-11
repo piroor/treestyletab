@@ -7,6 +7,7 @@
    * サイドバーが非表示のときに、親タブを閉じる動作をツリー全体ではなく親タブ単独に対してのみ反映する上級者向け設定を追加（既定でON）
    * 親タブを閉じたときの挙動について、「Firefox本体のタブバーと併用するユーザー」向けの設定が既定になるようにした（そのようになることが期待されていたが、設定の移行処理によって意図せず別の設定になってしまっていた）
    * APIの[`collapse-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#collapse-expanded-tree)と[`expand-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#expand-collapsed-tree)で、`recursively`オプションで効果を再帰的に反映するかどうかを選択できるようにした
+   * `fake-contextMenu-click`の通知内容に、クリックされたマウスのボタンを示す`button`を含めるように↓
    * `ru`ロケール更新（by wvxwxvw. Thanks!）
  - 3.4.5 (2020.3.9)
    * Firefox自身のタブと同じ操作性にするために、開閉つまみ、音声再生ボタン、クローズボックス上でのCtrl-クリックおよびShift-クリックはタブの複数選択の操作として扱うようにした
