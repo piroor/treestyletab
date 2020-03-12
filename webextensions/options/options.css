@@ -278,3 +278,13 @@ body > section.collapsed > h1:first-child ~ * {
               0 0 0.5em var(--in-content-box-info-background),
               0 0 0.5em var(--in-content-box-info-background);
 }
+
+
+#link-optionsPage-top {
+  float: right;
+  padding-right: 1em;
+}
+
+body.independent #link-optionsPage-top {
+  display: none;
+}

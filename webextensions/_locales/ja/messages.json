@@ -238,6 +238,7 @@
   "config_title": { "message": "Tree Style Tabの設定" },
 
   "config_showExpertOptions_label": { "message": "上級者向けの設定をアンロック" },
+  "config_openOptionsInTab_label": { "message": "この設定画面をより広いスペースで開く" },
 
   "config_appearance_caption": { "message": "外観" },
 

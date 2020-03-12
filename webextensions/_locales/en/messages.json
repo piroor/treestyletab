@@ -242,6 +242,7 @@
   "config_title": { "message": "Tree Style Tab Options" },
 
   "config_showExpertOptions_label": { "message": "Unlock Expert Options" },
+  "config_openOptionsInTab_label": { "message": "Open this options page in more wide space" },
 
   "config_appearance_caption": { "message": "Appearance" },
 

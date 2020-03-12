@@ -157,6 +157,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     showLogs();
   });
 
+  document.getElementById('link-optionsPage-top').setAttribute('href', `${location.href.split('#')[0]}#!`);
   document.getElementById('link-optionsPage').setAttribute('href', `${location.href.split('#')[0]}#!`);
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
