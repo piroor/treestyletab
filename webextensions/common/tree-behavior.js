@@ -191,7 +191,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           }
           else {
             log('calculateReferenceTabsFromInsertionPosition: from insertBefore, CASE 8');
-            parent = (tab.$TST.parent != prevTab) ? prevTab : null;
+            parent = (tab && tab.$TST.parent != prevTab) ? prevTab : null;
           }
         }
         else {
@@ -202,7 +202,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           }
           else {
             log('calculateReferenceTabsFromInsertionPosition: from insertBefore, CASE 6');
-            parent = tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent;
+            parent = tab && (tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent);
           }
         }
       }
@@ -256,13 +256,13 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     // placing the tab after hidden tabs (it is too far from the target).
     let unsafeNextTab = params.insertAfter &&
       params.insertAfter.$TST.unsafeNearestExpandedFollowingTab;
-    if (unsafeNextTab == tab) // failsafe
+    if (tab && unsafeNextTab == tab) // failsafe
       unsafeNextTab = tab.$TST.unsafeNearestExpandedFollowingTab;
     let nextTab = params.insertAfter &&
       (configs.fixupTreeOnTabVisibilityChanged ?
         params.insertAfter.$TST.nearestVisibleFollowingTab :
         unsafeNextTab);
-    if (nextTab == tab) // failsafe
+    if (tab && nextTab == tab) // failsafe
       nextTab = configs.fixupTreeOnTabVisibilityChanged ?
         tab.$TST.nearestVisibleFollowingTab :
         unsafeNextTab;
@@ -279,7 +279,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       else {
         log('calculateReferenceTabsFromInsertionPosition: from insertAfter, CASE 5');
         result = {
-          parent:       tab.$TST.parent && params.insertAfter && params.insertAfter.$TST.parent,
+          parent:       tab && tab.$TST.parent && params.insertAfter && params.insertAfter.$TST.parent,
           insertBefore: unsafeNextTab,
           insertAfter:  params.insertAfter
         };
@@ -304,7 +304,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
           }
           else {
             log('calculateReferenceTabsFromInsertionPosition: from insertAfter, CASE 6');
-            parent = tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent;
+            parent = tab && (tab.$TST.parent != possibleParent && possibleParent || tab.$TST.parent);
           }
         }
       }

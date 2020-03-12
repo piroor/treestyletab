@@ -373,7 +373,8 @@ function getDropAction(event) {
       if (info.draggedTab &&
           info.draggedTab.pinned != targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
-      if (info.insertBefore == info.draggedTab) // failsafe
+      if (info.draggedTab &&
+          info.insertBefore == info.draggedTab) // failsafe
         info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
           info.draggedTab.$TST.unsafeNextTab :
           (info.draggedTab.$TST.nextSiblingTab ||
