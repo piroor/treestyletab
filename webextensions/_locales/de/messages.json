@@ -191,25 +191,41 @@
   "api_requestedPermissions_type_cookies":   { "message": "Erkennung der Tab-Umgebungen" },
 
 
+  "context_menu_label": { "message": "Baumstruktur" },
+
   "context_reloadTree_label": { "message": "Zweig neu la&den" },
+  "context_reloadTree_label_multiselected": { "message": "Ausgewählte Zweige neu la&den" },
   "context_reloadTree_command": { "message": "Zweig neu laden" },
   "context_reloadDescendants_label": { "message": "&Untergeordnete Tabs neu laden" },
+  "context_reloadDescendants_label_multiselected": { "message": "&Untergeordnete Tabs der Auswahl neu laden" },
   "context_reloadDescendants_command": { "message": "Untergeordnete Tabs neu laden" },
   "context_closeTree_label": { "message": "Zweig &schließen" },
+  "context_closeTree_label_multiselected": { "message": "Ausgewählte Zweige &schließen" },
   "context_closeTree_command": { "message": "Zweig schließen" },
   "context_closeDescendants_label": { "message": "U&ntergeordnete Tabs schließen" },
+  "context_closeDescendants_label_multiselected": { "message": "U&ntergeordnete Tabs der Auswahl schließen" },
   "context_closeDescendants_command": { "message": "Untergeordnete Tabs schließen" },
   "context_closeOthers_label": { "message": "&Alle anderen Tabs außer diesen Zweig schließen" },
+  "context_closeOthers_label_multiselected": { "message": "&Alle anderen Tabs außer ausgewählter Zweige schließen" },
   "context_closeOthers_command": { "message": "Alle anderen Tabs außer diesen Zweig schließen" },
   "context_collapseTree_label": { "message": "Di&esen Zweig zuklappen" },
+  "context_collapseTree_label_multiselected": { "message": "Ausgewählte Zw&eige zuklappen" },
   "context_collapseTree_command": { "message": "Diesen Zweig zuklappen" },
+  "context_collapseTreeRecursively_label": { "message": "Diesen Zweig rekursiv zuklappen" },
+  "context_collapseTreeRecursively_label_multiselected": { "message": "Ausgewählte Zweige rekursiv zuklappen" },
+  "context_collapseTreeRecursively_command": { "message": "Diesen Zwei rekursiv zuklappen" },
   "context_collapseAll_label": { "message": "Alle &zuklappen" },
   "context_collapseAll_command": { "message": "Alle zuklappen" },
   "context_expandTree_label": { "message": "Diesen Zweig auskla&ppen" },
+  "context_expandTree_label_multiselected": { "message": "Ausgewählte Zweige auskla&ppen" },
   "context_expandTree_command": { "message": "Diesen Zweig ausklappen" },
+  "context_expandTreeRecursively_label": { "message": "Diesen Zweig rekursiv ausklappen" },
+  "context_expandTreeRecursively_label_multiselected": { "message": "Ausgewählte Zweige rekursiv ausklappen" },
+  "context_expandTreeRecursively_command": { "message": "Diesen Zweig rekursiv ausklappen" },
   "context_expandAll_label": { "message": "Alle au&fklappen" },
   "context_expandAll_command": { "message": "Alle aufklappen" },
   "context_bookmarkTree_label": { "message": "&Lesezeichen für diesen Zweig anlegen…" },
+  "context_bookmarkTree_label_multiselected": { "message": "&Lesezeichen für ausgewählte Zweige anlegen…" },
   "context_bookmarkTree_command": { "message": "Lesezeichen für diesen Zweig anlegen…" },
   "context_groupTabs_label":    { "message": "Neue &Gruppe aus Tabs erstellen" },
   "context_groupTabs_command":    { "message": "Neue Gruppe aus Tabs erstellen" },
@@ -220,9 +236,13 @@
   "context_unpinnedTab_label": { "message": "Abgelöst (für Test eines \"radio\" Menüs)" },
 
   "context_openAllBookmarksWithStructure_label": { "message": "&Alle als Zweig laden" },
+  "context_openAllBookmarksWithStructureRecursively_label": { "message": "&Alle als Zweig inklusive Unterverzeichnisse laden" },
 
 
   "config_title": { "message": "Tree Style Tab Einstellungen" },
+
+  "config_showExpertOptions_label": { "message": "Experteneinstellungen anzeigen" },
+  "config_openOptionsInTab_label": { "message": "Diese Einstellungsseite verbreitert anzeigen" },
 
   "config_appearance_caption": { "message": "Erscheinungsbild" },
 
@@ -269,6 +289,9 @@
   "config_extraItems_tabs_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
   "config_extraItems_tabs_topLevel": { "message": "Oberste Ebene" },
   "config_extraItems_tabs_subMenu": { "message": "Untermenü" },
+  "config_extraItems_tabs_middleClick": { "message": "Aktion bei Mittelklick" },
+  "config_extraItems_bookmarks_caption": { "message": "Zusätzliche Einträge im Lesezeichen-Kontextmenü" },
+  "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Tabs ausstehend lassen bis sie aktiv werden" },
 
 
   "config_newTab_caption": { "message": "Verhalten für neue Tabs" },
@@ -375,6 +398,9 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "Wenn ein neuer Zweig erscheint, alle anderen automatisch einklappen" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Wenn ein Tab ausgewählt wird, automatisch seinen Zweig ausklappen und alle anderen einklappen" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Es sei denn, dass das Auswählen des Tabs durch das Schließen des aktiven Tabs verursacht wird" },
+  "config_unfocusableCollapsedTab_label": { "message": "Wenn ein Tab unter einem eingeklappten Zweig fokussiert wird, den Zweig automatisch ausklappen" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Tabs ausstehend lassen, wenn Tabs versehentlich fokussiert werden und der Fokus sofort umgeleitet wird" },
+  "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Vermeiden, dass ausstehende Tabs versehentlich aktiviert werden, wenn der aktuelle Tab geschlossen oder ein Zweig eingeklappt wird" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Doppelklick auf einen Tab" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Aus-/einklappen eines Zweigs" },
@@ -396,7 +422,10 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
   "config_closeParentBehavior_detach":               { "message": "Untergeordnete Tabs vom Zweig lösen" },
 
+  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Einen geschlossenen übergeordneten Tab als einzelnen Tab behandeln, auch wenn der Tab eingeklappte Untergeordnete Tabs besitzt, wenn die Seitenleiste unsichtbar ist" },
+
   "config_warnOnCloseTabs_label": { "message": "Warnen, wenn mehrere Tabs geschlossen werden sollen" },
+  "config_warnOnCloseTabsByClosebox_label": { "message": "Warnen, wenn mehrere Tabs durch einen Klick auf eine Schließen-Schaltfläche geschlossen werden sollen" },
 
 
   "config_drag_caption": { "message": "Ziehen und Ablegen" },
@@ -411,14 +440,28 @@
   "config_tabDragBehavior_bookmark_tab":  { "message": "Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_none":          { "message": "Nichts machen" },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Erlauben, einen Zweig beim Ablegen außerhalb der Tableiste zu lösen" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Ziehen und Ablegen auf einen Tab abgelegt wird" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Immer nachfragen" },
   "config_dropLinksOnTabBehavior_load":    { "message": "In diesem Tab öffnen" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "In einem neuen untergeordneten Tab öffnen" },
 
+  "config_autoExpandOnLongHoverDelay_before":  { "message": "Eingeklappten Zweig ausklappen, wenn er beim Ziehen über " },
+  "config_autoExpandOnLongHoverDelay_after":  { "message": " ms schwebt" },
+  "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Solche Zweige nach dem Ziehen automatisch einklappen" },
+  "config_autoExpandIntelligently_label":  { "message": "Andere Zweige einklappen, wenn ein eingeklappter Zweig automatisch ausgeklappt wird" },
+
+
+  "config_more_caption": { "message": "Mehr..." },
 
   "config_shortcuts_caption": { "message": "Tastenkombinationen" },
+
+  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Das Ausführen von Scripts auf den Webseiten muss erlaubt sein.)" },
+  "config_requestPermissions_allUrls_inContentConfirmation": { "message": "Erlauben, Bestätigungsdialoge im Inhalt von Tabs zu zeigen (*Das Ausführen von Scripts auf den Webseiten muss erlaubt werden.)" },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Aktiven eingeklappten Zweig ausklappen, wenn die Tab-Taste für mehr als " },
+  "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": " ms gedrückt ist" },
+
   "config_shortcuts_resetAll": { "message": "Alle Tastenkombinationen zurücksetzen" },
 
 
@@ -442,7 +485,6 @@
   "config_userStyleRules_themeRules_description": { "message": "Folgende Eigenschaften sind per \"var()\" basierend auf dem aktuellen Browser-Design verfügbar:" },
 
 
-
   "config_addons_caption": { "message": "Zusätzliche Funktionen über andere Erweiterungen" },
 
   "config_addons_description_before": { "message": "Es existieren " },
@@ -463,6 +505,7 @@
   "config_link_groupPage_label":   { "message": "Seite für Gruppen-Tab" },
 
   "config_runTests_label": { "message": "Automatischen Test starten" },
+  "config_runBenchmark_label": { "message": "Benchmark starten" },
   "config_debug_label": { "message": "Testmodus" },
   "config_log_caption":               { "message": "Detaillierte Logs" },
   "config_logTimestamp_label": { "message": "Mit Zeitstempel loggen" },
@@ -484,7 +527,6 @@
   "config_labelOverflowStyle_crop":    { "message": "Abschneiden mit \"..\" (bessere Leistung)" },
 
   "config_requestPermissions_bookmarks": { "message": "Lesen und Erstellen von Lesezeichen zulassen" },
-  "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },
   "config_requestPermissions_tabHide":   { "message": "Erlaube, einzelne Tabs anzuzeigen/auszublenden (*Aus- und wieder einschalten, bevor Tests ausgeführt werden, um sicherzustellen, dass die Berechtigung gewährt wurde.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
