@@ -242,6 +242,7 @@
   "config_title": { "message": "Открыть настройки Tree Style Tab в новой вкладке" },
 
   "config_showExpertOptions_label": { "message": "Режим эксперта" },
+  "config_openOptionsInTab_label": { "message": "Открыть эту страницу в широком представлении " },
 
   "config_appearance_caption": { "message": "Внешний вид" },
 
