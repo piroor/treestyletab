@@ -170,7 +170,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen / Allow to show confirmation dialogs inside tab contents (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen / Erlauben, Bestätigungsdialoge im Inhalt von Tabs zu zeigen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
 
   "message_startup_userChromeCss_notify": { "message": "Wie kann man die Tableiste und die Überschrift der Sidebar ausblenden?" },
   "message_startup_userChromeCss_description_1": { "message": "Aufgrund von Beschränkungen für WebExtensions, hat Tree Style Tab keine Kontrolle über die Tableiste und die Sidebar-Überschriften von Firefox. Um sie zu verändern, siehe " },
@@ -346,7 +346,7 @@
   "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Die Tab-Umgebung vom aktuellen Tab erben" },
 
-  "config_sameSiteOrphan_caption": { "message": "Neuer Tab mit der gleichen Webseite wie der aktuelle Tab über die Adressleiste, bookmarks, histories, or other cases" },
+  "config_sameSiteOrphan_caption": { "message": "Neuer Tab mit der gleichen Webseite wie der aktuelle Tab über die Adressleiste, Lesezeichen, Verlauf oder anderes" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Öffnen als" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "unabhängigen Tab" },
@@ -453,7 +453,7 @@
   "config_autoExpandIntelligently_label":  { "message": "Andere Zweige einklappen, wenn ein eingeklappter Zweig automatisch ausgeklappt wird" },
 
 
-  "config_more_caption": { "message": "Mehr..." },
+  "config_more_caption": { "message": "Mehr…" },
 
   "config_shortcuts_caption": { "message": "Tastenkombinationen" },
 
