@@ -1,0 +1,52 @@
+このアドオンは、Firefoxのタブをツリー形式で扱う機能を提供します。
+
+現在のタブから開かれた新しいタブは、自動的に現在のタブの「子」としてツリー構造に組み込まれます。
+このようにして作られた「枝」は「親」タブに表示されている「▼」マークをクリックすると簡単に折り畳むことができますので、大量のタブがある場合でも混乱しなくて済みます。
+また必要に応じて、ツリーをドラッグ＆ドロップで編集することもできます。
+
+<ul>
+<li>こうして構築されたタブのツリーは、視覚化されたWebブラウズの履歴のように振る舞います。
+<ul>
+<li>例えば、ある話題の検索結果を見たい時には検索結果のリンクを新しい子タブとして開いていくことになるでしょう。詳しく調べるために孫タブ・ひ孫タブを開いていくこともできます。</li>
+<li>このようにどんどん情報を深掘りしていっても、閲覧履歴がツリーとして目に見える形で残されていれば、自分の現在位置を見失う事はありませんし、元の検索結果の一覧にも「ツリーの上位階層のタブ」をクリックすればすぐに戻れます。</li>
+</ul></li>
+<li>他にも、似た話題のタブを「グループ化されたタブ」として取り扱うためにもツリーを使う事ができます。</li>
+</ul>
+
+何はともあれ、このアドオンはプレーンな「ツリー」機能だけを提供します。
+お好みで自由に使いこなして下さい！
+
+<strong>小ネタ:</strong>
+
+<ul>
+<li>F1キーでツリー型タブのサイドバーを開閉できます。</li>
+<li>サイドバーはツールバー上の「ツリー型タブ」ボタンでも開閉できます。ボタンが不要な場合はツールバーから取り除く事もできます。</li>
+</ul>
+
+<strong>ヘルパーアドオン:</strong>
+
+TSTのサイドバーの機能を使い勝手を強化するアドオンもあります。
+
+<ul>
+<li><a href="https://addons.mozilla.org/firefox/addon/multiple-tab-handler/">Multiple Tab Handler</a> タブの長押しで、タブの複数選択を開始できるようになります。また、クローズボックスの長押しで複数のタブをまとめて閉じることもできます。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> TSTのサイドバーの下側に「ブックマーク」サイドバーパネルの小型版を表示します。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/">TST Active Tab in Collapsed Tree</a> 折りたたんだツリーの親タブについて、<a href="https://github.com/piroor/treestyletab/issues/2192">そのツリーの中で最後にアクティブだったタブへの参照を表示します</a>。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> ツリーを折りたたんだ状態に固定できるようにします。（この機能はTST 3.3.0～3.3.6の組み込みの機能でしたが、分離されました）</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/">TST Tab Drag Handle</a> タブをブックマークするか別ウィンドウに切り離すかを選んでドラッグ操作を開始するためのつまみをタブの上に表示します。（この機能はTST 2.6.0～3.3.6の組み込みの機能でしたが、分離されました）</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-middleclick/">TST-MiddleClick</a> 「閉じたタブを開き直す」「現在アクティブなタブを閉じる」といった操作を、サイドバーの空の領域上でのミドルクリックで実行します。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/">Tree Style Tab Mouse Wheel</a> ホイールスクロールでアクティブなタブを切り替えられるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/">Tab flip for Tree Style Tab</a> アクティブなタブをクリックすると、その直前まで見ていたタブにフォーカスを戻すようになります。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-focus-preceding-tab/">Tree Style Tab Focus Preceding Tab on Close</a> アクティブなタブを閉じたとき、次のタブではなく前のタブにフォーカスを移動するようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tab-unload-for-tree-style-tab/">Tab Unloader for Tree Style Tab</a> サイドバー上のタブのクリック操作でタブをアンロードできるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/move-unloaded-tabs-for-tst/">Move unloaded tabs for Tree Style Tab</a> 読み込み待機状態のタブを、その状態のままでサイドバー上でドラッグ操作できるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-in-separate-window/">Tree Style Tab in Separate Window</a> TSTのサイドバーを別ウィンドウで表示します。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/auto-tab-discard/">Auto Tab Discard</a> TSTのサイドバー上のコンテキストメニューに対応しています。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/unload-tabs/">UnloadTabs</a> TSTのサイドバー上のコンテキストメニューに対応しています。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/bookmark-tree-for-tst/">Bookmark Tree for Tree Style Tab</a> ツリーをブックマークしたり復元したりできるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-hoverswitch/">TST Hoverswitch</a> タブの上にカーソルをかざしてフォーカスを切り替えられるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-colored-tabs/">TST Colored Tabs</a> タブのドメインに基づいてタブの背景色を変えます。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/add-last-active-class-to-tab/">Add Last Active Class To Tab</a> 「1つ前にアクティブだったタブ」に特別なスタイル指定を適用できるようにします。</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-change-close-tab-button-be/">TSTのタブを閉じるボタンの挙動を変更</a> ツリーの開閉状態にかかわらず、親タブのクローズボックスのミドルクリックでツリー全体を閉じられるようにします。</li>
+</ul>
+
+最新の情報は<a href="https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst">リポジトリ</a>をご参照下さい。
