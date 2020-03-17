@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Fix undroppability of links and some objects to tabs. (regression on recent versions)
+   * Add a link to open the options page itself in a new tab, at the top of the page.
+   * Update `de` locale by SammysHP. Thanks!
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.4.6 (2020.3.12)
    * Add "Collapse this Tree Recursively" and "Expand this Tree Recursively" commands for the context menu and keyboard shortcuts.
    * Support inverted actions of some context menu commands with middle click: reload tree / reload descendants, close tree / close descendants, collapse tree one level / recursively, and expand tree one level / recursively.
