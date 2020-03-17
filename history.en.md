@@ -3,6 +3,7 @@
  - master/HEAD
    * Fix undroppability of links and some objects to tabs. (regression on recent versions)
    * Add a link to open the options page itself in a new tab, at the top of the page.
+   * Add "Reset All" button to the bottom of the options page.
    * Update `de` locale by SammysHP. Thanks!
    * Update `ru` locale by wvxwxvw. Thanks!
  - 3.4.6 (2020.3.12)
