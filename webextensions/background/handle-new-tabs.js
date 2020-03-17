@@ -118,7 +118,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
       }).then(moved => !moved);
     }
   }
-  else if (!info.maybeOrphan && configs.autoAttach) {
+  else if (!info.maybeOrphan) {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,

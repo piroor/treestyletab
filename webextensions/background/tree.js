@@ -454,13 +454,16 @@ export function detachAllChildren(tab, options = {}) {
 
 // returns moved (or not)
 export async function behaveAutoAttachedTab(tab, options = {}) {
+  if (!configs.autoAttach)
+    return false;
+
   const baseTab = options.baseTab || Tab.getActiveTab(TabsStore.getWindow() || tab.windowId);
   log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
 
   if (baseTab &&
       baseTab.$TST.ancestors.includes(tab)) {
     log(' => ignore possibly restored ancestor tab to avoid cyclic references');
-    return;
+    return false;
   }
 
   if (baseTab.pinned) {
