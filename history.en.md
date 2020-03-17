@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.4.7 (2020.3.17)
    * Fix undroppability of links and some objects to tabs. (regression on recent versions)
    * Add a link to open the options page itself in a new tab, at the top of the page.
    * Add "Reset All" button to the bottom of the options page.
