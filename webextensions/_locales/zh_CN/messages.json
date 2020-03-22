@@ -128,7 +128,7 @@
         "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"
     },
     "tab_closebox_tree_tooltip": {
-        "message": "关闭标签树树",
+        "message": "关闭标签树",
         "hash": "c92c35ca25e3c2ed25a49ec66487aa32"
     },
     "tab_soundButton_muted_tooltip": {
@@ -164,11 +164,11 @@
         "hash": "f7d2172e715235f06bcb735d83461315"
     },
     "tabbar_newTabButton_tooltip": {
-        "message": "打开新标签页",
+        "message": "打开新建标签页",
         "hash": "cdeaa496e27f481f501b51c5f07478f9"
     },
     "tabbar_newTabAction_tooltip": {
-        "message": "将新标签页打开为…",
+        "message": "将新建标签页打开为…",
         "hash": "4595cbc84085b40156711bb0df0f0ab8"
     },
     "tabbar_newTabAction_independent_label": {
@@ -238,7 +238,7 @@
         "hash": "4bfbdd0d863b718a743bf1b3e168195c"
     },
     "groupTab_options_label": {
-        "message": "这有一个选项能不再让你打开此类标签页",
+        "message": "这个选项能够禁止此类型的标签页被打开。",
         "hash": "716fbbb2f50b6d74be5d36e01a4a63f7"
     },
     "groupTab_options_dismiss": {
@@ -260,7 +260,7 @@
         "hash": "44f13d2945d8eea2099b13c8c2c52524"
     },
     "bookmarkTree_notification_success_message": {
-        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新文件夹下。",
+        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新建文件夹下。",
         "placeholders": {
             "title": { "content": "$1", "example": "Title" },
             "count": { "content": "$2", "example": "2" },
@@ -284,7 +284,7 @@
         "hash": "ab61fa1fa1bf23847df2aba0cc9f8bf9"
     },
     "bookmarkTabs_notification_success_message": {
-        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新文件夹下。",
+        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新建文件夹下。",
         "placeholders": {
             "title": { "content": "$1", "example": "Title" },
             "count": { "content": "$2", "example": "2" },
@@ -313,7 +313,7 @@
         "hash": "2c74e7c662255ba282ca422212107723"
     },
     "dropLinksOnTabBehavior_newtab": {
-        "message": "打开新建的子标签页",
+        "message": "打开新建子标签页",
         "hash": "ef65d6f472c7fb18957f70ccba02e044"
     },
     "tabDragBehaviorNotification_message_duration_single": {
@@ -362,7 +362,7 @@
         "hash": "80989b319537e780ba90b6b5e6053085"
     },
     "warnOnCloseTabs_message": {
-        "message": "您将要关闭 $NUMBER$ 个标签页。确定想要继续吗？",
+        "message": "您将要关闭 $NUMBER$ 个标签页。您确定想要继续吗？",
         "placeholders": {
             "NUMBER": { "content": "$1", "example": "10" }
         },
@@ -388,7 +388,7 @@
         "hash": "37cac4a438e8d5d2a3939a30d81dfe5c"
     },
     "warnOnAutoGroupNewTabs_message": {
-        "message": "$NUMBER$ 个标签页被同时打开了，你想要将它们分组到一个标签树吗？",
+        "message": "$NUMBER$ 个标签页被同时打开，您想要将它们分组到一个标签树吗？",
         "placeholders": {
             "NUMBER": { "content": "$1", "example": "10" }
         },
@@ -439,19 +439,19 @@
         "hash": "36612e37af337e8ffe66ebd20a89f8f9"
     },
     "message_startup_description_1": {
-        "message": "树状标签页 的垂直标签栏会作为可选用的侧栏面板之一。如果您还没看到它，请按下 ",
+        "message": "Tree Style Tab 的垂直标签栏会作为可选用的侧栏面板之一。如果您还没看到它，请按下 ",
         "hash": "77072da9342e0bbfc72df3969455dc51"
     },
     "message_startup_description_key": {
-        "message": "F1 键",
+        "message": "“F1” 键",
         "hash": "59740234c0d7b86a96198e49361b2b40"
     },
     "message_startup_description_2": {
-        "message": "或点击工具栏中的 ",
+        "message": "或者点击工具栏中的 ",
         "hash": "0030cd9d75c80a18085a4bda4ed6ac2d"
     },
     "message_startup_description_3": {
-        "message": " 按钮来激活 树状标签页 侧栏面板。",
+        "message": " 按钮来激活侧栏面板。",
         "hash": "073245a72ea5cb378794d40c049a9736"
     },
     "message_startup_requestPermissions_description": {
@@ -471,7 +471,7 @@
         "hash": "991184685e856081ec9ee06431fda2d2"
     },
     "message_startup_userChromeCss_description_1": {
-        "message": "由于 WebExtensions 的限制，树状标签页 无法控制在 Firefox 顶部的标签栏以及侧栏的标题。如果您十分需要定制它们，请参见",
+        "message": "由于 WebExtensions 的限制，Tree Style Tab 无法控制 Firefox 顶部标签栏和侧栏的标题。如果您十分需要定制它们，请参见",
         "hash": "2b5b9b8f63740c72ef3201e1f04c9c1a"
     },
     "message_startup_userChromeCss_description_link_label": {
@@ -499,7 +499,7 @@
         "hash": "00de8906635fae72f5a7f95466c14d54"
     },
     "api_requestedPermissions_message": {
-        "message": "⚠扩展 “$NAME$” 正通过树状标签页的 API 请求作出如下操作：\n\n$PERMISSIONS$\n\n如果您同意，请点击此处。",
+        "message": "⚠扩展 “$NAME$” 正通过 Tree Style Tab 的 API 请求做出如下操作：\n\n$PERMISSIONS$\n\n如果您同意，请点击此处。",
         "placeholders": {
             "NAME": { "content": "$1", "example": "foobar" },
             "PERMISSIONS": { "content": "$2", "example": "tabs" }
@@ -691,7 +691,7 @@
         "hash": "b977fd26ec4bf634094fe7b6a57a1759"
     },
     "config_title": {
-        "message": "树状标签页 选项",
+        "message": "Tree Style Tab 选项",
         "hash": "ac0a723c76133d1744f7fda57e510329"
     },
     "config_showExpertOptions_label": {
@@ -699,7 +699,7 @@
         "hash": "b19e02c05e20c20be54ce37e54fb9ca2"
     },
     "config_openOptionsInTab_label": {
-        "message": "在更宽的位置打开这些选项",
+        "message": "在更宽阔的位置打开这些选项",
         "hash": "1b288ad3433acb98d44583704640ee2b"
     },
     "config_appearance_caption": {
@@ -823,7 +823,7 @@
         "hash": "5e7505602601db21c833e6487cdb1792"
     },
     "config_applyThemeColorToIcon_label_info": {
-        "message": "（*您需要在 \"about:config\" 中将 “svg.context-properties.content.enabled” 项设置为 “true”）",
+        "message": "（*您需要在 \"about:config\" 中将 “svg.context-properties.content.enabled” 项设置为 “true” ）",
         "hash": "6c19e0fe00e7602c77f34fe7d5366cab"
     },
     "config_context_caption": {
@@ -927,7 +927,7 @@
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
-        "message": "当通过该 网址 打开新建的标签页时，将其视作新建的空白标签页",
+        "message": "当通过该网址打开新建标签页时，将其视作新建空白标签页",
         "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
     },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
@@ -967,7 +967,7 @@
         "hash": "f8ab82dd3d406acfa35073512648f10f"
     },
     "config_duplicateTabAction_caption": {
-        "message": "复制标签页（中键点击 “刷新” 按钮 等）",
+        "message": "复制标签页（中键点击 “刷新” 按钮 等。）",
         "hash": "ef195743a97cbc9a05b7447d9e686d3c"
     },
     "config_autoAttachOnDuplicated_before": {
@@ -1143,7 +1143,7 @@
         "hash": "f6e30954e0578b136171f7e44228f225"
     },
     "config_inheritContextualIdentityToNewChildTab_description": {
-        "message": "（*请注意，如果新建标签页被作为一个独立的标签页打开，则其不会继承前一个活动标签页的身份）",
+        "message": "（*请注意，如果新建标签页被作为一个独立的标签页打开，则其不会继承前一个活动标签页的身份。）",
         "hash": "d9de888723abfa7de39201222186cf2b"
     },
     "config_treeBehavior_caption": {
@@ -1307,7 +1307,7 @@
         "hash": "5a6aa1a824cdb8486c3ad323b73a3a00"
     },
     "config_tabDragBehavior_description": {
-        "message": "由于 Firefox 的限制，您必须在开始拖动时决定：当这些标签页被拖放到 树状标签页 侧栏之外时会被进行何种处理。",
+        "message": "由于 Firefox 的限制，您必须在开始拖动时决定：当这些标签页被拖放到 TST 侧栏之外时会被进行何种处理。",
         "hash": "c8eeed9c164f7d0bc624bfa57a3bc51c"
     },
     "config_tabDragBehavior_label": {
@@ -1471,11 +1471,11 @@
         "hash": "9003599648d97da3215830dbf6d548b8"
     },
     "config_addons_description_link_label": {
-        "message": "一些附加组件可以扩展 树状标签页 自身的功能",
+        "message": "一些附加组件可以扩展 TST 自身的功能",
         "hash": "add235fb13460dbf96732a534e49170b"
     },
     "config_addons_description_after": {
-        "message": "。如果您需要让 树状标签页 的侧栏拥有更多功能，可以去看看它们。",
+        "message": "。如果您需要让 TST 的侧栏拥有更多功能，可以去看看它们。",
         "hash": "59a6e79ef78c82f7ac8ef391e4de01f5"
     },
     "helper_addons_list_link_uri": {
@@ -1603,7 +1603,7 @@
         "hash": "7478a48fc3307a59c38920d562baf3b2"
     },
     "config_requestPermissions_tabHide": {
-        "message": "允许 显示/隐藏 单个标签页（*您必须在运行测试前取消勾选并再次勾选此项，以确保权限被正确授予）",
+        "message": "允许 显示/隐藏 单个标签页（*您必须在运行测试前取消勾选并再次勾选此项，以确保权限被正确授予。）",
         "hash": "f858aeed5852f32d912562432f5b4369"
     },
     "config_requestPermissions_fallbackToToolbarButton_title": {
@@ -1611,7 +1611,7 @@
         "hash": "faffac27406925eaf44308423fce1d21"
     },
     "config_requestPermissions_fallbackToToolbarButton_message": {
-        "message": "由于 Firefox 的 bug ，您无法在该屏幕画面内请求权限。请点击 “树状标签页” 的工具栏按钮以授予权限。",
+        "message": "由于 Firefox 的 bug ，您无法在该画面内请求权限。请点击 “树状标签页” 的工具栏按钮以授予权限。",
         "hash": "00b8ca01e816366e976d197677b7c497"
     },
     "config_all_caption": {
