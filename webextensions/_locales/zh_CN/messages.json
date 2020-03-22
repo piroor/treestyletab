@@ -967,7 +967,7 @@
         "hash": "f8ab82dd3d406acfa35073512648f10f"
     },
     "config_duplicateTabAction_caption": {
-        "message": "复制标签页（中键点击 “刷新” 按钮 等）",
+        "message": "复制标签页（中键点击 “刷新” 按钮 等。）",
         "hash": "ef195743a97cbc9a05b7447d9e686d3c"
     },
     "config_autoAttachOnDuplicated_before": {
@@ -1603,7 +1603,7 @@
         "hash": "7478a48fc3307a59c38920d562baf3b2"
     },
     "config_requestPermissions_tabHide": {
-        "message": "允许 显示/隐藏 单个标签页（*您必须在运行测试前取消勾选并再次勾选此项，以确保权限被正确授予）",
+        "message": "允许 显示/隐藏 单个标签页（*您必须在运行测试前取消勾选并再次勾选此项，以确保权限被正确授予。）",
         "hash": "f858aeed5852f32d912562432f5b4369"
     },
     "config_requestPermissions_fallbackToToolbarButton_title": {
