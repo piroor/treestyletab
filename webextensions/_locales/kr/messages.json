@@ -1194,7 +1194,7 @@
         "message": "드래그&드롭",
         "hash": "b2c8578361430cf0cdd6ef3978051b33"
     },
-    "config_tabDragBehavior_caption": {
+    "config_tabDragBehavior_caption_": {
         "message": "트리가 탭 바 밖으로 드랍되었을 때",
         "hash": "5a6aa1a824cdb8486c3ad323b73a3a00"
     },
@@ -1210,22 +1210,22 @@
         "hash": "c26c7dbae02a5f950080f2e84b543a51"
     },
     "config_tabDragBehavior_tearoff_tree": {
-        "message": "트리 전체를 다른 창으로 분리 (북마크 작성 불가)",
+        "message": "Move Entire Tree / 트리 전체를 다른 창으로 분리 (북마크 작성 불가)",
         "hash": "4723ca0b18c76b5e9b4a8000d8ac2292"
     },
     "config_tabDragBehavior_bookmark_tree": {
-        "message": "트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)",
+        "message": "Move Entire Tree / 트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)",
         "hash": "356fc53a67e8318e0226f69d53783d6f"
     },
     "config_tabDragBehavior_tearoff_tab": {
-        "message": "탭들을 다른 창으로 분리 (북마크 작성 불가)",
+        "message": "Move Solo Tab / 탭들을 다른 창으로 분리 (북마크 작성 불가)",
         "hash": "024c0183bb540674a551b18d646d4ef5"
     },
     "config_tabDragBehavior_bookmark_tab": {
-        "message": "탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)",
+        "message": "Move Solo Tab / 탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)",
         "hash": "222b9f01d390b68db03215b3766565a4"
     },
-    "config_tabDragBehavior_none": {
+    "config_tabDragBehavior_none_": {
         "message": "동작 없음",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
     },

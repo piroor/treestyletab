@@ -184,6 +184,11 @@ tbody tr {
 .contextConfigs tbody th,
 .tabDragBehaviorConfigs tbody th {
   font-weight: normal;
+}
+
+.contextConfigs tbody th,
+.tabDragBehaviorConfigs thead th:nth-child(3),
+.tabDragBehaviorConfigs tbody th {
   text-align: left;
 }
 

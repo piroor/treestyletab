@@ -1338,7 +1338,7 @@
         "message": "移动单个标签页 / 为单个标签页创建链接或书签（但不会从该窗口分离）",
         "hash": "f3592b9c978a8c82911ec0d008d3b870"
     },
-    "config_tabDragBehavior_none": {
+    "config_tabDragBehavior_none_": {
         "message": "什么都不做",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
     },
