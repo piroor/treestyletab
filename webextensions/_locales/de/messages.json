@@ -430,15 +430,15 @@
 
   "config_drag_caption": { "message": "Ziehen und Ablegen" },
 
-  "config_tabDragBehavior_caption":       { "message": "Wenn ein Zweig außerhalb der Tableiste gezogen wird" },
+  "config_tabDragBehavior_caption_":       { "message": "Wenn ein Zweig außerhalb der Tableiste gezogen wird" },
   "config_tabDragBehavior_description":   { "message": "Aufgrund von Firefox Einschränkungen muss beim Beginn des Ziehens bekannt sein, wie Tabs beim Ablegen außerhalb der Seitenleiste von TST behandelt werden sollen." },
   "config_tabDragBehavior_label":         { "message": "Ziehen" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Ziehen" },
-  "config_tabDragBehavior_tearoff_tree":  { "message": "Gesamten Zweig vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
-  "config_tabDragBehavior_bookmark_tree": { "message": "Verweise oder Lesezeichen vom gesamten Zweig erstellen (aber unmöglich, vom Fenster abzulösen)" },
-  "config_tabDragBehavior_tearoff_tab":   { "message": "Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
-  "config_tabDragBehavior_bookmark_tab":  { "message": "Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
-  "config_tabDragBehavior_none":          { "message": "Nichts machen" },
+  "config_tabDragBehavior_tearoff_tree":  { "message": "Move Entire Tree / Gesamten Zweig vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
+  "config_tabDragBehavior_bookmark_tree": { "message": "Move Entire Tree / Verweise oder Lesezeichen vom gesamten Zweig erstellen (aber unmöglich, vom Fenster abzulösen)" },
+  "config_tabDragBehavior_tearoff_tab":   { "message": "Move Solo Tab / Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
+  "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
+  "config_tabDragBehavior_none_":          { "message": "Nichts machen" },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
   "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Erlauben, einen Zweig beim Ablegen außerhalb der Tableiste zu lösen" },
 
