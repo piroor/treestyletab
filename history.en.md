@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Better description for drag and drop behavior options.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 3.4.7 (2020.3.17)
    * Fix undroppability of links and some objects to tabs. (regression on recent versions)
    * Add a link to open the options page itself in a new tab, at the top of the page.
