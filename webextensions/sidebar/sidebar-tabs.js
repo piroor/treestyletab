@@ -437,6 +437,7 @@ async function activateRealActiveTab(windowId) {
   TabsInternalOperation.setTabActive(tab);
 }
 
+const mLastProcessedTarget = {};
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -541,7 +542,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
+      mLastProcessedTarget[message.type] = message.tabId;
       await Tab.waitUntilTracked(message.tabId, { element: true });
+      // When a new active tab (A) is opened and another tab (B) is
+      // activated immediately, the "activated" notification for A
+      // is processed after B. So we should ignore such cases.
+      if (mLastProcessedTarget[message.type] != message.tabId)
+        return;
       const tab = Tab.get(message.tabId);
       if (tab) {
         TabsStore.activeTabInWindow.set(message.windowId, tab);
@@ -748,7 +755,14 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
+      const ids = message.tabIds.join(',');
+      mLastProcessedTarget[message.type] = ids;
       await Tab.waitUntilTracked(message.tabIds, { element: true });
+      // When new active tabs (A) are opened and other tabs (B) are
+      // highlighted immediately, the "activated" notification for A
+      // is processed after B. So we should ignore such cases.
+      if (mLastProcessedTarget[message.type] != ids)
+        return;
       TabsUpdate.updateTabsHighlighted(message);
       const window = TabsStore.windows.get(message.windowId);
       if (!window || !window.element)
