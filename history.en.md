@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.4.8 (2020.3.27)
    * Fix ghost "active, highlighted" state of newly opened tabs which lost its focus imediately.
    * Fix accidental unregistration of helper addons from unhandled errors.
    * Fix invalid `tab` property of `tab-mouseup` and `tab-clicked` notifications on mouseup after moving from non-tab element.
