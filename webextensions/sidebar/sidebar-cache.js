@@ -304,6 +304,8 @@ async function restoreTabsFromCacheInternal(params) {
         tabsMustBeRemoved.map(tab => tab.id));
     log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     const matched = params.cache.match(/<li/g);
+    if (!matched)
+      throw new Error('restoreTabsFromCacheInternal: invalid cache');
     log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
     if (configs.debug)
       dumpCache(params.cache);

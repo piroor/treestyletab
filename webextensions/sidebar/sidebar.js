@@ -998,6 +998,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         ignorePinnedTabs: true
       });
       if (!cache ||
+          !cache.tabbar.cache ||
           (cache.offset &&
            window.element.childNodes.length <= cache.offset)) {
         log('Tabs.onWindowRestoring: no effective cache');
