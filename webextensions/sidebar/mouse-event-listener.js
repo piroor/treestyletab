@@ -431,19 +431,23 @@ async function onMouseUp(event) {
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
-  const extraContentsInfo = lastMousedown.detail && lastMousedown.detail.$extraContentsInfo;
+  const extraContentsInfo = lastMousedown && lastMousedown.detail && lastMousedown.detail.$extraContentsInfo;
   if (!lastMousedown)
     return;
 
   if (tab) {
+    const mouseupInfo = Object.assign({}, lastMousedown, {
+      detail:   getMouseEventDetail(event, tab),
+      treeItem: new TSTAPI.TreeItem(tab)
+    });
     const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_MOUSEUP,
-      lastMousedown,
+      mouseupInfo,
       extraContentsInfo
     );
     const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_CLICKED,
-      lastMousedown,
+      mouseupInfo,
       extraContentsInfo
     );
     if (!mouseupAllowed ||
