@@ -968,9 +968,9 @@ function* spawnMessages(targetSet, params) {
           e.message == 'Could not establish connection. Receiving end does not exist.') {
         browser.runtime.sendMessage(id, { type: kNOTIFY_READY }).catch(_error => {
           console.log(`Unregistering missing helper addon ${id}...`);
-      unregisterAddon(id);
-      if (mIsFrontend)
-        browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
+          unregisterAddon(id);
+          if (mIsFrontend)
+            browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
         });
       }
       return {
