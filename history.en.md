@@ -1,8 +1,13 @@
 # History
 
  - master/HEAD
+   * Fix ghost "active, highlighted" state of newly opened tabs which lost its focus imediately.
+   * Fix accidental unregistration of helper addons from unhandled errors.
+   * Fix invalid `tab` property of `tab-mouseup` and `tab-clicked` notifications on mouseup after moving from non-tab element.
+   * Suppress error ater the first regular (unpinned) tab restoration.
    * Better description for drag and drop behavior options.
    * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.4.7 (2020.3.17)
    * Fix undroppability of links and some objects to tabs. (regression on recent versions)
    * Add a link to open the options page itself in a new tab, at the top of the page.
