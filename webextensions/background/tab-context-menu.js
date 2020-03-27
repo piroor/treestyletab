@@ -418,8 +418,12 @@ async function onShown(info, contextTab) {
   const hasMultipleTabs       = Tab.hasMultipleTabs(windowId);
   const hasMultipleNormalTabs = Tab.hasMultipleTabs(windowId, { normal: true });
   const multiselected         = contextTab && contextTab.$TST.multiselected;
-  const contextTabs           = multiselected ? Tab.getSelectedTabs(windowId) : [contextTab];
-  const hasChild              = contextTabs.some(tab => tab.$TST.hasChild);
+  const contextTabs           = multiselected ?
+    Tab.getSelectedTabs(windowId) :
+    contextTab ?
+      [contextTab] :
+      [];
+  const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
 
   let modifiedItemsCount = 0;
 
