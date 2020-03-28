@@ -1045,7 +1045,7 @@ export async function getTargetTabs(message, sender) {
         message.tabIds == '*')
       return Tab.getAllTabs(message.window || message.windowId, { iterator: true });
     else
-      return Tab.getRoots(message.window || message.windowId, { iterator: true });
+      return Tab.getRootTabs(message.window || message.windowId, { iterator: true });
   }
   if (message.tab == '*' ||
       message.tabId == '*' ||
