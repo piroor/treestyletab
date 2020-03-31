@@ -519,7 +519,7 @@
         "hash": "3c498ce07f491477e7484e731f59aaf2"
     },
     "context_menu_label": {
-        "message": "标签树",
+        "message": "标签树(&T)",
         "hash": "8d7379195ed66f46fa8a084c80cac51c"
     },
     "context_reloadTree_label": {
