@@ -69,6 +69,7 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)
  * [TST Tab Drag Handle](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) provides a small tooltip on tab labels to start dragging of tabs for specific operations. (This was a built-in feature on TST 2.6.0-3.3.6, and now separated.)
  * [TST-MiddleClick](https://addons.mozilla.org/firefox/addon/tst-middleclick/) allows you to run "undo close tab" or "close currently active tab" command on middle click on the sidebar.
+ * [TST-DisableMiddleClick](https://addons.mozilla.org/en-US/firefox/addon/tst-disablemiddleclick/) prevents TST from closing tabs when they a clicked with the middle mouse button.
  * [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) allows you to switch active tab by wheel scrolling.
  * [Tab flip for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/) allows you to move focus to the tab previously focused, by clicking on the active tab.
  * [Tree Style Tab Focus Preceding Tab on Close](https://addons.mozilla.org/firefox/addon/tst-focus-preceding-tab/) focuses the previous tab instead of the next tab when a tab is closed.
