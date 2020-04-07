@@ -120,7 +120,7 @@ export function init() {
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
     onConnected.dispatch(windowId);
-    port.onDisconnect.addListener(_message => {
+    port.onDisconnect.addListener(_diconnectedPort => {
       mOpenState.delete(windowId);
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
