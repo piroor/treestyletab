@@ -196,11 +196,16 @@ export class TreeItem {
         (sourceTab.incognito &&
          !permissions.has(kPERMISSION_INCOGNITO)))
       return null;
-
     const cacheKey = `${sourceTab.id}:${commonCacheKey}`;
-    if (cacheKey in this.cache.tabs)
-      return this.cache.tabs[cacheKey];
+    // The promise is cached here instead of the result,
+    // to avoid cache miss caused by concurrent call.
+    if (!(cacheKey in this.cache.tabs)) {
+      this.cache.tabs[cacheKey] = this.exportTabNoCache(sourceTab, permissions, commonCacheKey);
+    }
+    return await this.cache.tabs[cacheKey];
+  }
 
+  async exportTabNoCache(sourceTab, permissions, commonCacheKey = '') {
     const [effectiveFavIconUrl, children] = await Promise.all([
       (sourceTab.id in this.cache.effectiveFavIconUrls) ?
         this.cache.effectiveFavIconUrls[sourceTab.id] :
@@ -271,8 +276,6 @@ export class TreeItem {
       if (key in sourceTab)
         exportedTab[key] = sourceTab[key];
     }
-
-    this.cache.tabs[cacheKey] = exportedTab;
 
     return exportedTab;
   }
