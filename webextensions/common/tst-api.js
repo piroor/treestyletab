@@ -200,12 +200,12 @@ export class TreeItem {
     // The promise is cached here instead of the result,
     // to avoid cache miss caused by concurrent call.
     if (!(cacheKey in this.cache.tabs)) {
-      this.cache.tabs[cacheKey] = this.exportTabNoCache(sourceTab, permissions, commonCacheKey);
+      this.cache.tabs[cacheKey] = this._exportTab(sourceTab, permissions, commonCacheKey);
     }
     return await this.cache.tabs[cacheKey];
   }
 
-  async exportTabNoCache(sourceTab, permissions, commonCacheKey = '') {
+  async _exportTab(sourceTab, permissions, commonCacheKey = '') {
     const [effectiveFavIconUrl, children] = await Promise.all([
       (sourceTab.id in this.cache.effectiveFavIconUrls) ?
         this.cache.effectiveFavIconUrls[sourceTab.id] :
