@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Put bookmarks undar a new folder with their tree structure information automatically, when they are created from tabs via drag and drop.
+   * Show the fake context menu correctly even after any helper addon is unloaded.
+   * Return root tabs for an API call like `{type:`get-tree`,windowId}` correctly.
+   * Fix typo in English locale by [jaens](https://github.com/jaens). Thanks!
+   * Update `zh_CN` locale by [no1xsyzy](https://github.com/no1xsyzy): add an access key for the menu item "Tree of tabs". Thanks!
  - 3.4.8 (2020.3.27)
    * Fix ghost "active, highlighted" state of newly opened tabs which lost its focus imediately.
    * Fix accidental unregistration of helper addons from unhandled errors.
