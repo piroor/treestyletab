@@ -4,6 +4,7 @@
    * ツリーや複数タブのドラッグ＆ドロップでブックマークが作成されたときに、項目をフォルダにまとめてツリー構造を保持するようにした
    * ヘルパーアドオンが削除または無効化された後に偽コンテキストメニューが標示されなくなる問題を修正
    * ドキュメントの説明どおり、`{type:`get-tree`,windowId}`のようなAPI呼び出しで当該ウィンドウの最上位のタブの配列を返却するように修正
+   * [APIまわりのパフォーマンスを向上](https://github.com/piroor/treestyletab/issues/2554)（by [account-login](https://github.com/account-login). Thanks!）
    * 英語ロケールの誤記を修正（by [jaens](https://github.com/jaens). Thanks!）
    * `zh_CN`ロケールで「タブのツリー」の項目にアクセスキーを設定（by [no1xsyzy](https://github.com/no1xsyzy). Thanks!）
  - 3.4.8 (2020.3.27)
