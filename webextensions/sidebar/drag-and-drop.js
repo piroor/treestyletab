@@ -865,6 +865,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
   mLastDragStartTime = Date.now();
+  // Don't store raw URLs to save privacy!
   sha1sum(dragData.tabs.map(tab => tab.url).join('\n')).then(digest => {
     configs.lastDraggedTabs = {
       tabIds:     dragData.tabs.map(tab => tab.id),
