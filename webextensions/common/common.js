@@ -296,7 +296,7 @@ tab-item.private-browsing tab-label:before {
     'common/Tab': false,
     'common/Window': false,
     'common/api-tabs': false,
-    'common/bookmarks': false,
+    'common/bookmark': false,
     'common/contextual-identities': false,
     'common/permissions': false,
     'common/sidebar-connection': false,
