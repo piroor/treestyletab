@@ -85,7 +85,9 @@ async function rebuild() {
   const extraItemNodes = document.createDocumentFragment();
   const incognitoParams = { windowId: TabsStore.getWindow() };
   for (const [id, extraItems] of mExtraItems.entries()) {
-    if (!TSTAPI.isSafeAtIncognito(id, incognitoParams))
+    const addon = TSTAPI.getAddon(id);
+    if (!TSTAPI.isSafeAtIncognito(id, incognitoParams) ||
+        !addon)
       continue;
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
@@ -116,7 +118,7 @@ async function rebuild() {
     const topLevelItems = toBeBuiltItems.filter(item => !item.parentId);
     if (topLevelItems.length == 1 &&
         !topLevelItems[0].icons)
-      topLevelItems[0].icons = TSTAPI.getAddon(id).icons || {};
+      topLevelItems[0].icons = addon.icons || {};
 
     const addonSubMenu = addonItem.lastChild;
     const knownItems   = {};
