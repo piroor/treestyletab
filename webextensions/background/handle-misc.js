@@ -21,6 +21,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Permissions from '/common/permissions.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as Bookmark from '/common/bookmark.js';
 
 import Tab from '/common/Tab.js';
 
@@ -59,6 +60,7 @@ Background.onBuilt.addListener(() => {
 
 Background.onReady.addListener(() => {
   mInitialized = true;
+  Bookmark.startTracking();
 });
 
 Background.onDestroy.addListener(() => {
@@ -358,6 +360,7 @@ function onMessage(message, sender) {
         }
         else if (grantedPermission == JSON.stringify(Permissions.BOOKMARKS)) {
           Migration.migrateBookmarkUrls();
+          Bookmark.startTracking();
         }
       })();
 

@@ -31,7 +31,8 @@ import {
   log as internalLogger,
   wait,
   mapAndFilter,
-  configs
+  configs,
+  sha1sum
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -864,6 +865,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
   mLastDragStartTime = Date.now();
+  sha1sum(dragData.tabs.map(tab => tab.url).join('\n')).then(digest => {
+    configs.lastDraggedTabs = {
+      tabIds:     dragData.tabs.map(tab => tab.id),
+      urlsDigest: digest
+    };
+  });
 
   log('onDragStart: started');
 });

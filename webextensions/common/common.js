@@ -246,6 +246,7 @@ export const configs = new Configs({
 
   requestingPermissions: null,
   requestingPermissionsNatively: null,
+  lastDraggedTabs: null,
 
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
   newTabAnimationDuration: 100,
@@ -347,6 +348,7 @@ tab-item.private-browsing tab-label:before {
     notifiedFeaturesVersion
     requestingPermissions
     requestingPermissionsNatively
+    lastDraggedTabs
     testKey
   `.trim().split('\n'), key => {
     key = key.trim();
@@ -588,4 +590,13 @@ export function toLines(values, mapper, separator = '\n') {
     i++;
   }
   return lines;
+}
+
+export async function sha1sum(string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(string);
+  const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }

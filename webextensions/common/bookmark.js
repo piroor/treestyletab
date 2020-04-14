@@ -8,20 +8,24 @@
 import {
   log as internalLogger,
   configs,
-  notify
+  notify,
+  wait,
+  sha1sum
 } from './common.js';
 import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
+import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
 import RichConfirm from '/extlib/RichConfirm.js';
 import l10n from '/extlib/l10n.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/bookmarks', ...args);
 }
+
+let mCreatingCount = 0;
 
 async function getItemById(id) {
   if (!id)
@@ -93,9 +97,13 @@ export async function bookmarkTab(tab, options = {}) {
     }
   }
 
+  mCreatingCount++;
   const item = await browser.bookmarks.create({
     parentId, title, url
   }).catch(ApiTabs.createErrorHandler());
+  wait(150).then(() => {
+    mCreatingCount--;
+  });
   return item;
 }
 
@@ -119,7 +127,10 @@ export async function bookmarkTabs(tabs, options = {}) {
     .replace(/%YEAR%/gi, now.getFullYear())
     .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
     .replace(/%DATE%/gi, `0${now.getDate()}`.substr(-2));
-  const folderParams = { title };
+  const folderParams = {
+    type: 'folder',
+    title
+  };
   let parent;
   if (options.parentId) {
     parent = await getItemById(options.parentId);
@@ -166,6 +177,9 @@ export async function bookmarkTabs(tabs, options = {}) {
     }
   }
 
+  const toBeCreatedCount = tabs.length + 1;
+  mCreatingCount += toBeCreatedCount;
+
   const minLevel = Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0')));
   const folder = await browser.bookmarks.create(folderParams).catch(ApiTabs.createErrorHandler());
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
@@ -187,6 +201,10 @@ export async function bookmarkTabs(tabs, options = {}) {
       url:      tab.url
     }).catch(ApiTabs.createErrorSuppressor());
   }
+
+  wait(150).then(() => {
+    mCreatingCount -= toBeCreatedCount;
+  });
 
   return folder;
 }
@@ -296,4 +314,103 @@ export async function initFolderChoolser(anchor, params = {}) {
 
   const rootItems = await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler());
   buildItems(rootItems[0].children, mChooserTree);
+}
+
+let mCreatedBookmarks = [];
+
+async function onBookmarksCreated(id, bookmark) {
+  log('onBookmarksCreated ', { id, bookmark });
+
+  if (!(await Permissions.isGranted(Permissions.BOOKMARKS)) ||
+      mCreatingCount > 0)
+    return;
+
+  mCreatedBookmarks.push(bookmark);
+  reserveToGroupCreatedBookmarks();
+}
+
+function reserveToGroupCreatedBookmarks() {
+  if (reserveToGroupCreatedBookmarks.reserved)
+    clearTimeout(reserveToGroupCreatedBookmarks.reserved);
+  reserveToGroupCreatedBookmarks.reserved = setTimeout(() => {
+    reserveToGroupCreatedBookmarks.reserved = null;
+    tryGroupCreatedBookmarks();
+  }, 250);
+}
+
+async function tryGroupCreatedBookmarks() {
+  log('tryGroupCreatedBookmarks ', mCreatedBookmarks);
+  const bookmarks = mCreatedBookmarks;
+  mCreatedBookmarks = [];
+
+  const lastDraggedTabs = configs.lastDraggedTabs;
+  {
+    // accept only bookmarks from dragged tabs
+    const digest = await sha1sum(bookmarks.map(tab => tab.url).join('\n'));
+    configs.lastDraggedTabs = null;
+    if (digest != lastDraggedTabs.urlsDigest) {
+      log(' => digest mismatched ', { digest, last: lastDraggedTabs.urlsDigest });
+      return;
+    }
+  }
+
+  if (bookmarks.length < 2) {
+    log(' => ignore single bookmark');
+    return;
+  }
+
+  {
+    // Do nothing if multiple bookmarks are created under
+    // multiple parent folders by sync.
+    const parentIds = new Set();
+    for (const bookmark of bookmarks) {
+      parentIds.add(bookmark.parentId);
+    }
+    if (parentIds.size > 1) {
+      log(' => ignore bookmarks created under multiple folders');
+      return;
+    }
+  }
+
+  const parentId = bookmarks[0].parentId;
+  {
+    // Do nothing if all bookmarks are created under a new
+    // blank folder.
+    const allChildren = await browser.bookmarks.getChildren(parentId);
+    if (allChildren.length == bookmarks.length) {
+      log(' => ignore bookmarks created under a new blank folder');
+      return;
+    }
+  }
+
+  log('ready to group bookmarks under a folder');
+
+  mCreatingCount++;
+  const folder = await browser.bookmarks.create({
+    type:  'folder',
+    title: bookmarks[0].title,
+    index: bookmarks[0].index,
+    parentId
+  }).catch(ApiTabs.createErrorHandler());
+  wait(150).then(() => {
+    mCreatingCount--;
+  });
+
+  let movedCount = 0;
+  for (const bookmark of bookmarks) {
+    await browser.bookmarks.move(bookmark.id, {
+      parentId: folder.id,
+      index:    movedCount++
+    });
+  }
+
+  const tabs = lastDraggedTabs.tabIds.map(id => Tab.get(id));
+  if (tabs[0].$TST.isGroupTab)
+    browser.bookmarks.remove(bookmarks[0].id);
+}
+
+export async function startTracking() {
+  const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
+  if (granted && !browser.bookmarks.onCreated.hasListener(onBookmarksCreated))
+    browser.bookmarks.onCreated.addListener(onBookmarksCreated);
 }
