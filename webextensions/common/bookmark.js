@@ -180,25 +180,14 @@ export async function bookmarkTabs(tabs, options = {}) {
   const toBeCreatedCount = tabs.length + 1;
   mCreatingCount += toBeCreatedCount;
 
-  const minLevel = Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0')));
+  const titles = getTitlesWithTreeStructure(tabs);
   const folder = await browser.bookmarks.create(folderParams).catch(ApiTabs.createErrorHandler());
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
-    const tab = tabs[i];
-    let title = tab.title;
-    const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
-    let prefix = '';
-    for (let j = 0; j < level; j++) {
-      prefix += '>';
-    }
-    if (prefix)
-      title = `${prefix} ${title}`;
-    else
-      title = title.replace(/^>+ /, ''); // if the page title has marker-like prefix, we need to remove it.
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,
-      title,
-      url:      tab.url
+      title:    titles[i],
+      url:      tabs[i].url
     }).catch(ApiTabs.createErrorSuppressor());
   }
 
@@ -207,6 +196,25 @@ export async function bookmarkTabs(tabs, options = {}) {
   });
 
   return folder;
+}
+
+function getTitlesWithTreeStructure(tabs) {
+  const minLevel = Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0')));
+  const titles = [];
+  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
+    const tab = tabs[i];
+    const title = tab.title;
+    const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
+    let prefix = '';
+    for (let j = 0; j < level; j++) {
+      prefix += '>';
+    }
+    if (prefix)
+      titles.push(`${prefix} ${title}`);
+    else
+      titles.push(title.replace(/^>+ /, '')); // if the page title has marker-like prefix, we need to remove it.
+  }
+  return titles;
 }
 
 let mChooserTree = null;
@@ -405,8 +413,23 @@ async function tryGroupCreatedBookmarks() {
   }
 
   const tabs = lastDraggedTabs.tabIds.map(id => Tab.get(id));
-  if (tabs[0].$TST.isGroupTab)
+  let titles = getTitlesWithTreeStructure(tabs);
+  if (tabs[0].$TST.isGroupTab &&
+      titles.filter(title => !/^>/.test(title)).length == 1) {
+    log('delete needless bookmark for a group tab');
     browser.bookmarks.remove(bookmarks[0].id);
+    tabs.shift();
+    bookmarks.shift();
+    titles = getTitlesWithTreeStructure(tabs);
+  }
+
+  log('save bookmark structure to tabs');
+  for (let i = 0, maxi = bookmarks.length; i < maxi; i++) {
+    const title = titles[i];
+    if (title == tabs[i].title)
+      continue;
+    browser.bookmarks.update(bookmarks[i].id, { title });
+  }
 }
 
 export async function startTracking() {
