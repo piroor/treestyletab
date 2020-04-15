@@ -459,10 +459,10 @@ function onMessageExternal(message, sender) {
         if (child.$TST.collapsed &&
             !parent.$TST.collapsed &&
             !parent.$TST.subtreeCollapsed) {
-            await Tree.collapseExpandTabAndSubtree(child, {
-              collapsed: false,
-              bradcast:  true
-            });
+          await Tree.collapseExpandTabAndSubtree(child, {
+            collapsed: false,
+            bradcast:  true
+          });
         }
         return true;
       })();
@@ -477,10 +477,10 @@ function onMessageExternal(message, sender) {
           broadcast: true
         });
         if (tab.$TST.collapsed) {
-            await Tree.collapseExpandTabAndSubtree(tab, {
-              collapsed: false,
-              bradcast:  true
-            });
+          await Tree.collapseExpandTabAndSubtree(tab, {
+            collapsed: false,
+            bradcast:  true
+          });
         }
         return true;
       })();

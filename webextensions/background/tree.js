@@ -366,9 +366,9 @@ export async function detachTabsFromTree(tabs, options = {}) {
         else {
           detachTab(child, options);
           if (child.$TST.collapsed)
-              await collapseExpandTabAndSubtree(child, Object.assign({}, options, {
-                collapsed: false
-              }));
+            await collapseExpandTabAndSubtree(child, Object.assign({}, options, {
+              collapsed: false
+            }));
         }
       }
     }
