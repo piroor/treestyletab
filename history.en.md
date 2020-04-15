@@ -3,6 +3,7 @@
  - master/HEAD
    * Put bookmarks undar a new folder with their tree structure information automatically, when they are created from tabs via drag and drop.
    * Allow to move down a tree with the keyboard shortcut Ctrl-Shift-PageDown correctly.
+   * Don't leave invisible orphans after only their parent tab is moved via drag and drop or other operations.
    * Show the fake context menu correctly even after any helper addon is unloaded.
    * Return root tabs for an API call like `{type:`get-tree`,windowId}` correctly.
    * Notify `try-redirect-focus-from-collaped-tab` and `try-expand-tree-from-focused-collapsed-tab` with correct `focusDirection` for the first time or cases with a circulation.
