@@ -358,12 +358,24 @@ export async function detachTabsFromTree(tabs, options = {}) {
     const parent   = tab.$TST.parent;
     for (const child of children) {
       if (!tabs.includes(child)) {
-        if (parent)
+        if (parent) {
           promisedAttach.push(attachTabTo(child, parent, Object.assign({}, options, {
             dontMove: true
           })));
-        else
+        }
+        else {
           detachTab(child, options);
+          if (child.$TST.collapsed) {
+            if (child.$TST.subtreeCollapsed)
+              await collapseExpandTab(child, Object.assign({}, options, {
+                collapsed: false
+              }));
+            else
+              await collapseExpandTabAndSubtree(child, Object.assign({}, options, {
+                collapsed: false
+              }));
+          }
+        }
       }
     }
   }
