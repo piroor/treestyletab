@@ -117,10 +117,29 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       Tree.followDescendantsToMovedRoot(tab);
     }; break;
 
-    case 'detach': {
+    case 'detach':
       Tree.detachTab(tab, { broadcast: true });
       Tree.followDescendantsToMovedRoot(tab);
-    }; break;
+      if (!action.insertBefore && !action.insertAfter)
+        break;
+
+    case 'move':
+      if (action.insertBefore) {
+        Tree.moveTabSubtreeBefore(
+          tab,
+          Tab.get(action.insertBefore),
+          { broadcast: true }
+        );
+        return;
+      }
+      else if (action.insertAfter) {
+        Tree.moveTabSubtreeAfter(
+          tab,
+          Tab.get(action.insertAfter),
+          { broadcast: true }
+        );
+        return;
+      }
 
     default:
       Tree.followDescendantsToMovedRoot(tab);
@@ -272,6 +291,26 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
     let ancestor = newParent;
     while (ancestor) {
       if (ancestor == target) {
+        if (moveInfo.toIndex - moveInfo.fromIndex == 1) {
+          log('=> maybe move-down by keyboard shortcut or something.');
+          let nearestForeigner = tab.$TST.nearestFollowingForeignerTab;
+          if (nearestForeigner &&
+              nearestForeigner == tab)
+            nearestForeigner = nearestForeigner.$TST.nextTab;
+          log('nearest foreigner tab: ', nearestForeigner && nearestForeigner.id);
+          if (nearestForeigner) {
+            if (nearestForeigner.$TST.hasChild)
+              return {
+                action:      'attach',
+                parent:      nearestForeigner.id,
+                insertAfter: nearestForeigner.id
+              };
+            return {
+              action:      tab.$TST.parent ? 'detach' : 'move',
+              insertAfter: nearestForeigner.id
+            };
+          }
+        }
         log('=> invalid move: a parent is moved inside its own tree, thus move back!');
         return { action: 'moveBack' };
       }
