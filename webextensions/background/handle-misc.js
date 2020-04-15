@@ -456,6 +456,13 @@ function onMessageExternal(message, sender) {
           insertBefore: Tab.get(message.insertBefore),
           insertAfter:  Tab.get(message.insertAfter)
         });
+        if (child.$TST.collapsed &&
+            !parent.$TST.collapsed &&
+            !parent.$TST.subtreeCollapsed)
+          await Tree.collapseExpandTab(child, {
+            collapsed: false,
+            bradcast:  true
+          });
         return true;
       })();
 
@@ -468,6 +475,11 @@ function onMessageExternal(message, sender) {
         await Tree.detachTab(tab, {
           broadcast: true
         });
+        if (tab.$TST.collapsed)
+          await Tree.collapseExpandTab(tab, {
+            collapsed: false,
+            bradcast:  true
+          });
         return true;
       })();
 
