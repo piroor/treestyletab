@@ -2,8 +2,11 @@
 
  - master/HEAD
    * ツリーや複数タブのドラッグ＆ドロップでブックマークが作成されたときに、項目をフォルダにまとめてツリー構造を保持するようにした
+   * キーボードショートカット「Ctrl-Shift-PageDown」でツリーを下方向に移動できなかったのを修正
    * ヘルパーアドオンが削除または無効化された後に偽コンテキストメニューが標示されなくなる問題を修正
    * ドキュメントの説明どおり、`{type:`get-tree`,windowId}`のようなAPI呼び出しで当該ウィンドウの最上位のタブの配列を返却するように修正
+   * 初回およびフォーカスの循環時に `try-redirect-focus-from-collaped-tab` および `try-expand-tree-from-focused-collapsed-tab` で通知される `focusDirection` の値がおかしかったのを修正
+   * 不可視状態のタブについてAPI経由でツリー構造を編集した後で、タブが不可視のままにならないようにした
    * [APIまわりのパフォーマンスを向上](https://github.com/piroor/treestyletab/issues/2554)（by [account-login](https://github.com/account-login). Thanks!）
    * 英語ロケールの誤記を修正（by [jaens](https://github.com/jaens). Thanks!）
    * `zh_CN`ロケールで「タブのツリー」の項目にアクセスキーを設定（by [no1xsyzy](https://github.com/no1xsyzy). Thanks!）

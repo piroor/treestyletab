@@ -2,8 +2,11 @@
 
  - master/HEAD
    * Put bookmarks undar a new folder with their tree structure information automatically, when they are created from tabs via drag and drop.
+   * Allow to move down a tree with the keyboard shortcut Ctrl-Shift-PageDown correctly.
    * Show the fake context menu correctly even after any helper addon is unloaded.
    * Return root tabs for an API call like `{type:`get-tree`,windowId}` correctly.
+   * Notify `try-redirect-focus-from-collaped-tab` and `try-expand-tree-from-focused-collapsed-tab` with correct `focusDirection` for the first time or cases with a circulation.
+   * Make tabs visible automatically when tabs are attached/detached via APIs.
    * [Performance improvement around APIs](https://github.com/piroor/treestyletab/issues/2554) by [account-login](https://github.com/account-login). Thanks!
    * Fix typo in English locale by [jaens](https://github.com/jaens). Thanks!
    * Update `zh_CN` locale by [no1xsyzy](https://github.com/no1xsyzy): add an access key for the menu item "Tree of tabs". Thanks!
