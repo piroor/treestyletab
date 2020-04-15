@@ -460,10 +460,10 @@ function onMessageExternal(message, sender) {
             !parent.$TST.collapsed &&
             !parent.$TST.subtreeCollapsed) {
           if (child.$TST.subtreeCollapsed)
-          await Tree.collapseExpandTab(child, {
-            collapsed: false,
-            bradcast:  true
-          });
+            await Tree.collapseExpandTab(child, {
+              collapsed: false,
+              bradcast:  true
+            });
           else
             await Tree.collapseExpandTabAndSubtree(child, {
               collapsed: false,
@@ -484,10 +484,10 @@ function onMessageExternal(message, sender) {
         });
         if (tab.$TST.collapsed) {
           if (tab.$TST.subtreeCollapsed)
-          await Tree.collapseExpandTab(tab, {
-            collapsed: false,
-            bradcast:  true
-          });
+            await Tree.collapseExpandTab(tab, {
+              collapsed: false,
+              bradcast:  true
+            });
           else
             await Tree.collapseExpandTabAndSubtree(tab, {
               collapsed: false,
