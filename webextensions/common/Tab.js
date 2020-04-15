@@ -1182,11 +1182,13 @@ export default class Tab {
 
   get isSubstantiallyMoved() {
     const previousTab = this.unsafePreviousTab;
-    if (this.lastPreviousTabId != (previousTab && previousTab.id))
+    if (this.lastPreviousTabId &&
+        this.lastPreviousTabId != (previousTab && previousTab.id))
       return true;
 
     const nextTab = this.unsafeNextTab;
-    if (this.lastNextTabId != (nextTab && nextTab.id))
+    if (this.lastNextTabId &&
+        this.lastNextTabId != (nextTab && nextTab.id))
       return true;
 
     return false;
