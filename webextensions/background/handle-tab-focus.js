@@ -337,7 +337,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH: {
       log('Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH');
       mMaybeTabSwitchingByShortcut = true;
-      if (sender.tab.active) {
+      if (sender.tab && sender.tab.active) {
         const window = TabsStore.windows.get(sender.tab.windowId);
         window.lastActiveTab = sender.tab.id;
       }
@@ -346,7 +346,8 @@ function onMessage(message, sender) {
       log('Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
         if (mTabSwitchedByShortcut &&
-            configs.skipCollapsedTabsForTabSwitchingShortcuts) {
+            configs.skipCollapsedTabsForTabSwitchingShortcuts &&
+            sender.tab) {
           await Tab.waitUntilTracked(sender.tab.id);
           let tab = sender.tab && Tab.get(sender.tab.id);
           if (!tab) {
