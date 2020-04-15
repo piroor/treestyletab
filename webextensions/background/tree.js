@@ -1005,6 +1005,9 @@ export async function moveTabs(tabs, options = {}) {
   const structure = TreeBehavior.getTreeStructureFromTabs(tabs);
   log('original tree structure: ', structure);
 
+  if (!options.duplicate)
+    await detachTabsFromTree(tabs, options);
+
   if (isAcrossWindows || options.duplicate) {
     if (mSlowDuplication)
       UserOperationBlocker.blockIn(windowId, { throbber: true });
