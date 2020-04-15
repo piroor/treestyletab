@@ -20,6 +20,7 @@ import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
 
 import * as Background from './background.js';
 import * as Tree from './tree.js';
@@ -32,6 +33,16 @@ function log(...args) {
 let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
+Window.onInitialized.addListener(window => {
+  browser.tabs.query({
+    windowId: window.id,
+    active:   true
+  })
+    .then(activeTabs => {
+      if (!window.lastActiveTab)
+        window.lastActiveTab = activeTabs[0].id;
+    });
+});
 
 Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the activation should be canceled
   log('Tabs.onActivating ', { tab: dumpTab(tab), info });
@@ -50,8 +61,14 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
-  const focusDirection = (!lastActiveTab || lastActiveTab.index == 0) ?
+  const focusDirection = !lastActiveTab ?
     0 :
+    (!lastActiveTab.$TST.nearestVisiblePrecedingTab &&
+     !tab.$TST.nearestVisibleFollowingTab) ?
+      -1 :
+      (!lastActiveTab.$TST.nearestVisibleFollowingTab &&
+       !tab.$TST.nearestVisiblePrecedingTab) ?
+        1 :
     (lastActiveTab.index > tab.index) ?
       -1 :
       1;

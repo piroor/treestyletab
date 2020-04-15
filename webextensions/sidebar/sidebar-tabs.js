@@ -223,7 +223,8 @@ async function syncTabsOrder() {
   reserveToSyncTabsOrder();
 }
 
-Window.onInitialized.addListener(windowId => {
+Window.onInitialized.addListener(window => {
+  const windowId = window.id;
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');

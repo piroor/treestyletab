@@ -243,6 +243,6 @@ Window.onInitialized = new EventListenerManager();
 
 Window.init = windowId => {
   const window = TabsStore.windows.get(windowId) || new Window(windowId);
-  Window.onInitialized.dispatch(windowId);
+  Window.onInitialized.dispatch(window);
   return window;
 }
