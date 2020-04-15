@@ -458,11 +458,18 @@ function onMessageExternal(message, sender) {
         });
         if (child.$TST.collapsed &&
             !parent.$TST.collapsed &&
-            !parent.$TST.subtreeCollapsed)
+            !parent.$TST.subtreeCollapsed) {
+          if (child.$TST.subtreeCollapsed)
           await Tree.collapseExpandTab(child, {
             collapsed: false,
             bradcast:  true
           });
+          else
+            await Tree.collapseExpandTabAndSubtree(child, {
+              collapsed: false,
+              bradcast:  true
+            });
+        }
         return true;
       })();
 
@@ -475,11 +482,18 @@ function onMessageExternal(message, sender) {
         await Tree.detachTab(tab, {
           broadcast: true
         });
-        if (tab.$TST.collapsed)
+        if (tab.$TST.collapsed) {
+          if (tab.$TST.subtreeCollapsed)
           await Tree.collapseExpandTab(tab, {
             collapsed: false,
             bradcast:  true
           });
+          else
+            await Tree.collapseExpandTabAndSubtree(tab, {
+              collapsed: false,
+              bradcast:  true
+            });
+        }
         return true;
       })();
 
