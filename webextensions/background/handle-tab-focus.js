@@ -69,9 +69,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       (!lastActiveTab.$TST.nearestVisibleFollowingTab &&
        !tab.$TST.nearestVisiblePrecedingTab) ?
         1 :
-    (lastActiveTab.index > tab.index) ?
-      -1 :
-      1;
+        (lastActiveTab.index > tab.index) ?
+          -1 :
+          1;
   const cache = {};
   if (tab.$TST.collapsed) {
     if (!tab.$TST.parent) {
