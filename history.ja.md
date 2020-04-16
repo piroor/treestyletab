@@ -6,7 +6,7 @@
    * キーボードショートカット「Ctrl-Shift-PageDown」でツリーを下方向に移動できなかったのを修正
    * ドラッグ＆ドロップ操作などの後で、不可視状態のタブが最上位に取り残される場合があったのを修正
    * ヘルパーアドオンが削除または無効化された後に偽コンテキストメニューが表示されなくなる問題を修正
-   * ドキュメントの説明どおり、`{type:`get-tree`,windowId}`のようなAPI呼び出しで当該ウィンドウの最上位のタブの配列を返却するように修正
+   * ドキュメントの説明どおり、`{type:"get-tree",windowId}`のようなAPI呼び出しで当該ウィンドウの最上位のタブの配列を返却するように修正
    * 初回およびフォーカスの循環時に `try-redirect-focus-from-collaped-tab` および `try-expand-tree-from-focused-collapsed-tab` で通知される `focusDirection` の値がおかしかったのを修正
    * 不可視状態のタブについてAPI経由でツリー構造を編集した後で、タブが不可視のままにならないようにした
    * [APIまわりのパフォーマンスを向上](https://github.com/piroor/treestyletab/issues/2554)（by [account-login](https://github.com/account-login). Thanks!）

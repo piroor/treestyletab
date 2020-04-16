@@ -6,7 +6,7 @@
    * Allow to move down a tree with the keyboard shortcut Ctrl-Shift-PageDown correctly.
    * Don't leave invisible orphans after only their parent tab is moved via drag and drop or other operations.
    * Show the fake context menu correctly even after any helper addon is unloaded.
-   * Return root tabs for an API call like `{type:`get-tree`,windowId}` correctly.
+   * Return root tabs for an API call like `{type:"get-tree",windowId}` correctly.
    * Notify `try-redirect-focus-from-collaped-tab` and `try-expand-tree-from-focused-collapsed-tab` with correct `focusDirection` for the first time or cases with a circulation.
    * Make tabs visible automatically when tabs are attached/detached via APIs.
    * [Performance improvement around APIs](https://github.com/piroor/treestyletab/issues/2554) by [account-login](https://github.com/account-login). Thanks!
