@@ -101,12 +101,18 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 
   // notify event to helper addons with action and allow or deny
+  const cache = {};
   const allowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED,
-    { tab: new TSTAPI.TreeItem(tab),
+    {
+      tab:          new TSTAPI.TreeItem(tab),
       moveInfo,
-      action },
-    { tabProperties: ['tab'] }
+      action:       action.action,
+      parent:       action.parent && new TSTAPI.TreeItem(action.parent, { cache }),
+      insertBefore: action.insertBefore && new TSTAPI.TreeItem(action.insertBefore, { cache }),
+      insertAfter:  action.insertAfter && new TSTAPI.TreeItem(action.insertAfter, { cache })
+    },
+    { tabProperties: ['tab', 'parent', 'insertBefore', 'insertAfter'] }
   );
   if (!allowed) {
     log('no action - canceled by a helper addon');
