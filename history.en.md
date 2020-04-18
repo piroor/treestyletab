@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Open bookmarks as tabs with their correct title, via the "Open All as a Tree" context menu command on a bookmark folder.
+   * Introduce a new notification type API: [`try-fixup-tree-on-tab-moved`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-autofixing-of-tree-structure-for-moved-tabs).
  - 3.4.9 (2020.4.16)
    * Put bookmarks undar a new folder with their tree structure information automatically, when they are created from tabs via drag and drop.
    * Allow to move down a tree with the keyboard shortcut Ctrl-Shift-PageDown correctly.
