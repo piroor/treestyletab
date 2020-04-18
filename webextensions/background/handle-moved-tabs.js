@@ -106,11 +106,12 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     TSTAPI.kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED,
     {
       tab:          new TSTAPI.TreeItem(tab, { cache }),
-      moveInfo,
+      fromIndex:    moveInfo.fromIndex,
+      toIndex:      moveInfo.toIndex,
       action:       action.action,
-      parent:       action.parent && new TSTAPI.TreeItem(action.parent, { cache }),
-      insertBefore: action.insertBefore && new TSTAPI.TreeItem(action.insertBefore, { cache }),
-      insertAfter:  action.insertAfter && new TSTAPI.TreeItem(action.insertAfter, { cache })
+      parent:       action.parent && new TSTAPI.TreeItem(Tab.get(action.parent), { cache }),
+      insertBefore: action.insertBefore && new TSTAPI.TreeItem(Tab.get(action.insertBefore), { cache }),
+      insertAfter:  action.insertAfter && new TSTAPI.TreeItem(Tab.get(action.insertAfter), { cache })
     },
     { tabProperties: ['tab', 'parent', 'insertBefore', 'insertAfter'] }
   );
