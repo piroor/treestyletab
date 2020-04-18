@@ -314,6 +314,7 @@ export const kSHORTHAND_URIS = {
 
 export const kINSERTION_CONTEXT_MOVED = 1;
 export const kINSERTION_CONTEXT_SHOWN = 2;
+export const kINSERTION_CONTEXT_CREATED = 3;
 
 export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
   { opener: /^about:addons/,

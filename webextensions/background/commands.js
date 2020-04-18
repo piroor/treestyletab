@@ -961,14 +961,44 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
     return result;
   }, []);
 
+  const windowId = TabsStore.getWindow() || (await browser.windows.getCurrent()).id;
   const tabs = await TabsOpen.openURIsInTabs(items, {
-    windowId:     TabsStore.getWindow() || (await browser.windows.getCurrent()).id,
+    windowId,
     isOrphan:     true,
     inBackground: true,
     discarded
   });
-  if (tabs.length == structure.length)
-    Tree.applyTreeStructureToTabs(tabs, structure);
+
+  if (tabs.map(tab => tab.url).reverse().slice(1).join('\n') == items.slice(1).map(item => item.url).join('\n')) {
+    // tabs are opened with reversed order due to browser.tabs.insertAfterCurrent=true
+    let index = tabs[0].index;
+    tabs.reverse();
+    const window = TabsStore.windows.get(windowId);
+    window.internalMovingTabs.add(...tabs.map(tab => tab.id));
+    for (const tab of tabs) {
+      await browser.tabs.move(tab.id, {
+        windowId,
+        index: index++
+      }).catch(ApiTabs.handleMissingTabError);
+      if (window.internalMovingTabs.has(tab.id))
+        window.internalMovingTabs.delete(tab.id);
+    }
+  }
+
   if (tabs.length > indexToBeActive)
     TabsInternalOperation.activateTab(tabs[indexToBeActive]);
+  if (tabs.length == structure.length)
+    await Tree.applyTreeStructureToTabs(tabs, structure);
+
+  // tabs can be opened at middle of an existing tree due to browser.tabs.insertAfterCurrent=true
+  const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(tabs, {
+    context:      Constants.kINSERTION_CONTEXT_CREATED,
+    insertAfter:  tabs[0].$TST.previousTab,
+    insertBefore: tabs[tabs.length - 1].$TST.nextTab
+  });
+  if (referenceTabs.parent)
+    await Tree.attachTabTo(tabs[0], referenceTabs.parent, {
+      insertAfter:  referenceTabs.insertAfter,
+      insertBefore: referenceTabs.insertBefore
+    });
 }
