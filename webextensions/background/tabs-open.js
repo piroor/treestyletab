@@ -139,6 +139,10 @@ export async function openURIsInTabs(uris, options = {}) {
           params.url = uri;
         }
       }
+      if (options.discarded &&
+          !params.active &&
+          !('discarded' in params))
+        params.discarded = true;
       if (params.url &&
           FORBIDDEN_URL_MATCHER.test(params.url) &&
           !ALLOWED_URL_MATCHER.test(params.url))
@@ -166,10 +170,6 @@ export async function openURIsInTabs(uris, options = {}) {
         };
         Tab.onCreating.addListener(listener);
       });
-      if (options.discarded &&
-          !params.active &&
-          !('discarded' in params))
-        params.discarded = true;
       const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
       await Promise.all([
         promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
