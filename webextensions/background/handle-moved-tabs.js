@@ -105,7 +105,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   const allowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED,
     {
-      tab:          new TSTAPI.TreeItem(tab),
+      tab:          new TSTAPI.TreeItem(tab, { cache }),
       moveInfo,
       action:       action.action,
       parent:       action.parent && new TSTAPI.TreeItem(action.parent, { cache }),
