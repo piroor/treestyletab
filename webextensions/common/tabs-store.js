@@ -499,12 +499,16 @@ export function removeTabFromIndexes(tab) {
 }
 
 function addTabToIndex(tab, indexes) {
+  if (!tab)
+    throw new Error(`TabsStore.addTabToIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${new Error().stack}`);
   const tabs = indexes.get(tab.windowId);
   if (tabs)
     tabs.set(tab.id, tab);
 }
 
 function removeTabFromIndex(tab, indexes) {
+  if (!tab)
+    throw new Error(`TabsStore.removeTabFromIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${new Error().stack}`);
   const tabs = indexes.get(tab.windowId);
   if (tabs)
     tabs.delete(tab.id);
