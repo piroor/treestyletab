@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -96,6 +97,19 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   const action = detectTabActionFromNewPosition(tab, moveInfo);
   if (!action) {
     log('no action');
+    return;
+  }
+
+  // notify event to helper addons with action and allow or deny
+  const allowed = await TSTAPI.tryOperationAllowed(
+    TSTAPI.kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED,
+    { tab: new TSTAPI.TreeItem(tab),
+      moveInfo,
+      action },
+    { tabProperties: ['tab'] }
+  );
+  if (!allowed) {
+    log('no action - canceled by a helper addon');
     return;
   }
 
