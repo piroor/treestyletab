@@ -969,20 +969,15 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
     discarded
   });
 
-  if (tabs.map(tab => tab.url).reverse().slice(1).join('\n') == items.slice(1).map(item => item.url).join('\n')) {
+  if (tabs.every((tab, index) => (index == 0) || (tabs[index-1].index - tab.index) == 1)) {
     // tabs are opened with reversed order due to browser.tabs.insertAfterCurrent=true
-    let index = tabs[0].index;
-    tabs.reverse();
-    const window = TabsStore.windows.get(windowId);
-    window.internalMovingTabs.add(...tabs.map(tab => tab.id));
-    for (const tab of tabs) {
-      await browser.tabs.move(tab.id, {
-        windowId,
-        index: index++
-      }).catch(ApiTabs.handleMissingTabError);
-      if (window.internalMovingTabs.has(tab.id))
-        window.internalMovingTabs.delete(tab.id);
+    let lastTab;
+    for (const tab of tabs.slice(0).reverse()) {
+      if (lastTab)
+        TabsMove.moveTabInternallyBefore(tab, lastTab);
+      lastTab = tab;
     }
+    await TabsMove.waitUntilSynchronized(windowId);
   }
 
   if (tabs.length > indexToBeActive)

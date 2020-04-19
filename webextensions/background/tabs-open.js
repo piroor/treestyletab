@@ -104,7 +104,10 @@ export async function openURIsInTabs(uris, options = {}) {
   if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
-  return Tab.doAndGetNewTabs(async () => {
+  const tabs = [];
+  // Don't return the result of Tab.doAndGetNewTabs because their order can
+  // be inverted due to browser.tabs.insertAfterCurrent=true
+  const actuallyOpenedTabIds = new Set(await Tab.doAndGetNewTabs(async () => {
     await Tab.waitUntilTrackedAll(options.windowId);
     await TabsMove.waitUntilSynchronized(options.windowId);
     const startIndex = Tab.calculateNewTabIndex(options);
@@ -201,9 +204,11 @@ export async function openURIsInTabs(uris, options = {}) {
         });
       log('tab is opened.');
       await tab.$TST.opened;
+      tabs.push(tab);
       return tab;
     }));
-  }, options.windowId);
+  }, options.windowId));
+  return tabs.filter(tab => actuallyOpenedTabIds.has(tab));
 }
 
 
