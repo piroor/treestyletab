@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.4.10 (2020.4.19)
    * ブックマークフォルダ上のコンテキストメニューの「ツリーとしてすべて開く」で開かれたタブに適切にタイトルが設定されていなかった問題を修正
    * `browser.tabs.insertAfterCurrent`が`true`のときに、ブックマークフォルダ上のコンテキストメニューの「ツリーとしてすべて開く」でタブが開かれると順番やツリー構造がおかしくなっていたのを修正
    * 新しい通知型のAPIを追加: [`try-fixup-tree-on-tab-moved`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-autofixing-of-tree-structure-for-moved-tabs)

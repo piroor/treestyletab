@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.4.10 (2020.4.19)
    * Open bookmarks as tabs with their correct title, via the "Open All as a Tree" context menu command on a bookmark folder.
    * Open bookmarks more correctly via the "Open All as a Tree", even if `browser.tabs.insertAfterCurrent` is `true`.
    * Introduce a new notification type API: [`try-fixup-tree-on-tab-moved`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-autofixing-of-tree-structure-for-moved-tabs).
