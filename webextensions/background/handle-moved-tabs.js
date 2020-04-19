@@ -205,6 +205,8 @@ function moveBack(tab, moveInfo) {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
   });
+  // Because we need to use the raw "fromIndex" directly,
+  // we cannot use TabsMove.moveTabInternallyBefore/After here.
   return browser.tabs.move(tab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
