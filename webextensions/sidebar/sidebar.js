@@ -606,28 +606,19 @@ export async function confirmToCloseTabs(tabs, options = {}) {
       !configs[configKey])
     return true;
 
-  const confirm = new RichConfirm({
-    message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
-    buttons: [
-      browser.i18n.getMessage('warnOnCloseTabs_close'),
-      browser.i18n.getMessage('warnOnCloseTabs_cancel')
-    ],
-    checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
-    checked: true
+  const granted = await browser.runtime.sendMessage({
+    type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+    windowId: mTargetWindow,
+    tabs
   });
-  const result = await confirm.show();
-  switch (result.buttonIndex) {
-    case 0:
-      if (!result.checked)
-        configs[configKey] = false;
+  if (granted) {
       configs.lastConfirmedToCloseTabs = Date.now();
       configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       reserveToClearGrantedRemovingTabs();
       return true;
-    default:
-      return false;
   }
+  return false;
 }
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
@@ -637,37 +628,6 @@ function reserveToClearGrantedRemovingTabs() {
     if (configs.grantedRemovingTabIds.join(',') == lastGranted)
       configs.grantedRemovingTabIds = [];
   }, 1000);
-}
-
-async function confirmToAutoGroupNewTabs(tabIds) {
-  const count = tabIds.length;
-  if (count <= 1 ||
-      !configs.warnOnAutoGroupNewTabs)
-    return true;
-
-  const confirm = new RichConfirm({
-    message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [count]),
-    buttons: [
-      browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),
-      browser.i18n.getMessage('warnOnAutoGroupNewTabs_cancel')
-    ],
-    checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
-    checked: true
-  });
-  const result = await confirm.show();
-  switch (result.buttonIndex) {
-    case 0:
-      if (!result.checked)
-        configs.warnOnAutoGroupNewTabs = false;
-      return true;
-    case 1:
-      if (!result.checked) {
-        configs.warnOnAutoGroupNewTabs = false;
-        configs.autoGroupNewTabs = false;
-      }
-    default:
-      return false;
-  }
 }
 
 
@@ -913,14 +873,6 @@ function onMessage(message, _sender, _respond) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
-    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
-      log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
-      return confirmToCloseTabs(message.tabs);
-
-    case Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS:
-      log('kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS: ', { message, mTargetWindow });
-      return confirmToAutoGroupNewTabs(message.tabIds);
-
     case Constants.kCOMMAND_RELOAD:
       location.reload();
       return;

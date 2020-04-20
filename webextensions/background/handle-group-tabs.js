@@ -418,18 +418,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
     return true;
 
   const windowId = tabs[0].windowId;
-  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
-  if (!granted ||
-      /^(about|chrome|resource):/.test(tabs[0].url) ||
-      (SidebarConnection.isOpen(windowId) &&
-       SidebarConnection.hasFocus(windowId)))
-    return browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_CONFIRM_TO_AUTO_GROUP_NEW_TABS,
-      tabIds:   tabs.map(tab => tab.id),
-      windowId: windowId
-    }).catch(ApiTabs.createErrorHandler());
-
-  const result = await RichConfirm.showInTab(tabs[0].id, {
+  const result = await RichConfirm.showInPopup(windowId, {
     message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
     buttons: [
       browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),

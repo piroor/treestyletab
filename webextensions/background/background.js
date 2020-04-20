@@ -10,7 +10,6 @@ import RichConfirm from '/extlib/RichConfirm.js';
 import {
   log as internalLogger,
   wait,
-  notify,
   configs
 } from '/common/common.js';
 
@@ -466,35 +465,17 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     return true;
   }
 
+  let windowId = options.windowId;
+  if (!windowId) {
   const activeTabs = await browser.tabs.query({
     active:   true,
     windowId: options.windowId
   }).catch(ApiTabs.createErrorHandler());
-
-  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
-  if (!granted ||
-      /^(about|chrome|resource):/.test(activeTabs[0].url) ||
-      (!options.showInTab &&
-       SidebarConnection.hasFocus(options.windowId))) {
-    if (!SidebarConnection.isOpen(options.windowId)) {
-      log('confirmToCloseTabs: show confirmation as a notification');
-      const clicked = await notify({
-        title:   browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
-        message: browser.i18n.getMessage('warnOnCloseTabs_notification_message', [Math.floor(configs.warnOnCloseTabsNotificationTimeout / 1000)]),
-        timeout: configs.warnOnCloseTabsNotificationTimeout
-      });
-      return !clicked;
-    }
-    log('confirmToCloseTabs: show confirmation in the sidebar');
-    return browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-      tabs,
-      windowId: options.windowId
-    }).catch(ApiTabs.createErrorHandler());
+    windowId = activeTabs[0].windowId;
   }
 
-  log('confirmToCloseTabs: show confirmation in the active tab ', activeTabs[0]);
-  const result = await RichConfirm.showInTab(activeTabs[0].id, {
+  log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
+  const result = await RichConfirm.showInPopup(windowId, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
