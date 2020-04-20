@@ -612,11 +612,11 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     tabs
   });
   if (granted) {
-      configs.lastConfirmedToCloseTabs = Date.now();
-      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
-      log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
-      reserveToClearGrantedRemovingTabs();
-      return true;
+    configs.lastConfirmedToCloseTabs = Date.now();
+    configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
+    log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
+    reserveToClearGrantedRemovingTabs();
+    return true;
   }
   return false;
 }

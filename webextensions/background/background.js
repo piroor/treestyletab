@@ -467,10 +467,10 @@ export async function confirmToCloseTabs(tabs, options = {}) {
 
   let windowId = options.windowId;
   if (!windowId) {
-  const activeTabs = await browser.tabs.query({
-    active:   true,
-    windowId: options.windowId
-  }).catch(ApiTabs.createErrorHandler());
+    const activeTabs = await browser.tabs.query({
+      active:   true,
+      windowId: options.windowId
+    }).catch(ApiTabs.createErrorHandler());
     windowId = activeTabs[0].windowId;
   }
 
