@@ -369,11 +369,12 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
   if (extraContentsInfo && extraContentsInfo.owners) {
     const allowed = await TSTAPI.tryOperationAllowed(
       type,
-      Object.assign({}, mousedown.detail, {
+      {
+        ...mousedown.detail,
         tab:                mousedown.treeItem,
         originalTarget:     extraContentsInfo.target,
         $extraContentsInfo: null
-      }),
+      },
       { tabProperties: ['tab'],
         target:        extraContentsInfo.owners }
     );
@@ -382,10 +383,11 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
   }
   const allowed = await TSTAPI.tryOperationAllowed(
     type,
-    Object.assign({}, mousedown.detail, {
+    {
+      ...mousedown.detail,
       tab:                mousedown.treeItem,
       $extraContentsInfo: null
-    }),
+    },
     { tabProperties: ['tab'],
       except:        extraContentsInfo && extraContentsInfo.owners }
   );
@@ -436,10 +438,11 @@ async function onMouseUp(event) {
     return;
 
   if (tab) {
-    const mouseupInfo = Object.assign({}, lastMousedown, {
+    const mouseupInfo = {
+      ...lastMousedown,
       detail:   getMouseEventDetail(event, tab),
       treeItem: new TSTAPI.TreeItem(tab)
-    });
+    };
     const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_MOUSEUP,
       mouseupInfo,
@@ -499,12 +502,13 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   log('onMouseUp: notify as a blank area click to other addons');
   const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    Object.assign({}, lastMousedown.detail, {
+    {
+      ...lastMousedown.detail,
       window:             mTargetWindow,
       windowId:           mTargetWindow,
       tab:                lastMousedown.treeItem,
       $extraContentsInfo: null
-    }),
+    },
     { tabProperties: ['tab'] }
   );
   if (!mouseUpAllowed)
@@ -512,12 +516,13 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
 
   const clickAllowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    Object.assign({}, lastMousedown.detail, {
+    {
+      ...lastMousedown.detail,
       window:             mTargetWindow,
       windowId:           mTargetWindow,
       tab:                lastMousedown.treeItem,
       $extraContentsInfo: null
-    }),
+    },
     { tabProperties: ['tab'] }
   );
   if (!clickAllowed)
@@ -816,10 +821,11 @@ async function onDblClick(event) {
       if (extraContentsInfo.owners) {
         const allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-          Object.assign({}, detail, {
+          {
+            ...detail,
             tab:            treeItem,
             originalTarget: extraContentsInfo.target
-          }),
+          },
           { tabProperties: ['tab'],
             target:        extraContentsInfo.owners }
         );
@@ -828,9 +834,10 @@ async function onDblClick(event) {
       }
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-        Object.assign({}, detail, {
+        {
+          ...detail,
           tab: treeItem
-        }),
+        },
         { tabProperties: ['tab'],
           except:        extraContentsInfo.owners }
       );

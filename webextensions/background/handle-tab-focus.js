@@ -185,7 +185,10 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
   else
-    tryHighlightBundledTab(tab, Object.assign({}, info, { shouldSkipCollapsed }));
+    tryHighlightBundledTab(tab, {
+      ...info,
+      shouldSkipCollapsed
+    });
 
   return true;
 });

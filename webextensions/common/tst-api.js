@@ -881,7 +881,7 @@ export async function notifyScrolled(params = {}) {
 export async function tryOperationAllowed(type, message = {}, options = {}) {
   if (!hasListenerForMessageType(type))
     return true;
-  const results = await sendMessage(Object.assign({}, message, { type }), options).catch(_error => {});
+  const results = await sendMessage({ ...message, type }, options).catch(_error => {});
   if (results.flat().some(result => result && result.result)) {
     log(`=> ${type}: canceled by some helper addon`);
     return false;
@@ -1028,7 +1028,7 @@ async function sanitizeMessage(message, params) {
     }
   }
   await Promise.all(tasks);
-  return Object.assign({}, message, sanitizedProperties);
+  return { ...message, ...sanitizedProperties };
 }
 
 

@@ -924,7 +924,10 @@ export function onExternalMessage(message, sender) {
         const item = items[i];
         if (item.id != message.params[0])
           continue;
-        items.splice(i, 1, Object.assign({}, item, message.params[1]));
+        items.splice(i, 1, {
+          ...item,
+          ...message.params[1]
+        });
         break;
       }
       mExtraItems.set(sender.id, items);

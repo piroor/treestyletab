@@ -289,10 +289,11 @@ async function performTabsDragDrop(params = {}) {
     action:              params.action
   }));
 
-  const movedTabs = await moveTabsWithStructure(params.tabs, Object.assign({}, params, {
+  const movedTabs = await moveTabsWithStructure(params.tabs, {
+    ...params,
     windowId, destinationWindowId,
     broadcast: true
-  }));
+  });
   if (movedTabs.length == 0)
     return;
   if (windowId != destinationWindowId) {
@@ -374,9 +375,10 @@ export async function moveTabsWithStructure(tabs, params = {}) {
         console.log(error);
       }
       if (!importedTab)
-        importedTab = await browser.tabs.create(Object.assign({}, createParams, {
+        importedTab = await browser.tabs.create({
+          ...createParams,
           url: `about:blank?${tab.url}`
-        }));
+        });
       movedTabs.push(importedTab);
       index++;
     }
@@ -506,20 +508,22 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       { broadcast: options.broadcast }
     );
 
-  const memberOptions = Object.assign({}, options, {
+  const memberOptions = {
+    ...options,
     insertBefore: null,
     insertAfter:  null,
     dontMove:     true,
     forceExpand:  options.draggedTabs.some(tab => tab.active)
-  });
+  };
   return Promise.all(tabs.map(async tab => {
     if (parent)
       await Tree.attachTabTo(tab, parent, memberOptions);
     else
       await Tree.detachTab(tab, memberOptions);
-    return Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
+    return Tree.collapseExpandTabAndSubtree(tab, {
+      ...memberOptions,
       collapsed: false
-    }));
+    });
   }));
 }
 
@@ -527,9 +531,10 @@ function detachTabsWithStructure(tabs, options = {}) {
   log('detachTabsWithStructure: start ', () => tabs.map(dumpTab));
   for (const tab of tabs) {
     Tree.detachTab(tab, options);
-    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
+    Tree.collapseExpandTabAndSubtree(tab, {
+      ...options,
       collapsed: false
-    }));
+    });
   }
 }
 
@@ -537,9 +542,10 @@ export async function moveUp(tab, options = {}) {
   const previousTab = tab.$TST.nearestVisiblePrecedingTab;
   if (!previousTab)
     return false;
-  const moved = await moveBefore(tab, Object.assign({}, options, {
+  const moved = await moveBefore(tab, {
+    ...options,
     referenceTabId: previousTab.id
-  }));
+  });
   if (moved && !options.followChildren)
     await onMoveUp.dispatch(tab);
   return moved;
@@ -549,9 +555,10 @@ export async function moveDown(tab, options = {}) {
   const nextTab = options.followChildren ? tab.$TST.nearestFollowingForeignerTab : tab.$TST.nearestVisibleFollowingTab;
   if (!nextTab)
     return false;
-  const moved = await moveAfter(tab, Object.assign({}, options, {
+  const moved = await moveAfter(tab, {
+    ...options,
     referenceTabId: nextTab.id
-  }));
+  });
   if (moved && !options.followChildren)
     await onMoveDown.dispatch(tab);
   return moved;
@@ -814,12 +821,13 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         message.insertAfterId
       ]));
       log('perform tabs dragdrop requested: ', message);
-      performTabsDragDrop(Object.assign({}, message, {
+      performTabsDragDrop({
+        ...message,
         tabs:         message.import ? message.tabs : draggedTabIds.map(id => Tab.get(id)),
         attachTo:     message.attachToId && Tab.get(message.attachToId),
         insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
         insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
-      }));
+      });
     }; break;
 
     case Constants.kCOMMAND_TOGGLE_MUTED: {

@@ -429,9 +429,10 @@ async function onShown(contextTab) {
     windowId: TabsStore.getWindow()
   };
   return Promise.all([
-    browser.runtime.sendMessage(Object.assign({}, message, {
+    browser.runtime.sendMessage({
+      ...message,
       tab: message.tab && await message.tab.exportFor(browser.runtime.id)
-    })).catch(ApiTabs.createErrorSuppressor()),
+    }).catch(ApiTabs.createErrorSuppressor()),
     TSTAPI.sendMessage(message, { tabProperties: ['tab'] })
   ]);
 }

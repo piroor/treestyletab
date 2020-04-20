@@ -150,10 +150,11 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     const bulk = tasks.length > 1;
     await Promise.all(uniqueIds.map((uniqueId, index) => {
       const task = tasks[index];
-      return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
+      return attachTabFromRestoredInfo(task.tab, {
+        ...task.options,
         uniqueId,
         bulk
-      })).catch(error => {
+      }).catch(error => {
         console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, error.stack);
       });
     }));

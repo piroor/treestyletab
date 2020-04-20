@@ -50,30 +50,34 @@ export async function tryInitGroupTab(tab) {
     matchAboutBlank: true
   };
   try {
-    const initialized = await browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
+    const initialized = await browser.tabs.executeScript(tab.id, {
+      ...scriptOptions,
       code:  'window.initialized',
-    })).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     if (initialized[0])
       return;
   }
   catch(_e) {
   }
   try {
-    const titleElementExists = await browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
+    const titleElementExists = await browser.tabs.executeScript(tab.id, {
+      ...scriptOptions,
       code:  '!!document.querySelector("#title")',
-    })).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     if (!titleElementExists[0] && tab.status == 'complete') // we need to load resources/group-tab.html at first.
       return browser.tabs.update(tab.id, { url: tab.url }).catch(ApiTabs.createErrorSuppressor());
   }
   catch(_e) {
   }
-  browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
+  browser.tabs.executeScript(tab.id, {
+    ...scriptOptions,
     //file:  '/common/l10n.js'
     file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-  })).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-  browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  browser.tabs.executeScript(tab.id, {
+    ...scriptOptions,
     file:  '/resources/group-tab.js'
-  })).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 
   if (tab.$TST.states.has(Constants.kTAB_STATE_UNREAD)) {
     tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });

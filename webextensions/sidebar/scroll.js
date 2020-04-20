@@ -214,10 +214,11 @@ export function scrollToNewTab(tab, options = {}) {
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
     const activeTab = Tab.getActiveTab(TabsStore.getWindow());
-    scrollToTab(tab, Object.assign({}, options, {
+    scrollToTab(tab, {
+      ...options,
       anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
       notifyOnOutOfView: true
-    }));
+    });
   }
 }
 
@@ -296,14 +297,16 @@ export async function scrollToTab(tab, options = {}) {
         container:      containerRect.height
       });
     }
-    await scrollTo(Object.assign({}, options, {
+    await scrollTo({
+      ...options,
       position: mTabBar.scrollTop + delta
-    }));
+    });
   }
   else {
-    await scrollTo(Object.assign({}, options, {
+    await scrollTo({
+      ...options,
       tab
-    }));
+    });
   }
   // A tab can be moved after the tabbar is scrolled to the tab.
   // To retry "scroll to tab" behavior for such cases, we need to

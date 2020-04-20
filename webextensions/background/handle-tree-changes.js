@@ -77,10 +77,11 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
 
     if (info.forceExpand && allowed) {
       log('  expand by forceExpand option');
-      Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
+      Tree.collapseExpandSubtree(parent, {
+        ...info,
         collapsed: false,
         broadcast: true
-      }));
+      });
       parentTreeCollasped = false;
     }
     if (!info.dontExpand) {
@@ -113,10 +114,11 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
               parentCollasped     = true;
               return;
             }
-            Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
+            Tree.collapseExpandSubtree(ancestor, {
+              ...info,
               collapsed:    false,
               broadcast:    true
-            }));
+            });
             parentTreeCollasped = false;
           }));
         }
@@ -125,17 +127,19 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     else if (parent.$TST.isAutoExpandable ||
              parent.$TST.collapsed) {
       log('  collapse auto expanded tree');
-      Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
+      Tree.collapseExpandTabAndSubtree(tab, {
+        ...info,
         collapsed:    true,
         broadcast:    true
-      }));
+      });
     }
     if (parentTreeCollasped || parentCollasped) {
       log('  collapse tab because the parent is collapsed');
-      Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
+      Tree.collapseExpandTabAndSubtree(tab, {
+        ...info,
         collapsed: true,
         broadcast: true
-      }));
+      });
     }
   }
 
@@ -154,13 +158,15 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         prev: dumpTab(prevTab)
       });
       if (nextTab)
-        await Tree.moveTabSubtreeBefore(tab, nextTab, Object.assign({}, info, {
+        await Tree.moveTabSubtreeBefore(tab, nextTab, {
+          ...info,
           broadcast:    true
-        }));
+        });
       else
-        await Tree.moveTabSubtreeAfter(tab, prevTab, Object.assign({}, info, {
+        await Tree.moveTabSubtreeAfter(tab, prevTab, {
+          ...info,
           broadcast:    true
-        }));
+        });
     })()
   ]);
 

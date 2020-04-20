@@ -149,12 +149,13 @@ export async function attachTabTo(child, parent, options = {}) {
     log('=> already attached');
 
   if (newlyAttached) {
-    detachTab(child, Object.assign({}, options, {
+    detachTab(child, {
+      ...options,
       // Don't broadcast this detach operation, because this "attachTabTo" can be
       // broadcasted. If we broadcast this detach operation, the tab is detached
       // twice in the sidebar!
       broadcast: false
-    }));
+    });
 
     log('attachTabTo: setting child information to ', parent.id);
     // we need to set its children via the "children" setter, to invalidate cached information.
@@ -186,12 +187,13 @@ export async function attachTabTo(child, parent, options = {}) {
     }
   }
 
-  onAttached.dispatch(child, Object.assign({}, options, {
+  onAttached.dispatch(child, {
+    ...options,
     parent,
     insertBefore: options.insertBefore,
     insertAfter:  options.insertAfter,
     newIndex, newlyAttached
-  }));
+  });
 
   return !options.dontMove && moved;
 }
@@ -359,16 +361,18 @@ export async function detachTabsFromTree(tabs, options = {}) {
     for (const child of children) {
       if (!tabs.includes(child)) {
         if (parent) {
-          promisedAttach.push(attachTabTo(child, parent, Object.assign({}, options, {
+          promisedAttach.push(attachTabTo(child, parent, {
+            ...options,
             dontMove: true
-          })));
+          }));
         }
         else {
           detachTab(child, options);
           if (child.$TST.collapsed)
-            await collapseExpandTabAndSubtree(child, Object.assign({}, options, {
+            await collapseExpandTabAndSubtree(child, {
+              ...options,
               collapsed: false
-            }));
+            });
         }
       }
     }
@@ -412,9 +416,10 @@ export function detachAllChildren(tab, options = {}) {
   }
 
   if (options.behavior != Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
-    collapseExpandSubtree(tab, Object.assign({}, options, {
+    collapseExpandSubtree(tab, {
+      ...options,
       collapsed: false
-    }));
+    });
 
   let count = 0;
   for (const child of children) {
@@ -428,28 +433,32 @@ export function detachAllChildren(tab, options = {}) {
       detachTab(child, options);
       if (count == 0) {
         if (parent) {
-          attachTabTo(child, parent, Object.assign({}, options, {
+          attachTabTo(child, parent, {
+            ...options,
             dontExpan: true,
             dontMove:  true
-          }));
+          });
         }
-        collapseExpandSubtree(child, Object.assign({}, options, {
+        collapseExpandSubtree(child, {
+          ...options,
           collapsed: false
-        }));
+        });
         //deleteTabValue(child, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
-        attachTabTo(child, children[0], Object.assign({}, options, {
+        attachTabTo(child, children[0], {
+          ...options,
           dontExpand: true,
           dontMove:   true
-        }));
+        });
       }
     }
     else if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
-      attachTabTo(child, parent, Object.assign({}, options, {
+      attachTabTo(child, parent, {
+        ...options,
         dontExpand: true,
         dontMove:   true
-      }));
+      });
     }
     else { // options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
       detachTab(child, options);
@@ -758,13 +767,14 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
     await Promise.all(children.map((child, index) => {
       const last = params.last &&
                      (index == children.length - 1);
-      return collapseExpandTabAndSubtree(child, Object.assign({}, params, {
+      return collapseExpandTabAndSubtree(child, {
+        ...params,
         collapsed: params.collapsed,
         justNow:   params.justNow,
         anchor:    last && params.anchor,
         last:      last,
         broadcast: params.broadcast
-      }));
+      });
     }));
   }
 }
@@ -791,10 +801,11 @@ export async function collapseExpandTab(tab, params = {}) {
   const last = params.last &&
                  (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed);
   const byAncestor = tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed;
-  const collapseExpandInfo = Object.assign({}, params, {
+  const collapseExpandInfo = {
+    ...params,
     anchor: last && params.anchor,
     last
-  });
+  };
 
   if (params.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
@@ -870,14 +881,16 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 
     const manuallyExpanded = collapseTab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
-      collapseExpandSubtree(collapseTab, Object.assign({}, options, {
+      collapseExpandSubtree(collapseTab, {
+        ...options,
         collapsed: true
-      }));
+      });
   }
 
-  collapseExpandSubtree(tab, Object.assign({}, options, {
+  collapseExpandSubtree(tab, {
+    ...options,
     collapsed: false
-  }));
+  });
   window.doingIntelligentlyCollapseExpandCount--;
 }
 
@@ -897,9 +910,10 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
   });
   if (collapsedStateMismatched) {
     log(' => set collapsed state');
-    await collapseExpandSubtree(tab, Object.assign({}, options, {
+    await collapseExpandSubtree(tab, {
+      ...options,
       collapsed: childrenCollapsed
-    }));
+    });
     fixed = true;
   }
   if (!nextIsFirstChild) {
@@ -1230,9 +1244,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     })
     .catch(ApiTabs.createErrorHandler());
   tabs = tabs.filter(TabsStore.ensureLivingTab);
-  const movedTabs = await moveTabs(tabs, Object.assign({}, options, {
+  const movedTabs = await moveTabs(tabs, {
+    ...options,
     destinationPromisedNewWindow: promsiedNewWindow
-  }));
+  });
 
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
@@ -1285,10 +1300,11 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     const tab = tabs[i];
     /*
     if (tab.$TST.collapsed)
-      collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
+      collapseExpandTabAndSubtree(tab, {
+        ...options,
         collapsed: false,
         justNow: true
-      }));
+      });
     */
     detachTab(tab, { justNow: true });
 
@@ -1320,11 +1336,12 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     }
     if (parent) {
       parent.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
-      promises.push(attachTabTo(tab, parent, Object.assign({}, options, {
+      promises.push(attachTabTo(tab, parent, {
+        ...options,
         dontExpand: true,
         dontMove:   true,
         justNow:    true
-      })));
+      }));
     }
   }
   if (promises.length > 0)
@@ -1335,11 +1352,12 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   for (let i = tabs.length-1; i > -1; i--) {
     const tab = tabs[i];
     const expanded = expandStates[i];
-    collapseExpandSubtree(tab, Object.assign({}, options, {
+    collapseExpandSubtree(tab, {
+      ...options,
       collapsed: expanded === undefined ? !tab.$TST.hasChild : !expanded ,
       justNow:   true,
       force:     true
-    }));
+    });
   }
   MetricsData.add('applyTreeStructureToTabs: collapse/expand');
 }

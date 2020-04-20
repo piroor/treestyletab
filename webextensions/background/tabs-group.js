@@ -39,10 +39,11 @@ export async function groupTabs(tabs, options = {}) {
 
   log('groupTabs: ', () => tabs.map(dumpTab));
 
-  const uri = makeGroupTabURI(Object.assign({
+  const uri = makeGroupTabURI({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),
-    temporary: true
-  }, options));
+    temporary: true,
+    ...options
+  });
   const groupTab = await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].windowId,
     parent:       rootTabs[0].$TST.parent,

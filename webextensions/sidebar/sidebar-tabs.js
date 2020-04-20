@@ -324,7 +324,10 @@ function setupPendingUpdate(update) {
   update.addedAttributes   = update.addedAttributes || {};
   update.updatedProperties = update.updatedProperties || {};
 
-  pendingUpdate.updatedProperties = Object.assign({}, pendingUpdate.updatedProperties || {}, update.updatedProperties);
+  pendingUpdate.updatedProperties = {
+    ...(pendingUpdate.updatedProperties || {}),
+    ...update.updatedProperties
+  };
 
   if (update.removedAttributes.size > 0) {
     pendingUpdate.removedAttributes = new Set([...(pendingUpdate.removedAttributes || []), ...update.removedAttributes]);
@@ -335,7 +338,10 @@ function setupPendingUpdate(update) {
   }
 
   if (Object.keys(update.addedAttributes).length > 0) {
-    pendingUpdate.addedAttributes = Object.assign({}, pendingUpdate.addedAttributes || {}, update.addedAttributes);
+    pendingUpdate.addedAttributes = {
+      ...(pendingUpdate.addedAttributes || {}),
+      ...update.addedAttributes
+    };
     if (pendingUpdate.removedAttributes)
       for (const attribute of Object.keys(update.removedAttributes)) {
         pendingUpdate.removedAttributes.delete(attribute);

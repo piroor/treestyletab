@@ -106,9 +106,10 @@ export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo
 
 export function getClosingTabsFromParent(tab, removeInfo = {}) {
   log('getClosingTabsFromParent: ', tab);
-  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, Object.assign(removeInfo, {
+  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
+    ...removeInfo,
     windowId: tab.windowId
-  }));
+  });
   log('getClosingTabsFromParent: closeParentBehavior ', closeParentBehavior);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     return [tab];

@@ -30,12 +30,13 @@ export async function createTabs(definitions, commonParams = {}) {
     tabs = Promise.all(definitions.map(async (definition, index) => {
       if (!definition.url)
         definition.url = `about:blank?${index}`;
-      const params = Object.assign({}, commonParams, definition);
+      const params = { ...commonParams, ...definition };
       if (params.openerTabId)
         treeChanged = true;
-      const tab = await createTab(Object.assign({}, params, {
+      const tab = await createTab({
+        ...params,
         active: false // prepare all tabs in background, otherwise they may be misordered!
-      }));
+      });
       if (definition.active)
         toBeActiveTabId = tab.id;
       return tab;
@@ -50,12 +51,13 @@ export async function createTabs(definitions, commonParams = {}) {
         definition.openerTabId = tabs[definition.openerTabId].id;
       if (!definition.url)
         definition.url = `about:blank?${name}`;
-      const params = Object.assign({}, commonParams, definition);
+      const params = { ...commonParams, ...definition };
       if (params.openerTabId)
         treeChanged = true;
-      tabs[name] = await createTab(Object.assign({}, params, {
+      tabs[name] = await createTab({
+        ...params,
         active: false // prepare all tabs in background, otherwise they may be misordered!
-      }));
+      });
       await wait(100);
       if (definition.active)
         toBeActiveTabId = tabs[name].id;
@@ -177,7 +179,8 @@ export async function doAndGetNewTabs(task, queryToFindTabs) {
 }
 
 export async function callAPI(message) {
-  return browser.runtime.sendMessage(Object.assign({}, message, {
+  return browser.runtime.sendMessage({
+    ...message,
     type: `treestyletab:api:${message.type}`
-  }));
+  });
 }

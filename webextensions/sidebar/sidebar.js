@@ -343,9 +343,9 @@ function applyBrowserTheme(theme) {
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-tab-color-box'), null).backgroundColor);
   const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   const defaultColors = `:root {
-    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
-    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
-    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, { ...highlightColor, alpha: 0.35 })};
+    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, { ...highlightColor, alpha: 0.2 })};
+    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, { ...highlightColor, alpha: 0.1 })};
     --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
     --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
@@ -1027,13 +1027,17 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG: {
-      const options = Object.assign({}, message.options || {}, { showDialog: true });
-      Bookmark.bookmarkTab(Tab.get(message.tabId), options);
+      Bookmark.bookmarkTab(Tab.get(message.tabId), {
+        ...(message.options || {}),
+        showDialog: true
+      });
     }; break;
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG: {
-      const options = Object.assign({}, message.options || {}, { showDialog: true });
-      Bookmark.bookmarkTabs(mapAndFilter(message.tabIds, id => Tab.get(id)), options);
+      Bookmark.bookmarkTabs(mapAndFilter(message.tabIds, id => Tab.get(id)), {
+        ...(message.options || {}),
+        showDialog: true
+      });
     }; break;
   }
 });

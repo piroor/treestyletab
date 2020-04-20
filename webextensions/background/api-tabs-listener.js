@@ -163,12 +163,13 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    let focusOverridden = Tab.onActivating.dispatch(newActiveTab, Object.assign({}, activeInfo, {
+    let focusOverridden = Tab.onActivating.dispatch(newActiveTab, {
+      ...activeInfo,
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    }));
+    });
     // don't do await if not needed, to process things synchronously
     if (focusOverridden instanceof Promise)
       focusOverridden = await focusOverridden;
@@ -184,13 +185,14 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    const onActivatedReuslt = Tab.onActivated.dispatch(newActiveTab, Object.assign({}, activeInfo, {
+    const onActivatedReuslt = Tab.onActivated.dispatch(newActiveTab, {
+      ...activeInfo,
       oldActiveTabs,
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    }));
+    });
     // don't do await if not needed, to process things synchronously
     if (onActivatedReuslt instanceof Promise)
       await onActivatedReuslt;
@@ -673,11 +675,12 @@ async function onRemoved(tabId, removeInfo) {
 
     TabsStore.addRemovedTab(oldTab);
 
-    removeInfo = Object.assign({}, removeInfo, {
+    removeInfo = {
+      ...removeInfo,
       byInternalOperation,
       oldChildren: oldTab.$TST.children,
       oldParent:   oldTab.$TST.parent
-    });
+    };
 
     if (!removeInfo.isWindowClosing) {
       const closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(oldTab, removeInfo);
@@ -695,9 +698,10 @@ async function onRemoved(tabId, removeInfo) {
       });
     }
 
-    const onRemovingResult = Tab.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
+    const onRemovingResult = Tab.onRemoving.dispatch(oldTab, {
+      ...removeInfo,
       byInternalOperation
-    }));
+    });
     // don't do await if not needed, to process things synchronously
     if (onRemovingResult instanceof Promise)
       await onRemovingResult;
@@ -796,13 +800,14 @@ async function onMoved(tabId, moveInfo) {
       alreadyMoved = true;
     }
 
-    const extendedMoveInfo = Object.assign({}, moveInfo, {
+    const extendedMoveInfo = {
+      ...moveInfo,
       byInternalOperation: maybeInternalOperation,
       alreadyMoved,
       oldPreviousTab,
       oldNextTab,
       isSubstantiallyMoved: movedTab.$TST.isSubstantiallyMoved
-    });
+    };
     log('tabs.onMoved: ', movedTab, extendedMoveInfo);
 
     let canceled = Tab.onMoving.dispatch(movedTab, extendedMoveInfo);
@@ -895,7 +900,10 @@ async function onAttached(tabId, attachInfo) {
     }
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
-    const info = Object.assign({}, attachInfo, mTreeInfoForTabsMovingAcrossWindows.get(tabId));
+    const info = {
+      ...attachInfo,
+      ...mTreeInfoForTabsMovingAcrossWindows.get(tabId)
+    };
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const window = TabsStore.windows.get(attachInfo.newWindowId);
@@ -947,11 +955,12 @@ async function onDetached(tabId, detachInfo) {
     if (byInternalOperation)
       oldWindow.toBeDetachedTabs.delete(tabId);
 
-    const info = Object.assign({}, detachInfo, {
+    const info = {
+      ...detachInfo,
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
       descendants: oldTab.$TST.descendants
-    });
+    };
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
     if (!byInternalOperation) // we should process only tabs detached by others.

@@ -128,10 +128,11 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   item.lastVisible = item.visible = false;
   item.lastTitle = item.title;
   mContextMenuItems.push(item);
-  mGroupedContextMenuItems.push(Object.assign({}, item, {
+  mGroupedContextMenuItems.push({
+    ...item,
     id:       `grouped:${id}`,
     parentId: kROOT_ITEM
-  }));
+  });
 }
 
 configs.$loaded.then(() => {

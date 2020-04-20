@@ -49,9 +49,10 @@ export async function safeMoveAcrossWindows(tabIds, moveOptions) {
             window.tabs[destIndex].pinned != tab.pinned)
           await browser.tabs.update(tab.id, { pinned: true });
       }
-      let movedTab = await browser.tabs.move(tab.id, Object.assign({}, moveOptions, {
+      let movedTab = await browser.tabs.move(tab.id, {
+        ...moveOptions,
         index: destIndex
-      }));
+      });
       log(`safeMoveAcrossWindows: movedTab[${index}] = `, movedTab);
       if (Array.isArray(movedTab))
         movedTab = movedTab[0];
