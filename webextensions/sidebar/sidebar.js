@@ -5,8 +5,6 @@
 */
 'use strict';
 
-import RichConfirm from '/extlib/RichConfirm.js';
-
 import {
   log as internalLogger,
   nextFrame,

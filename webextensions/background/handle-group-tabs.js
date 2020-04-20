@@ -20,7 +20,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as Permissions from '/common/permissions.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
