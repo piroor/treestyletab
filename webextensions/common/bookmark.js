@@ -79,7 +79,8 @@ export async function bookmarkTab(tab, options = {}) {
                              name="url"
                              style="min-width: 30em"
                              value=${JSON.stringify(url)}></label></div>
-          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+          <div style="margin-bottom: 3em"
+              ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
         onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
@@ -171,7 +172,8 @@ export async function bookmarkTabs(tabs, options = {}) {
                              name="title"
                              style="min-width: 30em"
                              value=${JSON.stringify(folderParams.title)}></label></div>
-          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+          <div style="margin-bottom: 3em"
+              ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
         onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
