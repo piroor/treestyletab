@@ -19,6 +19,7 @@ import * as Permissions from '/common/permissions.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as BrowserTheme from '/common/browser-theme.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 log.context = 'Options';
 const options = new Options(configs);
@@ -103,19 +104,20 @@ function isAllSlavesChecked(aMasger) {
   return Array.from(checkboxes).every(checkbox => checkbox.checked);
 }
 
-function updateBookmarksUI(enabled) {
+async function updateBookmarksUI(enabled) {
   const elements = document.querySelectorAll('.with-bookmarks-permission label, .with-bookmarks-permission input, .with-bookmarks-permission button');
   if (enabled) {
     for (const element of elements) {
       element.removeAttribute('disabled');
     }
     const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
-    Bookmark.initFolderChoolser(defaultBookmarkParentChooser, {
+    Bookmark.initFolderChooser(defaultBookmarkParentChooser, {
       defaultValue: configs.defaultBookmarkParentId,
       onCommand:    (item, _event) => {
         if (item.dataset.id)
           configs.defaultBookmarkParentId = item.dataset.id;
       },
+      rootItems: await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
     });
   }
   else {

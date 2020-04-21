@@ -19,7 +19,6 @@ import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
 import RichConfirm from '/extlib/RichConfirm.js';
-import l10n from '/extlib/l10n.js';
 
 function log(...args) {
   internalLogger('common/bookmarks', ...args);
@@ -38,6 +37,14 @@ async function getItemById(id) {
   catch(_error) {
   }
   return null;
+}
+
+function getAnimationDuration() {
+  return configs.animation ? configs.collapseDuration : 0.001;
+}
+
+function sanitizeForHTMLText(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 export async function bookmarkTab(tab, options = {}) {
@@ -60,26 +67,36 @@ export async function bookmarkTab(tab, options = {}) {
   let parentId = parent && parent.id;
   if (options.showDialog) {
     try {
-      const result = await RichConfirm.show({
+      const result = await RichConfirm.showInPopup({
         content: `
-          <div><label>__MSG_bookmarkDialog_title__
+          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
                              value=${JSON.stringify(title)}></label></div>
-          <div><label>__MSG_bookmarkDialog_url__
+          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
                       <input type="text"
                              name="url"
                              value=${JSON.stringify(url)}></label></div>
-          <div><label>__MSG_bookmarkDialog_parentId__
+          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
-        onShown(container) {
-          l10n.updateDocument();
+        onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
+          MenuUI.init();
           container.classList.add('bookmark-dialog');
-          initFolderChoolser(container.querySelector('button'), {
-            defaultValue: parentId
+          initFolderChooser(container.querySelector('button'), {
+            MenuUI,
+            animationDuration,
+            defaultItem,
+            rootItems
           });
           container.querySelector('[name="title"]').select();
+        },
+        inject: {
+          MenuUI,
+          initFolderChooser,
+          animationDuration: getAnimationDuration(),
+          defaultItem: await getItemById(parentId),
+          rootItems:   await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
         },
         buttons: [
           browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -145,22 +162,32 @@ export async function bookmarkTabs(tabs, options = {}) {
 
   if (options.showDialog) {
     try {
-      const result = await RichConfirm.show({
+      const result = await RichConfirm.showInPopup({
         content: `
-          <div><label>__MSG_bookmarkDialog_title__
+          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
                              value=${JSON.stringify(folderParams.title)}></label></div>
-          <div><label>__MSG_bookmarkDialog_parentId__
+          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
-        onShown(container) {
-          l10n.updateDocument();
+        onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
+          MenuUI.init();
           container.classList.add('bookmark-dialog');
-          initFolderChoolser(container.querySelector('button'), {
-            defaultValue: folderParams.parentId
+          initFolderChooser(container.querySelector('button'), {
+            MenuUI,
+            animationDuration,
+            defaultItem,
+            rootItems
           });
           container.querySelector('[name="title"]').select();
+        },
+        inject: {
+          MenuUI,
+          initFolderChooser,
+          animationDuration: getAnimationDuration(),
+          defaultItem: await getItemById(folderParams.parentId),
+          rootItems:   await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
         },
         buttons: [
           browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -217,15 +244,14 @@ function getTitlesWithTreeStructure(tabs) {
   return titles;
 }
 
-let mChooserTree = null;
-
-export async function initFolderChoolser(anchor, params = {}) {
-  if (!mChooserTree) {
-    mChooserTree = document.documentElement.appendChild(document.createElement('ul'));
+export async function initFolderChooser(anchor, params = {}) {
+  let chooserTree = window.$bookmarkFolderChooserTree;
+  if (!chooserTree) {
+    chooserTree = window.$bookmarkFolderChooserTree = document.documentElement.appendChild(document.createElement('ul'));
   }
   else {
     const range = document.createRange();
-    range.selectNodeContents(mChooserTree);
+    range.selectNodeContents(chooserTree);
     range.deleteContents();
     range.detach();
   }
@@ -238,8 +264,8 @@ export async function initFolderChoolser(anchor, params = {}) {
   anchor.style.whiteSpace   = 'pre';
 
   let lastChosenId = null;
-  if (params.defaultValue) {
-    const item = await getItemById(params.defaultValue);
+  if (params.defaultItem || params.defaultValue) {
+    const item = params.defaultItem || await getItemById(params.defaultValue);
     if (item) {
       lastChosenId         = item.id;
       anchor.dataset.value = lastChosenId;
@@ -249,8 +275,8 @@ export async function initFolderChoolser(anchor, params = {}) {
     }
   }
 
-  anchor.ui = new MenuUI({
-    root:       mChooserTree,
+  anchor.ui = new (params.MenuUI || MenuUI)({
+    root:       chooserTree,
     appearance: 'menu',
     onCommand(item, event) {
       if (item.dataset.id) {
@@ -265,16 +291,16 @@ export async function initFolderChoolser(anchor, params = {}) {
       anchor.ui.close();
     },
     onShown() {
-      for (const item of mChooserTree.querySelectorAll('.checked')) {
+      for (const item of chooserTree.querySelectorAll('.checked')) {
         item.classList.remove('checked');
       }
       if (lastChosenId) {
-        const item = mChooserTree.querySelector(`.radio[data-id=${lastChosenId}]`);
+        const item = chooserTree.querySelector(`.radio[data-id=${lastChosenId}]`);
         if (item)
           item.classList.add('checked');
       }
     },
-    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+    animationDuration: params.animationDuration || getAnimationDuration()
   });
   anchor.addEventListener('click', () => {
     anchor.ui.open({
@@ -320,8 +346,7 @@ export async function initFolderChoolser(anchor, params = {}) {
     }
   };
 
-  const rootItems = await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler());
-  buildItems(rootItems[0].children, mChooserTree);
+  buildItems(params.rootItems[0].children, chooserTree);
 }
 
 let mCreatedBookmarks = [];
