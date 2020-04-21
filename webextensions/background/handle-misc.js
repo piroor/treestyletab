@@ -370,9 +370,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
       log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message });
-      return Background.confirmToCloseTabs(message.tabs, {
-        windowId: message.windowId
-      });
+      return Background.confirmToCloseTabs(message.tabs, message);
 
     default:
       const API_PREFIX_MATCHER = /^treestyletab:api:/;

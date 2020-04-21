@@ -459,8 +459,9 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     return false;
   });
   log('confirmToCloseTabs ', { tabIds, count, options });
+  const shouldConfirm = configs[options.configKey || 'warnOnCloseTabs'];
   if (count <= 1 ||
-      !configs.warnOnCloseTabs ||
+      !shouldConfirm ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500) {
     log('confirmToCloseTabs: skip confirmation and treated as granted');
     return true;

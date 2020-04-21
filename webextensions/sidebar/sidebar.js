@@ -609,6 +609,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     const granted = await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       windowId: mTargetWindow,
+      configKey,
       tabs
     });
     if (granted) {
