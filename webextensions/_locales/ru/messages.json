@@ -132,6 +132,7 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "создаст ссылку или закладку там где вы отпустите вкладки" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "создаст ссылку или закладку там где вы отпустите вкладку" },
 
+  "warnOnCloseTabs_title":     { "message": "Закрыть вкладки?" },
   "warnOnCloseTabs_message":   { "message": "Вы пытаетесь закрыть $NUMBER$ вкладок. Хотите продолжить?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -145,6 +146,7 @@
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
 
+  "warnOnAutoGroupNewTabs_title":     { "message": "Группировать вкладки?" },
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ вкладок открываются одновременно. Сгруппировать их?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -153,6 +155,8 @@
   "warnOnAutoGroupNewTabs_close":     { "message": "Группировать" },
   "warnOnAutoGroupNewTabs_cancel":    { "message": "Не группировать" },
 
+  "bookmarkDialog_dialogTitle_single":   { "message": "Новая закладка" },
+  "bookmarkDialog_dialogTitle_multiple": { "message": "Новые закладки" },
   "bookmarkDialog_title":    { "message": "Заголовок:" },
   "bookmarkDialog_url":      { "message": "Адрес:" },
   "bookmarkDialog_parentId": { "message": "Папка:" },
