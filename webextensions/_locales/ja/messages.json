@@ -132,6 +132,7 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "ドロップ位置にすべてのタブからリンクまたはブックマークが作成されます" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "ドロップ位置にこのタブからリンクまたはブックマークが作成されます" },
 
+  "warnOnCloseTabs_title":     { "message": "タブを閉じますか？" },
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -145,6 +146,7 @@
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
 
+  "warnOnAutoGroupNewTabs_title":     { "message": "タブをグループ化しますか？" },
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ 個のタブが一度に開かれました。グループとして1つのツリーにまとめますか？",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -153,6 +155,8 @@
   "warnOnAutoGroupNewTabs_close":     { "message": "グループ化する" },
   "warnOnAutoGroupNewTabs_cancel":    { "message": "そのままにする" },
 
+  "bookmarkDialog_dialogTitle_single":   { "message": "新しいブックマーク" },
+  "bookmarkDialog_dialogTitle_multiple": { "message": "新しいブックマーク" },
   "bookmarkDialog_title":    { "message": "名前:" },
   "bookmarkDialog_url":      { "message": "URL:" },
   "bookmarkDialog_parentId": { "message": "フォルダー:" },

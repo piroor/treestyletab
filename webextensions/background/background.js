@@ -478,6 +478,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
   UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
+    title:   browser.i18n.getMessage('warnOnCloseTabs_title'),
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),

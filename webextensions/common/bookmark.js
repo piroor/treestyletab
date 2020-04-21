@@ -71,6 +71,7 @@ export async function bookmarkTab(tab, options = {}) {
     try {
       UserOperationBlocker.blockIn(windowId, { throbber: false });
       const result = await RichConfirm.showInPopup(windowId, {
+        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single'),
         content: `
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
@@ -174,6 +175,7 @@ export async function bookmarkTabs(tabs, options = {}) {
     try {
       UserOperationBlocker.blockIn(windowId, { throbber: false });
       const result = await RichConfirm.showInPopup(windowId, {
+        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple'),
         content: `
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"

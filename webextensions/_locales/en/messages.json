@@ -132,6 +132,7 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links or bookmarks at the place tabs are dropped to" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link or a bookmark at the place the tab is dropped to" },
 
+  "warnOnCloseTabs_title":     { "message": "Close tabs?" },
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -145,6 +146,7 @@
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
 
+  "warnOnAutoGroupNewTabs_title":     { "message": "Group tabs?" },
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ tabs are opened in a time. Do you want them to be grouped in a tree?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -153,6 +155,8 @@
   "warnOnAutoGroupNewTabs_close":     { "message": "Group tabs" },
   "warnOnAutoGroupNewTabs_cancel":    { "message": "Keep tabs flat" },
 
+  "bookmarkDialog_dialogTitle_single":   { "message": "New Bookmark" },
+  "bookmarkDialog_dialogTitle_multiple": { "message": "New Bookmarks" },
   "bookmarkDialog_title":    { "message": "Name:" },
   "bookmarkDialog_url":      { "message": "Location:" },
   "bookmarkDialog_parentId": { "message": "Folder:" },
