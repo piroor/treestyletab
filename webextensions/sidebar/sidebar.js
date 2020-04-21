@@ -604,6 +604,8 @@ export async function confirmToCloseTabs(tabs, options = {}) {
       !configs[configKey])
     return true;
 
+  UserOperationBlocker.block({ throbber: false });
+  try {
   const granted = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
     windowId: mTargetWindow,
@@ -616,6 +618,14 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     reserveToClearGrantedRemovingTabs();
     return true;
   }
+  }
+  catch(error) {
+    console.error(error);
+  }
+  finally {
+    UserOperationBlocker.unblock({ throbber: false });
+  }
+
   return false;
 }
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
