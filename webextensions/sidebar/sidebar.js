@@ -606,18 +606,18 @@ export async function confirmToCloseTabs(tabs, options = {}) {
 
   UserOperationBlocker.block({ throbber: false });
   try {
-  const granted = await browser.runtime.sendMessage({
-    type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-    windowId: mTargetWindow,
-    tabs
-  });
-  if (granted) {
-    configs.lastConfirmedToCloseTabs = Date.now();
-    configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
-    log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
-    reserveToClearGrantedRemovingTabs();
-    return true;
-  }
+    const granted = await browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+      windowId: mTargetWindow,
+      tabs
+    });
+    if (granted) {
+      configs.lastConfirmedToCloseTabs = Date.now();
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds   || []).concat(tabIds)));
+      log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
+      reserveToClearGrantedRemovingTabs();
+      return true;
+    }
   }
   catch(error) {
     console.error(error);
