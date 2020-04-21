@@ -72,10 +72,12 @@ export async function bookmarkTab(tab, options = {}) {
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
+                             style="min-width: 30em"
                              value=${JSON.stringify(title)}></label></div>
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
                       <input type="text"
                              name="url"
+                             style="min-width: 30em"
                              value=${JSON.stringify(url)}></label></div>
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
@@ -167,6 +169,7 @@ export async function bookmarkTabs(tabs, options = {}) {
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
+                             style="min-width: 30em"
                              value=${JSON.stringify(folderParams.title)}></label></div>
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
