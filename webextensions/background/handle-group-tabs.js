@@ -21,6 +21,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
 
@@ -417,6 +418,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
     return true;
 
   const windowId = tabs[0].windowId;
+  UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
     message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
     buttons: [
@@ -426,6 +428,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
     checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
     checked: true
   });
+  UserOperationBlocker.unblockIn(windowId, { throbber: false });
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)

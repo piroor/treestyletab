@@ -22,6 +22,7 @@ import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -475,6 +476,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   }
 
   log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
+  UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
@@ -484,6 +486,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
   });
+  UserOperationBlocker.unblockIn(windowId, { throbber: false });
   log('confirmToCloseTabs: result = ', result);
   switch (result.buttonIndex) {
     case 0:

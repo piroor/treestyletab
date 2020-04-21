@@ -15,6 +15,7 @@ import {
 import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
+import * as UserOperationBlocker from './user-operation-blocker.js';
 import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
@@ -66,8 +67,10 @@ export async function bookmarkTab(tab, options = {}) {
   let url      = tab.url;
   let parentId = parent && parent.id;
   if (options.showDialog) {
+    const windowId = tab.windowId;
     try {
-      const result = await RichConfirm.showInPopup({
+      UserOperationBlocker.blockIn(windowId, { throbber: false });
+      const result = await RichConfirm.showInPopup(windowId, {
         content: `
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
@@ -114,6 +117,9 @@ export async function bookmarkTab(tab, options = {}) {
     }
     catch(_error) {
       return null;
+    }
+    finally {
+      UserOperationBlocker.unblockIn(windowId, { throbber: false });
     }
   }
 
@@ -164,8 +170,10 @@ export async function bookmarkTabs(tabs, options = {}) {
     folderParams.parentId = parent.id;
 
   if (options.showDialog) {
+    const windowId = tabs[0].windowId;
     try {
-      const result = await RichConfirm.showInPopup({
+      UserOperationBlocker.blockIn(windowId, { throbber: false });
+      const result = await RichConfirm.showInPopup(windowId, {
         content: `
           <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
@@ -206,6 +214,9 @@ export async function bookmarkTabs(tabs, options = {}) {
     }
     catch(_error) {
       return null;
+    }
+    finally {
+      UserOperationBlocker.unblockIn(windowId, { throbber: false });
     }
   }
 
