@@ -170,7 +170,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen / Erlauben, Bestätigungsdialoge im Inhalt von Tabs zu zeigen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen" },
 
   "message_startup_userChromeCss_notify": { "message": "Wie kann man die Tableiste und die Überschrift der Sidebar ausblenden?" },
   "message_startup_userChromeCss_description_1": { "message": "Aufgrund von Beschränkungen für WebExtensions, hat Tree Style Tab keine Kontrolle über die Tableiste und die Sidebar-Überschriften von Firefox. Um sie zu verändern, siehe " },
@@ -458,7 +458,6 @@
   "config_shortcuts_caption": { "message": "Tastenkombinationen" },
 
   "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Das Ausführen von Scripts auf den Webseiten muss erlaubt sein.)" },
-  "config_requestPermissions_allUrls_inContentConfirmation": { "message": "Erlauben, Bestätigungsdialoge im Inhalt von Tabs zu zeigen (*Das Ausführen von Scripts auf den Webseiten muss erlaubt werden.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Aktiven eingeklappten Zweig ausklappen, wenn die Tab-Taste für mehr als " },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": " ms gedrückt ist" },
 

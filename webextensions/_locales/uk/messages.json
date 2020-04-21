@@ -110,7 +110,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Є деякі функції, що потребують додаткових дозволів. Якщо ви хочете активувати їх, отримайте дозволи вручну." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Додати дерево до закладок\" у контекстному меню на вкладках (потрібен доступ до закладок)." },
-  "message_startup_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті нащадки, перемикаючи фокус вкладок з допомогою гарячих клавіш / Allow to show confirmation dialogs inside tab contents (для виявлення операцій з клавіатурою потрібне впровадження скрипта на веб-сторінки)." },
+  "message_startup_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті нащадки, перемикаючи фокус вкладок з допомогою гарячих клавіш." },
 
   "message_startup_userChromeCss_notify": { "message": "Як приховати верхню панель вкладок і заголовок бічної панелі?" },
   "message_startup_userChromeCss_description_1": { "message": "Через обмеження WebExtensions, TST не може контролювати верхню панель вкладок і заголовок бічної панелі. Якщо вам потрібно налаштувати їх, див. " },

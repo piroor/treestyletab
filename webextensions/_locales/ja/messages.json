@@ -170,7 +170,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」や、他の環境からインポートされたブックマークの内部URLの自動移行（ブックマークの操作の許可が必要）" },
-  "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない / タブのコンテンツ内に確認ダイアログを表示することを許可する（キー操作の検出のため・ダイアログ表示のためにWebページ内でのスクリプトの実行許可が必要）" },
+  "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、FirefoxのタブバーとサイドバーのヘッダーはTree Style Tabから制御できません。これらを隠したい場合は" },
@@ -455,7 +455,6 @@
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
 
   "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
-  "config_requestPermissions_allUrls_inContentConfirmation": { "message": "タブのコンテンツ内に確認ダイアログを表示することを許可する（※Webページ内でのスクリプトの実行を許可する必要があります）" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "折りたたまれたツリーにフォーカスがある状態でTabキーを" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "ミリ秒以上押し続けたらツリーを展開する" },
 

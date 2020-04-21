@@ -170,7 +170,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠下列功能需要額外權限，給予額外的權限以使用。" },
   "message_startup_requestPermissions_bookmarks": { "message": "右鍵選單中「此樹加入書籤」(需要允許書籤存取)。" },
-  "message_startup_requestPermissions_allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹 / Allow to show confirmation dialogs inside tab contents (為偵測盤盤操作，需要允許在網頁中插入腳本執行)。" },
+  "message_startup_requestPermissions_allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹。" },
 
   "message_startup_userChromeCss_notify": { "message": "想要隱藏分頁列及側邊欄標題列？" },
   "message_startup_userChromeCss_description_1": { "message": "由於 WebExtensions 限制，Tree Style Tab 無法控制分頁列及側邊欄標題列，若想隱藏詳見" },

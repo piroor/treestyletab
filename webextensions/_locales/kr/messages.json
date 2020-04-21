@@ -463,7 +463,7 @@
         "hash": "85897cd7e382dc85105661ce607f74ae"
     },
     "message_startup_requestPermissions_allUrls": {
-        "message": "키보드 단축키에서 탭 전환 중, 접혀있는 하위 항목을 넘기고, 트리도 펼치지 않습니다. / Allow to show confirmation dialogs inside tab contents (키 조작을 얻기 위해 웹 페이지 내 스크립트의 실행 허가 필요)",
+        "message": "키보드 단축키에서 탭 전환 중, 접혀있는 하위 항목을 넘기고, 트리도 펼치지 않습니다.",
         "hash": "3b9fbc8723ec431403379e494588277f"
     },
     "message_startup_userChromeCss_notify": {
