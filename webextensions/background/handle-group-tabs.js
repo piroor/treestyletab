@@ -420,6 +420,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
   const windowId = tabs[0].windowId;
   UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
+    modal:   true,
     title:   browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'),
     message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
     buttons: [
