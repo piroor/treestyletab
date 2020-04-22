@@ -497,7 +497,7 @@ async function onShown(info, contextTab) {
       showContextualIdentities = true;
   }
   updateItem('context_reopenInContainer', {
-    visible: emulate && contextTab && showContextualIdentities,
+    visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
     multiselected
   }) && modifiedItemsCount++;
 
