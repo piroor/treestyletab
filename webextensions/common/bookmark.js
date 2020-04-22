@@ -74,12 +74,14 @@ export async function bookmarkTab(tab, options = {}) {
         modal: true,
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single'),
         content: `
-          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
                              style="min-width: 30em"
                              value=${JSON.stringify(title)}></label></div>
-          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
+          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
+                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
                       <input type="text"
                              name="url"
                              style="min-width: 30em"
@@ -179,7 +181,8 @@ export async function bookmarkTabs(tabs, options = {}) {
         modal: true,
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple'),
         content: `
-          <div><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
                       <input type="text"
                              name="title"
                              style="min-width: 30em"

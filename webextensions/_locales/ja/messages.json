@@ -157,8 +157,10 @@
 
   "bookmarkDialog_dialogTitle_single":   { "message": "新しいブックマーク" },
   "bookmarkDialog_dialogTitle_multiple": { "message": "新しいブックマーク" },
-  "bookmarkDialog_title":    { "message": "名前:" },
+  "bookmarkDialog_title":    { "message": "名前(N):" },
+  "bookmarkDialog_title_accessKey": { "message": "n" },
   "bookmarkDialog_url":      { "message": "URL:" },
+  "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "フォルダー:" },
   "bookmarkDialog_accept":   { "message": "保存" },
   "bookmarkDialog_cancel":   { "message": "キャンセル" },
