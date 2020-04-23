@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.0 (2020.4.23)
    * Show dialogs as semi-modal popup windows.
    * Hide the context menu item "Reopen in Container" in private windows. This behavior is compatible to Firefox's one.
    * Update `ru` locale by wvxwxvw. Thanks!
