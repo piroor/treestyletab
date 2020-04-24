@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.1 (2020.4.24)
    * Show popup windows correctly on Firefox ESR68. (regression on 3.5.0)
  - 3.5.0 (2020.4.23)
    * Show dialogs as semi-modal popup windows.
