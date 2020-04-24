@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Show popup windows correctly on Firefox ESR68. (regression on 3.5.0)
  - 3.5.0 (2020.4.23)
    * Show dialogs as semi-modal popup windows.
    * Hide the context menu item "Reopen in Container" in private windows. This behavior is compatible to Firefox's one.
