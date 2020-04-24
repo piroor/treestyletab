@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.5.2 (2020.4.25)
+   * Improve implementation of semi-modal dialogs. Now it is more stable, more similar to native dialogs, more friendly for dark color scheme, and don't appear in the "Recently Closed Windows" list.
  - 3.5.1 (2020.4.24)
    * Show popup windows correctly on Firefox ESR68. (regression on 3.5.0)
  - 3.5.0 (2020.4.23)
