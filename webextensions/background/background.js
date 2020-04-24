@@ -480,6 +480,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
     modal:   true,
+    url:     '/resources/blank.html', // required on Firefox ESR68
     title:   browser.i18n.getMessage('warnOnCloseTabs_title'),
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
