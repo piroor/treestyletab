@@ -421,6 +421,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
   UserOperationBlocker.blockIn(windowId, { throbber: false });
   const result = await RichConfirm.showInPopup(windowId, {
     modal:   true,
+    type:    'common-dialog',
     url:     '/resources/blank.html', // required on Firefox ESR68
     title:   browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'),
     message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),

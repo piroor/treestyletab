@@ -72,6 +72,7 @@ export async function bookmarkTab(tab, options = {}) {
       UserOperationBlocker.blockIn(windowId, { throbber: false });
       const result = await RichConfirm.showInPopup(windowId, {
         modal: true,
+        type:  'dialog',
         url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single'),
         content: `
@@ -180,6 +181,7 @@ export async function bookmarkTabs(tabs, options = {}) {
       UserOperationBlocker.blockIn(windowId, { throbber: false });
       const result = await RichConfirm.showInPopup(windowId, {
         modal: true,
+        type:  'dialog',
         url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple'),
         content: `
