@@ -157,9 +157,11 @@
 
   "bookmarkDialog_dialogTitle_single":   { "message": "Новая закладка" },
   "bookmarkDialog_dialogTitle_multiple": { "message": "Новые закладки" },
-  "bookmarkDialog_title":    { "message": "Заголовок:" },
+  "bookmarkDialog_title":    { "message": "Заголовок . :" },
+  "bookmarkDialog_title_accessKey": { "message": "n" },
   "bookmarkDialog_url":      { "message": "Адрес:" },
-  "bookmarkDialog_parentId": { "message": "Папка:" },
+  "bookmarkDialog_url_accessKey": { "message": "l" },
+  "bookmarkDialog_parentId": { "message": "Папка . . . . . :" },
   "bookmarkDialog_accept":   { "message": "Сохранить" },
   "bookmarkDialog_cancel":   { "message": "Отмена" },
 
