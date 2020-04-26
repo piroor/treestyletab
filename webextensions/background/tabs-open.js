@@ -230,12 +230,12 @@ function onMessage(message, openerTab) {
         message.insertBeforeId,
         message.insertAfterId
       ]).then(() => {
-      openURIsInTabs(message.uris || [message.uri], {
-        windowId:     message.windowId,
-        parent:       Tab.get(message.parentId),
-        insertBefore: Tab.get(message.insertBeforeId),
-        insertAfter:  Tab.get(message.insertAfterId)
-      });
+        openURIsInTabs(message.uris || [message.uri], {
+          windowId:     message.windowId,
+          parent:       Tab.get(message.parentId),
+          insertBefore: Tab.get(message.insertBeforeId),
+          insertAfter:  Tab.get(message.insertAfterId)
+        });
       });
       break;
 
@@ -246,14 +246,14 @@ function onMessage(message, openerTab) {
         message.insertBeforeId,
         message.insertAfterId
       ]).then(() => {
-      log('new tabs requested: ', message);
-      openURIsInTabs(message.uris, {
-        windowId:     message.windowId,
-        opener:       Tab.get(message.openerId),
-        parent:       Tab.get(message.parentId),
-        insertBefore: Tab.get(message.insertBeforeId),
-        insertAfter:  Tab.get(message.insertAfterId)
-      });
+        log('new tabs requested: ', message);
+        openURIsInTabs(message.uris, {
+          windowId:     message.windowId,
+          opener:       Tab.get(message.openerId),
+          parent:       Tab.get(message.parentId),
+          insertBefore: Tab.get(message.insertBeforeId),
+          insertAfter:  Tab.get(message.insertAfterId)
+        });
       });
       break;
   }
