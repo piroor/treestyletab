@@ -212,7 +212,7 @@ export async function openURIsInTabs(uris, options = {}) {
 }
 
 
-async function onMessage(message, openerTab) {
+function onMessage(message, openerTab) {
   switch (message.type) {
     case Constants.kCOMMAND_LOAD_URI:
       loadURI(message.uri, {
@@ -225,26 +225,27 @@ async function onMessage(message, openerTab) {
         message.parentId = openerTab.id;
       if (!message.windowId && openerTab)
         message.windowId = openerTab.windowId;
-      await Tab.waitUntilTracked([
+      Tab.waitUntilTracked([
         message.parentId,
         message.insertBeforeId,
         message.insertAfterId
-      ]);
+      ]).then(() => {
       openURIsInTabs(message.uris || [message.uri], {
         windowId:     message.windowId,
         parent:       Tab.get(message.parentId),
         insertBefore: Tab.get(message.insertBeforeId),
         insertAfter:  Tab.get(message.insertAfterId)
       });
+      });
       break;
 
     case Constants.kCOMMAND_NEW_TABS:
-      await Tab.waitUntilTracked([
+      Tab.waitUntilTracked([
         message.openerId,
         message.parentId,
         message.insertBeforeId,
         message.insertAfterId
-      ]);
+      ]).then(() => {
       log('new tabs requested: ', message);
       openURIsInTabs(message.uris, {
         windowId:     message.windowId,
@@ -252,6 +253,7 @@ async function onMessage(message, openerTab) {
         parent:       Tab.get(message.parentId),
         insertBefore: Tab.get(message.insertBeforeId),
         insertAfter:  Tab.get(message.insertAfterId)
+      });
       });
       break;
   }
