@@ -48,6 +48,20 @@ function sanitizeForHTMLText(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      typeof message != 'object')
+    return;
+
+  switch (message.type) {
+    case 'get-bookmark-item-by-id':
+      return getItemById(message.id);
+
+    case 'get-bookmarks-tree':
+      return browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler());
+  }
+});
+
 export async function bookmarkTab(tab, options = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
@@ -92,9 +106,13 @@ export async function bookmarkTab(tab, options = {}) {
               ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
-        onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
+        async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
           MenuUI.init();
           container.classList.add('bookmark-dialog');
+          const [defaultItem, rootItems] = await Promise.all([
+            browser.runtime.sendMessage({ type: 'get-bookmark-item-by-id', id: parentId }),
+            browser.runtime.sendMessage({ type: 'get-bookmarks-tree' })
+          ]);
           initFolderChooser(container.querySelector('button'), {
             MenuUI,
             animationDuration,
@@ -107,8 +125,7 @@ export async function bookmarkTab(tab, options = {}) {
           MenuUI,
           initFolderChooser,
           animationDuration: getAnimationDuration(),
-          defaultItem: await getItemById(parentId),
-          rootItems:   await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
+          parentId
         },
         buttons: [
           browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -195,9 +212,13 @@ export async function bookmarkTabs(tabs, options = {}) {
               ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                       <button name="parentId"></button></label></div>
         `,
-        onShown(container, { MenuUI, initFolderChooser, animationDuration, defaultItem, rootItems }) {
+        async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
           MenuUI.init();
           container.classList.add('bookmark-dialog');
+          const [defaultItem, rootItems] = await Promise.all([
+            browser.runtime.sendMessage({ type: 'get-bookmark-item-by-id', id: parentId }),
+            browser.runtime.sendMessage({ type: 'get-bookmarks-tree' })
+          ]);
           initFolderChooser(container.querySelector('button'), {
             MenuUI,
             animationDuration,
@@ -210,8 +231,7 @@ export async function bookmarkTabs(tabs, options = {}) {
           MenuUI,
           initFolderChooser,
           animationDuration: getAnimationDuration(),
-          defaultItem: await getItemById(folderParams.parentId),
-          rootItems:   await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
+          parentId: folderParams.parentId
         },
         buttons: [
           browser.i18n.getMessage('bookmarkDialog_accept'),
