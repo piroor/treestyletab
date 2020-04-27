@@ -381,29 +381,36 @@ export async function initFolderChooser(anchor, params = {}) {
 
   const buildItems = async (items, container) => {
     for (const item of items) {
+      if (item.type == 'bookmark' &&
+          /^place:parent=([^&]+)$/.test(item.url)) { // alias for special folders
+        const realItem = await browser.runtime.sendMessage({
+          type: 'treestyletab:get-bookmark-item-by-id',
+          id:   RegExp.$1
+        });
+        item.id    = realItem.id;
+        item.type  = realItem.type;
+        item.title = realItem.title;
+      }
       if (item.type != 'folder')
         continue;
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
-      if ('childrn' in item) {
+      const delayedBuild = async () => {
+        if (item.$fetched)
+          return;
+        item.$fetched = true;
+        if (!('children' in item)) {
+        item.children = await browser.runtime.sendMessage({
+          type: 'treestyletab:get-bookmark-child-items',
+          id:   item.id
+        });
+        }
         if (item.children.length > 0)
-          buildItems(item.children, folderItem.lastChild);
-      }
-      else {
-        const delayedBuild = async () => {
-          if (item.children)
-            return;
-          item.children = await browser.runtime.sendMessage({
-            type: 'treestyletab:get-bookmark-child-items',
-            id:   item.id
-          });
-          if (item.children.length > 0)
-            buildItems(item.children, folderItem.lastChild);
-          anchor.ui.updateMenuItem(folderItem);
-        };
-        folderItem.addEventListener('focus', delayedBuild, { once: true });
-        folderItem.addEventListener('mouseover', delayedBuild, { once: true });
-      }
+          await buildItems(item.children, folderItem.lastChild);
+        anchor.ui.updateMenuItem(folderItem);
+      };
+      folderItem.addEventListener('focus', delayedBuild, { once: true });
+      folderItem.addEventListener('mouseover', delayedBuild, { once: true });
     }
     const firstFolderItem = container.querySelector('.folder');
     if (firstFolderItem && firstFolderItem.previousSibling) {
