@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Handle dismissed semi-modal dialogs correctly.
+   * Optimize semi-modal dialogs a little.
+   * Optimize bookmark folder chooser UI for very large number of bookmarks.
+   * Set the "Other Bookmarks" folder as the default choice of the bookmark folder chooser UI if the configured default folder was removed.
+   * Update `ru` locale by wvxwxvw. Thanks!
  - 3.5.2 (2020.4.25)
    * Improve implementation of semi-modal dialogs. Now it is more stable, more similar to native dialogs, more friendly for dark color scheme, and don't appear in the "Recently Closed Windows" list.
  - 3.5.1 (2020.4.24)
