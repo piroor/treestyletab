@@ -77,7 +77,10 @@ export async function bookmarkTab(tab, options = {}) {
     });
     return null;
   }
-  const parent = await getItemById(options.parentId || configs.defaultBookmarkParentId);
+  const parent = (
+    (await getItemById(options.parentId || configs.defaultBookmarkParentId)) ||
+    (await getItemById(configs.$defaults.defaultBookmarkParentId))
+  );
 
   let title    = tab.title;
   let url      = tab.url;
@@ -191,6 +194,8 @@ export async function bookmarkTabs(tabs, options = {}) {
   else {
     parent = await getItemById(configs.defaultBookmarkParentId);
   }
+  if (!parent)
+    parent = await getItemById(configs.$defaults.defaultBookmarkParentId);
   if (parent)
     folderParams.parentId = parent.id;
 
