@@ -60,6 +60,20 @@ if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
 
       case 'treestyletab:get-bookmark-child-items':
         return browser.bookmarks.getChildren(message.id || 'root________').catch(ApiTabs.createErrorHandler());
+
+      case 'treestyletab:get-bookmark-ancestor-ids':
+        return (async () => {
+          const ancestorIds = [];
+          let item;
+          let lastId = message.id;
+          do {
+            item = await getItemById(lastId);
+            if (!item)
+              break;
+            ancestorIds.push(lastId = item.parentId);
+          } while (lastId != 'root________');
+          return ancestorIds;
+        })();
     }
   });
 }
@@ -329,6 +343,17 @@ export async function initFolderChooser(anchor, params = {}) {
     }
   }
 
+  const prepareFolderItemsRecursively = async (parent, conditions) => {
+    const promises = [];
+    for (const folderItem of parent.querySelectorAll(conditions)) {
+      promises.push(folderItem.$completeFolderItem().then(completedFolderItem => {
+        completedFolderItem.classList.add('open');
+        return prepareFolderItemsRecursively(completedFolderItem.lastChild, conditions);
+      }));
+    }
+    return Promise.all(promises);
+  };
+
   // eslint-disable-next-line prefer-const
   let topLevelItems;
   anchor.ui = new (params.MenuUI || MenuUI)({
@@ -351,15 +376,28 @@ export async function initFolderChooser(anchor, params = {}) {
         item.classList.remove('checked');
       }
       if (lastChosenId) {
-        const item = chooserTree.querySelector(`.radio[data-id=${lastChosenId}]`);
-        if (item)
-          item.classList.add('checked');
+        browser.runtime.sendMessage({
+          type: 'treestyletab:get-bookmark-ancestor-ids',
+          id:   lastChosenId
+        }).then(async ancestorIds => {
+          const conditions = ancestorIds.map(id => `.radio[data-id="${id}"]`).join(',');
+          await prepareFolderItemsRecursively(chooserTree, conditions);
+          const item = chooserTree.querySelector(`.radio[data-id="${lastChosenId}"]`);
+          if (item) {
+            item.classList.add('checked');
+            anchor.ui.focusTo(item);
+          }
+        });
       }
     },
     onHidden() {
       const range = document.createRange();
       for (const folderItem of topLevelItems) {
+        const separator = folderItem.lastChild.querySelector('.separator');
+        if (!separator)
+          continue;
         range.selectNodeContents(folderItem.lastChild);
+        range.setStartBefore(separator);
         range.deleteContents();
         folderItem.classList.remove('has-built-children');
       }
@@ -413,7 +451,7 @@ export async function initFolderChooser(anchor, params = {}) {
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
       createdItems.push(folderItem);
-      const delayedBuild = async () => {
+      folderItem.$completeFolderItem = async () => {
         if (!item.$fetched &&
             !('children' in item)) {
           item.$fetched = true;
@@ -429,9 +467,10 @@ export async function initFolderChooser(anchor, params = {}) {
           await buildItems(item.children, folderItem.lastChild);
           anchor.ui.updateMenuItem(folderItem);
         }
+        return folderItem;
       };
-      folderItem.addEventListener('focus', delayedBuild);
-      folderItem.addEventListener('mouseover', delayedBuild);
+      folderItem.addEventListener('focus', folderItem.$completeFolderItem);
+      folderItem.addEventListener('mouseover', folderItem.$completeFolderItem);
     }
     const firstFolderItem = container.querySelector('.folder');
     if (firstFolderItem && firstFolderItem.previousSibling) {
