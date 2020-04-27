@@ -49,19 +49,19 @@ function sanitizeForHTMLText(text) {
 }
 
 if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
-browser.runtime.onMessage.addListener((message, _sender) => {
-  if (!message ||
-      typeof message != 'object')
-    return;
+  browser.runtime.onMessage.addListener((message, _sender) => {
+    if (!message ||
+        typeof message != 'object')
+      return;
 
-  switch (message.type) {
-    case 'treestyletab:get-bookmark-item-by-id':
-      return getItemById(message.id);
+    switch (message.type) {
+      case 'treestyletab:get-bookmark-item-by-id':
+        return getItemById(message.id);
 
-    case 'treestyletab:get-bookmark-child-items':
-      return browser.bookmarks.getChildren(message.id || 'root________').catch(ApiTabs.createErrorHandler());
-  }
-});
+      case 'treestyletab:get-bookmark-child-items':
+        return browser.bookmarks.getChildren(message.id || 'root________').catch(ApiTabs.createErrorHandler());
+    }
+  });
 }
 
 export async function bookmarkTab(tab, options = {}) {
@@ -386,8 +386,8 @@ export async function initFolderChooser(anchor, params = {}) {
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
       if ('childrn' in item) {
-      if (item.children.length > 0)
-        buildItems(item.children, folderItem.lastChild);
+        if (item.children.length > 0)
+          buildItems(item.children, folderItem.lastChild);
       }
       else {
         folderItem.addEventListener('mouseover', async () => {
