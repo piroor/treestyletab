@@ -390,7 +390,9 @@ export async function initFolderChooser(anchor, params = {}) {
           buildItems(item.children, folderItem.lastChild);
       }
       else {
-        folderItem.addEventListener('mouseover', async () => {
+        const delayedBuild = async () => {
+          if (item.children)
+            return;
           item.children = await browser.runtime.sendMessage({
             type: 'treestyletab:get-bookmark-child-items',
             id:   item.id
@@ -398,7 +400,9 @@ export async function initFolderChooser(anchor, params = {}) {
           if (item.children.length > 0)
             buildItems(item.children, folderItem.lastChild);
           anchor.ui.updateMenuItem(folderItem);
-        }, { once: true });
+        };
+        folderItem.addEventListener('focus', delayedBuild, { once: true });
+        folderItem.addEventListener('mouseover', delayedBuild, { once: true });
       }
     }
     const firstFolderItem = container.querySelector('.folder');
