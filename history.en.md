@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.3 (2020.4.28)
    * Handle dismissed semi-modal dialogs correctly.
    * Optimize semi-modal dialogs a little.
    * Optimize bookmark folder chooser UI for very large number of bookmarks.
