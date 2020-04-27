@@ -324,6 +324,7 @@ export async function initFolderChooser(anchor, params = {}) {
     }
   }
 
+  let topLevelItems;
   anchor.ui = new (params.MenuUI || MenuUI)({
     root:       chooserTree,
     appearance: 'menu',
@@ -348,6 +349,15 @@ export async function initFolderChooser(anchor, params = {}) {
         if (item)
           item.classList.add('checked');
       }
+    },
+    onHidden() {
+      const range = document.createRange();
+      for (const folderItem of topLevelItems) {
+        range.selectNodeContents(folderItem.lastChild);
+        range.deleteContents();
+        folderItem.classList.remove('has-built-children');
+      }
+      range.detach();
     },
     animationDuration: params.animationDuration || getAnimationDuration()
   });
@@ -380,6 +390,7 @@ export async function initFolderChooser(anchor, params = {}) {
   };
 
   const buildItems = async (items, container) => {
+    const createdItems = [];
     for (const item of items) {
       if (item.type == 'bookmark' &&
           /^place:parent=([^&]+)$/.test(item.url)) { // alias for special folders
@@ -395,31 +406,36 @@ export async function initFolderChooser(anchor, params = {}) {
         continue;
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
+      createdItems.push(folderItem);
       const delayedBuild = async () => {
-        if (item.$fetched)
-          return;
-        item.$fetched = true;
-        if (!('children' in item)) {
+        if (!item.$fetched &&
+            !('children' in item)) {
+          item.$fetched = true;
           item.children = await browser.runtime.sendMessage({
             type: 'treestyletab:get-bookmark-child-items',
             id:   item.id
           });
         }
-        if (item.children.length > 0)
+        if (item.children &&
+            item.children.length > 0 &&
+            !folderItem.classList.contains('has-built-children')) {
+          folderItem.classList.add('has-built-children');
           await buildItems(item.children, folderItem.lastChild);
         anchor.ui.updateMenuItem(folderItem);
+        }
       };
-      folderItem.addEventListener('focus', delayedBuild, { once: true });
-      folderItem.addEventListener('mouseover', delayedBuild, { once: true });
+      folderItem.addEventListener('focus', delayedBuild);
+      folderItem.addEventListener('mouseover', delayedBuild);
     }
     const firstFolderItem = container.querySelector('.folder');
     if (firstFolderItem && firstFolderItem.previousSibling) {
       const separator = container.insertBefore(document.createElement('li'), firstFolderItem);
       separator.classList.add('separator');
     }
+    return createdItems;
   };
 
-  buildItems(params.rootItems, chooserTree);
+  topLevelItems = await buildItems(params.rootItems, chooserTree);
 }
 
 let mCreatedBookmarks = [];
