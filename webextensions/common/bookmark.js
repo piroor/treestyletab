@@ -397,8 +397,7 @@ export async function initFolderChooser(anchor, params = {}) {
           });
           if (item.children.length > 0)
             buildItems(item.children, folderItem.lastChild);
-          anchor.ui.updateItems(folderItem);
-          anchor.ui.updatePositions(folderItem);
+          anchor.ui.updateMenuItem(folderItem);
         }, { once: true });
       }
     }
