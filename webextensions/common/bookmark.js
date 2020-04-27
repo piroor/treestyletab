@@ -343,18 +343,6 @@ export async function initFolderChooser(anchor, params = {}) {
     }
   }
 
-  const prepareFolderItemsRecursively = async (parent, conditions) => {
-    const promises = [];
-    for (const folderItem of parent.querySelectorAll(conditions)) {
-      promises.push(folderItem.$completeFolderItem().then(completedFolderItem => {
-        completedFolderItem.classList.add('open');
-        completedFolderItem.scrollIntoView();
-        return prepareFolderItemsRecursively(completedFolderItem.lastChild, conditions);
-      }));
-    }
-    return Promise.all(promises);
-  };
-
   // eslint-disable-next-line prefer-const
   let topLevelItems;
   anchor.ui = new (params.MenuUI || MenuUI)({
@@ -377,18 +365,9 @@ export async function initFolderChooser(anchor, params = {}) {
         item.classList.remove('checked');
       }
       if (lastChosenId) {
-        browser.runtime.sendMessage({
-          type: 'treestyletab:get-bookmark-ancestor-ids',
-          id:   lastChosenId
-        }).then(async ancestorIds => {
-          const conditions = ancestorIds.map(id => `.radio[data-id="${id}"]`).join(',');
-          await prepareFolderItemsRecursively(chooserTree, conditions);
-          const item = chooserTree.querySelector(`.radio[data-id="${lastChosenId}"]`);
-          if (item) {
-            item.classList.add('checked');
-            anchor.ui.focusTo(item);
-          }
-        });
+        const item = chooserTree.querySelector(`.radio[data-id="${lastChosenId}"]`);
+        if (item)
+          item.classList.add('checked');
       }
     },
     onHidden() {
