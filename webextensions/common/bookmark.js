@@ -48,19 +48,21 @@ function sanitizeForHTMLText(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
 browser.runtime.onMessage.addListener((message, _sender) => {
   if (!message ||
       typeof message != 'object')
     return;
 
   switch (message.type) {
-    case 'get-bookmark-item-by-id':
+    case 'treestyletab:get-bookmark-item-by-id':
       return getItemById(message.id);
 
-    case 'get-bookmarks-tree':
-      return browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler());
+    case 'treestyletab:get-bookmark-child-items':
+      return browser.bookmarks.getChildren(message.id || 'root________').catch(ApiTabs.createErrorHandler());
   }
 });
+}
 
 export async function bookmarkTab(tab, options = {}) {
   try {
@@ -110,8 +112,8 @@ export async function bookmarkTab(tab, options = {}) {
           MenuUI.init();
           container.classList.add('bookmark-dialog');
           const [defaultItem, rootItems] = await Promise.all([
-            browser.runtime.sendMessage({ type: 'get-bookmark-item-by-id', id: parentId }),
-            browser.runtime.sendMessage({ type: 'get-bookmarks-tree' })
+            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
+            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
           ]);
           initFolderChooser(container.querySelector('button'), {
             MenuUI,
@@ -216,8 +218,8 @@ export async function bookmarkTabs(tabs, options = {}) {
           MenuUI.init();
           container.classList.add('bookmark-dialog');
           const [defaultItem, rootItems] = await Promise.all([
-            browser.runtime.sendMessage({ type: 'get-bookmark-item-by-id', id: parentId }),
-            browser.runtime.sendMessage({ type: 'get-bookmarks-tree' })
+            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
+            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
           ]);
           initFolderChooser(container.querySelector('button'), {
             MenuUI,
@@ -377,14 +379,28 @@ export async function initFolderChooser(anchor, params = {}) {
     return item;
   };
 
-  const buildItems = (items, container) => {
+  const buildItems = async (items, container) => {
     for (const item of items) {
       if (item.type != 'folder')
         continue;
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
+      if ('childrn' in item) {
       if (item.children.length > 0)
         buildItems(item.children, folderItem.lastChild);
+      }
+      else {
+        folderItem.addEventListener('mouseover', async () => {
+          item.children = await browser.runtime.sendMessage({
+            type: 'treestyletab:get-bookmark-child-items',
+            id:   item.id
+          });
+          if (item.children.length > 0)
+            buildItems(item.children, folderItem.lastChild);
+          anchor.ui.updateItems(folderItem);
+          anchor.ui.updatePositions(folderItem);
+        }, { once: true });
+      }
     }
     const firstFolderItem = container.querySelector('.folder');
     if (firstFolderItem && firstFolderItem.previousSibling) {
@@ -393,7 +409,7 @@ export async function initFolderChooser(anchor, params = {}) {
     }
   };
 
-  buildItems(params.rootItems[0].children, chooserTree);
+  buildItems(params.rootItems, chooserTree);
 }
 
 let mCreatedBookmarks = [];

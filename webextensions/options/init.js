@@ -117,7 +117,7 @@ async function updateBookmarksUI(enabled) {
         if (item.dataset.id)
           configs.defaultBookmarkParentId = item.dataset.id;
       },
-      rootItems: await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler())
+      rootItems: (await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler()))[0].children
     });
   }
   else {

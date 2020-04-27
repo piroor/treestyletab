@@ -23,6 +23,7 @@ import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
