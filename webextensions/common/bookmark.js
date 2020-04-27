@@ -421,7 +421,7 @@ export async function initFolderChooser(anchor, params = {}) {
             !folderItem.classList.contains('has-built-children')) {
           folderItem.classList.add('has-built-children');
           await buildItems(item.children, folderItem.lastChild);
-        anchor.ui.updateMenuItem(folderItem);
+          anchor.ui.updateMenuItem(folderItem);
         }
       };
       folderItem.addEventListener('focus', delayedBuild);
