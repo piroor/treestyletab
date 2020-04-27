@@ -400,10 +400,10 @@ export async function initFolderChooser(anchor, params = {}) {
           return;
         item.$fetched = true;
         if (!('children' in item)) {
-        item.children = await browser.runtime.sendMessage({
-          type: 'treestyletab:get-bookmark-child-items',
-          id:   item.id
-        });
+          item.children = await browser.runtime.sendMessage({
+            type: 'treestyletab:get-bookmark-child-items',
+            id:   item.id
+          });
         }
         if (item.children.length > 0)
           await buildItems(item.children, folderItem.lastChild);
