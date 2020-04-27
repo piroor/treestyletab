@@ -324,6 +324,7 @@ export async function initFolderChooser(anchor, params = {}) {
     }
   }
 
+  // eslint-disable-next-line prefer-const
   let topLevelItems;
   anchor.ui = new (params.MenuUI || MenuUI)({
     root:       chooserTree,
