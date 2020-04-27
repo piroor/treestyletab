@@ -110,9 +110,13 @@ async function updateBookmarksUI(enabled) {
     for (const element of elements) {
       element.removeAttribute('disabled');
     }
+    const defaultParentFolder = (
+      (await Bookmark.getItemById(configs.defaultBookmarkParentId)) ||
+      (await Bookmark.getItemById(configs.$defaults.defaultBookmarkParentId))
+    );
     const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
     Bookmark.initFolderChooser(defaultBookmarkParentChooser, {
-      defaultValue: configs.defaultBookmarkParentId,
+      defaultValue: defaultParentFolder.id,
       onCommand:    (item, _event) => {
         if (item.dataset.id)
           configs.defaultBookmarkParentId = item.dataset.id;

@@ -27,7 +27,7 @@ function log(...args) {
 
 let mCreatingCount = 0;
 
-async function getItemById(id) {
+export async function getItemById(id) {
   if (!id)
     return null;
   try {
