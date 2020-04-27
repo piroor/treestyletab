@@ -348,6 +348,7 @@ export async function initFolderChooser(anchor, params = {}) {
     for (const folderItem of parent.querySelectorAll(conditions)) {
       promises.push(folderItem.$completeFolderItem().then(completedFolderItem => {
         completedFolderItem.classList.add('open');
+        completedFolderItem.scrollIntoView();
         return prepareFolderItemsRecursively(completedFolderItem.lastChild, conditions);
       }));
     }
