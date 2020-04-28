@@ -514,7 +514,7 @@ function collapseAutoExpandedTabsWhileDragging() {
 async function handleDroppedNonTabItems(event, dropActionInfo) {
   event.stopPropagation();
 
-  const uris = retrieveURIsFromDragEvent(event);
+  const uris = await retrieveURIsFromDragEvent(event);
   // uris.forEach(uRI => {
   //   if (uRI.indexOf(Constants.kURI_BOOKMARK_FOLDER) != 0)
   //     securityCheck(uRI, event);
@@ -550,8 +550,10 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
   });
 }
 
-function retrieveURIsFromDragEvent(event) {
+async function retrieveURIsFromDragEvent(event) {
   log('retrieveURIsFromDragEvent');
+  const dragDataFromSubpanel = await browser.runtime.sendMessage({ type: TSTAPI.kCOMMAND_GET_DRAG_DATA_FROM_SUBPANEL });
+  log('dragDataFromSubpanel: ', dragDataFromSubpanel);
   const dt    = event.dataTransfer;
   const types = [
     kTYPE_URI_LIST,
@@ -561,9 +563,15 @@ function retrieveURIsFromDragEvent(event) {
   ];
   let urls = [];
   for (const type of types) {
-    const urlData  = dt.getData(type);
-    if (urlData)
+    const urlData = dt.getData(type);
+    if (urlData) {
       urls = urls.concat(retrieveURIsFromData(urlData, type));
+    }
+    else {
+      const dataFromSubpanel = dragDataFromSubpanel.filter(dataSet => type in dataSet);
+      if (dataFromSubpanel.length > 0)
+        urls = urls.concat(retrieveURIsFromData(dataFromSubpanel[0][type], type));
+    }
     if (urls.length)
       break;
   }

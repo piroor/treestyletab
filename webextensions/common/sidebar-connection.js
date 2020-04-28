@@ -42,6 +42,10 @@ export const counts = {
   broadcast: {}
 };
 
+export function getOpenWindowIds() {
+  return mOpenState ? Array.from(mOpenState.keys()) : [];
+}
+
 export function sendMessage(message) {
   if (!mOpenState)
     return false;
