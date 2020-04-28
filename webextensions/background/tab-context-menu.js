@@ -456,33 +456,33 @@ async function onShown(info, contextTab) {
         }
         mLastContextOverridden = true;
       }
-  TSTAPI.sendMessage({
-    type: TSTAPI.kCONTEXT_MENU_SHOWN,
-    info: {
-      bookmarkId:    info.bookmarkId || null,
-      button:        info.button,
-      checked:       info.checked,
-      contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
-      editable:      false,
-      frameId:       null,
-      frameUrl:      null,
-      linkText:      null,
-      linkUrl:       null,
-      mediaType:     null,
-      menuIds:       [],
-      menuItemId:    null,
-      modifiers:     [],
-      pageUrl:       null,
-      parentMenuItemId: null,
-      selectionText: null,
-      srcUrl:        null,
-      targetElementId: null,
-      viewType:      'sidebar',
-      wasChecked:    false
-    },
-    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
-    windowId
-  }, { tabProperties: ['tab'] });
+      TSTAPI.sendMessage({
+        type: TSTAPI.kCONTEXT_MENU_SHOWN,
+        info: {
+          bookmarkId:    info.bookmarkId || null,
+          button:        info.button,
+          checked:       info.checked,
+          contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
+          editable:      false,
+          frameId:       null,
+          frameUrl:      null,
+          linkText:      null,
+          linkUrl:       null,
+          mediaType:     null,
+          menuIds:       [],
+          menuItemId:    null,
+          modifiers:     [],
+          pageUrl:       null,
+          parentMenuItemId: null,
+          selectionText: null,
+          srcUrl:        null,
+          targetElementId: null,
+          viewType:      'sidebar',
+          wasChecked:    false
+        },
+        tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+        windowId
+      }, { tabProperties: ['tab'] });
       reserveRefresh();
       return;
     }
