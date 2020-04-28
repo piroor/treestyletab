@@ -496,7 +496,16 @@ function onExternalMessage(message, sender) {
       })();
 
     case TSTAPI.kOVERRIDE_CONTEXT:
-      mReservedOverrideContext = message;
+      mReservedOverrideContext = (
+        message.context == 'bookmark' ?
+          { context:    'bookmark',
+            bookmarkId: message.bookmarkId } :
+          message.context == 'tab' ?
+            { context:    'tab',
+              tabId:      message.tabId } :
+            null
+      );
+      if (mReservedOverrideContext)
       document.getElementById('subpanel').style.pointerEvents = 'none';
       break;
   }
@@ -506,6 +515,7 @@ function onExternalMessage(message, sender) {
 async function onContextMenu(event) {
   const context = mReservedOverrideContext;
   mReservedOverrideContext = null;
+  if (context)
   setTimeout(() => {
     document.getElementById('subpanel').style.pointerEvents = '';
   }, 100);
@@ -531,12 +541,7 @@ async function onContextMenu(event) {
   }
 
   if (context && context.context) {
-    browser.menus.overrideContext(
-      context.context == 'bookmark' ?
-        { context:    'bookmark',
-          bookmarkId: context.bookmarkId } :
-        { context:    'tab',
-          tabId:      context.tabId });
+    browser.menus.overrideContext(context);
     return;
   }
 
