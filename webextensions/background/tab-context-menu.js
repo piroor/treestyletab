@@ -974,8 +974,10 @@ export function onExternalMessage(message, sender) {
             Array.isArray(params.viewTypes) &&
             params.viewTypes.includes('sidebar') &&
             mNativeContextMenuAvailable) {
+          const parentId = params.parentId && getExternalTopLevelItemId(sender.id, params.parentId);
           browser.menus.create({
             ...params,
+            ...(parentId ? { parentId } : {}),
             id: getExternalTopLevelItemId(sender.id, params.id),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
           });
