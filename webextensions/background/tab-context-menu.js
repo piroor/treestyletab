@@ -37,6 +37,16 @@ function getExternalTopLevelItemId(ownerId, itemId) {
   return `external-top-level-item:${ownerId}:${itemId}`;
 }
 
+const SAFE_MENU_PROPERTIES = [
+  'checked',
+  'enabled',
+  'icons',
+  'parentId',
+  'title',
+  'type',
+  'visible'
+];
+
 const mItemsById = {
   'context_reloadTab': {
     title:              browser.i18n.getMessage('tabContextMenu_reload_label'),
@@ -974,13 +984,20 @@ export function onExternalMessage(message, sender) {
             Array.isArray(params.viewTypes) &&
             params.viewTypes.includes('sidebar') &&
             mNativeContextMenuAvailable) {
-          const parentId = params.parentId && getExternalTopLevelItemId(sender.id, params.parentId);
-          browser.menus.create({
-            ...params,
-            ...(parentId ? { parentId } : {}),
-            id: getExternalTopLevelItemId(sender.id, params.id),
+          const createParams = {
+            id:       getExternalTopLevelItemId(sender.id, params.id),
+            type:     params.type || 'normal',
+            viwTypes: ['sidebar'],
+            contexts: (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
-          });
+          };
+          if (params.parentId)
+            createParams.parentId = getExternalTopLevelItemId(sender.id, params.parentId);
+          for (const property of SAFE_MENU_PROPERTIES) {
+            if (property in params)
+              createParams[property] = params[property];
+          }
+          browser.menus.create(createParams);
           reserveRefresh();
         }
       }
@@ -995,9 +1012,15 @@ export function onExternalMessage(message, sender) {
         const item = items[i];
         if (item.id != message.params[0])
           continue;
+        const params = message.params[1];
+        const updateProperties = {};
+        for (const property of SAFE_MENU_PROPERTIES) {
+          if (property in params)
+            updateProperties[property] = params[property];
+        }
         items.splice(i, 1, {
           ...item,
-          ...message.params[1]
+          ...updateProperties
         });
         if (sender.id != browser.runtime.id &&
             Array.isArray(item.viewTypes) &&
@@ -1005,7 +1028,7 @@ export function onExternalMessage(message, sender) {
             mNativeContextMenuAvailable) {
           browser.menus.update(
             getExternalTopLevelItemId(sender.id, item.id),
-            message.params[1]
+            updateProperties
           );
           reserveRefresh()
         }
