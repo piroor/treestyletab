@@ -575,6 +575,7 @@ async function retrieveURIsFromDragEvent(event) {
     const params     = RegExp.$1;
     const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
     const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
+    try {
     const dragData   = await browser.runtime.sendMessage(providerId, {
       type: 'get-drag-data',
       id:   dataId
@@ -587,6 +588,9 @@ async function retrieveURIsFromDragEvent(event) {
         urls = urls.concat(retrieveURIsFromData(urlData, type));
       if (urls.length)
         break;
+    }
+    }
+    catch(_error) {
     }
   }
   log(' => retrieved: ', urls);
