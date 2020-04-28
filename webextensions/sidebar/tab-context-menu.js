@@ -506,7 +506,7 @@ function onExternalMessage(message, sender) {
             null
       );
       if (mReservedOverrideContext)
-      document.getElementById('subpanel').style.pointerEvents = 'none';
+        document.getElementById('subpanel').style.pointerEvents = 'none';
       break;
   }
 }
@@ -516,9 +516,9 @@ async function onContextMenu(event) {
   const context = mReservedOverrideContext;
   mReservedOverrideContext = null;
   if (context)
-  setTimeout(() => {
-    document.getElementById('subpanel').style.pointerEvents = '';
-  }, 100);
+    setTimeout(() => {
+      document.getElementById('subpanel').style.pointerEvents = '';
+    }, 100);
 
   const target         = EventUtils.getElementTarget(event);
   const originalTarget = EventUtils.getElementOriginalTarget(event);
