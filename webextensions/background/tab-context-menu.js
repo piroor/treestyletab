@@ -444,9 +444,9 @@ async function onShown(info, contextTab) {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
       bookmarkId:    info.bookmarkId || null,
-      contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
       button:        info.button,
       checked:       info.checked,
+      contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
       editable:      false,
       frameId:       null,
       frameUrl:      null,
@@ -855,14 +855,24 @@ async function onClick(info, contextTab) {
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
-            ...info,
+            bookmarkId:    info.bookmarkId || null,
+            button:        info.button,
+            checked:       info.checked,
+            editable:      false,
+            frameId:       null,
+            frameUrl:      null,
+            linkText:      null,
+            linkUrl:       null,
+            mediaType:     null,
             menuItemId,
-            frameUrl:         null,
-            linkUrl:          null,
-            pageUrl:          null,
+            modifiers:     [],
+            pageUrl:       null,
             parentMenuItemId: null,
-            selectionText:    null,
-            srcUrl:           null
+            selectionText: null,
+            srcUrl:        null,
+            targetElementId: null,
+            viewType:      'sidebar',
+            wasChecked:    info.wasChecked
           },
           tab
         };
