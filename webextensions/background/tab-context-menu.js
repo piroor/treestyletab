@@ -449,12 +449,20 @@ async function onShown(info, contextTab) {
     if (mOverriddenContext) {
       if (!mLastContextOverridden) {
         for (const itemId of Object.keys(mItemsById)) {
-          if (mItemsById[itemId].lastVisible) {
+          if (mItemsById[itemId].lastVisible)
             browser.menus.update(itemId, { visible: false });
-            modifiedItemsCount++;
-          }
         }
         mLastContextOverridden = true;
+      }
+      for (const item of mExtraItems.get(mOverriddenContext.owner)) {
+        if (item.visible !== false &&
+            !item.lastVisible) {
+          browser.menus.update(
+            getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
+            { visible: true }
+          );
+          item.lastVisible = true;
+        }
       }
       TSTAPI.sendMessage({
         type: TSTAPI.kCONTEXT_MENU_SHOWN,
@@ -482,7 +490,10 @@ async function onShown(info, contextTab) {
         },
         tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
         windowId
-      }, { tabProperties: ['tab'] });
+      }, {
+        targets: [mOverriddenContext.owner],
+        tabProperties: ['tab']
+      });
       reserveRefresh();
       return;
     }
@@ -492,6 +503,19 @@ async function onShown(info, contextTab) {
           if (mItemsById[itemId].lastVisible) {
             browser.menus.update(itemId, { visible: true });
             modifiedItemsCount++;
+          }
+        }
+        for (const ownerId of mExtraItems.keys()) {
+          const items = mExtraItems.get(ownerId);
+          for (const item of items) {
+            if (item.lastVisible) {
+              browser.menus.update(
+                getExternalTopLevelItemId(ownerId, item.id),
+                { visible: false }
+              );
+              item.lastVisible = false;
+              modifiedItemsCount++;
+            }
           }
         }
         mLastContextOverridden = false;
@@ -999,6 +1023,8 @@ function onMessage(message, _sender) {
 
     case Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN:
       mOverriddenContext = message.context || null;
+      if (mOverriddenContext)
+        mOverriddenContext.owner = message.owner;
       break;
   }
 }
@@ -1075,6 +1101,10 @@ export function onExternalMessage(message, sender) {
           ...item,
           ...updateProperties
         });
+        console.log({
+          ...item,
+          ...updateProperties
+        }, updateProperties);
         if (sender.id != browser.runtime.id &&
             Array.isArray(item.viewTypes) &&
             item.viewTypes.includes('sidebar') &&
@@ -1083,6 +1113,8 @@ export function onExternalMessage(message, sender) {
             getExternalTopLevelItemId(sender.id, item.id),
             updateProperties
           );
+          if ('visible' in updateProperties)
+            item.lastVisible = updateProperties.visible;
           reserveRefresh()
         }
         break;

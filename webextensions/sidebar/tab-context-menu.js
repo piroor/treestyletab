@@ -508,7 +508,8 @@ function onExternalMessage(message, sender) {
       if (mReservedOverrideContext) {
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
-          context: mReservedOverrideContext
+          context: mReservedOverrideContext,
+          owner:   sender.id
         });
         document.getElementById('subpanel').style.pointerEvents = 'none';
       }
