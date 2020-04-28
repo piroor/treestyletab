@@ -1040,7 +1040,7 @@ export function onExternalMessage(message, sender) {
           const createParams = {
             id:       getExternalTopLevelItemId(sender.id, params.id),
             type:     params.type || 'normal',
-            viwTypes: ['sidebar'],
+            viewTypes: ['sidebar'],
             contexts: (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
           };
