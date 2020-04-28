@@ -56,7 +56,7 @@ const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
 const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
-const kTYPE_ADDON_DRAG_DATA = `application/x-moz-addon-drag-data;${browser.runtime.id}`;
+const kTYPE_ADDON_DRAG_DATA = `application/x-moz-addon-drag-data;provider=${browser.runtime.id}&id=`;
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
@@ -572,9 +572,12 @@ async function retrieveURIsFromDragEvent(event) {
   for (const type of dt.types) {
     if (!/^application\/x-moz-addon-drag-data;(.+)$/.test(type))
       continue;
-    const providerId = RegExp.$1;
-    const dragData = await browser.runtime.sendMessage(providerId, {
-      'type': 'get-drag-data'
+    const params     = RegExp.$1;
+    const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
+    const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
+    const dragData   = await browser.runtime.sendMessage(providerId, {
+      type: 'get-drag-data',
+      id:   dataId
     });
     if (!dragData || typeof dragData != 'object')
       break;
@@ -687,6 +690,7 @@ async function getDroppedLinksOnTabBehavior() {
 
 let mFinishCanceledDragOperation;
 let mLastDragStartTime = 0;
+let mCurrentDragDataForExternalsId = null;
 let mCurrentDragDataForExternals = null;
 
 export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
@@ -700,6 +704,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
+  mCurrentDragDataForExternalsId = `${parseInt(Math.random() * 65000)}-${Date.now()}`;
   mCurrentDragDataForExternals = {};
 
   const originalTarget = EventUtils.getElementOriginalTarget(event);
@@ -850,7 +855,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
       dt.setData(kTYPE_URI_LIST, mCurrentDragDataForExternals[kTYPE_URI_LIST]);
     }
   }
-  dt.setData(kTYPE_ADDON_DRAG_DATA, JSON.stringify(mCurrentDragDataForExternals));
+  dt.setData(`${kTYPE_ADDON_DRAG_DATA}${mCurrentDragDataForExternalsId}`, JSON.stringify(mCurrentDragDataForExternals));
 
   if (options.tab) {
     const tabRect = options.tab.$TST.element.getBoundingClientRect();
@@ -1404,6 +1409,7 @@ function finishDrag() {
 
   wait(100).then(() => {
     mCurrentDragData = null;
+    mCurrentDragDataForExternalsId = null;
     mCurrentDragDataForExternals = null;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
@@ -1505,7 +1511,8 @@ browser.runtime.onMessageExternal.addListener((message, _sender) => {
 
   switch (message.type) {
     case TSTAPI.kGET_DRAG_DATA:
-      if (mCurrentDragDataForExternals)
+      if (mCurrentDragDataForExternals &&
+          message.id == mCurrentDragDataForExternalsId)
         return Promise.resolve(mCurrentDragDataForExternals);
       break;
   }
