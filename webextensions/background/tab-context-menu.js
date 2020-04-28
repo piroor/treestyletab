@@ -32,6 +32,11 @@ export const onTSTItemClick = new EventListenerManager();
 export const onTSTTabContextMenuShown = new EventListenerManager();
 export const onTSTTabContextMenuHidden = new EventListenerManager();
 
+const EXTERNAL_TOP_LEVEL_ITEM_MATCHER = /^external-top-level-item:([^:]+):(.+)$/;
+function getExternalTopLevelItemId(ownerId, itemId) {
+  return `external-top-level-item:${ownerId}:${itemId}`;
+}
+
 const mItemsById = {
   'context_reloadTab': {
     title:              browser.i18n.getMessage('tabContextMenu_reload_label'),
@@ -824,7 +829,7 @@ async function onClick(info, contextTab) {
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
 
-      if (/^external:([^:]+):(.+)$/.test(info.menuItemId)) {
+      if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;
         const menuItemId = RegExp.$2;
         const tab = contextTab && (await (new TSTAPI.TreeItem(contextTab, { isContextTab: true })).exportFor      (owner)) || null;
@@ -971,7 +976,7 @@ export function onExternalMessage(message, sender) {
             mNativeContextMenuAvailable) {
           browser.menus.create({
             ...params,
-            id: `external:${sender.id}:${params.id}`,
+            id: getExternalTopLevelItemId(sender.id, params.id),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
           });
           reserveRefresh();
@@ -997,7 +1002,7 @@ export function onExternalMessage(message, sender) {
             item.viewTypes.includes('sidebar') &&
             mNativeContextMenuAvailable) {
           browser.menus.update(
-            `external:${sender.id}:${item.id}`,
+            getExternalTopLevelItemId(sender.id, item.id),
             message.params[1]
           );
           reserveRefresh()
@@ -1031,7 +1036,7 @@ export function onExternalMessage(message, sender) {
           Array.isArray(item.viewTypes) &&
           item.viewTypes.includes('sidebar') &&
           mNativeContextMenuAvailable) {
-        browser.menus.remove(`external:${sender.id}:${item.id}`);
+        browser.menus.remove(getExternalTopLevelItemId(sender.id, item.id));
         reserveRefresh();
       }
       return reserveNotifyUpdated();
