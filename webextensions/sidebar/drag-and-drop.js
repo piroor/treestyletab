@@ -576,19 +576,19 @@ async function retrieveURIsFromDragEvent(event) {
     const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
     const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
     try {
-    const dragData   = await browser.runtime.sendMessage(providerId, {
-      type: 'get-drag-data',
-      id:   dataId
-    });
-    if (!dragData || typeof dragData != 'object')
-      break;
-    for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
-      const urlData = dragData[type];
-      if (urlData)
-        urls = urls.concat(retrieveURIsFromData(urlData, type));
-      if (urls.length)
+      const dragData = await browser.runtime.sendMessage(providerId, {
+        type: 'get-drag-data',
+        id:   dataId
+      });
+      if (!dragData || typeof dragData != 'object')
         break;
-    }
+      for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
+        const urlData = dragData[type];
+        if (urlData)
+          urls = urls.concat(retrieveURIsFromData(urlData, type));
+        if (urls.length)
+          break;
+      }
     }
     catch(_error) {
     }
