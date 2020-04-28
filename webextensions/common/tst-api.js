@@ -125,8 +125,7 @@ export const kOPEN_ALL_BOOKMARKS_WITH_STRUCTURE = 'open-all-bookmarks-with-struc
 export const kSET_EXTRA_TAB_CONTENTS   = 'set-extra-tab-contents';
 export const kCLEAR_EXTRA_TAB_CONTENTS = 'clear-extra-tab-contents';
 export const kCLEAR_ALL_EXTRA_TAB_CONTENTS = 'clear-all-extra-tab-contents';
-export const kSET_DRAG_DATA_FROM_SUBPANEL   = 'set-drag-data';
-export const kCLEAR_DRAG_DATA_FROM_SUBPANEL = 'clear-drag-data';
+export const kGET_DRAG_DATA         = 'get-drag-data';
 
 export const kCONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
 export const kCONTEXT_MENU_GET_ITEMS  = 'fake-contextMenu-get-items';
@@ -150,7 +149,6 @@ export const kCOMMAND_GET_ADDONS                 = 'treestyletab:get-addons';
 export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permisssion';
 export const kCOMMAND_NOTIFY_PERMISSION_CHANGED  = 'treestyletab:notify-api-permisssion-changed';
 export const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
-export const kCOMMAND_GET_DRAG_DATA_FROM_SUBPANEL = 'treestyletab:get-drag-data-from-subpanel';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
@@ -167,7 +165,6 @@ const kPERMISSIONS_ALL = new Set([
 const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
-const mDragData = new Map();
 
 const mIsBackend  = location.href.startsWith(browser.extension.getURL('background/background.html'));
 const mIsFrontend = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
@@ -655,21 +652,6 @@ if (mIsBackend) {
       case kCOMMAND_UNREGISTER_ADDON:
         unregisterAddon(message.id);
         break;
-
-      case kCOMMAND_GET_DRAG_DATA_FROM_SUBPANEL:
-        return Promise.all(SidebarConnection.getOpenWindowIds().map(async windowId => {
-          const [providerId, height] = await Promise.all([
-            browser.sessions.getWindowValue(windowId, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),
-            browser.sessions.getWindowValue(windowId, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch  (ApiTabs.createErrorHandler())
-          ]);
-          if (providerId &&
-              typeof height == 'number' &&
-              !isNaN(height) &&
-              height > 0)
-            return mDragData.get(providerId);
-          else
-            return null;
-        })).then(dataSets => dataSets.filter(data => !!data));
     }
   });
 }
@@ -769,16 +751,6 @@ function onBackendCommand(message, sender) {
 
     case kWAIT_FOR_SHUTDOWN:
       return mPromisedOnBeforeUnload;
-
-    case kSET_DRAG_DATA_FROM_SUBPANEL:
-      mDragData.set(sender.id, message.data);
-      break;
-
-    case kCLEAR_DRAG_DATA_FROM_SUBPANEL:
-      clearTimeout(() => {
-        mDragData.delete(sender.id);
-      }, 150);
-      break;
 
     default:
       return onCommonCommand(message, sender);

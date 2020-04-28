@@ -56,6 +56,7 @@ const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
 const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
+const kTYPE_ADDON_DRAG_DATA = `application/x-moz-addon-drag-data;${browser.runtime.id}`;
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
@@ -550,30 +551,40 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
   });
 }
 
+const ACCEPTABLE_DRAG_DATA_TYPES = [
+  kTYPE_URI_LIST,
+  kTYPE_X_MOZ_URL,
+  kTYPE_MOZ_TEXT_INTERNAL,
+  'text/plain'
+];
+
 async function retrieveURIsFromDragEvent(event) {
   log('retrieveURIsFromDragEvent');
-  const dragDataFromSubpanel = await browser.runtime.sendMessage({ type: TSTAPI.kCOMMAND_GET_DRAG_DATA_FROM_SUBPANEL });
-  log('dragDataFromSubpanel: ', dragDataFromSubpanel);
-  const dt    = event.dataTransfer;
-  const types = [
-    kTYPE_URI_LIST,
-    kTYPE_X_MOZ_URL,
-    kTYPE_MOZ_TEXT_INTERNAL,
-    'text/plain'
-  ];
+  const dt = event.dataTransfer;
   let urls = [];
-  for (const type of types) {
+  for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
     const urlData = dt.getData(type);
-    if (urlData) {
+    if (urlData)
       urls = urls.concat(retrieveURIsFromData(urlData, type));
-    }
-    else {
-      const dataFromSubpanel = dragDataFromSubpanel.filter(dataSet => type in dataSet);
-      if (dataFromSubpanel.length > 0)
-        urls = urls.concat(retrieveURIsFromData(dataFromSubpanel[0][type], type));
-    }
     if (urls.length)
       break;
+  }
+  for (const type of dt.types) {
+    if (!/^application\/x-moz-addon-drag-data;(.+)$/.test(type))
+      continue;
+    const providerId = RegExp.$1;
+    const dragData = await browser.runtime.sendMessage(providerId, {
+      'type': 'get-drag-data'
+    });
+    if (!dragData || typeof dragData != 'object')
+      break;
+    for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
+      const urlData = dragData[type];
+      if (urlData)
+        urls = urls.concat(retrieveURIsFromData(urlData, type));
+      if (urls.length)
+        break;
+    }
   }
   log(' => retrieved: ', urls);
   urls = urls.filter(uri =>
@@ -676,6 +687,7 @@ async function getDroppedLinksOnTabBehavior() {
 
 let mFinishCanceledDragOperation;
 let mLastDragStartTime = 0;
+let mCurrentDragDataForExternals = null;
 
 export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
@@ -688,7 +700,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
-  const dragDataForSubpanel = {};
+  mCurrentDragDataForExternals = {};
 
   const originalTarget = EventUtils.getElementOriginalTarget(event);
   const extraTabContentsDragData = originalTarget && JSON.parse(originalTarget.dataset && originalTarget.dataset.dragData || 'null');
@@ -742,7 +754,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
           dt.setData(type, stringData);
           //*** We need to sanitize drag data from helper addons, because
           //they can have sensitive data...
-          //dragDataForSubpanel[type] = stringData;
+          //mCurrentDragDataForExternals[type] = stringData;
           dataOverridden = true;
         }; break;
       }
@@ -829,15 +841,16 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
         urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
       }
     }
-    dragDataForSubpanel[kTYPE_X_MOZ_URL] = mozUrl.join('\n');
-    dragDataForSubpanel[kTYPE_URI_LIST] = urlList.join('\n');
+    mCurrentDragDataForExternals[kTYPE_X_MOZ_URL] = mozUrl.join('\n');
+    mCurrentDragDataForExternals[kTYPE_URI_LIST] = urlList.join('\n');
     if (allowBookmark) {
       log('set kTYPE_X_MOZ_URL');
-      dt.setData(kTYPE_X_MOZ_URL, dragDataForSubpanel[kTYPE_X_MOZ_URL]);
+      dt.setData(kTYPE_X_MOZ_URL, mCurrentDragDataForExternals[kTYPE_X_MOZ_URL]);
       log('set kTYPE_URI_LIST');
-      dt.setData(kTYPE_URI_LIST, dragDataForSubpanel[kTYPE_URI_LIST]);
+      dt.setData(kTYPE_URI_LIST, mCurrentDragDataForExternals[kTYPE_URI_LIST]);
     }
   }
+  dt.setData(kTYPE_ADDON_DRAG_DATA, JSON.stringify(mCurrentDragDataForExternals));
 
   if (options.tab) {
     const tabRect = options.tab.$TST.element.getBoundingClientRect();
@@ -878,8 +891,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      new TSTAPI.TreeItem(tab),
-    windowId: TabsStore.getWindow(),
-    data:     dragDataForSubpanel
+    windowId: TabsStore.getWindow()
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
   mLastDragStartTime = Date.now();
@@ -1392,6 +1404,7 @@ function finishDrag() {
 
   wait(100).then(() => {
     mCurrentDragData = null;
+    mCurrentDragDataForExternals = null;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
       windowId: TabsStore.getWindow(),
@@ -1484,3 +1497,16 @@ function onMessage(message, _sender, _respond) {
   }
 }
 
+
+browser.runtime.onMessageExternal.addListener((message, _sender) => {
+  if (!message ||
+      typeof message.type != 'string')
+    return;
+
+  switch (message.type) {
+    case TSTAPI.kGET_DRAG_DATA:
+      if (mCurrentDragDataForExternals)
+        return Promise.resolve(mCurrentDragDataForExternals);
+      break;
+  }
+});
