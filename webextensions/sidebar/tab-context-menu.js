@@ -505,8 +505,13 @@ function onExternalMessage(message, sender) {
               tabId:      message.tabId } :
             null
       );
-      if (mReservedOverrideContext)
+      if (mReservedOverrideContext) {
+        browser.runtime.sendMessage({
+          type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
+          context: mReservedOverrideContext
+        });
         document.getElementById('subpanel').style.pointerEvents = 'none';
+      }
       break;
   }
 }
@@ -517,6 +522,10 @@ async function onContextMenu(event) {
   mReservedOverrideContext = null;
   if (context)
     setTimeout(() => {
+      browser.runtime.sendMessage({
+        type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
+        context: null
+      });
       document.getElementById('subpanel').style.pointerEvents = '';
     }, 100);
 

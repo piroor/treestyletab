@@ -423,6 +423,9 @@ function hasVisiblePrecedingItem(separator) {
   );
 }
 
+let mOverriddenContext = null;
+let mLastContextOverridden = false;
+
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
   const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({}).catch(ApiTabs.createErrorHandler())).id;
@@ -440,6 +443,19 @@ async function onShown(info, contextTab) {
       [];
   const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
 
+  let modifiedItemsCount = 0;
+
+  if (mNativeContextMenuAvailable) {
+    if (mOverriddenContext) {
+      if (!mLastContextOverridden) {
+        for (const itemId of Object.keys(mItemsById)) {
+          if (mItemsById[itemId].lastVisible) {
+            browser.menus.update(itemId, { visible: false });
+            modifiedItemsCount++;
+          }
+        }
+        mLastContextOverridden = true;
+      }
   TSTAPI.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -467,8 +483,21 @@ async function onShown(info, contextTab) {
     tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
     windowId
   }, { tabProperties: ['tab'] });
-
-  let modifiedItemsCount = 0;
+      reserveRefresh();
+      return;
+    }
+    else {
+      if (mLastContextOverridden) {
+        for (const itemId of Object.keys(mItemsById)) {
+          if (mItemsById[itemId].lastVisible) {
+            browser.menus.update(itemId, { visible: true });
+            modifiedItemsCount++;
+          }
+        }
+        mLastContextOverridden = false;
+      }
+    }
+  }
 
   // ESLint reports "short circuit" error for following codes.
   //   https://eslint.org/docs/rules/no-unused-expressions#allowshortcircuit
@@ -663,7 +692,8 @@ async function onShown(info, contextTab) {
 
   /* eslint-enable no-unused-expressions */
 
-  if (mNativeContextMenuAvailable && modifiedItemsCount)
+  if (mNativeContextMenuAvailable &&
+      modifiedItemsCount > 0)
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
 
@@ -966,6 +996,10 @@ function onMessage(message, _sender) {
         break;
       }
       return;
+
+    case Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN:
+      mOverriddenContext = message.context || null;
+      break;
   }
 }
 
