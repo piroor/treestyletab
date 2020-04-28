@@ -77,6 +77,7 @@ export const kNOTIFY_TREE_ATTACHED  = 'tree-attached';
 export const kNOTIFY_TREE_DETACHED  = 'tree-detached';
 export const kNOTIFY_TREE_COLLAPSED_STATE_CHANGED = 'tree-collapsed-state-changed';
 export const kNOTIFY_NATIVE_TAB_DRAGSTART = 'native-tab-dragstart';
+export const kNOTIFY_NATIVE_TAB_DRAGEND   = 'native-tab-dragend';
 export const kNOTIFY_PERMISSIONS_CHANGED = 'permissions-changed';
 export const kSTART_CUSTOM_DRAG     = 'start-custom-drag';
 export const kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE = 'try-move-focus-from-collapsing-tree';

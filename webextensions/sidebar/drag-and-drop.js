@@ -688,6 +688,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
+  const dragDataForSubpanel = {};
+
   const originalTarget = EventUtils.getElementOriginalTarget(event);
   const extraTabContentsDragData = originalTarget && JSON.parse(originalTarget.dataset && originalTarget.dataset.dragData || 'null');
   log('onDragStart: extraTabContentsDragData = ', extraTabContentsDragData);
@@ -735,7 +737,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
         default: {
           const dt = event.dataTransfer;
           dt.effectAllowed = data.effectAllowed || 'copy';
-          dt.setData(String(data.type), String(data.data));
+          const type       = String(data.type);
+          const stringData = String(data.data);
+          dt.setData(type, stringData);
+          //*** We need to sanitize drag data from helper addons, because
+          //they can have sensitive data...
+          //dragDataForSubpanel[type] = stringData;
           dataOverridden = true;
         }; break;
       }
@@ -822,11 +829,13 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
         urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
       }
     }
+    dragDataForSubpanel[kTYPE_X_MOZ_URL] = mozUrl.join('\n');
+    dragDataForSubpanel[kTYPE_URI_LIST] = urlList.join('\n');
     if (allowBookmark) {
       log('set kTYPE_X_MOZ_URL');
-      dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
+      dt.setData(kTYPE_X_MOZ_URL, dragDataForSubpanel[kTYPE_X_MOZ_URL]);
       log('set kTYPE_URI_LIST');
-      dt.setData(kTYPE_URI_LIST, urlList.join('\n'));
+      dt.setData(kTYPE_URI_LIST, dragDataForSubpanel[kTYPE_URI_LIST]);
     }
   }
 
@@ -869,7 +878,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      new TSTAPI.TreeItem(tab),
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getWindow(),
+    data:     dragDataForSubpanel
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
   mLastDragStartTime = Date.now();
@@ -1262,6 +1272,11 @@ async function onDragEnd(event) {
     dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
     dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
   }
+
+  TSTAPI.sendMessage({
+    type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGEND,
+    windowId: TabsStore.getWindow()
+  }).catch(_error => {});
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);
