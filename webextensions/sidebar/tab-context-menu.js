@@ -423,7 +423,8 @@ async function onShown(contextTab) {
       srcUrl:           null,
       contexts:         ['tab'],
       menuIds:          [],
-      viewType:         'sidebar'
+      viewType:         'sidebar',
+      bookmarkId:       null
     },
     tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
     windowId: TabsStore.getWindow()
@@ -474,10 +475,12 @@ function importExtraItems(importedItems) {
   }
 }
 
+let mReservedOverrideContext = null;
+
 function onExternalMessage(message, sender) {
-  log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
+      log('TSTAPI.kCONTEXT_MENU_OPEN:', message, { id: sender.id, url: sender.url });
       return (async () => {
         const tab      = message.tab ? Tab.get(message.tab) : null ;
         const windowId = message.window || tab && tab.windowId;
@@ -491,11 +494,22 @@ function onExternalMessage(message, sender) {
           top:      message.top
         });
       })();
+
+    case TSTAPI.kOVERRIDE_CONTEXT:
+      mReservedOverrideContext = message;
+      document.getElementById('subpanel').style.pointerEvents = 'none';
+      break;
   }
 }
 
 
 async function onContextMenu(event) {
+  const context = mReservedOverrideContext;
+  mReservedOverrideContext = null;
+  setTimeout(() => {
+    document.getElementById('subpanel').style.pointerEvents = '';
+  }, 100);
+
   const target         = EventUtils.getElementTarget(event);
   const originalTarget = EventUtils.getElementOriginalTarget(event);
   if (target.closest('input, textarea') ||
@@ -513,6 +527,16 @@ async function onContextMenu(event) {
       context:    'bookmark',
       bookmarkId: bookmarkId
     });
+    return;
+  }
+
+  if (context && context.context) {
+    browser.menus.overrideContext(
+      context.context == 'bookmark' ?
+        { context:    'bookmark',
+          bookmarkId: context.bookmarkId } :
+        { context:    'tab',
+          tabId:      context.tabId });
     return;
   }
 

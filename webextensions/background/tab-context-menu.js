@@ -425,6 +425,25 @@ async function onShown(info, contextTab) {
       [];
   const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
 
+  TSTAPI.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_SHOWN,
+    info: {
+      editable:      false,
+      frameUrl:      null,
+      linkUrl:       null,
+      mediaType:     null,
+      pageUrl:       null,
+      selectionText: null,
+      srcUrl:        null,
+      contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
+      menuIds:       [],
+      viewType:      'sidebar',
+      bookmarkId:    info.bookmarkId || null,
+    },
+    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+    windowId
+  }, { tabProperties: ['tab'] });
+
   let modifiedItemsCount = 0;
 
   // ESLint reports "short circuit" error for following codes.
@@ -804,6 +823,30 @@ async function onClick(info, contextTab) {
       if (contextTab &&
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
+
+      if (/^external:([^:]+):(.+)$/.test(info.menuItemId)) {
+        const owner      = RegExp.$1;
+        const menuItemId = RegExp.$2;
+        const tab = contextTab && (await (new TSTAPI.TreeItem(contextTab, { isContextTab: true })).exportFor      (owner)) || null;
+        const message = {
+          type: TSTAPI.kCONTEXT_MENU_CLICK,
+          info: {
+            ...info,
+            menuItemId,
+            frameUrl:         null,
+            linkUrl:          null,
+            pageUrl:          null,
+            parentMenuItemId: null,
+            selectionText:    null,
+            srcUrl:           null
+          },
+          tab
+        };
+        if (owner == browser.runtime.id)
+          browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
+        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
+          browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
+      }
     }; break;
   }
 }
@@ -853,6 +896,15 @@ function reserveNotifyUpdated() {
   });
 }
 
+function reserveRefresh() {
+  if (reserveRefresh.reserved)
+    clearTimeout(reserveRefresh.reserved);
+  reserveRefresh.reserved = setTimeout(() => {
+    reserveRefresh.reserved = null;;
+    browser.menus.refresh();
+  }, 0);
+}
+
 function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
@@ -886,9 +938,9 @@ function onMessage(message, _sender) {
 export function onExternalMessage(message, sender) {
   if (!message)
     return;
-  log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
+      log('TSTAPI.kCONTEXT_MENU_CREATE:', message, { id: sender.id, url: sender.url });
       const items  = getItemsFor(sender.id);
       let params = message.params;
       if (Array.isArray(params))
@@ -913,12 +965,24 @@ export function onExternalMessage(message, sender) {
           parent.children = parent.children || [];
           parent.children.push(params.id);
         }
+        if (sender.id != browser.runtime.id &&
+            Array.isArray(params.viewTypes) &&
+            params.viewTypes.includes('sidebar') &&
+            mNativeContextMenuAvailable) {
+          browser.menus.create({
+            ...params,
+            id: `external:${sender.id}:${params.id}`,
+            documentUrlPatterns: SIDEBAR_URL_PATTERN
+          });
+          reserveRefresh();
+        }
       }
       mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_UPDATE: {
+      log('TSTAPI.kCONTEXT_MENU_UPDATE:', message, { id: sender.id, url: sender.url });
       const items = getItemsFor(sender.id);
       for (let i = 0, maxi = items.length; i < maxi; i++) {
         const item = items[i];
@@ -928,6 +992,16 @@ export function onExternalMessage(message, sender) {
           ...item,
           ...message.params[1]
         });
+        if (sender.id != browser.runtime.id &&
+            Array.isArray(item.viewTypes) &&
+            item.viewTypes.includes('sidebar') &&
+            mNativeContextMenuAvailable) {
+          browser.menus.update(
+            `external:${sender.id}:${item.id}`,
+            message.params[1]
+          );
+          reserveRefresh()
+        }
         break;
       }
       mExtraItems.set(sender.id, items);
@@ -935,6 +1009,7 @@ export function onExternalMessage(message, sender) {
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE: {
+      log('TSTAPI.kCONTEXT_MENU_REMOVE:', message, { id: sender.id, url: sender.url });
       let items = getItemsFor(sender.id);
       let id    = message.params;
       if (Array.isArray(id))
@@ -951,6 +1026,13 @@ export function onExternalMessage(message, sender) {
         for (const childId of item.children) {
           onExternalMessage({ type: message.type, params: childId }, sender);
         }
+      }
+      if (sender.id != browser.runtime.id &&
+          Array.isArray(item.viewTypes) &&
+          item.viewTypes.includes('sidebar') &&
+          mNativeContextMenuAvailable) {
+        browser.menus.remove(`external:${sender.id}:${item.id}`);
+        reserveRefresh();
       }
       return reserveNotifyUpdated();
     }; break;

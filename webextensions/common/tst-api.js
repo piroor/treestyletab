@@ -137,6 +137,7 @@ export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 export const kCONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
 export const kCONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
+export const kOVERRIDE_CONTEXT        = 'override-context';
 
 export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-checked-status-changed';
 
