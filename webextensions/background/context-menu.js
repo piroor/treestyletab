@@ -236,6 +236,7 @@ const mGroupedBookmarkItems = mBookmarkItems.map(item => {
     ...item,
     id:       `grouped:${item.id}`,
     parentId: kROOT_BOOKMARK_ITEM,
+    icons:    null,
     ungroupedItem: item
   };
 });
