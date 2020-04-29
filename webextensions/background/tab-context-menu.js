@@ -434,13 +434,11 @@ async function onShown(info, contextTab) {
     }
     for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
       if (item.$topLevel &&
-          item.visible !== false &&
-          !item.lastVisible) {
+          item.lastVisible) {
         browser.menus.update(
           getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
           { visible: true }
         );
-        item.lastVisible = true;
       }
     }
     TSTAPI.sendMessage({
@@ -492,7 +490,6 @@ async function onShown(info, contextTab) {
             getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
             { visible: false }
           );
-          item.lastVisible = false;
           modifiedItemsCount++;
         }
       }
@@ -1022,9 +1019,16 @@ export function onExternalMessage(message, sender) {
         }
         if (sender.id != browser.runtime.id &&
             params.$topLevel) {
+          params.lastVisible = params.visible !== false;
+          const visible = !!(
+            params.lastVisible &&
+            mOverriddenContext &&
+            mLastOverriddenContextOwner == sender.id
+          );
           const createParams = {
             id:        getExternalTopLevelItemId(sender.id, params.id),
             type:      params.type || 'normal',
+            visible,
             viewTypes: ['sidebar'],
             contexts:  (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
@@ -1063,12 +1067,16 @@ export function onExternalMessage(message, sender) {
         });
         if (sender.id != browser.runtime.id &&
             item.$topLevel) {
+          if ('visible' in updateProperties)
+            item.lastVisible = updateProperties.visible;
+          if (!mOverriddenContext ||
+              mLastOverriddenContextOwner != sender.id)
+            delete updateProperties.visible;
+          if (Object.keys(updateProperties).length > 0)
           browser.menus.update(
             getExternalTopLevelItemId(sender.id, item.id),
             updateProperties
           );
-          if ('visible' in updateProperties)
-            item.lastVisible = updateProperties.visible;
           reserveRefresh()
         }
         break;
