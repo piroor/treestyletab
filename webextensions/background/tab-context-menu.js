@@ -1064,10 +1064,10 @@ export function onExternalMessage(message, sender) {
             params.viewTypes.includes('sidebar') &&
             mNativeContextMenuAvailable) {
           const createParams = {
-            id:       getExternalTopLevelItemId(sender.id, params.id),
-            type:     params.type || 'normal',
+            id:        getExternalTopLevelItemId(sender.id, params.id),
+            type:      params.type || 'normal',
             viewTypes: ['sidebar'],
-            contexts: (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
+            contexts:  (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
             documentUrlPatterns: SIDEBAR_URL_PATTERN
           };
           if (params.parentId)
