@@ -506,8 +506,7 @@ async function onShown(info, contextTab) {
             modifiedItemsCount++;
           }
         }
-          const items = mExtraItems.get(mLastOverriddenContextOwner);
-          for (const item of items) {
+          for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
             if (item.$topLevel &&
                 item.lastVisible) {
               browser.menus.update(
