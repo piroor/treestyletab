@@ -1073,10 +1073,10 @@ export function onExternalMessage(message, sender) {
               mLastOverriddenContextOwner != sender.id)
             delete updateProperties.visible;
           if (Object.keys(updateProperties).length > 0)
-          browser.menus.update(
-            getExternalTopLevelItemId(sender.id, item.id),
-            updateProperties
-          );
+            browser.menus.update(
+              getExternalTopLevelItemId(sender.id, item.id),
+              updateProperties
+            );
           reserveRefresh()
         }
         break;
