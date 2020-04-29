@@ -431,7 +431,7 @@ async function onShown(info, contextTab) {
       }
       mLastOverriddenContextOwner = mOverriddenContext.owner;
     }
-    for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
+    for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
       if (item.$topLevel &&
           item.visible !== false &&
           !item.lastVisible) {
@@ -484,7 +484,7 @@ async function onShown(info, contextTab) {
         browser.menus.update(itemId, { visible: true });
         modifiedItemsCount++;
       }
-      for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
+      for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
         if (item.$topLevel &&
             item.lastVisible) {
           browser.menus.update(
