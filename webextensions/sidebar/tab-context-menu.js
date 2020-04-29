@@ -513,6 +513,8 @@ function onExternalMessage(message, sender) {
           context: mReservedOverrideContext,
           owner:   sender.id
         });
+        // We need to ignore mouse events on the iframe, to handle
+        // the contextmenu event on this parent frame side.
         document.getElementById('subpanel').style.pointerEvents = 'none';
       }
       break;
