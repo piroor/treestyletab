@@ -132,16 +132,16 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   });
 }
 
-  browser.menus.create({
-    id:       'openAllBookmarksWithStructure',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-    contexts: ['bookmark']
-  });
-  browser.menus.create({
-    id:       'openAllBookmarksWithStructureRecursively',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
-    contexts: ['bookmark']
-  });
+browser.menus.create({
+  id:       'openAllBookmarksWithStructure',
+  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+  contexts: ['bookmark']
+});
+browser.menus.create({
+  id:       'openAllBookmarksWithStructureRecursively',
+  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+  contexts: ['bookmark']
+});
 
 let mInitialized = false;
 
