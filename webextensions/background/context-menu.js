@@ -281,12 +281,20 @@ function addBookmarkItems() {
 addBookmarkItems.done = false;
 
 
-TabContextMenu.onTopLevelItemAdded.addListener(() => {
-  // Re-register items to put them after
-  // top level items added by other addons.
-  addTabItems();
-  addBookmarkItems();
-});
+// Re-register items to put them after
+// top level items added by other addons.
+TabContextMenu.onTopLevelItemAdded.addListener(reserveToRefreshItems);
+
+function reserveToRefreshItems() {
+  if (reserveToRefreshItems.reserved)
+    clearTimeout(reserveToRefreshItems.reserved);
+  reserveToRefreshItems.reserved = setTimeout(() => {
+    reserveToRefreshItems.reserved = null;
+    addTabItems();
+    addBookmarkItems();
+  }, 100);
+}
+reserveToRefreshItems.reserved = null;
 
 function updateItem(id, params) {
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
