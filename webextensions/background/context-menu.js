@@ -135,16 +135,16 @@ for (const id of Object.keys(mContextMenuItemsById)) {
 configs.$loaded.then(() => {
   const menuParams = [
     {
-    id:       'openAllBookmarksWithStructure',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-    contexts: ['bookmark'],
-    visible:  configs.context_openAllBookmarksWithStructure
+      id:       'openAllBookmarksWithStructure',
+      title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+      contexts: ['bookmark'],
+      visible:  configs.context_openAllBookmarksWithStructure
     },
     {
-    id:       'openAllBookmarksWithStructureRecursively',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
-    contexts: ['bookmark'],
-    visible:  configs.context_openAllBookmarksWithStructureRecursively
+      id:       'openAllBookmarksWithStructureRecursively',
+      title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+      contexts: ['bookmark'],
+      visible:  configs.context_openAllBookmarksWithStructureRecursively
     }
   ];
 
@@ -529,12 +529,12 @@ async function onBookmarkContextMenuShown(info) {
     });
   }
   else {
-  browser.menus.update('general:openAllBookmarksWithStructure', {
-    visible: isFolder && configs.context_openAllBookmarksWithStructure
-  });
-  browser.menus.update('general:openAllBookmarksWithStructureRecursively', {
-    visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
-  });
+    browser.menus.update('general:openAllBookmarksWithStructure', {
+      visible: isFolder && configs.context_openAllBookmarksWithStructure
+    });
+    browser.menus.update('general:openAllBookmarksWithStructureRecursively', {
+      visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
+    });
   }
   browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
