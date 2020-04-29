@@ -552,9 +552,6 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "An &Ende verschieben" },
   "tabContextMenu_tearOff_label":     { "message": "In &neues Fenster verschieben" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Alle Tabs neu la&den" },
-  "tabContextMenu_bookmarkAll_label": { "message": "&Lesezeichen für alle Tabs hinzufügen…" },
-
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Tabs nach un&ten schließen" },
   "tabContextMenu_closeOther_label":  { "message": "Andere Tabs &schließen" },
 

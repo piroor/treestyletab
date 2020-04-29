@@ -23,9 +23,6 @@ function log(...args) {
   internalLogger('background/context-menu', ...args);
 }
 
-// Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
-const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
-
 const kROOT_ITEM = 'treestyletab';
 
 const mContextMenuItemsById = {
@@ -447,11 +444,8 @@ function onTabContextMenuShown(info, tab) {
   const hasChild         = contextTabs.some(tab => tab.$TST.hasChild);
   const subtreeCollapsed = contextTabs.some(tab => tab.$TST.subtreeCollapsed);
 
-  let updated = false;
-  if (mNativeContextMenuAvailable) {
     initItems();
-    updated = updateItems({ multiselected });
-  }
+  let updated = updateItems({ multiselected });
 
   for (const item of mContextMenuItems) {
     let newEnabled;

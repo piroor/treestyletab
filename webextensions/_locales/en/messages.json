@@ -559,9 +559,6 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "Move to &End" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Reload &All Tabs" },
-  "tabContextMenu_bookmarkAll_label": { "message": "Bookmark All &Tabs…" },
-
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 

@@ -375,8 +375,6 @@
   "tabContextMenu_duplicate_label":   { "message": "Дублювати вкладку" },
   "tabContextMenu_tearOff_label":     { "message": "Перенести у нове вікно" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Оновити всі вкладки" },
-  "tabContextMenu_bookmarkAll_label": { "message": "Додати всі вкладки до закладок…" },
   "tabContextMenu_closeAfter_label":  { "message": "Закрити вкладки що праворуч" },
   "tabContextMenu_closeOther_label":  { "message": "Закрити інші вкладки" },
 

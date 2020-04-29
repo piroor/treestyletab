@@ -555,9 +555,6 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "末尾へ移動(&E)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "すべてのタブを再読み込み(&A)" },
-  "tabContextMenu_bookmarkAll_label": { "message": "すべてのタブをブックマーク(&T)..." },
-
   "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 

@@ -503,9 +503,6 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "Déplacer à la &fin" },
   "tabContextMenu_tearOff_label":     { "message": "Déplacer dans une &nouvelle fenêtre" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "&Actualiser tous les onglets" },
-  "tabContextMenu_bookmarkAll_label": { "message": "É&pingler tous les onglets" },
-
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Fermer les onglets en &dessous" },
   "tabContextMenu_closeOther_label":  { "message": "Fermer &tous les autres onglets" },
 

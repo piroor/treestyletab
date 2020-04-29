@@ -559,9 +559,6 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в &конец" },
   "tabContextMenu_tearOff_label":     { "message": "Переместить в новое &окно" },
 
-  "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкл&адки" },
-  "tabContextMenu_bookmarkAll_label": { "message": "Добавить все в закладки…" },
-
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки &снизу" },
   "tabContextMenu_closeOther_label":  { "message": "&Закрыть другие вкладки" },
 

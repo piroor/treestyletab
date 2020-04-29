@@ -1553,14 +1553,6 @@
         "message": "새 창으로 이동(&W)",
         "hash": "e73bb254e78fb1b2a161d4c3961065a9"
     },
-    "tabContextMenu_reloadAll_label": {
-        "message": "모든 탭 새로고침(&A)",
-        "hash": "df293c6903c9c0d90d7e75c6d0eb5f9f"
-    },
-    "tabContextMenu_bookmarkAll_label": {
-        "message": "모든 탭 북마크(&T)",
-        "hash": "da48e2cbed383746950b8eeda47068db"
-    },
     "tabContextMenu_closeTabsToBottom_label": {
         "message": "아래 탭 모두 닫기(&B)",
         "hash": "0689164749139e0495098b167b7b8153"

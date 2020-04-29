@@ -1678,14 +1678,6 @@
         "message": "移动到新窗口(&W)",
         "hash": "e73bb254e78fb1b2a161d4c3961065a9"
     },
-    "tabContextMenu_reloadAll_label": {
-        "message": "重新载入所有标签页(&A)",
-        "hash": "df293c6903c9c0d90d7e75c6d0eb5f9f"
-    },
-    "tabContextMenu_bookmarkAll_label": {
-        "message": "将所有标签页添加到书签(&T)…",
-        "hash": "da48e2cbed383746950b8eeda47068db"
-    },
     "tabContextMenu_closeTabsToBottom_label": {
         "message": "关闭下方所有标签页(&B)",
         "hash": "0689164749139e0495098b167b7b8153"

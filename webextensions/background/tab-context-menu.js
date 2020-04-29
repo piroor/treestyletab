@@ -116,15 +116,6 @@ const mItemsById = {
   'context_separator:afterSendTab': {
     type: 'separator'
   },
-  'context_bookmarkAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_bookmarkAll_label')
-  },
-  'context_reloadAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
-  },
-  'context_separator:afterReloadAll': {
-    type: 'separator'
-  },
   'context_topLevel_collapseTree': {
     title:              browser.i18n.getMessage('context_collapseTree_label'),
     titleMultiselected: browser.i18n.getMessage('context_collapseTree_label_multiselected')
@@ -203,11 +194,7 @@ const mItemsById = {
 
 const mExtraItems = new Map();
 
-// Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
-const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
-let mNativeMultiselectionAvailable = true;
-
-const SIDEBAR_URL_PATTERN = mNativeContextMenuAvailable ? [`moz-extension://${location.host}/*`] : null;
+const SIDEBAR_URL_PATTERN = [`moz-extension://${location.host}/*`];
 
 function getItemPlacementSignature(item) {
   if (item.placementSignature)
@@ -224,10 +211,6 @@ export async function init() {
     browser.runtime.onMessage.removeListener(onMessage);
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
-
-  browser.runtime.getBrowserInfo().then(browserInfo => {
-    mNativeMultiselectionAvailable = parseInt(browserInfo.version.split('.')[0]) >= 63;
-  }).catch(ApiTabs.createErrorSuppressor());
 
   const itemIds = Object.keys(mItemsById);
   for (const id of itemIds) {
@@ -280,17 +263,15 @@ export async function init() {
     };
     if (item.parentId)
       info.parentId = item.parentId;
-    if (mNativeContextMenuAvailable && !item.fakeMenu)
+    if (!item.fakeMenu)
       browser.menus.create(info);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: info
     }, browser.runtime);
   }
-  if (mNativeContextMenuAvailable) {
     browser.menus.onShown.addListener(onShown);
     browser.menus.onClicked.addListener(onClick);
-  }
   onTSTItemClick.addListener(onClick);
 
   await ContextualIdentities.init();
@@ -306,7 +287,6 @@ function updateContextualIdentities() {
     const id = item.id;
     if (id in mItemsById)
       delete mItemsById[id];
-    if (mNativeContextMenuAvailable)
       browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_REMOVE,
@@ -323,7 +303,6 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
-  if (mNativeContextMenuAvailable)
     browser.menus.create(defaultItem);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -339,7 +318,6 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
-  if (mNativeContextMenuAvailable)
     browser.menus.create(defaultSeparator);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -359,7 +337,6 @@ function updateContextualIdentities() {
     };
     if (identity.iconUrl)
       item.icons = { 16: identity.iconUrl };
-    if (mNativeContextMenuAvailable)
       browser.menus.create(item);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -395,7 +372,6 @@ function updateItem(id, state = {}) {
                  updateInfo.enabled != item.lastEnabled;
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
-  if (mNativeContextMenuAvailable)
     browser.menus.update(id, updateInfo).catch(ApiTabs.createErrorSuppressor());
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_UPDATE,
@@ -445,7 +421,6 @@ async function onShown(info, contextTab) {
 
   let modifiedItemsCount = 0;
 
-  if (mNativeContextMenuAvailable) {
     if (mOverriddenContext) {
       if (!mLastOverriddenContextOwner) {
         for (const itemId of Object.keys(mItemsById)) {
@@ -520,7 +495,6 @@ async function onShown(info, contextTab) {
         mLastOverriddenContextOwner = null;
       }
     }
-  }
 
   // ESLint reports "short circuit" error for following codes.
   //   https://eslint.org/docs/rules/no-unused-expressions#allowshortcircuit
@@ -564,7 +538,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_selectAllTabs', {
-    visible: mNativeContextMenuAvailable && emulate && contextTab,
+    visible: emulate && contextTab,
     enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
@@ -612,14 +586,6 @@ async function onShown(info, contextTab) {
   updateItem('context_openTabInWindow', {
     enabled: emulate && contextTab && hasMultipleTabs,
     multiselected
-  }) && modifiedItemsCount++;
-
-  // workaround for https://github.com/piroor/treestyletab/issues/2056
-  updateItem('context_bookmarkAllTabs', {
-    visible: emulate && !mNativeMultiselectionAvailable
-  }) && modifiedItemsCount++;
-  updateItem('context_reloadAllTabs', {
-    visible: emulate && !mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
 
   updateItem('context_topLevel_collapseTree', {
@@ -687,7 +653,7 @@ async function onShown(info, contextTab) {
     visible: emulate && !contextTab
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_bookmarkSelected', {
-    visible: emulate && !contextTab && mNativeMultiselectionAvailable
+    visible: emulate && !contextTab
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
     visible: emulate && !contextTab,
@@ -715,8 +681,7 @@ async function onShown(info, contextTab) {
 
   /* eslint-enable no-unused-expressions */
 
-  if (mNativeContextMenuAvailable &&
-      modifiedItemsCount > 0)
+  if (modifiedItemsCount > 0)
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
 
@@ -822,16 +787,6 @@ async function onClick(info, contextTab) {
     case 'context_bookmarkSelected':
       Commands.bookmarkTab(contextTab || activeTab);
       break;
-    case 'context_bookmarkAllTabs':
-      Commands.bookmarkTabs(Tab.getTabs(contextTab.windowId));
-      break;
-    case 'context_reloadAllTabs': {
-      const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
-      for (const tab of tabs) {
-        browser.tabs.reload(tab.id)
-          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-      }
-    }; break;
     case 'context_closeTabsToTheEnd': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       let after = false;
@@ -1063,8 +1018,7 @@ export function onExternalMessage(message, sender) {
           parent.children.push(params.id);
         }
         if (sender.id != browser.runtime.id &&
-            params.$topLevel &&
-            mNativeContextMenuAvailable) {
+            params.$topLevel) {
           const createParams = {
             id:        getExternalTopLevelItemId(sender.id, params.id),
             type:      params.type || 'normal',
@@ -1108,8 +1062,7 @@ export function onExternalMessage(message, sender) {
           ...updateProperties
         }, updateProperties);
         if (sender.id != browser.runtime.id &&
-            item.$topLevel &&
-            mNativeContextMenuAvailable) {
+            item.$topLevel) {
           browser.menus.update(
             getExternalTopLevelItemId(sender.id, item.id),
             updateProperties
@@ -1144,8 +1097,7 @@ export function onExternalMessage(message, sender) {
         }
       }
       if (sender.id != browser.runtime.id &&
-          item.$topLevel &&
-          mNativeContextMenuAvailable) {
+          item.$topLevel) {
         browser.menus.remove(getExternalTopLevelItemId(sender.id, item.id));
         reserveRefresh();
       }
