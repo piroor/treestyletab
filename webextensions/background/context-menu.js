@@ -165,6 +165,7 @@ function initItems() {
 
   mInitialized = true;
   addTabItems();
+  addBookmarkItems();
 }
 
 function addTabItems() {
@@ -179,10 +180,10 @@ function addTabItems() {
 
   browser.menus.create(mRootItem);
   if (!addTabItems.done)
-  TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_CREATE,
-    params: mRootItem
-  }, browser.runtime);
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: mRootItem
+    }, browser.runtime);
   mRootItem.lastVisible = false;
 
   for (const item of mContextMenuItems.concat(mGroupedContextMenuItems)) {
@@ -199,10 +200,10 @@ function addTabItems() {
       params.parentId = item.parentId;
     browser.menus.create(params);
     if (!addTabItems.done)
-    TabContextMenu.onExternalMessage({
-      type: TSTAPI.kCONTEXT_MENU_CREATE,
-      params
-    }, browser.runtime);
+      TabContextMenu.onExternalMessage({
+        type: TSTAPI.kCONTEXT_MENU_CREATE,
+        params
+      }, browser.runtime);
   }
   addTabItems.done = true;
 }
@@ -213,6 +214,7 @@ function addBookmarkItems() {
     browser.menus.remove('openAllBookmarksWithStructure');
     browser.menus.remove('openAllBookmarksWithStructureRecursively');
   }
+
   browser.menus.create({
     id:       'openAllBookmarksWithStructure',
     title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
@@ -223,6 +225,7 @@ function addBookmarkItems() {
     title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
     contexts: ['bookmark']
   });
+
   addBookmarkItems.done = true;
 }
 addBookmarkItems.done = false;
