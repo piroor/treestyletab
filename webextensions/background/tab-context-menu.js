@@ -31,6 +31,7 @@ function log(...args) {
 export const onTSTItemClick = new EventListenerManager();
 export const onTSTTabContextMenuShown = new EventListenerManager();
 export const onTSTTabContextMenuHidden = new EventListenerManager();
+export const onTopLevelItemAdded = new EventListenerManager();
 
 const EXTERNAL_TOP_LEVEL_ITEM_MATCHER = /^external-top-level-item:([^:]+):(.+)$/;
 function getExternalTopLevelItemId(ownerId, itemId) {
@@ -1036,6 +1037,7 @@ export function onExternalMessage(message, sender) {
           }
           browser.menus.create(createParams);
           reserveRefresh();
+          onTopLevelItemAdded.dispatch();
         }
       }
       mExtraItems.set(sender.id, items);

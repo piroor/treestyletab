@@ -132,17 +132,6 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   });
 }
 
-browser.menus.create({
-  id:       'openAllBookmarksWithStructure',
-  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-  contexts: ['bookmark']
-});
-browser.menus.create({
-  id:       'openAllBookmarksWithStructureRecursively',
-  title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
-  contexts: ['bookmark']
-});
-
 let mInitialized = false;
 
 const mSeparator = {
@@ -163,16 +152,33 @@ const mRootItem = {
   visible:  false
 };
 
+const mAllItems = [
+  mSeparator,
+  mRootItem,
+  ...mContextMenuItems,
+  ...mGroupedContextMenuItems
+];
+
 function initItems() {
   if (mInitialized)
     return;
 
   mInitialized = true;
+  addTabItems();
+}
+
+function addTabItems() {
+  if (addTabItems.done) {
+    for (const item in mAllItems) {
+      browser.menus.remove(item.id);
+    }
+  }
 
   browser.menus.create(mSeparator);
   mSeparator.lastVisible = false;
 
   browser.menus.create(mRootItem);
+  if (!addTabItems.done)
   TabContextMenu.onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: mRootItem
@@ -192,12 +198,41 @@ function initItems() {
     if (item.parentId)
       params.parentId = item.parentId;
     browser.menus.create(params);
+    if (!addTabItems.done)
     TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params
     }, browser.runtime);
   }
+  addTabItems.done = true;
 }
+addTabItems.done = false;
+
+function addBookmarkItems() {
+  if (addBookmarkItems.done) {
+    browser.menus.remove('openAllBookmarksWithStructure');
+    browser.menus.remove('openAllBookmarksWithStructureRecursively');
+  }
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructure',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+    contexts: ['bookmark']
+  });
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructureRecursively',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+    contexts: ['bookmark']
+  });
+  addBookmarkItems.done = true;
+}
+addBookmarkItems.done = false;
+
+TabContextMenu.onTopLevelItemAdded.addListener(() => {
+  // Re-register items to put them after
+  // top level items added by other addons.
+  addTabItems();
+  addBookmarkItems();
+});
 
 function updateItem(id, params) {
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
