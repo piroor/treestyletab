@@ -506,17 +506,17 @@ async function onShown(info, contextTab) {
             modifiedItemsCount++;
           }
         }
-          for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
-            if (item.$topLevel &&
-                item.lastVisible) {
-              browser.menus.update(
-                getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
-                { visible: false }
-              );
-              item.lastVisible = false;
-              modifiedItemsCount++;
-            }
+        for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
+          if (item.$topLevel &&
+              item.lastVisible) {
+            browser.menus.update(
+              getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
+              { visible: false }
+            );
+            item.lastVisible = false;
+            modifiedItemsCount++;
           }
+        }
         mLastOverriddenContextOwner = null;
       }
     }
