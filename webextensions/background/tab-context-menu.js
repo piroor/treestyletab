@@ -1057,10 +1057,6 @@ export function onExternalMessage(message, sender) {
           ...item,
           ...updateProperties
         });
-        console.log({
-          ...item,
-          ...updateProperties
-        }, updateProperties);
         if (sender.id != browser.runtime.id &&
             item.$topLevel) {
           browser.menus.update(
