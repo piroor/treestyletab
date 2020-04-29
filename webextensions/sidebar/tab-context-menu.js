@@ -496,6 +496,8 @@ function onExternalMessage(message, sender) {
       })();
 
     case TSTAPI.kOVERRIDE_CONTEXT:
+      if (message.windowId != TabsStore.getWindow())
+        return;
       mReservedOverrideContext = (
         message.context == 'bookmark' ?
           { context:    'bookmark',
