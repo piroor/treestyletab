@@ -536,6 +536,11 @@ async function onContextMenu(event) {
       originalTarget.closest('input, textarea'))
     return;
 
+  if (context && context.context) {
+    browser.menus.overrideContext(context);
+    return;
+  }
+
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
 
   const originalTargetBookmarkElement = originalTarget && originalTarget.closest('[data-bookmark-id]');
@@ -547,11 +552,6 @@ async function onContextMenu(event) {
       context:    'bookmark',
       bookmarkId: bookmarkId
     });
-    return;
-  }
-
-  if (context && context.context) {
-    browser.menus.overrideContext(context);
     return;
   }
 
@@ -568,8 +568,10 @@ async function onContextMenu(event) {
     });
     return;
   }
+
   if (!configs.emulateDefaultContextMenu)
     return;
+
   event.stopPropagation();
   event.preventDefault();
   await onShown(tab);
