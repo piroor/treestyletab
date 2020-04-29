@@ -34,6 +34,7 @@ import * as Tree from './tree.js';
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TabContextMenu from './tab-context-menu.js';
+import * as ContextMenu from './context-menu.js';
 import * as Migration from './migration.js';
 import './browser-action-menu.js';
 import './successor-tab.js';
@@ -124,6 +125,7 @@ export async function init() {
   MetricsData.add('init: started listening');
 
   TabContextMenu.init();
+  ContextMenu.init();
   MetricsData.add('init: started initializing of context menu');
 
   Permissions.clearRequest();

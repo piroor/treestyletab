@@ -23,9 +23,6 @@ import './handle-moved-tabs.js';
 import './handle-tree-changes.js';
 import './handle-group-tabs.js';
 import './handle-misc.js';
-import './context-menu.js';
-
-import './tab-context-menu.js';
 
 log.context = 'BG';
 
