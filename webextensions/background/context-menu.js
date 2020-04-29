@@ -133,37 +133,21 @@ for (const id of Object.keys(mContextMenuItemsById)) {
 }
 
 configs.$loaded.then(() => {
-  const menuParams = [
-    {
-      id:       'openAllBookmarksWithStructure',
-      title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-      contexts: ['bookmark'],
-      visible:  configs.context_openAllBookmarksWithStructure
-    },
-    {
-      id:       'openAllBookmarksWithStructureRecursively',
-      title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
-      contexts: ['bookmark'],
-      visible:  configs.context_openAllBookmarksWithStructureRecursively
-    }
-  ];
-
-  for (const params of menuParams) {
-    browser.menus.create({
-      ...params,
-      id: `general:${params.id}`
-    });
-    browser.menus.create({
-      ...params,
-      id: `otherViews:${params.id}`,
-      viewTypes: ['sidebar', 'popup']
-    });
-  }
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructure',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
+    contexts: ['bookmark']
+  });
+  browser.menus.create({
+    id:       'openAllBookmarksWithStructureRecursively',
+    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
+    contexts: ['bookmark']
+  });
 
   configs.$addObserver(key => {
     if (!key.startsWith('context_'))
       return;
-    const id = key.replace(/^context_/, '').replace(/^[^:]+:/, '');
+    const id = key.replace(/^context_/, '');
     switch (id) {
       case 'openAllBookmarksWithStructure':
       case 'openAllBookmarksWithStructureRecursively':
@@ -433,7 +417,7 @@ function onTabItemClick(info, tab) {
 TabContextMenu.onTSTItemClick.addListener(onTabItemClick);
 
 function onBookmarkItemClick(info) {
-  switch (info.menuItemId.replace(/^[^:]+:/, '')) {
+  switch (info.menuItemId) {
     case 'openAllBookmarksWithStructure':
       Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: false });
       break;
@@ -520,21 +504,11 @@ async function onBookmarkContextMenuShown(info) {
     isFolder = item.type == 'folder';
   }
 
-  if (info.viewType) {
-    browser.menus.update('otherViews:openAllBookmarksWithStructure', {
-      visible: isFolder && configs.context_openAllBookmarksWithStructure
-    });
-    browser.menus.update('otherViews:openAllBookmarksWithStructureRecursively', {
-      visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
-    });
-  }
-  else {
-    browser.menus.update('general:openAllBookmarksWithStructure', {
-      visible: isFolder && configs.context_openAllBookmarksWithStructure
-    });
-    browser.menus.update('general:openAllBookmarksWithStructureRecursively', {
-      visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
-    });
-  }
+  browser.menus.update('openAllBookmarksWithStructure', {
+    visible: isFolder && configs.context_openAllBookmarksWithStructure
+  });
+  browser.menus.update('openAllBookmarksWithStructureRecursively', {
+    visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
+  });
   browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
