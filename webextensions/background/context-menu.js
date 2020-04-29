@@ -132,7 +132,6 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   });
 }
 
-configs.$loaded.then(() => {
   browser.menus.create({
     id:       'openAllBookmarksWithStructure',
     title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
@@ -143,22 +142,6 @@ configs.$loaded.then(() => {
     title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
     contexts: ['bookmark']
   });
-
-  configs.$addObserver(key => {
-    if (!key.startsWith('context_'))
-      return;
-    const id = key.replace(/^context_/, '');
-    switch (id) {
-      case 'openAllBookmarksWithStructure':
-      case 'openAllBookmarksWithStructureRecursively':
-        browser.menus.update(id, { visible: configs[key] });
-        return;
-
-      default:
-        return;
-    }
-  });
-});
 
 let mInitialized = false;
 
