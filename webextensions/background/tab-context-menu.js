@@ -427,7 +427,7 @@ async function onShown(info, contextTab) {
         if (!mItemsById[itemId].lastVisible)
           continue;
         mItemsById[itemId].lastVisible = false;
-          browser.menus.update(itemId, { visible: false });
+        browser.menus.update(itemId, { visible: false });
       }
       mLastOverriddenContextOwner = mOverriddenContext.owner;
     }
@@ -481,8 +481,8 @@ async function onShown(info, contextTab) {
         if (!mItemsById[itemId].lastVisible)
           return;
         mItemsById[itemId].lastVisible = true;
-          browser.menus.update(itemId, { visible: true });
-          modifiedItemsCount++;
+        browser.menus.update(itemId, { visible: true });
+        modifiedItemsCount++;
       }
       for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
         if (item.$topLevel &&
