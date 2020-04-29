@@ -270,8 +270,8 @@ export async function init() {
       params: info
     }, browser.runtime);
   }
-    browser.menus.onShown.addListener(onShown);
-    browser.menus.onClicked.addListener(onClick);
+  browser.menus.onShown.addListener(onShown);
+  browser.menus.onClicked.addListener(onClick);
   onTSTItemClick.addListener(onClick);
 
   await ContextualIdentities.init();
@@ -287,7 +287,7 @@ function updateContextualIdentities() {
     const id = item.id;
     if (id in mItemsById)
       delete mItemsById[id];
-      browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
+    browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_REMOVE,
       params: id
@@ -303,7 +303,7 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
-    browser.menus.create(defaultItem);
+  browser.menus.create(defaultItem);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultItem
@@ -318,7 +318,7 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
-    browser.menus.create(defaultSeparator);
+  browser.menus.create(defaultSeparator);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultSeparator
@@ -337,7 +337,7 @@ function updateContextualIdentities() {
     };
     if (identity.iconUrl)
       item.icons = { 16: identity.iconUrl };
-      browser.menus.create(item);
+    browser.menus.create(item);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: item
@@ -372,7 +372,7 @@ function updateItem(id, state = {}) {
                  updateInfo.enabled != item.lastEnabled;
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
-    browser.menus.update(id, updateInfo).catch(ApiTabs.createErrorSuppressor());
+  browser.menus.update(id, updateInfo).catch(ApiTabs.createErrorSuppressor());
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_UPDATE,
     params: [id, updateInfo]
@@ -421,80 +421,80 @@ async function onShown(info, contextTab) {
 
   let modifiedItemsCount = 0;
 
-    if (mOverriddenContext) {
-      if (!mLastOverriddenContextOwner) {
-        for (const itemId of Object.keys(mItemsById)) {
-          if (mItemsById[itemId].lastVisible)
-            browser.menus.update(itemId, { visible: false });
+  if (mOverriddenContext) {
+    if (!mLastOverriddenContextOwner) {
+      for (const itemId of Object.keys(mItemsById)) {
+        if (mItemsById[itemId].lastVisible)
+          browser.menus.update(itemId, { visible: false });
+      }
+      mLastOverriddenContextOwner = mOverriddenContext.owner;
+    }
+    for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
+      if (item.$topLevel &&
+          item.visible !== false &&
+          !item.lastVisible) {
+        browser.menus.update(
+          getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
+          { visible: true }
+        );
+        item.lastVisible = true;
+      }
+    }
+    TSTAPI.sendMessage({
+      type: TSTAPI.kCONTEXT_MENU_SHOWN,
+      info: {
+        bookmarkId:    info.bookmarkId || null,
+        button:        info.button,
+        checked:       info.checked,
+        contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
+        editable:      false,
+        frameId:       null,
+        frameUrl:      null,
+        linkText:      null,
+        linkUrl:       null,
+        mediaType:     null,
+        menuIds:       [],
+        menuItemId:    null,
+        modifiers:     [],
+        pageUrl:       null,
+        parentMenuItemId: null,
+        selectionText: null,
+        srcUrl:        null,
+        targetElementId: null,
+        viewType:      'sidebar',
+        wasChecked:    false
+      },
+      tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+      windowId
+    }, {
+      targets: [mOverriddenContext.owner],
+      tabProperties: ['tab']
+    });
+    reserveRefresh();
+    return;
+  }
+  else {
+    if (mLastOverriddenContextOwner) {
+      for (const itemId of Object.keys(mItemsById)) {
+        if (mItemsById[itemId].lastVisible) {
+          browser.menus.update(itemId, { visible: true });
+          modifiedItemsCount++;
         }
-        mLastOverriddenContextOwner = mOverriddenContext.owner;
       }
       for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
         if (item.$topLevel &&
-            item.visible !== false &&
-            !item.lastVisible) {
+            item.lastVisible) {
           browser.menus.update(
-            getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
-            { visible: true }
+            getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
+            { visible: false }
           );
-          item.lastVisible = true;
+          item.lastVisible = false;
+          modifiedItemsCount++;
         }
       }
-      TSTAPI.sendMessage({
-        type: TSTAPI.kCONTEXT_MENU_SHOWN,
-        info: {
-          bookmarkId:    info.bookmarkId || null,
-          button:        info.button,
-          checked:       info.checked,
-          contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
-          editable:      false,
-          frameId:       null,
-          frameUrl:      null,
-          linkText:      null,
-          linkUrl:       null,
-          mediaType:     null,
-          menuIds:       [],
-          menuItemId:    null,
-          modifiers:     [],
-          pageUrl:       null,
-          parentMenuItemId: null,
-          selectionText: null,
-          srcUrl:        null,
-          targetElementId: null,
-          viewType:      'sidebar',
-          wasChecked:    false
-        },
-        tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
-        windowId
-      }, {
-        targets: [mOverriddenContext.owner],
-        tabProperties: ['tab']
-      });
-      reserveRefresh();
-      return;
+      mLastOverriddenContextOwner = null;
     }
-    else {
-      if (mLastOverriddenContextOwner) {
-        for (const itemId of Object.keys(mItemsById)) {
-          if (mItemsById[itemId].lastVisible) {
-            browser.menus.update(itemId, { visible: true });
-            modifiedItemsCount++;
-          }
-        }
-        for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
-          if (item.$topLevel &&
-              item.lastVisible) {
-            browser.menus.update(
-              getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
-              { visible: false }
-            );
-            item.lastVisible = false;
-            modifiedItemsCount++;
-          }
-        }
-        mLastOverriddenContextOwner = null;
-      }
-    }
+  }
 
   // ESLint reports "short circuit" error for following codes.
   //   https://eslint.org/docs/rules/no-unused-expressions#allowshortcircuit

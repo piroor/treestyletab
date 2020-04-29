@@ -444,7 +444,7 @@ function onTabContextMenuShown(info, tab) {
   const hasChild         = contextTabs.some(tab => tab.$TST.hasChild);
   const subtreeCollapsed = contextTabs.some(tab => tab.$TST.subtreeCollapsed);
 
-    initItems();
+  initItems();
   let updated = updateItems({ multiselected });
 
   for (const item of mContextMenuItems) {
