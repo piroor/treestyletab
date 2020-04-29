@@ -122,6 +122,7 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   item.titleWithoutAccesskey = item.title && item.title.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   item.titleMultiselectedWithoutAccesskey = item.titleMultiselected && item.titleMultiselected.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   item.type = item.type || 'normal';
+  item.contexts = ['tab'];
   item.lastVisible = item.visible = false;
   item.lastTitle = item.title;
   mContextMenuItems.push(item);
@@ -132,15 +133,14 @@ for (const id of Object.keys(mContextMenuItemsById)) {
   });
 }
 
-let mInitialized = false;
-
 const mSeparator = {
   id:        `separatprBefore${kROOT_ITEM}`,
   type:      'separator',
   contexts:  ['tab'],
   viewTypes: ['sidebar'],
   documentUrlPatterns: [`moz-extension://${location.host}/*`],
-  visible:   false
+  visible:   false,
+  lastVisible: false
 };
 const manifest = browser.runtime.getManifest();
 const mRootItem = {
@@ -149,7 +149,8 @@ const mRootItem = {
   contexts: ['tab'],
   title:    browser.i18n.getMessage('context_menu_label'),
   icons:    manifest.icons,
-  visible:  false
+  visible:  false,
+  lastVisible: false
 };
 
 const mAllItems = [
@@ -159,45 +160,50 @@ const mAllItems = [
   ...mGroupedContextMenuItems
 ];
 
-function initItems() {
-  if (mInitialized)
-    return;
+const SAFE_CREATE_PROPERTIES = [
+  'checked',
+  'contexts',
+  'documentUrlPatterns',
+  'enabled',
+  'icons',
+  'id',
+  'parentId',
+  'title',
+  'type',
+  'viewTypes',
+  'visible'
+];
 
-  mInitialized = true;
-  addTabItems();
-  addBookmarkItems();
+function getSafeCreateParams(params) {
+  const safeParams = {};
+  for (const property of SAFE_CREATE_PROPERTIES) {
+    if (property in params)
+      safeParams[property] = params[property];
+  }
+  return safeParams;
 }
 
 function addTabItems() {
   if (addTabItems.done) {
-    for (const item in mAllItems) {
+    for (const item of mAllItems) {
       browser.menus.remove(item.id);
     }
   }
 
-  browser.menus.create(mSeparator);
-  mSeparator.lastVisible = false;
+  browser.menus.create(getSafeCreateParams(mSeparator));
 
-  browser.menus.create(mRootItem);
+  {
+  const params = getSafeCreateParams(mRootItem);
+  browser.menus.create(params);
   if (!addTabItems.done)
     TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
-      params: mRootItem
+      params
     }, browser.runtime);
-  mRootItem.lastVisible = false;
+  }
 
   for (const item of mContextMenuItems.concat(mGroupedContextMenuItems)) {
-    const id = item.id;
-    const params = {
-      id,
-      type:     item.type,
-      checked:  item.checked,
-      title:    item.title,
-      contexts: item.contexts || ['tab'],
-      visible:  item.visible
-    };
-    if (item.parentId)
-      params.parentId = item.parentId;
+    const params = getSafeCreateParams(item);
     browser.menus.create(params);
     if (!addTabItems.done)
       TabContextMenu.onExternalMessage({
@@ -208,13 +214,22 @@ function addTabItems() {
   addTabItems.done = true;
 }
 addTabItems.done = false;
+addTabItems();
 
 function addBookmarkItems() {
   if (addBookmarkItems.done) {
+    browser.menus.remove('separatorBeforeOpenAllBookmarksWithStructure');
     browser.menus.remove('openAllBookmarksWithStructure');
     browser.menus.remove('openAllBookmarksWithStructureRecursively');
   }
 
+  browser.menus.create({
+    id:        'separatorBeforeOpenAllBookmarksWithStructure',
+    type:      'separator',
+    contexts:  ['bookmark'],
+    viewTypes: ['sidebar'],
+    documentUrlPatterns: [`moz-extension://${location.host}/*`]
+  });
   browser.menus.create({
     id:       'openAllBookmarksWithStructure',
     title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
@@ -229,6 +244,7 @@ function addBookmarkItems() {
   addBookmarkItems.done = true;
 }
 addBookmarkItems.done = false;
+addBookmarkItems();
 
 TabContextMenu.onTopLevelItemAdded.addListener(() => {
   // Re-register items to put them after
@@ -463,7 +479,6 @@ function onTabContextMenuShown(info, tab) {
   const hasChild         = contextTabs.some(tab => tab.$TST.hasChild);
   const subtreeCollapsed = contextTabs.some(tab => tab.$TST.subtreeCollapsed);
 
-  initItems();
   let updated = updateItems({ multiselected });
 
   for (const item of mContextMenuItems) {
@@ -525,11 +540,15 @@ async function onBookmarkContextMenuShown(info) {
     isFolder = item.type == 'folder';
   }
 
+  let visibleItemCount = 0;
   browser.menus.update('openAllBookmarksWithStructure', {
-    visible: isFolder && configs.context_openAllBookmarksWithStructure
+    visible: !!(isFolder && configs.context_openAllBookmarksWithStructure && ++visibleItemCount)
   });
   browser.menus.update('openAllBookmarksWithStructureRecursively', {
-    visible: isFolder && configs.context_openAllBookmarksWithStructureRecursively
+    visible: !!(isFolder && configs.context_openAllBookmarksWithStructureRecursively && ++visibleItemCount)
+  });
+  browser.menus.update('separatorBeforeOpenAllBookmarksWithStructure', {
+    visible: visibleItemCount > 0
   });
   browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
