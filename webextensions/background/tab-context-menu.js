@@ -424,7 +424,9 @@ async function onShown(info, contextTab) {
   if (mOverriddenContext) {
     if (!mLastOverriddenContextOwner) {
       for (const itemId of Object.keys(mItemsById)) {
-        if (mItemsById[itemId].lastVisible)
+        if (!mItemsById[itemId].lastVisible)
+          continue;
+        mItemsById[itemId].lastVisible = false;
           browser.menus.update(itemId, { visible: false });
       }
       mLastOverriddenContextOwner = mOverriddenContext.owner;
@@ -476,10 +478,11 @@ async function onShown(info, contextTab) {
   else {
     if (mLastOverriddenContextOwner) {
       for (const itemId of Object.keys(mItemsById)) {
-        if (mItemsById[itemId].lastVisible) {
+        if (!mItemsById[itemId].lastVisible)
+          return;
+        mItemsById[itemId].lastVisible = true;
           browser.menus.update(itemId, { visible: true });
           modifiedItemsCount++;
-        }
       }
       for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
         if (item.$topLevel &&
