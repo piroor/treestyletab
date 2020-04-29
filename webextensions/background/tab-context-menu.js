@@ -669,7 +669,6 @@ async function onShown(info, contextTab) {
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
   updateSeparator('context_separator:afterSendTab') && modifiedItemsCount++;
-  updateSeparator('context_separator:afterReloadAll') && modifiedItemsCount++;
   updateSeparator('context_separator:afterCollapseExpand') && modifiedItemsCount++;
   updateSeparator('context_separator:afterClose') && modifiedItemsCount++;
 
