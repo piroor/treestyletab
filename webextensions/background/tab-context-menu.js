@@ -424,7 +424,7 @@ function hasVisiblePrecedingItem(separator) {
 }
 
 let mOverriddenContext = null;
-let mLastContextOverridden = false;
+let mLastOverriddenContextOwner = null;
 
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
@@ -447,15 +447,16 @@ async function onShown(info, contextTab) {
 
   if (mNativeContextMenuAvailable) {
     if (mOverriddenContext) {
-      if (!mLastContextOverridden) {
+      if (!mLastOverriddenContextOwner) {
         for (const itemId of Object.keys(mItemsById)) {
           if (mItemsById[itemId].lastVisible)
             browser.menus.update(itemId, { visible: false });
         }
-        mLastContextOverridden = true;
+        mLastOverriddenContextOwner = mOverriddenContext.owner;
       }
-      for (const item of mExtraItems.get(mOverriddenContext.owner)) {
-        if (item.visible !== false &&
+      for (const item of mExtraItems.get(mLastOverriddenContextOwner)) {
+        if (item.$topLevel &&
+            item.visible !== false &&
             !item.lastVisible) {
           browser.menus.update(
             getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
@@ -498,27 +499,26 @@ async function onShown(info, contextTab) {
       return;
     }
     else {
-      if (mLastContextOverridden) {
+      if (mLastOverriddenContextOwner) {
         for (const itemId of Object.keys(mItemsById)) {
           if (mItemsById[itemId].lastVisible) {
             browser.menus.update(itemId, { visible: true });
             modifiedItemsCount++;
           }
         }
-        for (const ownerId of mExtraItems.keys()) {
-          const items = mExtraItems.get(ownerId);
+          const items = mExtraItems.get(mLastOverriddenContextOwner);
           for (const item of items) {
-            if (item.lastVisible) {
+            if (item.$topLevel &&
+                item.lastVisible) {
               browser.menus.update(
-                getExternalTopLevelItemId(ownerId, item.id),
+                getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
                 { visible: false }
               );
               item.lastVisible = false;
               modifiedItemsCount++;
             }
           }
-        }
-        mLastContextOverridden = false;
+        mLastOverriddenContextOwner = null;
       }
     }
   }
@@ -1054,14 +1054,17 @@ export function onExternalMessage(message, sender) {
         }
       }
       if (shouldAdd) {
+        params.$topLevel = (
+          Array.isArray(params.viewTypes) &&
+          params.viewTypes.includes('sidebar')
+        );
         items.push(params);
         if (parent && params.id) {
           parent.children = parent.children || [];
           parent.children.push(params.id);
         }
         if (sender.id != browser.runtime.id &&
-            Array.isArray(params.viewTypes) &&
-            params.viewTypes.includes('sidebar') &&
+            params.$topLevel &&
             mNativeContextMenuAvailable) {
           const createParams = {
             id:        getExternalTopLevelItemId(sender.id, params.id),
@@ -1106,8 +1109,7 @@ export function onExternalMessage(message, sender) {
           ...updateProperties
         }, updateProperties);
         if (sender.id != browser.runtime.id &&
-            Array.isArray(item.viewTypes) &&
-            item.viewTypes.includes('sidebar') &&
+            item.$topLevel &&
             mNativeContextMenuAvailable) {
           browser.menus.update(
             getExternalTopLevelItemId(sender.id, item.id),
@@ -1143,8 +1145,7 @@ export function onExternalMessage(message, sender) {
         }
       }
       if (sender.id != browser.runtime.id &&
-          Array.isArray(item.viewTypes) &&
-          item.viewTypes.includes('sidebar') &&
+          item.$topLevel &&
           mNativeContextMenuAvailable) {
         browser.menus.remove(getExternalTopLevelItemId(sender.id, item.id));
         reserveRefresh();
