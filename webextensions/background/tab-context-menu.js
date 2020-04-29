@@ -479,7 +479,7 @@ async function onShown(info, contextTab) {
     if (mLastOverriddenContextOwner) {
       for (const itemId of Object.keys(mItemsById)) {
         if (!mItemsById[itemId].lastVisible)
-          return;
+          continue;
         mItemsById[itemId].lastVisible = true;
         browser.menus.update(itemId, { visible: true });
         modifiedItemsCount++;
