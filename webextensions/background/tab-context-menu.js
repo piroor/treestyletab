@@ -272,6 +272,7 @@ export async function init() {
     }, browser.runtime);
   }
   browser.menus.onShown.addListener(onShown);
+  browser.menus.onHidden.addListener(onHidden);
   browser.menus.onClicked.addListener(onClick);
   onTSTItemClick.addListener(onClick);
 
@@ -401,7 +402,6 @@ function hasVisiblePrecedingItem(separator) {
 }
 
 let mOverriddenContext = null;
-let mLastOverriddenContextOwner = null;
 
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
@@ -420,82 +420,10 @@ async function onShown(info, contextTab) {
       [];
   const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
 
-  let modifiedItemsCount = 0;
+  if (mOverriddenContext)
+    return onOverriddenMenuShown(info, contextTab, windowId);
 
-  if (mOverriddenContext) {
-    if (!mLastOverriddenContextOwner) {
-      for (const itemId of Object.keys(mItemsById)) {
-        if (!mItemsById[itemId].lastVisible)
-          continue;
-        mItemsById[itemId].lastVisible = false;
-        browser.menus.update(itemId, { visible: false });
-      }
-      mLastOverriddenContextOwner = mOverriddenContext.owner;
-    }
-    for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
-      if (item.$topLevel &&
-          item.lastVisible) {
-        browser.menus.update(
-          getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
-          { visible: true }
-        );
-      }
-    }
-    TSTAPI.sendMessage({
-      type: TSTAPI.kCONTEXT_MENU_SHOWN,
-      info: {
-        bookmarkId:    info.bookmarkId || null,
-        button:        info.button,
-        checked:       info.checked,
-        contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
-        editable:      false,
-        frameId:       null,
-        frameUrl:      null,
-        linkText:      null,
-        linkUrl:       null,
-        mediaType:     null,
-        menuIds:       [],
-        menuItemId:    null,
-        modifiers:     [],
-        pageUrl:       null,
-        parentMenuItemId: null,
-        selectionText: null,
-        srcUrl:        null,
-        targetElementId: null,
-        viewType:      'sidebar',
-        wasChecked:    false
-      },
-      tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
-      windowId
-    }, {
-      targets: [mOverriddenContext.owner],
-      tabProperties: ['tab']
-    });
-    reserveRefresh();
-    return;
-  }
-  else {
-    if (mLastOverriddenContextOwner) {
-      for (const itemId of Object.keys(mItemsById)) {
-        if (!mItemsById[itemId].lastVisible)
-          continue;
-        mItemsById[itemId].lastVisible = true;
-        browser.menus.update(itemId, { visible: true });
-        modifiedItemsCount++;
-      }
-      for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
-        if (item.$topLevel &&
-            item.lastVisible) {
-          browser.menus.update(
-            getExternalTopLevelItemId(mLastOverriddenContextOwner, item.id),
-            { visible: false }
-          );
-          modifiedItemsCount++;
-        }
-      }
-      mLastOverriddenContextOwner = null;
-    }
-  }
+  let modifiedItemsCount = cleanupOverriddenMenu();
 
   // ESLint reports "short circuit" error for following codes.
   //   https://eslint.org/docs/rules/no-unused-expressions#allowshortcircuit
@@ -683,6 +611,106 @@ async function onShown(info, contextTab) {
 
   if (modifiedItemsCount > 0)
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+}
+
+let mLastOverriddenContextOwner = null;
+
+function onOverriddenMenuShown(info, contextTab, windowId) {
+  if (!mLastOverriddenContextOwner) {
+    for (const itemId of Object.keys(mItemsById)) {
+      if (!mItemsById[itemId].lastVisible)
+        continue;
+      mItemsById[itemId].lastVisible = false;
+      browser.menus.update(itemId, { visible: false });
+    }
+    mLastOverriddenContextOwner = mOverriddenContext.owner;
+  }
+
+  for (const item of (mExtraItems.get(mLastOverriddenContextOwner) || [])) {
+    if (item.$topLevel &&
+        item.lastVisible) {
+      browser.menus.update(
+        getExternalTopLevelItemId(mOverriddenContext.owner, item.id),
+        { visible: true }
+      );
+    }
+  }
+
+  TSTAPI.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_SHOWN,
+    info: {
+      bookmarkId:    info.bookmarkId || null,
+      button:        info.button,
+      checked:       info.checked,
+      contexts:      contextTab ? ['tab'] : info.bookmarkId ? ['bookmark'] : [],
+      editable:      false,
+      frameId:       null,
+      frameUrl:      null,
+      linkText:      null,
+      linkUrl:       null,
+      mediaType:     null,
+      menuIds:       [],
+      menuItemId:    null,
+      modifiers:     [],
+      pageUrl:       null,
+      parentMenuItemId: null,
+      selectionText: null,
+      srcUrl:        null,
+      targetElementId: null,
+      viewType:      'sidebar',
+      wasChecked:    false
+    },
+    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+    windowId
+  }, {
+    targets: [mOverriddenContext.owner],
+    tabProperties: ['tab']
+  });
+
+  reserveRefresh();
+}
+
+function cleanupOverriddenMenu() {
+  if (!mLastOverriddenContextOwner)
+    return 0;
+
+  let modifiedItemsCount = 0;
+
+  const owner = mLastOverriddenContextOwner;
+  mLastOverriddenContextOwner = null;
+
+  for (const itemId of Object.keys(mItemsById)) {
+    if (!mItemsById[itemId].lastVisible)
+      continue;
+    mItemsById[itemId].lastVisible = true;
+    browser.menus.update(itemId, { visible: true });
+    modifiedItemsCount++;
+  }
+
+  for (const item of (mExtraItems.get(owner) || [])) {
+    if (item.$topLevel &&
+        item.lastVisible) {
+      browser.menus.update(
+        getExternalTopLevelItemId(owner, item.id),
+        { visible: false }
+      );
+      modifiedItemsCount++;
+    }
+  }
+
+  return modifiedItemsCount;
+}
+
+function onHidden() {
+  const owner = mOverriddenContext && mOverriddenContext.owner;
+  mOverriddenContext = null;
+
+  if (owner)
+    TSTAPI.sendMessage({
+      type: TSTAPI.kCONTEXT_MENU_HIDDEN
+    }, {
+      targets: [owner]
+    });
 }
 
 async function onClick(info, contextTab) {

@@ -540,13 +540,6 @@ window.addEventListener('mouseup', _event => {
   reserveToActivateSubpanel();
 });
 
-browser.menus.onHidden.addListener(() => {
-  browser.runtime.sendMessage({
-    type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
-    context: null
-  });
-});
-
 async function onContextMenu(event) {
   reserveToActivateSubpanel();
 
