@@ -521,18 +521,26 @@ function onExternalMessage(message, sender) {
   }
 }
 
+function cancelOverrideContext() {
+  setTimeout(() => {
+    browser.runtime.sendMessage({
+      type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
+      context: null
+    });
+    document.getElementById('subpanel').style.pointerEvents = '';
+  }, 100);
+}
+
+// safe guard
+window.addEventListener('mousedown', event => {
+  cancelOverrideContext();
+});
 
 async function onContextMenu(event) {
   const context = mReservedOverrideContext;
   mReservedOverrideContext = null;
   if (context)
-    setTimeout(() => {
-      browser.runtime.sendMessage({
-        type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
-        context: null
-      });
-      document.getElementById('subpanel').style.pointerEvents = '';
-    }, 100);
+    cancelOverrideContext();
 
   const target         = EventUtils.getElementTarget(event);
   const originalTarget = EventUtils.getElementOriginalTarget(event);
