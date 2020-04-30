@@ -558,7 +558,7 @@ async function onContextMenu(event) {
 
   if (!onInputField && context && context.context) {
     try {
-    browser.menus.overrideContext(context);
+      browser.menus.overrideContext(context);
     }
     catch(error) {
       if (context.context == 'bookmark' &&
