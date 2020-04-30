@@ -1022,28 +1022,28 @@ export function onExternalMessage(message, sender) {
       if (sender.id != browser.runtime.id &&
           params.$topLevel) {
         params.lastVisible = params.visible !== false;
-          const visible = !!(
-            params.lastVisible &&
-            mOverriddenContext &&
-            mLastOverriddenContextOwner == sender.id
-          );
-          const createParams = {
-            id:        getExternalTopLevelItemId(sender.id, params.id),
-            type:      params.type || 'normal',
-            visible,
-            viewTypes: ['sidebar'],
-            contexts:  (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
-            documentUrlPatterns: SIDEBAR_URL_PATTERN
-          };
-          if (params.parentId)
-            createParams.parentId = getExternalTopLevelItemId(sender.id, params.parentId);
-          for (const property of SAFE_MENU_PROPERTIES) {
-            if (property in params)
-              createParams[property] = params[property];
-          }
-          browser.menus.create(createParams);
-          reserveRefresh();
-          onTopLevelItemAdded.dispatch();
+        const visible = !!(
+          params.lastVisible &&
+          mOverriddenContext &&
+          mLastOverriddenContextOwner == sender.id
+        );
+        const createParams = {
+          id:        getExternalTopLevelItemId(sender.id, params.id),
+          type:      params.type || 'normal',
+          visible,
+          viewTypes: ['sidebar'],
+          contexts:  (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
+          documentUrlPatterns: SIDEBAR_URL_PATTERN
+        };
+        if (params.parentId)
+          createParams.parentId = getExternalTopLevelItemId(sender.id, params.parentId);
+        for (const property of SAFE_MENU_PROPERTIES) {
+          if (property in params)
+            createParams[property] = params[property];
+        }
+        browser.menus.create(createParams);
+        reserveRefresh();
+        onTopLevelItemAdded.dispatch();
       }
       return reserveNotifyUpdated();
     }; break;
@@ -1076,10 +1076,10 @@ export function onExternalMessage(message, sender) {
         if (sender.id != browser.runtime.id &&
             item.$topLevel &&
             Object.keys(updateProperties).length > 0) {
-            browser.menus.update(
-              getExternalTopLevelItemId(sender.id, item.id),
-              updateProperties
-            );
+          browser.menus.update(
+            getExternalTopLevelItemId(sender.id, item.id),
+            updateProperties
+          );
           reserveRefresh()
         }
         break;
