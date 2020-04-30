@@ -1008,18 +1008,20 @@ export function onExternalMessage(message, sender) {
         }
       }
       if (shouldAdd) {
-        params.$topLevel = (
-          Array.isArray(params.viewTypes) &&
-          params.viewTypes.includes('sidebar')
-        );
         items.push(params);
         if (parent && params.id) {
           parent.children = parent.children || [];
           parent.children.push(params.id);
         }
-        if (sender.id != browser.runtime.id &&
-            params.$topLevel) {
-          params.lastVisible = params.visible !== false;
+      }
+      mExtraItems.set(sender.id, items);
+      params.$topLevel = (
+        Array.isArray(params.viewTypes) &&
+        params.viewTypes.includes('sidebar')
+      );
+      if (sender.id != browser.runtime.id &&
+          params.$topLevel) {
+        params.lastVisible = params.visible !== false;
           const visible = !!(
             params.lastVisible &&
             mOverriddenContext &&
@@ -1042,9 +1044,7 @@ export function onExternalMessage(message, sender) {
           browser.menus.create(createParams);
           reserveRefresh();
           onTopLevelItemAdded.dispatch();
-        }
       }
-      mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
@@ -1061,10 +1061,6 @@ export function onExternalMessage(message, sender) {
           if (property in params)
             updateProperties[property] = params[property];
         }
-        items.splice(i, 1, {
-          ...item,
-          ...updateProperties
-        });
         if (sender.id != browser.runtime.id &&
             item.$topLevel) {
           if ('visible' in updateProperties)
@@ -1072,7 +1068,14 @@ export function onExternalMessage(message, sender) {
           if (!mOverriddenContext ||
               mLastOverriddenContextOwner != sender.id)
             delete updateProperties.visible;
-          if (Object.keys(updateProperties).length > 0)
+        }
+        items.splice(i, 1, {
+          ...item,
+          ...updateProperties
+        });
+        if (sender.id != browser.runtime.id &&
+            item.$topLevel &&
+            Object.keys(updateProperties).length > 0) {
             browser.menus.update(
               getExternalTopLevelItemId(sender.id, item.id),
               updateProperties
