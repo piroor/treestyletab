@@ -704,15 +704,16 @@ function cleanupOverriddenMenu() {
 function onHidden() {
   const owner = mOverriddenContext && mOverriddenContext.owner;
   const windowId = mOverriddenContext && mOverriddenContext.windowId;
-  mOverriddenContext = null;
-
-  if (owner)
+  if (mLastOverriddenContextOwner &&
+      owner == mLastOverriddenContextOwner) {
+    mOverriddenContext = null;
     TSTAPI.sendMessage({
       type: TSTAPI.kCONTEXT_MENU_HIDDEN,
       windowId
     }, {
       targets: [owner]
     });
+  }
 }
 
 async function onClick(info, contextTab) {
