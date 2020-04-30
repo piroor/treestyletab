@@ -513,10 +513,10 @@ function onMessageExternal(message, sender) {
           reserveToActivateSubpanel.reserved = null;
         }
         browser.runtime.sendMessage({
-          type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
-          context: mReservedOverrideContext,
+          type:     Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
+          context:  mReservedOverrideContext,
           windowId: message.windowId,
-          owner:   sender.id
+          owner:    sender.id
         });
         // We need to ignore mouse events on the iframe, to handle
         // the contextmenu event on this parent frame side.
