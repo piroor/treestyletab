@@ -48,7 +48,18 @@ function log(...args) {
 export const onInitialized = new EventListenerManager();
 export const onRegistered   = new EventListenerManager();
 export const onUnregistered = new EventListenerManager();
-export const onMessageExternal = new EventListenerManager();
+export const onMessageExternal = {
+  $listeners: new Set(),
+  addListener(listener) {
+    this.$listeners.add(listener);
+  },
+  removeListener(listener) {
+    this.$listeners.delete(listener);
+  },
+  dispatch(...args) {
+    return Array.from(this.$listeners, listener => listener(...args));
+  }
+};
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
@@ -680,7 +691,10 @@ function onBackendCommand(message, sender) {
       typeof message.type != 'string')
     return;
 
-  onMessageExternal.dispatch(message, sender);
+  const results = onMessageExternal.dispatch(message, sender);
+  const firstPromise = results.find(result => result instanceof Promise);
+  if (firstPromise)
+    return firstPromise;
 
   switch (message.type) {
     case kPING:
@@ -799,8 +813,12 @@ export async function initAsFrontend() {
   browser.runtime.onMessageExternal.addListener((message, sender) => {
     if (message &&
         typeof message == 'object' &&
-        typeof message.type == 'string')
-      onMessageExternal.dispatch(message, sender);
+        typeof message.type == 'string') {
+      const results = onMessageExternal.dispatch(message, sender);
+      const firstPromise = results.find(result => result instanceof Promise);
+      if (firstPromise)
+        return firstPromise;
+    }
     if (configs.incognitoAllowedExternalAddons.includes(sender.id) ||
         !document.documentElement.classList.contains('incognito'))
       return onCommonCommand(message, sender);
