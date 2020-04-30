@@ -515,6 +515,7 @@ function onMessageExternal(message, sender) {
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
           context: mReservedOverrideContext,
+          windowId: message.windowId,
           owner:   sender.id
         });
         // We need to ignore mouse events on the iframe, to handle
