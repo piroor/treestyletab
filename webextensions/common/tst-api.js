@@ -471,6 +471,11 @@ export async function initAsBackend() {
     mConnections.set(sender.id, port);
     port.onMessage.addListener(message => {
       onMessageExternal.dispatch(message, sender);
+      SidebarConnection.sendMessage({
+        type: 'external',
+        message,
+        sender
+      });
     });
     port.onDisconnect.addListener(_message => {
       mConnections.delete(sender.id);

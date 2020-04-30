@@ -984,8 +984,6 @@ function onMessage(message, _sender) {
 }
 
 export function onMessageExternal(message, sender) {
-  if (!message)
-    return;
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
       log('TSTAPI.kCONTEXT_MENU_CREATE:', message, { id: sender.id, url: sender.url });

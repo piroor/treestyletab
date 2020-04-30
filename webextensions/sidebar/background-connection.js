@@ -12,6 +12,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -88,6 +89,10 @@ async function onConnectionMessage(message) {
   switch (message.type) {
     case 'echo': // for testing
       mConnectionPort.postMessage(message);
+      break;
+
+    case 'external':
+      TSTAPI.onMessageExternal.dispatch(message.message, message.sender);
       break;
 
     default:
