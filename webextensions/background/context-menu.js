@@ -203,7 +203,7 @@ function addTabItems() {
     if (item.id == mTabSeparator.id ||
         addTabItems.done)
       continue;
-    TabContextMenu.onExternalMessage({
+    TabContextMenu.onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params
     }, browser.runtime);
@@ -298,7 +298,7 @@ reserveToRefreshItems.reserved = null;
 
 function updateItem(id, params) {
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
-  TabContextMenu.onExternalMessage({
+  TabContextMenu.onMessageExternal({
     type:   TSTAPI.kCONTEXT_MENU_UPDATE,
     params: [id, params]
   }, browser.runtime);

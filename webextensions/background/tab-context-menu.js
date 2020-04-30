@@ -206,11 +206,11 @@ function getItemPlacementSignature(item) {
 }
 export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
-  TSTAPI.onMessageExternal.addListener(onExternalMessage);
+  TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
   window.addEventListener('unload', () => {
     browser.runtime.onMessage.removeListener(onMessage);
-    TSTAPI.onMessageExternal.removeListener(onExternalMessage);
+    TSTAPI.onMessageExternal.removeListener(onMessageExternal);
   }, { once: true });
 
   const itemIds = Object.keys(mItemsById);
@@ -266,7 +266,7 @@ export async function init() {
       info.parentId = item.parentId;
     if (!item.fakeMenu)
       browser.menus.create(info);
-    onExternalMessage({
+    onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: info
     }, browser.runtime);
@@ -289,7 +289,7 @@ function updateContextualIdentities() {
     if (id in mItemsById)
       delete mItemsById[id];
     browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
-    onExternalMessage({
+    onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_REMOVE,
       params: id
     }, browser.runtime);
@@ -305,7 +305,7 @@ function updateContextualIdentities() {
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   browser.menus.create(defaultItem);
-  onExternalMessage({
+  onMessageExternal({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultItem
   }, browser.runtime);
@@ -320,7 +320,7 @@ function updateContextualIdentities() {
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   browser.menus.create(defaultSeparator);
-  onExternalMessage({
+  onMessageExternal({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultSeparator
   }, browser.runtime);
@@ -339,7 +339,7 @@ function updateContextualIdentities() {
     if (identity.iconUrl)
       item.icons = { 16: identity.iconUrl };
     browser.menus.create(item);
-    onExternalMessage({
+    onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: item
     }, browser.runtime);
@@ -374,7 +374,7 @@ function updateItem(id, state = {}) {
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
   browser.menus.update(id, updateInfo).catch(ApiTabs.createErrorSuppressor());
-  onExternalMessage({
+  onMessageExternal({
     type: TSTAPI.kCONTEXT_MENU_UPDATE,
     params: [id, updateInfo]
   }, browser.runtime);
@@ -983,7 +983,7 @@ function onMessage(message, _sender) {
   }
 }
 
-export function onExternalMessage(message, sender) {
+export function onMessageExternal(message, sender) {
   if (!message)
     return;
   switch (message.type) {
@@ -1104,7 +1104,7 @@ export function onExternalMessage(message, sender) {
         parent.children = parent.children.filter(childId => childId != id);
       if (item.children) {
         for (const childId of item.children) {
-          onExternalMessage({ type: message.type, params: childId }, sender);
+          onMessageExternal({ type: message.type, params: childId }, sender);
         }
       }
       if (sender.id != browser.runtime.id &&
