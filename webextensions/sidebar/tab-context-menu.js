@@ -532,7 +532,7 @@ function cancelOverrideContext() {
 }
 
 // safe guard
-window.addEventListener('mousedown', _event => {
+window.addEventListener('mouseup', _event => {
   cancelOverrideContext();
 });
 
