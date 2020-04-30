@@ -108,6 +108,9 @@
   "bookmark_notification_notPermitted_title": { "message": "Permission error" },
   "bookmark_notification_notPermitted_message": { "message": "Failed to get permissions to create bookmarks. Please click here to grant extra permissions." },
 
+  "bookmarkContext_notification_notPermitted_title": { "message": "Permission error" },
+  "bookmarkContext_notification_notPermitted_message": { "message": "Failed to get permissions to open a context menu for bookmarks. Please click here to grant extra permissions." },
+
   "dropLinksOnTabBehavior_message": { "message": "How to open this?" },
   "dropLinksOnTabBehavior_save":    { "message": "Do same choice hereafter" },
   "dropLinksOnTabBehavior_load":    { "message": "Load to this tab" },
@@ -533,6 +536,7 @@
   "config_labelOverflowStyle_crop":    { "message": "Crop with \"..\" (Better Performance)" },
 
   "config_requestPermissions_bookmarks": { "message": "Allow to read and create bookmarks" },
+  "config_requestPermissions_bookmarks_context": { "message": "Allow to open the context menu on bookmarks" },
   "config_requestPermissions_tabHide":   { "message": "Allow to show/hide individual tabs (*You must uncheck and re-check this before running tests, to ensure the permission is truly granted.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Click the \"Tree Style Tab\" toolbar button" },

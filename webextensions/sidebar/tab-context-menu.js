@@ -10,12 +10,14 @@ import MenuUI from '/extlib/MenuUI.js';
 import {
   log as internalLogger,
   wait,
+  notify,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as Permissions from '/common/permissions.js';
 import * as EventUtils from './event-utils.js';
 import * as BackgroundConnection from './background-connection.js';
 
@@ -555,7 +557,20 @@ async function onContextMenu(event) {
   );
 
   if (!onInputField && context && context.context) {
+    try {
     browser.menus.overrideContext(context);
+    }
+    catch(error) {
+      if (context.context == 'bookmark' &&
+          !(await Permissions.isGranted(Permissions.BOOKMARKS)))
+        notify({
+          title:   browser.i18n.getMessage('bookmarkContext_notification_notPermitted_title'),
+          message: browser.i18n.getMessage('bookmarkContext_notification_notPermitted_message'),
+          url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionGranted_context`
+        });
+      else
+        console.error(error);
+    }
     return;
   }
 

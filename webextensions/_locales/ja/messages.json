@@ -108,6 +108,9 @@
   "bookmark_notification_notPermitted_title": { "message": "権限のエラー" },
   "bookmark_notification_notPermitted_message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
 
+  "bookmarkContext_notification_notPermitted_title": { "message": "権限のエラー" },
+  "bookmarkContext_notification_notPermitted_message": { "message": "ブックマークに関するコンテキストメニューを開くのに必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
+
   "dropLinksOnTabBehavior_message": { "message": "どのように開きますか？" },
   "dropLinksOnTabBehavior_save":    { "message": "今後も同じ動作を行う" },
   "dropLinksOnTabBehavior_load":    { "message": "このタブに読み込む" },
@@ -529,6 +532,7 @@
   "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの読み取りと作成を許可する" },
+  "config_requestPermissions_bookmarks_context": { "message": "ブックマーク用のコンテキストメニューを開くことを許可する" },
   "config_requestPermissions_tabHide":   { "message": "個々のタブの表示・非表示の制御を許可する（※この操作が許可されていることを確かめるため、テスト実行前には必ずチェックボックスを一旦OFFにしてから再度ONにして下さい）" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },

@@ -251,6 +251,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     { onChanged: (granted) => updateBookmarksUI(granted) }
   );
   Permissions.bindToCheckbox(
+    Permissions.BOOKMARKS,
+    document.querySelector('#bookmarksPermissionGranted_context'),
+    { onChanged: (granted) => updateBookmarksUI(granted) }
+  );
+  Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
     document.querySelector('#tabHidePermissionGranted'),
     { onChanged: async (granted) => {
