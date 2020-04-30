@@ -508,6 +508,10 @@ function onMessageExternal(message, sender) {
             null
       );
       if (mReservedOverrideContext) {
+        if (reserveToActivateSubpanel.reserved) {
+          clearTimeout(reserveToActivateSubpanel.reserved);
+          reserveToActivateSubpanel.reserved = null;
+        }
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
           context: mReservedOverrideContext,
@@ -521,37 +525,46 @@ function onMessageExternal(message, sender) {
   }
 }
 
-function cancelOverrideContext() {
-  setTimeout(() => {
-    browser.runtime.sendMessage({
-      type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
-      context: null
-    });
+function reserveToActivateSubpanel() {
+  if (reserveToActivateSubpanel.reserved)
+    clearTimeout(reserveToActivateSubpanel.reserved);
+  reserveToActivateSubpanel.reserved = setTimeout(() => {
+    reserveToActivateSubpanel.reserved = null;
     document.getElementById('subpanel').style.pointerEvents = '';
   }, 100);
 }
+reserveToActivateSubpanel.reserved = null;
 
 // safe guard
 window.addEventListener('mouseup', _event => {
-  cancelOverrideContext();
+  reserveToActivateSubpanel();
 });
 
 async function onContextMenu(event) {
+  reserveToActivateSubpanel();
+
   const context = mReservedOverrideContext;
   mReservedOverrideContext = null;
-  if (context)
-    cancelOverrideContext();
 
   const target         = EventUtils.getElementTarget(event);
   const originalTarget = EventUtils.getElementOriginalTarget(event);
-  if (target.closest('input, textarea') ||
-      originalTarget.closest('input, textarea'))
-    return;
+  const onInputField   = (
+    target.closest('input, textarea') ||
+    originalTarget.closest('input, textarea')
+  );
 
-  if (context && context.context) {
+  if (!onInputField && context && context.context) {
     browser.menus.overrideContext(context);
     return;
   }
+
+  browser.runtime.sendMessage({
+    type:    Constants.kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN,
+    context: null
+  });
+
+  if (onInputField)
+    return;
 
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
 
