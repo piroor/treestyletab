@@ -48,6 +48,7 @@ function log(...args) {
 export const onInitialized = new EventListenerManager();
 export const onRegistered   = new EventListenerManager();
 export const onUnregistered = new EventListenerManager();
+export const onMessageExternal = new EventListenerManager();
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
@@ -468,6 +469,9 @@ export async function initAsBackend() {
   browser.runtime.onConnectExternal.addListener(port => {
     const sender = port.sender;
     mConnections.set(sender.id, port);
+    port.onMessage.addListener(message => {
+      onMessageExternal.dispatch(message, sender);
+    });
     port.onDisconnect.addListener(_message => {
       mConnections.delete(sender.id);
       onBackendCommand({
@@ -667,8 +671,11 @@ const mWaitingShutdownMessages = new Map();
 
 function onBackendCommand(message, sender) {
   if (!message ||
+      typeof message != 'object' ||
       typeof message.type != 'string')
     return;
+
+  onMessageExternal.dispatch(message, sender);
 
   switch (message.type) {
     case kPING:
@@ -785,6 +792,10 @@ export async function initAsFrontend() {
     await wait(10);
   }
   browser.runtime.onMessageExternal.addListener((message, sender) => {
+    if (message &&
+        typeof message == 'object' &&
+        typeof message.type == 'string')
+      onMessageExternal.dispatch(message, sender);
     if (configs.incognitoAllowedExternalAddons.includes(sender.id) ||
         !document.documentElement.classList.contains('incognito'))
       return onCommonCommand(message, sender);
@@ -804,6 +815,7 @@ export async function initAsFrontend() {
 if (mIsFrontend) {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
+        typeof message != 'object' ||
         typeof message.type != 'string')
       return;
 

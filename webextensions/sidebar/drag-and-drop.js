@@ -1508,11 +1508,7 @@ function onMessage(message, _sender, _respond) {
 }
 
 
-browser.runtime.onMessageExternal.addListener((message, _sender) => {
-  if (!message ||
-      typeof message.type != 'string')
-    return;
-
+TSTAPI.onMessageExternal.addListener((message, _sender) => {
   switch (message.type) {
     case TSTAPI.kGET_DRAG_DATA:
       if (mCurrentDragDataForExternals &&

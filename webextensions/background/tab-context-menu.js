@@ -206,11 +206,11 @@ function getItemPlacementSignature(item) {
 }
 export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
-  browser.runtime.onMessageExternal.addListener(onExternalMessage);
+  TSTAPI.onMessageExternal.addListener(onExternalMessage);
 
   window.addEventListener('unload', () => {
     browser.runtime.onMessage.removeListener(onMessage);
-    browser.runtime.onMessageExternal.removeListener(onExternalMessage);
+    TSTAPI.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
 
   const itemIds = Object.keys(mItemsById);

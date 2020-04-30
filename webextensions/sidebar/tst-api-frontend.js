@@ -34,10 +34,8 @@ TSTAPI.onUnregistered.addListener(addon => {
   uninstallStyle(addon.id)
 });
 
-browser.runtime.onMessageExternal.addListener((message, sender) => {
-  if (!message ||
-      typeof message.type != 'string' ||
-      (!configs.incognitoAllowedExternalAddons.includes(sender.id) &&
+TSTAPI.onMessageExternal.addListener((message, sender) => {
+  if ((!configs.incognitoAllowedExternalAddons.includes(sender.id) &&
        document.documentElement.classList.contains('incognito')))
     return;
 

@@ -50,7 +50,7 @@ let mInitialized = false;
 Background.onInit.addListener(() => {
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.commands.onCommand.addListener(onShortcutCommand);
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  TSTAPI.onMessageExternal.addListener(onMessageExternal);
 });
 
 Background.onBuilt.addListener(() => {
@@ -65,7 +65,7 @@ Background.onReady.addListener(() => {
 
 Background.onDestroy.addListener(() => {
   browser.runtime.onMessage.removeListener(onMessage);
-  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
+  TSTAPI.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
 });
 

@@ -54,7 +54,7 @@ export function init() {
   });
 
   browser.runtime.onMessage.addListener(onMessage);
-  browser.runtime.onMessageExternal.addListener(onExternalMessage);
+  TSTAPI.onMessageExternal.addListener(onExternalMessage);
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS

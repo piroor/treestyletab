@@ -71,7 +71,7 @@ export function init(scrollPosition) {
   document.addEventListener('wheel', onWheel, { capture: true });
   mTabBar.addEventListener('scroll', onScroll);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  TSTAPI.onMessageExternal.addListener(onMessageExternal);
 }
 
 /* basics */
