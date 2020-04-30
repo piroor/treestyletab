@@ -54,7 +54,7 @@ export function init() {
   });
 
   browser.runtime.onMessage.addListener(onMessage);
-  TSTAPI.onMessageExternal.addListener(onExternalMessage);
+  TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
@@ -477,7 +477,7 @@ function importExtraItems(importedItems) {
 
 let mReservedOverrideContext = null;
 
-function onExternalMessage(message, sender) {
+function onMessageExternal(message, sender) {
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       log('TSTAPI.kCONTEXT_MENU_OPEN:', message, { id: sender.id, url: sender.url });
