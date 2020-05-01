@@ -139,19 +139,23 @@ export const kCLEAR_EXTRA_TAB_CONTENTS = 'clear-extra-tab-contents';
 export const kCLEAR_ALL_EXTRA_TAB_CONTENTS = 'clear-all-extra-tab-contents';
 export const kGET_DRAG_DATA         = 'get-drag-data';
 
-export const kCONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
-export const kCONTEXT_MENU_GET_ITEMS  = 'fake-contextMenu-get-items';
-export const kCONTEXT_MENU_OPEN       = 'fake-contextMenu-open';
-export const kCONTEXT_MENU_CREATE     = 'fake-contextMenu-create';
-export const kCONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';
-export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
-export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
-export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
-export const kCONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
-export const kCONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
+export const kCONTEXT_MENU_OPEN       = 'contextMenu-open';
+export const kCONTEXT_MENU_CREATE     = 'contextMenu-create';
+export const kCONTEXT_MENU_UPDATE     = 'contextMenu-update';
+export const kCONTEXT_MENU_REMOVE     = 'contextMenu-remove';
+export const kCONTEXT_MENU_REMOVE_ALL = 'contextMenu-remove-all';
+export const kCONTEXT_MENU_CLICK      = 'contextMenu-click';
+export const kCONTEXT_MENU_SHOWN      = 'contextMenu-shown';
+export const kCONTEXT_MENU_HIDDEN     = 'contextMenu-hidden';
+export const kFAKE_CONTEXT_MENU_OPEN       = 'fake-contextMenu-open';
+export const kFAKE_CONTEXT_MENU_CREATE     = 'fake-contextMenu-create';
+export const kFAKE_CONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';
+export const kFAKE_CONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
+export const kFAKE_CONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
+export const kFAKE_CONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
+export const kFAKE_CONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
+export const kFAKE_CONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
 export const kOVERRIDE_CONTEXT        = 'override-context';
-
-export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-checked-status-changed';
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';

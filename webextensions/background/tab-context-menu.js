@@ -636,7 +636,7 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     }
   }
 
-  TSTAPI.sendMessage({
+  const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
       bookmarkId:    info.bookmarkId || null,
@@ -662,6 +662,14 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     },
     tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
     windowId
+  }
+  TSTAPI.sendMessage(message, {
+    targets: [mOverriddenContext.owner],
+    tabProperties: ['tab']
+  });
+  TSTAPI.sendMessage({
+    ...message,
+    type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
   }, {
     targets: [mOverriddenContext.owner],
     tabProperties: ['tab']
@@ -709,6 +717,12 @@ function onHidden() {
     mOverriddenContext = null;
     TSTAPI.sendMessage({
       type: TSTAPI.kCONTEXT_MENU_HIDDEN,
+      windowId
+    }, {
+      targets: [owner]
+    });
+    TSTAPI.sendMessage({
+      type: TSTAPI.kFAKE_CONTEXT_MENU_HIDDEN,
       windowId
     }, {
       targets: [owner]
@@ -915,10 +929,16 @@ async function onClick(info, contextTab) {
           },
           tab
         };
-        if (owner == browser.runtime.id)
+        if (owner == browser.runtime.id) {
           browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
+        }
+        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() })) {
           browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
+          browser.runtime.sendMessage(owner, {
+            ...message,
+            type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
+          }).catch(ApiTabs.createErrorSuppressor());
+        }
       }
     }; break;
   }
@@ -944,7 +964,7 @@ function exportExtraItems() {
 
 async function notifyUpdated() {
   await browser.runtime.sendMessage({
-    type:  TSTAPI.kCONTEXT_MENU_UPDATED,
+    type:  Constants.kCOMMAND_NOTIFY_CONTEXT_MENU_UPDATED,
     items: exportExtraItems()
   }).catch(ApiTabs.createErrorSuppressor());
 }
@@ -981,7 +1001,7 @@ function reserveRefresh() {
 function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
-    case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
+    case Constants.kCOMMAND_GET_CONTEXT_MENU_ITEMS:
       return Promise.resolve(exportExtraItems());
 
     case TSTAPI.kCONTEXT_MENU_CLICK:
@@ -997,7 +1017,7 @@ function onMessage(message, _sender) {
       onTSTTabContextMenuHidden.dispatch();
       return;
 
-    case TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED:
+    case Constants.kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED:
       for (const itemData of mExtraItems.get(message.ownerId)) {
         if (!itemData.id != message.id)
           continue;
@@ -1018,7 +1038,8 @@ function onMessage(message, _sender) {
 
 export function onMessageExternal(message, sender) {
   switch (message.type) {
-    case TSTAPI.kCONTEXT_MENU_CREATE: {
+    case TSTAPI.kCONTEXT_MENU_CREATE:
+    case TSTAPI.kFAKE_CONTEXT_MENU_CREATE: {
       log('TSTAPI.kCONTEXT_MENU_CREATE:', message, { id: sender.id, url: sender.url });
       const items  = getItemsFor(sender.id);
       let params = message.params;
@@ -1079,7 +1100,8 @@ export function onMessageExternal(message, sender) {
       return reserveNotifyUpdated();
     }; break;
 
-    case TSTAPI.kCONTEXT_MENU_UPDATE: {
+    case TSTAPI.kCONTEXT_MENU_UPDATE:
+    case TSTAPI.kFAKE_CONTEXT_MENU_UPDATE: {
       log('TSTAPI.kCONTEXT_MENU_UPDATE:', message, { id: sender.id, url: sender.url });
       const items = getItemsFor(sender.id);
       for (let i = 0, maxi = items.length; i < maxi; i++) {
@@ -1119,7 +1141,8 @@ export function onMessageExternal(message, sender) {
       return reserveNotifyUpdated();
     }; break;
 
-    case TSTAPI.kCONTEXT_MENU_REMOVE: {
+    case TSTAPI.kCONTEXT_MENU_REMOVE:
+    case TSTAPI.kFAKE_CONTEXT_MENU_REMOVE: {
       log('TSTAPI.kCONTEXT_MENU_REMOVE:', message, { id: sender.id, url: sender.url });
       let items = getItemsFor(sender.id);
       let id    = message.params;
@@ -1147,6 +1170,7 @@ export function onMessageExternal(message, sender) {
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
+    case TSTAPI.kFAKE_CONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
       delete mExtraItems.delete(sender.id);
       return reserveNotifyUpdated();

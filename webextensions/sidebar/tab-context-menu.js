@@ -59,7 +59,7 @@ export function init() {
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
   browser.runtime.sendMessage({
-    type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
+    type: Constants.kCOMMAND_GET_CONTEXT_MENU_ITEMS
   }).then(items => {
     importExtraItems(items);
     mIsDirty = true;
@@ -356,10 +356,18 @@ async function onCommand(item, event) {
     },
     tab
   };
-  if (owner == browser.runtime.id)
+  if (owner == browser.runtime.id) {
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
-  else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() }))
-    await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
+  }
+  else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() })) {
+    await Promise.all([
+      browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor()),
+      browser.runtime.sendMessage(owner, {
+        ...message,
+        type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
+      }).catch(ApiTabs.createErrorSuppressor())
+    ]);
+  }
 
   if (item.matches('.checkbox')) {
     item.classList.toggle('checked');
@@ -368,7 +376,7 @@ async function onCommand(item, event) {
         continue;
       itemData.checked = item.matches('.checked');
       browser.runtime.sendMessage({
-        type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+        type:    Constants.kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED,
         id:      item.dataset.itemId,
         ownerId: item.dataset.itemOwnerId,
         checked: itemData.checked
@@ -400,7 +408,7 @@ async function onCommand(item, event) {
         if (radioItem)
           radioItem.classList.toggle('checked', itemData.checked);
         browser.runtime.sendMessage({
-          type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+          type:    Constants.kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED,
           id:      item.dataset.itemId,
           ownerId: item.dataset.itemOwnerId,
           checked: itemData.checked
@@ -436,7 +444,11 @@ async function onShown(contextTab) {
       ...message,
       tab: message.tab && await message.tab.exportFor(browser.runtime.id)
     }).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message, { tabProperties: ['tab'] })
+    TSTAPI.sendMessage(message, { tabProperties: ['tab'] }),
+    TSTAPI.sendMessage({
+      ...message,
+      type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
+    }, { tabProperties: ['tab'] })
   ]);
 }
 
@@ -447,7 +459,11 @@ async function onHidden() {
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message)
+    TSTAPI.sendMessage(message),
+    TSTAPI.sendMessage({
+      ...message,
+      type: TSTAPI.kFAKE_CONTEXT_MENU_HIDDEN
+    })
   ]);
 }
 
@@ -461,7 +477,7 @@ function onMessage(message, _sender) {
         return;
       return Promise.resolve(onTabsClosing.dispatch(message.tabs));
 
-    case TSTAPI.kCONTEXT_MENU_UPDATED: {
+    case Constants.kCOMMAND_NOTIFY_CONTEXT_MENU_UPDATED: {
       importExtraItems(message.items);
       mIsDirty = true;
       if (mUI.opened)
@@ -482,6 +498,7 @@ let mReservedOverrideContext = null;
 function onMessageExternal(message, sender) {
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
+    case TSTAPI.kFAKE_CONTEXT_MENU_OPEN:
       log('TSTAPI.kCONTEXT_MENU_OPEN:', message, { id: sender.id, url: sender.url });
       return (async () => {
         const tab      = message.tab ? Tab.get(message.tab) : null ;

@@ -71,6 +71,9 @@ export const kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS  = 'treestyletab:request-c
 export const kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS = 'treestyletab:response-connection-message-logs';
 export const kCOMMAND_NOTIFY_TEST_KEY_CHANGED        = 'treestyletab:notify-test-key-changed';
 export const kCOMMAND_SIMULATE_SIDEBAR_MESSAGE       = 'treestyletab:simulate-sidebar-message';
+export const kCOMMAND_GET_CONTEXT_MENU_ITEMS         = 'treestyletab:contextMenu-get-items';
+export const kCOMMAND_NOTIFY_CONTEXT_MENU_UPDATED    = 'treestyletab:contextMenu-updated';
+export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab:contextMenu-item-checked-status-changed';
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
 
 export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
