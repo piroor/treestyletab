@@ -418,12 +418,8 @@ async function confirmToAutoGroupNewTabs(tabs) {
     return true;
 
   const windowId = tabs[0].windowId;
-  UserOperationBlocker.blockIn(windowId, { throbber: false });
-  const result = await RichConfirm.showInPopup(windowId, {
-    modal:   true,
-    type:    'common-dialog',
-    url:     '/resources/blank.html', // required on Firefox ESR68
-    title:   browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'),
+
+  const dialogParams = {
     message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
     buttons: [
       browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),
@@ -431,8 +427,36 @@ async function confirmToAutoGroupNewTabs(tabs) {
     ],
     checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
     checked: true
-  });
-  UserOperationBlocker.unblockIn(windowId, { throbber: false });
+  };
+  let result;
+  UserOperationBlocker.blockIn(windowId, { throbber: false });
+  try {
+    if (configs.showDialogInSidebar &&
+        SidebarConnection.isOpen(windowId)/* &&
+        SidebarConnection.hasFocus(windowId)*/) {
+      result = await browser.runtime.sendMessage({
+        type:   Constants.kCOMMAND_SHOW_DIALOG,
+        params: dialogParams,
+        windowId
+      }).catch(ApiTabs.createErrorHandler());
+    }
+    else {
+      result = await RichConfirm.showInPopup(windowId, {
+        ...dialogParams,
+        modal: true,
+        type:  'common-dialog',
+        url:   '/resources/blank.html', // required on Firefox ESR68
+        title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title')
+      });
+    }
+  }
+  catch(_error) {
+    result = { buttonIndex: -1 };
+  }
+  finally {
+    UserOperationBlocker.unblockIn(windowId, { throbber: false });
+  }
+
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)

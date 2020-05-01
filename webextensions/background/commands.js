@@ -8,7 +8,6 @@
 import {
   log as internalLogger,
   dumpTab,
-  notify,
   wait,
   countMatched,
   configs
@@ -144,7 +143,8 @@ export async function bookmarkTree(rootTabs, options = {}) {
     tabs.shift();
 
   const tab = tabs[0];
-  if (SidebarConnection.isOpen(tab.windowId)) {
+  if (configs.showDialogInSidebar &&
+      SidebarConnection.isOpen(tab.windowId)) {
     return SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
@@ -152,19 +152,12 @@ export async function bookmarkTree(rootTabs, options = {}) {
       options
     });
   }
-
-  const folder = await Bookmark.bookmarkTabs(tabs, options);
-  if (!folder)
-    return null;
-  notify({
-    title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
-    message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-      tabs[0].title,
-      tabs.length,
-      folder.title
-    ])
-  });
-  return folder;
+  else {
+    return Bookmark.bookmarkTabs(tabs, {
+      ...options,
+      showDialog: true
+    });
+  }
 }
 
 
@@ -731,7 +724,8 @@ export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && tab.$TST.multiselected)
     return bookmarkTabs(Tab.getSelectedTabs(tab.windowId));
 
-  if (SidebarConnection.isOpen(tab.windowId)) {
+  if (configs.showDialogInSidebar &&
+      SidebarConnection.isOpen(tab.windowId)) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
@@ -739,13 +733,8 @@ export async function bookmarkTab(tab, options = {}) {
     });
   }
   else {
-    await Bookmark.bookmarkTab(tab);
-    notify({
-      title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
-      message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
-        tab.title
-      ]),
-      icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+    Bookmark.bookmarkTab(tab, {
+      showDialog: true
     });
   }
 }
@@ -753,7 +742,8 @@ export async function bookmarkTab(tab, options = {}) {
 export async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
-  if (SidebarConnection.isOpen(tabs[0].windowId)) {
+  if (configs.showDialogInSidebar &&
+      SidebarConnection.isOpen(tabs[0].windowId)) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
@@ -761,17 +751,9 @@ export async function bookmarkTabs(tabs) {
     });
   }
   else {
-    const folder = await Bookmark.bookmarkTabs(tabs);
-    if (folder)
-      notify({
-        title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
-        message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
-          tabs[0].title,
-          tabs.length,
-          folder.title
-        ]),
-        icon:    Constants.kNOTIFICATION_DEFAULT_ICON
-      });
+    Bookmark.bookmarkTabs(tabs, {
+      showDialog: true
+    });
   }
 }
 

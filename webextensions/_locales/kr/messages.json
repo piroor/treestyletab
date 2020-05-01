@@ -255,43 +255,6 @@
         },
         "hash": "b40bb671bfdc9d5b864f508435a929f0"
     },
-    "bookmarkTree_notification_success_title": {
-        "message": "트리를 북마크 했습니다.",
-        "hash": "44f13d2945d8eea2099b13c8c2c52524"
-    },
-    "bookmarkTree_notification_success_message": {
-        "message": "\"$TITLE$\"을(를) 포함한 $COUNT$개의 탭을 \"$PARENT$\" 폴더를 만들어 북마크 했습니다.",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" },
-            "count": { "content": "$2", "example": "2" },
-            "parent": { "content": "$3", "example": "Parent Folder" }
-        },
-        "hash": "00f6694c786faa079e550c8b9febc2de"
-    },
-    "bookmarkTab_notification_success_title": {
-        "message": "탭을 북마크 했습니다.",
-        "hash": "ca244987ac78b7d48714b9d9d25c7cad"
-    },
-    "bookmarkTab_notification_success_message": {
-        "message": "\"$TITLE$\"을(를) 북마크 했습니다.",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" }
-        },
-        "hash": "49fe5f59a6250b4514ce1f4dc26f9f12"
-    },
-    "bookmarkTabs_notification_success_title": {
-        "message": "탭 목록을 북마크 했습니다.",
-        "hash": "ab61fa1fa1bf23847df2aba0cc9f8bf9"
-    },
-    "bookmarkTabs_notification_success_message": {
-        "message": "\"$TITLE$\"을(를) 포함한 $COUNT$개의 탭을 \"$PARENT$\" 폴더를 만들어 북마크 했습니다.",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" },
-            "count": { "content": "$2", "example": "2" },
-            "parent": { "content": "$3", "example": "Parent Folder" }
-        },
-        "hash": "00f6694c786faa079e550c8b9febc2de"
-    },
     "bookmark_notification_notPermitted_title": {
         "message": "권한 오류",
         "hash": "5648aca0df76cc07ac7f3cf1b709dff2"

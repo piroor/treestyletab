@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "此樹已加入書籤" },
-  "bookmarkTree_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入「$PARENT$」內的新資料夾中",
-    "placeholders": {
-      "title": { "content": "$1", "example": "標題" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "父資料夾" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "分頁已加入書籤" },
-  "bookmarkTab_notification_success_message": { "message": "「$TITLE$」已君入書籤。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "標籤" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "多個分頁已加入書籤" },
-  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入書籤內的新資料夾「$PARENT$」。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "標題" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "父資料夾" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "權限錯誤" },
   "bookmark_notification_notPermitted_message": { "message": "沒有權限創建書籤。點此允許相關權限。" },
 

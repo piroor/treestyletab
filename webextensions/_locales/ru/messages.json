@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "Дерево успешно добавлено в закладки" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ вкладок, включая \"$TITLE$\", добавлены в новую папку закладок в \"$PARENT$\".",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "Вкладка успешно добавлена в закладки" },
-  "bookmarkTab_notification_success_message": { "message": "\"$TITLE$\" добавлена в закладки.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "Вкладки успешно добавлены в закладки" },
-  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ вкладок, включая \"$TITLE$\", добавлены в новую папку закладок в \"$PARENT$\".",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
   "bookmark_notification_notPermitted_message": { "message": "Нет разрешения на создание закладок. Нажмите здесь, чтобы предоставить разрешения." },
 

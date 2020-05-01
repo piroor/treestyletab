@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "Arbre ajouté aux marque-pages avec succès" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ onglets dont « $TITLE$ » ont été ajoutés en marque-pages dans un nouveau dossier « $PARENT$ ».",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "Onglet ajouté aux marque-pages avec succès" },
-  "bookmarkTab_notification_success_message": { "message": "« $TITLE$ » a été ajouté aux marque-pages.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "Onglets ajoutés aux marque-pages avec succès" },
-  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ onglets dont « $TITLE$ » ont été ajouté aux marque-pages dans un nouveau dossier « $PARENT$ ».",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "Erreur de permission" },
   "bookmark_notification_notPermitted_message": { "message": "Échec de l'obtention des permissions pour créer des marques-page. Cliquez ici pour accorder des permissions supplémentaires." },
 

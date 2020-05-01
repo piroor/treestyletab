@@ -255,43 +255,6 @@
         },
         "hash": "b40bb671bfdc9d5b864f508435a929f0"
     },
-    "bookmarkTree_notification_success_title": {
-        "message": "标签树被成功加入书签",
-        "hash": "44f13d2945d8eea2099b13c8c2c52524"
-    },
-    "bookmarkTree_notification_success_message": {
-        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新建文件夹下。",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" },
-            "count": { "content": "$2", "example": "2" },
-            "parent": { "content": "$3", "example": "Parent Folder" }
-        },
-        "hash": "00f6694c786faa079e550c8b9febc2de"
-    },
-    "bookmarkTab_notification_success_title": {
-        "message": "标签已被成功加入书签",
-        "hash": "ca244987ac78b7d48714b9d9d25c7cad"
-    },
-    "bookmarkTab_notification_success_message": {
-        "message": "“$TITLE$” 已被加入书签",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" }
-        },
-        "hash": "49fe5f59a6250b4514ce1f4dc26f9f12"
-    },
-    "bookmarkTabs_notification_success_title": {
-        "message": "标签页被成功加入书签",
-        "hash": "ab61fa1fa1bf23847df2aba0cc9f8bf9"
-    },
-    "bookmarkTabs_notification_success_message": {
-        "message": "$COUNT$ 个包含 “$TITLE$” 的标签页已被加入到书签中名为 “$PARENT$” 的新建文件夹下。",
-        "placeholders": {
-            "title": { "content": "$1", "example": "Title" },
-            "count": { "content": "$2", "example": "2" },
-            "parent": { "content": "$3", "example": "Parent Folder" }
-        },
-        "hash": "00f6694c786faa079e550c8b9febc2de"
-    },
     "bookmark_notification_notPermitted_title": {
         "message": "权限错误",
         "hash": "5648aca0df76cc07ac7f3cf1b709dff2"

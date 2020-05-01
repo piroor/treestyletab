@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import RichConfirm from '/extlib/RichConfirm.js';
+
 import {
   log as internalLogger,
   nextFrame,
@@ -604,7 +606,6 @@ export async function confirmToCloseTabs(tabs, options = {}) {
       !configs[configKey])
     return true;
 
-  UserOperationBlocker.block({ throbber: false });
   try {
     const granted = await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
@@ -622,9 +623,6 @@ export async function confirmToCloseTabs(tabs, options = {}) {
   }
   catch(error) {
     console.error(error);
-  }
-  finally {
-    UserOperationBlocker.unblock({ throbber: false });
   }
 
   return false;
@@ -885,6 +883,9 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_RELOAD:
       location.reload();
       return;
+
+    case Constants.kCOMMAND_SHOW_DIALOG:
+      return RichConfirm.show(message.params);
   }
 }
 

@@ -479,13 +479,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     windowId = activeTabs[0].windowId;
   }
 
-  log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
-  UserOperationBlocker.blockIn(windowId, { throbber: false });
-  const result = await RichConfirm.showInPopup(windowId, {
-    modal:   true,
-    type:    'common-dialog',
-    url:     '/resources/blank.html', // required on Firefox ESR68
-    title:   browser.i18n.getMessage('warnOnCloseTabs_title'),
+  const dialogParams = {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
@@ -493,8 +487,37 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     ],
     checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
-  });
-  UserOperationBlocker.unblockIn(windowId, { throbber: false });
+  };
+  let result;
+  UserOperationBlocker.blockIn(windowId, { throbber: false });
+  try {
+    if (configs.showDialogInSidebar &&
+        SidebarConnection.isOpen(windowId)/* &&
+        SidebarConnection.hasFocus(windowId)*/) {
+      result = await browser.runtime.sendMessage({
+        type:   Constants.kCOMMAND_SHOW_DIALOG,
+        params: dialogParams,
+        windowId
+      }).catch(ApiTabs.createErrorHandler());
+    }
+    else {
+      log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
+      result = await RichConfirm.showInPopup(windowId, {
+        ...dialogParams,
+        modal: true,
+        type:  'common-dialog',
+        url:   '/resources/blank.html', // required on Firefox ESR68
+        title: browser.i18n.getMessage('warnOnCloseTabs_title')
+      });
+    }
+  }
+  catch(_error) {
+    result = { buttonIndex: -1 };
+  }
+  finally {
+    UserOperationBlocker.unblockIn(windowId, { throbber: false });
+  }
+
   log('confirmToCloseTabs: result = ', result);
   switch (result.buttonIndex) {
     case 0:

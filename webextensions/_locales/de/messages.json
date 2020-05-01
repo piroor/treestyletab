@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "Lesezeichen für den Zweig wurden gespeichert" },
-  "bookmarkTree_notification_success_message": { "message": "Lesezeichen für $COUNT$ Tabs inklusive \"$TITLE$\" werden in einem neuen Ordner gespeichert unter \"$PARENT$.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Titel" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Übergeordneter Ordner" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "Lesezeichen für den Tab wurde gespeichert" },
-  "bookmarkTab_notification_success_message": { "message": "Lesezeichen für \"$TITLE$\" wurde gespeichert.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Titel" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "Lesezeichen für Tabs wurden gespeichert" },
-  "bookmarkTabs_notification_success_message": { "message": "Lesezeichen für $COUNT$ Tabs inklusive \"$TITLE$\" werden in einem neuen Ordner gespeichert unter \"$PARENT$.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Titel" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Übergeordneter Ordner" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "Berechtigungs-Fehler" },
   "bookmark_notification_notPermitted_message": { "message": "Fehlende Berechtigung zum Erstellen von Lesezeichen. Bitte hier klicken um Berechtigungen zu erteilen." },
 

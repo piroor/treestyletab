@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "Tree is Successfully Bookmarked" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$\".",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "Tab is Successfully Bookmarked" },
-  "bookmarkTab_notification_success_message": { "message": "\"$TITLE$\" is bookmarked.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "Tabs are Successfully Bookmarked" },
-  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$\".",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "Permission error" },
   "bookmark_notification_notPermitted_message": { "message": "Failed to get permissions to create bookmarks. Please click here to grant extra permissions." },
 

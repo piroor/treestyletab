@@ -83,28 +83,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "ツリーをブックマークしました" },
-  "bookmarkTree_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを新しいフォルダー「$PARENT$」内にブックマークしました。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "タイトル" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "親フォルダー" }
-    }},
-
-  "bookmarkTab_notification_success_title": { "message": "タブをブックマークしました" },
-  "bookmarkTab_notification_success_message": { "message": "「$TITLE$」をブックマークしました。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "複数のタブをブックマークしました" },
-  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを新しいフォルダー「$PARENT$」内にブックマークしました。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "タイトル" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "親フォルダー" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "権限のエラー" },
   "bookmark_notification_notPermitted_message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
 

@@ -67,22 +67,6 @@
       "date":  { "content": "$4", "example": "21" }
     }},
 
-  "bookmarkTree_notification_success_title": { "message": "Дерево успішно додано в закладки" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ - стільки вкладок, включаючи \"$TITLE$\", додано в закладки, у нову папку під \"$PARENT$.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-  "bookmarkTabs_notification_success_title": { "message": "Вкладки успішно додано до закладок" },
-  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ - стільки вкладок, включаючи \"$TITLE$\", додано в закладки, у нову папку під \"$PARENT$.",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
   "bookmark_notification_notPermitted_title": { "message": "Помилка дозволу" },
   "bookmark_notification_notPermitted_message": { "message": "Не вдалося отримати дозвіл на створення закладок. Please click here to grant extra permissions." },
 

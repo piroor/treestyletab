@@ -101,28 +101,26 @@ export async function bookmarkTab(tab, options = {}) {
   let parentId = parent && parent.id;
   if (options.showDialog) {
     const windowId = tab.windowId;
-    try {
-      UserOperationBlocker.blockIn(windowId, { throbber: false });
-      const result = await RichConfirm.showInPopup(windowId, {
-        modal: true,
-        type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
-        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single'),
+    const inSidebar = location.pathname.startsWith('/sidebar/');
+    const dialogParams = {
         content: `
           <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
                      >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+                      ${inSidebar ? '<br>' : ''}
                       <input type="text"
                              name="title"
-                             style="min-width: 30em"
+                             style="${inSidebar ? '' : 'min-width: 30em'}"
                              value=${JSON.stringify(title)}></label></div>
           <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
                      >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
+                      ${inSidebar ? '<br>' : ''}
                       <input type="text"
                              name="url"
-                             style="min-width: 30em"
+                             style="${inSidebar ? '' : 'min-width: 30em'}"
                              value=${JSON.stringify(url)}></label></div>
           <div style="margin-bottom: 3em"
               ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+                      ${inSidebar ? '<br>' : ''}
                       <button name="parentId"></button></label></div>
         `,
         async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
@@ -150,19 +148,34 @@ export async function bookmarkTab(tab, options = {}) {
           browser.i18n.getMessage('bookmarkDialog_accept'),
           browser.i18n.getMessage('bookmarkDialog_cancel')
         ]
-      });
-      if (result.buttonIndex != 0)
-        return null;
-      title    = result.values.title;
-      url      = result.values.url;
-      parentId = result.values.parentId;
+    };
+    let result;
+    UserOperationBlocker.blockIn(windowId, { throbber: false });
+    try {
+      if (inSidebar) {
+        result = await RichConfirm.show(dialogParams);
+      }
+      else {
+        result = await RichConfirm.showInPopup(windowId, {
+          ...dialogParams,
+          modal: true,
+          type:  'dialog',
+          url:   '/resources/blank.html', // required on Firefox ESR68
+          title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
+        });
+      }
     }
     catch(_error) {
-      return null;
+      result = { buttonIndex: -1 };
     }
     finally {
       UserOperationBlocker.unblockIn(windowId, { throbber: false });
     }
+    if (result.buttonIndex != 0)
+      return null;
+    title    = result.values.title;
+    url      = result.values.url;
+    parentId = result.values.parentId;
   }
 
   mCreatingCount++;
@@ -215,22 +228,19 @@ export async function bookmarkTabs(tabs, options = {}) {
 
   if (options.showDialog) {
     const windowId = tabs[0].windowId;
-    try {
-      UserOperationBlocker.blockIn(windowId, { throbber: false });
-      const result = await RichConfirm.showInPopup(windowId, {
-        modal: true,
-        type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
-        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple'),
+    const inSidebar = location.pathname.startsWith('/sidebar/');
+    const dialogParams = {
         content: `
           <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
                      >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+                      ${inSidebar ? '<br>' : ''}
                       <input type="text"
                              name="title"
-                             style="min-width: 30em"
+                             style="${inSidebar ? '' : 'min-width: 30em'}"
                              value=${JSON.stringify(folderParams.title)}></label></div>
           <div style="margin-bottom: 3em"
               ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+                      ${inSidebar ? '<br>' : ''}
                       <button name="parentId"></button></label></div>
         `,
         async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
@@ -258,18 +268,33 @@ export async function bookmarkTabs(tabs, options = {}) {
           browser.i18n.getMessage('bookmarkDialog_accept'),
           browser.i18n.getMessage('bookmarkDialog_cancel')
         ]
-      });
-      if (result.buttonIndex != 0)
-        return null;
-      folderParams.title    = result.values.title;
-      folderParams.parentId = result.values.parentId;
+    };
+    let result;
+    try {
+      UserOperationBlocker.blockIn(windowId, { throbber: false });
+      if (inSidebar) {
+        result = await RichConfirm.show(dialogParams);
+      }
+      else {
+        result = await RichConfirm.showInPopup(windowId, {
+          ...dialogParams,
+          modal: true,
+          type:  'dialog',
+          url:   '/resources/blank.html', // required on Firefox ESR68
+          title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple')
+        });
+      }
     }
     catch(_error) {
-      return null;
+      result = { buttonIndex: -1 };
     }
     finally {
       UserOperationBlocker.unblockIn(windowId, { throbber: false });
     }
+    if (result.buttonIndex != 0)
+      return null;
+    folderParams.title    = result.values.title;
+    folderParams.parentId = result.values.parentId;
   }
 
   const toBeCreatedCount = tabs.length + 1;
