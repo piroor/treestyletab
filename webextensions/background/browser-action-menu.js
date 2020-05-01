@@ -164,6 +164,11 @@ const mItems = [
         key:   'applyThemeColorToIcon',
         type:  'checkbox',
         expert: true
+      },
+      {
+        title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
+        key:   'showDialogInSidebar',
+        type:  'checkbox'
       }
     ]
   },

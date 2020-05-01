@@ -45,6 +45,8 @@ export const configs = new Configs({
   zoomable: false,
   showCollapsedDescendantsByTooltip: true,
 
+  showDialogInSidebar: false,
+
 
   // context menu
   fakeContextMenu: null, // obsolete, migrated to emulateDefaultContextMenu
@@ -200,7 +202,6 @@ export const configs = new Configs({
 
   // misc.
   showExpertOptions: false,
-  showDialogInSidebar: false,
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
   defaultSearchEngine: 'https://www.google.com/search?q=%s',
