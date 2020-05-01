@@ -86,6 +86,9 @@
   "bookmark_notification_notPermitted_title": { "message": "Berechtigungs-Fehler" },
   "bookmark_notification_notPermitted_message": { "message": "Fehlende Berechtigung zum Erstellen von Lesezeichen. Bitte hier klicken um Berechtigungen zu erteilen." },
 
+  "bookmarkContext_notification_notPermitted_title": { "message": "Berechtigungs-Fehler" },
+  "bookmarkContext_notification_notPermitted_message": { "message": "Fehlende Berechtigung zum Öffnen des Kontextmenüs für Lesezeichen. Bitte hier klicken um Berechtigungen zu erteilen." },
+
   "dropLinksOnTabBehavior_message": { "message": "Wie soll der Link geöffnet werden?" },
   "dropLinksOnTabBehavior_save":    { "message": "Die Auswahl beim nächsten Mal beibehalten" },
   "dropLinksOnTabBehavior_load":    { "message": "In diesem Tab öffnen" },
@@ -110,6 +113,7 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "Verweise oder Lesezeichen an dem Platz anlegen, an dem die Tabs abgelegt werden" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "einen Verweis oder ein Lesezeichen an dem Platz anlegen, an dem der Tab abgelegt wird" },
 
+  "warnOnCloseTabs_title":     { "message": "Tabs schließen?" },
   "warnOnCloseTabs_message":   { "message": "Möchtest du wirklich $NUMBER$ Tabs schließen?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
@@ -123,7 +127,8 @@
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
 
-  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ Tabs werden gleichzeitig geöffnet. Sollen sie in einem Zweig geöffnet werden?",
+  "warnOnAutoGroupNewTabs_title":     { "message": "Tabs gruppieren?" },
+  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ Tabs werden gleichzeitig geöffnet. Sollen sie in einem Zweig gruppiert geöffnet werden?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
     }},
@@ -131,8 +136,12 @@
   "warnOnAutoGroupNewTabs_close":     { "message": "Tabs gruppieren" },
   "warnOnAutoGroupNewTabs_cancel":    { "message": "Tabs nebeneinander anzeigen" },
 
+  "bookmarkDialog_dialogTitle_single":   { "message": "Neues Lesezeichen" },
+  "bookmarkDialog_dialogTitle_multiple": { "message": "Neue Lesezeichen" },
   "bookmarkDialog_title":    { "message": "Name:" },
+  "bookmarkDialog_title_accessKey": { "message": "n" },
   "bookmarkDialog_url":      { "message": "Ort:" },
+  "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "Ordner:" },
   "bookmarkDialog_accept":   { "message": "Speichern" },
   "bookmarkDialog_cancel":   { "message": "Abbrechen" },
@@ -260,6 +269,7 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Eingeklappte untergeordnete Tabs als Tooltip anzeigen" },
   "config_applyThemeColorToIcon_label": { "message": "Wende Designfarbe auf die Toolbar-Schaltfläche an" },
   "config_applyThemeColorToIcon_label_info": { "message": "(*\"svg.context-properties.content.enabled\" muss auf \"true\" gesetzt werden via \"about:config\")" },
+  "config_showDialogInSidebar_label": { "message": "Zeige Dialoge in Seitenleiste falls möglich" },
 
 
   "config_context_caption": { "message": "Kontexmenü" },
@@ -408,15 +418,16 @@
 
   "config_drag_caption": { "message": "Ziehen und Ablegen" },
 
-  "config_tabDragBehavior_caption_":       { "message": "Wenn ein Zweig außerhalb der Tableiste gezogen wird" },
+  "config_tabDragBehavior_caption":       { "message": "Wenn ein übergeordneter Zweig gezogen und abgelegt wird" },
   "config_tabDragBehavior_description":   { "message": "Aufgrund von Firefox Einschränkungen muss beim Beginn des Ziehens bekannt sein, wie Tabs beim Ablegen außerhalb der Seitenleiste von TST behandelt werden sollen." },
   "config_tabDragBehavior_label":         { "message": "Ziehen" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Ziehen" },
+  "config_tabDragBehavior_label_behavior": { "message": "Verhalten innerhalb/außerhalb der Seitenleiste" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Move Entire Tree / Gesamten Zweig vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Move Entire Tree / Verweise oder Lesezeichen vom gesamten Zweig erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Move Solo Tab / Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
-  "config_tabDragBehavior_none_":          { "message": "Nichts machen" },
+  "config_tabDragBehavior_none":          { "message": "Nichts machen" },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
   "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Erlauben, einen Zweig beim Ablegen außerhalb der Tableiste zu lösen" },
 
@@ -504,6 +515,7 @@
   "config_labelOverflowStyle_crop":    { "message": "Abschneiden mit \"..\" (bessere Leistung)" },
 
   "config_requestPermissions_bookmarks": { "message": "Lesen und Erstellen von Lesezeichen zulassen" },
+  "config_requestPermissions_bookmarks_context": { "message": "Öffnen des Kontextmenüs für Lesezeichen zulassen" },
   "config_requestPermissions_tabHide":   { "message": "Erlaube, einzelne Tabs anzuzeigen/auszublenden (*Aus- und wieder einschalten, bevor Tests ausgeführt werden, um sicherzustellen, dass die Berechtigung gewährt wurde.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
