@@ -103,51 +103,51 @@ export async function bookmarkTab(tab, options = {}) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const dialogParams = {
-        content: `
-          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
-                      ${inSidebar ? '<br>' : ''}
-                      <input type="text"
-                             name="title"
-                             style="${inSidebar ? '' : 'min-width: 30em'}"
-                             value=${JSON.stringify(title)}></label></div>
-          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
-                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
-                      ${inSidebar ? '<br>' : ''}
-                      <input type="text"
-                             name="url"
-                             style="${inSidebar ? '' : 'min-width: 30em'}"
-                             value=${JSON.stringify(url)}></label></div>
-          <div style="margin-bottom: 3em"
-              ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
-                      ${inSidebar ? '<br>' : ''}
-                      <button name="parentId"></button></label></div>
-        `,
-        async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
-          MenuUI.init();
-          container.classList.add('bookmark-dialog');
-          const [defaultItem, rootItems] = await Promise.all([
-            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
-            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
-          ]);
-          initFolderChooser(container.querySelector('button'), {
-            MenuUI,
-            animationDuration,
-            defaultItem,
-            rootItems
-          });
-          container.querySelector('[name="title"]').select();
-        },
-        inject: {
+      content: `
+        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+                    ${inSidebar ? '<br>' : ''}
+                    <input type="text"
+                           name="title"
+                           style="${inSidebar ? '' : 'min-width: 30em'}"
+                           value=${JSON.stringify(title)}></label></div>
+        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
+                    ${inSidebar ? '<br>' : ''}
+                    <input type="text"
+                           name="url"
+                           style="${inSidebar ? '' : 'min-width: 30em'}"
+                           value=${JSON.stringify(url)}></label></div>
+        <div style="margin-bottom: 3em"
+            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+                    ${inSidebar ? '<br>' : ''}
+                    <button name="parentId"></button></label></div>
+      `,
+      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+        MenuUI.init();
+        container.classList.add('bookmark-dialog');
+        const [defaultItem, rootItems] = await Promise.all([
+          browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
+          browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
+        ]);
+        initFolderChooser(container.querySelector('button'), {
           MenuUI,
-          initFolderChooser,
-          animationDuration: getAnimationDuration(),
-          parentId
-        },
-        buttons: [
-          browser.i18n.getMessage('bookmarkDialog_accept'),
-          browser.i18n.getMessage('bookmarkDialog_cancel')
-        ]
+          animationDuration,
+          defaultItem,
+          rootItems
+        });
+        container.querySelector('[name="title"]').select();
+      },
+      inject: {
+        MenuUI,
+        initFolderChooser,
+        animationDuration: getAnimationDuration(),
+        parentId
+      },
+      buttons: [
+        browser.i18n.getMessage('bookmarkDialog_accept'),
+        browser.i18n.getMessage('bookmarkDialog_cancel')
+      ]
     };
     let result;
     UserOperationBlocker.blockIn(windowId, { throbber: false });
@@ -230,44 +230,44 @@ export async function bookmarkTabs(tabs, options = {}) {
     const windowId = tabs[0].windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const dialogParams = {
-        content: `
-          <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                     >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
-                      ${inSidebar ? '<br>' : ''}
-                      <input type="text"
-                             name="title"
-                             style="${inSidebar ? '' : 'min-width: 30em'}"
-                             value=${JSON.stringify(folderParams.title)}></label></div>
-          <div style="margin-bottom: 3em"
-              ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
-                      ${inSidebar ? '<br>' : ''}
-                      <button name="parentId"></button></label></div>
-        `,
-        async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
-          MenuUI.init();
-          container.classList.add('bookmark-dialog');
-          const [defaultItem, rootItems] = await Promise.all([
-            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
-            browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
-          ]);
-          initFolderChooser(container.querySelector('button'), {
-            MenuUI,
-            animationDuration,
-            defaultItem,
-            rootItems
-          });
-          container.querySelector('[name="title"]').select();
-        },
-        inject: {
+      content: `
+        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
+                    ${inSidebar ? '<br>' : ''}
+                    <input type="text"
+                           name="title"
+                           style="${inSidebar ? '' : 'min-width: 30em'}"
+                           value=${JSON.stringify(folderParams.title)}></label></div>
+        <div style="margin-bottom: 3em"
+            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
+                    ${inSidebar ? '<br>' : ''}
+                    <button name="parentId"></button></label></div>
+      `,
+      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+        MenuUI.init();
+        container.classList.add('bookmark-dialog');
+        const [defaultItem, rootItems] = await Promise.all([
+          browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
+          browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
+        ]);
+        initFolderChooser(container.querySelector('button'), {
           MenuUI,
-          initFolderChooser,
-          animationDuration: getAnimationDuration(),
-          parentId: folderParams.parentId
-        },
-        buttons: [
-          browser.i18n.getMessage('bookmarkDialog_accept'),
-          browser.i18n.getMessage('bookmarkDialog_cancel')
-        ]
+          animationDuration,
+          defaultItem,
+          rootItems
+        });
+        container.querySelector('[name="title"]').select();
+      },
+      inject: {
+        MenuUI,
+        initFolderChooser,
+        animationDuration: getAnimationDuration(),
+        parentId: folderParams.parentId
+      },
+      buttons: [
+        browser.i18n.getMessage('bookmarkDialog_accept'),
+        browser.i18n.getMessage('bookmarkDialog_cancel')
+      ]
     };
     let result;
     try {
