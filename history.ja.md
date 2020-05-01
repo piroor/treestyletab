@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+   * [TSTのタブとサブパネルとの間のドラッグ＆ドロップを可能にした](https://github.com/piroor/treestyletab/wiki/SubPanel-API#drag-and-drop-between-your-subpanel-and-tst)（新APIの[`get-drag-data`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#transfer-drag-data-from-a-subpanel-to-tst)を含む）
+   * [サブパネル上でのネイティブコンテキストメニューの表示に対応した](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-provide-custom-context-menu-on-your-subpanel)（新APIの[`override-context`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#override-the-context)を含む）
+   * コンテキストメニューに関わるAPIについて、`fake-contextMenu-*` という体系だったのを `fake-` プレフィクスなしの `contextMenu-*` に改めた（後方互換性のため、従来通りのAPI名も引き続き使用可能）
+   * 設定ページの「外観」配下に、ダイアログをサイドバー内に表示する（確認とブックマークのダイアログの動作を以前の物に戻す）設定を追加
+   * `de`ロケール更新（by SammysHP. Thanks!）
  - 3.5.3 (2020.4.28)
    * モーダル風ダイアログがクローズボックスで閉じられた時の挙動を改善
    * モーダル風ダイアログを開くのに要する時間を若干短縮した
