@@ -121,7 +121,7 @@ export async function bookmarkTab(tab, options = {}) {
         <div style="margin-bottom: 3em"
             ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                     ${inSidebar ? '<br>' : ''}
-                    <button name="parentId"></button></label></div>
+                    <button name="parentId">-</button></label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         MenuUI.init();
@@ -241,7 +241,7 @@ export async function bookmarkTabs(tabs, options = {}) {
         <div style="margin-bottom: 3em"
             ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                     ${inSidebar ? '<br>' : ''}
-                    <button name="parentId"></button></label></div>
+                    <button name="parentId">-</button></label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         MenuUI.init();
