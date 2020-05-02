@@ -86,6 +86,9 @@
   "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
   "bookmark_notification_notPermitted_message": { "message": "Нет разрешения на создание закладок. Нажмите здесь, чтобы предоставить разрешения." },
 
+  "bookmarkContext_notification_notPermitted_title": { "message": "Ошибка разрешения" },
+  "bookmarkContext_notification_notPermitted_message": { "message": "Нет разрешения на открытие контекстного меню закладок. Нажмите здесь, чтобы предоставить дополнительное разрешение." },
+
   "dropLinksOnTabBehavior_message": { "message": "Как это открыть?" },
   "dropLinksOnTabBehavior_save":    { "message": "Всегда выбирать этот вариант" },
   "dropLinksOnTabBehavior_load":    { "message": "Загрузить в этой вкладке" },
@@ -266,6 +269,7 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке вкладки" },
   "config_applyThemeColorToIcon_label": { "message": "Применить цвета темы к кнопке на панели" },
   "config_applyThemeColorToIcon_label_info": { "message": "(*Нужно установить \"svg.context-properties.content.enabled\" как \"true\" в \"about:config\" в Firefox 62 и старше)" },
+  "config_showDialogInSidebar_label": { "message": "Показать диалоги на боковой панели, если возможно" },
 
 
   "config_context_caption": { "message": "Контекстное меню" },
@@ -511,6 +515,7 @@
   "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
 
   "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
+  "config_requestPermissions_bookmarks_context": { "message": "Разрешить открывать контекстное меню на закладках" },
   "config_requestPermissions_tabHide":   { "message": "Разрешить показывать / скрывать отдельные вкладки (* Вы должны снять/поставить этот флажок перед запуском тестов, чтобы убедиться, что разрешение получено)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Нажмите \"Tree Style Tab\" кнопку панели инструментов" },
