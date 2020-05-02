@@ -5,7 +5,7 @@
    * [サブパネル上でのネイティブコンテキストメニューの表示に対応した](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-provide-custom-context-menu-on-your-subpanel)（新APIの[`override-context`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#override-the-context)を含む）
    * コンテキストメニューに関わるAPIについて、`fake-contextMenu-*` という体系だったのを `fake-` プレフィクスなしの `contextMenu-*` に改めた（後方互換性のため、従来通りのAPI名も引き続き使用可能）
    * 設定ページの「外観」配下に、ダイアログをサイドバー内に表示する（確認とブックマークのダイアログの動作を以前の物に戻す）設定を追加
-   * `de`ロケール更新（by SammysHP. Thanks!）
+   * `de`ロケール更新（by [SammysHP](https://github.com/SammysHP). Thanks!）
  - 3.5.3 (2020.4.28)
    * モーダル風ダイアログがクローズボックスで閉じられた時の挙動を改善
    * モーダル風ダイアログを開くのに要する時間を若干短縮した
@@ -47,8 +47,8 @@
    * リンクやその他のオブジェクトをタブにドロップできない場合があったのを修正（最近のバージョンでの回帰バグ）
    * 設定画面自体を新規タブで開くためのリンクを、設定画面の最上部に追加した
    * 設定画面の最下部に「Reset All」ボタンを追加した
-   * `de`ロケール更新（by SammysHP. Thanks!）
-   * `ru`ロケール更新（by wvxwxvw. Thanks!）
+   * `de`ロケール更新（by [SammysHP](https://github.com/SammysHP). Thanks!）
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw). Thanks!）
  - 3.4.6 (2020.3.12)
    * コンテキストメニューとキーボードショートカット用コマンドに「ツリーを再帰的にたたむ」「ツリーを再帰的に展開する」を追加した
    * 以下のコンテキストメニュー項目で、未読リックによる動作の反転に対応した：ツリーをリロード/配下のタブをリロード、ツリーを閉じる/配下のタブを閉じる、1レベルだけたたむ/再帰的にたたむ、1レベルだけ展開する/再帰的に展開する
@@ -57,7 +57,7 @@
    * 親タブを閉じたときの挙動について、「Firefox本体のタブバーと併用するユーザー」向けの設定が既定になるようにした（そのようになることが期待されていたが、設定の移行処理によって意図せず別の設定になってしまっていた）
    * APIの[`collapse-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#collapse-expanded-tree)と[`expand-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#expand-collapsed-tree)で、`recursively`オプションで効果を再帰的に反映するかどうかを選択できるようにした
    * `fake-contextMenu-click`の通知内容に、クリックされたマウスのボタンを示す`button`を含めるように↓
-   * `ru`ロケール更新（by wvxwxvw. Thanks!）
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw). Thanks!）
  - 3.4.5 (2020.3.9)
    * Firefox自身のタブと同じ操作性にするために、開閉つまみ、音声再生ボタン、クローズボックス上でのCtrl-クリックおよびShift-クリックはタブの複数選択の操作として扱うようにした
    * [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/)、[TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr)との併用時の挙動を改善
@@ -88,7 +88,7 @@
    * 新しい通知型のAPIメッセージを追加した：[`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)、[`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded)、[`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst)、[`try-expand-tree-from-focused-parent`、`try-expand-tree-from-focused-bundled-parent`、`try-expand-tree-from-attached-child`、`try-expand-tree-from-focused-collapsed-tab`、`try-expand-tree-from-long-press-ctrl-key`、および`try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst)
    * <del>[`tab-mousedown`に続く`tab-mouseup`、`tab-clicked`、`tab-dblclicked`の各通知型メッセージ](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)について、前の通知に対するキャンセル操作で確実にキャンセルできるようにした</del>
    * プライベートウィンドウへのアクセスをTST上でも許可されていない限り、他のアドオンにはプライベートウィンドウでのイベントを通知しないようにした
-   * `ru`ロケール更新（by wvxwxvw. Thanks!）
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw). Thanks!）
  - 3.3.6 (2020.2.21)
    * 複数のタブが選択されている場合、コンテキストメニューの「このツリーをブックマーク」の実行時にそれら（およびその配下のタブ～をすべてブックマークするようにした
    * ブックマークフォルダ上のコンテキストメニューの「ツリーとしてすべて開く」で開かれるグループタブはペンディング状態にせずすぐ読み込むようにした
@@ -104,12 +104,12 @@
    * ピン留めされていないタブを最後のピン留めされたタブの後の位置にドロップできるようにした
    * ピン留めされていて、且つアイコンの大きさに縮められていないタブについて、タブ上のドロップ位置を上下方向で判定するようにした
    * ドラッグ操作中に折りたたまれたツリーの上でしばらく待ってツリーが自動的に展開されたときに、他のツリーを折りたたむかどうかを制御する上級者向け設定を追加
-   * `ru`ロケール更新（by wvxwxvw. Thanks!）
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw). Thanks!）
  - 3.3.4 (2020.1.14)
    * 循環参照に起因する意図されないエラーを修正
    * タブの表示／非表示が切り替わった後にツリー構造が意図せず変更されるケースを減らした
    * アクティブなタブが閉じられた直後にCtrl-Tab/Ctrl-Shift-Tabでタブを切り替えたとき、折り畳まれたツリーの子孫のタブがスキップされない問題を修正
-   * `kr`ロケール追加（by BoredSomeone. Thanks!）
+   * `kr`ロケール追加（by [BoredSomeone](https://github.com/BoredSomeone). Thanks!）
  - 3.3.3 (2020.1.12)
    * [Bug 1565170](https://bugzilla.mozilla.org/show_bug.cgi?id=1565170)が修正されて以後のバージョンのFirefoxに対応
    * タブを非表示にして再表示した後でタブのフォーカス移動がおかしくなっていたのを修正

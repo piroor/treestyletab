@@ -5,13 +5,13 @@
    * Support [native context menu on subpanels](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-provide-custom-context-menu-on-your-subpanel). This improvement includes a new API [`override-context`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#override-the-context).
    * Unprefix `fake-contextMenu-*` API to `contextMenu-*`. But `fake-` prefixed verisons are still available for backward compatibilitty.
    * Add an option to show dialogs in the sidebar, under the "Appearance" section of the options page. It takes back the old behavior around dialogs for confirmation and bookmarking.
-   * Update `de` locale by SammysHP. Thanks!
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
  - 3.5.3 (2020.4.28)
    * Handle dismissed semi-modal dialogs correctly.
    * Optimize semi-modal dialogs a little.
    * Optimize bookmark folder chooser UI for very large number of bookmarks.
    * Set the "Other Bookmarks" folder as the default choice of the bookmark folder chooser UI if the configured default folder was removed.
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.2 (2020.4.25)
    * Improve implementation of semi-modal dialogs. Now it is more stable, more similar to native dialogs, more friendly for dark color scheme, and don't appear in the "Recently Closed Windows" list.
  - 3.5.1 (2020.4.24)
@@ -19,7 +19,7 @@
  - 3.5.0 (2020.4.23)
    * Show dialogs as semi-modal popup windows.
    * Hide the context menu item "Reopen in Container" in private windows. This behavior is compatible to Firefox's one.
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.4.10 (2020.4.19)
    * Open bookmarks as tabs with their correct title, via the "Open All as a Tree" context menu command on a bookmark folder.
    * Open bookmarks more correctly via the "Open All as a Tree", even if `browser.tabs.insertAfterCurrent` is `true`.
@@ -47,8 +47,8 @@
    * Fix undroppability of links and some objects to tabs. (regression on recent versions)
    * Add a link to open the options page itself in a new tab, at the top of the page.
    * Add "Reset All" button to the bottom of the options page.
-   * Update `de` locale by SammysHP. Thanks!
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.4.6 (2020.3.12)
    * Add "Collapse this Tree Recursively" and "Expand this Tree Recursively" commands for the context menu and keyboard shortcuts.
    * Support inverted actions of some context menu commands with middle click: reload tree / reload descendants, close tree / close descendants, collapse tree one level / recursively, and expand tree one level / recursively.
@@ -58,7 +58,7 @@
    * Change the default behavior around closing tab without sidebar to "for people who use the native tab bar". It was unexpectedly overwritten by the auto migration mechanism.
    * Add a new option `recursively` to [`collapse-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#collapse-expanded-tree) and [`expand-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#expand-collapsed-tree) APIs.
    * Add a new paremter `button` to parameters notified to `fake-contextMenu-click` listeners.
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.4.5 (2020.3.9)
    * Better compatibility to Firefox's native tabs around behavior and user experience about Ctrl-Click and Shift-Click on UI elements in tabs (twisties, sound playing buttons, and closeboxes). Now these actions just changes multizelection state of tabs.
    * Better compatibility with the combination of [TST Lock Tree Collapsed](https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/) and [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr).
@@ -89,7 +89,7 @@
    * Add new API notification message types: [`tab-dblclicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked), [`tree-collapsed-state-changed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-tree-is-collapsed-or-expanded), [`try-move-focus-from-collapsing-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-focus-change-by-tst), [`try-expand-tree-from-focused-parent`, `try-expand-tree-from-focused-bundled-parent`, `try-expand-tree-from-attached-child`, `try-expand-tree-from-focused-collapsed-tab`, `try-expand-tree-from-long-press-ctrl-key` and `try-expand-tree-from-end-tab-switch`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst).
    * <del>Notifications and operations [`tab-mouseup`, `tab-clicked` and `tab-dblclicked` following to `tab-mousedown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) are now canceled by any leading notifications.</del>
    * Don't deliver messages around incognito windows to other addons, if they are not allowed to access incognito windows.
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.3.6 (2020.2.21)
    * "Bookmark this Tree" context menu command now bookmarks all multiselected tabs and thier descendants.
    * Open dummy group tab with loaded state always, when it is opened by "Open All as a Tree" context menu command on bookmark folders.
@@ -105,12 +105,12 @@
    * Unnpinned tab is now droppable after the last pinned tab.
    * Detect drop position on a tab as top or bottom for pinned but not-faviconized tabs.
    * Add an expert option to control the behavior: collapse other trees when a collapsed tree is auto-expanded by a long-dragover.
-   * Update `ru` locale by wvxwxvw. Thanks!
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.3.4 (2020.1.14)
    * Fix unexpected error from cyclic references.
    * Reduce accidental modifications of the tree structure after tabs are shown/hidden.
    * Skip collapsed tabs on Ctrl-Tab/Ctrl-Shift-Tab focus rotation more correctly, just after the active tab was closed.
-   * Add `kr` locale by BoredSomeone. Thanks!
+   * Add `kr` locale by [BoredSomeone](https://github.com/BoredSomeone). Thanks!
  - 3.3.3 (2020.1.12)
    * Support Firefox versions after the [bug 1565170](https://bugzilla.mozilla.org/show_bug.cgi?id=1565170) is fixed.
    * Fix confused tab focus after some tabs are hidden and shown.
