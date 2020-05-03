@@ -224,8 +224,6 @@
 
   "context_openAllBookmarksWithStructure_label": { "message": "Открыть все как дерево" },
   "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все с подпапками" },
-  "context_openBookmarksWithStructure_label": { "message": "Открыть с дочерними" },
-  "context_openBookmarksWithStructure_description": { "message": "(*пункт доступен на любой закладке сохраненной в составе дерева, позволяет открыть только указанную закладку и ее потомки)" },
 
 
   "config_title": { "message": "Открыть настройки Tree Style Tab в новой вкладке" },

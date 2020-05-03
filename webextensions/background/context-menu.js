@@ -221,9 +221,6 @@ const mBookmarkItemsById = {
   },
   openAllBookmarksWithStructureRecursively: {
     title: browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label')
-  },
-  openBookmarksWithStructure: {
-    title: browser.i18n.getMessage('context_openBookmarksWithStructure_label')
   }
 };
 const mBookmarkItems = [];
@@ -511,11 +508,6 @@ async function onBookmarkItemClick(info) {
     case 'openAllBookmarksWithStructureRecursively':
       Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: true });
       break;
-
-    case 'openBookmarksWithStructure':
-      const partialTreeItems = await Bookmark.getPartialTree(info.bookmarkId);
-      Commands.openBookmarksWithStructure(partialTreeItems);
-      break;
   }
 }
 
@@ -588,7 +580,6 @@ TabContextMenu.onTSTTabContextMenuShown.addListener(onTabContextMenuShown);
 
 async function onBookmarkContextMenuShown(info) {
   let isFolder = true;
-  let partialTreeItems = [];
   if (info.bookmarkId) {
     const item = await Bookmark.getItemById(info.bookmarkId);
     isFolder = (
@@ -596,8 +587,6 @@ async function onBookmarkContextMenuShown(info) {
       (item.type == 'bookmark' &&
        /^place:parent=([^&]+)$/.test(item.url))
     );
-    if (!isFolder)
-      partialTreeItems = await Bookmark.getPartialTree(item);
   }
 
   let visibleItemCount = 0;
@@ -610,11 +599,6 @@ async function onBookmarkContextMenuShown(info) {
   mBookmarkItemsById.openAllBookmarksWithStructureRecursively.visible = !!(
     isFolder &&
     configs[mBookmarkItemsById.openAllBookmarksWithStructureRecursively.configKey] &&
-    ++visibleItemCount
-  );
-  mBookmarkItemsById.openBookmarksWithStructure.visible = !!(
-    partialTreeItems.length > 1 &&
-    configs[mBookmarkItemsById.openBookmarksWithStructure.configKey] &&
     ++visibleItemCount
   );
 
