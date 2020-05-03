@@ -334,7 +334,7 @@
   "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Inherit the container of the current tab" },
 
-  "config_sameSiteOrphan_caption": { "message": "New tab with the same website as the current tab from the location bar, bookmarks, hitories, or other cases" },
+  "config_sameSiteOrphan_caption": { "message": "New tab with the same website as the current tab from the location bar, bookmarks, histories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(no control)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
