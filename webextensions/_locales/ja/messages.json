@@ -219,6 +219,7 @@
 
   "context_openAllBookmarksWithStructure_label": { "message": "ツリーとしてすべて開く(&A)" },
   "context_openAllBookmarksWithStructureRecursively_label": { "message": "サブフォルダーも含めてツリーとしてすべて開く(&A)" },
+  "context_openBookmarksWithStructure_label": { "message": "この配下を部分的にツリーとして開く(&A)" },
 
 
 

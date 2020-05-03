@@ -329,6 +329,11 @@ const mItems = [
         key:   'context_openAllBookmarksWithStructureRecursively',
         type:  'checkbox'
       },
+      {
+        title: indent() + browser.i18n.getMessage('context_openBookmarksWithStructure_label'),
+        key:   'context_openBookmarksWithStructure',
+        type:  'checkbox'
+      },
       { type: 'separator' },
       {
         title: indent() + browser.i18n.getMessage('config_openAllBookmarksWithStructureDiscarded_label'),

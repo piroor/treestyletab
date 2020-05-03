@@ -904,24 +904,9 @@ async function collectBookmarkItems(root, recursively) {
   return items;
 }
 
-export async function openAllBookmarksWithStructure(id, { discarded, recursively } = {}) {
+export async function openBookmarksWithStructure(items, { activeIndex = 0, discarded } = {}) {
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
-
-  let item = await browser.bookmarks.get(id);
-  if (Array.isArray(item))
-    item = item[0];
-  if (!item)
-    return;
-
-  if (item.type != 'folder') {
-    item = await browser.bookmarks.get(item.parentId);
-    if (Array.isArray(item))
-      item = item[0];
-  }
-
-  const items = await collectBookmarkItems(item, recursively);
-  const indexToBeActive = items.findIndex(item => !item.group);
 
   const lastItemIndicesWithLevel = new Map();
   let lastMaxLevel = 0;
@@ -970,8 +955,8 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
     await TabsMove.waitUntilSynchronized(windowId);
   }
 
-  if (tabs.length > indexToBeActive)
-    TabsInternalOperation.activateTab(tabs[indexToBeActive]);
+  if (tabs.length > activeIndex)
+    TabsInternalOperation.activateTab(tabs[activeIndex]);
   if (tabs.length == structure.length)
     await Tree.applyTreeStructureToTabs(tabs, structure);
 
@@ -986,4 +971,26 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
       insertAfter:  referenceTabs.insertAfter,
       insertBefore: referenceTabs.insertBefore
     });
+}
+
+export async function openAllBookmarksWithStructure(id, { discarded, recursively } = {}) {
+  if (typeof discarded == 'undefined')
+    discarded = configs.openAllBookmarksWithStructureDiscarded;
+
+  let item = await browser.bookmarks.get(id);
+  if (Array.isArray(item))
+    item = item[0];
+  if (!item)
+    return;
+
+  if (item.type != 'folder') {
+    item = await browser.bookmarks.get(item.parentId);
+    if (Array.isArray(item))
+      item = item[0];
+  }
+
+  const items = await collectBookmarkItems(item, recursively);
+  const activeIndex = items.findIndex(item => !item.group);
+
+  openBookmarksWithStructure(items, { activeIndex, discarded });
 }

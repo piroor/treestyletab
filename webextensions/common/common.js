@@ -90,6 +90,7 @@ export const configs = new Configs({
 
   context_openAllBookmarksWithStructure: true,
   context_openAllBookmarksWithStructureRecursively: false,
+  context_openBookmarksWithStructure: true,
 
   openAllBookmarksWithStructureDiscarded: true,
 

@@ -12,6 +12,7 @@ import {
 
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as Bookmark from '/common/bookmark.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 import Tab from '/common/Tab.js';
@@ -214,32 +215,37 @@ function addTabItems() {
 addTabItems.done = false;
 
 
-const mBookmarkItems = [
-  {
-    id:       'openAllBookmarksWithStructure',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructure_label'),
-    contexts: ['bookmark'],
-    icons:    manifest.icons
+const mBookmarkItemsById = {
+  openAllBookmarksWithStructure: {
+    title: browser.i18n.getMessage('context_openAllBookmarksWithStructure_label')
   },
-  {
-    id:       'openAllBookmarksWithStructureRecursively',
-    title:    browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label'),
-    contexts: ['bookmark'],
-    icons:    manifest.icons
+  openAllBookmarksWithStructureRecursively: {
+    title: browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label')
+  },
+  openBookmarksWithStructure: {
+    title: browser.i18n.getMessage('context_openBookmarksWithStructure_label')
   }
-];
-const mBookmarkItemsById = {};
-const mGroupedBookmarkItems = mBookmarkItems.map(item => {
-  mBookmarkItemsById[item.id] = item;
-  item.configKey = `context_${item.id}`;
-  return {
+};
+const mBookmarkItems = [];
+const mGroupedBookmarkItems = []
+for (const id of Object.keys(mBookmarkItemsById)) {
+  const item = mBookmarkItemsById[id];
+  item.id        = id;
+  item.contexts  = ['bookmark'];
+  item.configKey = `context_${id}`;
+  const groupedItem = {
     ...item,
-    id:       `grouped:${item.id}`,
-    parentId: kROOT_BOOKMARK_ITEM,
-    icons:    null,
+    id:            `grouped:${id}`,
+    parentId:      kROOT_BOOKMARK_ITEM,
     ungroupedItem: item
   };
-});
+  item.icons = manifest.icons;
+
+  mBookmarkItems.push(item);
+
+  mBookmarkItemsById[groupedItem.id] = groupedItem;
+  mGroupedBookmarkItems.push(groupedItem);
+}
 
 const mBookmarkSeparator = {
   id:        `separatprBefore${kROOT_BOOKMARK_ITEM}`,
@@ -496,13 +502,19 @@ function onTabItemClick(info, tab) {
 }
 TabContextMenu.onTSTItemClick.addListener(onTabItemClick);
 
-function onBookmarkItemClick(info) {
+async function onBookmarkItemClick(info) {
   switch (info.menuItemId.replace(/^grouped:/, '')) {
     case 'openAllBookmarksWithStructure':
       Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: false });
       break;
+
     case 'openAllBookmarksWithStructureRecursively':
       Commands.openAllBookmarksWithStructure(info.bookmarkId, { recursively: true });
+      break;
+
+    case 'openBookmarksWithStructure':
+      const partialTreeItems = await Bookmark.getPartialTree(info.bookmarkId);
+      Commands.openBookmarksWithStructure(partialTreeItems);
       break;
   }
 }
@@ -576,26 +588,40 @@ TabContextMenu.onTSTTabContextMenuShown.addListener(onTabContextMenuShown);
 
 async function onBookmarkContextMenuShown(info) {
   let isFolder = true;
+  let partialTreeItems = [];
   if (info.bookmarkId) {
-    let item = await browser.bookmarks.get(info.bookmarkId);
-    if (Array.isArray(item))
-      item = item[0];
-    isFolder = item.type == 'folder';
+    const item = await Bookmark.getItemById(info.bookmarkId);
+    isFolder = (
+      item.type == 'folder' ||
+      (item.type == 'bookmark' &&
+       /^place:parent=([^&]+)$/.test(item.url))
+    );
+    if (!isFolder)
+      partialTreeItems = await Bookmark.getPartialTree(item);
   }
 
   let visibleItemCount = 0;
-  for (const item of mBookmarkItems) {
-    item.visible = !!(
-      isFolder &&
-      configs[item.configKey] &&
-      ++visibleItemCount
-    );
-  }
+
+  mBookmarkItemsById.openAllBookmarksWithStructure.visible = !!(
+    isFolder &&
+    configs[mBookmarkItemsById.openAllBookmarksWithStructure.configKey] &&
+    ++visibleItemCount
+  );
+  mBookmarkItemsById.openAllBookmarksWithStructureRecursively.visible = !!(
+    isFolder &&
+    configs[mBookmarkItemsById.openAllBookmarksWithStructureRecursively.configKey] &&
+    ++visibleItemCount
+  );
+  mBookmarkItemsById.openBookmarksWithStructure.visible = !!(
+    partialTreeItems.length > 1 &&
+    configs[mBookmarkItemsById.openBookmarksWithStructure.configKey] &&
+    ++visibleItemCount
+  );
+
   for (const item of mGroupedBookmarkItems) {
     item.visible = !!(
       visibleItemCount > 1 &&
-      isFolder &&
-      configs[item.configKey]
+      item.ungroupedItem.visible
     );
     if (item.visible)
       item.ungroupedItem.visible = false;

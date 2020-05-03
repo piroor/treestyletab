@@ -224,6 +224,7 @@
 
   "context_openAllBookmarksWithStructure_label": { "message": "Open &All as a Tree" },
   "context_openAllBookmarksWithStructureRecursively_label": { "message": "Open &All as a Tree including subfolders" },
+  "context_openBookmarksWithStructure_label": { "message": "Open &as a Partial Tree from here" },
 
 
   "config_title": { "message": "Tree Style Tab Options" },

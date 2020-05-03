@@ -40,6 +40,31 @@ export async function getItemById(id) {
   return null;
 }
 
+export async function getPartialTree(itemOrId) {
+  const item = typeof itemOrId == 'string' ? (await getItemById(itemOrId)) : itemOrId;
+  if (!item ||
+      item.type != 'bookmark' ||
+      /^place:parent=([^&]+)$/.test(item.url)) // alias for special folders)
+    return [];
+
+  const partialTreeItems = [{...item}];
+
+  const matched = item.title.match(/^((>+)\s+)/);
+  const commonPrefix = matched && matched[2] || '';
+  if (matched)
+    partialTreeItems[0].title = item.title.replace(matched[1], '');
+
+  const descendantsMatcher = new RegExp(`^${commonPrefix}>`);
+  const items = await browser.bookmarks.getChildren(item.parentId);
+  for (const descendant of items.slice(item.index + 1)) {
+    if (!descendantsMatcher.test(descendant.title))
+      break;
+    descendant.title = descendant.title.replace(commonPrefix, '');
+    partialTreeItems.push(descendant);
+  }
+  return partialTreeItems;
+}
+
 function getAnimationDuration() {
   return configs.animation ? configs.collapseDuration : 0.001;
 }
