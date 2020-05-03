@@ -3,6 +3,7 @@
  - master/HEAD
    * Show semi-modal dialogs more smartly. The annoying flash from a small window before the dialog is finally shown goes away.
    * Add an option to show dialogs in the sidebar, under the "Appearance" section of the options page. It takes back the old behavior around dialogs for confirmation and bookmarking.
+   * Reduce needless space below rendered columns of tabs tree in group tab pages.
    * Support [drag-and-drop between TST's tabs and subpanels](https://github.com/piroor/treestyletab/wiki/SubPanel-API#drag-and-drop-between-your-subpanel-and-tst). This improvement includes a new API [`get-drag-data`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#transfer-drag-data-from-a-subpanel-to-tst).
    * Support [native context menu on subpanels](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-provide-custom-context-menu-on-your-subpanel). This improvement includes a new API [`override-context`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#override-the-context).
    * Unprefix `fake-contextMenu-*` API to `contextMenu-*`. But `fake-` prefixed verisons are still available for backward compatibilitty.
