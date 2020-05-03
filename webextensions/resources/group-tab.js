@@ -365,7 +365,7 @@
     if (aTree.columnWidth * 2 <= maxWidth ||
         options.calculateCount) {
       style.height = style.maxHeight =
-        Math.floor(containerRect.height * 0.9) + 'px';
+        `calc(${containerRect.height}px - 1em)`;
 
       if (getActualColumnCount(aTree) <= 1)
         style.columnWidth = style.MozColumnWidth = '';
