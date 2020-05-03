@@ -125,6 +125,8 @@ export async function bookmarkTab(tab, options = {}) {
                     <button name="parentId">-</button></label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+        if (container.classList.contains('simulation'))
+          return;
         MenuUI.init();
         container.classList.add('bookmark-dialog');
         const [defaultItem, rootItems] = await Promise.all([
@@ -246,6 +248,8 @@ export async function bookmarkTabs(tabs, options = {}) {
                     <button name="parentId">-</button></label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+        if (container.classList.contains('simulation'))
+          return;
         MenuUI.init();
         container.classList.add('bookmark-dialog');
         const [defaultItem, rootItems] = await Promise.all([
