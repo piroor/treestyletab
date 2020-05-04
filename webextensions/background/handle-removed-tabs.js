@@ -42,10 +42,14 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   let newParent;
   const successor = tab.$TST.possibleSuccessorWithDifferentContainer;
   if (successor) {
-    if (successor && successor != tab.$TST.firstChild) {
-      newParent = successor;
-    }
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    // When a new tab is created with a different container and this tab
+    // is removed immediately before the new tab is completely handled,
+    // TST fails to detect the new tab as the successor of this tab. Thus,
+    // we treat the new tab as the successor - the first child of this
+    // (actually not attached to this tab yet).
+    if (successor && successor != tab.$TST.firstChild)
+      newParent = successor;
   }
   else {
     closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
