@@ -916,8 +916,13 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
     // Respect container type stored by Container Bookmarks
     // https://addons.mozilla.org/firefox/addon/container-bookmarks/
     const matchedContainer = item.url.match(containerMatcher);
-    if (matchedContainer)
-      item.cookieStoreId = ContextualIdentities.getIdFromName(decodeURIComponent(matchedContainer[matchedContainer.length-1]));
+    if (matchedContainer) {
+      const cookieStoreId = ContextualIdentities.getIdFromName(decodeURIComponent(matchedContainer[matchedContainer.length-1]));
+      if (cookieStoreId) {
+        item.cookieStoreId = cookieStoreId;
+        item.url = item.url.replace(containerMatcher, '');
+      }
+    }
 
     let level = 0;
     if (lastItemIndicesWithLevel.size > 0 &&
