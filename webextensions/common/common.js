@@ -276,7 +276,6 @@ tab-item.private-browsing tab-label:before {
   // This must be same to the redirect key of Container Bookmarks.
   // https://addons.mozilla.org/firefox/addon/container-bookmarks/
   containerRedirectKey: 'container',
-  bookmarkWithContainerRedirectKey: true,
 
 
   debug:     false,
