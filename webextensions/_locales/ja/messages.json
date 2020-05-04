@@ -143,6 +143,7 @@
   "bookmarkDialog_url":      { "message": "URL:" },
   "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "フォルダー:" },
+  "bookmarkDialog_saveContainerRedirectKey": { "message": "コンテナーの情報をContainer Bookmarks形式で保存する" },
   "bookmarkDialog_accept":   { "message": "保存" },
   "bookmarkDialog_cancel":   { "message": "キャンセル" },
 
@@ -485,6 +486,7 @@
   "addon_containerBookmarks_label": { "message": "Container Bookmarks" },
   "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
   "config_containerRedirectKey_label": { "message": "リダイレクトキー（※Container Bookmarksの設定画面の値と揃えて下さい）:" },
+  "config_bookmarkWithContainerRedirectKey_label": { "message": "ブックマーク作成時に、コンテナーの情報をContainer Bookmarks形式で保存する" },
 
 
   "config_debug_caption": { "message": "開発用" },

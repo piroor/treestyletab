@@ -143,6 +143,7 @@
   "bookmarkDialog_url":      { "message": "Location:" },
   "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "Folder:" },
+  "bookmarkDialog_saveContainerRedirectKey": { "message": "Save container information for Container Bookmarks" },
   "bookmarkDialog_accept":   { "message": "Save" },
   "bookmarkDialog_cancel":   { "message": "Cancel" },
 
@@ -489,6 +490,7 @@
   "addon_containerBookmarks_label": { "message": "Container Bookmarks" },
   "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
   "config_containerRedirectKey_label": { "message": "Redirect Key (*Please set a value same to the one in the addon's options page):" },
+  "config_bookmarkWithContainerRedirectKey_label": { "message": "Save container information for Container Bookmarks on bookmarks creation" },
 
 
   "config_debug_caption": { "message": "Development" },

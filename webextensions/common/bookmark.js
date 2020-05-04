@@ -16,6 +16,7 @@ import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
+import * as ContextualIdentities from './contextual-identities.js';
 import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
@@ -99,6 +100,7 @@ export async function bookmarkTab(tab, options = {}) {
   let title    = tab.title;
   let url      = tab.url;
   let parentId = parent && parent.id;
+  let saveContainerRedirectKey = configs.bookmarkWithContainerRedirectKey;
   if (options.showDialog) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
@@ -119,10 +121,15 @@ export async function bookmarkTab(tab, options = {}) {
                            name="url"
                            style="${fieldMinWidth}"
                            value=${JSON.stringify(url)}></label></div>
-        <div style="margin-bottom: 3em"
+        <div style="margin-bottom: 1em"
             ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                     ${inSidebar ? '<br>' : ''}
                     <button name="parentId">-</button></label></div>
+        <div style="margin-bottom: 3em"
+            ><label><input name="saveContainerRedirectKey"
+                           type="checkbox"
+                           ${saveContainerRedirectKey ? 'checked' : ''}>
+                    ${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_saveContainerRedirectKey'))}</label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
@@ -179,6 +186,14 @@ export async function bookmarkTab(tab, options = {}) {
     title    = result.values.title;
     url      = result.values.url;
     parentId = result.values.parentId;
+    saveContainerRedirectKey = result.values.saveContainerRedirectKey;
+  }
+
+  if (saveContainerRedirectKey &&
+      tab.cookieStoreId &&
+      tab.cookieStoreId != 'firefox-default') {
+    const name = ContextualIdentities.get(tab.cookieStoreId).name;
+    url = `${url.replace(/#.+$/, '')}#${configs.containerRedirectKey}-${encodeURIComponent(name.toLowerCase())}`;
   }
 
   mCreatingCount++;
@@ -229,6 +244,8 @@ export async function bookmarkTabs(tabs, options = {}) {
   if (parent)
     folderParams.parentId = parent.id;
 
+  let saveContainerRedirectKey = configs.bookmarkWithContainerRedirectKey;
+
   if (options.showDialog) {
     const windowId = tabs[0].windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
@@ -242,10 +259,15 @@ export async function bookmarkTabs(tabs, options = {}) {
                            name="title"
                            style="${fieldMinWidth}"
                            value=${JSON.stringify(folderParams.title)}></label></div>
-        <div style="margin-bottom: 3em"
+        <div style="margin-bottom: 1em"
             ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
                     ${inSidebar ? '<br>' : ''}
                     <button name="parentId">-</button></label></div>
+        <div style="margin-bottom: 3em"
+            ><label><input name="saveContainerRedirectKey"
+                           type="checkbox"
+                           ${saveContainerRedirectKey ? 'checked' : ''}>
+                    ${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_saveContainerRedirectKey'))}</label></div>
       `,
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
@@ -301,6 +323,7 @@ export async function bookmarkTabs(tabs, options = {}) {
       return null;
     folderParams.title    = result.values.title;
     folderParams.parentId = result.values.parentId;
+    saveContainerRedirectKey = result.values.saveContainerRedirectKey;
   }
 
   const toBeCreatedCount = tabs.length + 1;
@@ -309,11 +332,19 @@ export async function bookmarkTabs(tabs, options = {}) {
   const titles = getTitlesWithTreeStructure(tabs);
   const folder = await browser.bookmarks.create(folderParams).catch(ApiTabs.createErrorHandler());
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
+    const tab = tabs[i];
+    let url = tab.url;
+    if (saveContainerRedirectKey &&
+        tab.cookieStoreId &&
+        tab.cookieStoreId != 'firefox-default') {
+      const name = ContextualIdentities.get(tab.cookieStoreId).name;
+      url = `${url.replace(/#.+$/, '')}#${configs.containerRedirectKey}-${encodeURIComponent(name.toLowerCase())}`;
+    }
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,
       title:    titles[i],
-      url:      tabs[i].url
+      url
     }).catch(ApiTabs.createErrorSuppressor());
   }
 
