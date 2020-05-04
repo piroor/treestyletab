@@ -282,7 +282,8 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
     log('=> moved into existing tree');
     newParent = prevParent;
   }
-  else if (prevLevel > nextLevel) {
+  else if (prevLevel > nextLevel  &&
+           nextTab.parent != tab.id) {
     log('=> moved to end of existing tree');
     if (!target.active &&
         target.children.length == 0 &&
