@@ -515,13 +515,30 @@ function reserveToGroupCreatedBookmarks() {
     tryGroupCreatedBookmarks();
   }, 250);
 }
+reserveToGroupCreatedBookmarks.reserved = null;
+reserveToGroupCreatedBookmarks.retryCount = 0;
 
 async function tryGroupCreatedBookmarks() {
   log('tryGroupCreatedBookmarks ', mCreatedBookmarks);
-  const bookmarks = mCreatedBookmarks;
-  mCreatedBookmarks = [];
 
   const lastDraggedTabs = configs.lastDraggedTabs;
+  if (lastDraggedTabs &&
+      lastDraggedTabs.tabIds.length > mCreatedBookmarks.length) {
+    if (reserveToGroupCreatedBookmarks.retryCount++ < 10) {
+      return reserveToGroupCreatedBookmarks();
+    }
+    else {
+      reserveToGroupCreatedBookmarks.retryCount = 0;
+      mCreatedBookmarks = [];
+      configs.lastDraggedTabs = null;
+      log(' => timeout');
+      return;
+    }
+  }
+  reserveToGroupCreatedBookmarks.retryCount = 0;
+
+  const bookmarks = mCreatedBookmarks;
+  mCreatedBookmarks = [];
   {
     // accept only bookmarks from dragged tabs
     const digest = await sha1sum(bookmarks.map(tab => tab.url).join('\n'));
