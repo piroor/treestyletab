@@ -624,12 +624,25 @@ async function tryGroupCreatedBookmarks() {
     titles = getTitlesWithTreeStructure(tabs);
   }
 
-  log('save bookmark structure to tabs');
+  log('save tree structure (and container information) to bookmarks');
   for (let i = 0, maxi = bookmarks.length; i < maxi; i++) {
+    const bookmark = bookmarks[i];
+    const updated = {};
+
+    const tab = tabs[i];
+    if (configs.bookmarkWithContainerRedirectKey &&
+        tab.cookieStoreId &&
+        tab.cookieStoreId != 'firefox-default') {
+      const name = ContextualIdentities.get(tab.cookieStoreId).name;
+      updated.url = `${bookmark.url.replace(/#.+$/, '')}#${configs.containerRedirectKey}-${encodeURIComponent(name.toLowerCase())}`;
+    }
+
     const title = titles[i];
     if (title == tabs[i].title)
-      continue;
-    browser.bookmarks.update(bookmarks[i].id, { title });
+      updated.title = title;
+
+    if (Object.keys(updated).length > 0)
+      browser.bookmarks.update(bookmark.id, updated);
   }
 }
 
