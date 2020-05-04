@@ -580,6 +580,7 @@ async function tryGroupCreatedBookmarks() {
 
   log('ready to group bookmarks under a folder');
 
+  log('create a folder for grouping');
   mCreatingCount++;
   const folder = await browser.bookmarks.create({
     type:  'folder',
@@ -591,6 +592,7 @@ async function tryGroupCreatedBookmarks() {
     mCreatingCount--;
   });
 
+  log('move into a folder');
   let movedCount = 0;
   for (const bookmark of bookmarks) {
     await browser.bookmarks.move(bookmark.id, {
