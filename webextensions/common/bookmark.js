@@ -499,8 +499,7 @@ let mCreatedBookmarks = [];
 async function onBookmarksCreated(id, bookmark) {
   log('onBookmarksCreated ', { id, bookmark });
 
-  if (!(await Permissions.isGranted(Permissions.BOOKMARKS)) ||
-      mCreatingCount > 0)
+  if (mCreatingCount > 0)
     return;
 
   mCreatedBookmarks.push(bookmark);
