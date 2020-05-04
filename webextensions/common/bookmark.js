@@ -638,7 +638,7 @@ async function tryGroupCreatedBookmarks() {
     }
 
     const title = titles[i];
-    if (title == tabs[i].title)
+    if (title != tabs[i].title)
       updated.title = title;
 
     if (Object.keys(updated).length > 0)
