@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.4 (2020.5.5)
    * Show semi-modal dialogs more smartly. The annoying flash from a small window before the dialog is finally shown goes away.
    * Add an option to show dialogs in the sidebar, under the "Appearance" section of the options page. It takes back the old behavior around dialogs for confirmation and bookmarking.
    * Reduce needless space below rendered columns of tabs tree in group tab pages.
