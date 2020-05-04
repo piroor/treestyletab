@@ -19,6 +19,7 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 
 import Tab from '/common/Tab.js';
 
@@ -910,7 +911,14 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
 
   const lastItemIndicesWithLevel = new Map();
   let lastMaxLevel = 0;
+  const containerMatcher = new RegExp(`#${configs.containerRedirectKey}-(.+)$`);
   const structure = items.reduce((result, item, index) => {
+    // Respect container type stored by Container Bookmarks
+    // https://addons.mozilla.org/firefox/addon/container-bookmarks/
+    const matchedContainer = item.url.match(containerMatcher);
+    if (matchedContainer)
+      item.cookieStoreId = ContextualIdentities.getIdFromName(decodeURIComponent(matchedContainer[matchedContainer.length-1]));
+
     let level = 0;
     if (lastItemIndicesWithLevel.size > 0 &&
         item.title.match(DESCENDANT_MATCHER)) {

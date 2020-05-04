@@ -23,6 +23,14 @@ export function get(id) {
   return mContextualIdentities.get(id);
 }
 
+export function getIdFromName(name) {
+  for (const identity of mContextualIdentities.values()) {
+    if (identity.name.toLowerCase() == name.toLowerCase())
+      return identity.cookieStoreId;
+  }
+  return null;
+}
+
 export function getCount() {
   return mContextualIdentities.size;
 }

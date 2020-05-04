@@ -126,6 +126,8 @@ export async function openURIsInTabs(uris, options = {}) {
           params.title = uri.title;
         if ('discarded' in uri)
           params.discarded = uri.discarded;
+        if ('cookieStoreId' in uri)
+          params.cookieStoreId = uri.cookieStoreId;
         uri = uri.uri || uri.url;
       }
       let searchQuery = null;
@@ -158,7 +160,7 @@ export async function openURIsInTabs(uris, options = {}) {
         params.openerTabId = options.opener.id;
       if (startIndex > -1)
         params.index = startIndex + index;
-      if (options.cookieStoreId)
+      if (options.cookieStoreId && !params.cookieStoreId)
         params.cookieStoreId = options.cookieStoreId;
         // Tabs opened with different container can take time to be tracked,
         // then TabsStore.waitUntilTabsAreCreated() may be resolved before it is

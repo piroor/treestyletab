@@ -482,6 +482,11 @@
   "config_externalAddonPermissions_header_permissions": { "message": "許可する特別な操作" },
   "config_externalAddonPermissions_header_incognito": { "message": "プライベートウィンドウからのメッセージを通知する" },
 
+  "config_containerRedirectKey_label_before": { "message": "" },
+  "config_containerRedirectKey_containerBookmarks_label": { "message": "Container Bookmarks" },
+  "config_containerRedirectKey_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
+  "config_containerRedirectKey_label_after": { "message": "のリダイレクトキー（※当該アドオンの設定画面の値と揃えて下さい）:" },
+
 
   "config_debug_caption": { "message": "開発用" },
 

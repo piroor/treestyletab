@@ -205,6 +205,9 @@ export const configs = new Configs({
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
   defaultSearchEngine: 'https://www.google.com/search?q=%s',
+  // This must be same to the redirect key of Container Bookmarks.
+  // https://addons.mozilla.org/firefox/addon/container-bookmarks/
+  containerRedirectKey: 'container',
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
   enableWorkaroundForBug1409262: false,
