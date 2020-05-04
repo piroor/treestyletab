@@ -4,6 +4,8 @@
    * モーダル風ダイアログの表示サイズを、実際にウィンドウを開く前にある程度計算するようにして、初期化前のウィンドウによる不快なチラつきを低減した
    * 設定ページの「外観」配下に、ダイアログをサイドバー内に表示する（確認とブックマークのダイアログの動作を以前の物に戻す）設定を追加
    * グループ化用のタブ内で、ツリー構造の表示領域の下にあった無駄なスペースを減らした
+   * 最近のバージョンの[Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers/)との互換性を向上
+   * [Container Bookmarks](https://addons.mozilla.org/firefox/addon/container-bookmarks/)との互換性を向上し、ブックマークをツリーとして開く際にコンテナーの情報を検出できた場合はブックマークを直接そのコンテナーのタブで開くようにした
    * [TSTのタブとサブパネルとの間のドラッグ＆ドロップを可能にした](https://github.com/piroor/treestyletab/wiki/SubPanel-API#drag-and-drop-between-your-subpanel-and-tst)（新APIの[`get-drag-data`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#transfer-drag-data-from-a-subpanel-to-tst)を含む）
    * [サブパネル上でのネイティブコンテキストメニューの表示に対応した](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-provide-custom-context-menu-on-your-subpanel)（新APIの[`override-context`](https://github.com/piroor/treestyletab/wiki/SubPanel-API#override-the-context)を含む）
    * コンテキストメニューに関わるAPIについて、`fake-contextMenu-*` という体系だったのを `fake-` プレフィクスなしの `contextMenu-*` に改めた（後方互換性のため、従来通りのAPI名も引き続き使用可能）
