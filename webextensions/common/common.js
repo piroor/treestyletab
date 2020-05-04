@@ -205,9 +205,6 @@ export const configs = new Configs({
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'unfiled_____',
   defaultSearchEngine: 'https://www.google.com/search?q=%s',
-  // This must be same to the redirect key of Container Bookmarks.
-  // https://addons.mozilla.org/firefox/addon/container-bookmarks/
-  containerRedirectKey: 'container',
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
   enableWorkaroundForBug1409262: false,
@@ -232,12 +229,6 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
   migratedBookmarkUrls: [],
-  knownExternalAddons: [
-    'multipletab@piro.sakura.ne.jp'
-  ],
-  cachedExternalAddons: [],
-  grantedExternalAddonPermissions: {},
-  incognitoAllowedExternalAddons: [],
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,
@@ -272,6 +263,20 @@ tab-item.private-browsing tab-label:before {
 }
 */
 `.trim(),
+
+
+  // Compatibility with other addons
+  knownExternalAddons: [
+    'multipletab@piro.sakura.ne.jp'
+  ],
+  cachedExternalAddons: [],
+  grantedExternalAddonPermissions: {},
+  incognitoAllowedExternalAddons: [],
+
+  // This must be same to the redirect key of Container Bookmarks.
+  // https://addons.mozilla.org/firefox/addon/container-bookmarks/
+  containerRedirectKey: 'container',
+
 
   debug:     false,
   logTimestamp: true,

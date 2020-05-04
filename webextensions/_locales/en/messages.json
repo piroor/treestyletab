@@ -486,10 +486,9 @@
   "config_externalAddonPermissions_header_permissions": { "message": "Allowed Special Operations" },
   "config_externalAddonPermissions_header_incognito": { "message": "Notify Messages from Private Windows" },
 
-  "config_containerRedirectKey_label_before": { "message": "Redirect Key of the " },
-  "config_containerRedirectKey_containerBookmarks_label": { "message": "Container Bookmarks" },
-  "config_containerRedirectKey_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
-  "config_containerRedirectKey_label_after": { "message": " (*Please set a value same to the one in the addon's options page):" },
+  "addon_containerBookmarks_label": { "message": "Container Bookmarks" },
+  "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
+  "config_containerRedirectKey_label": { "message": "Redirect Key (*Please set a value same to the one in the addon's options page):" },
 
 
   "config_debug_caption": { "message": "Development" },
