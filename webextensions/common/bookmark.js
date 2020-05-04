@@ -16,7 +16,6 @@ import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
-import * as ContextualIdentities from './contextual-identities.js';
 import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
