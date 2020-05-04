@@ -39,10 +39,17 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     return;
 
   let closeParentBehavior;
-  if (tab.$TST.mayBeOriginalOfReplacedWithContainer)
+  let newParent;
+  const successor = tab.$TST.possibleSuccessorWithDifferentContainer;
+  if (successor) {
+    if (successor && successor != tab.$TST.firstChild) {
+      newParent = successor;
+    }
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-  else
+  }
+  else {
     closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+  }
 
   if (!SidebarConnection.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
@@ -92,6 +99,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   }
 
   Tree.detachAllChildren(tab, {
+    newParent,
     behavior:  closeParentBehavior,
     broadcast: true
   });

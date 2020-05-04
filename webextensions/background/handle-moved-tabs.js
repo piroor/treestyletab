@@ -300,7 +300,8 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
       newParent = tree.tabsById[newParent.parent];
     }
   }
-  else if (prevLevel < nextLevel) {
+  else if (prevLevel < nextLevel &&
+           nextTab.parent == prevTab.id) {
     log('=> moved to first child position of existing tree');
     newParent = prevTab || oldParent || nextParent;
   }

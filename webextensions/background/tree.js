@@ -382,9 +382,15 @@ export async function detachTabsFromTree(tabs, options = {}) {
 }
 
 export function detachAllChildren(tab, options = {}) {
-  log('detachAllChildren: ', tab.id);
+  log('detachAllChildren: ', tab.id, options);
   // the "children" option is used for removing tab.
   const children = options.children ? options.children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
+
+  if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+      options.newParent &&
+      !children.includes(options.newParent))
+    children.unshift(options.newParent);
+
   if (!children.length)
     return;
   log(' => children to be detached: ', () => children.map(dumpTab));

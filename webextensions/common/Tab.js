@@ -325,18 +325,43 @@ export default class Tab {
   // Temporary Containers
   // https://addons.mozilla.org/firefox/addon/temporary-containers/
   get mayBeReplacedWithContainer() {
-    const prevTab = this.unsafePreviousTab;
-    return (
-      !!prevTab &&
-      this.tab.cookieStoreId != prevTab.cookieStoreId &&
-      this.tab.url == prevTab.url
+    return !!(
+      this.$possiblePredecessorPreviousTab ||
+      this.$possiblePredecessorNextTab
     );
   }
-  get mayBeOriginalOfReplacedWithContainer() {
-    const firstChild = this.firstChild;
+  get $possiblePredecessorPreviousTab() {
+    const prevTab = this.unsafePreviousTab;
     return (
-      !!firstChild &&
-      firstChild.$TST.mayBeReplacedWithContainer
+      prevTab &&
+      this.tab.cookieStoreId != prevTab.cookieStoreId &&
+      this.tab.url == prevTab.url
+    ) ? prevTab : null;
+  }
+  get $possiblePredecessorNextTab() {
+    const nextTab = this.unsafeNextTab;
+    return (
+      nextTab &&
+      this.tab.cookieStoreId != nextTab.cookieStoreId &&
+      this.tab.url == nextTab.url
+    ) ? nextTab : null;
+  }
+  get possibleSuccessorWithDifferentContainer() {
+    const firstChild = this.firstChild;
+    const nextTab = this.nextTab;
+    const prevTab = this.previousTab;
+    return (
+      (firstChild &&
+       firstChild.$TST.$possiblePredecessorPreviousTab == this.tab &&
+       firstChild) ||
+      (nextTab &&
+       !nextTab.$TST.openedCompletely &&
+       nextTab.$TST.$possiblePredecessorPreviousTab == this.tab &&
+       nextTab) ||
+      (prevTab &&
+       !prevTab.$TST.openedCompletely &&
+       prevTab.$TST.$possiblePredecessorNextTab == this.tab &&
+       prevTab)
     );
   }
 
