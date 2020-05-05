@@ -276,7 +276,7 @@ If you need any new API, please file API proposals to the issue tracker.
   You can switch these behaviors.
   Please go to the "Drag and Drop" section of TST's options page.
   
-  For more preference, you can activate a small drag handles: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
+  For more preference, you can use a [small drag handles](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) with a helper addon: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
   You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
   </details>
 * <details><summary>I don't want to see the next tab is focused before the previous tab is focused, when I close a last child tab. (<a href="https://github.com/piroor/treestyletab/issues/1838">#1838</a>)</summary>
