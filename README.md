@@ -86,6 +86,8 @@ Some addons provide extended behavior to TST's sidebar panel:
 
 ## Similar projects
 
+There are some similar project by someone not me providing similar features:
+
 * <details><summary>Vertical tab bar with tree (and more features)</summary>
   
   * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
@@ -122,6 +124,7 @@ Some addons provide extended behavior to TST's sidebar panel:
   
   * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
   * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
+  * [Tree Style Tab for Chrome](https://chrome.google.com/webstore/detail/tree-style-tab-for-chrome/hbledhepdppepjnbnohiepcpcnphimdj)
   </details>
 * <details><summary>for Vivaldi</summary>
   
