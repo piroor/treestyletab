@@ -263,7 +263,7 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>I cannot drop tabs to the bookmarks toolbar to create bookmarks. (<a href="https://github.com/piroor/treestyletab/issues/2033">#2033</a>)</summary>
   
-  In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar.
+  In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar. Otherwise [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) possibly helps you.
   
   From [a change introduced at the bug 1453153 (affects on Firefox 63 and later)](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153), now Firefox doesn't allow addons to provide ability to do "creating bookmarks (or links) by drag and drop of tabs" and "detach a tab to a new window by dropping it outside of the window" in same time - those functionailities are quite exclusive.
 (For more technical details, see [my comment at the issue #2033](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422157577).)
@@ -275,6 +275,7 @@ If you need any new API, please file API proposals to the issue tracker.
   
   You can switch these behaviors.
   Please go to the "Drag and Drop" section of TST's options page.
+  (By the way, [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/)'s small Bookmarks panel always accept drag and drop of TST's tree without such modifier keys.)
   
   For more preference, you can use a [small drag handles](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) with a helper addon: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
   You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
