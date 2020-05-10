@@ -2,7 +2,7 @@
 
 ## Policy about translation (See also [#2434](https://github.com/piroor/treestyletab/pull/2434))
 
-* You should not translate the name of the name of this addon itself "Tree Style Tab", instead you can add a translated name after that like "Tree Style Tab - ツリー型タブ" (this just repeats "Tree Style Tab" in Japanese).
+* You should not translate the name of this addon itself "Tree Style Tab", instead you can add a translated name after that like "Tree Style Tab - ツリー型タブ" (this just repeats "Tree Style Tab" in Japanese).
   * This is for better findability on the Mozilla Add-ons website and the addons manager.
   * Here is [the commit to revert localized addon name to the global name](https://github.com/piroor/treestyletab/commit/73cee9a81882b1f09de149e8a549620b24fe31e7).
     The term "Tree Style Tab" in these messages means this addon itself.
@@ -10,7 +10,9 @@
 
 ## Translation on a web service
 
-The [Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
+You can translate TST's messages on [GitLocalize.com](https://gitlocalize.com/repo/3459). If you want to become a moderator of a language, please sign up to the service and contact me.
+
+Even if you don't have an account on GitLocalize.com, the [Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
 
 1. Click the "Load from GitHub" button (an octcat icon).
 2. Input an URL `https://github.com/piroor/treestyletab` in to the field and click the "OK" button.
