@@ -278,6 +278,8 @@ export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
 
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_NONE                  = 0;
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED      = 1;
+// 2 is a retired number for a removed feature
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE                 = 3;
 
 export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_WHOLE_TREE     = 1 << 0;

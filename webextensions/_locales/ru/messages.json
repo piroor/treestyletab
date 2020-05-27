@@ -392,6 +392,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Двойной щелчок" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Свернуть/развернуть дерево" },
+  "config_treeDoubleClickBehavior_close":               { "message": "Закрыть вкладку (*имитация поведения Firefox с \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Ничего не делать" },
   "config_closeParentBehaviorMode_caption":           { "message": "Когда родительская вкладка закрыта или перемещена как отдельная вкладка" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Рекомендуется для тех, кто все еще используют нативную панель вкладок Firefox" },
@@ -462,7 +463,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным щелчком (*имитация поведения Firefox с \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс (API) выбора нескольких вкладок  (*зависит от встроенной настройки \"browser.tabs.multiselect\"=\"true\" для Firefox 63 и выше)" },
 
   "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },

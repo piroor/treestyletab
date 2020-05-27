@@ -392,6 +392,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Doppelklick auf einen Tab" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Aus-/einklappen eines Zweigs" },
+  "config_treeDoubleClickBehavior_close":               { "message": "Tab schließen (*Simuliert Firefox eingebautes Verhalten für \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Nichts machen" },
   "config_closeParentBehaviorMode_caption":           { "message": "Wenn ein übergeordneter Tab geschlossen oder als eigenständiger Tab verschoben wird" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Empfohlenes Verhalten für Nutzer, welche auch die eingebaute Tableiste von Firefox verwenden" },
@@ -462,7 +463,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Neue Lesezeichen erstellen unter" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Tabs per Doppelklick schließen (*Simuliert Firefox eingebautes Verhalten für \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Verwende Schnittstelle zur Mehrfachauswahl von Tabs um den Tab-Fokus zu steuern (*hängt von der eingebauten Einstellung von Firefox \"browser.tabs.multiselect\"=\"true\" ab)" },
 
   "config_userStyleRules_label": { "message": "Zusätzliche Style-Regeln für Sidebar-Inhalte" },

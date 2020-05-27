@@ -1077,6 +1077,10 @@
         "message": "트리를 열고 닫음",
         "hash": "a6f448837c94b54069a5f7b82589dfa3"
     },
+    "config_treeDoubleClickBehavior_close": {
+        "message": "탭 닫기 (※Firefox 내장 기능인 \"browser.tabs.closeTabByDblclick\"=\"true\" 기능 재현)",
+        "hash": ""
+    },
     "config_treeDoubleClickBehavior_none": {
         "message": "동작 없음",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
@@ -1275,10 +1279,6 @@
     "config_defaultBookmarkParentId_label_after": {
         "message": "의 안에 작성",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
-    },
-    "config_simulateCloseTabByDblclick_label": {
-        "message": "더블 클릭으로 탭 닫기 (※Firefox 내장 기능인 \"browser.tabs.closeTabByDblclick\"=\"true\" 기능 재현)",
-        "hash": "048c429260ebd2e366a99b5a3f7472c6"
     },
     "config_supportTabsMultiselect_label": {
         "message": "탭을 보는 것을 제어할 때 복수의 선택 API 사용 (※Firefox의 설정인 \"browser.tabs.multiselect\"=\"true\"에 의존)",

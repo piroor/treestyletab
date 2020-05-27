@@ -393,6 +393,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-click on a tab" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Collapse/expand tree" },
+  "config_treeDoubleClickBehavior_close":               { "message": "Close tab (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },
   "config_closeParentBehaviorMode_caption":           { "message": "When a parent tab is closed or moved just as a solo tab" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Recommended behavior for people who still use the native tab bar of Firefox itself also" },
@@ -463,7 +464,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Create new bookmarks under" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Close tab by double click (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },

@@ -20,7 +20,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 9;
+const kCONFIGS_VERSION = 10;
 const kFEATURES_VERSION = 4;
 
 export function migrateConfigs() {
@@ -129,6 +129,11 @@ export function migrateConfigs() {
     case 8:
       if (configs.autoExpandOnCollapsedChildActive !== null)
         configs.unfocusableCollapsedTab = configs.autoExpandOnCollapsedChildActive;
+
+    case 9:
+      if (configs.simulateCloseTabByDblclick !== null &&
+          configs.simulateCloseTabByDblclick)
+        configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

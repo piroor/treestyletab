@@ -389,6 +389,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "タブのダブルクリック" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "ツリーを開閉する" },
+  "config_treeDoubleClickBehavior_close":               { "message": "タブを閉じる（※Firefox組み込みの機能である\"browser.tabs.closeTabByDblclick\"=\"true\"の再現）" },
   "config_treeDoubleClickBehavior_none":                { "message": "何もしない" },
   "config_closeParentBehaviorMode_caption":           { "message": "親タブを単独で閉じたり移動したりした時の挙動" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Firefox自身のタブバーを併用する場合向けの動作にする" },
@@ -459,7 +460,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
   "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "ダブルクリックでタブを閉じる（※Firefox組み込みの機能である\"browser.tabs.closeTabByDblclick\"=\"true\"の再現）" },
   "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefoxの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },

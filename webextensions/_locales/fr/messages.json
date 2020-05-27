@@ -348,6 +348,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-cliquer sur l'onglet" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Replier/déplier l'arbre" },
+  "config_treeDoubleClickBehavior_close":               { "message": "Fermer l'onglet (*simule le comportement de Firefox avec \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Ne fais rien" },
   "config_closeParentBehaviorMode_caption": { "message": "Quand un onglet parent est fermé ou déplacé en tant qu'onglet seul" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "Comportement recommandé si vous utilisez toujours la barre d'onglets native de Firefox en plus" },
@@ -401,7 +402,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Créer un nouveau marque-page sous" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "Fermer l'onglet par double clic (*simule le comportement de Firefox avec \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_supportTabsMultiselect_label": { "message": "Utiliser l'API de multi-sélection pour gérer le focus (*dépend du paramètre Firefox \"browser.tabs.multiselect\"=\"true\")" },
 
   "config_userStyleRules_label": { "message": "Règles d'apparence supplémentaires pour les contenus du panneau" },

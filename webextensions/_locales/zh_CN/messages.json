@@ -1181,6 +1181,10 @@
         "message": "折叠/展开 标签树",
         "hash": "a6f448837c94b54069a5f7b82589dfa3"
     },
+    "config_treeDoubleClickBehavior_close": {
+        "message": "关闭标签页（*模拟 Firefox 中对于 \"browser.tabs.closeTabByDblclick\"=\"true\" 的内置行为）",
+        "hash": ""
+    },
     "config_treeDoubleClickBehavior_none": {
         "message": "什么都不做",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
@@ -1392,10 +1396,6 @@
     "config_defaultBookmarkParentId_label_after": {
         "message": "\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
-    },
-    "config_simulateCloseTabByDblclick_label": {
-        "message": "双击关闭标签页（*模拟 Firefox 中对于 \"browser.tabs.closeTabByDblclick\"=\"true\" 的内置行为）",
-        "hash": "048c429260ebd2e366a99b5a3f7472c6"
     },
     "config_supportTabsMultiselect_label": {
         "message": "使用标签页多选 API 来控制标签页焦点（*依赖于 Firefox 自身的一个内置偏好设置项 \"browser.tabs.multiselect\"=\"true\" ）",

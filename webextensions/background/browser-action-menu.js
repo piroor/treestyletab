@@ -698,6 +698,12 @@ const mItems = [
             type:  'radio'
           },
           {
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_close'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE,
+            type:  'radio'
+          },
+          {
             title: browser.i18n.getMessage('config_treeDoubleClickBehavior_none'),
             key:   'treeDoubleClickBehavior',
             value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE,
@@ -1143,11 +1149,6 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('config_useCachedTree_label'),
         key:   'useCachedTree',
-        type:  'checkbox'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_simulateCloseTabByDblclick_label'),
-        key:   'simulateCloseTabByDblclick',
         type:  'checkbox'
       },
       {

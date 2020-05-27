@@ -353,6 +353,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "雙擊分頁" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "開關該樹" },
+  "config_treeDoubleClickBehavior_close":               { "message": "關閉分頁(※ 模擬 Firefox 內建設定「browser.tabs.closeTabByDblclick」為「true」的行為)" },
   "config_treeDoubleClickBehavior_none":                { "message": "無動作" },
   "config_closeParentBehaviorMode_caption":           { "message": "單獨關閉或移動父分頁時" },
   "config_closeParentBehaviorMode_withNativeTabs":    { "message": "和 Firefox 內建的分頁列共用時" },
@@ -406,7 +407,6 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "加入新書籤到" },
   "config_defaultBookmarkParentId_label_after":   { "message": "中" },
 
-  "config_simulateCloseTabByDblclick_label": { "message": "雙擊關閉分頁(※ 模擬 Firefox 內建設定「browser.tabs.closeTabByDblclick」為「true」的行為)" },
   "config_supportTabsMultiselect_label": { "message": "使用分頁多重選取 API 來操作分頁切換(※需要 Firefox 設定「browser.tabs.multiselect」為「true」)" },
 
   "config_userStyleRules_label": { "message": "額外的側邊欄樣式規則" },

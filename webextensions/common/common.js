@@ -211,7 +211,6 @@ export const configs = new Configs({
   enableWorkaroundForBug1548949: true,
   maximumDelayForBug1561879: 100,
   workaroundForBug1548949DroppedTabs: null,
-  simulateCloseTabByDblclick: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   maximumDelayUntilTabIsTracked: 10 * 60 * 1000,
   delayToBlockUserOperationForTabsRestoration: 1000,
@@ -221,6 +220,7 @@ export const configs = new Configs({
   delayToRetrySyncTabsOrder: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: null, // obsolete, migrated to longPressDuration
+  simulateCloseTabByDblclick: null, // obsolete, migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   delayToApplyHighlightedState: 50,
