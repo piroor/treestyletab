@@ -41,6 +41,11 @@ export function getFavIconizedTabSize() {
 }
 
 export function init() {
+  update();
+  matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addListener(update);
+}
+
+function update() {
   const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
   mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
