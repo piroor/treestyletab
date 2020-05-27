@@ -801,20 +801,6 @@ async function onDblClick(event) {
   if (livingTab &&
       !EventUtils.isEventFiredOnTwisty(event) &&
       !EventUtils.isEventFiredOnSoundButton(event)) {
-    if (configs.simulateCloseTabByDblclick &&
-        event.button == 0 &&
-        !event.altKey &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      BackgroundConnection.sendMessage({
-        type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-        tabIds: [livingTab.id],
-      });
-    }
-    else {
       const detail   = getMouseEventDetail(event, livingTab);
       const treeItem = new TSTAPI.TreeItem(livingTab);
       const extraContentsInfo = getOriginalExtraContentsTarget(event);
@@ -857,9 +843,17 @@ async function onDblClick(event) {
               stack:           configs.debug && new Error().stack
             });
             break;
+
+          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE:
+            event.stopPropagation();
+            event.preventDefault();
+            BackgroundConnection.sendMessage({
+              type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+              tabIds: [livingTab.id],
+            });
+            break;
         }
       }
-    }
     return;
   }
 
