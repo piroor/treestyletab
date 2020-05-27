@@ -801,59 +801,59 @@ async function onDblClick(event) {
   if (livingTab &&
       !EventUtils.isEventFiredOnTwisty(event) &&
       !EventUtils.isEventFiredOnSoundButton(event)) {
-      const detail   = getMouseEventDetail(event, livingTab);
-      const treeItem = new TSTAPI.TreeItem(livingTab);
-      const extraContentsInfo = getOriginalExtraContentsTarget(event);
-      if (extraContentsInfo.owners) {
-        const allowed = await TSTAPI.tryOperationAllowed(
-          TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-          {
-            ...detail,
-            tab:            treeItem,
-            originalTarget: extraContentsInfo.target
-          },
-          { tabProperties: ['tab'],
-            target:        extraContentsInfo.owners }
-        );
-        if (!allowed)
-          return;
-      }
+    const detail   = getMouseEventDetail(event, livingTab);
+    const treeItem = new TSTAPI.TreeItem(livingTab);
+    const extraContentsInfo = getOriginalExtraContentsTarget(event);
+    if (extraContentsInfo.owners) {
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TAB_DBLCLICKED,
         {
           ...detail,
-          tab: treeItem
+          tab:            treeItem,
+          originalTarget: extraContentsInfo.target
         },
         { tabProperties: ['tab'],
-          except:        extraContentsInfo.owners }
+          target:        extraContentsInfo.owners }
       );
       if (!allowed)
         return;
+    }
+    const allowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TAB_DBLCLICKED,
+      {
+        ...detail,
+        tab: treeItem
+      },
+      { tabProperties: ['tab'],
+        except:        extraContentsInfo.owners }
+    );
+    if (!allowed)
+      return;
 
-      if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
-        switch (configs.treeDoubleClickBehavior) {
-          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
-            event.stopPropagation();
-            event.preventDefault();
-            BackgroundConnection.sendMessage({
-              type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
-              tabId:           livingTab.id,
-              collapsed:       !livingTab.$TST.subtreeCollapsed,
-              manualOperation: true,
-              stack:           configs.debug && new Error().stack
-            });
-            break;
+    if (configs.treeDoubleClickBehavior != Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE) {
+      switch (configs.treeDoubleClickBehavior) {
+        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED:
+          event.stopPropagation();
+          event.preventDefault();
+          BackgroundConnection.sendMessage({
+            type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
+            tabId:           livingTab.id,
+            collapsed:       !livingTab.$TST.subtreeCollapsed,
+            manualOperation: true,
+            stack:           configs.debug && new Error().stack
+          });
+          break;
 
-          case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE:
-            event.stopPropagation();
-            event.preventDefault();
-            BackgroundConnection.sendMessage({
-              type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-              tabIds: [livingTab.id],
-            });
-            break;
-        }
+        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE:
+          event.stopPropagation();
+          event.preventDefault();
+          BackgroundConnection.sendMessage({
+            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+            tabIds: [livingTab.id],
+          });
+          break;
       }
+    }
     return;
   }
 
