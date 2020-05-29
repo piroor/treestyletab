@@ -143,6 +143,7 @@
   "bookmarkDialog_url":      { "message": "Адрес:" },
   "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "Папка . . . . . :" },
+  "bookmarkDialog_saveContainerRedirectKey": { "message": "Сохранить информацию о контейнере для закладок из контейнера" },
   "bookmarkDialog_accept":   { "message": "Сохранить" },
   "bookmarkDialog_cancel":   { "message": "Отмена" },
 
@@ -485,6 +486,10 @@
   "config_externalAddonPermissions_header_name": { "message": "Название аддона" },
   "config_externalAddonPermissions_header_permissions": { "message": "Разрешенные специальные операции" },
   "config_externalAddonPermissions_header_incognito": { "message": "Уведомлять из приватных окон" },
+
+  "addon_containerBookmarks_label": { "message": "Закладки с контейнером" },
+  "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
+  "config_containerRedirectKey_label": { "message": "Ключ перенаправления (* установите то же значение, что и на странице настроек аддона):" },
 
 
   "config_debug_caption": { "message": "Разработка" },
