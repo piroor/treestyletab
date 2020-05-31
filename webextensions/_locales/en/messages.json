@@ -157,7 +157,7 @@
   "message_startup_description_3": { "message": " button in the toolbar, to activate the sidebar panel." },
 
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
-  "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs, and auto migration of bookmarked internal URLs imported from other environments (requires access to bookmarks)" },
+  "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs, auto migration of bookmarked internal URLs imported from other environments, and detection of tabs opened from bookmarks (requires access to bookmarks)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts" },
 
   "message_startup_userChromeCss_notify": { "message": "How to hide top tab bar and sidebar header?" },
