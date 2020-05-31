@@ -375,22 +375,26 @@ async function tryGroupNewTabs() {
   tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs
+    let alreadyGranted = false;
     const tabs = mapAndFilter(tabReferences, tabReference => {
       const tab = Tab.get(tabReference.id);
       if (!tab)
         return undefined;
-      // We should check the "autoGroupNewTabsFromPinned" config here,
-      // because to-be-grouped tabs should be ignored by the handler for
-      // "autoAttachSameSiteOrphan" behavior.
-      const shouldBeGrouped = (
-        tabReference.openerIsPinned ?
-          configs.autoGroupNewTabsFromPinned :
-          tabReference.mayBeFromBookmark ?
-            configs.autoGroupNewTabsFromBookmarks :
-            configs.autoGroupNewTabsFromOthers
-      );
-      if (!shouldBeGrouped)
+      if (tabReference.openerIsPinned) {
+        // We should check the "autoGroupNewTabsFromPinned" config here,
+        // because to-be-grouped tabs should be ignored by the handler for
+        // "autoAttachSameSiteOrphan" behavior.
+        if (!configs.autoGroupNewTabsFromPinned)
+          return undefined;
+        alreadyGranted = true;
+      }
+      else if (tabReference.mayBeFromBookmark) {
+        if (!configs.autoGroupNewTabsFromBookmarks)
+          return undefined;
+      }
+      else if (!configs.autoGroupNewTabsFromOthers) {
         return undefined;
+      }
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       const uniqueId = tab.$TST.uniqueId;
@@ -410,7 +414,7 @@ async function tryGroupNewTabs() {
     }
     if (newRootTabs.length > 1 &&
         configs.autoGroupNewTabs) {
-      const granted = await confirmToAutoGroupNewTabs(tabs);
+      const granted = !alreadyGranted && await confirmToAutoGroupNewTabs(tabs);
       if (granted)
         await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
     }
