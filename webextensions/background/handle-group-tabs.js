@@ -369,7 +369,6 @@ async function tryGroupNewTabs() {
   tryGroupNewTabs.running = true;
   try {
     const fromPinned    = [];
-    const fromBookmarks = [];
     const fromOthers    = [];
     // extract only pure new tabs
     for (const tabReference of tabReferences) {
@@ -389,12 +388,7 @@ async function tryGroupNewTabs() {
             configs.autoGroupNewTabsFromPinned)
           fromPinned.push(tab);
       }
-      else if (await tab.$TST.promisedPossibleOpenerBookmarks &&
-               tab.$TST.possibleOpenerBookmarks.length > 0) {
-        if (configs.autoGroupNewTabsFromBookmarks)
-          fromBookmarks.push(tab);
-      }
-      else if (configs.autoGroupNewTabsFromOthers) {
+      else if (configs.autoGroupNewTabs) {
         fromOthers.push(tab);
       }
     }
@@ -406,17 +400,10 @@ async function tryGroupNewTabs() {
       }
     }
 
-    if (fromBookmarks.length > 0 &&
-        isTabsFromSameBookmarkFolder(fromBookmarks)) {
-      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromBookmarks));
-      if (newRootTabs.length > 1)
-        await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
-    }
-
     if (fromOthers.length > 0) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
       if (newRootTabs.length > 1) {
-        const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
+        const granted = await confirmToAutoGroupNewTabs(fromOthers);
         if (granted)
           await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
       }
@@ -432,20 +419,7 @@ async function tryGroupNewTabs() {
   }
 }
 
-function isTabsFromSameBookmarkFolder(tabs) {
-  const parentIdSets = tabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId));
-  return setsIntersection(...parentIdSets).size > 0;
-}
-
-function setsIntersection(oneSet, ...restSets) {
-  if (restSets.length == 0)
-    return oneSet;
-  if (Array.isArray(oneSet))
-    oneSet = new Set(oneSet);
-  return new Set([...setsIntersection(...restSets)].filter(item => oneSet.has(item)));
-}
-
-async function confirmToAutoGroupNewTabsFromOthers(tabs) {
+async function confirmToAutoGroupNewTabs(tabs) {
   if (tabs.length <= 1 ||
       !configs.warnOnAutoGroupNewTabs)
     return true;
@@ -498,7 +472,7 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     case 1:
       if (!result.checked) {
         configs.warnOnAutoGroupNewTabs = false;
-        configs.autoGroupNewTabsFromOthers = false;
+        configs.autoGroupNewTabs = false;
       }
     default:
       return false;

@@ -381,25 +381,6 @@ export default class Tab {
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
-  get promisedPossibleOpenerBookmarks() {
-    if ('possibleOpenerBookmarks' in this)
-      return Promise.resolve(this.possibleOpenerBookmarks);
-    return new Promise(async (resolve, _reject) => {
-      if (!browser.bookmarks)
-        return resolve(this.possibleOpenerBookmarks = []);
-      const url = await this.tab.$initialUrl;
-      if (!url || url == 'about:blank')
-        return resolve(this.possibleOpenerBookmarks = []);
-      try {
-        const bookmarks = await browser.bookmarks.search({ url });
-        resolve(this.possibleOpenerBookmarks = bookmarks);
-      }
-      catch(_error) {
-        return resolve(this.possibleOpenerBookmarks = []);
-      }
-    });
-  }
-
   //===================================================================
   // neighbor tabs
   //===================================================================
