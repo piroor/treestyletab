@@ -389,7 +389,8 @@ async function tryGroupNewTabs() {
             configs.autoGroupNewTabsFromPinned)
           fromPinned.push(tab);
       }
-      else if (await tab.$TST.mayBeFromBookmark) {
+      else if (await tab.$TST.promisedPossibleOpenerBookmarks &&
+               tab.$TST.possibleOpenerBookmarks.length > 0) {
         if (configs.autoGroupNewTabsFromBookmarks)
           fromBookmarks.push(tab);
       }
@@ -405,7 +406,8 @@ async function tryGroupNewTabs() {
       }
     }
 
-    if (fromBookmarks.length > 0) {
+    if (fromBookmarks.length > 0 &&
+        isTabsFromSameBookmarkFolder(fromBookmarks)) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromBookmarks));
       if (newRootTabs.length > 1)
         await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
@@ -428,6 +430,19 @@ async function tryGroupNewTabs() {
     if (mToBeGroupedTabSets.length > 0)
       tryGroupNewTabs();
   }
+}
+
+function isTabsFromSameBookmarkFolder(tabs) {
+  const parentIdSets = tabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId));
+  return setsIntersection(...parentIdSets).size > 0;
+}
+
+function setsIntersection(oneSet, ...restSets) {
+  if (restSets.length == 0)
+    return oneSet;
+  if (Array.isArray(oneSet))
+    oneSet = new Set(oneSet);
+  return new Set([...setsIntersection(...restSets)].filter(item => oneSet.has(item)));
 }
 
 async function confirmToAutoGroupNewTabsFromOthers(tabs) {

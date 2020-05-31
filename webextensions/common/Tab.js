@@ -381,18 +381,21 @@ export default class Tab {
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
-  get mayBeFromBookmark() {
-    if ('$mayBeFromBookmark' in this)
-      return Promise.resolve(this.$mayBeFromBookmark);
+  get promisedPossibleOpenerBookmarks() {
+    if ('possibleOpenerBookmarks' in this)
+      return Promise.resolve(this.possibleOpenerBookmarks);
     return new Promise(async (resolve, _reject) => {
-      if (!browser.bookmarks || !this.tab.$initialUrl)
-        return resolve(this.$mayBeFromBookmark = false);
+      if (!browser.bookmarks)
+        return resolve(this.possibleOpenerBookmarks = []);
+      const url = await this.tab.$initialUrl;
+      if (!url || url == 'about:blank')
+        return resolve(this.possibleOpenerBookmarks = []);
       try {
-        const bookmarks = await browser.bookmarks.search({ url: this.tab.$initialUrl });
-        resolve(this.$mayBeFromBookmark = (bookmarks && bookmarks.length > 0 || false));
+        const bookmarks = await browser.bookmarks.search({ url });
+        resolve(this.possibleOpenerBookmarks = bookmarks);
       }
       catch(_error) {
-        return resolve(this.$mayBeFromBookmark = false);
+        return resolve(this.possibleOpenerBookmarks = []);
       }
     });
   }
