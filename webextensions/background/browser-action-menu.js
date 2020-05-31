@@ -632,18 +632,26 @@ const mItems = [
         enabled: false
       },
       {
-        dynamicTitle: true,
-        get title() {
-          return indent() + browser.i18n.getMessage('config_autoGroupNewTabs_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabs_after');
-        },
-        key:   'autoGroupNewTabs',
-        type:  'checkbox'
-      },
-      {
         title: indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
         key:   'autoGroupNewTabsFromPinned',
         type:  'checkbox'
       },
+      {
+        dynamicTitle: true,
+        get title() {
+          return indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_after');
+        },
+        key:   'autoGroupNewTabsFromBookmarks',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromOthers_label'),
+        key:   'autoGroupNewTabsFromOthers',
+        type:  'checkbox',
+        expert: true
+      },
+      { type: 'separator',
+        expert: true },
       {
         title: indent() + browser.i18n.getMessage('config_renderTreeInGroupTabs_label'),
         key:   'renderTreeInGroupTabs',
