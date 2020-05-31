@@ -84,6 +84,7 @@ label.has-radio:not(.inline) {
   margin-left: 2em;
   text-indent: -2em;
   display: block;
+  width: -moz-fit-content;
 }
 
 
