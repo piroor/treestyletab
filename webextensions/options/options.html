@@ -447,31 +447,49 @@
     <fieldset id="autoGroupNewTabsSection">
       <legend>__MSG_config_groupTab_caption__</legend>
       <p><label class="has-checkbox"
-               ><input id="autoGroupNewTabs"
-                       type="checkbox">
-                __MSG_config_autoGroupNewTabs_before__
-                <input id="autoGroupNewTabsTimeout"
-                       type="number"
-                       size="3">
-                 __MSG_config_autoGroupNewTabs_after__</label></p>
-      <p class="sub"><label>__MSG_config_autoGroupNewTabsDelayOnNewWindow_before__
-                            <input id="autoGroupNewTabsDelayOnNewWindow"
-                                   type="number"
-                                   size="3">
-                            __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
-      <p class="sub"><label class="has-checkbox"
-                           ><input id="warnOnAutoGroupNewTabs"
-                                   type="checkbox">
-                            __MSG_config_warnOnAutoGroupNewTabs_label__</label></p>
-
-      <p><label class="has-checkbox"
                ><input id="autoGroupNewTabsFromPinned"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromPinned_label__</p>
-      <p class="expert"><label class="has-checkbox"
-               ><input id="renderTreeInGroupTabs"
-                       type="checkbox">
-                __MSG_config_renderTreeInGroupTabs_label__</p>
+      <p><label id="autoGroupNewTabsFromBookmarks_label"
+                class="has-checkbox"
+               ><input id="autoGroupNewTabsFromBookmarks"
+                       type="checkbox"
+                       class="require-bookmarks-permission"
+                       data-request-permission-message="__MSG_config_autoGroupNewTabsFromBookmarks_tooltiptext__">
+                <span>__MSG_config_autoGroupNewTabsFromBookmarks_before__</span>
+                <input id="autoGroupNewTabsTimeout"
+                       type="number"
+                       size="3"
+                       class="with-bookmarks-permission">
+                <span>__MSG_config_autoGroupNewTabsFromBookmarks_after__</span></label></p>
+      <div class="expert">
+        <p class="sub with-bookmarks-permission"
+          ><label>__MSG_config_tabsFromSameFolderMinThresholdPercentage_before__
+                  <input id="tabsFromSameFolderMinThresholdPercentage"
+                         type="number"
+                         size="3"
+                         max="100"
+                         min="0">
+                  __MSG_config_tabsFromSameFolderMinThresholdPercentage_after__</label></p>
+        <p><label class="has-checkbox"
+                 ><input id="autoGroupNewTabsFromOthers"
+                         type="checkbox">
+                  __MSG_config_autoGroupNewTabsFromOthers_label__</label></p>
+        <p class="sub"><label>__MSG_config_autoGroupNewTabsDelayOnNewWindow_before__
+                              <input id="autoGroupNewTabsDelayOnNewWindow"
+                                     type="number"
+                                     size="3">
+                              __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
+        <p class="sub"><label class="has-checkbox"
+                             ><input id="warnOnAutoGroupNewTabs"
+                                     type="checkbox">
+                              __MSG_config_warnOnAutoGroupNewTabs_label__</label></p>
+        <hr>
+        <p><label class="has-checkbox"
+                 ><input id="renderTreeInGroupTabs"
+                         type="checkbox">
+                  __MSG_config_renderTreeInGroupTabs_label__</p>
+      </div>
     </fieldset>
 
     </section>

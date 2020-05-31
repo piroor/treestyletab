@@ -70,7 +70,8 @@ pre {
   white-space: pre-wrap;
 }
 
-label[disabled="true"] {
+label[disabled="true"],
+input[disabled="true"] {
   opacity: 0.5;
 }
 label[disabled="true"] input,
@@ -292,4 +293,13 @@ body > section.collapsed > h1:first-child ~ * {
 
 body.independent #link-optionsPage-top {
   display: none;
+}
+
+
+input[type="checkbox"].missing-permission {
+  opacity: 0.5;
+}
+input[type="checkbox"].missing-permission,
+input[type="checkbox"].missing-permission ~ * {
+  cursor: help;
 }

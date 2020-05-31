@@ -85,9 +85,27 @@ function onChangeSlaveChacekbox(event) {
   saveLogForConfig();
 }
 
-function getMasterCheckboxFromSlave(aSlave) {
-  const container = aSlave.closest('fieldset');
+function getMasterCheckboxFromSlave(slave) {
+  const container = slave.closest('fieldset');
   return container.querySelector('legend input[type="checkbox"]');
+}
+
+async function onChangeBookmarkPermissionRequiredCheckboxState(event) {
+  const permissionCheckbox = document.getElementById('bookmarksPermissionGranted');
+  if (permissionCheckbox.checked)
+    return;
+
+  permissionCheckbox.checked = true;
+  permissionCheckbox.requestPermissions();
+
+  const checkbox = event.currentTarget;
+  const key = checkbox.name || checkbox.id || checkbox.dataset.configKey;
+  setTimeout(() => {
+    checkbox.checked = true;
+    setTimeout(() => {
+      configs[key] = true;
+    }, 300); // 250 msec is the minimum delay of throttle update
+  }, 100);
 }
 
 function saveLogForConfig() {
@@ -105,7 +123,7 @@ function isAllSlavesChecked(aMasger) {
 }
 
 async function updateBookmarksUI(enabled) {
-  const elements = document.querySelectorAll('.with-bookmarks-permission label, .with-bookmarks-permission input, .with-bookmarks-permission button');
+  const elements = document.querySelectorAll('.with-bookmarks-permission, .with-bookmarks-permission label, .with-bookmarks-permission input, .with-bookmarks-permission button');
   if (enabled) {
     for (const element of elements) {
       element.removeAttribute('disabled');
@@ -127,6 +145,24 @@ async function updateBookmarksUI(enabled) {
   else {
     for (const element of elements) {
       element.setAttribute('disabled', true);
+    }
+  }
+
+  const triboolChecks = document.querySelectorAll('.require-bookmarks-permission');
+  if (enabled) {
+    for (const checkbox of triboolChecks) {
+      checkbox.classList.remove('missing-permission');
+      const message = checkbox.dataset.requestPermissionMessage;
+      if (message && checkbox.parentNode.getAttribute('title') == message)
+        checkbox.parentNode.removeAttribute('title');
+    }
+  }
+  else {
+    for (const checkbox of triboolChecks) {
+      checkbox.classList.add('missing-permission');
+      const message = checkbox.dataset.requestPermissionMessage;
+      if (message)
+        checkbox.parentNode.setAttribute('title', message);
     }
   }
 }
@@ -290,6 +326,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     }}
   );
 
+  for (const checkbox of document.querySelectorAll('input[type="checkbox"].require-bookmarks-permission')) {
+    checkbox.addEventListener('change', onChangeBookmarkPermissionRequiredCheckboxState);
+  }
 
   for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
     checkbox.addEventListener('change', onChangeSlaveChacekbox);

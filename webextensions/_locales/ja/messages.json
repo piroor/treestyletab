@@ -353,8 +353,14 @@
 
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
-  "config_autoGroupNewTabs_before": { "message": "\u200b" },
-  "config_autoGroupNewTabs_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+  "config_autoGroupNewTabsFromBookmarks_before": { "message": "1つのブックマークフォルダーから" },
+  "config_autoGroupNewTabsFromBookmarks_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "この機能はブックマークへのアクセス権を必要とします。ここをクリックして必要な権限を与えてください。" },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "タブとブックマークの対応関係の検出を許可する)" },
+  "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "開かれたタブのURLのうち" },
+  "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "%以上が共通のフォルダー内にブックマークされていれば、開かれたタブすべてがそのブックマークフォルダーから開かれたと判断する" },
+  "config_autoGroupNewTabsFromOthers_label": { "message": "ブックマーク以外から連続して開かれたタブも自動的にグループ化する" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
   "config_warnOnAutoGroupNewTabs_label": { "message": "自動的にグループ化する前に確認する" },

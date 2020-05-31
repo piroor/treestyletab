@@ -357,8 +357,14 @@
 
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 
-  "config_autoGroupNewTabs_before": { "message": "Auto-group tabs opened within" },
-  "config_autoGroupNewTabs_after": { "message": "msec" },
+  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Auto-group tabs opened from a bookmark folder within" },
+  "config_autoGroupNewTabsFromBookmarks_after": { "message": "msec" },
+  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Allow to detect bookmarks corresponding to tabs)" },
+  "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },
+  "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "% tabs have corresponding bookmark in common bookmark folder" },
+  "config_autoGroupNewTabsFromOthers_label": { "message": "Auto-group tabs opened at a time from non-bookmark triggers also" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "But don't group new tabs opened within" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirm to group tabs" },
