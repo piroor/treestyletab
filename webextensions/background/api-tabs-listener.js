@@ -210,6 +210,8 @@ async function onActivated(activeInfo) {
   }
 }
 
+const mTabInitialUrlResolvers = new Map();
+
 async function onUpdated(tabId, changeInfo, tab) {
   if (mPromisedStarted)
     await mPromisedStarted;
@@ -236,6 +238,14 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     if ('url' in changeInfo) {
       changeInfo.previousUrl = updatedTab.url;
+    }
+    if ('url' in changeInfo ||
+        changeInfo.status == 'complete') {
+      const resolver = mTabInitialUrlResolvers.get(tabId);
+      if (resolver) {
+        mTabInitialUrlResolvers.delete(tabId);
+        resolver(changeInfo.url || tab.url);
+      }
     }
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to
@@ -349,6 +359,12 @@ async function onNewTabTracked(tab, info) {
   //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
   tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
   tab.reindexedBy = `onNewTabTracked (${tab.index})`;
+  if (tab.url != 'about:blank')
+    tab.$initialUrl = Promise.resolve(tab.url);
+  else
+    tab.$initialUrl = new Promise(resolve => {
+      mTabInitialUrlResolvers.set(tab.id, resolve);
+    });
 
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
