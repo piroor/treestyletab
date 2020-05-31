@@ -130,6 +130,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       const attached = Tree.attachTabTo(tab, Tab.get(action.parent), {
         insertBefore: Tab.get(action.insertBefore),
         insertAfter:  Tab.get(action.insertAfter),
+        forceExpand:  moveInfo.isTabCreating,
         broadcast:    true,
         synchronously: moveInfo.isTabCreating
       });
