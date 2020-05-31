@@ -308,7 +308,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
       window.openedNewTabs.set(tab.id, {
         id:       tab.id,
         openerId: openerTab && openerTab.id,
-        openerIsPinned: openerTab && openerTab.pinned
+        openerIsPinned: openerTab && openerTab.pinned,
+        maybeFromBookmark: tab.$TST.maybeFromBookmark
       });
     }
   }
@@ -365,6 +366,11 @@ async function tryGroupNewTabs() {
   if (!tabReferences)
     return;
 
+  await Promise.all(tabReferences.map(tabReference => {
+    Promise.resolve(tabReference.mayBeFromBookmark)
+      .then(resolved => tabReference.mayBeFromBookmark = resolved);
+  }));
+
   log('tryGroupNewTabs ', tabReferences);
   tryGroupNewTabs.running = true;
   try {
@@ -373,9 +379,16 @@ async function tryGroupNewTabs() {
       const tab = Tab.get(tabReference.id);
       if (!tab)
         return undefined;
-      // We should check the config here, because to-be-grouped tabs should be
-      // ignored by the handler for "autoAttachSameSiteOrphan" behavior.
-      const shouldBeGrouped = tabReference.openerIsPinned ? configs.autoGroupNewTabsFromPinned : configs.autoGroupNewTabs;
+      // We should check the "autoGroupNewTabsFromPinned" config here,
+      // because to-be-grouped tabs should be ignored by the handler for
+      // "autoAttachSameSiteOrphan" behavior.
+      const shouldBeGrouped = (
+        tabReference.openerIsPinned ?
+          configs.autoGroupNewTabsFromPinned :
+          tabReference.mayBeFromBookmark ?
+            configs.autoGroupNewTabsFromBookmarks :
+            configs.autoGroupNewTabsFromOthers
+      );
       if (!shouldBeGrouped)
         return undefined;
       if (tabReference.openerTabId)

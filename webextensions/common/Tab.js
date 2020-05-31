@@ -52,6 +52,7 @@ export default class Tab {
     tab.$TST = this;
     this.tab = tab;
     this.id  = tab.id;
+    this.initialUrl = tab.url;
     this.trackedAt = Date.now();
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
@@ -379,6 +380,22 @@ export default class Tab {
   get hasOtherHighlighted() {
     const highlightedTabs = TabsStore.highlightedTabsInWindow.get(this.tab.windowId);
     return !!(highlightedTabs && highlightedTabs.size > 1);
+  }
+
+  get mayBeFromBookmark() {
+    if ('$mayBeFromBookmark' in this)
+      return Promise.resolve(this.$mayBeFromBookmark);
+    return new Promise(async (resolve, _reject) => {
+      if (!browser.bookmarks)
+        return resolve(this.$mayBeFromBookmark = false);
+      try {
+        const bookmarks = await browser.bookmarks.search({ url: this.initialUrl });
+        resolve(this.$mayBeFromBookmark = (bookmarks && bookmarks.length > 0 || false));
+      }
+      catch(_error) {
+        return resolve(this.$mayBeFromBookmark = false);
+      }
+    });
   }
 
   //===================================================================
