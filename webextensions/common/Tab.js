@@ -52,7 +52,6 @@ export default class Tab {
     tab.$TST = this;
     this.tab = tab;
     this.id  = tab.id;
-    this.initialUrl = tab.url;
     this.trackedAt = Date.now();
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
@@ -386,10 +385,10 @@ export default class Tab {
     if ('$mayBeFromBookmark' in this)
       return Promise.resolve(this.$mayBeFromBookmark);
     return new Promise(async (resolve, _reject) => {
-      if (!browser.bookmarks)
+      if (!browser.bookmarks || !this.tab.$initialUrl)
         return resolve(this.$mayBeFromBookmark = false);
       try {
-        const bookmarks = await browser.bookmarks.search({ url: this.initialUrl });
+        const bookmarks = await browser.bookmarks.search({ url: this.tab.$initialUrl });
         resolve(this.$mayBeFromBookmark = (bookmarks && bookmarks.length > 0 || false));
       }
       catch(_error) {
@@ -1239,6 +1238,7 @@ export default class Tab {
   get sanitized() {
     const sanitized = {
       ...this.tab,
+      '$initialUrl': null,
       '$TST': null
     };
     delete sanitized.$TST;

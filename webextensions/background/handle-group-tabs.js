@@ -365,11 +365,6 @@ async function tryGroupNewTabs() {
   if (!tabReferences)
     return;
 
-  await Promise.all(tabReferences.map(tabReference => {
-    Promise.resolve(tabReference.mayBeFromBookmark)
-      .then(resolved => tabReference.mayBeFromBookmark = resolved);
-  }));
-
   log('tryGroupNewTabs ', tabReferences);
   tryGroupNewTabs.running = true;
   try {
@@ -394,7 +389,7 @@ async function tryGroupNewTabs() {
             configs.autoGroupNewTabsFromPinned)
           fromPinned.push(tab);
       }
-      else if (tabReference.mayBeFromBookmark) {
+      else if (await tab.$TST.mayBeFromBookmark) {
         if (configs.autoGroupNewTabsFromBookmarks)
           fromBookmarks.push(tab);
       }

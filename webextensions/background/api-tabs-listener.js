@@ -234,8 +234,13 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     const oldState = {};
 
-    if ('url' in changeInfo)
+    if ('url' in changeInfo) {
       changeInfo.previousUrl = updatedTab.url;
+      if (!updatedTab.$initialUrl &&
+          'url' in changeInfo &&
+          changeInfo.url != 'about:blank')
+        updatedTab.$initialUrl = changeInfo.url;
+    }
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to
       https://bugzilla.mozilla.org/show_bug.cgi?id=1409262 , so it can be
@@ -348,6 +353,8 @@ async function onNewTabTracked(tab, info) {
   //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
   tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
   tab.reindexedBy = `onNewTabTracked (${tab.index})`;
+  if (tab.url != 'about:blank')
+    tab.$initialUrl = tab.url;
 
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
