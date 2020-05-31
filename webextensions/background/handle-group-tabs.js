@@ -11,7 +11,6 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
-  mapAndFilter,
   configs
 } from '/common/common.js';
 
@@ -374,49 +373,56 @@ async function tryGroupNewTabs() {
   log('tryGroupNewTabs ', tabReferences);
   tryGroupNewTabs.running = true;
   try {
+    const fromPinned    = [];
+    const fromBookmarks = [];
+    const fromOthers    = [];
     // extract only pure new tabs
-    let alreadyGranted = false;
-    const tabs = mapAndFilter(tabReferences, tabReference => {
+    for (const tabReference of tabReferences) {
       const tab = Tab.get(tabReference.id);
       if (!tab)
-        return undefined;
+        continue;
+      if (tabReference.openerTabId)
+        tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
+      const uniqueId = tab.$TST.uniqueId;
+      if (tab.$TST.isGroupTab || uniqueId.duplicated || uniqueId.restored)
+        continue;
       if (tabReference.openerIsPinned) {
         // We should check the "autoGroupNewTabsFromPinned" config here,
         // because to-be-grouped tabs should be ignored by the handler for
         // "autoAttachSameSiteOrphan" behavior.
-        if (!configs.autoGroupNewTabsFromPinned)
-          return undefined;
-        alreadyGranted = true;
+        if (tab.$TST.hasPinnedOpener &&
+            configs.autoGroupNewTabsFromPinned)
+          fromPinned.push(tab);
       }
       else if (tabReference.mayBeFromBookmark) {
-        if (!configs.autoGroupNewTabsFromBookmarks)
-          return undefined;
+        if (configs.autoGroupNewTabsFromBookmarks)
+          fromBookmarks.push(tab);
       }
-      else if (!configs.autoGroupNewTabsFromOthers) {
-        return undefined;
+      else if (configs.autoGroupNewTabsFromOthers) {
+        fromOthers.push(tab);
       }
-      if (tabReference.openerTabId)
-        tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
-      const uniqueId = tab.$TST.uniqueId;
-      return !uniqueId.duplicated && !uniqueId.restored && tab || undefined;
-    });
-    Tab.sort(tabs);
-
-    let newRootTabs = Tab.collectRootTabs(tabs)
-      .filter(tab => !tab.$TST.isGroupTab);
-    if (newRootTabs.length <= 0)
-      return;
-
-    const newRootTabsFromPinned = newRootTabs.filter(tab => tab.$TST.hasPinnedOpener);
-    if (newRootTabsFromPinned.length > 0) {
-      newRootTabs = newRootTabs.filter(tab => !newRootTabsFromPinned.includes(tab));
-      await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
     }
-    if (newRootTabs.length > 1 &&
-        configs.autoGroupNewTabs) {
-      const granted = !alreadyGranted && await confirmToAutoGroupNewTabs(tabs);
-      if (granted)
+
+    if (fromPinned.length > 0) {
+      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromPinned));
+      if (newRootTabs.length > 0) {
+        await tryGroupNewTabsFromPinnedOpener(newRootTabs);
+      }
+    }
+
+    if (fromBookmarks.length > 0) {
+      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromBookmarks));
+      if (newRootTabs.length > 1)
         await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+    }
+
+    if (fromOthers.length > 0) {
+      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
+      if (newRootTabs.length > 1) {
+        const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
+        if (granted)
+          await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+      }
     }
   }
   catch(e) {
@@ -429,7 +435,7 @@ async function tryGroupNewTabs() {
   }
 }
 
-async function confirmToAutoGroupNewTabs(tabs) {
+async function confirmToAutoGroupNewTabsFromOthers(tabs) {
   if (tabs.length <= 1 ||
       !configs.warnOnAutoGroupNewTabs)
     return true;
@@ -482,7 +488,7 @@ async function confirmToAutoGroupNewTabs(tabs) {
     case 1:
       if (!result.checked) {
         configs.warnOnAutoGroupNewTabs = false;
-        configs.autoGroupNewTabs = false;
+        configs.autoGroupNewTabsFromOthers = false;
       }
     default:
       return false;
