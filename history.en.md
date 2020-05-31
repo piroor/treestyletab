@@ -3,6 +3,7 @@
  - master/HEAD
    * Fix broken appearance of the sidebar after window move across multiple screens with different DPI.
    * Group new tabs automatically by default only when they are detected as tabs opened from bookmarks in one folder. As the result the configuration UI for auto-grouping feature is now very simplified.
+   * Shrink clickable area of checkboxes and radio buttons in the options page.
    * Expand tree if a new tab is added into a collapsed tree as a next of a parent tab with `browser.tabs.insertAfterCurrent`=`true`.
    * Unify the simulation option for `browser.tabs.closeTabByDblclick`=`true` to the  option for the double-click action on a tab.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
