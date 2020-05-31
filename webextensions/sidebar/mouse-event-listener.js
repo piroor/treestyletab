@@ -486,15 +486,25 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
     return;
 
   // following codes are for handlig of click event on the tab bar itself.
-  const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
+  const actionForNewTabCommand = lastMousedown.detail.isMiddleClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
   if (EventUtils.isEventFiredOnNewTabButton(event)) {
     if (lastMousedown.detail.button != 2) {
       log('onMouseUp: click on the new tab button');
-      handleNewTabAction(event, {
-        action: actionForNewTabCommand
-      });
+      // Simulation of Firefox's built-in behavior.
+      // See also: https://github.com/piroor/treestyletab/issues/2593
+      const accelKeyPressed = EventUtils.isAccelKeyPressed(event);
+      if (event.shiftKey && !accelKeyPressed) {
+        browser.windows.create({});
+      }
+      else {
+        const activeTab = Tab.getActiveTab(mTargetWindow);
+        handleNewTabAction(event, {
+          action:        accelKeyPressed ? Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING : actionForNewTabCommand,
+          cookieStoreId: accelKeyPressed ? activeTab.cookieStoreId : null
+        });
+      }
     }
     return;
   }
