@@ -133,6 +133,7 @@ export const configs = new Configs({
 
   // grouping
   autoGroupNewTabsFromBookmarks: true,
+  tabsFromSameFolderMinThresholdPercentage: 50,
   autoGroupNewTabsFromOthers: false,
   autoGroupNewTabsTimeout: 100,
   autoGroupNewTabsDelayOnNewWindow: 500,
