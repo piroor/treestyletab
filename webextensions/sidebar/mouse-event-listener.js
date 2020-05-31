@@ -793,7 +793,7 @@ function handleNewTabAction(event, options = {}) {
 
   BackgroundConnection.sendMessage({
     type:          Constants.kCOMMAND_NEW_TAB_AS,
-    baseTabId:     TabsStore.activeTabInWindow.get(mTargetWindow).id,
+    baseTabId:     Tab.getActiveTab(mTargetWindow).id,
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground:  event.shiftKey
