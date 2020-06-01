@@ -7,6 +7,7 @@
    * Simuate Ctrl-click and Shift-click actions on the new tab button in Firefox's native tab bar. Now Ctrl-click opens a new next sibling tab with inherited container, and Shift-click opens a new window.
    * Expand tree if a new tab is added into a collapsed tree as a next of a parent tab with `browser.tabs.insertAfterCurrent`=`true`.
    * Unify the simulation option for `browser.tabs.closeTabByDblclick`=`true` to the  option for the double-click action on a tab.
+   * Apply extra user styles to contents of group tabs also.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.4 (2020.5.5)
    * Show semi-modal dialogs more smartly. The annoying flash from a small window before the dialog is finally shown goes away.
