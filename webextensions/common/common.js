@@ -252,7 +252,7 @@ export const configs = new Configs({
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
-tab-item.unread .label-content {
+:root.sidebar tab-item.unread .label-content {
   color: red !important;
   font-style: italic !important;
 }
@@ -260,7 +260,7 @@ tab-item.unread .label-content {
 
 /* Add private browsing indicator per tab */
 /*
-tab-item.private-browsing tab-label:before {
+:root.sidebar tab-item.private-browsing tab-label:before {
   content: "🕶";
 }
 */
@@ -321,7 +321,6 @@ tab-item.private-browsing tab-label:before {
     'common/user-operation-blocker': false,
     'sidebar/background-connection': false,
     'sidebar/collapse-expand': false,
-    'sidebar/color': false,
     'sidebar/drag-and-drop': false,
     'sidebar/event-utils': false,
     'sidebar/indent': false,

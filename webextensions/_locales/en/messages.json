@@ -472,7 +472,7 @@
 
   "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 
-  "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
+  "config_userStyleRules_label": { "message": "Extra style rules for contents provided by Tree Style Tab" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },
   "config_userStyleRules_description_after": { "message": " also." },

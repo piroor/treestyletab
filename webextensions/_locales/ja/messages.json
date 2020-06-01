@@ -468,7 +468,7 @@
 
   "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefoxの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
 
-  "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
+  "config_userStyleRules_label": { "message": "ツリー型タブが提供するページ用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },

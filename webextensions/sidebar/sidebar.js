@@ -22,6 +22,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as Color from '/common/color.js';
 import * as BrowserTheme from '/common/browser-theme.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -49,7 +50,6 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as CollapseExpand from './collapse-expand.js';
 import * as Size from './size.js';
-import * as Color from './color.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
@@ -355,61 +355,13 @@ function applyBrowserTheme(theme) {
       !theme.colors ||
       !configs.applyBrowserTheme) {
     mBrowserThemeDefinition.textContent = defaultColors;
-    return;
   }
-  const extraColors = [];
-  const themeFrameColor   = theme.colors.frame || theme.colors.accentcolor /* old name */;
-  const inactiveTextColor = theme.colors.tab_background_text || theme.colors.textcolor /* old name */;
-  const activeTextColor   = theme.colors.bookmark_text || theme.colors.toolbar_text /* old name */ || inactiveTextColor;
-  let bgAlpha = 1;
-  if (theme.images) {
-    const frameImage = theme.images.theme_frame || theme.images.headerURL /* old name */;
-    if (frameImage) {
-      extraColors.push(`--browser-header-url: url(${JSON.stringify(frameImage)})`);
-      extraColors.push('--browser-bg-for-header-image: transparent;');
-      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/themes/shared/tabs.inc.css#537
-      extraColors.push('--browser-bg-hover-for-header-image: rgba(0, 0, 0, 0.1);');
-      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
-      extraColors.push('--browser-bg-active-for-header-image: rgba(255, 255, 255, 0.4)');
-      // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/toolkit/themes/windows/global/global.css#138
-      if (Color.isBrightColor(inactiveTextColor))
-        extraColors.push('--browser-textshadow-for-header-image: 1px 1px 1.5px black'); // for bright text
-      else
-        extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white'); // for dark text
-    }
-    if (Array.isArray(theme.images.additional_backgrounds) &&
-        theme.images.additional_backgrounds.length > 0) {
-      extraColors.push(`--browser-bg-url: url(${JSON.stringify(theme.images.additional_backgrounds[0])})`);
-      bgAlpha = 0.75;
-    }
+  else {
+    mBrowserThemeDefinition.textContent = [
+      defaultColors,
+      BrowserTheme.generateThemeDeclarations(theme)
+    ].join('\n');
   }
-  const themeBaseColor    = Color.mixCSSColors(themeFrameColor, 'rgba(0, 0, 0, 0)', bgAlpha);
-  let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
-  if (theme.colors.toolbar)
-    toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
-  if (theme.colors.tab_line)
-    extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
-  if (theme.colors.tab_loading)
-    extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
-  extraColors.push(BrowserTheme.generateThemeRules(theme));
-  mBrowserThemeDefinition.textContent = `
-    ${defaultColors}
-    :root {
-      --browser-background:      ${themeFrameColor};
-      --browser-bg-base:         ${themeBaseColor};
-      --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
-      --browser-bg-lighter:      ${toolbarColor};
-      --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
-      --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
-      --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
-      --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
-      --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
-      --browser-fg:              ${inactiveTextColor};
-      --browser-fg-active:       ${activeTextColor};
-      --browser-border:          ${Color.mixCSSColors(inactiveTextColor, 'rgba(0, 0, 0, 0)', 0.4)};
-      ${extraColors.join(';\n')}
-    }
-  `;
 }
 
 function updateContextualIdentitiesStyle() {

@@ -2,7 +2,7 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<html>
+<html class="group-tab">
 <meta charset="UTF-8">
 <link rel="favicon" href="">
 <title></title>
@@ -214,8 +214,10 @@
     width: 1em;
   }
 --></style>
+<style id="browser-theme-definition" type="text/css"></style>
+<style id="user-style-rules" type="text/css"></style>
 <!--
-  Don't load scripts dynamically, to prevent the tab is closed by Firefox.
+  Don't load scripts statically, to prevent the tab is closed by Firefox.
   See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
 <script defer type="application/javascript" src="/common/l10n.js"></script>
 <script defer type="application/javascript" src="./group-tab.js"></script>

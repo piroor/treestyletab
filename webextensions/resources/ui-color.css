@@ -206,8 +206,8 @@ hr {
        - applies light colors by default, and applies dark
        colors on the dark color mode.
    */
-  :root#sidebar.apply-browser-theme:not([color-scheme="system-color"]),
-  :root:not(#sidebar):not([color-scheme="system-color"]) {
+  :root.sidebar.apply-browser-theme:not([color-scheme="system-color"]),
+  :root:not(.sidebar):not([color-scheme="system-color"]) {
     /* https://hg.mozilla.org/mozilla-central/raw-file/tip/toolkit/themes/shared/in-content/common.inc.css */
     --in-content-page-background: #2A2A2E /* rgb(42, 42, 46) */;
     --in-content-page-color: rgb(249, 249, 250);

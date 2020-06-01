@@ -13,6 +13,8 @@
   let gTitleField;
   let gTemporaryCheck;
   let gTemporaryAggressiveCheck;
+  let gBrowserThemeDefinition;
+  let gUserStyleRules;
 
   document.title = getTitle();
 
@@ -88,7 +90,7 @@
     history.replaceState({}, document.title, uri);
   }
 
-  function init() {
+  async function init() {
     if (gTitle)
       return;
     gTitle = document.querySelector('#title');
@@ -168,27 +170,43 @@
       updateParameters();
     });
 
+    gBrowserThemeDefinition = document.querySelector('#browser-theme-definition');
+    gUserStyleRules         = document.querySelector('#user-style-rules');
+
+
+    window.setTitle    = window.setTitle || setTitle;
+    window.updateTree  = window.updateTree || updateTree;
+
     window.l10n.updateDocument();
 
-    browser.runtime.sendMessage({
-      type: 'treestyletab:get-config-value',
-      keys: [
-        'renderTreeInGroupTabs',
-        'showAutoGroupOptionHint'
-      ]
-    }).then(configs => {
-      updateTree.enabled = configs.renderTreeInGroupTabs;
-      updateTree();
+    const [themeDeclarations, configs] = await Promise.all([
+      browser.runtime.sendMessage({
+        type: 'treestyletab:get-theme-declarations'
+      }),
+      browser.runtime.sendMessage({
+        type: 'treestyletab:get-config-value',
+        keys: [
+          'renderTreeInGroupTabs',
+          'showAutoGroupOptionHint',
+          'userStyleRules'
+        ]
+      })
+    ]);
 
-      let show = configs.showAutoGroupOptionHint;
-      if (!isTemporary() && !isTemporaryAggressive())
-        show = false;
+    gBrowserThemeDefinition.textContent = themeDeclarations;
+    gUserStyleRules.textContent = configs.userStyleRules;
 
-      const hint = document.getElementById('optionHint');
-      hint.style.display = show ? 'block' : 'none';
-      if (!show)
-        return;
+    updateTree.enabled = configs.renderTreeInGroupTabs;
+    updateTree();
 
+    let show = configs.showAutoGroupOptionHint;
+    if (!isTemporary() && !isTemporaryAggressive())
+      show = false;
+
+    const hint = document.getElementById('optionHint');
+    hint.style.display = show ? 'block' : 'none';
+
+    if (show) {
       hint.firstChild.addEventListener('click', event => {
         if (event.button != 0)
           return;
@@ -229,12 +247,9 @@
           value: false
         });
       });
-    });
+    }
 
-    window.setTitle    = window.setTitle || setTitle;
-    window.updateTree  = window.updateTree || updateTree;
     window.initialized = true;
-
     document.documentElement.classList.add('initialized');
   }
   //document.addEventListener('DOMContentLoaded', init, { once: true });
