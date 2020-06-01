@@ -49,11 +49,11 @@ export async function tryInitGroupTab(tab) {
     matchAboutBlank: true
   };
   try {
-    const initialized = await browser.tabs.executeScript(tab.id, {
+    const ready = await browser.tabs.executeScript(tab.id, {
       ...scriptOptions,
-      code:  'window.initialized',
+      code:  'window.ready',
     }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-    if (initialized[0])
+    if (ready[0])
       return;
   }
   catch(_e) {

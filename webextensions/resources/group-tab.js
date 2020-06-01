@@ -6,7 +6,7 @@
 'use strict';
 
 (() => {
-  if (window.initialized)
+  if (window.ready)
     return false;
 
   let gTitle;
@@ -249,7 +249,6 @@
       });
     }
 
-    window.initialized = true;
     document.documentElement.classList.add('initialized');
   }
   //document.addEventListener('DOMContentLoaded', init, { once: true });
@@ -399,5 +398,6 @@
   }
 
   init();
+  window.ready = true;
   return true;
 })();
