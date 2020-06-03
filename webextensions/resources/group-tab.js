@@ -285,6 +285,7 @@
 
     if (!tabs) {
       console.error(new Error('Couldn\'t get tree of tabs unexpectedly.'));
+      document.documentElement.classList.remove('updating');
       return;
     }
 
