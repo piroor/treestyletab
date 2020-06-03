@@ -283,6 +283,11 @@
     if (runAt != updateTree.lastRun)
       return;
 
+    if (!tabs) {
+      console.error(new Error('Couldn\'t get tree of tabs unexpectedly.'));
+      return;
+    }
+
     let tree;
     if (tabs[1]) {
       tabs[1].children = tabs[0].children;
