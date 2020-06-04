@@ -357,8 +357,14 @@
 
   "config_groupTab_caption": { "message": "Автоматическая группировка вкладок" },
 
-  "config_autoGroupNewTabs_before": { "message": "Автоматически группировать вкладки открытые в течении" },
-  "config_autoGroupNewTabs_after": { "message": "мс" },
+  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Автоматически группировать вкладки открытые в течении" },
+  "config_autoGroupNewTabsFromBookmarks_after": { "message": "мс" },
+  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "Эта функция требует права доступа к закладкам. Нажмите здесь, чтобы запросить необходимое разрешение." },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Разрешить обнаруживать закладки, соответствующие вкладкам)" },
+  "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Рассматривать все новые вкладки как открытые из одной папки закладок, если более " },
+  "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "% вкладок имеют соответствующую закладку в общей папке закладок" },
+  "config_autoGroupNewTabsFromOthers_label": { "message": "Автоматически группировать вкладки, открытые одновременно из триггеров, не связанных с закладками" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Автоматически группировать вкладки открытые в течении" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс, при открытии нового окна, в составе вкладок открытых как \"домашняя страница\"." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Подтверждать группировку вкладок" },
