@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.5 (2020.6.6)
    * Fix broken appearance of the sidebar after window move across multiple screens with different DPI.
    * Group new tabs automatically by default only when they are detected as tabs opened from bookmarks in one folder. As the result the configuration UI for auto-grouping feature is now very simplified.
    * Shrink clickable area of checkboxes and radio buttons in the options page.
