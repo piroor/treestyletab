@@ -421,6 +421,12 @@ const mItems = [
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
             type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            key:   'autoAttachOnNewTabButtonMiddleClick',
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
+            type:  'radio'
           }
         ]
       },

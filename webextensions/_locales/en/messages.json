@@ -311,6 +311,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "a child of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "the next sibling of the current tab" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "same to Ctrl-click (next sibling, same container)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Non-blank new tabs" },

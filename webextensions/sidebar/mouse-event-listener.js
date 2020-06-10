@@ -500,9 +500,11 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       }
       else {
         const activeTab = Tab.getActiveTab(mTargetWindow);
+        const action        = accelKeyPressed ? Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING : actionForNewTabCommand;
+        const cookieStoreId = accelKeyPressed || (action == Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER) ? activeTab.cookieStoreId : null
         handleNewTabAction(event, {
-          action:        accelKeyPressed ? Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING : actionForNewTabCommand,
-          cookieStoreId: accelKeyPressed ? activeTab.cookieStoreId : null
+          action,
+          cookieStoreId
         });
       }
     }

@@ -159,7 +159,8 @@ label input[type="checkbox"] ~ img {
 .has-preview-image[data-value="2"] .preview-image {
   background-image: url("as-sibling.png");
 }
-.has-preview-image[data-value="3"] .preview-image {
+.has-preview-image[data-value="3"] .preview-image,
+.has-preview-image[data-value="4"] .preview-image {
   background-image: url("as-next-sibling.png");
 }
 

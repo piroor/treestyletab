@@ -537,8 +537,9 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       }
     };
 
-    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      log(' => kNEWTAB_OPEN_AS_NEXT_SIBLING');
+    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING:
+    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER: {
+      log(' => kNEWTAB_OPEN_AS_NEXT_SIBLING(_WITH_INHERITED_CONTAINER)');
       let nextSibling = baseTab.$TST.nextSiblingTab;
       if (nextSibling == tab)
         nextSibling = null;

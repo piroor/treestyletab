@@ -307,6 +307,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "現在のタブの子として" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "現在のタブと同階層に" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "Ctrl-クリックと同様に（同階層で隣に、同じコンテナーで）" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
   "config_autoAttachWithURL_caption": { "message": "空でない新しいタブ" },
