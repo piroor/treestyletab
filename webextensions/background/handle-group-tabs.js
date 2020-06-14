@@ -441,14 +441,7 @@ async function tryGroupNewTabs() {
 }
 
 function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, allNewTabsCount) {
-  const parentIds = bookmarkedTabs.map(tab => {
-    if (tab.$TST.openerBookmarks)
-      return tab.$TST.openerBookmarks.map(bookmark => bookmark.parentId);
-    else if (tab.$TST.possibleOpenerBookmarks)
-      return tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId);
-    else
-      return [];
-  }).flat();
+  const parentIds = bookmarkedTabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId)).flat();
   const counts    = [];
   const countById = {};
   for (const id of parentIds) {
