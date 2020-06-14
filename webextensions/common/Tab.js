@@ -396,7 +396,7 @@ export default class Tab {
         /^https?:/.test(url) ?
           [] :
           browser.bookmarks.search({ url: `https://${url}` }),
-        /^ftp?:/.test(url) ?
+        /^ftp:/.test(url) ?
           [] :
           browser.bookmarks.search({ url: `ftp://${url}` }),
         /^moz-extension:/.test(url) ?
