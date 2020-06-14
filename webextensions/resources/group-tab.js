@@ -308,7 +308,7 @@
   function reflow() {
     const container = document.getElementById('tabs');
     columnizeTree(container.firstChild, {
-      columnWidth: '20em',
+      columnWidth: 'var(--column-width, 20em)',
       containerRect: container.getBoundingClientRect()
     });
   }
@@ -370,7 +370,7 @@
 
   function columnizeTree(aTree, options) {
     options = options || {};
-    options.columnWidth = options.columnWidth || '20em';
+    options.columnWidth = options.columnWidth || 'var(--column-width, 20em)';
 
     const style = aTree.style;
     style.columnWidth = style.MozColumnWidth = `calc(${options.columnWidth})`;
