@@ -387,16 +387,23 @@ export default class Tab {
     return new Promise(async (resolve, _reject) => {
       if (!browser.bookmarks)
         return resolve(this.possibleOpenerBookmarks = []);
-      const url = await this.tab.$initialUrl;
-      if (!url || url == 'about:blank')
-        return resolve(this.possibleOpenerBookmarks = []);
-      try {
-        const bookmarks = await browser.bookmarks.search({ url });
-        resolve(this.possibleOpenerBookmarks = bookmarks);
-      }
-      catch(_error) {
-        return resolve(this.possibleOpenerBookmarks = []);
-      }
+      const url = this.tab.$possibleInitialUrl;
+      const possibleBookmarks = await Promise.all([
+        browser.bookmarks.search({ url }),
+        /^https?:/.test(url) ?
+          [] :
+          browser.bookmarks.search({ url: `http://${url}` }),
+        /^https?:/.test(url) ?
+          [] :
+          browser.bookmarks.search({ url: `https://${url}` }),
+        /^ftp?:/.test(url) ?
+          [] :
+          browser.bookmarks.search({ url: `ftp://${url}` }),
+        /^moz-extension:/.test(url) ?
+          [] :
+          browser.bookmarks.search({ url: `moz-extension://${url}` })
+      ]);
+      resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
     });
   }
 
@@ -1241,7 +1248,7 @@ export default class Tab {
   get sanitized() {
     const sanitized = {
       ...this.tab,
-      '$initialUrl': null,
+      '$possibleInitialUrl': null,
       '$TST': null
     };
     delete sanitized.$TST;

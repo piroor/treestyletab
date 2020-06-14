@@ -369,7 +369,6 @@ async function tryGroupNewTabs() {
   tryGroupNewTabs.running = true;
   try {
     const fromPinned    = [];
-    const fromBookmarks = [];
     const fromOthers    = [];
     // extract only pure new tabs
     for (const tabReference of tabReferences) {
@@ -389,12 +388,7 @@ async function tryGroupNewTabs() {
             configs.autoGroupNewTabsFromPinned)
           fromPinned.push(tab);
       }
-      else if (await tab.$TST.promisedPossibleOpenerBookmarks &&
-               tab.$TST.possibleOpenerBookmarks.length > 0) {
-        if (configs.autoGroupNewTabsFromBookmarks)
-          fromBookmarks.push(tab);
-      }
-      else if (configs.autoGroupNewTabsFromOthers) {
+      else {
         fromOthers.push(tab);
       }
     }
@@ -406,15 +400,30 @@ async function tryGroupNewTabs() {
       }
     }
 
-    if (fromBookmarks.length > 0 &&
-        areMostTabsFromSameBookmarkFolder(fromBookmarks, fromOthers)) {
-      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromBookmarks.concat(fromOthers)));
-      if (newRootTabs.length > 1)
-        await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
-    }
-    else if (fromOthers.length > 0) {
-      const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
-      if (newRootTabs.length > 1) {
+    // We can assume that new tabs from a bookmark folder and from other
+    // sources won't be mixed.
+    const openedFromBookmarkFolder = fromOthers.length > 0 && await new Promise((resolve, _reject) => {
+      const maybeFromBookmarks = [];
+      let restCount = fromOthers.length;
+      for (const tab of fromOthers) {
+        tab.$TST.promisedPossibleOpenerBookmarks.then(() => {
+          restCount--;
+          if (tab.$TST.possibleOpenerBookmarks.length > 0)
+            maybeFromBookmarks.push(tab);
+          if (areMostTabsFromSameBookmarkFolder(maybeFromBookmarks, tabReferences.length))
+            resolve(true);
+          else if (restCount == 0)
+            resolve(false);
+        });
+      }
+    });
+    const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
+    if (newRootTabs.length > 1) {
+      if (openedFromBookmarkFolder) {
+        if (configs.autoGroupNewTabsFromBookmarks)
+          await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+      }
+      else if (configs.autoGroupNewTabsFromOthers) {
         const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
         if (granted)
           await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
@@ -431,8 +440,15 @@ async function tryGroupNewTabs() {
   }
 }
 
-function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, otherTabs) {
-  const parentIds = bookmarkedTabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId)).flat();
+function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, allNewTabsCount) {
+  const parentIds = bookmarkedTabs.map(tab => {
+    if (tab.$TST.openerBookmarks)
+      return tab.$TST.openerBookmarks.map(bookmark => bookmark.parentId);
+    else if (tab.$TST.possibleOpenerBookmarks)
+      return tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId);
+    else
+      return [];
+  }).flat();
   const counts    = [];
   const countById = {};
   for (const id of parentIds) {
@@ -444,7 +460,7 @@ function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, otherTabs) {
     return false;
 
   const greatestCount = counts.sort((a, b) => b.count - a.count)[0];
-  const minCount = (bookmarkedTabs.length + otherTabs.length) * configs.tabsFromSameFolderMinThresholdPercentage / 100;
+  const minCount = allNewTabsCount * configs.tabsFromSameFolderMinThresholdPercentage / 100;
   return greatestCount.count > minCount;
 }
 
