@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Add ability to configure middle click on the new tab button same as Ctrl-click.
+   * Quicken detection and grouping of new tabs opened from a bookmark folder.
+   * Show the container name in the tooltip on container tabs, like Firefox does.
+   * Better container support in group tabs.
+   * Add ability to change column width in group tabs. Now custom style definition like `:root.group-tab { --column-width: 30em; }` does it.
  - 3.5.5 (2020.6.6)
    * Fix broken appearance of the sidebar after window move across multiple screens with different DPI.
    * Group new tabs automatically by default only when they are detected as tabs opened from bookmarks in one folder. As the result the configuration UI for auto-grouping feature is now very simplified.
