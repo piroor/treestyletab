@@ -21,6 +21,7 @@
     font: message-box;
     line-height: 1.2;
     --column-width: 20em;
+    --favicon-size: 16px;
   }
 
   main {
@@ -78,11 +79,11 @@
   #tabs li img,
   #tabs li.use-default-favicon a::before,
   #tabs li.favicon-loading a::before {
-    height: 16px;
-    max-width: 16px;
-    max-height: 16px;
-    min-width: 16px;
-    width: 16px;
+    height: var(--favicon-size);
+    max-width: var(--favicon-size);
+    max-height: var(--favicon-size);
+    min-width: var(--favicon-size);
+    width: var(--favicon-size);
   }
 
   #tabs li.use-default-favicon img,
@@ -127,7 +128,7 @@
   #tabs a span.label {
     display: inline-block;
     margin: 0;
-    padding: calc(16px - 1em) 0 0 0.25em;
+    padding: calc(var(--favicon-size) - 1em) 0 0 0.25em;
     white-space: pre-wrap;
   }
 
