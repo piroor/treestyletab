@@ -318,7 +318,7 @@
 
     const link = item.appendChild(document.createElement('a'));
     link.href = '#';
-    link.setAttribute('title', tab.title);
+    link.setAttribute('title', tab.cookieStoreName ? `${tab.title} - ${tab.cookieStoreName}` : tab.title);
     link.dataset.tabId = tab.id;
 
     const icon = link.appendChild(document.createElement('img'));

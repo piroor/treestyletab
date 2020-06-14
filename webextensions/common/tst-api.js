@@ -288,8 +288,10 @@ export class TreeItem {
       ]);
       exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
     }
-    if (permissions.has(kPERMISSION_COOKIES))
+    if (permissions.has(kPERMISSION_COOKIES)) {
       allowedProperties.push('cookieStoreId');
+      exportedTab.cookieStoreName = sourceTab.$TST.cookieStoreName;
+    }
 
     allowedProperties = new Set(allowedProperties);
     for (const key of allowedProperties) {
