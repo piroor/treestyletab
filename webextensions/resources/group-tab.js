@@ -179,9 +179,12 @@
 
     window.l10n.updateDocument();
 
-    const [themeDeclarations, configs] = await Promise.all([
+    const [themeDeclarations, contextualIdentitiesColorInfo, configs] = await Promise.all([
       browser.runtime.sendMessage({
         type: 'treestyletab:get-theme-declarations'
+      }),
+      browser.runtime.sendMessage({
+        type: 'treestyletab:get-contextual-identities-color-info'
       }),
       browser.runtime.sendMessage({
         type: 'treestyletab:get-config-value',
@@ -193,7 +196,15 @@
       })
     ]);
 
-    gBrowserThemeDefinition.textContent = themeDeclarations;
+    const contextualIdentitiesMarkerDeclarations = Object.keys(contextualIdentitiesColorInfo.colors).map(id =>
+      `#tabs a[data-cookie-store-id="${id}"] .contextual-identity-marker {
+         background-color: ${contextualIdentitiesColorInfo.colors[id]};
+       }`).join('\n');
+    gBrowserThemeDefinition.textContent = `
+      ${themeDeclarations}
+      ${contextualIdentitiesMarkerDeclarations}
+      ${contextualIdentitiesColorInfo.colorDeclarations}
+    `;
     gUserStyleRules.textContent = configs.userStyleRules;
 
     updateTree.enabled = configs.renderTreeInGroupTabs;
@@ -320,6 +331,10 @@
     link.href = '#';
     link.setAttribute('title', tab.cookieStoreName ? `${tab.title} - ${tab.cookieStoreName}` : tab.title);
     link.dataset.tabId = tab.id;
+    link.dataset.cookieStoreId = tab.cookieStoreId;
+
+    const contextualIdentityMarker = link.appendChild(document.createElement('span'));
+    contextualIdentityMarker.classList.add('contextual-identity-marker');
 
     const icon = link.appendChild(document.createElement('img'));
     if (tab.effectiveFavIconUrl || tab.favIconUrl) {

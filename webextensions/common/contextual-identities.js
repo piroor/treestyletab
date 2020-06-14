@@ -31,6 +31,27 @@ export function getIdFromName(name) {
   return null;
 }
 
+export function getColorInfo() {
+  const colors = {};
+  const customColors = [];
+  forEach(identity => {
+    if (!identity.colorCode)
+      return;
+    let colorValue = identity.colorCode;
+    if (identity.color) {
+      const customColor = `--contextual-identity-color-${identity.color}`;
+      customColors.push(`${customColor}: ${identity.colorCode};`);
+      colorValue = `var(${customColor})`;
+    }
+    colors[identity.cookieStoreId] = colorValue;
+  });
+
+  return {
+    colors,
+    colorDeclarations: customColors.length > 0 ? `:root { ${customColors.join('\n')} }` : ''
+  };
+}
+
 export function getCount() {
   return mContextualIdentities.size;
 }

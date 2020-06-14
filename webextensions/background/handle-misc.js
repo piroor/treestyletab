@@ -23,6 +23,7 @@ import * as Permissions from '/common/permissions.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as BrowserTheme from '/common/browser-theme.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 
 import Tab from '/common/Tab.js';
 
@@ -315,6 +316,9 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_GET_THEME_DECLARATIONS:
       return browser.theme.getCurrent().then(theme => BrowserTheme.generateThemeDeclarations(theme));
+
+    case Constants.kCOMMAND_GET_CONTEXTUAL_IDENTITIES_COLOR_INFO:
+      return Promise.resolve(ContextualIdentities.getColorInfo());
 
     case Constants.kCOMMAND_GET_CONFIG_VALUE:
       if (Array.isArray(message.keys)) {

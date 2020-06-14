@@ -12,6 +12,7 @@ export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sid
 export const kCOMMAND_REQUEST_CONNECT_PREFIX         = 'treestyletab:request-connect-from:';
 export const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
 export const kCOMMAND_GET_THEME_DECLARATIONS         = 'treestyletab:get-theme-declarations';
+export const kCOMMAND_GET_CONTEXTUAL_IDENTITIES_COLOR_INFO = 'treestyletab:get-contextual-identities-color-info';
 export const kCOMMAND_GET_CONFIG_VALUE               = 'treestyletab:get-config-value';
 export const kCOMMAND_SET_CONFIG_VALUE               = 'treestyletab:set-config-value';
 export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
