@@ -406,9 +406,9 @@ async function tryGroupNewTabs() {
       const maybeFromBookmarks = [];
       let restCount = fromOthers.length;
       for (const tab of fromOthers) {
-        tab.$TST.promisedPossibleOpenerBookmarks.then(() => {
+        tab.$TST.promisedPossibleOpenerBookmarks.then(bookmarks => {
           restCount--;
-          if (tab.$TST.possibleOpenerBookmarks.length > 0)
+          if (bookmarks.length > 0)
             maybeFromBookmarks.push(tab);
           if (areMostTabsFromSameBookmarkFolder(maybeFromBookmarks, tabReferences.length))
             resolve(true);
