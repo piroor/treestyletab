@@ -19,6 +19,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
 import * as SidebarConnection from './sidebar-connection.js';
+import * as ContextualIdentities from './contextual-identities.js';
 
 import Window from './Window.js';
 
@@ -405,6 +406,11 @@ export default class Tab {
       ]);
       resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
     });
+  }
+
+  get cookieStoreName() {
+    const identity = this.tab.cookieStoreId && ContextualIdentities.get(this.tab.cookieStoreId);
+    return identity ? identity.name : null;
   }
 
   //===================================================================

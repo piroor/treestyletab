@@ -35,7 +35,6 @@ import {
 
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
-import * as ContextualIdentities from './contextual-identities.js';
 import * as SidebarConnection from './sidebar-connection.js';
 
 import Tab from './Tab.js';
@@ -77,12 +76,6 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       ('title' in newState &&
        newState.title != oldState.title)) {
-    let visibleLabel = newState.title;
-    if (newState && newState.cookieStoreId) {
-      const identity = ContextualIdentities.get(newState.cookieStoreId);
-      if (identity)
-        visibleLabel = `${newState.title} - ${identity.name}`;
-    }
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD) &&
@@ -114,7 +107,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
       addedStates.push(Constants.kTAB_STATE_UNREAD);
     }
-    tab.$TST.label = visibleLabel;
+    tab.$TST.label = newState.title;
     Tab.onLabelUpdated.dispatch(tab);
     messages.push({
       type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,

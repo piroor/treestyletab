@@ -326,7 +326,7 @@ windowId = ${tab.windowId}
       return;
     }
 
-    this.tooltip = tab.title;
+    this.tooltip = this.$TST.cookieStoreName ? `${tab.title} - ${this.$TST.cookieStoreName}` : tab.title;
     this.tooltipWithDescendants = this._getTooltipWithDescendants(tab);
 
     if (configs.showCollapsedDescendantsByTooltip &&
@@ -334,7 +334,7 @@ windowId = ${tab.windowId}
         this.$TST.hasChild) {
       this.$TST.setAttribute('title', this.tooltipWithDescendants);
     }
-    else if (this.classList.contains('faviconized') || this.overflow) {
+    else if (this.classList.contains('faviconized') || this.overflow || this.tooltip != tab.title) {
       this.$TST.setAttribute('title', this.tooltip);
     }
     else {
