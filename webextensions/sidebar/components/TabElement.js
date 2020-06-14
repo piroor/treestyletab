@@ -334,7 +334,7 @@ windowId = ${tab.windowId}
         this.$TST.hasChild) {
       this.$TST.setAttribute('title', this.tooltipWithDescendants);
     }
-    else if (tab.pinned || this.overflow) {
+    else if (this.classList.contains('faviconized') || this.overflow) {
       this.$TST.setAttribute('title', this.tooltip);
     }
     else {
