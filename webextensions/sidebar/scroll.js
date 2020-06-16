@@ -76,10 +76,17 @@ export function init(scrollPosition) {
 
 /* basics */
 
+//const mAnimationReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function canApplyAnimation() {
+  return configs.animation /* && !mAnimationReduced.matches // Currently Firefox doesn't deactivate smooth scroll animation with this trigger, so we respect the decision. */;
+}
+
 function scrollTo(params = {}) {
   log('scrollTo ', params);
   if (!params.justNow &&
-      configs.animation && configs.smoothScrollEnabled)
+      canApplyAnimation() &&
+      configs.smoothScrollEnabled)
     return smoothScrollTo(params);
 
   //cancelPerformingAutoScroll();
@@ -537,7 +544,7 @@ async function onBackgroundMessage(message) {
       if (message.maybeMoved)
         await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       const tab = Tab.get(message.tabId);
-      if (configs.animation) {
+      if (canApplyAnimation()) {
         wait(10).then(() => { // wait until the tab is moved by TST itself
           const parent = tab.$TST.parent;
           if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
