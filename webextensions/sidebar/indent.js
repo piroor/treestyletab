@@ -42,6 +42,12 @@ export function init() {
   mPromisedInitialized = mPromisedInitializedResolver = null;
 }
 
+const mLessAnimationMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function canApplyAnimation() {
+  return configs.animation  && !mLessAnimationMedia.matches;
+}
+
 export function updateRestoredTree(cachedIndent) {
   updateVisualMaxTreeLevel();
   update({
@@ -142,8 +148,16 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
   log('reserveToUpdateVisualMaxTreeLevel');
-  if (updateVisualMaxTreeLevel.waiting)
+  if (updateVisualMaxTreeLevel.waiting) {
     clearTimeout(updateVisualMaxTreeLevel.waiting);
+    delete updateVisualMaxTreeLevel.waiting;
+  }
+
+  if (!canApplyAnimation()) {
+    updateVisualMaxTreeLevel();
+    return;
+  }
+
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
     delete updateVisualMaxTreeLevel.waiting;
     updateVisualMaxTreeLevel();
@@ -214,6 +228,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (tab.$TST.getAttribute(Constants.kLEVEL) != message.level)
         tab.$TST.setAttribute(Constants.kLEVEL, message.level);
       reserveToUpdateIndent();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
+      if (!canApplyAnimation())
+        updateVisualMaxTreeLevel();
       break;
   }
 });

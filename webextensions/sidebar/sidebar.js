@@ -82,6 +82,7 @@ const mStyleLoader                = document.querySelector('#style-loader');
 const mBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 const mUserStyleRules             = document.querySelector('#user-style-rules');
 const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+const mLessAnimationMedia         = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -271,7 +272,7 @@ export async function init() {
       SidebarTabs.init();
       Indent.reserveToUpdateVisualMaxTreeLevel();
 
-      window.matchMedia('(prefers-reduced-motion: reduce)').addListener(_event => {
+      mLessAnimationMedia.addListener(_event => {
         onConfigChange('animation');
       });
       onConfigChange('animation');
@@ -726,7 +727,7 @@ function onConfigChange(changedKey) {
     }; break;
 
     case 'animation':
-      if (configs.animation && !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      if (configs.animation && !mLessAnimationMedia.matches)
         rootClasses.add('animation');
       else
         rootClasses.remove('animation');
