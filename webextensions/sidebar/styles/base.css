@@ -668,6 +668,12 @@ tab-item.faviconized .contextual-identity-marker {
   display: block;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  #out-of-view-tab-notifier.notifying {
+    animation: none;
+  }
+}
+
 
 /* sub panel */
 

@@ -271,6 +271,9 @@ export async function init() {
       SidebarTabs.init();
       Indent.reserveToUpdateVisualMaxTreeLevel();
 
+      window.matchMedia('(prefers-reduced-motion: reduce)').addListener(_event => {
+        onConfigChange('animation');
+      });
       onConfigChange('animation');
       onReady.dispatch();
     }),
@@ -723,7 +726,7 @@ function onConfigChange(changedKey) {
     }; break;
 
     case 'animation':
-      if (configs.animation)
+      if (configs.animation && !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
         rootClasses.add('animation');
       else
         rootClasses.remove('animation');
