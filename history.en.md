@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Activate/deactivate the animation effect for updating of indentation with the animation option.
+   * Deactivate all animations automatically when animation effects are disabled by the platform itself.
    * Add ability to configure middle click on the new tab button same as Ctrl-click.
    * Quicken detection and grouping of new tabs opened from a bookmark folder.
    * Show the container name in the tooltip on container tabs, like Firefox does.
