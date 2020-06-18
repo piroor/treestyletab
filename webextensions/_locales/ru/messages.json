@@ -311,6 +311,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую вкладку" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "то же для нажатия с Ctrl (следующая одноуровневая, в том же контейнере)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
