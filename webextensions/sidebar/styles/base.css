@@ -62,9 +62,9 @@
 
   --tab-extra-contents-behind-z-index: 10;
   --tab-base-z-index:                  100;
+  --tab-favicon-z-index:               200;
   --tab-burster-z-index:               4000;
   --tab-highlighter-z-index:           5000;
-  --tab-attention-z-index:             5500;
   --tab-extra-contents-front-z-index:  6000;
   --tab-ui-z-index:                    9000;
   --tab-drop-marker-z-index:           10000;
@@ -254,6 +254,10 @@ tab-item > * {
   z-index: var(--tab-base-z-index);
 }
 
+tab-item tab-favicon {
+  z-index: var(--tab-favicon-z-index);
+}
+
 tab-item.hidden {
   pointer-events: none;
   position: fixed;
@@ -353,7 +357,6 @@ tab-item.attention tab-favicon::before {
   right: auto;
   top: var(--attention-marker-y-offset);
   width: var(--faviconized-tab-size);
-  z-index: var(--tab-attention-z-index);
 }
 
 tab-item .extra-items-container.behind {
