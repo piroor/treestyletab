@@ -336,6 +336,9 @@
     const contextualIdentityMarker = link.appendChild(document.createElement('span'));
     contextualIdentityMarker.classList.add('contextual-identity-marker');
 
+    const defaultFavIcon = link.appendChild(document.createElement('span'));
+    defaultFavIcon.classList.add('default-favicon');
+
     const icon = link.appendChild(document.createElement('img'));
     if (tab.effectiveFavIconUrl || tab.favIconUrl) {
       icon.src = tab.effectiveFavIconUrl || tab.favIconUrl;

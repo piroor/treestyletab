@@ -77,8 +77,8 @@
   }
 
   #tabs li img,
-  #tabs li.use-default-favicon a::before,
-  #tabs li.favicon-loading a::before {
+  #tabs li.use-default-favicon .default-favicon,
+  #tabs li.favicon-loading .default-favicon {
     height: var(--favicon-size);
     max-width: var(--favicon-size);
     max-height: var(--favicon-size);
@@ -91,16 +91,15 @@
     display: none;
   }
 
-  #tabs li.use-default-favicon a::before,
-  #tabs li.favicon-loading a::before {
+  #tabs li.use-default-favicon .default-favicon,
+  #tabs li.favicon-loading .default-favicon {
     background: var(--text-color);
     display: none;
-    content: "";
     display: inline-block;
     mask: url("./icons/globe-16.svg") no-repeat center / 100%;
   }
 
-  #tabs li.use-default-favicon.group-tab a::before {
+  #tabs li.use-default-favicon.group-tab .default-favicon {
     mask-image: url("./icons/folder-16.svg");
   }
 
