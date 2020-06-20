@@ -246,7 +246,7 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>I want to use "Bookmarks" sidebar panel parallelly with TST's tabs</summary>
   
-  It is currently impossible due to [the bug 1328776 (Provide ability to show multiple sidebar contents parallelly)]. But there are some workarounds:
+  It is currently impossible due to [the bug 1328776 (Provide ability to show multiple sidebar contents parallelly)](https://bugzilla.mozilla.org/show_bug.cgi?id=1328776). But there are some workarounds:
   
   * [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) is now available for TST 3.1.0 and later. It provides a cloned version of the "Bookmarks" sidebar panel below TST's tabs.
   * [Aggregate Tabs to Main Window](https://addons.mozilla.org/firefox/addon/aggregate-tabs-to-main-window/) may help you to use Firefox's multiple windows for each purpose: "an window for a sidebar panel" and "an window for browsing tabs". Such windows should behave like virtual multiple sidebar panels.
