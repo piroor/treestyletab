@@ -34,7 +34,7 @@ async function registerToTST() {
       `,
 
       // Extra permissions to receive tab information via TST's API. (optional)
-      // Available permissions are listedat:
+      // Available permissions are listed at:
       // https://github.com/piroor/treestyletab/wiki/API-for-other-addons#extra-permissions
       permissions: [
         // ...
