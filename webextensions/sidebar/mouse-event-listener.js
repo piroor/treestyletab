@@ -257,14 +257,16 @@ function onMouseDown(event) {
       if (mousedownDetail.targetType != 'tab')
         return undefined;
 
-      log('Sending message to listeners');
+      log('Sending message to listeners ', { extraContentsInfo });
       const allowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
         mousedown,
         extraContentsInfo
       );
-      if (!allowed)
+      if (!allowed) {
+        log(' => canceled');
         return true;
+      }
 
       log(' => allowed');
       return false;
@@ -376,7 +378,7 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
         $extraContentsInfo: null
       },
       { tabProperties: ['tab'],
-        target:        extraContentsInfo.owners }
+        targets:       extraContentsInfo.owners }
     );
     if (!allowed)
       return false;
@@ -825,7 +827,7 @@ async function onDblClick(event) {
           originalTarget: extraContentsInfo.target
         },
         { tabProperties: ['tab'],
-          target:        extraContentsInfo.owners }
+          targets:       extraContentsInfo.owners }
       );
       if (!allowed)
         return;

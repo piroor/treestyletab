@@ -923,55 +923,49 @@ export async function notifyScrolled(params = {}) {
 // =======================================================================
 
 export async function tryOperationAllowed(type, message = {}, options = {}) {
-  if (!hasListenerForMessageType(type))
+  if (!hasListenerForMessageType(type, options)) {
+    //log(`=> ${type}: no listener, always allowed`);
     return true;
+  }
   const results = await sendMessage({ ...message, type }, options).catch(_error => {});
   if (results.flat().some(result => result && result.result)) {
     log(`=> ${type}: canceled by some helper addon`);
     return false;
   }
+  log(`=> ${type}: allowed by all helper addons`);
   return true;
 }
 
-export function hasListenerForMessageType(type) {
-  return getListenersForMessageType(type).length > 0;
+export function hasListenerForMessageType(type, options = {}) {
+  return getListenersForMessageType(type, options).length > 0;
 }
 
-export function getListenersForMessageType(type) {
-  const uniqueTargets = {};
+export function getListenersForMessageType(type, { targets, except } = {}) {
+  targets = targets instanceof Set ? targets : new Set(Array.isArray(targets) ? targets : targets ? [targets] : []);
+  except  = except instanceof Set ? except : new Set(Array.isArray(except) ? except : except ? [except] : []);
+  const finalTargets = new Set();
   for (const [id, addon] of getAddons()) {
-    if (addon.listeningTypes.includes(type))
-      uniqueTargets[id] = true;
+    if (addon.listeningTypes.includes(type) &&
+        (targets.size == 0 || targets.has(id)) &&
+        !except.has(id))
+      finalTargets.add(id);
   }
-  return Object.keys(uniqueTargets).map(id => getAddon(id));
+  //log('getListenersForMessageType ', { type, targets, except, finalTargets, all: mAddons });
+  return Array.from(finalTargets, getAddon);
 }
 
 export async function sendMessage(message, options = {}) {
-  const uniqueTargets = new Set();
-  const listenerAddons = getListenersForMessageType(message.type);
-  for (const addon of listenerAddons) {
-    uniqueTargets.add(addon.id);
-  }
+  const listenerAddons = getListenersForMessageType(message.type, options);
   const tabProperties = options.tabProperties || [];
   log(`sendMessage: sending message for ${message.type}: `, {
     message,
     listenerAddons,
-    targets: options.targets,
     tabProperties
   });
-  if (options.targets) {
-    if (!Array.isArray(options.targets))
-      options.targets = [options.targets];
-    for (const id of options.targets) {
-      uniqueTargets.add(id);
-    }
-  }
 
-  const promisedResults = spawnMessages(uniqueTargets, {
+  const promisedResults = spawnMessages(new Set(listenerAddons.map(addon => addon.id)), {
     message,
-    tabProperties,
-    target: options.target,
-    except: options.except
+    tabProperties
   });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
@@ -979,7 +973,7 @@ export async function sendMessage(message, options = {}) {
   }).catch(ApiTabs.createErrorHandler());
 }
 
-function* spawnMessages(targetSet, params) {
+function* spawnMessages(targets, params) {
   const message = params.message;
   const tabProperties = params.tabProperties || [];
 
@@ -1028,10 +1022,7 @@ function* spawnMessages(targetSet, params) {
     }
   };
 
-  for (const id of targetSet) {
-    if ((params.target && !params.target.has(id)) ||
-        (params.except && params.except.has(id)))
-      continue;
+  for (const id of targets) {
     yield send(id);
   }
 }
