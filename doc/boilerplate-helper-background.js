@@ -5,7 +5,7 @@
 
  license: The MIT License, Copyright (c) 2020 YUKI "Piro" Hiroshi
  original:
-   http://github.com/piroor/blob/trunk/doc/boilerplate-helper-background.js
+   http://github.com/piroor/treestyletab/blob/trunk/doc/boilerplate-helper-background.js
 */
 
 'use strict';
