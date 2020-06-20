@@ -48,12 +48,6 @@ async function registerToTST() {
         url:   `moz-extension://${location.host}/path/to/panel.html`
       },
       */
-
-      /*
-      // Extra tab contents (optional)
-      // https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API
-      contents: `<button id="button" part="button">foo</button>`,
-      */
     });
   }
   catch(_error) {
