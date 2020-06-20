@@ -257,7 +257,7 @@ function onMouseDown(event) {
       if (mousedownDetail.targetType != 'tab')
         return undefined;
 
-      log('Sending message to listeners ', { extraContentsInfo });
+      log('Sending message to mousedown listeners ', { extraContentsInfo });
       const allowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
         mousedown,
@@ -368,7 +368,9 @@ function getOriginalExtraContentsTarget(event) {
 }
 
 async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraContentsInfo) {
-  if (extraContentsInfo && extraContentsInfo.owners) {
+  if (extraContentsInfo &&
+      extraContentsInfo.owners &&
+      extraContentsInfo.owners.size > 0) {
     const allowed = await TSTAPI.tryOperationAllowed(
       type,
       {
