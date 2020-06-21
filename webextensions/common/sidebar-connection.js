@@ -31,7 +31,12 @@ export function isInitialized() {
 }
 
 export function isOpen(windowId) {
-  return mOpenState && mOpenState.has(windowId)
+  if (!mOpenState)
+    return false;
+  if (!mOpenState.has(windowId))
+    return false;
+  const ports = mOpenState.has(windowId);
+  return ports && ports.size > 0;
 }
 
 export function hasFocus(windowId) {
