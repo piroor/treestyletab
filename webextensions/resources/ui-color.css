@@ -241,3 +241,25 @@ hr {
     --text-color: var(--in-content-text-color);
   }
 }
+
+
+/*
+ Global styles for extensions page from chrome://browser/content/extension.css
+ They are applied to sidebar contents automatically but not provided for
+ in-page contents, so we manually define them here.
+*/
+html,
+body {
+  box-sizing: border-box;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  font: caption;
+  margin: 0;
+  padding: 0;
+  -moz-user-select: none;
+}
+body * {
+  box-sizing: border-box;
+  text-align: start;
+}
