@@ -41,7 +41,6 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "browser_style": true,
     "theme_icons": [
       {
         "light": "/resources/16x16-dark.svg#toolbar",
@@ -73,8 +72,7 @@
       "24": "/resources/24x24-light.svg",
       "32": "/resources/32x32-light.svg"
     },
-    "default_panel": "/sidebar/sidebar.html",
-    "browser_style": true
+    "default_panel": "/sidebar/sidebar.html"
   },
   "commands": {
     "_execute_browser_action": {
