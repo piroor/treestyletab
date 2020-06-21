@@ -133,7 +133,13 @@ export async function init() {
   UserOperationBlocker.setProgress(0);
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
-      const window = await MetricsData.addAsync('browser.windows.getCurrent', browser.windows.getCurrent({ populate: true })).catch(ApiTabs.createErrorHandler());
+      const bundledWindowId = /windowId=([1-9][0-9]*)/i.test(location.search) ? parseInt(RegExp.$1) : 0;
+      const window = await MetricsData.addAsync(
+        'getting window',
+        bundledWindowId >= 1 ?
+          browser.windows.get(bundledWindowId, { populate: true }) :
+          browser.windows.getCurrent({ populate: true })
+      ).catch(ApiTabs.createErrorHandler());
       if (window.focused)
         document.documentElement.classList.add('active');
       const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
