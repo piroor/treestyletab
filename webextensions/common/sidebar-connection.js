@@ -30,7 +30,7 @@ export function isInitialized() {
   return !!mConnections;
 }
 
-export function isOpen(windowId) {
+export function isSidebarOpen(windowId) {
   if (!mConnections)
     return false;
   const connections = mConnections.get(windowId);
@@ -41,6 +41,13 @@ export function isOpen(windowId) {
       return true;
   }
   return false;
+}
+
+export function isOpen(windowId) {
+  if (!mConnections)
+    return false;
+  const connections = mConnections.get(windowId);
+  return connections && connections.size > 0;
 }
 
 export function hasFocus(windowId) {

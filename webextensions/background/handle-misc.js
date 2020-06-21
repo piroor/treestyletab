@@ -76,7 +76,7 @@ function onToolbarButtonClick(tab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (SidebarConnection.isOpen(tab.windowId))
+  if (SidebarConnection.isSidebarOpen(tab.windowId))
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();
