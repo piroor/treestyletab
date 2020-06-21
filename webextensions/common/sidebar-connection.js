@@ -22,19 +22,25 @@ export const onMessage = new EventListenerManager();
 export const onConnected = new EventListenerManager();
 export const onDisconnected = new EventListenerManager();
 
-let mPorts;
+let mConnections;
 const mReceivers = new Map();
 const mFocusState = new Map();
 
 export function isInitialized() {
-  return !!mPorts;
+  return !!mConnections;
 }
 
 export function isOpen(windowId) {
-  if (!mPorts)
+  if (!mConnections)
     return false;
-  const ports = mPorts.get(windowId);
-  return ports && ports.size > 0;
+  const connections = mConnections.get(windowId);
+  if (!connections)
+    return false;
+  for (const connection of connections) {
+    if (connection.type == 'sidebar')
+      return true;
+  }
+  return false;
 }
 
 export function hasFocus(windowId) {
@@ -46,11 +52,11 @@ export const counts = {
 };
 
 export function getOpenWindowIds() {
-  return mPorts ? Array.from(mPorts.keys()) : [];
+  return mConnections ? Array.from(mConnections.keys()) : [];
 }
 
 export function sendMessage(message) {
-  if (!mPorts)
+  if (!mConnections)
     return false;
 
   if (message.windowId) {
@@ -60,11 +66,11 @@ export function sendMessage(message) {
       localCounts[message.type] = localCounts[message.type] || 0;
       localCounts[message.type]++;
     }
-    const ports = mPorts.get(message.windowId);
-    if (!ports || ports.size == 0)
+    const connections = mConnections.get(message.windowId);
+    if (!connections || connections.size == 0)
       return false;
-    for (const port of ports) {
-      sendMessageToPort(port, message);
+    for (const connection of connections) {
+      sendMessageToPort(connection.port, message);
     }
     //port.postMessage(message);
     return true;
@@ -73,11 +79,11 @@ export function sendMessage(message) {
   // broadcast
   counts.broadcast[message.type] = counts.broadcast[message.type] || 0;
   counts.broadcast[message.type]++;
-  for (const ports of mPorts.values()) {
-    if (!ports || ports.size == 0)
+  for (const connections of mConnections.values()) {
+    if (!connections || connections.size == 0)
       continue;
-    for (const port of ports) {
-      sendMessageToPort(port, message);
+    for (const connection of connections) {
+      sendMessageToPort(connection.port, message);
     }
     //port.postMessage(message);
   }
@@ -118,15 +124,17 @@ function sendMessageToPort(port, message) {
 export function init() {
   if (isInitialized())
     return;
-  mPorts = new Map();
-  const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
+  mConnections = new Map();
+  const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}([0-9]+):(.+)$`);
   browser.runtime.onConnect.addListener(port => {
     if (!matcher.test(port.name))
       return;
-    const windowId = parseInt(port.name.replace(matcher, ''));
-    const ports = mPorts.get(windowId) || new Set();
-    ports.add(port);
-    mPorts.set(windowId, ports);
+    const windowId   = parseInt(RegExp.$1);
+    const type       = RegExp.$2;
+    const connection = { port, type };
+    const connections = mConnections.get(windowId) || new Set();
+    connections.add(connection);
+    mConnections.set(windowId, connections);
     const receiver = message => {
       if (Array.isArray(message))
         return message.forEach(receiver);
@@ -134,15 +142,15 @@ export function init() {
     };
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
-    onConnected.dispatch(windowId, ports.size);
+    onConnected.dispatch(windowId, connections.size);
     port.onDisconnect.addListener(_diconnectedPort => {
-      ports.remove(port);
-      if (ports.size == 0)
-        mPorts.delete(windowId);
+      connections.delete(connection);
+      if (connections.size == 0)
+        mConnections.delete(windowId);
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
       mFocusState.delete(windowId);
-      onDisconnected.dispatch(windowId, ports.size);
+      onDisconnected.dispatch(windowId, connections.size);
     });
   });
 }
