@@ -57,10 +57,12 @@ export function sendMessage(message) {
       localCounts[message.type] = localCounts[message.type] || 0;
       localCounts[message.type]++;
     }
-    const port = mOpenState.get(message.windowId);
-    if (!port)
+    const ports = mOpenState.get(message.windowId);
+    if (!ports || ports.size == 0)
       return false;
+    for (const port of ports) {
     sendMessageToPort(port, message);
+    }
     //port.postMessage(message);
     return true;
   }
@@ -68,8 +70,12 @@ export function sendMessage(message) {
   // broadcast
   counts.broadcast[message.type] = counts.broadcast[message.type] || 0;
   counts.broadcast[message.type]++;
-  for (const port of mOpenState.values()) {
+  for (const ports of mOpenState.values()) {
+    if (!ports || ports.size == 0)
+      continue;
+    for (const port of ports) {
     sendMessageToPort(port, message);
+    }
     //port.postMessage(message);
   }
   return true;
@@ -115,7 +121,9 @@ export function init() {
     if (!matcher.test(port.name))
       return;
     const windowId = parseInt(port.name.replace(matcher, ''));
-    mOpenState.set(windowId, port);
+    const ports = mOpenState.get(windowId) || new Set();
+    ports.add(port);
+    mOpenState.set(windowId, ports);
     const receiver = message => {
       if (Array.isArray(message))
         return message.forEach(receiver);
@@ -125,6 +133,8 @@ export function init() {
     mReceivers.set(windowId, receiver);
     onConnected.dispatch(windowId);
     port.onDisconnect.addListener(_diconnectedPort => {
+      ports.remove(port);
+      if (ports.size == 0)
       mOpenState.delete(windowId);
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
