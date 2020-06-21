@@ -143,7 +143,7 @@ async function onActivated(activeInfo) {
     const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
     if (!Tab.isTracked(activeInfo.tabId))
-      await Tab.waitUntilTracked(activeInfo.tabId, { element: !!TabsStore.getWindow() });
+      await Tab.waitUntilTracked(activeInfo.tabId, { element: !!TabsStore.getCurrentWindowId() });
 
     const newActiveTab = Tab.get(activeInfo.tabId);
     if (!newActiveTab ||
@@ -215,7 +215,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     await mPromisedStarted;
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
+    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getCurrentWindowId() });
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -765,7 +765,7 @@ async function onMoved(tabId, moveInfo) {
   const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
+    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getCurrentWindowId() });
   if (Tab.needToWaitMoved(moveInfo.windowId))
     await Tab.waitUntilMovedAll(moveInfo.windowId);
 
@@ -982,7 +982,7 @@ async function onDetached(tabId, detachInfo) {
     oldWindow.detachTab(oldTab.id, {
       toBeDetached: true
     });
-    if (!TabsStore.getWindow() && // only in the background page - the sidebar has no need to destroy itself manually.
+    if (!TabsStore.getCurrentWindowId() && // only in the background page - the sidebar has no need to destroy itself manually.
         oldWindow.tabs &&
         oldWindow.tabs.size == 0) { // not destroyed yet case
       if (oldWindow.delayedDestroy)
@@ -1024,7 +1024,7 @@ async function onWindowRemoved(windowId) {
     log('onWindowRemoved ', windowId);
     const window = TabsStore.windows.get(windowId);
     if (window &&
-        !TabsStore.getWindow()) // skip destructor on sidebar
+        !TabsStore.getCurrentWindowId()) // skip destructor on sidebar
       window.destroy();
 
     onCompleted();

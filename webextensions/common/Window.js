@@ -204,7 +204,7 @@ export default class Window {
       return;
     order.splice(index, 1);
     if (this.tabs.size == 0) {
-      if (!TabsStore.getWindow()) { // only in the background page - the sidebar has no need to destroy itself manually.
+      if (!TabsStore.getCurrentWindowId()) { // only in the background page - the sidebar has no need to destroy itself manually.
         // the last tab can be removed with browser.tabs.closeWindowWithLastTab=false,
         // so we should not destroy the window immediately.
         if (this.delayedDestroy)

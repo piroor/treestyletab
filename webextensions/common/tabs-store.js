@@ -19,11 +19,11 @@ function log(...args) {
 
 let mTargetWindow;
 
-export function setWindow(targetWindow) {
+export function setCurrentWindowId(targetWindow) {
   return mTargetWindow = targetWindow;
 }
 
-export function getWindow() {
+export function getCurrentWindowId() {
   return mTargetWindow;
 }
 

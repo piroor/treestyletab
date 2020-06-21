@@ -39,7 +39,7 @@ export function setProgress(percentage, windowId = null) {
   percentage = Math.max(0, Math.min(100, percentage));
   if (mProgressbar)
     mProgressbar.value = percentage;
-  if (windowId && !TabsStore.getWindow())
+  if (windowId && !TabsStore.getCurrentWindowId())
     SidebarConnection.sendMessage({
       type: Constants.kCOMMAND_PROGRESS_USER_OPERATIONS,
       windowId,
@@ -48,7 +48,7 @@ export function setProgress(percentage, windowId = null) {
 }
 
 export function blockIn(windowId, options = {}) {
-  const targetWindow = TabsStore.getWindow();
+  const targetWindow = TabsStore.getCurrentWindowId();
   if (targetWindow && targetWindow != windowId)
     return;
 
@@ -83,7 +83,7 @@ export function unblock(_options = {}) {
 }
 
 export function unblockIn(windowId, options = {}) {
-  const targetWindow = TabsStore.getWindow();
+  const targetWindow = TabsStore.getCurrentWindowId();
   if (targetWindow && targetWindow != windowId)
     return;
 

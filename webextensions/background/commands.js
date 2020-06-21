@@ -270,7 +270,7 @@ export async function outdent(tab, options = {}) {
 
 // drag and drop helper
 async function performTabsDragDrop(params = {}) {
-  const windowId = params.windowId || TabsStore.getWindow();
+  const windowId = params.windowId || TabsStore.getCurrentWindowId();
   const destinationWindowId = params.destinationWindowId || windowId;
 
   log('performTabsDragDrop ', () => ({
@@ -949,7 +949,7 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
     return result;
   }, []);
 
-  const windowId = TabsStore.getWindow() || (await browser.windows.getCurrent()).id;
+  const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
   const tabs = await TabsOpen.openURIsInTabs(items, {
     windowId,
     isOrphan:     true,

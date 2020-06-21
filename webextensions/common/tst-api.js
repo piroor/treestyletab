@@ -883,7 +883,7 @@ export function isScrollLocked() {
 export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
-  const window  = TabsStore.getWindow();
+  const window  = TabsStore.getCurrentWindowId();
   const cache   = {};
   const allTreeItems = Tab.getTabs(window).map(tab => new TreeItem(tab, { cache }));
   const results = await sendMessage({

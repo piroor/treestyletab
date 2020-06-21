@@ -932,7 +932,7 @@ async function onClick(info, contextTab) {
         if (owner == browser.runtime.id) {
           browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
         }
-        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() })) {
+        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getCurrentWindowId() })) {
           browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
           browser.runtime.sendMessage(owner, {
             ...message,

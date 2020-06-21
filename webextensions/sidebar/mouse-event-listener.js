@@ -63,7 +63,7 @@ const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUA
 const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
 Sidebar.onInit.addListener(() => {
-  mTargetWindow = TabsStore.getWindow();
+  mTargetWindow = TabsStore.getCurrentWindowId();
 });
 
 Sidebar.onBuilt.addListener(async () => {

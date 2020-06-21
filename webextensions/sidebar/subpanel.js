@@ -54,7 +54,7 @@ export async function init() {
   if (mInitialized)
     return;
   mInitialized = true;
-  mTargetWindow = TabsStore.getWindow();
+  mTargetWindow = TabsStore.getCurrentWindowId();
 
   const [providerId, height] = await Promise.all([
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),

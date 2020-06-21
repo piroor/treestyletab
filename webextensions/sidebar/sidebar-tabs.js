@@ -80,12 +80,12 @@ async function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_LOADING_TAB, Tab.hasLoadingTab(TabsStore.getWindow()));
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_LOADING_TAB, Tab.hasLoadingTab(TabsStore.getCurrentWindowId()));
 }
 
 async function synchronizeThrobberAnimation() {
   let processedCount = 0;
-  for (const tab of Tab.getNeedToBeSynchronizedTabs(TabsStore.getWindow(), { iterator: true })) {
+  for (const tab of Tab.getNeedToBeSynchronizedTabs(TabsStore.getCurrentWindowId(), { iterator: true })) {
     tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
     TabsStore.removeUnsynchronizedTab(tab);
     processedCount++;
@@ -105,7 +105,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // TabUpdateTarget.DescendantsHighlighted refers results of descendants.
-  for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
+  for (const tab of Tab.getAllTabs(TabsStore.getCurrentWindowId(), { iterator: true, reverse: true })) {
     tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
     if (!tab.$TST.collapsed &&
@@ -132,7 +132,7 @@ reserveToSyncTabsOrder.retryCount = 0;
 
 async function syncTabsOrder() {
   log('syncTabsOrder');
-  const windowId      = TabsStore.getWindow();
+  const windowId      = TabsStore.getCurrentWindowId();
   const [internalOrder, nativeOrder] = await Promise.all([
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_PULL_TABS_ORDER,

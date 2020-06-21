@@ -85,7 +85,7 @@ async function rebuild() {
     return;
 
   const extraItemNodes = document.createDocumentFragment();
-  const incognitoParams = { windowId: TabsStore.getWindow() };
+  const incognitoParams = { windowId: TabsStore.getCurrentWindowId() };
   for (const [id, extraItems] of mExtraItems.entries()) {
     const addon = TSTAPI.getAddon(id);
     if (!TSTAPI.isSafeAtIncognito(id, incognitoParams) ||
@@ -359,7 +359,7 @@ async function onCommand(item, event) {
   if (owner == browser.runtime.id) {
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   }
-  else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getWindow() })) {
+  else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getCurrentWindowId() })) {
     await Promise.all([
       browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor()),
       browser.runtime.sendMessage(owner, {
@@ -437,7 +437,7 @@ async function onShown(contextTab) {
       bookmarkId:       null
     },
     tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getCurrentWindowId()
   };
   return Promise.all([
     browser.runtime.sendMessage({
@@ -455,7 +455,7 @@ async function onShown(contextTab) {
 async function onHidden() {
   const message = {
     type: TSTAPI.kCONTEXT_MENU_HIDDEN,
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getCurrentWindowId()
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
@@ -473,7 +473,7 @@ function onMessage(message, _sender) {
     case Constants.kCOMMAND_NOTIFY_TABS_CLOSING:
       // Don't respond to message for other windows, because
       // the sender receives only the firstmost response.
-      if (message.windowId != TabsStore.getWindow())
+      if (message.windowId != TabsStore.getCurrentWindowId())
         return;
       return Promise.resolve(onTabsClosing.dispatch(message.tabs));
 
@@ -503,7 +503,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tab      = message.tab ? Tab.get(message.tab) : null ;
         const windowId = message.window || tab && tab.windowId;
-        if (windowId != TabsStore.getWindow())
+        if (windowId != TabsStore.getCurrentWindowId())
           return;
         await onShown(tab);
         await wait(25);
@@ -515,7 +515,7 @@ function onMessageExternal(message, sender) {
       })();
 
     case TSTAPI.kOVERRIDE_CONTEXT:
-      if (message.windowId != TabsStore.getWindow())
+      if (message.windowId != TabsStore.getCurrentWindowId())
         return;
       mReservedOverrideContext = (
         message.context == 'bookmark' ?

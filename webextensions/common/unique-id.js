@@ -88,7 +88,7 @@ export async function request(tabOrId, options = {}) {
   if (typeof tabOrId == 'number')
     tab = TabsStore.tabs.get(tabOrId);
 
-  if (TabsStore.getWindow()) {
+  if (TabsStore.getCurrentWindowId()) {
     return browser.runtime.sendMessage({
       type:  Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       tabId: tab.id

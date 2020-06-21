@@ -28,7 +28,7 @@ export function connect() {
   if (mConnectionPort)
     return;
   mConnectionPort = browser.runtime.connect({
-    name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${TabsStore.getWindow()}`
+    name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${TabsStore.getCurrentWindowId()}`
   });
   mConnectionPort.onMessage.addListener(onConnectionMessage);
 }
@@ -117,6 +117,6 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   browser.runtime.sendMessage({
     type: Constants.kCOMMAND_RESPONSE_CONNECTION_MESSAGE_LOGS,
     logs: JSON.parse(JSON.stringify(counts)),
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getCurrentWindowId()
   });
 });

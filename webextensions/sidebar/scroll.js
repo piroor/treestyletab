@@ -220,7 +220,7 @@ export function scrollToNewTab(tab, options = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    const activeTab = Tab.getActiveTab(TabsStore.getWindow());
+    const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
     scrollToTab(tab, {
       ...options,
       anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
@@ -447,7 +447,7 @@ function reserveToSaveScrollPosition() {
   reserveToSaveScrollPosition.reserved = setTimeout(() => {
     delete reserveToSaveScrollPosition.reserved;
     browser.sessions.setWindowValue(
-      TabsStore.getWindow(),
+      TabsStore.getCurrentWindowId(),
       Constants.kWINDOW_STATE_SCROLL_POSITION,
       mTabBar.scrollTop
     ).catch(ApiTabs.createErrorSuppressor());
@@ -605,7 +605,7 @@ function onMessageExternal(message, _aSender) {
     case TSTAPI.kSCROLL:
       return (async () => {
         const params = {};
-        const currentWindow = TabsStore.getWindow();
+        const currentWindow = TabsStore.getCurrentWindowId();
         if ('tab' in message) {
           await Tab.waitUntilTracked(message.tab, { element: true });
           params.tab = Tab.get(message.tab);
@@ -615,7 +615,7 @@ function onMessageExternal(message, _aSender) {
         else {
           const windowId = message.window || message.windowId;
           if (windowId == 'active') {
-            const currentWindow = await browser.windows.get(TabsStore.getWindow());
+            const currentWindow = await browser.windows.get(TabsStore.getCurrentWindowId());
             if (!currentWindow.focused)
               return;
           }

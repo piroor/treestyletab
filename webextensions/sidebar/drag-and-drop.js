@@ -228,10 +228,10 @@ function getDropAction(event) {
     return info.draggedTabs.map(tab => tab.id);
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tab.getFirstNormalTab(TabsStore.getWindow()) || Tab.getFirstTab(TabsStore.getWindow());
+    return Tab.getFirstNormalTab(TabsStore.getCurrentWindowId()) || Tab.getFirstTab(TabsStore.getCurrentWindowId());
   });
   info.defineGetter('lastTargetTab', () => {
-    return Tab.getLastTab(TabsStore.getWindow());
+    return Tab.getLastTab(TabsStore.getCurrentWindowId());
   });
   info.defineGetter('canDrop', () => {
     if (info.dropPosition == kDROP_IMPOSSIBLE) {
@@ -241,7 +241,7 @@ function getDropAction(event) {
 
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
-    const isPrivateBrowsingDropTarget = (info.dragOverTab || Tab.getFirstTab(TabsStore.getWindow())).incognito;
+    const isPrivateBrowsingDropTarget = (info.dragOverTab || Tab.getFirstTab(TabsStore.getCurrentWindowId())).incognito;
     if (draggedTab &&
         isPrivateBrowsingTabDragged != isPrivateBrowsingDropTarget) {
       log('canDrop:undroppable: mispatched incognito status');
@@ -249,7 +249,7 @@ function getDropAction(event) {
     }
     else if (info.draggedTab) {
       if (info.action & Constants.kACTION_ATTACH) {
-        if (info.draggedTab.windowId != TabsStore.getWindow()) {
+        if (info.draggedTab.windowId != TabsStore.getCurrentWindowId()) {
           return true;
         }
         if (info.parent &&
@@ -477,14 +477,14 @@ export function clearDropPosition() {
 }
 
 export function clearDraggingTabsState() {
-  for (const tab of Tab.getDraggingTabs(TabsStore.getWindow(), { iterator: true })) {
+  for (const tab of Tab.getDraggingTabs(TabsStore.getCurrentWindowId(), { iterator: true })) {
     tab.$TST.removeState(Constants.kTAB_STATE_DRAGGING);
     TabsStore.removeDraggingTab(tab);
   }
 }
 
 export function clearDraggingState() {
-  const window = TabsStore.windows.get(TabsStore.getWindow());
+  const window = TabsStore.windows.get(TabsStore.getCurrentWindowId());
   window.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
@@ -544,7 +544,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
   BackgroundConnection.sendMessage({
     type:           Constants.kCOMMAND_NEW_TABS,
     uris,
-    windowId:       TabsStore.getWindow(),
+    windowId:       TabsStore.getCurrentWindowId(),
     parentId:       dropActionInfo.parent && dropActionInfo.parent.id,
     insertBeforeId: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
     insertAfterId:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
@@ -793,7 +793,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       mLastDragEnteredTarget = tab.$TST.element.closeBoxElement;
-    const windowId = TabsStore.getWindow();
+    const windowId = TabsStore.getCurrentWindowId();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
       tab:    new TSTAPI.TreeItem(tab),
@@ -834,7 +834,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   mCurrentDragData = sanitizedDragData;
   browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-    windowId: TabsStore.getWindow(),
+    windowId: TabsStore.getCurrentWindowId(),
     dragData: sanitizedDragData
   }).catch(ApiTabs.createErrorSuppressor());
 
@@ -866,7 +866,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dt.setDragImage(options.tab.$TST.element, event.clientX - tabRect.left, event.clientY - tabRect.top);
   }
 
-  TabsStore.windows.get(TabsStore.getWindow()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   // The drag operation can be canceled by something, then
@@ -900,7 +900,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      new TSTAPI.TreeItem(tab),
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getCurrentWindowId()
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
   mLastDragStartTime = Date.now();
@@ -1069,7 +1069,7 @@ function onDragEnter(event) {
         info.dragData.tabs.some(tab => tab.id == enteredTab.id)
       );
     }
-    TabsStore.windows.get(TabsStore.getWindow()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+    TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
     document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   }
   catch(_e) {
@@ -1165,7 +1165,7 @@ function onDragLeave(event) {
         }, 10);
       }
       else {
-        leftFromTabBar = !enteredTab || enteredTab.windowId != TabsStore.getWindow();
+        leftFromTabBar = !enteredTab || enteredTab.windowId != TabsStore.getCurrentWindowId();
         if (onDragLeave.delayedLeftFromDraggedTabs) {
           clearTimeout(onDragLeave.delayedLeftFromDraggedTabs);
           delete onDragLeave.delayedLeftFromDraggedTabs;
@@ -1238,7 +1238,7 @@ function onDrop(event) {
       attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
       insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
       insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
-      destinationWindowId: TabsStore.getWindow(),
+      destinationWindowId: TabsStore.getCurrentWindowId(),
       duplicate:           !fromOtherProfile && dt.dropEffect == 'copy',
       import:              fromOtherProfile
     });
@@ -1271,7 +1271,7 @@ function onDrop(event) {
         attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
         insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
         insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
-        destinationWindowId: TabsStore.getWindow(),
+        destinationWindowId: TabsStore.getCurrentWindowId(),
         duplicate:           dt.dropEffect == 'copy',
         import:              false
       });
@@ -1296,7 +1296,7 @@ async function onDragEnd(event) {
 
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGEND,
-    windowId: TabsStore.getWindow()
+    windowId: TabsStore.getCurrentWindowId()
   }).catch(_error => {});
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
@@ -1417,7 +1417,7 @@ function finishDrag() {
     mCurrentDragDataForExternals = null;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-      windowId: TabsStore.getWindow(),
+      windowId: TabsStore.getCurrentWindowId(),
       dragData: null
     }).catch(ApiTabs.createErrorSuppressor());
   });

@@ -46,7 +46,7 @@ let mTargetWindow;
 let mTabBar;
 
 export function init() {
-  mTargetWindow = TabsStore.getWindow();
+  mTargetWindow = TabsStore.getCurrentWindowId();
   mTabBar       = document.querySelector('#tabbar');
   configs.$addObserver(onConfigChange);
 }

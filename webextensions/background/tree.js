@@ -478,7 +478,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
   if (!configs.autoAttach)
     return false;
 
-  const baseTab = options.baseTab || Tab.getActiveTab(TabsStore.getWindow() || tab.windowId);
+  const baseTab = options.baseTab || Tab.getActiveTab(TabsStore.getCurrentWindowId() || tab.windowId);
   log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
 
   if (baseTab &&
@@ -1010,13 +1010,13 @@ export async function moveTabs(tabs, options = {}) {
 
   log('moveTabs: ', () => ({ tabs: tabs.map(dumpTab), options }));
 
-  const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
+  const windowId = parseInt(tabs[0].windowId || TabsStore.getCurrentWindowId());
 
   let newWindow = options.destinationPromisedNewWindow;
 
   let destinationWindowId = options.destinationWindowId;
   if (!destinationWindowId && !newWindow)
-    destinationWindowId = TabsStore.getWindow();
+    destinationWindowId = TabsStore.getCurrentWindowId();
 
   const isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 

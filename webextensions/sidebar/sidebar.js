@@ -150,7 +150,7 @@ export async function init() {
       const tabs = window.tabs;
       SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
       mTargetWindow = tabs[0].windowId;
-      TabsStore.setWindow(mTargetWindow);
+      TabsStore.setCurrentWindowId(mTargetWindow);
       mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
@@ -634,13 +634,13 @@ function updateTabbarLayout(params = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const activeTab = Tab.getActiveTab(TabsStore.getWindow());
+      const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
       if (activeTab && !Scroll.isTabInViewport(activeTab)) {
         log('scroll to active tab on updateTabbarLayout');
         Scroll.scrollToTab(activeTab);
         return;
       }
-      const lastOpenedTab = Tab.getLastOpenedTab(TabsStore.getWindow());
+      const lastOpenedTab = Tab.getLastOpenedTab(TabsStore.getCurrentWindowId());
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
