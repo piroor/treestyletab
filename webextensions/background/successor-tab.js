@@ -300,10 +300,10 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
   updateActiveTab(tab.windowId);
 });
 
-SidebarConnection.onConnected.addListener(windowId => {
+SidebarConnection.onConnected.addListener((windowId, _openCount) => {
   updateActiveTab(windowId);
 });
 
-SidebarConnection.onDisconnected.addListener(windowId => {
+SidebarConnection.onDisconnected.addListener((windowId, _openCount) => {
   updateActiveTab(windowId);
 });

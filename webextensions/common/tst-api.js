@@ -559,19 +559,21 @@ if (mIsBackend) {
     }
   });
 
-  SidebarConnection.onConnected.addListener(windowId => {
+  SidebarConnection.onConnected.addListener((windowId, openCount) => {
     sendMessage({
       type:   kNOTIFY_SIDEBAR_SHOW,
       window: windowId,
-      windowId
+      windowId,
+      openCount
     });
   });
 
-  SidebarConnection.onDisconnected.addListener(windowId => {
+  SidebarConnection.onDisconnected.addListener((windowId, openCount) => {
     sendMessage({
       type:   kNOTIFY_SIDEBAR_HIDE,
       window: windowId,
-      windowId
+      windowId,
+      openCount
     });
   });
 

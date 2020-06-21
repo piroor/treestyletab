@@ -136,7 +136,7 @@ export function init() {
     };
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
-    onConnected.dispatch(windowId);
+    onConnected.dispatch(windowId, ports.size);
     port.onDisconnect.addListener(_diconnectedPort => {
       ports.remove(port);
       if (ports.size == 0)
@@ -144,7 +144,7 @@ export function init() {
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
       mFocusState.delete(windowId);
-      onDisconnected.dispatch(windowId);
+      onDisconnected.dispatch(windowId, ports.size);
     });
   });
 }
