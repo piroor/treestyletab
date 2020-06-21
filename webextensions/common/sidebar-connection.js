@@ -61,7 +61,7 @@ export function sendMessage(message) {
     if (!ports || ports.size == 0)
       return false;
     for (const port of ports) {
-    sendMessageToPort(port, message);
+      sendMessageToPort(port, message);
     }
     //port.postMessage(message);
     return true;
@@ -74,7 +74,7 @@ export function sendMessage(message) {
     if (!ports || ports.size == 0)
       continue;
     for (const port of ports) {
-    sendMessageToPort(port, message);
+      sendMessageToPort(port, message);
     }
     //port.postMessage(message);
   }
@@ -135,7 +135,7 @@ export function init() {
     port.onDisconnect.addListener(_diconnectedPort => {
       ports.remove(port);
       if (ports.size == 0)
-      mOpenState.delete(windowId);
+        mOpenState.delete(windowId);
       port.onMessage.removeListener(receiver);
       mReceivers.delete(windowId);
       mFocusState.delete(windowId);
