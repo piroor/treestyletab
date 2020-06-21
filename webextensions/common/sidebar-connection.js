@@ -33,9 +33,7 @@ export function isInitialized() {
 export function isOpen(windowId) {
   if (!mPorts)
     return false;
-  if (!mPorts.has(windowId))
-    return false;
-  const ports = mPorts.has(windowId);
+  const ports = mPorts.get(windowId);
   return ports && ports.size > 0;
 }
 
