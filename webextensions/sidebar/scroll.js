@@ -615,7 +615,7 @@ function onMessageExternal(message, _aSender) {
         else {
           const windowId = message.window || message.windowId;
           if (windowId == 'active') {
-            const currentWindow = await browser.windows.getCurrent();
+            const currentWindow = await browser.windows.get(TabsStore.getWindow());
             if (!currentWindow.focused)
               return;
           }
