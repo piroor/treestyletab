@@ -62,6 +62,8 @@ const mTabBar = document.querySelector('#tabbar');
 const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
 const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
+let mHasMouseOverListeners = false;
+
 Sidebar.onInit.addListener(() => {
   mTargetWindow = TabsStore.getCurrentWindowId();
 });
@@ -71,6 +73,7 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
   mTabBar.addEventListener('dblclick', onDblClick);
+  mTabBar.addEventListener('mouseover', onMouseOver);
 
   MetricsData.add('mouse-event-listener: Sidebar.onBuilt: apply configs');
 
@@ -97,7 +100,8 @@ Sidebar.onReady.addListener(() => {
 });
 
 function updateSpecialEventListenersForAPIListeners() {
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
+  const shouldListenMouseMove = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) > 0;
+  if (shouldListenMouseMove != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = true;
@@ -109,19 +113,6 @@ function updateSpecialEventListenersForAPIListeners() {
   }
 
   const shouldListenMouseOut = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0;
-  const shouldListenMouseOver = shouldListenMouseOut || TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0;
-
-  if (shouldListenMouseOver != onMouseOver.listening) {
-    if (!onMouseOver.listening) {
-      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = true;
-    }
-    else {
-      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = false;
-    }
-  }
-
   if (shouldListenMouseOut != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
@@ -132,6 +123,8 @@ function updateSpecialEventListenersForAPIListeners() {
       onMouseOut.listening = false;
     }
   }
+
+  mHasMouseOverListeners = shouldListenMouseOut || TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0;
 }
 
 
@@ -157,6 +150,13 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
+
+  if (tab &&
+      typeof browser.tabs.warmup == 'function')
+    browser.tabs.warmup(tab.id);
+
+  if (!mHasMouseOverListeners)
+    return;
 
   // We enter the tab or one of its children, but not from any of the tabs
   // (other) children, so we are now starting to hover this tab (relatedTarget
