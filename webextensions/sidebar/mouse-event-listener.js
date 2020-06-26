@@ -148,12 +148,17 @@ function onMouseMove(event) {
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
+let mLastWarmUpTab = -1;
+
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
 
   if (tab &&
-      typeof browser.tabs.warmup == 'function')
+      mLastWarmUpTab != tab.id &&
+      typeof browser.tabs.warmup == 'function') {
     browser.tabs.warmup(tab.id);
+    mLastWarmUpTab = tab.id;
+  }
 
   if (!mHasMouseOverListeners)
     return;
