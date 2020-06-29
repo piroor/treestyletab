@@ -341,34 +341,34 @@ export const configs = new Configs({
   testKey: 0 // for tests/utils.js
 }, {
   localKeys: mapAndFilter(`
-    optionsExpandedSections
-    optionsExpandedGroups
-    sidebarPosition
-    sidebarDirection
-    style
-    colorScheme
-    faviconizedTabScale
     baseIndent
-    maximumDelayForBug1561879
-    minIndent
-    lastConfirmedToCloseTabs
-    grantedRemovingTabIds
-    subMenuOpenDelay
-    subMenuCloseDelay
-    minimumIntervalToProcessDragoverEvent
     cachedExternalAddons
-    notifiedFeaturesVersion
-    requestingPermissions
-    requestingPermissionsNatively
-    lastDraggedTabs
-    startDragTimeout
-    migratedBookmarkUrls
-    knownExternalAddons
+    colorScheme
     debug
-    logTimestamp
-    loggingQueries
+    faviconizedTabScale
+    grantedRemovingTabIds
+    knownExternalAddons
+    lastConfirmedToCloseTabs
+    lastDraggedTabs
     logFor
     loggingConnectionMessages
+    loggingQueries
+    logTimestamp
+    maximumDelayForBug1561879
+    migratedBookmarkUrls
+    minimumIntervalToProcessDragoverEvent
+    minIndent
+    notifiedFeaturesVersion
+    optionsExpandedGroups
+    optionsExpandedSections
+    requestingPermissions
+    requestingPermissionsNatively
+    sidebarDirection
+    sidebarPosition
+    startDragTimeout
+    style
+    subMenuCloseDelay
+    subMenuOpenDelay
     testKey
   `.trim().split('\n'), key => {
     key = key.trim();
