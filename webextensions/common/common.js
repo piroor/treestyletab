@@ -342,6 +342,7 @@ export const configs = new Configs({
 }, {
   localKeys: mapAndFilter(`
     optionsExpandedSections
+    optionsExpandedGroups
     sidebarPosition
     sidebarDirection
     style
@@ -360,6 +361,14 @@ export const configs = new Configs({
     requestingPermissions
     requestingPermissionsNatively
     lastDraggedTabs
+    startDragTimeout
+    migratedBookmarkUrls
+    knownExternalAddons
+    debug
+    logTimestamp
+    loggingQueries
+    logFor
+    loggingConnectionMessages
     testKey
   `.trim().split('\n'), key => {
     key = key.trim();
