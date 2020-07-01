@@ -9,6 +9,39 @@ import Configs from '/extlib/Configs.js';
 
 import * as Constants from './constants.js';
 
+const localKeys = mapAndFilter(`
+  baseIndent
+  colorScheme
+  debug
+  faviconizedTabScale
+  grantedRemovingTabIds
+  lastConfirmedToCloseTabs
+  lastDraggedTabs
+  logFor
+  loggingConnectionMessages
+  loggingQueries
+  logTimestamp
+  maximumDelayForBug1561879
+  migratedBookmarkUrls
+  minimumIntervalToProcessDragoverEvent
+  minIndent
+  notifiedFeaturesVersion
+  optionsExpandedGroups
+  optionsExpandedSections
+  requestingPermissions
+  requestingPermissionsNatively
+  sidebarDirection
+  sidebarPosition
+  startDragTimeout
+  style
+  subMenuCloseDelay
+  subMenuOpenDelay
+  testKey
+`.trim().split('\n'), key => {
+  key = key.trim();
+  return key && key.indexOf('//') != 0 && key;
+});
+
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
   optionsExpandedGroups: [],
@@ -340,39 +373,11 @@ export const configs = new Configs({
 
   testKey: 0 // for tests/utils.js
 }, {
-  localKeys: mapAndFilter(`
-    baseIndent
-    colorScheme
-    debug
-    faviconizedTabScale
-    grantedRemovingTabIds
-    lastConfirmedToCloseTabs
-    lastDraggedTabs
-    logFor
-    loggingConnectionMessages
-    loggingQueries
-    logTimestamp
-    maximumDelayForBug1561879
-    migratedBookmarkUrls
-    minimumIntervalToProcessDragoverEvent
-    minIndent
-    notifiedFeaturesVersion
-    optionsExpandedGroups
-    optionsExpandedSections
-    requestingPermissions
-    requestingPermissionsNatively
-    sidebarDirection
-    sidebarPosition
-    startDragTimeout
-    style
-    subMenuCloseDelay
-    subMenuOpenDelay
-    testKey
-  `.trim().split('\n'), key => {
-    key = key.trim();
-    return key && key.indexOf('//') != 0 && key;
-  })
+  localKeys
 });
+
+// cleanup old data
+browser.storage.sync.remove(localKeys);
 
 configs.$loaded.then(() => {
   log.forceStore = false;
