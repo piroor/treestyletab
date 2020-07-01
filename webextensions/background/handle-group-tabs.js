@@ -330,11 +330,12 @@ async function onNewTabsTimeout(window) {
     await Tab.waitUntilMovedAll(window.id);
 
   let tabReferences = Array.from(window.openedNewTabs.values());
-  log('onNewTabsTimeout ', tabReferences);
+  log('onNewTabsTimeout for ', tabReferences);
 
   window.openedNewTabs.clear();
 
   const blocked = TSTAPI.isGroupingBlocked();
+  log('  blocked?: ', blocked);
   tabReferences = tabReferences.filter(tabReference => {
     if (blocked || !tabReference.id)
       return false;
@@ -344,8 +345,10 @@ async function onNewTabsTimeout(window) {
     const uniqueId = tab && tab.$TST && tab.$TST.uniqueId;
     return !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
   });
-  if (tabReferences.length == 0)
+  if (tabReferences.length == 0) {
+    log(' => no tab to be grouped.');
     return;
+  }
 
   if (tabReferences.length > 1) {
     for (const tabReference of tabReferences) {
@@ -365,7 +368,7 @@ async function tryGroupNewTabs() {
   if (!tabReferences)
     return;
 
-  log('tryGroupNewTabs ', tabReferences);
+  log('tryGroupNewTabs for ', tabReferences);
   tryGroupNewTabs.running = true;
   try {
     const fromPinned    = [];
