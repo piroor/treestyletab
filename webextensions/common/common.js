@@ -342,12 +342,10 @@ export const configs = new Configs({
 }, {
   localKeys: mapAndFilter(`
     baseIndent
-    cachedExternalAddons
     colorScheme
     debug
     faviconizedTabScale
     grantedRemovingTabIds
-    knownExternalAddons
     lastConfirmedToCloseTabs
     lastDraggedTabs
     logFor
