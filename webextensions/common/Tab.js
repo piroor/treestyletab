@@ -390,6 +390,7 @@ export default class Tab {
         return resolve(this.possibleOpenerBookmarks = []);
       // A new tab from bookmark is opened with a title: its URL without the scheme part.
       const url = this.tab.$possibleInitialUrl;
+      try {
       const possibleBookmarks = await Promise.all([
         browser.bookmarks.search({ url: `http://${url}` }).catch(_error => []),
         browser.bookmarks.search({ url: `https://${url}` }).catch(_error => []),
@@ -397,6 +398,12 @@ export default class Tab {
         browser.bookmarks.search({ url: `moz-extension://${url}` }).catch(_error => [])
       ]);
       resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
+      }
+      catch(_error) {
+        // If it is detected as "not a valid URL", then
+        // it cannot be a tab opened from a bookmark.
+        resolve(this.possibleOpenerBookmarks = []);
+      }
     });
   }
 
