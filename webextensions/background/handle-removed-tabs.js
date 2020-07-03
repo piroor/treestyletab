@@ -15,7 +15,6 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
@@ -27,6 +26,7 @@ import * as Background from './background.js';
 import * as TabsGroup from './tabs-group.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as Commands from './commands.js';
 
 function log(...args) {
   internalLogger('background/handle-removed-tabs', ...args);
@@ -171,25 +171,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
       // this is required to wait until the closing tab is stored to the "recently closed" list
       wait(0).then(async () => {
-        const sessions = await browser.sessions.getRecentlyClosed({ maxResults: Math.min(browser.sessions.MAX_SESSION_RESULTS, shouldRestoreCount * 2) }).catch(ApiTabs.  createErrorHandler());
-        const toBeRestoredTabs = [];
-        for (const session of sessions) {
-          if (!session.tab)
-            continue;
-          toBeRestoredTabs.push(session.tab);
-          if (toBeRestoredTabs.length == shouldRestoreCount)
-            break;
-        }
-        const promisedRestoredTabSets = [];
-        for (const tab of toBeRestoredTabs.reverse()) {
-          log('tryGrantClose: Tabrestoring session = ', tab);
-          promisedRestoredTabSets.push(Tab.doAndGetNewTabs(async () => {
-            browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
-            await Tab.waitUntilTrackedAll();
-          }));
-        }
-        const restoredTabs = (await Promise.all(promisedRestoredTabSets)).flat();
-        await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
+        const restoredTabs = await Commands.restoreTabs(shouldRestoreCount);
         log('tryGrantClose: restored ', restoredTabs);
       });
       return false;
