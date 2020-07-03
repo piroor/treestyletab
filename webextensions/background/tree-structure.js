@@ -402,8 +402,18 @@ Tab.onRestored.addListener(tab => {
 });
 
 
+const mPendingRecentlyClosedTabsInfo = {
+  tabs:      [],
+  structure: []
+};
+
+Tab.onRemoved.addListener((tab, info) => {
+  mRecentlyClosedTabs = [];
+  mRecentlyClosedTabsTreeStructure = [];
+});
+
 Tab.onMultipleTabsRemoving.addListener(tabs => {
-  mRecentlyClosedTabs = tabs.map(tab => ({
+  mPendingRecentlyClosedTabsInfo.tabs = tabs.map(tab => ({
     originalId:    tab.id,
     uniqueId:      tab.$TST.uniqueId.id,
     windowId:      tab.windowId,
@@ -411,13 +421,22 @@ Tab.onMultipleTabsRemoving.addListener(tabs => {
     url:           tab.url,
     cookieStoreId: tab.cookieStoreId
   }));
-  mRecentlyClosedTabsTreeStructure = TreeBehavior.getTreeStructureFromTabs(tabs, { full: true });
+  mPendingRecentlyClosedTabsInfo.structure = TreeBehavior.getTreeStructureFromTabs(tabs, { full: true });
 });
 
 Tab.onMultipleTabsRemoved.addListener(tabs => {
+  let currentlyRestorable = mRecentlyClosedTabs.length > 1;
+
   const tabIds = new Set(tabs.map(tab => tab.id));
-  mRecentlyClosedTabs = mRecentlyClosedTabs.filter(info => tabIds.has(info.originalId));
-  mRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure.filter(structure => tabIds.has(structure.originalId));
+  mRecentlyClosedTabs = mPendingRecentlyClosedTabsInfo.tabs.filter(info => tabIds.has(info.originalId));
+  mRecentlyClosedTabsTreeStructure = mPendingRecentlyClosedTabsInfo.structure.filter(structure => tabIds.has(structure.originalId));
+
+  const newlyRestorable = mRecentlyClosedTabs.length > 1;
+  if (currentlyRestorable != newlyRestorable)
+    Tab.onChangeMultipleTabsRestorability.dispatch(newlyRestorable);
+
+  mPendingRecentlyClosedTabsInfo.tabs = [];
+  mPendingRecentlyClosedTabsInfo.structure = [];
 });
 
 async function tryRestoreClosedSetFor(tab) {
@@ -425,6 +444,8 @@ async function tryRestoreClosedSetFor(tab) {
   const lastRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure;
   mRecentlyClosedTabs = [];
   mRecentlyClosedTabsTreeStructure = [];
+  if (lastRecentlyClosedTabs.length > 1)
+    Tab.onChangeMultipleTabsRestorability.dispatch(false);
 
   const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
   if (alreadRestoredIndex < 0)

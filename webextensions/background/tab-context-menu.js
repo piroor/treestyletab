@@ -167,7 +167,8 @@ const mItemsById = {
   },
   'context_undoCloseTab': {
     title: browser.i18n.getMessage('tabContextMenu_undoClose_label'),
-    titleHasMultipleClosedTabs: browser.i18n.getMessage('tabContextMenu_undoClose_label_multiple')
+    titleRegular: browser.i18n.getMessage('tabContextMenu_undoClose_label'),
+    titleMultipleTabsRestorable: browser.i18n.getMessage('tabContextMenu_undoClose_label_multiple')
   },
   'context_closeTab': {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
@@ -289,6 +290,11 @@ export async function init() {
   });
 }
 
+Tab.onChangeMultipleTabsRestorability.addListener(multipleTabsRestorable => {
+  const item = mItemsById.context_undoCloseTab;
+  item.newTitle = multipleTabsRestorable ? item.titleMultipleTabsRestorable : item.titleRegular;
+});
+
 const mContextualIdentityItems = new Set();
 function updateContextualIdentities() {
   for (const item of mContextualIdentityItems.values()) {
@@ -369,7 +375,7 @@ function updateItem(id, state = {}) {
   };
   if ('checked' in state)
     updateInfo.checked = state.checked;
-  const title = state.multiselected && item.titleMultiselected || item.title;
+  const title = state.title || (state.multiselected && item.titleMultiselected) || item.title;
   if (title) {
     updateInfo.title = title;
     modified = title != item.lastTitle;
@@ -581,6 +587,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_undoCloseTab', {
+    title:   mItemsById.context_undoCloseTab.newTitle,
     visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
@@ -600,6 +607,7 @@ async function onShown(info, contextTab) {
     enabled: !contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
+    title:   mItemsById.context_undoCloseTab.newTitle,
     visible: emulate && !contextTab
   }) && modifiedItemsCount++;
 

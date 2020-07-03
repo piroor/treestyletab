@@ -1996,6 +1996,7 @@ Tab.onDetached         = new EventListenerManager();
 
 Tab.onMultipleTabsRemoving = new EventListenerManager();
 Tab.onMultipleTabsRemoved  = new EventListenerManager();
+Tab.onChangeMultipleTabsRestorability = new EventListenerManager();
 
 
 //===================================================================
