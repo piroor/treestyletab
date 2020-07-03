@@ -988,19 +988,9 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
     windowId,
     isOrphan:     true,
     inBackground: true,
+    fixPositions: true,
     discarded
   });
-
-  if (tabs.every((tab, index) => (index == 0) || (tabs[index-1].index - tab.index) == 1)) {
-    // tabs are opened with reversed order due to browser.tabs.insertAfterCurrent=true
-    let lastTab;
-    for (const tab of tabs.slice(0).reverse()) {
-      if (lastTab)
-        TabsMove.moveTabInternallyBefore(tab, lastTab);
-      lastTab = tab;
-    }
-    await TabsMove.waitUntilSynchronized(windowId);
-  }
 
   if (tabs.length > activeIndex)
     TabsInternalOperation.activateTab(tabs[activeIndex]);

@@ -210,7 +210,20 @@ export async function openURIsInTabs(uris, options = {}) {
       return tab;
     }));
   }, options.windowId));
-  return tabs.filter(tab => actuallyOpenedTabIds.has(tab));
+  const openedTabs = tabs.filter(tab => actuallyOpenedTabIds.has(tab));
+
+  if (options.fixPositions &&
+      openedTabs.every((tab, index) => (index == 0) || (openedTabs[index-1].index - tab.index) == 1)) {
+    // tabs are opened with reversed order due to browser.tabs.insertAfterCurrent=true
+    let lastTab;
+    for (const tab of openedTabs.slice(0).reverse()) {
+      if (lastTab)
+        TabsMove.moveTabInternallyBefore(tab, lastTab);
+      lastTab = tab;
+    }
+    await TabsMove.waitUntilSynchronized(options.windowId);
+  }
+  return openedTabs;
 }
 
 
