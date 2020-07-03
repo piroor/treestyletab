@@ -104,7 +104,8 @@ export function removeTabs(tabs) {
     }
   }
 
-  Tab.onMultipleTabsRemoving.dispatch(tabs);
+  const sortedTabs = Tab.sort(Array.from(tabs));
+  Tab.onMultipleTabsRemoving.dispatch(sortedTabs);
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (window) {
@@ -119,7 +120,7 @@ export function removeTabs(tabs) {
       const canceledTabs = new Set(tabs.filter(tab => tab.$TST && !tab.$TST.destroyed));
       log(`${canceledTabs.size} tabs may be canceled to close.`);
       if (canceledTabs.size == 0) {
-        Tab.onMultipleTabsRemoved.dispatch(tabs);
+        Tab.onMultipleTabsRemoved.dispatch(sortedTabs);
         return;
       }
       log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
@@ -127,7 +128,7 @@ export function removeTabs(tabs) {
         tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
         window.internalClosingTabs.delete(tab.id);
       }
-      Tab.onMultipleTabsRemoved.dispatch(tabs.filter(tab => !canceledTabs.has(tab)));
+      Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)));
     });
   }
   return promisedRemoved;

@@ -355,6 +355,7 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
       item.title  = tab.title;
       item.url    = tab.url;
       item.pinned = tab.pinned;
+      item.originalId = tab.id;
     }
     return item;
   });

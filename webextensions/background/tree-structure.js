@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   dumpTab,
   toLines,
-  configs
+  configs,
+  wait
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -19,10 +20,13 @@ import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 
 import Tab from '/common/Tab.js';
 
 import * as Tree from './tree.js';
+import * as TabsOpen from './tabs-open.js';
+import * as TabsMove from './tabs-move.js';
 import * as Commands from './commands.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -34,6 +38,7 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 let mRecentlyClosedTabs = [];
+let mRecentlyClosedTabsTreeStructure = [];
 
 export function startTracking() {
   Tab.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
@@ -401,28 +406,97 @@ Tab.onMultipleTabsRemoving.addListener(tabs => {
   mRecentlyClosedTabs = tabs.map(tab => ({
     originalId:    tab.id,
     uniqueId:      tab.$TST.uniqueId.id,
-    index:         tab.index,
     windowId:      tab.windowId,
+    title:         tab.title,
     url:           tab.url,
-    cookieStoreId: tab.cookieStoreId,
-    parentIndex:   tab.$TST.parentId && tabs.findIndex(otherTab => otherTab.id == tab.$TST.parentId)
+    cookieStoreId: tab.cookieStoreId
   }));
+  mRecentlyClosedTabsTreeStructure = TreeBehavior.getTreeStructureFromTabs(tabs, { full: true });
 });
 
 Tab.onMultipleTabsRemoved.addListener(tabs => {
   const tabIds = new Set(tabs.map(tab => tab.id));
   mRecentlyClosedTabs = mRecentlyClosedTabs.filter(info => tabIds.has(info.originalId));
+  mRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure.filter(structure => tabIds.has(structure.originalId));
 });
 
-function tryRestoreClosedSetFor(tab) {
+async function tryRestoreClosedSetFor(tab) {
   const lastRecentlyClosedTabs = mRecentlyClosedTabs;
+  const lastRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure;
   mRecentlyClosedTabs = [];
-  const index = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
-  if (index > -1) {
-    if (lastRecentlyClosedTabs.length < browser.sessions.MAX_SESSION_RESULTS) {
-      Commands.restoreTabs(lastRecentlyClosedTabs.length - 1);
-    }
-    else {
-    }
+  mRecentlyClosedTabsTreeStructure = [];
+
+  const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
+  if (alreadRestoredIndex < 0)
+    return;
+
+  let firstTab;
+  if (lastRecentlyClosedTabs.length < browser.sessions.MAX_SESSION_RESULTS) {
+    const restoredTabs = await Commands.restoreTabs(lastRecentlyClosedTabs.length - 1);
+    firstTab = Tab.sort(restoredTabs.push(tab))[0];
   }
+  else {
+    const windowId = lastRecentlyClosedTabs[0].windowId;
+    const beforeTabs = await TabsOpen.openURIsInTabs(
+      lastRecentlyClosedTabs.slice(0, alreadRestoredIndex).map(info => ({
+        title:         info.title,
+        url:           info.url,
+        cookieStoreId: info.cookieStoreId
+      })),
+      {
+        windowId,
+        isOrphan:     true,
+        inBackground: false,
+        discarded:    true,
+        fixPositions: true
+      }
+    );
+    const afterTabs = await TabsOpen.openURIsInTabs(
+      lastRecentlyClosedTabs.slice(alreadRestoredIndex + 1).map(info => ({
+        title:         info.title,
+        url:           info.url,
+        cookieStoreId: info.cookieStoreId
+      })),
+      {
+        windowId,
+        isOrphan:     true,
+        inBackground: true,
+        discarded:    true,
+        fixPositions: true
+      }
+    );
+    // We need to move tabs after they are opened instead of
+    // specifying the "index" option for TabsOpen.openURIsInTabs(),
+    // because the given restored tab can be moved while this
+    // operation.
+    if (beforeTabs.length > 0)
+      await TabsMove.moveTabsBefore(
+        beforeTabs,
+        tab,
+        { broadcast: true }
+      );
+    if (afterTabs.length > 0)
+      await TabsMove.moveTabsAfter(
+        afterTabs,
+        tab,
+        { broadcast: true }
+      );
+    const allTabs = [...beforeTabs, tab, ...afterTabs];
+    firstTab = allTabs[0]
+    await TabsInternalOperation.activateTab(firstTab);
+    await Tree.applyTreeStructureToTabs(
+      allTabs,
+      lastRecentlyClosedTabsTreeStructure
+    );
+  }
+
+  // Firefox itself activates the initially restored tab with delay,
+  // so we need to activate the first tab of the restored tabs again.
+  const onActivated = activeInfo => {
+    browser.tabs.onActivated.removeListener(onActivated);
+    if (activeInfo.id != firstTab.id)
+      TabsInternalOperation.activateTab(firstTab);
+  };
+  browser.tabs.onActivated.addListener(onActivated);
+  wait(100).then(() => onActivated({ id: -1 })); // failsafe
 }
