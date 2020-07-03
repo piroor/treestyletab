@@ -1994,6 +1994,9 @@ Tab.onWindowRestoring  = new EventListenerManager();
 Tab.onAttached         = new EventListenerManager();
 Tab.onDetached         = new EventListenerManager();
 
+Tab.onMultipleTabsRemoving = new EventListenerManager();
+Tab.onMultipleTabsRemoved  = new EventListenerManager();
+
 
 //===================================================================
 // utilities

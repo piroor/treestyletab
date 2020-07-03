@@ -23,6 +23,7 @@ import * as TreeBehavior from '/common/tree-behavior.js';
 import Tab from '/common/Tab.js';
 
 import * as Tree from './tree.js';
+import * as Commands from './commands.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -31,6 +32,8 @@ function log(...args) {
 }
 
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
+
+let mRecentlyClosedTabs = [];
 
 export function startTracking() {
   Tab.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
@@ -373,6 +376,8 @@ Tab.onRestored.addListener(tab => {
           setTimeout(() => { // unblock in the next event loop, after other asynchronous operations are finished
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
           }, 0);
+
+          tryRestoreClosedSetFor(tab);
         }
         else {
           mRestoringTabs.set(tab.windowId, count);
@@ -390,3 +395,34 @@ Tab.onRestored.addListener(tab => {
   if (mProcessingTabRestorations.length == 1)
     mProcessingTabRestorations[0]();
 });
+
+
+Tab.onMultipleTabsRemoving.addListener(tabs => {
+  mRecentlyClosedTabs = tabs.map(tab => ({
+    originalId:    tab.id,
+    uniqueId:      tab.$TST.uniqueId.id,
+    index:         tab.index,
+    windowId:      tab.windowId,
+    url:           tab.url,
+    cookieStoreId: tab.cookieStoreId,
+    parentIndex:   tab.$TST.parentId && tabs.findIndex(otherTab => otherTab.id == tab.$TST.parentId)
+  }));
+});
+
+Tab.onMultipleTabsRemoved.addListener(tabs => {
+  const tabIds = new Set(tabs.map(tab => tab.id));
+  mRecentlyClosedTabs = mRecentlyClosedTabs.filter(info => tabIds.has(info.originalId));
+});
+
+function tryRestoreClosedSetFor(tab) {
+  const lastRecentlyClosedTabs = mRecentlyClosedTabs;
+  mRecentlyClosedTabs = [];
+  const index = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
+  if (index > -1) {
+    if (lastRecentlyClosedTabs.length < browser.sessions.MAX_SESSION_RESULTS) {
+      Commands.restoreTabs(lastRecentlyClosedTabs.length - 1);
+    }
+    else {
+    }
+  }
+}
