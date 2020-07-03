@@ -453,12 +453,9 @@ async function tryRestoreClosedSetFor(tab) {
     return;
 
   const toBeRestoredTabsCount = lastRecentlyClosedTabs.length - 1;
-  const sessions = await browser.sessions.getRecentlyClosed({
-    maxResults: Math.min(
-      browser.sessions.MAX_SESSION_RESULTS,
-      toBeRestoredTabsCount
-    )
-  }).catch(ApiTabs.createErrorHandler());
+  const sessions = (await browser.sessions.getRecentlyClosed({
+    maxResults: browser.sessions.MAX_SESSION_RESULTS
+  }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab);
 
   let firstTab;
   if (toBeRestoredTabsCount <= sessions.length) {

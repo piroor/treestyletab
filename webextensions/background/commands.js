@@ -723,20 +723,9 @@ export async function openTabsInWindow(tabs) {
 
 
 export async function restoreTabs(count) {
-  const sessions = await browser.sessions.getRecentlyClosed({
-    maxResults: Math.min(
-      browser.sessions.MAX_SESSION_RESULTS,
-      count
-    )
-  }).catch(ApiTabs.createErrorHandler());
-  const toBeRestoredTabs = [];
-  for (const session of sessions) {
-    if (!session.tab)
-      continue;
-    toBeRestoredTabs.push(session.tab);
-    if (toBeRestoredTabs.length == count)
-      break;
-  }
+  const toBeRestoredTabs = (await browser.sessions.getRecentlyClosed({
+    maxResults: browser.sessions.MAX_SESSION_RESULTS
+  }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab).slice(0, count);
   const promisedRestoredTabs = [];
   for (const tab of toBeRestoredTabs.reverse()) {
     log('restoreTabs: Tabrestoring session = ', tab);
