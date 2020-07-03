@@ -171,7 +171,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
       // this is required to wait until the closing tab is stored to the "recently closed" list
       wait(0).then(async () => {
-        const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 }).catch(ApiTabs.  createErrorHandler());
+        const sessions = await browser.sessions.getRecentlyClosed({ maxResults: Math.min(browser.sessions.MAX_SESSION_RESULTS, shouldRestoreCount * 2) }).catch(ApiTabs.  createErrorHandler());
         const toBeRestoredTabs = [];
         for (const session of sessions) {
           if (!session.tab)
