@@ -452,9 +452,17 @@ async function tryRestoreClosedSetFor(tab) {
       !configs.undoMultipleTabsClose)
     return;
 
+  const toBeRestoredTabsCount = lastRecentlyClosedTabs.length - 1;
+  const sessions = await browser.sessions.getRecentlyClosed({
+    maxResults: Math.min(
+      browser.sessions.MAX_SESSION_RESULTS,
+      toBeRestoredTabsCount
+    )
+  }).catch(ApiTabs.createErrorHandler());
+
   let firstTab;
-  if (lastRecentlyClosedTabs.length < browser.sessions.MAX_SESSION_RESULTS) {
-    const restoredTabs = await Commands.restoreTabs(lastRecentlyClosedTabs.length - 1);
+  if (toBeRestoredTabsCount <= sessions.length) {
+    const restoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
     restoredTabs.push(tab);
     firstTab = Tab.sort(restoredTabs)[0];
   }
