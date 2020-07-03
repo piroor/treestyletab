@@ -550,6 +550,7 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "末尾へ移動(&E)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
+  "tabContextMenu_closeMultipleTabs_label":  { "message": "複数のタブを閉じる(&M)" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 

@@ -554,6 +554,7 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "Move to &End" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
 
+  "tabContextMenu_closeMultipleTabs_label":  { "message": "Close &Multiple Tabs" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 

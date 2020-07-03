@@ -142,10 +142,15 @@ const mItemsById = {
   'context_separator:afterCollapseExpand': {
     type: 'separator'
   },
+  'context_closeMultipleTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_closeMultipleTabs_label')
+  },
   'context_closeTabsToTheEnd': {
+    parentId: 'context_closeMultipleTabs',
     title: browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
   },
   'context_closeOtherTabs': {
+    parentId: 'context_closeMultipleTabs',
     title: browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
   'context_topLevel_closeTree': {
@@ -544,9 +549,14 @@ async function onShown(info, contextTab) {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
   }) && modifiedItemsCount++;
 
+  updateItem('context_closeMultipleTabs', {
+    visible: emulate && contextTab,
+    enabled: hasMultipleNormalTabs,
+    multiselected
+  }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
     visible: emulate && contextTab,
-    enabled: hasMultipleNormalTabs && nextTab,
+    enabled: nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
