@@ -454,7 +454,8 @@ async function tryRestoreClosedSetFor(tab) {
   let firstTab;
   if (lastRecentlyClosedTabs.length < browser.sessions.MAX_SESSION_RESULTS) {
     const restoredTabs = await Commands.restoreTabs(lastRecentlyClosedTabs.length - 1);
-    firstTab = Tab.sort(restoredTabs.push(tab))[0];
+    restoredTabs.push(tab);
+    firstTab = Tab.sort(restoredTabs)[0];
   }
   else {
     const windowId = lastRecentlyClosedTabs[0].windowId;
