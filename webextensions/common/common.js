@@ -263,6 +263,7 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
+  undoMultipleTabsClose: true,
   migratedBookmarkUrls: [],
   notifiedFeaturesVersion: 0,
 

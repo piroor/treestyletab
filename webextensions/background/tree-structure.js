@@ -448,7 +448,8 @@ async function tryRestoreClosedSetFor(tab) {
     Tab.onChangeMultipleTabsRestorability.dispatch(false);
 
   const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
-  if (alreadRestoredIndex < 0)
+  if (alreadRestoredIndex < 0 ||
+      !configs.undoMultipleTabsClose)
     return;
 
   let firstTab;

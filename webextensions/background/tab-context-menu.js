@@ -586,7 +586,7 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
 
-  const undoCloseTabLabel = mItemsById.context_undoCloseTab[mMultipleTabsRestorable ? 'titleMultipleTabsRestorable' : 'titleRegular'];
+  const undoCloseTabLabel = mItemsById.context_undoCloseTab[configs.undoMultipleTabsClose && mMultipleTabsRestorable ? 'titleMultipleTabsRestorable' : 'titleRegular'];
   updateItem('context_undoCloseTab', {
     title:   undoCloseTabLabel,
     visible: emulate && contextTab,
