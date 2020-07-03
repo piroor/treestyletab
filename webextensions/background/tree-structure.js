@@ -407,7 +407,7 @@ const mPendingRecentlyClosedTabsInfo = {
   structure: []
 };
 
-Tab.onRemoved.addListener((tab, info) => {
+Tab.onRemoved.addListener((_tab, _info) => {
   mRecentlyClosedTabs = [];
   mRecentlyClosedTabsTreeStructure = [];
 });
@@ -425,7 +425,7 @@ Tab.onMultipleTabsRemoving.addListener(tabs => {
 });
 
 Tab.onMultipleTabsRemoved.addListener(tabs => {
-  let currentlyRestorable = mRecentlyClosedTabs.length > 1;
+  const currentlyRestorable = mRecentlyClosedTabs.length > 1;
 
   const tabIds = new Set(tabs.map(tab => tab.id));
   mRecentlyClosedTabs = mPendingRecentlyClosedTabsInfo.tabs.filter(info => tabIds.has(info.originalId));
