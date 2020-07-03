@@ -555,6 +555,7 @@
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 
   "tabContextMenu_undoClose_label":   { "message": "閉じたタブを元に戻す(&U)" },
+  "tabContextMenu_undoClose_label_multiple":  { "message": "閉じたタブを元に戻す(&U)" },
   "tabContextMenu_close_label":       { "message": "タブを閉じる(&C)" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "選択したタブを再読み込み(&R)" },

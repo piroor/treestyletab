@@ -166,7 +166,8 @@ const mItemsById = {
     titleMultiselected: browser.i18n.getMessage('context_closeOthers_label_multiselected')
   },
   'context_undoCloseTab': {
-    title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
+    title: browser.i18n.getMessage('tabContextMenu_undoClose_label'),
+    titleHasMultipleClosedTabs: browser.i18n.getMessage('tabContextMenu_undoClose_label_multiple')
   },
   'context_closeTab': {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
