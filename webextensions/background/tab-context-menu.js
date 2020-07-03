@@ -290,9 +290,9 @@ export async function init() {
   });
 }
 
+let mMultipleTabsRestorable = false;
 Tab.onChangeMultipleTabsRestorability.addListener(multipleTabsRestorable => {
-  const item = mItemsById.context_undoCloseTab;
-  item.newTitle = multipleTabsRestorable ? item.titleMultipleTabsRestorable : item.titleRegular;
+  mMultipleTabsRestorable = multipleTabsRestorable;
 });
 
 const mContextualIdentityItems = new Set();
@@ -586,8 +586,9 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
 
+  const undoCloseTabLabel = mItemsById.context_undoCloseTab[mMultipleTabsRestorable ? 'titleMultipleTabsRestorable' : 'titleRegular'];
   updateItem('context_undoCloseTab', {
-    title:   mItemsById.context_undoCloseTab.newTitle,
+    title:   undoCloseTabLabel,
     visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
@@ -607,7 +608,7 @@ async function onShown(info, contextTab) {
     enabled: !contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
-    title:   mItemsById.context_undoCloseTab.newTitle,
+    title:   undoCloseTabLabel,
     visible: emulate && !contextTab
   }) && modifiedItemsCount++;
 
