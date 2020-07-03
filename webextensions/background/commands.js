@@ -732,24 +732,28 @@ export async function restoreTabs(count) {
     if (toBeRestoredTabs.length == count)
       break;
   }
-  const restoredTabs = [];
+  const promisedRestoredTabs = [];
   for (const tab of toBeRestoredTabs.reverse()) {
     log('restoreTabs: Tabrestoring session = ', tab);
-    const tabs = await Tab.doAndGetNewTabs(async () => {
+    promisedRestoredTabs.push(Tab.doAndGetNewTabs(async () => {
       browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
       await Tab.waitUntilTrackedAll();
-    });
-    await Promise.all(tabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
-    restoredTabs.push(...tabs);
+    }));
   }
-  //await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
+  const restoredTabs = (await Promise.all(promisedRestoredTabs)).flat();
+  await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
 
-  /*
   // Parallelly restored tabs can have ghost "active" state, so we need to clear them
   const activeTab = Tab.getActiveTab(restoredTabs[0].windowId);
   if (restoredTabs.some(tab => tab.id == activeTab.id))
     await TabsInternalOperation.setTabActive(activeTab);
-  */
+
+  let previousTab;
+  for (const tab of restoredTabs) {
+    if (previousTab)
+      TabsMove.moveTabBefore(tab, previousTab, { bloadcast: true });
+    previousTab = tab;
+  }
 
   return restoredTabs;
 }
