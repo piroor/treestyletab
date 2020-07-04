@@ -402,6 +402,9 @@ Tab.onRestored.addListener(tab => {
 });
 
 
+// Implementation for the "Undo Close Tab*s*" feature
+// https://github.com/piroor/treestyletab/issues/2627
+
 const mPendingRecentlyClosedTabsInfo = {
   tabs:      [],
   structure: []
