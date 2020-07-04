@@ -469,6 +469,8 @@
 
   "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefoxの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
 
+  "config_undoMultipleTabsClose_label": { "message": "最後にまとめて閉じたタブ群のうちの1つが「閉じたタブを元に戻す」で復元されたとき、タブ群全体を復元する" },
+
   "config_userStyleRules_label": { "message": "ツリー型タブが提供するページ用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },

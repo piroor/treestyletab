@@ -1171,6 +1171,11 @@ const mItems = [
         type:  'checkbox',
         expert: true
       },
+      {
+        title: indent() + browser.i18n.getMessage('config_undoMultipleTabsClose_label'),
+        key:   'undoMultipleTabsClose',
+        type:  'checkbox'
+      },
       { type: 'separator' },
       {
         title:   browser.i18n.getMessage('config_debug_caption'),
