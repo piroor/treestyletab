@@ -734,7 +734,7 @@ export async function restoreTabs(count) {
       await Tab.waitUntilTrackedAll();
     }));
   }
-  const restoredTabs = (await Promise.all(promisedRestoredTabs)).flat();
+  const restoredTabs = Array.from(new Set((await Promise.all(promisedRestoredTabs)).flat()));
   await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
 
   // Parallelly restored tabs can have ghost "active" state, so we need to clear them
