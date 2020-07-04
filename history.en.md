@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Group "Close Tabs to the Bottom" and "Close Other Tabs" context menu items under a submenu "Close Multiple Tabs", like Firefox 78 does.
+   * Add ability to restore the recently closed set of tabs, triggerred with a restoration of tabs in the set.
    * Activate/deactivate the animation effect for updating of indentation with the animation option.
    * Deactivate all animations automatically when animation effects are disabled by the platform itself.
    * Add ability to configure middle click on the new tab button same as Ctrl-click.
@@ -8,6 +10,12 @@
    * Show the container name in the tooltip on container tabs, like Firefox does.
    * Better container support in group tabs.
    * Add ability to change column width in group tabs. Now custom style definition like `:root.group-tab { --column-width: 30em; }` does it.
+   * Cancel TST's default action for click on tabs more correctly, via API notifications `tab-mousedown` and `tab-mouseup`.
+   * Add ability to open the sidebar in separate window with the URI `ext+treestyletab:tabbar?windowId=(Window.id)`. This change should help addons like the [TST in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
+   * The count of opened tabbar pages are now notified to helper addons via the `sidebar-show` and `sidebar-hide` notification APIs.
+   * Better responses for tab switching on Firefox 79 and later, with the new API `browser.tabs.warmup()`.
+   * Reduce the total amount of sync storage a little, and cleanup of needless sync data. [It is limited until 100KB, and please remind that you cannot put data larger than 16KB for each option especially custom style rules.](https://github.com/piroor/treestyletab/issues/2623)
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.5 (2020.6.6)
    * Fix broken appearance of the sidebar after window move across multiple screens with different DPI.
    * Group new tabs automatically by default only when they are detected as tabs opened from bookmarks in one folder. As the result the configuration UI for auto-grouping feature is now very simplified.
