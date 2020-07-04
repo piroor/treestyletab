@@ -742,14 +742,7 @@ export async function restoreTabs(count) {
   if (restoredTabs.some(tab => tab.id == activeTab.id))
     await TabsInternalOperation.setTabActive(activeTab);
 
-  let previousTab;
-  for (const tab of restoredTabs) {
-    if (previousTab)
-      TabsMove.moveTabBefore(tab, previousTab, { bloadcast: true });
-    previousTab = tab;
-  }
-
-  return restoredTabs;
+  return Tab.sort(restoredTabs);
 }
 
 
