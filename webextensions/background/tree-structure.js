@@ -457,6 +457,7 @@ async function tryRestoreClosedSetFor(tab) {
     Tab.onChangeMultipleTabsRestorability.dispatch(false);
 
   const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
+  log('tryRestoreClosedSetFor ', tab, mRecentlyClosedTabs, mRecentlyClosedTabsTreeStructure);
   if (alreadRestoredIndex < 0 ||
       !configs.undoMultipleTabsClose)
     return;
@@ -468,11 +469,13 @@ async function tryRestoreClosedSetFor(tab) {
 
   let restoredTabs;
   if (toBeRestoredTabsCount <= sessions.length) {
+    log('tryRestoreClosedSetFor: restore tabs with the sessions API');
     restoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
     restoredTabs.push(tab);
     Tab.sort(restoredTabs)
   }
   else {
+    log('tryRestoreClosedSetFor: recreate tabs');
     const tabOpenOptions = {
       windowId:     lastRecentlyClosedTabs[0].windowId,
       isOrphan:     true,
