@@ -463,11 +463,11 @@ async function tryRestoreClosedSetFor(tab) {
     maxResults: browser.sessions.MAX_SESSION_RESULTS
   }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab);
 
-  let firstTab;
+  let restoredTabs;
   if (toBeRestoredTabsCount <= sessions.length) {
-    const restoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
+    restoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
     restoredTabs.push(tab);
-    firstTab = Tab.sort(restoredTabs)[0];
+    Tab.sort(restoredTabs)
   }
   else {
     const windowId = lastRecentlyClosedTabs[0].windowId;
@@ -515,21 +515,20 @@ async function tryRestoreClosedSetFor(tab) {
         tab,
         { broadcast: true }
       );
-    const allTabs = [...beforeTabs, tab, ...afterTabs];
-    firstTab = allTabs[0]
-    await TabsInternalOperation.activateTab(firstTab);
-    await Tree.applyTreeStructureToTabs(
-      allTabs,
-      lastRecentlyClosedTabsTreeStructure
-    );
+    restoredTabs = [...beforeTabs, tab, ...afterTabs];
+    await TabsInternalOperation.activateTab(restoredTabs[0]);
   }
+  await Tree.applyTreeStructureToTabs(
+    restoredTabs,
+    lastRecentlyClosedTabsTreeStructure
+  );
 
   // Firefox itself activates the initially restored tab with delay,
   // so we need to activate the first tab of the restored tabs again.
   const onActivated = activeInfo => {
     browser.tabs.onActivated.removeListener(onActivated);
-    if (activeInfo.id != firstTab.id)
-      TabsInternalOperation.activateTab(firstTab);
+    if (activeInfo.id != restoredTabs[0].id)
+      TabsInternalOperation.activateTab(restoredTabs[0]);
   };
   browser.tabs.onActivated.addListener(onActivated);
   wait(100).then(() => onActivated({ id: -1 })); // failsafe
