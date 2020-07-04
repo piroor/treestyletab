@@ -1166,6 +1166,12 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent(2) + browser.i18n.getMessage('config_storeCacheAsWindowValue_label'),
+        key:   'storeCacheAsWindowValue',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title: indent() + browser.i18n.getMessage('config_supportTabsMultiselect_label'),
         key:   'supportTabsMultiselect',
         type:  'checkbox',
