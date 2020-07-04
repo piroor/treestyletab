@@ -473,20 +473,20 @@ async function tryRestoreClosedSetFor(tab) {
     Tab.sort(restoredTabs)
   }
   else {
-    const windowId = lastRecentlyClosedTabs[0].windowId;
+    const tabOpenOptions = {
+      windowId:     lastRecentlyClosedTabs[0].windowId,
+      isOrphan:     true,
+      inBackground: true,
+      discarded:    true,
+      fixPositions: true
+    };
     const beforeTabs = await TabsOpen.openURIsInTabs(
       lastRecentlyClosedTabs.slice(0, alreadRestoredIndex).map(info => ({
         title:         info.title,
         url:           info.url,
         cookieStoreId: info.cookieStoreId
       })),
-      {
-        windowId,
-        isOrphan:     true,
-        inBackground: false,
-        discarded:    true,
-        fixPositions: true
-      }
+      tabOpenOptions
     );
     const afterTabs = await TabsOpen.openURIsInTabs(
       lastRecentlyClosedTabs.slice(alreadRestoredIndex + 1).map(info => ({
@@ -494,13 +494,7 @@ async function tryRestoreClosedSetFor(tab) {
         url:           info.url,
         cookieStoreId: info.cookieStoreId
       })),
-      {
-        windowId,
-        isOrphan:     true,
-        inBackground: true,
-        discarded:    true,
-        fixPositions: true
-      }
+      tabOpenOptions
     );
     // We need to move tabs after they are opened instead of
     // specifying the "index" option for TabsOpen.openURIsInTabs(),
