@@ -92,7 +92,10 @@ const mLessAnimationMedia         = window.matchMedia('(prefers-reduced-motion: 
   if (style)
     applyStyle(style[1]);
   else
-    configs.$loaded.then(() => applyStyle());
+    configs.$loaded.then(async () => {
+      await applyStyle();
+      Size.update();
+    });
 
   configs.$loaded.then(applyUserStyleRules);
 

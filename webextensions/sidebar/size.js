@@ -45,7 +45,7 @@ export function init() {
   matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addListener(update);
 }
 
-function update() {
+export function update() {
   const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
   mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
