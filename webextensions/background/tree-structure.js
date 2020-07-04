@@ -408,8 +408,14 @@ const mPendingRecentlyClosedTabsInfo = {
 };
 
 Tab.onRemoved.addListener((_tab, _info) => {
+  const currentlyRestorable = mRecentlyClosedTabs.length > 1;
+
   mRecentlyClosedTabs = [];
   mRecentlyClosedTabsTreeStructure = [];
+
+  const newlyRestorable = mRecentlyClosedTabs.length > 1;
+  if (currentlyRestorable != newlyRestorable)
+    Tab.onChangeMultipleTabsRestorability.dispatch(newlyRestorable);
 });
 
 Tab.onMultipleTabsRemoving.addListener(tabs => {
