@@ -29,5 +29,9 @@ if (matched) {
     case 'options':
       location.href = `${Constants.kSHORTHAND_URIS.options}${params.split('#')[1] || ''}`;
       break;
+
+    case 'tabbar':
+      location.href = `${Constants.kSHORTHAND_URIS.tabbar}${location.search}`;
+      break;
   }
 }

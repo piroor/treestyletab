@@ -505,6 +505,7 @@
 
   "config_link_startupPage_label": { "message": "Page for Initial Startup" },
   "config_link_groupPage_label":   { "message": "Page for Group Tab" },
+  "config_link_tabbarPage_label":   { "message": "Page for Tab Bar" },
 
   "config_runTests_label": { "message": "Run Automated Tests" },
   "config_runBenchmark_label": { "message": "Run Benchmark" },

@@ -501,6 +501,7 @@
 
   "config_link_startupPage_label": { "message": "初回起動時用のページ" },
   "config_link_groupPage_label":   { "message": "グループ化用タブのページ" },
+  "config_link_tabbarPage_label":   { "message": "タブバーのページ" },
 
   "config_runTests_label": { "message": "自動テストを実行" },
   "config_runBenchmark_label": { "message": "ベンチマークを実行" },

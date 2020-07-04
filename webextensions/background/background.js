@@ -181,7 +181,7 @@ async function notifyReadyToSidebars() {
 }
 
 function updatePanelUrl() {
-  const panel = browser.extension.getURL(`/sidebar/sidebar.html?style=${encodeURIComponent(configs.style)}`);
+  const panel = `${Constants.kSHORTHAND_URIS.tabbar}?style=${encodeURIComponent(configs.style)}`;
   browser.sidebarAction.setPanel({ panel });
 }
 

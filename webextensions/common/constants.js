@@ -314,6 +314,7 @@ export const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${brows
 export const kSHORTHAND_CUSTOM_URI = /^ext\+treestyletab:([^:?]+)(?:[:?](.*))?$/;
 export const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^?]+)/;
 export const kSHORTHAND_URIS = {
+  tabbar:  browser.extension.getURL('sidebar/sidebar.html'),
   group:   kGROUP_TAB_URI,
   options: browser.extension.getURL('options/options.html?independent=true'),
   startup: browser.extension.getURL('resources/startup.html'),
