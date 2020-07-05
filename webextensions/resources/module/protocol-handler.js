@@ -12,9 +12,10 @@ const matched = uri && uri.match(Constants.kSHORTHAND_CUSTOM_URI);
 if (matched) {
   const name = matched[1];
   const params = matched[2] || '';
+  const delimiter = params ? '?' : '';
   switch (name.toLowerCase()) {
     case 'group':
-      location.href = `${Constants.kSHORTHAND_URIS.group}?${params}`;
+      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params}`;
       break;
 
     case 'startup':
@@ -23,7 +24,7 @@ if (matched) {
 
     case 'test-runner':
     case 'testrunner':
-      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${location.search}`;
+      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params}`;
       break;
 
     case 'options':
@@ -31,7 +32,7 @@ if (matched) {
       break;
 
     case 'tabbar':
-      location.href = `${Constants.kSHORTHAND_URIS.tabbar}${location.search}`;
+      location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params}`;
       break;
   }
 }
