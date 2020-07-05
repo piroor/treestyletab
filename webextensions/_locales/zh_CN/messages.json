@@ -1314,7 +1314,7 @@
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"
     },
     "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": {
-        "message": "允许分离被拖放到侧边标签栏之外的标签树",
+        "message": "允许分离被拖放到侧边标签栏之外的标签树 (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")",
         "hash": "9b12018454e1dfb157bdb832a15a1c45"
     },
     "config_dropLinksOnTabBehavior_caption": {

@@ -438,7 +438,7 @@
   "config_tabDragBehavior_bookmark_tab":  { "message": "Перемещение вкладки / Создаст закладку или ссылку (невозможно отсоединить от окна)" },
   "config_tabDragBehavior_none_":          { "message": "Ничего не делать" },
   "config_showTabDragBehaviorNotification_label": { "message": "Показывать напоминание о том, что произойдет после отпускания вкладки за пределами боковой панели" },
-  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Разрешить открепление дерева, вытянутого за пределы панели вкладок" },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Разрешить открепление дерева, вытянутого за пределы панели вкладок (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL на вкладку" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
