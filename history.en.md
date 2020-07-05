@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.5.7 (2020.7.6)
+   * Process redirection of shorthand URI (`ext+treestyletab:*`) with query parameters correctly.
  - 3.5.6 (2020.7.5)
    * Group "Close Tabs to the Bottom" and "Close Other Tabs" context menu items under a submenu "Close Multiple Tabs", like Firefox 78 does.
    * Add ability to restore the recently closed set of tabs, triggerred with a restoration of tabs in the set.
