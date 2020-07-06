@@ -202,7 +202,7 @@ const mItemsById = {
 
 const mExtraItems = new Map();
 
-const SIDEBAR_URL_PATTERN = [`moz-extension://${location.host}/*`];
+const SIDEBAR_URL_PATTERN = [`${Constants.kSHORTHAND_URIS.tabbar}*`];
 
 function getItemPlacementSignature(item) {
   if (item.placementSignature)
@@ -265,7 +265,7 @@ export async function init() {
       title:    item.title,
       type:     item.type || 'normal',
       contexts: ['tab'],
-      viewTypes: ['sidebar'],
+      viewTypes: ['sidebar', 'tab', 'popup'],
       visible:  false, // hide all by default
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
@@ -314,7 +314,7 @@ function updateContextualIdentities() {
     id:        'context_reopenInContainer:firefox-default',
     title:     browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts:  ['tab'],
-    viewTypes: ['sidebar'],
+    viewTypes: ['sidebar', 'tab', 'popup'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   browser.menus.create(defaultItem);
@@ -329,7 +329,7 @@ function updateContextualIdentities() {
     id:        'context_reopenInContainer_separator',
     type:      'separator',
     contexts:  ['tab'],
-    viewTypes: ['sidebar'],
+    viewTypes: ['sidebar', 'tab', 'popup'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   browser.menus.create(defaultSeparator);
@@ -346,7 +346,7 @@ function updateContextualIdentities() {
       id:       id,
       title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
       contexts: ['tab'],
-      viewTypes: ['sidebar'],
+      viewTypes: ['sidebar', 'tab', 'popup'],
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (identity.iconUrl)
@@ -1103,7 +1103,7 @@ export function onMessageExternal(message, sender) {
           id:        getExternalTopLevelItemId(sender.id, params.id),
           type:      params.type || 'normal',
           visible,
-          viewTypes: ['sidebar'],
+          viewTypes: ['sidebar', 'tab', 'popup'],
           contexts:  (params.contexts || []).filter(context => context == 'tab' || context == 'bookmark'),
           documentUrlPatterns: SIDEBAR_URL_PATTERN
         };
