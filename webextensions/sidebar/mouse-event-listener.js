@@ -100,7 +100,7 @@ Sidebar.onReady.addListener(() => {
 });
 
 function updateSpecialEventListenersForAPIListeners() {
-  const shouldListenMouseMove = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) > 0;
+  const shouldListenMouseMove = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE);
   if (shouldListenMouseMove != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
@@ -112,7 +112,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  const shouldListenMouseOut = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0;
+  const shouldListenMouseOut = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT);
   if (shouldListenMouseOut != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
@@ -124,7 +124,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  mHasMouseOverListeners = shouldListenMouseOut || TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0;
+  mHasMouseOverListeners = shouldListenMouseOut || TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER);
 }
 
 
