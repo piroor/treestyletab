@@ -443,7 +443,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   onConfigChanged('closeParentBehaviorMode');
 
   if (focusedItem)
-    focusedItem.scrollIntoView();
+    focusedItem.scrollIntoView({ block: 'start' });
 
   document.documentElement.classList.add('initialized');
 }, { once: true });
