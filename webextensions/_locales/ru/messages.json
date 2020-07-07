@@ -421,8 +421,8 @@
 
   "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Рассматривать закрывающуюся родительскую вкладку как одиночную, даже если у нее есть свернутый потомок, при скрытой боковой панели" },
 
-  "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
-  "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать, когда я попытаюсь закрыть несколько вкладок по крестику закрытия вкладки (свернутое дерево)" },
+  "config_warnOnCloseTabs_label": { "message": "Предупреждать при закрытии нескольких вкладок" },
+  "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать при закрытии нескольких вкладок по крестику закрытия вкладки (свернутое дерево)" },
 
 
   "config_drag_caption": { "message": "Перетаскивание" },
@@ -438,7 +438,7 @@
   "config_tabDragBehavior_bookmark_tab":  { "message": "Перемещение вкладки / Создаст закладку или ссылку (невозможно отсоединить от окна)" },
   "config_tabDragBehavior_none_":          { "message": "Ничего не делать" },
   "config_showTabDragBehaviorNotification_label": { "message": "Показывать напоминание о том, что произойдет после отпускания вкладки за пределами боковой панели" },
-  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Разрешить открепление дерева, вытянутого за пределы панели вкладок (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")" },
+  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Разрешить открепление дерева, вытянутого за пределы панели вкладок (* симуляция встроенного поведения Firefox \"browser.tabs.allowTabDetach\"=\"true\")" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL на вкладку" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
@@ -473,6 +473,8 @@
 
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс (API) выбора нескольких вкладок  (*зависит от встроенной настройки \"browser.tabs.multiselect\"=\"true\" для Firefox 63 и выше)" },
 
+  "config_undoMultipleTabsClose_label": { "message": "Восстановить набор закрытых вкладок, когда одна из них восстанавливается командой \"Восстановить закрытую вкладку\"" },
+
   "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },
   "config_userStyleRules_description_before": { "message": "Для ознакомления " },
   "config_userStyleRules_description_link_label": { "message": "смотрите примеры на TST-" },
@@ -503,6 +505,7 @@
 
   "config_link_startupPage_label": { "message": "Открыть стартовую страницу Tree Style Tab" },
   "config_link_groupPage_label":   { "message": "Открыть страницу группы вкладок Tree Style Tab" },
+  "config_link_tabbarPage_label":   { "message": "Открыть панель вкладок Tree Style Tab на странице" },
 
   "config_runTests_label": { "message": "Запустить автоматические тесты" },
   "config_runBenchmark_label": { "message": "Запустить бенчмарк" },
@@ -527,7 +530,7 @@
   "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
 
   "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
-  "config_requestPermissions_bookmarks_context": { "message": "Разрешить открывать контекстное меню на закладках" },
+  "config_requestPermissions_bookmarks_context": { "message": "Включить контекстное меню закладок" },
   "config_requestPermissions_tabHide":   { "message": "Разрешить показывать / скрывать отдельные вкладки (* Вы должны снять/поставить этот флажок перед запуском тестов, чтобы убедиться, что разрешение получено)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Нажмите \"Tree Style Tab\" кнопку панели инструментов" },
@@ -549,15 +552,17 @@
   "tabContextMenu_bookmark_label":    { "message": "Добавить вкладку в зак&ладки" },
   "tabContextMenu_reopenInContainer_label":             { "message": "Переоткрыть в &контейнере" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Переоткрыть &без контейнера" },
-  "tabContextMenu_moveTab_label":     { "message": "П&ереместить вкладку" },
+  "tabContextMenu_moveTab_label":     { "message": "&Переместить вкладку" },
   "tabContextMenu_moveTabToStart_label": { "message": "Переместить в &начало" },
   "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в &конец" },
-  "tabContextMenu_tearOff_label":     { "message": "Переместить в новое &окно" },
+  "tabContextMenu_tearOff_label":     { "message": "Пере&местить в новое окно" },
 
+  "tabContextMenu_closeMultipleTabs_label":  { "message": "&Закрыть несколько вкладок" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки &снизу" },
   "tabContextMenu_closeOther_label":  { "message": "&Закрыть другие вкладки" },
 
   "tabContextMenu_undoClose_label":   { "message": "Восстанов&ить закрытую вкладку" },
+  "tabContextMenu_undoClose_label_multiple": { "message": "Восстанов&ить закрытые вкладки" },
   "tabContextMenu_close_label":       { "message": "Закр&ыть вкладку" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "&Обновить выбранные вкладки" },
