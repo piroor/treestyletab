@@ -499,7 +499,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
     configs.autoAttachOnNewTabButtonMiddleClick :
     lastMousedown.detail.isAccelClick ?
       configs.autoAttachOnNewTabButtonAccelClick :
-    configs.autoAttachOnNewTabCommand;
+      configs.autoAttachOnNewTabCommand;
   if (EventUtils.isEventFiredOnNewTabButton(event)) {
     if (lastMousedown.detail.button != 2) {
       log('onMouseUp: click on the new tab button');
