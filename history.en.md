@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.8 (2020.7.10)
    * Fix incompatibility with [TST Hoverswitch](https://addons.mozilla.org/firefox/addon/tst-hoverswitch/) and other addons using `tab-mouseover` API [by Klemens Schölhorn, thanks!](https://github.com/piroor/treestyletab/pull/2633)
    * Don't produce any scrolling for popup menus (on the new tab button and others) if the focused item is already visible in the view area.
    * Reduce needless confirmation about closing of multiple tabs triggered by actions from outside of TST.
