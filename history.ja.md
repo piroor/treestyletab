@@ -3,6 +3,7 @@
  - master/HEAD
    * [TST Hoverswitch](https://addons.mozilla.org/firefox/addon/tst-hoverswitch/)などの`tab-mouseover` APIを使用しているアドオンが動作しなくなっていたのを修正（[by Klemens Schölhorn, thanks!](https://github.com/piroor/treestyletab/pull/2633)）
    * 「新しいタブ」ボタンの上などで表示されるポップアップについて、フォーカスされた項目が既に可視領域の中にある場合はポップアップ全体をスクロールしないようにした
+   * TSTの外で行われた捜査によって複数のタブが閉じられる場面では不要な確認を表示しないようにした
    * 初回起動時に開くタブの内容がセンタリングされなくなっていたのを修正
    * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.5.7 (2020.7.6)
