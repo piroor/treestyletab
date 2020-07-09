@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Fix incompatibility with [TST Hoverswitch](https://addons.mozilla.org/firefox/addon/tst-hoverswitch/) and other addons using `tab-mouseover` API [by Klemens Schölhorn, thanks!](https://github.com/piroor/treestyletab/pull/2633)
+   * Don't produce any scrolling for popup menus (on the new tab button and others) if the focused item is already visible in the view area.
+   * Fix unexpected missing centering of the startup tab.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.7 (2020.7.6)
    * Process redirection of shorthand URI (`ext+treestyletab:*`) with query parameters correctly.
  - 3.5.6 (2020.7.5)
