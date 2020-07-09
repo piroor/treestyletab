@@ -314,6 +314,15 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "same to Ctrl-click (next sibling, same container)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
+  "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "For Ctrl/⌘-click, open new blank tab as" },
+  "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(no control)" },
+  "config_autoAttachOnNewTabButtonAccelClick_independent": { "message": "an independent tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_child": { "message": "a child of the current tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "a sibling of the current tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "the next sibling of the current tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "next sibling, same container" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
+
   "config_autoAttachWithURL_caption": { "message": "Non-blank new tabs" },
 
   "config_duplicateTabAction_caption": { "message": "Duplicate Tabs (middle click on the \"Reload\" button, etc.)" },

@@ -310,6 +310,15 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "Ctrl-クリックと同様に（同階層で隣に、同じコンテナーで）" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "開く" },
 
+  "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "Ctrl/⌘-クリックした時、新しい空のタブを" },
+  "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(制御せず既定の位置に)" },
+  "config_autoAttachOnNewTabButtonAccelClick_independent": { "message": "独立したタブとして" },
+  "config_autoAttachOnNewTabButtonAccelClick_child": { "message": "現在のタブの子として" },
+  "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "現在のタブと同階層に" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "同階層で隣に、同じコンテナーで" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "開く" },
+
   "config_autoAttachWithURL_caption": { "message": "空でない新しいタブ" },
 
   "config_duplicateTabAction_caption": { "message": "複製されたタブ（「再読み込み」ボタンの中クリックなど）" },
