@@ -5,6 +5,12 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+html,
+body {
+  /* This should be more suitable for list of tabs. See also: https://github.com/piroor/treestyletab/issues/2636 */
+  font: menu;
+}
+
 :root {
   /* default size, they will be overridden. */
   --favicon-size: 16px;
