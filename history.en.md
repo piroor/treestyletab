@@ -1,11 +1,14 @@
 # History
 
  - master/HEAD
+   * Show fonts with normal weight on Windows 7 Classic theme.
+   * Define default keyboard shortcuts statically with the `manifest.json`. It should reduce unexpected disappearing of default shortcuts. You can unbind default shortcuts on Firefox 74 and later, but it is impossible on older versions.
+   * Don't produce any scrolling for popup menus (on the new tab button and others) if the focused item is already visible in the view area.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.9 (2020.7.10)
    * Constantly promote tab by drag and drop after its present parent tab. (regression on recent versions)
  - 3.5.8 (2020.7.10)
    * Fix incompatibility with [TST Hoverswitch](https://addons.mozilla.org/firefox/addon/tst-hoverswitch/) and other addons using `tab-mouseover` API [by Klemens Schölhorn, thanks!](https://github.com/piroor/treestyletab/pull/2633)
-   * Don't produce any scrolling for popup menus (on the new tab button and others) if the focused item is already visible in the view area.
    * Reduce needless confirmation about closing of multiple tabs triggered by actions from outside of TST.
    * Fix unexpected missing centering of the startup tab.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
