@@ -76,7 +76,10 @@
   },
   "commands": {
     "_execute_browser_action": {
-      "description": "__MSG_sidebarToggleDescription__ (F1)"
+      "description": "__MSG_sidebarToggleDescription__",
+      "suggested_key": {
+        "default": "F1"
+      }
     },
     "reloadTree": {
       "description": "__MSG_context_reloadTree_command__"
@@ -178,25 +181,46 @@
       "description": "__MSG_command_focusNextSibling__"
     },
     "tabbarUp": {
-      "description": "__MSG_command_tabbarUp__ (Alt+Shift+Up)"
+      "description": "__MSG_command_tabbarUp__",
+      "suggested_key": {
+        "default": "Alt+Shift+Up"
+      }
     },
     "tabbarPageUp": {
-      "description": "__MSG_command_tabbarPageUp__ (Alt+Shift+PageUp)"
+      "description": "__MSG_command_tabbarPageUp__",
+      "suggested_key": {
+        "default": "Alt+Shift+PageUp"
+      }
     },
     "tabbarHome": {
-      "description": "__MSG_command_tabbarHome__ (Alt+Shift+Home)"
+      "description": "__MSG_command_tabbarHome__",
+      "suggested_key": {
+        "default": "Alt+Shift+Home"
+      }
     },
     "tabbarDown": {
-      "description": "__MSG_command_tabbarDown__ (Alt+Shift+Down)"
+      "description": "__MSG_command_tabbarDown__",
+      "suggested_key": {
+        "default": "Alt+Shift+Down"
+      }
     },
     "tabbarPageDown": {
-      "description": "__MSG_command_tabbarPageDown__ (Alt+Shift+PageDown)"
+      "description": "__MSG_command_tabbarPageDown__",
+      "suggested_key": {
+        "default": "Alt+Shift+PageDown"
+      }
     },
     "tabbarEnd": {
-      "description": "__MSG_command_tabbarEnd__ (Alt+Shift+End)"
+      "description": "__MSG_command_tabbarEnd__",
+      "suggested_key": {
+        "default": "Alt+Shift+End"
+      }
     },
     "toggleSubPanel": {
-      "description": "__MSG_command_toggleSubPanel__ (F2)"
+      "description": "__MSG_command_toggleSubPanel__",
+      "suggested_key": {
+        "default": "F2"
+      }
     },
     "switchSubPanel": {
       "description": "__MSG_command_switchSubPanel__"

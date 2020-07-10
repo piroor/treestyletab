@@ -13,8 +13,6 @@ import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Permissions from '/common/permissions.js';
 
-import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
-
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('background/migration', ...args);
@@ -26,8 +24,6 @@ const kFEATURES_VERSION = 4;
 export function migrateConfigs() {
   switch (configs.configsVersion) {
     case 0:
-      ShortcutCustomizeUI.setDefaultShortcuts();
-
     case 1:
       if (configs.startDragTimeout !== null)
         configs.longPressDuration = configs.startDragTimeout;
