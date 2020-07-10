@@ -431,7 +431,9 @@ function getDropAction(event) {
              +-----------------------------------------------------
         */
         if (info.draggedTab &&
-            info.draggedTab.id == info.insertBefore.id) {
+            info.draggedTab.$TST.nearestVisibleFollowingTab &&
+            info.draggedTab.$TST.nearestVisibleFollowingTab.id == info.insertBefore.id) {
+          log('special case: promote tab');
           info.action      = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
           info.parent      = targetTab.$TST.parent;
           let insertBefore = targetTab.$TST.nextSiblingTab;
