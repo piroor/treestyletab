@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.10 (2020.7.11)
    * Show fonts with normal weight on Windows 7 Classic theme.
    * Define default keyboard shortcuts statically with the `manifest.json`. It should reduce unexpected disappearing of default shortcuts. You can unbind default shortcuts on Firefox 74 and later, but it is impossible on older versions.
    * Don't produce any scrolling for popup menus (on the new tab button and others) if the focused item is already visible in the view area.
