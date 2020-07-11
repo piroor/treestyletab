@@ -217,7 +217,7 @@ function initUserStyleImportExportButtons() {
           ]
         });
       }
-      catch(e) {
+      catch(_error) {
         result = { buttonIndex: -1 };
       }
       switch (result.buttonIndex) {
