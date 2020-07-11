@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.11 (2020.7.12)
    * Show confirmation for multiple tabs closing after a tab is completely closed from outside of TST instead of showing before the tab disappears, for better response on tab closing.
    * Ignore click on the blank area if it is performed immediately after a click on a tab and at the same coordinates.
    * Add ability to import/export user styles.
