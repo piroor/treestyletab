@@ -260,6 +260,7 @@ export const configs = new Configs({
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   delayToApplyHighlightedState: 50,
+  acceptableFlickerToIgnoreClickOnTabAndTabbar: 10,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,

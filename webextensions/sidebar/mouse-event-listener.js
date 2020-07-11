@@ -429,6 +429,10 @@ function getMouseEventTargetType(event) {
   return 'blank';
 }
 
+let mLastMouseUpX = -1;
+let mLastMouseUpY = -1;
+let mLastMouseUpOnTab = -1;
+
 async function onMouseUp(event) {
   const unsafeTab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
   const tab       = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
@@ -494,6 +498,12 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       await handleDefaultMouseUpOnTab(lastMousedown, tab))
     return;
 
+  if (tab) {
+    mLastMouseUpX = event.clientX;
+    mLastMouseUpY = event.clientY;
+    mLastMouseUpOnTab = Date.now();
+  }
+
   // following codes are for handlig of click event on the tab bar itself.
   const actionForNewTabCommand = lastMousedown.detail.isMiddleClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
@@ -519,6 +529,15 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
     }
     return;
   }
+
+  // Multiple middle clicks to close tabs can be detected as a middle click on the tab bar.
+  // We should ignore if the cursor is not moved and the closing tab is still in animation.
+  // See also: https://github.com/piroor/treestyletab/issues/1968
+  if (configs.animation &&
+      Date.now() - mLastMouseUpOnTab <= configs.collapseDuration &&
+      Math.abs(mLastMouseUpX - event.clientX) < configs.acceptableFlickerToIgnoreClickOnTabAndTabbar / 2 &&
+      Math.abs(mLastMouseUpY - event.clientY) < configs.acceptableFlickerToIgnoreClickOnTabAndTabbar / 2)
+    return;
 
   log('onMouseUp: notify as a blank area click to other addons');
   const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
