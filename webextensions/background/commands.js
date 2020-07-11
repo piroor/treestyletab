@@ -740,10 +740,10 @@ export async function restoreTabs(count) {
   await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
 
   if (restoredTabs.length > 0) {
-  // Parallelly restored tabs can have ghost "active" state, so we need to clear them
-  const activeTab = Tab.getActiveTab(restoredTabs[0].windowId);
-  if (restoredTabs.some(tab => tab.id == activeTab.id))
-    await TabsInternalOperation.setTabActive(activeTab);
+    // Parallelly restored tabs can have ghost "active" state, so we need to clear them
+    const activeTab = Tab.getActiveTab(restoredTabs[0].windowId);
+    if (restoredTabs.some(tab => tab.id == activeTab.id))
+      await TabsInternalOperation.setTabActive(activeTab);
   }
 
   return Tab.sort(restoredTabs);

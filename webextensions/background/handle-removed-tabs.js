@@ -66,56 +66,56 @@ Tab.onRemoving.addListener((tab, removeInfo = {}) => {
 
   tryGrantCloseTab(tab, closeParentBehavior).then(async granted => {
     if (!granted)
-    return;
-  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
-
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(tab);
-
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      tab.$TST.childIds.length > 1 &&
-      countMatched(tab.$TST.children,
-                   tab => !tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)) > 1) {
-    log('trying to replace the closing tab with a new group tab');
-    const firstChild = tab.$TST.firstChild;
-    const uri = TabsGroup.makeGroupTabURI({
-      title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
-      temporaryAggressive: true
-    });
-    const window = TabsStore.windows.get(tab.windowId);
-    window.toBeOpenedTabsWithPositions++;
-    const groupTab = await TabsOpen.openURIInTab(uri, {
-      windowId:     tab.windowId,
-      insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
-      inBackground: true
-    });
-    log('group tab: ', dumpTab(groupTab));
-    if (!groupTab) // the window is closed!
       return;
-    await Tree.attachTabTo(groupTab, tab, {
-      insertBefore: firstChild,
-      broadcast:    true
-    });
-    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-    // This can be triggered on closing of multiple tabs,
-    // so we should cleanup it on such cases for safety.
-    // https://github.com/piroor/treestyletab/issues/2317
-    wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
-  }
+    log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
-  Tree.detachAllChildren(tab, {
-    newParent,
-    behavior:  closeParentBehavior,
-    broadcast: true
-  });
-  //reserveCloseRelatedTabs(toBeClosedTabs);
-  // We should skip needless operation if it is a bulk tab close
-  const window = TabsStore.windows.get(tab.windowId);
-  if (!window.internalClosingTabs.has(tab.$TST.parentId))
-    Tree.detachTab(tab, {
-      dontUpdateIndent: true,
-      broadcast:        true
+    if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+      await closeChildTabs(tab);
+
+    if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
+        tab.$TST.childIds.length > 1 &&
+        countMatched(tab.$TST.children,
+                     tab => !tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)) > 1) {
+      log('trying to replace the closing tab with a new group tab');
+      const firstChild = tab.$TST.firstChild;
+      const uri = TabsGroup.makeGroupTabURI({
+        title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
+        temporaryAggressive: true
+      });
+      const window = TabsStore.windows.get(tab.windowId);
+      window.toBeOpenedTabsWithPositions++;
+      const groupTab = await TabsOpen.openURIInTab(uri, {
+        windowId:     tab.windowId,
+        insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
+        inBackground: true
+      });
+      log('group tab: ', dumpTab(groupTab));
+      if (!groupTab) // the window is closed!
+        return;
+      await Tree.attachTabTo(groupTab, tab, {
+        insertBefore: firstChild,
+        broadcast:    true
+      });
+      closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+      // This can be triggered on closing of multiple tabs,
+      // so we should cleanup it on such cases for safety.
+      // https://github.com/piroor/treestyletab/issues/2317
+      wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
+    }
+
+    Tree.detachAllChildren(tab, {
+      newParent,
+      behavior:  closeParentBehavior,
+      broadcast: true
     });
+    //reserveCloseRelatedTabs(toBeClosedTabs);
+    // We should skip needless operation if it is a bulk tab close
+    const window = TabsStore.windows.get(tab.windowId);
+    if (!window.internalClosingTabs.has(tab.$TST.parentId))
+      Tree.detachTab(tab, {
+        dontUpdateIndent: true,
+        broadcast:        true
+      });
   });
 });
 
