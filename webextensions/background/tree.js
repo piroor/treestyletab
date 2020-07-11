@@ -386,7 +386,10 @@ export function detachAllChildren(
   { children, parent, nearestFollowingRootTab, newParent, behavior,
     ...options } = {}
 ) {
-  log('detachAllChildren: ', tab && tab.id, { children, parent, nearestFollowingRootTab, newParent, behavior }, options);
+  log('detachAllChildren: ',
+      tab && tab.id,
+      { children, parent, nearestFollowingRootTab, newParent, behavior },
+      options);
   // the "children" option is used for removing tab.
   children = children ? children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
 
@@ -466,7 +469,8 @@ export function detachAllChildren(
         });
       }
     }
-    else if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
+    else if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
+             parent) {
       attachTabTo(child, parent, {
         ...options,
         dontExpand: true,
