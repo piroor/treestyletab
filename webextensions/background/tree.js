@@ -452,8 +452,8 @@ export function detachAllChildren(
         if (parent) {
           attachTabTo(child, parent, {
             ...options,
-            dontExpan: true,
-            dontMove:  true
+            dontExpand: true,
+            dontMove:   true
           });
         }
         collapseExpandSubtree(child, {
