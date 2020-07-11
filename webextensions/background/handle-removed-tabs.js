@@ -64,14 +64,15 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  const parent      = tab.$TST.parent;
-  const nearestFollowingRootTab = tab.$TST.nearestFollowingRootTab;
-  const children    = tab.$TST.children;
-  const descendants = tab.$TST.descendants;
   const postProcessParams = {
     windowId:     tab.windowId,
     insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
-    closeParentBehavior, parent, newParent, nearestFollowingRootTab, children, descendants
+    parent:       tab.$TST.parent,
+    newParent,
+    children:     tab.$TST.children,
+    descendants:  tab.$TST.descendants,
+    nearestFollowingRootTab: tab.$TST.nearestFollowingRootTab,
+    closeParentBehavior
   };
 
   if (tab.$TST.subtreeCollapsed) {
@@ -81,8 +82,9 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       log('Tabs.onRemoving: granted to close ', dumpTab(tab));
       handleRemovingPostProcess(postProcessParams)
     });
+    // First we always need to detach children from the closing parent.
+    // They will be processed again after confirmation.
     Tree.detachAllChildren(tab, {
-      parent,
       newParent,
       behavior:         Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
       dontUpdateIndent: true,
