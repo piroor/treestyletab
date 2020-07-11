@@ -144,7 +144,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   self.promisedGrantedToCloseTabs = wait(250).then(async () => {
     const closingTabIds = new Set(self.closingTabIds);
     let allClosingTabs = new Set();
-    //allClosingTabs.add(tab);
+    allClosingTabs.add(tab);
     self.closingTabIds = Array.from(closingTabIds);
     self.closingDescendantTabIds = mapAndFilterUniq(self.closingDescendantTabIds, id => {
       if (closingTabIds.has(id))
@@ -161,7 +161,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     );
     if (restorableClosingTabsCount > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
-      return Background.confirmToCloseTabs(allClosingTabs.map(tab => tab.$TST.sanitized), {
+      return Background.confirmToCloseTabs(allClosingTabs.slice(1).map(tab => tab.$TST.sanitized), {
         windowId:   tab.windowId,
         messageKey: 'warnOnCloseTabs_fromOutside_message',
         titleKey:   'warnOnCloseTabs_fromOutside_title'
