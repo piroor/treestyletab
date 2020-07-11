@@ -381,47 +381,50 @@ export async function detachTabsFromTree(tabs, options = {}) {
     await Promise.all(promisedAttach);
 }
 
-export function detachAllChildren(tab, options = {}) {
-  log('detachAllChildren: ', tab.id, options);
+export function detachAllChildren(tab = null, { children, parent, nearestFollowingRootTab, newParent, behavior, ...options } = {}) {
+  log('detachAllChildren: ', tab && tab.id, { children, parent, nearestFollowingRootTab, newParent, behavior }, options);
   // the "children" option is used for removing tab.
-  const children = options.children ? options.children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
+  children = children ? children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
 
-  if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
-      options.newParent &&
-      !children.includes(options.newParent))
-    children.unshift(options.newParent);
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+      newParent &&
+      !children.includes(newParent))
+    children.unshift(newParent);
 
   if (!children.length)
     return;
   log(' => children to be detached: ', () => children.map(dumpTab));
 
-  if (!('behavior' in options))
-    options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
-  if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  if (behavior === undefined)
+    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   options.dontUpdateInsertionPositionInfo = true;
 
   // the "parent" option is used for removing tab.
-  const parent = TabsStore.ensureLivingTab(options.parent) || tab.$TST.parent;
-  if (tab.$TST.isGroupTab &&
+  parent = TabsStore.ensureLivingTab(parent) || (tab && tab.$TST.parent);
+  if (tab &&
+      tab.$TST.isGroupTab &&
       Tab.getRemovingTabs(tab.windowId).length == children.length) {
-    options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     options.dontUpdateIndent = false;
   }
 
   let nextTab = null;
-  if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
+  if (tab &&
+      behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
     nextTab = tab.$TST.nearestFollowingRootTab;
   }
 
-  if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
     // open new group tab and replace the detaching tab with it.
-    options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
 
-  if (options.behavior != Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
+  if (tab &&
+      behavior != Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
     collapseExpandSubtree(tab, {
       ...options,
       collapsed: false
@@ -431,11 +434,11 @@ export function detachAllChildren(tab, options = {}) {
   for (const child of children) {
     if (!child)
       continue;
-    if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
+    if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
       detachTab(child, options);
       moveTabSubtreeBefore(child, nextTab, options);
     }
-    else if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
+    else if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
       detachTab(child, options);
       if (count == 0) {
         if (parent) {
@@ -459,14 +462,14 @@ export function detachAllChildren(tab, options = {}) {
         });
       }
     }
-    else if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
+    else if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
       attachTabTo(child, parent, {
         ...options,
         dontExpand: true,
         dontMove:   true
       });
     }
-    else { // options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    else { // behavior == Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
       detachTab(child, options);
     }
     count++;
@@ -474,12 +477,12 @@ export function detachAllChildren(tab, options = {}) {
 }
 
 // returns moved (or not)
-export async function behaveAutoAttachedTab(tab, options = {}) {
+export async function behaveAutoAttachedTab(tab, { baseTab, behavior, broadcast, dontMove } = {}) {
   if (!configs.autoAttach)
     return false;
 
-  const baseTab = options.baseTab || Tab.getActiveTab(TabsStore.getCurrentWindowId() || tab.windowId);
-  log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
+  baseTab = baseTab || Tab.getActiveTab(TabsStore.getCurrentWindowId() || tab.windowId);
+  log('behaveAutoAttachedTab ', tab.id, baseTab.id, { baseTab, behavior });
 
   if (baseTab &&
       baseTab.$TST.ancestors.includes(tab)) {
@@ -490,17 +493,17 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
   if (baseTab.pinned) {
     if (!tab.pinned)
       return false;
-    options.behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
+    behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
     log(' => override behavior for pinned tabs');
   }
-  switch (options.behavior) {
+  switch (behavior) {
     default:
       return false;
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       log(' => kNEWTAB_OPEN_AS_ORPHAN');
       detachTab(tab, {
-        broadcast: options.broadcast
+        broadcast
       });
       if (tab.$TST.nextTab)
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
@@ -511,10 +514,10 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
     case Constants.kNEWTAB_OPEN_AS_CHILD:
       log(' => kNEWTAB_OPEN_AS_CHILD');
       return attachTabTo(tab, baseTab, {
-        dontMove:    options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
+        dontMove:    dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
         forceExpand: true,
         delayedMove: true,
-        broadcast:   options.broadcast
+        broadcast
       });
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
@@ -523,13 +526,13 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       if (parent) {
         await attachTabTo(tab, parent, {
           delayedMove: true,
-          broadcast: options.broadcast
+          broadcast
         });
         return true;
       }
       else {
         detachTab(tab, {
-          broadcast: options.broadcast
+          broadcast
         });
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true
@@ -549,22 +552,22 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           insertBefore: nextSibling,
           insertAfter:  baseTab.$TST.lastDescendant || baseTab,
           delayedMove:  true,
-          broadcast:    options.broadcast
+          broadcast
         });
       }
       else {
         detachTab(tab, {
-          broadcast: options.broadcast
+          broadcast
         });
         if (nextSibling)
           return TabsMove.moveTabBefore(tab, nextSibling, {
             delayedMove: true,
-            broadcast: options.broadcast
+            broadcast
           });
         else
           return TabsMove.moveTabAfter(tab, baseTab.$TST.lastDescendant, {
             delayedMove: true,
-            broadcast: options.broadcast
+            broadcast
           });
       }
     };
