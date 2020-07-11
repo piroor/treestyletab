@@ -381,7 +381,11 @@ export async function detachTabsFromTree(tabs, options = {}) {
     await Promise.all(promisedAttach);
 }
 
-export function detachAllChildren(tab = null, { children, parent, nearestFollowingRootTab, newParent, behavior, ...options } = {}) {
+export function detachAllChildren(
+  tab = null,
+  { children, parent, nearestFollowingRootTab, newParent, behavior,
+    ...options } = {}
+) {
   log('detachAllChildren: ', tab && tab.id, { children, parent, nearestFollowingRootTab, newParent, behavior }, options);
   // the "children" option is used for removing tab.
   children = children ? children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
@@ -477,7 +481,10 @@ export function detachAllChildren(tab = null, { children, parent, nearestFollowi
 }
 
 // returns moved (or not)
-export async function behaveAutoAttachedTab(tab, { baseTab, behavior, broadcast, dontMove } = {}) {
+export async function behaveAutoAttachedTab(
+  tab,
+  { baseTab, behavior, broadcast, dontMove } = {}
+) {
   if (!configs.autoAttach)
     return false;
 
