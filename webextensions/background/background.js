@@ -449,7 +449,7 @@ async function updateSubtreeCollapsed(tab) {
     tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
 }
 
-export async function confirmToCloseTabs(tabs, options = {}) {
+export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey } = {}) {
   const grantedIds = new Set(configs.grantedRemovingTabIds);
   let count = 0;
   const tabIds = [];
@@ -461,8 +461,8 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     }
     return false;
   });
-  log('confirmToCloseTabs ', { tabIds, count, options });
-  const shouldConfirm = configs[options.configKey || 'warnOnCloseTabs'];
+  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey });
+  const shouldConfirm = configs[configKey || 'warnOnCloseTabs'];
   if (count <= 1 ||
       !shouldConfirm ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500) {
@@ -470,17 +470,16 @@ export async function confirmToCloseTabs(tabs, options = {}) {
     return true;
   }
 
-  let windowId = options.windowId;
   if (!windowId) {
     const activeTabs = await browser.tabs.query({
       active:   true,
-      windowId: options.windowId
+      windowId
     }).catch(ApiTabs.createErrorHandler());
     windowId = activeTabs[0].windowId;
   }
 
   const dialogParams = {
-    message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
+    message: browser.i18n.getMessage(messageKey || 'warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
       browser.i18n.getMessage('warnOnCloseTabs_cancel')
@@ -507,7 +506,7 @@ export async function confirmToCloseTabs(tabs, options = {}) {
         modal: true,
         type:  'common-dialog',
         url:   '/resources/blank.html', // required on Firefox ESR68
-        title: browser.i18n.getMessage('warnOnCloseTabs_title')
+        title: browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title')
       });
     }
   }

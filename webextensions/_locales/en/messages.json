@@ -122,6 +122,12 @@
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
+  "warnOnCloseTabs_fromOutside_title":     { "message": "Close with descendant tabs?" },
+  "warnOnCloseTabs_fromOutside_message":   { "message": "The closed tab had $NUMBER$ descendant tabs. Are you sure you want to close them also?\n(*Canceling will restore the closed parent tab.)",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+
   "warnOnCloseTabs_notification_message": { "message": "If not, click here to cancel the operation.\nOtherwise rest tabs are closed at $TIMEOUT$ seconds later.",
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }

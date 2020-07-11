@@ -122,6 +122,12 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "warnOnCloseTabs_fromOutside_title":     { "message": "配下のタブを閉じますか？" },
+  "warnOnCloseTabs_fromOutside_message":   { "message": "今閉じたタブの配下には $NUMBER$ 個のタブがあります。それらもすべて閉じてよろしいですか？\n（※キャンセルすると今閉じた親タブを復元します）",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+
   "warnOnCloseTabs_notification_message": { "message": "操作を取り消す場合はこの通知をクリックしてください。\n続行して問題がなければ、$TIMEOUT$ 秒後に残りのタブも閉じられます。",
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
