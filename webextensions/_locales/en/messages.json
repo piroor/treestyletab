@@ -496,6 +496,8 @@
   "config_userStyleRules_description_after": { "message": " also." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Following custom properties are also available via \"var()\", based on the current browser theme:" },
+  "config_userStyleRules_import": { "message": "Load from File" },
+  "config_userStyleRules_export": { "message": "Save as File" },
 
 
   "config_addons_caption": { "message": "Extra Features via Other Addons" },

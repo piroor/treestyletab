@@ -492,6 +492,8 @@
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "現在のブラウザのテーマに基づいて、「var()」で以下のカスタムプロパティも使用できます：" },
+  "config_userStyleRules_import": { "message": "ファイルから読み込み" },
+  "config_userStyleRules_export": { "message": "ファイルに保存" },
 
 
   "config_addons_caption": { "message": "他のアドオンによる機能追加" },

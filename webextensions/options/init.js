@@ -173,6 +173,46 @@ async function showLogs() {
   });
 }
 
+function initUserStyleImportExportButtons() {
+  const exportButton = document.getElementById('userStyleRules-export');
+  exportButton.addEventListener('keydown', event => {
+    if (event.key == 'Enter' || event.key == ' ')
+      exportUserStyleToFile();
+  });
+  exportButton.addEventListener('click', event => {
+    if (event.button == 0)
+      exportUserStyleToFile();
+  });
+  const importButton = document.getElementById('userStyleRules-import');
+  importButton.addEventListener('keydown', event => {
+    if (event.key == 'Enter' || event.key == ' ')
+      importUserStyleFromFile();
+  });
+  importButton.addEventListener('click', event => {
+    if (event.button == 0)
+      importUserStyleFromFile();
+  });
+  const fileField = document.getElementById('userStyleRules-import-file');
+  fileField.addEventListener('change', _event => {
+    const reader = new FileReader();
+    reader.onload = event => {
+      document.getElementById('userStyleRules').value = event.target.result;
+    };
+    reader.readAsText(fileField.files.item(0), 'utf-8');
+  });
+}
+
+function importUserStyleFromFile() {
+  document.getElementById('userStyleRules-import-file').click();
+}
+
+function exportUserStyleToFile() {
+  const styleRules = document.getElementById('userStyleRules').value;
+  const link = document.getElementById('userStyleRules-export-file');
+  link.href = URL.createObjectURL(new Blob([styleRules], { type: 'text/css' }));
+  link.click();
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
   if (typeof browser.tabs.moveInSuccession == 'function')
@@ -365,6 +405,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       container.dataset.value = select.dataset.value = select.value;
     });
   }
+
+  initUserStyleImportExportButtons();
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS
