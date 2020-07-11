@@ -7,6 +7,7 @@
 
 import Options from '/extlib/Options.js';
 import '/extlib/l10n.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
   log,
@@ -195,8 +196,40 @@ function initUserStyleImportExportButtons() {
   const fileField = document.getElementById('userStyleRules-import-file');
   fileField.addEventListener('change', _event => {
     const reader = new FileReader();
-    reader.onload = event => {
-      document.getElementById('userStyleRules').value = event.target.result;
+    reader.onload = async event => {
+      const style = event.target.result;
+      const field = document.getElementById('userStyleRules');
+      if (field.value.trim() == '') {
+        field.value = style;
+        return;
+      }
+      let result;
+      try {
+        result = await RichConfirm.showInPopup({
+          modal:   true,
+          type:    'common-dialog',
+          url:     '/resources/blank.html', // required on Firefox ESR68
+          title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
+          message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
+          buttons: [
+            browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
+            browser.i18n.getMessage('config_userStyleRules_overwrite_append')
+          ]
+        });
+      }
+      catch(e) {
+        result = { buttonIndex: -1 };
+      }
+      switch (result.buttonIndex) {
+        case 0:
+          field.value = style;
+          break;
+        case 1:
+          field.value = `${field.value}\n${style}`;
+          break;
+        default:
+          break;
+      }
     };
     reader.readAsText(fileField.files.item(0), 'utf-8');
   });
