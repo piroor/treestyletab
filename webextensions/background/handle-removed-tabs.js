@@ -152,9 +152,11 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     });
     allClosingTabs = Array.from(allClosingTabs);
     shouldRestoreCount = self.closingTabIds.length;
-    const restorableClosingTabsCount = countMatched(allClosingTabs,
-                                                    tab => tab.url != 'about:blank' &&
-                                                           tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl);
+    const restorableClosingTabsCount = countMatched(
+      allClosingTabs,
+      tab => tab.url != 'about:blank' &&
+             tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl
+    );
     if (restorableClosingTabsCount > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
       return Background.confirmToCloseTabs(allClosingTabs.map(tab => tab.$TST.sanitized), {
