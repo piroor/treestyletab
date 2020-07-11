@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Show confirmation for multiple tabs closing after a tab is completely closed from outside of TST instead of showing before the tab disappears, for better response on tab closing.
+   * Ignore click on the blank area if it is performed immediately after a click on a tab and at the same coordinates.
+   * Add ability to import/export user styles.
  - 3.5.10 (2020.7.11)
    * Show fonts with normal weight on Windows 7 Classic theme.
    * Define default keyboard shortcuts statically with the `manifest.json`. It should reduce unexpected disappearing of default shortcuts. You can unbind default shortcuts on Firefox 74 and later, but it is impossible on older versions.
