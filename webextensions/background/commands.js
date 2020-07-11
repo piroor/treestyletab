@@ -723,24 +723,28 @@ export async function openTabsInWindow(tabs) {
 
 
 export async function restoreTabs(count) {
-  const toBeRestoredTabs = (await browser.sessions.getRecentlyClosed({
+  const toBeRestoredTabSessions = (await browser.sessions.getRecentlyClosed({
     maxResults: browser.sessions.MAX_SESSION_RESULTS
   }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab).slice(0, count);
+  log('restoreTabs: toBeRestoredTabSessions = ', toBeRestoredTabSessions);
   const promisedRestoredTabs = [];
-  for (const tab of toBeRestoredTabs.reverse()) {
-    log('restoreTabs: Tabrestoring session = ', tab);
+  for (const session of toBeRestoredTabSessions.reverse()) {
+    log('restoreTabs: Tabrestoring session = ', session);
     promisedRestoredTabs.push(Tab.doAndGetNewTabs(async () => {
-      browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
+      browser.sessions.restore(session.tab.sessionId).catch(ApiTabs.createErrorSuppressor());
       await Tab.waitUntilTrackedAll();
     }));
   }
   const restoredTabs = Array.from(new Set((await Promise.all(promisedRestoredTabs)).flat()));
+  log('restoreTabs: restoredTabs = ', restoredTabs);
   await Promise.all(restoredTabs.map(tab => tab && Tab.get(tab.id).$TST.opened));
 
+  if (restoredTabs.length > 0) {
   // Parallelly restored tabs can have ghost "active" state, so we need to clear them
   const activeTab = Tab.getActiveTab(restoredTabs[0].windowId);
   if (restoredTabs.some(tab => tab.id == activeTab.id))
     await TabsInternalOperation.setTabActive(activeTab);
+  }
 
   return Tab.sort(restoredTabs);
 }
