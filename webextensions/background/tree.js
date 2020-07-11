@@ -383,12 +383,12 @@ export async function detachTabsFromTree(tabs, options = {}) {
 
 export function detachAllChildren(
   tab = null,
-  { children, parent, nearestFollowingRootTab, newParent, behavior,
+  { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand,
     ...options } = {}
 ) {
   log('detachAllChildren: ',
       tab && tab.id,
-      { children, parent, nearestFollowingRootTab, newParent, behavior },
+      { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand },
       options);
   // the "children" option is used for removing tab.
   children = children ? children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
@@ -430,7 +430,8 @@ export function detachAllChildren(
     behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
 
-  if (tab &&
+  if (!dontExpand &&
+      tab &&
       behavior != Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
     collapseExpandSubtree(tab, {
       ...options,

@@ -87,6 +87,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     Tree.detachAllChildren(tab, {
       newParent,
       behavior:         Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+      dontExpand:       true,
       dontUpdateIndent: true,
       broadcast:        true
     });
