@@ -33,7 +33,7 @@ function log(...args) {
 }
 
 
-Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
+Tab.onRemoving.addListener((tab, removeInfo = {}) => {
   log('Tabs.onRemoving ', dumpTab(tab), removeInfo);
   if (removeInfo.isWindowClosing)
     return;
@@ -64,7 +64,8 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
+  tryGrantCloseTab(tab, closeParentBehavior).then(async granted => {
+    if (!granted)
     return;
   log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
@@ -115,6 +116,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       dontUpdateIndent: true,
       broadcast:        true
     });
+  });
 });
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {
