@@ -563,6 +563,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
+      // We don't use BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage for this type message because update type messages need to be merged more intelligently.
       const hasPendingUpdate = mPendingUpdates.has(message.tabId);
 
       // Updates may be notified before the tab element is actually created,
@@ -591,6 +592,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
+      // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
       maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab     = Tab.get(message.tabId);
@@ -634,6 +636,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
+      // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
       maybeNewTabIsMoved(message.tabId);
       await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
       const tab         = Tab.get(message.tabId);
