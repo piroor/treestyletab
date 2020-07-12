@@ -195,14 +195,19 @@ export function setCollapsed(tab, info = {}) {
   });
 }
 
+const BUFFER_KEY_PREFIX = 'collapse-expand-';
+
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}message.tabId}`);
       if (!tab)
         return;
-      if (message.collapsed)
+      if (lastMessage.collapsed)
         tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
@@ -210,15 +215,18 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab)
         return;
       setCollapsed(tab, {
-        collapsed: message.collapsed,
-        justNow:   message.justNow,
-        anchor:    Tab.get(message.anchorId),
-        last:      message.last
+        collapsed: lastMessage.collapsed,
+        justNow:   lastMessage.justNow,
+        anchor:    Tab.get(lastMessage.anchorId),
+        last:      lastMessage.last
       });
     }; break;
   }

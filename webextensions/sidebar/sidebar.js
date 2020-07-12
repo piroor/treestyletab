@@ -841,6 +841,7 @@ function onMessage(message, _sender, _respond) {
   }
 }
 
+const BUFFER_KEY_PREFIX = 'sidebar-';
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -875,15 +876,26 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
-      if (message.tabId)
+      if (message.tabId) {
+        if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+          return;
         await Tab.waitUntilTracked(message.tabId, { element: true });
+        const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+        if (lastMessage.message.type != message.type)
+          return;
+      }
       reserveToUpdateTabbarLayout({
         reason: Constants.kTABBAR_UPDATE_REASON_TAB_OPEN
       });
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (lastMessage.message.type != message.type)
+        return;
       reserveToUpdateTabbarLayout({
         reason: Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE
       });

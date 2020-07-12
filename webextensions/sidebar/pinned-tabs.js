@@ -138,6 +138,8 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
+const BUFFER_KEY_PREFIX = 'pinned-tabs-';
+
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
@@ -159,6 +161,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
+      BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`);
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
       reserveToReposition();
@@ -170,9 +173,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('show/hide', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          lastMessage.message.type != message.type)
         return;
       clearStyle(tab);
       reserveToReposition();

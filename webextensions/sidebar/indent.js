@@ -203,6 +203,8 @@ CollapseExpand.onUpdated.addListener((_tab, _options) => {
     reserveToUpdateVisualMaxTreeLevel();
 });
 
+const BUFFER_KEY_PREFIX = 'indent-';
+
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
@@ -219,16 +221,19 @@ BackgroundConnection.onMessage.addListener(async message => {
       reserveToUpdateVisualMaxTreeLevel();
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED:
+    case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      log('listen: ', message.type, tab);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      log('listen: ', message.type, tab, lastMessage);
       if (!tab)
         return;
-      if (tab.$TST.getAttribute(Constants.kLEVEL) != message.level)
-        tab.$TST.setAttribute(Constants.kLEVEL, message.level);
+      if (tab.$TST.getAttribute(Constants.kLEVEL) != lastMessage.level)
+        tab.$TST.setAttribute(Constants.kLEVEL, lastMessage.level);
       reserveToUpdateIndent();
-      break;
+    }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
       if (!canApplyAnimation())

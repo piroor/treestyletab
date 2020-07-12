@@ -444,7 +444,7 @@ async function activateRealActiveTab(windowId) {
   TabsInternalOperation.setTabActive(tab);
 }
 
-const mLastProcessedTarget = {};
+const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -549,16 +549,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
-      mLastProcessedTarget[message.type] = message.tabId;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      // When a new active tab (A) is opened and another tab (B) is
-      // activated immediately, the "activated" notification for A
-      // is processed after B. So we should ignore such cases.
-      if (mLastProcessedTarget[message.type] != message.tabId)
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`))
         return;
-      const tab = Tab.get(message.tabId);
+      await Tab.waitUntilTracked(message.tabId, { element: true });
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+      const tab = Tab.get(lastMessage.tabId);
       if (tab) {
-        TabsStore.activeTabInWindow.set(message.windowId, tab);
+        TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
         TabsInternalOperation.setTabActive(tab);
       }
     }; break;
@@ -658,17 +655,20 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_UPDATE_LOADING_STATE: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (tab) {
-        if (message.status == 'loading') {
+        if (lastMessage.status == 'loading') {
           tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
           TabsStore.addLoadingTab(tab);
           tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
           TabsStore.addUnsynchronizedTab(tab);
         }
         else {
-          if (message.reallyChanged) {
+          if (lastMessage.reallyChanged) {
             tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
             if (tab.$TST.delayedBurstEnd)
               clearTimeout(tab.$TST.delayedBurstEnd);
@@ -729,32 +729,41 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab)
         return;
-      tab.$TST.label = tab.$TST.element.label = message.label;
+      tab.$TST.label = tab.$TST.element.label = lastMessage.label;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab)
         return;
-      tab.favIconUrl = message.favIconUrl;
-      tab.$TST.favIconUrl = message.favIconUrl;
+      tab.favIconUrl = lastMessage.favIconUrl;
+      tab.$TST.favIconUrl = lastMessage.favIconUrl;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab)
         return;
-      if (message.hasSoundPlayingMember)
+      if (lastMessage.hasSoundPlayingMember)
         tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      if (message.hasMutedMember)
+      if (lastMessage.hasMutedMember)
         tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
       else
         tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
@@ -762,13 +771,10 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
-      const ids = message.tabIds.join(',');
-      mLastProcessedTarget[message.type] = ids;
+      BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       await Tab.waitUntilTracked(message.tabIds, { element: true });
-      // When new active tabs (A) are opened and other tabs (B) are
-      // highlighted immediately, the "activated" notification for A
-      // is processed after B. So we should ignore such cases.
-      if (mLastProcessedTarget[message.type] != ids)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+      if (lastMessage.tabIds.join(',') != message.tabIds.join(','))
         return;
       TabsUpdate.updateTabsHighlighted(message);
       const window = TabsStore.windows.get(message.windowId);
@@ -778,9 +784,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          lastMessage.message.type != message.type)
         return;
       tab.pinned = true;
       TabsStore.removeUnpinnedTab(tab);
@@ -788,9 +798,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          lastMessage.message.type != message.type)
         return;
       tab.pinned = false;
       TabsStore.removePinnedTab(tab);
@@ -798,9 +812,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          lastMessage.message.type != message.type)
         return;
       tab.hidden = true;
       TabsStore.removeVisibleTab(tab);
@@ -808,9 +826,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
+      if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          lastMessage.message.type != message.type)
         return;
       tab.hidden = false;
       if (!tab.$TST.collapsed)
@@ -819,19 +841,24 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+        return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
+      BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab)
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
-      if (message.collapsed)
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`) ||
+          message.collapsed)
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab || lastMessage.collapsed)
         return;
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
