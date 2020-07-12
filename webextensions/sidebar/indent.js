@@ -228,7 +228,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       log('listen: ', message.type, tab, lastMessage);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       if (tab.$TST.getAttribute(Constants.kLEVEL) != lastMessage.level)
         tab.$TST.setAttribute(Constants.kLEVEL, lastMessage.level);

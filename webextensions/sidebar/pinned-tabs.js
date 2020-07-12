@@ -179,6 +179,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('show/hide', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
+          !lastMessage ||
           lastMessage.message.type != message.type)
         return;
       clearStyle(tab);

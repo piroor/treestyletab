@@ -205,7 +205,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}message.tabId}`);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       if (lastMessage.collapsed)
         tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
@@ -220,7 +221,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       setCollapsed(tab, {
         collapsed: lastMessage.collapsed,

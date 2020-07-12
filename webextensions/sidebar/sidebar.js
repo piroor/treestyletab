@@ -881,7 +881,8 @@ BackgroundConnection.onMessage.addListener(async message => {
           return;
         await Tab.waitUntilTracked(message.tabId, { element: true });
         const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
-        if (lastMessage.message.type != message.type)
+        if (!lastMessage ||
+            lastMessage.message.type != message.type)
           return;
       }
       reserveToUpdateTabbarLayout({
@@ -894,7 +895,8 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (lastMessage.message.type != message.type)
+      if (!lastMessage ||
+          lastMessage.message.type != message.type)
         return;
       reserveToUpdateTabbarLayout({
         reason: Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE

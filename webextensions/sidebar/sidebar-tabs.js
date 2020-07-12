@@ -553,11 +553,13 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+      if (!lastMessage)
+        return;
       const tab = Tab.get(lastMessage.tabId);
-      if (tab) {
-        TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
-        TabsInternalOperation.setTabActive(tab);
-      }
+      if (!tab)
+        return;
+      TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
+      TabsInternalOperation.setTabActive(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
@@ -660,7 +662,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (tab) {
+      if (tab &&
+          lastMessage) {
         if (lastMessage.status == 'loading') {
           tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
           TabsStore.addLoadingTab(tab);
@@ -734,7 +737,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       tab.$TST.label = tab.$TST.element.label = lastMessage.label;
     }; break;
@@ -745,7 +749,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       tab.favIconUrl = lastMessage.favIconUrl;
       tab.$TST.favIconUrl = lastMessage.favIconUrl;
@@ -757,7 +762,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab)
+      if (!tab ||
+          !lastMessage)
         return;
       if (lastMessage.hasSoundPlayingMember)
         tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
@@ -774,7 +780,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       await Tab.waitUntilTracked(message.tabIds, { element: true });
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
-      if (lastMessage.tabIds.join(',') != message.tabIds.join(','))
+      if (!lastMessage ||
+          lastMessage.tabIds.join(',') != message.tabIds.join(','))
         return;
       TabsUpdate.updateTabsHighlighted(message);
       const window = TabsStore.windows.get(message.windowId);
@@ -790,6 +797,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
+          !lastMessage ||
           lastMessage.message.type != message.type)
         return;
       tab.pinned = true;
@@ -804,6 +812,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
+          !lastMessage ||
           lastMessage.message.type != message.type)
         return;
       tab.pinned = false;
@@ -818,6 +827,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
+          !lastMessage ||
           lastMessage.message.type != message.type)
         return;
       tab.hidden = true;
@@ -832,6 +842,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
+          !lastMessage ||
           lastMessage.message.type != message.type)
         return;
       tab.hidden = false;
@@ -845,8 +856,9 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab)
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
+      if (!tab ||
+          !lastMessage)
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     }; break;
@@ -858,7 +870,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab || lastMessage.collapsed)
+      if (!tab ||
+          !lastMessage ||
+          lastMessage.collapsed)
         return;
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
