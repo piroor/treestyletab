@@ -36,6 +36,7 @@ import {
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
 import * as SidebarConnection from './sidebar-connection.js';
+import * as ContextualIdentities from './contextual-identities.js';
 
 import Tab from './Tab.js';
 
@@ -264,6 +265,14 @@ export function updateTab(tab, newState = {}, options = {}) {
       const state = `contextual-identity-${newState.cookieStoreId}`;
       tab.$TST.addState(state);
       addedStates.push(state);
+      const identity = ContextualIdentities.get(newState.cookieStoreId);
+      if (identity)
+        tab.$TST.setAttribute(Constants.kCONTEXTUAL_IDENTITY_NAME, identity.name);
+      else
+        tab.$TST.removeAttribute(Constants.kCONTEXTUAL_IDENTITY_NAME);
+    }
+    else {
+      tab.$TST.removeAttribute(Constants.kCONTEXTUAL_IDENTITY_NAME);
     }
   }
 
