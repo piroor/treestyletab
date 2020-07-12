@@ -108,20 +108,19 @@ async function onConnectionMessage(message) {
 // Mechanism to apply only most recently notified message.
 // See also: https://github.com/piroor/treestyletab/issues/2568#issuecomment-657188062
 
-const mLastMessagesForType = new Map();
+const mBufferedMessages = new Map();
 
 export function handleBufferedMessage(message, key) {
-  const messages = mLastMessagesForType.get(message.type) || new Map();
-  const hasLastMessage = messages.has(key);
-  messages.set(key, message);
-  mLastMessagesForType.set(message.type, messages);
+  const bufferKey = `${message.type}:${key}`;
+  const hasLastMessage = mBufferedMessages.has(bufferKey);
+  mBufferedMessages.set(bufferKey, message);
   return hasLastMessage;
 }
 
 export function fetchBufferedMessage(type, key) {
-  const messages = mLastMessagesForType.get(type) || new Map();
-  const message = messages.get(key);
-  messages.delete(key);
+  const bufferKey = `${type}:${key}`;
+  const message = mBufferedMessages.get(bufferKey);
+  mBufferedMessages.delete(bufferKey);
   return message;
 }
 
