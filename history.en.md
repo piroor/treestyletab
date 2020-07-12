@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.12 (2020.7.12)
    * Stabilize handling of asynchronously notified messages from the background page to the sidebar page. As the result, wrong indentation and collapsed/expanded state should disappear especially around session restoration.
    * CSS selectors for container tabs like `tab-item[data-contextual-identity-name="Personal"]` is now available for user styles.
  - 3.5.11 (2020.7.12)
