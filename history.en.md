@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Stabilize handling of asynchronously notified messages from the background page to the sidebar page. As the result, wrong indentation and collapsed/expanded state should disappear especially around session restoration.
+   * CSS selectors for container tabs like `tab-item[data-contextual-identity-name="Personal"]` is now available for user styles.
  - 3.5.11 (2020.7.12)
    * Show confirmation for multiple tabs closing after a tab is completely closed from outside of TST instead of showing before the tab disappears, for better response on tab closing.
    * Ignore click on the blank area if it is performed immediately after a click on a tab and at the same coordinates.
