@@ -782,7 +782,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
       BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       await Tab.waitUntilTracked(message.tabIds, { element: true });
-      const lastMessage = BackgroundConnection.fetchBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+      const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       if (!lastMessage ||
           lastMessage.tabIds.join(',') != message.tabIds.join(','))
         return;
