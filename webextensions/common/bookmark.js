@@ -101,26 +101,28 @@ export async function bookmarkTab(tab, options = {}) {
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const fieldMinWidth = inSidebar ? '' : 'min-width: 30em';
     const dialogParams = {
+      /* eslint-disable indent */
       content: `
         <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
-                    ${inSidebar ? '<br>' : ''}
-                    <input type="text"
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))
+                   }${inSidebar ? '<br>' : ''
+                   }<input type="text"
                            name="title"
                            style="${fieldMinWidth}"
-                           value=${JSON.stringify(title)}></label></div>
-        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}
-                    ${inSidebar ? '<br>' : ''}
-                    <input type="text"
+                           value=${JSON.stringify(title)}></label></div
+       ><div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))
+                   }${inSidebar ? '<br>' : ''
+                   }<input type="text"
                            name="url"
                            style="${fieldMinWidth}"
-                           value=${JSON.stringify(url)}></label></div>
-        <div style="margin-bottom: 3em"
-            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
-                    ${inSidebar ? '<br>' : ''}
-                    <button name="parentId">-</button></label></div>
-      `,
+                           value=${JSON.stringify(url)}></label></div
+       ><div style="margin-bottom: 3em"
+            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))
+                   }${inSidebar ? '<br>' : ''
+                   }<button name="parentId">-</button></label></div>
+      `.trim(),
+      /* eslint-enable indent */
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
           return;
@@ -231,19 +233,21 @@ export async function bookmarkTabs(tabs, options = {}) {
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const fieldMinWidth = inSidebar ? '' : 'min-width: 30em';
     const dialogParams = {
+      /* eslint-disable indent */
       content: `
         <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}
-                    ${inSidebar ? '<br>' : ''}
-                    <input type="text"
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))
+                   }${inSidebar ? '<br>' : ''
+                   }<input type="text"
                            name="title"
                            style="${fieldMinWidth}"
-                           value=${JSON.stringify(folderParams.title)}></label></div>
-        <div style="margin-bottom: 3em"
-            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}
-                    ${inSidebar ? '<br>' : ''}
-                    <button name="parentId">-</button></label></div>
-      `,
+                           value=${JSON.stringify(folderParams.title)}></label></div
+       ><div style="margin-bottom: 3em"
+            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))
+                   }${inSidebar ? '<br>' : ''
+                   }<button name="parentId">-</button></label></div>
+      `.trim(),
+      /* eslint-enable indent */
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
           return;
