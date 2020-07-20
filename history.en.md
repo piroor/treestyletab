@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.5.13 (2020.7.21)
+   * List tabs to be closed/grouped in the confirmation dialog to represent which tabs are going to be operated.
+   * Update tabs' activated, pinned/unpinned, hidden/shown, and collapsed/expanded states correctly. (regression on 3.5.12)
+   * Highlight multiselected tabs on "Metal" and "Sidebar" theme correctly. (regression on 3.5.12)
+   * Restore tree structure for "Undo Close Tabs" operation more correctly.
  - 3.5.12 (2020.7.12)
    * Stabilize handling of asynchronously notified messages from the background page to the sidebar page. As the result, wrong indentation and collapsed/expanded state should disappear especially around session restoration.
    * CSS selectors for container tabs like `tab-item[data-contextual-identity-name="Personal"]` is now available for user styles.
