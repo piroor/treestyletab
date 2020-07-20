@@ -532,6 +532,24 @@ async function tryRestoreClosedSetFor(tab) {
     restoredTabs = [...beforeTabs, tab, ...afterTabs];
     await TabsInternalOperation.activateTab(restoredTabs[0]);
   }
+
+  const rootTabs = restoredTabs.filter((tab, index) => lastRecentlyClosedTabsTreeStructure[index].parent == TreeBehavior.STRUCTURE_KEEP_PARENT || lastRecentlyClosedTabsTreeStructure[index].parent == TreeBehavior.STRUCTURE_NO_PARENT);
+  for (const rootTab of rootTabs) {
+    const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(rootTab, {
+      context:      Constants.kINSERTION_CONTEXT_MOVED,
+      insertAfter:  rootTab.$TST.previousTab,
+      insertBefore: restoredTabs[restoredTabs.length - 1].$TST.nextTab
+    });
+    log(`tryRestoreClosedSetFor: referenceTabs for ${rootTab.id} => `, referenceTabs);
+    if (referenceTabs.parent)
+      await Tree.attachTabTo(rootTab, referenceTabs.parent, {
+        dontExpand:  true,
+        insertAfter: referenceTabs.insertAfter,
+        dontMove:    true,
+        broadcast:   true
+      });
+  }
+
   await Tree.applyTreeStructureToTabs(
     restoredTabs,
     lastRecentlyClosedTabsTreeStructure
