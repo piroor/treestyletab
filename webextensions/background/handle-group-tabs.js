@@ -28,6 +28,7 @@ import Tab from '/common/Tab.js';
 import * as TabsGroup from './tabs-group.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as Background from './background.js';
 
 function log(...args) {
   internalLogger('background/handle-group-tabs', ...args);
@@ -469,7 +470,7 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
   const windowId = tabs[0].windowId;
 
   const listing = configs.warnOnAutoGroupNewTabsWithListing ?
-    TreeBehavior.tabsToHTMLList(tabs, { maxRows: configs.warnOnAutoGroupNewTabsWithListingMaxRows }) :
+    Background.tabsToHTMLList(tabs, { maxRows: configs.warnOnAutoGroupNewTabsWithListingMaxRows }) :
     '';
   const dialogParams = {
     content: `

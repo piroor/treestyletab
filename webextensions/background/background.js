@@ -24,7 +24,6 @@ import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
-import * as TreeBehavior from '/common/tree-behavior.js';
 import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 
 import Tab from '/common/Tab.js';
@@ -481,7 +480,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   }
 
   const listing = configs.warnOnCloseTabsWithListing ?
-    TreeBehavior.tabsToHTMLList(tabs, { maxRows: configs.warnOnCloseTabsWithListingMaxRows }) :
+    tabsToHTMLList(tabs, { maxRows: configs.warnOnCloseTabsWithListingMaxRows }) :
     '';
   const dialogParams = {
     content: `
@@ -548,6 +547,38 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
 Commands.onTabsClosing.addListener((tabIds, options = {}) => {
   return confirmToCloseTabs(tabIds, options);
 });
+
+export function tabsToHTMLList(tabs, { maxRows }) {
+  const rootLevelOffset = tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)).sort()[0];
+  return (
+    `<ul style="border: 1px inset;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                flex-shrink: 1;
+                margin: 0.5em 0;
+                min-height: ${(Math.max(1, maxRows || 0)) + 1}em;
+                max-height: ${(Math.max(1, maxRows || 0)) + 1}em;
+                overflow: auto;
+                padding: 0.5em;">` +
+      tabs.map(tab => `<li style="align-items: center;
+                                  display: flex;
+                                  flex-direction: row;
+                                  padding-left: calc((${tab.$TST.getAttribute(Constants.kLEVEL)} - ${rootLevelOffset}) * 0.25em);"
+                           title="${sanitizeForHTMLText(tab.title)}"
+                          ><img style="display: flex;
+                                       max-height: 1em;
+                                       max-width: 1em;"
+                                alt=""
+                                src="${sanitizeForHTMLText(tab.favIconUrl || browser.extension.getURL('resources/icons/globe-16.svg'))}"
+                               ><span style="display: flex;
+                                             margin-left: 0.25em;
+                                             overflow: hidden;
+                                             white-space: nowrap;"
+                                     >${sanitizeForHTMLText(tab.title)}</span></li>`).join('') +
+      `</ul>`
+  );
+}
 
 function reserveToClearGrantedRemovingTabs() {
   const lastGranted = configs.grantedRemovingTabIds.join(',');
