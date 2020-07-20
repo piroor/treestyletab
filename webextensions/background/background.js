@@ -24,6 +24,7 @@ import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 
 import Tab from '/common/Tab.js';
@@ -454,8 +455,8 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   const grantedIds = new Set(configs.grantedRemovingTabIds);
   let count = 0;
   const tabIds = [];
-  tabs = tabs.filter(tab => {
-    if (!grantedIds.has(tab.id)) {
+  tabs = tabs.map(tab => tab && Tab.get(tab.id)).filter(tab => {
+    if (tab && !grantedIds.has(tab.id)) {
       count++;
       tabIds.push(tab.id);
       return true;
@@ -480,13 +481,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   }
 
   const listing = configs.warnOnCloseTabsWithListing ?
-    `<ol style="border: 1px inset;
-                margin: 0.5em 0;
-                max-height: ${configs.warnOnCloseTabsWithListingMaxRows + 1}em;
-                overflow: auto;
-                padding-bottom: 0.5em;
-                padding-right: 0.5em;
-                padding-top: 0.5em;">` + tabs.map(tab => `<li>${sanitizeForHTMLText(tab.title)}</li>`).join('') + `</ol>` :
+    TreeBehavior.tabsToHTMLList(tabs, { maxRows: configs.warnOnCloseTabsWithListingMaxRows }) :
     '';
   const dialogParams = {
     content: `

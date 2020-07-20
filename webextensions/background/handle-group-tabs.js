@@ -469,13 +469,7 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
   const windowId = tabs[0].windowId;
 
   const listing = configs.warnOnAutoGroupNewTabsWithListing ?
-    `<ol style="border: 1px inset;
-                margin: 0.5em 0;
-                max-height: ${configs.warnOnAutoGroupNewTabsWithListingMaxRows + 1}em;
-                overflow: auto;
-                padding-bottom: 0.5em;
-                padding-right: 0.5em;
-                padding-top: 0.5em;">` + tabs.map(tab => `<li>${sanitizeForHTMLText(tab.title)}</li>`).join('') + `</ol>` :
+    TreeBehavior.tabsToHTMLList(tabs, { maxRows: configs.warnOnAutoGroupNewTabsWithListingMaxRows }) :
     '';
   const dialogParams = {
     content: `

@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  sanitizeForHTMLText
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
@@ -387,4 +388,33 @@ function cleanUpTreeStructureArray(treeStructure, defaultParent) {
     return index < STRUCTURE_NO_PARENT ? defaultParent : index ;
   });
   return treeStructure;
+}
+
+export function tabsToHTMLList(tabs, { maxRows }) {
+  const rootLevelOffset = tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)).sort()[0];
+  return (
+    `<ul style="border: 1px inset;
+                display: flex;
+                flex-direction: column;
+                margin: 0.5em 0;
+                max-height: ${(Math.max(1, maxRows || 0)) + 1}em;
+                overflow: auto;
+                padding: 0.5em;">` +
+      tabs.map(tab => `<li style="align-items: center;
+                                  display: flex;
+                                  flex-direction: row;
+                                  padding-left: calc((${tab.$TST.getAttribute(Constants.kLEVEL)} - ${rootLevelOffset}) * 0.25em);"
+                           title="${sanitizeForHTMLText(tab.title)}"
+                          ><img style="display: flex;
+                                       max-height: 1em;
+                                       max-width: 1em;"
+                                alt=""
+                                src="${sanitizeForHTMLText(tab.favIconUrl || browser.extension.getURL('resources/icons/globe-16.svg'))}"
+                               ><span style="display: flex;
+                                             margin-left: 0.25em;
+                                             overflow: hidden;
+                                             white-space: nowrap;"
+                                     >${sanitizeForHTMLText(tab.title)}</span></li>`).join('') +
+      `</ul>`
+  );
 }
