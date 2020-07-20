@@ -522,6 +522,13 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
+      if (message.active) {
+        BackgroundConnection.handleBufferedMessage({
+          type:  Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
+          tabId: message.tabId,
+          windowId: message.windowId
+        }, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+      }
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
       if (!tab)
@@ -537,6 +544,14 @@ BackgroundConnection.onMessage.addListener(async message => {
             collapsed: false
           });
         reserveToUpdateLoadingState();
+      }
+      if (tab.active) {
+        const lastMessage = BackgroundConnection.fetchBufferedMessage(Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
+        if (!lastMessage)
+          return;
+        const activeTab = Tab.get(lastMessage.tabId);
+        TabsStore.activeTabInWindow.set(activeTab.windowId, activeTab);
+        TabsInternalOperation.setTabActive(activeTab);
       }
     }; break;
 

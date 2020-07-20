@@ -551,6 +551,7 @@ async function onNewTabTracked(tab, info) {
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
       windowId: tab.windowId,
       tabId:    tab.id,
+      active:   tab.active,
       maybeMoved: moved
     });
 
