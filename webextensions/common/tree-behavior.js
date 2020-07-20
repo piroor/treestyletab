@@ -326,8 +326,9 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
 
 
 export const STRUCTURE_NO_PARENT = -1;
+export const STRUCTURE_KEEP_PARENT = -2;
 
-export function getTreeStructureFromTabs(tabs, options = {}) {
+export function getTreeStructureFromTabs(tabs, { full, keepParentOfRootTabs } = {}) {
   if (!tabs || !tabs.length)
     return [];
 
@@ -348,13 +349,16 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
     }),
     STRUCTURE_NO_PARENT
   ).map((parentIndex, index) => {
+    if (parentIndex == STRUCTURE_NO_PARENT &&
+        keepParentOfRootTabs)
+      parentIndex = STRUCTURE_KEEP_PARENT;
     const tab = tabs[index];
     const item = {
       id:        tab.$TST.uniqueId.id,
       parent:    parentIndex,
       collapsed: tab.$TST.subtreeCollapsed
     };
-    if (options.full) {
+    if (full) {
       item.title  = tab.title;
       item.url    = tab.url;
       item.pinned = tab.pinned;

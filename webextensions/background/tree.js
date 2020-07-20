@@ -1315,7 +1315,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
   MetricsData.add('applyTreeStructureToTabs: preparation');
 
-  let parentTab = null;
+  let parent = null;
   let tabsInTree = [];
   const promises   = [];
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
@@ -1328,8 +1328,6 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
         justNow: true
       });
     */
-    detachTab(tab, { justNow: true });
-
     const structureInfo = treeStructure[i];
     let parentIndexInTree = TreeBehavior.STRUCTURE_NO_PARENT;
     if (typeof structureInfo == 'number') { // legacy format
@@ -1339,24 +1337,21 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
       parentIndexInTree = structureInfo.parent;
       expandStates[i]   = !structureInfo.collapsed;
     }
-    if (parentIndexInTree < 0) { // there is no parent, so this is a new parent!
-      parentTab  = tab.id;
+    log(`  applyTreeStructureToTabs: parent for ${tab.id} => ${parentIndexInTree}`);
+    if (parentIndexInTree == TreeBehavior.STRUCTURE_NO_PARENT ||
+        parentIndexInTree == TreeBehavior.STRUCTURE_KEEP_PARENT) {
+      // there is no parent, so this is a new parent!
+      parent = null;
       tabsInTree = [tab];
     }
-
-    let parent = null;
-    if (parentIndexInTree != TreeBehavior.STRUCTURE_NO_PARENT) {
-      parent = Tab.get(parentTab);
-      if (parent) {
-        //log('existing tabs in tree: ', {
-        //  size:   tabsInTree.length,
-        //  parent: parentIndexInTree
-        //});
-        parent = parentIndexInTree < tabsInTree.length ? tabsInTree[parentIndexInTree] : parent ;
-        tabsInTree.push(tab);
-      }
+    else {
+      tabsInTree.push(tab);
+      parent = parentIndexInTree < tabsInTree.length ? tabsInTree[parentIndexInTree] : null;
     }
-    if (parent) {
+    log('   => parent = ', parent);
+    if (parentIndexInTree != TreeBehavior.STRUCTURE_KEEP_PARENT)
+      detachTab(tab, { justNow: true });
+    if (parent && tab != parent) {
       parent.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
       promises.push(attachTabTo(tab, parent, {
         ...options,

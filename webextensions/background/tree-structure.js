@@ -430,15 +430,20 @@ Tab.onMultipleTabsRemoving.addListener(tabs => {
     url:           tab.url,
     cookieStoreId: tab.cookieStoreId
   }));
-  mPendingRecentlyClosedTabsInfo.structure = TreeBehavior.getTreeStructureFromTabs(tabs, { full: true });
+  mPendingRecentlyClosedTabsInfo.structure = TreeBehavior.getTreeStructureFromTabs(tabs, {
+    full:                 true,
+    keepParentOfRootTabs: true
+  });
 });
 
 Tab.onMultipleTabsRemoved.addListener(tabs => {
+  log('multiple tabs are removed');
   const currentlyRestorable = mRecentlyClosedTabs.length > 1;
 
   const tabIds = new Set(tabs.map(tab => tab.id));
   mRecentlyClosedTabs = mPendingRecentlyClosedTabsInfo.tabs.filter(info => tabIds.has(info.originalId));
   mRecentlyClosedTabsTreeStructure = mPendingRecentlyClosedTabsInfo.structure.filter(structure => tabIds.has(structure.originalId));
+  log('  structure: ', mRecentlyClosedTabsTreeStructure);
 
   const newlyRestorable = mRecentlyClosedTabs.length > 1;
   if (currentlyRestorable != newlyRestorable)
@@ -456,13 +461,22 @@ async function tryRestoreClosedSetFor(tab) {
   if (lastRecentlyClosedTabs.length > 1)
     Tab.onChangeMultipleTabsRestorability.dispatch(false);
 
-  const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
-  log('tryRestoreClosedSetFor ', tab, mRecentlyClosedTabs, mRecentlyClosedTabsTreeStructure);
-  if (alreadRestoredIndex < 0 ||
-      !configs.undoMultipleTabsClose)
+  if (!configs.undoMultipleTabsClose)
     return;
 
+  const alreadRestoredIndex = lastRecentlyClosedTabs.findIndex(info => info.uniqueId == tab.$TST.uniqueId.id && info.windowId == tab.windowId);
+  log('tryRestoreClosedSetFor ', tab, lastRecentlyClosedTabs, lastRecentlyClosedTabsTreeStructure);
+  if (alreadRestoredIndex < 0) {
+    log(' => not a member of restorable tab set.');
+    return;
+  }
+
   const toBeRestoredTabsCount = lastRecentlyClosedTabs.length - 1;
+  if (toBeRestoredTabsCount == 0) {
+    log(' => no more tab to be restored.');
+    return;
+  }
+
   const sessions = (await browser.sessions.getRecentlyClosed({
     maxResults: browser.sessions.MAX_SESSION_RESULTS
   }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab);
