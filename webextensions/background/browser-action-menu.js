@@ -1158,6 +1158,11 @@ const mItems = [
         title: indent(2) + browser.i18n.getMessage('config_warnOnCloseTabsByClosebox_label'),
         key:   'warnOnCloseTabsByClosebox',
         type:  'checkbox',
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_warnOnCloseTabsWithListing_label'),
+        key:   'warnOnCloseTabsWithListing',
+        type:  'checkbox',
         expert: true
       },
       {

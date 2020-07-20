@@ -438,6 +438,7 @@
 
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warn me when I attempt to close multiple tabs by a normal click on a closebox" },
+  "config_warnOnCloseTabsWithListing_label": { "message": "List closing tabs in the confirmation dialog" },
 
 
   "config_drag_caption": { "message": "Drag and Drop" },
