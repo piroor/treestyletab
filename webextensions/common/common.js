@@ -215,6 +215,8 @@ export const configs = new Configs({
   warnOnCloseTabs: true,
   warnOnCloseTabsNotificationTimeout: 20 * 1000,
   warnOnCloseTabsByClosebox: true,
+  warnOnCloseTabsWithListing: true,
+  warnOnCloseTabsWithListingMaxRows: 5,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
 
@@ -625,4 +627,8 @@ export async function sha1sum(string) {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
   return hashHex;
+}
+
+export function sanitizeForHTMLText(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }

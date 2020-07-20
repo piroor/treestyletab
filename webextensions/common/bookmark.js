@@ -10,7 +10,8 @@ import {
   configs,
   notify,
   wait,
-  sha1sum
+  sha1sum,
+  sanitizeForHTMLText
 } from './common.js';
 import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
@@ -42,10 +43,6 @@ export async function getItemById(id) {
 
 function getAnimationDuration() {
   return configs.animation ? configs.collapseDuration : 0.001;
-}
-
-function sanitizeForHTMLText(text) {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
