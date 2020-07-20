@@ -211,7 +211,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
   let insertBefore, insertAfter;
   if (descendants.length > 0) {
     const firstChild     = descendants[0];
-    const lastDescendant = descendants[descendants.length-1];
+    const lastDescendant = descendants[descendants.length - 1];
     switch (insertAt) {
       case Constants.kINSERT_END:
       default:
@@ -593,7 +593,7 @@ export async function behaveAutoAttachedTabs(tabs, options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       if (options.baseTabs && !options.baseTab)
-        options.baseTab = options.baseTabs[options.baseTabs.length-1];
+        options.baseTab = options.baseTabs[options.baseTabs.length - 1];
       for (const tab of tabs) {
         await behaveAutoAttachedTab(tab, options);
       }
@@ -612,7 +612,7 @@ export async function behaveAutoAttachedTabs(tabs, options = {}) {
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       if (options.baseTabs && !options.baseTab)
-        options.baseTab = options.baseTabs[options.baseTabs.length-1];
+        options.baseTab = options.baseTabs[options.baseTabs.length - 1];
       let moved = false;
       for (const tab of tabs.reverse()) {
         moved = (await behaveAutoAttachedTab(tab, options)) || moved;
@@ -1290,11 +1290,11 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 
 
 /* "treeStructure" is an array of integers, meaning:
-  [A]     => -1 (parent is not in this tree)
+  [A]     => TreeBehavior.STRUCTURE_NO_PARENT (parent is not in this tree)
     [B]   => 0 (parent is 1st item in this tree)
     [C]   => 0 (parent is 1st item in this tree)
       [D] => 2 (parent is 2nd in this tree)
-  [E]     => -1 (parent is not in this tree, and this creates another tree)
+  [E]     => TreeBehavior.STRUCTURE_NO_PARENT (parent is not in this tree, and this creates another tree)
     [F]   => 0 (parent is 1st item in this another tree)
   See also getTreeStructureFromTabs() in tree-behavior.js
 */
@@ -1311,7 +1311,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   let expandStates = tabs.map(tab => !!tab);
   expandStates = expandStates.slice(0, tabs.length);
   while (expandStates.length < tabs.length)
-    expandStates.push(-1);
+    expandStates.push(TreeBehavior.STRUCTURE_NO_PARENT);
 
   MetricsData.add('applyTreeStructureToTabs: preparation');
 
@@ -1331,7 +1331,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     detachTab(tab, { justNow: true });
 
     const structureInfo = treeStructure[i];
-    let parentIndexInTree = -1;
+    let parentIndexInTree = TreeBehavior.STRUCTURE_NO_PARENT;
     if (typeof structureInfo == 'number') { // legacy format
       parentIndexInTree = structureInfo;
     }
@@ -1345,7 +1345,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     }
 
     let parent = null;
-    if (parentIndexInTree > -1) {
+    if (parentIndexInTree != TreeBehavior.STRUCTURE_NO_PARENT) {
       parent = Tab.get(parentTab);
       if (parent) {
         //log('existing tabs in tree: ', {
@@ -1371,7 +1371,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   MetricsData.add('applyTreeStructureToTabs: attach/detach');
 
   log('expandStates: ', expandStates);
-  for (let i = tabs.length-1; i > -1; i--) {
+  for (let i = tabs.length - 1; i > -1; i--) {
     const tab = tabs[i];
     const expanded = expandStates[i];
     collapseExpandSubtree(tab, {

@@ -118,7 +118,7 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 
 export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   const firstTab = Array.isArray(tab) ? tab[0] : tab;
-  const lastTab  = Array.isArray(tab) ? tab[tab.length-1] : tab;
+  const lastTab  = Array.isArray(tab) ? tab[tab.length - 1] : tab;
   log('calculateReferenceTabsFromInsertionPosition ', {
     firstTab:     firstTab && firstTab.id,
     lastTab:      lastTab && lastTab.id,
@@ -324,26 +324,29 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   throw new Error('calculateReferenceTabsFromInsertionPosition requires one of insertBefore or insertAfter parameter!');
 }
 
+
+export const STRUCTURE_NO_PARENT = -1;
+
 export function getTreeStructureFromTabs(tabs, options = {}) {
   if (!tabs || !tabs.length)
     return [];
 
   /* this returns...
-    [A]     => -1 (parent is not in this tree)
+    [A]     => STRUCTURE_NO_PARENT (parent is not in this tree)
       [B]   => 0 (parent is 1st item in this tree)
       [C]   => 0 (parent is 1st item in this tree)
         [D] => 2 (parent is 2nd in this tree)
-    [E]     => -1 (parent is not in this tree, and this creates another tree)
+    [E]     => STRUCTURE_NO_PARENT (parent is not in this tree, and this creates another tree)
       [F]   => 0 (parent is 1st item in this another tree)
   */
   const tabIds = tabs.map(tab => tab.id);
   return cleanUpTreeStructureArray(
     tabs.map((tab, index) => {
       const parentId = tab.$TST.parentId;
-      const indexInGivenTabs = parent ? tabIds.indexOf(parentId) : -1 ;
-      return indexInGivenTabs >= index ? -1 : indexInGivenTabs ;
+      const indexInGivenTabs = parent ? tabIds.indexOf(parentId) : STRUCTURE_NO_PARENT ;
+      return indexInGivenTabs >= index ? STRUCTURE_NO_PARENT : indexInGivenTabs ;
     }),
-    -1
+    STRUCTURE_NO_PARENT
   ).map((parentIndex, index) => {
     const tab = tabs[index];
     const item = {
@@ -364,10 +367,10 @@ function cleanUpTreeStructureArray(treeStructure, defaultParent) {
   let offset = 0;
   treeStructure = treeStructure
     .map((position, index) => {
-      return (position == index) ? -1 : position ;
+      return (position == index) ? STRUCTURE_NO_PARENT : position ;
     })
     .map((position, index) => {
-      if (position == -1) {
+      if (position == STRUCTURE_NO_PARENT) {
         offset = index;
         return position;
       }
@@ -375,9 +378,9 @@ function cleanUpTreeStructureArray(treeStructure, defaultParent) {
     });
 
   /* The final step, this validates all of values.
-     Smaller than -1 is invalid, so it becomes to -1. */
+     Smaller than STRUCTURE_NO_PARENT is invalid, so it becomes to STRUCTURE_NO_PARENT. */
   treeStructure = treeStructure.map(index => {
-    return index < -1 ? defaultParent : index ;
+    return index < STRUCTURE_NO_PARENT ? defaultParent : index ;
   });
   return treeStructure;
 }
