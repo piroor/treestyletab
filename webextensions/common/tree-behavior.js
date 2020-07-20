@@ -396,7 +396,10 @@ export function tabsToHTMLList(tabs, { maxRows }) {
     `<ul style="border: 1px inset;
                 display: flex;
                 flex-direction: column;
+                flex-grow: 1;
+                flex-shrink: 1;
                 margin: 0.5em 0;
+                min-height: ${(Math.max(1, maxRows || 0)) + 1}em;
                 max-height: ${(Math.max(1, maxRows || 0)) + 1}em;
                 overflow: auto;
                 padding: 0.5em;">` +

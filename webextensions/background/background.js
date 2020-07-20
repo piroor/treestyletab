@@ -510,6 +510,14 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
       log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
       result = await RichConfirm.showInPopup(windowId, {
         ...dialogParams,
+        onShown(container) {
+          setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
+            const style = container.querySelector('ul').style;
+            style.height = '0px'; // this makes the box shrinkable
+            style.maxHeight = 'none';
+            style.minHeight = '0px';
+          }, 0);
+        },
         modal: true,
         type:  'common-dialog',
         url:   '/resources/blank.html', // required on Firefox ESR68
