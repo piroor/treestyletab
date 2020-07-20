@@ -384,6 +384,7 @@
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "But don't group new tabs opened within" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirm to group tabs" },
+  "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "List tabs to be grouped in the confirmation dialog" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab" },
   "config_renderTreeInGroupTabs_label": { "message": "Render tree in group tabs" },

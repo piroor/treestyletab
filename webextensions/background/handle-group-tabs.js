@@ -11,7 +11,8 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
-  configs
+  configs,
+  sanitizeForHTMLText
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -467,8 +468,19 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
 
   const windowId = tabs[0].windowId;
 
+  const listing = configs.warnOnAutoGroupNewTabsWithListing ?
+    `<ol style="border: 1px inset;
+                margin: 0.5em 0;
+                max-height: ${configs.warnOnAutoGroupNewTabsWithListingMaxRows + 1}em;
+                overflow: auto;
+                padding-bottom: 0.5em;
+                padding-right: 0.5em;
+                padding-top: 0.5em;">` + tabs.map(tab => `<li>${sanitizeForHTMLText(tab.title)}</li>`).join('') + `</ol>` :
+    '';
   const dialogParams = {
-    message: browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]),
+    content: `
+      <div>${sanitizeForHTMLText(browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]))}</div>${listing}
+    `.trim(),
     buttons: [
       browser.i18n.getMessage('warnOnAutoGroupNewTabs_close'),
       browser.i18n.getMessage('warnOnAutoGroupNewTabs_cancel')

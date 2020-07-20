@@ -656,6 +656,18 @@ const mItems = [
         type:  'checkbox',
         expert: true
       },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_warnOnAutoGroupNewTabs_label'),
+        key:   'warnOnAutoGroupNewTabs',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: indent(4) + browser.i18n.getMessage('config_warnOnAutoGroupNewTabsWithListing_label'),
+        key:   'warnOnAutoGroupNewTabsWithListing',
+        type:  'checkbox',
+        expert: true
+      },
       { type: 'separator',
         expert: true },
       {

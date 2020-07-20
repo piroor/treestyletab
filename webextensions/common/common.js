@@ -173,6 +173,8 @@ export const configs = new Configs({
   autoGroupNewTabsFromPinned: true,
   renderTreeInGroupTabs: true,
   warnOnAutoGroupNewTabs: true,
+  warnOnAutoGroupNewTabsWithListing: true,
+  warnOnAutoGroupNewTabsWithListingMaxRows: 5,
   showAutoGroupOptionHint: true,
 
 
