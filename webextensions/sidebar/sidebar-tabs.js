@@ -793,21 +793,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       window.classList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_PINNED: {
-      if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
-        return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab ||
-          !lastMessage ||
-          lastMessage.message.type != message.type)
-        return;
-      tab.pinned = true;
-      TabsStore.removeUnpinnedTab(tab);
-      TabsStore.addPinnedTab(tab);
-    }; break;
-
+    case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
@@ -815,29 +801,21 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
-          !lastMessage ||
-          lastMessage.message.type != message.type)
+          !lastMessage)
         return;
-      tab.pinned = false;
-      TabsStore.removePinnedTab(tab);
-      TabsStore.addUnpinnedTab(tab);
+      if (lastMessage.message.type == Constants.kCOMMAND_NOTIFY_TAB_PINNED) {
+        tab.pinned = true;
+        TabsStore.removeUnpinnedTab(tab);
+        TabsStore.addPinnedTab(tab);
+      }
+      else {
+        tab.pinned = false;
+        TabsStore.removePinnedTab(tab);
+        TabsStore.addUnpinnedTab(tab);
+      }
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
-      if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
-        return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      const tab = Tab.get(message.tabId);
-      const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      if (!tab ||
-          !lastMessage ||
-          lastMessage.message.type != message.type)
-        return;
-      tab.hidden = true;
-      TabsStore.removeVisibleTab(tab);
-      TabsStore.removeControllableTab(tab);
-    }; break;
-
+    case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
@@ -845,13 +823,19 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
-          !lastMessage ||
-          lastMessage.message.type != message.type)
+          !lastMessage)
         return;
-      tab.hidden = false;
-      if (!tab.$TST.collapsed)
-        TabsStore.addVisibleTab(tab);
-      TabsStore.addControllableTab(tab);
+      if (lastMessage.message.type == Constants.kCOMMAND_NOTIFY_TAB_HIDDEN) {
+        tab.hidden = true;
+        TabsStore.removeVisibleTab(tab);
+        TabsStore.removeControllableTab(tab);
+      }
+      else {
+        tab.hidden = false;
+        if (!tab.$TST.collapsed)
+          TabsStore.addVisibleTab(tab);
+        TabsStore.addControllableTab(tab);
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
