@@ -462,8 +462,8 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     }
     return false;
   });
-  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey });
   const shouldConfirm = configs[configKey || 'warnOnCloseTabs'];
+  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, grantedIds, shouldConfirm });
   if (count <= 1 ||
       !shouldConfirm ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500) {
