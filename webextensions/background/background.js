@@ -545,7 +545,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   }
 }
 Commands.onTabsClosing.addListener((tabIds, options = {}) => {
-  return confirmToCloseTabs(tabIds, options);
+  return confirmToCloseTabs(tabIds.map(Tab.get), options);
 });
 
 export function tabsToHTMLList(tabs, { maxRows }) {
