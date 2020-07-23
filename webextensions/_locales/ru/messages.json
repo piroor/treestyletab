@@ -260,8 +260,6 @@
   "config_style_none": { "message": "Без стиля" },
   "config_style_none_info": { "message": " (* Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
 
-  "config_applyBrowserTheme_label": { "message": "Применить тему браузера (* только для простых, вертиго и смешанной)" },
-
   "config_maxTreeLevel_before": { "message": "Отступ вкладок до" },
   "config_maxTreeLevel_after": { "message": "уровней (* Отрицательное значение = \"бесконечно\")" },
 

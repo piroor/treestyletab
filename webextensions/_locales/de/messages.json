@@ -253,8 +253,6 @@
   "config_style_none": { "message": "Keine Designvorgabe" },
   "config_style_none_info": { "message": " (*Passe alles selbst über das Feld \"Style-Regeln für Sidebar-Inhalte\" an)" },
 
-  "config_applyBrowserTheme_label": { "message": "Nutze Browser Design (*verfügbar nur für Pur, Vertigo und Gemischt)" },
-
   "config_maxTreeLevel_before": { "message": "Tabs einrücken bis" },
   "config_maxTreeLevel_after": { "message": "Stufen (*Negative Werte bedeuten \"unbegrenzt\")" },
 

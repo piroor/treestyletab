@@ -220,8 +220,6 @@
   "config_style_none": { "message": "無裝飾" },
   "config_style_none_info": { "message": "(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
-  "config_applyBrowserTheme_label": { "message": "套用瀏覽器佈景主題(※僅 Plain、Vertigo 及 Mixed 適用)" },
-
   "config_maxTreeLevel_before": { "message": "最多縮進" },
   "config_maxTreeLevel_after": { "message": "層分頁(負值表示無限制)" },
 

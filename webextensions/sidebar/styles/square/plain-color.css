@@ -37,7 +37,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root.apply-browser-theme {
+  :root {
     --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
     --tabbar-bg: var(--browser-bg-darker, var(--dark-frame));
   }

@@ -129,18 +129,16 @@ tab-item.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .
 }
 
 @media (prefers-color-scheme: dark) {
-  :root.apply-browser-theme {
+  :root {
     --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
     --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
   }
-  :root.apply-browser-theme
-    tab-item:not(.active):hover {
+  tab-item:not(.active):hover {
     --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.25);
     --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
   }
 
-  :root.apply-browser-theme
-    tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+  tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
     --tab-highlighter-start: var(--grey-10-a015);
     --tab-highlighter-end: var(--grey-10-a20);
   }

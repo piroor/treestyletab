@@ -55,7 +55,6 @@ export const configs = new Configs({
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
       'mixed',
-  applyBrowserTheme: true,
 
   faviconizePinnedTabs: true,
   maxFaviconizedPinnedTabsInOneRow: 0, // auto

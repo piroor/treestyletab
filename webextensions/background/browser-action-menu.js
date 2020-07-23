@@ -119,12 +119,6 @@ const mItems = [
         ]
       },
       {
-        title: browser.i18n.getMessage('config_applyBrowserTheme_label'),
-        key:   'applyBrowserTheme',
-        type:  'checkbox',
-        expert: true
-      },
-      {
         title: browser.i18n.getMessage('config_animation_label'),
         key:   'animation',
         type:  'checkbox'

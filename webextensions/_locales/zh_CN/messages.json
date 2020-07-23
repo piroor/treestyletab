@@ -737,10 +737,6 @@
         "message": "（*请通过 “额外的侧栏内容样式规则” 自行修饰所有内容）",
         "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
     },
-    "config_applyBrowserTheme_label": {
-        "message": "应用浏览器主题（*仅可用于朴素、眩晕、错综）",
-        "hash": "794a1641ceddfd61aa784009cebcd7a1"
-    },
     "config_maxTreeLevel_before": {
         "message": "增加标签页缩进，最多",
         "hash": "f9e353339b4cf89bb31d4d79a6a660b8"

@@ -218,7 +218,7 @@ export async function init() {
 
       log('Start to process messages including queued ones');
       BackgroundConnection.start();
-      onConfigChange('applyBrowserTheme');
+      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
 
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
 
@@ -364,8 +364,7 @@ function applyBrowserTheme(theme) {
   }`;
 
   if (!theme ||
-      !theme.colors ||
-      !configs.applyBrowserTheme) {
+      !theme.colors) {
     mBrowserThemeDefinition.textContent = defaultColors;
   }
   else {
@@ -774,11 +773,6 @@ function onConfigChange(changedKey) {
 
     case 'style':
       location.reload();
-      break;
-
-    case 'applyBrowserTheme':
-      document.documentElement.classList.toggle('apply-browser-theme', configs.applyBrowserTheme);
-      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       break;
 
     case 'userStyleRules':

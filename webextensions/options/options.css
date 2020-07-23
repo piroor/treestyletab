@@ -107,8 +107,7 @@ label.has-radio:not(.inline) {
   width: calc(1em + 100px + 8em); /* radio + image + label */
 }
 
-#style-radiogroup li img,
-#applyBrowserTheme ~ img {
+#style-radiogroup li img {
   max-width: 100px;
 }
 
