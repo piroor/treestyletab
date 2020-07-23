@@ -260,10 +260,6 @@
   "config_style_none": { "message": "Без стиля" },
   "config_style_none_info": { "message": " (* Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
 
-  "config_colorScheme_caption": { "message": "Цветовая схема:" },
-  "config_colorScheme_photon": { "message": "Фотон" },
-  "config_colorScheme_systemColor": { "message": "Системные цвета" },
-
   "config_applyBrowserTheme_label": { "message": "Применить тему браузера (* только для простых, вертиго и смешанной)" },
 
   "config_maxTreeLevel_before": { "message": "Отступ вкладок до" },

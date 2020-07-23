@@ -4,8 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-:root,
-:root[color-scheme="system-color"] {
+:root {
   --in-content-page-background: #2A2A2E /* rgb(42, 42, 46) */;
   --in-content-page-color: rgb(249, 249, 250);
   --in-content-text-color: var(--in-content-page-color);
@@ -55,10 +54,6 @@
    https://github.com/piroor/treestyletab/issues/2373 */
 #tabbar {
   scrollbar-color: var(--in-content-button-background-active-mixed) var(--in-content-box-background);
-}
-
-:root[color-scheme="system-color"] #background::after {
-  content: none;
 }
 
 :root,

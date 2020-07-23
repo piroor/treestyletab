@@ -188,7 +188,6 @@ export async function init() {
   MetricsData.add('browser.tabs.query finish, SidebarCache initialized, configs are loaded.');
   EventListenerManager.debug = configs.debug;
 
-  onConfigChange('colorScheme');
   onConfigChange('simulateSVGContextFill');
   onInit.dispatch();
 
@@ -775,10 +774,6 @@ function onConfigChange(changedKey) {
 
     case 'style':
       location.reload();
-      break;
-
-    case 'colorScheme':
-      document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
 
     case 'applyBrowserTheme':

@@ -256,10 +256,6 @@
   "config_style_none": { "message": "装飾無し" },
   "config_style_none_info": { "message": "（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
 
-  "config_colorScheme_caption": { "message": "配色:" },
-  "config_colorScheme_photon": { "message": "Photon" },
-  "config_colorScheme_systemColor": { "message": "システムカラー" },
-
   "config_applyBrowserTheme_label": { "message": "ブラウザの現在の配色を反映（※Plain、Vertigo、Mixedのみ）" },
 
   "config_maxTreeLevel_before": { "message": "ツリーを" },

@@ -737,18 +737,6 @@
         "message": "（*请通过 “额外的侧栏内容样式规则” 自行修饰所有内容）",
         "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
     },
-    "config_colorScheme_caption": {
-        "message": "颜色方案：",
-        "hash": "116757b55afc8e038df21da385c437da"
-    },
-    "config_colorScheme_photon": {
-        "message": "光子",
-        "hash": "311fd0d76e3c685954e10bbc330ac1da"
-    },
-    "config_colorScheme_systemColor": {
-        "message": "系统颜色",
-        "hash": "dab5540a8cd4047f9e3411859792c4eb"
-    },
     "config_applyBrowserTheme_label": {
         "message": "应用浏览器主题（*仅可用于朴素、眩晕、错综）",
         "hash": "794a1641ceddfd61aa784009cebcd7a1"

@@ -152,10 +152,6 @@
   "config_style_none": { "message": "Без стилю" },
   "config_style_none_info": { "message": " (*Будь ласка, прикрасьте все самостійно через \"Додаткові правила стилю  бічної панелі\")" },
 
-  "config_colorScheme_caption": { "message": "Колірна схема:" },
-  "config_colorScheme_photon": { "message": "Фотон" },
-  "config_colorScheme_systemColor": { "message": "Системні кольори" },
-
   "config_maxTreeLevel_before": { "message": "Відступ вкладок до" },
   "config_maxTreeLevel_after": { "message": "рівня(ів) (*Від'ємне значення означає \"нескінченно\")" },
 

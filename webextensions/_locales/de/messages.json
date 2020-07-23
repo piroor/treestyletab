@@ -253,10 +253,6 @@
   "config_style_none": { "message": "Keine Designvorgabe" },
   "config_style_none_info": { "message": " (*Passe alles selbst über das Feld \"Style-Regeln für Sidebar-Inhalte\" an)" },
 
-  "config_colorScheme_caption": { "message": "Farbschema:" },
-  "config_colorScheme_photon": { "message": "Photon" },
-  "config_colorScheme_systemColor": { "message": "Systemfarben" },
-
   "config_applyBrowserTheme_label": { "message": "Nutze Browser Design (*verfügbar nur für Pur, Vertigo und Gemischt)" },
 
   "config_maxTreeLevel_before": { "message": "Tabs einrücken bis" },

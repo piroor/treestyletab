@@ -31,42 +31,13 @@
   background-image: var(--browser-bg-url, var(--browser-header-url, none));
 }
 
-:root[color-scheme="system-color"] {
-  --tab-surface-regular: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
-  --tab-text-regular: var(--browser-fg, -moz-dialogtext);
-  --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
-  --tab-text-active: var(--tab-text-regular);
-  --tab-text-active-inverted: Highlight;
-  --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
-  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, ThreeDHighlight));
-  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, Highlight));
-  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, Highlight));
-  --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
-  --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
-}
-:root[color-scheme="system-color"] #background::after {
-  background: var(--browser-bg-darker, AppWorkspace);
-  opacity: 0.15;
-
-  bottom: 0;
-  content: "";
-  left: 0;
-  margin: 0;
-  overflow: hidden;
-  padding: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 20;
-}
-
 #tabbar {
   scrollbar-color: var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed))
                    var(--theme-colors-toolbar, var(--in-content-box-background));
 }
 
 @media (prefers-color-scheme: dark) {
-  :root.apply-browser-theme:not([color-scheme="system-color"]) {
+  :root.apply-browser-theme {
     --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
     --tabbar-bg: var(--browser-bg-darker, var(--dark-frame));
   }
