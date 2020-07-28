@@ -116,7 +116,7 @@ export async function bookmarkTab(tab, options = {}) {
       ${inSidebar ? '' : 'flex-shrink: 1;'}
       ${inSidebar ? '' : 'min-width: 30em;'}
     `;
-    const buttonStyle = `
+    const buttonContainerStyle = `
       ${inSidebar ? '' : 'margin-left: 0.25em;'}
     `;
     const dialogParams = {
@@ -140,9 +140,8 @@ export async function bookmarkTab(tab, options = {}) {
        ><div style="${divStyle}; margin-bottom: 3em;"
             ><label style="${labelStyle}"
                    ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                   ><button name="parentId"
-                            style="${buttonStyle}"
-                           >-</button></label></div>
+                   ><span style="${buttonContainerStyle}"
+                         ><button name="parentId">-</button></span></label></div>
       `.trim(),
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
@@ -269,7 +268,7 @@ export async function bookmarkTabs(tabs, options = {}) {
       ${inSidebar ? '' : 'flex-shrink: 1;'}
       ${inSidebar ? '' : 'min-width: 30em;'}
     `;
-    const buttonStyle = `
+    const buttonContainerStyle = `
       ${inSidebar ? '' : 'margin-left: 0.25em;'}
     `;
     const dialogParams = {
@@ -285,9 +284,8 @@ export async function bookmarkTabs(tabs, options = {}) {
        ><div style="${divStyle}; margin-bottom: 3em;"
             ><label style="${labelStyle}"
                    ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                   ><button name="parentId"
-                            style="${buttonStyle}"
-                           >-</button></label></div>
+                   ><span style="${buttonContainerStyle}"
+                         ><button name="parentId">-</button></span></label></div>
       `.trim(),
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
