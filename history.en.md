@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+ - 3.5.14 (2020.7.29)
+   * Confirm to close tabs via context menu commands on the sidebar correctly. (regression on recent versions)
+   * Always apply the "Photon" color scheme on Linux environments.
+   * Always apply browser's theme to the sidebar (on Mixed, Plain and Vertigo).
+   * Keep the tab in the root level, when a tab is moved or opened before a root tab. This improves compatibility with the Facebook Container.
+   * Flexible width input field in the bookmark properties dialog.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.13 (2020.7.21)
    * List tabs to be closed/grouped in the confirmation dialog to represent which tabs are going to be operated.
    * Update tabs' activated, pinned/unpinned, hidden/shown, and collapsed/expanded states correctly. (regression on 3.5.12)
