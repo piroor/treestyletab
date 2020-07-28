@@ -99,30 +99,51 @@ export async function bookmarkTab(tab, options = {}) {
   if (options.showDialog) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
-    const fieldMinWidth = inSidebar ? '' : 'min-width: 30em';
+    const divStyle = `
+      display: flex;
+      flex-direction: column;
+    `;
+    const labelStyle = `
+      display: flex;
+      flex-direction: ${inSidebar ? 'column' : 'row'};
+      ${inSidebar ? 'align-items: stretch;' : ''}
+      ${inSidebar ? 'text-align: start;' : ''}
+    `;
+    const inputFieldStyle = `
+      display: flex;
+      ${inSidebar ? '' : 'margin-left: 0.25em;'}
+      ${inSidebar ? '' : 'flex-grow: 1;'}
+      ${inSidebar ? '' : 'flex-shrink: 1;'}
+      ${inSidebar ? '' : 'min-width: 30em;'}
+    `;
+    const buttonStyle = `
+      ${inSidebar ? '' : 'margin-left: 0.25em;'}
+    `;
     const dialogParams = {
-      /* eslint-disable indent */
       content: `
-        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))
-                   }${inSidebar ? '<br>' : ''
-                   }<input type="text"
+        <div style="${divStyle}"
+            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                    style="${labelStyle}"
+                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
+                   ><input type="text"
                            name="title"
-                           style="${fieldMinWidth}"
+                           style="${inputFieldStyle}"
                            value=${JSON.stringify(title)}></label></div
-       ><div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))
-                   }${inSidebar ? '<br>' : ''
-                   }<input type="text"
+       ><div style="${divStyle}"
+            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
+                    style="${labelStyle}"
+                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
+                   ><input type="text"
                            name="url"
-                           style="${fieldMinWidth}"
+                           style="${inputFieldStyle}"
                            value=${JSON.stringify(url)}></label></div
-       ><div style="margin-bottom: 3em"
-            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))
-                   }${inSidebar ? '<br>' : ''
-                   }<button name="parentId">-</button></label></div>
+       ><div style="${divStyle}; margin-bottom: 3em;"
+            ><label style="${labelStyle}"
+                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
+                   ><button name="parentId"
+                            style="${buttonStyle}"
+                           >-</button></label></div>
       `.trim(),
-      /* eslint-enable indent */
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
           return;
@@ -231,23 +252,43 @@ export async function bookmarkTabs(tabs, options = {}) {
   if (options.showDialog) {
     const windowId = tabs[0].windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
-    const fieldMinWidth = inSidebar ? '' : 'min-width: 30em';
+    const divStyle = `
+      display: flex;
+      flex-direction: column;
+    `;
+    const labelStyle = `
+      display: flex;
+      flex-direction: ${inSidebar ? 'column' : 'row'};
+      ${inSidebar ? 'align-items: stretch;' : ''}
+      ${inSidebar ? 'text-align: start;' : ''}
+    `;
+    const inputFieldStyle = `
+      display: flex;
+      ${inSidebar ? '' : 'margin-left: 0.25em;'}
+      ${inSidebar ? '' : 'flex-grow: 1;'}
+      ${inSidebar ? '' : 'flex-shrink: 1;'}
+      ${inSidebar ? '' : 'min-width: 30em;'}
+    `;
+    const buttonStyle = `
+      ${inSidebar ? '' : 'margin-left: 0.25em;'}
+    `;
     const dialogParams = {
-      /* eslint-disable indent */
       content: `
-        <div><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
-                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))
-                   }${inSidebar ? '<br>' : ''
-                   }<input type="text"
+        <div style="${divStyle}"
+            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+                    style="${labelStyle}"
+                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
+                   ><input type="text"
                            name="title"
-                           style="${fieldMinWidth}"
+                           style="${inputFieldStyle}"
                            value=${JSON.stringify(folderParams.title)}></label></div
-       ><div style="margin-bottom: 3em"
-            ><label>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))
-                   }${inSidebar ? '<br>' : ''
-                   }<button name="parentId">-</button></label></div>
+       ><div style="${divStyle}; margin-bottom: 3em;"
+            ><label style="${labelStyle}"
+                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
+                   ><button name="parentId"
+                            style="${buttonStyle}"
+                           >-</button></label></div>
       `.trim(),
-      /* eslint-enable indent */
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
         if (container.classList.contains('simulation'))
           return;
