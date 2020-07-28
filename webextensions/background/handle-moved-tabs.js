@@ -93,18 +93,6 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     });
   }
 
-  if (moveInfo.isTabCreating) {
-    const nextTab = tab.$TST.nearestCompletelyOpenedNormalFollowingTab;
-    if (!nextTab) {
-      log('The tab is opened at the end of tabs. We should keep it in the root level.');
-      return;
-    }
-    if (!nextTab.$TST.parent) {
-      log('The tab is opened before a root level tab. We should keep it in the root level.');
-      return;
-    }
-  }
-
   log('The tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
   const action = detectTabActionFromNewPosition(tab, moveInfo);
   if (!action) {
@@ -261,6 +249,17 @@ function detectTabActionFromNewPosition(tab, moveInfo = {}) {
 
   const oldParent = tree.tabsById[target.parent];
   let newParent = null;
+
+  if (!oldParent) {
+    if (!nextTab) {
+      log('=> A root level tab, placed at the end of tabs. We should keep it in the root level.');
+      return { action: null };
+    }
+    if (!nextParent) {
+      log(' => A root level tab, placed before another root level tab. We should keep it in the root level.');
+      return { action: null };
+    }
+  }
 
   if (target.mayBeReplacedWithContainer) {
     log('=> replaced by Firefox Multi-Acount Containers or Temporary Containers');
