@@ -93,7 +93,19 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     });
   }
 
-  log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
+  if (moveInfo.isTabCreating) {
+    const nextTab = tab.$TST.nearestCompletelyOpenedNormalFollowingTab;
+    if (!nextTab) {
+      log('The tab is opened at the end of tabs. We should keep it in the root level.');
+      return;
+    }
+    if (!nextTab.$TST.parent) {
+      log('The tab is opened before a root level tab. We should keep it in the root level.');
+      return;
+    }
+  }
+
+  log('The tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
   const action = detectTabActionFromNewPosition(tab, moveInfo);
   if (!action) {
     log('no action');
