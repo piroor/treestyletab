@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Expand the background image cited from the browser theme to cover the sidebar area, instead of repeating.
+   * Don't attach restored tab to its old hidden parent when TST is configured to fix trees based on visible tabs.
  - 3.5.14 (2020.7.29)
    * Confirm to close tabs via context menu commands on the sidebar correctly. (regression on recent versions)
    * Always apply the "Photon" color scheme on Linux environments.
