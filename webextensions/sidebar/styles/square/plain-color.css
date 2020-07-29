@@ -29,6 +29,12 @@
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
   background-image: var(--browser-bg-url, var(--browser-header-url, none));
+  background-position: left;
+  background-size: cover;
+}
+:root.right,
+:root.right #background {
+  background-position: right;
 }
 
 #tabbar {
