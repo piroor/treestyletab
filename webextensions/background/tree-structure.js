@@ -216,6 +216,10 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     ancestors:    ancestors.map(dumpTab).join(', '),
     children:     children.map(dumpTab).join(', ')
   }));
+  if (configs.fixupTreeOnTabVisibilityChanged) {
+    ancestors = ancestors.filter(tab => !tab.hidden);
+    children = children.filter(tab => !tab.hidden);
+  }
 
   // clear wrong positioning information
   if (tab.pinned ||
