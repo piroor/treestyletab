@@ -127,8 +127,13 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
     log('group tab: ', dumpTab(groupTab));
     if (!groupTab) // the window is closed!
       return;
+    if (newParent || parent)
+      await Tree.attachTabTo(groupTab, newParent || parent, {
+        dontMove:  true,
+        broadcast: true
+      });
     for (const child of children) {
-      await Tree.attachTabTo(groupTab, child, {
+      await Tree.attachTabTo(child, groupTab, {
         dontMove:  true,
         broadcast: true
       });
@@ -138,7 +143,7 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
     // https://github.com/piroor/treestyletab/issues/2317
     wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
   }
-
+  else {
   Tree.detachAllChildren(null, {
     parent,
     newParent,
@@ -147,6 +152,7 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
     behavior:  closeParentBehavior,
     broadcast: true
   });
+  }
 }
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {
