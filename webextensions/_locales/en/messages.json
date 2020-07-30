@@ -258,6 +258,10 @@
   "config_style_none": { "message": "No Decoration" },
   "config_style_none_info": { "message": " (*Please decorate everything by yourself via \"Extra style rules for sidebar contents\")" },
 
+  "config_colorScheme_caption": { "message": "Color scheme:" },
+  "config_colorScheme_photon": { "message": "Photon" },
+  "config_colorScheme_systemColor": { "message": "System Color" },
+
   "config_maxTreeLevel_before": { "message": "Indent tabs until" },
   "config_maxTreeLevel_after": { "message": "level(s) (*Negative value means \"infinite\")" },
 

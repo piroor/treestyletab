@@ -218,6 +218,10 @@
   "config_style_none": { "message": "無裝飾" },
   "config_style_none_info": { "message": "(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
+  "config_colorScheme_caption": { "message": "配色:" },
+  "config_colorScheme_photon": { "message": "Photon" },
+  "config_colorScheme_systemColor": { "message": "系統配色" },
+
   "config_maxTreeLevel_before": { "message": "最多縮進" },
   "config_maxTreeLevel_after": { "message": "層分頁(負值表示無限制)" },
 

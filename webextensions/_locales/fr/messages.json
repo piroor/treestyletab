@@ -215,6 +215,10 @@
   "config_style_none": { "message": "Pas de décoration" },
   "config_style_none_info": { "message": " (*Veuillez tout décorer par vous-même via « Règles d'apparence supplémentaires pour les contenus du panneau »)" },
 
+  "config_colorScheme_caption": { "message": "Schéma de couleur :" },
+  "config_colorScheme_photon": { "message": "Photon" },
+  "config_colorScheme_systemColor": { "message": "Couleur du système" },
+
   "config_maxTreeLevel_before": { "message": "Indenter les onglets jusqu'à" },
   "config_maxTreeLevel_after": { "message": "niveau(x) (*Une valeur négative signifie « infini »)" },
 

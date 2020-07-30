@@ -641,6 +641,14 @@
         "message": "(※\"사이드바 내용 추가 스타일 지정\"에서 원하는 장식을 설정해주세요.)",
         "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
     },
+    "config_colorScheme_caption": {
+        "message": "배색: ",
+        "hash": "116757b55afc8e038df21da385c437da"
+    },
+    "config_colorScheme_systemColor": {
+        "message": "시스템 색상",
+        "hash": "dab5540a8cd4047f9e3411859792c4eb"
+    },
     "config_maxTreeLevel_before": {
         "message": "트리를",
         "hash": "f9e353339b4cf89bb31d4d79a6a660b8"

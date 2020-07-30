@@ -11,6 +11,7 @@ import * as Constants from './constants.js';
 
 const localKeys = mapAndFilter(`
   baseIndent
+  colorScheme
   debug
   faviconizedTabScale
   grantedRemovingTabIds
@@ -55,6 +56,7 @@ export const configs = new Configs({
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
       'mixed',
+  colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   faviconizePinnedTabs: true,
   maxFaviconizedPinnedTabsInOneRow: 0, // auto
