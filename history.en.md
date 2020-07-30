@@ -3,6 +3,7 @@
  - master/HEAD
    * Drop support for some built-in themes: ["Metal"](https://github.com/piroor/treestyletab/wiki/Metal-theme) and ["Plain Dark"](https://github.com/piroor/treestyletab/wiki/Plain-Dark-theme-%28patch-for-the-theme-%22Plain%22%29). They can be alternated with [user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes).
    * Respect colors defined in the browser theme more.
+   * Apply system colors on Linux environments by default again.
    * Allow to attach restored hidden tab to other hidden tabs.
  - 3.5.15 (2020.7.30)
    * Expand the background image cited from the browser theme to cover the sidebar area, instead of repeating.
