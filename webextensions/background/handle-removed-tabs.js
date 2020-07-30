@@ -144,14 +144,14 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
     wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
   }
   else {
-  Tree.detachAllChildren(null, {
-    parent,
-    newParent,
-    children,
-    nearestFollowingRootTab,
-    behavior:  closeParentBehavior,
-    broadcast: true
-  });
+    Tree.detachAllChildren(null, {
+      parent,
+      newParent,
+      children,
+      nearestFollowingRootTab,
+      behavior:  closeParentBehavior,
+      broadcast: true
+    });
   }
 }
 
