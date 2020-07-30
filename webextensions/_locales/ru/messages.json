@@ -254,7 +254,6 @@
   "config_style_plain_dark": { "message": "Простая темная" },
   "config_style_vertigo": { "message": "Вертиго" },
   "config_style_mixed": { "message": "Смешанная" },
-  "config_style_metal": { "message": "Металл" },
   "config_style_sidebar": { "message": "Боковая панель" },
   "config_style_highcontrast": { "message": "Контрастная" },
   "config_style_none": { "message": "Без стиля" },

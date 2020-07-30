@@ -93,12 +93,6 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_style_metal'),
-            key:   'style',
-            value: 'metal',
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_style_sidebar'),
             key:   'style',
             value: 'sidebar',

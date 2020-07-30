@@ -214,7 +214,6 @@
   "config_style_plain_dark": { "message": "Plain Dark" },
   "config_style_vertigo": { "message": "Vertigo" },
   "config_style_mixed": { "message": "Mixed" },
-  "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "高對比" },
   "config_style_none": { "message": "無裝飾" },

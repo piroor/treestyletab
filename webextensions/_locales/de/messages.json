@@ -247,7 +247,6 @@
   "config_style_plain_dark": { "message": "Pur dunkel" },
   "config_style_vertigo": { "message": "Vertigo" },
   "config_style_mixed": { "message": "Gemischt" },
-  "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "Hoher Kontrast" },
   "config_style_none": { "message": "Keine Designvorgabe" },

@@ -310,9 +310,6 @@ export async function init() {
 function applyStyle(style) {
   mStyle = style || configs.style;
   switch (mStyle) {
-    case 'metal':
-      mStyleLoader.setAttribute('href', 'styles/metal/metal.css');
-      break;
     case 'sidebar':
       mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;

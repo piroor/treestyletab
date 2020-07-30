@@ -18,7 +18,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 10;
+const kCONFIGS_VERSION = 11;
 const kFEATURES_VERSION = 4;
 
 export function migrateConfigs() {
@@ -130,6 +130,10 @@ export function migrateConfigs() {
       if (configs.simulateCloseTabByDblclick !== null &&
           configs.simulateCloseTabByDblclick)
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE;
+
+    case 10:
+      if (configs.style == 'metal')
+        configs.style = configs.$default.style;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

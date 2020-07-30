@@ -717,10 +717,6 @@
         "message": "错综",
         "hash": "94f3f9ff6783cbe8ba55c5781259e736"
     },
-    "config_style_metal": {
-        "message": "金属",
-        "hash": "4c5bad4b2e7156aad2fcfd23683a5913"
-    },
     "config_style_sidebar": {
         "message": "经典侧栏",
         "hash": "d33b881939ebc1e7e552f119ae13938a"
