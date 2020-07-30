@@ -244,7 +244,6 @@
 
   "config_style_caption": { "message": "Design" },
   "config_style_plain": { "message": "Pur" },
-  "config_style_plain_dark": { "message": "Pur dunkel" },
   "config_style_vertigo": { "message": "Vertigo" },
   "config_style_mixed": { "message": "Gemischt" },
   "config_style_sidebar": { "message": "Sidebar" },

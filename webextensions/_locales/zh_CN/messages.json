@@ -705,10 +705,6 @@
         "message": "朴素",
         "hash": "8c6d5fc3ce692d4e152f1d33e8b27f4b"
     },
-    "config_style_plain_dark": {
-        "message": "朴素暗",
-        "hash": "2dbdf9ce20650a74290d53fe7723a0d5"
-    },
     "config_style_vertigo": {
         "message": "眩晕",
         "hash": "a2f78364a5f70a2d183096bfa86747a4"

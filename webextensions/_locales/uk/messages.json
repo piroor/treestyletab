@@ -143,7 +143,6 @@
 
   "config_style_caption": { "message": "Тема" },
   "config_style_plain": { "message": "Проста" },
-  "config_style_plain_dark": { "message": "Проста темна" },
   "config_style_vertigo": { "message": "Вертіґо" },
   "config_style_mixed": { "message": "Змішана" },
   "config_style_sidebar": { "message": "Бічна панель" },
