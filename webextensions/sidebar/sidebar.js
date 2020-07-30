@@ -319,9 +319,6 @@ function applyStyle(style) {
     case 'vertigo':
       mStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
       break;
-    case 'plain-dark':
-      mStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
-      break;
     case 'plain':
     case 'flat': // for backward compatibility, fall back to plain.
       mStyleLoader.setAttribute('href', 'styles/square/plain.css');

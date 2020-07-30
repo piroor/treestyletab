@@ -75,12 +75,6 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_style_plain_dark'),
-            key:   'style',
-            value: 'plain-dark',
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_style_vertigo'),
             key:   'style',
             value: 'vertigo',

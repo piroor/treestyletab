@@ -132,7 +132,8 @@ export function migrateConfigs() {
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE;
 
     case 10:
-      if (configs.style == 'metal')
+      if (configs.style == 'plain-dark' ||
+          configs.style == 'metal')
         configs.style = configs.$default.style;
   }
   configs.configsVersion = kCONFIGS_VERSION;
