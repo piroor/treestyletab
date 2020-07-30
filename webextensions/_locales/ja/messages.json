@@ -502,6 +502,11 @@
   "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加できます。" },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
+  "config_theme_description_before": { "message": "組み込みで提供されているテーマ以外を使用したい場合、" },
+  "config_theme_description_link_label": { "message": "コードスニペット" },
+  "config_theme_description_after": { "message": "にある例を参照して下さい。" },
+  "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
+
   "config_externaladdonpermissions_label": { "message": "他のアドオンからのAPI呼び出しに与える許可" },
   "config_externaladdonpermissions_description": { "message": "ここでチェックを入れたアドオンは、Firefox自体がそのアドオンにタブの詳細情報やプライベートウィンドウのタブへのアクセスを禁止していても、<em>Tree Style Tabの権限で</em>それらにアクセスできるようになります。<em>信用できないアドオンに対しては絶対に権限を与えないで下さい。<em>" },
   "config_externalAddonPermissions_header_name": { "message": "アドオン名" },
