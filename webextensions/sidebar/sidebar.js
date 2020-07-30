@@ -353,8 +353,12 @@ function applyBrowserTheme(theme) {
   log('applying theme ', theme);
 
   let browserThemeStyle = '';
-  if (theme &&
-      theme.colors) {
+  if (!theme ||
+      !theme.colors) {
+    // Reset colors
+    mBrowserThemeDefinition.textContent = '';
+  }
+  else {
     browserThemeStyle = BrowserTheme.generateThemeDeclarations(theme);
     // Apply theme color at first, to use given colors as the base of following "face-*" colors.
     mBrowserThemeDefinition.textContent = browserThemeStyle;
