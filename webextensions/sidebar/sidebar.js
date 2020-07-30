@@ -352,6 +352,14 @@ function applyUserStyleRules() {
 function applyBrowserTheme(theme) {
   log('applying theme ', theme);
 
+  let browserThemeStyle = '';
+  if (theme &&
+      theme.colors) {
+    browserThemeStyle = BrowserTheme.generateThemeDeclarations(theme);
+    // Apply theme color at first, to use given colors as the base of following "face-*" colors.
+    mBrowserThemeDefinition.textContent = browserThemeStyle;
+  }
+
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-tab-color-box'), null).backgroundColor);
   const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   const defaultColors = `:root {
@@ -370,7 +378,7 @@ function applyBrowserTheme(theme) {
   else {
     mBrowserThemeDefinition.textContent = [
       defaultColors,
-      BrowserTheme.generateThemeDeclarations(theme)
+      browserThemeStyle
     ].join('\n');
   }
 }

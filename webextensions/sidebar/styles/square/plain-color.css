@@ -15,7 +15,7 @@
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
-  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-more-lighter, var(--in-content-box-background-hover)));
+  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--in-content-box-background-hover)));
   --tab-surface-active: var(--browser-bg-active-for-header-image, var(--face-highlight-more-lighter, var(--in-content-button-background-mixed)));
   --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--face-highlight-more-more-lighter, var(--in-content-button-background-active-mixed)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
