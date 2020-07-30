@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * 組み込みのテーマの["Metal"](https://github.com/piroor/treestyletab/wiki/Metal-theme)と["Plain Dark"](https://github.com/piroor/treestyletab/wiki/Plain-Dark-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
+   * ブラウザのテーマで定義された色をより尊重するようにした
+   * 復元されたタブが非表示のときは、非表示のタブの子として復元できるようにした
  - 3.5.15 (2020.7.30)
    * ブラウザのテーマで設定された背景画像を反映する際、繰り返し表示する代わりにサイドバー全体に拡大表示するようにした
    * ツリー構造を可視状態のタブに合わせて自動的に修復する設定のとき、復元されたタブの元の親タブが非表示の場合は子タブにしないようにした
