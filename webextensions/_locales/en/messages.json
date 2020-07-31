@@ -511,7 +511,7 @@
 
   "config_theme_description_before": { "message": "If you want to use non-built-in theme, see " },
   "config_theme_description_link_label": { "message": "the code snippets" },
-  "config_theme_description_after": { "message": " to see examples." },
+  "config_theme_description_after": { "message": " for examples." },
   "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
 
   "config_externaladdonpermissions_label": { "message": "Permissions for API Call from Other Addons" },
