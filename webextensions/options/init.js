@@ -246,6 +246,24 @@ function exportUserStyleToFile() {
   link.click();
 }
 
+function updateThemeInformation(theme) {
+  const rules = BrowserTheme.generateThemeRules(theme)
+    .replace(/(#(?:[0-9a-f]{3,8})|(?:rgb|hsl)a?\([^\)]+\))/gi, `$1<span style="
+      background-color: $1;
+      border-radius:    0.2em;
+      box-shadow:       1px 1px 1.5px black;
+      display:          inline-block;
+      height:           1em;
+      width:            1em;
+    ">\u200b</span>`);
+  const range = document.createRange();
+  range.selectNodeContents(document.getElementById('browserThemeCustomRules'));
+  range.deleteContents();
+  range.insertNode(range.createContextualFragment(rules));
+  range.detach();
+  document.getElementById('browserThemeCustomRulesBlock').style.display = rules ? 'block' : 'none';
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
   if (typeof browser.tabs.moveInSuccession == 'function')
@@ -280,24 +298,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
   document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
 
-  if (browser.theme && browser.theme.getCurrent)
-    browser.theme.getCurrent().then(theme => {
-      const rules = BrowserTheme.generateThemeRules(theme)
-        .replace(/(#(?:[0-9a-f]{3,8})|(?:rgb|hsl)a?\([^\)]+\))/gi, `$1<span style="
-          background-color: $1;
-          border-radius:    0.2em;
-          box-shadow:       1px 1px 1.5px black;
-          display:          inline-block;
-          height:           1em;
-          width:            1em;
-        ">\u200b</span>`);
-      const range = document.createRange();
-      range.selectNodeContents(document.getElementById('browserThemeCustomRules'));
-      range.collapse(false);
-      range.startContainer.appendChild(range.createContextualFragment(rules));
-      range.detach();
-      document.getElementById('browserThemeCustomRulesBlock').style.display = rules ? 'block' : 'none';
-    });
+  if (browser.theme && browser.theme.getCurrent) {
+    browser.theme.getCurrent().then(updateThemeInformation);
+    browser.theme.onUpdated.addListener(updateInfo => updateThemeInformation(updateInfo.theme));
+  }
 
   await configs.$loaded;
 
