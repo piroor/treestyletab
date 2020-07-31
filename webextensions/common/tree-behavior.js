@@ -11,6 +11,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
+import Tab from './Tab.js';
 
 function log(...args) {
   internalLogger('common/tree-behavior', ...args);
@@ -118,10 +119,10 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 
 export function calculateReferenceTabsFromInsertionPosition(
   tab,
-  { context, insertBefore, insertAfter,  } = {}
+  { context, insertBefore, insertAfter, windowId } = {}
 ) {
-  const firstTab = Array.isArray(tab) ? tab[0] : tab;
-  const lastTab  = Array.isArray(tab) ? tab[tab.length - 1] : tab;
+  const firstTab = (Array.isArray(tab) ? tab[0] : tab) || windowId && Tab.getFirstTab(windowId);
+  const lastTab  = (Array.isArray(tab) ? tab[tab.length - 1] : tab) || windowId && Tab.getLastTab(windowId);
   log('calculateReferenceTabsFromInsertionPosition ', {
     firstTab:     firstTab && firstTab.id,
     lastTab:      lastTab && lastTab.id,
