@@ -432,6 +432,7 @@ function getDropAction(event) {
              +-----------------------------------------------------
         */
         if (info.draggedTab &&
+            info.draggedTab.$TST &&
             info.draggedTab.$TST.nearestVisibleFollowingTab &&
             info.draggedTab.$TST.nearestVisibleFollowingTab.id == info.insertBefore.id) {
           log('special case: promote tab');
