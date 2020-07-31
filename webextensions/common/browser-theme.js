@@ -68,14 +68,28 @@ export async function generateThemeDeclarations(theme) {
     }
     const loader = new Image();
     try {
+      const shouldRepeat = (
+        theme.properties &&
+        Array.isArray(theme.properties.additional_backgrounds_tiling) &&
+        theme.properties.additional_backgrounds_tiling.some(value => value == 'repeat' || value == 'repeat-y')
+      );
+      const shouldNoRepeat = (
+        !theme.properties ||
+        !Array.isArray(theme.properties.additional_backgrounds_tiling) ||
+        theme.properties.additional_backgrounds_tiling.some(value => value == 'no-repeat')
+      );
+      let maybeRepeatable = false;
+      if (!shouldRepeat && !shouldNoRepeat) {
       await new Promise((resolve, reject) => {
         loader.addEventListener('load', resolve);
         loader.addEventListener('error', reject);
         loader.src = imageUrl;
       });
-      if ((loader.width / Math.max(1, loader.height)) > configs.unrepeatableBGImageAspectRatio)
+        maybeRepeatable = (loader.width / Math.max(1, loader.height)) <= configs.unrepeatableBGImageAspectRatio;
+      }
+      if (shouldNoRepeat)
         extraColors.push('--browser-background-image-size: cover;');
-      else
+      else if (shouldRepeat || maybeRepeatable)
         extraColors.push('--browser-background-image-size: auto;');
     }
     catch(error) {
