@@ -80,11 +80,11 @@ export async function generateThemeDeclarations(theme) {
       );
       let maybeRepeatable = false;
       if (!shouldRepeat && !shouldNoRepeat) {
-      await new Promise((resolve, reject) => {
-        loader.addEventListener('load', resolve);
-        loader.addEventListener('error', reject);
-        loader.src = imageUrl;
-      });
+        await new Promise((resolve, reject) => {
+          loader.addEventListener('load', resolve);
+          loader.addEventListener('error', reject);
+          loader.src = imageUrl;
+        });
         maybeRepeatable = (loader.width / Math.max(1, loader.height)) <= configs.unrepeatableBGImageAspectRatio;
       }
       if (shouldNoRepeat)
