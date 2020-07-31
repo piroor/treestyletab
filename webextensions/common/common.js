@@ -58,6 +58,8 @@ export const configs = new Configs({
       'mixed',
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
+  unrepeatableBGImageAspectRatio: 4,
+
   faviconizePinnedTabs: true,
   maxFaviconizedPinnedTabsInOneRow: 0, // auto
   faviconizedTabScale: 1.75,

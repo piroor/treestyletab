@@ -344,7 +344,7 @@ function applyUserStyleRules() {
   mUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
-function applyBrowserTheme(theme) {
+async function applyBrowserTheme(theme) {
   log('applying theme ', theme);
 
   let browserThemeStyle = '';
@@ -354,7 +354,7 @@ function applyBrowserTheme(theme) {
     mBrowserThemeDefinition.textContent = '';
   }
   else {
-    browserThemeStyle = BrowserTheme.generateThemeDeclarations(theme);
+    browserThemeStyle = await BrowserTheme.generateThemeDeclarations(theme);
     // Apply theme color at first, to use given colors as the base of following "face-*" colors.
     mBrowserThemeDefinition.textContent = browserThemeStyle;
   }

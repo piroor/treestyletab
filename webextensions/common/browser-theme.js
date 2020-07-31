@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import {
+  configs
+} from '/common/common.js';
 import * as Color from './color.js';
 
 export function generateThemeRules(theme) {
@@ -31,7 +34,7 @@ export function generateThemeRules(theme) {
   return rules.join('\n');
 }
 
-export function generateThemeDeclarations(theme) {
+export async function generateThemeDeclarations(theme) {
   if (!theme ||
       !theme.colors)
     return '';
@@ -56,10 +59,27 @@ export function generateThemeDeclarations(theme) {
       else
         extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white'); // for dark text
     }
+    let imageUrl = frameImage;
     if (Array.isArray(theme.images.additional_backgrounds) &&
         theme.images.additional_backgrounds.length > 0) {
-      extraColors.push(`--browser-bg-url: url(${JSON.stringify(theme.images.additional_backgrounds[0])})`);
+      imageUrl = theme.images.additional_backgrounds[0];
+      extraColors.push(`--browser-bg-url: url(${JSON.stringify(imageUrl)})`);
       bgAlpha = 0.75;
+    }
+    const loader = new Image();
+    try {
+      await new Promise((resolve, reject) => {
+        loader.addEventListener('load', resolve);
+        loader.addEventListener('error', reject);
+        loader.src = imageUrl;
+      });
+      if ((loader.width / Math.max(1, loader.height)) > configs.unrepeatableBGImageAspectRatio)
+        extraColors.push('--browser-background-image-size: cover;');
+      else
+        extraColors.push('--browser-background-image-size: auto;');
+    }
+    catch(error) {
+      console.error(error);
     }
   }
   const themeBaseColor    = Color.mixCSSColors(themeFrameColor, 'rgba(0, 0, 0, 0)', bgAlpha);
