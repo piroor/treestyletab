@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.16 (2020.8.1)
    * Drop support for some built-in themes: ["Metal"](https://github.com/piroor/treestyletab/wiki/Metal-theme) and ["Plain Dark"](https://github.com/piroor/treestyletab/wiki/Plain-Dark-theme-%28patch-for-the-theme-%22Plain%22%29). They can be alternated with [user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes).
    * Fix too dark color for active tabs from combinations of the Dark color scheme and a bright theme.
    * Apply a workaround for a problem: [unreadable text color on the "High Contrast" mode of Windows 10](https://bugzilla.mozilla.org/show_bug.cgi?id=1656637).
