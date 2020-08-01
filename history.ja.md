@@ -3,6 +3,7 @@
  - master/HEAD
    * 組み込みのテーマの["Metal"](https://github.com/piroor/treestyletab/wiki/Metal-theme)と["Plain Dark"](https://github.com/piroor/treestyletab/wiki/Plain-Dark-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
    * OSの暗い配色と明るいテーマの組み合わせでアクティブなタブの色が暗くなってしまう問題を修正
+   * [Windows 10のハイコントラストモードでサイドバーや設定画面の内容をまったく読めなくなってしまう問題](https://bugzilla.mozilla.org/show_bug.cgi?id=1656637)を回避するようにした
    * ブラウザのテーマに設定された画像のタイリング設定を尊重し、設定が無い場合は画像の縦横比が4:1より横長の場合繰り返しに不適当と判断して拡大表示するようにした
    * Linux環境において初期状態ではシステムカラーを参照するように戻した
    * 復元されたタブが非表示のときは、非表示のタブの子として復元できるようにした
