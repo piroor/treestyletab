@@ -72,7 +72,8 @@
       "24": "/resources/24x24-light.svg",
       "32": "/resources/32x32-light.svg"
     },
-    "default_panel": "/sidebar/sidebar.html"
+    "default_panel": "/sidebar/sidebar.html",
+    "browser_style": false
   },
   "commands": {
     "_execute_browser_action": {
@@ -234,7 +235,7 @@
   },
   "options_ui": {
     "page": "/options/options.html",
-    "browser_style": true
+    "browser_style": false
   },
   "web_accessible_resources": [
     "/resources/group-tab.html*"
