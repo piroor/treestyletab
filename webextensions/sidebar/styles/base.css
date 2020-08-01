@@ -5,6 +5,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+@import url("/resources/ui-base.css");
+
 :root {
   /* default size, they will be overridden. */
   --favicon-size: 16px;
