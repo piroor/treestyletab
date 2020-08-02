@@ -627,6 +627,18 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     tryStartHandleAccelKeyOnTab(tab);
 });
 
+Tab.onShown.addListener(tab => {
+  if (configs.fixupTreeOnTabVisibilityChanged) {
+    reserveToUpdateAncestors(tab);
+    reserveToUpdateChildren(tab);
+  }
+  reserveToUpdateInsertionPosition([
+    tab,
+    tab.$TST.nextTab,
+    tab.$TST.previousTab
+  ]);
+});
+
 Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
   // Spread muted state of a parent tab to its collapsed descendants
   if (!root.$TST.subtreeCollapsed ||
