@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.5.17 (2020.8.3)
+   * Firefoxを起動した時に非表示状態で復元されたタブについて、閉じた後に「閉じたタブを開き直す」で誤った位置に復元されてしまう問題を修正
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.5.16 (2020.8.1)
    * 組み込みのテーマの["Metal"](https://github.com/piroor/treestyletab/wiki/Metal-theme)と["Plain Dark"](https://github.com/piroor/treestyletab/wiki/Plain-Dark-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
    * OSの暗い配色と明るいテーマの組み合わせでアクティブなタブの色が暗くなってしまう問題を修正
