@@ -345,7 +345,7 @@ async function updateInsertionPosition(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
 
-  const prev = tab.$TST.previousTab;
+  const prev = tab.hidden ? tab.$TST.unsafePreviousTab : tab.$TST.previousTab;
   if (prev)
     browser.sessions.setTabValue(
       tab.id,
@@ -358,7 +358,7 @@ async function updateInsertionPosition(tab) {
       Constants.kPERSISTENT_INSERT_AFTER
     ).catch(ApiTabs.createErrorSuppressor());
 
-  const next = tab.$TST.nextTab;
+  const next = tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab;
   if (next)
     browser.sessions.setTabValue(
       tab.id,
