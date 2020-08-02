@@ -597,8 +597,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
   reserveToUpdateChildren(tab);
   reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.nextTab,
-    tab.$TST.previousTab
+    tab.hidden ? tab.$TST.unsafePreviousTab : tab.$TST.previousTab,
+    tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab
   ]);
 });
 
@@ -634,8 +634,8 @@ Tab.onShown.addListener(tab => {
   }
   reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.nextTab,
-    tab.$TST.previousTab
+    tab.hidden ? tab.$TST.unsafePreviousTab : tab.$TST.previousTab,
+    tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab
   ]);
 });
 
@@ -696,8 +696,8 @@ Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
 Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.previousTab,
-    tab.$TST.nextTab,
+    tab.hidden ? tab.$TST.unsafePreviousTab : tab.$TST.previousTab,
+    tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab,
     info.oldPreviousTab,
     info.oldNextTab
   ]);
@@ -710,8 +710,8 @@ Tab.onMoved.addListener((tab, moveInfo) => {
     tab,
     moveInfo.oldPreviousTab,
     moveInfo.oldNextTab,
-    tab.$TST.previousTab,
-    tab.$TST.nextTab
+    tab.hidden ? tab.$TST.unsafePreviousTab : tab.$TST.previousTab,
+    tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab
   ]);
 });
 
