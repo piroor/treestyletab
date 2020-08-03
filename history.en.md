@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.5.18 (2020.8.4)
+   * Safely restore tree for reopened tab even if its old parent was already closed. (regression on 3.5.16)
+   * Safely restore tree for reopened tab on the "Fix up tree structure with visible tabs automatically" mode. (regression on 3.5.17)
  - 3.5.17 (2020.8.3)
    * Undo closed tab at its correct old position, even it it was restored as a hidden tab on the startup.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
