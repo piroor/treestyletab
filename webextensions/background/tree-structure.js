@@ -217,8 +217,12 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     children:     children.map(dumpTab).join(', ')
   }));
   if (configs.fixupTreeOnTabVisibilityChanged) {
-    ancestors = ancestors.filter(ancestor => ancestor && (ancestor.hidden != tab.hidden));
-    children = children.filter(child => child && (child.hidden != tab.hidden));
+    ancestors = ancestors.filter(ancestor => ancestor && (ancestor.hidden == tab.hidden));
+    children = children.filter(child => child && (child.hidden == tab.hidden));
+    log(' ==> references: ', () => ({
+      ancestors: ancestors.map(dumpTab).join(', '),
+      children:  children.map(dumpTab).join(', ')
+    }));
   }
 
   // clear wrong positioning information
@@ -236,6 +240,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
+    log(' attach to old ancestor: ', { child: tab, parent: ancestor });
     const promisedDone = Tree.attachTabTo(tab, ancestor, {
       insertBefore,
       insertAfter,
