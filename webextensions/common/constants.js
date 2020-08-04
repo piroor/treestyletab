@@ -332,4 +332,4 @@ export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
     child:  /^https:\/\/addons.mozilla.org\/([^\/]+\/)?[^\/]+\/search\// }
 ];
 
-export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
+export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';

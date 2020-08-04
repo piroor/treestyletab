@@ -730,7 +730,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpda
 //   https://bugzilla.mozilla.org/show_bug.cgi?id=1367042
 function applyThemeColorToIcon() {
   if (configs.applyThemeColorToIcon) {
-    const icons = { path: browser.runtime.getManifest().variable_color_icons };
+    const icons = { path: browser.runtime.getManifest().icons };
     browser.browserAction.setIcon(icons);
     browser.sidebarAction.setIcon(icons);
   }
