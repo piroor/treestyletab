@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.5.19 (2020.8.4)
+   * Use the toolbar color defined in the theme as the background color of each tab surfaces.
+   * Accept themes with colors defined in various formats `hsl()`, `hsla()`, and their variations.
  - 3.5.18 (2020.8.4)
    * Safely restore tree for reopened tab even if its old parent was already closed. (regression on 3.5.16)
    * Safely restore tree for reopened tab on the "Fix up tree structure with visible tabs automatically" mode. (regression on 3.5.17)
