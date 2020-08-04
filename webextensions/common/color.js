@@ -18,7 +18,7 @@ export function parseCSSColor(color, baseColor) {
 
   let red, green, blue, alpha;
 
-  // RRGGBB, RRGGBBAA
+  // #RRGGBB, #RRGGBBAA
   let parts = color.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
   if (parts) {
     red   = parseInt(parts[1], 16);
@@ -27,7 +27,7 @@ export function parseCSSColor(color, baseColor) {
     alpha = parts[4] ? parseInt(parts[4], 16) / 255 : 1 ;
   }
   if (!parts) {
-    // RGB, RGBA
+    // #RGB, #RGBA
     parts = color.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])([0-9a-f])?$/i);
     if (parts) {
       red   = Math.min(255, Math.round(255 * (parseInt(parts[1], 16) / 16)));
@@ -39,13 +39,64 @@ export function parseCSSColor(color, baseColor) {
   if (!parts) {
     // rgb(), rgba()
     parts = color.match(/^rgba?\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)(?:\s*,\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
-    if (!parts)
-      return color;
-    red   = parseInt(parts[1]);
-    green = parseInt(parts[2]);
-    blue  = parseInt(parts[3]);
-    alpha = parts[4] ? parseFloat(parts[4]) : 1 ;
+    if (parts) {
+      red   = parseInt(parts[1]);
+      green = parseInt(parts[2]);
+      blue  = parseInt(parts[3]);
+      alpha = parts[4] ? parseFloat(parts[4]) : 1 ;
+    }
   }
+  if (!parts) {
+    // hsl(), hsla()
+    parts = color.match(/^hsla?\(\s*([0-9]+)\s*,\s*([0-9]+)%\s*,\s*([0-9]+)%(?:\s*,\s*((?:0\.)?[0-9]+)%\s*)?\)$/i);
+    if (parts) {
+      const hue        = parseInt(parts[1]);
+      const saturation = parseInt(parts[2]);
+      const lightness  = parseInt(parts[3]);
+      let min, max;
+      if (lightness < 50) {
+        max = 2.55 * (lightness + (lightness * (saturation / 100)));
+        min = 2.55 * (lightness - (lightness * (saturation / 100)));
+      }
+      else {
+        max = 2.55 * (lightness + ((100 - lightness) * (saturation / 100)));
+        min = 2.55 * (lightness - ((100 - lightness) * (saturation / 100)));
+      }
+      if (hue < 60) {
+        red   = max;
+        green = (hue / 60) * (max - min) + min;
+        blue  = min;
+      }
+      else if (hue < 120) {
+        red   = ((120 - hue) / 60) * (max - min) + min;
+        green = max;
+        blue  = min;
+      }
+      else if (hue < 180) {
+        red   = min;
+        green = max;
+        blue  = ((hue - 120) / 60) * (max - min) + min;
+      }
+      else if (hue < 240) {
+        red   = min;
+        green = ((240 - hue) / 60) * (max - min) + min;
+        blue  = max;
+      }
+      else if (hue < 300) {
+        red   = ((hue - 240) / 60) * (max - min) + min;
+        green = min;
+        blue  = max;
+      }
+      else {
+        red   = max;
+        green = min;
+        blue  = ((360 - hue) / 60) * (max - min) + min;
+      }
+      alpha = parts[4] ? (parseFloat(parts[4]) / 100) : 1 ;
+    }
+  }
+  if (!parts)
+    return color;
 
   const parsed = { red, green, blue, alpha };
 
