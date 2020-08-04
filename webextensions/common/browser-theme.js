@@ -108,14 +108,14 @@ export async function generateThemeDeclarations(theme) {
   return `
     :root {
       --browser-background:      ${themeFrameColor};
-      --browser-bg-base:         ${themeBaseColor};
-      --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
-      --browser-bg-lighter:      ${toolbarColor};
-      --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
-      --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
-      --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
-      --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
-      --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
+      --browser-bg-base:         ${toolbarColor};
+      --browser-bg-less-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.05)', bgAlpha)};
+      --browser-bg-lighter:      ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.1)', bgAlpha)};
+      --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
+      --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.4)', bgAlpha)};
+      --browser-bg-less-darker:  ${Color.mixCSSColors(toolbarColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
+      --browser-bg-darker:       ${Color.mixCSSColors(toolbarColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
+      --browser-bg-more-darker:  ${Color.mixCSSColors(toolbarColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${inactiveTextColor};
       --browser-fg-active:       ${activeTextColor};
       --browser-border:          ${Color.mixCSSColors(inactiveTextColor, 'rgba(0, 0, 0, 0)', 0.4)};
