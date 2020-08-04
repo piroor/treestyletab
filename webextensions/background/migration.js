@@ -7,10 +7,10 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  notify
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as Permissions from '/common/permissions.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -139,7 +139,7 @@ export function migrateConfigs() {
   configs.configsVersion = kCONFIGS_VERSION;
 }
 
-export async function notifyNewFeatures() {
+export function tryNotifyNewFeatures() {
   /*
   let featuresVersionOffset = 0;
   const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
@@ -152,15 +152,19 @@ export async function notifyNewFeatures() {
   */
 
   const featuresVersion = kFEATURES_VERSION /*+ featuresVersionOffset*/;
+  const isInitialInstall = configs.notifiedFeaturesVersion == 0;
 
   if (configs.notifiedFeaturesVersion >= featuresVersion)
     return;
   configs.notifiedFeaturesVersion = featuresVersion;
 
-  return browser.tabs.create({
-    url:    Constants.kSHORTHAND_URIS.startup,
-    active: true
-  }).catch(ApiTabs.createErrorSuppressor());
+  const suffix = isInitialInstall ? 'installed' : 'updated';
+  notify({
+    url:     Constants.kSHORTHAND_URIS.startup,
+    title:   browser.i18n.getMessage(`startup_notification_title_${suffix}`),
+    message: browser.i18n.getMessage(`startup_notification_message_${suffix}`),
+    timeout: 90 * 1000
+  });
 }
 
 

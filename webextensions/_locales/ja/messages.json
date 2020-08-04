@@ -157,6 +157,11 @@
   "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },
 
+  "startup_notification_title_installed":   { "message": "Tree Style Tabを使い始める方へ" },
+  "startup_notification_message_installed": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ここをクリックして権限を設定してください。" },
+  "startup_notification_title_updated":     { "message": "Tree Style Tabの動作が変わりました" },
+  "startup_notification_message_updated":   { "message": "操作感に影響する大きな変更がありました。ここをクリックして補足説明を確認してください。" },
+
   "message_startup_description_1": { "message": "Tree Style Tabの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },

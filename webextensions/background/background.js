@@ -114,12 +114,7 @@ export async function init() {
   log('init: Start to process messages including queued ones');
   ApiTabsListener.start();
 
-  // Open new tab now (after listening is started, before the end of initialization),
-  // because the sidebar may fail to track tabs.onCreated for the tab while its
-  // initializing process.
-  const promisedNotificationTab = Migration.notifyNewFeatures();
-  if (promisedNotificationTab)
-    await promisedNotificationTab;
+  Migration.tryNotifyNewFeatures();
 
   ContextualIdentities.startObserve();
   onBuilt.dispatch(); // after this line, this master process may receive "kCOMMAND_PING_TO_BACKGROUND" requests from sidebars.
