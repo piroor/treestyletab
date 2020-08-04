@@ -38,7 +38,7 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // rgb(), rgba()
-    parts = color.match(/^rgba?\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)(?:\s*,\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
+    parts = color.match(/^rgba?\(\s*([0-9]+)\s*,?\s*([0-9]+)\s*,?\s*([0-9]+)(?:\s*[,/]?\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
     if (parts) {
       red   = parseInt(parts[1]);
       green = parseInt(parts[2]);
@@ -48,7 +48,7 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // hsl(), hsla()
-    parts = color.match(/^hsla?\(\s*([0-9]+)\s*,\s*([0-9]+)%\s*,\s*([0-9]+)%(?:\s*,\s*((?:0\.)?[0-9]+)%\s*)?\)$/i);
+    parts = color.match(/^hsla?\(\s*([0-9]+)\s*,?\s*([0-9]+)%\s*,?\s*([0-9]+)%(?:\s*[,/]?\s*((?:0\.)?[0-9]+)%\s*)?\)$/i);
     if (parts) {
       const hue        = parseInt(parts[1]);
       const saturation = parseInt(parts[2]);
