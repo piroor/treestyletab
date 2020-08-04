@@ -138,8 +138,19 @@ export function parseCSSColor(color, baseColor) {
       alpha = normalizeAlpha(parts[5]);
     }
   }
-  if (!parts)
-    return color;
+  if (!parts) {
+    switch(color.toLowerCase()) {
+      case 'transparent':
+        red   = 0;
+        green = 0;
+        blue  = 0;
+        alpha = 0;
+        break;
+
+      default:
+        return color;
+    }
+  }
 
   const parsed = { red, green, blue, alpha };
 
