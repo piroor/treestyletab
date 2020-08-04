@@ -22,7 +22,7 @@ function normalizeAlpha(value) {
   return Math.max(0, Math.min(1, value.endsWith('%') ? (parseFloat(value) / 100) : parseFloat(value)));
 }
 
-function normalizeDegrees(value, unit) {
+function normalizeAngle(value, unit) {
   value = parseFloat(value);
   switch ((unit || '').toLowerCase()) {
     case 'rad':
@@ -84,7 +84,7 @@ export function parseCSSColor(color, baseColor) {
     // hsl(), hsla()
     parts = color.match(/^hsla?\(\s*([0-9]+(?:\.[0-9]+)?)(deg|rad|grad|turn)?\s*,?\s*([0-9]+(?:\.[0-9]+)?)%\s*,?\s*([0-9]+(?:\.[0-9]+)?)%(?:\s*[,/]?\s*((?:0\.)?[0-9]+(?:\.[0-9]+)?)%\s*)?\)$/i);
     if (parts) {
-      const hue        = normalizeDegrees(parts[1], parts[2]);
+      const hue        = normalizeAngle(parts[1], parts[2]);
       const saturation = parseFloat(parts[3]);
       const lightness  = parseFloat(parts[4]);
       let min, max;
