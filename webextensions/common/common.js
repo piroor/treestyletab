@@ -492,12 +492,12 @@ export function nextFrame() {
   });
 }
 
-export async function notify(params = {}) {
+export async function notify({ icon, title, message, timeout, url } = {}) {
   const id = await browser.notifications.create({
     type:    'basic',
-    iconUrl: params.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
-    title:   params.title,
-    message: params.message
+    iconUrl: icon || Constants.kNOTIFICATION_DEFAULT_ICON,
+    title,
+    message
   });
 
   let onClicked;
@@ -508,9 +508,9 @@ export async function notify(params = {}) {
     onClicked = notificationId => {
       if (notificationId != id)
         return;
-      if (params.url) {
+      if (url) {
         browser.tabs.create({
-          url: params.url
+          url
         });
       }
       resolved = true;
@@ -528,7 +528,6 @@ export async function notify(params = {}) {
     };
     browser.notifications.onClosed.addListener(onClosed);
 
-    let timeout = params.timeout;
     if (typeof timeout != 'number')
       timeout = configs.notificationTimeout;
     if (timeout >= 0) {
