@@ -44,11 +44,12 @@ export async function generateThemeDeclarations(theme) {
   const inactiveTextColor = theme.colors.tab_background_text || theme.colors.textcolor /* old name */;
   const activeTextColor   = theme.colors.bookmark_text || theme.colors.toolbar_text /* old name */ || inactiveTextColor;
   let bgAlpha = 1;
+  let hasImage = false;
   if (theme.images) {
     const frameImage = theme.images.theme_frame || theme.images.headerURL /* old name */;
     if (frameImage) {
+      hasImage = true;
       extraColors.push(`--browser-header-url: url(${JSON.stringify(frameImage)})`);
-      extraColors.push('--browser-bg-for-header-image: transparent;');
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/themes/shared/tabs.inc.css#537
       extraColors.push('--browser-bg-hover-for-header-image: rgba(0, 0, 0, 0.1);');
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
@@ -65,6 +66,7 @@ export async function generateThemeDeclarations(theme) {
       imageUrl = theme.images.additional_backgrounds[0];
       extraColors.push(`--browser-bg-url: url(${JSON.stringify(imageUrl)})`);
       bgAlpha = 0.75;
+      hasImage = true;
     }
     const loader = new Image();
     try {
@@ -98,8 +100,14 @@ export async function generateThemeDeclarations(theme) {
   }
   const themeBaseColor    = Color.mixCSSColors(themeFrameColor, 'rgba(0, 0, 0, 0)', bgAlpha);
   let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
-  if (theme.colors.toolbar)
+  if (theme.colors.toolbar) {
     toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
+    if (hasImage)
+      extraColors.push(`--browser-bg-for-header-image: ${theme.colors.toolbar};`);
+  }
+  else if (hasImage) {
+    extraColors.push('--browser-bg-for-header-image: rgba(255, 255, 255, 0.25);');
+  }
   if (theme.colors.tab_line)
     extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
   if (theme.colors.tab_loading)
