@@ -46,14 +46,23 @@ function normalizeAngle(value, unit) {
   return value;
 }
 
+const HEX        = '[0-9a-f]';
+const DOUBLE_HEX = `${HEX}{2}`;
+const FLOAT      = '(?:\\.?[0-9]+|[0-9]+(?:\\.[0-9]+)?)';
+const FLOAT_OR_PERCENTAGE = `${FLOAT}%?`;
+
+const HEX_RRGGBBAA_MATCHER = new RegExp(`^#?(${DOUBLE_HEX})(${DOUBLE_HEX})(${DOUBLE_HEX})(${DOUBLE_HEX})?$`, 'i');
+const HEX_RGBA_MATCHER     = new RegExp(`^#?(${HEX})(${HEX})(${HEX})(${HEX})?$`, 'i');
+const RGBA_MATCHER         = new RegExp(`^rgba?\\(\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})(?:\\s*[,/]?\\s*(${FLOAT_OR_PERCENTAGE})\\s*)?\\)$`, 'i');
+const HSLA_MATCHER         = new RegExp(`^hsla?\\(\\s*(${FLOAT})(deg|rad|grad|turn)?\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})(?:\\s*[,/]?\\s*(${FLOAT_OR_PERCENTAGE})\\s*)?\\)$`, 'i');
+
 export function parseCSSColor(color, baseColor) {
   if (typeof color!= 'string')
     return color;
 
   let red, green, blue, alpha;
 
-  // #RRGGBB, #RRGGBBAA
-  let parts = color.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
+  let parts = color.match(HEX_RRGGBBAA_MATCHER);
   if (parts) {
     red   = parseInt(parts[1], 16);
     green = parseInt(parts[2], 16);
@@ -62,7 +71,7 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // #RGB, #RGBA
-    parts = color.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])([0-9a-f])?$/i);
+    parts = color.match(HEX_RGBA_MATCHER);
     if (parts) {
       red   = Math.min(255, Math.round(255 * (parseInt(parts[1], 16) / 16)));
       green = Math.min(255, Math.round(255 * (parseInt(parts[2], 16) / 16)));
@@ -72,7 +81,7 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // rgb(), rgba()
-    parts = color.match(/^rgba?\(\s*([0-9]+(?:\.[0-9]+)?%?)\s*,?\s*([0-9]+(?:\.[0-9]+)?%?)\s*,?\s*([0-9]+(?:\.[0-9]+)?%?)(?:\s*[,/]?\s*((?:0\.)?[0-9]+(?:\.[0-9]+)?)\s*)?\)$/i);
+    parts = color.match(RGBA_MATCHER);
     if (parts) {
       red   = normalizeColorElement(parts[1]);
       green = normalizeColorElement(parts[2]);
@@ -82,7 +91,7 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // hsl(), hsla()
-    parts = color.match(/^hsla?\(\s*([0-9]+(?:\.[0-9]+)?)(deg|rad|grad|turn)?\s*,?\s*([0-9]+(?:\.[0-9]+)?)%\s*,?\s*([0-9]+(?:\.[0-9]+)?)%(?:\s*[,/]?\s*((?:0\.)?[0-9]+(?:\.[0-9]+)?)%\s*)?\)$/i);
+    parts = color.match(HSLA_MATCHER);
     if (parts) {
       const hue        = normalizeAngle(parts[1], parts[2]);
       const saturation = parseFloat(parts[3]);
