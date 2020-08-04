@@ -12,6 +12,40 @@ export function mixCSSColors(base, over, alpha = 1) {
   return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${alpha})`;
 }
 
+function normalizeColorElement(value) {
+  return Math.max(0, Math.min(255, value.endsWith('%') ? (parseFloat(value) / 100 * 255) : parseFloat(value)));
+}
+
+function normalizeAlpha(value) {
+  if (!value)
+    return 1;
+  return Math.max(0, Math.min(1, value.endsWith('%') ? (parseFloat(value) / 100) : parseFloat(value)));
+}
+
+function normalizeDegrees(value, unit) {
+  value = parseFloat(value);
+  switch ((unit || '').toLowerCase()) {
+    case 'rad':
+      value = value * (180 / Math.PI);
+      break;
+
+    case 'grad':
+      value = value * 0.9;
+      break;
+
+    case 'turn':
+      value = value * 360;
+      break;
+
+    default: // deg
+      break;
+  }
+  value = value % 360;
+  if (value < 0)
+    value += 360;
+  return value;
+}
+
 export function parseCSSColor(color, baseColor) {
   if (typeof color!= 'string')
     return color;
@@ -38,21 +72,21 @@ export function parseCSSColor(color, baseColor) {
   }
   if (!parts) {
     // rgb(), rgba()
-    parts = color.match(/^rgba?\(\s*([0-9]+)\s*,?\s*([0-9]+)\s*,?\s*([0-9]+)(?:\s*[,/]?\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
+    parts = color.match(/^rgba?\(\s*([0-9]+(?:\.[0-9]+)?%?)\s*,?\s*([0-9]+(?:\.[0-9]+)?%?)\s*,?\s*([0-9]+(?:\.[0-9]+)?%?)(?:\s*[,/]?\s*((?:0\.)?[0-9]+(?:\.[0-9]+)?)\s*)?\)$/i);
     if (parts) {
-      red   = parseInt(parts[1]);
-      green = parseInt(parts[2]);
-      blue  = parseInt(parts[3]);
-      alpha = parts[4] ? parseFloat(parts[4]) : 1 ;
+      red   = normalizeColorElement(parts[1]);
+      green = normalizeColorElement(parts[2]);
+      blue  = normalizeColorElement(parts[3]);
+      alpha = normalizeAlpha(parts[4]);
     }
   }
   if (!parts) {
     // hsl(), hsla()
-    parts = color.match(/^hsla?\(\s*([0-9]+)\s*,?\s*([0-9]+)%\s*,?\s*([0-9]+)%(?:\s*[,/]?\s*((?:0\.)?[0-9]+)%\s*)?\)$/i);
+    parts = color.match(/^hsla?\(\s*([0-9]+(?:\.[0-9]+)?)(deg|rad|grad|turn)?\s*,?\s*([0-9]+(?:\.[0-9]+)?)%\s*,?\s*([0-9]+(?:\.[0-9]+)?)%(?:\s*[,/]?\s*((?:0\.)?[0-9]+(?:\.[0-9]+)?)%\s*)?\)$/i);
     if (parts) {
-      const hue        = parseInt(parts[1]);
-      const saturation = parseInt(parts[2]);
-      const lightness  = parseInt(parts[3]);
+      const hue        = normalizeDegrees(parts[1], parts[2]);
+      const saturation = parseFloat(parts[3]);
+      const lightness  = parseFloat(parts[4]);
       let min, max;
       if (lightness < 50) {
         max = 2.55 * (lightness + (lightness * (saturation / 100)));
@@ -92,7 +126,7 @@ export function parseCSSColor(color, baseColor) {
         green = min;
         blue  = ((360 - hue) / 60) * (max - min) + min;
       }
-      alpha = parts[4] ? (parseFloat(parts[4]) / 100) : 1 ;
+      alpha = normalizeAlpha(parts[5]);
     }
   }
   if (!parts)
