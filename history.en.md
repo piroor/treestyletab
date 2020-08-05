@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Allow to save user style rules within 48KB.
  - 3.5.19 (2020.8.4)
    * Use the toolbar color defined in the theme as the background color of each tab surfaces.
    * Accept themes with colors defined in various formats `hsl()`, `hsla()`, and their variations.
