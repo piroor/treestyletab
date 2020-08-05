@@ -75,7 +75,7 @@ function removeAccesskeyMark(node) {
   node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
 
-function onChangeMasterChacekbox(event) {
+function onChangeParentChacekbox(event) {
   const container = event.currentTarget.closest('fieldset');
   for (const checkbox of container.querySelectorAll('p input[type="checkbox"]')) {
     checkbox.checked = event.currentTarget.checked;
@@ -83,13 +83,13 @@ function onChangeMasterChacekbox(event) {
   saveLogForConfig();
 }
 
-function onChangeSlaveChacekbox(event) {
-  getMasterCheckboxFromSlave(event.currentTarget).checked = isAllSlavesChecked(event.currentTarget);
+function onChangeChildChacekbox(event) {
+  getParentCheckboxFromChild(event.currentTarget).checked = isAllChildrenChecked(event.currentTarget);
   saveLogForConfig();
 }
 
-function getMasterCheckboxFromSlave(slave) {
-  const container = slave.closest('fieldset');
+function getParentCheckboxFromChild(child) {
+  const container = child.closest('fieldset');
   return container.querySelector('legend input[type="checkbox"]');
 }
 
@@ -133,7 +133,7 @@ function saveLogForConfig() {
   configs.logFor = config;
 }
 
-function isAllSlavesChecked(aMasger) {
+function isAllChildrenChecked(aMasger) {
   const container = aMasger.closest('fieldset');
   const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
   return Array.from(checkboxes).every(checkbox => checkbox.checked);
@@ -424,12 +424,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
-    checkbox.addEventListener('change', onChangeSlaveChacekbox);
+    checkbox.addEventListener('change', onChangeChildChacekbox);
     checkbox.checked = configs.logFor[checkbox.id.replace(/^logFor-/, '')];
   }
   for (const checkbox of document.querySelectorAll('legend input[type="checkbox"][id^="logFor-"]')) {
-    checkbox.checked = isAllSlavesChecked(checkbox);
-    checkbox.addEventListener('change', onChangeMasterChacekbox);
+    checkbox.checked = isAllChildrenChecked(checkbox);
+    checkbox.addEventListener('change', onChangeParentChacekbox);
   }
 
   for (const previewImage of document.querySelectorAll('select ~ .preview-image')) {
