@@ -334,4 +334,5 @@ export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
 
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';
 
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
 export const kSYNC_STORAGE_SAFE_QUOTA = (2 ^ 10) * 1024;
