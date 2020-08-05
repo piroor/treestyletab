@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Apply system colors by default only on Linux with non-dark platform theme.
    * Extend the maximum size of the user style rules from 8KB to 48KB.
    * Notify new features with a desktop notification instead of an annoying tab.
  - 3.5.19 (2020.8.4)
