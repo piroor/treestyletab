@@ -12,7 +12,9 @@ import RichConfirm from '/extlib/RichConfirm.js';
 import {
   log,
   wait,
-  configs
+  configs,
+  loadUserStyleRules,
+  saveUserStyleRules
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -109,6 +111,20 @@ async function onChangeBookmarkPermissionRequiredCheckboxState(event) {
   }, 100);
 }
 
+
+const mUserStyleRulesField = document.getElementById('userStyleRulesField');
+
+function reserveToSaveUserStyleRules() {
+  if (reserveToSaveUserStyleRules.timer)
+    clearTimeout(reserveToSaveUserStyleRules.timer);
+  reserveToSaveUserStyleRules.timer = setTimeout(() => {
+    reserveToSaveUserStyleRules.timer = null;
+    saveUserStyleRules(mUserStyleRulesField.value);
+  }, 250);
+}
+reserveToSaveUserStyleRules.timer = null;
+
+
 function saveLogForConfig() {
   const config = {};
   for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
@@ -198,9 +214,8 @@ function initUserStyleImportExportButtons() {
     const reader = new FileReader();
     reader.onload = async event => {
       const style = event.target.result;
-      const field = document.getElementById('userStyleRules');
-      if (field.value.trim() == '') {
-        field.value = style;
+      if (mUserStyleRulesField.value.trim() == '') {
+        mUserStyleRulesField.value = style;
         return;
       }
       let result;
@@ -222,10 +237,10 @@ function initUserStyleImportExportButtons() {
       }
       switch (result.buttonIndex) {
         case 0:
-          field.value = style;
+          mUserStyleRulesField.value = style;
           break;
         case 1:
-          field.value = `${field.value}\n${style}`;
+          mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
           break;
         default:
           break;
@@ -240,7 +255,7 @@ function importUserStyleFromFile() {
 }
 
 function exportUserStyleToFile() {
-  const styleRules = document.getElementById('userStyleRules').value;
+  const styleRules = mUserStyleRulesField.value;
   const link = document.getElementById('userStyleRules-export-file');
   link.href = URL.createObjectURL(new Blob([styleRules], { type: 'text/css' }));
   link.click();
@@ -443,6 +458,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  mUserStyleRulesField.value = loadUserStyleRules();
+  mUserStyleRulesField.addEventListener('change', reserveToSaveUserStyleRules);
+  mUserStyleRulesField.addEventListener('input', reserveToSaveUserStyleRules);
   initUserStyleImportExportButtons();
 
   browser.runtime.sendMessage({

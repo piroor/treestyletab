@@ -11,7 +11,8 @@ import {
   log as internalLogger,
   nextFrame,
   mapAndFilter,
-  configs
+  configs,
+  loadUserStyleRules
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -341,7 +342,7 @@ function applyStyle(style) {
 }
 
 function applyUserStyleRules() {
-  mUserStyleRules.textContent = configs.userStyleRules || '';
+  mUserStyleRules.textContent = loadUserStyleRules();
 }
 
 async function applyBrowserTheme(theme) {
@@ -786,10 +787,6 @@ function onConfigChange(changedKey) {
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
 
-    case 'userStyleRules':
-      applyUserStyleRules()
-      break;
-
     case 'inheritContextualIdentityToNewChildTab':
       updateContextualIdentitiesSelector();
       break;
@@ -813,6 +810,11 @@ function onConfigChange(changedKey) {
         rootClasses.add('simulate-svg-context-fill');
       else
         rootClasses.remove('simulate-svg-context-fill');
+      break;
+
+    default:
+      if (changedKey.startsWith('userStyleRules'))
+        applyUserStyleRules();
       break;
   }
 }

@@ -18,7 +18,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 11;
+const kCONFIGS_VERSION = 12;
 const kFEATURES_VERSION = 5;
 
 export function migrateConfigs() {
@@ -135,6 +135,10 @@ export function migrateConfigs() {
       if (configs.style == 'plain-dark' ||
           configs.style == 'metal')
         configs.style = configs.$default.style;
+
+    case 11:
+      configs.userStyleRules0 = configs.userStyleRules;
+      configs.userStyleRules = '';
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

@@ -290,6 +290,7 @@ export const configs = new Configs({
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
   newTabAnimationDuration: 100,
 
+  // obsolete, migrated to userStyleRules0-5
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
@@ -306,6 +307,12 @@ export const configs = new Configs({
 }
 */
 `.trim(),
+  userStyleRules0: '',
+  userStyleRules1: '',
+  userStyleRules2: '',
+  userStyleRules3: '',
+  userStyleRules4: '',
+  userStyleRules5: '',
 
 
   // Compatibility with other addons
@@ -392,6 +399,46 @@ configs.$loaded.then(() => {
   if (!configs.debug)
     log.logs = [];
 });
+
+
+export function loadUserStyleRules() {
+  let style = '';
+  let count = 0;
+  while (true) {
+    const key = `userStyleRules${count}`;
+    if (!(key in configs))
+      break;
+    style += configs[key];
+    count++;
+  }
+  return style;
+}
+
+export function saveUserStyleRules(style) {
+  chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA).forEach((chunk, index) => {
+    const key = `userStyleRules${index}`;
+    if (key in configs)
+      configs[key] = chunk;
+  });
+}
+
+// https://stackoverflow.com/questions/57068850/how-to-split-a-string-into-chunks-of-a-particular-byte-size
+function chunkString(input, maxBytes) {
+  const decoder = new TextDecoder('utf-8');
+  let buffer = new TextEncoder('utf-8').encode(input);
+  const chunks = [];
+  while (buffer.length) {
+    let index = buffer.lastIndexOf(32, maxBytes + 1);
+    if (index < 0)
+      index = buffer.indexOf(32, maxBytes);
+    if (index < 0)
+      index = buffer.length;
+    chunks.push(decoder.decode(buffer.slice(0, index)));
+    buffer = buffer.slice(index + 1);
+  }
+  return chunks;
+}
+
 
 
 export function log(module, ...args)
