@@ -1,7 +1,8 @@
 # History
 
  - master/HEAD
-   * Allow to save user style rules within 48KB.
+   * Extend the maximum size of the user style rules from 8KB to 48KB.
+   * Notify new features with a desktop notification instead of an annoying tab.
  - 3.5.19 (2020.8.4)
    * Use the toolbar color defined in the theme as the background color of each tab surfaces.
    * Accept themes with colors defined in various formats `hsl()`, `hsla()`, and their variations.
