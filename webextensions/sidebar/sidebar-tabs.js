@@ -159,7 +159,7 @@ async function syncTabsOrder() {
   const nativeTabs   = nativeOrder.slice(0).sort().join('\n');
   if (expectedTabs != nativeTabs) {
     if (reserveToSyncTabsOrder.retryCount > 10) {
-      console.error(new Error(`Fatal error: native tabs are not same to the tabs tracked by the master process, for the window ${windowId}. Reloading all...`));
+      console.error(new Error(`Fatal error: native tabs are not same to the tabs tracked by the background process, for the window ${windowId}. Reloading all...`));
       reserveToSyncTabsOrder.retryCount = 0;
       browser.runtime.sendMessage({
         type: Constants.kCOMMAND_RELOAD,
@@ -167,7 +167,7 @@ async function syncTabsOrder() {
       }).catch(ApiTabs.createErrorSuppressor());
       return;
     }
-    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen when synchronization and tab removing are done in parallel. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
+    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the background process, but this can happen when synchronization and tab removing are done in parallel. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
@@ -175,7 +175,7 @@ async function syncTabsOrder() {
   const actualTabs = actualOrder.slice(0).sort().join('\n');
   if (expectedTabs != actualTabs ||
       elementsOrder.length != internalOrder.length) {
-    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the master process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
+    log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the background process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.error(new Error(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`));
       reserveToSyncTabsOrder.retryCount = 0;
@@ -481,7 +481,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const nativeTab = message.tab;
       nativeTab.reindexedBy = `creating (${nativeTab.index})`;
 
-      // The "index" property of the tab was already updated by the master process
+      // The "index" property of the tab was already updated by the background process
       // with other newly opened tabs. However, such other tabs are not tracked on
       // this sidebar namespace yet. Thus we need to correct the index of the tab
       // to be inserted to already tracked tabs.
