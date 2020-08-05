@@ -47,7 +47,7 @@ tab-item:not(.collapsed) .throbber {
 }
 
 :root:not(.throbber-synchronizing) tab-item:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
-:root:not(.throbber-synchronizing).have-loading-tab #master-throbber,
+:root:not(.throbber-synchronizing).have-loading-tab #conductor-throbber,
 :root.have-loading-tab #sync-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
   animation: throbber 1.05s var(--throbber-animation-steps) infinite;
@@ -55,7 +55,7 @@ tab-item:not(.collapsed) .throbber {
 
 :root.blocking-throbber #blocking-screen .throbber::before,
 #tabbar tab-item:not(.collapsed).loading .throbber::before,
-:root.have-loading-tab #master-throbber {
+:root.have-loading-tab #conductor-throbber {
   content: "";
   height: var(--throbber-size);
   position: absolute;
@@ -86,13 +86,13 @@ tab-item:not(.collapsed) .throbber {
 
 #tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   background-image: none;
-  mask: -moz-element(#master-throbber) no-repeat left center / 100%;
+  mask: -moz-element(#conductor-throbber) no-repeat left center / 100%;
 }
 :root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
-  mask: -moz-element(#master-throbber-container) no-repeat;
+  mask: -moz-element(#conductor-throbber-container) no-repeat;
 }
 
-#master-throbber {
+#conductor-throbber {
   background: url("./throbber.svg") no-repeat left center;
 }
 
