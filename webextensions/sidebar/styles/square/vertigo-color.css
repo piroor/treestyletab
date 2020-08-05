@@ -64,16 +64,16 @@
 }
 
 @media not (prefers-color-scheme: dark) {
-:root[color-scheme="system-color"] {
-  --toolbar-non-lwt-bgcolor: -moz-dialog;
-  --toolbar-non-lwt-textcolor: -moz-dialogtext;
-  --toolbar-non-lwt-inverted-textcolor: -moz-dialog;
-  --toolbar-non-lwt-border-color: ThreeDShadow;
+  :root[color-scheme="system-color"] {
+    --toolbar-non-lwt-bgcolor: -moz-dialog;
+    --toolbar-non-lwt-textcolor: -moz-dialogtext;
+    --toolbar-non-lwt-inverted-textcolor: -moz-dialog;
+    --toolbar-non-lwt-border-color: ThreeDShadow;
 
-  --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter)));
-  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, var(--face-highlight-lighter)));
-  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-lighter)));
-}
+    --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter)));
+    --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, var(--face-highlight-lighter)));
+    --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-lighter)));
+  }
 }
 
 tab-item,
