@@ -63,6 +63,7 @@
   background-position: right;
 }
 
+@media not (prefers-color-scheme: dark) {
 :root[color-scheme="system-color"] {
   --toolbar-non-lwt-bgcolor: -moz-dialog;
   --toolbar-non-lwt-textcolor: -moz-dialogtext;
@@ -72,6 +73,7 @@
   --tab-surface-hover: var(--browser-bg-hover-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-more-lighter)));
   --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-bg-lighter, var(--face-highlight-lighter)));
   --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, var(--face-highlight-more-lighter)));
+}
 }
 
 tab-item,
@@ -123,7 +125,7 @@ tab-item .burster {
 
 
 @media (prefers-color-scheme: dark) {
-  :root:not([color-scheme="system-color"]) {
+  :root {
     --toolbar-non-lwt-bgcolor: #252526;
     --toolbar-non-lwt-textcolor: #efefef;
     --toolbar-non-lwt-inverted-textcolor: black;
@@ -137,8 +139,7 @@ tab-item .burster {
     --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-bg-more-lighter, #293b4e /* #252526 + #041628 (switched R and B from #281600 + #00004), (parseInt('252526', 16) + parseInt('041628', 16)).toString(16) */));
   }
 
-  :root:not([color-scheme="system-color"])
-    tab-item:not(.active):not(.bundled-active):not(.highlighted) {
+  tab-item:not(.active):not(.bundled-active):not(.highlighted) {
     --throbber-color: var(--browser-loading-indicator, #afafaf);
   }
 

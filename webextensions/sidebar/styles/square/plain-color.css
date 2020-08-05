@@ -37,6 +37,7 @@
   background-position: right;
 }
 
+@media not (prefers-color-scheme: dark) {
 :root[color-scheme="system-color"] {
   --tab-surface-regular: var(--browser-bg-for-header-image, var(--browser-bg-base, -moz-dialog));
   --tab-text-regular: var(--browser-fg, -moz-dialogtext);
@@ -65,6 +66,7 @@
   top: 0;
   z-index: 20;
 }
+}
 
 #tabbar {
   scrollbar-color: var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed))
@@ -72,7 +74,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([color-scheme="system-color"]) {
+  :root {
     --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
     --tabbar-bg: var(--browser-bg-darker, var(--dark-frame));
   }

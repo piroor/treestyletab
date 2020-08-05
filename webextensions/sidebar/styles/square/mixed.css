@@ -26,6 +26,7 @@
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
 }
 
+@media not (prefers-color-scheme: dark) {
 :root[color-scheme="system-color"] {
   --tab-surface-active-gradient-start: var(--face-gradient-start-active);
   --tab-surface-active-gradient-end:   var(--face-gradient-end);
@@ -33,6 +34,7 @@
 :root[color-scheme="system-color"] tab-item:not(.active):hover {
   --tab-surface-active-gradient-start: var(--face-gradient-start-inactive);
   --tab-surface-active-gradient-end:   var(--face-gradient-end);
+}
 }
 
 :root,
@@ -144,18 +146,16 @@ tab-item.faviconized:not(.active):not(.bundled-active):not(.highlighted):hover .
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([color-scheme="system-color"]) {
+  :root {
     --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.4);
     --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
   }
-  :root:not([color-scheme="system-color"])
-    tab-item:not(.active):hover {
+  tab-item:not(.active):hover {
     --tab-surface-active-gradient-start: rgba(12, 39, 56, 0.25);
     --tab-surface-active-gradient-end:   rgba(12, 39, 56, 0);
   }
 
-  :root:not([color-scheme="system-color"])
-    tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
+  tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .highlighter::before {
     --tab-highlighter-start: var(--grey-10-a015);
     --tab-highlighter-end: var(--grey-10-a20);
   }
