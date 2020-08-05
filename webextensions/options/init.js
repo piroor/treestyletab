@@ -75,7 +75,7 @@ function removeAccesskeyMark(node) {
   node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
 
-function onChangeParentChacekbox(event) {
+function onChangeParentCheckbox(event) {
   const container = event.currentTarget.closest('fieldset');
   for (const checkbox of container.querySelectorAll('p input[type="checkbox"]')) {
     checkbox.checked = event.currentTarget.checked;
@@ -83,7 +83,7 @@ function onChangeParentChacekbox(event) {
   saveLogForConfig();
 }
 
-function onChangeChildChacekbox(event) {
+function onChangeChildCheckbox(event) {
   getParentCheckboxFromChild(event.currentTarget).checked = isAllChildrenChecked(event.currentTarget);
   saveLogForConfig();
 }
@@ -424,12 +424,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
-    checkbox.addEventListener('change', onChangeChildChacekbox);
+    checkbox.addEventListener('change', onChangeChildCheckbox);
     checkbox.checked = configs.logFor[checkbox.id.replace(/^logFor-/, '')];
   }
   for (const checkbox of document.querySelectorAll('legend input[type="checkbox"][id^="logFor-"]')) {
     checkbox.checked = isAllChildrenChecked(checkbox);
-    checkbox.addEventListener('change', onChangeParentChacekbox);
+    checkbox.addEventListener('change', onChangeParentCheckbox);
   }
 
   for (const previewImage of document.querySelectorAll('select ~ .preview-image')) {
