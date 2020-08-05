@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Use the SVG icon insetad of the PNG icon on all situations.
    * Apply system colors by default only on Linux with non-dark platform theme.
    * Extend the maximum size of the user style rules from 8KB to 48KB.
    * Notify new features with a desktop notification instead of an annoying tab.
