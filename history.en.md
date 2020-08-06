@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.20 (2020.8.7)
    * Use the SVG icon insetad of the PNG icon on all situations.
    * Apply system colors by default only on Linux with non-dark platform theme.
    * Extend the maximum size of the user style rules from 8KB to 48KB.
