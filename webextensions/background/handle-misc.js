@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   wait,
   mapAndFilterUniq,
-  configs
+  configs,
+  loadUserStyleRules
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -332,6 +333,9 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SET_CONFIG_VALUE:
       return Promise.resolve(configs[message.key] = message.value);
+
+    case Constants.kCOMMAND_GET_USER_STYLE_RULES:
+      return Promise.resolve(loadUserStyleRules());
 
     case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimizie further initialization tasks in the sidebar
     case Constants.kCOMMAND_PULL_TABS:

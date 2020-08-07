@@ -179,7 +179,7 @@
 
     window.l10n.updateDocument();
 
-    const [themeDeclarations, contextualIdentitiesColorInfo, configs] = await Promise.all([
+    const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules] = await Promise.all([
       browser.runtime.sendMessage({
         type: 'treestyletab:get-theme-declarations'
       }),
@@ -190,9 +190,11 @@
         type: 'treestyletab:get-config-value',
         keys: [
           'renderTreeInGroupTabs',
-          'showAutoGroupOptionHint',
-          'userStyleRules'
+          'showAutoGroupOptionHint'
         ]
+      }),
+      browser.runtime.sendMessage({
+        type: 'treestyletab:get-user-style-rules'
       })
     ]);
 
@@ -205,7 +207,7 @@
       ${contextualIdentitiesMarkerDeclarations}
       ${contextualIdentitiesColorInfo.colorDeclarations}
     `;
-    gUserStyleRules.textContent = configs.userStyleRules;
+    gUserStyleRules.textContent = userStyleRules;
 
     updateTree.enabled = configs.renderTreeInGroupTabs;
     updateTree();
