@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.5.21 (2020.8.8)
+   * Apply user style rules to group tabs again. (regression on 3.5.20)
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.20 (2020.8.7)
    * Use the SVG icon insetad of the PNG icon on all situations.
    * Apply system colors by default only on Linux with non-dark platform theme.
