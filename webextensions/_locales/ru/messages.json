@@ -157,6 +157,11 @@
   "bookmarkFolderChooser_blank":         { "message": "(без имени)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Использовать эту папку" },
 
+  "startup_notification_title_installed":   { "message": "Новым пользователям Tree Style Tab" },
+  "startup_notification_message_installed": { "message": "Дополнительные разрешения требуются для взаимодействия с пользователем. Щелкните здесь, чтобы предоставить их." },
+  "startup_notification_title_updated":     { "message": "Изменения в Tree Style Tab" },
+  "startup_notification_message_updated":   { "message": "Изменения могут повлиять на ваши предпочтения. Щелкните здесь, чтобы увидеть описания." },
+
   "message_startup_description_1": { "message": "Tree Style Tab возрожден на основе технологий WebExtensions для Firefox 57 и более поздних версий. Вертикальная панель вкладок доступна в качестве одной из боковых панелей. Если вы ещё не видите её, нажмите " },
   "message_startup_description_key": { "message": "кнопку \"F1\" " },
   "message_startup_description_2": { "message": " либо " },
