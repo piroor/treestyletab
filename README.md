@@ -156,6 +156,8 @@ If you need any new API, please file API proposals to the issue tracker.
 
 ### FAQ / frequently rejected requests/proposals
 
+#### Other browsers support
+
 * <details><summary>Support for <a href="https://github.com/piroor/treestyletab/issues/1043">Pale Moon, Waterfox, and other Firefox forks</a></summary>
   
   Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.  There is also [a forked version for Waterfox Classic](https://github.com/Ulf3000/treestyletab).
@@ -170,11 +172,31 @@ If you need any new API, please file API proposals to the issue tracker.
   Sorry but I won't re-implement TST as a Chrome extension by myself because I still use Firefox.
   (But [there are some alternatives developed by someone not me](#similar-projects).)
   </details>
+
+#### Appearance
+
 * <details><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
   
   [As a workaround, you need to do it by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
   But please remind that such an usage is not recommended by the original author of TST, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*.
   </details>
+* <details><summary>Unnatural colors diferent from GTK+ theme on Linux</summary>
+  
+  Due to restrictions from Firefox itself, TST can't apply GTK+ theme color to its appearance by default. If you hope to see TST's UI with colors matching to other parts of Firefox, you need to configure Firefox and TST as:
+  
+  * Firefox's about:config
+    * *`widget.content.allow-gtk-dark-theme`=`true` (not default)*
+    * `widget.content.gtk-theme-override`=unset (default)
+  * TST's options
+    * *"Appearance" =>  "Theme" =>  "High Contrast" (not default)*
+    * "Advanced" => "Extra style rules..." => no active style rule (default)
+    * "Development" => "Color scheme" => "System Color" (default)
+  
+  For more details, please see also [the discussions in the issue #2667](https://github.com/piroor/treestyletab/issues/2667).
+  </details>
+
+#### Feature requests
+
 * <details><summary>Support for horizontal tab bar</summary>
   
   It is impossible.
@@ -268,6 +290,9 @@ If you need any new API, please file API proposals to the issue tracker.
   There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
   See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspection for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
   </details>
+
+#### Troubles, unexpected behaviors
+
 * <details><summary>I cannot drop tabs to the bookmarks toolbar to create bookmarks. (<a href="https://github.com/piroor/treestyletab/issues/2033">#2033</a>)</summary>
   
   In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar. Otherwise [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) possibly helps you.
@@ -302,6 +327,9 @@ If you need any new API, please file API proposals to the issue tracker.
   
   However Firefox 64 will have [some new WebExtensions APIs about this point](https://bugzilla.mozilla.org/show_bug.cgi?id=1500479 "1500479 - Enhance browser.tabs API to support assigning tab successors"). After those APIs land, TST will be updated to use them and you'll never see the "next tab is unexpectedly focused" behavior anymore.
   </details>
+
+#### Other topics
+
 * <details><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
   
   Thanks, but sorry, I have no plan about any donation from some reasons.
