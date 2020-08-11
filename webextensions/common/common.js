@@ -425,7 +425,6 @@ export function saveUserStyleRules(style) {
   });
 }
 
-// https://stackoverflow.com/questions/57068850/how-to-split-a-string-into-chunks-of-a-particular-byte-size
 function chunkString(input, maxBytes) {
   const decoder = new TextDecoder('utf-8');
   let buffer = new TextEncoder('utf-8').encode(input);
