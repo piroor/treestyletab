@@ -417,7 +417,8 @@ export function loadUserStyleRules() {
 }
 
 export function saveUserStyleRules(style) {
-  [...chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA), ...Array.from(new Uint8Array(8), _ => '')].slice(0, 8).forEach((chunk, index) => {
+  const slots = 8;
+  [...chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA), ...Array.from(new Uint8Array(slots), _ => '')].slice(0, slots).forEach((chunk, index) => {
     const key = `userStyleRules${index}`;
     if (key in configs)
       configs[key] = chunk || '';
