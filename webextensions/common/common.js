@@ -426,12 +426,14 @@ export function loadUserStyleRules() {
 }
 
 export function saveUserStyleRules(style) {
-  const slots = 8;
-  [...chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA), ...Array.from(new Uint8Array(slots), _ => '')].slice(0, slots).forEach((chunk, index) => {
-    const key = `chunkedUserStyleRules${index}`;
-    if (key in configs)
-      configs[key] = chunk || '';
-  });
+  [...chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA),
+    ...Array.from(new Uint8Array(Constants.kUSER_STYLE_RULES_SLOT), _ => '')]
+    .slice(0, Constants.kUSER_STYLE_RULES_SLOT)
+    .forEach((chunk, index) => {
+      const key = `chunkedUserStyleRules${index}`;
+      if (key in configs)
+        configs[key] = chunk || '';
+    });
 }
 
 function chunkString(input, maxBytes) {
