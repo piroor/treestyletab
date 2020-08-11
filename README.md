@@ -257,6 +257,8 @@ If you need any new API, please file API proposals to the issue tracker.
 * <details><summary>How to customize tab context menu?</summary>
   
   You can do it with the `userChrome.css`. There are some instructions about [activatiton of the `userChrome.css` on recent versions of Firefox](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss) and [style rules to hide specific context menu items](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#hide-context-menu-items-in-the-sidebar-2116).
+  
+  I have no plan to add configuration UI for menu items cited from Firefox's native tab context menu. [Here are some my comments describing reasons of this decision.](https://github.com/piroor/treestyletab/issues/2658)
   </details>
 * <details><summary>Auto hide of the sidebar</summary>
   
