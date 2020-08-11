@@ -808,6 +808,18 @@ function updateMultiselectionByTabClick(tab, event) {
   }
 }
 
+Tab.onActivated.addListener((tab, _info = {}) => {
+  if (tab.windowId != mTargetWindow)
+    return;
+
+  if (mLastClickedTab &&
+      tab.id != mLastClickedTab.id &&
+      Tab.getHighlightedTabs(mTargetWindow).length == 1) {
+    mLastClickedTab       = null;
+    mIsInSelectionSession = false;
+  }
+});
+
 function onClick(_event) {
   // clear unexpectedly left "dragging" state
   // (see also https://github.com/piroor/treestyletab/issues/1921 )
