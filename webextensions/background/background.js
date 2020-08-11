@@ -46,6 +46,9 @@ function log(...args) {
   internalLogger('background/background', ...args);
 }
 
+// This needs to be large enough for bulk updates on multiple tabs.
+const DELAY_TO_PROCESS_RESERVED_UPDATE_TASKS = 250;
+
 export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
@@ -325,16 +328,25 @@ export function reserveToUpdateInsertionPosition(tabOrTabs) {
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingTab(tab))
       continue;
-    if (tab.$TST.reservedUpdateInsertionPosition)
-      clearTimeout(tab.$TST.reservedUpdateInsertionPosition);
-    tab.$TST.reservedUpdateInsertionPosition = setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      delete tab.$TST.reservedUpdateInsertionPosition;
-      updateInsertionPosition(tab);
-    }, 100);
+    const reserved = reserveToUpdateInsertionPosition.reserved.get(tab.windowId) || {
+      timer: null,
+      tabs:  new Set()
+    };
+    if (reserved.timer)
+      clearTimeout(reserved.timer);
+    reserved.tabs.add(tab);
+    reserved.timer = setTimeout(() => {
+      reserveToUpdateInsertionPosition.reserved.delete(tab.windowId);
+      for (const tab of reserved.tabs) {
+        if (!tab.$TST)
+          continue;
+        updateInsertionPosition(tab);
+      }
+    }, DELAY_TO_PROCESS_RESERVED_UPDATE_TASKS);
+    reserveToUpdateInsertionPosition.reserved.set(tab.windowId, reserved);
   }
 }
+reserveToUpdateInsertionPosition.reserved = new Map();
 
 async function updateInsertionPosition(tab) {
   if (!TabsStore.ensureLivingTab(tab))
@@ -373,16 +385,25 @@ export function reserveToUpdateAncestors(tabOrTabs) {
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingTab(tab))
       continue;
-    if (tab.$TST.reservedUpdateAncestors)
-      clearTimeout(tab.$TST.reservedUpdateAncestors);
-    tab.$TST.reservedUpdateAncestors = setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      delete tab.$TST.reservedUpdateAncestors;
-      updateAncestors(tab);
-    }, 100);
+    const reserved = reserveToUpdateAncestors.reserved.get(tab.windowId) || {
+      timer: null,
+      tabs:  new Set()
+    };
+    if (reserved.timer)
+      clearTimeout(reserved.timer);
+    reserved.tabs.add(tab);
+    reserved.timer = setTimeout(() => {
+      reserveToUpdateAncestors.reserved.delete(tab.windowId);
+      for (const tab of reserved.tabs) {
+        if (!tab.$TST)
+          continue;
+        updateAncestors(tab);
+      }
+    }, DELAY_TO_PROCESS_RESERVED_UPDATE_TASKS);
+    reserveToUpdateAncestors.reserved.set(tab.windowId, reserved);
   }
 }
+reserveToUpdateAncestors.reserved = new Map();
 
 async function updateAncestors(tab) {
   if (!TabsStore.ensureLivingTab(tab))
@@ -400,16 +421,25 @@ export function reserveToUpdateChildren(tabOrTabs) {
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingTab(tab))
       continue;
-    if (tab.$TST.reservedUpdateChildren)
-      clearTimeout(tab.$TST.reservedUpdateChildren);
-    tab.$TST.reservedUpdateChildren = setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      delete tab.$TST.reservedUpdateChildren;
-      updateChildren(tab);
-    }, 100);
+    const reserved = reserveToUpdateChildren.reserved.get(tab.windowId) || {
+      timer: null,
+      tabs:  new Set()
+    };
+    if (reserved.timer)
+      clearTimeout(reserved.timer);
+    reserved.tabs.add(tab);
+    reserved.timer = setTimeout(() => {
+      reserveToUpdateChildren.reserved.delete(tab.windowId);
+      for (const tab of reserved.tabs) {
+        if (!tab.$TST)
+          continue;
+        updateChildren(tab);
+      }
+    }, DELAY_TO_PROCESS_RESERVED_UPDATE_TASKS);
+    reserveToUpdateChildren.reserved.set(tab.windowId, reserved);
   }
 }
+reserveToUpdateChildren.reserved = new Map();
 
 async function updateChildren(tab) {
   if (!TabsStore.ensureLivingTab(tab))
@@ -426,15 +456,24 @@ function reserveToUpdateSubtreeCollapsed(tab) {
   if (!mInitialized ||
       !TabsStore.ensureLivingTab(tab))
     return;
-  if (tab.$TST.reservedUpdateSubtreeCollapsed)
-    clearTimeout(tab.$TST.reservedUpdateSubtreeCollapsed);
-  tab.$TST.reservedUpdateSubtreeCollapsed = setTimeout(() => {
-    if (!tab.$TST)
-      return;
-    delete tab.$TST.reservedUpdateSubtreeCollapsed;
-    updateSubtreeCollapsed(tab);
-  }, 100);
+  const reserved = reserveToUpdateSubtreeCollapsed.reserved.get(tab.windowId) || {
+    timer: null,
+    tabs:  new Set()
+  };
+  if (reserved.timer)
+    clearTimeout(reserved.timer);
+  reserved.tabs.add(tab);
+  reserved.timer = setTimeout(() => {
+    reserveToUpdateSubtreeCollapsed.reserved.delete(tab.windowId);
+    for (const tab of reserved.tabs) {
+      if (!tab.$TST)
+        continue;
+      updateSubtreeCollapsed(tab);
+    }
+  }, DELAY_TO_PROCESS_RESERVED_UPDATE_TASKS);
+  reserveToUpdateSubtreeCollapsed.reserved.set(tab.windowId, reserved);
 }
+reserveToUpdateSubtreeCollapsed.reserved = new Map();
 
 async function updateSubtreeCollapsed(tab) {
   if (!TabsStore.ensureLivingTab(tab))
