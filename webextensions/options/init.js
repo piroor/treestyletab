@@ -119,7 +119,16 @@ function reserveToSaveUserStyleRules() {
     clearTimeout(reserveToSaveUserStyleRules.timer);
   reserveToSaveUserStyleRules.timer = setTimeout(() => {
     reserveToSaveUserStyleRules.timer = null;
-    saveUserStyleRules(mUserStyleRulesField.value);
+    const caution = document.querySelector('#tooLargeUserStyleRulesCaution');
+    try {
+      saveUserStyleRules(mUserStyleRulesField.value);
+      mUserStyleRulesField.classList.remove('invalid');
+      caution.classList.remove('invalid');
+    }
+    catch(e) {
+      mUserStyleRulesField.classList.add('invalid');
+      caution.classList.add('invalid');
+    }
   }, 250);
 }
 reserveToSaveUserStyleRules.timer = null;

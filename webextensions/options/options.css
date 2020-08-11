@@ -171,6 +171,21 @@ label input[type="checkbox"] ~ img {
   cursor: text;
 }
 
+#tooLargeUserStyleRulesCaution {
+  color: var(--red-50);
+  visibility: hidden;
+}
+#tooLargeUserStyleRulesCaution.invalid {
+  visibility: visible;
+}
+
+#userStyleRulesField.invalid {
+  border-color: var(--red-50);
+  --in-content-border-active: var(--red-50);
+  --in-content-border-active-shadow: var(--red-50-a30);
+  background-color: var(--red-50-a10);
+}
+
 
 table {
   border-collapse: collapse;

@@ -144,17 +144,22 @@ export function migrateConfigs() {
       }
 
     case 12:
-      saveUserStyleRules(Array.from(new Uint8Array(8), (_, index) => {
-        const key = `userStyleRules${index}`;
-        if (key in configs) {
-          const chunk = configs[key];
-          configs[key] = '';
-          return chunk || '';
-        }
-        else {
-          return '';
-        }
-      }).join(''));
+      try {
+        saveUserStyleRules(Array.from(new Uint8Array(8), (_, index) => {
+          const key = `userStyleRules${index}`;
+          if (key in configs) {
+            const chunk = configs[key];
+            configs[key] = '';
+            return chunk || '';
+          }
+          else {
+            return '';
+          }
+        }).join(''));
+      }
+      catch(error) {
+        console.error(error);
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

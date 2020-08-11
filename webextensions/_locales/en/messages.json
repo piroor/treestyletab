@@ -505,6 +505,7 @@
   "config_userStyleRules_overwrite_message":   { "message": "Do you want the current style rules to be replaced with the loaded file completely?" },
   "config_userStyleRules_overwrite_overwrite": { "message": "Replace All" },
   "config_userStyleRules_overwrite_append":    { "message": "Append to the last" },
+  "config_tooLargeUserStyleRulesCaution": { "message": "Too many (large) style rules! Please shrink more." },
 
 
   "config_addons_caption": { "message": "Extra Features via Other Addons" },
