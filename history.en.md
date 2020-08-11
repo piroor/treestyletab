@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Shift-click to multiselect tabs between the clicked tab and the active tab correctly, even if it happens after focus move from outside of TST.
    * Restore closed tabs with their correct old position even if their visibility was switched by something other addons like Simple Tab Groups.
    * Save very large user style rules more safely.
  - 3.5.21 (2020.8.8)
