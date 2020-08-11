@@ -137,8 +137,10 @@ export function migrateConfigs() {
         configs.style = configs.$default.style;
 
     case 11:
-      configs.userStyleRules0 = configs.userStyleRules;
-      configs.userStyleRules = '';
+      if (configs.userStyleRules) {
+        configs.userStyleRules0 = configs.userStyleRules;
+        configs.userStyleRules = '';
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
