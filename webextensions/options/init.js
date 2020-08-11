@@ -125,7 +125,7 @@ function reserveToSaveUserStyleRules() {
       mUserStyleRulesField.classList.remove('invalid');
       caution.classList.remove('invalid');
     }
-    catch(e) {
+    catch(_error) {
       mUserStyleRulesField.classList.add('invalid');
       caution.classList.add('invalid');
     }

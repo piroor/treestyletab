@@ -430,7 +430,7 @@ export function saveUserStyleRules(style) {
   if (chunks.length > Constants.kUSER_STYLE_RULES_SLOT)
     throw new Error('too large style');
   [...chunks,
-   ...Array.from(new Uint8Array(Constants.kUSER_STYLE_RULES_SLOT), _ => '')]
+    ...Array.from(new Uint8Array(Constants.kUSER_STYLE_RULES_SLOT), _ => '')]
     .slice(0, Constants.kUSER_STYLE_RULES_SLOT)
     .forEach((chunk, index) => {
       const key = `chunkedUserStyleRules${index}`;
