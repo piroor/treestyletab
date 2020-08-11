@@ -686,8 +686,8 @@ function updateMultiselectionByTabClick(tab, event) {
 
     try {
       if (!ctrlKeyPressed) {
-        const alreadySelectedTabs = Tab.getSelectedTabs(tab.windowId, { iterator: true });
-        log('clear old selection by shift-click: ', configs.debug && Array.from(alreadySelectedTabs, dumpTab));
+        const alreadySelectedTabs = Tab.getHighlightedTabs(tab.windowId, { iterator: true });
+        log('clear old selection by shift-click');
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.has(alreadySelectedTab))
             highlightedTabIds.delete(alreadySelectedTab.id);
@@ -710,6 +710,7 @@ function updateMultiselectionByTabClick(tab, event) {
           highlightedTabIds.add(descendant.id);
         }
       }
+      log(' => highlightedTabIds: ', highlightedTabIds);
 
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = mapAndFilter(highlightedTabIds,
