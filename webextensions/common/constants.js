@@ -336,4 +336,6 @@ export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
-export const kSYNC_STORAGE_SAFE_QUOTA = (2 ^ 10) * 1024;
+// Use 6 * 1024 instead of 8 * 1024 (max of the quota) for safety.
+// For example, 6 * 8 = 48KB is the max size of the user style rules.
+export const kSYNC_STORAGE_SAFE_QUOTA = 6 * 1024;

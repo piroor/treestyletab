@@ -313,6 +313,8 @@ export const configs = new Configs({
   userStyleRules3: '',
   userStyleRules4: '',
   userStyleRules5: '',
+  userStyleRules6: '',
+  userStyleRules7: '',
 
 
   // Compatibility with other addons
@@ -428,12 +430,17 @@ function chunkString(input, maxBytes) {
   let buffer = new TextEncoder('utf-8').encode(input);
   const chunks = [];
   while (buffer.length) {
-    let index = buffer.lastIndexOf(32, maxBytes + 1);
-    if (index < 0)
-      index = buffer.indexOf(32, maxBytes);
-    if (index < 0)
-      index = buffer.length;
-    chunks.push(decoder.decode(buffer.slice(0, index)));
+    let index = maxBytes;
+    let decoded = null;
+    while (decoded === null) {
+      try {
+        decoded = decoder.decode(buffer.slice(0, index));
+      }
+      catch(_errore) {
+        index--;
+      }
+    }
+    chunks.push(decoded);
     buffer = buffer.slice(index + 1);
   }
   return chunks;
