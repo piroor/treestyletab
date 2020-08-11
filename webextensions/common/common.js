@@ -436,7 +436,7 @@ function chunkString(input, maxBytes) {
       try {
         decoded = decoder.decode(buffer.slice(0, index));
       }
-      catch(_errore) {
+      catch(_error) {
         index--;
       }
     }
