@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Save very large user style rules more safely.
  - 3.5.21 (2020.8.8)
    * Apply user style rules to group tabs again. (regression on 3.5.20)
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
