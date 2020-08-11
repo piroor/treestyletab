@@ -813,7 +813,7 @@ function onConfigChange(changedKey) {
       break;
 
     default:
-      if (changedKey.startsWith('userStyleRules'))
+      if (changedKey.startsWith('chunkedUserStyleRules'))
         applyUserStyleRules();
       break;
   }

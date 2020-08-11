@@ -290,7 +290,15 @@ export const configs = new Configs({
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
   newTabAnimationDuration: 100,
 
-  // obsolete, migrated to userStyleRules0-5
+  chunkedUserStyleRules0: '',
+  chunkedUserStyleRules1: '',
+  chunkedUserStyleRules2: '',
+  chunkedUserStyleRules3: '',
+  chunkedUserStyleRules4: '',
+  chunkedUserStyleRules5: '',
+  chunkedUserStyleRules6: '',
+  chunkedUserStyleRules7: '',
+  // obsolete, migrated to chunkedUserStyleRules0-5
   userStyleRules: `
 /* Show title of unread tabs with red and italic font */
 /*
@@ -307,6 +315,7 @@ export const configs = new Configs({
 }
 */
 `.trim(),
+  // obsolete, migrated to chunkedUserStyleRules0-5
   userStyleRules0: '',
   userStyleRules1: '',
   userStyleRules2: '',
@@ -404,46 +413,45 @@ configs.$loaded.then(() => {
 
 
 export function loadUserStyleRules() {
-  let style = '';
+  const chunks = [];
   let count = 0;
   while (true) {
-    const key = `userStyleRules${count}`;
+    const key = `chunkedUserStyleRules${count}`;
     if (!(key in configs))
       break;
-    style += configs[key];
+    chunks.push(configs[key]);
     count++;
   }
-  return style;
+  return joinChunkedStrings(chunks);
 }
 
 export function saveUserStyleRules(style) {
   const slots = 8;
   [...chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA), ...Array.from(new Uint8Array(slots), _ => '')].slice(0, slots).forEach((chunk, index) => {
-    const key = `userStyleRules${index}`;
+    const key = `chunkedUserStyleRules${index}`;
     if (key in configs)
       configs[key] = chunk || '';
   });
 }
 
 function chunkString(input, maxBytes) {
-  const decoder = new TextDecoder('utf-8');
-  let buffer = new TextEncoder('utf-8').encode(input);
+  let binaryString = btoa(Array.from(new TextEncoder().encode(input), c => String.fromCharCode(c)).join(''));
   const chunks = [];
-  while (buffer.length) {
-    let index = maxBytes;
-    let decoded = null;
-    while (decoded === null) {
-      try {
-        decoded = decoder.decode(buffer.slice(0, index));
-      }
-      catch(_error) {
-        index--;
-      }
-    }
-    chunks.push(decoded);
-    buffer = buffer.slice(index + 1);
+  while (binaryString.length > 0) {
+    chunks.push(binaryString.slice(0, maxBytes));
+    binaryString = binaryString.slice(maxBytes);
   }
   return chunks;
+}
+
+function joinChunkedStrings(chunks) {
+  try {
+    const buffer = Uint8Array.from(atob(chunks.join('')).split('').map(bytes => bytes.charCodeAt(0)));
+    return new TextDecoder().decode(buffer);
+  }
+  catch(_error) {
+    return '';
+  }
 }
 
 

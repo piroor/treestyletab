@@ -8,6 +8,7 @@
 import {
   log as internalLogger,
   configs,
+  saveUserStyleRules,
   notify
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -18,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 12;
+const kCONFIGS_VERSION = 13;
 const kFEATURES_VERSION = 5;
 
 export function migrateConfigs() {
@@ -141,6 +142,19 @@ export function migrateConfigs() {
         configs.userStyleRules0 = configs.userStyleRules;
         configs.userStyleRules = '';
       }
+
+    case 12:
+      saveUserStyleRules(Array.from(new Uint8Array(8), (_, index) => {
+        const key = `userStyleRules${index}`;
+        if (key in configs) {
+          const chunk = configs[key];
+          configs[key] = '';
+          return chunk || '';
+        }
+        else {
+          return '';
+        }
+      }).join(''));
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
