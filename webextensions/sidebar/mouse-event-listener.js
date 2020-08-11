@@ -667,18 +667,17 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
 }
 handleDefaultMouseUpOnTab = EventUtils.wrapWithErrorHandler(handleDefaultMouseUpOnTab);
 
-const mLastClickedTabInWindow = new Map();
-const mIsInSelectionSession   = new Map();
+let mLastClickedTab       = null;
+let mIsInSelectionSession = false;
 
 function updateMultiselectionByTabClick(tab, event) {
   const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
   const activeTab          = Tab.getActiveTab(tab.windowId);
   const highlightedTabIds  = new Set(Tab.getHighlightedTabs(tab.windowId).map(tab => tab.id));
-  const inSelectionSession = mIsInSelectionSession.get(tab.windowId);
-  log('updateMultiselectionByTabClick ', { ctrlKeyPressed, activeTab, highlightedTabIds, inSelectionSession });
+  log('updateMultiselectionByTabClick ', { ctrlKeyPressed, activeTab, highlightedTabIds, mIsInSelectionSession });
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
-    const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;
+    const lastClickedTab   = mLastClickedTab || activeTab;
     const betweenTabs      = Tab.getTabsBetween(lastClickedTab, tab);
     const targetTabs       = new Set([lastClickedTab].concat(betweenTabs));
     targetTabs.add(tab);
@@ -702,7 +701,7 @@ function updateMultiselectionByTabClick(tab, event) {
 
       const rootTabs = [tab];
       if (tab != activeTab &&
-          !inSelectionSession)
+          !mIsInSelectionSession)
         rootTabs.push(activeTab);
       for (const root of rootTabs) {
         if (!root.$TST.subtreeCollapsed)
@@ -726,7 +725,7 @@ function updateMultiselectionByTabClick(tab, event) {
     catch(_e) { // not implemented on old Firefox
       return false;
     }
-    mIsInSelectionSession.set(tab.windowId, true);
+    mIsInSelectionSession = true;
     return true;
   }
   else if (ctrlKeyPressed) {
@@ -773,7 +772,7 @@ function updateMultiselectionByTabClick(tab, event) {
           highlightedTabIds.add(tab.id);
         }
       }
-      else if (!inSelectionSession) {
+      else if (!mIsInSelectionSession) {
         log('Select active tab and its descendants, for new selection session');
         highlightedTabIds.add(activeTab.id);
         if (activeTab.$TST.subtreeCollapsed) {
@@ -797,13 +796,13 @@ function updateMultiselectionByTabClick(tab, event) {
     catch(_e) { // not implemented on old Firefox
       return false;
     }
-    mLastClickedTabInWindow.set(tab.windowId, tab);
-    mIsInSelectionSession.set(tab.windowId, true);
+    mLastClickedTab       = tab;
+    mIsInSelectionSession = true;
     return true;
   }
   else {
-    mLastClickedTabInWindow.set(tab.windowId, tab);
-    mIsInSelectionSession.delete(tab.windowId);
+    mLastClickedTab       = null;
+    mIsInSelectionSession = false;
     return false;
   }
 }
