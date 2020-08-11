@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Restore closed tabs with their correct old position even if their visibility was switched by something other addons like Simple Tab Groups.
    * Save very large user style rules more safely.
  - 3.5.21 (2020.8.8)
    * Apply user style rules to group tabs again. (regression on 3.5.20)
