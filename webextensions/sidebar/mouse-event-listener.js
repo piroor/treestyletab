@@ -441,14 +441,18 @@ async function onMouseUp(event) {
   DragAndDrop.endMultiDrag(unsafeTab, event);
 
   if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
-      EventUtils.isEventFiredOnAnchor(event))
+      EventUtils.isEventFiredOnAnchor(event)) {
+    log(' => on menu or anchor');
     return;
+  }
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
   const extraContentsInfo = lastMousedown && lastMousedown.detail && lastMousedown.detail.$extraContentsInfo;
-  if (!lastMousedown)
+  if (!lastMousedown) {
+    log(' => no lastMousedown');
     return;
+  }
 
   if (tab) {
     const mouseupInfo = {
@@ -467,8 +471,10 @@ async function onMouseUp(event) {
       extraContentsInfo
     );
     if (!mouseupAllowed ||
-        !clickAllowed)
+        !clickAllowed) {
+      log(' => not allowed');
       return true;
+    }
   }
 
   let promisedCanceled = null;
@@ -477,8 +483,10 @@ async function onMouseUp(event) {
 
   if (lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) || // when the cursor was moved before mouseup
-      (tab && tab != Tab.get(lastMousedown.detail.tab))) // when the tab was already removed
+      (tab && tab != Tab.get(lastMousedown.detail.tab))) { // when the tab was already removed
+    log(' => expired, different type, or different tab');
     return;
+  }
 
   if (promisedCanceled && await promisedCanceled) {
     log('onMouseUp: canceled / by other addons');
