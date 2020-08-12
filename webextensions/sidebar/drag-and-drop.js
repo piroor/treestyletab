@@ -812,8 +812,6 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     return;
   }
 
-  EventUtils.cancelHandleMousedown();
-
   // dragging on clickable element will be expected to cancel the operation
   if (EventUtils.isEventFiredOnClosebox(options.tab && options.tab.$TST.element || event) ||
       EventUtils.isEventFiredOnClickable(options.tab && options.tab.$TST.element || event)) {
@@ -822,6 +820,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.preventDefault();
     return;
   }
+
+  EventUtils.cancelHandleMousedown();
 
   mDraggingOnSelfWindow = true;
   mDraggingOnDraggedTabs = true;
