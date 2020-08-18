@@ -503,7 +503,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
 
   if (tab &&
       lastMousedown.detail.button != 2 &&
-      await handleDefaultMouseUpOnTab(lastMousedown, tab))
+      await handleDefaultMouseUpOnTab({ lastMousedown, tab, event }))
     return;
 
   if (tab) {
@@ -585,7 +585,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
 }
 handleDefaultMouseUp = EventUtils.wrapWithErrorHandler(handleDefaultMouseUp);
 
-async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
+async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
   log('Ready to handle click action on the tab');
 
   const onRegularArea = (
@@ -627,7 +627,8 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
     // Thus we should simulate the behavior.
     return true;
   }
-  else if (lastMousedown.detail.twisty) {
+  else if (lastMousedown.detail.twisty &&
+           EventUtils.isEventFiredOnTwisty(event)) {
     log('clicked on twisty');
     if (tab.$TST.hasChild)
       BackgroundConnection.sendMessage({
@@ -638,14 +639,16 @@ async function handleDefaultMouseUpOnTab(lastMousedown, tab) {
         stack:           configs.debug && new Error().stack
       });
   }
-  else if (lastMousedown.detail.soundButton) {
+  else if (lastMousedown.detail.soundButton &&
+           EventUtils.isEventFiredOnSoundButton(event)) {
     log('clicked on sound button');
     BackgroundConnection.sendMessage({
       type:  Constants.kCOMMAND_TOGGLE_MUTED,
       tabId: tab.id
     });
   }
-  else if (lastMousedown.detail.closebox) {
+  else if (lastMousedown.detail.closebox &&
+           EventUtils.isEventFiredOnClosebox(event)) {
     log('clicked on closebox');
     //if (!warnAboutClosingTabSubtreeOf(tab)) {
     //  event.stopPropagation();
