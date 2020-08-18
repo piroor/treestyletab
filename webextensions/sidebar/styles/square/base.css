@@ -6,22 +6,55 @@
 
 tab-item,
 .after-tabs button {
+  border: 1px solid var(--tab-border);
+  border-width: 1px 0;
+  margin-bottom: -1px;
   padding: 0.3em 0.25em;
 }
+
+tab-item.pinned {
+  border-width: 0 1px 1px 0;
+}
+
+tab-item.pinned.last-row {
+  border-bottom-width: 0;
+}
+
 
 .after-tabs button {
   padding: 0em;
 }
 
+#tabbar + .after-tabs button {
+  border-bottom: none;
+}
+
+
 :root.left tab-item:not(.pinned),
 :root.left .after-tabs button {
   padding-right: 0.35em;
+}
+:root.left tab-item:not(.pinned)[data-parent-id] {
+  border-left-width: 1px;
 }
 
 :root.right tab-item:not(.pinned),
 :root.right .after-tabs button {
   padding-left: 0.35em;
 }
+:root.right tab-item:not(.pinned)[data-parent-id] {
+  border-right-width: 1px;
+}
+
+#tabbar tab-item.pinned + tab-item:not(.pinned),
+#tabbar tab-item:not(.pinned):first-of-type {
+  border-top: none;
+}
+
+:root.have-pinned-tabs #tabbar {
+  border-top: 1px solid var(--tab-border);
+}
+
 
 /* macOS workaround */
 :root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) {
@@ -98,4 +131,15 @@ tab-item tab-closebox::after {
   right: 0;
   top: 0;
   z-index: 10;
+}
+
+
+/* show more-highlighter like as tree */
+
+tab-item:not(.faviconized) .highlighter::after {
+   top: calc(var(--tab-highlighter-size) * 2);
+}
+
+tab-item[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
+  width: calc(var(--tab-highlighter-size) * 2);
 }

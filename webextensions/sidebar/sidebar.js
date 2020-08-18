@@ -315,14 +315,11 @@ function applyStyle(style) {
     case 'sidebar':
       mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;
-    case 'mixed':
-      mStyleLoader.setAttribute('href', 'styles/square/mixed.css');
-      break;
-    case 'vertigo':
-      mStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
-      break;
     case 'plain':
-    case 'flat': // for backward compatibility, fall back to plain.
+    // for backward compatibility, fall back to plain.
+    case 'flat':
+    case 'vertigo':
+    case 'mixed':
       mStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
     case 'highcontrast':

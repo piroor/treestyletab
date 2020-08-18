@@ -211,8 +211,6 @@
 
   "config_style_caption": { "message": "佈景主題" },
   "config_style_plain": { "message": "Plain" },
-  "config_style_vertigo": { "message": "Vertigo" },
-  "config_style_mixed": { "message": "Mixed" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "高對比" },
   "config_style_none": { "message": "無裝飾" },

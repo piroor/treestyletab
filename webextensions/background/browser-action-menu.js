@@ -75,18 +75,6 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_style_vertigo'),
-            key:   'style',
-            value: 'vertigo',
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_style_mixed'),
-            key:   'style',
-            value: 'mixed',
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_style_sidebar'),
             key:   'style',
             value: 'sidebar',

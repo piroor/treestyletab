@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 13;
+const kCONFIGS_VERSION = 14;
 const kFEATURES_VERSION = 5;
 
 export function migrateConfigs() {
@@ -160,6 +160,11 @@ export function migrateConfigs() {
       catch(error) {
         console.error(error);
       }
+
+    case 13:
+      if (configs.style == 'mixed' ||
+          configs.style == 'vertigo')
+        configs.style = 'plain';
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

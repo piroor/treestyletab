@@ -252,8 +252,6 @@
 
   "config_style_caption": { "message": "テーマ" },
   "config_style_plain": { "message": "Plain" },
-  "config_style_vertigo": { "message": "Vertigo" },
-  "config_style_mixed": { "message": "Mixed" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "ハイコントラスト" },
   "config_style_none": { "message": "装飾無し" },

@@ -208,8 +208,6 @@
 
   "config_style_caption": { "message": "Thème" },
   "config_style_plain": { "message": "Simple" },
-  "config_style_vertigo": { "message": "Vertigo" },
-  "config_style_mixed": { "message": "Mixte" },
   "config_style_sidebar": { "message": "Panneau" },
   "config_style_highcontrast": { "message": "Contraste élevé" },
   "config_style_none": { "message": "Pas de décoration" },

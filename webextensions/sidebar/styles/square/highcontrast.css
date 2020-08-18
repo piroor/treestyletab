@@ -5,7 +5,6 @@
 */
 
 @import url("base.css");
-@import url("border.css");
 
 :root {
   --tab-like-surface: ThreeDFace;

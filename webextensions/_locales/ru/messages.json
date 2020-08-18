@@ -256,8 +256,6 @@
 
   "config_style_caption": { "message": "Тема" },
   "config_style_plain": { "message": "Простая" },
-  "config_style_vertigo": { "message": "Вертиго" },
-  "config_style_mixed": { "message": "Смешанная" },
   "config_style_sidebar": { "message": "Боковая панель" },
   "config_style_highcontrast": { "message": "Контрастная" },
   "config_style_none": { "message": "Без стиля" },
