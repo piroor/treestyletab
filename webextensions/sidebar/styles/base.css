@@ -36,7 +36,7 @@
 
   --button-opacity: 0.75;
   --button-hover-opacity: 1;
-  --button-active-opacity: 0.5;
+  --button-active-opacity: 1;
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: Highlight;

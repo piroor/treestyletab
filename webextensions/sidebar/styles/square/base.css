@@ -104,6 +104,10 @@ tab-item tab-closebox:hover::before {
   opacity: 0.1;
 }
 
+tab-item tab-closebox:active::before {
+  opacity: 0.2;
+}
+
 tab-item.active tab-closebox:hover::before {
   background: var(--tab-text);
 }
