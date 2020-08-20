@@ -83,7 +83,7 @@ export async function init() {
         browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
           .then(cache => mPreloadedCaches.set(`window-${window.id}`, cache));
-        const tab = window.tabs[window.tabs.length - 1];
+        const tab = window.tabs[0];
         browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
           .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
