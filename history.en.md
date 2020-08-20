@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Drop support for some built-in themes: ["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29) and ["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29). They can be alternated with [user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes).
+   * Simulate appearance of close boxes in Firefox's native tabs more, for hover and active state.
+   * Close the tab by click on the close box, even if the cursor has moved out from the close box and went back while the button is pressed, like close boxes in Firefox's native tabs.
+   * Set default color of icons for the "No Decoration" theme.
+   * Restore tree state from cache more correctly on the experimental "per-window cache" mode.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.22 (2020.8.12)
    * Shift-click to multiselect tabs between the clicked tab and the active tab correctly, even if it happens after focus move from outside of TST.
    * Restore closed tabs with their correct old position even if their visibility was switched by something other addons like Simple Tab Groups.

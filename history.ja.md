@@ -1,6 +1,12 @@
 # 更新履歴
 
  - master/HEAD
+   * 組み込みのテーマの["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29)と["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
+   * タブのクローズボックスのhover時とactive時の見た目をFirefoxのタブのクローズボックスに合わせるようにした
+   * タブのクローズボックス上でボタンを押してボタン外までドラッグし、再びボタン上にカーソルを戻してボタンを放したときに、Firefoxのタブ同様にタブを閉じるようにした（動作を揃えるようにした）
+   * 「装飾なし」テーマ選択時でもタブのクローズボックス等が見えるように既定の色を指定するようにした
+   * ウィンドウ単位でキャッシュを保存する実験的な機能について、キャッシュからのツリーの復元処理をより正しく動作するようにした
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.5.22 (2020.8.12)
    * TST外の要因でタブのフォーカスが切り替わった後の、Shift-クリック時にクリックされたタブとアクティブなタブの間のタブが正しく選択されない問題を修正
    * Simple Tab Groupsなどの他のアドオンによって一度にタブの表示状態が切り替えられた後の場面で、閉じたタブを正しく元通りの位置に開き直すようにした
