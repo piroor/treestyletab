@@ -42,6 +42,9 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
 
+  /* Default color for "No Decoration" */
+  --tab-text-regular: ButtonText;
+
   --tab-surface: var(--tab-surface-regular);
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: none;
