@@ -98,7 +98,7 @@ export async function getEffectiveWindowCache(options = {}) {
   await Promise.all([
     MetricsData.addAsync('getEffectiveWindowCache: main', async () => {
       const tabs = options.tabs || await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
-      mLastWindowCacheOwner = tabs[tabs.length - 1];
+      mLastWindowCacheOwner = tabs[0];
       if (!mLastWindowCacheOwner)
         return;
       // We cannot define constants with variables at a time like:
@@ -469,7 +469,7 @@ async function getWindowCache(key) {
 }
 
 function getWindowCacheOwner() {
-  return Tab.getFirstNormalTab(mTargetWindow) || Tab.getFirstTab(mTargetWindow);
+  return Tab.getFirstTab(mTargetWindow);
 }
 
 export async function reserveToUpdateCachedTabbar() {
