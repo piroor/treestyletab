@@ -80,10 +80,13 @@ export async function init() {
   getAllWindows()
     .then(windows => {
       for (const window of windows) {
+        browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_CACHED_TABS)
+          .catch(ApiTabs.createErrorSuppressor())
+          .then(cache => mPreloadedCaches.set(`window-${window.id}`, cache));
         const tab = window.tabs[window.tabs.length - 1];
         browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
-          .then(cache => mPreloadedCaches.set(tab.id, cache));
+          .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
       }
     });
 
@@ -193,9 +196,12 @@ function waitUntilCompletelyRestored() {
       clearTimeout(timeout);
       log('new restored tab is detected.');
       // Read caches from restored tabs while waiting, for better performance.
+      browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_TABS)
+        .catch(ApiTabs.createErrorSuppressor())
+        .then(cache => mPreloadedCaches.set(`window-${tab.windowId}`, cache));
       browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
         .catch(ApiTabs.createErrorSuppressor())
-        .then(cache => mPreloadedCaches.set(tab.id, cache));
+        .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };

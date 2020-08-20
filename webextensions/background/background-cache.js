@@ -54,7 +54,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   if (configs.debug)
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, () => tabs.map(dumpTab));
   const actualSignature = getWindowSignature(tabs);
-  let cache = options.caches && options.caches.get(owner.id) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
+  let cache = options.caches && options.caches.get(configs.storeCacheAsWindowValue ? `window-${owner.windowId}` : `tab-${owner.id}`) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
   if (!cache) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} fail: no cache`);
     return false;
