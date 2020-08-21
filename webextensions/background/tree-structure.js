@@ -210,7 +210,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   insertAfter  = Tab.getByUniqueId(insertAfter);
   ancestors    = ancestors.map(Tab.getByUniqueId);
   children     = children.map(Tab.getByUniqueId);
-  log(' => references: ', () => ({
+  log(' => references: ', tab.id, () => ({
     insertBefore: dumpTab(insertBefore),
     insertAfter:  dumpTab(insertAfter),
     ancestors:    ancestors.map(dumpTab).join(', '),
@@ -219,7 +219,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   if (configs.fixupTreeOnTabVisibilityChanged) {
     ancestors = ancestors.filter(ancestor => ancestor && (ancestor.hidden == tab.hidden));
     children = children.filter(child => child && (child.hidden == tab.hidden));
-    log(' ==> references: ', () => ({
+    log(' ==> references: ', tab.id, () => ({
       ancestors: ancestors.map(dumpTab).join(', '),
       children:  children.map(dumpTab).join(', ')
     }));
@@ -240,7 +240,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    log(' attach to old ancestor: ', { child: tab, parent: ancestor });
+    log(' attach to old ancestor: ', tab.id, { child: tab, parent: ancestor });
     const promisedDone = Tree.attachTabTo(tab, ancestor, {
       insertBefore,
       insertAfter,
@@ -259,7 +259,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     const opener = tab.$TST.openerTab;
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
-      log(' attach to opener: ', { child: tab, parent: opener });
+      log(' attach to opener: ', tab.id, { child: tab, parent: opener });
       const promisedDone = Tree.attachTabTo(tab, opener, {
         dontExpand:  !active,
         forceExpand: active,
@@ -274,7 +274,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     else if (!options.bulk &&
              (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
               tab.$TST.nearestCompletelyOpenedNormalPrecedingTab)) {
-      log(' attach from position');
+      log(' attach from position: ', tab.id);
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
         fromIndex: Tab.getLastTab(tab.windowId).index
@@ -313,6 +313,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   }
 
   const subtreeCollapsed = states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  log('restore subtree collapsed state: ', tab.id, { current: tab.$TST.subtreeCollapsed, expected: subtreeCollapsed, ...options });
   if ((options.canCollapse || options.bulk) &&
       tab.$TST.subtreeCollapsed != subtreeCollapsed) {
     const promisedDone = Tree.collapseExpandSubtree(tab, {
