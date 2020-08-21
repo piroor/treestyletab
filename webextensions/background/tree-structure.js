@@ -324,8 +324,25 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     promises.push(promisedDone);
   }
 
+  const updateCollapsedState = () => {
+    log('update collapsed state: ', tab.id, {
+      current: tab.$TST.collapsed,
+      ancestors: tab.$TST.ancestors.map(ancestor => ancestor.$TST.collapsed || ancestor.$TST.subtreeCollapsed)
+    });
+    if ((options.canCollapse || options.bulk) &&
+        tab.$TST.collapsed != tab.$TST.ancestors.some(ancestor => ancestor.$TST.collapsed || ancestor.$TST.subtreeCollapsed)) {
+      Tree.collapseExpandTabAndSubtree(tab, {
+        broadcast: true,
+        collapsed: !tab.$TST.collapsed,
+        justNow:   true
+      });
+    }
+  };
+
   if (options.bulk)
-    return Promise.all(promises);
+    return Promise.all(promises).then(updateCollapsedState);
+  else
+    updateCollapsedState();
 }
 
 const mRestoringTabs = new Map();
