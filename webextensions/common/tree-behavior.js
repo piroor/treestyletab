@@ -172,8 +172,8 @@ export function calculateReferenceTabsFromInsertionPosition(
     if (prevTab == lastTab) // failsafe
       prevTab = !firstTab ? null :
         configs.fixupTreeOnTabVisibilityChanged ?
-        firstTab.$TST.nearestVisiblePrecedingTab :
-        firstTab.$TST.unsafeNearestExpandedPrecedingTab;
+          firstTab.$TST.nearestVisiblePrecedingTab :
+          firstTab.$TST.unsafeNearestExpandedPrecedingTab;
     if (!prevTab) {
       log('calculateReferenceTabsFromInsertionPosition: from insertBefore, CASE 1/5');
       // allow to move pinned tab to beside of another pinned tab
