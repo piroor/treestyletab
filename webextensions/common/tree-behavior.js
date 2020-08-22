@@ -119,7 +119,7 @@ export function getClosingTabsFromParent(tab, removeInfo = {}) {
 
 export function calculateReferenceTabsFromInsertionPosition(
   tab,
-  { context, insertBefore, insertAfter, windowId } = {}
+  { context, insertBefore, insertAfter } = {}
 ) {
   const firstTab = (Array.isArray(tab) ? tab[0] : tab) || tab;
   const lastTab  = (Array.isArray(tab) ? tab[tab.length - 1] : tab) || tab;
