@@ -11,7 +11,6 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
-import Tab from './Tab.js';
 
 function log(...args) {
   internalLogger('common/tree-behavior', ...args);
