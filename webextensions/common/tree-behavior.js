@@ -121,8 +121,8 @@ export function calculateReferenceTabsFromInsertionPosition(
   tab,
   { context, insertBefore, insertAfter, windowId } = {}
 ) {
-  const firstTab = (Array.isArray(tab) ? tab[0] : tab) || windowId && Tab.getFirstTab(windowId);
-  const lastTab  = (Array.isArray(tab) ? tab[tab.length - 1] : tab) || windowId && Tab.getLastTab(windowId);
+  const firstTab = (Array.isArray(tab) ? tab[0] : tab) || tab;
+  const lastTab  = (Array.isArray(tab) ? tab[tab.length - 1] : tab) || tab;
   log('calculateReferenceTabsFromInsertionPosition ', {
     firstTab:     firstTab && firstTab.id,
     lastTab:      lastTab && lastTab.id,
@@ -171,7 +171,8 @@ export function calculateReferenceTabsFromInsertionPosition(
         insertBefore.$TST.nearestVisiblePrecedingTab :
         insertBefore.$TST.unsafeNearestExpandedPrecedingTab);
     if (prevTab == lastTab) // failsafe
-      prevTab = configs.fixupTreeOnTabVisibilityChanged ?
+      prevTab = !firstTab ? null :
+        configs.fixupTreeOnTabVisibilityChanged ?
         firstTab.$TST.nearestVisiblePrecedingTab :
         firstTab.$TST.unsafeNearestExpandedPrecedingTab;
     if (!prevTab) {
@@ -265,14 +266,14 @@ export function calculateReferenceTabsFromInsertionPosition(
     let unsafeNextTab = insertAfter &&
       insertAfter.$TST.unsafeNearestExpandedFollowingTab;
     if (firstTab && unsafeNextTab == firstTab) // failsafe
-      unsafeNextTab = lastTab.$TST.unsafeNearestExpandedFollowingTab;
+      unsafeNextTab = lastTab && lastTab.$TST.unsafeNearestExpandedFollowingTab;
     let nextTab = insertAfter &&
       (configs.fixupTreeOnTabVisibilityChanged ?
         insertAfter.$TST.nearestVisibleFollowingTab :
         unsafeNextTab);
     if (firstTab && nextTab == firstTab) // failsafe
       nextTab = configs.fixupTreeOnTabVisibilityChanged ?
-        lastTab.$TST.nearestVisibleFollowingTab :
+        (lastTab && lastTab.$TST.nearestVisibleFollowingTab) :
         unsafeNextTab;
     if (!nextTab) {
       let result;
