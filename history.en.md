@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.23 (2020.8.26)
    * Drop support for some built-in themes: ["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29) and ["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29). They can be alternated with [user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes).
    * Simulate appearance of close boxes in Firefox's native tabs more, for hover and active state.
    * Close the tab by click on the close box, even if the cursor has moved out from the close box and went back while the button is pressed, like close boxes in Firefox's native tabs.

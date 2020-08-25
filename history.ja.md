@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.5.23 (2020.8.26)
    * 組み込みのテーマの["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29)と["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
    * タブのクローズボックスのhover時とactive時の見た目をFirefoxのタブのクローズボックスに合わせるようにした
    * タブのクローズボックス上でボタンを押してボタン外までドラッグし、再びボタン上にカーソルを戻してボタンを放したときに、Firefoxのタブ同様にタブを閉じるようにした（動作を揃えるようにした）
