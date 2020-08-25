@@ -5,7 +5,8 @@
    * Simulate appearance of close boxes in Firefox's native tabs more, for hover and active state.
    * Close the tab by click on the close box, even if the cursor has moved out from the close box and went back while the button is pressed, like close boxes in Firefox's native tabs.
    * Set default color of icons for the "No Decoration" theme.
-   * Restore tree state from cache more correctly on the experimental "per-window cache" mode.
+   * Save cached tree state as a metadata related to each window instead of individual tab.
+   * Attach tabs opened from dropped links to existing tree based on their position. (regression on recent versions)
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.22 (2020.8.12)
    * Shift-click to multiselect tabs between the clicked tab and the active tab correctly, even if it happens after focus move from outside of TST.
