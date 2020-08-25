@@ -443,7 +443,6 @@
   "config_simulateSVGContextFill_label": { "message": "模擬 SVG 圖標以解決 Bug 1388193 及 Bug 1421329 (※可能會提高 CPU 用量。在 Bug 修正前，若想禁用此選項必須啟用「about:config」的「svg.context-properties.content.enabled」)" },
   "config_useCachedTree_label": { "message": "以快取加速樹狀結構初始化" },
   "config_useCachedTree_description": { "message": "※快取不一致導致操作不穩定時，取消再重勾此選項刷新快取應可改善。" },
-  "config_storeCacheAsWindowValue_label": { "message": "儲存快取到視窗而非分頁中(會抑制瀏覽階段資料過於肥大，但在復原樹時可能會不穩定。)" },
   "config_acceleratedTabCreation_label": { "message": "加速開新分頁處理（※操作會不穩定）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "中斷未於" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "亳秒完成的分頁複製。" },

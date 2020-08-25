@@ -439,7 +439,6 @@
   "config_simulateSVGContextFill_label": { "message": "Activer le contournement pour le bug 1388193 et le bug 1421329 pour simuler des icônes SVG (*Ceci peut augmenter l'utilisation du processeur. Pour désactiver cette option, vous devez activer \"svg.context-properties.content.enabled\" via \"about:config\", jusqu'à que ces bugs soient corrigés.)" },
   "config_useCachedTree_label": { "message": "Optimiser la restauration des arbres avec un cache" },
   "config_useCachedTree_description": { "message": "*Veuillez essayer de décocher et re-cocher ceci pour rafraichir le cache, quand le comportement relatif aux arbres est instable." },
-  "config_storeCacheAsWindowValue_label": { "message": "Enregistrer le cache pour chaque fenêtre au lieu des onglets (ceci réduira le remplissage des données de session, mais peut introduire une instabilité dans la restauration des arbres)" },
   "config_acceleratedTabCreation_label": { "message": "Accélérer les opérations autour des onglets nouvellement ouverts (*NOTE : Vous observerez des comportements instables relatifs aux onglets.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Annuler la duplication d'un onglet si elle prend" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "millisecondes ou plus." },

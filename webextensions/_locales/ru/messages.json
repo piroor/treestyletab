@@ -549,7 +549,6 @@
   "config_simulateSVGContextFill_label": { "message": "Активировать обходной путь для бага 1388193 и бага 1421329 для симуляции SVG иконок ( * Это может увеличить нагрузку на процессор. Для деактивации переключите \"svg.context-properties.content.enabled\" в \"about:config\", пока эти баги не будут исправлены.)" },
   "config_useCachedTree_label": { "message": "Оптимизация восстановления дерева с помощью кэша" },
   "config_useCachedTree_description": { "message": "* Попробуйте снять флажок и установить повторно, чтобы обновить кэш, если поведение дерева нестабильно." },
-  "config_storeCacheAsWindowValue_label": { "message": "Сохранять кэш для каждого окна вместо вкладок (это уменьшит разздутие данных сеанса, но может привести к нестабильному восстановлению дерева)" },
   "config_acceleratedTabCreation_label": { "message": "Ускорение операций с повторно открытыми вкладками ( * ПРИМЕЧАНИЕ: Возможно вы увидите нестабильную работу вкладок.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Отменить дублирование вкладок, когда это продолжается" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "миллисекунд или больше." },

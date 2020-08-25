@@ -1513,10 +1513,6 @@
         "message": "*当标签树的相关行为变得不稳定时，请尝试取消勾选此项再重新勾选以刷新缓存。",
         "hash": "9d15b5ec84fbfefc2361dfc9b6d07faf"
     },
-    "config_storeCacheAsWindowValue_label": {
-        "message": "将缓存分别存储到每个窗口而非标签页（这将会减少会话数据的膨胀，但可能会让标签树的恢复变得不稳定）",
-        "hash": "d642725425d521417c2ac31bc31725a7"
-    },
     "config_acceleratedTabCreation_label": {
         "message": "对与新打开标签页相关的操作进行加速（*请注意，您将会看到标签页的不稳定行为。）",
         "hash": "7ff05a0f0be2c1b3a45ff150d49c4b29"

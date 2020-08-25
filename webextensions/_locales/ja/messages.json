@@ -545,7 +545,6 @@
   "config_simulateSVGContextFill_label": { "message": "Bug 1388193およびBug 1421329を回避して擬似的にSVGアイコンを表示する（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、これらのBugが修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_useCachedTree_description": { "message": "※キャッシュの不整合で動作が不安定になっている場合、このチェックをOFFにして再度ONにすることでキャッシュが刷新され状況が改善するかもしれません。" },
-  "config_storeCacheAsWindowValue_label": { "message": "キャッシュをタブではなくウィンドウに対して保存する（セッションデータの肥大化が抑制されますが、ツリーの復元処理が不安定になる可能性があります）" },
   "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },

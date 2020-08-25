@@ -54,7 +54,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   if (configs.debug)
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, () => tabs.map(dumpTab));
   const actualSignature = getWindowSignature(tabs);
-  let cache = options.caches && options.caches.get(configs.storeCacheAsWindowValue ? `window-${owner.windowId}` : `tab-${owner.id}`) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
+  let cache = options.caches && options.caches.get(`window-${owner.windowId}`) || await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: window cache', getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS));
   if (!cache) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId} fail: no cache`);
     return false;
@@ -287,9 +287,7 @@ async function updateWindowCache(owner, key, value) {
     return;
   if (value === undefined) {
     try {
-      if (configs.storeCacheAsWindowValue)
-        return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
-      return browser.sessions.removeTabValue(owner.id || owner, key).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
+      return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
     }
     catch(e) {
       console.log(new Error('fatal error: failed to delete window cache'), e, owner, key, value);
@@ -297,9 +295,7 @@ async function updateWindowCache(owner, key, value) {
   }
   else {
     try {
-      if (configs.storeCacheAsWindowValue)
-        return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
-      return browser.sessions.setTabValue(owner.id || owner, key, value).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
+      return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
     }
     catch(e) {
       console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
@@ -320,9 +316,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  if (configs.storeCacheAsWindowValue)
-    return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
-  return browser.sessions.getTabValue(owner.id, key).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
 }
 
 function getWindowCacheOwner(windowId) {

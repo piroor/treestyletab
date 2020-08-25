@@ -1408,10 +1408,6 @@
         "message": "※캐시의 부정합으로 동작이 불안정해져 있는 경우 이 체크를 OFF로 한 후 다시 ON으로 하면 캐시를 새로고쳐 상황이 개선될 수 있습니다.",
         "hash": "9d15b5ec84fbfefc2361dfc9b6d07faf"
     },
-    "config_storeCacheAsWindowValue_label": {
-        "message": "캐시를 탭이 아닌 창에 저장 (세션 데이터의 비대화가 줄어들지만, 트리 복원 처리가 불안해질 수 있습니다.)",
-        "hash": "d642725425d521417c2ac31bc31725a7"
-    },
     "config_acceleratedTabCreation_label": {
         "message": "새 탭이 열렸을 때 처리를 고속화 (※동작이 불안정해짐)",
         "hash": "7ff05a0f0be2c1b3a45ff150d49c4b29"
