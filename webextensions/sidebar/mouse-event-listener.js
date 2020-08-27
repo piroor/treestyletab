@@ -983,7 +983,8 @@ function unlockTabbarScrollPosition(event) {
         return;
       }
       if (event.type == 'mousemove' &&
-          EventUtils.getTabFromEvent(event)) {
+          (EventUtils.getTabFromEvent(event, { force: true }) ||
+           EventUtils.getTabFromTabbarEvent(event, { force: true }))) {
         log(' => ignore mousemove on any tab');
         return;
       }
