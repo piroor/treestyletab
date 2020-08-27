@@ -945,7 +945,21 @@ function tryLockTabbarScrollPosition(tabIds) {
   if (!configs.simulateLockTabSizing)
     return;
 
-  const lastTabBox = Tab.getLastVisibleTab().$TST.element.getBoundingClientRect();
+  // Don't lock scroll position when the last tab is closed.
+  const lastTab = Tab.getLastVisibleTab();
+  if (tabIds.includes(lastTab.id)) {
+    if (tryLockTabbarScrollPosition.tabIds.size > 0) {
+      // but we need to add tabs to the list of "close with locked scroll position"
+      // tabs to prevent unexpected unlocking.
+      for (const id of tabIds) {
+        tryLockTabbarScrollPosition.tabIds.add(id);
+      }
+    }
+    return;
+  }
+
+  // Lock scroll position only when the closing affects to the max scroll position.
+  const lastTabBox = lastTab.$TST.element.getBoundingClientRect();
   if (mTabBar.scrollTop == 0 ||
       lastTabBox.top /* not "bottom" because the tab is going to be shifted! */ > mTabBar.getBoundingClientRect().bottom)
     return;
