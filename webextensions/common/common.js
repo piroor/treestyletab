@@ -214,6 +214,7 @@ export const configs = new Configs({
   moveFocusInTreeForClosedActiveTab: null, // obsolete, migrated to "successorTabControlLevel"
   successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,
+  simulateLockTabSizing: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,
   warnOnCloseTabsNotificationTimeout: 20 * 1000,

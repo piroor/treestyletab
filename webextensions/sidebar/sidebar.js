@@ -593,13 +593,14 @@ function reserveToClearGrantedRemovingTabs() {
 }
 
 
-export function reserveToUpdateTabbarLayout(options = {}) {
+export function reserveToUpdateTabbarLayout({ reason, timeout } = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
-  if (options.reason && !(reserveToUpdateTabbarLayout.reasons & options.reason))
-    reserveToUpdateTabbarLayout.reasons |= options.reason;
-  const timeout = options.timeout || 10;
+  if (reason && !(reserveToUpdateTabbarLayout.reasons & reason))
+    reserveToUpdateTabbarLayout.reasons |= reason;
+  if (typeof timeout != 'number')
+    timeout = 10;
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;

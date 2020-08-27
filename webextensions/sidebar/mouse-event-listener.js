@@ -614,10 +614,13 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
     });
     Sidebar.confirmToCloseTabs(tabs.map(tab => tab.$TST.sanitized))
       .then(confirmed => {
-        if (confirmed)
+        if (!confirmed)
+          return;
+        const tabIds = tabs.map(tab => tab.id);
+        tryLockTabbarScrollPosition(tabIds);
           BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds: tabs.map(tab => tab.id)
+            tabIds
           });
       });
   }
@@ -667,9 +670,11 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
       .then(confirmed => {
         if (!confirmed)
           return;
+        const tabIds = tabsToBeClosed.map(tab => tab.id);
+        tryLockTabbarScrollPosition(tabIds);
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds: tabsToBeClosed.map(tab => tab.id)
+          tabIds
         });
       });
   }
@@ -910,9 +915,11 @@ async function onDblClick(event) {
         case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE:
           event.stopPropagation();
           event.preventDefault();
+          const tabIds = [livingTab.id];
+          tryLockTabbarScrollPosition(tabIds);
           BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds: [livingTab.id],
+            tabIds
           });
           break;
       }
@@ -929,6 +936,89 @@ async function onDblClick(event) {
     action: configs.autoAttachOnNewTabCommand
   });
 }
+
+
+// Simulate "lock tab sizing while closing tabs via mouse click" behavior of Firefox itself
+// https://github.com/piroor/treestyletab/issues/2691
+// https://searchfox.org/mozilla-central/rev/27932d4e6ebd2f4b8519865dad864c72176e4e3b/browser/base/content/tabbrowser-tabs.js#1207
+function tryLockTabbarScrollPosition(tabIds) {
+  if (!configs.simulateLockTabSizing)
+    return;
+
+  const lastTabBox = Tab.getLastVisibleTab().$TST.element.getBoundingClientRect();
+  if (mTabBar.scrollTop == 0 ||
+      lastTabBox.top /* not "bottom" because the tab is going to be shifted! */ > mTabBar.getBoundingClientRect().bottom)
+    return;
+
+  for (const id of tabIds) {
+    tryLockTabbarScrollPosition.tabIds.add(id);
+  }
+
+  log('tryLockTabbarScrollPosition');
+  mTabBar.dataset.removedTabsCount = parseInt(mTabBar.dataset.removedTabsCount || 0) + 1;
+  mTabBar.style.setProperty('--removed-tabs-count', mTabBar.dataset.removedTabsCount, 'important');
+
+  if (!unlockTabbarScrollPosition.listening) {
+    unlockTabbarScrollPosition.listening = true;
+    window.addEventListener('mousemove', unlockTabbarScrollPosition);
+    window.addEventListener('mouseout', unlockTabbarScrollPosition);
+  }
+}
+tryLockTabbarScrollPosition.tabIds = new Set();
+
+function unlockTabbarScrollPosition(event) {
+  log('unlockTabbarScrollPosition ', event);
+  switch (event && event.type) {
+    case 'mouseout':
+      const relatedTarget = event.relatedTarget;
+      if (relatedTarget && relatedTarget.ownerDocument == document) {
+        log(' => ignore mouseout in the tabbar window itself');
+        return;
+      }
+
+    case 'mousemove':
+      if (unlockTabbarScrollPosition.contextMenuOpen ||
+          (event.type == 'mousemove' && event.target.closest('#tabContextMenu'))) {
+        log(' => ignore events while the context menu is opened');
+        return;
+      }
+      if (event.type == 'mousemove' &&
+          EventUtils.getTabFromEvent(event)) {
+        log(' => ignore mousemove on any tab');
+        return;
+      }
+
+    default:
+      break;
+  }
+
+  window.removeEventListener('mousemove', unlockTabbarScrollPosition);
+  window.removeEventListener('mouseout', unlockTabbarScrollPosition);
+  unlockTabbarScrollPosition.listening = false;
+
+  tryLockTabbarScrollPosition.tabIds.clear();
+  mTabBar.dataset.removedTabsCount = 0;
+  mTabBar.style.setProperty('--removed-tabs-count', '0', 'important');
+  Sidebar.reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    timeout: configs.animation ? configs.collapseDuration : 0
+  });
+}
+unlockTabbarScrollPosition.contextMenuOpen = false;
+
+browser.menus.onShown.addListener((info, tab) => {
+  unlockTabbarScrollPosition.contextMenuOpen = info.context == 'tab' && tab.windowId != mTargetWindow;
+});
+
+browser.menus.onHidden.addListener((_info, _tab) => {
+  unlockTabbarScrollPosition.contextMenuOpen = false;
+});
+
+browser.tabs.onRemoved.addListener(tabId => {
+  if (!tryLockTabbarScrollPosition.tabIds.has(tabId))
+    unlockTabbarScrollPosition();
+});
+
 
 function onNewTabActionSelect(item, event) {
   if (item.dataset.value) {

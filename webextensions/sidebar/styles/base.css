@@ -152,11 +152,17 @@ button {
 }
 
 #tabbar {
+  --removed-tabs-count: 0;
   position: absolute;
 }
 
 #tabbar.overflow {
   overflow-y: scroll;
+}
+
+#tabbar.overflow .tabs {
+  padding-bottom: calc(var(--tab-size) * var(--removed-tabs-count));
+  transition: padding-bottom var(--collapse-animation);
 }
 
 :root.initializing #tabbar {
