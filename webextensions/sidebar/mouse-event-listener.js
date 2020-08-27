@@ -618,10 +618,10 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
           return;
         const tabIds = tabs.map(tab => tab.id);
         tryLockTabbarScrollPosition(tabIds);
-          BackgroundConnection.sendMessage({
-            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds
-          });
+        BackgroundConnection.sendMessage({
+          type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+          tabIds
+        });
       });
   }
   else if (wasMultiselectionAction) {
