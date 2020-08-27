@@ -180,15 +180,19 @@ If you need any new API, please file API proposals to the issue tracker.
   [As a workaround, you need to do it by creating a `userChrome.css`.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
   But please remind that such an usage is not recommended by the original author of TST, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*.
   </details>
-* <details><summary>Unnatural colors diferent from GTK+ theme on Linux</summary>
+* <details><summary>How to apply GTK+ theme color on Linux?</summary>
   
   Due to restrictions from Firefox itself, TST can't apply GTK+ theme color to its appearance by default. If you hope to see TST's UI with colors matching to other parts of Firefox, you need to configure Firefox and TST as:
   
   * Firefox's about:config
     * *`widget.content.allow-gtk-dark-theme`=`true` (not default)*
     * `widget.content.gtk-theme-override`=unset (default)
-  * TST's options
-    * *"Appearance" =>  "Theme" =>  "High Contrast" (not default)*
+  * TST's options (pattern 1, using "Plain" theme)
+    * "Appearance" => "Theme" => "Plain" (default)
+    * *"Advanced" => "Extra style rules..." => [paste these lines](https://github.com/piroor/treestyletab/blob/0859730342a13060c7e4d5ce78e3ec809973d1be/webextensions/sidebar/styles/square/plain.css#L47-L74) (not default)*
+    * "Development" => "Color scheme" => "System Color" (default)
+  * TST's options (pattern 2, using less extra style rules)
+    * *"Appearance" => "Theme" => "High Contrast" (not default)*
     * "Advanced" => "Extra style rules..." => no active style rule (default)
     * "Development" => "Color scheme" => "System Color" (default)
   
