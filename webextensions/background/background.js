@@ -520,7 +520,10 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   }
 
   const listing = configs.warnOnCloseTabsWithListing ?
-    tabsToHTMLList(tabs, { maxRows: configs.warnOnCloseTabsWithListingMaxRows }) :
+    tabsToHTMLList(tabs, {
+      maxRows: configs.warnOnCloseTabsWithListingMaxRows,
+      maxWidth: Math.round((await browser.windows.get(windowId)).width * 0.75)
+    }) :
     '';
   const dialogParams = {
     content: `
@@ -588,7 +591,7 @@ Commands.onTabsClosing.addListener((tabIds, options = {}) => {
   return confirmToCloseTabs(tabIds.map(Tab.get), options);
 });
 
-export function tabsToHTMLList(tabs, { maxRows }) {
+export function tabsToHTMLList(tabs, { maxRows, maxWidth }) {
   const rootLevelOffset = tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)).sort()[0];
   return (
     `<ul style="border: 1px inset;
@@ -599,6 +602,7 @@ export function tabsToHTMLList(tabs, { maxRows }) {
                 margin: 0.5em 0;
                 min-height: ${(Math.max(1, maxRows || 0)) + 1}em;
                 max-height: ${(Math.max(1, maxRows || 0)) + 1}em;
+                max-width: ${maxWidth}px;
                 overflow: auto;
                 padding: 0.5em;">` +
       tabs.map(tab => `<li style="align-items: center;
@@ -611,9 +615,9 @@ export function tabsToHTMLList(tabs, { maxRows }) {
                                        max-width: 1em;"
                                 alt=""
                                 src="${sanitizeForHTMLText(tab.favIconUrl || browser.extension.getURL('resources/icons/globe-16.svg'))}"
-                               ><span style="display: flex;
-                                             margin-left: 0.25em;
+                               ><span style="margin-left: 0.25em;
                                              overflow: hidden;
+                                             text-overflow: ellipsis;
                                              white-space: nowrap;"
                                      >${sanitizeForHTMLText(tab.title)}</span></li>`).join('') +
       `</ul>`
