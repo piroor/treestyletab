@@ -1022,7 +1022,7 @@ function unlockTabbarScrollPosition(event) {
 unlockTabbarScrollPosition.contextMenuOpen = false;
 
 browser.menus.onShown.addListener((info, tab) => {
-  unlockTabbarScrollPosition.contextMenuOpen = info.context == 'tab' && tab.windowId != mTargetWindow;
+  unlockTabbarScrollPosition.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == mTargetWindow);
 });
 
 browser.menus.onHidden.addListener((_info, _tab) => {
