@@ -397,6 +397,7 @@ async function tryGroupNewTabs() {
         fromOthers.push(tab);
       }
     }
+    log(' => ', { fromPinned, fromOthers });
 
     if (fromPinned.length > 0) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromPinned));
@@ -412,6 +413,7 @@ async function tryGroupNewTabs() {
       let restCount = fromOthers.length;
       for (const tab of fromOthers) {
         tab.$TST.promisedPossibleOpenerBookmarks.then(bookmarks => {
+          log(` bookmarks from tab ${tab.id}: `, bookmarks);
           restCount--;
           if (bookmarks.length > 0)
             maybeFromBookmarks.push(tab);
@@ -422,6 +424,7 @@ async function tryGroupNewTabs() {
         });
       }
     });
+    log(' => openedFromBookmarkFolder: ', openedFromBookmarkFolder);
     const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
     if (newRootTabs.length > 1) {
       if (openedFromBookmarkFolder) {
@@ -446,6 +449,7 @@ async function tryGroupNewTabs() {
 }
 
 function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, allNewTabsCount) {
+  log('areMostTabsFromSameBookmarkFolder ', { bookmarkedTabs, allNewTabsCount });
   const parentIds = bookmarkedTabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId)).flat();
   const counts    = [];
   const countById = {};
@@ -454,11 +458,13 @@ function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, allNewTabsCount) {
       counts.push(countById[id] = { id, count: 0 });
     countById[id].count++;
   }
+  log(' counts: ', counts);
   if (counts.length == 0)
     return false;
 
   const greatestCount = counts.sort((a, b) => b.count - a.count)[0];
   const minCount = allNewTabsCount * configs.tabsFromSameFolderMinThresholdPercentage / 100;
+  log(' => ', { greatestCount, minCount });
   return greatestCount.count > minCount;
 }
 
