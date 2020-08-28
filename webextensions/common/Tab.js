@@ -393,10 +393,13 @@ export default class Tab {
       try {
         const possibleBookmarks = await Promise.all([
           browser.bookmarks.search({ url: `http://${url}` }).catch(_error => []),
+          browser.bookmarks.search({ url: `http://www.${url}` }).catch(_error => []),
           browser.bookmarks.search({ url: `https://${url}` }).catch(_error => []),
+          browser.bookmarks.search({ url: `https://www.${url}` }).catch(_error => []),
           browser.bookmarks.search({ url: `ftp://${url}` }).catch(_error => []),
           browser.bookmarks.search({ url: `moz-extension://${url}` }).catch(_error => [])
         ]);
+        log(`promisedPossibleOpenerBookmarks for tab ${this.tab.id} (${url}): `, possibleBookmarks);
         resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
       }
       catch(_error) {
