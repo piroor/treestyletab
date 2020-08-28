@@ -256,8 +256,8 @@
 
   "config_style_caption": { "message": "Тема" },
   "config_style_plain": { "message": "Простая" },
-  "config_style_sidebar": { "message": "Боковая панель" },
-  "config_style_highcontrast": { "message": "Контрастная" },
+  "config_style_sidebar": { "message": "Сайдбар" },
+  "config_style_highcontrast": { "message": "Контраст" },
   "config_style_none": { "message": "Без стиля" },
   "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
 
@@ -513,7 +513,7 @@
   "config_addons_description_after": { "message": ". Посмотрите их, если вам нужно больше функций для панели TST." },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
-  "config_theme_description_before": { "message": "Currently there are available built-in themes only \"Plain\", \"Sidebar\" and \"Hight Contrast\". Если вы хотите использовать не встроенную тему, см. " },
+  "config_theme_description_before": { "message": "В настоящее время доступны только три встроенные темы \"Простая\", \"Сайдбар\" и \"Контраст\". Если вы хотите использовать не встроенную тему, см. " },
   "config_theme_description_link_label": { "message": "'Восстановление старых встроенных тем'" },
   "config_theme_description_after": { "message": " как пример." },
   "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
