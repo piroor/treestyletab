@@ -942,7 +942,11 @@ async function onDblClick(event) {
 // https://github.com/piroor/treestyletab/issues/2691
 // https://searchfox.org/mozilla-central/rev/27932d4e6ebd2f4b8519865dad864c72176e4e3b/browser/base/content/tabbrowser-tabs.js#1207
 function tryLockTabbarScrollPosition(tabIds) {
-  if (!configs.simulateLockTabSizing)
+  if (!configs.simulateLockTabSizing ||
+      tabIds.every(id => {
+        const tab = Tab.get(id);
+        return !tab || tab.pinned || tab.hidden;
+      }))
     return;
 
   // Don't lock scroll position when the last tab is closed.
