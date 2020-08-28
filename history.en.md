@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.5.24 (2020.8.28)
+   * Simulate "lock scroll position of the tab bar while middle tabs are closed via mouse operations" behavior of Firefox's native tab bar.
+   * Shrink the width of the confirmation dialog for closing tabs with very long titles.
+   * Detect a tab is opened from a bookmark more certainly, even if its hostname starts with "www."
  - 3.5.23 (2020.8.26)
    * Drop support for some built-in themes: ["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29) and ["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29). They can be alternated with [user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes).
    * Simulate appearance of close boxes in Firefox's native tabs more, for hover and active state.

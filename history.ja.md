@@ -1,6 +1,10 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.5.24 (2020.8.28)
+   * Firefox本体のタブバーの「中程にあるタブをマウス操作で閉じている間はスクロール位置を維持する」動作を真似るようにした
+   * 非常に長いタイトルのタブがあるときに、タブをまとめて閉じる際の確認ダイアログの幅が大きくなりすぎないようにした
+   * ブックマークのURLのホスト名部分が「www.」で始まる場合でも、ブックマークから開かれたタブをより正しく検出するようにした
  - 3.5.23 (2020.8.26)
    * 組み込みのテーマの["Vertigo"](https://github.com/piroor/treestyletab/wiki/Vertigo-theme-%28patch-for-the-theme-%22Plain%22%29)と["Mixed"](https://github.com/piroor/treestyletab/wiki/Mixed-theme-%28patch-for-the-theme-%22Plain%22%29)を削除した（[ユーザースタイル定義](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes)での代替は可能です）
    * タブのクローズボックスのhover時とactive時の見た目をFirefoxのタブのクローズボックスに合わせるようにした
