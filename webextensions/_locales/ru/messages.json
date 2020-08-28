@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "Увеличить размер суб-панели" },
   "command_decreaseSubPanel":      { "message": "Уменьшить размер суб-панели" },
   "command_groupSelectedTabs":     { "message": "Создать новую группу из выбранных вкладок" },
+  "command_ungroupTabs":           { "message": "Разгруппировать вкладки" },
 
   "tab_closebox_tab_tooltip": { "message": "Закрыть вкладку" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Закрыть вкладки" },
@@ -228,6 +229,8 @@
   "context_bookmarkTree_command": { "message": "В закладки это дерево…" },
   "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
   "context_groupTabs_command":    { "message": "Создать новую группу из вкладок" },
+  "context_ungroupTabs_label":  { "message": "Разгруппировать вкладки" },
+  "context_ungroupTabs_command":{ "message": "Разгруппировать вкладки" },
   "context_topLevel_prefix": { "message": "Верхний элемент: " },
 
   "context_collapsed_label": { "message": "Свернут (проверка меню типа флажок)" },
@@ -256,8 +259,8 @@
 
   "config_style_caption": { "message": "Тема" },
   "config_style_plain": { "message": "Простая" },
-  "config_style_sidebar": { "message": "Боковая панель" },
-  "config_style_highcontrast": { "message": "Контрастная" },
+  "config_style_sidebar": { "message": "Сайдбар" },
+  "config_style_highcontrast": { "message": "Контраст" },
   "config_style_none": { "message": "Без стиля" },
   "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
 
@@ -513,7 +516,7 @@
   "config_addons_description_after": { "message": ". Посмотрите их, если вам нужно больше функций для панели TST." },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
-  "config_theme_description_before": { "message": "Currently there are available built-in themes only \"Plain\", \"Sidebar\" and \"Hight Contrast\". Если вы хотите использовать не встроенную тему, см. " },
+  "config_theme_description_before": { "message": "В настоящее время доступны только три встроенные темы \"Простая\", \"Сайдбар\" и \"Контраст\". Если вы хотите использовать не встроенную тему, см. " },
   "config_theme_description_link_label": { "message": "'Восстановление старых встроенных тем'" },
   "config_theme_description_after": { "message": " как пример." },
   "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
