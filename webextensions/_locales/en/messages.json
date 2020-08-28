@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
   "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
   "command_groupSelectedTabs":     { "message": "Create New Group from Selected Tabs" },
+  "command_ungroupTabs":           { "message": "Ungroup Tabs" },
 
   "tab_closebox_tab_tooltip": { "message": "Close tab" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Close tabs" },
@@ -228,6 +229,8 @@
   "context_bookmarkTree_command": { "message": "Bookmark this Tree…" },
   "context_groupTabs_label":    { "message": "Create New &Group from tabs" },
   "context_groupTabs_command":    { "message": "Create New Group from tabs" },
+  "context_ungroupTabs_label":  { "message": "U&ngroup tabs" },
+  "context_ungroupTabs_command":{ "message": "Ungroup tabs" },
   "context_topLevel_prefix": { "message": "Top level item: " },
 
   "context_collapsed_label": { "message": "Collapsed (for testing of a checkbox type menu)" },

@@ -67,6 +67,17 @@ export async function groupTabs(tabs, options = {}) {
   return groupTab;
 }
 
+export async function ungroupTabs(tabs, { broadcast } = {}) {
+  tabs = tabs.filter(tab => tab.$TST.isGroupTab);
+  for (const tab of tabs) {
+    Tree.detachAllChildren(tab, {
+      behavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+      broadcast
+    });
+  }
+  TabsInternalOperation.removeTabs(tabs);
+}
+
 export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {

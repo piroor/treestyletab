@@ -128,6 +128,9 @@
     "groupSelectedTabs": {
       "description": "__MSG_command_groupSelectedTabs__"
     },
+    "ungroupTabs": {
+      "description": "__MSG_command_ungroupTabs__"
+    },
     "indent": {
       "description": "__MSG_command_indent__"
     },

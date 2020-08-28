@@ -124,6 +124,10 @@ const mTabItemsById = {
     title:                browser.i18n.getMessage('context_groupTabs_label'),
     requireMultiselected: true
   },
+  'ungroupTabs': {
+    title:          browser.i18n.getMessage('context_ungroupTabs_label'),
+    requireGrouped: true
+  },
   'separatorAfterBookmark': {
     type: 'separator'
   },
@@ -473,6 +477,10 @@ function onTabItemClick(info, tab) {
       if (contextTabs.length > 1)
         TabsGroup.groupTabs(contextTabs, { broadcast: true });
       break;
+    case 'ungroupTabs':
+      if (contextTabs.length > 1)
+        TabsGroup.ungroupTabs(contextTabs, { broadcast: true });
+      break;
 
     case 'collapsed':
       if (info.wasChecked)
@@ -523,8 +531,9 @@ function onTabContextMenuShown(info, tab) {
   tab = tab && Tab.get(tab.id);
   const multiselected = tab && tab.$TST.multiselected;
   const contextTabs      = multiselected ? Tab.getSelectedTabs(tab.windowId) : tab ? [tab] : [];
-  const hasChild         = contextTabs.some(tab => tab.$TST.hasChild);
-  const subtreeCollapsed = contextTabs.some(tab => tab.$TST.subtreeCollapsed);
+  const hasChild         = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.hasChild);
+  const subtreeCollapsed = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.subtreeCollapsed);
+  const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
 
   let updated = updateItems({ multiselected });
 
@@ -545,6 +554,9 @@ function onTabContextMenuShown(info, tab) {
     }
     else if (item.requireMultiselected) {
       newEnabled = multiselected;
+    }
+    else if (item.requireGrouped) {
+      newEnabled = grouped;
     }
     else {
       continue;

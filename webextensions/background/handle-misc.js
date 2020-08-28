@@ -168,6 +168,9 @@ async function onShortcutCommand(command) {
       if (selectedTabs.length > 1)
         TabsGroup.groupTabs(selectedTabs, { broadcast: true });
       return;
+    case 'ungroupTabs':
+      TabsGroup.ungroupTabs(selectedTabs, { broadcast: true });
+      return;
 
     case 'indent':
       Commands.indent(activeTab, { followChildren: true });
