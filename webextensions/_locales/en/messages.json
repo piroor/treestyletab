@@ -516,7 +516,7 @@
   "config_addons_description_after": { "message": ". Check them out if you need more features on TST's sidebar." },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
-  "config_theme_description_before": { "message": "Currently there are available built-in themes only \"Plain\", \"Sidebar\" and \"Hight Contrast\". If you want to use non-built-in theme, see " },
+  "config_theme_description_before": { "message": "Currently there are available built-in themes only \"Plain\", \"Sidebar\" and \"High Contrast\". If you want to use non-built-in theme, see " },
   "config_theme_description_link_label": { "message": "the code snippets" },
   "config_theme_description_after": { "message": " for examples." },
   "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
