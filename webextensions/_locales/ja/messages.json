@@ -161,7 +161,7 @@
   "startup_notification_title_installed":   { "message": "Tree Style Tabを使い始める方へ" },
   "startup_notification_message_installed": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ここをクリックして権限を設定してください。" },
   "startup_notification_title_updated":     { "message": "Tree Style Tabの動作が変わりました" },
-  "startup_notification_message_updated":   { "message": "操作感に影響する大きな変更がありました。ここをクリックして補足説明を確認してください。" },
+  "startup_notification_message_updated":   { "message": "操作感に影響する大きな変更がありました。ここをクリックして変更履歴を確認してください。" },
 
   "message_startup_description_1": { "message": "Tree Style Tabの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
@@ -170,7 +170,7 @@
 
   "message_startup_history_before":     { "message": "更新によって変更された動作は、設定で元の動作に戻せる場合があります。詳細は" },
   "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
-  "message_startup_history_link_label": { "message": "バージョン履歴" },
+  "message_startup_history_link_label": { "message": "変更履歴" },
   "message_startup_history_after":      { "message": "を参照してください。" },
 
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },

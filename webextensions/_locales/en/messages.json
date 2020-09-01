@@ -161,7 +161,7 @@
   "startup_notification_title_installed":   { "message": "For newcomer of Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Some extra permissions are required for more natural user experiences. Please click here to grant them." },
   "startup_notification_title_updated":     { "message": "Noticeable Changes on Tree Style Tab" },
-  "startup_notification_message_updated":   { "message": "Some changes may affect to your use case. Please click here to see explanations." },
+  "startup_notification_message_updated":   { "message": "Some changes may affect to your use case. Please click here to see the changelog." },
 
   "message_startup_description_1": { "message": "Tree Style Tab's vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the " },
   "message_startup_description_key": { "message": "\"F1\" key" },
@@ -170,7 +170,7 @@
 
   "message_startup_history_before":     { "message": "Changed behaviors may be (or not) restored with workaround options. See " },
   "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
-  "message_startup_history_link_label": { "message": "version history" },
+  "message_startup_history_link_label": { "message": "the changelog" },
   "message_startup_history_after":      { "message": " for more details." },
 
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
