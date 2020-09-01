@@ -290,6 +290,12 @@ export async function init() {
     }),
     MetricsData.addAsync('parallel initialization: post process: Scroll.init', async () => {
       Scroll.init(await promisedScrollPosition);
+      Scroll.onPositionUnlocked.addListener(() => {
+        reserveToUpdateTabbarLayout({
+          reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+          timeout: configs.animation ? configs.collapseDuration : 0
+        });
+      });
     })
   ]));
 

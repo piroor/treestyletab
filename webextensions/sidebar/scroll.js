@@ -48,6 +48,10 @@ import * as CollapseExpand from './collapse-expand.js';
 
 import * as RestoringTabCount from './restoring-tab-count.js';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
+export const onPositionUnlocked = new EventListenerManager();
+
 function log(...args) {
   internalLogger('sidebar/scroll', ...args);
 }
@@ -654,4 +658,102 @@ CollapseExpand.onUpdated.addListener((tab, options) => {
     });
   else if (tab.active && !options.collapsed)
     scrollToTab(tab);
+});
+
+
+// Simulate "lock tab sizing while closing tabs via mouse click" behavior of Firefox itself
+// https://github.com/piroor/treestyletab/issues/2691
+// https://searchfox.org/mozilla-central/rev/27932d4e6ebd2f4b8519865dad864c72176e4e3b/browser/base/content/tabbrowser-tabs.js#1207
+export function tryLockPosition(tabIds) {
+  if (!configs.simulateLockTabSizing ||
+      tabIds.every(id => {
+        const tab = Tab.get(id);
+        return !tab || tab.pinned || tab.hidden;
+      }))
+    return;
+
+  // Don't lock scroll position when the last tab is closed.
+  const lastTab = Tab.getLastVisibleTab();
+  if (tabIds.includes(lastTab.id)) {
+    if (tryLockPosition.tabIds.size > 0) {
+      // but we need to add tabs to the list of "close with locked scroll position"
+      // tabs to prevent unexpected unlocking.
+      for (const id of tabIds) {
+        tryLockPosition.tabIds.add(id);
+      }
+    }
+    return;
+  }
+
+  // Lock scroll position only when the closing affects to the max scroll position.
+  const lastTabBox = lastTab.$TST.element.getBoundingClientRect();
+  if (mTabBar.scrollTop == 0 ||
+      lastTabBox.top /* not "bottom" because the tab is going to be shifted! */ > mTabBar.getBoundingClientRect().bottom)
+    return;
+
+  for (const id of tabIds) {
+    tryLockPosition.tabIds.add(id);
+  }
+
+  log('tryLockPosition');
+  mTabBar.dataset.removedTabsCount = parseInt(mTabBar.dataset.removedTabsCount || 0) + 1;
+  mTabBar.style.setProperty('--removed-tabs-count', mTabBar.dataset.removedTabsCount, 'important');
+
+  if (!unlockPosition.listening) {
+    unlockPosition.listening = true;
+    window.addEventListener('mousemove', unlockPosition);
+    window.addEventListener('mouseout', unlockPosition);
+  }
+}
+tryLockPosition.tabIds = new Set();
+
+function unlockPosition(event) {
+  log('unlockPosition ', event);
+  switch (event && event.type) {
+    case 'mouseout':
+      const relatedTarget = event.relatedTarget;
+      if (relatedTarget && relatedTarget.ownerDocument == document) {
+        log(' => ignore mouseout in the tabbar window itself');
+        return;
+      }
+
+    case 'mousemove':
+      if (unlockPosition.contextMenuOpen ||
+          (event.type == 'mousemove' && event.target.closest('#tabContextMenu'))) {
+        log(' => ignore events while the context menu is opened');
+        return;
+      }
+      if (event.type == 'mousemove' &&
+          (EventUtils.getTabFromEvent(event, { force: true }) ||
+           EventUtils.getTabFromTabbarEvent(event, { force: true }))) {
+        log(' => ignore mousemove on any tab');
+        return;
+      }
+
+    default:
+      break;
+  }
+
+  window.removeEventListener('mousemove', unlockPosition);
+  window.removeEventListener('mouseout', unlockPosition);
+  unlockPosition.listening = false;
+
+  tryLockPosition.tabIds.clear();
+  mTabBar.dataset.removedTabsCount = 0;
+  mTabBar.style.setProperty('--removed-tabs-count', '0', 'important');
+  onPositionUnlocked.dispatch();
+}
+unlockPosition.contextMenuOpen = false;
+
+browser.menus.onShown.addListener((info, tab) => {
+  unlockPosition.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == TabsStore.getCurrentWindowId());
+});
+
+browser.menus.onHidden.addListener((_info, _tab) => {
+  unlockPosition.contextMenuOpen = false;
+});
+
+browser.tabs.onRemoved.addListener(tabId => {
+  if (!tryLockPosition.tabIds.has(tabId))
+    unlockPosition();
 });
