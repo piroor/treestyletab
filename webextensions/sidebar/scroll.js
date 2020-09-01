@@ -686,9 +686,7 @@ export function tryLockPosition(tabIds) {
   }
 
   // Lock scroll position only when the closing affects to the max scroll position.
-  const lastTabBox = lastTab.$TST.element.getBoundingClientRect();
-  if (mTabBar.scrollTop == 0 ||
-      lastTabBox.top /* not "bottom" because the tab is going to be shifted! */ > mTabBar.getBoundingClientRect().bottom)
+  if (mTabBar.scrollTop < mTabBar.scrollTopMax - Size.getTabHeight())
     return;
 
   for (const id of tabIds) {
