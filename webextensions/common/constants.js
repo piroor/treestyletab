@@ -130,6 +130,7 @@ export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 export const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
 export const kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU = 'contextual-identities-selector-context';
 export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
+export const kTABBAR_SPACER   = 'tabs-spacer';
 
 export const kTAB_STATE_ACTIVE                    = 'active';
 export const kTAB_STATE_PINNED                    = 'pinned';

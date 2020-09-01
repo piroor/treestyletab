@@ -696,7 +696,7 @@ export function tryLockPosition(tabIds) {
   }
 
   log('tryLockPosition');
-  const spacer = mTabBar.querySelector('.tabs-spacer');
+  const spacer = mTabBar.querySelector(`.${Constants.kTABBAR_SPACER}`);
   const count = parseInt(spacer.dataset.removedTabsCount || 0) + 1;
   spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
   spacer.dataset.removedTabsCount = count;
@@ -741,7 +741,7 @@ function unlockPosition(event) {
   unlockPosition.listening = false;
 
   tryLockPosition.tabIds.clear();
-  const spacer = mTabBar.querySelector('.tabs-spacer');
+  const spacer = mTabBar.querySelector(`.${Constants.kTABBAR_SPACER}`);
   spacer.dataset.removedTabsCount = 0;
   spacer.style.minHeight = '';
   onPositionUnlocked.dispatch();

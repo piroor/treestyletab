@@ -229,7 +229,7 @@ Window.onInitialized.addListener(window => {
   if (!container) {
     container = document.createElement('ul');
     const spacer = container.appendChild(document.createElement('li'));
-    spacer.classList.add('tabs-spacer');
+    spacer.classList.add(Constants.kTABBAR_SPACER);
     wholeContainer.appendChild(container);
   }
   container.dataset.windowId = windowId;
@@ -260,7 +260,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   const window  = TabsStore.windows.get(tab.windowId);
   const nextTab = tab.$TST.unsafeNextTab;
   log(`creating tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element || window.element.querySelector('.tabs-spacer'));
+  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
 });
 
 
@@ -641,7 +641,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
-      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element || window.element.querySelector('.tabs-spacer'));
+      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -668,7 +668,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const nextElement = nextTab && nextTab.$TST.element;
       const window      = TabsStore.windows.get(tab.windowId);
       if (tabElement.nextSibling != nextElement)
-        window.element.insertBefore(tabElement, nextElement || window.element.querySelector('.tabs-spacer'));
+        window.element.insertBefore(tabElement, nextElement || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger
