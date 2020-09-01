@@ -339,6 +339,9 @@ async function restoreTabsFromCacheInternal(params) {
     if (!params.insertionPoint)
       insertionPoint.detach();
   }
+  const spacer = container.querySelector(`.${Constants.kTABBAR_SPACER}`);
+  if (spacer)
+    spacer.style.minHeight = '';
   MetricsData.add('restoreTabsFromCacheInternal: DOM tree restoration finished');
 
   log('restoreTabsFromCacheInternal: post process ', { tabElements, tabs });
