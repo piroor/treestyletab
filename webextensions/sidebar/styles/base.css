@@ -160,9 +160,16 @@ button {
   overflow-y: scroll;
 }
 
-#tabbar.overflow .tabs {
-  padding-bottom: calc(var(--tab-size) * var(--removed-tabs-count));
-  transition: padding-bottom var(--collapse-animation);
+.tabs-spacer {
+  height: 0;
+  min-height: 0;
+  pointer-events: none;
+  transition: min-height var(--collapse-animation);
+  visibility: hidden;
+}
+
+#tabbar.overflow .tabs-spacer {
+  min-height: calc(var(--tab-size) * var(--removed-tabs-count));
 }
 
 :root.initializing #tabbar {

@@ -212,7 +212,7 @@ async function syncTabsOrder() {
         for (const id of moveTabIds) {
           const tab = Tab.get(id);
           if (tab)
-            tab.$TST.element.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
+            trackedWindow.element.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element || trackedWindow.element.lastChild);
         }
         break;
     }
@@ -228,6 +228,8 @@ Window.onInitialized.addListener(window => {
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');
+    const spacer = container.appendChild(document.createElement('li'));
+    spacer.classList.add('tabs-spacer');
     wholeContainer.appendChild(container);
   }
   container.dataset.windowId = windowId;
@@ -258,7 +260,7 @@ Tab.onInitialized.addListener((tab, _info) => {
   const window  = TabsStore.windows.get(tab.windowId);
   const nextTab = tab.$TST.unsafeNextTab;
   log(`creating tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
+  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element || window.element.querySelector('.tabs-spacer'));
 });
 
 
@@ -639,7 +641,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
-      tab.$TST.element.parentNode.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
+      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element || window.element.querySelector('.tabs-spacer'));
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -664,8 +666,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tabElement  = tab.$TST.element;
       const nextTab     = Tab.get(message.nextTabId);
       const nextElement = nextTab && nextTab.$TST.element;
+      const window      = TabsStore.windows.get(tab.windowId);
       if (tabElement.nextSibling != nextElement)
-        tabElement.parentNode.insertBefore(tabElement, nextElement);
+        window.element.insertBefore(tabElement, nextElement || window.element.querySelector('.tabs-spacer'));
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger
