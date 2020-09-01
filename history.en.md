@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+ - 3.5.25 (2020.9.2)
+   * Optimize performance around the "lock scroll position" behavior.
+   * Add "Ungroup Tabs" context menu command.
+   * Open the changelog from the update notification popup.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
+   * Fix typo in Enghlish locale by [reaverxai](https://github.com/reaverxai). Thanks!
  - 3.5.24 (2020.8.28)
    * Simulate "lock scroll position of the tab bar while middle tabs are closed via mouse operations" behavior of Firefox's native tab bar.
    * Shrink the width of the confirmation dialog for closing tabs with very long titles.
