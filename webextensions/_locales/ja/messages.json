@@ -168,6 +168,11 @@
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },
   "message_startup_description_3": { "message": "」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示して下さい。" },
 
+  "message_startup_history_before":     { "message": "更新によって変更された動作は、設定で元の動作に戻せる場合があります。詳細は" },
+  "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
+  "message_startup_history_link_label": { "message": "バージョン履歴" },
+  "message_startup_history_after":      { "message": "を参照してください。" },
+
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」、他の環境からインポートされたブックマークの内部URLの自動移行、ブックマークから開かれたタブの検出（ブックマークの操作の許可が必要）" },
   "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない" },

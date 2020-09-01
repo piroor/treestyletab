@@ -168,6 +168,11 @@
   "message_startup_description_2": { "message": " or click the " },
   "message_startup_description_3": { "message": " button in the toolbar, to activate the sidebar panel." },
 
+  "message_startup_history_before":     { "message": "Changed behaviors may be (or not) restored with workaround options. See " },
+  "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
+  "message_startup_history_link_label": { "message": "version history" },
+  "message_startup_history_after":      { "message": " for more details." },
+
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs, auto migration of bookmarked internal URLs imported from other environments, and detection of tabs opened from bookmarks (requires access to bookmarks)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts" },

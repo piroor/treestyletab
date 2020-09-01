@@ -189,8 +189,9 @@ export function tryNotifyNewFeatures() {
   configs.notifiedFeaturesVersion = featuresVersion;
 
   const suffix = isInitialInstall ? 'installed' : 'updated';
+  const url = isInitialInstall ? Constants.kSHORTHAND_URIS.startup : browser.i18n.getMessage('message_startup_history_uri');
   notify({
-    url:     Constants.kSHORTHAND_URIS.startup,
+    url,
     title:   browser.i18n.getMessage(`startup_notification_title_${suffix}`),
     message: browser.i18n.getMessage(`startup_notification_message_${suffix}`),
     timeout: 90 * 1000
