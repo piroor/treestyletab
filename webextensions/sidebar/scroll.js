@@ -754,6 +754,10 @@ browser.menus.onHidden.addListener((_info, _tab) => {
   unlockPosition.contextMenuOpen = false;
 });
 
+browser.tabs.onCreated.addListener(_tab => {
+  unlockPosition();
+});
+
 browser.tabs.onRemoved.addListener(tabId => {
   if (!tryLockPosition.tabIds.has(tabId))
     unlockPosition();
