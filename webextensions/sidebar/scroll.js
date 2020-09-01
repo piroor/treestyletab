@@ -696,8 +696,10 @@ export function tryLockPosition(tabIds) {
   }
 
   log('tryLockPosition');
-  mTabBar.dataset.removedTabsCount = parseInt(mTabBar.dataset.removedTabsCount || 0) + 1;
-  mTabBar.style.setProperty('--removed-tabs-count', mTabBar.dataset.removedTabsCount, 'important');
+  const spacer = mTabBar.querySelector('.tabs-spacer');
+  const count = parseInt(spacer.dataset.removedTabsCount || 0) + 1;
+  spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
+  spacer.dataset.removedTabsCount = count;
 
   if (!unlockPosition.listening) {
     unlockPosition.listening = true;
@@ -739,8 +741,9 @@ function unlockPosition(event) {
   unlockPosition.listening = false;
 
   tryLockPosition.tabIds.clear();
-  mTabBar.dataset.removedTabsCount = 0;
-  mTabBar.style.setProperty('--removed-tabs-count', '0', 'important');
+  const spacer = mTabBar.querySelector('.tabs-spacer');
+  spacer.dataset.removedTabsCount = 0;
+  spacer.style.minHeight = '';
   onPositionUnlocked.dispatch();
 }
 unlockPosition.contextMenuOpen = false;
