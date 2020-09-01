@@ -24,7 +24,7 @@ xpi: update_extlib install_extlib lint
 update_extlib:
 	cd .. && git submodule update --init
 
-install_extlib:
+install_extlib: install_dependency
 	rm -f $(EXTERNAL_LIB_DIR)/*.js
 	cp ../submodules/webextensions-lib-event-listener-manager/EventListenerManager.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabFavIconHelper;' >> $(EXTERNAL_LIB_DIR)/TabFavIconHelper.js
@@ -36,4 +36,7 @@ install_extlib:
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/l10n-classic.js; echo 'window.l10n = l10n;' >> $(EXTERNAL_LIB_DIR)/l10n-classic.js
 	cp ../submodules/webextensions-lib-dom-updater/src/diff.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-dom-updater/src/dom-updater.js $(EXTERNAL_LIB_DIR)/
+	cp node_modules/codemirror/lib/codemirror.js $(EXTERNAL_LIB_DIR)/
+	cp node_modules/codemirror/lib/codemirror.css $(EXTERNAL_LIB_DIR)/
+	cp node_modules/codemirror/mode/css/css.js $(EXTERNAL_LIB_DIR)/codemirror-mode-css.js
 

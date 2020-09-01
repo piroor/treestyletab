@@ -40,6 +40,7 @@ if ((location.hash && location.hash != '#') ||
   document.body.classList.add('independent');
 
 const mUserStyleRulesField = document.getElementById('userStyleRulesField');
+let mUserStyleRulesFieldEditor;
 
 function onConfigChanged(key) {
   const value = configs[key];
@@ -152,7 +153,7 @@ function reserveToSaveUserStyleRules() {
     if (reserveToSaveUserStyleRules.clearFlagTimer)
       clearTimeout(reserveToSaveUserStyleRules.clearFlagTimer);
     try {
-      saveUserStyleRules(mUserStyleRulesField.value);
+      saveUserStyleRules(mUserStyleRulesFieldEditor.getValue());
       mUserStyleRulesField.classList.remove('invalid');
       caution.classList.remove('invalid');
     }
@@ -291,7 +292,7 @@ function initUserStyleImportExportButtons() {
 }
 
 function exportUserStyleToFile() {
-  const styleRules = mUserStyleRulesField.value;
+  const styleRules = mUserStyleRulesFieldEditor.getValue();
   const link = document.getElementById('userStyleRules-export-file');
   link.href = URL.createObjectURL(new Blob([styleRules], { type: 'text/css' }));
   link.click();
@@ -350,8 +351,9 @@ async function importFilesToUserStyleRulesField(files) {
   }
   else {
     const style = (await Promise.all(files.map(file => file.text()))).join('\n');
-    if (mUserStyleRulesField.value.trim() == '') {
-      mUserStyleRulesField.value = style;
+    const current = mUserStyleRulesFieldEditor.getValue().trim();
+    if (current == '') {
+      mUserStyleRulesFieldEditor.setValue(style);
       return;
     }
     let result;
@@ -373,10 +375,10 @@ async function importFilesToUserStyleRulesField(files) {
     }
     switch (result.buttonIndex) {
       case 0:
-        mUserStyleRulesField.value = style;
+        mUserStyleRulesFieldEditor.setValue(style);
         break;
       case 1:
-        mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
+        mUserStyleRulesFieldEditor.setValue(`${current}\n${style}`);
         break;
       default:
         break;
@@ -583,9 +585,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  mUserStyleRulesField.value = loadUserStyleRules();
-  mUserStyleRulesField.addEventListener('change', reserveToSaveUserStyleRules);
-  mUserStyleRulesField.addEventListener('input', reserveToSaveUserStyleRules);
+  mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
+    mode: 'css'
+  });
+  window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
+  mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());
+  mUserStyleRulesFieldEditor.on('change', reserveToSaveUserStyleRules);
+  mUserStyleRulesFieldEditor.on('update', reserveToSaveUserStyleRules);
   initUserStyleImportExportButtons();
   initFileDragAndDropHandlers();
 

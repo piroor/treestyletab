@@ -7,6 +7,9 @@
     <meta charset="UTF-8">
     <script type="module" src="./init.js"></script>
     <link rel="stylesheet" type="text/css" href="options.css"/>
+    <link rel="stylesheet" type="text/css" href="/extlib/codemirror.css"/>
+    <script type="application/javascript" src="/extlib/codemirror.js"></script>
+    <script type="application/javascript" src="/extlib/codemirror-mode-css.js"></script>
   </head>
   <body>
     <p><a id="link-optionsPage-top" target="_blank">__MSG_config_openOptionsInTab_label__</a>
@@ -1012,9 +1015,9 @@
         <p>__MSG_config_userStyleRules_themeRules_description_alphaVariations__</p>
       </div>
       <p id="tooLargeUserStyleRulesCaution">__MSG_config_tooLargeUserStyleRulesCaution__</p>
-      <textarea id="userStyleRulesField"
-                rows="10"
-                style="width: 100%"></textarea>
+      <div id="userStyleRulesField"
+           contenteditable="true"
+           style="height: 10em; width: 100%;"></div>
       <div>
         <button id="userStyleRules-export">__MSG_config_userStyleRules_export__</button>
         <a id="userStyleRules-export-file"
