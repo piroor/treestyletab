@@ -125,7 +125,8 @@ There are some similar project by someone not me providing similar features:
   
   * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
   * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
-  * [Tree Style Tab for Chrome](https://chrome.google.com/webstore/detail/tree-style-tab-for-chrome/hbledhepdppepjnbnohiepcpcnphimdj)
+  * [Treely: Tree Style Tab Manager](https://chrome.google.com/webstore/detail/treely-tree-style-tab-man/hbledhepdppepjnbnohiepcpcnphimdj)
+  * [Tree Style Tab](https://chrome.google.com/webstore/detail/tree-style-tab/oicakdoenlelpjnkoljnaakdofplkgnd)
   </details>
 * <details><summary>for Vivaldi</summary>
   
