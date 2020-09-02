@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.5.26 (2020.9.3)
+   * Deactivate animation effects globally when [they are reduced by platform configs](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion).
+   * Deactivate throbber animation when animation effects are reduced by platform configs.
  - 3.5.25 (2020.9.2)
    * Optimize performance around the "lock scroll position" behavior.
    * Add "Ungroup Tabs" context menu command.
