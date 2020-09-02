@@ -29,7 +29,8 @@
 import {
   log as internalLogger,
   nextFrame,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -98,7 +99,7 @@ export function setCollapsed(tab, info = {}) {
         !TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
-    if (configs.animation &&
+    if (shouldApplyAnimation() &&
         !info.justNow &&
         configs.collapseDuration > 0)
       return; // force completion is required only for non-animation case
@@ -117,7 +118,7 @@ export function setCollapsed(tab, info = {}) {
   };
   manager.addListener(onCompleted);
 
-  if (!configs.animation ||
+  if (!shouldApplyAnimation() ||
       info.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');

@@ -11,7 +11,8 @@ import {
   wait,
   countMatched,
   toLines,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -556,8 +557,8 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVED:
       await wait(0);
-      if (configs.animation)
-        await wait(configs.animation ? configs.collapseDuration : 0);
+      if (shouldApplyAnimation())
+        await wait(configs.collapseDuration);
       reserveToUpdateCachedTabbar();
       break;
 

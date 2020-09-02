@@ -12,6 +12,7 @@ import {
   nextFrame,
   mapAndFilter,
   configs,
+  shouldApplyAnimation,
   loadUserStyleRules
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -83,7 +84,6 @@ const mStyleLoader                = document.querySelector('#style-loader');
 const mBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 const mUserStyleRules             = document.querySelector('#user-style-rules');
 const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
-const mLessAnimationMedia         = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -282,10 +282,9 @@ export async function init() {
       SidebarTabs.init();
       Indent.reserveToUpdateVisualMaxTreeLevel();
 
-      mLessAnimationMedia.addListener(_event => {
-        onConfigChange('animation');
-      });
-      onConfigChange('animation');
+      shouldApplyAnimation.onChanged.addListener(applyAnimationState);
+      applyAnimationState(shouldApplyAnimation());
+
       onReady.dispatch();
     }),
     MetricsData.addAsync('parallel initialization: post process: Scroll.init', async () => {
@@ -293,7 +292,7 @@ export async function init() {
       Scroll.onPositionUnlocked.addListener(() => {
         reserveToUpdateTabbarLayout({
           reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
-          timeout: configs.animation ? configs.collapseDuration : 0
+          timeout: shouldApplyAnimation() ? configs.collapseDuration : 0
         });
       });
     })
@@ -313,6 +312,14 @@ export async function init() {
   MetricsData.add('init: end');
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
+}
+
+function applyAnimationState(active) {
+  const rootClasses = document.documentElement.classList;
+  if (active)
+    rootClasses.add('animation');
+  else
+    rootClasses.remove('animation');
 }
 
 function applyStyle(style) {
@@ -744,13 +751,6 @@ function onConfigChange(changedKey) {
       else
         rootClasses.remove('debug');
     }; break;
-
-    case 'animation':
-      if (configs.animation && !mLessAnimationMedia.matches)
-        rootClasses.add('animation');
-      else
-        rootClasses.remove('animation');
-      break;
 
     case 'sidebarPosition':
       if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {

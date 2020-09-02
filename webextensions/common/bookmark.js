@@ -8,6 +8,7 @@
 import {
   log as internalLogger,
   configs,
+  shouldApplyAnimation,
   notify,
   wait,
   sha1sum,
@@ -42,7 +43,7 @@ export async function getItemById(id) {
 }
 
 function getAnimationDuration() {
-  return configs.animation ? configs.collapseDuration : 0.001;
+  return shouldApplyAnimation() ? configs.collapseDuration : 0.001;
 }
 
 if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {

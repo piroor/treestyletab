@@ -11,7 +11,8 @@ import {
   log as internalLogger,
   wait,
   notify,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -50,7 +51,7 @@ export function init() {
     //onShown,
     onHidden,
     appearance:        'menu',
-    animationDuration: configs.animation ? configs.collapseDuration : 0.001,
+    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001,
     subMenuOpenDelay:  configs.subMenuOpenDelay,
     subMenuCloseDelay: configs.subMenuCloseDelay
   });

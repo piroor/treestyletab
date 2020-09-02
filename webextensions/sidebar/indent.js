@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -40,12 +41,6 @@ export function init() {
 
   mPromisedInitializedResolver();
   mPromisedInitialized = mPromisedInitializedResolver = null;
-}
-
-const mLessAnimationMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-function canApplyAnimation() {
-  return configs.animation  && !mLessAnimationMedia.matches;
 }
 
 export function updateRestoredTree(cachedIndent) {
@@ -153,7 +148,7 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
     delete updateVisualMaxTreeLevel.waiting;
   }
 
-  if (!canApplyAnimation()) {
+  if (!shouldApplyAnimation()) {
     updateVisualMaxTreeLevel();
     return;
   }
@@ -237,7 +232,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
-      if (!canApplyAnimation())
+      if (!shouldApplyAnimation())
         updateVisualMaxTreeLevel();
       break;
   }

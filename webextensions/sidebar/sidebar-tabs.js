@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   wait,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -511,7 +512,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
       TabsStore.addUnsynchronizedTab(tab);
       TabsStore.addLoadingTab(tab);
-      if (configs.animation) {
+      if (shouldApplyAnimation()) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true,
           justNow:   true
@@ -539,7 +540,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
         await waitUntilNewTabIsMoved(message.tabId);
-      if (configs.animation) {
+      if (shouldApplyAnimation()) {
         await wait(0); // nextFrame() is too fast!
         if (tab.$TST.shouldExpandLater)
           CollapseExpand.setCollapsed(tab, {
@@ -625,7 +626,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.addState(Constants.kTAB_STATE_MOVING);
 
       let shouldAnimate = false;
-      if (configs.animation &&
+      if (shouldApplyAnimation() &&
           !tab.pinned &&
           !tab.$TST.opening &&
           !tab.$TST.collapsed) {
@@ -740,14 +741,14 @@ BackgroundConnection.onMessage.addListener(async message => {
         activateRealActiveTab(message.windowId);
       }
       if (!tab.$TST.collapsed &&
-          configs.animation &&
+          shouldApplyAnimation() &&
           tab.$TST.element) {
         const tabRect = tab.$TST.element.getBoundingClientRect();
         tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
-        await wait(configs.animation ? configs.collapseDuration : 0);
+        await wait(configs.collapseDuration);
       }
       tab.$TST.destroy();
     }; break;

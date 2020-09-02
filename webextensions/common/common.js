@@ -6,6 +6,7 @@
 'use strict';
 
 import Configs from '/extlib/Configs.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import * as Constants from './constants.js';
 
@@ -461,6 +462,22 @@ function joinChunkedStrings(chunks) {
   }
 }
 
+
+shouldApplyAnimation.onChanged = new EventListenerManager();
+shouldApplyAnimation.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+shouldApplyAnimation.prefersReducedMotion.addListener(_event => {
+  shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
+});
+configs.$addObserver(key => {
+  if (key == 'animation')
+    shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
+});
+
+// Some animation effects like smooth scrolling are still active even if it matches to "prefers-reduced-motion: reduce".
+// So this function provides ability to ignore the media query result.
+export function shouldApplyAnimation(configOnly = false) {
+  return configs.animation && (configOnly || !shouldApplyAnimation.prefersReducedMotion.matches);
+}
 
 
 export function log(module, ...args)

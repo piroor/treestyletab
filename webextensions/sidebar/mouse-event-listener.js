@@ -34,7 +34,8 @@ import {
   dumpTab,
   mapAndFilter,
   countMatched,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -85,14 +86,14 @@ Sidebar.onBuilt.addListener(async () => {
     root:       mContextualIdentitySelector,
     appearance: 'panel',
     onCommand:  onContextualIdentitySelect,
-    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
   });
 
   mNewTabActionSelector.ui = new MenuUI({
     root:       mNewTabActionSelector,
     appearance: 'panel',
     onCommand:  onNewTabActionSelect,
-    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
   });
 });
 
@@ -542,7 +543,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   // Multiple middle clicks to close tabs can be detected as a middle click on the tab bar.
   // We should ignore if the cursor is not moved and the closing tab is still in animation.
   // See also: https://github.com/piroor/treestyletab/issues/1968
-  if (configs.animation &&
+  if (shouldApplyAnimation() &&
       Date.now() - mLastMouseUpOnTab <= configs.collapseDuration &&
       Math.abs(mLastMouseUpX - event.clientX) < configs.acceptableFlickerToIgnoreClickOnTabAndTabbar / 2 &&
       Math.abs(mLastMouseUpY - event.clientY) < configs.acceptableFlickerToIgnoreClickOnTabAndTabbar / 2)

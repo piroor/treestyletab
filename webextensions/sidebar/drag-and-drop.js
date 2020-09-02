@@ -32,6 +32,7 @@ import {
   wait,
   mapAndFilter,
   configs,
+  shouldApplyAnimation,
   sha1sum
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -894,7 +895,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
         invertedResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
           browser.i18n.getMessage(`tabDragBehaviorNotification_message_${invertedResult}`)]),
       ].join('\n');
-      mDragBehaviorNotification.firstChild.style.animationDuration = browser.i18n.getMessage(`tabDragBehaviorNotification_message_duration_${currentResult && invertedResult ? 'both' : 'single'}`);
+      mDragBehaviorNotification.firstChild.style.animationDuration = !shouldApplyAnimation() ? 0 : browser.i18n.getMessage(`tabDragBehaviorNotification_message_duration_${currentResult && invertedResult ? 'both' : 'single'}`);
       mDragBehaviorNotification.classList.remove('hiding');
       mDragBehaviorNotification.classList.add('shown');
     }
