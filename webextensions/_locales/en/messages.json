@@ -280,6 +280,7 @@
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Show " },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " or less tabs for each row (*0 or less means auto-calculation)" },
   "config_animation_label": { "message": "Enable animation effects" },
+  "config_animationForce_label": { "message": "Enable animations regardless \"reduce animations\" platform settings" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_applyThemeColorToIcon_label": { "message": "Apply theme color to the toolbar button" },
   "config_applyThemeColorToIcon_label_info": { "message": "(*You need to set \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\")" },

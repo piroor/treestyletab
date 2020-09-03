@@ -100,6 +100,12 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title:  indent() + browser.i18n.getMessage('config_animationForce_label'),
+        key:    'animationForce',
+        type:   'checkbox',
+        expert: true
+      },
+      {
         title:    browser.i18n.getMessage('config_labelOverflowStyle_caption'),
         children: [
           {

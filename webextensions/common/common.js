@@ -230,6 +230,7 @@ export const configs = new Configs({
 
   // animation
   animation: true,
+  animationForce: false,
   smoothScrollEnabled:  true,
   smoothScrollDuration: 150,
   burstDuration:    375,
@@ -469,14 +470,17 @@ shouldApplyAnimation.prefersReducedMotion.addListener(_event => {
   shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
 });
 configs.$addObserver(key => {
-  if (key == 'animation')
+  if (key == 'animation' ||
+      key == 'animationForce')
     shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
 });
 
 // Some animation effects like smooth scrolling are still active even if it matches to "prefers-reduced-motion: reduce".
 // So this function provides ability to ignore the media query result.
 export function shouldApplyAnimation(configOnly = false) {
-  return configs.animation && (configOnly || !shouldApplyAnimation.prefersReducedMotion.matches);
+  if (!configs.animation)
+    return false;
+  return configOnly || configs.animationForce || !shouldApplyAnimation.prefersReducedMotion.matches;
 }
 
 
