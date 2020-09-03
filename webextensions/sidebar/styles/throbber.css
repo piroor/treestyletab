@@ -22,9 +22,6 @@ tab-item.faviconized {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
-@media (prefers-reduced-motion: reduce) {
-  @keyframes throbber {}
-}
 
 
 :root:not(.blocking-throbber) #blocking-screen .throbber,
@@ -49,10 +46,10 @@ tab-item:not(.collapsed) .throbber {
   width: var(--throbber-size);
 }
 
-:root:not(.throbber-synchronizing) tab-item:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
-:root:not(.throbber-synchronizing).have-loading-tab #conductor-throbber,
-:root.have-loading-tab #sync-throbber,
-:root.blocking-throbber #blocking-screen .throbber::before {
+:root.animation:not(.throbber-synchronizing) tab-item:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
+:root.animation:not(.throbber-synchronizing).have-loading-tab #conductor-throbber,
+:root.animation.have-loading-tab #sync-throbber,
+:root.animation.blocking-throbber #blocking-screen .throbber::before {
   animation: throbber 1.05s var(--throbber-animation-steps) infinite;
 }
 
@@ -62,14 +59,12 @@ tab-item:not(.collapsed) .throbber {
   content: "";
   height: var(--throbber-size);
   position: absolute;
-  width: calc(var(--throbber-size) * 60);
+  width: var(--throbber-size);
 }
-@media (prefers-reduced-motion: reduce) {
-  :root.blocking-throbber #blocking-screen .throbber::before,
-  #tabbar tab-item:not(.collapsed).loading .throbber::before,
-  :root.have-loading-tab #conductor-throbber {
-    width: var(--throbber-size);
-  }
+:root.animation.blocking-throbber #blocking-screen .throbber::before,
+:root.animation #tabbar tab-item:not(.collapsed).loading .throbber::before,
+:root.animation.have-loading-tab #conductor-throbber {
+  width: calc(var(--throbber-size) * 60);
 }
 
 
@@ -87,21 +82,20 @@ tab-item:not(.collapsed) .throbber {
 :root.blocking-throbber #blocking-screen .throbber::before,
 #tabbar tab-item:not(.collapsed).loading .throbber::before {
   -moz-context-properties: fill;
-  background: url("./throbber.svg") no-repeat;
+  background: url("/resources/icons/hourglass.svg") no-repeat;
 }
 :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
 :root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
-  mask: url("./throbber.svg") no-repeat left center / 100%;
+  mask: url("/resources/icons/hourglass.svg") no-repeat left center / 100%;
 }
-@media (prefers-reduced-motion: reduce) {
-  :root.blocking-throbber #blocking-screen .throbber::before,
-  #tabbar tab-item:not(.collapsed).loading .throbber::before {
-    background-image: url("/resources/icons/hourglass.svg");
-  }
-  :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
-  :root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
-    mask-image: url("/resources/icons/hourglass.svg");
-  }
+
+:root.animation.blocking-throbber #blocking-screen .throbber::before,
+:root.animation #tabbar tab-item:not(.collapsed).loading .throbber::before {
+  background-image: url("./throbber.svg");
+}
+:root.animation.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
+:root.animation.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
+  mask-image: url("./throbber.svg");
 }
 
 #tabbar tab-item:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
@@ -113,12 +107,10 @@ tab-item:not(.collapsed) .throbber {
 }
 
 #conductor-throbber {
-  background: url("./throbber.svg") no-repeat left center;
+  background: url("/resources/icons/hourglass.svg") no-repeat left center;
 }
-@media (prefers-reduced-motion: reduce) {
-  #conductor-throbber {
-    background-image: url("/resources/icons/hourglass.svg");
-  }
+:root.animation #conductor-throbber {
+  background-image: url("./throbber.svg");
 }
 
 
@@ -162,10 +154,6 @@ tab-item:not(.collapsed) .throbber {
 @keyframes tab-burst-animation-light {
   0%   { opacity: 0.2; transform: var(--tab-burster-translation) scale(1); }
   100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
-}
-@media (prefers-reduced-motion: reduce) {
-  @keyframes tab-burst-animation {}
-  @keyframes tab-burst-animation-light {}
 }
 
 :root.animation tab-item:not(.collapsed).bursting .burster::before {

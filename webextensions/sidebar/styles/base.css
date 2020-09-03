@@ -687,15 +687,13 @@ tab-item.faviconized .contextual-identity-marker {
   opacity: 0;
 }
 
+
 #out-of-view-tab-notifier.notifying {
-  animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
   display: block;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #out-of-view-tab-notifier.notifying {
-    animation: none;
-  }
+:root.animation #out-of-view-tab-notifier.notifying {
+  animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
 }
 
 
@@ -816,6 +814,9 @@ iframe#subpanel {
 }
 
 :root.blocking-throbber #blocking-screen {
+  background: rgba(0, 0, 0, 0.01);
+}
+:root.animation.blocking-throbber #blocking-screen {
   background: rgba(0, 0, 0, 0.35);
 }
 
@@ -823,11 +824,6 @@ iframe#subpanel {
   display: block;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :root.blocking-throbber #blocking-screen {
-    background: rgba(0, 0, 0, 0.01);
-  }
-  :root.blocking-throbber #blocking-screen * {
-    visibility: hidden;
-  }
+:root:not(.animation).blocking-throbber #blocking-screen * {
+  visibility: hidden;
 }

@@ -103,6 +103,7 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
   document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
 }
 
+applyAnimationState(shouldApplyAnimation());
 UserOperationBlocker.block({ throbber: true });
 
 export async function init() {
