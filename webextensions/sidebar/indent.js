@@ -185,10 +185,11 @@ async function reserveToUpdateIndent() {
   log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
     clearTimeout(reserveToUpdateIndent.waiting);
+  const delay = shouldApplyAnimation() ? Math.max(configs.indentDuration, configs.collapseDuration) * 1.5 : 100;
   reserveToUpdateIndent.waiting = setTimeout(() => {
     delete reserveToUpdateIndent.waiting;
     update();
-  }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
+  }, delay);
 }
 
 

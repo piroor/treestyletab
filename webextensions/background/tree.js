@@ -31,7 +31,8 @@ import {
   wait,
   dumpTab,
   mapAndFilter,
-  configs
+  configs,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -649,7 +650,7 @@ function updateTabIndent(tab, level = undefined, options = {}) {
   let timer = updateTabIndent.delayed.get(tab.id);
   if (timer)
     clearTimeout(timer);
-  if (options.justNow) {
+  if (options.justNow || !shouldApplyAnimation()) {
     return updateTabIndentNow(tab, level, options);
   }
   timer = setTimeout(() => {
@@ -710,10 +711,14 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
+  const animation = (
+    !params.collapsed &&
+    !params.justNow &&
+    !shouldApplyAnimation()
+  );
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
     const childTab = childTabs[i];
-    if (!params.collapsed &&
-        !params.justNow &&
+    if (animation &&
         i == lastExpandedTabIndex) {
       await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
