@@ -866,7 +866,7 @@ export async function collapseExpandTab(tab, params = {}) {
       stack,
       byAncestor
     });
-  }, 100);
+  }, shouldApplyAnimation() ? 100 : 0);
   collapseExpandTab.delayedNotify.set(tab.id, timer);
 }
 collapseExpandTab.delayedNotify = new Map();
