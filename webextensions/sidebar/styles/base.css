@@ -822,3 +822,12 @@ iframe#subpanel {
 :root.blocking #blocking-screen {
   display: block;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  :root.blocking-throbber #blocking-screen {
+    background: rgba(0, 0, 0, 0.01);
+  }
+  :root.blocking-throbber #blocking-screen * {
+    visibility: hidden;
+  }
+}
