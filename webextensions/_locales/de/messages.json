@@ -31,6 +31,7 @@
   "command_increaseSubPanel":      { "message": "Größe des Unter-Bedienfeld erhöhen" },
   "command_decreaseSubPanel":      { "message": "Größe des Unter-Bedienfeld verringern" },
   "command_groupSelectedTabs":     { "message": "Neue Gruppe mit ausgewählten Tabs erstellen" },
+  "command_ungroupTabs":           { "message": "Tabgruppe auflösen" },
 
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Tabs schließen" },
@@ -122,6 +123,12 @@
   "warnOnCloseTabs_close":     { "message": "Tabs schließen" },
   "warnOnCloseTabs_cancel":    { "message": "Abbrechen" },
 
+  "warnOnCloseTabs_fromOutside_title":     { "message": "Mit untergeordneten Tabs schließen?" },
+  "warnOnCloseTabs_fromOutside_message":   { "message": "Der geschlossene Tab hatte $NUMBER$ untergeordnete Tabs. Sicher, dass diese auch geschlossen werden sollen?\n(*Abbruch wird den geschlossenen übergeordneten Tab wiederherstellen.)",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+
   "warnOnCloseTabs_notification_message": { "message": "Falls nicht, hier zum Abbrechen klicken.\nAndernfalls werden die Tabs nach $TIMEOUT$ Sekunden geschlossen.",
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
@@ -143,6 +150,7 @@
   "bookmarkDialog_url":      { "message": "Ort:" },
   "bookmarkDialog_url_accessKey": { "message": "l" },
   "bookmarkDialog_parentId": { "message": "Ordner:" },
+  "bookmarkDialog_saveContainerRedirectKey": { "message": "Umgebungs-Informationen für Container Bookmarks speichern" },
   "bookmarkDialog_accept":   { "message": "Speichern" },
   "bookmarkDialog_cancel":   { "message": "Abbrechen" },
 
@@ -150,10 +158,20 @@
   "bookmarkFolderChooser_blank":         { "message": "(kein Name)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Diesen Orner nutzen" },
 
+  "startup_notification_title_installed":   { "message": "Für neue Nutzer von Tree Style Tab" },
+  "startup_notification_message_installed": { "message": "Einige zusätzliche Berechtigungen sind für ein natürlicheres Nutzererlebnis erforderlich. Hier klicken um sie zu gewähren." },
+  "startup_notification_title_updated":     { "message": "Spürbare Änderungen von Tree Style Tab" },
+  "startup_notification_message_updated":   { "message": "Einige Änderungen können die gewohnte Nutzung beeinträchtigen. Hier klicken um die Änderungen zu sehen." },
+
   "message_startup_description_1": { "message": "Tree Style Tab wurde wiedergeboren basierend auf der WebExtensions-Technologie für Firefox 57 (und neuer). Seine senkrechte Tab-Leiste ist als eine der auswählbaren Sidebars verfügbar. Falls sie noch nicht angezeigt wird, drücke die " },
   "message_startup_description_key": { "message": "\"F1\" Taste" },
   "message_startup_description_2": { "message": " oder klicke auf den " },
   "message_startup_description_3": { "message": " Button in der Symbolleiste um die Sidebar zu aktivieren." },
+
+  "message_startup_history_before":     { "message": "Geändertes Verhalten kann (oder auch nicht) durch Workarounds wiederhergestellt werden. Siehe" },
+  "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
+  "message_startup_history_link_label": { "message": "die Liste der Änderungen" },
+  "message_startup_history_after":      { "message": " für weitere Informationen." },
 
   "message_startup_requestPermissions_description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
@@ -216,6 +234,8 @@
   "context_bookmarkTree_command": { "message": "Lesezeichen für diesen Zweig anlegen…" },
   "context_groupTabs_label":    { "message": "Neue &Gruppe aus Tabs erstellen" },
   "context_groupTabs_command":    { "message": "Neue Gruppe aus Tabs erstellen" },
+  "context_ungroupTabs_label":  { "message": "Gruppe aufl&ösen" },
+  "context_ungroupTabs_command":{ "message": "Gruppe auflösen" },
   "context_topLevel_prefix": { "message": "Oberstes Objekt: " },
 
   "context_collapsed_label": { "message": "Zugeklappt (für Test eines \"checkbox\" Menüs)" },
@@ -304,7 +324,17 @@
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "identisch mit Strg-Klick (nächster Nachbar, gleiche Umgebung)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
+
+  "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "Für Strg/⌘-Klick, neuen leeren Tab öffnen als" },
+  "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(keine Steuerung)" },
+  "config_autoAttachOnNewTabButtonAccelClick_independent": { "message": "eigenständigen Tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_child": { "message": "untergeordneten Tab des aktiven Tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "direkter Nachbar, gleiche Umgebung" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Nicht-leere neue Tabs" },
 
@@ -350,11 +380,18 @@
 
   "config_groupTab_caption": { "message": "Automatische Gruppierung der Tabs" },
 
-  "config_autoGroupNewTabs_before": { "message": "Tabs automatisch gruppieren, die innerhalb von" },
-  "config_autoGroupNewTabs_after": { "message": "Millisekunden geöffnet wurden" },
+  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Tabs automatisch gruppieren, die innerhalb von" },
+  "config_autoGroupNewTabsFromBookmarks_after": { "message": "Millisekunden aus einem Lesezeichen-Ordner geöffnet wurden" },
+  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "Diese Funktion benötigt Zugriff auf die Lesezeichen. Hier klicken um die zusätzliche Berechtigung zu gewähren." },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
+  "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Erkennen von zu Tabs gehörenden Lesezeichen erlauben)" },
+  "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Alle neuen Tabs als aus einem Lesezeichen-Ordner stammend betrachten, falls mehr als " },
+  "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "% Tabs ein entsprechendes Lesezeichen in einem Lesezeichen-Ordner haben" },
+  "config_autoGroupNewTabsFromOthers_label": { "message": "Zeitgleich geöffnete Tabs gruppieren, auch wenn sie nicht aus den Lesezeichen stammen" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Aber neue Tabs nicht gruppieren, die innerhalb von" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "Millisekunden geöffnet werden, wenn ein neues Fenster geöffnet wird, als Teil von Tabs, die als \"Startseite\" geöffnet werden." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Bestätige Gruppierung von Tabs" },
+  "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "Tabs, die gruppiert werden sollen, im Bestätigungsdialog auflisten" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Tabs automatisch gruppieren, die aus dem gleichen angehefteten Tab heraus geöffnet werden" },
   "config_renderTreeInGroupTabs_label": { "message": "Zeige Baum in Gruppen-Tab" },
@@ -409,6 +446,7 @@
 
   "config_warnOnCloseTabs_label": { "message": "Warnen, wenn mehrere Tabs geschlossen werden sollen" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warnen, wenn mehrere Tabs durch einen Klick auf eine Schließen-Schaltfläche geschlossen werden sollen" },
+  "config_warnOnCloseTabsWithListing_label": { "message": "Tabs, die geschlossen werden sollen, im Bestätigungsdialog auflisten" },
 
 
   "config_drag_caption": { "message": "Ziehen und Ablegen" },
@@ -459,12 +497,21 @@
 
   "config_supportTabsMultiselect_label": { "message": "Verwende Schnittstelle zur Mehrfachauswahl von Tabs um den Tab-Fokus zu steuern (*hängt von der eingebauten Einstellung von Firefox \"browser.tabs.multiselect\"=\"true\" ab)" },
 
+  "config_undoMultipleTabsClose_label": { "message": "Zuletzt geschlossene Tabs wiederherstellen, wenn einer der Tabs über den \"Geschlossener Tab wiederherstellen\" Befehl wiederhergestellt wird" },
+
   "config_userStyleRules_label": { "message": "Zusätzliche Style-Regeln für Sidebar-Inhalte" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
   "config_userStyleRules_description_link_label": { "message": "Codebeispiele im TST Wiki" },
   "config_userStyleRules_description_after": { "message": "." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Folgende Eigenschaften sind per \"var()\" basierend auf dem aktuellen Browser-Design verfügbar:" },
+  "config_userStyleRules_import": { "message": "Aus Datei laden" },
+  "config_userStyleRules_export": { "message": "Als Datei speichern" },
+  "config_userStyleRules_overwrite_title":     { "message": "Aktuelle Style-Regeln ersetzen?" },
+  "config_userStyleRules_overwrite_message":   { "message": "Sollen die aktuellen Style-Regeln durch die geladene Datei komplett ersetzt werden?" },
+  "config_userStyleRules_overwrite_overwrite": { "message": "Alles ersetzen" },
+  "config_userStyleRules_overwrite_append":    { "message": "Am Ende anfügen" },
+  "config_tooLargeUserStyleRulesCaution": { "message": "Die Style-Regeln sind zu lang! Bitte kürzen." },
 
 
   "config_addons_caption": { "message": "Zusätzliche Funktionen über andere Erweiterungen" },
@@ -474,17 +521,27 @@
   "config_addons_description_after": { "message": ". Probiere sie aus, wenn Du mehr Funktionen in der Sidebar von TST haben möchtest." },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
 
+  "config_theme_description_before": { "message": "Aktuell gibt es nur die eingebauten Designs \"Pur\", \"Sidebar\" und \"Hoher Kontrast\". Für weitere Designs siehe " },
+  "config_theme_description_link_label": { "message": "die Code-Beispiele im Wiki" },
+  "config_theme_description_after": { "message": " für Beispiele." },
+  "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
+
   "config_externaladdonpermissions_label": { "message": "Berechtigungen für API-Zugriffe von anderen Erweiterungen" },
   "config_externaladdonpermissions_description": { "message": "Hier zugelassene Erweiterungen erhalten Zugriff auf detaillierte Tab-Informationen und Tabs in privaten Fenstern, <em>durch die Berechtigungen von Tree Style Tab</em>, auch wenn die Berechtigungen der Erweiterung selbst durch Firefox nicht erteilt wurden. <em>Berechtigungen nicht erteilen, wenn der Erweiterung nicht vertraut wird.</em>" },
   "config_externalAddonPermissions_header_name": { "message": "Name der Erweiterung" },
   "config_externalAddonPermissions_header_permissions": { "message": "Zugelassene spezielle Operationen" },
   "config_externalAddonPermissions_header_incognito": { "message": "Benachrichtigungen von privaten Fenstern" },
 
+  "addon_containerBookmarks_label": { "message": "Container Bookmarks" },
+  "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
+  "config_containerRedirectKey_label": { "message": "Redirect Key (*Bitte den gleichen Wert setzen wie in den Einstellungen der Erweiterung):" },
+
 
   "config_debug_caption": { "message": "Entwicklung" },
 
   "config_link_startupPage_label": { "message": "Seite für ersten Start" },
   "config_link_groupPage_label":   { "message": "Seite für Gruppen-Tab" },
+  "config_link_tabbarPage_label":   { "message": "Seite für Tab-Leiste" },
 
   "config_runTests_label": { "message": "Automatischen Test starten" },
   "config_runBenchmark_label": { "message": "Benchmark starten" },
@@ -535,10 +592,12 @@
   "tabContextMenu_moveTabToEnd_label":   { "message": "An &Ende verschieben" },
   "tabContextMenu_tearOff_label":     { "message": "In &neues Fenster verschieben" },
 
+  "tabContextMenu_closeMultipleTabs_label":  { "message": "&Mehrere Tabs schließen" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Tabs nach un&ten schließen" },
   "tabContextMenu_closeOther_label":  { "message": "Andere Tabs &schließen" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Geschlossenen Tab wiederherstellen" },
+  "tabContextMenu_undoClose_label_multiple": { "message": "&Geschlossene Tabs wiederherstellen" },
   "tabContextMenu_close_label":       { "message": "Tab s&chließen" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "Ausgewählte Tabs neu la&den" },
