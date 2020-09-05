@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.5.27 (2020.9.6)
+   * Reduce more visual motions when [they are reduced by platform configs](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion).
+   * Add an expert option to activate animation effects regardless platform configs.
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
  - 3.5.26 (2020.9.3)
    * Deactivate animation effects globally when [they are reduced by platform configs](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion).
    * Deactivate throbber animation when animation effects are reduced by platform configs.

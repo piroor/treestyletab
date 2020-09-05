@@ -1,6 +1,10 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.5.27 (2020.9.6)
+   * [プラットフォームの設定でアニメーション効果が抑制されている場合](https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion)に、視覚的な変化をより抑制するようにした
+   * プラットフォームの設定を無視してアニメーション効果を有効化するための上級者向け設定を追加
+   * `de`ロケール更新（by [SammysHP](https://github.com/SammysHP). Thanks!）
  - 3.5.26 (2020.9.3)
    * [プラットフォームの設定でアニメーション効果が抑制されている場合](https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion)、全体的にアニメーション効果を無効化するようにした
    * プラットフォームの設定でアニメーション効果が抑制されている場合、タブの読み込み中のアニメーションを無効化するようにした
