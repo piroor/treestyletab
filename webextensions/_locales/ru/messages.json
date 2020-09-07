@@ -168,6 +168,11 @@
   "message_startup_description_2": { "message": " либо " },
   "message_startup_description_3": { "message": " кнопку на панели инструментов, чтобы активировать боковую панель." },
 
+  "message_startup_history_before":     { "message": "Измененное поведение может быть (или нет) восстановлено с помощью вариантов обхода. См. детали в " },
+  "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
+  "message_startup_history_link_label": { "message": "истории изменений" },
+  "message_startup_history_after":      { "message": "." },
+
   "message_startup_requestPermissions_description": { "message": "⚠Есть некоторые функции, требующие дополнительных разрешений. Если вы хотите активировать их, получите разрешения вручную." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Это дерево в закладки…\" в контекстном меню на вкладках (нужен доступ к закладкам.)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами." },
@@ -275,6 +280,7 @@
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Показать " },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " или меньше вкладок на строку ( * 0 или \"-\" авторасчет)" },
   "config_animation_label": { "message": "Включить эффекты анимации" },
+  "config_animationForce_label": { "message": "Включить анимацию независимо от настроек браузера" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке вкладки" },
   "config_applyThemeColorToIcon_label": { "message": "Применить цвета темы к кнопке на панели" },
   "config_applyThemeColorToIcon_label_info": { "message": "( * Нужно установить \"svg.context-properties.content.enabled\" как \"true\" в \"about:config\")" },
