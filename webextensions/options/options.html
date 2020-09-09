@@ -313,11 +313,13 @@
                           <input id="guessNewOrphanTabAsOpenedByNewTabCommandUrl"
                                  size="20">
                            __MSG_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after__</label></p>
-    <p><label class="has-checkbox"
-             ><input id="inheritContextualIdentityToNewChildTab"
-                     type="checkbox">
-              __MSG_config_inheritContextualIdentityToNewChildTab_label__
-              <br>__MSG_config_inheritContextualIdentityToNewChildTab_description__</label></p>
+    <p class="sub"
+      ><label>__MSG_config_inheritContextualIdentityToChildTabMode_label__
+              <select id="inheritContextualIdentityToChildTabMode">
+                <option value="0">__MSG_config_inheritContextualIdentityToChildTabMode_default__</option>
+                <option value="1">__MSG_config_inheritContextualIdentityToChildTabMode_parent__</option>
+                <option value="2">__MSG_config_inheritContextualIdentityToChildTabMode_lastActive__</option>
+              </select></label></p>
     </fieldset>
     <fieldset>
       <legend>__MSG_config_newTabButton_caption__</legend>
@@ -382,10 +384,13 @@
                 </select>
                 __MSG_config_autoAttachSameSiteOrphan_after__
               <span class="preview-image"></span></label></p>
-      <p class="sub"><label class="has-checkbox"
-                           ><input id="inheritContextualIdentityToSameSiteOrphan"
-                                   type="checkbox">
-                            __MSG_config_inheritContextualIdentityToSameSiteOrphan_label__</label></p>
+      <p class="sub"
+        ><label>__MSG_config_inheritContextualIdentityToSameSiteOrphanMode_label__
+                <select id="inheritContextualIdentityToSameSiteOrphanMode">
+                  <option value="0">__MSG_config_inheritContextualIdentityToSameSiteOrphanMode_default__</option>
+                  <option value="1">__MSG_config_inheritContextualIdentityToSameSiteOrphanMode_parent__</option>
+                  <option value="2">__MSG_config_inheritContextualIdentityToSameSiteOrphanMode_lastActive__</option>
+                </select></label></p>
       <p><label>__MSG_config_fromExternal_caption__: __MSG_config_autoAttachOnOpenedFromExternal_before__
                 <select id="autoAttachOnOpenedFromExternal">
                   <option value="-1">__MSG_config_autoAttachOnOpenedFromExternal_noControl__</option>
@@ -396,10 +401,13 @@
                 </select>
                 __MSG_config_autoAttachOnOpenedFromExternal_after__
               <span class="preview-image"></span></label></p>
-      <p class="sub"><label class="has-checkbox"
-                           ><input id="inheritContextualIdentityToTabsFromExternal"
-                                   type="checkbox">
-                            __MSG_config_inheritContextualIdentityToTabsFromExternal_label__</label></p>
+      <p class="sub"
+        ><label>__MSG_config_inheritContextualIdentityToTabsFromExternalMode_label__
+                <select id="inheritContextualIdentityToTabsFromExternalMode">
+                  <option value="0">__MSG_config_inheritContextualIdentityToTabsFromExternalMode_default__</option>
+                  <option value="1">__MSG_config_inheritContextualIdentityToTabsFromExternalMode_parent__</option>
+                  <option value="2">__MSG_config_inheritContextualIdentityToTabsFromExternalMode_lastActive__</option>
+                </select></label></p>
     </fieldset>
 
     <fieldset>

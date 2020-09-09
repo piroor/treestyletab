@@ -353,7 +353,10 @@
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "現在のタブと同階層に" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnOpenedFromExternal_after": { "message": "開く" },
-  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "現在のタブのコンテナーを継承する" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "コンテナー:" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "（制御しない）" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "ツリー上での親から継承" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_lastActive": { "message": "現在のタブから継承" },
 
   "config_sameSiteOrphan_caption": { "message": "ロケーションバー、ブックマーク、履歴、およびその他のきっかけから開かれた、現在のタブと同じWebサイトのタブ" },
   "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
@@ -363,7 +366,10 @@
   "config_autoAttachSameSiteOrphan_sibling": { "message": "現在のタブと同階層に" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachSameSiteOrphan_after": { "message": "開く" },
-  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "現在のタブのコンテナーを継承する" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "コンテナー:" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "（制御しない）" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "ツリー上での親から継承" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "現在のタブから継承" },
 
   "config_insertNewChildAt_caption": { "message": "新しい子タブを開く位置" },
   "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
@@ -393,9 +399,10 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
   "config_renderTreeInGroupTabs_label": { "message": "グループ化用のタブにツリーを表示する" },
 
-  "config_newTabContainer_caption": { "message": "新しい空の子タブのコンテナー" },
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "message": "（※新しいタブが独立したタブとして開かれた場合、直前までアクティブだったタブのコンテナーは継承しません）" },
+  "config_inheritContextualIdentityToChildTabMode_label": { "message": "コンテナー:" },
+  "config_inheritContextualIdentityToChildTabMode_default": { "message": "（制御しない）" },
+  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "ツリー上での親から継承" },
+  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "現在のタブから継承" },
 
 
   "config_treeBehavior_caption": { "message": "ツリーの挙動" },

@@ -298,6 +298,10 @@ export const kNEWTAB_OPEN_AS_SIBLING      = 2;
 export const kNEWTAB_OPEN_AS_NEXT_SIBLING = 3;
 export const kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER = 4;
 
+export const kCONTEXTUAL_IDENTITY_DEFAULT          = 0;
+export const kCONTEXTUAL_IDENTITY_FROM_PARENT      = 1;
+export const kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE = 2;
+
 export const kSCROLL_TO_NEW_TAB_IGNORE      = 0;
 export const kSCROLL_TO_NEW_TAB_IF_POSSIBLE = 1;
 

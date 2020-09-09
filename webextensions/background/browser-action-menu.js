@@ -366,9 +366,27 @@ const mItems = [
         ]
       },
       {
-        title: browser.i18n.getMessage('config_inheritContextualIdentityToNewChildTab_label'),
-        key:   'inheritContextualIdentityToNewChildTab',
-        type:  'checkbox'
+        title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_label'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_default'),
+            key:   'inheritContextualIdentityToChildTabMode',
+            value: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_parent'),
+            key:   'inheritContextualIdentityToChildTabMode',
+            value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_lastActive'),
+            key:   'inheritContextualIdentityToChildTabMode',
+            value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+            type:  'radio'
+          }
+        ]
       },
       { type: 'separator' },
       {
@@ -524,9 +542,27 @@ const mItems = [
           },
           { type: 'separator' },
           {
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToSameSiteOrphan_label'),
-            key:   'inheritContextualIdentityToSameSiteOrphan',
-            type:  'checkbox'
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToSameSiteOrphanMode_label'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToSameSiteOrphanMode_default'),
+                key:   'inheritContextualIdentityToSameSiteOrphanMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToSameSiteOrphanMode_parent'),
+                key:   'inheritContextualIdentityToSameSiteOrphanMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToSameSiteOrphanMode_lastActive'),
+                key:   'inheritContextualIdentityToSameSiteOrphanMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+                type:  'radio'
+              }
+            ]
           }
         ]
       },
@@ -565,9 +601,27 @@ const mItems = [
           },
           { type: 'separator' },
           {
-            title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternal_label'),
-            key:   'inheritContextualIdentityToTabsFromExternal',
-            type:  'checkbox'
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternalMode_label'),
+            children: [
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternalMode_default'),
+                key:   'inheritContextualIdentityToTabsFromExternalMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternalMode_parent'),
+                key:   'inheritContextualIdentityToTabsFromExternalMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromExternalMode_lastActive'),
+                key:   'inheritContextualIdentityToTabsFromExternalMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+                type:  'radio'
+              }
+            ]
           }
         ]
       },

@@ -203,10 +203,21 @@ export async function openNewTabAs(options = {}) {
     }; break;
   }
 
-  if (parent &&
-      configs.inheritContextualIdentityToNewChildTab &&
-      !options.cookieStoreId)
-    options.cookieStoreId = parent.cookieStoreId;
+  if (!options.cookieStoreId) {
+    switch (configs.inheritContextualIdentityToChildTabMode) {
+      case Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT:
+        if (parent)
+          options.cookieStoreId = parent.cookieStoreId;
+        break;
+
+      case Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE:
+        options.cookieStoreId = currentTab.cookieStoreId;
+        break;
+
+      default:
+        break;
+    }
+  }
 
   TabsOpen.openNewTab({
     parent, insertBefore, insertAfter,

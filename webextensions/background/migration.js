@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 14;
+const kCONFIGS_VERSION = 15;
 const kFEATURES_VERSION = 6;
 
 export function migrateConfigs() {
@@ -165,6 +165,14 @@ export function migrateConfigs() {
       if (configs.style == 'mixed' ||
           configs.style == 'vertigo')
         configs.style = 'plain';
+
+    case 14:
+      if (configs.inheritContextualIdentityToNewChildTab !== null)
+        configs.inheritContextualIdentityToChildTabMode = configs.inheritContextualIdentityToNewChildTab ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+      if (configs.inheritContextualIdentityToSameSiteOrphan !== null)
+        configs.inheritContextualIdentityToSameSiteOrphanMode = configs.inheritContextualIdentityToSameSiteOrphan ? Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+      if (configs.inheritContextualIdentityToTabsFromExternal !== null)
+        configs.inheritContextualIdentityToTabsFromExternalMode = configs.inheritContextualIdentityToTabsFromExternal ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

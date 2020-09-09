@@ -77,7 +77,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
             activeTab:                 possibleOpenerTab,
             autoAttachBehavior,
             dontMove,
-            inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+            inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode
           }).then(moved => !moved);
         }
         return false;
@@ -93,7 +93,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
         baseTab:   possibleOpenerTab,
         behavior:  configs.autoAttachOnOpenedFromExternal,
         dontMove,
-        inheritContextualIdentity: configs.inheritContextualIdentityToTabsFromExternal,
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode,
         broadcast: true
       }).then(moved => !moved);
     }
@@ -123,7 +123,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
       baseTab:   opener,
       behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
-      inheritContextualIdentity: info.fromExternal ? configs.inheritContextualIdentityToTabsFromExternal : false,
+      inheritContextualIdentityMode: info.fromExternal ? configs.inheritContextualIdentityToTabsFromExternalMode : null,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -144,13 +144,27 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     broadcast: true,
     dontMove:  params.dontMove || false
   });
+
   const parent = tab.$TST.parent;
-  if (!parent ||
-      !params.inheritContextualIdentity ||
-      tab.cookieStoreId != 'firefox-default' ||
-      tab.cookieStoreId == parent.cookieStoreId)
+  let cookieStoreId = null;
+  switch (params.inheritContextualIdentityMode) {
+    case Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT:
+      if (parent)
+        cookieStoreId = parent.cookieStoreId;
+      break;
+
+    case Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE:
+      cookieStoreId = activeTab.cookieStoreId
+      break;
+
+    default:
+      return moved;
+  }
+  if (tab.cookieStoreId == cookieStoreId) {
+    log('handleNewTabFromActiveTab: no need to reopen with inherited contextual identity ', cookieStoreId);
     return moved;
-  const cookieStoreId = activeTab.cookieStoreId;
+  }
+
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   // We need to prevent grouping of this original tab and the reopened tab
   // by the "multiple tab opened in XXX msec" feature.
@@ -227,7 +241,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       handleNewTabFromActiveTab(tab, {
         activeTab:                 possibleOpenerTab,
         autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
-        inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode
       });
       return;
     }
@@ -241,7 +255,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         url:                       tab.url,
         activeTab:                 possibleOpenerTab,
         autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
-        inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToSameSiteOrphanMode
       });
       return;
     }

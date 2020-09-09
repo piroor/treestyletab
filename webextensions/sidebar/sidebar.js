@@ -430,7 +430,7 @@ function updateContextualIdentitiesSelector() {
     item.dataset.icon = identity.iconUrl;
     fragment.appendChild(item);
   });
-  if (configs.inheritContextualIdentityToNewChildTab) {
+  if (configs.inheritContextualIdentityToChildTabMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT) {
     const defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
     defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
@@ -792,7 +792,7 @@ function onConfigChange(changedKey) {
       document.documentElement.setAttribute('color-scheme', configs.colorScheme);
       break;
 
-    case 'inheritContextualIdentityToNewChildTab':
+    case 'inheritContextualIdentityToChildTabMode':
       updateContextualIdentitiesSelector();
       break;
 

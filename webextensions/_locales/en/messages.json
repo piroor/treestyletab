@@ -357,7 +357,10 @@
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
-  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Inherit the container of the current tab" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Container:" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(no control)" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Inherit from the parent tab on the tree" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_lastActive": { "message": "Inherit from the current tab" },
 
   "config_sameSiteOrphan_caption": { "message": "New tab with the same website as the current tab from the location bar, bookmarks, histories, or other cases" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
@@ -367,7 +370,10 @@
   "config_autoAttachSameSiteOrphan_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
-  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Inherit the container of the current tab" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Container:" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(no control)" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Inherit from the parent tab on the tree" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "Inherit from the current tab" },
 
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
@@ -397,9 +403,10 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab" },
   "config_renderTreeInGroupTabs_label": { "message": "Render tree in group tabs" },
 
-  "config_newTabContainer_caption": { "message": "Container of new blank child tabs" },
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Inherit the container of the parent tab to a new blank child tab" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "message": "(*Please note that the new tab won't inherit the container of the previously active tab, if it is opened as an independent tab.)" },
+  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },
+  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(no control)" },
+  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Inherit from the parent tab on the tree" },
+  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Inherit from the current tab" },
 
 
   "config_treeBehavior_caption": { "message": "Tree Behavior" },

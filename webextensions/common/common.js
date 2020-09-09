@@ -199,9 +199,12 @@ export const configs = new Configs({
   autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
-  inheritContextualIdentityToNewChildTab: false,
-  inheritContextualIdentityToSameSiteOrphan: true,
-  inheritContextualIdentityToTabsFromExternal: false,
+  inheritContextualIdentityToNewChildTab: null, // obsolete, migrated to inheritContextualIdentityToChildTabMode
+  inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+  inheritContextualIdentityToSameSiteOrphan: null, // obsolete, migrated to inheritContextualIdentityToSameSiteOrphanMode
+  inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+  inheritContextualIdentityToTabsFromExternal: null, // obsolete, migrated to inheritContextualIdentityToTabsFromExternalMode
+  inheritContextualIdentityToTabsFromExternalMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
 
 
   // behavior around closed tab
