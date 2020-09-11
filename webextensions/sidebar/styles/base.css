@@ -449,6 +449,13 @@ tab-item tab-label {
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
+tab-item.active tab-label {
+  /* For high contrast mode */
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25em;
+}
+
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
 tab-item .label-content {
   color: inherit;
@@ -475,6 +482,10 @@ tab-closebox {
   opacity: var(--button-opacity);
   position: relative;
   z-index: var(--tab-ui-z-index);
+}
+tab-closebox:hover {
+  /* For high contrast mode */
+  outline: thin solid transparent;
 }
 
 tab-closebox::after {
