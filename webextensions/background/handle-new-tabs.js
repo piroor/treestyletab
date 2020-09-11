@@ -160,7 +160,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     default:
       return moved;
   }
-  if (tab.cookieStoreId == cookieStoreId) {
+  if ((tab.cookieStoreId || 'firefox-default') == (cookieStoreId || 'firefox-default')) {
     log('handleNewTabFromActiveTab: no need to reopen with inherited contextual identity ', cookieStoreId);
     return moved;
   }
