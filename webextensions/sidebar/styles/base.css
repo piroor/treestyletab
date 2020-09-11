@@ -427,6 +427,12 @@ tab-item.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 
+tab-item.faviconized.active:not([data-drop-position]) {
+  /* For high contrast mode */
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
 
 /* tab label */
 
