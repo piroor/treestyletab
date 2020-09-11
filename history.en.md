@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Better visibility of active tabs and closeboxes on the high contrast mode.
+   * Add ability to control container of new tabs from three options: no inheritance, inherit from the current tab, or inherit from the tree parent.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.27 (2020.9.6)
    * Reduce more visual motions when [they are reduced by platform configs](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion).
    * Add an expert option to activate animation effects regardless platform configs.
