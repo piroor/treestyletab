@@ -1180,6 +1180,10 @@
         "message": "Move Entire Tree / 트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)",
         "hash": "356fc53a67e8318e0226f69d53783d6f"
     },
+    "config_tabDragBehavior_none_tree": {
+        "message": "Move Entire Tree / 동작 없음",
+        "hash": ""
+    },
     "config_tabDragBehavior_tearoff_tab": {
         "message": "Move Solo Tab / 탭들을 다른 창으로 분리 (북마크 작성 불가)",
         "hash": "024c0183bb540674a551b18d646d4ef5"
@@ -1188,17 +1192,13 @@
         "message": "Move Solo Tab / 탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)",
         "hash": "222b9f01d390b68db03215b3766565a4"
     },
-    "config_tabDragBehavior_none_": {
-        "message": "동작 없음",
-        "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+    "config_tabDragBehavior_none_tab": {
+        "message": "Move Solo Tab / 동작 없음",
+        "hash": ""
     },
     "config_showTabDragBehaviorNotification_label": {
         "message": "탭 드래그 중 사이드 바 밖으로 드롭했을 때의 조작",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"
-    },
-    "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": {
-        "message": "탭 바 밖에 드롭된 트리를 다른 창으로 분리 허용 (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")",
-        "hash": "9b12018454e1dfb157bdb832a15a1c45"
     },
     "config_dropLinksOnTabBehavior_caption": {
         "message": "탭에 링크나 URL을 드랍했을 때",

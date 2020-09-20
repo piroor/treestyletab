@@ -1337,9 +1337,7 @@ async function onDragEnd(event) {
   }
 
   if (event.dataTransfer.mozUserCancelled ||
-      handledBySomeone ||
-      //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
-      !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
+      handledBySomeone) {
     log('dragged items are processed by someone: ', event.dataTransfer.dropEffect);
     return;
   }

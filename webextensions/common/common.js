@@ -274,7 +274,7 @@ export const configs = new Configs({
   minimumIntervalToProcessDragoverEvent: 50,
   delayToApplyHighlightedState: 50,
   acceptableFlickerToIgnoreClickOnTabAndTabbar: 10,
-  moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
+  moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , obsolete and migrated to tabDragBehavior
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,

@@ -1277,6 +1277,10 @@
         "message": "移动整个标签树 / 为整个标签树创建链接或书签（但不会从该窗口分离）",
         "hash": "0b9924753511cc71dc499f5f40a6e927"
     },
+    "config_tabDragBehavior_none_tree": {
+        "message": "移动整个标签树 / 什么都不做",
+        "hash": ""
+    },
     "config_tabDragBehavior_tearoff_tab": {
         "message": "移动单个标签页 / 从该窗口分离单个标签页（但不会创建书签）",
         "hash": "bfd07549cea04e48abb877763c6d6a4a"
@@ -1285,17 +1289,13 @@
         "message": "移动单个标签页 / 为单个标签页创建链接或书签（但不会从该窗口分离）",
         "hash": "f3592b9c978a8c82911ec0d008d3b870"
     },
-    "config_tabDragBehavior_none_": {
-        "message": "什么都不做",
-        "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+    "config_tabDragBehavior_none_tab": {
+        "message": "移动单个标签页 / 什么都不做",
+        "hash": ""
     },
     "config_showTabDragBehaviorNotification_label": {
         "message": "在拖动标签页时显示通知提示，说明当这些标签页被拖放到侧栏之外时会发生的情况。",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"
-    },
-    "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": {
-        "message": "允许分离被拖放到侧边标签栏之外的标签树 (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")",
-        "hash": "9b12018454e1dfb157bdb832a15a1c45"
     },
     "config_dropLinksOnTabBehavior_caption": {
         "message": "当一个链接或网址字符串被拖放到标签页上时",

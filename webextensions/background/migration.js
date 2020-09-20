@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 15;
+const kCONFIGS_VERSION = 16;
 const kFEATURES_VERSION = 6;
 
 export function migrateConfigs() {
@@ -173,6 +173,20 @@ export function migrateConfigs() {
         configs.inheritContextualIdentityToSameSiteOrphanMode = configs.inheritContextualIdentityToSameSiteOrphan ? Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
       if (configs.inheritContextualIdentityToTabsFromExternal !== null)
         configs.inheritContextualIdentityToTabsFromExternalMode = configs.inheritContextualIdentityToTabsFromExternal ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+
+    case 15:
+      if (configs.moveDroppedTabToNewWindowForUnhandledDragEvent !== null &&
+          !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
+        if (configs.tabDragBehavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF)
+          configs.tabDragBehavior = configs.tabDragBehavior ^ Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+        else if (configs.tabDragBehavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
+          configs.tabDragBehavior = configs.tabDragBehavior ^ Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+
+        if (configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_TEAR_OFF)
+          configs.tabDragBehaviorShift = configs.tabDragBehaviorShift ^ Constants.kDRAG_BEHAVIOR_TEAR_OFF;
+        else if (configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
+          configs.tabDragBehaviorShift = configs.tabDragBehaviorShift ^ Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

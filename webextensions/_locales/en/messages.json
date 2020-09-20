@@ -466,11 +466,11 @@
   "config_tabDragBehavior_label_behavior": { "message": "Behavior Inside Sidebar / Outside Sidebar" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Move Entire Tree / Detach Entire Tree from the window (but impossible to create bookmarks)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Move Entire Tree / Create links or bookmarks from Entire Tree (but impossible to detach from the window)" },
+  "config_tabDragBehavior_none_tree":     { "message": "Move Entire Tree / Do nothing" },
   "config_tabDragBehavior_tearoff_tab":   { "message": "Move Solo Tab / Detach Individual Tab from the window (but impossible to create bookmark)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / Create link or bookmark from Individual Tab (but impossible to detach from the window)" },
-  "config_tabDragBehavior_none":          { "message": "Do nothing" },
+  "config_tabDragBehavior_none_tab":      { "message": "Move Solo Tab / Do nothing" },
   "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
-  "config_moveDroppedTabToNewWindowForUnhandledDragEvent_label": { "message": "Allow to detach tree dropped outside of the tab bar (*simulation of Firefox's built-in behavior for \"browser.tabs.allowTabDetach\"=\"true\")" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
