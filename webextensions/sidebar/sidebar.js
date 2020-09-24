@@ -39,6 +39,7 @@ import { TabLabelElement } from './components/TabLabelElement.js';
 import { TabCounterElement } from './components/TabCounterElement.js';
 import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
 import {
+  kTAB_ELEMENT_NAME,
   TabElement,
   TabInvalidationTarget,
   TabUpdateTarget,
@@ -927,7 +928,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!cache ||
           !cache.tabbar.cache ||
           (cache.offset &&
-           window.element.childNodes.length <= cache.offset)) {
+           window.element.querySelectorAll(kTAB_ELEMENT_NAME).length <= cache.offset)) {
         log('Tabs.onWindowRestoring: no effective cache');
         UserOperationBlocker.unblock({ throbber: true });
         return;

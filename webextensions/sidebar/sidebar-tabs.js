@@ -145,7 +145,7 @@ async function syncTabsOrder() {
   const trackedWindow = TabsStore.windows.get(windowId);
   const actualOrder   = trackedWindow.order;
   const container     = trackedWindow.element;
-  const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
+  const elementsOrder = Array.from(container.querySelectorAll(kTAB_ELEMENT_NAME), tab => tab.apiTab.id);
 
   log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder, elementsOrder });
 

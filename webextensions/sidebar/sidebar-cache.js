@@ -31,7 +31,10 @@ import * as CollapseExpand from './collapse-expand.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
-import { TabUpdateTarget } from './components/TabElement.js';
+import {
+  kTAB_ELEMENT_NAME,
+  TabUpdateTarget,
+} from './components/TabElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar-cache', ...args);
@@ -287,11 +290,11 @@ async function restoreTabsFromCacheInternal(params) {
   let tabElements;
   if (offset > 0) {
     if (!container ||
-        container.childNodes.length <= offset) {
+        container.querySelectorAll(kTAB_ELEMENT_NAME).length <= offset) {
       log('restoreTabsFromCacheInternal: missing container');
       return [];
     }
-    log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
+    log(`restoreTabsFromCacheInternal: there is ${container.querySelectorAll(kTAB_ELEMENT_NAME).length} tabs`);
     log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, tabs[0].id);
     const insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
@@ -303,7 +306,7 @@ async function restoreTabsFromCacheInternal(params) {
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(tab => !tab),
         tabsMustBeRemoved.map(tab => tab.id));
-    log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
+    log(`restoreTabsFromCacheInternal: => ${container.querySelectorAll(kTAB_ELEMENT_NAME).length} tabs`);
     const matched = params.cache.match(/<li/g);
     if (!matched)
       throw new Error('restoreTabsFromCacheInternal: invalid cache');
@@ -316,7 +319,7 @@ async function restoreTabsFromCacheInternal(params) {
     const fragment = insertionPoint.createContextualFragment(source);
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
-    tabElements = Array.from(container.childNodes).slice(-matched.length);
+    tabElements = Array.from(container.querySelectorAll(kTAB_ELEMENT_NAME)).slice(-matched.length);
   }
   else {
     if (container && container.parentNode)
@@ -336,7 +339,7 @@ async function restoreTabsFromCacheInternal(params) {
     container.id = `window-${params.windowId}`;
     container.dataset.windowId = params.windowId;
     Window.init(params.windowId);
-    tabElements = Array.from(container.childNodes);
+    tabElements = Array.from(container.querySelectorAll(kTAB_ELEMENT_NAME));
     if (!params.insertionPoint)
       insertionPoint.detach();
   }
