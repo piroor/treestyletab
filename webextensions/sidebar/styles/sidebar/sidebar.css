@@ -151,8 +151,11 @@ tab-item:not(.active):not(:hover):not(#dummy-tab) tab-closebox {
 }
 
 /* Tab label is without special decoration except when selected: then
-   the text is white and bold. */
-tab-item tab-label {
+   the text is white and bold.
+   We need to apply text-shadow for .label-content instead of tab-label
+   because transparent underline for the high contrast mode should not
+   have text-shadow. */
+tab-item tab-label .label-content {
   font-weight: normal;
   line-height: 1.4;
   color: var(--tab-text);
@@ -163,7 +166,7 @@ tab-item tab-label {
   padding: 0 0 0.25em 0;
 }
 
-tab-item.active tab-label {
+tab-item.active tab-label .label-content {
   font-weight: bold;
   color: var(--tab-text-active);
   text-shadow: var(--tab-text-shadow);
