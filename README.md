@@ -161,7 +161,7 @@ If you need any new API, please file API proposals to the issue tracker.
 
 * <details><summary>Support for <a href="https://github.com/piroor/treestyletab/issues/1043">Pale Moon, Waterfox, and other Firefox forks</a></summary>
   
-  Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.  There is also [a forked version for Waterfox Classic](https://github.com/Ulf3000/treestyletab).
+  Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
   TST is designed for latest release of Mozilla Firefox (*Please see also the [`strict_min_version` information in the install manifest](https://github.com/piroor/treestyletab/blob/master/webextensions/manifest.json#L203) to know the minimum supported Firefox version)<!-- and Mozilla Firefox ESR-->, and other applications forked from Firefox are not supported.
   
   "Waterfox Current" looks based on Firefox ESR68 and you can install TST 2.0 and later to it.
