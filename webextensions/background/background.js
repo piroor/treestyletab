@@ -322,7 +322,7 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
       allFrames:       true,
       matchAboutBlank: true,
       runAt:           'document_start'
-    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
+    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
   }
   catch(error) {
     console.log(error);
