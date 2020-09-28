@@ -58,12 +58,10 @@ function log(...args) {
 }
 
 
-let mTabBar;
-let mOutOfViewTabNotifier;
+const mTabBar               = document.querySelector('#tabbar');
+const mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
 export function init(scrollPosition) {
-  mTabBar               = document.querySelector('#tabbar');
-  mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
