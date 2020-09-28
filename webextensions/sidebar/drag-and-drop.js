@@ -655,7 +655,7 @@ function retrieveURIsFromData(data, type) {
 }
 
 function fixupURIFromText(maybeURI) {
-  if (/^\w+:/.test(maybeURI))
+  if (/^(ext\+)?\w+:/.test(maybeURI))
     return maybeURI;
 
   if (/^([^\.\s]+\.)+[^\.\s]{2}/.test(maybeURI))
