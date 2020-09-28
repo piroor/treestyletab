@@ -86,6 +86,7 @@ tab-item:not(.collapsed) .throbber {
 }
 :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
 :root.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
+  background-image: none;
   mask: url("/resources/icons/hourglass.svg") no-repeat left center / 100%;
 }
 
@@ -95,6 +96,7 @@ tab-item:not(.collapsed) .throbber {
 }
 :root.animation.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
 :root.animation.simulate-svg-context-fill #tabbar tab-item:not(.collapsed).loading .throbber::before {
+  background-image: none;
   mask-image: url("./throbber.svg");
 }
 
