@@ -65,20 +65,42 @@ export async function safeMoveAcrossWindows(tabIds, moveOptions) {
   }))).filter(tab => !!tab);
 }
 
+export function isMissingTabError(error) {
+  return (
+    error &&
+    error.message &&
+    error.message.includes('Invalid tab ID:')
+  );
+}
 export function handleMissingTabError(error) {
-  if (!error ||
-      !error.message ||
-      error.message.indexOf('Invalid tab ID:') != 0)
+  if (!isMissingTabError(error))
     throw error;
   // otherwise, this error is caused from a tab already closed.
   // we just ignore it.
   //console.log('Invalid Tab ID error on: ' + error.stack);
 }
 
+export function isUnloadedError(error) {
+  return (
+    error &&
+    error.message &&
+    error.message.includes('can\'t access dead object')
+  );
+}
 export function handleUnloadedError(error) {
-  if (!error ||
-      !error.message ||
-      error.message.indexOf('can\'t access dead object') != 0)
+  if (!isUnloadedError(error))
+    throw error;
+}
+
+export function isMissingHostPermissionError(error) {
+  return (
+    error &&
+    error.message &&
+    error.message.includes('Missing host permission for the tab')
+  );
+}
+export function handleMissingHostPermissionError(error) {
+  if (!isMissingHostPermissionError(error))
     throw error;
 }
 

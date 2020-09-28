@@ -46,6 +46,7 @@ export async function tryInitGroupTab(tab) {
   if (!tab.$TST.isGroupTab &&
       tab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
     return;
+  log('tryInitGroupTab ', tab.id);
   const scriptOptions = {
     runAt:           'document_start',
     matchAboutBlank: true
@@ -53,32 +54,50 @@ export async function tryInitGroupTab(tab) {
   try {
     const ready = await browser.tabs.executeScript(tab.id, {
       ...scriptOptions,
-      code:  'window.ready',
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-    if (ready[0])
+      code:  '[window.ready, document.documentElement.matches(".initialized")]',
+    }).catch(error => {
+      if (ApiTabs.isMissingHostPermissionError(error)) {
+        log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
+        browser.tabs.reload(tab.id);
+        return [[true, true]];
+      }
+      return ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)(error);
+    });
+    log('  tryInitGroupTab [ready, initialized] => ', tab.id, ready && ready[0]);
+    if (ready && ready[0][0] && ready[0][1]) {
+      log('  => already initialized ', tab.id);
       return;
+    }
   }
-  catch(_e) {
+  catch(error) {
+    log('  tryInitGroupTab error while checking initialized: ', tab.id, error);
   }
   try {
     const titleElementExists = await browser.tabs.executeScript(tab.id, {
       ...scriptOptions,
       code:  '!!document.querySelector("#title")',
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-    if (!titleElementExists[0] && tab.status == 'complete') // we need to load resources/group-tab.html at first.
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+    if (titleElementExists && !titleElementExists[0] && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
+      log('  => title element exists, load again ', tab.id);
       return browser.tabs.update(tab.id, { url: tab.url }).catch(ApiTabs.createErrorSuppressor());
+    }
   }
-  catch(_e) {
+  catch(error) {
+    log('  tryInitGroupTab error while checking title element: ', tab.id, error);
   }
+  Promise.all([
   browser.tabs.executeScript(tab.id, {
     ...scriptOptions,
     //file:  '/common/l10n.js'
     file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
   browser.tabs.executeScript(tab.id, {
     ...scriptOptions,
     file:  '/resources/group-tab.js'
-  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError))
+  ]).then(() => {
+    log('tryInitGroupTab completely initialized: ', tab.id);
+  });
 
   if (tab.$TST.states.has(Constants.kTAB_STATE_UNREAD)) {
     tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
@@ -117,12 +136,26 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
     return;
 
   await tryInitGroupTab(groupTab);
-  if (changedInfo.includes('tree'))
+  if (changedInfo.includes('tree')) {
+    try {
     await browser.tabs.executeScript(groupTab.id, {
       runAt:           'document_start',
       matchAboutBlank: true,
       code:            `window.updateTree && window.updateTree()`,
-    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleUnloadedError));
+      }).catch(error => {
+        if (ApiTabs.isMissingHostPermissionError(error))
+          throw error;
+        return ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleUnloadedError)(error);
+      });
+    }
+    catch(error) {
+      if (ApiTabs.isMissingHostPermissionError(error)) {
+        log('  updateRelatedGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', groupTab.id);
+        browser.tabs.reload(groupTab.id);
+        return;
+      }
+    }
+  }
 
   const firstChild = groupTab.$TST.firstChild;
   if (!firstChild) // the tab can be closed while waiting...
@@ -154,7 +187,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
         runAt:           'document_start',
         matchAboutBlank: true,
         code:            `window.setTitle && window.setTitle(${JSON.stringify(newTitle)})`,
-      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
     }
   }
 }
