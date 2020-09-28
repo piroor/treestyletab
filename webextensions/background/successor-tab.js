@@ -86,7 +86,7 @@ async function updateInternal(tabId) {
   if (tab.$TST.lastSuccessorTabId) {
     log(`  ${dumpTab(tab)} is under control: `, {
       successorTabId: renewedTab.successorTabId,
-      lastSuccessorTabId: tab.lastSuccessorTabId
+      lastSuccessorTabId: tab.$TST.lastSuccessorTabId
     });
     if (renewedTab.successorTabId != -1 &&
         renewedTab.successorTabId != tab.$TST.lastSuccessorTabId) {
