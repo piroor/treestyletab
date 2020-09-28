@@ -111,6 +111,58 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
      'new last descendant tab must be the successor.');
 }
 
+testMissingSuccessor.runnable = true;
+export async function testMissingSuccessor() {
+  await Utils.setConfigs({
+    successorTabControlLevel:           Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    simulateSelectOwnerOnClose:         true
+  });
+
+  const A = await browser.tabs.create({ windowId: win.id });
+  const B = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
+  const C = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
+  const D = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
+  const E = await browser.tabs.create({ windowId: win.id, active: false });
+
+  let tabs = await Utils.refreshTabs({ A, B, C, D, E });
+  {
+    const { A, B, C, D, E } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${E.id}`
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs must be initialized with specified structure');
+    is([A.id, B.id, C.id, D.id, E.id],
+       await Utils.tabsOrder([A, B, C, D, E]),
+       'tabs must be initialized with specified order');
+    is('A', await getActiveTabName(tabs),
+       'the parent tab must be active');
+  }
+
+  await browser.tabs.remove(A.id);
+  await wait(1000);
+
+  tabs = await Utils.refreshTabs({ B, C, D, E });
+  is('B', await getActiveTabName(tabs),
+     'first child tab must be the successor.');
+
+  await browser.tabs.update(C.id, { active: true });
+  await wait(1000);
+  await browser.tabs.remove(C.id);
+  await wait(1000);
+
+  tabs = await Utils.refreshTabs({ B, D, E });
+  is('D', await getActiveTabName(tabs),
+     'next tab must be the successor, instead of the parent.');
+}
+
 export async function testSimulateSelectOwnerOnClose() {
   await Utils.setConfigs({
     successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,

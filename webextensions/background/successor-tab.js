@@ -83,7 +83,11 @@ async function updateInternal(tabId) {
     delete tab.$TST.lastSuccessorTabId;
     clearSuccessor(tab.id);
   }
-  if (tab.$TST.lastSuccessorTabId) {
+  const lastSuccessorTab = tab.$TST.lastSuccessorTabId && Tab.get(tab.$TST.lastSuccessorTabId);
+  if (!lastSuccessorTab) {
+    log(`  ${dumpTab(tab)}'s successor is missing: it was already closed.`);
+  }
+  else {
     log(`  ${dumpTab(tab)} is under control: `, {
       successorTabId: renewedTab.successorTabId,
       lastSuccessorTabId: tab.$TST.lastSuccessorTabId
