@@ -25,7 +25,11 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as ApiTabs from '/common/api-tabs.js';
 
 log.context = 'Options';
-const options = new Options(configs);
+const options = new Options(configs, {
+  steps: {
+    faviconizedTabScale: '0.01'
+  }
+});
 
 document.title = browser.i18n.getMessage('config_title');
 if ((location.hash && location.hash != '#') ||
