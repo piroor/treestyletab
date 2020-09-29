@@ -357,7 +357,10 @@
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
-  "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "Наследовать контейнер текущей вкладки" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Контейнер:" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(не контролируется)" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
+  "config_inheritContextualIdentityToTabsFromExternalMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
   "config_sameSiteOrphan_caption": { "message": "Когда новая вкладка открывается с сайтом, как в текущей вкладке" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
@@ -367,7 +370,10 @@
   "config_autoAttachSameSiteOrphan_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
-  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Наследовать контейнер текущей вкладки" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Контейнер:" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(не контролируется)" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
+  "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
   "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
@@ -397,9 +403,10 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автогруппировать вкладки, открытые с одной закрепленной вкладки" },
   "config_renderTreeInGroupTabs_label": { "message": "Отрисовывать дерево во вкладке(папке) группы" },
 
-  "config_newTabContainer_caption": { "message": "Контейнер новой пустой дочерней вкладки" },
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Наследовать контейнер родительской вкладки новой пустой дочерней вкладкой" },
-  "config_inheritContextualIdentityToNewChildTab_description": { "message": "( * Обратите внимание, что новая вкладка не будет наследовать контейнер активной вкладки, если она открыта как независимая вкладка.)" },
+  "config_inheritContextualIdentityToChildTabMode_label": { "message": "Контейнер:" },
+  "config_inheritContextualIdentityToChildTabMode_default": { "message": "(не контролируется)" },
+  "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
+  "config_inheritContextualIdentityToChildTabMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },
