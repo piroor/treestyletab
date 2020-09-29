@@ -86,15 +86,15 @@ export async function tryInitGroupTab(tab) {
     log('  tryInitGroupTab error while checking title element: ', tab.id, error);
   }
   Promise.all([
-  browser.tabs.executeScript(tab.id, {
-    ...scriptOptions,
-    //file:  '/common/l10n.js'
-    file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
-  browser.tabs.executeScript(tab.id, {
-    ...scriptOptions,
-    file:  '/resources/group-tab.js'
-  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError))
+    browser.tabs.executeScript(tab.id, {
+      ...scriptOptions,
+      //file:  '/common/l10n.js'
+      file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
+    browser.tabs.executeScript(tab.id, {
+      ...scriptOptions,
+      file:  '/resources/group-tab.js'
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError))
   ]).then(() => {
     log('tryInitGroupTab completely initialized: ', tab.id);
   });
@@ -138,10 +138,10 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   await tryInitGroupTab(groupTab);
   if (changedInfo.includes('tree')) {
     try {
-    await browser.tabs.executeScript(groupTab.id, {
-      runAt:           'document_start',
-      matchAboutBlank: true,
-      code:            `window.updateTree && window.updateTree()`,
+      await browser.tabs.executeScript(groupTab.id, {
+        runAt:           'document_start',
+        matchAboutBlank: true,
+        code:            `window.updateTree && window.updateTree()`,
       }).catch(error => {
         if (ApiTabs.isMissingHostPermissionError(error))
           throw error;
