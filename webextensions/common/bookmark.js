@@ -229,8 +229,8 @@ export async function bookmarkTabs(tabs, options = {}) {
     .replace(/%TITLE%/gi, tabs[0].title)
     .replace(/%URL%/gi, tabs[0].url)
     .replace(/%YEAR%/gi, now.getFullYear())
-    .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
-    .replace(/%DATE%/gi, `0${now.getDate()}`.substr(-2));
+    .replace(/%MONTH%/gi, String(now.getMonth() + 1).padStart(2, '0'))
+    .replace(/%DATE%/gi, String(now.getDate()).padStart(2, '0'));
   const folderParams = {
     type: 'folder',
     title
