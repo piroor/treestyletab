@@ -495,7 +495,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "Folder name for \"Bookmark this Tree\":" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
+  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %SHORT_YEAR% (year, two digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Create new bookmarks under" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },

@@ -491,7 +491,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "ツリーをブックマークする時のフォルダー名:" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
+  "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %SHORT_YEAR%（2桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
   "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },
