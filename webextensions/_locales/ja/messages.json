@@ -78,10 +78,7 @@
 
   "bookmarkFolder_label_default": { "message": "$TITLE$ など (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "タイトル" },
-      "year":  { "content": "$2", "example": "2018" },
-      "month": { "content": "$3", "example": "06" },
-      "date":  { "content": "$4", "example": "21" }
+      "title": { "content": "$1", "example": "タイトル" }
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "権限のエラー" },
