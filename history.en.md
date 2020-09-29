@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.28 (2020.9.29)
    * Better visibility of active tabs and closeboxes on the high contrast mode.
    * Fix regressions on 3.5.24 around auto-correcting of tabs order after multiple opened tabs.
    * Fix wrong successor tab control around child tabs and their closed opener parent tabs: the next sibling of a closed child active tab will become active instead of the parent tab.
