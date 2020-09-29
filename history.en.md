@@ -2,7 +2,16 @@
 
  - master/HEAD
    * Better visibility of active tabs and closeboxes on the high contrast mode.
+   * Fix regressions on 3.5.24 around auto-correcting of tabs order after multiple opened tabs.
+   * Fix wrong successor tab control around child tabs and their closed opener parent tabs: the next sibling of a closed child active tab will become active instead of the parent tab.
+   * Initialize restored group tabs more certainly.
+   * Search text dropped onto the sidebar with the default search engine correctly.
+   * Add regular choices for drag and drop options to prevent detaching of dropped tabs to a separate window.
    * Add ability to control container of new tabs from three options: no inheritance, inherit from the current tab, or inherit from the tree parent.
+   * Show throbber with the color same to tab labels on a dark theme.
+   * Remove needless underline of tab labels on the "Sidebar" theme.
+   * Set "Plain" as the default theme on Windows and Linux correctly.
+   * Fix wrong behaviors of "All Configs" UI: apply imported configs to options UI immediately and treat decimal values as valid for some numeric options.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.27 (2020.9.6)
    * Reduce more visual motions when [they are reduced by platform configs](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion).
