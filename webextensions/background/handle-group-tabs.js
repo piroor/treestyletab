@@ -52,25 +52,30 @@ export async function tryInitGroupTab(tab) {
     matchAboutBlank: true
   };
   try {
-    const ready = await browser.tabs.executeScript(tab.id, {
+    const results = await browser.tabs.executeScript(tab.id, {
       ...scriptOptions,
-      code:  '[window.ready, document.documentElement.matches(".initialized")]',
+      code:  '[window.prepared, document.documentElement.matches(".initialized")]',
     }).catch(error => {
       if (ApiTabs.isMissingHostPermissionError(error)) {
         log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
         browser.tabs.reload(tab.id);
-        return [[true, true]];
+        return [[false, false, true]];
       }
       return ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)(error);
     });
-    log('  tryInitGroupTab [ready, initialized] => ', tab.id, ready && ready[0]);
-    if (ready && ready[0][0] && ready[0][1]) {
+    const [prepared, initialized, reloaded] = results && results[0] || [];
+    log('  tryInitGroupTab: groupt tab state ', tab.id, { prepared, initialized, reloaded });
+    if (reloaded) {
+      log('  => reloaded ', tab.id);
+      return;
+    }
+    if (prepared && initialized) {
       log('  => already initialized ', tab.id);
       return;
     }
   }
   catch(error) {
-    log('  tryInitGroupTab error while checking initialized: ', tab.id, error);
+    log('  tryInitGroupTab: error while checking initialized: ', tab.id, error);
   }
   try {
     const titleElementExists = await browser.tabs.executeScript(tab.id, {

@@ -5,8 +5,17 @@
 */
 'use strict';
 
-(() => {
-  if (window.ready)
+(async function prepare(retryCount = 0) {
+  if (retryCount > 10)
+    throw new Error('could not prepare group tab contents');
+
+  if (!document.documentElement) {
+    setTimeout(prepare, 100, retryCount + 1);
+    return false;
+  }
+
+  if (window.prepared &&
+      document.documentElement.classList.contains('initialized'))
     return false;
 
   let gTitle;
@@ -90,11 +99,34 @@
     history.replaceState({}, document.title, uri);
   }
 
-  async function init() {
-    if (gTitle)
+  async function init(retryCount = 0) {
+    if (gTitle &&
+        gTitleField &&
+        gTemporaryCheck &&
+        gTemporaryAggressiveCheck &&
+        gBrowserThemeDefinition &&
+        gUserStyleRules)
       return;
-    gTitle = document.querySelector('#title');
-    gTitleField = document.querySelector('#title-field');
+
+    if (retryCount > 10)
+      throw new Error('could not initialize group tab contents');
+
+    gTitle                    = document.querySelector('#title');
+    gTitleField               = document.querySelector('#title-field');
+    gTemporaryCheck           = document.querySelector('#temporary');
+    gTemporaryAggressiveCheck = document.querySelector('#temporaryAggressive');
+    gBrowserThemeDefinition   = document.querySelector('#browser-theme-definition');
+    gUserStyleRules           = document.querySelector('#user-style-rules');
+
+    if (!gTitle ||
+        !gTitleField ||
+        !gTemporaryCheck ||
+        !gTemporaryAggressiveCheck ||
+        !gBrowserThemeDefinition ||
+        !gUserStyleRules) {
+      setTimeout(init, 100, retryCount + 1);
+      return;
+    }
 
     gTitle.addEventListener('click', event => {
       if (event.button == 0 &&
@@ -154,7 +186,6 @@
 
     gTitle.textContent = gTitleField.value = getTitle();
 
-    gTemporaryCheck = document.querySelector('#temporary');
     gTemporaryCheck.checked = isTemporary();
     gTemporaryCheck.addEventListener('change', _event => {
       if (gTemporaryCheck.checked)
@@ -162,17 +193,12 @@
       updateParameters();
     });
 
-    gTemporaryAggressiveCheck = document.querySelector('#temporaryAggressive');
     gTemporaryAggressiveCheck.checked = isTemporaryAggressive();
     gTemporaryAggressiveCheck.addEventListener('change', _event => {
       if (gTemporaryAggressiveCheck.checked)
         gTemporaryCheck.checked = false;
       updateParameters();
     });
-
-    gBrowserThemeDefinition = document.querySelector('#browser-theme-definition');
-    gUserStyleRules         = document.querySelector('#user-style-rules');
-
 
     window.setTitle    = window.setTitle || setTitle;
     window.updateTree  = window.updateTree || updateTree;
@@ -424,6 +450,6 @@
   }
 
   init();
-  window.ready = true;
+  window.prepared = true;
   return true;
 })();
