@@ -89,11 +89,13 @@ Tab.onCreating.addListener((tab, info = {}) => {
     }
     if (info.fromExternal) {
       log('behave as a tab opened from external application');
+      // we may need to reopen the tab with loaded URL
+      if (configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
+        tab.$TST.fromExternal = true;
       return Tree.behaveAutoAttachedTab(tab, {
         baseTab:   possibleOpenerTab,
         behavior:  configs.autoAttachOnOpenedFromExternal,
         dontMove,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode,
         broadcast: true
       }).then(moved => !moved);
     }
@@ -119,11 +121,13 @@ Tab.onCreating.addListener((tab, info = {}) => {
     }
   }
   else if (!info.maybeOrphan) {
+    if (info.fromExternal &&
+        configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
+      tab.$TST.fromExternal = true;
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
-      inheritContextualIdentityMode: info.fromExternal ? configs.inheritContextualIdentityToTabsFromExternalMode : null,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -218,13 +222,27 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     });
   }
 
-  if ((changeInfo.url || changeInfo.status == 'complete') &&
-      tab.$TST.isNewTab) {
-    log('new tab ', dumpTab(tab));
+  if (tab.$TST.openedCompletely &&
+      (changeInfo.url || changeInfo.status == 'complete') &&
+      (tab.$TST.isNewTab || tab.$TST.fromExternal)) {
+    log('loaded tab ', dumpTab(tab), { isNewTab: tab.$TST.isNewTab, fromExternal: tab.$TST.fromExternal });
     delete tab.$TST.isNewTab;
     const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
+
+    if (tab.$TST.fromExternal) {
+      delete tab.$TST.fromExternal;
+      log('behave as a tab opened from external application (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        url:                           tab.url,
+        activeTab:                     possibleOpenerTab,
+        autoAttachBehavior:            configs.autoAttachOnOpenedFromExternal,
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode
+      });
+      return;
+    }
+
     const window = TabsStore.windows.get(tab.windowId);
     log('window.openedNewTabs ', window.openedNewTabs);
     if (tab.$TST.parent ||
