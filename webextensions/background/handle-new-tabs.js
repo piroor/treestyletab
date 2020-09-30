@@ -257,8 +257,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     if (tab.$TST.isNewTabCommandTab) {
       log('behave as a tab opened by new tab command (delayed)');
       handleNewTabFromActiveTab(tab, {
-        activeTab:                 possibleOpenerTab,
-        autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+        activeTab:                     possibleOpenerTab,
+        autoAttachBehavior:            configs.autoAttachOnNewTabCommand,
         inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode
       });
       return;
@@ -270,9 +270,9 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
       log('behave as a tab opened from same site (delayed)');
       handleNewTabFromActiveTab(tab, {
-        url:                       tab.url,
-        activeTab:                 possibleOpenerTab,
-        autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+        url:                           tab.url,
+        activeTab:                     possibleOpenerTab,
+        autoAttachBehavior:            configs.autoAttachSameSiteOrphan,
         inheritContextualIdentityMode: configs.inheritContextualIdentityToSameSiteOrphanMode
       });
       return;
