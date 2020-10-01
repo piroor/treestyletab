@@ -148,6 +148,10 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     broadcast: true,
     dontMove:  params.dontMove || false
   });
+  if (tab.cookieStoreId && tab.cookieStoreId != 'firefox-default') {
+    log('handleNewTabFromActiveTab: do not reopen tab opened with non-default contextual identity ', tab.cookieStoreId);
+    return moved;
+  }
 
   const parent = tab.$TST.parent;
   let cookieStoreId = null;
