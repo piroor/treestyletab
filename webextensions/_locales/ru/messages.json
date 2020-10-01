@@ -78,10 +78,7 @@
 
   "bookmarkFolder_label_default": { "message": "$TITLE$ и больше (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "year":  { "content": "$2", "example": "2018" },
-      "month": { "content": "$3", "example": "06" },
-      "date":  { "content": "$4", "example": "21" }
+      "title": { "content": "$1", "example": "Title" }
     }},
 
   "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
@@ -498,7 +495,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Это дерево в закладки…\":" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
+  "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %SHORT_YEAR% (год, 2 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
