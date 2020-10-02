@@ -432,8 +432,13 @@
     const maxWidth = containerRect.width;
     if (aTree.columnWidth * 2 <= maxWidth ||
         options.calculateCount) {
+      const treeContentsRange = document.createRange();
+      treeContentsRange.selectNodeContents(aTree);
+      const overflow = treeContentsRange.getBoundingClientRect().width > window.innerWidth;
+      treeContentsRange.detach();
+      const blankSpace = overflow ? 2 : 1;
       style.height = style.maxHeight =
-        `calc(${containerRect.height}px - 1em)`;
+        `calc(${containerRect.height}px - ${blankSpace}em)`;
 
       if (getActualColumnCount(aTree) <= 1)
         style.columnWidth = style.MozColumnWidth = '';
