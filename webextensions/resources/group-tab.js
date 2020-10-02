@@ -5,7 +5,7 @@
 */
 'use strict';
 
-(async function prepare(retryCount = 0) {
+(function prepare(retryCount = 0) {
   if (retryCount > 10)
     throw new Error('could not prepare group tab contents');
 
@@ -14,9 +14,11 @@
     return false;
   }
 
-  if (window.prepared &&
+  if (window.prepared ||
       document.documentElement.classList.contains('initialized'))
     return false;
+
+  window.prepared = true;
 
   let gTitle;
   let gTitleField;
@@ -450,6 +452,5 @@
   }
 
   init();
-  window.prepared = true;
   return true;
 })();
