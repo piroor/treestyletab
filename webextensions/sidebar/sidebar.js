@@ -97,6 +97,7 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
     configs.$loaded.then(async () => {
       await applyStyle();
       Size.update();
+      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
     });
 
   configs.$loaded.then(applyUserStyleRules);
