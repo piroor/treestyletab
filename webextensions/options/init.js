@@ -231,37 +231,37 @@ function initUserStyleImportExportButtons() {
       return insertFilesToUserStyleRulesField(files);
 
     const style = (await Promise.all(files.map(file => file.text()))).join('\n');
-      if (mUserStyleRulesField.value.trim() == '') {
+    if (mUserStyleRulesField.value.trim() == '') {
+      mUserStyleRulesField.value = style;
+      return;
+    }
+    let result;
+    try {
+      result = await RichConfirm.showInPopup({
+        modal:   true,
+        type:    'common-dialog',
+        url:     '/resources/blank.html', // required on Firefox ESR68
+        title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
+        message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
+        buttons: [
+          browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
+          browser.i18n.getMessage('config_userStyleRules_overwrite_append')
+        ]
+      });
+    }
+    catch(_error) {
+      result = { buttonIndex: -1 };
+    }
+    switch (result.buttonIndex) {
+      case 0:
         mUserStyleRulesField.value = style;
-        return;
-      }
-      let result;
-      try {
-        result = await RichConfirm.showInPopup({
-          modal:   true,
-          type:    'common-dialog',
-          url:     '/resources/blank.html', // required on Firefox ESR68
-          title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
-          message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
-          buttons: [
-            browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
-            browser.i18n.getMessage('config_userStyleRules_overwrite_append')
-          ]
-        });
-      }
-      catch(_error) {
-        result = { buttonIndex: -1 };
-      }
-      switch (result.buttonIndex) {
-        case 0:
-          mUserStyleRulesField.value = style;
-          break;
-        case 1:
-          mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
-          break;
-        default:
-          break;
-      }
+        break;
+      case 1:
+        mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
+        break;
+      default:
+        break;
+    }
   });
 }
 
