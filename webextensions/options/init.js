@@ -475,6 +475,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   mUserStyleRulesField.addEventListener('change', reserveToSaveUserStyleRules);
   mUserStyleRulesField.addEventListener('input', reserveToSaveUserStyleRules);
   initUserStyleImportExportButtons();
+
+  // Due to https://bugzilla.mozilla.org/show_bug.cgi?id=1408756 we cannot accept dropped files on an embedded options page...
   mUserStyleRulesField.addEventListener('dragenter', event => {
     event.stopPropagation();
     event.preventDefault();
