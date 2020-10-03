@@ -475,6 +475,48 @@ window.addEventListener('DOMContentLoaded', async () => {
   mUserStyleRulesField.addEventListener('change', reserveToSaveUserStyleRules);
   mUserStyleRulesField.addEventListener('input', reserveToSaveUserStyleRules);
   initUserStyleImportExportButtons();
+  mUserStyleRulesField.addEventListener('dragenter', event => {
+    event.stopPropagation();
+    event.preventDefault();
+  }, { capture: true });
+  mUserStyleRulesField.addEventListener('dragover', event => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const dt = event.dataTransfer;
+    const hasFile = Array.from(dt.items, item => item.kind).some(kind => kind == 'file');
+    dt.dropEffect = hasFile ? 'link' : 'none';
+  }, { capture: true });
+  mUserStyleRulesField.addEventListener('drop', async event => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const dt = event.dataTransfer;
+    const files = dt.files;
+    if (!files || files.length == 0)
+      return;
+
+    const contents = await Promise.all(Array.from(files, file => {
+      switch (file.type) {
+        case 'text/plain':
+        case 'text/css':
+          return file.text();
+
+        default:
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+              resolve(`url(${JSON.stringify(reader.result)})`);
+            });
+            reader.addEventListener('error', event => {
+              reject(event);
+            });
+            reader.readAsDataURL(file);
+          });
+      }
+    }));
+    mUserStyleRulesField.setRangeText(contents.join('\n'), 0, 0, 'select');
+  }, { capture: true });
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS
