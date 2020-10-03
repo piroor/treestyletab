@@ -224,9 +224,7 @@ function initUserStyleImportExportButtons() {
   });
   const fileField = document.getElementById('userStyleRules-import-file');
   fileField.addEventListener('change', _event => {
-    const reader = new FileReader();
-    reader.onload = async event => {
-      const style = event.target.result;
+    fileField.files.item(0).text().then(async style => {
       if (mUserStyleRulesField.value.trim() == '') {
         mUserStyleRulesField.value = style;
         return;
@@ -258,8 +256,7 @@ function initUserStyleImportExportButtons() {
         default:
           break;
       }
-    };
-    reader.readAsText(fileField.files.item(0), 'utf-8');
+    });
   });
 }
 
