@@ -324,7 +324,8 @@ async function insertFilesToUserStyleRulesField(files) {
         });
     }
   }));
-  mUserStyleRulesField.setRangeText(contents.join('\n'), 0, 0, 'select');
+  mUserStyleRulesField.setRangeText(contents.join('\n'), mUserStyleRulesField.selectionStart, mUserStyleRulesField.selectionEnd, 'select');
+  mUserStyleRulesField.focus();
 }
 
 function updateThemeInformation(theme) {
