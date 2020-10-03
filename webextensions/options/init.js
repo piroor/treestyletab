@@ -213,6 +213,7 @@ function initUserStyleImportExportButtons() {
     if (event.button == 0)
       exportUserStyleToFile();
   });
+
   const importButton = document.getElementById('userStyleRules-import');
   importButton.addEventListener('keydown', event => {
     if (event.key == 'Enter' || event.key == ' ')
@@ -222,9 +223,14 @@ function initUserStyleImportExportButtons() {
     if (event.button == 0)
       importUserStyleFromFile();
   });
+
   const fileField = document.getElementById('userStyleRules-import-file');
-  fileField.addEventListener('change', _event => {
-    fileField.files.item(0).text().then(async style => {
+  fileField.addEventListener('change', async _event => {
+    const files = Array.from(fileField.files);
+    if (files.some(file => file.type.startsWith('image/')))
+      return insertFilesToUserStyleRulesField(files);
+
+    const style = (await Promise.all(files.map(file => file.text()))).join('\n');
       if (mUserStyleRulesField.value.trim() == '') {
         mUserStyleRulesField.value = style;
         return;
@@ -256,7 +262,6 @@ function initUserStyleImportExportButtons() {
         default:
           break;
       }
-    });
   });
 }
 
