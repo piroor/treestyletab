@@ -262,6 +262,7 @@ function initUserStyleImportExportButtons() {
       default:
         break;
     }
+    mUserStyleRulesField.focus();
   });
 }
 
