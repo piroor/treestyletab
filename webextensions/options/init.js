@@ -299,26 +299,26 @@ function initFileDragAndDropHandlers() {
 }
 
 async function insertFilesToUserStyleRulesField(files) {
-    const contents = await Promise.all(Array.from(files, file => {
-      switch (file.type) {
-        case 'text/plain':
-        case 'text/css':
-          return file.text();
+  const contents = await Promise.all(Array.from(files, file => {
+    switch (file.type) {
+      case 'text/plain':
+      case 'text/css':
+        return file.text();
 
-        default:
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-              resolve(`url(${JSON.stringify(reader.result)})`);
-            });
-            reader.addEventListener('error', event => {
-              reject(event);
-            });
-            reader.readAsDataURL(file);
+      default:
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.addEventListener('load', () => {
+            resolve(`url(${JSON.stringify(reader.result)})`);
           });
-      }
-    }));
-    mUserStyleRulesField.setRangeText(contents.join('\n'), 0, 0, 'select');
+          reader.addEventListener('error', event => {
+            reject(event);
+          });
+          reader.readAsDataURL(file);
+        });
+    }
+  }));
+  mUserStyleRulesField.setRangeText(contents.join('\n'), 0, 0, 'select');
 }
 
 function updateThemeInformation(theme) {
