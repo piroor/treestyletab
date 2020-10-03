@@ -267,60 +267,60 @@ function initFileDragAndDropHandlers() {
 async function importFilesToUserStyleRulesField(files) {
   files = Array.from(files);
   if (files.some(file => file.type.startsWith('image/'))) {
-  const contents = await Promise.all(Array.from(files, file => {
-    switch (file.type) {
-      case 'text/plain':
-      case 'text/css':
-        return file.text();
+    const contents = await Promise.all(Array.from(files, file => {
+      switch (file.type) {
+        case 'text/plain':
+        case 'text/css':
+          return file.text();
 
-      default:
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.addEventListener('load', () => {
-            resolve(`url(${JSON.stringify(reader.result)})`);
+        default:
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+              resolve(`url(${JSON.stringify(reader.result)})`);
+            });
+            reader.addEventListener('error', event => {
+              reject(event);
+            });
+            reader.readAsDataURL(file);
           });
-          reader.addEventListener('error', event => {
-            reject(event);
-          });
-          reader.readAsDataURL(file);
-        });
-    }
-  }));
-  mUserStyleRulesField.setRangeText(contents.join('\n'), mUserStyleRulesField.selectionStart, mUserStyleRulesField.selectionEnd, 'select');
+      }
+    }));
+    mUserStyleRulesField.setRangeText(contents.join('\n'), mUserStyleRulesField.selectionStart,   mUserStyleRulesField.selectionEnd, 'select');
   }
   else {
-  const style = (await Promise.all(files.map(file => file.text()))).join('\n');
-  if (mUserStyleRulesField.value.trim() == '') {
-    mUserStyleRulesField.value = style;
-    return;
-  }
-  let result;
-  try {
-    result = await RichConfirm.showInPopup({
-      modal:   true,
-      type:    'common-dialog',
-      url:     '/resources/blank.html', // required on Firefox ESR68
-      title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
-      message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
-      buttons: [
-        browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
-        browser.i18n.getMessage('config_userStyleRules_overwrite_append')
-      ]
-    });
-  }
-  catch(_error) {
-    result = { buttonIndex: -1 };
-  }
-  switch (result.buttonIndex) {
-    case 0:
+    const style = (await Promise.all(files.map(file => file.text()))).join('\n');
+    if (mUserStyleRulesField.value.trim() == '') {
       mUserStyleRulesField.value = style;
-      break;
-    case 1:
-      mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
-      break;
-    default:
-      break;
-  }
+      return;
+    }
+    let result;
+    try {
+      result = await RichConfirm.showInPopup({
+        modal:   true,
+        type:    'common-dialog',
+        url:     '/resources/blank.html', // required on Firefox ESR68
+        title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
+        message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
+        buttons: [
+          browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
+          browser.i18n.getMessage('config_userStyleRules_overwrite_append')
+        ]
+      });
+    }
+    catch(_error) {
+      result = { buttonIndex: -1 };
+    }
+    switch (result.buttonIndex) {
+      case 0:
+        mUserStyleRulesField.value = style;
+        break;
+      case 1:
+        mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
+        break;
+      default:
+        break;
+    }
   }
   mUserStyleRulesField.focus();
 }
