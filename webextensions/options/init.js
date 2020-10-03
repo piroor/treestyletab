@@ -217,57 +217,17 @@ function initUserStyleImportExportButtons() {
   const importButton = document.getElementById('userStyleRules-import');
   importButton.addEventListener('keydown', event => {
     if (event.key == 'Enter' || event.key == ' ')
-      importUserStyleFromFile();
+      document.getElementById('userStyleRules-import-file').click();
   });
   importButton.addEventListener('click', event => {
     if (event.button == 0)
-      importUserStyleFromFile();
+      document.getElementById('userStyleRules-import-file').click();
   });
 
   const fileField = document.getElementById('userStyleRules-import-file');
   fileField.addEventListener('change', async _event => {
-    const files = Array.from(fileField.files);
-    if (files.some(file => file.type.startsWith('image/')))
-      return insertFilesToUserStyleRulesField(files);
-
-    const style = (await Promise.all(files.map(file => file.text()))).join('\n');
-    if (mUserStyleRulesField.value.trim() == '') {
-      mUserStyleRulesField.value = style;
-      return;
-    }
-    let result;
-    try {
-      result = await RichConfirm.showInPopup({
-        modal:   true,
-        type:    'common-dialog',
-        url:     '/resources/blank.html', // required on Firefox ESR68
-        title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
-        message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
-        buttons: [
-          browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
-          browser.i18n.getMessage('config_userStyleRules_overwrite_append')
-        ]
-      });
-    }
-    catch(_error) {
-      result = { buttonIndex: -1 };
-    }
-    switch (result.buttonIndex) {
-      case 0:
-        mUserStyleRulesField.value = style;
-        break;
-      case 1:
-        mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
-        break;
-      default:
-        break;
-    }
-    mUserStyleRulesField.focus();
+    importFilesToUserStyleRulesField(fileField.files);
   });
-}
-
-function importUserStyleFromFile() {
-  document.getElementById('userStyleRules-import-file').click();
 }
 
 function exportUserStyleToFile() {
@@ -300,11 +260,13 @@ function initFileDragAndDropHandlers() {
     const dt = event.dataTransfer;
     const files = dt.files;
     if (files && files.length > 0)
-      insertFilesToUserStyleRulesField(files);
+      importFilesToUserStyleRulesField(files);
   }, { capture: true });
 }
 
-async function insertFilesToUserStyleRulesField(files) {
+async function importFilesToUserStyleRulesField(files) {
+  files = Array.from(files);
+  if (files.some(file => file.type.startsWith('image/'))) {
   const contents = await Promise.all(Array.from(files, file => {
     switch (file.type) {
       case 'text/plain':
@@ -325,6 +287,41 @@ async function insertFilesToUserStyleRulesField(files) {
     }
   }));
   mUserStyleRulesField.setRangeText(contents.join('\n'), mUserStyleRulesField.selectionStart, mUserStyleRulesField.selectionEnd, 'select');
+  }
+  else {
+  const style = (await Promise.all(files.map(file => file.text()))).join('\n');
+  if (mUserStyleRulesField.value.trim() == '') {
+    mUserStyleRulesField.value = style;
+    return;
+  }
+  let result;
+  try {
+    result = await RichConfirm.showInPopup({
+      modal:   true,
+      type:    'common-dialog',
+      url:     '/resources/blank.html', // required on Firefox ESR68
+      title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
+      message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
+      buttons: [
+        browser.i18n.getMessage('config_userStyleRules_overwrite_overwrite'),
+        browser.i18n.getMessage('config_userStyleRules_overwrite_append')
+      ]
+    });
+  }
+  catch(_error) {
+    result = { buttonIndex: -1 };
+  }
+  switch (result.buttonIndex) {
+    case 0:
+      mUserStyleRulesField.value = style;
+      break;
+    case 1:
+      mUserStyleRulesField.value = `${mUserStyleRulesField.value}\n${style}`;
+      break;
+    default:
+      break;
+  }
+  }
   mUserStyleRulesField.focus();
 }
 
