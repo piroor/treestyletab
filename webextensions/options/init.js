@@ -293,9 +293,12 @@ function initFileDragAndDropHandlers() {
 
     const dt = event.dataTransfer;
     const files = dt.files;
-    if (!files || files.length == 0)
-      return;
+    if (files && files.length > 0)
+      insertFilesToUserStyleRulesField(files);
+  }, { capture: true });
+}
 
+async function insertFilesToUserStyleRulesField(files) {
     const contents = await Promise.all(Array.from(files, file => {
       switch (file.type) {
         case 'text/plain':
@@ -316,7 +319,6 @@ function initFileDragAndDropHandlers() {
       }
     }));
     mUserStyleRulesField.setRangeText(contents.join('\n'), 0, 0, 'select');
-  }, { capture: true });
 }
 
 function updateThemeInformation(theme) {
