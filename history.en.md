@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * The "Load from File" button for the user styles now allows you to choose images and embed them as data: URIs.
+   * The user styles input field now accepts drag and drop of files (but this new behavior is available only when the options page is opened in a separate tab instead of embedded in the addons manager, due to [the bug 1408756](https://bugzilla.mozilla.org/show_bug.cgi?id=1408756)).
+   * Reopen new tab from external application with specific containers correctly.
+   * Never reopen a new tab with a container inherited from the current tab or the parent tab, when the tab is opened with non-default container.
+   * Never show needless vertical scrollbar in group tabs even if there are too many tree items.
+   * Never draw tree of tabs multiple times in a group tab. (regression on recent versions)
+   * Support two digits year with the placeholder `$SHORT_YEAR%` for names of generated bookmark folders.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.28 (2020.9.29)
    * Better visibility of active tabs and closeboxes on the high contrast mode.
    * Fix regressions on 3.5.24 around auto-correcting of tabs order after multiple opened tabs.
