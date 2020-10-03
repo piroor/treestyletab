@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.29 (2020.10.4)
    * The "Load from File" button for the user styles now allows you to choose images and embed them as data: URIs.
    * The user styles input field now accepts drag and drop of files (but this new behavior is available only when the options page is opened in a separate tab instead of embedded in the addons manager, due to [the bug 1408756](https://bugzilla.mozilla.org/show_bug.cgi?id=1408756)).
    * Reopen new tab from external application with specific containers correctly.
