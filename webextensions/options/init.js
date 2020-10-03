@@ -287,7 +287,7 @@ function initFileDragAndDropHandlers() {
     dt.dropEffect = hasFile ? 'link' : 'none';
   }, { capture: true });
 
-  mUserStyleRulesField.addEventListener('drop', async event => {
+  mUserStyleRulesField.addEventListener('drop', event => {
     event.stopPropagation();
     event.preventDefault();
 
