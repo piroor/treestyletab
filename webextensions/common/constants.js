@@ -318,7 +318,7 @@ export const kDEFAULT_MIN_INDENT = 3;
 export const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
 export const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_label', '.+')}$`);
 export const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_fromPinnedTab_label', '.+')}$`);
-export const kSHORTHAND_CUSTOM_URI = /^ext\+treestyletab:([^:?]+)(?:[:?](.*))?$/;
+export const kSHORTHAND_CUSTOM_URI = /^ext\+treestyletab:([^:?]+)(?:[:?](.*))?(#.*)?$/;
 export const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^?]+)/;
 export const kSHORTHAND_URIS = {
   tabbar:  browser.extension.getURL('sidebar/sidebar.html'),

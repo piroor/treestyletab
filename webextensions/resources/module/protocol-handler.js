@@ -11,11 +11,12 @@ const uri = decodeURIComponent(location.search.replace(/^\?/, ''));
 const matched = uri && uri.match(Constants.kSHORTHAND_CUSTOM_URI);
 if (matched) {
   const name = matched[1];
-  const params = matched[2] || '';
-  const delimiter = params ? '?' : '';
+  const params = new URLSearchParams(matched[2] || '');
+  const hash = matched[3] || '';
+  const delimiter = params.toString() ? '?' : '';
   switch (name.toLowerCase()) {
     case 'group':
-      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params}`;
+      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params.toString()}`;
       break;
 
     case 'startup':
@@ -24,15 +25,26 @@ if (matched) {
 
     case 'test-runner':
     case 'testrunner':
-      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params}`;
+      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params.toString()}`;
       break;
 
     case 'options':
-      location.href = `${Constants.kSHORTHAND_URIS.options}${params.split('#')[1] || ''}`;
+      location.href = `${Constants.kSHORTHAND_URIS.options}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'tabbar':
-      location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params}`;
+      if (!params.has('style')) {
+        browser.runtime.sendMessage({
+          type: 'treestyletab:get-config-value',
+          keys: ['style']
+        }).then(configs => {
+          params.set('style', configs.style);
+          location.href = `${Constants.kSHORTHAND_URIS.tabbar}?${params.toString()}`;
+        });
+      }
+      else {
+        location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}`;
+      }
       break;
   }
 }
