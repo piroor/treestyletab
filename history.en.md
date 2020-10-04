@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Add ability to specify arbitrary title for the sidebar page with the parameter `title`, like `ext+treestyletab:tabbar?title=...`. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
+   * Load sidebar page with the chosen builtin theme immediately when it is loaded via `ext+treestyletab:tabbar` URL. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
+   * Apply browser theme and user styles to the sidebar page more safely when the builtin theme information is not specified via the URL parameter. [Thank you Lej77!](https://github.com/piroor/treestyletab/pull/2733)
  - 3.5.29 (2020.10.4)
    * The "Load from File" button for the user styles now allows you to choose images and embed them as data: URIs.
    * The user styles input field now accepts drag and drop of files (but this new behavior is available only when the options page is opened in a separate tab instead of embedded in the addons manager, due to [the bug 1408756](https://bugzilla.mozilla.org/show_bug.cgi?id=1408756)).

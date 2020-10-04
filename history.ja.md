@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * サイドバー用のページを読み込む際、`ext+treestyletab:tabbar?title=...` のようにURLパラメータ `title` でページのタイトルを制御できるようにした（[Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などのアドオンとの互換性向上のため）
+   * `ext+treestyletab:tabbar` と指定してサイドバー用のページを読み込む際、選択された組み込みのテーマを反映した状態でページを読み込むようにした（[Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などのアドオンとの互換性向上のため）
+   * サイドバー用のページの読み込み時に、組み込みのテーマの選択情報が指定されていない場合でもブラウザのテーマとユーザー定義のスタイルを正しく反映するようにした（[Thank you Lej77!](https://github.com/piroor/treestyletab/pull/2733)）
  - 3.5.29 (2020.10.4)
    * ユーザースタイル定義の入力欄の「ファイルから読み込み」ボタンについて、画像を選択した場合はカーソル位置にdata: URIを埋め込むようにした
    * ユーザースタイル定義の入力欄でファイルのドラッグ＆ドロップを受け付けて「ファイルから読み込み」ボタンと同等のことをできるようにした（ただし、[Bug 1408756](https://bugzilla.mozilla.org/show_bug.cgi?id=1408756)のため、アドオンマネージャ内での埋め込み状態ではなく独立したタブとして設定画面を開いている状態でのみ有効です）
