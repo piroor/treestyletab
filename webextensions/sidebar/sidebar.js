@@ -86,9 +86,9 @@ const mBrowserThemeDefinition     = document.querySelector('#browser-theme-defin
 const mUserStyleRules             = document.querySelector('#user-style-rules');
 const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
-  // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
-  document.documentElement.dataset.userAgent = navigator.userAgent;
-  document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
+// allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
+document.documentElement.dataset.userAgent = navigator.userAgent;
+document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
 
 {
   const params = new URLSearchParams(location.search);
