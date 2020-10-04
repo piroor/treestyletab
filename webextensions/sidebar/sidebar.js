@@ -103,6 +103,10 @@ document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator
     applyTheme({ style });
   else
     configs.$loaded.then(applyTheme);
+
+  const title = params.get('title');
+  if (title)
+    document.title = title;
 }
 
 applyAnimationState(shouldApplyAnimation());
