@@ -34,10 +34,11 @@
   function getTitle() {
     let title = params.get('title');
     if (!title) {
-      title = location.search.match(/^\?([^&;]*)/);
+      const matched = location.search.match(/^\?([^&;]*)/);
+      if (matched)
+        title = decodeURIComponent(matched[1]);
     }
-    return title && decodeURIComponent(title[1]) ||
-             browser.i18n.getMessage('groupTab_label_default');
+    return title || browser.i18n.getMessage('groupTab_label_default');
   }
 
   function setTitle(title) {
