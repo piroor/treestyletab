@@ -328,7 +328,7 @@ async function applyTheme({ style } = {}) {
   const [theme, ] = await Promise.all([
     browser.theme.getCurrent(mTargetWindow),
     style && applyOwnTheme(style),
-    !style && configs.$loaded.then(applyOwnTheme),
+    !style && configs.$loaded.then(() => applyOwnTheme()),
     configs.$loaded
   ]);
   applyBrowserTheme(theme);
