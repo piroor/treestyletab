@@ -99,10 +99,7 @@ document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator
 
   // apply style ASAP!
   const style = params.get('style');
-  if (style)
-    applyTheme({ style });
-  else
-    configs.$loaded.then(applyTheme);
+  applyTheme({ style });
 
   const title = params.get('title');
   if (title)
@@ -331,7 +328,9 @@ function applyAnimationState(active) {
 async function applyTheme({ style } = {}) {
   const [theme, ] = await Promise.all([
     browser.theme.getCurrent(mTargetWindow),
-    applyOwnTheme(style)
+    style && applyOwnTheme(style),
+    !style && configs.$loaded.then(applyOwnTheme),
+    configs.$loaded
   ]);
   applyBrowserTheme(theme);
   applyUserStyleRules();
