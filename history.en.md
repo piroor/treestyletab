@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.30 (2020.10.4)
    * Add ability to specify arbitrary title for the sidebar page with the parameter `title`, like `ext+treestyletab:tabbar?title=...`. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
    * Load sidebar page with the chosen builtin theme immediately when it is loaded via `ext+treestyletab:tabbar` URL. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
    * Apply browser theme and user styles to the sidebar page more safely when the builtin theme information is not specified via the URL parameter. [Thank you Lej77!](https://github.com/piroor/treestyletab/pull/2733)
