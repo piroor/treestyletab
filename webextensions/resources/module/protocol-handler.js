@@ -16,16 +16,16 @@ if (matched) {
   const delimiter = params.toString() ? '?' : '';
   switch (name.toLowerCase()) {
     case 'group':
-      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params.toString()}`;
+      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'startup':
-      location.href = Constants.kSHORTHAND_URIS.startup;
+      location.href = `${Constants.kSHORTHAND_URIS.startup}${hash}`;
       break;
 
     case 'test-runner':
     case 'testrunner':
-      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params.toString()}`;
+      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'options':
@@ -39,11 +39,11 @@ if (matched) {
           keys: ['style']
         }).then(configs => {
           params.set('style', configs.style);
-          location.href = `${Constants.kSHORTHAND_URIS.tabbar}?${params.toString()}`;
+          location.href = `${Constants.kSHORTHAND_URIS.tabbar}?${params.toString()}${hash}`;
         });
       }
       else {
-        location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}`;
+        location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}${hash}`;
       }
       break;
   }
