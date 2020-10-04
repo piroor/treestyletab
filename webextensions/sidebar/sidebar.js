@@ -89,20 +89,19 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
   document.documentElement.dataset.userAgent = navigator.userAgent;
-
-  const style = location.search.match(/style=([^&]+)/);
-  if (style)
-    applyStyle(style[1]);
-  else
-    configs.$loaded.then(async () => {
-      await applyStyle();
-      Size.update();
-      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
-    });
-
-  configs.$loaded.then(applyUserStyleRules);
-
   document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
+
+  const params = new URLSearchParams(location.search);
+
+  mTargetWindow = parseInt(params.get('windowId') || 0);
+  if (isNaN(mTargetWindow) || mTargetWindow < 1)
+    mTargetWindow = null;
+
+  const style = params.get('style');
+  if (style)
+    applyTheme({ style });
+  else
+    configs.$loaded.then(applyTheme);
 }
 
 applyAnimationState(shouldApplyAnimation());
@@ -140,11 +139,10 @@ export async function init() {
   UserOperationBlocker.setProgress(0);
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
-      const bundledWindowId = /windowId=([1-9][0-9]*)/i.test(location.search) ? parseInt(RegExp.$1) : 0;
       const window = await MetricsData.addAsync(
         'getting window',
-        bundledWindowId >= 1 ?
-          browser.windows.get(bundledWindowId, { populate: true }) :
+        mTargetWindow ?
+          browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
       if (window.focused)
@@ -156,7 +154,8 @@ export async function init() {
 
       const tabs = window.tabs;
       SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
-      mTargetWindow = tabs[0].windowId;
+      if (!mTargetWindow)
+        mTargetWindow = tabs[0].windowId;
       TabsStore.setCurrentWindowId(mTargetWindow);
       mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
@@ -223,7 +222,6 @@ export async function init() {
 
       log('Start to process messages including queued ones');
       BackgroundConnection.start();
-      browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
 
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
 
@@ -325,7 +323,17 @@ function applyAnimationState(active) {
     rootClasses.remove('animation');
 }
 
-function applyStyle(style) {
+async function applyTheme({ style } = {}) {
+  const [theme, ] = await Promise.all([
+    browser.theme.getCurrent(mTargetWindow),
+    applyOwnTheme(style)
+  ]);
+  applyBrowserTheme(theme);
+  applyUserStyleRules();
+  Size.update();
+}
+
+async function applyOwnTheme(style) {
   mStyle = style || configs.style;
   switch (mStyle) {
     case 'sidebar':
