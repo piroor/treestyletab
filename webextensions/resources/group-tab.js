@@ -27,13 +27,16 @@
   let gBrowserThemeDefinition;
   let gUserStyleRules;
 
+  const params = new URLSearchParams(location.search.split('#')[0]);
+
   document.title = getTitle();
 
   function getTitle() {
-    const params = location.search.split('#')[0];
-    let title = params.match(/[&?]title=([^&;]*)/);
-    if (!title)
-      title = params.match(/^\?([^&;]*)/);
+    let title = params.get('title');
+    if (!title) {
+      const rawParams = location.search.split('#')[0];
+      title = rawParams.match(/^\?([^&;]*)/);
+    }
     return title && decodeURIComponent(title[1]) ||
              browser.i18n.getMessage('groupTab_label_default');
   }
@@ -46,19 +49,15 @@
   }
 
   function isTemporary() {
-    const params = location.search.split('#')[0];
-    return /[&?]temporary=true/.test(params);
+    return params.get('temporary') == true;
   }
 
   function isTemporaryAggressive() {
-    const params = location.search.split('#')[0];
-    return /[&?]temporaryAggressive=true/.test(params);
+    return params.get('temporaryAggressive') == true;
   }
 
   function getOpenerTabId() {
-    const params = location.search.split('#')[0];
-    const matched = params.match(/[&?]openerTabId=([^&;]*)/);
-    return matched && matched[1];
+    return params.get('openerTabId');
   }
 
   function enterTitleEdit() {
