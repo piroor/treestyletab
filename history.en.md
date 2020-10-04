@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.5.31 (2020.10.4)
+   * Restore group tab title correctly. (regression on 3.5.30)
  - 3.5.30 (2020.10.4)
    * Add ability to specify arbitrary title for the sidebar page with the parameter `title`, like `ext+treestyletab:tabbar?title=...`. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).
    * Load sidebar page with the chosen builtin theme immediately when it is loaded via `ext+treestyletab:tabbar` URL. This is for better compatibiliy with helper addons using TST's sidebar page e.g. [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/).

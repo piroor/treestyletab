@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.5.31 (2020.10.4)
+   * グループ化用タブのタイトルが正しく復元されなくなっていたのを修正（3.5.30での後退バグ）
  - 3.5.30 (2020.10.4)
    * サイドバー用のページを読み込む際、`ext+treestyletab:tabbar?title=...` のようにURLパラメータ `title` でページのタイトルを制御できるようにした（[Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などのアドオンとの互換性向上のため）
    * `ext+treestyletab:tabbar` と指定してサイドバー用のページを読み込む際、選択された組み込みのテーマを反映した状態でページを読み込むようにした（[Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などのアドオンとの互換性向上のため）
