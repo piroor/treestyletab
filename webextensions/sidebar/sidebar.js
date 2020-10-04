@@ -70,7 +70,6 @@ export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
 
 
-let mStyle;
 let mTargetWindow = null;
 let mInitialized = false;
 
@@ -338,8 +337,9 @@ async function applyTheme({ style } = {}) {
 }
 
 async function applyOwnTheme(style) {
-  mStyle = style || configs.style;
-  switch (mStyle) {
+  if (!style)
+    style = configs.style;
+  switch (style) {
     case 'sidebar':
       mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;
