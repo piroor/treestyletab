@@ -27,15 +27,14 @@
   let gBrowserThemeDefinition;
   let gUserStyleRules;
 
-  const params = new URLSearchParams(location.search.split('#')[0]);
+  const params = new URLSearchParams(location.search);
 
   document.title = getTitle();
 
   function getTitle() {
     let title = params.get('title');
     if (!title) {
-      const rawParams = location.search.split('#')[0];
-      title = rawParams.match(/^\?([^&;]*)/);
+      title = location.search.match(/^\?([^&;]*)/);
     }
     return title && decodeURIComponent(title[1]) ||
              browser.i18n.getMessage('groupTab_label_default');
