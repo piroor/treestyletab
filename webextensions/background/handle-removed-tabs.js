@@ -67,6 +67,10 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   const postProcessParams = {
     windowId:     tab.windowId,
     removedTab:   tab.$TST.export(true),
+    structure:    TreeBehavior.getTreeStructureFromTabs([tab, ...tab.$TST.descendants], {
+      full:                 true,
+      keepParentOfRootTabs: true
+    }),
     insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
     parent:       tab.$TST.parent,
     newParent,
@@ -104,9 +108,12 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast:        true
     });
 });
-async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab } = {}) {
+async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure } = {}) {
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(descendants, { triggerTab: removedTab });
+    await closeChildTabs(descendants, {
+      triggerTab:        removedTab,
+      originalStructure: structure
+    });
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       children.length > 1 &&
@@ -234,13 +241,13 @@ tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
-async function closeChildTabs(tabs, { triggerTab } = {}) {
+async function closeChildTabs(tabs, { triggerTab, originalStructure } = {}) {
   //if (!fireTabSubtreeClosingEvent(parent, tabs))
   //  return;
 
   //markAsClosedSet([parent].concat(tabs));
   // close bottom to top!
-  await TabsInternalOperation.removeTabs(tabs.reverse(), { triggerTab });
+  await TabsInternalOperation.removeTabs(tabs.slice(0).reverse(), { triggerTab, originalStructure });
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 

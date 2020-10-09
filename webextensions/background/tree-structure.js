@@ -446,7 +446,7 @@ Tab.onRemoved.addListener((_tab, _info) => {
     Tab.onChangeMultipleTabsRestorability.dispatch(newlyRestorable);
 });
 
-Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab } = {}) => {
+Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab, originalStructure } = {}) => {
   if (triggerTab)
     tabs = [triggerTab, ...tabs];
   mPendingRecentlyClosedTabsInfo.tabs = tabs.map(tab => ({
@@ -457,7 +457,7 @@ Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab } = {}) => {
     url:           tab.url,
     cookieStoreId: tab.cookieStoreId
   }));
-  mPendingRecentlyClosedTabsInfo.structure = TreeBehavior.getTreeStructureFromTabs(tabs, {
+  mPendingRecentlyClosedTabsInfo.structure = originalStructure || TreeBehavior.getTreeStructureFromTabs(tabs, {
     full:                 true,
     keepParentOfRootTabs: true
   });
