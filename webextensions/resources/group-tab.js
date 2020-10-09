@@ -49,11 +49,11 @@
   }
 
   function isTemporary() {
-    return params.get('temporary') == true;
+    return params.get('temporary') == 'true';
   }
 
   function isTemporaryAggressive() {
-    return params.get('temporaryAggressive') == true;
+    return params.get('temporaryAggressive') == 'true';
   }
 
   function getOpenerTabId() {
