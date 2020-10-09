@@ -5,8 +5,6 @@
   "sidebarTitle": { "message": "ツリー型タブ" },
   "sidebarToggleDescription": { "message": "ツリー型タブのサイドバーの表示・非表示を切り替える" },
 
-  "command_indent":                { "message": "現在のタブを1階層深くする" },
-  "command_outdent":               { "message": "現在のタブを1階層浅くする" },
   "command_tabMoveUp":             { "message": "現在のタブを単体で1つ上に移動" },
   "command_treeMoveUp":            { "message": "現在のタブとその配下のタブを1つ上に移動" },
   "command_tabMoveDown":           { "message": "現在のタブを単体で1つ下に移動" },
@@ -30,8 +28,6 @@
   "command_switchSubPanel":        { "message": "サブパネルの内容を切り替える" },
   "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
   "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
-  "command_groupSelectedTabs":     { "message": "選択中のタブを新しいグループにする" },
-  "command_ungroupTabs":           { "message": "タブのグループ化を解除" },
 
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
@@ -228,10 +224,6 @@
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
   "context_bookmarkTree_label_multiselected": { "message": "選択したツリーをブックマーク(&B)..." },
   "context_bookmarkTree_command": { "message": "このツリーをブックマーク..." },
-  "context_groupTabs_label": { "message": "これらのタブを新しいグループにする(&G)" },
-  "context_groupTabs_command": { "message": "これらのタブを新しいグループにする" },
-  "context_ungroupTabs_label":  { "message": "グループ化を解除(&N)" },
-  "context_ungroupTabs_command":{ "message": "グループ化を解除" },
   "context_topLevel_prefix": { "message": "トップレベルの項目: " },
 
   "context_openAllBookmarksWithStructure_label": { "message": "ツリーとしてすべて開く(&A)" },

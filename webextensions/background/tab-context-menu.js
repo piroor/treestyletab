@@ -177,12 +177,6 @@ const mItemsById = {
   'context_separator:afterClose': {
     type: 'separator'
   },
-  'context_topLevel_groupTabs': {
-    title: browser.i18n.getMessage('context_groupTabs_label')
-  },
-  'context_topLevel_ungroupTabs': {
-    title: browser.i18n.getMessage('context_ungroupTabs_label')
-  },
 
   'noContextTab:context_reloadTab': {
     title: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
@@ -613,14 +607,6 @@ async function onShown(info, contextTab) {
   updateItem('noContextTab:context_undoCloseTab', {
     title:   undoCloseTabLabel,
     visible: emulate && !contextTab
-  }) && modifiedItemsCount++;
-
-  updateItem('context_topLevel_groupTabs', {
-    visible: emulate && multiselected && contextTab && configs.context_topLevel_groupTabs
-  }) && modifiedItemsCount++;
-  updateItem('context_topLevel_ungroupTabs', {
-    visible: emulate && contextTab && configs.context_topLevel_ungroupTabs,
-    enabled: contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab)
   }) && modifiedItemsCount++;
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;

@@ -99,8 +99,6 @@ export const configs = new Configs({
   context_expandTreeRecursively: true,
   context_expandAll: true,
   context_bookmarkTree: true,
-  context_groupTabs: true,
-  context_ungroupTabs: true,
 
   context_topLevel_reloadTree: false,
   context_topLevel_reloadDescendants: false,
@@ -114,8 +112,6 @@ export const configs = new Configs({
   context_topLevel_expandTreeRecursively: false,
   context_topLevel_expandAll: false,
   context_topLevel_bookmarkTree: false,
-  context_topLevel_groupTabs: false,
-  context_topLevel_ungroupTabs: false,
 
   context_closeTabOptions_closeTree: null, // obsolete, migrated to context_topLevel_closeTree
   context_closeTabOptions_closeDescendants: null, // obsolete, migrated to context_topLevel_closeDescendants

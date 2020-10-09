@@ -17,7 +17,6 @@ import * as TabContextMenu from './tab-context-menu.js';
 
 import Tab from '/common/Tab.js';
 
-import * as TabsGroup from './tabs-group.js';
 import * as Commands from './commands.js';
 
 function log(...args) {
@@ -119,14 +118,6 @@ const mTabItemsById = {
   'bookmarkTree': {
     title:              browser.i18n.getMessage('context_bookmarkTree_label'),
     titleMultiselected: browser.i18n.getMessage('context_bookmarkTree_label_multiselected')
-  },
-  'groupTabs': {
-    title:                browser.i18n.getMessage('context_groupTabs_label'),
-    requireMultiselected: true
-  },
-  'ungroupTabs': {
-    title:          browser.i18n.getMessage('context_ungroupTabs_label'),
-    requireGrouped: true
   },
   'separatorAfterBookmark': {
     type: 'separator'
@@ -471,15 +462,6 @@ function onTabItemClick(info, tab) {
 
     case 'bookmarkTree':
       Commands.bookmarkTree(contextTabs);
-      break;
-
-    case 'groupTabs':
-      if (contextTabs.length > 1)
-        TabsGroup.groupTabs(contextTabs, { broadcast: true });
-      break;
-    case 'ungroupTabs':
-      if (contextTabs.length > 1)
-        TabsGroup.ungroupTabs(contextTabs, { broadcast: true });
       break;
 
     case 'collapsed':
