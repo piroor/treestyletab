@@ -66,6 +66,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
 
   const postProcessParams = {
     windowId:     tab.windowId,
+    removedTab:   tab.$TST.export(true),
     insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
     parent:       tab.$TST.parent,
     newParent,
@@ -103,9 +104,9 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast:        true
     });
 });
-async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants } = {}) {
+async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab } = {}) {
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(descendants);
+    await closeChildTabs(descendants, { triggerTab: removedTab });
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       children.length > 1 &&
@@ -233,13 +234,13 @@ tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
-async function closeChildTabs(tabs) {
+async function closeChildTabs(tabs, { triggerTab } = {}) {
   //if (!fireTabSubtreeClosingEvent(parent, tabs))
   //  return;
 
   //markAsClosedSet([parent].concat(tabs));
   // close bottom to top!
-  await TabsInternalOperation.removeTabs(tabs.reverse());
+  await TabsInternalOperation.removeTabs(tabs.reverse(), { triggerTab });
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 

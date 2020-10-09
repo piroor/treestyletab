@@ -446,10 +446,12 @@ Tab.onRemoved.addListener((_tab, _info) => {
     Tab.onChangeMultipleTabsRestorability.dispatch(newlyRestorable);
 });
 
-Tab.onMultipleTabsRemoving.addListener(tabs => {
+Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab } = {}) => {
+  if (triggerTab)
+    tabs = [triggerTab, ...tabs];
   mPendingRecentlyClosedTabsInfo.tabs = tabs.map(tab => ({
     originalId:    tab.id,
-    uniqueId:      tab.$TST.uniqueId.id,
+    uniqueId:      tab.$TST ? /* raw tab */ tab.$TST.uniqueId.id : /* exported tab */ tab.uniqueId.id,
     windowId:      tab.windowId,
     title:         tab.title,
     url:           tab.url,
@@ -459,12 +461,16 @@ Tab.onMultipleTabsRemoving.addListener(tabs => {
     full:                 true,
     keepParentOfRootTabs: true
   });
+  log('mPendingRecentlyClosedTabsInfo.tabs = ', mPendingRecentlyClosedTabsInfo.tabs);
+  log('mPendingRecentlyClosedTabsInfo.structure = ', mPendingRecentlyClosedTabsInfo.structure);
 });
 
-Tab.onMultipleTabsRemoved.addListener(tabs => {
+Tab.onMultipleTabsRemoved.addListener((tabs, { triggerTab } = {}) => {
   log('multiple tabs are removed');
   const currentlyRestorable = mRecentlyClosedTabs.length > 1;
 
+  if (triggerTab)
+    tabs = [triggerTab, ...tabs];
   const tabIds = new Set(tabs.map(tab => tab.id));
   mRecentlyClosedTabs = mPendingRecentlyClosedTabsInfo.tabs.filter(info => tabIds.has(info.originalId));
   mRecentlyClosedTabsTreeStructure = mPendingRecentlyClosedTabsInfo.structure.filter(structure => tabIds.has(structure.originalId));
@@ -496,7 +502,7 @@ async function tryRestoreClosedSetFor(tab) {
     return;
   }
 
-  const toBeRestoredTabsCount = lastRecentlyClosedTabs.length - 1;
+  const toBeRestoredTabsCount = lastRecentlyClosedTabs.filter(tabInfo => tabInfo.uniqueId != tab.$TST.uniqueId.id).length;
   if (toBeRestoredTabsCount == 0) {
     log(' => no more tab to be restored.');
     return;
@@ -506,12 +512,45 @@ async function tryRestoreClosedSetFor(tab) {
     maxResults: browser.sessions.MAX_SESSION_RESULTS
   }).catch(ApiTabs.createErrorHandler())).filter(session => session.tab);
 
+  const canRestoreWithSession = toBeRestoredTabsCount <= sessions.length;
+
   let restoredTabs;
-  if (toBeRestoredTabsCount <= sessions.length) {
-    log('tryRestoreClosedSetFor: restore tabs with the sessions API');
-    restoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
-    restoredTabs.push(tab);
-    Tab.sort(restoredTabs)
+  if (canRestoreWithSession) {
+    log(`tryRestoreClosedSetFor: restore ${toBeRestoredTabsCount} tabs with the sessions API`);
+    const unsortedRestoredTabs = await Commands.restoreTabs(toBeRestoredTabsCount);
+    unsortedRestoredTabs.push(tab);
+    // tabs can be restored in different order, then we need to rearrange them manually
+    const tabsByUniqueId = new Map();
+    for (const tab of unsortedRestoredTabs) {
+      tabsByUniqueId.set(tab.$TST.uniqueId.id, tab);
+    }
+    restoredTabs = await Promise.all(lastRecentlyClosedTabsTreeStructure.map(tabInfo => {
+      const restoredTab = tabsByUniqueId.get(tabInfo.id);
+      if (restoredTab)
+        return restoredTab;
+      log('tryRestoreClosedSetFor: recreate tab for ', tabInfo);
+      return TabsOpen.openURIInTab({
+        title:         tabInfo.title,
+        url:           tabInfo.url,
+        cookieStoreId: tabInfo.cookieStoreId
+      }, {
+        windowId:      tab.windowId,
+        isOrphan:      true,
+        inBackground:  true,
+        discarded:     true,
+        fixPositions:  true
+      });
+    }));
+    let lastTab;
+    for (const tab of restoredTabs) {
+      if (lastTab && tab.$TST.previousTab != lastTab)
+        await TabsMove.moveTabAfter(
+          tab,
+          lastTab,
+          { broadcast: true }
+        );
+      lastTab = tab;
+    }
   }
   else {
     log('tryRestoreClosedSetFor: recreate tabs');
@@ -559,6 +598,7 @@ async function tryRestoreClosedSetFor(tab) {
   }
 
   const rootTabs = restoredTabs.filter((tab, index) => lastRecentlyClosedTabsTreeStructure[index].parent == TreeBehavior.STRUCTURE_KEEP_PARENT || lastRecentlyClosedTabsTreeStructure[index].parent == TreeBehavior.STRUCTURE_NO_PARENT);
+  log(`tryRestoreClosedSetFor: rootTabs, restoredTabs = `, rootTabs, restoredTabs);
   for (const rootTab of rootTabs) {
     const referenceTabs = TreeBehavior.calculateReferenceTabsFromInsertionPosition(rootTab, {
       context:      Constants.kINSERTION_CONTEXT_MOVED,

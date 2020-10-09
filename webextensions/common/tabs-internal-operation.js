@@ -70,7 +70,7 @@ export function removeTab(tab) {
   return removeTabs([tab]);
 }
 
-export function removeTabs(tabs) {
+export function removeTabs(tabs, { triggerTab } = {}) {
   if (!SidebarConnection.isInitialized())
     throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page.');
 
@@ -105,7 +105,7 @@ export function removeTabs(tabs) {
   }
 
   const sortedTabs = Tab.sort(Array.from(tabs));
-  Tab.onMultipleTabsRemoving.dispatch(sortedTabs);
+  Tab.onMultipleTabsRemoving.dispatch(sortedTabs, { triggerTab });
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (window) {
@@ -120,7 +120,7 @@ export function removeTabs(tabs) {
       const canceledTabs = new Set(tabs.filter(tab => tab.$TST && !tab.$TST.destroyed));
       log(`${canceledTabs.size} tabs may be canceled to close.`);
       if (canceledTabs.size == 0) {
-        Tab.onMultipleTabsRemoved.dispatch(sortedTabs);
+        Tab.onMultipleTabsRemoved.dispatch(sortedTabs, { triggerTab });
         return;
       }
       log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
@@ -128,7 +128,7 @@ export function removeTabs(tabs) {
         tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
         window.internalClosingTabs.delete(tab.id);
       }
-      Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)));
+      Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab });
     });
   }
   return promisedRemoved;
