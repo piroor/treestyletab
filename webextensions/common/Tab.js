@@ -1270,7 +1270,9 @@ export default class Tab {
       states:     Array.from(this.states),
       attributes: this.attributes,
       parentId:   this.parentId,
-      childIds:   this.childIds
+      childIds:   this.childIds,
+      collapsed:  this.collapsed,
+      subtreeCollapsed: this.subtreeCollapsed
     };
     if (full)
       return {

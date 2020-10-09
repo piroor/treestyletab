@@ -451,7 +451,7 @@ Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab } = {}) => {
     tabs = [triggerTab, ...tabs];
   mPendingRecentlyClosedTabsInfo.tabs = tabs.map(tab => ({
     originalId:    tab.id,
-    uniqueId:      tab.$TST ? /* raw tab */ tab.$TST.uniqueId.id : /* exported tab */ tab.uniqueId.id,
+    uniqueId:      tab.$TST.uniqueId.id,
     windowId:      tab.windowId,
     title:         tab.title,
     url:           tab.url,
