@@ -502,7 +502,9 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     }
     return false;
   });
-  const shouldConfirm = configs[configKey || 'warnOnCloseTabs'];
+  if (!configKey)
+    configKey = 'warnOnCloseTabs';
+  const shouldConfirm = configs[configKey];
   log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, grantedIds, shouldConfirm });
   if (count <= 1 ||
       !shouldConfirm ||
@@ -578,7 +580,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)
-        configs.warnOnCloseTabs = false;
+        configs[configKey] = false;
       configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       reserveToClearGrantedRemovingTabs();
