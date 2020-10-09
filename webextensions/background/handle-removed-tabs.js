@@ -159,7 +159,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   log('tryGrantClose: ', { alreadyGranted: configs.grantedRemovingTabIds, closing: dumpTab(tab) });
   const alreadyGranted = configs.grantedRemovingTabIds.includes(tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
-  if (alreadyGranted)
+  if (!tab || alreadyGranted)
     return true;
 
   const self = tryGrantCloseTab;
@@ -185,7 +185,9 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     self.closingDescendantTabIds = mapAndFilterUniq(self.closingDescendantTabIds, id => {
       if (closingTabIds.has(id))
         return undefined;
-      allClosingTabs.add(Tab.get(id));
+      const tab = Tab.get(id);
+      if (tab) // ignore already closed tabs
+        allClosingTabs.add(tab);
       return id;
     });
     allClosingTabs = Array.from(allClosingTabs);
