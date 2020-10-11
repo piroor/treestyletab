@@ -1,6 +1,16 @@
 # History
 
  - master/HEAD
+ - 3.5.32 (2020.10.11)
+   * Save "Warn me when I attempt to close multiple tabs" checkbox state correctly for the confirmation dialog about closing multiple tabs via the closebox.
+   * Handle tabs which are immediately opened and closed more safely. It will improve compatibility with other tab addons which reopen new tabs, e.g. Temporary Containers.
+   * Handle closing of multiple tabs more safely for already closed tabs.
+   * Scroll the tab bar to expanded tree. (regression on recent versions)
+   * Scroll the tab bar to expanded tree even if animations are disabled.
+   * Restore closed tree with their original order and tree structure more correctly.
+   * Keep and restore checkbox state of group tabs correctly. (regression on recent versions)
+   * Fill the user styles field with imported configs immediately.
+   * Accept `ext+treestyletabi:sidebar` as an alias of `ext+treestyletab:tabbar`.
  - 3.5.31 (2020.10.4)
    * Restore group tab title correctly. (regression on 3.5.30)
  - 3.5.30 (2020.10.4)

@@ -369,7 +369,7 @@ function onMessage(message, sender) {
             configs.skipCollapsedTabsForTabSwitchingShortcuts &&
             sender.tab) {
           await Tab.waitUntilTracked(sender.tab.id);
-          let tab = sender.tab && Tab.get(sender.tab.id);
+          let tab = Tab.get(sender.tab.id);
           if (!tab) {
             const tabs = await browser.tabs.query({ currentWindow: true, active: true }).catch(ApiTabs.createErrorHandler());
             await Tab.waitUntilTracked(tabs[0].id);

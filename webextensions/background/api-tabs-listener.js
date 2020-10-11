@@ -389,7 +389,8 @@ async function onNewTabTracked(tab, info) {
   // See also: https://github.com/piroor/treestyletab/issues/2419
   let treeForActionDetection;
   const onTreeModified = (_child, _info) => {
-    if (!treeForActionDetection)
+    if (!treeForActionDetection ||
+        !TabsStore.ensureLivingTab(tab))
       return;
     treeForActionDetection = Tree.snapshotForActionDetection(tab);
     log('Tree modification is detected while waiting. Cached tree for action detection is updated: ', treeForActionDetection);
@@ -418,6 +419,7 @@ async function onNewTabTracked(tab, info) {
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
@@ -479,10 +481,10 @@ async function onNewTabTracked(tab, info) {
       await window.allTabsRestored;
       log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
     }
-    if (!TabsStore.ensureLivingTab(tab) ||
-        !TabsStore.windows.get(tab.windowId)) {
+    if (!TabsStore.ensureLivingTab(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       Tree.onAttached.removeListener(onTreeModified);
@@ -503,6 +505,17 @@ async function onNewTabTracked(tab, info) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
+
+    if (!TabsStore.ensureLivingTab(tab)) {
+      log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
+      onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
+      Tab.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
+      Tree.onAttached.removeListener(onTreeModified);
+      return;
+    }
+
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
       windowId: tab.windowId,
@@ -513,8 +526,7 @@ async function onNewTabTracked(tab, info) {
     });
     log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
 
-    if (TabsStore.ensureLivingTab(tab) &&
-        TabsStore.windows.get(tab.windowId)) { // it can be removed while waiting
+    if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
       setTimeout(() => {
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
@@ -525,6 +537,7 @@ async function onNewTabTracked(tab, info) {
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       Tree.onAttached.removeListener(onTreeModified);

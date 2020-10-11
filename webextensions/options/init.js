@@ -36,6 +36,8 @@ if ((location.hash && location.hash != '#') ||
     /independent=true/.test(location.search))
   document.body.classList.add('independent');
 
+const mUserStyleRulesField = document.getElementById('userStyleRulesField');
+
 function onConfigChanged(key) {
   const value = configs[key];
   switch (key) {
@@ -69,6 +71,11 @@ function onConfigChanged(key) {
 
     case 'showExpertOptions':
       document.documentElement.classList.toggle('show-expert-options', configs.showExpertOptions);
+      break;
+
+    default:
+      if (key.startsWith('chunkedUserStyleRules'))
+        mUserStyleRulesField.value = loadUserStyleRules();
       break;
   }
 }
@@ -115,8 +122,6 @@ async function onChangeBookmarkPermissionRequiredCheckboxState(event) {
   }, 100);
 }
 
-
-const mUserStyleRulesField = document.getElementById('userStyleRulesField');
 
 function reserveToSaveUserStyleRules() {
   if (reserveToSaveUserStyleRules.timer)

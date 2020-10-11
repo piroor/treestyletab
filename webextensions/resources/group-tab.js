@@ -49,11 +49,11 @@
   }
 
   function isTemporary() {
-    return params.get('temporary') == true;
+    return params.get('temporary') == 'true';
   }
 
   function isTemporaryAggressive() {
-    return params.get('temporaryAggressive') == true;
+    return params.get('temporaryAggressive') == 'true';
   }
 
   function getOpenerTabId() {
@@ -83,20 +83,27 @@
            event.shiftKey;
   }
 
-  function updateParameters(aParameters = {}) {
-    const title = aParameters.title || getTitle() || '';
+  function updateParameters({ title } = {}) {
+    params.set('title', title || getTitle() || '');
 
-    let temporary = gTemporaryCheck.checked;
-    temporary = temporary ? `&temporary=${temporary}` : '';
+    if (gTemporaryCheck.checked)
+      params.set('temporary', 'true');
+    else
+      params.delete('temporary');
 
-    let temporaryAggressive = gTemporaryAggressiveCheck.checked;
-    temporaryAggressive = temporaryAggressive ? `&temporaryAggressive=${temporaryAggressive}` : '';
+    if (gTemporaryAggressiveCheck.checked)
+      params.set('temporaryAggressive', 'true');
+    else
+      params.delete('temporaryAggressive');
 
-    let opener = getOpenerTabId();
-    opener = opener ? `&openerTabId=${opener}` : '';
+    const opener = getOpenerTabId();
+    if (opener)
+      params.set('openerTabId', opener);
+    else
+      params.delete('openerTabId');
 
     let uri = location.href.split('?')[0];
-    uri = `${uri}?title=${encodeURIComponent(title)}${temporary}${temporaryAggressive}${opener}`;
+    uri = `${uri}?${params.toString()}`;
     history.replaceState({}, document.title, uri);
   }
 

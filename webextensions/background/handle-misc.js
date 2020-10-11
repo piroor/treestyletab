@@ -300,7 +300,8 @@ function onMessage(message, sender) {
       return (async () => {
         if (!Tab.get(message.tabId))
           await Tab.waitUntilTracked(message.tabId);
-        return Tab.get(message.tabId).$TST.promisedUniqueId;
+        const tab = Tab.get(message.tabId);
+        return tab ? tab.$TST.promisedUniqueId : {};
       })();
 
     case Constants.kCOMMAND_GET_THEME_DECLARATIONS:

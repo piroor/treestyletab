@@ -711,15 +711,10 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
-  const animation = (
-    !params.collapsed &&
-    !params.justNow &&
-    shouldApplyAnimation()
-  );
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
     const childTab = childTabs[i];
-    if (animation &&
-        i == lastExpandedTabIndex) {
+    if (i == lastExpandedTabIndex &&
+        !params.collapsed) {
       await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,

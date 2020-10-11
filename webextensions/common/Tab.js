@@ -1216,10 +1216,16 @@ export default class Tab {
 
 
   resolveOpened() {
-    if (!mOpenedResolvers.has(this.tab.id))
+    if (!mOpenedResolvers.has(this.id))
       return;
-    mOpenedResolvers.get(this.tab.id)();
-    mOpenedResolvers.delete(this.tab.id);
+    mOpenedResolvers.get(this.id).resolve();
+    mOpenedResolvers.delete(this.id);
+  }
+  rejectOpened() {
+    if (!mOpenedResolvers.has(this.id))
+      return;
+    mOpenedResolvers.get(this.id).reject();
+    mOpenedResolvers.delete(this.id);
   }
 
   fetchClosedWhileActiveResolver() {
@@ -1417,35 +1423,36 @@ async function waitUntilTracked(tabId, options = {}) {
       return tab.$TST.promisedElement;
     return tab;
   }
-  return new Promise((resolve, reject) => {
+  let resolved = false;
+  return new Promise((resolve, _reject) => {
     const timeout = setTimeout(() => {
-      if (options.element) // eslint-disable-next-line no-use-before-define
-        Tab.onElementBound.removeListener(onTracked);
-      else // eslint-disable-next-line no-use-before-define
-        Tab.onTracked.removeListener(onTracked);
-      // eslint-disable-next-line no-use-before-define
-      Tab.onDestroyed.removeListener(onDestroyed);
-      reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`));
+      unregisterListeners();
+      log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`);
+      if (!resolved)
+        resolve(null);
     }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
     const onDestroyed = (tab) => {
       if (tab.id != tabId)
         return;
-      if (options.element) // eslint-disable-next-line no-use-before-define
-        Tab.onElementBound.removeListener(onTracked);
-      else // eslint-disable-next-line no-use-before-define
-        Tab.onTracked.removeListener(onTracked);
-      Tab.onDestroyed.removeListener(onDestroyed);
-      reject(new Error(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`));
+      unregisterListeners();
+      log(`Tab.waitUntilTracked: ${tabId} is destroyed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`);
+      if (!resolved)
+        resolve(null);
+    };
+    const onRemoved = (removedTabId, _removeInfo) => {
+      if (removedTabId != tabId)
+        return;
+      unregisterListeners();
+      log(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`);
+      if (!resolved)
+        resolve(null);
     };
     const onTracked = (tab) => {
       if (tab.id != tabId)
         return;
-      if (options.element)
-        Tab.onElementBound.removeListener(onTracked);
-      else
-        Tab.onTracked.removeListener(onTracked);
-      Tab.onDestroyed.removeListener(onDestroyed);
-      clearTimeout(timeout);
+      unregisterListeners();
+      if (resolved)
+        return;
       if (options.element) {
         if (tab.$TST.element)
           resolve(tab);
@@ -1461,7 +1468,23 @@ async function waitUntilTracked(tabId, options = {}) {
     else
       Tab.onTracked.addListener(onTracked);
     Tab.onDestroyed.addListener(onDestroyed);
-  });
+    browser.tabs.onRemoved.addListener(onRemoved);
+    browser.tabs.get(tabId).catch(_error => null).then(tab => {
+      if (tab || resolved)
+        return;
+      unregisterListeners();
+      log('waitUntilTracked was called for unexisting tab');
+      if (!resolved)
+        resolve(null);
+    });
+    function unregisterListeners() {
+      Tab.onElementBound.removeListener(onTracked);
+      Tab.onTracked.removeListener(onTracked);
+      Tab.onDestroyed.removeListener(onDestroyed);
+      browser.tabs.onRemoved.removeListener(onRemoved);
+      clearTimeout(timeout);
+    }
+  }).then(() => resolved = true);
 };
 
 Tab.waitUntilTracked = async (tabId, options = {}) => {
@@ -1489,10 +1512,10 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
     //if (mPromisedTrackedTabs.get(key) == promisedTracked)
     //  mPromisedTrackedTabs.delete(key);
     return tab;
-  }).catch(error => {
+  }).catch(_error => {
     //if (mPromisedTrackedTabs.get(key) == promisedTracked)
     //  mPromisedTrackedTabs.delete(key);
-    throw error;
+    return null;
   });
 };
 
@@ -1561,9 +1584,9 @@ Tab.init = (tab, options = {}) => {
   else {
     tab.$TST.opening = true;
     tab.$TST.openedCompletely = false;
-    tab.$TST.opened = new Promise((resolve, _reject) => {
+    tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
-      mOpenedResolvers.set(tab.id, resolve);
+      mOpenedResolvers.set(tab.id, { resolve, reject });
     }).then(() => {
       tab.$TST.openedCompletely = true;
     });
