@@ -413,6 +413,7 @@ export const configs = new Configs({
 browser.storage.sync.remove(localKeys);
 
 configs.$loaded.then(() => {
+  EventListenerManager.debug = configs.debug;
   log.forceStore = false;
   if (!configs.debug)
     log.logs = [];
@@ -473,9 +474,16 @@ shouldApplyAnimation.prefersReducedMotion.addListener(_event => {
   shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
 });
 configs.$addObserver(key => {
-  if (key == 'animation' ||
-      key == 'animationForce')
-    shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
+  switch(key) {
+    case 'animation':
+    case 'animationForce':
+      shouldApplyAnimation.onChanged.dispatch(shouldApplyAnimation());
+      break;
+
+    case 'debug':
+      EventListenerManager.debug = configs[key];
+      break;
+  }
 });
 
 // Some animation effects like smooth scrolling are still active even if it matches to "prefers-reduced-motion: reduce".
