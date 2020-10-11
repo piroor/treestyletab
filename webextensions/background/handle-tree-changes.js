@@ -74,6 +74,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       { tab: new TSTAPI.TreeItem(parent, { cache }) },
       { tabProperties: ['tab'] }
     );
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
 
     if (info.forceExpand && allowed) {
       log('  expand by forceExpand option');
@@ -114,6 +116,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
               parentCollasped     = true;
               return;
             }
+            if (!TabsStore.ensureLivingTab(tab))
+              return;
             Tree.collapseExpandSubtree(ancestor, {
               ...info,
               collapsed:    false,
@@ -121,6 +125,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
             });
             parentTreeCollasped = false;
           }));
+          if (!TabsStore.ensureLivingTab(tab))
+            return;
         }
       }
     }
