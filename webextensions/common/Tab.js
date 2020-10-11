@@ -1216,16 +1216,16 @@ export default class Tab {
 
 
   resolveOpened() {
-    if (!mOpenedResolvers.has(this.tab.id))
+    if (!mOpenedResolvers.has(this.id))
       return;
-    mOpenedResolvers.get(this.tab.id).resolve();
-    mOpenedResolvers.delete(this.tab.id);
+    mOpenedResolvers.get(this.id).resolve();
+    mOpenedResolvers.delete(this.id);
   }
   rejectOpened() {
-    if (!mOpenedResolvers.has(this.tab.id))
+    if (!mOpenedResolvers.has(this.id))
       return;
-    mOpenedResolvers.get(this.tab.id).reject();
-    mOpenedResolvers.delete(this.tab.id);
+    mOpenedResolvers.get(this.id).reject();
+    mOpenedResolvers.delete(this.id);
   }
 
   fetchClosedWhileActiveResolver() {
