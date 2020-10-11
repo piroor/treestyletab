@@ -33,6 +33,7 @@ if (matched) {
       break;
 
     case 'tabbar':
+    case 'sidebar':
       if (!params.has('style')) {
         browser.runtime.sendMessage({
           type: 'treestyletab:get-config-value',
