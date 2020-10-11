@@ -389,7 +389,9 @@ async function onNewTabTracked(tab, info) {
   // See also: https://github.com/piroor/treestyletab/issues/2419
   let treeForActionDetection;
   const onTreeModified = (_child, _info) => {
-    if (!treeForActionDetection)
+    if (!treeForActionDetection ||
+        !TabsStore.ensureLivingTab(tab) ||
+        !TabsStore.windows.get(tab.windowId))
       return;
     treeForActionDetection = Tree.snapshotForActionDetection(tab);
     log('Tree modification is detected while waiting. Cached tree for action detection is updated: ', treeForActionDetection);
@@ -503,6 +505,17 @@ async function onNewTabTracked(tab, info) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
+
+    if (!TabsStore.ensureLivingTab(tab) ||
+        !TabsStore.windows.get(tab.windowId)) {
+      log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
+      onCompleted(uniqueId);
+      Tab.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
+      Tree.onAttached.removeListener(onTreeModified);
+      return;
+    }
+
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATING,
       windowId: tab.windowId,
