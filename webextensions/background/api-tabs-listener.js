@@ -390,8 +390,7 @@ async function onNewTabTracked(tab, info) {
   let treeForActionDetection;
   const onTreeModified = (_child, _info) => {
     if (!treeForActionDetection ||
-        !TabsStore.ensureLivingTab(tab) ||
-        !TabsStore.windows.get(tab.windowId))
+        !TabsStore.ensureLivingTab(tab))
       return;
     treeForActionDetection = Tree.snapshotForActionDetection(tab);
     log('Tree modification is detected while waiting. Cached tree for action detection is updated: ', treeForActionDetection);
@@ -481,8 +480,7 @@ async function onNewTabTracked(tab, info) {
       await window.allTabsRestored;
       log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
     }
-    if (!TabsStore.ensureLivingTab(tab) ||
-        !TabsStore.windows.get(tab.windowId)) {
+    if (!TabsStore.ensureLivingTab(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onCompleted(uniqueId);
       Tab.untrack(tab.id);
@@ -506,8 +504,7 @@ async function onNewTabTracked(tab, info) {
       moved = await moved;
     moved = moved === false;
 
-    if (!TabsStore.ensureLivingTab(tab) ||
-        !TabsStore.windows.get(tab.windowId)) {
+    if (!TabsStore.ensureLivingTab(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onCompleted(uniqueId);
       Tab.untrack(tab.id);
@@ -526,8 +523,7 @@ async function onNewTabTracked(tab, info) {
     });
     log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
 
-    if (TabsStore.ensureLivingTab(tab) &&
-        TabsStore.windows.get(tab.windowId)) { // it can be removed while waiting
+    if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
       setTimeout(() => {
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
