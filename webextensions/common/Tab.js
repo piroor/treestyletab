@@ -1218,7 +1218,13 @@ export default class Tab {
   resolveOpened() {
     if (!mOpenedResolvers.has(this.tab.id))
       return;
-    mOpenedResolvers.get(this.tab.id)();
+    mOpenedResolvers.get(this.tab.id).resolve();
+    mOpenedResolvers.delete(this.tab.id);
+  }
+  rejectOpened() {
+    if (!mOpenedResolvers.has(this.tab.id))
+      return;
+    mOpenedResolvers.get(this.tab.id).reject();
     mOpenedResolvers.delete(this.tab.id);
   }
 
@@ -1561,9 +1567,9 @@ Tab.init = (tab, options = {}) => {
   else {
     tab.$TST.opening = true;
     tab.$TST.openedCompletely = false;
-    tab.$TST.opened = new Promise((resolve, _reject) => {
+    tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
-      mOpenedResolvers.set(tab.id, resolve);
+      mOpenedResolvers.set(tab.id, { resolve, reject });
     }).then(() => {
       tab.$TST.openedCompletely = true;
     });

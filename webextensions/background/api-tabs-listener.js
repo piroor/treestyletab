@@ -419,6 +419,7 @@ async function onNewTabTracked(tab, info) {
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
@@ -483,6 +484,7 @@ async function onNewTabTracked(tab, info) {
     if (!TabsStore.ensureLivingTab(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       Tree.onAttached.removeListener(onTreeModified);
@@ -507,6 +509,7 @@ async function onNewTabTracked(tab, info) {
     if (!TabsStore.ensureLivingTab(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       Tree.onAttached.removeListener(onTreeModified);
@@ -534,6 +537,7 @@ async function onNewTabTracked(tab, info) {
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       Tree.onAttached.removeListener(onTreeModified);
