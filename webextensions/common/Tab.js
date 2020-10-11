@@ -1423,33 +1423,27 @@ async function waitUntilTracked(tabId, options = {}) {
       return tab.$TST.promisedElement;
     return tab;
   }
+  let resolved = false;
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
-      if (options.element) // eslint-disable-next-line no-use-before-define
-        Tab.onElementBound.removeListener(onTracked);
-      else // eslint-disable-next-line no-use-before-define
-        Tab.onTracked.removeListener(onTracked);
-      // eslint-disable-next-line no-use-before-define
-      Tab.onDestroyed.removeListener(onDestroyed);
+      Tab.onElementBound.removeListener(onTracked); // eslint-disable-line no-use-before-define
+      Tab.onTracked.removeListener(onTracked); // eslint-disable-line no-use-before-define
+      Tab.onDestroyed.removeListener(onDestroyed); // eslint-disable-line no-use-before-define
       reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`));
     }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
     const onDestroyed = (tab) => {
       if (tab.id != tabId)
         return;
-      if (options.element) // eslint-disable-next-line no-use-before-define
-        Tab.onElementBound.removeListener(onTracked);
-      else // eslint-disable-next-line no-use-before-define
-        Tab.onTracked.removeListener(onTracked);
+      Tab.onElementBound.removeListener(onTracked); // eslint-disable-line no-use-before-define
+      Tab.onTracked.removeListener(onTracked); // eslint-disable-line no-use-before-define
       Tab.onDestroyed.removeListener(onDestroyed);
       reject(new Error(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`));
     };
     const onTracked = (tab) => {
       if (tab.id != tabId)
         return;
-      if (options.element)
-        Tab.onElementBound.removeListener(onTracked);
-      else
-        Tab.onTracked.removeListener(onTracked);
+      Tab.onElementBound.removeListener(onTracked);
+      Tab.onTracked.removeListener(onTracked);
       Tab.onDestroyed.removeListener(onDestroyed);
       clearTimeout(timeout);
       if (options.element) {
