@@ -42,6 +42,18 @@ export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerT
   return `${base}?${params.toString()}`;
 }
 
+export function temporaryStateParams(state) {
+  switch (state) {
+    case Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE:
+      return { temporary: true };
+    case Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE:
+      return { temporaryAggressive: true };
+    default:
+      break;
+  }
+  return {};
+}
+
 export async function groupTabs(tabs, { broadcast, ...groupTabOptions } = {}) {
   const rootTabs = Tab.collectRootTabs(tabs);
   if (rootTabs.length <= 0)

@@ -467,12 +467,18 @@ async function tryGroupNewTabs() {
     if (newRootTabs.length > 1) {
       if (openedFromBookmarkFolder) {
         if (configs.autoGroupNewTabsFromBookmarks)
-          await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+          await TabsGroup.groupTabs(newRootTabs, {
+            ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromBookmarks),
+            broadcast: true
+          });
       }
       else if (configs.autoGroupNewTabsFromOthers) {
         const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
         if (granted)
-          await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+          await TabsGroup.groupTabs(newRootTabs, {
+            ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromOthers),
+            broadcast: true
+          });
       }
     }
   }
@@ -667,8 +673,8 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     if (!parent) {
       const uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
-        temporary:   true,
-        openerTabId: opener.$TST.uniqueId.id
+        openerTabId: opener.$TST.uniqueId.id,
+        ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForChildrenOfPinned)
       });
       parent = await TabsOpen.openURIInTab(uri, {
         windowId:     opener.windowId,

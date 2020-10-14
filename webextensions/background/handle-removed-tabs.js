@@ -123,7 +123,7 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
     const firstChild = children[0];
     const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
-      temporaryAggressive: true
+      ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForOrphanedTabs)
     });
     const window = TabsStore.windows.get(windowId);
     window.toBeOpenedTabsWithPositions++;
