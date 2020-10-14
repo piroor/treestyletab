@@ -23,13 +23,23 @@ function log(...args) {
   internalLogger('background/tabs-group', ...args);
 }
 
-export function makeGroupTabURI(options = {}) {
+export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerTabId } = {}) {
   const base = Constants.kGROUP_TAB_URI;
-  const title = encodeURIComponent(options.title || '');
-  const temporaryOption = options.temporary ? '&temporary=true' : '' ;
-  const temporaryAggressiveOption = options.temporaryAggressive ? '&temporaryAggressive=true' : '' ;
-  const openerTabIdOption = options.openerTabId ? `&openerTabId=${options.openerTabId}` : '' ;
-  return `${base}?title=${title}${temporaryOption}${temporaryAggressiveOption}${openerTabIdOption}`;
+
+  const params = new URLSearchParams();
+
+  if (title)
+    params.set('title', title);
+
+  if (temporaryAggressive)
+    params.set('temporaryAggressive', 'true');
+  else if (temporary)
+    params.set('temporary', 'true');
+
+  if (openerTabId)
+    params.set('openerTabId', openerTabId);
+
+  return `${base}?${params.toString()}`;
 }
 
 export async function groupTabs(tabs, options = {}) {
