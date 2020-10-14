@@ -42,7 +42,7 @@ export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerT
   return `${base}?${params.toString()}`;
 }
 
-export async function groupTabs(tabs, options = {}) {
+export async function groupTabs(tabs, { broadcast, ...groupTabOptions } = {}) {
   const rootTabs = Tab.collectRootTabs(tabs);
   if (rootTabs.length <= 0)
     return null;
@@ -52,7 +52,7 @@ export async function groupTabs(tabs, options = {}) {
   const uri = makeGroupTabURI({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),
     temporary: true,
-    ...options
+    ...groupTabOptions
   });
   const groupTab = await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].windowId,
@@ -62,16 +62,16 @@ export async function groupTabs(tabs, options = {}) {
   });
 
   await Tree.detachTabsFromTree(tabs, {
-    broadcast: !!options.broadcast
+    broadcast: !!broadcast
   });
   await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
-    broadcast: !!options.broadcast
+    broadcast: !!broadcast
   });
   for (const tab of rootTabs) {
     await Tree.attachTabTo(tab, groupTab, {
       forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       dontMove:  true,
-      broadcast: !!options.broadcast
+      broadcast: !!broadcast
     });
   }
   return groupTab;
