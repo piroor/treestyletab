@@ -256,6 +256,7 @@ export const kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE = 1 << 9;
 export const kGROUP_BOOKMARK_EXPAND_ALL_TREE             = 1 << 11;
 export const kGROUP_BOOKMARK_CANCEL                      = -1;
 
+export const kGROUP_TAB_TEMPORARY_STATE_NOTHING = 0;
 export const kGROUP_TAB_TEMPORARY_STATE_PASSIVE = 1;
 export const kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE = 2;
 

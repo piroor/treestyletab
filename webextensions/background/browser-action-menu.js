@@ -715,6 +715,109 @@ const mItems = [
         key:   'renderTreeInGroupTabs',
         type:  'checkbox',
         expert: true
+      },
+      { type: 'separator',
+        expert: true },
+      {
+        title: browser.i18n.getMessage('config_groupTabTemporaryState_caption'),
+        enabled: false,
+        expert: true
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_groupTabTemporaryStateForNewTabsFromBookmarks_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForNewTabsFromBookmarks',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForNewTabsFromBookmarks',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForNewTabsFromBookmarks',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_groupTabTemporaryStateForNewTabsFromOthers_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForNewTabsFromOthers',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForNewTabsFromOthers',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForNewTabsFromOthers',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfPinned_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_groupTabTemporaryStateForOrphanedTabs_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForOrphanedTabs',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForOrphanedTabs',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForOrphanedTabs',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
       }
     ]
   },

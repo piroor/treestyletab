@@ -400,6 +400,15 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab" },
   "config_renderTreeInGroupTabs_label": { "message": "Render tree in group tabs" },
 
+  "config_groupTabTemporaryState_caption": { "message": "Default state of group tabs for each context" },
+  "config_groupTabTemporaryState_option_default": { "message": "Check to nothing" },
+  "config_groupTabTemporaryState_option_checked_before": { "message": "Check to the \"" },
+  "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
+  "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "For tabs opened from bookmarks:" },
+  "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "For tabs opened at a time from non-bookmark triggers:" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "For tabs opened from same pinned tab:" },
+  "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
+
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },
   "config_inheritContextualIdentityToChildTabMode_default": { "message": "(no control)" },
   "config_inheritContextualIdentityToChildTabMode_parent": { "message": "Inherit from the parent tab on the tree" },

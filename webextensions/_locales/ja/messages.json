@@ -396,6 +396,15 @@
   "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
   "config_renderTreeInGroupTabs_label": { "message": "グループ化用のタブにツリーを表示する" },
 
+  "config_groupTabTemporaryState_caption": { "message": "場合ごとのグループ化用のタブの初期状態" },
+  "config_groupTabTemporaryState_option_default": { "message": "何もチェックしない" },
+  "config_groupTabTemporaryState_option_checked_before": { "message": "「" },
+  "config_groupTabTemporaryState_option_checked_after": { "message": "」をチェック済みにする" },
+  "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "ブックマークから開かれたタブをグループ化した場合:" },
+  "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "ブックマーク以外から連続して開かれたタブをグループ化した場合:" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "同じピン留めされたタブから開かれたタブをグループ化した場合:" },
+  "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "閉じられた親タブを置き換える形で開かれた場合:" },
+
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "コンテナー:" },
   "config_inheritContextualIdentityToChildTabMode_default": { "message": "（制御しない）" },
   "config_inheritContextualIdentityToChildTabMode_parent": { "message": "ツリー上での親から継承" },
