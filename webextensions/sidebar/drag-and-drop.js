@@ -371,13 +371,13 @@ function getDropAction(event) {
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB ?
         (lastRelatedTab && lastRelatedTab.$TST.nextSiblingTab || targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab) :
         configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
-        (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
+          (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
+          (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB ?
         (lastRelatedTab && lastRelatedTab.$TST.lastDescendant || lastRelatedTab || targetTab) :
         configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        targetTab :
-        (targetTab.$TST.lastDescendant || targetTab);
+          targetTab :
+          (targetTab.$TST.lastDescendant || targetTab);
       if (info.draggedTab &&
           info.draggedTab.pinned != targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
