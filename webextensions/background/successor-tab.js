@@ -203,15 +203,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
     if (!tab.openerTabId)
       return;
 
-    const window = TabsStore.windows.get(tab.windowId);
-    window.lastRelatedTabs = window.lastRelatedTabs || new Map();
-
-    const lastRelatedTabId = window.lastRelatedTabs.get(tab.openerTabId);
-    if (lastRelatedTabId)
-      tryClearOwnerSuccessor(Tab.get(lastRelatedTabId));
-
-    window.lastRelatedTabs.set(tab.openerTabId, tab.id);
-    log(`set lastRelatedTab for ${tab.openerTabId}: ${dumpTab(tab)}`);
+    const opener = Tab.get(tab.openerTabId);
+    const lastRelatedTab = opener && opener.$TST.lastRelatedTabs;
+    if (lastRelatedTab)
+      tryClearOwnerSuccessor(lastRelatedTab);
+    opener.$TST.lastRelatedTab = tab;
   });
 });
 

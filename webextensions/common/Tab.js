@@ -29,6 +29,10 @@ function log(...args) {
   internalLogger('common/Tab', ...args);
 }
 
+function successorTabLog(...args) {
+  internalLogger('background/successor-tab', ...args);
+}
+
 const mOpenedResolvers            = new Map();
 const mClosedWhileActiveResolvers = new Map();
 
@@ -958,6 +962,18 @@ export default class Tab {
   get lastRelatedTab() {
     const window = TabsStore.windows.get(this.tab.windowId);
     return window.lastRelatedTabs && Tab.get(window.lastRelatedTabs.get(this.id)) || null;
+  }
+  set lastRelatedTab(relatedTab) {
+    const window = TabsStore.windows.get(this.tab.windowId);
+    window.lastRelatedTabs = window.lastRelatedTabs || new Map();
+    if (relatedTab) {
+      window.lastRelatedTabs.set(this.id, relatedTab.id);
+      successorTabLog(`set lastRelatedTab for ${this.id}: ${relatedTab.id}`);
+    }
+    else {
+      window.lastRelatedTabs.delete(this.id);
+      successorTabLog(`clear lastRelatedTab for ${this.id}`);
+    }
   }
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
