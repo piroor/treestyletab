@@ -374,13 +374,15 @@
 
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewChildAt_first": { "message": "Insert to the top of the tree, as the first child" },
+  "config_insertNewChildAt_first": { "message": "Insert at the top of the tree, as the first child" },
   "config_insertNewChildAt_end": { "message": "Append to the end of the tree" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Append at the next to the recently opened child, otherwise append at the top (simulation of Firefox's behavior)" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new tabs from pinned tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "Insert to the top of the tree, as the first child" },
+  "config_insertNewTabFromPinnedTabAt_first": { "message": "Insert at the top of the tree, as the first child" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Append to the end of the tree" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Append at the next to the recently opened child, otherwise append at the top (simulation of Firefox's behavior)" },
 
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 

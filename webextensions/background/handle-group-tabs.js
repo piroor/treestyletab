@@ -689,9 +689,15 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       TabsStore.removeToBeGroupedTab(child);
+      const lastRelatedTab = parent.$TST.lastRelatedTab;
+      const insertAfter = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB ?
+        (lastRelatedTab || parent) :
+        configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+          parent :
+          parent.$TST.lastDescendant;
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : parent.$TST.lastDescendant,
+        insertAfter,
         broadcast:   true
       });
     }

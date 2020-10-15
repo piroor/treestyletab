@@ -372,11 +372,13 @@
   "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
   "config_insertNewChildAt_first": { "message": "ツリーの最初の位置に挿入する" },
   "config_insertNewChildAt_end": { "message": "ツリーの末尾に追加する" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "直近に連続して開いた子タブの次の位置、または先頭（Firefoxの挙動の再現）" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから新しいタブを開く位置" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
   "config_insertNewTabFromPinnedTabAt_first": { "message": "ツリーの最初の位置に挿入する" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾に追加する" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "直近に連続して開いた子タブの次の位置、または先頭（Firefoxの挙動の再現）" },
 
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 

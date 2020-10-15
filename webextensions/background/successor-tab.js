@@ -286,8 +286,19 @@ Tab.onHidden.addListener(tab => {
   updateActiveTab(tab.windowId);
 });
 
-Tree.onAttached.addListener((child, _info = {}) => {
+Tree.onAttached.addListener((child, { parent } = {}) => {
   updateActiveTab(child.windowId);
+
+  const window = TabsStore.windows.get(child.windowId);
+  window.lastRelatedTabs = window.lastRelatedTabs || new Map();
+
+  const lastRelatedTabId = window.lastRelatedTabs.get(parent.id);
+  if (lastRelatedTabId &&
+      child.$TST.previousSiblingTab &&
+      lastRelatedTabId == child.$TST.previousSiblingTab.id) {
+    window.lastRelatedTabs.set(parent.id, child.id);
+    log(`update lastRelatedTab for ${parent.id}: ${dumpTab(child)}`);
+  }
 });
 
 Tree.onDetached.addListener((child, _info = {}) => {
