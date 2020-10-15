@@ -229,7 +229,6 @@ Tab.onRemoving.addListener((tab, removeInfo = {}) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  const window = TabsStore.windows.get(tab.windowId);
   const lastRelatedTab = tab.$TST.lastRelatedTab;
   if (lastRelatedTab &&
       !lastRelatedTab.active)
