@@ -656,9 +656,9 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           (siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab)
         );
         if (tab.id != (referenceTab && referenceTab.id)) {
-        await Tree.moveTabSubtreeAfter(tab, (referenceTab && referenceTab.$TST.lastDescendant || referenceTab), {
-          broadcast: true
-        });
+          await Tree.moveTabSubtreeAfter(tab, (referenceTab && referenceTab.$TST.lastDescendant || referenceTab), {
+            broadcast: true
+          });
           log(`newly opened child ${tab.id} has been moved after ${referenceTab && referenceTab.id}`);
         }
         else {
