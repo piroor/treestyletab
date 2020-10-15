@@ -955,6 +955,11 @@ export default class Tab {
     return foundTab;
   }
 
+  get lastRelatedTab() {
+    const window = TabsStore.windows.get(this.tab.windowId);
+    return window.lastRelatedTabs && Tab.get(window.lastRelatedTabs.get(this.id)) || null;
+  }
+
   // if all tabs are aldeardy placed at there, we don't need to move them.
   isAllPlacedBeforeSelf(tabs) {
     if (tabs.length == 0)
