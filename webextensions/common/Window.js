@@ -59,6 +59,7 @@ export default class Window {
     this.toBeDetachedTabs = new Set();
 
     this.lastRelatedTabs = new Map();
+    this.previousLastRelatedTabs = new Map();
 
     TabsStore.windows.set(windowId, this);
     TabsStore.prepareIndexesForWindow(windowId);
@@ -99,6 +100,7 @@ export default class Window {
 
   clearLastRelatedTabs() {
     this.lastRelatedTabs.clear();
+    this.previousLastRelatedTabs.clear();
   }
 
   bindElement(element) {

@@ -702,25 +702,24 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       log('opened group tab: ', dumpTab(parent));
       newGroupTabs.set(opener, true);
     }
-    const lastRelatedTab = opener.$TST.lastRelatedTab;
-    const shouldInsertAsFirstChild = (
-      (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB &&
-       !lastRelatedTab) ||
-      configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_FIRST
-    );
-    log('shouldInsertAsFirstChild: ', shouldInsertAsFirstChild);
+    // lastRelatedTab was already updated, so we need to refer the previous one
+    const lastRelatedTab = opener.$TST.previousLastRelatedTab;
+    let lastAttachedChild;
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       TabsStore.removeToBeGroupedTab(child);
-      const insertAfter = shouldInsertAsFirstChild ?
-        parent :
-        parent.$TST.lastDescendant;
+      const insertAfter = configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB ?
+        (lastAttachedChild || lastRelatedTab || parent) :
+        configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_FIRST ?
+          (lastAttachedChild || parent) :
+          parent.$TST.lastDescendant;
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter,
         broadcast:   true
       });
+      lastAttachedChild = child;
       log(`tab ${child.id}: child of ${opener.id} has been moved after ${insertAfter && insertAfter.id}, lastRelatedTab = ${lastRelatedTab && lastRelatedTab.id}`);
     }
   }

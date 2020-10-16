@@ -973,11 +973,17 @@ export default class Tab {
       window.lastRelatedTabs.delete(this.id);
       successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
+    window.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
   }
 
   get lastRelatedTabId() {
     const window = TabsStore.windows.get(this.tab.windowId);
     return window.lastRelatedTabs.get(this.id) || 0;
+  }
+
+  get previousLastRelatedTab() {
+    const window = TabsStore.windows.get(this.tab.windowId);
+    return Tab.get(window.previousLastRelatedTabs.get(this.id)) || null;
   }
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
