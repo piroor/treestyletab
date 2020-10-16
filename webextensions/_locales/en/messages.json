@@ -380,8 +380,8 @@
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new tabs from pinned tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child or the parent (simulation of Firefox's behavior)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "The top of the tree (next to the parent)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child or near the parent (simulation of Firefox's behavior)" },
+  "config_insertNewTabFromPinnedTabAt_first": { "message": "The top of the tree (near the parent)" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "The end of the tree" },
 
   "config_insertDroppedTabsAt_caption": { "message": "Insertion position of children dropped onto a parent" },
