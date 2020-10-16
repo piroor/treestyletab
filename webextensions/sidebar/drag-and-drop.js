@@ -369,11 +369,11 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = insertAt == Constants.kINSERT_FIRST ?
-          (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
-          (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
+        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
+        (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
       info.insertAfter  = insertAt == Constants.kINSERT_FIRST ?
-          targetTab :
-          (targetTab.$TST.lastDescendant || targetTab);
+        targetTab :
+        (targetTab.$TST.lastDescendant || targetTab);
       if (info.draggedTab &&
           info.draggedTab.pinned != targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
