@@ -636,7 +636,7 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_insertNewChildA_nextToLastRelateTab'),
+            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
             key:   'insertNewChildA',
             value: Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB,
             type:  'radio'
