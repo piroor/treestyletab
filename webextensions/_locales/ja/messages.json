@@ -380,6 +380,11 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "ツリーの先頭（親タブの隣）" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾" },
 
+  "config_insertDroppedTabsAt_caption": { "message": "親タブにドロップされた子タブの挿入位置" },
+  "config_insertDroppedTabsAt_inherit": { "message": "親タブから新しい子タブを開いたときと同様に扱う" },
+  "config_insertDroppedTabsAt_first": { "message": "ツリーの先頭（親タブの隣）" },
+  "config_insertDroppedTabsAt_end": { "message": "ツリーの末尾" },
+
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "1つのブックマークフォルダーから" },

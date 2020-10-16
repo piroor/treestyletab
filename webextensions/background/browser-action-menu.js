@@ -684,6 +684,30 @@ const mItems = [
           }
         ]
       },
+      {
+        title:    browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_INHERIT,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_FIRST,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_END,
+            type:  'radio'
+          }
+        ],
+        expert: true
+      },
       { type: 'separator' },
       {
         title: browser.i18n.getMessage('config_groupTab_caption'),

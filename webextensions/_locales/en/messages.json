@@ -384,6 +384,11 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "The top of the tree (next to the parent)" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "The end of the tree" },
 
+  "config_insertDroppedTabsAt_caption": { "message": "Insertion position of children dropped onto a parent" },
+  "config_insertDroppedTabsAt_inherit": { "message": "Treat same as new children opened from the parent" },
+  "config_insertDroppedTabsAt_first": { "message": "The top of the tree (next to the parent)" },
+  "config_insertDroppedTabsAt_end": { "message": "The end of the tree" },
+
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "Auto-group tabs opened from a bookmark folder within" },

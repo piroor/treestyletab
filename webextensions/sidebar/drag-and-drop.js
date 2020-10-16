@@ -365,17 +365,13 @@ function getDropAction(event) {
   switch (info.dropPosition) {
     case kDROP_ON_SELF: {
       log('drop position = on ', info.targetTab.id);
-      const lastRelatedTab = targetTab.$TST.lastRelatedTab;
+      const insertAt = configs.insertDroppedTabsAt == Constants.kINSERT_INHERIT ? configs.insertNewChildAt : configs.insertDroppedTabsAt;
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
-      info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB ?
-        (lastRelatedTab && lastRelatedTab.$TST.nextSiblingTab || targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab) :
-        configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+      info.insertBefore = insertAt == Constants.kINSERT_FIRST ?
           (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
           (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
-      info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB ?
-        (lastRelatedTab && lastRelatedTab.$TST.lastDescendant || lastRelatedTab || targetTab) :
-        configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+      info.insertAfter  = insertAt == Constants.kINSERT_FIRST ?
           targetTab :
           (targetTab.$TST.lastDescendant || targetTab);
       if (info.draggedTab &&
@@ -383,7 +379,7 @@ function getDropAction(event) {
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (info.draggedTab &&
           info.insertBefore == info.draggedTab) // failsafe
-        info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB || configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+        info.insertBefore = insertAt == Constants.kINSERT_FIRST ?
           info.draggedTab.$TST.unsafeNextTab :
           (info.draggedTab.$TST.nextSiblingTab ||
            info.draggedTab.$TST.unsafeNearestFollowingForeignerTab);
