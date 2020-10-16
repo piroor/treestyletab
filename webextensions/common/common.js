@@ -188,7 +188,7 @@ export const configs = new Configs({
 
   // behavior around newly opened tabs
   insertNewChildAt: Constants.kINSERT_END,
-  insertNewTabFromPinnedTabAt: Constants.kINSERT_NO_CONTROL,
+  insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
   insertDroppedTabsAt: Constants.kINSERT_END,
 
   scrollToNewTabMode: Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
