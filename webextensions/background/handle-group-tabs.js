@@ -635,7 +635,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
 
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
-    case Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB:
+    case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB:
     case Constants.kINSERT_FIRST: {
       const allPinnedTabs = Tab.getPinnedTabs(rootTabs[0].windowId);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
@@ -646,7 +646,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           continue;
         // If there is not-yet grouped sibling, place next to it.
         const lastRelatedTab = (
-          configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB &&
+          configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB &&
           opener.$TST.lastRelatedTab
         );
         log(`lastRelatedTab: ${lastRelatedTab && lastRelatedTab.id}`);

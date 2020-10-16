@@ -253,15 +253,15 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
           }
         }
       }; break;
-      case Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB: {
+      case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
         const lastRelatedTab = parent.$TST.lastRelatedTab;
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
-          log('  insert after lastRelatedTab (insertAt=kINSERT_NEXT_TO_LAST_RELATE_TAB)');
+          log('  insert after lastRelatedTab (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)');
         }
         else {
           insertBefore = firstChild;
-          log('  insert before firstChild (insertAt=kINSERT_NEXT_TO_LAST_RELATE_TAB)');
+          log('  insert before firstChild (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)');
         }
       }; break;
     }

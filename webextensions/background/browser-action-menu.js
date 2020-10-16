@@ -638,7 +638,7 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
             key:   'insertNewChildA',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB,
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
             type:  'radio'
           },
           {
@@ -667,7 +667,7 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
             key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATE_TAB,
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
             type:  'radio'
           },
           {

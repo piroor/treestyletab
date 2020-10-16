@@ -204,7 +204,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
       return;
 
     const opener = Tab.get(tab.openerTabId);
-    const lastRelatedTab = opener && opener.$TST.lastRelatedTabs;
+    const lastRelatedTab = opener && opener.$TST.lastRelatedTab;
     if (lastRelatedTab)
       tryClearOwnerSuccessor(lastRelatedTab);
     opener.$TST.lastRelatedTab = tab;

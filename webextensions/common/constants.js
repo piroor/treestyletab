@@ -281,7 +281,7 @@ export const kINSERT_INHERIT    = -2;
 export const kINSERT_FIRST      = 0;
 export const kINSERT_END        = 1;
 export const kINSERT_NEAREST    = 2;
-export const kINSERT_NEXT_TO_LAST_RELATE_TAB = 3;
+export const kINSERT_NEXT_TO_LAST_RELATED_TAB = 3;
 
 export const kSUCCESSOR_TAB_CONTROL_NEVER            = 0;
 export const kSUCCESSOR_TAB_CONTROL_SIMULATE_DEFAULT = 1;
