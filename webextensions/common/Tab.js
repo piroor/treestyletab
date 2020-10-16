@@ -960,20 +960,24 @@ export default class Tab {
   }
 
   get lastRelatedTab() {
-    const window = TabsStore.windows.get(this.tab.windowId);
-    return window.lastRelatedTabs && Tab.get(window.lastRelatedTabs.get(this.id)) || null;
+    return Tab.get(this.lastRelatedTabId) || null;
   }
   set lastRelatedTab(relatedTab) {
+    const previousLastRelatedTabId = this.lastRelatedTabId;
     const window = TabsStore.windows.get(this.tab.windowId);
-    window.lastRelatedTabs = window.lastRelatedTabs || new Map();
     if (relatedTab) {
       window.lastRelatedTabs.set(this.id, relatedTab.id);
-      successorTabLog(`set lastRelatedTab for ${this.id}: ${relatedTab.id}`);
+      successorTabLog(`set lastRelatedTab for ${this.id}: ${previousLastRelatedTabId} => ${relatedTab.id}`);
     }
     else {
       window.lastRelatedTabs.delete(this.id);
-      successorTabLog(`clear lastRelatedTab for ${this.id}`);
+      successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
+  }
+
+  get lastRelatedTabId() {
+    const window = TabsStore.windows.get(this.tab.windowId);
+    return window.lastRelatedTabs.get(this.id) || 0;
   }
 
   // if all tabs are aldeardy placed at there, we don't need to move them.

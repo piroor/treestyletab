@@ -173,9 +173,7 @@ Tab.onActivated.addListener(async (tab, info = {}) => {
       if (lastRelatedTab &&
           lastRelatedTab.id != tab.id) {
         log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated`);
-        const window = TabsStore.windows.get(info.windowId);
-        if (window.lastRelatedTabs)
-          window.lastRelatedTabs.clear();
+        TabsStore.windows.get(info.windowId).clearLastRelatedTabs();
         await tryClearOwnerSuccessor(lastRelatedTab);
       }
     }
@@ -238,8 +236,7 @@ Tab.onRemoved.addListener((tab, info = {}) => {
   if (!window)
     return;
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
-  if (window.lastRelatedTabs)
-    window.lastRelatedTabs.clear();
+  window.clearLastRelatedTabs();
 });
 
 Tab.onMoved.addListener((tab, info = {}) => {
@@ -247,9 +244,7 @@ Tab.onMoved.addListener((tab, info = {}) => {
 
   if (!info.byInternalOperation) {
     log(`clear lastRelatedTabs for ${tab.windowId} by tabs.onMoved`);
-    const window = TabsStore.windows.get(info.windowId);
-    if (window.lastRelatedTabs)
-      window.lastRelatedTabs.clear();
+    TabsStore.windows.get(info.windowId).clearLastRelatedTabs();
   }
 });
 
@@ -263,8 +258,7 @@ Tab.onDetached.addListener((_tab, info = {}) => {
   const window = TabsStore.windows.get(info.oldWindowId);
   if (window) {
     log(`clear lastRelatedTabs for ${info.windowId} by tabs.onDetached`);
-    if (window.lastRelatedTabs)
-      window.lastRelatedTabs.clear();
+    window.clearLastRelatedTabs();
   }
 });
 
@@ -285,16 +279,11 @@ Tab.onHidden.addListener(tab => {
 Tree.onAttached.addListener((child, { parent } = {}) => {
   updateActiveTab(child.windowId);
 
-  const window = TabsStore.windows.get(child.windowId);
-  window.lastRelatedTabs = window.lastRelatedTabs || new Map();
-
-  const lastRelatedTabId = window.lastRelatedTabs.get(parent.id);
+  const lastRelatedTabId = parent.$TST.lastRelatedTabId;
   if (lastRelatedTabId &&
       child.$TST.previousSiblingTab &&
-      lastRelatedTabId == child.$TST.previousSiblingTab.id) {
-    window.lastRelatedTabs.set(parent.id, child.id);
-    log(`update lastRelatedTab for ${parent.id}: ${dumpTab(child)}`);
-  }
+      lastRelatedTabId == child.$TST.previousSiblingTab.id)
+    parent.$TST.lastRelatedTab = child;
 });
 
 Tree.onDetached.addListener((child, _info = {}) => {
