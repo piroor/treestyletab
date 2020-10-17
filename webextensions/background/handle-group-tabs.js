@@ -645,25 +645,24 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Tab.getGroupTabForOpener(opener))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const lastRelatedTab = (
-          configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB &&
-          opener.$TST.lastRelatedTab
-        );
+        const lastRelatedTab = configs.insertNewTabFromPinnedTabAt != Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB ?
+          null :
+          // lastRelatedTab can be already updated, then we need to refer the previous one
+          opener.$TST.lastRelatedTabId == tab.id ?
+            opener.$TST.previousLastRelatedTab :
+            opener.$TST.lastRelatedTab;
         log(`lastRelatedTab: ${lastRelatedTab && lastRelatedTab.id}`);
         const siblings = tab.$TST.needToBeGroupedSiblings;
-        const referenceTab = (
+        const insertAfter = (
           lastRelatedTab ||
           (siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab)
         );
-        if (tab.id != (referenceTab && referenceTab.id)) {
-          await Tree.moveTabSubtreeAfter(tab, (referenceTab && referenceTab.$TST.lastDescendant || referenceTab), {
-            broadcast: true
-          });
-          log(`newly opened child ${tab.id} has been moved after ${referenceTab && referenceTab.id}`);
-        }
-        else {
-          log(`no need to move newly opened child ${tab.id}`);
-        }
+        await Tree.moveTabSubtreeAfter(
+          tab,
+          insertAfter && insertAfter.$TST.lastDescendant || insertAfter,
+          { broadcast: true }
+        );
+        log(`newly opened child ${tab.id} has been moved after ${insertAfter && insertAfter.id}`);
       }
     }; break;
     case Constants.kINSERT_END:
@@ -702,24 +701,26 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       log('opened group tab: ', dumpTab(parent));
       newGroupTabs.set(opener, true);
     }
-    // lastRelatedTab was already updated, so we need to refer the previous one
-    const lastRelatedTab = opener.$TST.previousLastRelatedTab;
-    let lastAttachedChild;
+    let nextInsertAfter;
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       TabsStore.removeToBeGroupedTab(child);
+      // lastRelatedTab can be already updated, then we need to refer the previous one
+      const lastRelatedTab = opener.$TST.lastRelatedTabId == child.id ?
+        opener.$TST.previousLastRelatedTab :
+        opener.$TST.lastRelatedTab;
       const insertAfter = configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB ?
-        (lastAttachedChild || lastRelatedTab || parent) :
+        (nextInsertAfter || (lastRelatedTab && lastRelatedTab.$TST.lastDescendant || lastRelatedTab) || parent) :
         configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_FIRST ?
-          (lastAttachedChild || parent) :
+          (nextInsertAfter || parent) :
           parent.$TST.lastDescendant;
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter,
         broadcast:   true
       });
-      lastAttachedChild = child;
+      nextInsertAfter = child.$TST.lastDescendant || child;
       log(`tab ${child.id}: child of ${opener.id} has been moved after ${insertAfter && insertAfter.id}, lastRelatedTab = ${lastRelatedTab && lastRelatedTab.id}`);
     }
   }
