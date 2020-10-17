@@ -111,7 +111,6 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
      'new last descendant tab must be the successor.');
 }
 
-testMissingSuccessor.runnable = true;
 export async function testMissingSuccessor() {
   await Utils.setConfigs({
     successorTabControlLevel:           Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
