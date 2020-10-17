@@ -20,6 +20,9 @@ import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
 
+// exceptions to prevent reloading of the background page
+const CONFIG_KEYS_TRIGGERS_RELOADING = new Set(['style', 'useCachedTree']);
+
 let mResults;
 let mLogs;
 
@@ -45,6 +48,8 @@ function backupConfigs() {
 
 async function restoreConfigs(values) {
   for (const key of Object.keys(values)) {
+    if (CONFIG_KEYS_TRIGGERS_RELOADING.has(key))
+      continue;
     configs[key] = values[key];
   }
   // wait until updated configs are delivered to other namespaces
