@@ -118,8 +118,8 @@ export default class Tab {
   }
 
   destroy() {
-    mPromisedTrackedTabs.delete(`${this.tab.id}:true`);
-    mPromisedTrackedTabs.delete(`${this.tab.id}:false`);
+    mPromisedTrackedTabs.delete(`${this.id}:true`);
+    mPromisedTrackedTabs.delete(`${this.id}:false`);
 
     Tab.onDestroyed.dispatch(this.tab);
     this.detach();
@@ -183,6 +183,8 @@ export default class Tab {
   }
 
   startMoving() {
+    if (!this.tab)
+      return Promise.resolve();
     let onTabMoved;
     const promisedMoved = new Promise((resolve, _reject) => {
       onTabMoved = resolve;
@@ -229,7 +231,7 @@ export default class Tab {
   //===================================================================
 
   get soundPlaying() {
-    return !!(this.tab.audible && !this.tab.mutedInfo.muted);
+    return !!(this.tab && this.tab.audible && !this.tab.mutedInfo.muted);
   }
 
   get maybeSoundPlaying() {
@@ -239,7 +241,7 @@ export default class Tab {
   }
 
   get muted() {
-    return !!(this.tab.mutedInfo && this.tab.mutedInfo.muted);
+    return !!(this.tab && this.tab.mutedInfo && this.tab.mutedInfo.muted);
   }
 
   get maybeMuted() {
@@ -281,7 +283,8 @@ export default class Tab {
   }
 
   get isNewTabCommandTab() {
-    if (!configs.guessNewOrphanTabAsOpenedByNewTabCommand)
+    if (!this.tab ||
+        !configs.guessNewOrphanTabAsOpenedByNewTabCommand)
       return false;
 
     const newTabUrl = configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
@@ -314,13 +317,13 @@ export default class Tab {
   }
 
   get isTemporaryGroupTab() {
-    if (!this.isGroupTab)
+    if (!this.tab || !this.isGroupTab)
       return false;
     return /[&?]temporary=true/.test(this.tab.url);
   }
 
   get isTemporaryAggressiveGroupTab() {
-    if (!this.isGroupTab)
+    if (!this.tab || !this.isGroupTab)
       return false;
     return /[&?]temporaryAggressive=true/.test(this.tab.url);
   }
@@ -339,6 +342,7 @@ export default class Tab {
     const prevTab = this.unsafePreviousTab;
     return (
       prevTab &&
+      this.tab &&
       this.tab.cookieStoreId != prevTab.cookieStoreId &&
       this.tab.url == prevTab.url
     ) ? prevTab : null;
@@ -347,6 +351,7 @@ export default class Tab {
     const nextTab = this.unsafeNextTab;
     return (
       nextTab &&
+      this.tab &&
       this.tab.cookieStoreId != nextTab.cookieStoreId &&
       this.tab.url == nextTab.url
     ) ? nextTab : null;
@@ -376,13 +381,14 @@ export default class Tab {
   }
 
   get multiselected() {
-    return this.selected &&
+    return this.tab &&
+             this.selected &&
              (this.hasOtherHighlighted ||
               TabsStore.selectedTabsInWindow.get(this.tab.windowId).size > 1);
   }
 
   get hasOtherHighlighted() {
-    const highlightedTabs = TabsStore.highlightedTabsInWindow.get(this.tab.windowId);
+    const highlightedTabs = this.tab && TabsStore.highlightedTabsInWindow.get(this.tab.windowId);
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
@@ -390,7 +396,7 @@ export default class Tab {
     if ('possibleOpenerBookmarks' in this)
       return Promise.resolve(this.possibleOpenerBookmarks);
     return new Promise(async (resolve, _reject) => {
-      if (!browser.bookmarks)
+      if (!browser.bookmarks || !this.tab)
         return resolve(this.possibleOpenerBookmarks = []);
       // A new tab from bookmark is opened with a title: its URL without the scheme part.
       const url = this.tab.$possibleInitialUrl;
@@ -403,7 +409,7 @@ export default class Tab {
           browser.bookmarks.search({ url: `ftp://${url}` }).catch(_error => []),
           browser.bookmarks.search({ url: `moz-extension://${url}` }).catch(_error => [])
         ]);
-        log(`promisedPossibleOpenerBookmarks for tab ${this.tab.id} (${url}): `, possibleBookmarks);
+        log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
         resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
       }
       catch(_error) {
@@ -415,7 +421,7 @@ export default class Tab {
   }
 
   get cookieStoreName() {
-    const identity = this.tab.cookieStoreId && ContextualIdentities.get(this.tab.cookieStoreId);
+    const identity = this.tab && this.tab.cookieStoreId && ContextualIdentities.get(this.tab.cookieStoreId);
     return identity ? identity.name : null;
   }
 
@@ -424,20 +430,20 @@ export default class Tab {
   //===================================================================
 
   get nextTab() {
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       controllable: true,
       index:    (index => index > this.tab.index)
     });
   }
 
   get previousTab() {
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       controllable: true,
       index:    (index => index < this.tab.index),
       last:     true
@@ -445,39 +451,39 @@ export default class Tab {
   }
 
   get unsafeNextTab() {
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
-      fromId:   this.tab.id,
+      fromId:   this.id,
       index:    (index => index > this.tab.index)
     });
   }
 
   get unsafePreviousTab() {
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
-      fromId:   this.tab.id,
+      fromId:   this.id,
       index:    (index => index < this.tab.index),
       last:     true
     });
   }
 
   get nearestCompletelyOpenedNormalFollowingTab() { // including hidden tabs!
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
       states:   [Constants.kTAB_STATE_CREATING, false],
-      fromId:   this.tab.id,
+      fromId:   this.id,
       living:   true,
       index:    (index => index > this.tab.index)
     });
   }
 
   get nearestCompletelyOpenedNormalPrecedingTab() { // including hidden tabs!
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
       states:   [Constants.kTAB_STATE_CREATING, false],
-      fromId:   this.tab.id,
+      fromId:   this.id,
       living:   true,
       index:    (index => index < this.tab.index),
       last:     true
@@ -485,29 +491,29 @@ export default class Tab {
   }
 
   get nearestVisibleFollowingTab() { // visible, not-collapsed
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.visibleTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       visible:  true,
       index:    (index => index > this.tab.index)
     });
   }
 
   get unsafeNearestExpandedFollowingTab() { // not-collapsed, possibly hidden
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.expandedTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       index:    (index => index > this.tab.index)
     });
   }
 
   get nearestVisiblePrecedingTab() { // visible, not-collapsed
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.visibleTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       visible:  true,
       index:    (index => index < this.tab.index),
       last:     true
@@ -515,24 +521,24 @@ export default class Tab {
   }
 
   get unsafeNearestExpandedPrecedingTab() { // not-collapsed, possibly hidden
-    return TabsStore.query({
+    return this.tab && TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.expandedTabsInWindow.get(this.tab.windowId),
-      fromId:   this.tab.id,
+      fromId:   this.id,
       index:    (index => index < this.tab.index),
       last:     true
     });
   }
 
   get nearestLoadedTab() {
-    const tabs = TabsStore.visibleTabsInWindow.get(this.tab.windowId);
-    return (
+    const tabs = this.tab && TabsStore.visibleTabsInWindow.get(this.tab.windowId);
+    return this.tab && (
       // nearest following tab
       TabsStore.query({
         windowId:  this.tab.windowId,
         tabs,
         discarded: false,
-        fromId:    this.tab.id,
+        fromId:    this.id,
         visible:   true,
         index:     (index => index > this.tab.index)
       }) ||
@@ -541,7 +547,7 @@ export default class Tab {
         windowId:  this.tab.windowId,
         tabs,
         discarded: false,
-        fromId:    this.tab.id,
+        fromId:    this.id,
         visible:   true,
         index:     (index => index < this.tab.index),
         last:      true
@@ -550,6 +556,8 @@ export default class Tab {
   }
 
   get nearestLoadedTabInTree() {
+    if (!this.tab)
+      return null;
     let tab = this.tab;
     const tabs = TabsStore.visibleTabsInWindow.get(tab.windowId);
     let lastLastDescendant;
@@ -565,7 +573,7 @@ export default class Tab {
           tabs,
           descendantOf: parent.id,
           discarded:    false,
-          '!id':        this.tab.id,
+          '!id':        this.id,
           fromId:       (lastLastDescendant || this.tab).id,
           toId:         lastDescendant.id,
           visible:      true,
@@ -577,7 +585,7 @@ export default class Tab {
           tabs,
           descendantOf: parent.id,
           discarded:    false,
-          '!id':        this.tab.id,
+          '!id':        this.id,
           fromId:       tab.id,
           toId:         parent.$TST.firstChild.id,
           visible:      true,
@@ -597,7 +605,7 @@ export default class Tab {
 
   get nearestLoadedSiblingTab() {
     const parent = this.parent;
-    if (!parent)
+    if (!parent || !this.tab)
       return null;
     const tabs = TabsStore.visibleTabsInWindow.get(this.tab.windowId);
     return (
@@ -607,7 +615,7 @@ export default class Tab {
         tabs,
         childOf:   parent.id,
         discarded: false,
-        fromId:    this.tab.id,
+        fromId:    this.id,
         toId:      parent.$TST.lastChild.id,
         visible:   true,
         index:     (index => index > this.tab.index)
@@ -618,7 +626,7 @@ export default class Tab {
         tabs,
         childOf:   parent.id,
         discarded: false,
-        fromId:    this.tab.id,
+        fromId:    this.id,
         toId:      parent.$TST.firstChild.id,
         visible:   true,
         index:     (index => index < this.tab.index),
@@ -633,7 +641,8 @@ export default class Tab {
 
   set parent(tab) {
     const newParentId = tab && (typeof tab == 'number' ? tab : tab.id);
-    if (newParentId == this.parentId)
+    if (!this.tab ||
+        newParentId == this.parentId)
       return tab;
 
     const oldParent = this.parent;
@@ -644,13 +653,13 @@ export default class Tab {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
       if (this.states.has(Constants.kTAB_STATE_SOUND_PLAYING))
-        parent.$TST.soundPlayingChildrenIds.add(this.tab.id);
+        parent.$TST.soundPlayingChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER))
-        parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+        parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_MUTED))
-        parent.$TST.mutedChildrenIds.add(this.tab.id);
+        parent.$TST.mutedChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER))
-        parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
+        parent.$TST.maybeMutedChildrenIds.add(this.id);
       parent.$TST.inheritSoundStateFromChildren();
       TabsStore.removeRootTab(this.tab);
     }
@@ -659,17 +668,17 @@ export default class Tab {
       TabsStore.addRootTab(this.tab);
     }
     if (oldParent && oldParent.id != this.parentId) {
-      oldParent.$TST.soundPlayingChildrenIds.delete(this.tab.id);
-      oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
-      oldParent.$TST.mutedChildrenIds.delete(this.tab.id);
-      oldParent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+      oldParent.$TST.soundPlayingChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
+      oldParent.$TST.mutedChildrenIds.delete(this.id);
+      oldParent.$TST.maybeMutedChildrenIds.delete(this.id);
       oldParent.$TST.inheritSoundStateFromChildren();
-      oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.tab.id);
+      oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.id);
     }
     return tab;
   }
   get parent() {
-    return this.parentId && TabsStore.ensureLivingTab(Tab.get(this.parentId));
+    return this.tab && this.parentId && TabsStore.ensureLivingTab(Tab.get(this.parentId));
   }
 
   get hasParent() {
@@ -690,6 +699,8 @@ export default class Tab {
   updateAncestors() {
     const ancestors = [];
     this.cachedAncestorIds = [];
+    if (!this.tab)
+      return ancestors;
     let descendant = this.tab;
     while (true) {
       const parent = Tab.get(descendant.$TST.parentId);
@@ -740,6 +751,8 @@ export default class Tab {
   }
 
   set children(tabs) {
+    if (!this.tab)
+      return tabs;
     const ancestorIds = this.ancestorIds;
     const newChildIds = mapAndFilter(tabs, tab => {
       const id = typeof tab == 'number' ? tab : tab && tab.id;
@@ -840,10 +853,12 @@ export default class Tab {
   }
 
   get nextSiblingTab() {
+    if (!this.tab)
+      return null;
     const parent = this.parent;
     if (parent) {
       const siblingIds = parent.$TST.childIds;
-      const index = siblingIds.indexOf(this.tab.id);
+      const index = siblingIds.indexOf(this.id);
       const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
       if (!siblingId)
         return null;
@@ -853,7 +868,7 @@ export default class Tab {
       return TabsStore.query({
         windowId:  this.tab.windowId,
         tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
-        fromId:    this.tab.id,
+        fromId:    this.id,
         living:    true,
         index:     (index => index > this.tab.index),
         hasParent: false,
@@ -868,10 +883,12 @@ export default class Tab {
   }
 
   get previousSiblingTab() {
+    if (!this.tab)
+      return null;
     const parent = this.parent;
     if (parent) {
       const siblingIds = parent.$TST.childIds;
-      const index = siblingIds.indexOf(this.tab.id);
+      const index = siblingIds.indexOf(this.id);
       const siblingId = index > 0 ? siblingIds[index - 1] : null ;
       if (!siblingId)
         return null;
@@ -881,7 +898,7 @@ export default class Tab {
       return TabsStore.query({
         windowId:  this.tab.windowId,
         tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
-        fromId:    this.tab.id,
+        fromId:    this.id,
         living:    true,
         index:     (index => index < this.tab.index),
         hasParent: false,
@@ -891,11 +908,13 @@ export default class Tab {
   }
 
   get needToBeGroupedSiblings() {
+    if (!this.tab)
+      return [];
     return TabsStore.queryAll({
       windowId:   this.tab.windowId,
       tabs:       TabsStore.toBeGroupedTabsInWindow.get(this.tab.windowId),
       normal:     true,
-      '!id':      this.tab.id,
+      '!id':      this.id,
       attributes: [
         Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, this.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
         Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
@@ -909,8 +928,9 @@ export default class Tab {
   //===================================================================
 
   get openerTab() {
-    if (!this.tab.openerTabId ||
-        this.tab.openerTabId == this.tab.id)
+    if (!this.tab ||
+        !this.tab.openerTabId ||
+        this.tab.openerTabId == this.id)
       return null;
     return TabsStore.query({
       windowId: this.tab.windowId,
@@ -941,6 +961,8 @@ export default class Tab {
   }
 
   findSuccessor(options = {}) {
+    if (!this.tab)
+      return null;
     if (typeof options != 'object')
       options = {};
     const ignoredTabs = (options.ignoredTabs || []).slice(0);
@@ -995,7 +1017,8 @@ export default class Tab {
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
   isAllPlacedBeforeSelf(tabs) {
-    if (tabs.length == 0)
+    if (!this.tab ||
+        tabs.length == 0)
       return true;
     let nextTab = this.tab;
     if (tabs[tabs.length - 1] == nextTab)
@@ -1016,7 +1039,8 @@ export default class Tab {
   }
 
   isAllPlacedAfterSelf(tabs) {
-    if (tabs.length == 0)
+    if (!this.tab ||
+        tabs.length == 0)
       return true;
     let previousTab = this.tab;
     if (tabs[0] == previousTab)
@@ -1047,6 +1071,9 @@ export default class Tab {
   //===================================================================
 
   async addState(state, options = {}) {
+    if (!this.tab)
+      return;
+
     if (this.classList)
       this.classList.add(state);
     if (this.states)
@@ -1072,25 +1099,25 @@ export default class Tab {
       case Constants.kTAB_STATE_SOUND_PLAYING: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.soundPlayingChildrenIds.add(this.tab.id);
+          parent.$TST.soundPlayingChildrenIds.add(this.id);
       } break;
 
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+          parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
       } break;
 
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.mutedChildrenIds.add(this.tab.id);
+          parent.$TST.mutedChildrenIds.add(this.id);
       } break;
 
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
+          parent.$TST.maybeMutedChildrenIds.add(this.id);
       } break;
     }
 
@@ -1102,12 +1129,15 @@ export default class Tab {
       const states = await this.getPermanentStates();
       if (!states.includes(state)) {
         states.push(state);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
+        await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
   }
 
   async removeState(state, options = {}) {
+    if (!this.tab)
+      return;
+
     if (this.classList)
       this.classList.remove(state);
     if (this.states)
@@ -1133,25 +1163,25 @@ export default class Tab {
       case Constants.kTAB_STATE_SOUND_PLAYING: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.soundPlayingChildrenIds.delete(this.tab.id);
+          parent.$TST.soundPlayingChildrenIds.delete(this.id);
       } break;
 
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
+          parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
       } break;
 
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.mutedChildrenIds.delete(this.tab.id);
+          parent.$TST.mutedChildrenIds.delete(this.id);
       } break;
 
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
-          parent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+          parent.$TST.maybeMutedChildrenIds.delete(this.id);
       } break;
     }
 
@@ -1164,17 +1194,20 @@ export default class Tab {
       const index = states.indexOf(state);
       if (index > -1) {
         states.splice(index, 1);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
+        await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
   }
 
   async getPermanentStates() {
-    const states = this.tab && await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.handleMissingTabError);
+    const states = this.tab && await browser.sessions.getTabValue(this.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.handleMissingTabError);
     return states || [];
   }
 
   inheritSoundStateFromChildren() {
+    if (!this.tab)
+      return;
+
     // this is called too many times on a session restoration, so this should be throttled for better performance
     if (this.delayedInheritSoundStateFromChildren)
       clearTimeout(this.delayedInheritSoundStateFromChildren);
@@ -1193,12 +1226,12 @@ export default class Tab {
         if (soundPlayingCount > 0) {
           this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
           if (parent)
-            parent.$TST.maybeSoundPlayingChildrenIds.add(this.tab.id);
+            parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
         }
         else {
           this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
           if (parent)
-            parent.$TST.maybeSoundPlayingChildrenIds.delete(this.tab.id);
+            parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
         }
         modifiedCount++;
       }
@@ -1209,12 +1242,12 @@ export default class Tab {
         if (mutedCount > 0) {
           this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
           if (parent)
-            parent.$TST.maybeMutedChildrenIds.add(this.tab.id);
+            parent.$TST.maybeMutedChildrenIds.add(this.id);
         }
         else {
           this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
           if (parent)
-            parent.$TST.maybeMutedChildrenIds.delete(this.tab.id);
+            parent.$TST.maybeMutedChildrenIds.delete(this.id);
         }
         modifiedCount++;
       }
@@ -1228,7 +1261,7 @@ export default class Tab {
       SidebarConnection.sendMessage({
         type:                  Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED,
         windowId:              this.tab.windowId,
-        tabId:                 this.tab.id,
+        tabId:                 this.id,
         hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
         hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
       });
@@ -1267,8 +1300,8 @@ export default class Tab {
   }
 
   fetchClosedWhileActiveResolver() {
-    const resolver = mClosedWhileActiveResolvers.get(this.tab.id);
-    mClosedWhileActiveResolvers.delete(this.tab.id);
+    const resolver = mClosedWhileActiveResolvers.get(this.id);
+    mClosedWhileActiveResolvers.delete(this.id);
     return resolver;
   }
 
@@ -1298,6 +1331,9 @@ export default class Tab {
   }
 
   get sanitized() {
+    if (!this.tab)
+      return {};
+
     const sanitized = {
       ...this.tab,
       '$possibleInitialUrl': null,
@@ -1327,6 +1363,9 @@ export default class Tab {
   }
 
   apply(exported) { // not optimized and unsafe yet!
+    if (!this.tab)
+      return;
+
     TabsStore.removeTabFromIndexes(this.tab);
 
     for (const key of Object.keys(exported)) {
