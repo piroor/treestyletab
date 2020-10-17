@@ -355,15 +355,14 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   }
 }
 
-export function getReferenceTabsForNewChild(child, parent, options = {}) {
-  log('getReferenceTabsForNewChild ', { child, parent, options });
-  let insertAt = options.insertAt;
+export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTabs, lastRelatedTab } = {}) {
+  log('getReferenceTabsForNewChild ', { child, parent, insertAt, ignoreTabs, lastRelatedTab });
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
   log('  insertAt = ', insertAt);
   let descendants = parent.$TST.descendants;
-  if (options.ignoreTabs)
-    descendants = descendants.filter(tab => !options.ignoreTabs.includes(tab));
+  if (ignoreTabs)
+    descendants = descendants.filter(tab => !ignoreTabs.includes(tab));
   log('  descendants = ', descendants);
   let insertBefore, insertAfter;
   if (descendants.length > 0) {
@@ -380,7 +379,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         log('  insert before firstChild (insertAt=kINSERT_TOP)');
         break;
       case Constants.kINSERT_NEAREST: {
-        const allTabs = Tab.getOtherTabs(parent.windowId, options.ignoreTabs);
+        const allTabs = Tab.getOtherTabs(parent.windowId, ignoreTabs);
         const index = allTabs.indexOf(child);
         log('  insertAt=kINSERT_NEAREST ', { allTabs, index });
         if (index < allTabs.indexOf(firstChild)) {
@@ -394,8 +393,8 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         }
         else { // inside the tree
           let children = parent.$TST.children;
-          if (options.ignoreTabs)
-            children = children.filter(tab => !options.ignoreTabs.includes(tab));
+          if (ignoreTabs)
+            children = children.filter(tab => !ignoreTabs.includes(tab));
           for (const child of children) {
             if (index > allTabs.indexOf(child))
               continue;
@@ -413,7 +412,8 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         // Simulates Firefox's default behavior with `browser.tabs.insertRelatedAfterCurrent`=`true`.
         // The result will become same to kINSERT_NO_CONTROL case,
         // but this is necessary for environments with disabled the preference.
-        const lastRelatedTab = 'lastRelatedTab' in options ? options.lastRelatedTab : parent.$TST.lastRelatedTab;
+        if (lastRelatedTab === undefined)
+          lastRelatedTab = parent.$TST.lastRelatedTab;
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
           log('  insert after lastRelatedTab (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)');
