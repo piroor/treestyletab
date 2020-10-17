@@ -230,22 +230,20 @@ export async function testIgnoreCreatingTabsOnTreeStructureAutoFix() {
 }
 
 export async function testNearestLoadedTabInTree() {
-  /*
-    * A
-    * B
-      * C
-        * D
-      * E
-        * F
-          * G
-        * H <= test target
-          * I
-        * J
-          * K
-      * L
-        * M
-    * N
-  */
+  // * A
+  // * B
+  //   * C
+  //     * D
+  //   * E
+  //     * F
+  //       * G
+  //     * H <= test target
+  //       * I
+  //     * J
+  //       * K
+  //   * L
+  //     * M
+  // * N
   let tabs = await Utils.createTabs({
     A: { index: 1 },
     B: { index: 2 },
