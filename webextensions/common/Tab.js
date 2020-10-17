@@ -310,7 +310,7 @@ export default class Tab {
   }
 
   get hasGroupTabURL() {
-    return this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
+    return !!(this.tab && this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0);
   }
 
   get isTemporaryGroupTab() {
@@ -963,6 +963,8 @@ export default class Tab {
     return Tab.get(this.lastRelatedTabId) || null;
   }
   set lastRelatedTab(relatedTab) {
+    if (!this.tab)
+      return relatedTab;
     const previousLastRelatedTabId = this.lastRelatedTabId;
     const window = TabsStore.windows.get(this.tab.windowId);
     if (relatedTab) {
@@ -974,14 +976,19 @@ export default class Tab {
       successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
     window.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
+    return relatedTab;
   }
 
   get lastRelatedTabId() {
+    if (!this.tab)
+      return 0;
     const window = TabsStore.windows.get(this.tab.windowId);
     return window.lastRelatedTabs.get(this.id) || 0;
   }
 
   get previousLastRelatedTab() {
+    if (!this.tab)
+      return null;
     const window = TabsStore.windows.get(this.tab.windowId);
     return Tab.get(window.previousLastRelatedTabs.get(this.id)) || null;
   }
