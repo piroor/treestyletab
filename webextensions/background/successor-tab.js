@@ -191,26 +191,26 @@ Tab.onCreating.addListener((tab, info = {}) => {
   );
 
   if (shouldControlSuccesor) {
-  // don't use await here, to prevent that other onCreating handlers are treated async.
-  tryClearOwnerSuccessor(info.activeTab).then(() => {
-    const ownerTabId = tab.openerTabId || tab.active ? info.activeTab.id : null
-    if (!ownerTabId)
-      return;
+    // don't use await here, to prevent that other onCreating handlers are treated async.
+    tryClearOwnerSuccessor(info.activeTab).then(() => {
+      const ownerTabId = tab.openerTabId || tab.active ? info.activeTab.id : null
+      if (!ownerTabId)
+        return;
 
-    log(`${dumpTab(tab)} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
-    setSuccessor(tab.id, ownerTabId);
-    tab.$TST.lastSuccessorTabId = ownerTabId;
-    tab.$TST.lastSuccessorTabIdByOwner = true;
+      log(`${dumpTab(tab)} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
+      setSuccessor(tab.id, ownerTabId);
+      tab.$TST.lastSuccessorTabId = ownerTabId;
+      tab.$TST.lastSuccessorTabIdByOwner = true;
 
-    if (!tab.openerTabId)
-      return;
+      if (!tab.openerTabId)
+        return;
 
-    const opener = Tab.get(tab.openerTabId);
-    const lastRelatedTab = opener && opener.$TST.lastRelatedTab;
-    if (lastRelatedTab)
-      tryClearOwnerSuccessor(lastRelatedTab);
-    opener.$TST.lastRelatedTab = tab;
-  });
+      const opener = Tab.get(tab.openerTabId);
+      const lastRelatedTab = opener && opener.$TST.lastRelatedTab;
+      if (lastRelatedTab)
+        tryClearOwnerSuccessor(lastRelatedTab);
+      opener.$TST.lastRelatedTab = tab;
+    });
   }
   else {
     const opener = Tab.get(tab.openerTabId);
