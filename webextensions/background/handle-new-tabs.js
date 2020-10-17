@@ -107,49 +107,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
   if (opener && opener.pinned &&
       opener.windowId == tab.windowId) {
-    if (Tab.getGroupTabForOpener(opener) ||
-        (configs.autoGroupNewTabsFromPinned &&
-         tab.$TST.needToBeGroupedSiblings.length > 0)) {
-      log(' => controlled by auto-grouping');
-      return !Tab.getGroupTabForOpener(opener);
-    }
-    switch (configs.insertNewTabFromPinnedTabAt) {
-      case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
-        const lastRelatedTab = opener.$TST.lastRelatedTab;
-        if (lastRelatedTab) {
-          log(` => place after last related tab ${dumpTab(lastRelatedTab)}`);
-          return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
-            delayedMove: true,
-            broadcast:   true
-          }).then(moved => !moved);
-        }
-      };
-      case Constants.kINSERT_TOP: {
-        const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
-        if (lastPinnedTab) {
-          log(` => place after last pinned tab ${dumpTab(lastPinnedTab)}`);
-          return TabsMove.moveTabAfter(tab, lastPinnedTab, {
-            delayedMove: true,
-            broadcast:   true
-          }).then(moved => !moved);
-        }
-        const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
-        if (firstNormalTab) {
-          log(` => place before first pinned tab ${dumpTab(firstNormalTab)}`);
-          return TabsMove.moveTabBefore(tab, firstNormalTab, {
-            delayedMove: true,
-            broadcast:   true
-          }).then(moved => !moved);
-        }
-      }; break;
-
-      case Constants.kINSERT_END:
-        log(' => place after the last tab');
-        return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
-          delayedMove: true,
-          broadcast:   true
-        }).then(moved => !moved);
-    }
+    return handleTabsFromPinnedOpener(tab, opener).then(moved => !moved);
   }
   else if (!info.maybeOrphan) {
     if (info.fromExternal &&
@@ -171,7 +129,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   if (activeTab &&
       activeTab.$TST.ancestors.includes(tab)) {
     log(' => ignore restored ancestor tab');
-    return;
+    return false;
   }
   const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
@@ -217,6 +175,60 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   });
   TabsInternalOperation.removeTab(tab);
   return moved;
+}
+
+function handleTabsFromPinnedOpener(tab, opener) {
+  const parent = Tab.getGroupTabForOpener(opener);
+  if (parent) {
+    log(' => controlled by auto-grouping');
+    return false;
+  }
+
+  if (configs.autoGroupNewTabsFromPinned &&
+      tab.$TST.needToBeGroupedSiblings.length > 0) {
+    log(' => controlled by auto-grouping');
+    return !Tab.getGroupTabForOpener(opener);
+  }
+
+  switch (configs.insertNewTabFromPinnedTabAt) {
+    case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
+      const lastRelatedTab = opener.$TST.lastRelatedTab;
+      if (lastRelatedTab) {
+        log(` => place after last related tab ${dumpTab(lastRelatedTab)}`);
+        return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+      }
+    };
+    case Constants.kINSERT_TOP: {
+      const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
+      if (lastPinnedTab) {
+        log(` => place after last pinned tab ${dumpTab(lastPinnedTab)}`);
+        return TabsMove.moveTabAfter(tab, lastPinnedTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+      }
+      const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
+      if (firstNormalTab) {
+        log(` => place before first pinned tab ${dumpTab(firstNormalTab)}`);
+        return TabsMove.moveTabBefore(tab, firstNormalTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+      }
+    }; break;
+
+    case Constants.kINSERT_END:
+      log(' => place after the last tab');
+      return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
+        delayedMove: true,
+        broadcast:   true
+      });
+  }
+
+  return false;
 }
 
 Tab.onCreated.addListener((tab, info = {}) => {
