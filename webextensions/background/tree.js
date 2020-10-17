@@ -254,6 +254,9 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         }
       }; break;
       case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
+        // Simulates Firefox's default behavior with `browser.tabs.insertRelatedAfterCurrent`=`true`.
+        // The result will become same to kINSERT_NO_CONTROL case,
+        // but this is necessary for environments with disabled the preference.
         const lastRelatedTab = parent.$TST.lastRelatedTab;
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
