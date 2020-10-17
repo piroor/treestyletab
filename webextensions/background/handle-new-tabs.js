@@ -145,10 +145,10 @@ Tab.onCreating.addListener((tab, info = {}) => {
 
       case Constants.kINSERT_END:
         log(' => place after the last tab');
-      return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
-        delayedMove: true,
-        broadcast:   true
-      }).then(moved => !moved);
+        return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
+          delayedMove: true,
+          broadcast:   true
+        }).then(moved => !moved);
     }
   }
   else if (!info.maybeOrphan) {
