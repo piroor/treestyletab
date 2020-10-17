@@ -370,12 +370,12 @@
 
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
-  "config_insertNewChildAt_first": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
+  "config_insertNewChildAt_top": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
   "config_insertNewChildAt_end": { "message": "Am Ende des Zweigs" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Einfügeposition neuer Tabs von angehefteten Tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Am Ende des Zweigs" },
 
   "config_groupTab_caption": { "message": "Automatische Gruppierung der Tabs" },

@@ -636,7 +636,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB:
-    case Constants.kINSERT_FIRST: {
+    case Constants.kINSERT_TOP: {
       const allPinnedTabs = Tab.getPinnedTabs(rootTabs[0].windowId);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (const tab of rootTabs.slice(0).reverse()) {
@@ -712,7 +712,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         opener.$TST.lastRelatedTab;
       const insertAfter = configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB ?
         (nextInsertAfter || (lastRelatedTab && lastRelatedTab.$TST.lastDescendant || lastRelatedTab) || parent) :
-        configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_FIRST ?
+        configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_TOP ?
           (nextInsertAfter || parent) :
           parent.$TST.lastDescendant;
       await Tree.attachTabTo(child, parent, {

@@ -1021,7 +1021,7 @@
         "message": "不控制（遵循 Firefox 或其它标签页扩展的决定）",
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
-    "config_insertNewChildAt_first": {
+    "config_insertNewChildAt_top": {
         "message": "插入到该标签树的顶部，作为其第一个子项",
         "hash": "e94f2dec1cd7d4578a3257b46a320438"
     },
@@ -1037,7 +1037,7 @@
         "message": "不控制（遵循 Firefox 或其它标签页扩展的决定）",
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
-    "config_insertNewTabFromPinnedTabAt_first": {
+    "config_insertNewTabFromPinnedTabAt_top": {
         "message": "插入到该标签树的顶部，作为其第一个子项",
         "hash": "e94f2dec1cd7d4578a3257b46a320438"
     },

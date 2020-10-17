@@ -278,7 +278,7 @@ export const kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR   = 2;
 
 export const kINSERT_NO_CONTROL = -1;
 export const kINSERT_INHERIT    = -2;
-export const kINSERT_FIRST      = 0;
+export const kINSERT_TOP        = 0;
 export const kINSERT_END        = 1;
 export const kINSERT_NEAREST    = 2;
 export const kINSERT_NEXT_TO_LAST_RELATED_TAB = 3;

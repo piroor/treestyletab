@@ -642,9 +642,9 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_insertNewChildAt_first'),
+            title: browser.i18n.getMessage('config_insertNewChildAt_top'),
             key:   'insertNewChildAt',
-            value: Constants.kINSERT_FIRST,
+            value: Constants.kINSERT_TOP,
             type:  'radio'
           },
           {
@@ -671,9 +671,9 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_first'),
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
             key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_FIRST,
+            value: Constants.kINSERT_TOP,
             type:  'radio'
           },
           {
@@ -696,7 +696,7 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
             key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_FIRST,
+            value: Constants.kINSERT_TOP,
             type:  'radio'
           },
           {

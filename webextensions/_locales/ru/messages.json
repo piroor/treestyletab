@@ -374,12 +374,12 @@
 
   "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewChildAt_first": { "message": "Добавить в начало дерева, как первый дочерний элемент" },
+  "config_insertNewChildAt_top": { "message": "Добавить в начало дерева, как первый дочерний элемент" },
   "config_insertNewChildAt_end": { "message": "Добавить в конец дерева" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Место появления новых вкладок из закрепленных вкладок" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "Добавить в начало дерева, как первый дочерний элемент" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "Добавить в начало дерева, как первый дочерний элемент" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
 
   "config_groupTab_caption": { "message": "Автогруппировка вкладок" },

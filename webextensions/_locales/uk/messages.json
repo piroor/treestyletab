@@ -220,12 +220,12 @@
 
   "config_insertNewChildAt_caption": { "message": "Місце появи нових дочірніх вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контролю (вирішує Firefox чи інші додатки для вкладок)" },
-  "config_insertNewChildAt_first": { "message": "Додати у верхню частину дерева, як перший дочірній елемент" },
+  "config_insertNewChildAt_top": { "message": "Додати у верхню частину дерева, як перший дочірній елемент" },
   "config_insertNewChildAt_end": { "message": "Додати в кінець дерева" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Місце появи нових вкладок із закріплених вкладок" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Без контролю (вирішує Firefox чи інші додатки для вкладок)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "Додати у верхню частину дерева, як перший дочірній елемент" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "Додати у верхню частину дерева, як перший дочірній елемент" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Додати в кінець дерева" },
 
   "config_autoGroupNewTabs_before": { "message": "Автоматично групувати вкладки відкриті протягом" },

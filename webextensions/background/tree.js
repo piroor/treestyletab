@@ -219,9 +219,9 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         insertAfter = lastDescendant;
         log('  insert after lastDescendant (insertAt=kINSERT_END)');
         break;
-      case Constants.kINSERT_FIRST:
+      case Constants.kINSERT_TOP:
         insertBefore = firstChild;
-        log('  insert before firstChild (insertAt=kINSERT_FIRST)');
+        log('  insert before firstChild (insertAt=kINSERT_TOP)');
         break;
       case Constants.kINSERT_NEAREST: {
         const allTabs = Tab.getOtherTabs(parent.windowId, options.ignoreTabs);

@@ -371,13 +371,13 @@
   "config_insertNewChildAt_caption": { "message": "新しい子タブを開く位置" },
   "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
   "config_insertNewChildAt_nextToLastRelateTab": { "message": "直近に開いた子タブ、もしくは親タブの隣（Firefox既定の挙動の再現）" },
-  "config_insertNewChildAt_first": { "message": "ツリーの先頭（親タブの隣）" },
+  "config_insertNewChildAt_top": { "message": "ツリーの先頭（親タブの隣）" },
   "config_insertNewChildAt_end": { "message": "ツリーの末尾" },
 
-  "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから新しいタブを開く位置" },
+  "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから新しい子タブを開く位置" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
   "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "直近に開いた子タブ、もしくは親タブの近く（Firefox既定の挙動の再現）" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "ツリーの先頭（親タブの近く）" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "ツリーの先頭（親タブの近く）" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾" },
 
   "config_insertDroppedTabsAt_caption": { "message": "親タブにドロップされた子タブの挿入位置" },

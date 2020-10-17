@@ -298,12 +298,12 @@
 
   "config_insertNewChildAt_caption": { "message": "Position d'insertion des nouveaux onglets enfants" },
   "config_insertNewChildAt_noControl": { "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)" },
-  "config_insertNewChildAt_first": { "message": "Insérer en haut de l'arbre, comme premier enfant" },
+  "config_insertNewChildAt_top": { "message": "Insérer en haut de l'arbre, comme premier enfant" },
   "config_insertNewChildAt_end": { "message": "Ajouter à la fin de l'arbre" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Position de l'insertion des nouveaux onglets ouverts depuis des onglets épinglés" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "Insérer en haut de l'arbre, comme premier enfant" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "Insérer en haut de l'arbre, comme premier enfant" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Ajouter à la fin de l'arbre" },
 
   "config_groupTab_caption": { "message": "Groupement automatique des onglets" },

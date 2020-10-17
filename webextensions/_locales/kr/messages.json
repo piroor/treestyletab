@@ -933,7 +933,7 @@
         "message": "제어하지 않음(Firefox나 다른 확장 기능의 판단에 맞김)",
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
-    "config_insertNewChildAt_first": {
+    "config_insertNewChildAt_top": {
         "message": "트리의 첫 번째 위치에 넣기",
         "hash": "e94f2dec1cd7d4578a3257b46a320438"
     },
@@ -949,7 +949,7 @@
         "message": "제어하지 않음(Firefox나 다른 확장 기능의 판단에 맞김)",
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
-    "config_insertNewTabFromPinnedTabAt_first": {
+    "config_insertNewTabFromPinnedTabAt_top": {
         "message": "트리의 첫 번째 위치에 넣기",
         "hash": "e94f2dec1cd7d4578a3257b46a320438"
     },
