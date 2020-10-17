@@ -107,13 +107,44 @@ Tab.onCreating.addListener((tab, info = {}) => {
   log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
   if (opener && opener.pinned &&
       opener.windowId == tab.windowId) {
-    if (configs.autoGroupNewTabsFromPinned) {
-      if (Tab.getGroupTabForOpener(opener) ||
-          tab.$TST.needToBeGroupedSiblings.length > 0)
-        return false;
-      return true;
+    if (Tab.getGroupTabForOpener(opener) ||
+        (configs.autoGroupNewTabsFromPinned &&
+         tab.$TST.needToBeGroupedSiblings.length > 0)) {
+      log(' => controlled by auto-grouping');
+      return !Tab.getGroupTabForOpener(opener);
     }
-    if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
+    switch (configs.insertNewTabFromPinnedTabAt) {
+      case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
+        const lastRelatedTab = opener.$TST.lastRelatedTab;
+        if (lastRelatedTab) {
+          log(` => place after last related tab ${dumpTab(lastRelatedTab)}`);
+          return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
+            delayedMove: true,
+            broadcast:   true
+          }).then(moved => !moved);
+        }
+      };
+      case Constants.kINSERT_TOP: {
+        const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
+        if (lastPinnedTab) {
+          log(` => place after last pinned tab ${dumpTab(lastPinnedTab)}`);
+          return TabsMove.moveTabAfter(tab, lastPinnedTab, {
+            delayedMove: true,
+            broadcast:   true
+          }).then(moved => !moved);
+        }
+        const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
+        if (firstNormalTab) {
+          log(` => place before first pinned tab ${dumpTab(firstNormalTab)}`);
+          return TabsMove.moveTabBefore(tab, firstNormalTab, {
+            delayedMove: true,
+            broadcast:   true
+          }).then(moved => !moved);
+        }
+      }; break;
+
+      case Constants.kINSERT_END:
+        log(' => place after the last tab');
       return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
         delayedMove: true,
         broadcast:   true
