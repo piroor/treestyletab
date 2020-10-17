@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  wait
+  wait,
+  configs
 } from '/common/common.js';
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
@@ -377,52 +378,46 @@ export async function testNearestLoadedTabInTree() {
 
 
 async function prepareRelatedTabsToTestInsertionPosition() {
-  const A = await browser.tabs.create({ windowId: win.id, active: true, url: 'about:blank?A' });
-  const B = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?B' });
-  const C = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?C' });
-  const D = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?D' });
+  const windowId = win.id;
+  const active = false;
+  const A = await browser.tabs.create({ windowId, active: true, url: 'about:blank?A' });
+  const B = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?B' });
+  const C = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?C' });
 
   await browser.tabs.update(B.id, { active: true });
   await wait(150);
-  const B1 = await browser.tabs.create({ windowId: win.id, openerTabId: B.id, active: false, url: 'about:blank?B1' });
-  const B2 = await browser.tabs.create({ windowId: win.id, openerTabId: B.id, active: false, url: 'about:blank?B2' });
+  const B1 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B1' });
+  const B2 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B2' });
 
   await browser.tabs.update(C.id, { active: true });
   await wait(150);
-  const C1 = await browser.tabs.create({ windowId: win.id, openerTabId: C.id, active: false, url: 'about:blank?C1' });
-  const C2 = await browser.tabs.create({ windowId: win.id, openerTabId: C.id, active: false, url: 'about:blank?C2' });
-
-  await browser.tabs.update(D.id, { active: true });
-  await wait(150);
-  const D1 = await browser.tabs.create({ windowId: win.id, openerTabId: D.id, active: false, url: 'about:blank?D1' });
-  const D2 = await browser.tabs.create({ windowId: win.id, openerTabId: D.id, active: false, url: 'about:blank?D2' });
+  const C1 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C1' });
+  const C2 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C2' });
 
   await browser.tabs.update(A.id, { active: true });
   await wait(150);
-  const E = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?E' });
-  const F = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?F' });
+  const D = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?D' });
+  const E = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?E' });
 
-  await wait(150);
-  return Utils.refreshTabs({ A, B, B1, B2, C, C1, C2, D, D1, D2, E, F });
+  await wait(500);
+  return Utils.refreshTabs({ A, B, B1, B2, C, C1, C2, D, E });
 }
 
-export async function testInsertionPosition_insertAtTop() {
+export async function testInsertNewChildAt_insertAtTop() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_TOP,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
     insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsDelayOnNewWindow: 0
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
-  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  const { A, B, B1, B2, C, C1, C2, D, E } = tabs;
   is([
     `${A.id}`,
-    `${A.id} => ${F.id}`,
     `${A.id} => ${E.id}`,
     `${A.id} => ${D.id}`,
-    `${A.id} => ${D.id} => ${D2.id}`,
-    `${A.id} => ${D.id} => ${D1.id}`,
     `${A.id} => ${C.id}`,
     `${A.id} => ${C.id} => ${C2.id}`,
     `${A.id} => ${C.id} => ${C1.id}`,
@@ -430,19 +425,20 @@ export async function testInsertionPosition_insertAtTop() {
     `${A.id} => ${B.id} => ${B2.id}`,
     `${A.id} => ${B.id} => ${B1.id}`,
   ], Utils.treeStructure(Object.values(tabs)),
-     'tabs should be opened reversed order');
+     'tabs should be opened in reversed order');
 }
 
-export async function testInsertionPosition_insertAtEnd() {
+export async function testInsertNewChildAt_insertAtEnd() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
     insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsDelayOnNewWindow: 0
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
-  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  const { A, B, B1, B2, C, C1, C2, D, E } = tabs;
   is([
     `${A.id}`,
     `${A.id} => ${B.id}`,
@@ -452,28 +448,111 @@ export async function testInsertionPosition_insertAtEnd() {
     `${A.id} => ${C.id} => ${C1.id}`,
     `${A.id} => ${C.id} => ${C2.id}`,
     `${A.id} => ${D.id}`,
-    `${A.id} => ${D.id} => ${D1.id}`,
-    `${A.id} => ${D.id} => ${D2.id}`,
     `${A.id} => ${E.id}`,
-    `${A.id} => ${F.id}`,
   ], Utils.treeStructure(Object.values(tabs)),
-     'tabs should be opened reversed order');
+     'tabs should be opened in opened order');
 }
 
-export async function testInsertionPosition_nextToLastRelatedTab() {
+export async function testInsertNewChildAt_nextToLastRelatedTab() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
     insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsDelayOnNewWindow: 0
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
-  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  const { A, B, B1, B2, C, C1, C2, D, E } = tabs;
+  is([
+    `${A.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${E.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be ordered like Firefox does');
+}
+
+
+async function preparePinnedTabsAndChildrenToTestInsertionPosition() {
+  const windowId = win.id;
+  const active = false;
+  const A = await browser.tabs.create({ windowId, active: true, url: 'about:blank?A', pinned: true });
+  const O = await browser.tabs.create({ windowId, active, url: 'about:blank?Outer' });
+  await wait(configs.autoGroupNewTabsTimeout + 250);
+
+  const B = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?B' });
+  const C = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?C' });
+  await wait(configs.autoGroupNewTabsTimeout + 1500);
+
+  await browser.tabs.update(B.id, { active: true });
+  await wait(150);
+  const B1 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B1' });
+  const B2 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B2' });
+
+  await browser.tabs.update(C.id, { active: true });
+  await wait(150);
+  const C1 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C1' });
+  const C2 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C2' });
+
+  await browser.tabs.update(A.id, { active: true });
+  await wait(150);
+  const D = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?D' });
+  const E = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?E' });
+
+  await wait(configs.autoGroupNewTabsTimeout + 1500);
+  return Utils.refreshTabs({ A, B, B1, B2, C, C1, C2, D, E, O });
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtTop() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  false,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
   is([
     `${A.id}`,
     `${A.id} => ${E.id}`,
-    `${A.id} => ${F.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be placed in reversed order');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtEnd() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  false,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `${O.id}`,
     `${A.id} => ${B.id}`,
     `${A.id} => ${B.id} => ${B1.id}`,
     `${A.id} => ${B.id} => ${B2.id}`,
@@ -481,9 +560,288 @@ export async function testInsertionPosition_nextToLastRelatedTab() {
     `${A.id} => ${C.id} => ${C1.id}`,
     `${A.id} => ${C.id} => ${C2.id}`,
     `${A.id} => ${D.id}`,
-    `${A.id} => ${D.id} => ${D1.id}`,
-    `${A.id} => ${D.id} => ${D2.id}`
+    `${A.id} => ${E.id}`,
   ], Utils.treeStructure(Object.values(tabs)),
-     'tabs should be ordered like Firefox does');
+     'tabs should be placed in opened order');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  false,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${E.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be palced like Firefox does');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_insertAtTopInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_TOP,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${E.id}`,
+    `? => ${D.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_insertAtEndInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_insertNextToLastRelatedInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_insertAtTopInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_TOP,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `${O.id}`,
+    `? => ${E.id}`,
+    `? => ${D.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${B.id} => ${B1.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the end');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_insertAtEndInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `${O.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the end');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_insertNextToLastRelatednTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `${O.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the end');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoGroup_insertAtTopInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${E.id}`,
+    `? => ${D.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoGroup_insertAtEndInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
+}
+
+export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoGroup_insertNextToLastRelatedInTree() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false,
+    autoGroupNewTabsFromPinned:  true,
+    autoGroupNewTabsTimeout:     250,
+    autoGroupNewTabsDelayOnNewWindow: 0
+  });
+
+  const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, E, O } = tabs;
+  is([
+    `${A.id}`,
+    `? => ${D.id}`,
+    `? => ${E.id}`,
+    `? => ${B.id}`,
+    `? => ${B.id} => ${B1.id}`,
+    `? => ${B.id} => ${B2.id}`,
+    `? => ${C.id}`,
+    `? => ${C.id} => ${C1.id}`,
+    `? => ${C.id} => ${C2.id}`,
+    `${O.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'group should be placed at the top');
 }
 
