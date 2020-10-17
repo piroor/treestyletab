@@ -681,19 +681,19 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       continue;
     }
     log(`trying to group children of ${dumpTab(opener)}: `, () => children.map(dumpTab));
-      const uri = TabsGroup.makeGroupTabURI({
-        title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
-        openerTabId: opener.$TST.uniqueId.id,
-        ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForChildrenOfPinned)
-      });
-      parent = await TabsOpen.openURIInTab(uri, {
-        windowId:     opener.windowId,
-        insertBefore: children[0],
-        cookieStoreId: opener.cookieStoreId,
-        inBackground: true
-      });
-      log('opened group tab: ', dumpTab(parent));
-      newGroupTabs.set(opener, true);
+    const uri = TabsGroup.makeGroupTabURI({
+      title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
+      openerTabId: opener.$TST.uniqueId.id,
+      ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForChildrenOfPinned)
+    });
+    parent = await TabsOpen.openURIInTab(uri, {
+      windowId:     opener.windowId,
+      insertBefore: children[0],
+      cookieStoreId: opener.cookieStoreId,
+      inBackground: true
+    });
+    log('opened group tab: ', dumpTab(parent));
+    newGroupTabs.set(opener, true);
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
