@@ -72,9 +72,6 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id} => ${H.id}`
     ], Utils.treeStructure(Object.values(tabs)),
        'tabs must be initialized with specified structure');
-    is([A.id, B.id, C.id, D.id, E.id, F.id, G.id, H.id],
-       await Utils.tabsOrder([A, B, C, D, E, F, G, H]),
-       'tabs must be initialized with specified order');
 
     await new Promise(resolve => {
       // wait until tabs are updated by TST
@@ -159,9 +156,6 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
       `${C.id}`,
     ], Utils.treeStructure([B, D, C]),
        'new tab must be a child of the opener');
-    is([B.id, D.id, C.id],
-       await Utils.tabsOrder([B, C, D]),
-       'new tab must be placed next to the opener');
   }
 }
 

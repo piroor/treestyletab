@@ -121,7 +121,7 @@ export function treeStructure(tabs) {
       return `${outputNestedRelation(tabsById[tab.$TST.parentId])} => ${tab.id}`;
     return `${tab.id}`;
   };
-  return tabs.map(outputNestedRelation);
+  return tabs.slice(0).sort((a, b) => a.index - b.index).map(outputNestedRelation);
 }
 
 export async function tabsOrder(tabs) {
