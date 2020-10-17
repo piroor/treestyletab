@@ -374,3 +374,116 @@ export async function testNearestLoadedTabInTree() {
     lastTab = nextTab;
   }
 }
+
+
+async function prepareRelatedTabsToTestInsertionPosition() {
+  const A = await browser.tabs.create({ windowId: win.id, active: true, url: 'about:blank?A' });
+  const B = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?B' });
+  const C = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?C' });
+  const D = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?D' });
+
+  await browser.tabs.update(B.id, { active: true });
+  await wait(150);
+  const B1 = await browser.tabs.create({ windowId: win.id, openerTabId: B.id, active: false, url: 'about:blank?B1' });
+  const B2 = await browser.tabs.create({ windowId: win.id, openerTabId: B.id, active: false, url: 'about:blank?B2' });
+
+  await browser.tabs.update(C.id, { active: true });
+  await wait(150);
+  const C1 = await browser.tabs.create({ windowId: win.id, openerTabId: C.id, active: false, url: 'about:blank?C1' });
+  const C2 = await browser.tabs.create({ windowId: win.id, openerTabId: C.id, active: false, url: 'about:blank?C2' });
+
+  await browser.tabs.update(D.id, { active: true });
+  await wait(150);
+  const D1 = await browser.tabs.create({ windowId: win.id, openerTabId: D.id, active: false, url: 'about:blank?D1' });
+  const D2 = await browser.tabs.create({ windowId: win.id, openerTabId: D.id, active: false, url: 'about:blank?D2' });
+
+  await browser.tabs.update(A.id, { active: true });
+  await wait(150);
+  const E = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?E' });
+  const F = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false, url: 'about:blank?F' });
+
+  await wait(150);
+  return Utils.refreshTabs({ A, B, B1, B2, C, C1, C2, D, D1, D2, E, F });
+}
+
+export async function testInsertionPosition_insertAtTop() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_TOP,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false
+  });
+
+  const tabs = await prepareRelatedTabsToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  is([
+    `${A.id}`,
+    `${A.id} => ${F.id}`,
+    `${A.id} => ${E.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${D.id} => ${D2.id}`,
+    `${A.id} => ${D.id} => ${D1.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be opened reversed order');
+}
+
+export async function testInsertionPosition_insertAtEnd() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false
+  });
+
+  const tabs = await prepareRelatedTabsToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  is([
+    `${A.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${D.id} => ${D1.id}`,
+    `${A.id} => ${D.id} => ${D2.id}`,
+    `${A.id} => ${E.id}`,
+    `${A.id} => ${F.id}`,
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be opened reversed order');
+}
+
+export async function testInsertionPosition_nextToLastRelatedTab() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
+    insertDroppedTabsAt:         Constants.kINSERT_END,
+    simulateSelectOwnerOnClose:  false
+  });
+
+  const tabs = await prepareRelatedTabsToTestInsertionPosition();
+  const { A, B, B1, B2, C, C1, C2, D, D1, D2, E, F } = tabs;
+  is([
+    `${A.id}`,
+    `${A.id} => ${E.id}`,
+    `${A.id} => ${F.id}`,
+    `${A.id} => ${B.id}`,
+    `${A.id} => ${B.id} => ${B1.id}`,
+    `${A.id} => ${B.id} => ${B2.id}`,
+    `${A.id} => ${C.id}`,
+    `${A.id} => ${C.id} => ${C1.id}`,
+    `${A.id} => ${C.id} => ${C2.id}`,
+    `${A.id} => ${D.id}`,
+    `${A.id} => ${D.id} => ${D1.id}`,
+    `${A.id} => ${D.id} => ${D2.id}`
+  ], Utils.treeStructure(Object.values(tabs)),
+     'tabs should be ordered like Firefox does');
+}
+
