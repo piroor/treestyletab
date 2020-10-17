@@ -188,6 +188,9 @@ export async function attachTabTo(child, parent, options = {}) {
     }
   }
 
+  if (newlyAttached)
+    await collapseExpandForAttachedTab(child, parent, options);
+
   onAttached.dispatch(child, {
     ...options,
     parent,
@@ -197,6 +200,107 @@ export async function attachTabTo(child, parent, options = {}) {
   });
 
   return !options.dontMove && moved;
+}
+
+async function collapseExpandForAttachedTab(tab, parent, options = {}) {
+  // Because the tab is possibly closing for "reopen" operation,
+  // we need to apply "forceExpand" immediately. Otherwise, when
+  // the tab is closed with "subtree collapsed" state, descendant
+  // tabs are also closed even if "forceExpand" is "true".
+  log('newly attached tab');
+  if (parent.$TST.subtreeCollapsed &&
+      !options.forceExpand) {
+    log('  the tree is collapsed, but keep collapsed by forceExpand option');
+    collapseExpandTabAndSubtree(tab, {
+      collapsed: true,
+      justNow:   true,
+      broadcast: true
+    });
+  }
+
+  const isNewTreeCreatedManually = !options.justNow && parent.$TST.childIds.length == 1;
+  let parentTreeCollasped = parent.$TST.subtreeCollapsed;
+  let parentCollasped     = parent.$TST.collapsed;
+
+  const cache = {};
+  const allowed = (options.forceExpand || !!options.dontExpand) && await TSTAPI.tryOperationAllowed(
+    TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
+    { tab: new TSTAPI.TreeItem(parent, { cache }) },
+    { tabProperties: ['tab'] }
+  );
+  if (!TabsStore.ensureLivingTab(tab))
+    return;
+
+  if (options.forceExpand && allowed) {
+    log('  expand by forceExpand option');
+    collapseExpandSubtree(parent, {
+      ...options,
+      collapsed: false,
+      broadcast: true
+    });
+    parentTreeCollasped = false;
+  }
+  if (!options.dontExpand) {
+    if (allowed) {
+      if (configs.autoCollapseExpandSubtreeOnAttach &&
+          (isNewTreeCreatedManually ||
+           parent.$TST.isAutoExpandable)) {
+        log('  collapse others by collapseExpandTreesIntelligentlyFor');
+        collapseExpandTreesIntelligentlyFor(parent, {
+          broadcast: true
+        });
+      }
+      if (configs.autoCollapseExpandSubtreeOnSelect ||
+          isNewTreeCreatedManually ||
+          parent.$TST.isAutoExpandable ||
+          options.forceExpand) {
+        log('  expand ancestor tabs');
+        parentTreeCollasped = false;
+        parentCollasped     = false;
+        await Promise.all([parent].concat(parent.$TST.ancestors).map(async ancestor => {
+          if (!ancestor.$TST.subtreeCollapsed)
+            return;
+          const allowed = await TSTAPI.tryOperationAllowed(
+            TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
+            { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
+            { tabProperties: ['tab'] }
+          );
+          if (!allowed) {
+            parentTreeCollasped = true;
+            parentCollasped     = true;
+            return;
+          }
+          if (!TabsStore.ensureLivingTab(tab))
+            return;
+          collapseExpandSubtree(ancestor, {
+            ...options,
+            collapsed:    false,
+            broadcast:    true
+          });
+          parentTreeCollasped = false;
+        }));
+        if (!TabsStore.ensureLivingTab(tab))
+          return;
+      }
+    }
+  }
+  else if (parent.$TST.isAutoExpandable ||
+           parent.$TST.collapsed) {
+    log('  collapse auto expanded tree');
+    collapseExpandTabAndSubtree(tab, {
+      ...options,
+      collapsed:    true,
+      broadcast:    true
+    });
+  }
+  if (parentTreeCollasped || parentCollasped) {
+    log('  collapse tab because the parent is collapsed');
+    collapseExpandTabAndSubtree(tab, {
+      ...options,
+      collapsed: true,
+      broadcast: true
+    });
+  }
 }
 
 export function getReferenceTabsForNewChild(child, parent, options = {}) {

@@ -17,7 +17,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -45,108 +44,6 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       const index = tab.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
       tab.$TST.updatingOpenerTabIds.splice(index, 1);
     });
-  }
-
-  if (info.newlyAttached &&
-      mInitialized) {
-    // Because the tab is possibly closing for "reopen" operation,
-    // we need to apply "forceExpand" immediately. Otherwise, when
-    // the tab is closed with "subtree collapsed" state, descendant
-    // tabs are also closed even if "forceExpand" is "true".
-    log('newly attached tab');
-    if (parent.$TST.subtreeCollapsed &&
-        !info.forceExpand) {
-      log('  the tree is collapsed, but keep collapsed by forceExpand option');
-      Tree.collapseExpandTabAndSubtree(tab, {
-        collapsed: true,
-        justNow:   true,
-        broadcast: true
-      });
-    }
-
-    const isNewTreeCreatedManually = !info.justNow && parent.$TST.childIds.length == 1;
-    let parentTreeCollasped = parent.$TST.subtreeCollapsed;
-    let parentCollasped     = parent.$TST.collapsed;
-
-    const cache = {};
-    const allowed = (info.forceExpand || !!info.dontExpand) && await TSTAPI.tryOperationAllowed(
-      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-      { tab: new TSTAPI.TreeItem(parent, { cache }) },
-      { tabProperties: ['tab'] }
-    );
-    if (!TabsStore.ensureLivingTab(tab))
-      return;
-
-    if (info.forceExpand && allowed) {
-      log('  expand by forceExpand option');
-      Tree.collapseExpandSubtree(parent, {
-        ...info,
-        collapsed: false,
-        broadcast: true
-      });
-      parentTreeCollasped = false;
-    }
-    if (!info.dontExpand) {
-      if (allowed) {
-        if (configs.autoCollapseExpandSubtreeOnAttach &&
-            (isNewTreeCreatedManually ||
-             parent.$TST.isAutoExpandable)) {
-          log('  collapse others by collapseExpandTreesIntelligentlyFor');
-          Tree.collapseExpandTreesIntelligentlyFor(parent, {
-            broadcast: true
-          });
-        }
-        if (configs.autoCollapseExpandSubtreeOnSelect ||
-            isNewTreeCreatedManually ||
-            parent.$TST.isAutoExpandable ||
-            info.forceExpand) {
-          log('  expand ancestor tabs');
-          parentTreeCollasped = false;
-          parentCollasped     = false;
-          await Promise.all([parent].concat(parent.$TST.ancestors).map(async ancestor => {
-            if (!ancestor.$TST.subtreeCollapsed)
-              return;
-            const allowed = await TSTAPI.tryOperationAllowed(
-              TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-              { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
-              { tabProperties: ['tab'] }
-            );
-            if (!allowed) {
-              parentTreeCollasped = true;
-              parentCollasped     = true;
-              return;
-            }
-            if (!TabsStore.ensureLivingTab(tab))
-              return;
-            Tree.collapseExpandSubtree(ancestor, {
-              ...info,
-              collapsed:    false,
-              broadcast:    true
-            });
-            parentTreeCollasped = false;
-          }));
-          if (!TabsStore.ensureLivingTab(tab))
-            return;
-        }
-      }
-    }
-    else if (parent.$TST.isAutoExpandable ||
-             parent.$TST.collapsed) {
-      log('  collapse auto expanded tree');
-      Tree.collapseExpandTabAndSubtree(tab, {
-        ...info,
-        collapsed:    true,
-        broadcast:    true
-      });
-    }
-    if (parentTreeCollasped || parentCollasped) {
-      log('  collapse tab because the parent is collapsed');
-      Tree.collapseExpandTabAndSubtree(tab, {
-        ...info,
-        collapsed: true,
-        broadcast: true
-      });
-    }
   }
 
   await Promise.all([
