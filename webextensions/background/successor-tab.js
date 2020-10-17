@@ -182,11 +182,15 @@ Tab.onActivated.addListener(async (tab, info = {}) => {
 });
 
 Tab.onCreating.addListener((tab, info = {}) => {
-  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
-      !configs.simulateSelectOwnerOnClose ||
-      !info.activeTab)
+  if (!info.activeTab)
     return;
 
+  const shouldControlSuccesor = (
+    configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_NEVER &&
+    configs.simulateSelectOwnerOnClose
+  );
+
+  if (shouldControlSuccesor) {
   // don't use await here, to prevent that other onCreating handlers are treated async.
   tryClearOwnerSuccessor(info.activeTab).then(() => {
     const ownerTabId = tab.openerTabId || tab.active ? info.activeTab.id : null
@@ -207,6 +211,12 @@ Tab.onCreating.addListener((tab, info = {}) => {
       tryClearOwnerSuccessor(lastRelatedTab);
     opener.$TST.lastRelatedTab = tab;
   });
+  }
+  else {
+    const opener = Tab.get(tab.openerTabId);
+    if (opener)
+      opener.$TST.lastRelatedTab = tab;
+  }
 });
 
 function updateActiveTab(windowId) {
