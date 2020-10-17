@@ -177,7 +177,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   return moved;
 }
 
-function handleTabsFromPinnedOpener(tab, opener) {
+async function handleTabsFromPinnedOpener(tab, opener) {
   const parent = Tab.getGroupTabForOpener(opener);
   if (parent) {
     log('handleTabsFromPinnedOpener: attach to corresponding group tab');
@@ -186,13 +186,12 @@ function handleTabsFromPinnedOpener(tab, opener) {
       forceExpand:    true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       broadcast:      true
     });
-    return true;
   }
 
   if (configs.autoGroupNewTabsFromPinned &&
       tab.$TST.needToBeGroupedSiblings.length > 0) {
     log('handleTabsFromPinnedOpener: controlled by auto-grouping');
-    return !Tab.getGroupTabForOpener(opener);
+    return Promise.resolve(!Tab.getGroupTabForOpener(opener));
   }
 
   switch (configs.insertNewTabFromPinnedTabAt) {
@@ -233,7 +232,7 @@ function handleTabsFromPinnedOpener(tab, opener) {
       });
   }
 
-  return false;
+  return Promise.resolve(false);
 }
 
 Tab.onCreated.addListener((tab, info = {}) => {
