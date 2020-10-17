@@ -58,7 +58,7 @@ function reserveDetachHiddenTab(tab) {
           });
         }
         if (nearestVisibleAncestor) {
-          log(` => reattach descendant ${descendant.id} to ${nearestVisibleAncestor.parent.id}`);
+          log(` => reattach descendant ${descendant.id} to ${nearestVisibleAncestor.id}`);
           await Tree.attachTabTo(descendant, nearestVisibleAncestor, {
             dontMove:  true,
             broadcast: true
