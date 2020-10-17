@@ -188,8 +188,59 @@ export async function attachTabTo(child, parent, options = {}) {
     }
   }
 
+  if (child.openerTabId != parent.id &&
+      configs.syncParentTabAndOpenerTab) {
+    child.openerTabId = parent.id;
+    child.$TST.updatingOpenerTabIds.push(parent.id);
+    child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    browser.tabs.update(child.id, { openerTabId: parent.id })
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+    wait(200).then(() => {
+      const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
+      child.$TST.updatingOpenerTabIds.splice(index, 1);
+    });
+  }
+
   if (newlyAttached)
     await collapseExpandForAttachedTab(child, parent, options);
+
+  if (!options.dontMove) {
+    let nextTab = options.insertBefore;
+    let prevTab = options.insertAfter;
+    if (!nextTab && !prevTab) {
+      nextTab = Tab.getTabAt(child.windowId, newIndex);
+      if (!nextTab)
+        prevTab = Tab.getTabAt(child.windowId, newIndex - 1);
+    }
+    log('move newly attached child: ', dumpTab(child), {
+      next: dumpTab(nextTab),
+      prev: dumpTab(prevTab)
+    });
+    if (nextTab)
+      await moveTabSubtreeBefore(child, nextTab, {
+        ...options,
+        broadcast: true
+      });
+    else
+      await moveTabSubtreeAfter(child, prevTab, {
+        ...options,
+        broadcast: true
+      });
+  }
+
+  child.$TST.opened.then(() => {
+    if (!TabsStore.ensureLivingTab(child) || // not removed while waiting
+        child.$TST.parent != parent) // not detached while waiting
+      return;
+
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY,
+      windowId: child.windowId,
+      childId:  child.id,
+      parentId: parent.id,
+      newlyAttached
+    });
+  });
 
   onAttached.dispatch(child, {
     ...options,
@@ -463,6 +514,14 @@ export function detachTab(child, options = {}) {
 
   if (!options.toBeRemoved && !options.toBeDetached)
     updateTabsIndent(child);
+
+  if (child.openerTabId &&
+      configs.syncParentTabAndOpenerTab) {
+    child.openerTabId = child.id;
+    child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }
 
   onDetached.dispatch(child, {
     oldParentTab: parent,

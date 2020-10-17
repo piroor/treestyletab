@@ -7,16 +7,12 @@
 
 import {
   log as internalLogger,
-  dumpTab,
-  wait,
   configs
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -31,80 +27,6 @@ function log(...args) {
 
 let mInitialized = false;
 
-Tree.onAttached.addListener(async (tab, info = {}) => {
-  const parent = info.parent;
-  if (tab.openerTabId != parent.id &&
-      configs.syncParentTabAndOpenerTab) {
-    tab.openerTabId = parent.id;
-    tab.$TST.updatingOpenerTabIds.push(parent.id);
-    tab.$TST.updatedOpenerTabId = tab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(tab.id, { openerTabId: parent.id })
-      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-    wait(200).then(() => {
-      const index = tab.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
-      tab.$TST.updatingOpenerTabIds.splice(index, 1);
-    });
-  }
-
-  await Promise.all([
-    tab.$TST.opened,
-    !info.dontMove && (async () => {
-      let nextTab = info.insertBefore;
-      let prevTab = info.insertAfter;
-      if (!nextTab && !prevTab) {
-        nextTab = Tab.getTabAt(tab.windowId, info.newIndex);
-        if (!nextTab)
-          prevTab = Tab.getTabAt(tab.windowId, info.newIndex - 1);
-      }
-      log('move newly attached child: ', dumpTab(tab), {
-        next: dumpTab(nextTab),
-        prev: dumpTab(prevTab)
-      });
-      if (nextTab)
-        await Tree.moveTabSubtreeBefore(tab, nextTab, {
-          ...info,
-          broadcast:    true
-        });
-      else
-        await Tree.moveTabSubtreeAfter(tab, prevTab, {
-          ...info,
-          broadcast:    true
-        });
-    })()
-  ]);
-
-  if (!TabsStore.ensureLivingTab(tab) || // not removed while waiting
-      tab.$TST.parent != info.parent) // not detached while waiting
-    return;
-
-  SidebarConnection.sendMessage({
-    type:          Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY,
-    windowId:      tab.windowId,
-    tabId:         tab.id,
-    parentId:      parent.id,
-    newlyAttached: info.newlyAttached
-  });
-
-  if (info.newlyAttached)
-    Background.reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
-  Background.reserveToUpdateChildren(parent);
-  Background.reserveToUpdateInsertionPosition([
-    tab,
-    tab.$TST.nextTab,
-    tab.$TST.previousTab
-  ]);
-});
-
-Tree.onDetached.addListener((tab, _detachInfo) => {
-  if (tab.openerTabId &&
-      configs.syncParentTabAndOpenerTab) {
-    tab.openerTabId = tab.id;
-    tab.$TST.updatedOpenerTabId = tab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(tab.id, { openerTabId: tab.id }) // set self id instead of null, because it requires any valid tab id...
-      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-  }
-});
-
 function reserveDetachHiddenTab(tab) {
   reserveDetachHiddenTab.tabs.add(tab);
   if (reserveDetachHiddenTab.reserved)
@@ -113,6 +35,7 @@ function reserveDetachHiddenTab(tab) {
     delete reserveDetachHiddenTab.reserved;
     const tabs = new Set(Tab.sort(Array.from(reserveDetachHiddenTab.tabs)));
     reserveDetachHiddenTab.tabs.clear();
+    log('try to detach hidden tabs: ', tabs);
     for (const tab of tabs) {
       if (!TabsStore.ensureLivingTab(tab))
         continue;
@@ -135,22 +58,26 @@ function reserveDetachHiddenTab(tab) {
           });
         }
         if (nearestVisibleAncestor) {
+          log(` => reattach descendant ${descendant.id} to ${nearestVisibleAncestor.parent.id}`);
           await Tree.attachTabTo(descendant, nearestVisibleAncestor, {
             dontMove:  true,
             broadcast: true
           });
         }
         else {
+          log(` => detach descendant ${descendant.id}`);
           await Tree.detachTab(descendant, {
             broadcast: true
           });
         }
       }
       if (tab.$TST.hasParent &&
-          !tab.$TST.parent.hidden)
+          !tab.$TST.parent.hidden) {
+        log(` => detach hidden tab ${tab.id}`);
         await Tree.detachTab(tab, {
           broadcast: true
         });
+      }
     }
   }, 100);
 }
@@ -170,6 +97,7 @@ function reserveAttachShownTab(tab) {
     delete reserveAttachShownTab.reserved;
     const tabs = new Set(Tab.sort(Array.from(reserveAttachShownTab.tabs)));
     reserveAttachShownTab.tabs.clear();
+    log('try to attach shown tabs: ', tabs);
     for (const tab of tabs) {
       if (!TabsStore.ensureLivingTab(tab) ||
           tab.$TST.hasParent) {
@@ -184,6 +112,7 @@ function reserveAttachShownTab(tab) {
         insertBefore: tab.$TST.unsafeNearestFollowingForeignerTab
       });
       if (referenceTabs.parent) {
+        log(` => attach shown tab ${tab.id} to ${referenceTabs.parent.id}`);
         await Tree.attachTabTo(tab, referenceTabs.parent, {
           insertBefore: referenceTabs.insertBefore,
           insertAfter:  referenceTabs.insertAfter,

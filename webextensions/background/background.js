@@ -761,9 +761,21 @@ Tab.onMoved.addListener((tab, moveInfo) => {
   ]);
 });
 
-Tree.onAttached.addListener((tab, attachInfo) => {
-  reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
-  reserveToUpdateChildren(attachInfo.parent);
+Tree.onAttached.addListener(async (tab, attachInfo) => {
+  await tab.$TST.opened;
+
+  if (!TabsStore.ensureLivingTab(tab) || // not removed while waiting
+      tab.$TST.parent != attachInfo.parent) // not detached while waiting
+    return;
+
+  if (attachInfo.newlyAttached)
+    reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
+  reserveToUpdateChildren(parent);
+  reserveToUpdateInsertionPosition([
+    tab,
+    tab.$TST.nextTab,
+    tab.$TST.previousTab
+  ]);
 });
 
 Tree.onDetached.addListener((tab, detachInfo) => {
