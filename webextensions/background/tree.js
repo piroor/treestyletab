@@ -81,6 +81,7 @@ export async function attachTabTo(child, parent, options = {}) {
     insertAt:         options.insertAt,
     insertBefore:     options.insertBefore && options.insertBefore.id,
     insertAfter:      options.insertAfter && options.insertAfter.id,
+    lastRelatedTab:   options.lastRelatedTab && options.lastRelatedTab.id,
     dontMove:         options.dontMove,
     dontUpdateIndent: options.dontUpdateIndent,
     forceExpand:      options.forceExpand,
@@ -412,7 +413,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         // Simulates Firefox's default behavior with `browser.tabs.insertRelatedAfterCurrent`=`true`.
         // The result will become same to kINSERT_NO_CONTROL case,
         // but this is necessary for environments with disabled the preference.
-        const lastRelatedTab = parent.$TST.lastRelatedTab;
+        const lastRelatedTab = 'lastRelatedTab' in options ? options.lastRelatedTab : parent.$TST.lastRelatedTab;
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
           log('  insert after lastRelatedTab (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)');
