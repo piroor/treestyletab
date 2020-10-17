@@ -267,6 +267,8 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
           log('  insert before firstChild (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)');
         }
       }; break;
+      case Constants.kINSERT_NO_CONTROL:
+        throw new Error('getReferenceTabsForNewChild: unavailable insertion position kINSERT_NO_CONTROL');
     }
   }
   else {
