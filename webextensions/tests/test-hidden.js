@@ -136,6 +136,10 @@ export async function testAutoFixupForHiddenTabs() {
 }
 
 export async function testCalculateNewTabPositionWithHiddenTabs() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
+  });
   let tabs = await Utils.createTabs({
     A: { index: 1 },
     B: { index: 2, active: true },
@@ -160,6 +164,10 @@ export async function testCalculateNewTabPositionWithHiddenTabs() {
 }
 
 export async function testNewTabBeforeHiddenTab() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
+  });
   let tabs = await Utils.createTabs({
     A: { index: 1, active: true },
     B: { index: 2 }, // => hidden
