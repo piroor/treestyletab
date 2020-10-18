@@ -20,8 +20,13 @@ import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
 
-// exceptions to prevent reloading of the background page
-const CONFIG_KEYS_TRIGGERS_RELOADING = new Set(['style', 'useCachedTree']);
+
+const NO_RESET_CONFIG_KEYS = new Set([
+  'debug',
+  'logFor',
+  'style', // prevent reloading of the background page
+  'useCachedTree' // prevent reloading of the background page
+]);
 
 let mResults;
 let mLogs;
@@ -48,7 +53,7 @@ function backupConfigs() {
 
 async function restoreConfigs(values) {
   for (const key of Object.keys(values)) {
-    if (CONFIG_KEYS_TRIGGERS_RELOADING.has(key))
+    if (NO_RESET_CONFIG_KEYS.has(key))
       continue;
     configs[key] = values[key];
   }
