@@ -376,6 +376,13 @@ export async function testNearestLoadedTabInTree() {
 
 
 async function prepareRelatedTabsToTestInsertionPosition() {
+  // wait until timeout the special timer which prevents grouping of new tabs
+  await wait(configs.autoGroupNewTabsDelayOnNewWindow);
+  await Utils.setConfigs({
+    insertDroppedTabsAt:        Constants.kINSERT_END,
+    simulateSelectOwnerOnClose: false
+  });
+
   const windowId = win.id;
   const active = false;
   const A = await browser.tabs.create({ windowId, active: true, url: 'about:blank?A' });
@@ -404,10 +411,7 @@ async function prepareRelatedTabsToTestInsertionPosition() {
 export async function testInsertNewChildAt_insertAtTop() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_TOP,
-    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
@@ -429,10 +433,7 @@ export async function testInsertNewChildAt_insertAtTop() {
 export async function testInsertNewChildAt_insertAtEnd() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
-    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
@@ -454,10 +455,7 @@ export async function testInsertNewChildAt_insertAtEnd() {
 export async function testInsertNewChildAt_nextToLastRelatedTab() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-    insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
   });
 
   const tabs = await prepareRelatedTabsToTestInsertionPosition();
@@ -478,6 +476,13 @@ export async function testInsertNewChildAt_nextToLastRelatedTab() {
 
 
 async function preparePinnedTabsAndChildrenToTestInsertionPosition() {
+  // wait until timeout the special timer which prevents grouping of new tabs
+  await wait(configs.autoGroupNewTabsDelayOnNewWindow);
+  await Utils.setConfigs({
+    insertDroppedTabsAt:        Constants.kINSERT_END,
+    simulateSelectOwnerOnClose: false
+  });
+
   const windowId = win.id;
   const active = false;
   const A = await browser.tabs.create({ windowId, active: true, url: 'about:blank?A', pinned: true });
@@ -511,11 +516,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtTop() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  false,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  false
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -539,11 +540,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtEnd() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  false,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  false
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -567,11 +564,7 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab() {
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  false,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  false
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -595,11 +588,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_TOP,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -623,11 +612,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -651,11 +636,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtTop_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_TOP,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -679,11 +660,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_TOP,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -707,11 +684,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -735,11 +708,7 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_inse
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_END,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -763,11 +732,7 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoG
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -791,11 +756,7 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoG
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_END,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
@@ -819,11 +780,7 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoG
   await Utils.setConfigs({
     insertNewChildAt:            Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-    insertDroppedTabsAt:         Constants.kINSERT_END,
-    simulateSelectOwnerOnClose:  false,
-    autoGroupNewTabsFromPinned:  true,
-    autoGroupNewTabsTimeout:     250,
-    autoGroupNewTabsDelayOnNewWindow: 0
+    autoGroupNewTabsFromPinned:  true
   });
 
   const tabs = await preparePinnedTabsAndChildrenToTestInsertionPosition();
