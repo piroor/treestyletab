@@ -731,10 +731,9 @@ export async function testInsertNewTabFromPinnedTabAt_insertAtEnd_autoGroup_inse
   ], Utils.treeStructure(Object.values(tabs)),
      'group should be placed at the end');
 }
-
 export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoGroup_insertAtTopInTree() {
   await Utils.setConfigs({
-    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewChildAt:            Constants.kINSERT_TOP,
     insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
     autoGroupNewTabsFromPinned:  true
   });
