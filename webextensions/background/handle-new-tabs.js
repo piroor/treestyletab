@@ -181,6 +181,8 @@ async function handleTabsFromPinnedOpener(tab, opener) {
   const parent = Tab.getGroupTabForOpener(opener);
   if (parent) {
     log('handleTabsFromPinnedOpener: attach to corresponding group tab');
+    tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
+    tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
     return Tree.attachTabTo(tab, parent, {
       lastRelatedTab: opener.$TST.lastRelatedTab,
       forceExpand:    true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
@@ -191,7 +193,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
   if (configs.autoGroupNewTabsFromPinned &&
       tab.$TST.needToBeGroupedSiblings.length > 0) {
     log('handleTabsFromPinnedOpener: controlled by auto-grouping');
-    return Promise.resolve(!Tab.getGroupTabForOpener(opener));
+    return false;
   }
 
   switch (configs.insertNewTabFromPinnedTabAt) {
@@ -199,6 +201,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const lastRelatedTab = opener.$TST.lastRelatedTab;
       if (lastRelatedTab) {
         log(`handleTabsFromPinnedOpener: place after last related tab ${dumpTab(lastRelatedTab)}`);
+        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
         return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
           delayedMove: true,
           broadcast:   true
@@ -209,6 +212,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
       if (lastPinnedTab) {
         log(`handleTabsFromPinnedOpener: opened from pinned opener: place after last pinned tab ${dumpTab(lastPinnedTab)}`);
+        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
         return TabsMove.moveTabAfter(tab, lastPinnedTab, {
           delayedMove: true,
           broadcast:   true
@@ -217,6 +221,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
       if (firstNormalTab) {
         log(`handleTabsFromPinnedOpener: opened from pinned opener: place before first pinned tab ${dumpTab(firstNormalTab)}`);
+        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
         return TabsMove.moveTabBefore(tab, firstNormalTab, {
           delayedMove: true,
           broadcast:   true
@@ -224,12 +229,15 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       }
     }; break;
 
-    case Constants.kINSERT_END:
-      log('handleTabsFromPinnedOpener: opened from pinned opener: place after the last tab');
-      return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
+    case Constants.kINSERT_END: {
+      const lastTab = Tab.getLastTab(tab.windowId);
+      log('handleTabsFromPinnedOpener: opened from pinned opener: place after the last tab ', lastTab);
+      tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+      return TabsMove.moveTabAfter(tab, lastTab, {
         delayedMove: true,
         broadcast:   true
       });
+    };
   }
 
   return Promise.resolve(false);

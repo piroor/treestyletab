@@ -588,8 +588,6 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
 async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   log(`tryGroupNewTabsFromPinnedOpener: ${rootTabs.length} root tabs are opened from pinned tabs`);
 
-  await Tab.waitUntilMovedAll(rootTabs[0].windowId);
-
   // First, collect pinned opener tabs.
   let pinnedOpeners = [];
   const childrenOfPinnedTabs = {};
@@ -638,12 +636,13 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Move newly opened tabs to expected position before grouping!
   // Note that we should refer "insertNewChildAt" instead of "insertNewTabFromPinnedTabAt"
   // because these children are going to be controlled in a sub tree.
-  for (const tab of rootTabs.slice(0).reverse()) {
+  for (const tab of rootTabs.slice(0).sort((a, b) => a.id - b.id)/* process them in the order they were opened */) {
     const opener   = openerOf[tab.id];
     const siblings = tab.$TST.needToBeGroupedSiblings;
     if (!pinnedOpeners.includes(opener) ||
         Tab.getGroupTabForOpener(opener) ||
-        siblings.length == 0)
+        siblings.length == 0 ||
+        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener)
       continue;
     const refTabs = Tree.getReferenceTabsForNewChild(tab, null, {
       lastRelatedTab: opener.$TST.previousLastRelatedTab,
@@ -667,6 +666,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       );
       log(`newly opened child ${tab.id} has been moved before ${refTabs.insertBefore && refTabs.insertBefore.id}`);
     }
+    tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
   }
 
   // Finally, try to group opened tabs.
