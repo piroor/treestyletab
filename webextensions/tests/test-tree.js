@@ -491,7 +491,7 @@ async function preparePinnedTabsAndChildrenToTestInsertionPosition() {
 
   const B = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?B' });
   const C = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?C' });
-  await wait(configs.autoGroupNewTabsTimeout + 1500);
+  await wait(configs.autoGroupNewTabsTimeout + 1000);
 
   await browser.tabs.update(B.id, { active: true });
   await wait(150);
@@ -508,7 +508,7 @@ async function preparePinnedTabsAndChildrenToTestInsertionPosition() {
   const D = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?D' });
   const E = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?E' });
 
-  await wait(configs.autoGroupNewTabsTimeout + 1500);
+  await wait(configs.autoGroupNewTabsTimeout + 1000);
   return Utils.refreshTabs({ A, B, B1, B2, C, C1, C2, D, E, O });
 }
 
