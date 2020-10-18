@@ -373,11 +373,11 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
       case Constants.kINSERT_END:
       default:
         insertAfter = lastDescendant;
-        log(`  insert ${child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_END)`);
+        log(`  insert ${child && child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_END)`);
         break;
       case Constants.kINSERT_TOP:
         insertBefore = firstChild;
-        log(`  insert ${child.id} before firstChild ${insertBefore && insertBefore.id} (insertAt=kINSERT_TOP)`);
+        log(`  insert ${child && child.id} before firstChild ${insertBefore && insertBefore.id} (insertAt=kINSERT_TOP)`);
         break;
       case Constants.kINSERT_NEAREST: {
         const allTabs = Tab.getOtherTabs(child.windowId, ignoreTabs);
@@ -386,11 +386,11 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
         if (index < allTabs.indexOf(firstChild)) {
           insertBefore = firstChild;
           insertAfter  = parent;
-          log(`  insert ${child.id} between parent ${insertAfter && insertAfter.id} and firstChild ${insertBefore && insertBefore.id} (insertAt=kINSERT_NEAREST)`);
+          log(`  insert ${child && child.id} between parent ${insertAfter && insertAfter.id} and firstChild ${insertBefore && insertBefore.id} (insertAt=kINSERT_NEAREST)`);
         }
         else if (index > allTabs.indexOf(lastDescendant)) {
           insertAfter  = lastDescendant;
-          log(`  insert ${child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_NEAREST)`);
+          log(`  insert ${child && child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_NEAREST)`);
         }
         else { // inside the tree
           if (parent && !children)
@@ -401,12 +401,12 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
             if (index > allTabs.indexOf(child))
               continue;
             insertBefore = child;
-            log(`  insert ${child.id} before nearest following child ${insertBefore && insertBefore.id} (insertAt=kINSERT_NEAREST)`);
+            log(`  insert ${child && child.id} before nearest following child ${insertBefore && insertBefore.id} (insertAt=kINSERT_NEAREST)`);
             break;
           }
           if (!insertBefore) {
             insertAfter = lastDescendant;
-            log(`  insert ${child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_NEAREST)`);
+            log(`  insert ${child && child.id} after lastDescendant ${insertAfter && insertAfter.id} (insertAt=kINSERT_NEAREST)`);
           }
         }
       }; break;
@@ -418,36 +418,36 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
           lastRelatedTab = parent.$TST.lastRelatedTab;
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
-          log(`  insert ${child.id} after lastRelatedTab (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB) `, lastRelatedTab);
+          log(`  insert ${child && child.id} after lastRelatedTab ${lastRelatedTab.id} (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)`);
         }
         else {
           insertBefore = firstChild;
-          log(`  insert ${child.id} before firstChild (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB) `, lastRelatedTab);
+          log(`  insert ${child && child.id} before firstChild (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)`);
         }
       }; break;
       case Constants.kINSERT_NO_CONTROL:
-        throw new Error(`getReferenceTabsForNewChild: unavailable insertion position kINSERT_NO_CONTROL for ${child.id}`);
+        throw new Error(`getReferenceTabsForNewChild: unavailable insertion position kINSERT_NO_CONTROL for ${child && child.id}`);
     }
   }
   else {
     insertAfter = parent;
-    log(`  insert ${child.id} after parent`);
+    log(`  insert ${child && child.id} after parent`);
   }
   if (insertBefore == child) {
     // Return unsafe tab, to avoid placing the child after hidden tabs
     // (too far from the place it should be.)
     insertBefore = insertBefore && insertBefore.$TST.unsafeNextTab;
-    log(`  => insert ${child.id} before next tab ${insertBefore && insertBefore.id} of the child tab itelf`);
+    log(`  => insert ${child && child.id} before next tab ${insertBefore && insertBefore.id} of the child tab itelf`);
   }
   if (insertAfter == child) {
     insertAfter = insertAfter && insertAfter.$TST.previousTab;
-    log(`  => insert ${child.id} after previous tab ${insertAfter && insertAfter.id} of the child tab itelf`);
+    log(`  => insert ${child && child.id} after previous tab ${insertAfter && insertAfter.id} of the child tab itelf`);
   }
   // disallow to place tab in invalid position
   if (insertBefore) {
     if (parent && insertBefore.index <= parent.index) {
       insertBefore = null;
-      log(`  => do not put ${child.id} before a tab preceding to the parent`);
+      log(`  => do not put ${child && child.id} before a tab preceding to the parent`);
     }
     //TODO: we need to reject more cases...
   }
@@ -458,7 +458,7 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
     const lastMember    = allTabsInTree[allTabsInTree.length - 1];
     if (insertAfter.index >= lastMember.index) {
       insertAfter = lastMember;
-      log(`  => do not put ${child.id} after the last tab ${insertAfter && insertAfter.id} in the tree`);
+      log(`  => do not put ${child && child.id} after the last tab ${insertAfter && insertAfter.id} in the tree`);
     }
     //TODO: we need to reject more cases...
   }
