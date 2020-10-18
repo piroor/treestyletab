@@ -183,8 +183,10 @@ async function handleTabsFromPinnedOpener(tab, opener) {
     log('handleTabsFromPinnedOpener: attach to corresponding group tab');
     tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
     tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+    // it could be updated already...
+    const lastRelatedTab = opener.$TST.lastRelatedTabId == tab.id ? opener.$TST.previousLastRelatedTab : opener.$TST.lastRelatedTab;
     return Tree.attachTabTo(tab, parent, {
-      lastRelatedTab: opener.$TST.lastRelatedTab,
+      lastRelatedTab,
       forceExpand:    true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       broadcast:      true
     });
