@@ -267,7 +267,14 @@ const mDelayedSync      = new Map();
 const mDelayedSyncTimer = new Map();
 
 export async function waitUntilSynchronized(windowId) {
-  return mPreviousSync.get(windowId) || mDelayedSync.get(windowId);
+  const previous = mPreviousSync.get(windowId);
+  if (previous)
+    return previous.then(() => waitUntilSynchronized(windowId));
+  return Promise.resolve(mDelayedSync.get(windowId)).then(() => {
+    const previous = mPreviousSync.get(windowId);
+    if (previous)
+      return waitUntilSynchronized(windowId);
+  });
 }
 
 function syncToNativeTabs(tabs) {
