@@ -394,11 +394,13 @@ async function prepareRelatedTabsToTestInsertionPosition() {
   const B1 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B1' });
   const B2 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B2' });
 
+  await wait(150); // this is required to prevent tabs.onActivated is processed before B1 and B2 are attached to B
   await browser.tabs.update(C.id, { active: true });
   await wait(150);
   const C1 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C1' });
   const C2 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C2' });
 
+  await wait(150); // this is required to prevent tabs.onActivated is processed before C1 and C2 are attached to C
   await browser.tabs.update(A.id, { active: true });
   await wait(150);
   const D = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?D' });
@@ -498,11 +500,13 @@ async function preparePinnedTabsAndChildrenToTestInsertionPosition() {
   const B1 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B1' });
   const B2 = await browser.tabs.create({ windowId, openerTabId: B.id, active, url: 'about:blank?B2' });
 
+  await wait(150); // this is required to prevent tabs.onActivated is processed before B1 and B2 are attached to B
   await browser.tabs.update(C.id, { active: true });
   await wait(150);
   const C1 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C1' });
   const C2 = await browser.tabs.create({ windowId, openerTabId: C.id, active, url: 'about:blank?C2' });
 
+  await wait(150); // this is required to prevent tabs.onActivated is processed before C1 and C2 are attached to C
   await browser.tabs.update(A.id, { active: true });
   await wait(150);
   const D = await browser.tabs.create({ windowId, openerTabId: A.id, active, url: 'about:blank?D' });
