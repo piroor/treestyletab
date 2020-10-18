@@ -113,6 +113,11 @@ export async function testTryToOpenUnpinnedTabBeforePinnedTab() {
 }
 
 export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCreating() {
+  await Utils.setConfigs({
+    insertNewChildAt:            Constants.kINSERT_END,
+    insertNewTabFromPinnedTabAt: Constants.kINSERT_END
+  });
+  await wait(1000); // this is required to avoid affections from other tests
   let tabs = await Utils.createTabs({
     A: { index: 1, active: true },
     B: { index: 2 }
