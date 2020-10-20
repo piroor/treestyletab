@@ -56,7 +56,8 @@ export async function tryInitGroupTab(tab) {
       ...scriptOptions,
       code:  '[window.prepared, document.documentElement.matches(".initialized")]',
     }).catch(error => {
-      if (ApiTabs.isMissingHostPermissionError(error)) {
+      if (ApiTabs.isMissingHostPermissionError(error) &&
+          tab.$TST.hasGroupTabURL) {
         log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
         browser.tabs.reload(tab.id);
         return [[false, false, true]];
