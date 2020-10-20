@@ -6,6 +6,7 @@
    * Add some expert options to configure checkbox status of group tabs created for each context.
    * Simulate Firefox's focus control behavior like the combination `browser.tabs.insertRelatedAfterCurrent`=`true` and `browser.tabs.selectOwnerOnClose`=`true` more correctly. (On old versions the parent tab was unexpectedly became the successor of a closed child tab even after manual focus changes.)
    * More stabilize behaviors around auto-grouping of tabs opened from a pinned tab.
+   * Don't reload tab inifinitely when a URL is loaded on a group tab (it was originally reported as the [bug 1671500](https://bugzilla.mozilla.org/show_bug.cgi?id=1671500).)
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.5.32 (2020.10.11)
    * Save "Warn me when I attempt to close multiple tabs" checkbox state correctly for the confirmation dialog about closing multiple tabs via the closebox.
