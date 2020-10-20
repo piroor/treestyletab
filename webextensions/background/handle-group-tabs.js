@@ -44,7 +44,7 @@ function log(...args) {
 */
 export async function tryInitGroupTab(tab) {
   if (!tab.$TST.isGroupTab &&
-      tab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
+      !tab.$TST.hasGroupTabURL)
     return;
   log('tryInitGroupTab ', tab.id);
   const scriptOptions = {
