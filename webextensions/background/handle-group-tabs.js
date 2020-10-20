@@ -46,7 +46,7 @@ export async function tryInitGroupTab(tab) {
   if (!tab.$TST.isGroupTab &&
       !tab.$TST.hasGroupTabURL)
     return;
-  log('tryInitGroupTab ', tab.id);
+  log('tryInitGroupTab ', tab);
   const scriptOptions = {
     runAt:           'document_start',
     matchAboutBlank: true
