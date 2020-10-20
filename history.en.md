@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.5.33 (2020.10.20)
    * Add an explicit choice to open new child tabs at the position next to the recently opened child or the opener parent tab, like Firefox does with the preference `browser.tabs.insertRelatedAfterCurrent`=`true`.
    * Add an expert option to insert new child tabs at the top or the end, when they are dropped onto a parent.
    * Add some expert options to configure checkbox status of group tabs created for each context.
