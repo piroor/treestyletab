@@ -645,12 +645,18 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         siblings.length == 0 ||
         tab.$TST.alreadyMovedAsOpenedFromPinnedOpener)
       continue;
-    const refTabs = Tree.getReferenceTabsForNewChild(tab, null, {
+    let refTabs = {};
+    try {
+      refTabs = Tree.getReferenceTabsForNewChild(tab, null, {
       lastRelatedTab: opener.$TST.previousLastRelatedTab,
       parent:         siblings[0],
       children:       siblings,
       descendants:    siblings.map(sibling => [sibling, ...sibling.$TST.descendants]).flat()
     });
+    }
+    catch(_error) {
+      // insertChildAt == "no control" case
+    }
     if (refTabs.insertAfter) {
       await Tree.moveTabSubtreeAfter(
         tab,
@@ -666,6 +672,9 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         { broadcast: true }
       );
       log(`newly opened child ${tab.id} has been moved before ${refTabs.insertBefore && refTabs.insertBefore.id}`);
+    }
+    else {
+      continue;
     }
     tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
   }
