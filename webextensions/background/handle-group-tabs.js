@@ -648,11 +648,11 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     let refTabs = {};
     try {
       refTabs = Tree.getReferenceTabsForNewChild(tab, null, {
-      lastRelatedTab: opener.$TST.previousLastRelatedTab,
-      parent:         siblings[0],
-      children:       siblings,
-      descendants:    siblings.map(sibling => [sibling, ...sibling.$TST.descendants]).flat()
-    });
+        lastRelatedTab: opener.$TST.previousLastRelatedTab,
+        parent:         siblings[0],
+        children:       siblings,
+        descendants:    siblings.map(sibling => [sibling, ...sibling.$TST.descendants]).flat()
+      });
     }
     catch(_error) {
       // insertChildAt == "no control" case
