@@ -374,13 +374,13 @@
 
   "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Рядом с недавно открытой (Firefox по умолчанию)" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или после родителя (имитация Firefox)" },
   "config_insertNewChildAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
   "config_insertNewChildAt_end": { "message": "Добавить в конец дерева" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Место появления новых вкладок из закрепленных вкладок" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Рядом с недавно открытой или рядом с открывающей (Firefox по умолчанию)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или рядом с родителем (имитация Firefox)" },
   "config_insertNewTabFromPinnedTabAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
 
