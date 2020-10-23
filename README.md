@@ -300,6 +300,14 @@ If you need any new API, please file API proposals to the issue tracker.
 
 #### Troubles, unexpected behaviors
 
+* <details><summary>TST suddenly became not working! No reaction on the sidebar!</summary>
+  
+  1. Please try closing the sidebar and reopen it again, to reload the sidebar presentation module of TST.
+     TST may work again if the trouble is due to a disconnection between TST's internal modules.
+  2. If reopening the sidebar doesn't solve the problem, try disabling and re-enabling TST on the add-ons manager, to reload TST completely.
+     TST may work again if the trouble is due to something broken internal status of TST itself.
+  3. If both reopening and reloading don't solve the problem, restart Firefox please.
+     If the trouble is due to something problems happening in a deeply low layer, we cannot recover the normal status without restarting of Firefox.
 * <details><summary>I cannot drop tabs to the bookmarks toolbar to create bookmarks. (<a href="https://github.com/piroor/treestyletab/issues/2033">#2033</a>)</summary>
   
   In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar. Otherwise [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) possibly helps you.
