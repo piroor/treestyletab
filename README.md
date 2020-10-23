@@ -319,21 +319,6 @@ If you need any new API, please file API proposals to the issue tracker.
   For more preference, you can use a [small drag handles](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) with a helper addon: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
   You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
   </details>
-* <details><summary>I don't want to see the next tab is focused before the previous tab is focused, when I close a last child tab. (<a href="https://github.com/piroor/treestyletab/issues/1838">#1838</a>)</summary>
-  
-  In short: you need to wait for Firefox 64.
-  
-  There are two cases when the current tab is going to be closed.
-  
-  1. The tab is closed by TST itself, by clicking the closebox of a tab in the sidebar, or choosing "close tab" command from the fake context menu in the sidebar.
-  2. The tab is closed by Firefox itself or other addons, in other methods (Ctrl-W, clicking the closebox of a tab in the horizontal tab bar, etc.)
-  
-  TST can focus to the previous tab directly before the current tab is closed, only for the 1st case. On the other hand, for the 2nd case, TST cannot inject any operation before the tab is closed, instead just a "tabs.onRemoved" event is notified after the focus was actually moved by Firefox. So logically TST cannot prevent the "the next tab is unexpectedly focused" behavior for the 2nd case.
-  
-  Moreover, if TST always control focusing of tabs for the 1st case, it will conflict to Firefox's `browser.tabs.selectOwnerOnClose`=`true` behavior or other addon's behaviors. My development policy about TST is: being compatible to Firefox's native features and other addons, thus I won't introduce such a behavior breaking compatibility with others.
-  
-  However Firefox 64 will have [some new WebExtensions APIs about this point](https://bugzilla.mozilla.org/show_bug.cgi?id=1500479 "1500479 - Enhance browser.tabs API to support assigning tab successors"). After those APIs land, TST will be updated to use them and you'll never see the "next tab is unexpectedly focused" behavior anymore.
-  </details>
 * <details><summary>New tab is not opened with expected position and container, when it is opened as a blank tab instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2176#issuecomment-714853450">#2176</a>)</summary>
   
   This is a known issue and hard (or impossible) to be fixed on TST, due to restrictions of WebExtensions API.
