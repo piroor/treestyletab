@@ -334,6 +334,14 @@ If you need any new API, please file API proposals to the issue tracker.
   
   However Firefox 64 will have [some new WebExtensions APIs about this point](https://bugzilla.mozilla.org/show_bug.cgi?id=1500479 "1500479 - Enhance browser.tabs API to support assigning tab successors"). After those APIs land, TST will be updated to use them and you'll never see the "next tab is unexpectedly focused" behavior anymore.
   </details>
+* <details><summary>New tab is not opened with expected position and container, when it is opened as a blank tab instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2176#issuecomment-714853450">#2176</a>)</summary>
+  
+  This is a known issue and hard (or impossible) to be fixed on TST, due to restrictions of WebExtensions API.
+  TST cannot detect "a new blank tab is intentionally opened by the user with the keyboard shortcut Ctrl-T", because all new tabs are initially opened with the `about:blank` URL even if you open a new tab from a link.
+  Sadly there is no more hint to detect the context how a new tab is opened by you.
+  
+  For a workaround, you can define a custom shortcut to open a new blank tab with TST's settings: assigning something shortcut for the command "Open a new tab: Child Tab" at the add-ons manager.
+  Go to `about:addons` => click the gear button => "Manage Extension Shortcuts" => "Tree Style Tab" => "Show 40 More" => "Open a new tab: Child Tab" => set something shortcut like Ctrl+Alt+T, then you'll get a child tab as expected with the shortcut instead of the default Ctrl-T.
 
 #### Other topics
 
