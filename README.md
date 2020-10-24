@@ -227,6 +227,7 @@ If you need any new API, please file API proposals to the issue tracker.
   3. Turn on the checkbox "Debug mode". Then all internal configurations are listed.
   4. Turn off the checkbox "autoAttach".
   5. Turn off the checkbox "syncParentTabAndOpenerTab".
+  6. Turn on the checkbox "Debug mode". Then all internal configurations are listed.
   
   After that TST never attach new tabs to existing tree automatically.
   
