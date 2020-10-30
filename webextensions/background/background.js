@@ -25,6 +25,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
+import * as Sync from '/common/sync.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -157,6 +158,8 @@ export async function init() {
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
+
+  Sync.init();
 
   await MetricsData.addAsync('init: exporting tabs to sidebars', notifyReadyToSidebars());
 

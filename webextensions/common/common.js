@@ -37,6 +37,7 @@ const localKeys = mapAndFilter(`
   style
   subMenuCloseDelay
   subMenuOpenDelay
+  syncDeviceInfo
   testKey
 `.trim().split('\n'), key => {
   key = key.trim();
@@ -336,6 +337,10 @@ export const configs = new Configs({
   userStyleRules5: '',
   userStyleRules6: '',
   userStyleRules7: '',
+
+  syncDeviceInfo: null,
+  syncDevices:    {},
+  syncDeviceExpirationDays: 14,
 
 
   // Compatibility with other addons
