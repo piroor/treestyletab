@@ -19,9 +19,9 @@ export async function init() {
       browser.runtime.getBrowserInfo()
     ]);
     configs.syncDeviceInfo = {
-      id:         `${platformInfo.os}-${platformInfo.arch}/${browserInfo.vendor}-${browserInfo.name}-${browserInfo.version}-${browserInfo.buildID}/${Date.now()}-${Math.round(Math.random() * 65000)}`,
-      name:       `${browserInfo.name} on ${platformInfo.os}`,
-      icon:       null
+      id:   `${platformInfo.os}-${platformInfo.arch}/${browserInfo.vendor}-${browserInfo.name}-${browserInfo.version}-${browserInfo.buildID}/${Date.now()}-${Math.round(Math.random() * 65000)}`,
+      name: `${browserInfo.name} on ${platformInfo.os}`,
+      icon: null
     };
     update();
   }
