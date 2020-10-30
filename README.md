@@ -342,7 +342,7 @@ If you need any new API, please file API proposals to the issue tracker.
   You need to change the TST's option `New Tabs Behavior` => `Basic control for New Blank Tab` => `Guess a newly opened tab as opened by "New Blank Tab" action, when it is opened with the URL` to detect new tabs opened with any custom URL.
   It is `about:newtab` by default for Firefox's native new tabs.
 
-  * If you use any addon providing a fixed custom new tab page (ex. [Momentum](https://addons.mozilla.org/firefox/addon/momentumdash/), open a new tab and show the developer tool with the keyboard shortcut `Ctrl-Shift-K`, then type `location.href` in the console. You'll see the actual URL of the new tab page like `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/dashboard.html`.
+  * If you use any addon providing a fixed custom new tab page (ex. [Momentum](https://addons.mozilla.org/firefox/addon/momentumdash/)), open a new tab and show the developer tool with the keyboard shortcut `Ctrl-Shift-K`, then type `location.href` in the console. You'll see the actual URL of the new tab page like `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/dashboard.html`.
     The UUID part is random due to security reasons.
   * If you use [New Tab Override](https://addons.mozilla.org/firefox/addon/new-tab-override/) to set a custom URL for new tabs, you cannot get the actual internal URL of new tabs with the method above, because it is immediately redirected.
     It is `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/html/newtab.html`, the UUID part can be found at `about:debugging#/runtime/this-firefox` => `Extensions` => `New Tab Override` => `Internal UUID`.
