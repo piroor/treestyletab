@@ -38,6 +38,7 @@ const localKeys = mapAndFilter(`
   subMenuCloseDelay
   subMenuOpenDelay
   syncDeviceInfo
+  syncDevicesLocalCache
   testKey
 `.trim().split('\n'), key => {
   key = key.trim();
@@ -340,6 +341,7 @@ export const configs = new Configs({
 
   syncDeviceInfo: null,
   syncDevices:    {},
+  syncDevicesLocalCache: {},
   syncDeviceExpirationDays: 14,
   chunkedSyncData0: '',
   chunkedSyncData1: '',

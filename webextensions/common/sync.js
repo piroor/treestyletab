@@ -18,12 +18,11 @@ function log(...args) {
 }
 
 export const onMessage = new EventListenerManager();
+export const onNewDevice = new EventListenerManager();
+export const onObsoleteDevice = new EventListenerManager();
 
 export async function init() {
-  if (configs.syncDeviceInfo) {
-    update();
-  }
-  else {
+  if (!configs.syncDeviceInfo) {
     const [platformInfo, browserInfo] = await Promise.all([
       browser.runtime.getPlatformInfo(),
       browser.runtime.getBrowserInfo()
@@ -33,38 +32,79 @@ export async function init() {
       name: `${browserInfo.name} on ${platformInfo.os}`,
       icon: null
     };
-    update();
   }
-  window.setInterval(update, 1000 * 60 * 60 * 24); // update info every day!
+  updateSelf();
+  updateDevices();
+  reserveToReceiveMessage();
+  window.setInterval(updateSelf, 1000 * 60 * 60 * 24); // update info every day!
 
   configs.$addObserver(key => {
-    if (!key.startsWith('chunkedSyncData'))
-      return;
-    reserveToReceiveMessage();
+    switch (key) {
+      case 'syncDevices':
+        updateDevices();
+        break;
+
+      default:
+        if (key.startsWith('chunkedSyncData'))
+          reserveToReceiveMessage();
+        break;
+    }
   });
 }
 
-function update() {
+function updateSelf() {
   const now = Math.floor(Date.now() / 1000);
   configs.syncDeviceInfo = {
-    ...JSON.parse(JSON.stringify(configs.syncDeviceInfo)),
+    ...clone(configs.syncDeviceInfo),
     timestamp: now
   };
 
-  const devices = JSON.parse(JSON.stringify(configs.syncDevices));
-  devices[configs.syncDeviceInfo.id] = JSON.parse(JSON.stringify(configs.syncDeviceInfo));
+  const devices = clone(configs.syncDevices);
+  devices[configs.syncDeviceInfo.id] = clone(configs.syncDeviceInfo);
 
   const expireDateInSeconds = now - (60 * 60 * configs.syncDeviceExpirationDays);
   for (const [id, info] of Object.entries(devices)) {
     if (info &&
         info.timestamp < expireDateInSeconds) {
       delete devices[id];
-      log('device expired: ', info);
+      log('updateSelf: expired ', info);
     }
   }
 
   configs.syncDevices = devices;
-  log('device updated: ', configs.syncDeviceInfo);
+  configs.syncDevicesLocalCache = clone(devices);
+  log('updateSelf: updated ', configs.syncDeviceInfo, devices);
+}
+
+function updateDevices() {
+  if (updateDevices.updating)
+    return;
+  updateDevices.updating = true;
+
+  const remote = clone(configs.syncDevices);
+  const local  = clone(configs.syncDevicesLocalCache);
+  log('devices updated: ', local, remote);
+  for (const [id, info] of Object.entries(remote)) {
+    if (id in local ||
+        id == configs.syncDeviceInfo.id)
+      continue;
+    log('new device: ', info);
+    onNewDevice.dispatch(info);
+    local[id] = info;
+  }
+  for (const [id, info] of Object.entries(local)) {
+    if (id in remote ||
+        id == configs.syncDeviceInfo.id)
+      continue;
+    log('obsolete device: ', info);
+    delete local[id];
+    onObsoleteDevice.dispatch(info);
+  }
+  configs.syncDevices = local;
+  configs.syncDevicesLocalCache = clone(local);
+  setTimeout(() => {
+    updateDevices.updating = false;
+  }, 250);
 }
 
 function reserveToReceiveMessage() {
@@ -78,7 +118,7 @@ function reserveToReceiveMessage() {
 
 async function receiveMessage() {
   try {
-    const messages = JSON.parse((await getChunkedConfig('chunkedSyncData')) || '[]');
+    const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
     if (!Array.isArray(messages)) {
       log('invalid data: ', messages);
       return;
@@ -92,9 +132,24 @@ async function receiveMessage() {
       return true;
     });
     if (restMessages.length != messages.length)
-      await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
+      await setChunkedConfig('chunkedSyncData', JSON.stringify(restMessages));
   }
   catch(error) {
     log('receiveMessage fatal error: ', error);
   }
+}
+
+export async function sendMessage(to, message) {
+  const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
+  messages.push({
+    timestamp: Math.floor(Date.now() / 1000),
+    from:      configs.syncDeviceInfo.id,
+    to,
+    message
+  });
+  await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
 }
