@@ -409,6 +409,7 @@ export const configs = new Configs({
     'common/contextual-identities': false,
     'common/permissions': false,
     'common/sidebar-connection': false,
+    'common/sync': false,
     'common/tabs-internal-operation': false,
     'common/tabs-update': false,
     'common/tree-behavior': false,
