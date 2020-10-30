@@ -341,6 +341,26 @@ export const configs = new Configs({
   syncDeviceInfo: null,
   syncDevices:    {},
   syncDeviceExpirationDays: 14,
+  chunkedSyncData0: '',
+  chunkedSyncData1: '',
+  chunkedSyncData2: '',
+  chunkedSyncData3: '',
+  chunkedSyncData4: '',
+  chunkedSyncData5: '',
+  chunkedSyncData6: '',
+  chunkedSyncData7: '',
+  chunkedSyncData8: '',
+  chunkedSyncData9: '',
+  chunkedSyncData10: '',
+  chunkedSyncData11: '',
+  chunkedSyncData12: '',
+  chunkedSyncData13: '',
+  chunkedSyncData14: '',
+  chunkedSyncData15: '',
+  chunkedSyncData16: '',
+  chunkedSyncData17: '',
+  chunkedSyncData18: '',
+  chunkedSyncData19: '',
 
 
   // Compatibility with other addons
@@ -431,29 +451,48 @@ configs.$loaded.then(() => {
 
 
 export function loadUserStyleRules() {
+  return getChunkedConfig('chunkedUserStyleRules');
+}
+
+export function saveUserStyleRules(style) {
+  return setChunkedConfig('chunkedUserStyleRules', style);
+}
+
+export function getChunkedConfig(key) {
   const chunks = [];
   let count = 0;
   while (true) {
-    const key = `chunkedUserStyleRules${count}`;
-    if (!(key in configs))
+    const slotKey = `${key}${count}`;
+    if (!(slotKey in configs))
       break;
-    chunks.push(configs[key]);
+    chunks.push(configs[slotKey]);
     count++;
   }
   return joinChunkedStrings(chunks);
 }
 
-export function saveUserStyleRules(style) {
-  const chunks = chunkString(style, Constants.kSYNC_STORAGE_SAFE_QUOTA);
-  if (chunks.length > Constants.kUSER_STYLE_RULES_SLOT)
-    throw new Error('too large style');
+export function setChunkedConfig(key, value) {
+  let largestSlot = 0;
+  let count = 0;
+  while (true) {
+    if (!(`${key}${count}` in configs)) {
+      largestSlot = count - 1;
+      break;
+    }
+    count++;
+  }
+
+  const chunks = chunkString(value, Constants.kSYNC_STORAGE_SAFE_QUOTA);
+  if (chunks.length >= largestSlot)
+    throw new Error('too large data');
+
   [...chunks,
-    ...Array.from(new Uint8Array(Constants.kUSER_STYLE_RULES_SLOT), _ => '')]
-    .slice(0, Constants.kUSER_STYLE_RULES_SLOT)
+    ...Array.from(new Uint8Array(largestSlot), _ => '')]
+    .slice(0, largestSlot)
     .forEach((chunk, index) => {
-      const key = `chunkedUserStyleRules${index}`;
-      if (key in configs)
-        configs[key] = chunk || '';
+      const slotKey = `${key}${index}`;
+      if (slotKey in configs)
+        configs[slotKey] = chunk || '';
     });
 }
 

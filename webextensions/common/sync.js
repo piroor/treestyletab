@@ -6,8 +6,18 @@
 'use strict';
 
 import {
-  configs
+  log as internalLogger,
+  configs,
+  getChunkedConfig,
+  setChunkedConfig
 } from './common.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
+function log(...args) {
+  internalLogger('common/sync', ...args);
+}
+
+export const onMessage = new EventListenerManager();
 
 export async function init() {
   if (configs.syncDeviceInfo) {
@@ -26,6 +36,12 @@ export async function init() {
     update();
   }
   window.setInterval(update, 1000 * 60 * 60 * 24); // update info every day!
+
+  configs.$addObserver(key => {
+    if (!key.startsWith('chunkedSyncData'))
+      return;
+    reserveToReceiveMessage();
+  });
 }
 
 function update() {
@@ -41,9 +57,44 @@ function update() {
   const expireDateInSeconds = now - (60 * 60 * configs.syncDeviceExpirationDays);
   for (const [id, info] of Object.entries(devices)) {
     if (info &&
-        info.timestamp < expireDateInSeconds)
+        info.timestamp < expireDateInSeconds) {
       delete devices[id];
+      log('device expired: ', info);
+    }
   }
 
   configs.syncDevices = devices;
+  log('device updated: ', configs.syncDeviceInfo);
+}
+
+function reserveToReceiveMessage() {
+  if (reserveToReceiveMessage.reserved)
+    clearTimeout(reserveToReceiveMessage.reserved);
+  reserveToReceiveMessage.reserved = setTimeout(() => {
+    delete reserveToReceiveMessage.reserved;
+    receiveMessage();
+  }, 250);
+}
+
+async function receiveMessage() {
+  try {
+    const messages = JSON.parse((await getChunkedConfig('chunkedSyncData')) || '[]');
+    if (!Array.isArray(messages)) {
+      log('invalid data: ', messages);
+      return;
+    }
+    const restMessages = messages.filter(message => {
+      if (message.to == configs.syncDeviceInfo.id) {
+        log('receiveMessage receive: ', message);
+        onMessage.dispatch(message);
+        return false;
+      }
+      return true;
+    });
+    if (restMessages.length != messages.length)
+      await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
+  }
+  catch(error) {
+    log('receiveMessage fatal error: ', error);
+  }
 }
