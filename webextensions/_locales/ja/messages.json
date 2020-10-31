@@ -296,6 +296,7 @@
   "config_syncDeviceExpirationDays_label_before": { "message": "\u200b" },
   "config_syncDeviceExpirationDays_label_after": { "message": "日以上接続接続していない端末は自動的に端末一覧から削除する（\"0\"=自動削除しない）" },
   "config_syncUnsendableUrlPattern_label": { "message": "送信できないタブを識別するためのマッチングルール（※Firefox自身の \"services.sync.engine.tabs.filteredUrls\" と同じ内容を設定してください）" },
+  "config_otherDevices_caption": { "message": "使用可能な他の端末:" },
   "config_removeDeviceButton_label": { "message": "削除" },
   "config_removeDeviceButton_tooltip": { "message": "この端末を一覧から削除する" },
 

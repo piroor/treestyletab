@@ -300,6 +300,7 @@
   "config_syncDeviceExpirationDays_label_before": { "message": "Expire unused devices automatically when they are not connected over " },
   "config_syncDeviceExpirationDays_label_after": { "message": " days (\"0\" means \"no expiration\")" },
   "config_syncUnsendableUrlPattern_label": { "message": "Matching rule to treat unsendable URL of tabs (*This must be synchronized to the \"services.sync.engine.tabs.filteredUrls\" of Firefox itself):" },
+  "config_otherDevices_caption": { "message": "Active other devices:" },
   "config_removeDeviceButton_label": { "message": "Delete" },
   "config_removeDeviceButton_tooltip": { "message": "Delete this device from the list" },
 
