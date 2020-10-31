@@ -51,6 +51,10 @@ export async function init() {
         updateDevices();
         break;
 
+      case 'syncDeviceInfo':
+        updateSelf();
+        break;
+
       default:
         if (key.startsWith('chunkedSyncData'))
           reserveToReceiveMessage();
@@ -77,10 +81,6 @@ configs.$addObserver(key => {
   switch (key) {
     case 'syncUnsendableUrlPattern':
       isSendableTab.unsendableUrlMatcher = null;
-      break;
-
-    case 'syncDeviceInfo':
-      updateSelf();
       break;
 
     default:
