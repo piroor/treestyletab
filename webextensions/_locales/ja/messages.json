@@ -162,6 +162,8 @@
     }},
   "syncDeviceMissingDeviceName": { "message": "名前が設定されていない端末" },
   "syncDeviceUnknownDevice":     { "message": "不明な端末" },
+  "syncAvailable_notification_title":   { "message": "タブをTSTから他の端末に送れます" },
+  "syncAvailable_notification_message": { "message": "他の端末との間でタブを送受信できます。ここをクリックして、この端末に分かりやすい名前を設定してください。" },
   "receiveTabs_notification_title":            { "message": "$DEVICE$ からのタブ",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }

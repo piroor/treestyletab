@@ -162,6 +162,8 @@
     }},
   "syncDeviceMissingDeviceName": { "message": "an unnamed device" },
   "syncDeviceUnknownDevice":     { "message": "an unknown device" },
+  "syncAvailable_notification_title":   { "message": "Tabs are sendable to other devices from TST now." },
+  "syncAvailable_notification_message": { "message": "Tabs can be transferred between your devices. Please click here to set an identifiable name to this device." },
   "receiveTabs_notification_title":            { "message": "Tab from $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }

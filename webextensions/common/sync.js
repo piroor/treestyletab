@@ -8,9 +8,11 @@
 import {
   log as internalLogger,
   configs,
+  notify,
   getChunkedConfig,
   setChunkedConfig
 } from './common.js';
+import * as Constants from '/common/constants.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -33,6 +35,18 @@ export async function init() {
 
   configs.$addObserver(key => {
     switch (key) {
+      case 'syncOtherDevicesDetected':
+        if (!configs.syncAvailableNotified) {
+          configs.syncAvailableNotified = true;
+          notify({
+            title:   browser.i18n.getMessage('syncAvailable_notification_title'),
+            message: browser.i18n.getMessage('syncAvailable_notification_message'),
+            url:     `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`,
+            timeout: configs.syncAvailableNotificationTimeout
+          });
+        }
+        return;
+
       case 'syncDevices':
         updateDevices();
         break;
@@ -136,6 +150,10 @@ function updateDevices() {
   }
 
   local[configs.syncDeviceInfo.id] = clone(configs.syncDeviceInfo);
+
+  if (!configs.syncOtherDevicesDetected && Object.keys(local).length > 1)
+    configs.syncOtherDevicesDetected = true;
+
   configs.syncDevices = local;
   configs.syncDevicesLocalCache = clone(local);
   setTimeout(() => {

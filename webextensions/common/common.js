@@ -45,6 +45,8 @@ const localKeys = mapAndFilter(`
   style
   subMenuCloseDelay
   subMenuOpenDelay
+  syncOtherDevicesDetected
+  syncAvailableNotified
   syncDeviceInfo
   syncDevicesLocalCache
   syncLastMessageTimestamp
@@ -350,6 +352,9 @@ export const configs = new Configs({
   userStyleRules6: '',
   userStyleRules7: '',
 
+  syncOtherDevicesDetected: false,
+  syncAvailableNotified: false,
+  syncAvailableNotificationTimeout: 20 * 1000,
   syncDeviceInfo: null,
   syncDevices:    {},
   syncDevicesLocalCache: {},
