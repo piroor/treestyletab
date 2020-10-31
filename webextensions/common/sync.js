@@ -152,10 +152,7 @@ function reserveToReceiveMessage() {
 
 async function receiveMessage() {
   try {
-    const messages = uniqMessages([
-      ...JSON.parse(getChunkedConfig('chunkedSyncData') || '[]'),
-      ...JSON.parse(getChunkedConfig('chunkedSyncDataLocal') || '[]')
-    ]);
+    const messages = readMessages();
     log('receiveMessage: queued messages => ', messages);
     const restMessages = messages.filter(message => {
       if (message.timestamp <= configs.syncLastMessageTimestamp)
@@ -169,29 +166,18 @@ async function receiveMessage() {
       return true;
     });
     log('receiveMessage: restMessages => ', restMessages);
-    if (restMessages.length != messages.length) {
-      const stringifiedMessages = JSON.stringify(restMessages);
-      await Promise.all([
-        setChunkedConfig('chunkedSyncData', stringifiedMessages),
-        setChunkedConfig('chunkedSyncDataLocal', stringifiedMessages)
-      ]);
-    }
+    if (restMessages.length != messages.length)
+      writeMessages(restMessages);
   }
   catch(error) {
     log('receiveMessage fatal error: ', error);
-    await Promise.all([
-      setChunkedConfig('chunkedSyncData', '[]'),
-      setChunkedConfig('chunkedSyncDataLocal', '[]')
-    ]);
+    writeMessages([]);
   }
 }
 
 export async function sendMessage(to, data) {
   try {
-    const messages = uniqMessages([
-      ...JSON.parse(getChunkedConfig('chunkedSyncData') || '[]'),
-      ...JSON.parse(getChunkedConfig('chunkedSyncDataLocal') || '[]')
-    ]);
+    const messages = readMessages();
     messages.push({
       timestamp: Date.now(),
       from:      configs.syncDeviceInfo.id,
@@ -199,19 +185,31 @@ export async function sendMessage(to, data) {
       data
     });
     log('sendMessage: queued messages => ', messages);
-    const stringifiedMessages = JSON.stringify(messages);
-    await Promise.all([
-      setChunkedConfig('chunkedSyncData', stringifiedMessages),
-      setChunkedConfig('chunkedSyncDataLocal', stringifiedMessages)
-    ]);
+    writeMessages(messages);
   }
   catch(error) {
     console.log('Sync.sendMessage: failed to send message ', error);
-    await Promise.all([
-      setChunkedConfig('chunkedSyncData', '[]'),
-      setChunkedConfig('chunkedSyncDataLocal', '[]')
+    writeMessages([]);
+  }
+}
+
+function readMessages() {
+  try {
+    return uniqMessages([
+      ...JSON.parse(getChunkedConfig('chunkedSyncDataLocal') || '[]'),
+      ...JSON.parse(getChunkedConfig('chunkedSyncData') || '[]')
     ]);
   }
+  catch(error) {
+    log('failed to read messages: ', error);
+    return [];
+  }
+}
+
+function writeMessages(messages) {
+  const stringified = JSON.stringify(messages || []);
+  setChunkedConfig('chunkedSyncDataLocal', stringified);
+  setChunkedConfig('chunkedSyncData', stringified);
 }
 
 function uniqMessages(messages) {
