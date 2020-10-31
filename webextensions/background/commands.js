@@ -1042,23 +1042,23 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
 
 export function sendTabsToDevice(tabs, to) {
   tabs = tabs.filter(Sync.isSendableTab);
-  Sync.sendMessage(to, {
-    type:      Constants.kSYNC_DATA_TYPE_TABS,
-    urls:      tabs.map(tab => tab.url),
-    structure: TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
-  });
+  Sync.sendMessage(to, getTabsDataToSend(tabs));
 }
 
 export function sendTabsToAllDevices(tabs) {
   tabs = tabs.filter(Sync.isSendableTab);
-  const data = {
-    type:       Constants.kSYNC_DATA_TYPE_TABS,
-    urls:       tabs.map(tab => tab.url),
-    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
-  };
+  const data = getTabsDataToSend(tabs);
   for (const device of Sync.getOtherDevices()) {
     Sync.sendMessage(device.id, data);
   }
+}
+
+function getTabsDataToSend(tabs) {
+  return {
+    type:       Constants.kSYNC_DATA_TYPE_TABS,
+    tabs:       tabs.map(tab => ({ url: tab.url, cookieStoreId: tab.cookieStoreId })),
+    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
+  };
 }
 
 export function manageSyncDevices(windowId) {
@@ -1071,35 +1071,39 @@ export function manageSyncDevices(windowId) {
 Sync.onMessage.addListener(async message => {
   const data = message.data;
   if (data.type != Constants.kSYNC_DATA_TYPE_TABS ||
-      !Array.isArray(data.urls))
+      !Array.isArray(data.tabs))
     return;
 
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
   const window = TabsStore.windows.get(windowId);
   const initialIndex = window.tabs.size;
-  window.toBeOpenedOrphanTabs += data.urls.length;
+  window.toBeOpenedOrphanTabs += data.tabs.length;
   let index = 0;
   const tabs = [];
-  for (const url of data.urls) {
+  for (const tab of data.tabs) {
     const createParams = {
-      url,
       windowId,
+      url:    tab.url,
       index:  initialIndex + index,
       active: index == 0
     };
-    let tab;
+    if (tab.cookieStoreId &&
+        tab.cookieStoreId != 'firefox-default' &&
+        ContextualIdentities.get(tab.cookieStoreId))
+      createParams.cookieStoreId = tab.cookieStoreId;
+    let openedTab;
     try {
-      tab = await browser.tabs.create(createParams);
+      openedTab = await browser.tabs.create(createParams);
     }
     catch(error) {
       console.log(error);
     }
-    if (!tab)
-      tab = await browser.tabs.create({
+    if (!openedTab)
+      openedTab = await browser.tabs.create({
         ...createParams,
-        url: `about:blank?${url}`
+        url: `about:blank?${tab.url}`
       });
-    tabs.push(tab);
+    tabs.push(openedTab);
     index++;
   }
 
