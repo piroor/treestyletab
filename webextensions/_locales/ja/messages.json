@@ -155,6 +155,32 @@
   "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },
 
+  "syncDeviceDefaultName": { "message": "$PLATFORM$ の $BROWSER$",
+    "placeholders": {
+      "PLATFORM": { "content": "$1", "example": "Firefox" },
+      "BROWSER":  { "content": "$2", "example": "Windows" }
+    }},
+  "syncDeviceMissingDeviceName": { "message": "名前が設定されていない端末" },
+  "syncDeviceUnknownDevice":     { "message": "不明な端末" },
+  "receiveTabs_notification_title":            { "message": "$DEVICE$ からのタブ",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "receiveTabs_notification_message":          { "message": "$URL$",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" }
+    }},
+  "receiveTabs_notification_title_multiple":   { "message": "$DEVICE$ からのタブ",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "receiveTabs_notification_message_multiple": { "message": "$URL$\nを含む $ALL$ 個のタブ",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" },
+      "ALL": { "content": "$2", "example": "4" },
+      "REST": { "content": "$3", "example": "3" }
+    }},
+
   "startup_notification_title_installed":   { "message": "Tree Style Tabを使い始める方へ" },
   "startup_notification_message_installed": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ここをクリックして権限を設定してください。" },
   "startup_notification_title_updated":     { "message": "Tree Style Tabの動作が変わりました" },

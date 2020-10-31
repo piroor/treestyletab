@@ -155,6 +155,32 @@
   "bookmarkFolderChooser_blank":         { "message": "(no name)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Use this folder" },
 
+  "syncDeviceDefaultName": { "message": "$BROWSER$ on $PLATFORM$",
+    "placeholders": {
+      "PLATFORM": { "content": "$1", "example": "Firefox" },
+      "BROWSER":  { "content": "$2", "example": "Windows" }
+    }},
+  "syncDeviceMissingDeviceName": { "message": "an unnamed device" },
+  "syncDeviceUnknownDevice":     { "message": "an unknown device" },
+  "receiveTabs_notification_title":            { "message": "Tab from $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "receiveTabs_notification_message":          { "message": "$URL$",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" }
+    }},
+  "receiveTabs_notification_title_multiple":   { "message": "Tabs from $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "receiveTabs_notification_message_multiple": { "message": "$URL$\nand $REST$ more tab(s)",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" },
+      "ALL": { "content": "$2", "example": "4" },
+      "REST": { "content": "$3", "example": "3" }
+    }},
+
   "startup_notification_title_installed":   { "message": "For newcomer of Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Some extra permissions are required for more natural user experiences. Please click here to grant them." },
   "startup_notification_title_updated":     { "message": "Noticeable Changes on Tree Style Tab" },

@@ -52,7 +52,9 @@ export async function generateDeviceInfo({ name, icon } = {}) {
   ]);
   return {
     id:   `device-${Date.now()}-${Math.round(Math.random() * 65000)}`,
-    name: name === undefined ? `${browserInfo.name} on ${platformInfo.os}` : (name || null),
+    name: name === undefined ?
+      browser.i18n.getMessage('syncDeviceDefaultName', [platformInfo.os, browserInfo.name]) :
+      (name || null),
     icon: icon || null
   };
 }
@@ -236,6 +238,13 @@ export function getOtherDevices() {
     result.push(info);
   }
   return result.sort((a, b) => a.name > b.name);
+}
+
+export function getDeviceName(id) {
+  const devices = configs.syncDevices || {};
+  if (!(id in devices) || !devices[id])
+    return browser.i18n.getMessage('syncDeviceUnknownDevice');
+  return String(devices[id].name || '').trim() || browser.i18n.getMessage('syncDeviceMissingDeviceName');
 }
 
 // https://searchfox.org/mozilla-central/rev/d866b96d74ec2a63f09ee418f048d23f4fd379a2/browser/base/content/browser-sync.js#1176

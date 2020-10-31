@@ -10,7 +10,8 @@ import {
   dumpTab,
   wait,
   countMatched,
-  configs
+  configs,
+  notify
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -1077,6 +1078,21 @@ Sync.onMessage.addListener(async message => {
   if (data.type != Constants.kSYNC_DATA_TYPE_TABS ||
       !Array.isArray(data.tabs))
     return;
+
+  const multiple = data.tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title: browser.i18n.getMessage(
+      `receiveTabs_notification_title${multiple}`,
+      [Sync.getDeviceName(message.from)]
+    ),
+    message: browser.i18n.getMessage(
+      `receiveTabs_notification_message${multiple}`,
+      data.tabs.length > 1 ?
+        [data.tabs[0].url, data.tabs.length, data.tabs.length - 1] :
+        [data.tabs[0].url]
+    ),
+    timeout: configs.syncReceivedTabsNotificationTimeout
+  });
 
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
   const window = TabsStore.windows.get(windowId);

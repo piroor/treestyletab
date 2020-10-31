@@ -357,6 +357,7 @@ export const configs = new Configs({
   // Must be same to "services.sync.engine.tabs.filteredUrls"
   syncUnsendableUrlPattern: '^(about:.*|resource:.*|chrome:.*|wyciwyg:.*|file:.*|blob:.*|moz-extension:.*)$',
   syncLastMessageTimestamp: 0,
+  syncReceivedTabsNotificationTimeout: 20 * 1000,
   chunkedSyncData0: '',
   chunkedSyncData1: '',
   chunkedSyncData2: '',
