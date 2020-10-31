@@ -20,6 +20,7 @@ import * as Bookmark from '/common/bookmark.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Sync from '/common/sync.js';
 
 import Tab from '/common/Tab.js';
 
@@ -1037,3 +1038,29 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
 
   openBookmarksWithStructure(items, { activeIndex, discarded });
 }
+
+
+export function sendTabsToDevice(tabs, to) {
+  tabs = tabs.filter(Sync.isSendableTab);
+  Sync.sendMessage(to, {
+    urls:      tabs.map(tab => tab.url),
+    structure: TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
+  });
+}
+
+export function sendTabsToAllDevices(tabs) {
+  tabs = tabs.filter(Sync.isSendableTab);
+  const urls      = tabs.map(tab => tab.url);
+  const structure = TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent);
+  for (const device of Sync.getOtherDevices()) {
+    Sync.sendMessage(device.id, { urls, structure });
+  }
+}
+
+export function manageSyncDevices(windowId) {
+  browser.tabs.create({
+    windowId,
+    url: `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`
+  });
+}
+

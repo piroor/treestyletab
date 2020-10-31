@@ -623,6 +623,9 @@
   "tabContextMenu_moveTabToStart_label": { "message": "Move to &Start" },
   "tabContextMenu_moveTabToEnd_label":   { "message": "Move to &End" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
+  "tabContextMenu_sendTabsToDevice_label": { "message": "Se&nd Tab to Device" },
+  "tabContextMenu_sendTabsToAllDevices_label": { "message": "Send to All Devices" },
+  "tabContextMenu_manageSyncDevices_label": { "message": "Manage Devices…" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "Close &Multiple Tabs" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
@@ -642,6 +645,7 @@
   "tabContextMenu_duplicate_label_multiselected":   { "message": "&Duplicate Tabs" },
 
   "tabContextMenu_moveTab_label_multiselected": { "message": "Mo&ve Tabs" },
+  "tabContextMenu_sendTabsToDevice_label_multiselected": { "message": "Se&nd %S Tabs to Device" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "&Bookmark Tabs…" },
   "tabContextMenu_bookmarkSelected_label":       { "message": "Bookmark Selected &Tabs…" },

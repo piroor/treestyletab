@@ -619,6 +619,9 @@
   "tabContextMenu_moveTabToStart_label": { "message": "先頭へ移動(&S)" },
   "tabContextMenu_moveTabToEnd_label":   { "message": "末尾へ移動(&E)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
+  "tabContextMenu_sendTabsToDevice_label": { "message": "%S 個のタブを端末へ送信(&N)" },
+  "tabContextMenu_sendTabsToAllDevices_label": { "message": "すべての端末に送信" },
+  "tabContextMenu_manageSyncDevices_label": { "message": "端末を管理..." },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "複数のタブを閉じる(&M)" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
@@ -638,6 +641,7 @@
   "tabContextMenu_unpin_label_multiselected":       { "message": "タブのピン留めを外す(&P)" },
 
   "tabContextMenu_moveTab_label_multiselected": { "message": "選択したタブを移動(&V)" },
+  "tabContextMenu_sendTabsToDevice_label_multiselected": { "message": "%S 個のタブを端末へ送信(&N)" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "タブをブックマーク(&B)…" },
   "tabContextMenu_bookmarkSelected_label":       { "message": "選択したタブをブックマーク(&T)…" },

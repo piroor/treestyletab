@@ -17,6 +17,7 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Sync from '/common/sync.js';
 
 import Tab from '/common/Tab.js';
 
@@ -113,6 +114,10 @@ const mItemsById = {
   'context_openTabInWindow': {
     parentId: 'context_moveTab',
     title:    browser.i18n.getMessage('tabContextMenu_tearOff_label')
+  },
+  'context_sendTabsToDevice': {
+    title:              browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label_multiselected')
   },
   'context_separator:afterSendTab': {
     type: 'separator'
@@ -368,6 +373,91 @@ function updateContextualIdentities() {
   }
 }
 
+let mLastSendToDeviceItemsSignature = null;
+const mSendToDeviceItems = new Set();
+function updateSendToDeviceItems() {
+  const devices = Sync.getOtherDevices();
+  const signature = JSON.stringify(devices.map(device => ({ id: device.id, name: device.name })));
+  if (signature == mLastSendToDeviceItemsSignature)
+    return false;
+
+  mLastSendToDeviceItemsSignature = signature;
+
+  for (const item of mSendToDeviceItems) {
+    const id = item.id;
+    browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_REMOVE,
+      params: id
+    }, browser.runtime);
+  }
+  mSendToDeviceItems.clear();
+
+  const baseParams = {
+    parentId:            'context_sendTabsToDevice',
+    contexts:            ['tab'],
+    viewTypes:           ['sidebar', 'tab', 'popup'],
+    documentUrlPatterns: SIDEBAR_URL_PATTERN
+  };
+
+  if (devices.length > 0) {
+    for (const device of devices) {
+      const item = {
+        ...baseParams,
+        type:  'normal',
+        id:    `context_sendTabsToDevice:device:${device.id}`,
+        title: device.name
+      };
+      browser.menus.create(item);
+      onMessageExternal({
+        type: TSTAPI.kCONTEXT_MENU_CREATE,
+        params: item
+      }, browser.runtime);
+      mSendToDeviceItems.add(item);
+    }
+
+    const separator = {
+      ...baseParams,
+      type: 'separator',
+      id:   'context_sendTabsToDevice:separator'
+    };
+    browser.menus.create(separator);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: separator
+    }, browser.runtime);
+    mSendToDeviceItems.add(separator);
+
+    const sendToAllItem = {
+      ...baseParams,
+      type:  'normal',
+      id:    'context_sendTabsToDevice:all',
+      title: browser.i18n.getMessage('tabContextMenu_sendTabsToAllDevices_label')
+    };
+    browser.menus.create(sendToAllItem);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: sendToAllItem
+    }, browser.runtime);
+    mSendToDeviceItems.add(sendToAllItem);
+  }
+
+  const manageItem = {
+    ...baseParams,
+    type:  'normal',
+    id:    'context_sendTabsToDevice:manage',
+    title: browser.i18n.getMessage('tabContextMenu_manageSyncDevices_label')
+  };
+  browser.menus.create(manageItem);
+  onMessageExternal({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: manageItem
+  }, browser.runtime);
+  mSendToDeviceItems.add(manageItem);
+
+  return true;
+}
+
 
 function updateItem(id, state = {}) {
   let modified = false;
@@ -378,7 +468,7 @@ function updateItem(id, state = {}) {
   };
   if ('checked' in state)
     updateInfo.checked = state.checked;
-  const title = state.title || (state.multiselected && item.titleMultiselected) || item.title;
+  const title = String(state.title || (state.multiselected && item.titleMultiselected) || item.title).replace(/%S/g, state.count || 0);
   if (title) {
     updateInfo.title = title;
     modified = title != item.lastTitle;
@@ -531,6 +621,13 @@ async function onShown(info, contextTab) {
     enabled: emulate && contextTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
+
+  updateItem('context_sendTabsToDevice', {
+    enabled: emulate && contextTabs.filter(Sync.isSendableTab).length > 0,
+    multiselected,
+    count: contextTabs.length
+  }) && modifiedItemsCount++;
+  updateSendToDeviceItems() && modifiedItemsCount++;
 
   updateItem('context_topLevel_collapseTree', {
     visible: emulate && contextTab && configs.context_topLevel_collapseTree,
@@ -844,6 +941,12 @@ async function onClick(info, contextTab) {
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
       break;
+    case 'context_sendTabsToDevice:all':
+      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
+      break;
+    case 'context_sendTabsToDevice:manage':
+      Commands.manageSyncDevices(windowId);
+      break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       browser.tabs.highlight({
@@ -927,6 +1030,11 @@ async function onClick(info, contextTab) {
       if (contextTab &&
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
+
+      const sendToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
+      if (contextTab &&
+          sendToDeviceMatch)
+        Commands.sendTabsToDevice(multiselectedTabs || [contextTab], sendToDeviceMatch[1]);
 
       if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;

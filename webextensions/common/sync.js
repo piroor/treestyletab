@@ -194,3 +194,14 @@ export function getOtherDevices() {
   }
   return result.sort((a, b) => a.name > b.name);
 }
+
+// https://searchfox.org/mozilla-central/rev/d866b96d74ec2a63f09ee418f048d23f4fd379a2/browser/base/content/browser-sync.js#1176
+export function isSendableTab(tab) {
+  if (!tab.url ||
+      tab.url.length > 65535)
+    return false;
+
+  if (!isSendableTab.unsendableUrlMatcher)
+    isSendableTab.unsendableUrlMatcher = new RegExp(configs.syncUnsendableUrlPattern);
+  return !isSendableTab.unsendableUrlMatcher.test(tab.url);
+}

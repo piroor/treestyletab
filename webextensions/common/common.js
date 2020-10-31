@@ -343,6 +343,8 @@ export const configs = new Configs({
   syncDevices:    {},
   syncDevicesLocalCache: {},
   syncDeviceExpirationDays: 14,
+  // Must be same to "services.sync.engine.tabs.filteredUrls"
+  syncUnsendableUrlPattern: '^(about:.*|resource:.*|chrome:.*|wyciwyg:.*|file:.*|blob:.*|moz-extension:.*)$',
   chunkedSyncData0: '',
   chunkedSyncData1: '',
   chunkedSyncData2: '',
