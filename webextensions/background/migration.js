@@ -210,6 +210,13 @@ export function tryNotifyNewFeatures() {
     return;
   configs.notifiedFeaturesVersion = featuresVersion;
 
+  if (isInitialInstall &&
+      !configs.syncOtherDevicesDetected &&
+      Object.keys(configs.syncDevices).length > 1) {
+    configs.syncAvailableNotified = true;
+    configs.syncOtherDevicesDetected = true;
+  }
+
   const suffix = isInitialInstall ? 'installed' : 'updated';
   const url = isInitialInstall ? Constants.kSHORTHAND_URIS.startup : browser.i18n.getMessage('message_startup_history_uri');
   notify({
