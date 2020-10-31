@@ -63,14 +63,14 @@ function updateSelf() {
   devices[configs.syncDeviceInfo.id] = clone(configs.syncDeviceInfo);
 
   if (configs.syncDeviceExpirationDays > 0) {
-  const expireDateInSeconds = now - (60 * 60 * configs.syncDeviceExpirationDays);
-  for (const [id, info] of Object.entries(devices)) {
-    if (info &&
-        info.timestamp < expireDateInSeconds) {
-      delete devices[id];
-      log('updateSelf: expired ', info);
+    const expireDateInSeconds = now - (60 * 60 * configs.syncDeviceExpirationDays);
+    for (const [id, info] of Object.entries(devices)) {
+      if (info &&
+          info.timestamp < expireDateInSeconds) {
+        delete devices[id];
+        log('updateSelf: expired ', info);
+      }
     }
-  }
   }
 
   configs.syncDevices = devices;
