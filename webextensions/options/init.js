@@ -660,7 +660,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }, 250);
   });
   const deviceInfoIconRadiogroup = document.querySelector('#syncDeviceInfoIcon');
-  deviceInfoIconRadiogroup.addEventListener('change', event => {
+  deviceInfoIconRadiogroup.addEventListener('change', _event => {
     if (deviceInfoIconRadiogroup.$throttling)
       clearTimeout(deviceInfoIconRadiogroup.$throttling);
     deviceInfoIconRadiogroup.$throttling = setTimeout(async () => {
