@@ -222,8 +222,8 @@ function initOtherDevices() {
   range.deleteContents();
   for (const device of Sync.getOtherDevices()) {
     const contents = range.createContextualFragment(`
-      <li id="otherDevice:${sanitizeForHTMLText(device.id)}"
-         ><label>${sanitizeForHTMLText(device.name)}
+      <li id="otherDevice:${sanitizeForHTMLText(String(device.id))}"
+         ><label>${sanitizeForHTMLText(String(device.name))}
                  <button title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label')))}
                         >${sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label'))}</button></label></li>
     `.trim());
