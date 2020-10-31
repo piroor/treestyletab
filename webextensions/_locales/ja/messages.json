@@ -192,6 +192,9 @@
   "message_startup_description_key": { "message": "「F1」キー" },
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },
   "message_startup_description_3": { "message": "」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示して下さい。" },
+  "message_startup_description_sync_before": { "message": "Firefox Sync経由でのタブの他の端末への送信は、TSTが動作している端末に対してのみ行えます。事前にFirefoxの設定画面からFirefox Syncを有効化しておき、他の端末でもTSTを有効化しておいてください。また、" },
+  "message_startup_description_sync_link":   { "message": "端末名は手動で設定する必要があります" },
+  "message_startup_description_sync_after":  { "message": "。" },
 
   "message_startup_history_before":     { "message": "更新によって変更された動作は、設定で元の動作に戻せる場合があります。詳細は" },
   "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },

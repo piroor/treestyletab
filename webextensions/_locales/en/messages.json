@@ -192,6 +192,9 @@
   "message_startup_description_key": { "message": "\"F1\" key" },
   "message_startup_description_2": { "message": " or click the " },
   "message_startup_description_3": { "message": " button in the toolbar, to activate the sidebar panel." },
+  "message_startup_description_sync_before": { "message": "Tabs can be sent via Firefox Sync only to devices with TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also. Moreover," },
+  "message_startup_description_sync_link":   { "message": "the device name should be configured manually" },
+  "message_startup_description_sync_after":  { "message": "." },
 
   "message_startup_history_before":     { "message": "Changed behaviors may be (or not) restored with workaround options. See " },
   "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
@@ -325,7 +328,7 @@
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Keep tabs pended until they become active" },
 
   "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices with the context menu via Firefox Sync" },
-  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent to only devices TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also." },
+  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also." },
   "config_syncDeviceInfo_name_label": { "message": "Name of this device:" },
   "config_syncDeviceInfo_name_description_before": { "message": "TST cannot detect the name of this device you configured for Firefox Sync, due to restrictions of WebExtensions API. Please set an identifiable name for this device manually. (It is recommended to copy " },
   "config_syncDeviceInfo_name_description_link": { "message": "the device name for Firefox Sync" },

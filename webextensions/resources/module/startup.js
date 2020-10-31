@@ -9,9 +9,11 @@ import '../../extlib/l10n.js';
 
 import { configs } from '/common/common.js';
 import * as Permissions from '/common/permissions.js';
+import * as Constants from '/common/constants.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
+  document.querySelector('#syncTabsToDeviceOptionsLink').href = `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`;
 
   Permissions.bindToCheckbox(
     Permissions.ALL_URLS,
