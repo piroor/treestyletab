@@ -19,6 +19,7 @@ function log(...args) {
 
 export const onMessage = new EventListenerManager();
 export const onNewDevice = new EventListenerManager();
+export const onUpdatedDevice = new EventListenerManager();
 export const onObsoleteDevice = new EventListenerManager();
 
 export async function init() {
@@ -115,12 +116,17 @@ function updateDevices() {
   const local  = clone(configs.syncDevicesLocalCache);
   log('devices updated: ', local, remote);
   for (const [id, info] of Object.entries(remote)) {
-    if (id in local ||
-        id == configs.syncDeviceInfo.id)
+    if (id == configs.syncDeviceInfo.id)
       continue;
-    log('new device: ', info);
-    onNewDevice.dispatch(info);
     local[id] = info;
+    if (id in local) {
+      log('updated device: ', info);
+      onUpdatedDevice.dispatch(info);
+    }
+    else {
+      log('new device: ', info);
+      onNewDevice.dispatch(info);
+    }
   }
   for (const [id, info] of Object.entries(local)) {
     if (id in remote ||
