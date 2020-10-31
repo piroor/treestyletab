@@ -179,6 +179,7 @@ async function receiveMessage() {
 }
 
 export async function sendMessage(to, data) {
+  try {
   const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
   messages.push({
     timestamp: Date.now(),
@@ -188,6 +189,10 @@ export async function sendMessage(to, data) {
   });
   log('sendMessage: queued messages => ', messages);
   await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
+  }
+  catch(error) {
+    console.log('Sync.sendMessage: failed to send message ', error);
+  }
 }
 
 function clone(value) {
