@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Implement the "Send Tab to Device" context menu command based on Firefox Sync. It is just a workaround implementation based on the Sync Storage, because [a genuine WebExtensios API to use Firefox Sync won't be implemented for now](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183).
  - 3.5.34 (2020.10.22)
    * Create group for tabs opened from a pinned tab correctly, even if "no control" is chosen for the insertion position of new child tabs. (regression on 3.5.33)
  - 3.5.33 (2020.10.20)
