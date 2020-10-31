@@ -13,6 +13,7 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Bookmark from '/common/bookmark.js';
+import * as Sync from '/common/sync.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 import Tab from '/common/Tab.js';
@@ -562,7 +563,14 @@ function onTabContextMenuShown(info, tab) {
 
   for (const item of mTabItems) {
     let newEnabled;
-    if (item.requireTree) {
+    if (item.id == 'sendTreeToDevice') {
+      newEnabled = (
+        hasChild &&
+        Sync.getOtherDevices().length > 0 &&
+        contextTabs.filter(Sync.isSendableTab).length > 0
+      );
+    }
+    else if (item.requireTree) {
       newEnabled = hasChild;
       switch (item.id) {
         case 'collapseTree':
