@@ -645,11 +645,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
   const deviceName = (configs.syncDeviceInfo || {}).name || '';
   deviceInfoNameField.value = deviceName;
-  deviceInfoNameField.addEventListener('input', async () => {
+  deviceInfoNameField.addEventListener('input', () => {
+    if (deviceInfoNameField.$throttling)
+      clearTimeout(deviceInfoNameField.$throttling);
+    deviceInfoNameField.$throttling = setTimeout(async () => {
+      delete deviceInfoNameField.$throttling;
     configs.syncDeviceInfo = JSON.parse(JSON.stringify({
       ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
       name: deviceInfoNameField.value
     }));
+    }, 250);
   });
   initOtherDevices();
   const otherDevices = document.querySelector('#otherDevices');
