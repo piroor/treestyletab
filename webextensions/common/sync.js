@@ -80,7 +80,7 @@ function updateSelf() {
 
   configs.syncDeviceInfo = {
     ...clone(configs.syncDeviceInfo),
-    timestamp: getNow()
+    timestamp: Date.now()
   };
 
   updateDevices();
@@ -122,7 +122,7 @@ function updateDevices() {
   }
 
   if (configs.syncDeviceExpirationDays > 0) {
-    const expireDateInSeconds = getNow() - (60 * 60 * configs.syncDeviceExpirationDays);
+    const expireDateInSeconds = Date.now() - (1000 * 60 * 60 * configs.syncDeviceExpirationDays);
     for (const [id, info] of Object.entries(local)) {
       if (info &&
           info.timestamp < expireDateInSeconds) {
@@ -158,8 +158,11 @@ async function receiveMessage() {
       return;
     }
     const restMessages = messages.filter(message => {
+      if (message.timestamp <= configs.syncLastMessageTimestamp)
+        return false;
       if (message.to == configs.syncDeviceInfo.id) {
         log('receiveMessage receive: ', message);
+        configs.syncLastMessageTimestamp = message.timestamp;
         onMessage.dispatch(message);
         return false;
       }
@@ -176,16 +179,12 @@ async function receiveMessage() {
 export async function sendMessage(to, data) {
   const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
   messages.push({
-    timestamp: getNow(),
+    timestamp: Date.now(),
     from:      configs.syncDeviceInfo.id,
     to,
     data
   });
   await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
-}
-
-function getNow() {
-  return Math.floor(Date.now() / 1000);
 }
 
 function clone(value) {

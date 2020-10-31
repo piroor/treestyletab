@@ -39,6 +39,7 @@ const localKeys = mapAndFilter(`
   subMenuOpenDelay
   syncDeviceInfo
   syncDevicesLocalCache
+  syncLastMessageTimestamp
   testKey
 `.trim().split('\n'), key => {
   key = key.trim();
@@ -347,6 +348,7 @@ export const configs = new Configs({
   syncDeviceExpirationDays: 14,
   // Must be same to "services.sync.engine.tabs.filteredUrls"
   syncUnsendableUrlPattern: '^(about:.*|resource:.*|chrome:.*|wyciwyg:.*|file:.*|blob:.*|moz-extension:.*)$',
+  syncLastMessageTimestamp: 0,
   chunkedSyncData0: '',
   chunkedSyncData1: '',
   chunkedSyncData2: '',
