@@ -637,7 +637,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
   updateItem('context_topLevel_sendTreeToDevice', {
-    visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice,
+    visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
     enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
     multiselected
   }) && modifiedItemsCount++;
