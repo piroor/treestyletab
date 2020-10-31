@@ -300,7 +300,7 @@ Tab.onChangeMultipleTabsRestorability.addListener(multipleTabsRestorable => {
 
 const mContextualIdentityItems = new Set();
 function updateContextualIdentities() {
-  for (const item of mContextualIdentityItems.values()) {
+  for (const item of mContextualIdentityItems) {
     const id = item.id;
     if (id in mItemsById)
       delete mItemsById[id];
@@ -361,7 +361,7 @@ function updateContextualIdentities() {
     }, browser.runtime);
     mContextualIdentityItems.add(item);
   });
-  for (const item of mContextualIdentityItems.values()) {
+  for (const item of mContextualIdentityItems) {
     mItemsById[item.id] = item;
     item.lastVisible = true;
     item.lastEnabled = true;
