@@ -173,13 +173,13 @@ async function receiveMessage() {
   }
 }
 
-export async function sendMessage(to, message) {
+export async function sendMessage(to, data) {
   const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
   messages.push({
     timestamp: getNow(),
     from:      configs.syncDeviceInfo.id,
     to,
-    message
+    data
   });
   await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
 }
