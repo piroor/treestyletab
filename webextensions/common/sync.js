@@ -157,6 +157,7 @@ async function receiveMessage() {
       log('invalid data: ', messages);
       return;
     }
+    log('receiveMessage: queued messages => ', messages);
     const restMessages = messages.filter(message => {
       if (message.timestamp <= configs.syncLastMessageTimestamp)
         return false;
@@ -168,6 +169,7 @@ async function receiveMessage() {
       }
       return true;
     });
+    log('receiveMessage: restMessages => ', restMessages);
     if (restMessages.length != messages.length)
       await setChunkedConfig('chunkedSyncData', JSON.stringify(restMessages));
   }
@@ -184,6 +186,7 @@ export async function sendMessage(to, data) {
     to,
     data
   });
+  log('sendMessage: queued messages => ', messages);
   await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
 }
 
