@@ -101,6 +101,7 @@ export const configs = new Configs({
   context_expandTreeRecursively: true,
   context_expandAll: true,
   context_bookmarkTree: true,
+  context_sendTreeToDevice: true,
   context_groupTabs: true,
   context_ungroupTabs: true,
 
@@ -116,6 +117,7 @@ export const configs = new Configs({
   context_topLevel_expandTreeRecursively: false,
   context_topLevel_expandAll: false,
   context_topLevel_bookmarkTree: false,
+  context_topLevel_sendTreeToDevice: false,
   context_topLevel_groupTabs: false,
   context_topLevel_ungroupTabs: false,
 

@@ -119,6 +119,10 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label_multiselected')
   },
+  'context_topLevel_sendTreeToDevice': {
+    title:              browser.i18n.getMessage('context_sendTreeToDevice_label'),
+    titleMultiselected: browser.i18n.getMessage('context_sendTreeToDevice_label_multiselected')
+  },
   'context_separator:afterSendTab': {
     type: 'separator'
   },
@@ -373,17 +377,18 @@ function updateContextualIdentities() {
   }
 }
 
-let mLastSendToDeviceItemsSignature = null;
-const mSendToDeviceItems = new Set();
-function updateSendToDeviceItems() {
+const mLastDevicesSignature = new Map();
+const mSendToDeviceItems    = new Map();
+export function updateSendToDeviceItems(parentId, { manage } = {}) {
   const devices = Sync.getOtherDevices();
   const signature = JSON.stringify(devices.map(device => ({ id: device.id, name: device.name })));
-  if (signature == mLastSendToDeviceItemsSignature)
+  if (signature == mLastDevicesSignature.get(parentId))
     return false;
 
-  mLastSendToDeviceItemsSignature = signature;
+  mLastDevicesSignature.set(parentId, signature);
 
-  for (const item of mSendToDeviceItems) {
+  const items = mSendToDeviceItems.get(parentId) || new Set();
+  for (const item of items) {
     const id = item.id;
     browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
     onMessageExternal({
@@ -391,10 +396,10 @@ function updateSendToDeviceItems() {
       params: id
     }, browser.runtime);
   }
-  mSendToDeviceItems.clear();
+  items.clear();
 
   const baseParams = {
-    parentId:            'context_sendTabsToDevice',
+    parentId,
     contexts:            ['tab'],
     viewTypes:           ['sidebar', 'tab', 'popup'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
@@ -405,7 +410,7 @@ function updateSendToDeviceItems() {
       const item = {
         ...baseParams,
         type:  'normal',
-        id:    `context_sendTabsToDevice:device:${device.id}`,
+        id:    `${parentId}:device:${device.id}`,
         title: device.name
       };
       browser.menus.create(item);
@@ -413,25 +418,25 @@ function updateSendToDeviceItems() {
         type: TSTAPI.kCONTEXT_MENU_CREATE,
         params: item
       }, browser.runtime);
-      mSendToDeviceItems.add(item);
+      items.add(item);
     }
 
     const separator = {
       ...baseParams,
       type: 'separator',
-      id:   'context_sendTabsToDevice:separator'
+      id:   `${parentId}:separator`
     };
     browser.menus.create(separator);
     onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: separator
     }, browser.runtime);
-    mSendToDeviceItems.add(separator);
+    items.add(separator);
 
     const sendToAllItem = {
       ...baseParams,
       type:  'normal',
-      id:    'context_sendTabsToDevice:all',
+      id:    `${parentId}:all`,
       title: browser.i18n.getMessage('tabContextMenu_sendTabsToAllDevices_label')
     };
     browser.menus.create(sendToAllItem);
@@ -439,13 +444,14 @@ function updateSendToDeviceItems() {
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: sendToAllItem
     }, browser.runtime);
-    mSendToDeviceItems.add(sendToAllItem);
+    items.add(sendToAllItem);
   }
 
+  if (manage) {
   const manageItem = {
     ...baseParams,
     type:  'normal',
-    id:    'context_sendTabsToDevice:manage',
+    id:    `${parentId}:manage`,
     title: browser.i18n.getMessage('tabContextMenu_manageSyncDevices_label')
   };
   browser.menus.create(manageItem);
@@ -453,8 +459,10 @@ function updateSendToDeviceItems() {
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: manageItem
   }, browser.runtime);
-  mSendToDeviceItems.add(manageItem);
+  items.add(manageItem);
+  }
 
+  mSendToDeviceItems.set(parentId, items);
   return true;
 }
 
@@ -627,7 +635,13 @@ async function onShown(info, contextTab) {
     multiselected,
     count: contextTabs.length
   }) && modifiedItemsCount++;
-  updateSendToDeviceItems() && modifiedItemsCount++;
+  updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
+  updateItem('context_topLevel_sendTreeToDevice', {
+    visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice,
+    enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
+    multiselected
+  }) && modifiedItemsCount++;
+  mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
 
   updateItem('context_topLevel_collapseTree', {
     visible: emulate && contextTab && configs.context_topLevel_collapseTree,

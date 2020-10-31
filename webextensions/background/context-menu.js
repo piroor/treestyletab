@@ -120,6 +120,10 @@ const mTabItemsById = {
     title:              browser.i18n.getMessage('context_bookmarkTree_label'),
     titleMultiselected: browser.i18n.getMessage('context_bookmarkTree_label_multiselected')
   },
+  'sendTreeToDevice': {
+    title:              browser.i18n.getMessage('context_sendTreeToDevice_label'),
+    titleMultiselected: browser.i18n.getMessage('context_sendTreeToDevice_label_multiselected')
+  },
   'groupTabs': {
     title:                browser.i18n.getMessage('context_groupTabs_label'),
     requireMultiselected: true
@@ -147,6 +151,7 @@ const mTabItemsById = {
 };
 const mTabItems = [];
 const mGroupedTabItems = [];
+const mGroupedTabItemsById = {};
 for (const id of Object.keys(mTabItemsById)) {
   const item = mTabItemsById[id];
   item.id = id;
@@ -162,11 +167,14 @@ for (const id of Object.keys(mTabItemsById)) {
   item.lastVisible = item.visible = false;
   item.lastTitle = item.title;
   mTabItems.push(item);
-  mGroupedTabItems.push({
+
+  const groupedItem = {
     ...item,
     id:       `grouped:${id}`,
     parentId: kROOT_TAB_ITEM
-  });
+  };
+  mGroupedTabItems.push(groupedItem);
+  mGroupedTabItemsById[groupedItem.id] = groupedItem;
 }
 
 const mTabSeparator = {
@@ -393,6 +401,10 @@ function updateItems({ multiselected } = {}) {
   if (topLevelItems.updated)
     updated = true;
 
+  if (mGroupedTabItemsById['grouped:sendTreeToDevice'].lastVisible &&
+      TabContextMenu.updateSendToDeviceItems('grouped:sendTreeToDevice'))
+    updated = true;
+
   return updated;
 }
 
@@ -473,6 +485,10 @@ function onTabItemClick(info, tab) {
       Commands.bookmarkTree(contextTabs);
       break;
 
+    case 'sendTreeToDevice:all':
+      Commands.sendTabsToAllDevices(Tab.collectRootTabs(contextTabs).map(tab => [tab, ...tab.$TST.descendants]).flat());
+      break;
+
     case 'groupTabs':
       if (contextTabs.length > 1)
         TabsGroup.groupTabs(contextTabs, { broadcast: true });
@@ -501,8 +517,15 @@ function onTabItemClick(info, tab) {
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
 
-    default:
-      break;
+    default: {
+      const sendToDeviceMatch = info.menuItemId.match(/^sendTreeToDevice:device:(.+)$/);
+      if (contextTab &&
+          sendToDeviceMatch)
+        Commands.sendTabsToDevice(
+          Tab.collectRootTabs(contextTabs).map(tab => [tab, ...tab.$TST.descendants]).flat(),
+          sendToDeviceMatch[1]
+        );
+    }; break;
   }
 }
 TabContextMenu.onTSTItemClick.addListener(onTabItemClick);
