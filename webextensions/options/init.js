@@ -13,6 +13,7 @@ import {
   log,
   wait,
   configs,
+  sanitizeForHTMLText,
   loadUserStyleRules,
   saveUserStyleRules
 } from '/common/common.js';
@@ -23,6 +24,7 @@ import * as Bookmark from '/common/bookmark.js';
 import * as BrowserTheme from '/common/browser-theme.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Sync from '/common/sync.js';
 
 log.context = 'Options';
 const options = new Options(configs, {
@@ -71,6 +73,17 @@ function onConfigChanged(key) {
 
     case 'showExpertOptions':
       document.documentElement.classList.toggle('show-expert-options', configs.showExpertOptions);
+      break;
+
+    case 'syncDeviceInfo': {
+      const name = (configs.syncDeviceInfo || {}).name || '';
+      const field = document.querySelector('#syncDeviceInfoName');
+      if (name != field.value)
+        field.value = name;
+    }; break;
+
+    case 'syncDevices':
+      initOtherDevices();
       break;
 
     default:
@@ -201,6 +214,32 @@ async function updateBookmarksUI(enabled) {
     }
   }
 }
+
+function initOtherDevices() {
+  const container = document.querySelector('#otherDevices');
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  range.deleteContents();
+  for (const device of Sync.getOtherDevices()) {
+    const contents = range.createContextualFragment(`
+      <li id="otherDevice:${sanitizeForHTMLText(device.id)}"
+         ><label>${sanitizeForHTMLText(device.name)}
+                 <button title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label')))}
+                        >${sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label'))}</button></label></li>
+    `.trim());
+    range.insertNode(contents);
+  }
+  range.detach();
+}
+
+function removeOtherDevice(id) {
+  const devices = JSON.parse(JSON.stringify(configs.syncDevices));
+  if (!(id in devices))
+    return;
+  delete devices[id];
+  configs.syncDevices = devices;
+}
+
 
 async function showLogs() {
   browser.tabs.create({
@@ -602,6 +641,32 @@ window.addEventListener('DOMContentLoaded', async () => {
       container.appendChild(row);
     }
   });
+
+  const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
+  const deviceName = (configs.syncDeviceInfo || {}).name || '';
+  deviceInfoNameField.value = deviceName;
+  deviceInfoNameField.addEventListener('input', async () => {
+    configs.syncDeviceInfo = JSON.parse(JSON.stringify({
+      ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
+      name: deviceInfoNameField.value
+    }));
+  });
+  initOtherDevices();
+  const otherDevices = document.querySelector('#otherDevices');
+  otherDevices.addEventListener('click', event => {
+    if (event.target.localName != 'button')
+      return;
+    const item = event.target.closest('li');
+    removeOtherDevice(item.id.replace(/^otherDevice:/, ''));
+  });
+  otherDevices.addEventListener('keydown', event => {
+    if (event.key != 'Enter' ||
+        event.target.localName != 'button')
+      return;
+    const item = event.target.closest('li');
+    removeOtherDevice(item.id.replace(/^otherDevice:/, ''));
+  });
+
 
   options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
   onConfigChanged('successorTabControlLevel');

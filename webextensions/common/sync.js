@@ -23,15 +23,7 @@ export const onObsoleteDevice = new EventListenerManager();
 
 export async function init() {
   if (!configs.syncDeviceInfo) {
-    const [platformInfo, browserInfo] = await Promise.all([
-      browser.runtime.getPlatformInfo(),
-      browser.runtime.getBrowserInfo()
-    ]);
-    configs.syncDeviceInfo = {
-      id:   `${platformInfo.os}-${platformInfo.arch}/${browserInfo.vendor}-${browserInfo.name}-${browserInfo.version}-${browserInfo.buildID}/${Date.now()}-${Math.round(Math.random() * 65000)}`,
-      name: `${browserInfo.name} on ${platformInfo.os}`,
-      icon: null
-    };
+    configs.syncDeviceInfo = await generateDeviceInfo();
   }
   updateSelf();
   updateDevices();
@@ -52,7 +44,39 @@ export async function init() {
   });
 }
 
+export async function generateDeviceInfo({ name, icon } = {}) {
+  const [platformInfo, browserInfo] = await Promise.all([
+    browser.runtime.getPlatformInfo(),
+    browser.runtime.getBrowserInfo()
+  ]);
+  return {
+    id:   `device-${Date.now()}-${Math.round(Math.random() * 65000)}`,
+    name: name === undefined ? `${browserInfo.name} on ${platformInfo.os}` : (name || null),
+    icon: icon || null
+  };
+}
+
+configs.$addObserver(key => {
+  switch (key) {
+    case 'syncUnsendableUrlPattern':
+      isSendableTab.unsendableUrlMatcher = null;
+      break;
+
+    case 'syncDeviceInfo':
+      updateSelf();
+      break;
+
+    default:
+      break;
+  }
+});
+
 function updateSelf() {
+  if (updateSelf.updating)
+    return;
+
+  updateSelf.updating = true;
+
   const now = Math.floor(Date.now() / 1000);
   configs.syncDeviceInfo = {
     ...clone(configs.syncDeviceInfo),
@@ -76,6 +100,10 @@ function updateSelf() {
   configs.syncDevices = devices;
   configs.syncDevicesLocalCache = clone(devices);
   log('updateSelf: updated ', configs.syncDeviceInfo, devices);
+
+  setTimeout(() => {
+    updateSelf.updating = false;
+  }, 250);
 }
 
 function updateDevices() {
@@ -154,4 +182,15 @@ export async function sendMessage(to, message) {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+export function getOtherDevices() {
+  const devices = configs.syncDevices || {};
+  const result = [];
+  for (const [id, info] of Object.entries(devices)) {
+    if (id == configs.syncDeviceInfo.id)
+      continue;
+    result.push(info);
+  }
+  return result.sort((a, b) => a.name > b.name);
 }

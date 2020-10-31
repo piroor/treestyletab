@@ -293,6 +293,16 @@
   "config_extraItems_bookmarks_caption": { "message": "Additional Bookmarks Context Menu Items" },
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Keep tabs pended until they become active" },
 
+  "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices via Firefox Sync" },
+  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync. Please activate Firefox Sync with Firefox's options at first." },
+  "config_syncDeviceInfo_name_label": { "message": "Name of this device:" },
+  "config_syncDeviceInfo_name_description": { "message": "*TST cannot detect the name of this device you configured for Firefox Sync, due to restrictions of WebExtensions API. Please set an identifiable name for this device manually. (It is recommended to copy the device name for Firefox Sync.)" },
+  "config_syncDeviceExpirationDays_label_before": { "message": "Expire unused devices automatically when they are not connected over " },
+  "config_syncDeviceExpirationDays_label_after": { "message": " days (\"0\" means \"no expiration\")" },
+  "config_syncUnsendableUrlPattern_label": { "message": "Matching rule to treat unsendable URL of tabs (*This must be synchronized to the \"services.sync.engine.tabs.filteredUrls\" of Firefox itself):" },
+  "config_removeDeviceButton_label": { "message": "Delete" },
+  "config_removeDeviceButton_tooltip": { "message": "Delete this device from the list" },
+
 
   "config_newTab_caption": { "message": "New Tabs Behavior" },
 
