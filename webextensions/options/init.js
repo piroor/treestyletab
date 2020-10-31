@@ -77,9 +77,13 @@ function onConfigChanged(key) {
 
     case 'syncDeviceInfo': {
       const name = (configs.syncDeviceInfo || {}).name || '';
-      const field = document.querySelector('#syncDeviceInfoName');
-      if (name != field.value)
-        field.value = name;
+      const nameField = document.querySelector('#syncDeviceInfoName');
+      if (name != nameField.value)
+        nameField.value = name;
+      const icon = (configs.syncDeviceInfo || {}).icon || '';
+      const iconRadio = document.querySelector(`#syncDeviceInfoIcon input[type="radio"][value=${JSON.stringify(sanitizeForHTMLText(icon))}]`);
+      if (iconRadio && !iconRadio.checked)
+        iconRadio.checked = true;
     }; break;
 
     case 'syncDevices':
@@ -221,9 +225,10 @@ function initOtherDevices() {
   range.selectNodeContents(container);
   range.deleteContents();
   for (const device of Sync.getOtherDevices()) {
+    const icon = device.icon ? `<img src="/resources/icons/${sanitizeForHTMLText(device.icon)}.svg">` : '';
     const contents = range.createContextualFragment(`
       <li id="otherDevice:${sanitizeForHTMLText(String(device.id))}"
-         ><label>${sanitizeForHTMLText(String(device.name))}
+         ><label>${icon}${sanitizeForHTMLText(String(device.name))}
                  <button title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label')))}
                         >${sanitizeForHTMLText(browser.i18n.getMessage('config_removeDeviceButton_label'))}</button></label></li>
     `.trim());
@@ -643,8 +648,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 
   const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
-  const deviceName = (configs.syncDeviceInfo || {}).name || '';
-  deviceInfoNameField.value = deviceName;
   deviceInfoNameField.addEventListener('input', () => {
     if (deviceInfoNameField.$throttling)
       clearTimeout(deviceInfoNameField.$throttling);
@@ -653,6 +656,19 @@ window.addEventListener('DOMContentLoaded', async () => {
       configs.syncDeviceInfo = JSON.parse(JSON.stringify({
         ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
         name: deviceInfoNameField.value
+      }));
+    }, 250);
+  });
+  const deviceInfoIconRadiogroup = document.querySelector('#syncDeviceInfoIcon');
+  deviceInfoIconRadiogroup.addEventListener('change', event => {
+    if (deviceInfoIconRadiogroup.$throttling)
+      clearTimeout(deviceInfoIconRadiogroup.$throttling);
+    deviceInfoIconRadiogroup.$throttling = setTimeout(async () => {
+      delete deviceInfoIconRadiogroup.$throttling;
+      const checkedRadio = deviceInfoIconRadiogroup.querySelector('input[type="radio"]:checked');
+      configs.syncDeviceInfo = JSON.parse(JSON.stringify({
+        ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
+        icon: checkedRadio.value
       }));
     }, 250);
   });
@@ -678,6 +694,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   onConfigChanged('showExpertOptions');
   await wait(0);
   onConfigChanged('closeParentBehaviorMode');
+  onConfigChanged('syncDeviceInfo');
 
   if (focusedItem)
     focusedItem.scrollIntoView({ block: 'start' });

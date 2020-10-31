@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   mapAndFilter,
-  configs
+  configs,
+  sanitizeForHTMLText
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -413,6 +414,10 @@ export function updateSendToDeviceItems(parentId, { manage } = {}) {
         id:    `${parentId}:device:${device.id}`,
         title: device.name
       };
+      if (device.icon)
+        item.icons = {
+          '16': `/resources/icons/${sanitizeForHTMLText(device.icon)}.svg`
+        };
       browser.menus.create(item);
       onMessageExternal({
         type: TSTAPI.kCONTEXT_MENU_CREATE,

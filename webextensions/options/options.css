@@ -132,6 +132,10 @@ label input[type="checkbox"] ~ img {
   margin-bottom: 0.15em;
 }
 
+#syncTabsToDeviceOptions label input[type="radio"] ~ img {
+  border: 0 none;
+}
+
 .preview-image {
   background: no-repeat;
   background-size: contain;
