@@ -448,18 +448,18 @@ export function updateSendToDeviceItems(parentId, { manage } = {}) {
   }
 
   if (manage) {
-  const manageItem = {
-    ...baseParams,
-    type:  'normal',
-    id:    `${parentId}:manage`,
-    title: browser.i18n.getMessage('tabContextMenu_manageSyncDevices_label')
-  };
-  browser.menus.create(manageItem);
-  onMessageExternal({
-    type: TSTAPI.kCONTEXT_MENU_CREATE,
-    params: manageItem
-  }, browser.runtime);
-  items.add(manageItem);
+    const manageItem = {
+      ...baseParams,
+      type:  'normal',
+      id:    `${parentId}:manage`,
+      title: browser.i18n.getMessage('tabContextMenu_manageSyncDevices_label')
+    };
+    browser.menus.create(manageItem);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: manageItem
+    }, browser.runtime);
+    items.add(manageItem);
   }
 
   mSendToDeviceItems.set(parentId, items);
