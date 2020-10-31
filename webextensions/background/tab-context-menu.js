@@ -961,6 +961,9 @@ async function onClick(info, contextTab) {
     case 'context_sendTabsToDevice:manage':
       Commands.manageSyncDevices(windowId);
       break;
+    case 'context_topLevel_sendTreeToDevice:all':
+      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab], { recursively: true });
+      break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       browser.tabs.highlight({
@@ -1045,10 +1048,21 @@ async function onClick(info, contextTab) {
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
 
-      const sendToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
+      const sendTabsToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
       if (contextTab &&
-          sendToDeviceMatch)
-        Commands.sendTabsToDevice(multiselectedTabs || [contextTab], sendToDeviceMatch[1]);
+          sendTabsToDeviceMatch)
+        Commands.sendTabsToDevice(
+          multiselectedTabs || [contextTab],
+          { to: sendTabsToDeviceMatch[1] }
+        );
+      const sendTreeToDeviceMatch = info.menuItemId.match(/^context_topLevel_sendTreeToDevice:device:(.+)$/);
+      if (contextTab &&
+          sendTreeToDeviceMatch)
+        Commands.sendTabsToDevice(
+          multiselectedTabs || [contextTab],
+          { to: sendTreeToDeviceMatch[1],
+            recursively: true }
+        );
 
       if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;

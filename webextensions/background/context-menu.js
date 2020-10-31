@@ -487,7 +487,7 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'sendTreeToDevice:all':
-      Commands.sendTabsToAllDevices(Tab.collectRootTabs(contextTabs).map(tab => [tab, ...tab.$TST.descendants]).flat());
+      Commands.sendTabsToAllDevices(contextTabs, { recursively: true });
       break;
 
     case 'groupTabs':
@@ -523,8 +523,9 @@ function onTabItemClick(info, tab) {
       if (contextTab &&
           sendToDeviceMatch)
         Commands.sendTabsToDevice(
-          Tab.collectRootTabs(contextTabs).map(tab => [tab, ...tab.$TST.descendants]).flat(),
-          sendToDeviceMatch[1]
+          contextTabs,
+          { to: sendToDeviceMatch[1],
+            recursively: true }
         );
     }; break;
   }
