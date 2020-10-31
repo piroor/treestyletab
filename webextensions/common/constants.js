@@ -350,3 +350,5 @@ export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';
 // Use 6 * 1024 instead of 8 * 1024 (max of the quota) for safety.
 // For example, 6 * 8 = 48KB is the max size of the user style rules.
 export const kSYNC_STORAGE_SAFE_QUOTA = 6 * 1024;
+
+export const kSYNC_DATA_TYPE_TABS = 'tabs';

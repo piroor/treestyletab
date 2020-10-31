@@ -1043,6 +1043,7 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
 export function sendTabsToDevice(tabs, to) {
   tabs = tabs.filter(Sync.isSendableTab);
   Sync.sendMessage(to, {
+    type:      Constants.kSYNC_DATA_TYPE_TABS,
     urls:      tabs.map(tab => tab.url),
     structure: TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
   });
@@ -1050,10 +1051,13 @@ export function sendTabsToDevice(tabs, to) {
 
 export function sendTabsToAllDevices(tabs) {
   tabs = tabs.filter(Sync.isSendableTab);
-  const urls      = tabs.map(tab => tab.url);
-  const structure = TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent);
+  const data = {
+    type:       Constants.kSYNC_DATA_TYPE_TABS,
+    urls:       tabs.map(tab => tab.url),
+    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
+  };
   for (const device of Sync.getOtherDevices()) {
-    Sync.sendMessage(device.id, { urls, structure });
+    Sync.sendMessage(device.id, data);
   }
 }
 
@@ -1064,3 +1068,46 @@ export function manageSyncDevices(windowId) {
   });
 }
 
+Sync.onMessage.addListener(async message => {
+  const data = message.data;
+  if (data.type != Constants.kSYNC_DATA_TYPE_TABS ||
+      !Array.isArray(data.urls))
+    return;
+
+  const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
+  const window = TabsStore.windows.get(windowId);
+  const initialIndex = window.tabs.size;
+  window.toBeOpenedOrphanTabs += data.urls.length;
+  let index = 0;
+  const tabs = [];
+  for (const url of data.urls) {
+    const createParams = {
+      url,
+      windowId,
+      index:  initialIndex + index,
+      active: index == 0
+    };
+    let tab;
+    try {
+      tab = await browser.tabs.create(createParams);
+    }
+    catch(error) {
+      console.log(error);
+    }
+    if (!tab)
+      tab = await browser.tabs.create({
+        ...createParams,
+        url: `about:blank?${url}`
+      });
+    tabs.push(tab);
+    index++;
+  }
+
+  if (!Array.isArray(data.structure))
+    return;
+
+  await wait(100); // wait for all tabs are tracked
+  await Tree.applyTreeStructureToTabs(tabs.map(tab => Tab.get(tab.id)), data.structure, {
+    broadcast: true
+  });
+});
