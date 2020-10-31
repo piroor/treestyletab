@@ -12,6 +12,14 @@ import * as Constants from './constants.js';
 
 const localKeys = mapAndFilter(`
   baseIndent
+  chunkedSyncDataLocal0
+  chunkedSyncDataLocal1
+  chunkedSyncDataLocal2
+  chunkedSyncDataLocal3
+  chunkedSyncDataLocal4
+  chunkedSyncDataLocal5
+  chunkedSyncDataLocal6
+  chunkedSyncDataLocal7
   colorScheme
   debug
   faviconizedTabScale
@@ -357,18 +365,14 @@ export const configs = new Configs({
   chunkedSyncData5: '',
   chunkedSyncData6: '',
   chunkedSyncData7: '',
-  chunkedSyncData8: '',
-  chunkedSyncData9: '',
-  chunkedSyncData10: '',
-  chunkedSyncData11: '',
-  chunkedSyncData12: '',
-  chunkedSyncData13: '',
-  chunkedSyncData14: '',
-  chunkedSyncData15: '',
-  chunkedSyncData16: '',
-  chunkedSyncData17: '',
-  chunkedSyncData18: '',
-  chunkedSyncData19: '',
+  chunkedSyncDataLocal0: '',
+  chunkedSyncDataLocal1: '',
+  chunkedSyncDataLocal2: '',
+  chunkedSyncDataLocal3: '',
+  chunkedSyncDataLocal4: '',
+  chunkedSyncDataLocal5: '',
+  chunkedSyncDataLocal6: '',
+  chunkedSyncDataLocal7: '',
 
 
   // Compatibility with other addons

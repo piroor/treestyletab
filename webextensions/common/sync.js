@@ -152,11 +152,10 @@ function reserveToReceiveMessage() {
 
 async function receiveMessage() {
   try {
-    const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
-    if (!Array.isArray(messages)) {
-      log('invalid data: ', messages);
-      return;
-    }
+    const messages = uniqMessages([
+      ...JSON.parse(getChunkedConfig('chunkedSyncData') || '[]'),
+      ...JSON.parse(getChunkedConfig('chunkedSyncDataLocal') || '[]')
+    ]);
     log('receiveMessage: queued messages => ', messages);
     const restMessages = messages.filter(message => {
       if (message.timestamp <= configs.syncLastMessageTimestamp)
@@ -170,17 +169,29 @@ async function receiveMessage() {
       return true;
     });
     log('receiveMessage: restMessages => ', restMessages);
-    if (restMessages.length != messages.length)
-      await setChunkedConfig('chunkedSyncData', JSON.stringify(restMessages));
+    if (restMessages.length != messages.length) {
+      const stringifiedMessages = JSON.stringify(restMessages);
+      await Promise.all([
+        setChunkedConfig('chunkedSyncData', stringifiedMessages),
+        setChunkedConfig('chunkedSyncDataLocal', stringifiedMessages)
+      ]);
+    }
   }
   catch(error) {
     log('receiveMessage fatal error: ', error);
+    await Promise.all([
+      setChunkedConfig('chunkedSyncData', '[]'),
+      setChunkedConfig('chunkedSyncDataLocal', '[]')
+    ]);
   }
 }
 
 export async function sendMessage(to, data) {
   try {
-    const messages = JSON.parse(getChunkedConfig('chunkedSyncData') || '[]');
+    const messages = uniqMessages([
+      ...JSON.parse(getChunkedConfig('chunkedSyncData') || '[]'),
+      ...JSON.parse(getChunkedConfig('chunkedSyncDataLocal') || '[]')
+    ]);
     messages.push({
       timestamp: Date.now(),
       from:      configs.syncDeviceInfo.id,
@@ -188,11 +199,30 @@ export async function sendMessage(to, data) {
       data
     });
     log('sendMessage: queued messages => ', messages);
-    await setChunkedConfig('chunkedSyncData', JSON.stringify(messages));
+    const stringifiedMessages = JSON.stringify(messages);
+    await Promise.all([
+      setChunkedConfig('chunkedSyncData', stringifiedMessages),
+      setChunkedConfig('chunkedSyncDataLocal', stringifiedMessages)
+    ]);
   }
   catch(error) {
     console.log('Sync.sendMessage: failed to send message ', error);
+    await Promise.all([
+      setChunkedConfig('chunkedSyncData', '[]'),
+      setChunkedConfig('chunkedSyncDataLocal', '[]')
+    ]);
   }
+}
+
+function uniqMessages(messages) {
+  const knownMessages = new Set();
+  return messages.filter(message => {
+    const key = JSON.stringify(message);
+    if (knownMessages.has(key))
+      return false;
+    knownMessages.add(key);
+    return true;
+  });
 }
 
 function clone(value) {
