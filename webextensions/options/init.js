@@ -650,10 +650,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       clearTimeout(deviceInfoNameField.$throttling);
     deviceInfoNameField.$throttling = setTimeout(async () => {
       delete deviceInfoNameField.$throttling;
-    configs.syncDeviceInfo = JSON.parse(JSON.stringify({
-      ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
-      name: deviceInfoNameField.value
-    }));
+      configs.syncDeviceInfo = JSON.parse(JSON.stringify({
+        ...(configs.syncDeviceInfo || await Sync.generateDeviceInfo()),
+        name: deviceInfoNameField.value
+      }));
     }, 250);
   });
   initOtherDevices();
