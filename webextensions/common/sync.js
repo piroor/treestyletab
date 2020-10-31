@@ -150,7 +150,7 @@ function reserveToReceiveMessage() {
   }, 250);
 }
 
-async function receiveMessage() {
+function receiveMessage() {
   try {
     const messages = readMessages();
     log('receiveMessage: queued messages => ', messages);
@@ -175,7 +175,7 @@ async function receiveMessage() {
   }
 }
 
-export async function sendMessage(to, data) {
+export function sendMessage(to, data) {
   try {
     const messages = readMessages();
     messages.push({
