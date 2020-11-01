@@ -71,10 +71,23 @@ export async function generateDeviceInfo({ name, icon } = {}) {
   return {
     id:   `device-${Date.now()}-${Math.round(Math.random() * 65000)}`,
     name: name === undefined ?
-      browser.i18n.getMessage('syncDeviceDefaultName', [platformInfo.os, browserInfo.name]) :
+      browser.i18n.getMessage('syncDeviceDefaultName', [toHumanReadableOSName(platformInfo.os), browserInfo.name]) :
       (name || null),
     icon: icon || 'device-desktop'
   };
+}
+
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/PlatformOs
+function toHumanReadableOSName(os) {
+  switch (os) {
+    case 'mac': return 'macOS';
+    case 'win': return 'Windows';
+    case 'android': return 'Android';
+    case 'cros': return 'Chrome OS';
+    case 'linux': return 'Linux';
+    case 'openbsd': return 'Open/FreeBSD';
+    default: return 'Unknown Platform';
+  }
 }
 
 configs.$addObserver(key => {
