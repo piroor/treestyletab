@@ -329,7 +329,7 @@
 
   "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices with the context menu via Firefox Sync" },
   "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also." },
-  "config_syncDeviceInfo_name_label": { "message": "Name of this device:" },
+  "config_syncDeviceInfo_name_label": { "message": "Name and icon of this device:" },
   "config_syncDeviceInfo_name_description_before": { "message": "TST cannot detect the name of this device you configured for Firefox Sync, due to restrictions of WebExtensions API. Please set an identifiable name for this device manually. (It is recommended to copy " },
   "config_syncDeviceInfo_name_description_link": { "message": "the device name for Firefox Sync" },
   "config_syncDeviceInfo_name_description_href": { "message": "https://accounts.firefox.com/settings/clients" },

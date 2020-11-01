@@ -325,7 +325,7 @@
 
   "config_sendTabsToDevice_caption": { "message": "Firefox Syncによる、コンテキストメニューからの他の端末へのタブ送信" },
   "config_syncRequirements_description": { "message": "この機能はFirefox Syncに依存し、TSTが動作している端末に対してのみタブを送信できます。事前にFirefoxの設定画面からFirefox Syncを有効化しておき、他の端末でもTSTを有効化しておいてください。" },
-  "config_syncDeviceInfo_name_label": { "message": "この端末の表示名:" },
+  "config_syncDeviceInfo_name_label": { "message": "この端末の表示名とアイコン:" },
   "config_syncDeviceInfo_name_description_before": { "message": "WebExtensions APIの制約により、TSTはFirefox Syncで設定済みの端末名を自動認識しません。分かりやすい端末名を手動で設定してください。（" },
   "config_syncDeviceInfo_name_description_link": { "message": "Firefox Syncと同じ端末名" },
   "config_syncDeviceInfo_name_description_href": { "message": "https://accounts.firefox.com/settings/clients" },
