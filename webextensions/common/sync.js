@@ -73,7 +73,7 @@ export async function generateDeviceInfo({ name, icon } = {}) {
     name: name === undefined ?
       browser.i18n.getMessage('syncDeviceDefaultName', [platformInfo.os, browserInfo.name]) :
       (name || null),
-    icon: icon || null
+    icon: icon || 'device-desktop'
   };
 }
 
