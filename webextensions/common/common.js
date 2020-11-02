@@ -363,6 +363,7 @@ export const configs = new Configs({
   syncUnsendableUrlPattern: '^(about:.*|resource:.*|chrome:.*|wyciwyg:.*|file:.*|blob:.*|moz-extension:.*)$',
   syncLastMessageTimestamp: 0,
   syncReceivedTabsNotificationTimeout: 20 * 1000,
+  syncSentTabsNotificationTimeout: 5 * 1000,
   chunkedSyncData0: '',
   chunkedSyncData1: '',
   chunkedSyncData2: '',

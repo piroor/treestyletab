@@ -164,6 +164,20 @@
   "syncDeviceUnknownDevice":     { "message": "an unknown device" },
   "syncAvailable_notification_title":   { "message": "Tabs are sendable to other devices from TST now." },
   "syncAvailable_notification_message": { "message": "Tabs can be transferred between your devices. Please click here to set an identifiable name to this device." },
+  "sentTabs_notification_title":            { "message": "" },
+  "sentTabs_notification_message":          { "message": "Tabs is sent to $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "sentTabs_notification_title_multiple":   { "message": "" },
+  "sentTabs_notification_message_multiple": { "message": "Tabs are sent to $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
+    }},
+  "sentTabsToAllDevices_notification_title":            { "message": "" },
+  "sentTabsToAllDevices_notification_message":          { "message": "Tab is sent to all devices" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "" },
+  "sentTabsToAllDevices_notification_message_multiple": { "message": "Tabs are sent to all devices" },
   "receiveTabs_notification_title":            { "message": "Tab from $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }

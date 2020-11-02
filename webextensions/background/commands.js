@@ -1046,6 +1046,19 @@ export function sendTabsToDevice(tabs, { to, recursively } = {}) {
     tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
   tabs = tabs.filter(Sync.isSendableTab);
   Sync.sendMessage(to, getTabsDataToSend(tabs));
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title: browser.i18n.getMessage(
+      `sentTabs_notification_title${multiple}`,
+      [Sync.getDeviceName(to)]
+    ),
+    message: browser.i18n.getMessage(
+      `sentTabs_notification_message${multiple}`,
+      [Sync.getDeviceName(to)]
+    ),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
 }
 
 export function sendTabsToAllDevices(tabs, { recursively } = {}) {
@@ -1056,6 +1069,13 @@ export function sendTabsToAllDevices(tabs, { recursively } = {}) {
   for (const device of Sync.getOtherDevices()) {
     Sync.sendMessage(device.id, data);
   }
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title:   browser.i18n.getMessage(`sentTabsToAllDevices_notification_title${multiple}`),
+    message: browser.i18n.getMessage(`sentTabsToAllDevices_notification_message${multiple}`),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
 }
 
 function getTabsDataToSend(tabs) {
