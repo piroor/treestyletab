@@ -369,10 +369,18 @@ Tab.onAttached.addListener(async (tab, info = {}) => {
     insertAfter:         tab
   });
   log('moved descendants: ', () => movedTabs.map(dumpTab));
+  if (info.descendants.length == movedTabs.length) {
+    await Tree.applyTreeStructureToTabs(
+      [tab, ...movedTabs],
+      info.structure
+    );
+  }
+  else {
   for (const movedTab of movedTabs) {
     Tree.attachTabTo(movedTab, tab, {
       broadcast: true,
       dontMove:  true
     });
+  }
   }
 });

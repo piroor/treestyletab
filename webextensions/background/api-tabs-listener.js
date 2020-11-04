@@ -974,12 +974,16 @@ async function onDetached(tabId, detachInfo) {
     if (byInternalOperation)
       oldWindow.toBeDetachedTabs.delete(tabId);
 
+    const descendants = oldTab.$TST.descendants;
     const info = {
       ...detachInfo,
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
-      descendants: oldTab.$TST.descendants
+      structure:   TreeBehavior.getTreeStructureFromTabs([oldTab, ...descendants]),
+      descendants
     };
+    const alreadyMovedAcrossWindows = Array.from(mTreeInfoForTabsMovingAcrossWindows.values(), info => info.descendants.map(tab => tab.id)).some(tabIds => tabIds.includes(tabId));
+    if (!alreadyMovedAcrossWindows)
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
     if (!byInternalOperation) // we should process only tabs detached by others.
