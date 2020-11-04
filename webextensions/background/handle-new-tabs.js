@@ -376,11 +376,11 @@ Tab.onAttached.addListener(async (tab, info = {}) => {
     );
   }
   else {
-  for (const movedTab of movedTabs) {
-    Tree.attachTabTo(movedTab, tab, {
-      broadcast: true,
-      dontMove:  true
-    });
-  }
+    for (const movedTab of movedTabs) {
+      Tree.attachTabTo(movedTab, tab, {
+        broadcast: true,
+        dontMove:  true
+      });
+    }
   }
 });

@@ -984,7 +984,7 @@ async function onDetached(tabId, detachInfo) {
     };
     const alreadyMovedAcrossWindows = Array.from(mTreeInfoForTabsMovingAcrossWindows.values(), info => info.descendants.map(tab => tab.id)).some(tabIds => tabIds.includes(tabId));
     if (!alreadyMovedAcrossWindows)
-    mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
+      mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
     if (!byInternalOperation) // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);
