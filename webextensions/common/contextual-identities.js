@@ -96,7 +96,7 @@ function fixupIcon(identity) {
 const mDarkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 mDarkModeMedia.addListener(async _event => {
   await init();
-  forEach(onContextualIdentityUpdated);
+  forEach(identity => onContextualIdentityUpdated({ contextualIdentity: identity }));
 });
 
 function safeColor(color) {
