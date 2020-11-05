@@ -5,8 +5,6 @@
 */
 'use strict';
 
-import RichConfirm from '/extlib/RichConfirm.js';
-
 import {
   log as internalLogger,
   wait,
@@ -23,7 +21,7 @@ import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as Dialog from '/common/dialog.js';
 import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 import * as Sync from '/common/sync.js';
 
@@ -531,7 +529,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
       maxWidth: Math.round(win.width * 0.75)
     }) :
     '';
-  const dialogParams = {
+  const result = await Dialog.show(win, {
     content: `
       <div>${sanitizeForHTMLText(browser.i18n.getMessage(messageKey || 'warnOnCloseTabs_message', [count]))}</div>${listing}
     `.trim(),
@@ -540,76 +538,27 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
       browser.i18n.getMessage('warnOnCloseTabs_cancel')
     ],
     checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
-    checked: true
-  };
-  let result;
-  try {
-    if (configs.showDialogInSidebar &&
-        SidebarConnection.isOpen(windowId)/* &&
-        SidebarConnection.hasFocus(windowId)*/) {
-      UserOperationBlocker.blockIn(windowId, { throbber: false });
-      result = await browser.runtime.sendMessage({
-        type:   Constants.kCOMMAND_SHOW_DIALOG,
-        params: dialogParams,
-        windowId
-      }).catch(ApiTabs.createErrorHandler());
+    checked: true,
+    modal:   true, // for popup
+    type:    'common-dialog', // for popup
+    url:     '/resources/blank.html', // for popup, required on Firefox ESR68
+    title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
+    onShownInTab(container) {
+      const style = container.closest('.rich-confirm-dialog').style;
+      style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
+      style.marginLeft = style.marginRight = 'auto';
+    },
+    onShownInPopup(container) {
+      setTimeout(() => {
+        // this need to be done on the next tick, to use the height of
+        // the box for calculation of dialog size
+        const style = container.querySelector('ul').style;
+        style.height = '0px'; // this makes the box shrinkable
+        style.maxHeight = 'none';
+        style.minHeight = '0px';
+      }, 0);
     }
-    else if (/^Mac/i.test(navigator.platform) &&
-             win.state == 'fullscreen') {
-      // on macOS, a popup window opened from a fullscreen browser window is always
-      // opened as a new fullscreen window, thus we need to fallback to a workaround.
-      log('confirmToCloseTabs: show confirmation in a temporary tab in ', windowId);
-      UserOperationBlocker.blockIn(windowId, { throbber: false, shade: true });
-      const tempTab = await browser.tabs.create({
-        windowId,
-        url:    'about:blank',
-        active: true
-      });
-      await Promise.all([
-        Tab.waitUntilTracked(tempTab.id).then(() => {
-          Tab.get(tempTab.id).$TST.addState('hidden', { broadcast: true });
-        }),
-        (async () => {
-          result = await RichConfirm.showInTab(tempTab.id, {
-            ...dialogParams,
-            onShown(container) {
-              const style = container.closest('.rich-confirm-dialog').style;
-              style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
-              style.marginLeft = style.marginRight = 'auto';
-            }
-          });
-        })()
-      ]);
-      browser.tabs.remove(tempTab.id);
-    }
-    else {
-      log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
-      UserOperationBlocker.blockIn(windowId, { throbber: false });
-      result = await RichConfirm.showInPopup(windowId, {
-        ...dialogParams,
-        onShown(container) {
-          setTimeout(() => {
-            // this need to be done on the next tick, to use the height of
-            // the box for calculation of dialog size
-            const style = container.querySelector('ul').style;
-            style.height = '0px'; // this makes the box shrinkable
-            style.maxHeight = 'none';
-            style.minHeight = '0px';
-          }, 0);
-        },
-        modal: true,
-        type:  'common-dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
-        title: browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title')
-      });
-    }
-  }
-  catch(_error) {
-    result = { buttonIndex: -1 };
-  }
-  finally {
-    UserOperationBlocker.unblockIn(windowId, { throbber: false });
-  }
+  });
 
   log('confirmToCloseTabs: result = ', result);
   switch (result.buttonIndex) {

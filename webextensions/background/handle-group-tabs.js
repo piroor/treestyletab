@@ -5,8 +5,6 @@
 */
 'use strict';
 
-import RichConfirm from '/extlib/RichConfirm.js';
-
 import {
   log as internalLogger,
   dumpTab,
@@ -21,7 +19,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as Dialog from '/common/dialog.js';
 
 import Tab from '/common/Tab.js';
 
@@ -519,11 +517,12 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     return true;
 
   const windowId = tabs[0].windowId;
+  const win = await browser.windows.get(windowId);
 
   const listing = configs.warnOnAutoGroupNewTabsWithListing ?
     Background.tabsToHTMLList(tabs, { maxRows: configs.warnOnAutoGroupNewTabsWithListingMaxRows }) :
     '';
-  const dialogParams = {
+  const result = await Dialog.show(win, {
     content: `
       <div>${sanitizeForHTMLText(browser.i18n.getMessage('warnOnAutoGroupNewTabs_message', [tabs.length]))}</div>${listing}
     `.trim(),
@@ -532,44 +531,25 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
       browser.i18n.getMessage('warnOnAutoGroupNewTabs_cancel')
     ],
     checkMessage: browser.i18n.getMessage('warnOnAutoGroupNewTabs_warnAgain'),
-    checked: true
-  };
-  let result;
-  UserOperationBlocker.blockIn(windowId, { throbber: false });
-  try {
-    if (configs.showDialogInSidebar &&
-        SidebarConnection.isOpen(windowId)/* &&
-        SidebarConnection.hasFocus(windowId)*/) {
-      result = await browser.runtime.sendMessage({
-        type:   Constants.kCOMMAND_SHOW_DIALOG,
-        params: dialogParams,
-        windowId
-      }).catch(ApiTabs.createErrorHandler());
+    checked: true,
+    modal: true, // for popup
+    type:  'common-dialog', // for popup
+    url:   '/resources/blank.html',  // for popup, required on Firefox ESR68
+    title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'), // for popup
+    onShownInTab(container) {
+      const style = container.closest('.rich-confirm-dialog').style;
+      style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
+      style.marginLeft = style.marginRight = 'auto';
+    },
+    onShownInPopup(container) {
+      setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
+        const style = container.querySelector('ul').style;
+        style.height = '0px'; // this makes the box shrinkable
+        style.maxHeight = 'none';
+        style.minHeight = '0px';
+      }, 0);
     }
-    else {
-      result = await RichConfirm.showInPopup(windowId, {
-        ...dialogParams,
-        onShown(container) {
-          setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
-            const style = container.querySelector('ul').style;
-            style.height = '0px'; // this makes the box shrinkable
-            style.maxHeight = 'none';
-            style.minHeight = '0px';
-          }, 0);
-        },
-        modal: true,
-        type:  'common-dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
-        title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title')
-      });
-    }
-  }
-  catch(_error) {
-    result = { buttonIndex: -1 };
-  }
-  finally {
-    UserOperationBlocker.unblockIn(windowId, { throbber: false });
-  }
+  });
 
   switch (result.buttonIndex) {
     case 0:

@@ -18,6 +18,7 @@ import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
+import * as Dialog from './dialog.js';
 import Tab from '/common/Tab.js';
 
 import MenuUI from '/extlib/MenuUI.js';
@@ -173,13 +174,20 @@ export async function bookmarkTab(tab, options = {}) {
       ]
     };
     let result;
-    UserOperationBlocker.blockIn(windowId, { throbber: false });
-    try {
-      if (inSidebar) {
+    if (inSidebar) {
+      try {
+        UserOperationBlocker.blockIn(windowId, { throbber: false });
         result = await RichConfirm.show(dialogParams);
       }
+      catch(_error) {
+        result = { buttonIndex: -1 };
+      }
+      finally {
+        UserOperationBlocker.unblockIn(windowId, { throbber: false });
+      }
+      }
       else {
-        result = await RichConfirm.showInPopup(windowId, {
+        result = await Dialog.show(await browser.windows.get(windowId), {
           ...dialogParams,
           modal: true,
           type:  'dialog',
@@ -187,13 +195,6 @@ export async function bookmarkTab(tab, options = {}) {
           title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
         });
       }
-    }
-    catch(_error) {
-      result = { buttonIndex: -1 };
-    }
-    finally {
-      UserOperationBlocker.unblockIn(windowId, { throbber: false });
-    }
     if (result.buttonIndex != 0)
       return null;
     title    = result.values.title;
