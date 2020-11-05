@@ -185,16 +185,16 @@ export async function bookmarkTab(tab, options = {}) {
       finally {
         UserOperationBlocker.unblockIn(windowId, { throbber: false });
       }
-      }
-      else {
-        result = await Dialog.show(await browser.windows.get(windowId), {
-          ...dialogParams,
-          modal: true,
-          type:  'dialog',
-          url:   '/resources/blank.html', // required on Firefox ESR68
-          title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
-        });
-      }
+    }
+    else {
+      result = await Dialog.show(await browser.windows.get(windowId), {
+        ...dialogParams,
+        modal: true,
+        type:  'dialog',
+        url:   '/resources/blank.html', // required on Firefox ESR68
+        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
+      });
+    }
     if (result.buttonIndex != 0)
       return null;
     title    = result.values.title;
