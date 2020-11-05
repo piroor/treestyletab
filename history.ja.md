@@ -2,6 +2,10 @@
 
  - master/HEAD
    * Firefox Sync経由でコンテキストメニューからタブを他の端末に送信できるようにした（[Firefox Syncを直接利用するWebExtensions APIが当面実装されない模様](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183)なので、Sync Storageベースで暫定的に実装した）
+   * [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/)のようにウィンドウ間でタブを移動する機能を持つアドオンとの互換性を向上（ウィンドウをまたいでタブを移動した後もツリー構造が壊れにくくなった）
+   * ウィンドウ間でタブを移動した後にタブバーの内容の溢れ状態が更新されていなかったのを修正
+   * コンテナーのアイコンの色として「toolbar」に対応
+   * [Facebook Container](https://addons.mozilla.org/firefox/addon/facebook-container/)アドオンのコンテナー用に使われる「柵」のアイコンを追加（[by maciekmm](https://github.com/piroor/treestyletab/pull/2748). Thanks!）
  - 3.5.34 (2020.10.22)
    * 子タブを開く位置を制御しない設定の時に、ピン留めされたタブから開かれた子タブがグループされなくなっていたのを修正（3.5.33での後退バグ）
  - 3.5.33 (2020.10.20)
