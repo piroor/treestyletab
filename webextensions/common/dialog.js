@@ -43,20 +43,23 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false, shade: true });
       const tempTab = await browser.tabs.create({
         windowId: ownerWindow.id,
-        url:      'about:blank',
+        url:      '/resources/blank.html',
         active:   true
       });
-      await Promise.all([
-        Tab.waitUntilTracked(tempTab.id).then(() => {
-          Tab.get(tempTab.id).$TST.addState('hidden', { broadcast: true });
-        }),
-        (async () => {
-          result = await RichConfirm.showInTab(tempTab.id, {
-            ...dialogParams,
-            onShown: dialogParams.onShownInTab
-          });
-        })()
-      ]);
+      await Tab.waitUntilTracked(tempTab.id).then(() => {
+        Tab.get(tempTab.id).$TST.addState('hidden', { broadcast: true });
+      });
+      result = await RichConfirm.showInTab(tempTab.id, {
+        ...dialogParams,
+        onShown: [
+          container => {
+            const style = container.closest('.rich-confirm-dialog').style;
+            style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
+            style.marginLeft = style.marginRight = 'auto';
+          },
+          dialogParams.onShownInTab || dialogParams.onShown
+        ]
+      });
       browser.tabs.remove(tempTab.id);
     }
     else {
@@ -64,7 +67,7 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false });
       result = await RichConfirm.showInPopup(ownerWindow.id, {
         ...dialogParams,
-        onShown: dialogParams.onShownInPopup
+        onShown: dialogParams.onShownInPopup || dialogParams.onShown
       });
     }
   }

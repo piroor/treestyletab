@@ -320,26 +320,26 @@ export async function bookmarkTabs(tabs, options = {}) {
       ]
     };
     let result;
-    try {
-      UserOperationBlocker.blockIn(windowId, { throbber: false });
-      if (inSidebar) {
+    if (inSidebar) {
+      try {
+        UserOperationBlocker.blockIn(windowId, { throbber: false });
         result = await RichConfirm.show(dialogParams);
       }
-      else {
-        result = await RichConfirm.showInPopup(windowId, {
-          ...dialogParams,
-          modal: true,
-          type:  'dialog',
-          url:   '/resources/blank.html', // required on Firefox ESR68
-          title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple')
-        });
+      catch(_error) {
+        result = { buttonIndex: -1 };
+      }
+      finally {
+        UserOperationBlocker.unblockIn(windowId, { throbber: false });
       }
     }
-    catch(_error) {
-      result = { buttonIndex: -1 };
-    }
-    finally {
-      UserOperationBlocker.unblockIn(windowId, { throbber: false });
+    else {
+      result = await Dialog.show(await browser.windows.get(windowId), {
+        ...dialogParams,
+        modal: true,
+        type:  'dialog',
+        url:   '/resources/blank.html', // required on Firefox ESR68
+        title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple')
+      });
     }
     if (result.buttonIndex != 0)
       return null;

@@ -422,6 +422,7 @@ export const configs = new Configs({
     'common/api-tabs': false,
     'common/bookmark': false,
     'common/contextual-identities': false,
+    'common/dialog': false,
     'common/permissions': false,
     'common/sidebar-connection': false,
     'common/sync': false,

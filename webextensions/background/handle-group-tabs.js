@@ -536,11 +536,6 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     type:  'common-dialog', // for popup
     url:   '/resources/blank.html',  // for popup, required on Firefox ESR68
     title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'), // for popup
-    onShownInTab(container) {
-      const style = container.closest('.rich-confirm-dialog').style;
-      style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
-      style.marginLeft = style.marginRight = 'auto';
-    },
     onShownInPopup(container) {
       setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
         const style = container.querySelector('ul').style;
