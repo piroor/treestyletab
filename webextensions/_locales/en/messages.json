@@ -5,8 +5,6 @@
   "sidebarTitle": { "message": "Tree Style Tab" },
   "sidebarToggleDescription": { "message": "Toggle \"Tree Style Tab\" Sidebar" },
 
-  "command_indent":                { "message": "Indent Current Tab" },
-  "command_outdent":               { "message": "Outdent Current Tab" },
   "command_tabMoveUp":             { "message": "Move Current Tab Up" },
   "command_treeMoveUp":            { "message": "Move Current Tree Up" },
   "command_tabMoveDown":           { "message": "Move Current Tab Down" },
@@ -30,8 +28,6 @@
   "command_switchSubPanel":        { "message": "Switch Sub Panel contents" },
   "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
   "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
-  "command_groupSelectedTabs":     { "message": "Create New Group from Selected Tabs" },
-  "command_ungroupTabs":           { "message": "Ungroup Tabs" },
 
   "tab_closebox_tab_tooltip": { "message": "Close tab" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Close tabs" },
@@ -277,10 +273,6 @@
   "context_sendTreeToDevice_label": { "message": "Sen&d this Tree to Device" },
   "context_sendTreeToDevice_label_multiselected": { "message": "Sen&d Selected Trees to Device" },
   "context_sendTreeToDevice_command": { "message": "Send this Tree to Device" },
-  "context_groupTabs_label":    { "message": "Create New &Group from tabs" },
-  "context_groupTabs_command":    { "message": "Create New Group from tabs" },
-  "context_ungroupTabs_label":  { "message": "U&ngroup tabs" },
-  "context_ungroupTabs_command":{ "message": "Ungroup tabs" },
   "context_topLevel_prefix": { "message": "Top level item: " },
 
   "context_collapsed_label": { "message": "Collapsed (for testing of a checkbox type menu)" },

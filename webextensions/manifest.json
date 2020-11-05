@@ -125,18 +125,6 @@
     "newContainerTab": {
       "description": "__MSG_tabbar_newTabWithContexualIdentity_tooltip__"
     },
-    "groupSelectedTabs": {
-      "description": "__MSG_command_groupSelectedTabs__"
-    },
-    "ungroupTabs": {
-      "description": "__MSG_command_ungroupTabs__"
-    },
-    "indent": {
-      "description": "__MSG_command_indent__"
-    },
-    "outdent": {
-      "description": "__MSG_command_outdent__"
-    },
     "tabMoveUp": {
       "description": "__MSG_command_tabMoveUp__"
     },
