@@ -181,6 +181,11 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab, options);
+  if (tab.$TST.treeStructureRestored) {
+    log(' => already restored');
+    return;
+  }
+
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
@@ -336,6 +341,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       });
     }
   };
+
+  tab.$TST.treeStructureRestored = true;
 
   if (options.bulk)
     return Promise.all(promises).then(updateCollapsedState);
