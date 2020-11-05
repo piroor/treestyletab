@@ -89,8 +89,32 @@ export async function init() {
 
 function fixupIcon(identity) {
   if (identity.icon && identity.color)
-    identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${identity.color}`;
+    identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${safeColor(identity.color)}`;
   return identity;
+}
+
+const mDarkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+mDarkModeMedia.addListener(async _event => {
+  await init();
+  forEach(onContextualIdentityUpdated);
+});
+
+function safeColor(color) {
+  switch (color) {
+    case 'blue':
+    case 'turquoise':
+    case 'green':
+    case 'yellow':
+    case 'orange':
+    case 'red':
+    case 'pink':
+    case 'purple':
+      return color;
+
+    case 'toolbar':
+    default:
+      return !/^Win/i.test(navigator.platform) && mDarkModeMedia.matches ? 'toolbar-dark' : 'toolbar-light';
+  }
 }
 
 export const onUpdated = new EventListenerManager();
