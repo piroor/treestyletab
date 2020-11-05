@@ -830,10 +830,12 @@ iframe#subpanel {
   z-index: var(--blocking-ui-z-index);
 }
 
-:root.blocking-throbber #blocking-screen {
+:root.blocking-throbber #blocking-screen,
+:root.blocking-shade #blocking-screen {
   background: rgba(0, 0, 0, 0.01);
 }
-:root.animation.blocking-throbber #blocking-screen {
+:root.animation.blocking-throbber #blocking-screen,
+:root.animation.blocking-shade #blocking-screen {
   background: rgba(0, 0, 0, 0.35);
 }
 
@@ -841,6 +843,7 @@ iframe#subpanel {
   display: block;
 }
 
-:root:not(.animation).blocking-throbber #blocking-screen * {
+:root:not(.animation).blocking-throbber #blocking-screen *,
+:root:not(.animation).blocking-shade #blocking-screen * {
   visibility: hidden;
 }

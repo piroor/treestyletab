@@ -524,10 +524,11 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     windowId = activeTabs[0].windowId;
   }
 
+  const win = await browser.windows.get(windowId);
   const listing = configs.warnOnCloseTabsWithListing ?
     tabsToHTMLList(tabs, {
       maxRows: configs.warnOnCloseTabsWithListingMaxRows,
-      maxWidth: Math.round((await browser.windows.get(windowId)).width * 0.75)
+      maxWidth: Math.round(win.width * 0.75)
     }) :
     '';
   const dialogParams = {
@@ -542,23 +543,47 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     checked: true
   };
   let result;
-  UserOperationBlocker.blockIn(windowId, { throbber: false });
   try {
     if (configs.showDialogInSidebar &&
         SidebarConnection.isOpen(windowId)/* &&
         SidebarConnection.hasFocus(windowId)*/) {
+      UserOperationBlocker.blockIn(windowId, { throbber: false });
       result = await browser.runtime.sendMessage({
         type:   Constants.kCOMMAND_SHOW_DIALOG,
         params: dialogParams,
         windowId
       }).catch(ApiTabs.createErrorHandler());
     }
+    else if (/^Mac/i.test(navigator.platform) &&
+             win.state == 'fullscreen') {
+      // on macOS, a popup window opened from a fullscreen browser window is always
+      // opened as a new fullscreen window, thus we need to fallback to a workaround.
+      log('confirmToCloseTabs: show confirmation in a temporary tab in ', windowId);
+      UserOperationBlocker.blockIn(windowId, { throbber: false, shade: true });
+      const tempTab = await browser.tabs.create({
+        windowId,
+        url:    'about:blank',
+        active: true
+      });
+      await Promise.all([
+        Tab.waitUntilTracked(tempTab.id).then(() => {
+          Tab.get(tempTab.id).$TST.addState('hidden', { broadcast: true });
+        }),
+        (async () => {
+          result = await RichConfirm.showInTab(tempTab.id, dialogParams);
+        })()
+      ]);
+      browser.tabs.remove(tempTab.id);
+    }
     else {
       log('confirmToCloseTabs: show confirmation in a popup window on ', windowId);
+      UserOperationBlocker.blockIn(windowId, { throbber: false });
       result = await RichConfirm.showInPopup(windowId, {
         ...dialogParams,
         onShown(container) {
-          setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
+          setTimeout(() => {
+            // this need to be done on the next tick, to use the height of
+            // the box for calculation of dialog size
             const style = container.querySelector('ul').style;
             style.height = '0px'; // this makes the box shrinkable
             style.maxHeight = 'none';

@@ -22,16 +22,19 @@ let mBlockingCount = 0;
 let mBlockingThrobberCount = 0;
 const mProgressbar = document.querySelector('#blocking-screen progress');
 
-export function block(options = {}) {
+export function block({ throbber, shade } = {}) {
   mBlockingCount++;
   document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
-  if (options.throbber) {
+  if (throbber) {
     mBlockingThrobberCount++;
     mProgressbar.delayedShow = setTimeout(() => {
       mProgressbar.delayedShow = null;
       mProgressbar.classList.add('shown');
     }, configs.delayToShowProgressForBlockedUserOperation);
     document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+  }
+  else if (shade) {
+    document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_SHADE);
   }
 }
 
@@ -47,7 +50,7 @@ export function setProgress(percentage, windowId = null) {
     });
 }
 
-export function blockIn(windowId, options = {}) {
+export function blockIn(windowId, { throbber, shade } = {}) {
   const targetWindow = TabsStore.getCurrentWindowId();
   if (targetWindow && targetWindow != windowId)
     return;
@@ -56,14 +59,15 @@ export function blockIn(windowId, options = {}) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId,
-      throbber: !!options.throbber
+      throbber: !!throbber,
+      shade:    !!shade
     });
     return;
   }
-  block(options);
+  block({ throbber, shade });
 }
 
-export function unblock(_options = {}) {
+export function unblock() {
   mBlockingThrobberCount--;
   if (mBlockingThrobberCount < 0)
     mBlockingThrobberCount = 0;
@@ -73,6 +77,7 @@ export function unblock(_options = {}) {
     if (mProgressbar.delayedShow)
       clearTimeout(mProgressbar.delayedShow);
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+    document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_SHADE);
   }
 
   mBlockingCount--;
@@ -82,7 +87,7 @@ export function unblock(_options = {}) {
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING);
 }
 
-export function unblockIn(windowId, options = {}) {
+export function unblockIn(windowId, { throbber, shade } = {}) {
   const targetWindow = TabsStore.getCurrentWindowId();
   if (targetWindow && targetWindow != windowId)
     return;
@@ -91,10 +96,11 @@ export function unblockIn(windowId, options = {}) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId,
-      throbber: !!options.throbber
+      throbber: !!throbber,
+      shade:    !!shade
     });
     return;
   }
-  unblock(options);
+  unblock({ throbber, shade });
 }
 

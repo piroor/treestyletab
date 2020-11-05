@@ -206,6 +206,7 @@ export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';
 export const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
+export const kTABBAR_STATE_BLOCKING_WITH_SHADE    = 'blocking-shade';
 export const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
 export const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 export const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
