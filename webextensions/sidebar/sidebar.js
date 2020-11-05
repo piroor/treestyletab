@@ -881,6 +881,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
+    case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW:
       if (message.tabId)
         await Tab.waitUntilTracked(message.tabId, { element: true });
       reserveToUpdateTabbarLayout({
@@ -889,7 +890,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       });
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
