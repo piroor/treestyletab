@@ -570,7 +570,14 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
           Tab.get(tempTab.id).$TST.addState('hidden', { broadcast: true });
         }),
         (async () => {
-          result = await RichConfirm.showInTab(tempTab.id, dialogParams);
+          result = await RichConfirm.showInTab(tempTab.id, {
+            ...dialogParams,
+            onShown(container) {
+              const style = container.closest('.rich-confirm-dialog').style;
+              style.maxWidth = `${Math.floor(window.innerWidth * 0.6)}px`;
+              style.marginLeft = style.marginRight = 'auto';
+            }
+          });
         })()
       ]);
       browser.tabs.remove(tempTab.id);
