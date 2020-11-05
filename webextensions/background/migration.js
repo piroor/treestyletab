@@ -20,7 +20,7 @@ function log(...args) {
 }
 
 const kCONFIGS_VERSION = 16;
-const kFEATURES_VERSION = 6;
+const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
   switch (configs.configsVersion) {
