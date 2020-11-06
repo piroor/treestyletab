@@ -12,7 +12,8 @@ import {
   wait,
   notify,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -329,7 +330,7 @@ async function onCommand(item, event) {
     modifiers.push('Command');
   if (event.ctrlKey) {
     modifiers.push('Ctrl');
-    if (/^Mac/i.test(navigator.platform))
+    if (isMacOS())
       modifiers.push('MacCtrl');
   }
   if (event.shiftKey)
@@ -600,7 +601,7 @@ async function onContextMenu(event) {
   if (onInputField)
     return;
 
-  const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
+  const modifierKeyPressed = isMacOS() ? event.metaKey : event.ctrlKey;
 
   const originalTargetBookmarkElement = originalTarget && originalTarget.closest('[data-bookmark-id]');
   const bookmarkId = originalTargetBookmarkElement && originalTargetBookmarkElement.dataset.bookmarkId;

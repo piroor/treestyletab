@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   configs,
   saveUserStyleRules,
-  notify
+  notify,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
@@ -54,7 +55,7 @@ export function migrateConfigs() {
 
     case 5:
       if (configs.scrollbarMode !== null) {
-        switch (configs.scrollbarMode < 0 ? (/^Mac/i.test(navigator.platform) ? 3 : 1) : configs.scrollbarMode) {
+        switch (configs.scrollbarMode < 0 ? (isMacOS() ? 3 : 1) : configs.scrollbarMode) {
           case 0: // default, refular width
             configs.userStyleRules += `
 

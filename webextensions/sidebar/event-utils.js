@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   countMatched,
-  configs
+  configs,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -32,7 +33,7 @@ export function isAccelAction(event) {
 }
 
 export function isAccelKeyPressed(event) {
-  return /^Mac/i.test(navigator.platform) ?
+  return isMacOS() ?
     (event.metaKey || event.key == 'Meta') :
     (event.ctrlKey || event.key == 'Control') ;
 }

@@ -616,6 +616,9 @@
 
   "config_runTests_label": { "message": "自動テストを実行" },
   "config_runBenchmark_label": { "message": "ベンチマークを実行" },
+  "config_enableLinuxBehaviors_label": { "message": "Linux専用の挙動を有効化する" },
+  "config_enableMacOSBehaviors_label": { "message": "macOS専用の挙動を有効化する" },
+  "config_enableWindowsBehaviors_label": { "message": "Windows専用の挙動を有効化する" },
   "config_debug_label": { "message": "デバッグモード" },
   "config_log_caption":               { "message": "詳細なログ" },
   "config_logTimestamp_label": { "message": "日時をログに付与する" },

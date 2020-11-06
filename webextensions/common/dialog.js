@@ -10,6 +10,7 @@ import RichConfirm from '/extlib/RichConfirm.js';
 import {
   log as internalLogger,
   configs,
+  isMacOS,
 } from '/common/common.js';
 
 import * as Constants from './constants.js';
@@ -35,7 +36,7 @@ export async function show(ownerWindow, dialogParams) {
         windowId: ownerWindow.id
       }).catch(ApiTabs.createErrorHandler());
     }
-    else if (/^Mac/i.test(navigator.platform) &&
+    else if (isMacOS() &&
              ownerWindow.state == 'fullscreen') {
       // on macOS, a popup window opened from a fullscreen browser window is always
       // opened as a new fullscreen window, thus we need to fallback to a workaround.

@@ -33,7 +33,8 @@ import {
   mapAndFilter,
   configs,
   shouldApplyAnimation,
-  sha1sum
+  sha1sum,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -930,7 +931,6 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     ...
   }
 */
-const isMac = /^Mac/i.test(navigator.platform);
 function detectOverrideDragDataSet(dataSet, event) {
   if (Array.isArray(dataSet))
     return dataSet.map(oneDataSet => detectOverrideDragDataSet(oneDataSet, event)).flat();
@@ -942,13 +942,13 @@ function detectOverrideDragDataSet(dataSet, event) {
   if (event.altKey)
     keys.push('alt');
   if (event.ctrlKey) {
-    if (isMac)
+    if (isMacOS())
       keys.push('macctrl');
     else
       keys.push('ctrl');
   }
   if (event.metaKey) {
-    if (isMac)
+    if (isMacOS())
       keys.push('command');
     else
       keys.push('meta');

@@ -13,7 +13,8 @@ import {
   mapAndFilter,
   configs,
   shouldApplyAnimation,
-  loadUserStyleRules
+  loadUserStyleRules,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -87,7 +88,7 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
 
 // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
 document.documentElement.dataset.userAgent = navigator.userAgent;
-document.documentElement.classList.toggle('platform-mac', /^Mac/i.test(navigator.platform));
+document.documentElement.classList.toggle('platform-mac', isMacOS());
 
 {
   const params = new URLSearchParams(location.search);

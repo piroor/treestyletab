@@ -22,6 +22,9 @@ const localKeys = mapAndFilter(`
   chunkedSyncDataLocal7
   colorScheme
   debug
+  enableLinuxBehaviors
+  enableMacOSBehaviors
+  enableWindowsBehaviors
   faviconizedTabScale
   grantedRemovingTabIds
   lastConfirmedToCloseTabs
@@ -448,6 +451,9 @@ export const configs = new Configs({
     'sidebar/tab-context-menu': false
   },
   loggingConnectionMessages: false,
+  enableLinuxBehaviors: false,
+  enableMacOSBehaviors: false,
+  enableWindowsBehaviors: false,
 
   configsVersion: 0,
 
@@ -800,4 +806,17 @@ export async function sha1sum(string) {
 
 export function sanitizeForHTMLText(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+
+export function isLinux() {
+  return configs.enableLinuxBehaviors || /^Linux/i.test(navigator.platform);
+}
+
+export function isMacOS() {
+  return configs.enableMacOSBehaviors || /^Mac/i.test(navigator.platform);
+}
+
+export function isWindows() {
+  return configs.enableWindowsBehaviors || /^Win/i.test(navigator.platform);
 }

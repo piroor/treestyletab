@@ -35,7 +35,8 @@ import {
   mapAndFilter,
   countMatched,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -689,7 +690,7 @@ let mLastClickedTab       = null;
 let mIsInSelectionSession = false;
 
 function updateMultiselectionByTabClick(tab, event) {
-  const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
+  const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && isMacOS());
   const activeTab          = Tab.getActiveTab(tab.windowId);
   const highlightedTabIds  = new Set(Tab.getHighlightedTabs(tab.windowId).map(tab => tab.id));
   log('updateMultiselectionByTabClick ', { ctrlKeyPressed, activeTab, highlightedTabIds, mIsInSelectionSession });

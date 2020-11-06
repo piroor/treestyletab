@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  isWindows,
 } from './common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 
@@ -113,7 +114,7 @@ function safeColor(color) {
 
     case 'toolbar':
     default:
-      return !/^Win/i.test(navigator.platform) && mDarkModeMedia.matches ? 'toolbar-dark' : 'toolbar-light';
+      return !isWindows() && mDarkModeMedia.matches ? 'toolbar-dark' : 'toolbar-light';
   }
 }
 

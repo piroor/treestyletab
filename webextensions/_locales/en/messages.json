@@ -620,6 +620,9 @@
 
   "config_runTests_label": { "message": "Run Automated Tests" },
   "config_runBenchmark_label": { "message": "Run Benchmark" },
+  "config_enableLinuxBehaviors_label": { "message": "Activate Linux specific behaviors" },
+  "config_enableMacOSBehaviors_label": { "message": "Activate macOS specific behaviors" },
+  "config_enableWindowsBehaviors_label": { "message": "Activate Windows specific behaviors" },
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detailed logging" },
   "config_logTimestamp_label": { "message": "Log with timestamp" },
