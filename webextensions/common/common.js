@@ -809,9 +809,11 @@ export function sanitizeForHTMLText(text) {
 }
 
 
+/*
 export function isLinux() {
   return configs.enableLinuxBehaviors || /^Linux/i.test(navigator.platform);
 }
+*/
 
 export function isMacOS() {
   return configs.enableMacOSBehaviors || /^Mac/i.test(navigator.platform);
