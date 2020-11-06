@@ -6,8 +6,12 @@
    * Remove "Group Tabs", "Ungroup Tabs", "Indent" and "Outdent" menu commands and keyboard shortcuts. Now they are separated to a helper addon [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/).
    * Better compatibility with addons providing features to move tabs across windows, e.g. [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/). Now TST keeps tree structure of moved tabs more safely.
    * Update overflow status of the tab bar after tabs are moved across windows.
+   * On macOS, show custom dialogs in a temporary tab instead of a window if the browser window is in the fullscreen mode. (Because to avoid custom dialogs to be oepend as new fullscreen windows.)
    * Support "toolbar" color for container icons.
    * Support "fence" icon of [Facebook Container](https://addons.mozilla.org/firefox/addon/facebook-container/) addon for container icons, [by maciekmm](https://github.com/piroor/treestyletab/pull/2748). Thanks!
+   * Add debug options to activate platform specific behaviors.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
+   * Rename intenral directory name of the Korean locale from `kr` to `ko`, by [dfkdream](https://github.com/dfkdream). thanks!
  - 3.5.34 (2020.10.22)
    * Create group for tabs opened from a pinned tab correctly, even if "no control" is chosen for the insertion position of new child tabs. (regression on 3.5.33)
  - 3.5.33 (2020.10.20)

@@ -6,8 +6,12 @@
    * メニュー項目とキーボードショートカット用コマンドから「選択中のタブを新しいグループにする」「タブのグループ化を解除」「現在のタブを1階層深くする」「現在のタブを1階層浅くする」を削除した（これらの機能は新しいヘルパーアドオンの[TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/)に分割されました）
    * [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/)のようにウィンドウ間でタブを移動する機能を持つアドオンとの互換性を向上（ウィンドウをまたいでタブを移動した後もツリー構造が壊れにくくなった）
    * ウィンドウ間でタブを移動した後にタブバーの内容の溢れ状態が更新されていなかったのを修正
+   * macOSでブラウザウィンドウがフルスクリーン表示になっているときに、複数タブを閉じる確認などのダイアログがそれ自体フルスクリーン表示の1つのウィンドウになってしまっていたのを、一時的なタブの中でダイアログとして表示するように改めた
    * コンテナーのアイコンの色として「toolbar」に対応
    * [Facebook Container](https://addons.mozilla.org/firefox/addon/facebook-container/)アドオンのコンテナー用に使われる「柵」のアイコンを追加（[by maciekmm](https://github.com/piroor/treestyletab/pull/2748). Thanks!）
+   * プラットフォームごとに固有の挙動をテストするためのデバッグオプションを追加
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
+   * 韓国語のロケールのディレクトリ名を`kr`から`ko`に変更（by [dfkdream](https://github.com/dfkdream), thanks!）
  - 3.5.34 (2020.10.22)
    * 子タブを開く位置を制御しない設定の時に、ピン留めされたタブから開かれた子タブがグループされなくなっていたのを修正（3.5.33での後退バグ）
  - 3.5.33 (2020.10.20)
