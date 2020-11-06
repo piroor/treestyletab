@@ -1363,11 +1363,49 @@ const mItems = [
         enabled: false
       },
       {
+        title:    indent() + browser.i18n.getMessage('config_colorScheme_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_colorScheme_photon'),
+            key:   'colorScheme',
+            value: 'photon',
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_colorScheme_systemColor'),
+            key:   'colorScheme',
+            value: 'system-color',
+            type:  'radio'
+          }
+        ]
+      },
+      /*
+      {
+        title: indent() + browser.i18n.getMessage('config_enableLinuxBehaviors_label'),
+        key:   'enableLinuxBehaviors',
+        type:  'checkbox'
+      },
+      */
+      {
+        title: indent() + browser.i18n.getMessage('config_enableMacOSBehaviors_label'),
+        key:   'enableMacOSBehaviors',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_enableWindowsBehaviors_label'),
+        key:   'enableWindowsBehaviors',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('config_loggingQueries_label'),
         key:   'loggingQueries',
         type:  'checkbox'
       },
-      { type: 'separator' },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_loggingConnectionMessages_label'),
+        key:   'loggingConnectionMessages',
+        type:  'checkbox'
+      },
       {
         title: indent() + browser.i18n.getMessage('config_debug_label'),
         key:   'debug',
