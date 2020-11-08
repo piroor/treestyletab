@@ -5,8 +5,6 @@
   "sidebarTitle": { "message": "Tree Style Tab" },
   "sidebarToggleDescription": { "message": "Переключить боковую панель \"Tree Style Tab\" " },
 
-  "command_indent":                { "message": "Добавить текущую вкладку в дерево" },
-  "command_outdent":               { "message": "Отсоединить текущую вкладку от дерева" },
   "command_tabMoveUp":             { "message": "Переместить текущую вкладку вверх" },
   "command_treeMoveUp":            { "message": "Переместить текущее дерево вверх" },
   "command_tabMoveDown":           { "message": "Переместить текущую вкладку вниз" },
@@ -30,8 +28,6 @@
   "command_switchSubPanel":        { "message": "Переключить содержимое суб-панели" },
   "command_increaseSubPanel":      { "message": "Увеличить размер суб-панели" },
   "command_decreaseSubPanel":      { "message": "Уменьшить размер суб-панели" },
-  "command_groupSelectedTabs":     { "message": "Создать новую группу из выбранных вкладок" },
-  "command_ungroupTabs":           { "message": "Разгруппировать вкладки" },
 
   "tab_closebox_tab_tooltip": { "message": "Закрыть вкладку" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Закрыть вкладки" },
@@ -155,6 +151,48 @@
   "bookmarkFolderChooser_blank":         { "message": "(без имени)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Использовать эту папку" },
 
+  "syncDeviceDefaultName": { "message": "$BROWSER$ on $PLATFORM$",
+    "placeholders": {
+      "PLATFORM": { "content": "$1", "example": "Firefox" },
+      "BROWSER":  { "content": "$2", "example": "Windows" }
+    }},
+  "syncDeviceMissingDeviceName": { "message": "безымянное устройство" },
+  "syncDeviceUnknownDevice":     { "message": "неизвестное устройство" },
+  "syncAvailable_notification_title":   { "message": "Теперь вкладки можно отправлять на другие устройства с TST." },
+  "syncAvailable_notification_message": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите здесь, чтобы присвоить этому устройству имя(id)." },
+  "sentTabs_notification_title":            { "message": "" },
+  "sentTabs_notification_message":          { "message": "Вкладки отправлены на $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
+    }},
+  "sentTabs_notification_title_multiple":   { "message": "" },
+  "sentTabs_notification_message_multiple": { "message": "Вкладки отправлены на $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
+    }},
+  "sentTabsToAllDevices_notification_title":            { "message": "" },
+  "sentTabsToAllDevices_notification_message":          { "message": "Вкладка отправлена на все устройства" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "" },
+  "sentTabsToAllDevices_notification_message_multiple": { "message": "Вкладки отправлены на все устройства" },
+  "receiveTabs_notification_title":            { "message": "Вкладка из $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
+    }},
+  "receiveTabs_notification_message":          { "message": "$URL$",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" }
+    }},
+  "receiveTabs_notification_title_multiple":   { "message": "Вкладки из $DEVICE$",
+    "placeholders": {
+      "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
+    }},
+  "receiveTabs_notification_message_multiple": { "message": "$URL$\nи $REST$ других вкладок",
+    "placeholders": {
+      "URL": { "content": "$1", "example": "http://example.com/" },
+      "ALL": { "content": "$2", "example": "4" },
+      "REST": { "content": "$3", "example": "3" }
+    }},
+
   "startup_notification_title_installed":   { "message": "Новым пользователям Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Дополнительные разрешения требуются для взаимодействия с пользователем. Щелкните здесь, чтобы предоставить их." },
   "startup_notification_title_updated":     { "message": "Изменения в Tree Style Tab" },
@@ -164,6 +202,9 @@
   "message_startup_description_key": { "message": "кнопку \"F1\" " },
   "message_startup_description_2": { "message": " либо " },
   "message_startup_description_3": { "message": " кнопку на панели инструментов, чтобы активировать боковую панель." },
+  "message_startup_description_sync_before": { "message": "Вкладки можно отправлять через Firefox Sync только на устройства с установленным TST. Сначала активируйте Firefox Sync в настройках Firefox и установите TST на другие устройства." },
+  "message_startup_description_sync_link":   { "message": "Имя устройства нужно настраивать вручную" },
+  "message_startup_description_sync_after":  { "message": "." },
 
   "message_startup_history_before":     { "message": "Измененное поведение может быть (или нет) восстановлено с помощью вариантов обхода. См. детали в " },
   "message_startup_history_uri":        { "message": "https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/" },
@@ -229,10 +270,9 @@
   "context_bookmarkTree_label": { "message": "В закладки это дерево…" },
   "context_bookmarkTree_label_multiselected": { "message": "В закладки эти деревья…" },
   "context_bookmarkTree_command": { "message": "В закладки это дерево…" },
-  "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
-  "context_groupTabs_command":    { "message": "Создать новую группу из вкладок" },
-  "context_ungroupTabs_label":  { "message": "Разгруппировать вкладки" },
-  "context_ungroupTabs_command":{ "message": "Разгруппировать вкладки" },
+  "context_sendTreeToDevice_label": { "message": "Отправить это дерево на устройство" },
+  "context_sendTreeToDevice_label_multiselected": { "message": "Отправить выбранные деревья на устройство" },
+  "context_sendTreeToDevice_command": { "message": "Отправить это дерево на устройство" },
   "context_topLevel_prefix": { "message": "Верхний элемент: " },
 
   "context_collapsed_label": { "message": "Свернут (проверка меню типа флажок)" },
@@ -292,6 +332,20 @@
   "config_extraItems_tabs_middleClick": { "message": "Действие щелчка СКМ" },
   "config_extraItems_bookmarks_caption": { "message": "Пункты контекстного меню закладок" },
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Открывать незагруженными" },
+
+  "config_sendTabsToDevice_caption": { "message": "Отправляйте вкладки на другие устройства через контекстное меню используя Firefox Sync" },
+  "config_syncRequirements_description": { "message": "Эта функция зависит от Firefox Sync. Вкладки можно отправлять только на устройства с установленным TST. Сначала активируйте Firefox Sync в настройках Firefox и установите TST на другие устройства." },
+  "config_syncDeviceInfo_name_label": { "message": "Название и значок этого устройства:" },
+  "config_syncDeviceInfo_name_description_before": { "message": "TST не может определить имя устройства, из-за ограничений API WebExtensions. Установите имя(id) для этого устройства вручную. (Рекомендуется копировать " },
+  "config_syncDeviceInfo_name_description_link": { "message": "имя устройства из Firefox Sync" },
+  "config_syncDeviceInfo_name_description_href": { "message": "https://accounts.firefox.com/settings/clients" },
+  "config_syncDeviceInfo_name_description_after": { "message": ".)" },
+  "config_syncDeviceExpirationDays_label_before": { "message": "Автоисключение неиспользуемых устройств, если они не подключались более " },
+  "config_syncDeviceExpirationDays_label_after": { "message": " дней (\"0\" - \"не исключать\")" },
+  "config_syncUnsendableUrlPattern_label": { "message": "Правило соответствия для неотправляемых URL вкладок ( * Это должно быть синхронизировано с параметром \"services.sync.engine.tabs.filteredUrls\" Firefox:" },
+  "config_otherDevices_caption": { "message": "Активные другие устройства:" },
+  "config_removeDeviceButton_label": { "message": "Удалить" },
+  "config_removeDeviceButton_tooltip": { "message": "Удалить это устройство из списка" },
 
 
   "config_newTab_caption": { "message": "Поведение новой вкладки" },
@@ -566,6 +620,9 @@
 
   "config_runTests_label": { "message": "Запустить автоматические тесты" },
   "config_runBenchmark_label": { "message": "Запустить бенчмарк" },
+  "config_enableLinuxBehaviors_label": { "message": "Активация специфического поведения Linux" },
+  "config_enableMacOSBehaviors_label": { "message": "Активация специфического поведения macOS" },
+  "config_enableWindowsBehaviors_label": { "message": "Активация специфического поведения Windows" },
   "config_debug_label": { "message": "Режим отладки" },
   "config_log_caption":               { "message": "Детальное логирование" },
   "config_logTimestamp_label": { "message": "Лог с отметками времени" },
@@ -612,6 +669,9 @@
   "tabContextMenu_moveTabToStart_label": { "message": "Переместить в &начало" },
   "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в &конец" },
   "tabContextMenu_tearOff_label":     { "message": "Пере&местить в новое окно" },
+  "tabContextMenu_sendTabsToDevice_label": { "message": "Отправить вкладку на устройство" },
+  "tabContextMenu_sendTabsToAllDevices_label": { "message": "Отправить на все устройства" },
+  "tabContextMenu_manageSyncDevices_label": { "message": "Управление устройствами…" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "&Закрыть несколько вкладок" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки &снизу" },
@@ -631,6 +691,7 @@
   "tabContextMenu_duplicate_label_multiselected":   { "message": "&Дублировать вкладки" },
 
   "tabContextMenu_moveTab_label_multiselected": { "message": "П&ереместить вкладки" },
+  "tabContextMenu_sendTabsToDevice_label_multiselected": { "message": "Отправить %S вкладок на устройство" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "Добавить вкладки в зак&ладки…" },
   "tabContextMenu_bookmarkSelected_label":       { "message": "Добавить выб&ранные в закладки…" },
