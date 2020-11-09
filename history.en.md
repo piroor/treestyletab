@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.6.1 (2020.11.10)
+   * Fix broken custom confirmation dialogs. (regression on 3.6.0)
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.6.0 (2020.11.06)
    * Implement the "Send Tab to Device" context menu command based on Firefox Sync. It is just a workaround implementation based on the Sync Storage, because [a genuine WebExtensios API to use Firefox Sync won't be implemented for now](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183).
    * Remove "Group Tabs", "Ungroup Tabs", "Indent" and "Outdent" menu commands and keyboard shortcuts. Now they are separated to a helper addon [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/).

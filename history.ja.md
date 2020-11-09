@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.6.1 (2020.11.10)
+   * 独自の確認ダイアログが動作しなくなっていたのを修正（3.6.0での後退バグ）
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.6.0 (2020.11.06)
    * Firefox Sync経由でコンテキストメニューからタブを他の端末に送信できるようにした（[Firefox Syncを直接利用するWebExtensions APIが当面実装されない模様](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183)なので、Sync Storageベースで暫定的に実装した）
    * メニュー項目とキーボードショートカット用コマンドから「選択中のタブを新しいグループにする」「タブのグループ化を解除」「現在のタブを1階層深くする」「現在のタブを1階層浅くする」を削除した（これらの機能は新しいヘルパーアドオンの[TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/)に分割されました）
