@@ -9,6 +9,7 @@ export const kCOMMAND_GET_INSTANCE_ID                = 'treestyletab:get-instanc
 export const kCOMMAND_RELOAD                         = 'treestyletab:reload';
 export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
+export const kCOMMAND_HEARTBEAT                      = 'treestyletab:heartbeat';
 export const kCOMMAND_REQUEST_CONNECT_PREFIX         = 'treestyletab:request-connect-from:';
 export const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
 export const kCOMMAND_GET_THEME_DECLARATIONS         = 'treestyletab:get-theme-declarations';

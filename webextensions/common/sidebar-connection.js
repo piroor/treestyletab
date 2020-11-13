@@ -142,23 +142,44 @@ export function init() {
     const connections = mConnections.get(windowId) || new Set();
     connections.add(connection);
     mConnections.set(windowId, connections);
+    let connectionTimeoutTimer = null;
+    const updateTimeoutTimer = () => {
+      if (connectionTimeoutTimer) {
+        clearTimeout(connectionTimeoutTimer);
+        connectionTimeoutTimer = null;
+      }
+      connectionTimeoutTimer = setTimeout(() => {
+        log(`no heartbeat from window ${windowId}: disconnected.`);
+        cleanup(); // eslint-disable-line no-use-before-define
+        port.disconnect();
+      }, configs.heartbeatInterval + configs.connectionTimeoutDelay);
+    };
+    const cleanup = _diconnectedPort => {
+      if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
+        return;
+      if (connectionTimeoutTimer) {
+        clearTimeout(connectionTimeoutTimer);
+        connectionTimeoutTimer = null;
+      }
+      connections.delete(connection);
+      if (connections.size == 0)
+        mConnections.delete(windowId);
+      port.onMessage.removeListener(receiver); // eslint-disable-line no-use-before-define
+      mReceivers.delete(windowId);
+      mFocusState.delete(windowId);
+      onDisconnected.dispatch(windowId, connections.size);
+    };
     const receiver = message => {
       if (Array.isArray(message))
         return message.forEach(receiver);
+      if (message.type == Constants.kCOMMAND_HEARTBEAT)
+        updateTimeoutTimer();
       onMessage.dispatch(windowId, message);
     };
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
     onConnected.dispatch(windowId, connections.size);
-    port.onDisconnect.addListener(_diconnectedPort => {
-      connections.delete(connection);
-      if (connections.size == 0)
-        mConnections.delete(windowId);
-      port.onMessage.removeListener(receiver);
-      mReceivers.delete(windowId);
-      mFocusState.delete(windowId);
-      onDisconnected.dispatch(windowId, connections.size);
-    });
+    port.onDisconnect.addListener(cleanup);
   });
 }
 

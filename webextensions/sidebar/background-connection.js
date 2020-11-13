@@ -23,6 +23,7 @@ function log(...args) {
 export const onMessage = new EventListenerManager();
 
 let mConnectionPort = null;
+let mHeartbeatTimer = null;
 
 export function connect() {
   if (mConnectionPort)
@@ -32,6 +33,18 @@ export function connect() {
     name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${TabsStore.getCurrentWindowId()}:${type}`
   });
   mConnectionPort.onMessage.addListener(onConnectionMessage);
+  mConnectionPort.onDisconnect.addListener(() => {
+    log(`disconnected: try to reconnect.`);
+    mConnectionPort = null;
+    connect();
+  });
+  if (mHeartbeatTimer)
+    clearInterval(mHeartbeatTimer);
+  mHeartbeatTimer = setInterval(() => {
+    sendMessage({
+      type: Constants.kCOMMAND_HEARTBEAT
+    });
+  }, configs.heartbeatInterval);
 }
 
 let mPromisedStartedResolver;
