@@ -280,7 +280,7 @@ export const configs = new Configs({
   maximumDelayForBug1561879: 100,
   workaroundForBug1548949DroppedTabs: null,
   heartbeatInterval: 1000,
-  connectionTimeoutDelay: 500,
+  connectionTimeoutDelay: 5000,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   maximumDelayUntilTabIsTracked: 10 * 60 * 1000,
   delayToBlockUserOperationForTabsRestoration: 1000,
