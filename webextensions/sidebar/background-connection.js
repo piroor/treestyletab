@@ -35,8 +35,7 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
   mConnectionPort.onDisconnect.addListener(() => {
     log(`disconnected: try to reconnect.`);
-    mConnectionPort = null;
-    connect();
+    location.reload();
   });
   if (mHeartbeatTimer)
     clearInterval(mHeartbeatTimer);
