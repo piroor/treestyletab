@@ -1293,6 +1293,7 @@
         "message": "移动单个标签页 / 什么都不做",
         "hash": ""
     },
+    "config_tabDragBehavior_none_none":     { "message": "什么都不做 / 什么都不做" },
     "config_showTabDragBehaviorNotification_label": {
         "message": "在拖动标签页时显示通知提示，说明当这些标签页被拖放到侧栏之外时会发生的情况。",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"

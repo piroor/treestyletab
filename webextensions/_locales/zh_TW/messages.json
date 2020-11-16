@@ -381,6 +381,7 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Move Solo Tab / 分離單個分頁至新視窗(無法加入書籤)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / 加入單個分頁至新視窗(無法分離至新視窗)" },
   "config_tabDragBehavior_none_tab":      { "message": "Move Solo Tab / 無動作" },
+  "config_tabDragBehavior_none_none":     { "message": "無動作 / 無動作" },
   "config_showTabDragBehaviorNotification_label": { "message": "拖曳分頁到分頁欄外期間顯示說明" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "拖曳連結或 URL 字串至分頁時" },

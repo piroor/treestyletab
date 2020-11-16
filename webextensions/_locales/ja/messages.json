@@ -533,6 +533,7 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "タブ単体を移動する / タブ単体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "タブ単体を移動する / タブ単体からリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
   "config_tabDragBehavior_none_tab":      { "message": "タブ単体を移動する / 何もしない" },
+  "config_tabDragBehavior_none_none":      { "message": "何もしない / 何もしない" },
   "config_showTabDragBehaviorNotification_label": { "message": "タブのドラッグ中、サイドバー外にドロップした時の操作説明を表示する" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "タブにリンクやURL文字列をドロップしたとき" },

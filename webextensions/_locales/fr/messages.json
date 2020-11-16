@@ -376,6 +376,7 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Move Solo Tab / Détacher un onglet seul de la fenêtre (mais impossible de créer un marque-page)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / Créer un lien ou un marque-page pour un onglet seul (mais impossible de le détacher de la fenêtre)" },
   "config_tabDragBehavior_none_tab":      { "message": "Move Solo Tab / Ne rien faire" },
+  "config_tabDragBehavior_none_none":     { "message": "Ne rien faire / Ne rien faire" },
   "config_showTabDragBehaviorNotification_label": { "message": "Afficher pendant le déplacement ce qui arrivera aux onglets déposés en dehors" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "Quand un lien ou une URL est déposée sur un onglet" },

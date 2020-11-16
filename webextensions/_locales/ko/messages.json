@@ -1196,6 +1196,7 @@
         "message": "Move Solo Tab / 동작 없음",
         "hash": ""
     },
+    "config_tabDragBehavior_none_none":     { "message": "동작 없음 / 동작 없음" },
     "config_showTabDragBehaviorNotification_label": {
         "message": "탭 드래그 중 사이드 바 밖으로 드롭했을 때의 조작",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"

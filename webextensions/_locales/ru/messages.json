@@ -537,6 +537,7 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Перемещение вкладки / Отсоеденит вкладку от окна (невозможно создать закладку)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Перемещение вкладки / Создаст закладку или ссылку (невозможно отсоединить от окна)" },
   "config_tabDragBehavior_none_tab":      { "message": "Перемещение вкладки / Ничего не делать" },
+  "config_tabDragBehavior_none_none":     { "message": "Ничего не делать / Ничего не делать" },
   "config_showTabDragBehaviorNotification_label": { "message": "Показывать напоминание о том, что произойдет после отпускания вкладки за пределами боковой панели" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL на вкладку" },
