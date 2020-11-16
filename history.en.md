@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Stable toggling of the sidebar via F1 key or the toolbar button. (The action was sometimes broken unexpectedly due to zombie connections between closed sidebar pages and the background page.)
+   * Never lose the cusror position of the input field for the user styles while typing.
+   * Suppress unexpected detaching or moving of tabs from unexpectedly dispatched `dragend`, more aggressively.
+   * Add new choice to disable drag-and-drop of tabs completely, for experts.
  - 3.6.1 (2020.11.10)
    * Fix broken custom confirmation dialogs. (regression on 3.6.0)
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
