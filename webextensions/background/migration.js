@@ -20,7 +20,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 17;
+const kCONFIGS_VERSION = 18;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -191,6 +191,10 @@ export function migrateConfigs() {
 
     case 16:
       configs.maximumDelayForBug1561879 = Math.max(configs.$default.maximumDelayForBug1561879, configs.maximumDelayForBug1561879);
+
+    case 17:
+      configs.tabDragBehavior |= Constants.kDRAG_BEHAVIOR_MOVE;
+      configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_MOVE;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

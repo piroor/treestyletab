@@ -753,7 +753,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
             if (tab) {
               tabIsGiven = true;
               draggedTab = tab;
-              behavior   = Constants.kDRAG_BEHAVIOR_NONE;
+              behavior   = data.data.allowMove === false ? Constants.kDRAG_BEHAVIOR_NONE : Constants.kDRAG_BEHAVIOR_MOVE;
               if (data.data.allowDetach)
                 behavior |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
               if (data.data.allowLink)
@@ -1247,6 +1247,7 @@ function onDrop(event) {
       tabs:                dropActionInfo.dragData.tabs,
       structure:           dropActionInfo.dragData.structure,
       action:              dropActionInfo.action,
+      allosedActions:      dropActionInfo.dragData.behavior,
       attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
       insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
       insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,

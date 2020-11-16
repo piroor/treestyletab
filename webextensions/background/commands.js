@@ -293,8 +293,15 @@ async function performTabsDragDrop(params = {}) {
     insertAfter:         dumpTab(params.insertAfter),
     windowId:            params.windowId,
     destinationWindowId: params.destinationWindowId,
-    action:              params.action
+    action:              params.action,
+    allosedActions:      params.allosedActions
   }));
+
+  if (!(params.allosedActions & Constants.kDRAG_BEHAVIOR_MOVE) &&
+      !params.duplicate) {
+    log('not allowed action');
+    return;
+  }
 
   const movedTabs = await moveTabsWithStructure(params.tabs, {
     ...params,
