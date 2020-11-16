@@ -1365,6 +1365,7 @@ async function onDragEnd(event) {
     devicePixelRatio: window.devicePixelRatio,
     offset
   });
+  const now = Date.now();
   if ((event.screenX >= windowX - offset &&
        event.screenY >= windowY - offset &&
        event.screenX <= windowX + windowW + offset &&
@@ -1376,10 +1377,13 @@ async function onDragEnd(event) {
        fixedEventScreenY <= windowY + windowH + offset) ||
       // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561879
       // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
-      (Date.now() - mLastDragStartTime < configs.maximumDelayForBug1561879 &&
+      // This happens on Windows also.
+      (now - mLastDragStartTime < configs.maximumDelayForBug1561879 &&
        event.screenX == 0 &&
        event.screenY == 0)) {
-    log('dropped near the tab bar (from coordinates): detaching is canceled');
+    log('dropped near the tab bar (from coordinates): detaching is canceled ', {
+      delay: now - mLastDragStartTime
+    });
     return;
   }
 
