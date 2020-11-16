@@ -216,6 +216,11 @@ const mItems = [
         key:   'context_topLevel_bookmarkTree',
         type:  'checkbox'
       },
+      {
+        title: indent() + browser.i18n.getMessage('context_sendTreeToDevice_command'),
+        key:   'context_topLevel_sendTreeToDevice',
+        type:  'checkbox'
+      },
       { type: 'separator' },
       {
         title: browser.i18n.getMessage('config_extraItems_tabs_subMenu'),
@@ -279,6 +284,11 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_command'),
         key:   'context_bookmarkTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_sendTreeToDevice_command'),
+        key:   'context_sendTreeToDevice',
         type:  'checkbox'
       },
       { type: 'separator' },
