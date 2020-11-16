@@ -1222,7 +1222,8 @@ const mItems = [
             title: browser.i18n.getMessage('config_tabDragBehavior_none_none'),
             key:   'tabDragBehavior',
             value: Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
+            type:  'radio',
+            expert: true
           }
         ]
       },
@@ -1269,7 +1270,8 @@ const mItems = [
             title: browser.i18n.getMessage('config_tabDragBehavior_none_none'),
             key:   'tabDragBehaviorShift',
             value: Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
+            type:  'radio',
+            expert: true
           }
         ]
       },
