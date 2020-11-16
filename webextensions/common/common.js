@@ -810,6 +810,10 @@ export function sanitizeForHTMLText(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+export function sanitizeAccesskeyMark(label) {
+  return String(label || '').replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
+}
+
 
 /*
 export function isLinux() {

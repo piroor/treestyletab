@@ -15,7 +15,8 @@ import {
   configs,
   sanitizeForHTMLText,
   loadUserStyleRules,
-  saveUserStyleRules
+  saveUserStyleRules,
+  sanitizeAccesskeyMark,
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -101,7 +102,7 @@ function onConfigChanged(key) {
 function removeAccesskeyMark(node) {
   if (!node.nodeValue)
     return;
-  node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
+  node.nodeValue = sanitizeAccesskeyMark(node.nodeValue);
 }
 
 function onChangeParentCheckbox(event) {
