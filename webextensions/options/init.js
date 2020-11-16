@@ -91,7 +91,8 @@ function onConfigChanged(key) {
       break;
 
     default:
-      if (key.startsWith('chunkedUserStyleRules'))
+      if (key.startsWith('chunkedUserStyleRules') &&
+          !mUserStyleRulesField.$saving)
         mUserStyleRulesField.value = loadUserStyleRules();
       break;
   }
@@ -146,6 +147,7 @@ function reserveToSaveUserStyleRules() {
   reserveToSaveUserStyleRules.timer = setTimeout(() => {
     reserveToSaveUserStyleRules.timer = null;
     const caution = document.querySelector('#tooLargeUserStyleRulesCaution');
+    mUserStyleRulesField.$saving = true;
     try {
       saveUserStyleRules(mUserStyleRulesField.value);
       mUserStyleRulesField.classList.remove('invalid');
@@ -154,6 +156,11 @@ function reserveToSaveUserStyleRules() {
     catch(_error) {
       mUserStyleRulesField.classList.add('invalid');
       caution.classList.add('invalid');
+    }
+    finally {
+      setTimeout(() => {
+        mUserStyleRulesField.$saving = false;
+      }, 250);
     }
   }, 250);
 }
