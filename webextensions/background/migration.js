@@ -20,7 +20,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 16;
+const kCONFIGS_VERSION = 17;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -188,6 +188,9 @@ export function migrateConfigs() {
         else if (configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
           configs.tabDragBehaviorShift = configs.tabDragBehaviorShift ^ Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
       }
+
+    case 16:
+      configs.maximumDelayForBug1561879 = configs.$default.maximumDelayForBug1561879;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
