@@ -81,6 +81,7 @@ let mCapturingForDragging = false;
 let mReadyToCaptureMouseEvents = false;
 let mLastDragEnteredTarget = null;
 let mLastDropPosition      = null;
+let mLastDragEventCoordinates = null;
 let mDragTargetIsClosebox  = false;
 let mCurrentDragData       = null;
 
@@ -100,6 +101,8 @@ export function init() {
   mDragBehaviorNotification = document.getElementById('tab-drag-notification');
 
   browser.runtime.sendMessage({ type: Constants.kCOMMAND_GET_INSTANCE_ID }).then(id => mInstanceId = id);
+
+  updateLastDragEventCoordinates();
 }
 
 
@@ -699,7 +702,6 @@ async function getDroppedLinksOnTabBehavior() {
 /* DOM event listeners */
 
 let mFinishCanceledDragOperation;
-let mLastDragStartTime = 0;
 let mCurrentDragDataForExternalsId = null;
 let mCurrentDragDataForExternals = null;
 
@@ -909,7 +911,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     windowId: TabsStore.getCurrentWindowId()
   }, { tabProperties: ['tab'] }).catch(_error => {});
 
-  mLastDragStartTime = Date.now();
+  updateLastDragEventCoordinates(event);
   // Don't store raw URLs to save privacy!
   sha1sum(dragData.tabs.map(tab => tab.url).join('\n')).then(digest => {
     configs.lastDraggedTabs = {
@@ -1007,6 +1009,8 @@ function onDragOver(event) {
   event.preventDefault(); // this is required to override default dragover actions!
   Scroll.autoScrollOnMouseEvent(event);
 
+  updateLastDragEventCoordinates(event);
+
   // reduce too much handling of too frequent dragover events...
   const now = Date.now();
   if (now - (mLastDragOverTimestamp || 0) < configs.minimumIntervalToProcessDragoverEvent)
@@ -1084,6 +1088,8 @@ function onDragEnter(event) {
   dt.dropEffect = info.dropEffect;
   if (info.dropEffect == 'link')
     document.documentElement.classList.add(kTABBAR_STATE_LINK_DRAGGING);
+
+  updateLastDragEventCoordinates(event);
 
   if (!configs.autoExpandOnLongHover ||
       !info.canDrop ||
@@ -1197,6 +1203,7 @@ function onDragLeave(event) {
     delete onDragLeave.delayedLeftFromTabBar;
   }
 
+  updateLastDragEventCoordinates(event);
   clearTimeout(mLongHoverTimer);
   mLongHoverTimer = null;
 }
@@ -1291,6 +1298,9 @@ onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 async function onDragEnd(event) {
   log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs, dropEffect: event.dataTransfer.dropEffect });
+  const lastDragEventCoordinatesX = mLastDragEventCoordinates.x;
+  const lastDragEventCoordinatesY = mLastDragEventCoordinates.y;
+  const lastDragEventCoordinatesTimestamp = mLastDragEventCoordinates.timestamp;
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
@@ -1351,6 +1361,7 @@ async function onDragEnd(event) {
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
   const fixedEventScreenX = event.screenX / window.devicePixelRatio;
   const fixedEventScreenY = event.screenY / window.devicePixelRatio;
+  const now = Date.now();
   log('dragend at: ', {
     windowX,
     windowY,
@@ -1363,9 +1374,12 @@ async function onDragEnd(event) {
     fixedEventScreenX,
     fixedEventScreenY,
     devicePixelRatio: window.devicePixelRatio,
+    lastDragEventCoordinatesX,
+    lastDragEventCoordinatesY,
+    lastDragEventCoordinatesTimestamp,
+    delayFromLast: now - lastDragEventCoordinatesTimestamp,
     offset
   });
-  const now = Date.now();
   if ((event.screenX >= windowX - offset &&
        event.screenY >= windowY - offset &&
        event.screenX <= windowX + windowW + offset &&
@@ -1377,13 +1391,17 @@ async function onDragEnd(event) {
        fixedEventScreenY <= windowY + windowH + offset) ||
       // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561879
       // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
-      // This happens on Windows also.
-      (now - mLastDragStartTime < configs.maximumDelayForBug1561879 &&
-       event.screenX == 0 &&
-       event.screenY == 0)) {
-    log('dropped near the tab bar (from coordinates): detaching is canceled ', {
-      delay: now - mLastDragStartTime
-    });
+      // (This happens on Windows also.)
+      (event.screenX == 0 &&
+       event.screenY == 0 &&
+       // We need to accept intentional drag and drop at left edge of the screen.
+       // For safety, cancel only when the coordinates become (0,0) accidently from the bug.
+       now - lastDragEventCoordinatesTimestamp < configs.maximumDelayForBug1561879 &&
+       (Math.abs(event.screenX - lastDragEventCoordinatesX) > offset ||
+        Math.abs(fixedEventScreenX - lastDragEventCoordinatesX) > offset) &&
+       (Math.abs(event.screenY - lastDragEventCoordinatesY) > offset ||
+        Math.abs(fixedEventScreenY - lastDragEventCoordinatesY) > offset))) {
+    log('dropped near the tab bar (from coordinates): detaching is canceled');
     return;
   }
 
@@ -1436,11 +1454,20 @@ function onFinishDrag() {
   clearDraggingTabsState();
   clearDropPosition();
   mLastDropPosition = null;
+  updateLastDragEventCoordinates();
   mLastDragOverTimestamp = null;
   clearDraggingState();
   collapseAutoExpandedTabsWhileDragging();
   mDraggingOnSelfWindow = false;
   mDraggingOnDraggedTabs = false;
+}
+
+function updateLastDragEventCoordinates(event = null) {
+  mLastDragEventCoordinates = {
+    x: event ? event.screenX : 0,
+    y: event ? event.screenY : 0,
+    timestamp: event ? Date.now() : 0
+  };
 }
 
 
