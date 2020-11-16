@@ -190,7 +190,7 @@ export function migrateConfigs() {
       }
 
     case 16:
-      configs.maximumDelayForBug1561879 = configs.$default.maximumDelayForBug1561879;
+      configs.maximumDelayForBug1561879 = Math.max(configs.$default.maximumDelayForBug1561879, configs.maximumDelayForBug1561879);
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
