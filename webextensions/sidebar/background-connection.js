@@ -35,7 +35,15 @@ export function connect() {
   mConnectionPort.onMessage.addListener(onConnectionMessage);
   mConnectionPort.onDisconnect.addListener(() => {
     log(`disconnected: try to reconnect.`);
-    location.reload();
+    if (configs.reconnectToBackgroundImmediately) {
+      // faster, but unsafe.
+      mConnectionPort = null;
+      connect();
+    }
+    else {
+      // safer, but slow.
+      location.reload();
+    }
   });
   if (mHeartbeatTimer)
     clearInterval(mHeartbeatTimer);
