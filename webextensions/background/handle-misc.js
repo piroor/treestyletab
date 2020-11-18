@@ -397,7 +397,12 @@ function onMessageExternal(message, sender) {
             interval: message.interval,
             cache
           })),
-          message,
+          {
+            ...message,
+            // This must return an array of root tabs if just the window id is specified.
+            // See also: https://github.com/piroor/treestyletab/issues/2763
+            ...((message.window || message.windowId) && !message.tab && !message.tabs ? { tab: '*' } : {})
+          },
           sender.id
         );
       })();
