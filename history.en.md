@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.6.2 (2020.11.19)
    * Stable toggling of the sidebar via F1 key or the toolbar button. (The action was sometimes broken unexpectedly due to zombie connections between closed sidebar pages and the background page.)
    * Never lose the cusror position of the input field for the user styles while typing.
    * Suppress unexpected detaching or moving of tabs from unexpectedly dispatched `dragend`, more aggressively.
