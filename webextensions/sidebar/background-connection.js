@@ -34,16 +34,8 @@ export function connect() {
   });
   mConnectionPort.onMessage.addListener(onConnectionMessage);
   mConnectionPort.onDisconnect.addListener(() => {
-    log(`disconnected: try to reconnect.`);
-    if (configs.reconnectToBackgroundImmediately) {
-      // faster, but unsafe.
-      mConnectionPort = null;
-      connect();
-    }
-    else {
-      // safer, but slow.
-      location.reload();
-    }
+    log(`Disconnected accidentally: try to reconnect.`);
+    location.reload();
   });
   if (mHeartbeatTimer)
     clearInterval(mHeartbeatTimer);

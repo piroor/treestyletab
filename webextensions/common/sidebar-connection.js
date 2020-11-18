@@ -148,8 +148,21 @@ export function init() {
         clearTimeout(connectionTimeoutTimer);
         connectionTimeoutTimer = null;
       }
-      connectionTimeoutTimer = setTimeout(() => {
-        log(`no heartbeat from window ${windowId}: disconnected.`);
+      connectionTimeoutTimer = setTimeout(async () => {
+        log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
+        try {
+          const pong = await browser.runtime.sendMessage({
+            type: Constants.kCOMMAND_PING_TO_SIDEBAR,
+            windowId
+          });
+          if (pong) {
+            log(`Sidebar for the window ${windowId} responded. Keep connected.`);
+            return;
+          }
+        }
+        catch(_error) {
+        }
+        log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
         cleanup(); // eslint-disable-line no-use-before-define
         port.disconnect();
       }, configs.heartbeatInterval + configs.connectionTimeoutDelay);

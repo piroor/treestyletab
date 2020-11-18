@@ -855,6 +855,10 @@ function onMessage(message, _sender, _respond) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
+    // for a vital check from SidebarConnection
+    case Constants.kCOMMAND_PING_TO_SIDEBAR:
+      return Promise.resolve(true);
+
     case Constants.kCOMMAND_RELOAD:
       location.reload();
       return;
