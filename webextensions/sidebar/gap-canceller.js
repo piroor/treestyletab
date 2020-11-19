@@ -31,27 +31,27 @@ export function init() {
       onLocationChange(tab.url);
   }, { windowId: mWindowId, properties: ['status'] });
 
-  if (configs.suppressGapOnNewTabBookmarksToolbar)
-    startSuppressGapOnNewTabBookmarksToolbar();
+  if (configs.suppressGapFromShownOrHiddenToolbar)
+    startSuppressGapFromShownOrHiddenToolbar();
 
   configs.$addObserver(changedKey => {
     switch (changedKey) {
-      case 'suppressGapOnNewTabBookmarksToolbar':
-      case 'suppressGapOnNewTabBookmarksToolbarInterval':
-        if (configs.suppressGapOnNewTabBookmarksToolbar)
-          startSuppressGapOnNewTabBookmarksToolbar();
+      case 'suppressGapFromShownOrHiddenToolbar':
+      case 'suppressGapFromShownOrHiddenToolbarInterval':
+        if (configs.suppressGapFromShownOrHiddenToolbar)
+          startSuppressGapFromShownOrHiddenToolbar();
         else
-          stopSuppressGapOnNewTabBookmarksToolbar();
+          stopSuppressGapFromShownOrHiddenToolbar();
         break;
     }
   });
 }
 
-function startSuppressGapOnNewTabBookmarksToolbar() {
-  stopSuppressGapOnNewTabBookmarksToolbar();
+function startSuppressGapFromShownOrHiddenToolbar() {
+  stopSuppressGapFromShownOrHiddenToolbar();
   let lastWindowScreenY   = window.screenY;
   let lastMozInnerScreenY = window.mozInnerScreenY;
-  startSuppressGapOnNewTabBookmarksToolbar.timer = window.setInterval(() => {
+  startSuppressGapFromShownOrHiddenToolbar.timer = window.setInterval(() => {
     const shouldSuppressGap = (
       mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl ||
       mDataset.ownerWindowState == 'fullscreen'
@@ -77,13 +77,13 @@ function startSuppressGapOnNewTabBookmarksToolbar() {
     browser.windows.get(mWindowId).then(window => {
       mDataset.ownerWindowState = window.state;
     });
-  }, configs.suppressGapOnNewTabBookmarksToolbarInterval);
+  }, configs.suppressGapFromShownOrHiddenToolbarInterval);
 }
 
-function stopSuppressGapOnNewTabBookmarksToolbar() {
-  if (startSuppressGapOnNewTabBookmarksToolbar.timer)
-    window.clearInterval(startSuppressGapOnNewTabBookmarksToolbar.timer);
-  delete startSuppressGapOnNewTabBookmarksToolbar.timer;
+function stopSuppressGapFromShownOrHiddenToolbar() {
+  if (startSuppressGapFromShownOrHiddenToolbar.timer)
+    window.clearInterval(startSuppressGapFromShownOrHiddenToolbar.timer);
+  delete startSuppressGapFromShownOrHiddenToolbar.timer;
 }
 
 function onLocationChange(url) {

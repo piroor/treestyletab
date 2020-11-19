@@ -98,8 +98,8 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
-  suppressGapOnNewTabBookmarksToolbar: true,
-  suppressGapOnNewTabBookmarksToolbarInterval: 100,
+  suppressGapFromShownOrHiddenToolbar: true,
+  suppressGapFromShownOrHiddenToolbarInterval: 100,
 
 
   // context menu
