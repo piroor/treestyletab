@@ -312,6 +312,9 @@ export async function init() {
   mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
 
+  if (configs.suppressGapOnNewTabBookmarksToolbar)
+    startSuppressGapOnNewTabBookmarksToolbar();
+
   MetricsData.add('init: end');
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
@@ -573,6 +576,29 @@ async function importTabsFromBackground() {
   return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', mImportedTabs);
 }
 
+// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=727668
+function startSuppressGapOnNewTabBookmarksToolbar() {
+  stopSuppressGapOnNewTabBookmarksToolbar();
+  let lastWindowScreenY   = window.screenY;
+  let lastMozInnerScreenY = window.mozInnerScreenY;
+  const container = document.querySelector('#tabbar-container');
+  startSuppressGapOnNewTabBookmarksToolbar.timer = window.setInterval(() => {
+    if (window.screenY == lastWindowScreenY &&
+        lastMozInnerScreenY != window.mozInnerScreenY) {
+      const offset = lastMozInnerScreenY - window.mozInnerScreenY;
+      container.style.transform = offset < 0 ? `translate(0, ${offset}px)` : '';
+    }
+    lastWindowScreenY   = window.screenY;
+    lastMozInnerScreenY = window.mozInnerScreenY;
+  }, configs.suppressGapOnNewTabBookmarksToolbarInterval);
+}
+
+function stopSuppressGapOnNewTabBookmarksToolbar() {
+  if (startSuppressGapOnNewTabBookmarksToolbar.timer)
+    window.clearInterval(startSuppressGapOnNewTabBookmarksToolbar.timer);
+  delete startSuppressGapOnNewTabBookmarksToolbar.timer;
+}
+
 
 export async function confirmToCloseTabs(tabs, { configKey } = {}) {
   const tabIds = [];
@@ -831,6 +857,14 @@ function onConfigChange(changedKey) {
         rootClasses.add('simulate-svg-context-fill');
       else
         rootClasses.remove('simulate-svg-context-fill');
+      break;
+
+    case 'suppressGapOnNewTabBookmarksToolbar':
+    case 'suppressGapOnNewTabBookmarksToolbarInterval':
+      if (configs.suppressGapOnNewTabBookmarksToolbar)
+        startSuppressGapOnNewTabBookmarksToolbar();
+      else
+        stopSuppressGapOnNewTabBookmarksToolbar();
       break;
 
     default:

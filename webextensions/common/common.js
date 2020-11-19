@@ -98,6 +98,9 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
+  suppressGapOnNewTabBookmarksToolbar: true,
+  suppressGapOnNewTabBookmarksToolbarInterval: 100,
+
 
   // context menu
   fakeContextMenu: null, // obsolete, migrated to emulateDefaultContextMenu
