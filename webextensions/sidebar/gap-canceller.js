@@ -10,11 +10,16 @@
 import {
   configs,
 } from '/common/common.js';
+import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 
 let mWindowId;
 const mStyle = document.documentElement.style;
 const mDataset = document.documentElement.dataset;
+
+let mLastWindowScreenY   = window.screenY;
+let mLastMozInnerScreenY = window.mozInnerScreenY;
+let mOffset              = 0;
 
 export function init() {
   mWindowId = TabsStore.getCurrentWindowId();
@@ -32,60 +37,89 @@ export function init() {
   }, { windowId: mWindowId, properties: ['status'] });
 
   if (configs.suppressGapFromShownOrHiddenToolbar)
-    startSuppressGapFromShownOrHiddenToolbar();
+    startWatching();
 
   configs.$addObserver(changedKey => {
     switch (changedKey) {
       case 'suppressGapFromShownOrHiddenToolbar':
       case 'suppressGapFromShownOrHiddenToolbarInterval':
         if (configs.suppressGapFromShownOrHiddenToolbar)
-          startSuppressGapFromShownOrHiddenToolbar();
+          startWatching();
         else
-          stopSuppressGapFromShownOrHiddenToolbar();
+          stopWatching();
         break;
     }
   });
 }
 
-function startSuppressGapFromShownOrHiddenToolbar() {
-  stopSuppressGapFromShownOrHiddenToolbar();
-  let lastWindowScreenY   = window.screenY;
-  let lastMozInnerScreenY = window.mozInnerScreenY;
-  startSuppressGapFromShownOrHiddenToolbar.timer = window.setInterval(() => {
-    const shouldSuppressGap = (
-      mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl ||
-      mDataset.ownerWindowState == 'fullscreen'
-    );
-    if (window.screenY == lastWindowScreenY &&
-        lastMozInnerScreenY != window.mozInnerScreenY) {
-      if (shouldSuppressGap) {
-        const offset = lastMozInnerScreenY - window.mozInnerScreenY;
-        mStyle.setProperty('--visual-gap-offset', offset < 0 ? `${offset}px` : '0px');
-        console.log('should suppress visual gap: offset = ', offset);
-      }
-      else {
-        mStyle.setProperty('--visual-gap-offset', '0px');
-        console.log('should not suppress, but there is a visual gap ');
-      }
+function updateOffset() {
+  const shouldSuppressGap = (
+    mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl ||
+    mDataset.ownerWindowState == 'fullscreen'
+  );
+  if (window.screenY == mLastWindowScreenY &&
+      mLastMozInnerScreenY != window.mozInnerScreenY) {
+    if (shouldSuppressGap) {
+      mOffset = Math.min(0, mLastMozInnerScreenY - window.mozInnerScreenY);
+      mStyle.setProperty('--visual-gap-offset', `${mOffset}px`);
+      document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, mOffset < 0);
+      console.log('should suppress visual gap: offset = ', mOffset);
     }
-    else if (!shouldSuppressGap) {
+    else {
       mStyle.setProperty('--visual-gap-offset', '0px');
-      console.log('should not suppress, no visual gap ');
+      console.log('should not suppress, but there is a visual gap ');
     }
-    lastWindowScreenY   = window.screenY;
-    lastMozInnerScreenY = window.mozInnerScreenY;
-    browser.windows.get(mWindowId).then(window => {
-      mDataset.ownerWindowState = window.state;
-    });
-  }, configs.suppressGapFromShownOrHiddenToolbarInterval);
+  }
+  else if (!shouldSuppressGap) {
+    mStyle.setProperty('--visual-gap-offset', '0px');
+    console.log('should not suppress, no visual gap ');
+  }
+  mLastWindowScreenY   = window.screenY;
+  mLastMozInnerScreenY = window.mozInnerScreenY;
+  browser.windows.get(mWindowId).then(window => {
+    mDataset.ownerWindowState = window.state;
+  });
 }
 
-function stopSuppressGapFromShownOrHiddenToolbar() {
-  if (startSuppressGapFromShownOrHiddenToolbar.timer)
-    window.clearInterval(startSuppressGapFromShownOrHiddenToolbar.timer);
-  delete startSuppressGapFromShownOrHiddenToolbar.timer;
+function startWatching() {
+  stopWatching();
+  startWatching.timer = window.setInterval(
+    updateOffset,
+    configs.suppressGapFromShownOrHiddenToolbarInterval
+  );
+  if (!onMouseMove.listening) {
+    window.addEventListener('mousemove', onMouseMove);
+    onMouseMove.listening = true;
+  }
+}
+
+function stopWatching() {
+  if (startWatching.timer)
+    window.clearInterval(startWatching.timer);
+  delete startWatching.timer;
+  if (onMouseMove.listening) {
+    window.removeEventListener('mousemove', onMouseMove);
+    onMouseMove.listening = false;
+  }
 }
 
 function onLocationChange(url) {
   mDataset.activeTabUrl = url;
+}
+
+let mClearHoverTopEdgeTimer;
+
+function onMouseMove(event) {
+  if (mClearHoverTopEdgeTimer)
+    clearTimeout(mClearHoverTopEdgeTimer);
+  const onTopEdge = event.screenY < window.mozInnerScreenY - mOffset;
+  if (onTopEdge) {
+    document.documentElement.classList.add(Constants.kTABBAR_STATE_HOVER_ON_TOP_EDGE);
+  }
+  else {
+    mClearHoverTopEdgeTimer = setTimeout(() => {
+      mClearHoverTopEdgeTimer = null;
+      document.documentElement.classList.remove(Constants.kTABBAR_STATE_HOVER_ON_TOP_EDGE);
+    }, configs.cancelGapSuppresserHoverDelay);
+  }
 }

@@ -213,6 +213,8 @@ export const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 export const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
 export const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable';
 export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
+export const kTABBAR_STATE_HAS_VISUAL_GAP         = 'has-visual-gap';
+export const kTABBAR_STATE_HOVER_ON_TOP_EDGE      = 'hover-on-top-edge';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';

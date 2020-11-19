@@ -100,6 +100,7 @@ export const configs = new Configs({
 
   suppressGapFromShownOrHiddenToolbar: true,
   suppressGapFromShownOrHiddenToolbarInterval: 100,
+  cancelGapSuppresserHoverDelay: 1000, // msec
 
 
   // context menu

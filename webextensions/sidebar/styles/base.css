@@ -75,7 +75,7 @@
   --tab-drop-marker-z-index:           10000;
 
   --visual-gap-offset: 0px;
-  --visual-gap-hover-animation: top var(--collapse-animation) 1s;
+  --visual-gap-hover-animation: top var(--collapse-animation) var(--visual-gap-hover-animation-delay);
 }
 
 tab-item {
@@ -157,8 +157,7 @@ button {
 #tabbar-container {
   top: var(--visual-gap-offset);
 }
-
-:root[data-owner-window-state="fullscreen"]:hover #tabbar-container {
+:root.hover-on-top-edge:hover #tabbar-container {
   transition: var(--visual-gap-hover-animation);
   top: 0 !important;
 }
@@ -411,11 +410,11 @@ tab-item.pinned {
   z-index: var(--over-tabs-z-index);
 }
 
-:root[data-owner-window-state="fullscreen"]:hover tab-item.pinned {
+:root.hover-on-top-edge:hover tab-item.pinned {
   transition: var(--visual-gap-hover-animation);
   top: var(--pinned-position-top) !important;
 }
-:root[data-owner-window-state="fullscreen"].animation:hover tab-item.pinned {
+:root.hover-on-top-edge.animation:hover tab-item.pinned {
   transition: var(--tab-animation),
               var(--visual-gap-hover-animation);
 }

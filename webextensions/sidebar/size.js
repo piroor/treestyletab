@@ -79,5 +79,6 @@ export function update() {
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
+    --visual-gap-hover-animation-delay: ${configs.cancelGapSuppresserHoverDelay}ms;
   }`;
 }
