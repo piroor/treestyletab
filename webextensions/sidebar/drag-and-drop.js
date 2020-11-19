@@ -794,7 +794,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const mousedown = EventUtils.getLastMousedown(event.button);
 
   if (mousedown &&
-      mousedown.detail.hasVisualGap != document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP)) {
+      mousedown.detail.lastInnerScreenY != window.mozInnerScreenY) {
     log('ignore accidental drag from updated visual gap');
     event.stopPropagation();
     event.preventDefault();

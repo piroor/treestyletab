@@ -354,7 +354,7 @@ function getMouseEventDetail(event, tab) {
     metaKey:       event.metaKey,
     isMiddleClick: EventUtils.isMiddleClick(event),
     isAccelClick:  EventUtils.isAccelAction(event),
-    hasVisualGap:  document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP)
+    lastInnerScreenY: window.mozInnerScreenY
   };
 }
 
