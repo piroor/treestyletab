@@ -445,6 +445,7 @@ export const configs = new Configs({
     'sidebar/collapse-expand': false,
     'sidebar/drag-and-drop': false,
     'sidebar/event-utils': false,
+    'sidebar/gap-canceller': false,
     'sidebar/indent': false,
     'sidebar/mouse-event-listener': false,
     'sidebar/pinned-tabs': false,

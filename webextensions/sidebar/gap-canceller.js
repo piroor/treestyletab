@@ -8,10 +8,15 @@
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=727668
 
 import {
+  log as internalLogger,
   configs,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+
+function log(...args) {
+  internalLogger('sidebar/gap-canceller', ...args);
+}
 
 let mWindowId;
 const mStyle = document.documentElement.style;
@@ -63,16 +68,16 @@ function updateOffset() {
       mOffset = Math.min(0, mLastMozInnerScreenY - window.mozInnerScreenY);
       mStyle.setProperty('--visual-gap-offset', `${mOffset}px`);
       document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, mOffset < 0);
-      console.log('should suppress visual gap: offset = ', mOffset);
+      log('should suppress visual gap: offset = ', mOffset);
     }
     else {
       mStyle.setProperty('--visual-gap-offset', '0px');
-      console.log('should not suppress, but there is a visual gap ');
+      log('should not suppress, but there is a visual gap ');
     }
   }
   else if (!shouldSuppressGap) {
     mStyle.setProperty('--visual-gap-offset', '0px');
-    console.log('should not suppress, no visual gap ');
+    log('should not suppress, no visual gap ');
   }
   mLastWindowScreenY   = window.screenY;
   mLastMozInnerScreenY = window.mozInnerScreenY;
