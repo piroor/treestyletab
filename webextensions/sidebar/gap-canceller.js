@@ -88,6 +88,9 @@ function updateOffset() {
 
 function startWatching() {
   stopWatching();
+  // We need to use this method instead of window.addEventListener('resize', ...) or
+  // ResizeObserver, because the mozInnerScreenY is sometimes not updated yet when
+  // resize events are dispatched or the observer is called.
   startWatching.timer = window.setInterval(
     updateOffset,
     configs.suppressGapFromShownOrHiddenToolbarInterval
