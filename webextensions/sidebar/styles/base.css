@@ -158,7 +158,7 @@ button {
   top: var(--visual-gap-offset);
 }
 
-:root:hover #tabbar-container {
+:root[data-owner-window-state="fullscreen"]:hover #tabbar-container {
   transition: var(--visual-gap-hover-animation);
   top: 0 !important;
 }
@@ -411,11 +411,11 @@ tab-item.pinned {
   z-index: var(--over-tabs-z-index);
 }
 
-:root:hover tab-item.pinned {
+:root[data-owner-window-state="fullscreen"]:hover tab-item.pinned {
   transition: var(--visual-gap-hover-animation);
   top: var(--pinned-position-top) !important;
 }
-:root.animation:hover tab-item.pinned {
+:root[data-owner-window-state="fullscreen"].animation:hover tab-item.pinned {
   transition: var(--tab-animation),
               var(--visual-gap-hover-animation);
 }
