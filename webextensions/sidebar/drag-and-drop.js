@@ -793,7 +793,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const tab       = dragData.tab;
   const mousedown = EventUtils.getLastMousedown(event.button);
 
-  if (mousedown.hasVisualGap != document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP)) {
+  if (mousedown &&
+      mousedown.detail.hasVisualGap != document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP)) {
     log('ignore accidental drag from updated visual gap');
     event.stopPropagation();
     event.preventDefault();
