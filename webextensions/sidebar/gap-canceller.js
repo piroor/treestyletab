@@ -67,8 +67,12 @@ function updateOffset() {
     if (shouldSuppressGap) {
       mOffset = Math.min(0, mLastMozInnerScreenY - window.mozInnerScreenY);
       mStyle.setProperty('--visual-gap-offset', `${mOffset}px`);
-      document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, mOffset < 0);
+      const currentState = document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP);
+      const newState = mOffset < 0;
+      document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, newState);
       log('should suppress visual gap: offset = ', mOffset);
+      if (currentState != newState)
+        cancelUpdateOffsetTimers();
     }
     else {
       mStyle.setProperty('--visual-gap-offset', '0px');
@@ -88,13 +92,7 @@ function updateOffset() {
 
 function startWatching() {
   stopWatching();
-  // We need to use this method instead of window.addEventListener('resize', ...) or
-  // ResizeObserver, because the mozInnerScreenY is sometimes not updated yet when
-  // resize events are dispatched or the observer is called.
-  startWatching.timer = window.setInterval(
-    updateOffset,
-    configs.suppressGapFromShownOrHiddenToolbarInterval
-  );
+  window.addEventListener('resize', onResize);
   if (!onMouseMove.listening) {
     window.addEventListener('mousemove', onMouseMove);
     onMouseMove.listening = true;
@@ -102,12 +100,38 @@ function startWatching() {
 }
 
 function stopWatching() {
-  if (startWatching.timer)
-    window.clearInterval(startWatching.timer);
-  delete startWatching.timer;
+  cancelUpdateOffsetTimers();
+  window.removeEventListener('resize', onResize);
   if (onMouseMove.listening) {
     window.removeEventListener('mousemove', onMouseMove);
     onMouseMove.listening = false;
+  }
+}
+
+function onResize() {
+  cancelUpdateOffsetTimers();
+  // We need to use this workaround, because the mozInnerScreenY is sometimes
+  // not updated yet when a resize event is dispatched.
+  // (ResizeObserver has same problem.)
+  updateOffset.intervalTimer = window.setInterval(
+    updateOffset,
+    configs.suppressGapFromShownOrHiddenToolbarInterval
+  );
+  updateOffset.timeoutTimer = setTimeout(() => {
+    window.clearInterval(updateOffset.intervalTimer);
+    delete updateOffset.intervalTimer;
+    delete updateOffset.timeoutTimer;
+  }, configs.suppressGapFromShownOrHiddenToolbarTiemout);
+}
+
+function cancelUpdateOffsetTimers() {
+  if (updateOffset.intervalTimer) {
+    window.clearInterval(updateOffset.intervalTimer);
+    delete updateOffset.intervalTimer;
+  }
+  if (updateOffset.timeoutTimer) {
+    window.clearTimeout(updateOffset.timeoutTimer);
+    delete updateOffset.timeoutTimer;
   }
 }
 

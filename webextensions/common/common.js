@@ -99,7 +99,8 @@ export const configs = new Configs({
   showDialogInSidebar: false,
 
   suppressGapFromShownOrHiddenToolbar: true,
-  suppressGapFromShownOrHiddenToolbarInterval: 100,
+  suppressGapFromShownOrHiddenToolbarInterval: 50,
+  suppressGapFromShownOrHiddenToolbarTiemout: 200,
   cancelGapSuppresserHoverDelay: 1000, // msec
 
 
