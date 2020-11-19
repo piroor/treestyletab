@@ -73,6 +73,9 @@
   --tab-extra-contents-front-z-index:  6000;
   --tab-ui-z-index:                    9000;
   --tab-drop-marker-z-index:           10000;
+
+  --visual-gap-offset: 0px;
+  --visual-gap-hover-animation: top var(--collapse-animation) 1s;
 }
 
 tab-item {
@@ -149,6 +152,15 @@ button {
   right: 0;
   top: 0;
   z-index: var(--accessible-ui-z-index);
+}
+
+#tabbar-container {
+  top: var(--visual-gap-offset);
+}
+
+:root:hover #tabbar-container {
+  transition: var(--visual-gap-hover-animation);
+  top: 0 !important;
 }
 
 #tabbar {
@@ -390,9 +402,22 @@ tab-item .extra-items-container.behind {
 tab-item.pinned {
   border-top: none;
   border-left: none;
+  bottom: var(--pinned-position-bottom);
+  left: var(--pinned-position-left);
   margin: 0;
   position: fixed;
+  right: var(--pinned-position-right);
+  top: calc(var(--pinned-position-top) + var(--visual-gap-offset));
   z-index: var(--over-tabs-z-index);
+}
+
+:root:hover tab-item.pinned {
+  transition: var(--visual-gap-hover-animation);
+  top: var(--pinned-position-top) !important;
+}
+:root.animation:hover tab-item.pinned {
+  transition: var(--tab-animation),
+              var(--visual-gap-hover-animation);
 }
 
 tab-item.pinned:not(.faviconized) {

@@ -89,10 +89,10 @@ export function reposition(options = {}) {
     else
       tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
 
-    style.bottom = 'auto';
-    style.left   = `${width * col}px`;
-    style.right  = faviconized ? 'auto' : 0 ;
-    style.top    = `${height * row}px`;
+    style.setProperty('--pinned-position-bottom', 'auto');
+    style.setProperty('--pinned-position-left', `${width * col}px`);
+    style.setProperty('--pinned-position-right', faviconized ? 'auto' : 0 );
+    style.setProperty('--pinned-position-top', `${height * row}px`);
 
     if (options.justNow)
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -135,7 +135,10 @@ function clearStyle(tab) {
   tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
   tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
   const style = tab.$TST.element.style;
-  style.left = style.right = style.top = style.bottom;
+  style.setProperty('--pinned-position-bottom', '');
+  style.setProperty('--pinned-position-left', '');
+  style.setProperty('--pinned-position-right', '');
+  style.setProperty('--pinned-position-top', '');
 }
 
 const BUFFER_KEY_PREFIX = 'pinned-tabs-';

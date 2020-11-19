@@ -13,7 +13,7 @@ import {
 import * as TabsStore from '/common/tabs-store.js';
 
 let mWindowId;
-const mContainer = document.querySelector('#tabbar-container');
+const mStyle = document.documentElement.style;
 const mDataset = document.documentElement.dataset;
 
 export function init() {
@@ -60,16 +60,16 @@ function startSuppressGapFromShownOrHiddenToolbar() {
         lastMozInnerScreenY != window.mozInnerScreenY) {
       if (shouldSuppressGap) {
         const offset = lastMozInnerScreenY - window.mozInnerScreenY;
-        mContainer.style.transform = offset < 0 ? `translate(0, ${offset}px)` : '';
+        mStyle.setProperty('--visual-gap-offset', offset < 0 ? `${offset}px` : '0px');
         console.log('should suppress visual gap: offset = ', offset);
       }
       else {
-        mContainer.style.transform = '';
+        mStyle.setProperty('--visual-gap-offset', '0px');
         console.log('should not suppress, but there is a visual gap ');
       }
     }
     else if (!shouldSuppressGap) {
-      mContainer.style.transform = '';
+      mStyle.setProperty('--visual-gap-offset', '0px');
       console.log('should not suppress, no visual gap ');
     }
     lastWindowScreenY   = window.screenY;
