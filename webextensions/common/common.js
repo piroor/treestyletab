@@ -98,7 +98,7 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
-  suppressGapOnNewTabBookmarksToolbar: false,
+  suppressGapOnNewTabBookmarksToolbar: true,
   suppressGapOnNewTabBookmarksToolbarInterval: 100,
 
 
