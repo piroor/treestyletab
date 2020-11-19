@@ -35,7 +35,6 @@ export function init() {
     startSuppressGapOnNewTabBookmarksToolbar();
 
   configs.$addObserver(changedKey => {
-    const rootClasses = document.documentElement.classList;
     switch (changedKey) {
       case 'suppressGapOnNewTabBookmarksToolbar':
       case 'suppressGapOnNewTabBookmarksToolbarInterval':
