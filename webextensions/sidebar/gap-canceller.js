@@ -71,8 +71,13 @@ function updateOffset() {
       const newState = mOffset < 0;
       document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, newState);
       log('should suppress visual gap: offset = ', mOffset);
-      if (currentState != newState)
-        cancelUpdateOffsetTimers();
+      if (currentState != newState) {
+        cancelUpdateOffset();
+        if (newState)
+          startListenMouseEvents()
+        else
+          endListenMouseEvents();
+      }
     }
     else {
       mStyle.setProperty('--visual-gap-offset', '0px');
@@ -93,38 +98,29 @@ function updateOffset() {
 function startWatching() {
   stopWatching();
   window.addEventListener('resize', onResize);
-  if (!onMouseMove.listening) {
-    window.addEventListener('mousemove', onMouseMove);
-    onMouseMove.listening = true;
-  }
 }
 
 function stopWatching() {
-  cancelUpdateOffsetTimers();
+  cancelUpdateOffset();
   window.removeEventListener('resize', onResize);
-  if (onMouseMove.listening) {
-    window.removeEventListener('mousemove', onMouseMove);
-    onMouseMove.listening = false;
-  }
 }
 
 function onResize() {
-  cancelUpdateOffsetTimers();
-  // We need to use this workaround, because the mozInnerScreenY is sometimes
-  // not updated yet when a resize event is dispatched.
+  cancelUpdateOffset();
+  // We need to try checking updateed mozInnerScreenY, because the
+  // mozInnerScreenY is sometimes not updated yet when a resize event
+  // is dispatched.
   // (ResizeObserver has same problem.)
   updateOffset.intervalTimer = window.setInterval(
     updateOffset,
     configs.suppressGapFromShownOrHiddenToolbarInterval
   );
   updateOffset.timeoutTimer = setTimeout(() => {
-    window.clearInterval(updateOffset.intervalTimer);
-    delete updateOffset.intervalTimer;
-    delete updateOffset.timeoutTimer;
+    cancelUpdateOffset();
   }, configs.suppressGapFromShownOrHiddenToolbarTiemout);
 }
 
-function cancelUpdateOffsetTimers() {
+function cancelUpdateOffset() {
   if (updateOffset.intervalTimer) {
     window.clearInterval(updateOffset.intervalTimer);
     delete updateOffset.intervalTimer;
@@ -137,6 +133,22 @@ function cancelUpdateOffsetTimers() {
 
 function onLocationChange(url) {
   mDataset.activeTabUrl = url;
+}
+
+function startListenMouseEvents() {
+  if (!onMouseMove.listening) {
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseout', onMouseMove);
+    onMouseMove.listening = true;
+  }
+}
+
+function endListenMouseEvents() {
+  if (onMouseMove.listening) {
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseout', onMouseMove);
+    onMouseMove.listening = false;
+  }
 }
 
 let mClearHoverTopEdgeTimer;
