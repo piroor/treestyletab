@@ -753,7 +753,7 @@ Tree.onAttached.addListener(async (tab, attachInfo) => {
 
   if (attachInfo.newlyAttached)
     reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
-  reserveToUpdateChildren(parent);
+  reserveToUpdateChildren(tab.$TST.parent);
   reserveToUpdateInsertionPosition([
     tab,
     tab.$TST.nextTab,
