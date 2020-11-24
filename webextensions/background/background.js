@@ -416,10 +416,12 @@ async function updateAncestors(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
 
+  const ancestors = tab.$TST.ancestors.map(ancestor => ancestor.$TST.uniqueId.id);
+  log(`updateAncestors: save persistent ancestors for ${tab.id}: `, ancestors);
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    tab.$TST.ancestors.map(ancestor => ancestor.$TST.uniqueId.id)
+    ancestors
   ).catch(ApiTabs.createErrorSuppressor());
 }
 
@@ -452,10 +454,12 @@ async function updateChildren(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
 
+  const children = tab.$TST.children.map(child => child.$TST.uniqueId.id);
+  log(`updateChildren: save persistent children for ${tab.id}: `, children);
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
-    tab.$TST.children.map(child => child.$TST.uniqueId.id)
+    children
   ).catch(ApiTabs.createErrorSuppressor());
 }
 
