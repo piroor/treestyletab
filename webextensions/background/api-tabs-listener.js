@@ -326,7 +326,7 @@ async function onCreated(tab) {
     await mPromisedStarted;
 
   log('tabs.onCreated: ', dumpTab(tab));
-  return onNewTabTracked(tab, { type: 'onCreated' });
+  return onNewTabTracked(tab, { trigger: 'tabs.onCreated' });
 }
 
 async function onNewTabTracked(tab, info) {
@@ -361,7 +361,7 @@ async function onNewTabTracked(tab, info) {
   // impossible to know which tab was previously active.
   tab = Tab.track(tab);
 
-  if (info.type == 'onCreated')
+  if (info.trigger == 'tabs.onCreated')
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
 
   const mayBeReplacedWithContainer = tab.$TST.mayBeReplacedWithContainer;
@@ -592,7 +592,7 @@ async function onNewTabTracked(tab, info) {
       if (tab[key] == value)
         continue;
       if (key == 'openerTabId' &&
-          info.type == 'onAttached' &&
+          info.trigger == 'tabs.onAttached' &&
           value != tab.openerTabId &&
           tab.openerTabId == tab.$TST.updatedOpenerTabId) {
         log(`openerTabId of ${tab.id} is different from the raw value but it has been updated by TST while attaching, so don't detect as updated for now`);
@@ -941,7 +941,7 @@ async function onAttached(tabId, attachInfo) {
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const window = TabsStore.windows.get(attachInfo.newWindowId);
-    await onNewTabTracked(tab, { type: 'onAttached' });
+    await onNewTabTracked(tab, { trigger: 'tabs.onAttached' });
     const byInternalOperation = window.toBeAttachedTabs.has(tab.id);
     if (byInternalOperation)
       window.toBeAttachedTabs.delete(tab.id);
