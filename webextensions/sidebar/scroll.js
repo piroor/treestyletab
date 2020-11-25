@@ -541,7 +541,12 @@ async function onBackgroundMessage(message) {
       if (message.maybeMoved)
         await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       const tab = Tab.get(message.tabId);
-      if (shouldApplyAnimation(true)) {
+      const needToWaitForTreeExpansion = (
+        !tab.active &&
+        !Tab.getActiveTab(tab.windowId).pinned
+      );
+      if (shouldApplyAnimation(true) ||
+          needToWaitForTreeExpansion) {
         wait(10).then(() => { // wait until the tab is moved by TST itself
           const parent = tab.$TST.parent;
           if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
@@ -557,11 +562,7 @@ async function onBackgroundMessage(message) {
         });
       }
       else {
-        if (tab.active ||
-            Tab.getActiveTab(tab.windowId).pinned)
           reserveToScrollToNewTab(tab);
-        else
-          notifyOutOfViewTab(tab);
       }
     }; break;
 
