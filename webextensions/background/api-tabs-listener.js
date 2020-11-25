@@ -993,6 +993,7 @@ async function onDetached(tabId, detachInfo) {
     const info = {
       ...detachInfo,
       byInternalOperation,
+      trigger:     'tabs.onDetached',
       windowId:    detachInfo.oldWindowId,
       structure:   TreeBehavior.getTreeStructureFromTabs([oldTab, ...descendants]),
       descendants

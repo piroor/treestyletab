@@ -293,12 +293,15 @@ Tab.onDetached.addListener((tab, info = {}) => {
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
+  const dontSyncParentToOpenerTab = info.trigger == 'tabs.onDetached';
   Tree.detachAllChildren(tab, {
+    dontSyncParentToOpenerTab,
     behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
   Tree.detachTab(tab, {
+    dontSyncParentToOpenerTab,
     dontUpdateIndent: true,
     broadcast:        true
   });
