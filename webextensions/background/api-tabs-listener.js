@@ -335,7 +335,7 @@ async function onNewTabTracked(tab, info) {
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
-  const fromExternal         = !mAppIsActive;
+  const fromExternal         = !mAppIsActive && !!tab.openerTabId;
   const initialOpenerTabId   = tab.openerTabId;
 
   // New tab's index can become invalid because the value of "index" is same to
