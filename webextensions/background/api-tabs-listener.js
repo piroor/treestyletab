@@ -612,14 +612,17 @@ async function onNewTabTracked(tab, info) {
     // Thus we need to re-apply `updatedOpenerTabId` as the `openerTabId` of
     // the tab again, to keep the tree structure managed by TST.
     // See also: https://github.com/piroor/treestyletab/issues/2388
+    if ('openerTabId' in changedProps) {
+      log(`openerTabId of ${tab.id} is changed while creating: ${tab.openerTabId} (changed by someone) => ${changedProps.openerTabId} (original) `, configs.debug && new Error().stack);
     if (duplicated &&
         tab.active &&
         'openerTabId' in changedProps &&
         changedProps.openerTabId == initialOpenerTabId &&
         changedProps.openerTabId != updatedOpenerTabId) {
-      log(`openerTabId of ${tab.id} is changed while creating, so restore original: ${tab.openerTabId} (changed by someone) => ${updatedOpenerTabId} (original) `, configs.debug && new Error().stack);
+      log(`restore original openerTabId of ${tab.id} for duplicated active tab: ${updatedOpenerTabId}`);
       delete changedProps.openerTabId;
       browser.tabs.update(tab.id, { openerTabId: updatedOpenerTabId });
+    }
     }
 
     if (Object.keys(renewedTab).length > 0)
