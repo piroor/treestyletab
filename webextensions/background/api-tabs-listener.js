@@ -584,11 +584,21 @@ async function onNewTabTracked(tab, info) {
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
     if (!renewedTab)
       throw new Error(`tab ${tab.id} is closed while tracking`);
+
     const updatedOpenerTabId = tab.openerTabId;
     const changedProps = {};
     for (const key of Object.keys(renewedTab)) {
-      if (tab[key] != renewedTab[key])
-        changedProps[key] = renewedTab[key];
+      const value = renewedTab[key];
+      if (tab[key] == value)
+        continue;
+      if (key == 'openerTabId' &&
+          info.type == 'onAttached' &&
+          value != tab.openerTabId &&
+          tab.openerTabId == tab.$TST.updatedOpenerTabId) {
+        log(`openerTabId of ${tab.id} is different from the raw value but it has been updated by TST while attaching, so don't detect as updated for now`);
+        continue;
+      }
+      changedProps[key] = value;
     }
 
     // When the active tab is duplicated, Firefox creates a duplicated tab
