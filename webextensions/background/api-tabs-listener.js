@@ -250,6 +250,8 @@ async function onUpdated(tabId, changeInfo, tab) {
         continue;
       if ('key' in updatedTab)
         oldState[key] = updatedTab[key];
+      if (key == 'openerTabId')
+        log(`openerTabId of ${tabId} is changed by someone (notified via changeInfo)!: ${updatedTab.openerTabId} (original) => ${changeInfo[key]} (changed by someone)`, configs.debug && new Error().stack);
       updatedTab[key] = changeInfo[key];
     }
     if (changeInfo.url ||
@@ -267,7 +269,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     }
     if (configs.enableWorkaroundForBug1409262 &&
         tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
-      logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.$TST.updatedOpenerTabId} => ${tab.openerTabId}`);
+      log(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.$TST.updatedOpenerTabId} (original) => ${tab.openerTabId} (changed by someone) `, configs.debug && new Error().stack);
       updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = changeInfo.openerTabId = tab.openerTabId;
     }
 
@@ -605,6 +607,7 @@ async function onNewTabTracked(tab, info) {
         'openerTabId' in changedProps &&
         changedProps.openerTabId == initialOpenerTabId &&
         changedProps.openerTabId != updatedOpenerTabId) {
+      log(`openerTabId of ${tab.id} is changed while creating, so restore original: ${tab.openerTabId} (changed by someone) => ${updatedOpenerTabId} (original) `, configs.debug && new Error().stack);
       delete changedProps.openerTabId;
       browser.tabs.update(tab.id, { openerTabId: updatedOpenerTabId });
     }
@@ -684,7 +687,7 @@ async function onRemoved(tabId, removeInfo) {
       return;
     }
 
-    log('tabs.onRemoved, tab is found: ', oldTab);
+    log('tabs.onRemoved, tab is found: ', oldTab, `openerTabId=${oldTab.openerTabId}`);
 
     const nearestTabs = [oldTab.$TST.unsafePreviousTab, oldTab.$TST.unsafeNextTab];
 

@@ -191,6 +191,7 @@ export async function attachTabTo(child, parent, options = {}) {
 
   if (child.openerTabId != parent.id &&
       configs.syncParentTabAndOpenerTab) {
+    log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${parent.id} (changed by TST)`, new Error().stack);
     child.openerTabId = parent.id;
     child.$TST.updatingOpenerTabIds.push(parent.id);
     child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
@@ -522,6 +523,7 @@ export function detachTab(child, options = {}) {
 
   if (child.openerTabId &&
       configs.syncParentTabAndOpenerTab) {
+    log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, configs.debug && new Error().stack);
     child.openerTabId = child.id;
     child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
