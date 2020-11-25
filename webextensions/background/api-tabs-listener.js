@@ -616,7 +616,6 @@ async function onNewTabTracked(tab, info) {
       log(`openerTabId of ${tab.id} is changed while creating: ${tab.openerTabId} (changed by someone) => ${changedProps.openerTabId} (original) `, configs.debug && new Error().stack);
       if (duplicated &&
           tab.active &&
-          'openerTabId' in changedProps &&
           changedProps.openerTabId == initialOpenerTabId &&
           changedProps.openerTabId != updatedOpenerTabId) {
         log(`restore original openerTabId of ${tab.id} for duplicated active tab: ${updatedOpenerTabId}`);
