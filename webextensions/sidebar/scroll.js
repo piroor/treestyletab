@@ -562,7 +562,7 @@ async function onBackgroundMessage(message) {
         });
       }
       else {
-          reserveToScrollToNewTab(tab);
+        reserveToScrollToNewTab(tab);
       }
     }; break;
 
