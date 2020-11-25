@@ -790,6 +790,15 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     return;
   }
 
+  if (!(behavior & Constants.kDRAG_BEHAVIOR_MOVE) &&
+      !(behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF) &&
+      !allowBookmark) {
+    log('ignore drag action because it can do nothing');
+    event.stopPropagation();
+    event.preventDefault();
+    return;
+  }
+
   const tab       = dragData.tab;
   const mousedown = EventUtils.getLastMousedown(event.button);
 
