@@ -105,6 +105,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   if (!window.internalClosingTabs.has(tab.$TST.parentId))
     Tree.detachTab(tab, {
       dontUpdateIndent: true,
+      dontSyncParentToOpenerTab: true,
       broadcast:        true
     });
 });
@@ -271,6 +272,7 @@ Tab.onRemoved.addListener((tab, info) => {
   }
   if (info.oldParent) {
     Tree.detachTab(tab, {
+      dontSyncParentToOpenerTab: true,
       parent:    info.oldParent,
       broadcast: true
     });

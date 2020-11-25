@@ -87,6 +87,7 @@ export async function attachTabTo(child, parent, options = {}) {
     forceExpand:      options.forceExpand,
     dontExpand:       options.dontExpand,
     delayedMove:      options.delayedMove,
+    dontSyncParentToOpenerTab: options.dontSyncParentToOpenerTab,
     broadcast:        options.broadcast,
     broadcasted:      options.broadcasted,
     stack:            `${configs.debug && new Error().stack}\n${options.stack || ''}`
@@ -190,6 +191,7 @@ export async function attachTabTo(child, parent, options = {}) {
   }
 
   if (child.openerTabId != parent.id &&
+      !options.dontSyncParentToOpenerTab &&
       configs.syncParentTabAndOpenerTab) {
     log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${parent.id} (changed by TST)`, new Error().stack);
     child.openerTabId = parent.id;
@@ -522,6 +524,7 @@ export function detachTab(child, options = {}) {
     updateTabsIndent(child);
 
   if (child.openerTabId &&
+      !options.dontSyncParentToOpenerTab &&
       configs.syncParentTabAndOpenerTab) {
     log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, configs.debug && new Error().stack);
     child.openerTabId = child.id;
@@ -570,12 +573,12 @@ export async function detachTabsFromTree(tabs, options = {}) {
 
 export function detachAllChildren(
   tab = null,
-  { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand,
+  { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
     ...options } = {}
 ) {
   log('detachAllChildren: ',
       tab && tab.id,
-      { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand },
+      { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab },
       options);
   // the "children" option is used for removing tab.
   children = children ? children.map(TabsStore.ensureLivingTab) : tab.$TST.children;
@@ -630,15 +633,16 @@ export function detachAllChildren(
     if (!child)
       continue;
     if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
-      detachTab(child, options);
+      detachTab(child, { ...options, dontSyncParentToOpenerTab });
       moveTabSubtreeBefore(child, nextTab, options);
     }
     else if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
-      detachTab(child, options);
+      detachTab(child, { ...options, dontSyncParentToOpenerTab });
       if (count == 0) {
         if (parent) {
           attachTabTo(child, parent, {
             ...options,
+            dontSyncParentToOpenerTab,
             dontExpand: true,
             dontMove:   true
           });
@@ -652,6 +656,7 @@ export function detachAllChildren(
       else {
         attachTabTo(child, children[0], {
           ...options,
+          dontSyncParentToOpenerTab,
           dontExpand: true,
           dontMove:   true
         });
@@ -661,12 +666,13 @@ export function detachAllChildren(
              parent) {
       attachTabTo(child, parent, {
         ...options,
+        dontSyncParentToOpenerTab,
         dontExpand: true,
         dontMove:   true
       });
     }
     else { // behavior == Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
-      detachTab(child, options);
+      detachTab(child, { ...options, dontSyncParentToOpenerTab });
     }
     count++;
   }
