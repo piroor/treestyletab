@@ -733,6 +733,10 @@ tab-item.faviconized .contextual-identity-marker {
   display: block;
 }
 
+:root:not(.animation) #out-of-view-tab-notifier.notifying {
+  opacity: 1;
+}
+
 :root.animation #out-of-view-tab-notifier.notifying {
   animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
 }
