@@ -131,6 +131,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
+    tab.$TST.setAttribute(Constants.kCURRENT_FAVICON_URI, addedAttributes[Constants.kCURRENT_FAVICON_URI] = tab.favIconUrl);
     messages.push({
       type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
       windowId:   tab.windowId,
@@ -142,6 +143,8 @@ export function updateTab(tab, newState = {}, options = {}) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
+    removedAttributes.push(Constants.kCURRENT_FAVICON_URI)
+    tab.$TST.removeAttribute(Constants.kCURRENT_FAVICON_URI);
     messages.push({
       type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
       windowId:   tab.windowId,

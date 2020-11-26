@@ -105,6 +105,7 @@ export const kCHILDREN      = 'data-child-ids';
 export const kLEVEL         = 'data-level';
 export const kCLOSED_SET_ID = 'data-closed-set-id';
 export const kCURRENT_URI   = 'data-current-uri';
+export const kCURRENT_FAVICON_URI = 'data-current-favicon-uri';
 export const kCONTEXTUAL_IDENTITY_NAME = 'data-contextual-identity-name';
 export const kMAX_TREE_LEVEL = 'data-max-tree-level';
 export const kLABEL_OVERFLOW = 'data-label-overflow';

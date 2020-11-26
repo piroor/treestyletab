@@ -532,6 +532,10 @@ windowId = ${tab.windowId}
     if (this.getAttribute(Constants.kCURRENT_URI) != uri)
       this.setAttribute(Constants.kCURRENT_URI, uri);
 
+    const favIconUri = this.$TST.getAttribute(Constants.kCURRENT_FAVICON_URI) || tab.favIconUrl;
+    if (this.getAttribute(Constants.kCURRENT_FAVICON_URI) != favIconUri)
+      this.setAttribute(Constants.kCURRENT_FAVICON_URI, favIconUri);
+
     const level = this.$TST.getAttribute(Constants.kLEVEL) || 0;
     if (this.getAttribute(Constants.kLEVEL) != level)
       this.setAttribute(Constants.kLEVEL, level);
