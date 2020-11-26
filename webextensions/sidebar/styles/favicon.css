@@ -79,22 +79,6 @@ tab-item[data-current-uri^="about:addons"] .favicon-builtin::before {
   mask: url("/resources/icons/extensionGeneric-16.svg") no-repeat center / 100%;
 }
 
-tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
-  background: url("/resources/icons/settings.svg") no-repeat center / 100%;
-}
-:root.simulate-svg-context-fill tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
-  background: var(--tab-text);
-  mask: url("/resources/icons/settings.svg") no-repeat center / 100%;
-}
-
-tab-item[data-current-uri^="about:performance"] .favicon-builtin::before {
-  background: url("/resources/icons/performance.svg") no-repeat center / 100%;
-}
-:root.simulate-svg-context-fill tab-item[data-current-uri^="about:performance"] .favicon-builtin::before {
-  background: var(--tab-text);
-  mask: url("/resources/icons/performance.svg") no-repeat center / 100%;
-}
-
 tab-item[data-current-uri^="about:debugging"] .favicon-builtin::before {
   background: url("/resources/icons/developer.svg") no-repeat center / 100%;
 }
@@ -109,6 +93,22 @@ tab-item[data-current-uri^="about:devtools-toolbox"] .favicon-builtin::before {
 :root.simulate-svg-context-fill tab-item[data-current-uri^="about:devtools-toolbox"] .favicon-builtin::before {
   background: var(--tab-text);
   mask: url("/resources/icons/window.svg") no-repeat center / 100%;
+}
+
+tab-item[data-current-uri^="about:performance"] .favicon-builtin::before {
+  background: url("/resources/icons/performance.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill tab-item[data-current-uri^="about:performance"] .favicon-builtin::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/performance.svg") no-repeat center / 100%;
+}
+
+tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
+  background: url("/resources/icons/settings.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/settings.svg") no-repeat center / 100%;
 }
 
 tab-item[data-current-uri^="about:privatebrowsing"] .favicon-builtin::before,
