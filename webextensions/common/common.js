@@ -276,7 +276,7 @@ export const configs = new Configs({
   // misc.
   showExpertOptions: false,
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
-  defaultBookmarkParentId: 'unfiled_____',
+  defaultBookmarkParentId: 'toolbar_____', // 'unfiled_____' for Firefox 83 and olders,
   defaultSearchEngine: 'https://www.google.com/search?q=%s',
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
