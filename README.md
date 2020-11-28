@@ -200,6 +200,10 @@ If you need any new API, please file API proposals to the issue tracker.
   
   For more details, please see also [the discussions in the issue #2667](https://github.com/piroor/treestyletab/issues/2667).
   </details>
+* <details><summary>I cannot find out suitable <a href="https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules">code snippet</a> satisfying my demand. Is there any reference document?</summary>
+  
+  Sadly there is no stable reference document due to unstableness of TST's DOM structure. The [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) are just examples for the time they were written, and they may be broken by changes on TST itself, thus they need to be updated by users through [investigation with the debugger](https://github.com/piroor/treestyletab/wiki/How-to-inspect-tree-of-tabs#how-to-inspect-the-sidebar).
+  </details>
 
 #### Feature requests
 
