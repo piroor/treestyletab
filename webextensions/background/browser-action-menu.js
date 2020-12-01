@@ -1404,13 +1404,11 @@ const mItems = [
           }
         ]
       },
-      /*
       {
         title: indent() + browser.i18n.getMessage('config_enableLinuxBehaviors_label'),
         key:   'enableLinuxBehaviors',
         type:  'checkbox'
       },
-      */
       {
         title: indent() + browser.i18n.getMessage('config_enableMacOSBehaviors_label'),
         key:   'enableMacOSBehaviors',

@@ -13,6 +13,7 @@ import {
   notify,
   configs,
   shouldApplyAnimation,
+  isLinux,
   isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -584,7 +585,7 @@ async function onContextMenu(event) {
           !(await Permissions.isGranted(Permissions.BOOKMARKS)))
         notify({
           title:   browser.i18n.getMessage('bookmarkContext_notification_notPermitted_title'),
-          message: browser.i18n.getMessage('bookmarkContext_notification_notPermitted_message'),
+          message: browser.i18n.getMessage(`bookmarkContext_notification_notPermitted_message${isLinux() ? '_linux' : ''}`),
           url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionGranted_context`
         });
       else

@@ -32,7 +32,8 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 import {
   log as internalLogger,
   wait,
-  configs
+  configs,
+  isLinux,
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -371,7 +372,7 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
     type:    'basic',
     iconUrl: Constants.kNOTIFICATION_DEFAULT_ICON,
     title:   browser.i18n.getMessage('api_requestedPermissions_title'),
-    message: browser.i18n.getMessage('api_requestedPermissions_message', [
+    message: browser.i18n.getMessage(`api_requestedPermissions_message${isLinux() ? '_linux' : ''}`, [
       addon.name || addon.title || addon.id,
       Array.from(requestedPermissions, permission => {
         if (permission == kPERMISSION_INCOGNITO)

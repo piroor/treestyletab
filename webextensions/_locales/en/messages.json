@@ -79,9 +79,11 @@
 
   "bookmark_notification_notPermitted_title": { "message": "Permission error" },
   "bookmark_notification_notPermitted_message": { "message": "Failed to get permissions to create bookmarks. Please click here to grant extra permissions." },
+  "bookmark_notification_notPermitted_message_linux": { "message": "Failed to get permissions to create bookmarks. Please click the button to grant extra permissions." },
 
   "bookmarkContext_notification_notPermitted_title": { "message": "Permission error" },
   "bookmarkContext_notification_notPermitted_message": { "message": "Failed to get permissions to open a context menu for bookmarks. Please click here to grant extra permissions." },
+  "bookmarkContext_notification_notPermitted_message_linux": { "message": "Failed to get permissions to open a context menu for bookmarks. Please click the button to grant extra permissions." },
 
   "dropLinksOnTabBehavior_message": { "message": "How to open this?" },
   "dropLinksOnTabBehavior_save":    { "message": "Do same choice hereafter" },
@@ -126,6 +128,10 @@
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
+  "warnOnCloseTabs_notification_message_linux": { "message": "If not, click the button to cancel the operation.\nOtherwise rest tabs are closed at $TIMEOUT$ seconds later.",
+    "placeholders": {
+      "TIMEOUT": { "content": "$1", "example": "10" }
+    }},
 
   "warnOnAutoGroupNewTabs_title":     { "message": "Group tabs?" },
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ tabs are opened in a time. Do you want them to be grouped in a tree?",
@@ -160,6 +166,7 @@
   "syncDeviceUnknownDevice":     { "message": "an unknown device" },
   "syncAvailable_notification_title":   { "message": "Tabs are sendable to other devices from TST now." },
   "syncAvailable_notification_message": { "message": "Tabs can be transferred between your devices. Please click here to set an identifiable name to this device." },
+  "syncAvailable_notification_message_linux": { "message": "Tabs can be transferred between your devices. Please click the button to set an identifiable name to this device." },
   "sentTabs_notification_title":            { "message": "" },
   "sentTabs_notification_message":          { "message": "Tabs is sent to $DEVICE$",
     "placeholders": {
@@ -195,8 +202,10 @@
 
   "startup_notification_title_installed":   { "message": "For newcomer of Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Some extra permissions are required for more natural user experiences. Please click here to grant them." },
+  "startup_notification_message_installed_linux": { "message": "Some extra permissions are required for more natural user experiences. Please click the button to grant them." },
   "startup_notification_title_updated":     { "message": "Noticeable Changes on Tree Style Tab" },
   "startup_notification_message_updated":   { "message": "Some changes may affect to your use case. Please click here to see the changelog." },
+  "startup_notification_message_updated_linux":   { "message": "Some changes may affect to your use case. Please click the button to see the changelog." },
 
   "message_startup_description_1": { "message": "Tree Style Tab's vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the " },
   "message_startup_description_key": { "message": "\"F1\" key" },
@@ -225,6 +234,11 @@
 
   "api_requestedPermissions_title": { "message": "Request for Extra Permissions" },
   "api_requestedPermissions_message": { "message": "⚠The addon \"$NAME$\" is requesting to do following operation:\n\n$PERMISSIONS$\n\nvia Tree Style Tab's API. Click here if you grant that.",
+    "placeholders": {
+      "NAME":        { "content": "$1", "example": "foobar" },
+      "PERMISSIONS": { "content": "$2", "example": "tabs" }
+    }},
+  "api_requestedPermissions_message_linux": { "message": "⚠The addon \"$NAME$\" is requesting to do following operation:\n\n$PERMISSIONS$\n\nvia Tree Style Tab's API. Click the button if you grant that.",
     "placeholders": {
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }

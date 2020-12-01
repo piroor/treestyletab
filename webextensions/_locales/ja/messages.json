@@ -79,9 +79,11 @@
 
   "bookmark_notification_notPermitted_title": { "message": "権限のエラー" },
   "bookmark_notification_notPermitted_message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
+  "bookmark_notification_notPermitted_message_linux": { "message": "ブックマーク作成に必要な権限を取得できませんでした。ボタンをクリックして追加の権限を許可して下さい。" },
 
   "bookmarkContext_notification_notPermitted_title": { "message": "権限のエラー" },
   "bookmarkContext_notification_notPermitted_message": { "message": "ブックマークに関するコンテキストメニューを開くのに必要な権限を取得できませんでした。この通知をクリックして追加の権限を許可して下さい。" },
+  "bookmarkContext_notification_notPermitted_message_linux": { "message": "ブックマークに関するコンテキストメニューを開くのに必要な権限を取得できませんでした。ボタンをクリックして追加の権限を許可して下さい。" },
 
   "dropLinksOnTabBehavior_message": { "message": "どのように開きますか？" },
   "dropLinksOnTabBehavior_save":    { "message": "今後も同じ動作を行う" },
@@ -126,6 +128,10 @@
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
+  "warnOnCloseTabs_notification_message_linux": { "message": "操作を取り消す場合はボタンをクリックしてください。\n続行して問題がなければ、$TIMEOUT$ 秒後に残りのタブも閉じられます。",
+    "placeholders": {
+      "TIMEOUT": { "content": "$1", "example": "10" }
+    }},
 
   "warnOnAutoGroupNewTabs_title":     { "message": "タブをグループ化しますか？" },
   "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ 個のタブが一度に開かれました。グループとして1つのツリーにまとめますか？",
@@ -160,6 +166,7 @@
   "syncDeviceUnknownDevice":     { "message": "不明な端末" },
   "syncAvailable_notification_title":   { "message": "タブをTSTから他の端末に送れます" },
   "syncAvailable_notification_message": { "message": "他の端末との間でタブを送受信できます。ここをクリックして、この端末に分かりやすい名前を設定してください。" },
+  "syncAvailable_notification_message_linux": { "message": "他の端末との間でタブを送受信できます。ボタンをクリックして、この端末に分かりやすい名前を設定してください。" },
   "sentTabs_notification_title":            { "message": "" },
   "sentTabs_notification_message":          { "message": "$DEVICE$ にタブを送信しました",
     "placeholders": {
@@ -195,8 +202,10 @@
 
   "startup_notification_title_installed":   { "message": "Tree Style Tabを使い始める方へ" },
   "startup_notification_message_installed": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ここをクリックして権限を設定してください。" },
+  "startup_notification_message_installed_linux": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ボタンをクリックして権限を設定してください。" },
   "startup_notification_title_updated":     { "message": "Tree Style Tabの動作が変わりました" },
   "startup_notification_message_updated":   { "message": "操作感に影響する大きな変更がありました。ここをクリックして変更履歴を確認してください。" },
+  "startup_notification_message_updated_linux":   { "message": "操作感に影響する大きな変更がありました。ボタンをクリックして変更履歴を確認してください。" },
 
   "message_startup_description_1": { "message": "Tree Style Tabの縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
@@ -225,6 +234,11 @@
 
   "api_requestedPermissions_title": { "message": "アクセス権の要求" },
   "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下のことをしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
+    "placeholders": {
+      "NAME":        { "content": "$1", "example": "foobar" },
+      "PERMISSIONS": { "content": "$2", "example": "tabs" }
+    }},
+  "api_requestedPermissions_message_linux": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下のことをしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はボタンをクリックしてアドオンに許可を与えてください。",
     "placeholders": {
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }

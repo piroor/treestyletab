@@ -12,7 +12,8 @@ import {
   notify,
   wait,
   sha1sum,
-  sanitizeForHTMLText
+  sanitizeForHTMLText,
+  isLinux,
 } from './common.js';
 import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
@@ -85,7 +86,7 @@ export async function bookmarkTab(tab, options = {}) {
   catch(_e) {
     notify({
       title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
-      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message'),
+      message: browser.i18n.getMessage(`bookmark_notification_notPermitted_message${isLinux() ? '_linux' : ''}`),
       url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionSection`
     });
     return null;

@@ -10,6 +10,7 @@ import {
   configs,
   saveUserStyleRules,
   notify,
+  isLinux,
   isMacOS,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -229,12 +230,13 @@ export function tryNotifyNewFeatures() {
     configs.syncOtherDevicesDetected = true;
   }
 
-  const suffix = isInitialInstall ? 'installed' : 'updated';
+  const typeSuffix = isInitialInstall ? 'installed' : 'updated';
+  const platformSuffix = isLinux() ? '_linux' : '';
   const url = isInitialInstall ? Constants.kSHORTHAND_URIS.startup : browser.i18n.getMessage('message_startup_history_uri');
   notify({
     url,
-    title:   browser.i18n.getMessage(`startup_notification_title_${suffix}`),
-    message: browser.i18n.getMessage(`startup_notification_message_${suffix}`),
+    title:   browser.i18n.getMessage(`startup_notification_title_${typeSuffix}`),
+    message: browser.i18n.getMessage(`startup_notification_message_${typeSuffix}${platformSuffix}`),
     timeout: 90 * 1000
   });
 }

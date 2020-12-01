@@ -10,7 +10,8 @@ import {
   configs,
   notify,
   getChunkedConfig,
-  setChunkedConfig
+  setChunkedConfig,
+  isLinux,
 } from './common.js';
 import * as Constants from '/common/constants.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -40,7 +41,7 @@ export async function init() {
           configs.syncAvailableNotified = true;
           notify({
             title:   browser.i18n.getMessage('syncAvailable_notification_title'),
-            message: browser.i18n.getMessage('syncAvailable_notification_message'),
+            message: browser.i18n.getMessage(`syncAvailable_notification_message${isLinux() ? '_linux' : ''}`),
             url:     `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`,
             timeout: configs.syncAvailableNotificationTimeout
           });
