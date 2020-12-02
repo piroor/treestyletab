@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.6.3 (2020.12.2)
    * Cancel the visual gap of the sidebar contents when visibility of Firefox's toolbar is toggled for some special cases: about [the bookmarks toolbar for new tabs on Firefox 84 and later](https://bugzilla.mozilla.org/show_bug.cgi?id=727668), and about the navigation toolbar in the fullscreen mode. You can access invisible tabs top of the sidebar with hovering on the top edge of the sidebar contents.
    * Context menu commands "Close Other Tabs" and "Close Tabs to Bottom" now don't close hidden tabs like Firefox's native commands.
    * Better compatibility with other addons around tabs moved across windows by other players like [Simple Tab Groups](https://addons.mozilla.org/firefox/addon/simple-tab-groups/). TST now don't clear `openerTabId` of such tabs.
