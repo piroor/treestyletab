@@ -149,6 +149,8 @@ function reserveToSaveUserStyleRules() {
     reserveToSaveUserStyleRules.timer = null;
     const caution = document.querySelector('#tooLargeUserStyleRulesCaution');
     mUserStyleRulesField.$saving = true;
+    if (reserveToSaveUserStyleRules.clearFlagTimer)
+      clearTimeout(reserveToSaveUserStyleRules.clearFlagTimer);
     try {
       saveUserStyleRules(mUserStyleRulesField.value);
       mUserStyleRulesField.classList.remove('invalid');
@@ -159,9 +161,10 @@ function reserveToSaveUserStyleRules() {
       caution.classList.add('invalid');
     }
     finally {
-      setTimeout(() => {
+      reserveToSaveUserStyleRules.clearFlagTimer = setTimeout(() => {
+        delete reserveToSaveUserStyleRules.clearFlagTimer;
         mUserStyleRulesField.$saving = false;
-      }, 250);
+      }, 1000);
     }
   }, 250);
 }
