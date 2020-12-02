@@ -12,6 +12,7 @@
    * Prevent starting of accidental drag sessions for clicked tabs from Firefox's bugs around IPC more aggressively.
    * Create bookmarks to the bookmarks toolbar by default like Firefox 84 and later.
    * Guide to click the button in a desktop notification with the phrase "click the button" instead of "click here", on Linux environment.
+   * Avoid losing the cusror position of the input field for the user styles while typing, more certainly.
    * Scroll the sidebar to newly opened tabs even if animation effects are disabled. (regression on 3.5.33)
    * Indicate new tabs opened outside of the visible area with blue flash even if animation effects are disabled. (regression on 3.5.33)
  - 3.6.2 (2020.11.19)
