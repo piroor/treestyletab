@@ -79,9 +79,11 @@
 
   "bookmark_notification_notPermitted_title": { "message": "Ошибка разрешений" },
   "bookmark_notification_notPermitted_message": { "message": "Нет разрешения на создание закладок. Нажмите здесь, чтобы предоставить разрешения." },
+  "bookmark_notification_notPermitted_message_linux": { "message": "Не удалось получить разрешение на создание закладок. Нажмите кнопку, чтобы предоставить дополнительные разрешения." },
 
   "bookmarkContext_notification_notPermitted_title": { "message": "Ошибка разрешения" },
   "bookmarkContext_notification_notPermitted_message": { "message": "Нет разрешения на открытие контекстного меню закладок. Нажмите здесь, чтобы предоставить дополнительное разрешение." },
+  "bookmarkContext_notification_notPermitted_message_linux": { "message": "Не удалось получить разрешение на открытие контекстного меню закладок. Нажмите кнопку, чтобы предоставить дополнительные разрешения." },
 
   "dropLinksOnTabBehavior_message": { "message": "Как это открыть?" },
   "dropLinksOnTabBehavior_save":    { "message": "Всегда выбирать этот вариант" },
@@ -126,9 +128,13 @@
     "placeholders": {
       "TIMEOUT": { "content": "$1", "example": "10" }
     }},
+  "warnOnCloseTabs_notification_message_linux": { "message": "Если нет, то нажмите кнопку, чтобы отменить операцию.\nИначе остальные вкладки закроются через $TIMEOUT$ секунд.",
+    "placeholders": {
+      "TIMEOUT": { "content": "$1", "example": "10" }
+    }},
 
   "warnOnAutoGroupNewTabs_title":     { "message": "Группировать вкладки?" },
-  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ вкладок открываются одновременно. Сгруппировать их?",
+  "warnOnAutoGroupNewTabs_message":   { "message": "$NUMBER$ вкладок открываются одновременно. Сгруппировать их в дерево?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
     }},
@@ -159,7 +165,8 @@
   "syncDeviceMissingDeviceName": { "message": "безымянное устройство" },
   "syncDeviceUnknownDevice":     { "message": "неизвестное устройство" },
   "syncAvailable_notification_title":   { "message": "Теперь вкладки можно отправлять на другие устройства с TST." },
-  "syncAvailable_notification_message": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите здесь, чтобы присвоить этому устройству имя(id)." },
+  "syncAvailable_notification_message": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присвоить этому устройству уникальное имя." },
+  "syncAvailable_notification_message_linux": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присоить этому устройству уникальное имя." },
   "sentTabs_notification_title":            { "message": "" },
   "sentTabs_notification_message":          { "message": "Вкладки отправлены на $DEVICE$",
     "placeholders": {
@@ -195,8 +202,10 @@
 
   "startup_notification_title_installed":   { "message": "Новым пользователям Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Дополнительные разрешения требуются для взаимодействия с пользователем. Щелкните здесь, чтобы предоставить их." },
+  "startup_notification_message_installed_linux": { "message": "Для более естественного взаимодействия с пользователем требуются некоторые дополнительные разрешения. Нажмите кнопку, чтобы предоставить их." },
   "startup_notification_title_updated":     { "message": "Изменения в Tree Style Tab" },
   "startup_notification_message_updated":   { "message": "Изменения могут повлиять на ваши предпочтения. Щелкните здесь, чтобы увидеть описания." },
+  "startup_notification_message_updated_linux":   { "message": "Некоторые изменения могут повлиять на ваши предпочтения. Нажмите кнопку, чтобы посмотреть список изменений." },
 
   "message_startup_description_1": { "message": "Tree Style Tab возрожден на основе технологий WebExtensions для Firefox 57 и более поздних версий. Вертикальная панель вкладок доступна в качестве одной из боковых панелей. Если вы ещё не видите её, нажмите " },
   "message_startup_description_key": { "message": "кнопку \"F1\" " },
@@ -224,7 +233,12 @@
   "message_startup_userChromeCss_description_3": { "message": "." },
 
   "api_requestedPermissions_title": { "message": "Запрос дополнительных разрешений" },
-  "api_requestedPermissions_message": { "message": "⚠Аддон \"$NAME$\" запрашивает выполнение операции:\n\n$PERMISSIONS$\n\nЧерез API Tree Style Tab. Нажмите здесь, чтобы разрешить.",
+  "api_requestedPermissions_message": { "message": "⚠Аддон \"$NAME$\" запрашивает выполнение операции:\n\n$PERMISSIONS$\n\nЧерез API Tree Style Tab. Нажмите здесь, чтобы предоставить разрешение.",
+    "placeholders": {
+      "NAME":        { "content": "$1", "example": "foobar" },
+      "PERMISSIONS": { "content": "$2", "example": "tabs" }
+    }},
+  "api_requestedPermissions_message_linux": { "message": "⚠Аддон \"$NAME$\" запрашивает выполнение операции:\n\n$PERMISSIONS$\n\nЧерез API Tree Style Tab. Нажмите кнопку, чтобы предоставить разрешение.",
     "placeholders": {
       "NAME":        { "content": "$1", "example": "foobar" },
       "PERMISSIONS": { "content": "$2", "example": "tabs" }
@@ -610,7 +624,7 @@
 
   "addon_containerBookmarks_label": { "message": "Закладки с контейнером" },
   "addon_containerBookmarks_uri": { "message": "https://addons.mozilla.org/firefox/addon/container-bookmarks/" },
-  "config_containerRedirectKey_label": { "message": "Ключ перенаправления ( * установите тоже значение, что и на странице настроек аддона):" },
+  "config_containerRedirectKey_label": { "message": "Ключ перенаправления ( * установите значение как в параметрах Container Bookmarks):" },
 
 
   "config_debug_caption": { "message": "Разработка" },
