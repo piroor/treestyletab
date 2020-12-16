@@ -575,7 +575,7 @@ export async function moveUp(tab, options = {}) {
   });
   if (moved) {
     if (!options.followChildren)
-    await onMoveUp.dispatch(tab);
+      await onMoveUp.dispatch(tab);
     await ensureMovedRootTabVisible(tab, options);
   }
   return moved;
@@ -591,7 +591,7 @@ export async function moveDown(tab, options = {}) {
   });
   if (moved) {
     if (!options.followChildren)
-    await onMoveDown.dispatch(tab);
+      await onMoveDown.dispatch(tab);
     await ensureMovedRootTabVisible(tab, options);
   }
   return moved;
