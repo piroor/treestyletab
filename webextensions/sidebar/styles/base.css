@@ -226,6 +226,7 @@ ul {
 
 #dummy-tabs {
   bottom: 0;
+  clip: rect(0, 0, 0, 0);
   left: 0;
   overflow-y: scroll;
   pointer-events: none;
