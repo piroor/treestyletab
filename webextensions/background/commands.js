@@ -9,6 +9,7 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
+  nextFrame,
   countMatched,
   configs,
   notify
@@ -552,6 +553,18 @@ function detachTabsWithStructure(tabs, options = {}) {
   }
 }
 
+async function ensureMovedRootTabVisible(tab, options) {
+  await nextFrame();
+  if (tab.$TST.parent ||
+      !tab.$TST.collapsed)
+    return;
+  Tree.collapseExpandTabAndSubtree(tab, {
+    ...options,
+    collapsed: false,
+    broadcast: true
+  });
+}
+
 export async function moveUp(tab, options = {}) {
   const previousTab = tab.$TST.nearestVisiblePrecedingTab;
   if (!previousTab)
@@ -560,8 +573,11 @@ export async function moveUp(tab, options = {}) {
     ...options,
     referenceTabId: previousTab.id
   });
-  if (moved && !options.followChildren)
+  if (moved) {
+    if (!options.followChildren)
     await onMoveUp.dispatch(tab);
+    await ensureMovedRootTabVisible(tab, options);
+  }
   return moved;
 }
 
@@ -573,8 +589,11 @@ export async function moveDown(tab, options = {}) {
     ...options,
     referenceTabId: nextTab.id
   });
-  if (moved && !options.followChildren)
+  if (moved) {
+    if (!options.followChildren)
     await onMoveDown.dispatch(tab);
+    await ensureMovedRootTabVisible(tab, options);
+  }
   return moved;
 }
 
@@ -608,6 +627,7 @@ export async function moveBefore(tab, options = {}) {
       insertAfter:  referenceTabs.insertAfter,
       broadcast:    true
     });
+    await ensureMovedRootTabVisible(tab, options);
   }
   return true;
 }
@@ -641,6 +661,7 @@ export async function moveAfter(tab, options = {}) {
       insertAfter:  referenceTabs.insertAfter,
       broadcast:    true
     });
+    await ensureMovedRootTabVisible(tab, options);
   }
   return true;
 }
