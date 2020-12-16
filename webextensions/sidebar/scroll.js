@@ -483,11 +483,16 @@ function reserveToScrollToNewTab(tab) {
 
 function reReserveScrollingForTab(tab) {
   if (!tab)
-    return;
-  if (reserveToScrollToTab.reservedTabId == tab.id)
+    return false;
+  if (reserveToScrollToTab.reservedTabId == tab.id) {
     reserveToScrollToTab(tab);
-  if (reserveToScrollToNewTab.reservedTabId == tab.id)
+    return true;
+  }
+  if (reserveToScrollToNewTab.reservedTabId == tab.id) {
     reserveToScrollToNewTab(tab);
+    return true;
+  }
+  return false;
 }
 
 
@@ -591,10 +596,13 @@ async function onBackgroundMessage(message) {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
-    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED:
+    case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
-      reReserveScrollingForTab(Tab.get(message.tabId));
-      break;
+      const tab = Tab.get(message.tabId);
+      if (!reReserveScrollingForTab(tab) &&
+          tab.active)
+        reserveToScrollToTab(tab);
+    }; break;
   }
 }
 
