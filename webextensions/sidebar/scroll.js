@@ -71,7 +71,7 @@ export function init(scrollPosition) {
     });
   }
 
-  document.addEventListener('wheel', onWheel, { capture: true });
+  document.addEventListener('wheel', onWheel, { capture: true, passive: false });
   mTabBar.addEventListener('scroll', onScroll);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
