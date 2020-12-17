@@ -561,7 +561,7 @@ export async function moveUp(tab, options = {}) {
     referenceTabId: previousTab.id
   });
   if (moved && !options.followChildren)
-      await onMoveUp.dispatch(tab);
+    await onMoveUp.dispatch(tab);
   return moved;
 }
 
@@ -574,7 +574,7 @@ export async function moveDown(tab, options = {}) {
     referenceTabId: nextTab.id
   });
   if (moved && !options.followChildren)
-      await onMoveDown.dispatch(tab);
+    await onMoveDown.dispatch(tab);
   return moved;
 }
 
