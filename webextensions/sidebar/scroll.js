@@ -71,6 +71,8 @@ export function init(scrollPosition) {
     });
   }
 
+  // We need to register the lister as non-passive to cancel the event.
+  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
   document.addEventListener('wheel', onWheel, { capture: true, passive: false });
   mTabBar.addEventListener('scroll', onScroll);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
