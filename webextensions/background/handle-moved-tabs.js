@@ -169,6 +169,27 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 }
 
+function reserveToEnsureRootTabVisible(tab) {
+  reserveToEnsureRootTabVisible.tabIds.add(tab.id);
+  if (reserveToEnsureRootTabVisible.reserved)
+    clearTimeout(reserveToEnsureRootTabVisible.reserved);
+  reserveToEnsureRootTabVisible.reserved = setTimeout(() => {
+    delete reserveToEnsureRootTabVisible.reserved;
+    const tabs = Array.from(reserveToEnsureRootTabVisible.tabIds, Tab.get);
+    reserveToEnsureRootTabVisible.tabIds.clear();
+    for (const tab of tabs) {
+      if (tab.$TST.parent ||
+          !tab.$TST.collapsed)
+        continue;
+      Tree.collapseExpandTabAndSubtree(tab, {
+        collapsed: false,
+        broadcast: true
+      });
+    }
+  }, 150);
+}
+reserveToEnsureRootTabVisible.tabIds = new Set();
+
 Tab.onMoved.addListener((tab, moveInfo = {}) => {
   if (!moveInfo.byInternalOperation &&
       !moveInfo.isSubstantiallyMoved &&
@@ -179,6 +200,7 @@ Tab.onMoved.addListener((tab, moveInfo = {}) => {
   else {
     log('internal move');
   }
+  reserveToEnsureRootTabVisible(tab);
 });
 
 Commands.onMoveUp.addListener(async tab => {
