@@ -428,9 +428,9 @@ async function onWheel(event) {
 
   const tab = EventUtils.getTabFromEvent(event);
   TSTAPI.notifyScrolled({
-    tab:             tab,
+    tab,
     scrollContainer: mTabBar,
-    event:           event
+    event
   });
 }
 
