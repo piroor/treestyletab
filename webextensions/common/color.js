@@ -12,6 +12,19 @@ export function mixCSSColors(base, over, alpha = 1) {
   return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${alpha})`;
 }
 
+export function overrideCSSAlpha(color, alpha = 1) {
+  const parsed = parseCSSColor(color);
+  let base = color;
+  let baseAlpha = parsed.alpha;
+  if (baseAlpha > 0) {
+    while (baseAlpha < 1) {
+      base = mixCSSColors(base, base);
+      baseAlpha *= 2;
+    }
+  }
+  return mixCSSColors(base, base, alpha);
+}
+
 function normalizeColorElement(value) {
   return Math.max(0, Math.min(255, value.endsWith('%') ? (parseFloat(value) / 100 * 255) : parseFloat(value)));
 }

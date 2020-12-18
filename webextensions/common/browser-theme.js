@@ -27,7 +27,7 @@ export function generateThemeRules(theme) {
             value = `url(${JSON.stringify(value)})`;
           rules.push(`--theme-${propertyKey}: ${value};`);
           for (let alpha = 10; alpha < 100; alpha += 10) {
-            rules.push(`--theme-${propertyKey}-${alpha}: ${Color.mixCSSColors(value, 'rgba(0, 0, 0, 0)', alpha / 100)};`);
+            rules.push(`--theme-${propertyKey}-${alpha}: ${Color.overrideCSSAlpha(value, alpha / 100)};`);
           }
           break;
       }
@@ -101,7 +101,7 @@ export async function generateThemeDeclarations(theme) {
       console.error(error);
     }
   }
-  const themeBaseColor    = Color.mixCSSColors(themeFrameColor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  const themeBaseColor    = Color.overrideCSSAlpha(themeFrameColor, bgAlpha);
   let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
   if (theme.colors.toolbar) {
     toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
@@ -129,7 +129,7 @@ export async function generateThemeDeclarations(theme) {
       --browser-bg-more-darker:  ${Color.mixCSSColors(toolbarColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${inactiveTextColor};
       --browser-fg-active:       ${activeTextColor};
-      --browser-border:          ${Color.mixCSSColors(inactiveTextColor, 'rgba(0, 0, 0, 0)', 0.4)};
+      --browser-border:          ${Color.overrideCSSAlpha(inactiveTextColor, 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
