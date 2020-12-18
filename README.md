@@ -200,7 +200,7 @@ If you need any new API, please file API proposals to the issue tracker.
   
   For more details, please see also [the discussions in the issue #2667](https://github.com/piroor/treestyletab/issues/2667).
   </details>
-* <details><summary>How to apply colors customized via [Firefox Color](https://color.firefox.com/)?</summary>
+* <details><summary>How to apply colors customized via <a href="https://color.firefox.com/">Firefox Color</a>?</summary>
   
   In short, there is a workaround:
   
