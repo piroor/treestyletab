@@ -592,6 +592,7 @@
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "現在のブラウザのテーマに基づいて、「var()」で以下のカスタムプロパティも使用できます：" },
+  "config_userStyleRules_themeRules_description_alphaVariations": { "message": "「--theme-colors-tab_background_text-30」のようにカスタムプロパティ名の後に不透明度を指定すると、10%刻みで不透明度を変えられます（この例では不透明度30%）" },
   "config_userStyleRules_import": { "message": "ファイルから読み込み" },
   "config_userStyleRules_export": { "message": "ファイルに保存" },
   "config_userStyleRules_overwrite_title":     { "message": "現在の内容を置き換えますか？" },

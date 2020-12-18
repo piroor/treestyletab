@@ -387,6 +387,7 @@ async function importFilesToUserStyleRulesField(files) {
 
 function updateThemeInformation(theme) {
   const rules = BrowserTheme.generateThemeRules(theme)
+    .replace(/--theme-[^:]*-[0-9]+:[^;]*;\s*/g, '') /* hide alpha variations */
     .replace(/(#(?:[0-9a-f]{3,8})|(?:rgb|hsl)a?\([^\)]+\))/gi, `$1<span style="
       background-color: $1;
       border-radius:    0.2em;

@@ -26,6 +26,9 @@ export function generateThemeRules(theme) {
           if (/^[^:]+:\/\//.test(value))
             value = `url(${JSON.stringify(value)})`;
           rules.push(`--theme-${propertyKey}: ${value};`);
+          for (let alpha = 10; alpha < 100; alpha += 10) {
+            rules.push(`--theme-${propertyKey}-${alpha}: ${Color.mixCSSColors(value, 'rgba(0, 0, 0, 0)', alpha / 100)};`);
+          }
           break;
       }
     }
