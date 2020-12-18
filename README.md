@@ -200,6 +200,16 @@ If you need any new API, please file API proposals to the issue tracker.
   
   For more details, please see also [the discussions in the issue #2667](https://github.com/piroor/treestyletab/issues/2667).
   </details>
+* <details><summary>How to apply colors customized via [Firefox Color](https://color.firefox.com/)?</summary>
+  
+  In short, there is a workaround:
+  
+  1. Go to TST's options.
+  2. Choose "Development" => "Color scheme" => "Photon".
+  3. Add a [CSS declaration applying Firefox's native tab colors](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#apply-tab-colors-exactly-same-to-firefoxs-native-2780) to "Advanced" => "Extra style rules for contents provided by Tree Style Tab".
+  
+  For more detailed background, please see also [my comment in the issue #2780](https://github.com/piroor/treestyletab/issues/2780#issuecomment-746043627).
+  </details>
 * <details><summary>I cannot find out suitable <a href="https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules">code snippet</a> satisfying my demand. Is there any reference document?</summary>
   
   Sadly there is no stable reference document due to unstableness of TST's DOM structure. The [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) are just examples for the time they were written, and they may be broken by changes on TST itself, thus they need to be updated by users through [investigation with the debugger](https://github.com/piroor/treestyletab/wiki/How-to-inspect-tree-of-tabs#how-to-inspect-the-sidebar).
