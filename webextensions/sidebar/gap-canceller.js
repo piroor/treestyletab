@@ -41,20 +41,28 @@ export function init() {
       onLocationChange(tab.url);
   }, { windowId: mWindowId, properties: ['status'] });
 
-  if (configs.suppressGapFromShownOrHiddenToolbar)
+  if (shouldWatchVisualGap())
     startWatching();
 
   configs.$addObserver(changedKey => {
     switch (changedKey) {
-      case 'suppressGapFromShownOrHiddenToolbar':
+      case 'suppressGapFromShownOrHiddenToolbarOnFullScreen':
+      case 'suppressGapFromShownOrHiddenToolbarOnNewTab':
       case 'suppressGapFromShownOrHiddenToolbarInterval':
-        if (configs.suppressGapFromShownOrHiddenToolbar)
+        if (shouldWatchVisualGap())
           startWatching();
         else
           stopWatching();
         break;
     }
   });
+}
+
+function shouldWatchVisualGap() {
+  return (
+    configs.suppressGapFromShownOrHiddenToolbarOnFullScreen ||
+    configs.suppressGapFromShownOrHiddenToolbarOnNewTab
+  );
 }
 
 function getWindowDimension() {
@@ -64,8 +72,10 @@ function getWindowDimension() {
 function updateOffset() {
   const dimension = getWindowDimension();
   const shouldSuppressGap = (
-    mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl ||
-    mDataset.ownerWindowState == 'fullscreen'
+    (configs.suppressGapFromShownOrHiddenToolbarOnNewTab &&
+     mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) ||
+    (configs.suppressGapFromShownOrHiddenToolbarOnFullScreen &&
+     mDataset.ownerWindowState == 'fullscreen')
   );
   log('updateOffset: ', {
     url:               mDataset.activeTabUrl,

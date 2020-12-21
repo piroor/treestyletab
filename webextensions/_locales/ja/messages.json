@@ -331,7 +331,9 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折りたたまれた子孫タブの情報を含める" },
   "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する" },
   "config_applyThemeColorToIcon_label_info": { "message": "（※「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
-  "config_suppressGapFromShownOrHiddenToolbar_label": { "message": "ツールバーの表示・非表示が一時的に切り替わった場合に、サイドバーの内容をずらして視覚的なガタつきを抑制する" },
+  "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "以下の場面でツールバーの表示・非表示が一時的に切り替わった場合に、サイドバーの内容をずらして視覚的なガタつきを抑制する" },
+  "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "フルスクリーンモードのウィンドウ" },
+  "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Firefox 85以降での新しい空のタブ" },
   "config_showDialogInSidebar_label": { "message": "可能であればサイドバー内でダイアログを表示する" },
 
 

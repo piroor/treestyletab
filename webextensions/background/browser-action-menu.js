@@ -143,8 +143,19 @@ const mItems = [
         expert: true
       },
       {
-        title: browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbar_label'),
-        key:   'suppressGapFromShownOrHiddenToolbar',
+        title:   browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbar_caption'),
+        enabled: false,
+        expert:  true
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label'),
+        key:   'suppressGapFromShownOrHiddenToolbarOnFullScreen',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbarOnNewTab_label'),
+        key:   'suppressGapFromShownOrHiddenToolbarOnNewTab',
         type:  'checkbox',
         expert: true
       },

@@ -335,7 +335,9 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_applyThemeColorToIcon_label": { "message": "Apply theme color to the toolbar button" },
   "config_applyThemeColorToIcon_label_info": { "message": "(*You need to set \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\")" },
-  "config_suppressGapFromShownOrHiddenToolbar_label": { "message": "Suppress visual gap of the sidebar contents produced by temporarily shown/hidden toolbars" },
+  "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Suppress visual gap of the sidebar contents produced by temporarily shown/hidden toolbars on following cases" },
+  "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Fullscreen windows" },
+  "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Blank new tabs on Firefox 85 and later" },
   "config_showDialogInSidebar_label": { "message": "Show dialogs in the sidebar if possible" },
 
 

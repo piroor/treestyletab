@@ -21,7 +21,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 19;
+const kCONFIGS_VERSION = 20;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -200,6 +200,12 @@ export function migrateConfigs() {
     case 18:
       if (configs.connectionTimeoutDelay == 5000)
         configs.connectionTimeoutDelay = configs.$default.connectionTimeoutDelay;
+
+    case 19:
+      if (configs.suppressGapFromShownOrHiddenToolbar !== configs.$default.suppressGapFromShownOrHiddenToolbar) {
+        configs.suppressGapFromShownOrHiddenToolbarOnNewTab =
+          configs.suppressGapFromShownOrHiddenToolbarOnFullScreen = configs.suppressGapFromShownOrHiddenToolbar;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

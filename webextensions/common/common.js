@@ -98,7 +98,9 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
-  suppressGapFromShownOrHiddenToolbar: true,
+  suppressGapFromShownOrHiddenToolbar: true, // obsolete, migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  suppressGapFromShownOrHiddenToolbarOnFullScreen: true,
+  suppressGapFromShownOrHiddenToolbarOnNewTab: true,
   suppressGapFromShownOrHiddenToolbarInterval: 50,
   suppressGapFromShownOrHiddenToolbarTiemout: 500,
   cancelGapSuppresserHoverDelay: 1000, // msec
