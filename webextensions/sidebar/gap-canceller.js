@@ -22,7 +22,7 @@ let mWindowId;
 const mStyle = document.documentElement.style;
 const mDataset = document.documentElement.dataset;
 
-let mLastWindowScreenY   = window.screenY;
+let mLastWindowDimension = getWindowDimension();
 let mLastMozInnerScreenY = window.mozInnerScreenY;
 let mOffset              = 0;
 
@@ -57,12 +57,28 @@ export function init() {
   });
 }
 
+function getWindowDimension() {
+  return `(${window.screenX},${window.screenY}), ${window.outerWidth}x${window.outerHeight}, innerX=${window.mozInnerScreenX}`;
+}
+
 function updateOffset() {
+  const dimension = getWindowDimension();
   const shouldSuppressGap = (
     mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl ||
     mDataset.ownerWindowState == 'fullscreen'
   );
-  if (window.screenY == mLastWindowScreenY &&
+  log('updateOffset: ', {
+    url:               mDataset.activeTabUrl,
+    isNewTab:          mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl,
+    state:             mDataset.ownerWindowState,
+    dimension,
+    lastDimension:     mLastWindowDimension,
+    innerScreenY:      window.mozInnerScreenY,
+    lastInnerScreenY:  mLastMozInnerScreenY,
+    windowNotChanged:  dimension == mLastWindowDimension,
+    sidebarMoved:      mLastMozInnerScreenY != window.mozInnerScreenY
+  });
+  if (dimension == mLastWindowDimension &&
       mLastMozInnerScreenY != window.mozInnerScreenY) {
     if (shouldSuppressGap) {
       mOffset = Math.min(0, mLastMozInnerScreenY - window.mozInnerScreenY);
@@ -70,7 +86,7 @@ function updateOffset() {
       const currentState = document.documentElement.classList.contains(Constants.kTABBAR_STATE_HAS_VISUAL_GAP);
       const newState = mOffset < 0;
       document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAS_VISUAL_GAP, newState);
-      log('should suppress visual gap: offset = ', mOffset);
+      log(' => should suppress visual gap: offset = ', mOffset);
       if (currentState != newState) {
         cancelUpdateOffset();
         if (newState)
@@ -81,14 +97,14 @@ function updateOffset() {
     }
     else {
       mStyle.setProperty('--visual-gap-offset', '0px');
-      log('should not suppress, but there is a visual gap ');
+      log(' => should not suppress, but there is a visual gap ');
     }
   }
   else if (!shouldSuppressGap) {
     mStyle.setProperty('--visual-gap-offset', '0px');
-    log('should not suppress, no visual gap ');
+    log(' => should not suppress, no visual gap ');
   }
-  mLastWindowScreenY   = window.screenY;
+  mLastWindowDimension = dimension;
   mLastMozInnerScreenY = window.mozInnerScreenY;
   browser.windows.get(mWindowId).then(window => {
     mDataset.ownerWindowState = window.state;
