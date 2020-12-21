@@ -71,12 +71,19 @@ function getWindowDimension() {
 
 function updateOffset() {
   const dimension = getWindowDimension();
-  const shouldSuppressGap = (
-    (configs.suppressGapFromShownOrHiddenToolbarOnNewTab &&
-     mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) ||
-    (configs.suppressGapFromShownOrHiddenToolbarOnFullScreen &&
-     mDataset.ownerWindowState == 'fullscreen')
+
+  const isNewTab     = mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+  const isFullScreen = mDataset.ownerWindowState == 'fullscreen'
+  const shouldSuppressGapOnNewTab = (
+    configs.suppressGapFromShownOrHiddenToolbarOnNewTab &&
+    isNewTab &&
+    !isFullScreen
   );
+  const shouldSuppressGapOnFullScreen = (
+    configs.suppressGapFromShownOrHiddenToolbarOnFullScreen &&
+    isFullScreen
+  );
+  const shouldSuppressGap = shouldSuppressGapOnNewTab || shouldSuppressGapOnFullScreen;
   log('updateOffset: ', {
     url:               mDataset.activeTabUrl,
     isNewTab:          mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl,
