@@ -335,6 +335,9 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке вкладки" },
   "config_applyThemeColorToIcon_label": { "message": "Применить цвета темы к кнопке на панели" },
   "config_applyThemeColorToIcon_label_info": { "message": "( * Нужно установить \"svg.context-properties.content.enabled\" как \"true\" в \"about:config\")" },
+  "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Исправлять визуальные баги сайдбара при временном отображнии/скрытии других панелей, в случаях" },
+  "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Полноэкранные окна" },
+  "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Пустые новые вкладки в Firefox 85 и новее" },
   "config_showDialogInSidebar_label": { "message": "Показать диалоги на боковой панели, если возможно" },
 
 
@@ -595,6 +598,7 @@
   "config_userStyleRules_description_after": { "message": " ." },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
   "config_userStyleRules_themeRules_description": { "message": "Следующие свойства также доступны через \"var()\", в зависимости от текущей темы браузера" },
+  "config_userStyleRules_themeRules_description_alphaVariations": { "message": "Вы можете изменить непрозрачность цвета с помощью цифрового суффикса, например, \"--theme-colors-tab_background_text-30\", означает непрозрачность 30%." },
   "config_userStyleRules_import": { "message": "Загрузить из файла" },
   "config_userStyleRules_export": { "message": "Сохранить в файл" },
   "config_userStyleRules_overwrite_title":     { "message": "Заменить текущие правила стиля?" },
