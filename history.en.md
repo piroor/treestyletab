@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Prevent to mis-shift the sidebar content with regular tabs, non-fullscreen windows placed at coordinates like (*, 0). ([Thanks to @nanto!](https://github.com/piroor/treestyletab/issues/2786))
+   * Expose an expert option to deactivate shifting of the sidebar contents with temporarily shown toolbars.
+   * Fix incompatibility with [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) on Firefox 84 and later. ([Thanks to @MISONLN41!](https://github.com/piroor/treestyletab/pull/2784))
+   * Ensure moved active tab visible even if it is moved via keyboard shortcuts Ctrl-Shift-PageUp/PageDown.
+   * Turn moved active tab visible even if it is moved from an collapsed tree to the top level via keyboard shortcuts.
+   * Hide the dummy tab behind the background carten completely.
+   * Provide custom properties for theme colors with different opacity, with a numeric suffix like `-10` per 10%. For example `--theme-colors-tab_background_text-30` means "the color ame to `tab_background_text` but 30% opacity".
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.6.3 (2020.12.2)
    * Cancel the visual gap of the sidebar contents when visibility of Firefox's toolbar is toggled for some special cases: about [the bookmarks toolbar for new tabs on Firefox 84 and later](https://bugzilla.mozilla.org/show_bug.cgi?id=727668), and about the navigation toolbar in the fullscreen mode. You can access invisible tabs top of the sidebar with hovering on the top edge of the sidebar contents.
    * Context menu commands "Close Other Tabs" and "Close Tabs to Bottom" now don't close hidden tabs like Firefox's native commands.
