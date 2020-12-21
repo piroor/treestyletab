@@ -1,7 +1,7 @@
 # 更新履歴
 
  - master/HEAD
-   * (*, 0)のような座標に置かれたフルスクリーン表示でないウィンドウの通常のタブにおいて、サイドバーの内容が意図せず上にずれて表示されていたのを修正（[Thanks to @nanto!](https://github.com/piroor/treestyletab/issues/2786)）
+   * (*, 0)のような座標に置かれたフルスクリーン表示でないウィンドウの通常のタブにおいて、サイドバーの内容が意図せず上にずれて表示されていたのを修正
    * 一時的に表示されたツールバーのためにサイドバーの内容をずらして表示する動作を無効化する上級者向け設定を追加
    * Firefox 84以降での[Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/)との非互換性を修正（[Thanks to @MISONLN41!](https://github.com/piroor/treestyletab/pull/2784)）
    * キーボードショートカット Ctrl-Shift-PageUp/PageDownで現在のタブが移動された場合に、サイドバーのスクロール位置をタブに追従するようにした

@@ -1,7 +1,7 @@
 # History
 
  - master/HEAD
-   * Prevent to mis-shift the sidebar content with regular tabs, non-fullscreen windows placed at coordinates like (*, 0). ([Thanks to @nanto!](https://github.com/piroor/treestyletab/issues/2786))
+   * Prevent to mis-shift the sidebar content with regular tabs, non-fullscreen windows placed at coordinates like (*, 0).
    * Expose an expert option to deactivate shifting of the sidebar contents with temporarily shown toolbars.
    * Fix incompatibility with [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) on Firefox 84 and later. ([Thanks to @MISONLN41!](https://github.com/piroor/treestyletab/pull/2784))
    * Ensure moved active tab visible even if it is moved via keyboard shortcuts Ctrl-Shift-PageUp/PageDown.
