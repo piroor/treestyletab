@@ -876,3 +876,11 @@ iframe#subpanel {
 :root:not(.animation).blocking-shade #blocking-screen * {
   visibility: hidden;
 }
+
+/*
+MenuUI.js workaround: prevent menu elements revealed by the custom user styles.
+See also: https://github.com/piroor/treestyletab/issues/2777
+*/
+body > ul[id$="selector"] {
+  opacity: 0;
+}
