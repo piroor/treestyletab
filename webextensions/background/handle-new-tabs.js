@@ -32,7 +32,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
     return true;
 
-  log('Tabs.onCreating ', dumpTab(tab), info);
+  log('Tabs.onCreating ', dumpTab(tab), tab.openerTabId, info);
 
   const possibleOpenerTab = info.activeTab || Tab.getActiveTab(tab.windowId);
   const opener = tab.$TST.openerTab;
