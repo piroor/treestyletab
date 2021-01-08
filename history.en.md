@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.6.5 (2021.1.8)
+   * Show favicons same to Firefox's built-in for `about:logins`, `about:profiling`, `about:protections` and `about:robots` tabs.
+   * Detect tabs opened from external applications correctly. (The detection result was wrong: only new tabs opened with `openerTabId` while all Firefox windows were inactive were detected as "opened by external applications".)
+   * Don't show not-initialized-yet menu elements while the startup process.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.6.4 (2020.12.21)
    * Prevent to mis-shift the sidebar content with regular tabs, non-fullscreen windows placed at coordinates like (*, 0).
    * Expose an expert option to deactivate shifting of the sidebar contents with temporarily shown toolbars.
