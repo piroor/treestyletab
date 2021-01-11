@@ -310,7 +310,7 @@ tab-item.hidden {
 tab-item.removing,
 tab-item:not(.pinned).collapsed,
 tab-item.duplicating {
-  margin-top: calc(0px - var(--tab-size));
+  margin-top: calc(0px - var(--tab-current-size));
   opacity: 0;
   pointer-events: none;
   z-index: var(--invisible-z-index);
@@ -385,11 +385,11 @@ tab-item.faviconized.unread tab-favicon::before,
 tab-item.attention tab-favicon::before {
   bottom: auto;
   content: '';
-  height: var(--faviconized-tab-size);
+  height: var(--tab-current-size);
   left: var(--attention-marker-x-offset);
   right: auto;
   top: var(--attention-marker-y-offset);
-  width: var(--faviconized-tab-size);
+  width: var(--tab-current-size);
 }
 
 tab-item .extra-items-container.behind {
