@@ -578,26 +578,31 @@ tab-item:not(.collapsed) tab-closebox:active {
 /* contextual identity (aka Container Tab) */
 
 .contextual-identity-marker {
-  bottom: 0;
+  --contextual-identity-marker-width: calc(var(--tab-current-size) / 12);
   position: absolute;
+}
+
+tab-item:not(.faviconized) .contextual-identity-marker {
+  --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.15));
+  bottom: var(--contextual-identity-marker-margin);
+  top: var(--contextual-identity-marker-margin);
+  width: var(--contextual-identity-marker-width);
 }
 
 :root.left tab-item:not(.faviconized) .contextual-identity-marker {
   right: 0;
-  top: 0;
-  width: calc(var(--favicon-size) / 6);
 }
 
 :root.right tab-item:not(.faviconized) .contextual-identity-marker {
   left: 0;
-  top: 0;
-  width: calc(var(--favicon-size) / 6);
 }
 
 tab-item.faviconized .contextual-identity-marker {
-  height: calc(var(--favicon-size) / 6);
-  left: 0;
-  right: 0;
+  --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.33));
+  bottom: 0;
+  height: var(--contextual-identity-marker-width);
+  left: var(--contextual-identity-marker-margin);
+  right: var(--contextual-identity-marker-margin);
 }
 
 
