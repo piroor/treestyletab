@@ -349,7 +349,7 @@ async function importFilesToUserStyleRulesField(files) {
           });
       }
     }));
-    mUserStyleRulesField.setRangeText(contents.join('\n'), mUserStyleRulesField.selectionStart,   mUserStyleRulesField.selectionEnd, 'select');
+    mUserStyleRulesFieldEditor.replaceSelection(contents.join('\n'), true);
   }
   else {
     const style = (await Promise.all(files.map(file => file.text()))).join('\n');
