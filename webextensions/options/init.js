@@ -588,6 +588,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
+    colorpicker: {
+      mode: 'edit'
+    },
     lineNumbers: true,
     lineWrapping: true,
     mode: 'css',
