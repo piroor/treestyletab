@@ -177,13 +177,34 @@ label input[type="checkbox"] ~ img {
 
 #tooLargeUserStyleRulesCaution {
   color: var(--red-50);
+  margin-bottom: 0;
   visibility: hidden;
 }
 #tooLargeUserStyleRulesCaution.invalid {
   visibility: visible;
 }
 
-#userStyleRulesField.invalid {
+#userStyleRulesField {
+  margin: 0 -5px;
+  min-height: 10em;
+  overflow: hidden;
+  resize: vertical;
+}
+
+#userStyleRulesField > .CodeMirror {
+  background: white;
+  border: thin solid;
+  height: calc(100% - 10px);
+  margin: 5px;
+}
+
+#userStyleRulesField > .CodeMirror.CodeMirror-focused {
+  border-color: var(--in-content-border-focus);
+  box-shadow: 0 0 0 1px var(--in-content-border-active),
+              0 0 0 4px var(--in-content-border-active-shadow);
+}
+
+#userStyleRulesField.invalid > .CodeMirror {
   border-color: var(--red-50);
   --in-content-border-active: var(--red-50);
   --in-content-border-active-shadow: var(--red-50-a30);
