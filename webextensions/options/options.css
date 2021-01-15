@@ -210,6 +210,11 @@ label input[type="checkbox"] ~ img {
   background-color: var(--red-50-a10);
 }
 
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
+  word-break: break-all !important;
+}
+
 
 table {
   border-collapse: collapse;
