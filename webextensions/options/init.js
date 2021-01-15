@@ -602,6 +602,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   mUserStyleRulesFieldEditor.on('update', reserveToSaveUserStyleRules);
   initUserStyleImportExportButtons();
   initFileDragAndDropHandlers();
+  mUserStyleRulesField.style.height = configs.userStyleRulesFieldHeight;
+  (new ResizeObserver(_entries => {
+    configs.userStyleRulesFieldHeight = `${mUserStyleRulesField.getBoundingClientRect().height}px`;
+  })).observe(mUserStyleRulesField);
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS

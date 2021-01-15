@@ -359,6 +359,7 @@ export const configs = new Configs({
   userStyleRules5: '',
   userStyleRules6: '',
   userStyleRules7: '',
+  userStyleRulesFieldHeight: '10em',
 
   syncOtherDevicesDetected: false,
   syncAvailableNotified: false,
