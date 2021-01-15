@@ -39,4 +39,5 @@ install_extlib: install_dependency
 	cp node_modules/codemirror/lib/codemirror.js $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror/lib/codemirror.css $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror/mode/css/css.js $(EXTERNAL_LIB_DIR)/codemirror-mode-css.js
+	cp node_modules/codemirror/theme/bespin.css $(EXTERNAL_LIB_DIR)/codemirror-theme-bespin.css
 

@@ -42,6 +42,8 @@ if ((location.hash && location.hash != '#') ||
 const mUserStyleRulesField = document.getElementById('userStyleRulesField');
 let mUserStyleRulesFieldEditor;
 
+const mDarkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
 function onConfigChanged(key) {
   const value = configs[key];
   switch (key) {
@@ -586,7 +588,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
-    mode: 'css'
+    mode: 'css',
+    theme: mDarkModeMedia.matches ? 'bespin' : 'default'
+  });
+  mDarkModeMedia.addListener(async _event => {
+    mUserStyleRulesFieldEditor.setOption('theme', mDarkModeMedia.matches ? 'bespin' : 'default');
   });
   window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
   mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());

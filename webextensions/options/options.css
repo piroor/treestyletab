@@ -192,7 +192,6 @@ label input[type="checkbox"] ~ img {
 }
 
 #userStyleRulesField > .CodeMirror {
-  background: white;
   border: thin solid;
   height: calc(100% - 10px);
   margin: 5px;
