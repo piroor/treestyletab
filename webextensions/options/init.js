@@ -588,6 +588,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
+    lineNumbers: true,
+    lineWrapping: true,
     mode: 'css',
     theme: mDarkModeMedia.matches ? 'bespin' : 'default'
   });
