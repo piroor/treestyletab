@@ -97,7 +97,7 @@ function onConfigChanged(key) {
     default:
       if (key.startsWith('chunkedUserStyleRules') &&
           !mUserStyleRulesField.$saving)
-        mUserStyleRulesField.value = loadUserStyleRules();
+        mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());
       break;
   }
 }
