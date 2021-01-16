@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2020
+ * Portions created by the Initial Developer are Copyright (C) 2011-2021
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1115,31 +1115,40 @@ async function getTabsFromWrongIds(ids, sender) {
   const tabs = await Promise.all(ids.map(async (id) => {
     if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
       id = id.id;
-    switch (String(id).toLowerCase()) {
+    let query   = String(id).toLowerCase();
+    let baseTab = Tab.getActiveTab(activeWindow.id);
+    const nonActiveTabMatched = query.match(/^([^-]+)-of-(.+)$/i);
+    if (nonActiveTabMatched) {
+      query = nonActiveTabMatched[1];
+      id    = nonActiveTabMatched[2];
+      if (/^\d+$/.test(id))
+        id = parseInt(id);
+      baseTab = Tab.get(id) || Tab.getByUniqueId(id);
+    }
+    switch (query) {
       case 'active':
       case 'current':
-        return Tab.getActiveTab(activeWindow.id);
+        return baseTab;
 
       case 'next':
-        return Tab.getActiveTab(activeWindow.id).$TST.nextTab;
+        return baseTab.$TST.nextTab;
       case 'nextcyclic':
-        return Tab.getActiveTab(activeWindow.id).$TST.nextTab || Tab.getFirstTab(activeWindow.id);
+        return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id);
 
       case 'previous':
       case 'prev':
-        return Tab.getActiveTab(activeWindow.id).$TST.previousTab;
+        return baseTab.$TST.previousTab;
       case 'previouscyclic':
       case 'prevcyclic':
-        return Tab.getActiveTab(activeWindow.id).$TST.previousTab || Tab.getLastTab(activeWindow.id);
+        return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id);
 
       case 'nextsibling':
-        return Tab.getActiveTab(activeWindow.id).$TST.nextSiblingTab;
+        return baseTab.$TST.nextSiblingTab;
       case 'nextsiblingcyclic': {
-        const active = Tab.getActiveTab(activeWindow.id);
-        const nextSibling = active.$TST.nextSiblingTab;
+        const nextSibling = baseTab.$TST.nextSiblingTab;
         if (nextSibling)
           return nextSibling;
-        const parent = active.$TST.parent;
+        const parent = baseTab.$TST.parent;
         if (parent)
           return parent.$TST.firstChild;
         return Tab.getFirstTab(activeWindow.id);
@@ -1147,30 +1156,29 @@ async function getTabsFromWrongIds(ids, sender) {
 
       case 'previoussibling':
       case 'prevsibling':
-        return Tab.getActiveTab(activeWindow.id).$TST.previousSiblingTab;
+        return baseTab.$TST.previousSiblingTab;
       case 'previoussiblingcyclic':
       case 'prevsiblingcyclic': {
-        const active = Tab.getActiveTab(activeWindow.id);
-        const previousSiblingTab = active.$TST.previousSiblingTab;
+        const previousSiblingTab = baseTab.$TST.previousSiblingTab;
         if (previousSiblingTab)
           return previousSiblingTab;
-        const parent = active.$TST.parent;
+        const parent = baseTab.$TST.parent;
         if (parent)
           return parent.$TST.lastChild;
         return Tab.getLastRootTab(activeWindow.id);
       }
 
       case 'nextvisible':
-        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisibleFollowingTab;
+        return baseTab.$TST.nearestVisibleFollowingTab;
       case 'nextvisiblecyclic':
-        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id);
+        return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id);
 
       case 'previousvisible':
       case 'prevvisible':
-        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisiblePrecedingTab;
+        return baseTab.$TST.nearestVisiblePrecedingTab;
       case 'previousvisiblecyclic':
       case 'prevvisiblecyclic':
-        return Tab.getActiveTab(activeWindow.id).$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
+        return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
 
       case 'sendertab':
         return sender.tab && Tab.get(sender.tab.id) || null;
