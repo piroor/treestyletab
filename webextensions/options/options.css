@@ -223,6 +223,10 @@ label input[type="checkbox"] ~ img {
   flex-direction: row;
 }
 
+#userStyleRules-footer-bar button {
+  margin-right: 0.5em;
+}
+
 #userStyleRules-footer-bar .spacer {
   display: flex;
   flex-grow: 1;
