@@ -27,6 +27,8 @@ update_extlib:
 install_extlib: install_dependency
 	rm -f $(EXTERNAL_LIB_DIR)/*.js
 	rm -f $(EXTERNAL_LIB_DIR)/*.css
+	rm -rf $(EXTERNAL_LIB_DIR)/codemirror-theme
+	mkdir -p $(EXTERNAL_LIB_DIR)/codemirror-theme
 	cp ../submodules/webextensions-lib-event-listener-manager/EventListenerManager.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabFavIconHelper;' >> $(EXTERNAL_LIB_DIR)/TabFavIconHelper.js
 	cp ../submodules/webextensions-lib-rich-confirm/RichConfirm.js $(EXTERNAL_LIB_DIR)/; echo 'export default RichConfirm;' >> $(EXTERNAL_LIB_DIR)/RichConfirm.js
@@ -40,7 +42,7 @@ install_extlib: install_dependency
 	cp node_modules/codemirror/lib/codemirror.js $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror/lib/codemirror.css $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror/mode/css/css.js $(EXTERNAL_LIB_DIR)/codemirror-mode-css.js
-	cp node_modules/codemirror/theme/bespin.css $(EXTERNAL_LIB_DIR)/codemirror-theme-bespin.css
+	cp node_modules/codemirror/theme/*.css $(EXTERNAL_LIB_DIR)/codemirror-theme/
 	cp node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.js $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.css $(EXTERNAL_LIB_DIR)/
 
