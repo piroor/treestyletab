@@ -104,16 +104,6 @@ yeti
 yonce
 zenburn
 `.trim().split(/\s+/);
-{
-  const range = document.createRange();
-  range.selectNodeContents(document.querySelector('head'));
-  range.collapse(false);
-  range.insertNode(range.createContextualFragment(CODEMIRROR_THEMES.map(theme =>
-    `<link rel="stylesheet"
-           type="text/css"
-           href="/extlib/codemirror-theme/${theme}.css"/>`)));
-  range.detach();
-}
 
 const mUserStyleRulesField = document.getElementById('userStyleRulesField');
 let mUserStyleRulesFieldEditor;
@@ -171,7 +161,7 @@ function onConfigChanged(key) {
       break;
 
     case 'userStyleRulesFieldTheme':
-      mUserStyleRulesFieldEditor.setOption('theme', getUserStyleRulesFieldTheme());
+      applyUserStyleRulesFieldTheme();
       break;
 
     default:
@@ -258,6 +248,22 @@ function getUserStyleRulesFieldTheme() {
     return configs.userStyleRulesFieldTheme;
 
   return mDarkModeMedia.matches ? 'bespin' : 'default';
+}
+
+function applyUserStyleRulesFieldTheme() {
+  const theme = getUserStyleRulesFieldTheme();
+  if (!document.querySelector(`link[href$="/extlib/codemirror-theme/${theme}.css"]`)) {
+    const range = document.createRange();
+    range.selectNodeContents(document.querySelector('head'));
+    range.collapse(false);
+    range.insertNode(range.createContextualFragment(`
+      <link rel="stylesheet"
+            type="text/css"
+            href="/extlib/codemirror-theme/${theme}.css"/>
+    `.trim()));
+    range.detach();
+  }
+  mUserStyleRulesFieldEditor.setOption('theme', theme);
 }
 
 
@@ -684,8 +690,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     theme: getUserStyleRulesFieldTheme()
   });
   mDarkModeMedia.addListener(async _event => {
-    mUserStyleRulesFieldEditor.setOption('theme', getUserStyleRulesFieldTheme());
+    applyUserStyleRulesFieldTheme();
   });
+  applyUserStyleRulesFieldTheme();
   window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
   mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());
   mUserStyleRulesFieldEditor.on('change', reserveToSaveUserStyleRules);
