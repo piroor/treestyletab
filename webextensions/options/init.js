@@ -170,6 +170,10 @@ function onConfigChanged(key) {
       initOtherDevices();
       break;
 
+    case 'userStyleRulesFieldTheme':
+      mUserStyleRulesFieldEditor.setOption('theme', getUserStyleRulesFieldTheme());
+      break;
+
     default:
       if (key.startsWith('chunkedUserStyleRules') &&
           !mUserStyleRulesField.$saving)
@@ -248,6 +252,13 @@ function reserveToSaveUserStyleRules() {
   }, 250);
 }
 reserveToSaveUserStyleRules.timer = null;
+
+function getUserStyleRulesFieldTheme() {
+  if (configs.userStyleRulesFieldTheme != 'auto')
+    return configs.userStyleRulesFieldTheme;
+
+  return mDarkModeMedia.matches ? 'bespin' : 'default';
+}
 
 
 function saveLogForConfig() {
@@ -670,10 +681,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     lineNumbers: true,
     lineWrapping: true,
     mode: 'css',
-    theme: mDarkModeMedia.matches ? 'bespin' : 'default'
+    theme: getUserStyleRulesFieldTheme()
   });
   mDarkModeMedia.addListener(async _event => {
-    mUserStyleRulesFieldEditor.setOption('theme', mDarkModeMedia.matches ? 'bespin' : 'default');
+    mUserStyleRulesFieldEditor.setOption('theme', getUserStyleRulesFieldTheme());
   });
   window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
   mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());

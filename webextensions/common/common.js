@@ -54,6 +54,8 @@ const localKeys = mapAndFilter(`
   syncDevicesLocalCache
   syncLastMessageTimestamp
   testKey
+  userStyleRulesFieldHeight
+  userStyleRulesFieldTheme
 `.trim().split('\n'), key => {
   key = key.trim();
   return key && key.indexOf('//') != 0 && key;
@@ -360,6 +362,7 @@ export const configs = new Configs({
   userStyleRules6: '',
   userStyleRules7: '',
   userStyleRulesFieldHeight: '10em',
+  userStyleRulesFieldTheme: 'auto',
 
   syncOtherDevicesDetected: false,
   syncAvailableNotified: false,
