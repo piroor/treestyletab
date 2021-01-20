@@ -207,6 +207,9 @@ label input[type="checkbox"] ~ img {
   border-color: var(--red-50);
   --in-content-border-active: var(--red-50);
   --in-content-border-active-shadow: var(--red-50-a30);
+}
+
+#userStyleRulesField.invalid .CodeMirror-scroll {
   background-color: var(--red-50-a10);
 }
 
