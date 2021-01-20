@@ -104,6 +104,15 @@ yeti
 yonce
 zenburn
 `.trim().split(/\s+/);
+{
+  const range = document.createRange();
+  range.selectNodeContents(document.querySelector('#userStyleRulesFieldTheme'));
+  range.collapse(false);
+  range.insertNode(range.createContextualFragment(CODEMIRROR_THEMES.map(theme => `
+    <option value=${JSON.stringify(sanitizeForHTMLText(theme))}>${sanitizeForHTMLText(theme)}</option>
+  `.trim()).join('')));
+  range.detach();
+}
 
 const mUserStyleRulesField = document.getElementById('userStyleRulesField');
 let mUserStyleRulesFieldEditor;

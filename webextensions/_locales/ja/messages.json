@@ -602,6 +602,10 @@
   "config_userStyleRules_overwrite_overwrite": { "message": "すべて置き換える" },
   "config_userStyleRules_overwrite_append":    { "message": "最後に追加する" },
   "config_tooLargeUserStyleRulesCaution": { "message": "スタイル指定が長すぎます！ もっと短くしてください" },
+  "config_userStyleRulesTheme_label":     { "message": "テーマ:" },
+  "config_userStyleRulesTheme_auto":      { "message": "自動" },
+  "config_userStyleRulesTheme_separator": { "message": "-----------------" },
+  "config_userStyleRulesTheme_default":   { "message": "既定" },
 
 
   "config_addons_caption": { "message": "他のアドオンによる機能追加" },

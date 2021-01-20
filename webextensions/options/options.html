@@ -1017,7 +1017,7 @@
       <div id="userStyleRulesField"
            contenteditable="true"
            style="height: 10em; width: 100%;"></div>
-      <div>
+      <div id="userStyleRules-footer-bar">
         <button id="userStyleRules-export">__MSG_config_userStyleRules_export__</button>
         <a id="userStyleRules-export-file"
            type="text/css"
@@ -1028,6 +1028,15 @@
                type="file"
                accept="text/css,text/plain,image/*"
                style="display:none">
+        <span class="spacer"></span>
+        <label>
+          __MSG_config_userStyleRulesTheme_label__
+          <select id="userStyleRulesFieldTheme">
+            <option value="auto">__MSG_config_userStyleRulesTheme_auto__</option>
+            <option disabled="true">__MSG_config_userStyleRulesTheme_separator__</option>
+            <option value="default">__MSG_config_userStyleRulesTheme_default__</option>
+          </select>
+        </label>
       </div>
     </fieldset>
     </section>

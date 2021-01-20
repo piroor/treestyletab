@@ -215,6 +215,16 @@ label input[type="checkbox"] ~ img {
   word-break: break-all !important;
 }
 
+#userStyleRules-footer-bar {
+  display: flex;
+  flex-direction: row;
+}
+
+#userStyleRules-footer-bar .spacer {
+  display: flex;
+  flex-grow: 1;
+}
+
 
 table {
   border-collapse: collapse;

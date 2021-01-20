@@ -606,6 +606,10 @@
   "config_userStyleRules_overwrite_overwrite": { "message": "Replace All" },
   "config_userStyleRules_overwrite_append":    { "message": "Append to the last" },
   "config_tooLargeUserStyleRulesCaution": { "message": "Too long style rules! Please shorten more." },
+  "config_userStyleRulesTheme_label":     { "message": "Theme:" },
+  "config_userStyleRulesTheme_auto":      { "message": "Auto" },
+  "config_userStyleRulesTheme_separator": { "message": "-----------------" },
+  "config_userStyleRulesTheme_default":   { "message": "Default" },
 
 
   "config_addons_caption": { "message": "Extra Features via Other Addons" },
