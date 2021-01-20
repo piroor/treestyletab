@@ -10,7 +10,7 @@ module.exports = {
   'root': true,
 
   'parserOptions': {
-    'ecmaVersion': 2018,
+    'ecmaVersion': 2020,
   },
 
   'env': {

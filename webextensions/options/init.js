@@ -680,30 +680,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
-    colorpicker: {
-      mode: 'edit'
-    },
-    lineNumbers: true,
-    lineWrapping: true,
-    mode: 'css',
-    theme: getUserStyleRulesFieldTheme()
-  });
-  mDarkModeMedia.addListener(async _event => {
-    applyUserStyleRulesFieldTheme();
-  });
-  applyUserStyleRulesFieldTheme();
-  window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
-  mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());
-  mUserStyleRulesFieldEditor.on('change', reserveToSaveUserStyleRules);
-  mUserStyleRulesFieldEditor.on('update', reserveToSaveUserStyleRules);
-  initUserStyleImportExportButtons();
-  initFileDragAndDropHandlers();
-  mUserStyleRulesField.style.height = configs.userStyleRulesFieldHeight;
-  (new ResizeObserver(_entries => {
-    configs.userStyleRulesFieldHeight = `${mUserStyleRulesField.getBoundingClientRect().height}px`;
-  })).observe(mUserStyleRulesField);
-
   browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS
   }).then(addons => {
@@ -828,3 +804,34 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   document.documentElement.classList.add('initialized');
 }, { once: true });
+
+import('/extlib/codemirror.js').then(async () => {
+  await Promise.all([
+    configs.$loaded,
+    import('/extlib/codemirror-mode-css.js'),
+    import('/extlib/codemirror-colorpicker.js')
+  ]);
+  mUserStyleRulesFieldEditor = CodeMirror(mUserStyleRulesField, { // eslint-disable-line no-undef
+    colorpicker: {
+      mode: 'edit'
+    },
+    lineNumbers: true,
+    lineWrapping: true,
+    mode: 'css',
+    theme: getUserStyleRulesFieldTheme()
+  });
+  mDarkModeMedia.addListener(async _event => {
+    applyUserStyleRulesFieldTheme();
+  });
+  applyUserStyleRulesFieldTheme();
+  window.mUserStyleRulesFieldEditor = mUserStyleRulesFieldEditor;
+  mUserStyleRulesFieldEditor.setValue(loadUserStyleRules());
+  mUserStyleRulesFieldEditor.on('change', reserveToSaveUserStyleRules);
+  mUserStyleRulesFieldEditor.on('update', reserveToSaveUserStyleRules);
+  initUserStyleImportExportButtons();
+  initFileDragAndDropHandlers();
+  mUserStyleRulesField.style.height = configs.userStyleRulesFieldHeight;
+  (new ResizeObserver(_entries => {
+    configs.userStyleRulesFieldHeight = `${mUserStyleRulesField.getBoundingClientRect().height}px`;
+  })).observe(mUserStyleRulesField);
+});

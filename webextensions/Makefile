@@ -39,10 +39,12 @@ install_extlib: install_dependency
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/l10n-classic.js; echo 'window.l10n = l10n;' >> $(EXTERNAL_LIB_DIR)/l10n-classic.js
 	cp ../submodules/webextensions-lib-dom-updater/src/diff.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-dom-updater/src/dom-updater.js $(EXTERNAL_LIB_DIR)/
-	cp node_modules/codemirror/lib/codemirror.js $(EXTERNAL_LIB_DIR)/
+	cp node_modules/codemirror/lib/codemirror.js $(EXTERNAL_LIB_DIR)/; echo 'window.CodeMirror = CodeMirror;' >> $(EXTERNAL_LIB_DIR)/codemirror.js
 	cp node_modules/codemirror/lib/codemirror.css $(EXTERNAL_LIB_DIR)/
 	cp node_modules/codemirror/mode/css/css.js $(EXTERNAL_LIB_DIR)/codemirror-mode-css.js
 	cp node_modules/codemirror/theme/*.css $(EXTERNAL_LIB_DIR)/codemirror-theme/
 	cp node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.js $(EXTERNAL_LIB_DIR)/
+	sed -i -e "s/(this, (function () { 'use strict';/(this || self, (function () { 'use strict';/" $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.js
+	echo 'window["codemirror-picker"] = self["codemirror-picker"];' >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.js
 	cp node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.css $(EXTERNAL_LIB_DIR)/
 
