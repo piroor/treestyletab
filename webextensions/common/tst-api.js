@@ -1180,6 +1180,9 @@ async function getTabsFromWrongIds(ids, sender) {
       case 'prevvisiblecyclic':
         return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
 
+      case 'lastdescendant':
+        return baseTab.$TST.lastDescendant;
+
       case 'sendertab':
         return sender.tab && Tab.get(sender.tab.id) || null;
       case 'highlighted':
