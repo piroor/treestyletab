@@ -160,6 +160,12 @@ const mItems = [
         expert: true
       },
       {
+        title: indent() + browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label'),
+        key:   'suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
         key:   'showDialogInSidebar',
         type:  'checkbox'

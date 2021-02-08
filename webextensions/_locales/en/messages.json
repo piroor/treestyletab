@@ -338,6 +338,7 @@
   "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Suppress visual gap of the sidebar contents produced by temporarily shown/hidden toolbars on following cases" },
   "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Fullscreen windows" },
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Blank new tabs on Firefox 85 and later" },
+  "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Only when triggered by a mouse operation in the sidebar" },
   "config_showDialogInSidebar_label": { "message": "Show dialogs in the sidebar if possible" },
 
 

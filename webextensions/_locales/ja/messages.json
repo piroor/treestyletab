@@ -334,6 +334,7 @@
   "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "以下の場面でツールバーの表示・非表示が一時的に切り替わった場合に、サイドバーの内容をずらして視覚的なガタつきを抑制する" },
   "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "フルスクリーンモードのウィンドウ" },
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Firefox 85以降での新しい空のタブ" },
+  "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "サイドバーをマウスで操作した場合のみ抑制する" },
   "config_showDialogInSidebar_label": { "message": "可能であればサイドバー内でダイアログを表示する" },
 
 
