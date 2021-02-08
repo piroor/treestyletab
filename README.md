@@ -374,7 +374,7 @@ If you need any new API, please file API proposals to the issue tracker.
     My hands are already full to maintain this addon for my use case.
     (Of course I know that donation is not payment, but I'm afraid that I would think about voices from people who did donation more seriously and it would unconsciously conflict with my policies.)
   * And, I'm afraid of [social undermining](https://en.wikipedia.org/wiki/Social_undermining) also.
-  * I'm an employee of the [ClearCode Inc.](https://www.clear-code.com/).
+  * I'm an employee of the [ClearCode Inc.](https://www.clear-code.com/)
     My employer allows me to develop my addons while business hours, because my job is supporting customers (enterprise users of Firefox and Thunderbird) technically and developing addons increases my skills about Firefox and Thunderbird.
     In other words, my addon projects already have monetary support enoughly.
     Stagnation of my addon projects are mostly caused from technical reasons or lowering of motivation, not monetary reasons.
