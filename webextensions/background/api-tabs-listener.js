@@ -137,6 +137,9 @@ async function onActivated(activeInfo) {
     const byInternalOperation = window.internalFocusCount > 0;
     if (byInternalOperation)
       window.internalFocusCount--;
+    const byMouseOperation = window.internalByMouseFocusCount > 0;
+    if (byMouseOperation)
+      window.internalByMouseFocusCount--;
     const silently = window.internalSilentlyFocusCount > 0;
     if (silently)
       window.internalSilentlyFocusCount--;
@@ -168,6 +171,17 @@ async function onActivated(activeInfo) {
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
+      byMouseOperation,
+      silently
+    });
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATING,
+      windowId: activeInfo.windowId,
+      tabId:    activeInfo.tabId,
+      byActiveTabRemove,
+      byTabDuplication,
+      byInternalOperation,
+      byMouseOperation,
       silently
     });
     // don't do await if not needed, to process things synchronously
@@ -191,6 +205,7 @@ async function onActivated(activeInfo) {
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
+      byMouseOperation,
       silently
     });
     // don't do await if not needed, to process things synchronously
@@ -200,7 +215,12 @@ async function onActivated(activeInfo) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
       windowId: activeInfo.windowId,
-      tabId:    activeInfo.tabId
+      tabId:    activeInfo.tabId,
+      byActiveTabRemove,
+      byTabDuplication,
+      byInternalOperation,
+      byMouseOperation,
+      silently
     });
     onCompleted();
   }

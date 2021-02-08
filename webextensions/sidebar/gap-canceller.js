@@ -14,6 +14,10 @@ import {
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 
+import Tab from '/common/Tab.js';
+
+import * as BackgroundConnection from './background-connection.js';
+
 function log(...args) {
   internalLogger('sidebar/gap-canceller', ...args);
 }
@@ -22,6 +26,7 @@ let mWindowId;
 const mStyle = document.documentElement.style;
 const mDataset = document.documentElement.dataset;
 
+let mByMouseOperation    = false;
 let mLastWindowDimension = getWindowDimension();
 let mLastMozInnerScreenY = window.mozInnerScreenY;
 let mOffset              = 0;
@@ -32,9 +37,17 @@ export function init() {
   browser.tabs.query({ active: true, windowId: mWindowId }).then(tabs => {
     onLocationChange(tabs[0].url);
   });
-  browser.tabs.onActivated.addListener(async activeInfo => {
-    const tab = await browser.tabs.get(activeInfo.tabId);
-    onLocationChange(tab.url);
+  BackgroundConnection.onMessage.addListener(async message => {
+    switch (message.type) {
+      case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATING:
+        const tab = Tab.get(message.tabId);
+        if (tab) {
+          onLocationChange(tab.url, { byMouseOperation: message.byMouseOperation });
+          if (!message.byMouseOperation)
+            updateOffset();
+        }
+        break;
+    }
   });
   browser.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
     if (tab.active && changeInfo.status == 'complete')
@@ -83,11 +96,15 @@ function updateOffset() {
     configs.suppressGapFromShownOrHiddenToolbarOnFullScreen &&
     isFullScreen
   );
-  const shouldSuppressGap = shouldSuppressGapOnNewTab || shouldSuppressGapOnFullScreen;
+  const shouldSuppressGap = (
+    (shouldSuppressGapOnNewTab || shouldSuppressGapOnFullScreen) &&
+    (mByMouseOperation || !configs.suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation)
+  );
   log('updateOffset: ', {
     url:               mDataset.activeTabUrl,
     isNewTab:          mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl,
     state:             mDataset.ownerWindowState,
+    mByMouseOperation,
     dimension,
     lastDimension:     mLastWindowDimension,
     innerScreenY:      window.mozInnerScreenY,
@@ -111,6 +128,7 @@ function updateOffset() {
         else
           endListenMouseEvents();
       }
+      cancelUpdateOffset();
     }
     else {
       mStyle.setProperty('--visual-gap-offset', '0px');
@@ -157,6 +175,7 @@ function cancelUpdateOffset() {
   if (updateOffset.intervalTimer) {
     window.clearInterval(updateOffset.intervalTimer);
     delete updateOffset.intervalTimer;
+    mByMouseOperation = false;
   }
   if (updateOffset.timeoutTimer) {
     window.clearTimeout(updateOffset.timeoutTimer);
@@ -164,8 +183,10 @@ function cancelUpdateOffset() {
   }
 }
 
-function onLocationChange(url) {
+function onLocationChange(url, { byMouseOperation } = {}) {
   mDataset.activeTabUrl = url;
+  if (byMouseOperation)
+    mByMouseOperation = true;
 }
 
 function startListenMouseEvents() {

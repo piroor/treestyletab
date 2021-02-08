@@ -101,6 +101,7 @@ export const configs = new Configs({
   showDialogInSidebar: false,
 
   suppressGapFromShownOrHiddenToolbar: null, // obsolete, migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation: true,
   suppressGapFromShownOrHiddenToolbarOnFullScreen: false,
   suppressGapFromShownOrHiddenToolbarOnNewTab: true,
   suppressGapFromShownOrHiddenToolbarInterval: 50,

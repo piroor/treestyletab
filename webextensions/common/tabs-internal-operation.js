@@ -24,7 +24,7 @@ function log(...args) {
   internalLogger('common/tabs-internal-operation', ...args);
 }
 
-export async function activateTab(tab, options = {}) {
+export async function activateTab(tab, { byMouseOperation, keepMultiselection, silently } = {}) {
   if (!Constants.IS_BACKGROUND)
     throw new Error('Error: TabsInternalOperation.activateTab is available only on the background page, use a `kCOMMAND_ACTIVATE_TAB` message instead.');
 
@@ -34,11 +34,15 @@ export async function activateTab(tab, options = {}) {
   log('activateTab: ', dumpTab(tab));
   const window = TabsStore.windows.get(tab.windowId);
   window.internalFocusCount++;
-  if (options.silently)
+  if (byMouseOperation)
+    window.internalByMouseFocusCount++;
+  if (silently)
     window.internalSilentlyFocusCount++;
   const onError = (e) => {
     window.internalFocusCount--;
-    if (options.silently)
+    if (byMouseOperation)
+      window.internalByMouseFocusCount--;
+    if (silently)
       window.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
@@ -46,7 +50,7 @@ export async function activateTab(tab, options = {}) {
       typeof browser.tabs.highlight == 'function') {
     let tabs = [tab.index];
     if (tab.$TST.hasOtherHighlighted &&
-        options.keepMultiselection) {
+        keepMultiselection) {
       const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
       if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
         // switch active tab with highlighted state
@@ -73,7 +77,7 @@ export function removeTab(tab) {
   return removeTabs([tab]);
 }
 
-export function removeTabs(tabs, { triggerTab, originalStructure } = {}) {
+export function removeTabs(tabs, { byMouseOperation, originalStructure, triggerTab } = {}) {
   if (!Constants.IS_BACKGROUND)
     throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
 
@@ -83,11 +87,14 @@ export function removeTabs(tabs, { triggerTab, originalStructure } = {}) {
 
   const window = TabsStore.windows.get(tabs[0].windowId);
   const tabIds = [];
+  let willChangeFocus = false;
   tabs = tabs.filter(tab => {
     if ((!window ||
          !window.internalClosingTabs.has(tab.id)) &&
         TabsStore.ensureLivingTab(tab)) {
       tabIds.push(tab.id);
+      if (tab.active)
+        willChangeFocus = true;
       return true;
     }
     return false;
@@ -105,6 +112,8 @@ export function removeTabs(tabs, { triggerTab, originalStructure } = {}) {
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
     }
+    if (willChangeFocus && byMouseOperation)
+      window.internalByMouseFocusCount++;
   }
 
   const sortedTabs = Tab.sort(Array.from(tabs));
@@ -184,7 +193,9 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds);
-      removeTabs(message.tabIds.map(id => Tab.get(id)));
+      removeTabs(message.tabIds.map(id => Tab.get(id)), {
+        byMouseOperation: message.byMouseOperation
+      });
       break;
   }
 });

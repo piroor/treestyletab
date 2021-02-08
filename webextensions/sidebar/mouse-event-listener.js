@@ -304,6 +304,7 @@ function onMouseDown(event) {
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_ACTIVATE_TAB,
         tabId: tab.id,
+        byMouseOperation:   true,
         keepMultiselection: true
       });
   });
@@ -609,6 +610,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
     BackgroundConnection.sendMessage({
       type:  Constants.kCOMMAND_ACTIVATE_TAB,
       tabId: tab.id,
+      byMouseOperation:   true,
       keepMultiselection: false // tab.highlighted
     });
 
@@ -627,7 +629,8 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         Scroll.tryLockPosition(tabIds);
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds
+          tabIds,
+          byMouseOperation: true
         });
       });
   }
@@ -681,7 +684,8 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         Scroll.tryLockPosition(tabIds);
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds
+          tabIds,
+          byMouseOperation: true
         });
       });
   }
@@ -926,7 +930,8 @@ async function onDblClick(event) {
           Scroll.tryLockPosition(tabIds);
           BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds
+            tabIds,
+            byMouseOperation: true
           });
           break;
       }

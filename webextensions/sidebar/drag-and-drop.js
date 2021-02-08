@@ -541,7 +541,8 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     if (behavior & Constants.kDROPLINK_LOAD) {
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_ACTIVATE_TAB,
-        tabId: dropActionInfo.dragOverTab.id
+        tabId: dropActionInfo.dragOverTab.id,
+        byMouseOperation: true
       });
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_LOAD_URI,
@@ -1143,7 +1144,8 @@ function reserveToProcessLongHover(params = {}) {
           params.dropEffect == 'link') {
         BackgroundConnection.sendMessage({
           type:  Constants.kCOMMAND_ACTIVATE_TAB,
-          tabId: dragOverTab.id
+          tabId: dragOverTab.id,
+          byMouseOperation: true
         });
       }
 
