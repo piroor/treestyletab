@@ -398,7 +398,7 @@ function onMessage(message, sender) {
 
 SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
-    case Constants.kCOMMAND_SELECT_TAB: {
+    case Constants.kCOMMAND_ACTIVATE_TAB: {
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)

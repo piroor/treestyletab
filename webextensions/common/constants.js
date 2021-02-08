@@ -80,7 +80,7 @@ export const kCOMMAND_NOTIFY_CONTEXT_MENU_UPDATED    = 'treestyletab:contextMenu
 export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab:contextMenu-item-checked-status-changed';
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
 
-export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
+export const kCOMMAND_ACTIVATE_TAB            = 'treestyletab:activate-tab';
 export const kCOMMAND_TOGGLE_MUTED            = 'treestyletab:toggle-muted';
 export const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';
