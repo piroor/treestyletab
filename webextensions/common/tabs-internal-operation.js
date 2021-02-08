@@ -25,6 +25,9 @@ function log(...args) {
 }
 
 export async function activateTab(tab, options = {}) {
+  if (!Constants.IS_BACKGROUND)
+    throw new Error('Error: TabsInternalOperation.activateTab is available only on the background page, use a `kCOMMAND_ACTIVATE_TAB` message instead.');
+
   tab = TabsStore.ensureLivingTab(tab);
   if (!tab)
     return;
@@ -71,8 +74,8 @@ export function removeTab(tab) {
 }
 
 export function removeTabs(tabs, { triggerTab, originalStructure } = {}) {
-  if (!SidebarConnection.isInitialized())
-    throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page.');
+  if (!Constants.IS_BACKGROUND)
+    throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
 
   log('TabsInternalOperation.removeTabs: ', () => tabs.map(dumpTab));
   if (tabs.length == 0)
@@ -167,6 +170,18 @@ export function clearCache(tab) {
 
 SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
+    case Constants.kCOMMAND_ACTIVATE_TAB: {
+      await Tab.waitUntilTracked(message.tabId);
+      const tab = Tab.get(message.tabId);
+      if (!tab)
+        return;
+      activateTab(tab, {
+        byMouseOperation:   message.byMouseOperation,
+        keepMultiselection: message.keepMultiselection,
+        silently:           message.silently
+      });
+    }; break;
+
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds);
       removeTabs(message.tabIds.map(id => Tab.get(id)));

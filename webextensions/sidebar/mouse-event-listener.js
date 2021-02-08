@@ -41,7 +41,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
-import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -302,7 +301,9 @@ function onMouseDown(event) {
     if (mousedown.detail.button == 0 &&
         onRegularArea &&
         !wasMultiselectionAction)
-      TabsInternalOperation.activateTab(tab, {
+      BackgroundConnection.sendMessage({
+        type:  Constants.kCOMMAND_ACTIVATE_TAB,
+        tabId: tab.id,
         keepMultiselection: true
       });
   });
@@ -605,7 +606,9 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
   if (lastMousedown.detail.button == 0 &&
       onRegularArea &&
       !wasMultiselectionAction)
-    TabsInternalOperation.activateTab(tab, {
+    BackgroundConnection.sendMessage({
+      type:  Constants.kCOMMAND_ACTIVATE_TAB,
+      tabId: tab.id,
       keepMultiselection: false // tab.highlighted
     });
 

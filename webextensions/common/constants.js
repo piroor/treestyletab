@@ -358,3 +358,6 @@ export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';
 export const kSYNC_STORAGE_SAFE_QUOTA = 6 * 1024;
 
 export const kSYNC_DATA_TYPE_TABS = 'tabs';
+
+export const IS_BACKGROUND = location.href.contains(browser.extension.getURL('background/background.html'));
+export const IS_SIDEBAR    = location.href.contains(browser.extension.getURL('sidebar/sidebar.html'));
