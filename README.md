@@ -368,12 +368,16 @@ If you need any new API, please file API proposals to the issue tracker.
 * <details><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
   
   Thanks, but sorry, I have no plan about any donation from some reasons.
-  The biggest reason is: because I want to keep me as the prime user of this project.
-  I want to keep having a privilege to say "no" about requests that do not match my vision.
-  My hands are already full to maintain this addon for my use case.
-  (Of course I know that donation is not payment, but I'm afraid that I would think about voices from people who did donation more seriously and it would unconsciously conflict with my policies.)
   
-  And, I'm afraid of [social undermining](https://en.wikipedia.org/wiki/Social_undermining) also.
+  * The biggest reason is: because I want to keep me as the prime user of this project.
+    I want to keep having a privilege to say "no" about requests that do not match my vision.
+    My hands are already full to maintain this addon for my use case.
+    (Of course I know that donation is not payment, but I'm afraid that I would think about voices from people who did donation more seriously and it would unconsciously conflict with my policies.)
+  * And, I'm afraid of [social undermining](https://en.wikipedia.org/wiki/Social_undermining) also.
+  * I'm an employee of the [ClearCode Inc.](https://www.clear-code.com/).
+    My employer allows me to develop my addons while business hours, because my job is supporting customers (enterprise users of Firefox and Thunderbird) technically and developing addons increases my skills about Firefox and Thunderbird.
+    In other words, my addon projects already have monetary support enoughly.
+    Stagnation of my addon projects are mostly caused from technical reasons or lowering of motivation, not monetary reasons.
   
   Any other contribution to this project is welcome - translation, debugging, triaging of issues, and more.
   If you have fixed a bug you met, please send a pull request - I'll merge it.
