@@ -258,7 +258,7 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>Adding new options to control where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
-  It is available on TST 3.6.6 and later, as an expert option: "Tabs from any other trigger".
+  It is available on TST 3.6.6 and later, as an expert option: "Tabs from any other trigger" under the "New Tabs Behavior" section.
   [Sadly you cannot control the behavior for each detailed case, due to limitations of WebExtensions API.](https://github.com/piroor/treestyletab/issues/2391#issuecomment-542302281)
   </details>
 * <details><summary>Adding new context menu command to go to the options page</summary>
