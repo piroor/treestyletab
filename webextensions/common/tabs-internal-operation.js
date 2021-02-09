@@ -112,8 +112,13 @@ export function removeTabs(tabs, { byMouseOperation, originalStructure, triggerT
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
     }
-    if (willChangeFocus && byMouseOperation)
+    if (willChangeFocus && byMouseOperation) {
       window.internalByMouseFocusCount++;
+      setTimeout(() => { // the operation can be canceled
+        if (window.internalByMouseFocusCount > 0)
+          window.internalByMouseFocusCount--;
+      }, 250);
+    }
   }
 
   const sortedTabs = Tab.sort(Array.from(tabs));
