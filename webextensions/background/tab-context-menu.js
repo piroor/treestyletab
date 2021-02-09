@@ -594,19 +594,19 @@ async function onShown(info, contextTab) {
 
   let showContextualIdentities = false;
   if (!contextTab.incognito) {
-  for (const item of mContextualIdentityItems.values()) {
-    const id = item.id;
-    let visible;
-    if (!emulate)
-      visible = false;
-    else if (id == 'context_reopenInContainer_separator')
-      visible = contextTab && contextTab.cookieStoreId != 'firefox-default';
-    else
-      visible = contextTab && id != `context_reopenInContainer:${contextTab.cookieStoreId}`;
-    updateItem(id, { visible }) && modifiedItemsCount++;
-    if (visible)
-      showContextualIdentities = true;
-  }
+    for (const item of mContextualIdentityItems.values()) {
+      const id = item.id;
+      let visible;
+      if (!emulate)
+        visible = false;
+      else if (id == 'context_reopenInContainer_separator')
+        visible = contextTab && contextTab.cookieStoreId != 'firefox-default';
+      else
+        visible = contextTab && id != `context_reopenInContainer:${contextTab.cookieStoreId}`;
+      updateItem(id, { visible }) && modifiedItemsCount++;
+      if (visible)
+        showContextualIdentities = true;
+    }
   }
   updateItem('context_reopenInContainer', {
     visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
