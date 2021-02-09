@@ -1,6 +1,16 @@
 # 更新履歴
 
  - master/HEAD
+   * タブ内に表示するコンテナー識別用のバーの表示のされ方を、Firefox本体のタブの物と似た形に変更した
+   * ユーザースタイル入力欄のシンタックスハイライトに対応（[CodeMirror](https://codemirror.net/)を使用）
+   * ユーザースタイル入力欄の高さの変更状態を記憶するようにした
+   * 動的に表示・非表示が切り替わったツールバーによって引き起こされるサイドバーの内容の表示のずれについて、初期状態では、通常の（フルスクリーンモードでない）ウィンドウでのサイドバー内でのマウス操作が契機の場合にのみ、表示のずれをキャンセルするようにした
+   * 既存の設定項目でカバーされていなかった他のケース全般について、タブを開く位置の制御を可能とする上級者向け設定を追加した
+   * Firefox自体の動作と同様に、プライベートウィンドウでは「コンテナーを開きなおす」などのコンテナータブ関連の機能を無効化するようにした
+   * APIの改善：[任意のタブからの位置関係でタブを取得するための、`*-of-<id>` 接尾辞が付いたキーワード指定](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)に対応した
+   * APIの改善：[ツリー構造に基づいてタブを取得するための `lastDescendant` キーワード指定](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)に対応した
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
+   * `de`ロケール更新（by [SammysHP](https://github.com/SammysHP), thanks!）
  - 3.6.5 (2021.1.8)
    * `about:logins`, `about:profiling`, `about:protections` および `about:robots` のタブについて、Firefox組み込みの物と同じfaviconを表示するようにした
    * 外部アプリケーションから開かれたタブをより正しく検出するようにした（今までは、すべてのFirefoxのウィンドウが非アクティブな状態で`openerTabId`を伴って開かれたタブのみが、「外部アプリケーションから開かれたタブ」として検出されていた）

@@ -1,6 +1,16 @@
 # History
 
  - master/HEAD
+   * Show in-tab container indicators (colored bars) with a styling more similar to Firefox's native one.
+   * Introduce syntax highlighing in the user styles editor (based on the [CodeMirror](https://codemirror.net/).)
+   * Remember the height of the user styles editor.
+   * Cancel the visual gap of tabs produced with dynamically showing/hiding toolbars only when it is triggered by mouse operations on the sidebar in regular windows (not fullscreen mode), by default.
+   * Add a new expert option to control how tabs to be opened for any other cases not covered by existing options.
+   * Deactivate "Reopen in Container" and other container tab related features for private windows, like as Firefox itself does.
+   * API improvement: introduce [`*-of-<id>` suffixed keywords to get tabs based on relations from any arbitrary tab](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs).
+   * API improvement: introduce [`lastDescendant` keyword to get tabs based on tree structures](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs).
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
  - 3.6.5 (2021.1.8)
    * Show favicons same to Firefox's built-in for `about:logins`, `about:profiling`, `about:protections` and `about:robots` tabs.
    * Detect tabs opened from external applications correctly. (The detection result was wrong: only new tabs opened with `openerTabId` while all Firefox windows were inactive were detected as "opened by external applications".)
