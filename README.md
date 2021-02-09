@@ -258,11 +258,8 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>Adding new options to control where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
-  In most cases - subjectively 99%, new tabs from links may be related to the source tab, and tabs from bookmarks may not be related to the current tab.
-  For other rare cases - if you want to open the link in new sibling tab, or you want to open a bookmark as a child tab of the current, then you can do it by dragging a link or bookmark and drop it onto a tab or between tabs.
-  Natural operations for GUI objects shoud be optimized for most major usecases.
-  
-  Too high customizability for such rare usecases would make just you happy, but others including me won't - they are just confused that "why are there so many choices to make?"
+  It is available on TST 3.6.6 and later, as an expert option: "Tabs from any other trigger".
+  [Sadly you cannot control the behavior for each detailed case, due to limitations of WebExtensions API.](https://github.com/piroor/treestyletab/issues/2391#issuecomment-542302281)
   </details>
 * <details><summary>Adding new context menu command to go to the options page</summary>
   
