@@ -82,6 +82,7 @@ Sidebar.onBuilt.addListener(async () => {
   browser.runtime.onMessage.addListener(onMessage);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
 
+  if (!document.documentElement.classList.contains('incognito'))
   mContextualIdentitySelector.ui = new MenuUI({
     root:       mContextualIdentitySelector,
     appearance: 'panel',
@@ -982,6 +983,7 @@ function onContextualIdentitySelect(item, event) {
       cookieStoreId: item.dataset.value
     });
   }
+  if (mContextualIdentitySelector.ui)
   mContextualIdentitySelector.ui.close();
 }
 
@@ -1019,6 +1021,8 @@ function onBackgroundMessage(message) {
       break;
 
     case Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR: {
+      if (!mContextualIdentitySelector.ui)
+        return;
       const anchor = document.querySelector(`
         :root.contextual-identity-selectable .contextual-identities-selector-anchor,
         .newtab-button

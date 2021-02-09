@@ -660,7 +660,7 @@ tab-item.faviconized .contextual-identity-marker {
   .newtab-action-selector-anchor,
 .after-tabs
   .newtab-action-selector-anchor.open,
-:root.contextual-identity-selectable
+:root.contextual-identity-selectable:not(.incognito)
   .after-tabs
   .newtab-button-box:hover
   .contextual-identities-selector-anchor:not([disabled="true"]),
@@ -686,13 +686,16 @@ tab-item.faviconized .contextual-identity-marker {
   transition: opacity var(--collapse-animation);
   z-index: var(--over-buttons-z-index);
 }
-:root.contextual-identity-selectable
+:root.contextual-identity-selectable:not(.incognito)
   .after-tabs
   .newtab-action-selector-anchor {
   border-width: 0 1px 0 0;
   left: 0;
 }
 :root:not(.contextual-identity-selectable)
+  .after-tabs
+  .newtab-action-selector-anchor,
+:root.incognito
   .after-tabs
   .newtab-action-selector-anchor,
 .after-tabs .contextual-identities-selector-anchor {

@@ -427,9 +427,11 @@ function updateContextualIdentitiesStyle() {
 }
 
 function updateContextualIdentitiesSelector() {
+  const disabled = document.documentElement.classList.contains('incognito') || ContextualIdentities.getCount() == 0;
+
   const anchors = document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`);
   for (const anchor of anchors) {
-    if (ContextualIdentities.getCount() == 0)
+    if (disabled)
       anchor.setAttribute('disabled', true);
     else
       anchor.removeAttribute('disabled');
@@ -439,6 +441,9 @@ function updateContextualIdentitiesSelector() {
   const range    = document.createRange();
   range.selectNodeContents(selector);
   range.deleteContents();
+
+  if (disabled)
+    return;
 
   const fragment = document.createDocumentFragment();
   ContextualIdentities.forEach(identity => {

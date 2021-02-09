@@ -593,7 +593,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
-  if (!contextTab.incognito) {
+  if (contextTab && !contextTab.incognito) {
     for (const item of mContextualIdentityItems.values()) {
       const id = item.id;
       let visible;
