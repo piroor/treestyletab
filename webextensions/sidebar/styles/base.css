@@ -675,7 +675,7 @@ tab-item.faviconized .contextual-identity-marker {
   background: none;
   bottom: 0;
   color: var(--tab-text);
-  display: flex;
+  display: none;
   max-width: 1.5em;
   opacity: 0;
   overflow: hidden;
@@ -690,13 +690,17 @@ tab-item.faviconized .contextual-identity-marker {
   .after-tabs
   .newtab-action-selector-anchor {
   border-width: 0 1px 0 0;
+  display: flex;
   left: 0;
 }
 :root:not(.contextual-identity-selectable)
   .after-tabs
   .newtab-action-selector-anchor,
-.after-tabs .contextual-identities-selector-anchor {
+:root.contextual-identity-selectable
+  .after-tabs
+  .contextual-identities-selector-anchor {
   border-width: 0 0 0 1px;
+  display: flex;
   right: 0;
 }
 

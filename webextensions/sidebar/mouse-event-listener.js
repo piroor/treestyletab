@@ -321,8 +321,10 @@ function onMouseDown(event) {
       mousedown.expired = true;
       const selector = document.getElementById(configs.longPressOnNewTabButton);
       if (selector) {
+        const anchor = target.parentNode.querySelector(`[data-menu-ui="${selector.id}"]`);
+        const anchorVisible = anchor && window.getComputedStyle(anchor, null).display != 'none';
         selector.ui.open({
-          anchor: target
+          anchor: anchorVisible && anchor || target
         });
       }
       return;
