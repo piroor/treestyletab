@@ -593,6 +593,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
+  if (!contextTab.incognito) {
   for (const item of mContextualIdentityItems.values()) {
     const id = item.id;
     let visible;
@@ -605,6 +606,7 @@ async function onShown(info, contextTab) {
     updateItem(id, { visible }) && modifiedItemsCount++;
     if (visible)
       showContextualIdentities = true;
+  }
   }
   updateItem('context_reopenInContainer', {
     visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
