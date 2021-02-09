@@ -296,6 +296,14 @@
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Hériter du conteneur de l'onglet courant" },
 
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "Ouvrir comme" },
+  "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(aucun contrôle)" },
+  "config_autoAttachOnAnyOtherTrigger_independent": { "message": "un onglet indépendant" },
+  "config_autoAttachOnAnyOtherTrigger_child": { "message": "un enfant de l'onglet courant" },
+  "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "au même niveau que l'onglet courant" },
+  "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "au même niveau que l'onglet courant, juste après" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+
   "config_insertNewChildAt_caption": { "message": "Position d'insertion des nouveaux onglets enfants" },
   "config_insertNewChildAt_noControl": { "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)" },
   "config_insertNewChildAt_top": { "message": "Insérer en haut de l'arbre, comme premier enfant" },

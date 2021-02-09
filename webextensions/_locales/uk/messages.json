@@ -218,6 +218,13 @@
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Успадковувати контейнер поточної вкладки" },
 
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "Відкрити як" },
+  "config_autoAttachOnAnyOtherTrigger_independent": { "message": "окрему вкладку" },
+  "config_autoAttachOnAnyOtherTrigger_child": { "message": "дочірню поточній" },
+  "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "однорівневий елемент поточної вкладки" },
+  "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "наступний однорівневий елемент поточної вкладки" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+
   "config_insertNewChildAt_caption": { "message": "Місце появи нових дочірніх вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контролю (вирішує Firefox чи інші додатки для вкладок)" },
   "config_insertNewChildAt_top": { "message": "Додати у верхню частину дерева, як перший дочірній елемент" },

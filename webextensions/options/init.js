@@ -150,6 +150,17 @@ function onConfigChanged(key) {
       }
     }; break;
 
+    case 'autoAttachOnAnyOtherTrigger': {
+      const nodes = document.querySelectorAll('.sub.autoAttachOnAnyOtherTrigger label, .sub.autoAttachOnAnyOtherTrigger select');
+      const disabled = configs.autoAttachOnAnyOtherTrigger == Constants.kNEWTAB_DO_NOTHING;
+      for (const node of nodes) {
+        if ('disabled' in node)
+          node.disabled = disabled;
+        else
+          node.setAttribute('disabled', disabled);
+      }
+    }; break;
+
     case 'showExpertOptions':
       document.documentElement.classList.toggle('show-expert-options', configs.showExpertOptions);
       break;
@@ -806,6 +817,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   onConfigChanged('showExpertOptions');
   await wait(0);
   onConfigChanged('closeParentBehaviorMode');
+  onConfigChanged('autoAttachOnAnyOtherTrigger');
   onConfigChanged('syncDeviceInfo');
 
   if (focusedItem)

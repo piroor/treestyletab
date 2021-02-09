@@ -100,6 +100,17 @@ Tab.onCreating.addListener((tab, info = {}) => {
       }).then(moved => !moved);
     }
     log('behave as a tab opened with any URL');
+    if (configs.autoAttachOnAnyOtherTrigger != Constants.kNEWTAB_DO_NOTHING) {
+      if (configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
+        tab.$TST.anyOtherTrigger = true;
+      log('controlled as a new tab from other unknown trigger');
+      return Tree.behaveAutoAttachedTab(tab, {
+        baseTab:   possibleOpenerTab,
+        behavior:  configs.autoAttachOnAnyOtherTrigger,
+        dontMove,
+        broadcast: true
+      }).then(moved => !moved);
+    }
     tab.$TST.positionedBySelf = info.positionedBySelf;
     return true;
   }
@@ -285,8 +296,10 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
   if (tab.$TST.openedCompletely &&
       (changeInfo.url || changeInfo.status == 'complete') &&
-      (tab.$TST.isNewTab || tab.$TST.fromExternal)) {
-    log('loaded tab ', dumpTab(tab), { isNewTab: tab.$TST.isNewTab, fromExternal: tab.$TST.fromExternal });
+      (tab.$TST.isNewTab ||
+       tab.$TST.fromExternal ||
+       tab.$TST.anyOtherTrigger)) {
+    log('loaded tab ', dumpTab(tab), { isNewTab: tab.$TST.isNewTab, fromExternal: tab.$TST.fromExternal, anyOtherTrigger: tab.$TST.anyOtherTrigger });
     delete tab.$TST.isNewTab;
     const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
@@ -300,6 +313,18 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnOpenedFromExternal,
         inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode
+      });
+      return;
+    }
+
+    if (tab.$TST.anyOtherTrigger) {
+      delete tab.$TST.anyOtherTrigger;
+      log('behave as a tab opened from any other trigger (delayed)');
+      handleNewTabFromActiveTab(tab, {
+        url:                           tab.url,
+        activeTab:                     possibleOpenerTab,
+        autoAttachBehavior:            configs.autoAttachOnAnyOtherTrigger,
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode
       });
       return;
     }

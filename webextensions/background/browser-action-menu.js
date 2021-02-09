@@ -641,6 +641,69 @@ const mItems = [
       },
       { type: 'separator' },
       {
+        title:    indent() + browser.i18n.getMessage('config_anyOtherTrigger_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after'),
+            key:   'autoAttachOnAnyOtherTrigger',
+            value: Constants.kNEWTAB_DO_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after'),
+            key:   'autoAttachOnAnyOtherTrigger',
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after'),
+            key:   'autoAttachOnAnyOtherTrigger',
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after'),
+            key:   'autoAttachOnAnyOtherTrigger',
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after'),
+            key:   'autoAttachOnAnyOtherTrigger',
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+            type:  'radio'
+          },
+          { type: 'separator' },
+          {
+            title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label'),
+            get enabled() {
+              return configs.autoAttachOnAnyOtherTrigger != Constants.kNEWTAB_DO_NOTHING;
+            },
+            children: [
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default'),
+                key:   'inheritContextualIdentityToTabsFromAnyOtherTriggerMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent'),
+                key:   'inheritContextualIdentityToTabsFromAnyOtherTriggerMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT,
+                type:  'radio'
+              },
+              {
+                title: browser.i18n.getMessage('config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive'),
+                key:   'inheritContextualIdentityToTabsFromAnyOtherTriggerMode',
+                value: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
+                type:  'radio'
+              }
+            ]
+          }
+        ]
+      },
+      { type: 'separator' },
+      {
         title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
         children: [
           {

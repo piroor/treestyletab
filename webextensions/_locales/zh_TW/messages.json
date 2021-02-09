@@ -301,6 +301,14 @@
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "繼承目前分頁之容器" },
 
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "開啟為" },
+  "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(不控制)" },
+  "config_autoAttachOnAnyOtherTrigger_independent": { "message": "獨立分頁" },
+  "config_autoAttachOnAnyOtherTrigger_child": { "message": "目前分頁之子分頁" },
+  "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "同前分頁同層分頁" },
+  "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "目前分頁同層相鄰分頁" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+
   "config_insertNewChildAt_caption": { "message": "新子分頁開啟於" },
   "config_insertNewChildAt_noControl": { "message": "不控制(由 Firefox 或其他附加元件決定)" },
   "config_insertNewChildAt_top": { "message": "樹的前端" },

@@ -1013,6 +1013,34 @@
         "message": "继承当前标签页的身份",
         "hash": "05b8f966c86567dfc6b764aac8a83701"
     },
+    "config_autoAttachOnAnyOtherTrigger_before": {
+        "message": "将其打开为",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachOnAnyOtherTrigger_noControl": {
+        "message": "（不控制）",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnAnyOtherTrigger_independent": {
+        "message": "一个独立的标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnAnyOtherTrigger_child": {
+        "message": "当前标签页的子项",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnAnyOtherTrigger_sibling": {
+        "message": "当前标签页的同级项",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnAnyOtherTrigger_nextSibling": {
+        "message": "紧随当前标签页的同级项",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnAnyOtherTrigger_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
     "config_insertNewChildAt_caption": {
         "message": "新建子标签页的插入位置",
         "hash": "1c30663590c21f4fc422a876cca96a7a"

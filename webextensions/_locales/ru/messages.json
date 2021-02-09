@@ -443,6 +443,18 @@
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "Открыть как" },
+  "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(не контролируется)" },
+  "config_autoAttachOnAnyOtherTrigger_independent": { "message": "независимую вкладку" },
+  "config_autoAttachOnAnyOtherTrigger_child": { "message": "дочернюю текущей" },
+  "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "одноуровневую вкладку" },
+  "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "следующую одноуровневую" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Контейнер:" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(не контролируется)" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Наследовать от текущей вкладки" },
+
   "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
   "config_insertNewChildAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или после родителя (имитация Firefox)" },

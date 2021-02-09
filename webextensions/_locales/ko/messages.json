@@ -925,6 +925,34 @@
         "message": "현재 탭의 컨테이너 상속",
         "hash": "05b8f966c86567dfc6b764aac8a83701"
     },
+    "config_autoAttachOnAnyOtherTrigger_before": {
+        "message": "\u200b",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachOnAnyOtherTrigger_noControl": {
+        "message": "(제어하지 않음)",
+        "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+    },
+    "config_autoAttachOnAnyOtherTrigger_independent": {
+        "message": "독립된 탭으로",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnAnyOtherTrigger_child": {
+        "message": "현재 탭의 하위로",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnAnyOtherTrigger_sibling": {
+        "message": "현재 탭과 같은 단계로",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnAnyOtherTrigger_nextSibling": {
+        "message": "현재 탭과 같은 단계 옆에",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnAnyOtherTrigger_after": {
+        "message": "열기",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
     "config_insertNewChildAt_caption": {
         "message": "새 하위 탭을 열 때 위치",
         "hash": "1c30663590c21f4fc422a876cca96a7a"

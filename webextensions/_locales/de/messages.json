@@ -443,6 +443,18 @@
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "Vom aktuellen Tab erben" },
 
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "Öffnen als" },
+  "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(keine Steuerung)" },
+  "config_autoAttachOnAnyOtherTrigger_independent": { "message": "unabhängigen Tab" },
+  "config_autoAttachOnAnyOtherTrigger_child": { "message": "untergeordneten Tab des aktuellen Tab" },
+  "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Tab-Umgebung:" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(keine Steuerung)" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
+  "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Vom aktuellen Tab erben" },
+
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
   "config_insertNewChildAt_nextToLastRelateTab": { "message": "Neben dem zuletzt untergeordneten Tab oder neben dem übergeordneten Tab (simuliert Firefox Standardverhalten)" },
