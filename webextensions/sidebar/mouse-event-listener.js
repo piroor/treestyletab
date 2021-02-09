@@ -83,12 +83,12 @@ Sidebar.onBuilt.addListener(async () => {
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
 
   if (!document.documentElement.classList.contains('incognito'))
-  mContextualIdentitySelector.ui = new MenuUI({
-    root:       mContextualIdentitySelector,
-    appearance: 'panel',
-    onCommand:  onContextualIdentitySelect,
-    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
-  });
+    mContextualIdentitySelector.ui = new MenuUI({
+      root:       mContextualIdentitySelector,
+      appearance: 'panel',
+      onCommand:  onContextualIdentitySelect,
+      animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
+    });
 
   mNewTabActionSelector.ui = new MenuUI({
     root:       mNewTabActionSelector,
@@ -984,7 +984,7 @@ function onContextualIdentitySelect(item, event) {
     });
   }
   if (mContextualIdentitySelector.ui)
-  mContextualIdentitySelector.ui.close();
+    mContextualIdentitySelector.ui.close();
 }
 
 
