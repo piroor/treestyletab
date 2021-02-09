@@ -168,10 +168,10 @@ If you need any new API, please file API proposals to the issue tracker.
   "Waterfox Current" looks based on Firefox ESR68 and you can install TST 2.0 and later to it.
   However "Waterfox Classic" based on Firefox 56 is never supported.
   </details>
-* <details><summary>Support for Google Chrome and other Chromium based browsers</a></summary>
+* <details><summary>Support for other browsers based on Chromium (ex. Google Chrome) and WebKit (ex. Safari)</a></summary>
   
-  TST can't be ported to Chrome because it depends on some Firefox specific API like `sidebar`, so it needs to be re-implemented completely.
-  Sorry but I won't re-implement TST as a Chrome extension by myself because I still use Firefox.
+  TST can't be ported to other browsers because [it depends on some Firefox specific APIs like `sidebar`](https://github.com/piroor/treestyletab/issues/2801#issuecomment-768584534), so it needs to be re-implemented completely.
+  Sorry but I won't re-implement TST as an extension for other browsers by myself because I still use Firefox.
   (But [there are some alternatives developed by someone not me](#similar-projects).)
   </details>
 
