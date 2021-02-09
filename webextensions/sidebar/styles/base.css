@@ -686,16 +686,13 @@ tab-item.faviconized .contextual-identity-marker {
   transition: opacity var(--collapse-animation);
   z-index: var(--over-buttons-z-index);
 }
-:root.contextual-identity-selectable:not(.incognito)
+:root.contextual-identity-selectable
   .after-tabs
   .newtab-action-selector-anchor {
   border-width: 0 1px 0 0;
   left: 0;
 }
 :root:not(.contextual-identity-selectable)
-  .after-tabs
-  .newtab-action-selector-anchor,
-:root.incognito
   .after-tabs
   .newtab-action-selector-anchor,
 .after-tabs .contextual-identities-selector-anchor {
