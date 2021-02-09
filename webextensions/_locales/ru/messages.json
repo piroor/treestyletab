@@ -618,6 +618,10 @@
   "config_userStyleRules_overwrite_overwrite": { "message": "Заменить все" },
   "config_userStyleRules_overwrite_append":    { "message": "Добавить в конец" },
   "config_tooLargeUserStyleRulesCaution": { "message": "Слишком длинный код стиля! Нужно сократить." },
+  "config_userStyleRulesTheme_label":     { "message": "Тема:" },
+  "config_userStyleRulesTheme_auto":      { "message": "Авто" },
+  "config_userStyleRulesTheme_separator": { "message": "-----------------" },
+  "config_userStyleRulesTheme_default":   { "message": "По умолчанию" },
 
 
   "config_addons_caption": { "message": "Дополнительные функции через другие аддоны" },
