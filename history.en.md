@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.7.1 (2021.2.12)
    * Consistent the position of the new tab action selector button in both regular and private windows.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.0 (2021.2.9)
