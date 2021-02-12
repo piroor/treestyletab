@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Consistent the position of the new tab action selector button in both regular and private windows.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.0 (2021.2.9)
    * Show in-tab container indicators (colored bars) with a styling more similar to Firefox's native one.
    * Introduce syntax highlighing in the user styles editor (based on the [CodeMirror](https://codemirror.net/).)
