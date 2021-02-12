@@ -250,11 +250,13 @@ If you need any new API, please file API proposals to the issue tracker.
   </details>
 * <details><summary>Adding new minor (trivial) options more and more</summary>
   
-  I won't increase number of configurations inifinitely, instead I hope to reduce them.
+  First, look at the [list of helper addons](#addons-that-extend-tst) please.
+  Moreover [custom user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) may help you if your request is related to the appearance of tabs in the sidebar.
+  
+  I won't increase number of configurations of TST itself inifinitely, instead I hope to reduce them.
   High customizability for details of features is out of TST's purpose.
   I want to provide only very required options which are truly un-omitable.
   Too many optional features would kill this project, because they would cloud the important concept of TST and would bring together people who don't like my core vision about TST.
-  Instead, sorry but please fork this project and modify it for your use case.
   </details>
 * <details><summary>Adding new options to control where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
@@ -294,6 +296,11 @@ If you need any new API, please file API proposals to the issue tracker.
   * [Aggregate Tabs to Main Window](https://addons.mozilla.org/firefox/addon/aggregate-tabs-to-main-window/) may help you to use Firefox's multiple windows for each purpose: "an window for a sidebar panel" and "an window for browsing tabs". Such windows should behave like virtual multiple sidebar panels.
   </details>
 * <details><summary>High-power management of tree, like <a href="https://github.com/piroor/treestyletab/issues/94">sorting child tabs</a>, <a href="https://github.com/piroor/treestyletab/issues/509">auto-modification of tree</a>, <a href="https://github.com/piroor/treestyletab/issues/794">renaming of tabs</a>, and so on</summary>
+  
+  First, look at the [list of helper addons](#addons-that-extend-tst) please.
+  Especially [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/)'s [issue tracker](https://github.com/piroor/tst-more-tree-commands/issues) may be a good place to track your request.
+  
+  Please note that "useful" features won't be implemented to TST itself as a built-in feature.
   
   I believe that generally "tree of tabs should be a visualized history of web browsing", because they are built on relations where you came from.
   Possibly such a tree is facially chaotic, but it just mirrors your actual footmarks, so you'll easily find out where is the target tab based on a map in your mind. Moreover, those relations themselves may let you recall forgotten idea you thought while you were browsing those tabs.
