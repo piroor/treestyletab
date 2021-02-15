@@ -82,6 +82,7 @@ export const configs = new Configs({
   faviconizePinnedTabs: true,
   maxFaviconizedPinnedTabsInOneRow: 0, // auto
   faviconizedTabScale: 1.75,
+  maxPinnedTabsRowsAreaPercentage: 50,
 
   counterRole: Constants.kCOUNTER_ROLE_CONTAINED_TABS,
 

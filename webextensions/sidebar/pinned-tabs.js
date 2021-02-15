@@ -44,11 +44,31 @@ function log(...args) {
 
 let mTargetWindow;
 let mTabBar;
+let mAreaHeight     = 0;
+let mMaxVisibleRows = 0;
+let mScrollRow      = 0;
 
 export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
   mTabBar       = document.querySelector('#tabbar');
   configs.$addObserver(onConfigChange);
+
+  // We need to register the lister as non-passive to cancel the event.
+  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
+  document.addEventListener('wheel', event => {
+    if (event.clientY > mAreaHeight ||
+        Tab.getPinnedTabs(mTargetWindow).length == 0)
+      return;
+    event.preventDefault();
+    event.stopPropagation();
+    const deltaRows = Math.floor(event.deltaY / Math.max(1, getTabHeight()));
+    mScrollRow = Math.min(mMaxVisibleRows + 1, Math.max(0, mScrollRow + deltaRows));
+    reserveToReposition();
+  }, { capture: true, passive: false });
+}
+
+function getTabHeight() {
+  return configs.faviconizePinnedTabs ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
 }
 
 export function reposition(options = {}) {
@@ -67,13 +87,20 @@ export function reposition(options = {}) {
   const faviconized    = configs.faviconizePinnedTabs;
 
   const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
-  const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
+  const height = getTabHeight();
   const maxCol = faviconized ? Math.max(1, configs.maxFaviconizedPinnedTabsInOneRow > 0 ? configs.maxFaviconizedPinnedTabsInOneRow : Math.floor(maxWidth / width)) : 1;
   const maxRow = Math.ceil(pinnedTabs.length / maxCol);
   let col    = 0;
   let row    = 0;
 
-  mTabBar.style.marginTop = `${height * maxRow + (faviconized ? 0 : Size.getTabYOffset())}px`;
+  const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
+  mMaxVisibleRows = Math.ceil((mTabBar.getBoundingClientRect().height * pinnedTabsAreaRatio) / height);
+  mAreaHeight = Math.min(
+    height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
+    mMaxVisibleRows * height
+  );
+  mTabBar.style.marginTop = `${mAreaHeight}px`;
+  const scrollRow = Math.max(0, Math.min(maxRow - mMaxVisibleRows, mScrollRow));
   for (const tab of pinnedTabs) {
     const style = tab.$TST.element.style;
     if (options.justNow)
@@ -92,7 +119,9 @@ export function reposition(options = {}) {
     style.setProperty('--pinned-position-bottom', 'auto');
     style.setProperty('--pinned-position-left', `${width * col}px`);
     style.setProperty('--pinned-position-right', faviconized ? 'auto' : 0 );
-    style.setProperty('--pinned-position-top', `${height * row}px`);
+    style.setProperty('--pinned-position-top', `${height * (row - scrollRow)}px`);
+    const inVisibleArea = scrollRow <= row && row - scrollRow < mMaxVisibleRows;
+    tab.$TST.element.classList.toggle('in-visible-area', inVisibleArea);
 
     if (options.justNow)
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -129,6 +158,9 @@ function reset() {
   for (const tab of Tab.getPinnedTabs(mTargetWindow, { iterator: true })) {
     clearStyle(tab);
   }
+  mAreaHeight     = 0;
+  mMaxVisibleRows = 0;
+  mScrollRow      = 0;
 }
 
 function clearStyle(tab) {
@@ -139,6 +171,7 @@ function clearStyle(tab) {
   style.setProperty('--pinned-position-left', '');
   style.setProperty('--pinned-position-right', '');
   style.setProperty('--pinned-position-top', '');
+  tab.$TST.element.classList.remove('in-visible-area');
 }
 
 const BUFFER_KEY_PREFIX = 'pinned-tabs-';

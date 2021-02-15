@@ -411,6 +411,10 @@ tab-item.pinned {
   z-index: var(--over-tabs-z-index);
 }
 
+tab-item.pinned:not(.in-visible-area) {
+  display: none;
+}
+
 :root.hover-on-top-edge:hover tab-item.pinned {
   transition: var(--visual-gap-hover-animation);
   top: var(--pinned-position-top) !important;
