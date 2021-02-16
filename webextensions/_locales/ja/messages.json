@@ -585,7 +585,7 @@
   "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "キーボードショートカットでのタブ切り替え中は、折りたたまれた子孫タブにはフォーカスせず、折りたたまれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "折りたたまれたツリーにフォーカスがある状態でTabキーを" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "ミリ秒以上押し続けたらツリーを展開する" },
-  "config_accelKey_label":   { "message": "キーボードショートカットのアクセラレータキー:" },
+  "config_accelKey_label":   { "message": "キーボードショートカットのアクセラレータキー（※「ui.key.accelKey」の設定と一致させる必要があります）:" },
   "config_accelKey_auto":    { "message": "既定（macOS=⌘, それ以外=Ctrl）" },
   "config_accelKey_alt":     { "message": "Alt" },
   "config_accelKey_control": { "message": "Ctrl/Control" },
