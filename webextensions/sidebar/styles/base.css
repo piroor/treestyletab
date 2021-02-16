@@ -412,7 +412,8 @@ tab-item.pinned {
 }
 
 tab-item.pinned:not(.in-visible-area) {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 :root.hover-on-top-edge:hover tab-item.pinned {
