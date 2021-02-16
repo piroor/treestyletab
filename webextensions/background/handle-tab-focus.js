@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
-  configs
+  configs,
+  isMacOS,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -353,16 +354,20 @@ function onMessage(message, sender) {
         mTabSwitchedByShortcut = false;
       break;
 
-    case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH: {
-      log('Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH');
+    case Constants.kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH: {
+      if (message.modifier != (isMacOS() ? 'meta' : 'control'))
+        return;
+      log('kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH ', message.modifier);
       mMaybeTabSwitchingByShortcut = true;
       if (sender.tab && sender.tab.active) {
         const window = TabsStore.windows.get(sender.tab.windowId);
         window.lastActiveTab = sender.tab.id;
       }
     }; break;
-    case Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH:
-      log('Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH');
+    case Constants.kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH:
+      if (message.modifier != (isMacOS() ? 'meta' : 'control'))
+        return;
+      log('kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH ', message.modifier);
       return (async () => {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts &&

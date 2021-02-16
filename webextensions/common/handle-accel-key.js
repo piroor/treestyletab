@@ -9,88 +9,83 @@
   if (window.handleAccelKeyLoaded)
     return;
 
-  const isMac = /^Mac/i.test(navigator.platform);
+  function stringifySoloModifier(event) {
+    switch (event.key) {
+      case 'Alt':
+        return (
+          !event.ctrlKey &&
+          !event.metaKey
+        ) ? 'alt' : null;
 
-  function isAccelKeyOnlyEvent(event) {
-    if (isMac)
-      return (
-        event.key == 'Meta' &&
-        !event.altKey &&
-        !event.ctrlKey /*&&
-        !event.shiftKey*/
-      );
-    else
-      return (
-        event.key == 'Control' &&
-        !event.altKey &&
-        !event.metaKey /*&&
-        !event.shiftKey*/
-      );
+      case 'Control':
+        return (
+          !event.altKey &&
+          !event.metaKey
+        ) ? 'control' : null;
+
+      case 'Meta':
+        return (
+          !event.altKey &&
+          !event.ctrlKey
+        ) ? 'meta' : null;
+
+      default:
+        return null;
+    }
   }
 
-  function isAccelKeyUnshiftEvent(event) {
-    if (isMac)
-      return (
-        event.key == 'Shift' &&
-        !event.altKey &&
+  function stringifyModifier(event) {
+    if (event.altKey &&
         !event.ctrlKey &&
-        event.metaKey /*&&
-        !event.shiftKey*/
-      );
-    else
-      return (
-        event.key == 'Shift' &&
-        !event.altKey &&
+        !event.metaKey)
+      return 'alt';
+
+    if (!event.altKey &&
         event.ctrlKey &&
-        !event.metaKey /*&&
-        !event.shiftKey*/
-      );
+        !event.metaKey)
+      return 'control';
+
+    if (!event.altKey &&
+        !event.ctrlKey &&
+        event.metaKey)
+      return 'meta';
+
+    return null;
   }
 
-  function isTabSwitchEvent(event) {
+  function stringifyUnshiftedSoloModifier(event) {
+    if (event.key != 'Shift')
+      return null;
+    return stringifyModifier(event);
+  }
+
+  function stringifyMayTabSwitchModifier(event) {
     if (!/^(Tab|Shift|PageUp|PageDown)$/.test(event.key))
-      return false;
-    if (isMac)
-      return (
-        !event.altKey &&
-        !event.ctrlKey &&
-        event.metaKey /*&&
-        !event.shiftKey*/
-      );
-    else
-      return (
-        !event.altKey &&
-        event.ctrlKey &&
-        !event.metaKey /*&&
-        !event.shiftKey*/
-      );
+      return null;
+    return stringifyModifier(event);
   }
 
   function onKeyDown(event) {
-    const kCOMMAND_NOTIFY_START_TAB_SWITCH = 'treestyletab:notify-start-tab-switch';
-    //console.log('onKeyDown '+JSON.stringify({
-    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(event),
-    //  tabSwitchEvent: isTabSwitchEvent(event)
-    //}));
-    if (isAccelKeyOnlyEvent(event) ||
-        isTabSwitchEvent(event))
+    const modifier             = stringifySoloModifier(event);
+    const mayTabSwitchModifier = stringifyMayTabSwitchModifier(event);
+    if (modifier ||
+        mayTabSwitchModifier)
       browser.runtime.sendMessage({
-        type: kCOMMAND_NOTIFY_START_TAB_SWITCH
+        type:     'treestyletab:notify-may-start-tab-switch',
+        modifier: modifier || mayTabSwitchModifier
       });
   }
 
   function onKeyUp(event) {
-    const kCOMMAND_NOTIFY_END_TAB_SWITCH = 'treestyletab:notify-end-tab-switch';
-    //console.log('onKeyUp '+JSON.stringify({
-    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(event),
-    //  unshiftEvent: isAccelKeyUnshiftEvent(event),
-    //  tabSwitchEvent: isTabSwitchEvent(event)
-    //}));
-    if (isAccelKeyOnlyEvent(event) ||
-        (!isAccelKeyUnshiftEvent(event) &&
-         !isTabSwitchEvent(event)))
+    const modifier             = stringifySoloModifier(event);
+    const unshiftedModifier    = stringifyUnshiftedSoloModifier(event);
+    const mayTabSwitchModifier = stringifyMayTabSwitchModifier(event);
+    if (modifier ||
+        (!unshiftedModifier &&
+         !mayTabSwitchModifier))
       browser.runtime.sendMessage({
-        type: kCOMMAND_NOTIFY_END_TAB_SWITCH
+        type:     'treestyletab:notify-may-end-tab-switch',
+        modifier: modifier || stringifyModifier(event)
       });
   }
 
