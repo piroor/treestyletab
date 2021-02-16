@@ -11,6 +11,7 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 import * as Constants from './constants.js';
 
 const localKeys = mapAndFilter(`
+  accelKey
   baseIndent
   chunkedSyncDataLocal0
   chunkedSyncDataLocal1
@@ -174,6 +175,8 @@ export const configs = new Configs({
   autoExpandOnLongHover: true,
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,
+
+  accelKey: '',
 
   skipCollapsedTabsForTabSwitchingShortcuts: false,
 

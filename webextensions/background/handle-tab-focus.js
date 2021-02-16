@@ -355,7 +355,7 @@ function onMessage(message, sender) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH: {
-      if (message.modifier != (isMacOS() ? 'meta' : 'control'))
+      if (message.modifier != (configs.accelKey || (isMacOS() ? 'meta' : 'control')))
         return;
       log('kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH ', message.modifier);
       mMaybeTabSwitchingByShortcut = true;
@@ -365,7 +365,7 @@ function onMessage(message, sender) {
       }
     }; break;
     case Constants.kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH:
-      if (message.modifier != (isMacOS() ? 'meta' : 'control'))
+      if (message.modifier != (configs.accelKey || (isMacOS() ? 'meta' : 'control')))
         return;
       log('kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH ', message.modifier);
       return (async () => {
