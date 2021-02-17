@@ -265,9 +265,7 @@ export async function testReplaceRemovedParentWithGroupForVisibleSidebar() {
      'the total number of tabs must be same');
 
   delete tabs.A;
-  tabs.opened = afterTabs[afterTabs.length - 3];
-
-  tabs = await Utils.refreshTabs(tabs);
+  tabs = await Utils.refreshTabs({ opened: afterTabs[afterTabs.length - 3], ...tabs });
   {
     const { opened, B, C } = tabs;
     is([
