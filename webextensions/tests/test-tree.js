@@ -899,3 +899,42 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoG
      'group should be placed at the top');
 }
 
+// https://github.com/piroor/treestyletab/issues/2819
+testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior.runnable = true;
+export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1, url: 'ext+treestyletab:group?temporaryAggressive=true' },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'A' }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${C.id}`,
+    ], Utils.treeStructure([A, B, C]),
+       'tabs must be initialized with specified structure');
+  }
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove(tabs.C.id);
+  await wait(1000);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length - 2,
+     afterTabs.length,
+     'only the group parent tab should be cleaned up');
+  is(afterTabs[afterTabs.length - 1].id,
+     tabs.B.id,
+     'other children of the group parent tab must be kept');
+}
+
