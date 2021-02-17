@@ -88,7 +88,7 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
 export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
   const applyTreeBehavior = (
     removeInfo.applyTreeBehavior ||
-    !shouldApplyTreeBehavior({
+    shouldApplyTreeBehavior({
       windowId:            removeInfo.windowId || tab.windowId,
       byInternalOperation: removeInfo.byInternalOperation
     })
