@@ -301,7 +301,8 @@ function onMouseDown(event) {
     );
     if (mousedown.detail.button == 0 &&
         onRegularArea &&
-        !wasMultiselectionAction)
+        !wasMultiselectionAction &&
+        tab)
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_ACTIVATE_TAB,
         tabId: tab.id,
