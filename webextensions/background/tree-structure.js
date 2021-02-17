@@ -356,6 +356,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
 const mRestoringTabs = new Map();
 const mMaxRestoringTabs = new Map();
+const mRestoredTabIds = new Set();
 const mProcessingTabRestorations = [];
 
 Tab.onRestored.addListener(tab => {
@@ -376,13 +377,14 @@ Tab.onRestored.addListener(tab => {
       const maxCount = mMaxRestoringTabs.get(tab.windowId) || 0;
       mMaxRestoringTabs.set(tab.windowId, Math.max(count, maxCount));
 
+      const uniqueId = await tab.$TST.promisedUniqueId;
+      mRestoredTabIds.add(uniqueId.id);
+
       if (count == 0) {
         // Force restore recycled active tab.
         // See also: https://github.com/piroor/treestyletab/issues/2191#issuecomment-489271889
         const activeTab = Tab.getActiveTab(tab.windowId);
-        let uniqueId, restoredUniqueId;
-        // eslint-disable-next-line prefer-const
-        [uniqueId, restoredUniqueId] = await Promise.all([
+        const [uniqueId, restoredUniqueId] = await Promise.all([
           activeTab.$TST.promisedUniqueId,
           browser.sessions.getTabValue(activeTab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
         ]);
@@ -418,7 +420,11 @@ Tab.onRestored.addListener(tab => {
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
           }, 0);
 
-          tryRestoreClosedSetFor(tab);
+          const countToBeRestored = mRecentlyClosedTabs.filter(tab => !mRestoredTabIds.has(tab.uniqueId));
+          log('countToBeRestored: ', countToBeRestored);
+          if (countToBeRestored > 0)
+            tryRestoreClosedSetFor(tab, countToBeRestored);
+          mRestoredTabIds.clear();
         }
         else {
           mRestoringTabs.set(tab.windowId, count);
@@ -495,7 +501,7 @@ Tab.onMultipleTabsRemoved.addListener((tabs, { triggerTab } = {}) => {
   mPendingRecentlyClosedTabsInfo.structure = [];
 });
 
-async function tryRestoreClosedSetFor(tab) {
+async function tryRestoreClosedSetFor(tab, countToBeRestored) {
   const lastRecentlyClosedTabs = mRecentlyClosedTabs;
   const lastRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure;
   mRecentlyClosedTabs = [];
@@ -513,7 +519,10 @@ async function tryRestoreClosedSetFor(tab) {
     return;
   }
 
-  const toBeRestoredTabsCount = lastRecentlyClosedTabs.filter(tabInfo => tabInfo.uniqueId != tab.$TST.uniqueId.id).length;
+  const toBeRestoredTabsCount = Math.min(
+    typeof countToBeRestored == 'number' ? countToBeRestored : Number.MAX_SAFE_INTEGER,
+    lastRecentlyClosedTabs.filter(tabInfo => tabInfo.uniqueId != tab.$TST.uniqueId.id).length
+  );
   if (toBeRestoredTabsCount == 0) {
     log(' => no more tab to be restored.');
     return;
