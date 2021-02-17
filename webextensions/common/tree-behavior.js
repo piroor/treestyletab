@@ -55,10 +55,6 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR:
       log(' => kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR');
       behavior = sidebarVisible ? configs.closeParentBehavior : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-      if (behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
-          behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
-        behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-
       break;
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
       log(' => kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM');
