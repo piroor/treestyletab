@@ -24,6 +24,7 @@ export async function setup() {
 export async function teardown() {
   await browser.windows.remove(win.id);
   win = null;
+  configs.sidebarVirtuallyOpenedWindows = [];
 }
 
 
@@ -226,7 +227,55 @@ export async function testReplaceRemovedParentWithGroup() {
       `${opened.id} => ${B.id}`,
       `${opened.id} => ${C.id}`,
     ], Utils.treeStructure([opened, B, C]),
-       'all children must be promoted');
+       'tree structure must be kept');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/2818
+export async function testReplaceRemovedParentWithGroupForVisibleSidebar() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2, openerTabId: 'A' },
+    C: { index: 3, openerTabId: 'A' }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${C.id}`,
+    ], Utils.treeStructure([A, B, C]),
+       'tabs must be initialized with specified structure');
+  }
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove(tabs.A.id);
+  await wait(1000);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length,
+     afterTabs.length,
+     'the total number of tabs must be same');
+
+  delete tabs.A;
+  tabs.opened = afterTabs[afterTabs.length - 3];
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { opened, B, C } = tabs;
+    is([
+      `${opened.id}`,
+      `${opened.id} => ${B.id}`,
+      `${opened.id} => ${C.id}`,
+    ], Utils.treeStructure([opened, B, C]),
+       'tree structure must be kept');
   }
 }
 
