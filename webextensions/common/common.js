@@ -45,6 +45,8 @@ const localKeys = mapAndFilter(`
   requestingPermissionsNatively
   sidebarDirection
   sidebarPosition
+  sidebarVirtuallyClosedWindows
+  sidebarVirtuallyOpenedWindows
   startDragTimeout
   style
   subMenuCloseDelay
@@ -264,6 +266,8 @@ export const configs = new Configs({
   warnOnCloseTabsWithListingMaxRows: 5,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
+  sidebarVirtuallyOpenedWindows: [], // for automated tests
+  sidebarVirtuallyClosedWindows: [], // for automated tests
 
 
   // animation

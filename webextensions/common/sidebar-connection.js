@@ -33,6 +33,15 @@ export function isInitialized() {
 export function isSidebarOpen(windowId) {
   if (!mConnections)
     return false;
+
+  // for automated tests
+  if (configs.sidebarVirtuallyOpenedWindows.length > 0 &&
+      configs.sidebarVirtuallyOpenedWindows.includes(windowId))
+    return true;
+  if (configs.sidebarVirtuallyClosedWindows.length > 0 &&
+      configs.sidebarVirtuallyClosedWindows.includes(windowId))
+    return false;
+
   const connections = mConnections.get(windowId);
   if (!connections)
     return false;
@@ -46,6 +55,15 @@ export function isSidebarOpen(windowId) {
 export function isOpen(windowId) {
   if (!mConnections)
     return false;
+
+  // for automated tests
+  if (configs.sidebarVirtuallyOpenedWindows.length > 0 &&
+      configs.sidebarVirtuallyOpenedWindows.includes(windowId))
+    return true;
+  if (configs.sidebarVirtuallyClosedWindows.length > 0 &&
+      configs.sidebarVirtuallyClosedWindows.includes(windowId))
+    return false;
+
   const connections = mConnections.get(windowId);
   return connections && connections.size > 0;
 }
