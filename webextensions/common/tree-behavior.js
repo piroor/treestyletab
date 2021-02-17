@@ -37,6 +37,7 @@ export function getCloseParentBehaviorForTab(tab, { asIndividualTab, byInternalO
   const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
   log('getCloseParentBehaviorForTab ', tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent }, { sidebarVisible });
   if (!asIndividualTab &&
+      !keepDescendants &&
       tab.$TST.subtreeCollapsed &&
       (sidebarVisible ||
        !configs.treatTreeAsExpandedOnClosedWithNoSidebar) &&
