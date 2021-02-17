@@ -26,64 +26,6 @@ export async function teardown() {
 }
 
 
-export async function testGroupMultiselectedTabs() {
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2 },
-    C: { index: 3 },
-    D: { index: 4 }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D } = tabs;
-    is([
-      `${A.id}`,
-      `${B.id}`,
-      `${C.id}`,
-      `${D.id}`
-    ], Utils.treeStructure(Object.values(tabs)),
-       'tabs must be initialized with specified structure');
-  }
-
-  await browser.tabs.highlight({
-    windowId: win.id,
-    tabs: [tabs.B.index, tabs.C.index]
-  });
-  await wait(500);
-
-  const newTabs = await Utils.doAndGetNewTabs(async () => {
-    await browser.runtime.sendMessage({
-      type: TSTAPI.kCONTEXT_MENU_CLICK,
-      info: {
-        menuItemId: 'groupTabs'
-      },
-      tab: tabs.B.$TST.sanitized
-    });
-    await wait(1000);
-  }, { windowId: win.id });
-
-  is(1, newTabs.length,
-     'new group tab must be opened');
-
-  tabs.GroupTab = newTabs[0];
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D, GroupTab } = tabs;
-    is([A.id, GroupTab.id, B.id, C.id, D.id],
-       await Utils.tabsOrder([A, B, C, D, GroupTab]),
-       'new group tab must be placed before the first multiselected tab');
-    is([
-      `${A.id}`,
-      `${GroupTab.id}`,
-      `${GroupTab.id} => ${B.id}`,
-      `${GroupTab.id} => ${C.id}`,
-      `${D.id}`
-    ], Utils.treeStructure([A, GroupTab, B, C, D]),
-       'multiselected tabs must be bundled under the group tab');
-  }
-}
-
 export async function testCloseTabsToBottomTabs() {
   await Utils.setConfigs({
     warnOnCloseTabs: false
