@@ -900,7 +900,6 @@ export async function testInsertNewTabFromPinnedTabAt_nextToLastRelatedTab_autoG
 }
 
 // https://github.com/piroor/treestyletab/issues/2819
-testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior.runnable = true;
 export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior() {
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
