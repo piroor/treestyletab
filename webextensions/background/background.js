@@ -495,7 +495,7 @@ async function updateSubtreeCollapsed(tab) {
     tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
 }
 
-export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey } = {}) {
+export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey, minConfirmCount } = {}) {
   const grantedIds = new Set(configs.grantedRemovingTabIds);
   let count = 0;
   const tabIds = [];
@@ -510,10 +510,11 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   if (!configKey)
     configKey = 'warnOnCloseTabs';
   const shouldConfirm = configs[configKey];
-  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, grantedIds, shouldConfirm });
-  if (count <= 1 ||
+  const deltaFromLastConfirmation = Date.now() - configs.lastConfirmedToCloseTabs;
+  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, grantedIds, shouldConfirm, deltaFromLastConfirmation, minConfirmCount });
+  if (count <= (typeof minConfirmCount == 'number' ? minConfirmCount : 1) ||
       !shouldConfirm ||
-      Date.now() - configs.lastConfirmedToCloseTabs < 500) {
+      deltaFromLastConfirmation < 500) {
     log('confirmToCloseTabs: skip confirmation and treated as granted');
     return true;
   }

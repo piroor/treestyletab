@@ -171,8 +171,10 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   log('tryGrantClose: ', { alreadyGranted: configs.grantedRemovingTabIds, closing: dumpTab(tab) });
   const alreadyGranted = configs.grantedRemovingTabIds.includes(tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
-  if (!tab || alreadyGranted)
+  if (!tab || alreadyGranted) {
+    log(' => no need to confirm');
     return true;
+  }
 
   const self = tryGrantCloseTab;
 
@@ -183,13 +185,16 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
   }
 
-  if (self.promisedGrantedToCloseTabs)
+  if (self.promisedGrantedToCloseTabs) {
+    log(' => have promisedGrantedToCloseTabs');
     return self.promisedGrantedToCloseTabs;
+  }
 
   self.closingTabWasActive = self.closingTabWasActive || tab.active;
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(250).then(async () => {
+    log(' => confirmation with delay');
     const closingTabIds = new Set(self.closingTabIds);
     let allClosingTabs = new Set();
     allClosingTabs.add(tab);
@@ -209,17 +214,20 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       tab => tab.url != 'about:blank' &&
              tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl
     );
+    log(' => restorableClosingTabsCount: ', restorableClosingTabsCount);
     if (restorableClosingTabsCount > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
       return Background.confirmToCloseTabs(allClosingTabs.slice(1).map(tab => tab.$TST.sanitized), {
         windowId:   tab.windowId,
         messageKey: 'warnOnCloseTabs_fromOutside_message',
-        titleKey:   'warnOnCloseTabs_fromOutside_title'
+        titleKey:   'warnOnCloseTabs_fromOutside_title',
+        minConfirmCount: 0
       });
     }
     return true;
   })
     .then(async (granted) => {
+      log(' => granted: ', granted);
       // remove the closed tab itself because it is already closed!
       configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
       if (granted)
