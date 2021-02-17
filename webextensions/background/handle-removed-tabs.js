@@ -42,6 +42,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   let newParent;
   const successor = tab.$TST.possibleSuccessorWithDifferentContainer;
   if (successor) {
+    log('override closeParentBehaior with kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD for different container successor ', successor);
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
     // When a new tab is created with a different container and this tab
     // is removed immediately before the new tab is completely handled,
@@ -53,6 +54,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   }
   else {
     closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+    log('detected closeParentBehaior: ', closeParentBehavior);
   }
 
   if (!SidebarConnection.isOpen(tab.windowId) &&
@@ -110,6 +112,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     });
 });
 async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure } = {}) {
+  log('handleRemovingPostProcess ', { closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure });
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(descendants, {
       triggerTab:        removedTab,

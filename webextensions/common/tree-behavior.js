@@ -105,7 +105,7 @@ export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo
 }
 
 export function getClosingTabsFromParent(tab, removeInfo = {}) {
-  log('getClosingTabsFromParent: ', tab);
+  log('getClosingTabsFromParent: ', tab, removeInfo);
   const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
     ...removeInfo,
     windowId: tab.windowId
