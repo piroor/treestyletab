@@ -16,20 +16,14 @@ function log(...args) {
   internalLogger('common/tree-behavior', ...args);
 }
 
-export function shouldApplyTreeBehavior(params = {}) {
-  log('shouldApplyTreeBehavior ', () => ({
-    closeParentBehaviorMode: configs.closeParentBehaviorMode,
-    params,
-    stack: new Error().stack
-  }));
+export function shouldApplyTreeBehavior({ windowId } = {}) {
   switch (configs.closeParentBehaviorMode) {
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ALWAYS
+    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
       return true;
     default:
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE
-      return SidebarConnection.isInitialized() ? (params.windowId && SidebarConnection.isOpen(params.windowId)) : true ;
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
-      return !!params.byInternalOperation;
+      return SidebarConnection.isInitialized() ? (windowId && SidebarConnection.isOpen(windowId)) : true ;
   }
 }
 
@@ -93,13 +87,9 @@ export function getCloseParentBehaviorForTab(tab, { asIndividualTab, byInternalO
 }
 
 export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
-  const applyTreeBehavior = (
-    removeInfo.applyTreeBehavior ||
-    shouldApplyTreeBehavior({
-      windowId:            removeInfo.windowId || tab.windowId,
-      byInternalOperation: removeInfo.byInternalOperation
-    })
-  );
+  const applyTreeBehavior = typeof removeInfo.applyTreeBehavior == 'boolean' ?
+    removeInfo.applyTreeBehavior :
+    false;
   log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, applyTreeBehavior });
   return getCloseParentBehaviorForTab(tab, {
     byInternalOperation: removeInfo.byInternalOperation,
