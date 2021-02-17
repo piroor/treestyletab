@@ -1607,7 +1607,7 @@ function snapshotTree(targetTab, tabs) {
       children:      tab.$TST.children.map(child => child.id),
       collapsed:     tab.$TST.subtreeCollapsed,
       pinned:        tab.pinned,
-      level:         parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
+      level:         tab.$TST.ancestorIds.length, // parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0), // we need to use the number of real ancestors instead of a cached "level", because it will be updated with delay
       trackedAt:     tab.$TST.trackedAt,
       mayBeReplacedWithContainer: tab.$TST.mayBeReplacedWithContainer
     };
