@@ -33,14 +33,14 @@ export function shouldApplyTreeBehavior(params = {}) {
   }
 }
 
-export function getCloseParentBehaviorForTab(tab, options = {}) {
+export function getCloseParentBehaviorForTab(tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent } = {}) {
   const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
-  log('getCloseParentBehaviorForTab ', tab, options, { sidebarVisible });
-  if (!options.asIndividualTab &&
+  log('getCloseParentBehaviorForTab ', tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent }, { sidebarVisible });
+  if (!asIndividualTab &&
       tab.$TST.subtreeCollapsed &&
       (sidebarVisible ||
        !configs.treatTreeAsExpandedOnClosedWithNoSidebar) &&
-      !options.applyTreeBehavior) {
+      !applyTreeBehavior) {
     log(' => collapsed tree, kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN');
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
   }
@@ -58,18 +58,24 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
       break;
     case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
       log(' => kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM');
-      behavior = options.byInternalOperation ? configs.closeParentBehavior :
+      behavior = byInternalOperation ? configs.closeParentBehavior :
         sidebarVisible ? configs.closeParentBehavior_outsideSidebar :
           configs.closeParentBehavior_noSidebar;
       break;
   }
-  const parentTab = options.parent || tab.$TST.parent;
+  const parentTab = parent || tab.$TST.parent;
 
   log(' => behavior: ', behavior);
 
   if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY) {
     behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
     log(' => intelligent behavior: ', behavior);
+  }
+
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      keepDescendants) {
+    behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    log(' => keepDescendants behavior: ', behavior);
   }
 
   // Promote all children to upper level, if this is the last child of the parent.
@@ -96,6 +102,7 @@ export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo
   log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, applyTreeBehavior });
   return getCloseParentBehaviorForTab(tab, {
     byInternalOperation: removeInfo.byInternalOperation,
+    keepDescendants:     removeInfo.keepDescendants,
     applyTreeBehavior
   });
 }

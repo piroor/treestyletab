@@ -77,7 +77,7 @@ export function removeTab(tab) {
   return removeTabs([tab]);
 }
 
-export function removeTabs(tabs, { byMouseOperation, originalStructure, triggerTab } = {}) {
+export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalStructure, triggerTab } = {}) {
   if (!Constants.IS_BACKGROUND)
     throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
 
@@ -111,6 +111,8 @@ export function removeTabs(tabs, { byMouseOperation, originalStructure, triggerT
       window.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
+      if (keepDescendants)
+        window.keepDescendantsTabs.add(tab.id);
     }
     if (willChangeFocus && byMouseOperation) {
       window.internalByMouseFocusCount++;
@@ -144,6 +146,8 @@ export function removeTabs(tabs, { byMouseOperation, originalStructure, triggerT
       for (const tab of canceledTabs) {
         tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
         window.internalClosingTabs.delete(tab.id);
+        if (keepDescendants)
+          window.keepDescendantsTabs.delete(tab.id);
       }
       Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab, originalStructure });
     });
@@ -199,7 +203,8 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       await Tab.waitUntilTracked(message.tabIds);
       removeTabs(message.tabIds.map(id => Tab.get(id)), {
-        byMouseOperation: message.byMouseOperation
+        byMouseOperation: message.byMouseOperation,
+        keepDescendants:  message.keepDescendants
       });
       break;
   }

@@ -704,6 +704,9 @@ async function onRemoved(tabId, removeInfo) {
   const byInternalOperation = window.internalClosingTabs.has(tabId);
   if (byInternalOperation)
     window.internalClosingTabs.delete(tabId);
+  const keepDescendants = window.keepDescendantsTabs.has(tabId);
+  if (keepDescendants)
+    window.keepDescendantsTabs.delete(tabId);
 
   if (Tab.needToWaitTracked(removeInfo.windowId))
     await Tab.waitUntilTrackedAll(removeInfo.windowId);
@@ -732,6 +735,7 @@ async function onRemoved(tabId, removeInfo) {
     removeInfo = {
       ...removeInfo,
       byInternalOperation,
+      keepDescendants,
       oldChildren: oldTab.$TST.children,
       oldParent:   oldTab.$TST.parent
     };
@@ -748,13 +752,15 @@ async function onRemoved(tabId, removeInfo) {
         windowId:        oldTab.windowId,
         tabId:           oldTab.id,
         isWindowClosing: removeInfo.isWindowClosing,
-        byInternalOperation
+        byInternalOperation,
+        keepDescendants,
       });
     }
 
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, {
       ...removeInfo,
-      byInternalOperation
+      byInternalOperation,
+      keepDescendants,
     });
     // don't do await if not needed, to process things synchronously
     if (onRemovingResult instanceof Promise)
@@ -781,7 +787,8 @@ async function onRemoved(tabId, removeInfo) {
       windowId:        oldTab.windowId,
       tabId:           oldTab.id,
       isWindowClosing: removeInfo.isWindowClosing,
-      byInternalOperation
+      byInternalOperation,
+      keepDescendants,
     });
     oldTab.$TST.destroy();
 
