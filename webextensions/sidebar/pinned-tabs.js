@@ -94,7 +94,9 @@ export function reposition(options = {}) {
   let row    = 0;
 
   const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
-  mMaxVisibleRows = Math.max(0, Math.floor((mTabBar.parentNode.getBoundingClientRect().height * pinnedTabsAreaRatio) / height));
+  const visualGap = parseFloat(window.getComputedStyle(mTabBar, null).getPropertyValue('--visual-gap-offset').replace(/px$/));
+  const allTabsAreaHeight = mTabBar.parentNode.getBoundingClientRect().height + visualGap;
+  mMaxVisibleRows = Math.max(0, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
   mAreaHeight = Math.min(
     height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
     mMaxVisibleRows * height
@@ -119,7 +121,8 @@ export function reposition(options = {}) {
     style.setProperty('--pinned-position-bottom', 'auto');
     style.setProperty('--pinned-position-left', `${width * col}px`);
     style.setProperty('--pinned-position-right', faviconized ? 'auto' : 0 );
-    style.setProperty('--pinned-position-top', `${height * (row - scrollRow)}px`);
+    style.setProperty('--pinned-position-top', `${height * row}px`);
+    style.marginTop = `${height * -scrollRow}px`; // this need to pe separated from "top", because its animation can be delayed by the visual gap canceller.
     const inVisibleArea = scrollRow <= row && row - scrollRow < mMaxVisibleRows;
     tab.$TST.element.classList.toggle('in-visible-area', inVisibleArea);
 
@@ -171,6 +174,7 @@ function clearStyle(tab) {
   style.setProperty('--pinned-position-left', '');
   style.setProperty('--pinned-position-right', '');
   style.setProperty('--pinned-position-top', '');
+  style.marginTop = '';
   tab.$TST.element.classList.remove('in-visible-area');
 }
 
