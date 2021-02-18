@@ -75,7 +75,7 @@ export async function testPromoteFirstChild() {
   }
 }
 
-export async function testPromoteFirstChildWhenClosedParentIsLastChild() {
+export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
@@ -87,27 +87,81 @@ export async function testPromoteFirstChildWhenClosedParentIsLastChild() {
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
       C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' } },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
     win.id,
     [ 'A',
       'A => B',
       'A => B => C',
-      'A => B => D' ]
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
   );
 
-  await browser.tabs.remove(tabs.B.id);
+  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
   await wait(1000);
 
   delete tabs.B;
+  delete tabs.E;
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { A, C, D } = tabs;
+    const { A, C, D, F, G } = tabs;
     is([
       `${A.id}`,
       `${A.id} => ${C.id}`,
       `${A.id} => ${C.id} => ${D.id}`,
-    ], Utils.treeStructure([A, C, D]),
+      `${F.id}`,
+      `${F.id} => ${G.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
        'only first child must be promoted');
+  }
+}
+
+export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    promoteAllChildrenWhenClosedParentIsLastChild: true
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+
+  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.E;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${F.id}`,
+      `${F.id} => ${G.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted only when it is the last child');
   }
 }
 
@@ -155,11 +209,10 @@ export async function testPromoteAllChildren() {
   }
 }
 
-export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
+export async function testPromoteIntelligently() {
   await Utils.setConfigs({
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    promoteAllChildrenWhenClosedParentIsLastChild: true
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
@@ -168,35 +221,136 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
       B: { index: 2, openerTabId: 'A' },
       C: { index: 3, openerTabId: 'B' },
       D: { index: 4, openerTabId: 'B' },
-      E: { index: 5 },
-      F: { index: 6, openerTabId: 'E' },
-      G: { index: 7, openerTabId: 'E' } },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
     win.id,
     [ 'A',
       'A => B',
       'A => B => C',
       'A => B => D',
-      'E',
-      'E => F',
-      'E => G' ]
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
   );
 
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
   await wait(1000);
 
   delete tabs.B;
-  delete tabs.E;
+  delete tabs.F;
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { A, C, D, F, G } = tabs;
+    const { A, C, D, E, G, H } = tabs;
     is([
       `${A.id}`,
       `${A.id} => ${C.id}`,
       `${A.id} => ${D.id}`,
-      `${F.id}`,
-      `${F.id} => ${G.id}`,
-    ], Utils.treeStructure([A, C, D, F, G]),
-       'all children must be promoted only when it is the last child');
+      `${A.id} => ${E.id}`,
+      `${G.id}`,
+      `${G.id} => ${H.id}`,
+    ], Utils.treeStructure([A, C, D, E, G, H]),
+       'all children must be promoted if there parent, otherwise promote the first child');
+  }
+}
+
+export async function testDetachAllChildren() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
+  );
+
+  await browser.tabs.remove(tabs.B.id);
+  await wait(1000);
+  await browser.tabs.remove(tabs.F.id);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, E, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${E.id}`,
+      `${C.id}`,
+      `${D.id}`,
+      `${G.id}`,
+      `${H.id}`,
+    ], Utils.treeStructure([A, E, C, D, G, H]),
+       'all children must be detached');
+  }
+}
+
+export async function testSimplyDetachAllChildren() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
+  );
+
+  await browser.tabs.remove(tabs.B.id);
+  await wait(1000);
+  await browser.tabs.remove(tabs.F.id);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, E, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${C.id}`,
+      `${D.id}`,
+      `${A.id} => ${E.id}`,
+      `${G.id}`,
+      `${H.id}`,
+    ], Utils.treeStructure([A, C, D, E, G, H]),
+       'all children must be detached');
   }
 }
 
