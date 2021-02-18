@@ -249,16 +249,15 @@ async function assertAllChildrenClosed() {
       'E => G' ]
   );
 
-  const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
   await wait(1000);
-  const afterTabs = await browser.tabs.query({ windowId: win.id });
-  is(beforeTabs.length - 6,
-     afterTabs.length,
-     'all closed parents ant their children must be removed');
-  is(tabs.A.id,
-     afterTabs[afterTabs.length - 1].id,
-     'only upper level tab must be left');
+  const afterTabs = await Promise.all(
+    Array.from(Object.values(tabs))
+      .map(tab => browser.tabs.get(tab.id).catch(_error => null))
+  );
+  is([tabs.A.id],
+     afterTabs.map(tab => tab.id),
+     'all closed parents and their children must be removed, and only upper level tab must be left');
 }
 
 async function assertClosedParentIsReplacedWithGroup() {
@@ -280,18 +279,18 @@ async function assertClosedParentIsReplacedWithGroup() {
       'E => G' ]
   );
 
-  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  const beforeTabIds = new Set((await browser.tabs.query({ windowId: win.id })).map(tab => tab.id));
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
   await wait(1000);
-  const afterTabs = await browser.tabs.query({ windowId: win.id });
-  is(beforeTabs.length,
-     afterTabs.length,
-     'the total number of tabs must be same');
+  const openedTabs = (await browser.tabs.query({ windowId: win.id })).filter(tab => !beforeTabIds.has(tab.id));
+  is(2,
+     openedTabs.length,
+     'group tabs must be opened for closed parent tabs');
 
   delete tabs.B;
   delete tabs.E;
-  tabs.opened1 = afterTabs[afterTabs.length - 6];
-  tabs.opened2 = afterTabs[afterTabs.length - 3];
+  tabs.opened1 = openedTabs[0];
+  tabs.opened2 = openedTabs[1];
 
   tabs = await Utils.refreshTabs(tabs);
   {
@@ -315,9 +314,28 @@ export async function testPromoteFirstChild() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertFirstChildIsPromoted();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertFirstChildIsPromoted();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted();
+
 }
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
@@ -415,9 +433,27 @@ export async function testPromoteAllChildren() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertAllChildrenArePromoted();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenArePromoted();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenArePromoted();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 export async function testPromoteIntelligently() {
@@ -425,9 +461,27 @@ export async function testPromoteIntelligently() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertPromotedIntelligently();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertPromotedIntelligently();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertPromotedIntelligently();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 export async function testDetachAllChildren() {
@@ -435,9 +489,27 @@ export async function testDetachAllChildren() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertAllChildrenDetached();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenDetached();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenDetached();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 export async function testSimplyDetachAllChildren() {
@@ -445,9 +517,27 @@ export async function testSimplyDetachAllChildren() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertAllChildrenSimplyDetached();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenSimplyDetached();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenSimplyDetached();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 export async function testCloseAllChildren() {
@@ -455,9 +545,27 @@ export async function testCloseAllChildren() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertAllChildrenClosed();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenClosed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenClosed();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 export async function testReplaceRemovedParentWithGroup() {
@@ -465,20 +573,28 @@ export async function testReplaceRemovedParentWithGroup() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
+
   configs.sidebarVirtuallyOpenedWindows = [win.id];
-
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertClosedParentIsReplacedWithGroup();
-}
 
-// https://github.com/piroor/treestyletab/issues/2818
-export async function testReplaceRemovedParentWithGroupForVisibleSidebar() {
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertClosedParentIsReplacedWithGroup();
+
+  // https://github.com/piroor/treestyletab/issues/2818
   await Utils.setConfigs({
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
   await assertClosedParentIsReplacedWithGroup();
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted(); // should keep tree structure if possible
 }
 
 // https://github.com/piroor/treestyletab/issues/2819
