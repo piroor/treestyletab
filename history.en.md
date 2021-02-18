@@ -4,6 +4,7 @@
    * Limit maximum rows of pinned tabs (50% height of the sidebar by default) and allow to scroll pinned tab rows with the wheel.
    * Keep tree structure more robustly for tabs immediately closed and reopened with different contaienr by any other addon.
    * Don't restore closed tabs doubledly on a restoration with Ctrl-Shift-T.
+   * Restore root level tabs to their original position correctly, even if "new tabs from any other trigger" option is changed. (regression on recent versions)
    * Clean up only dummy group tabs even if "Close descendants too" is chosen for options under the "When a parent tab is closed or moved just as a solo tab" => "Custom" section.
    * Apply "When a parent tab is closed or moved just as a solo tab" => "Recommended behavior for people who still use the native tab bar of Firefox itself also" => "Replace closed parent with a dummy tab and keep the tree" behavior correctly. (regression on recent versions)
    * Show confirmation for closing descendants when a collapsed tree is closed via keyboard shortcuts. (regression on recent versions)
