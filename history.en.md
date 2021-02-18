@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.7.2 (2021.2.19)
    * Limit maximum rows of pinned tabs (50% height of the sidebar by default) and allow to scroll pinned tab rows with the wheel.
    * Keep tree structure more robustly for tabs immediately closed and reopened with different contaienr by any other addon.
    * Don't restore closed tabs doubledly on a restoration with Ctrl-Shift-T.
