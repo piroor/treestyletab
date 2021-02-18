@@ -326,6 +326,8 @@
   "config_faviconizePinnedTabs_label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "一行に" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": "個までタブを表示（※0以下で自動折り返し）" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_before": { "message": "ピン留めされたタブを表示する領域の最大の高さ：サイドバーの" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "%まで" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_animationForce_label": { "message": "アニメーションを抑制するプラットフォームの設定を無視して有効にする" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折りたたまれた子孫タブの情報を含める" },

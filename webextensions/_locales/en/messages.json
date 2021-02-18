@@ -330,6 +330,8 @@
   "config_faviconizePinnedTabs_label": { "message": "Show pinned tabs only with their icon" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Show " },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " or less tabs for each row (*0 or less means auto-calculation)" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_before": { "message": "Maximum height of the area for pinned tabs:" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "% of the sidebar" },
   "config_animation_label": { "message": "Enable animation effects" },
   "config_animationForce_label": { "message": "Enable animations regardless \"reduce animations\" platform settings" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
