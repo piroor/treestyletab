@@ -68,7 +68,7 @@ async function assertFirstChildIsPromoted() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.E;
@@ -107,7 +107,7 @@ async function assertAllChildrenArePromoted() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.E;
@@ -148,7 +148,7 @@ async function assertPromotedIntelligently() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.F.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.F;
@@ -190,7 +190,7 @@ async function assertAllChildrenDetached() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.F.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.F;
@@ -232,7 +232,7 @@ async function assertAllChildrenSimplyDetached() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.F.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.F;
@@ -272,7 +272,7 @@ async function assertAllChildrenClosed() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
   const afterTabs = await Promise.all(
     Array.from(Object.values(tabs))
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))
@@ -335,7 +335,7 @@ async function assertClosedParentIsReplacedWithGroup() {
 
   const beforeTabIds = new Set((await browser.tabs.query({ windowId: win.id })).map(tab => tab.id));
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
   const openedTabs = (await browser.tabs.query({ windowId: win.id })).filter(tab => !beforeTabIds.has(tab.id));
   is(2,
      openedTabs.length,
@@ -452,7 +452,7 @@ export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.E;
@@ -500,7 +500,7 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
   await expandAll();
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
+  await wait(500);
 
   delete tabs.B;
   delete tabs.E;
@@ -892,7 +892,7 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
 
   const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove(tabs.C.id);
-  await wait(1000);
+  await wait(500);
   const afterTabs = await browser.tabs.query({ windowId: win.id });
   is(beforeTabs.length - 2,
      afterTabs.length,
