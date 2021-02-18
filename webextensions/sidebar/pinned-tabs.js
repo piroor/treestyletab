@@ -94,7 +94,7 @@ export function reposition(options = {}) {
   let row    = 0;
 
   const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
-  mMaxVisibleRows = Math.ceil((mTabBar.getBoundingClientRect().height * pinnedTabsAreaRatio) / height);
+  mMaxVisibleRows = Math.max(0, Math.floor((mTabBar.parentNode.getBoundingClientRect().height * pinnedTabsAreaRatio) / height));
   mAreaHeight = Math.min(
     height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
     mMaxVisibleRows * height
