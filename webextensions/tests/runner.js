@@ -19,6 +19,7 @@ import * as TestHidden from './test-hidden.js';
 import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
+import * as TestCloseParentBehavior from './test-close-parent-behavior.js';
 
 
 const NO_RESET_CONFIG_KEYS = new Set([
@@ -72,7 +73,8 @@ async function runAll() {
       TestHidden,
       TestNewTab,
       TestSuccessor,
-      TestTree
+      TestTree,
+      TestCloseParentBehavior
     );
   }
   let runOnlyRunnable = false;
