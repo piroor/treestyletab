@@ -31,23 +31,20 @@ export async function testInheritMutedState() {
   await Utils.setConfigs({
     spreadMutedStateOnlyToSoundPlayingTabs: false
   });
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'B' },
-    D: { index: 4, openerTabId: 'C' }
-  }, { windowId: win.id });
 
-  tabs = await Utils.refreshTabs(tabs);
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'C' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => C => D' ]
+  );
   {
     const { A, B, C, D } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
-    ], Utils.treeStructure(Object.values(tabs)),
-       'tabs must be initialized with specified structure');
     is([false, false, false, false],
        [A, B, C, D].map(tab => tab.$TST.muted),
        'initially all tab must be unmuted');
@@ -107,22 +104,15 @@ export async function testIgnoreCreatingTabsOnTreeStructureAutoFix() {
     autoGroupNewTabs: false
   });
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'B' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`
-    ], Utils.treeStructure([A, B, C]),
-       'tabs must be initialized with specified structure');
-  }
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C' ]
+  );
 
   const newTabs = await Utils.doAndGetNewTabs(async () => {
     await Promise.all([
@@ -162,22 +152,37 @@ export async function testNearestLoadedTabInTree() {
   //   * L
   //     * M
   // * N
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2 },
-    C: { index: 3, openerTabId: 'B' },
-    D: { index: 4, openerTabId: 'C' },
-    E: { index: 5, openerTabId: 'B' },
-    F: { index: 6, openerTabId: 'E' },
-    G: { index: 7, openerTabId: 'F' },
-    H: { index: 8, openerTabId: 'E' },
-    I: { index: 9, openerTabId: 'H' },
-    J: { index: 10, openerTabId: 'E' },
-    K: { index: 11, openerTabId: 'J' },
-    L: { index: 12, openerTabId: 'B' },
-    M: { index: 13, openerTabId: 'L' },
-    N: { index: 14 }
-  }, { windowId: win.id });
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2 },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'C' },
+      E: { index: 5, openerTabId: 'B' },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'E' },
+      I: { index: 9, openerTabId: 'H' },
+      J: { index: 10, openerTabId: 'E' },
+      K: { index: 11, openerTabId: 'J' },
+      L: { index: 12, openerTabId: 'B' },
+      M: { index: 13, openerTabId: 'L' },
+      N: { index: 14 } },
+    win.id,
+    [ 'A',
+      'B',
+      'B => C',
+      'B => C => D',
+      'B => E',
+      'B => E => F',
+      'B => E => F => G',
+      'B => E => H',
+      'B => E => H => I',
+      'B => E => J',
+      'B => E => J => K',
+      'B => L',
+      'B => L => M',
+      'N' ]
+  );
   await browser.tabs.update(tabs.H.id, { active: true });
   await browser.tabs.discard([
     tabs.A.id,
@@ -195,26 +200,6 @@ export async function testNearestLoadedTabInTree() {
   ]);
   await wait(50);
   tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D, E, F, G, H, I, J, K, L, M, N } = tabs;
-    is([
-      `${A.id}`,
-      `${B.id}`,
-      `${B.id} => ${C.id}`,
-      `${B.id} => ${C.id} => ${D.id}`,
-      `${B.id} => ${E.id}`,
-      `${B.id} => ${E.id} => ${F.id}`,
-      `${B.id} => ${E.id} => ${F.id} => ${G.id}`,
-      `${B.id} => ${E.id} => ${H.id}`,
-      `${B.id} => ${E.id} => ${H.id} => ${I.id}`,
-      `${B.id} => ${E.id} => ${J.id}`,
-      `${B.id} => ${E.id} => ${J.id} => ${K.id}`,
-      `${B.id} => ${L.id}`,
-      `${B.id} => ${L.id} => ${M.id}`,
-      `${N.id}`
-    ], Utils.treeStructure(Object.values(tabs)),
-       'tabs must be initialized with specified structure');
-  }
   await wait(1000);
 
   const tabNameById = {};

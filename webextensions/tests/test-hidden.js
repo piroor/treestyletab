@@ -34,8 +34,6 @@ export async function testAutoFixupForHiddenTabs() {
     inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT
   });
 
-  let tabs;
-
   /*
   - A
     - B (with the "Personal" container)
@@ -46,33 +44,30 @@ export async function testAutoFixupForHiddenTabs() {
       - G (with the "Personal" container)
     - H
   */
-  tabs = await Utils.createTabs({
-    A: { index: 1, cookieStoreId: 'firefox-default' },
-    B: { index: 2, cookieStoreId: 'firefox-container-1', openerTabId: 'A' },
-    C: { index: 3, cookieStoreId: 'firefox-container-1', openerTabId: 'B' },
-    D: { index: 4, cookieStoreId: 'firefox-default', openerTabId: 'C' },
-    E: { index: 5, cookieStoreId: 'firefox-default', openerTabId: 'D' },
-    F: { index: 6, cookieStoreId: 'firefox-container-1', openerTabId: 'A' },
-    G: { index: 7, cookieStoreId: 'firefox-container-1', openerTabId: 'F' },
-    H: { index: 8, cookieStoreId: 'firefox-default', openerTabId: 'A' }
-  }, { windowId: win.id });
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1, cookieStoreId: 'firefox-default' },
+      B: { index: 2, cookieStoreId: 'firefox-container-1', openerTabId: 'A' },
+      C: { index: 3, cookieStoreId: 'firefox-container-1', openerTabId: 'B' },
+      D: { index: 4, cookieStoreId: 'firefox-default', openerTabId: 'C' },
+      E: { index: 5, cookieStoreId: 'firefox-default', openerTabId: 'D' },
+      F: { index: 6, cookieStoreId: 'firefox-container-1', openerTabId: 'A' },
+      G: { index: 7, cookieStoreId: 'firefox-container-1', openerTabId: 'F' },
+      H: { index: 8, cookieStoreId: 'firefox-default', openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => C => D',
+      'A => B => C => D => E',
+      'A => F',
+      'A => F => G',
+      'A => H' ]
+  );
   await wait(1000);
 
   tabs = await Utils.refreshTabs(tabs);
   {
-    const { A, B, C, D, E, F, G, H } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
-      `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
-      `${A.id} => ${F.id}`,
-      `${A.id} => ${F.id} => ${G.id}`,
-      `${A.id} => ${H.id}`
-    ], Utils.treeStructure(Object.values(tabs)),
-       'tabs must be initialized with specified structure');
-
+    const { /* A, */ B, C, /* D, E, */ F, G /*, H */ } = tabs;
     await new Promise(resolve => {
       // wait until tabs are updated by TST
       let count = 0;

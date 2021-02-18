@@ -33,28 +33,23 @@ export async function teardown() {
 
 export async function testPromoteFirstChildWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
     promoteAllChildrenWhenClosedParentIsLastChild: false
   });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'B' },
-    D: { index: 4, openerTabId: 'B' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${D.id}`,
-    ], Utils.treeStructure([A, B, C, D]),
-       'tabs must be initialized with specified structure');
-  }
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D' ]
+  );
 
   await browser.tabs.remove(tabs.B.id);
   await wait(1000);
@@ -78,25 +73,19 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
     promoteAllChildrenWhenClosedParentIsLastChild: true
   });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'B' },
-    D: { index: 4, openerTabId: 'B' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${D.id}`,
-    ], Utils.treeStructure([A, B, C, D]),
-       'tabs must be initialized with specified structure');
-  }
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D' ]
+  );
 
   await browser.tabs.remove(tabs.B.id);
   await wait(1000);
@@ -119,23 +108,17 @@ export async function testReplaceRemovedParentWithGroup() {
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'A' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${C.id}`,
-    ], Utils.treeStructure([A, B, C]),
-       'tabs must be initialized with specified structure');
-  }
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C' ]
+  );
 
   const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove(tabs.A.id);
@@ -168,22 +151,15 @@ export async function testReplaceRemovedParentWithGroupForVisibleSidebar() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'A' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${C.id}`,
-    ], Utils.treeStructure([A, B, C]),
-       'tabs must be initialized with specified structure');
-  }
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C' ]
+  );
 
   const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove(tabs.A.id);
@@ -214,23 +190,17 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
     closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
     closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1, url: 'ext+treestyletab:group?temporaryAggressive=true' },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'A' }
-  }, { windowId: win.id });
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${C.id}`,
-    ], Utils.treeStructure([A, B, C]),
-       'tabs must be initialized with specified structure');
-  }
+  const tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1, url: `${Constants.kSHORTHAND_URIS.group}?temporaryAggressive=true` },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C' ]
+  );
 
   const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove(tabs.C.id);

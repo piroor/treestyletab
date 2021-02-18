@@ -9,10 +9,29 @@ import {
   wait,
   configs
 } from '/common/common.js';
+import { is /*, ok, ng*/ } from './assert.js';
 
 import * as Constants from '/common/constants.js';
 //import * as Tree from '/background/tree.js';
 import Tab from '/common/Tab.js';
+
+export async function prepareTabsInWindow(definition, windowId, expectedStructure) {
+  let tabs = await createTabs(definition, { windowId });
+  tabs = await refreshTabs(tabs);
+  const actualTabs = new Set();
+  const expected = expectedStructure.map(line => {
+    return line.replace(/\b[a-z]+\b/gi, matched => {
+      const tab = tabs[matched];
+      if (!actualTabs.has(tab))
+        actualTabs.add(tab);
+      return tab.id;
+    });
+  });
+  is(expected,
+     treeStructure(Array.from(actualTabs)),
+     'tabs must be initialized with specified structure');
+  return tabs;
+}
 
 export async function createTab(params = {}) {
   return browser.tabs.create(params);

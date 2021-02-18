@@ -36,25 +36,20 @@ export async function testSuccessorForLastChildWithPreviousSibling() {
     simulateSelectOwnerOnClose: false
   });
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'A', active: true },
-    D: { index: 4 }
-  }, { windowId: win.id });
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${C.id}`,
-      `${D.id}`
-    ], Utils.treeStructure(Object.values(tabs)),
-       'tabs must be initialized with specified structure');
-    is('C', await getActiveTabName(tabs),
-       'the last child tab must be active');
-  }
+  const tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A', active: true },
+      D: { index: 4 } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C',
+      'D' ]
+  );
+
+  is('C', await getActiveTabName(tabs),
+     'the last child tab must be active');
 
   await browser.tabs.remove(tabs.C.id);
   await wait(1000);
@@ -69,13 +64,19 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
     simulateSelectOwnerOnClose: false
   });
 
-  let tabs = await Utils.createTabs({
-    A: { index: 1 },
-    B: { index: 2, openerTabId: 'A' },
-    C: { index: 3, openerTabId: 'B' },
-    D: { index: 3, openerTabId: 'A' },
-    E: { index: 5 }
-  }, { windowId: win.id });
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 3, openerTabId: 'A' },
+      E: { index: 5 } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => D',
+      'E' ]
+  );
   // deactivate the effect of the "browser.tabs.selectOwnerOnClose"
   await browser.tabs.update(tabs.D.id, { active: true });
   await wait(50);
@@ -84,19 +85,8 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
   await browser.tabs.update(tabs.D.id, { active: true });
   await wait(50);
   tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, B, C, D, E } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${B.id}`,
-      `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-      `${E.id}`
-    ], Utils.treeStructure([A, B, C, D, E]),
-       'tabs must be initialized with specified structure');
-    is('D', await getActiveTabName(tabs),
-       'the last descendant tab must be active');
-  }
+  is('D', await getActiveTabName(tabs),
+     'the last descendant tab must be active');
 
   await browser.tabs.remove(tabs.D.id);
   await wait(1000);
