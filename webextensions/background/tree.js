@@ -609,10 +609,9 @@ export function detachAllChildren(
   }
 
   let nextTab = null;
-  if (tab &&
-      behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
+  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = tab.$TST.nearestFollowingRootTab;
+    nextTab = tab ? tab.$TST.nearestFollowingRootTab : nearestFollowingRootTab;
   }
 
   if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
