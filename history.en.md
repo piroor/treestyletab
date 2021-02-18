@@ -1,7 +1,7 @@
 # History
 
  - master/HEAD
-   * Limit maximum rows of pinned tabs as 50% height of the sidebar and allow to scroll pinned tab rows with the wheel. (You can change the maximum rows with TST Options => Development => All Configs => `maxPinnedTabsRowsAreaPercentage`.)
+   * Limit maximum rows of pinned tabs as 50% height of the sidebar and allow to scroll pinned tab rows with the wheel.
    * Keep tree structure more robustly for tabs immediately closed and reopened with different contaienr by any other addon.
    * Don't restore closed tabs doubledly on a restoration with Ctrl-Shift-T.
    * Clean up only dummy group tabs even if "Close descendants too" is chosen for options under the "When a parent tab is closed or moved just as a solo tab" => "Custom" section.
