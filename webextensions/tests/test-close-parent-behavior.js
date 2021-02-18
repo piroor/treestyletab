@@ -231,7 +231,7 @@ async function assertAllChildrenSimplyDetached() {
 }
 
 async function assertAllChildrenClosed() {
-  let tabs = await Utils.prepareTabsInWindow(
+  const tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
       C: { index: 3, openerTabId: 'B' },
