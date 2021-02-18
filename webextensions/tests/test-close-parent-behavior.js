@@ -351,6 +351,28 @@ export async function testPromoteFirstChild() {
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted();
 
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertFirstChildIsPromoted();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertFirstChildIsPromoted();
+
 }
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
@@ -471,6 +493,28 @@ export async function testPromoteAllChildren() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenArePromoted();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenArePromoted();
 }
 
 export async function testPromoteIntelligently() {
@@ -499,6 +543,28 @@ export async function testPromoteIntelligently() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertPromotedIntelligently();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertPromotedIntelligently();
 }
 
 export async function testDetachAllChildren() {
@@ -527,6 +593,28 @@ export async function testDetachAllChildren() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenDetached();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenDetached();
 }
 
 export async function testSimplyDetachAllChildren() {
@@ -555,6 +643,28 @@ export async function testSimplyDetachAllChildren() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenSimplyDetached();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenSimplyDetached();
 }
 
 export async function testCloseAllChildren() {
@@ -583,6 +693,28 @@ export async function testCloseAllChildren() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenClosed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertAllChildrenClosed();
 }
 
 export async function testReplaceRemovedParentWithGroup() {
@@ -612,6 +744,28 @@ export async function testReplaceRemovedParentWithGroup() {
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertClosedParentIsReplacedWithGroup();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [];
+  configs.sidebarVirtuallyClosedWindows = [win.id];
+  await assertClosedParentIsReplacedWithGroup();
 }
 
 // https://github.com/piroor/treestyletab/issues/2819
