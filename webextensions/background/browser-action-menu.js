@@ -13,6 +13,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Permissions from '/common/permissions.js';
 
 function log(...args) {
   internalLogger('background/browser-action-menu', ...args);
@@ -243,6 +244,12 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('context_sendTreeToDevice_command'),
         key:   'context_topLevel_sendTreeToDevice',
         type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title:       browser.i18n.getMessage('config_requestPermissions_bookmarks'),
+        type:        'checkbox',
+        permissions: Permissions.BOOKMARKS
       },
       { type: 'separator' },
       {
@@ -971,6 +978,50 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title:       browser.i18n.getMessage('config_requestPermissions_allUrls_ctrlTabTracking'),
+        type:        'checkbox',
+        permissions: Permissions.ALL_URLS
+      },
+      {
+        dynamicTitle: true,
+        get title() {
+          return indent() + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
+        },
+        key:   'autoExpandOnTabSwitchingShortcuts',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title:   indent() + browser.i18n.getMessage('config_accelKey_label'),
+        enabled: false,
+        expert:  true
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_accelKey_auto'),
+        key:   'accelKey',
+        value: '',
+        type:  'radio'
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_accelKey_alt'),
+        key:   'accelKey',
+        value: 'alt',
+        type:  'radio'
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_accelKey_control'),
+        key:   'accelKey',
+        value: 'control',
+        type:  'radio'
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_accelKey_meta'),
+        key:   'accelKey',
+        value: 'meta',
+        type:  'radio'
+      },
+      { type: 'separator', expert: true },
+      {
         title:    browser.i18n.getMessage('config_treeDoubleClickBehavior_caption'),
         children: [
           {
@@ -1418,21 +1469,6 @@ const mItems = [
     title:    browser.i18n.getMessage('config_more_caption'),
     children: [
       {
-        title:   browser.i18n.getMessage('config_shortcuts_caption'),
-        enabled: false,
-        expert:  true
-      },
-      {
-        dynamicTitle: true,
-        get title() {
-          return indent() + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_before') + delimiter + configs.autoExpandOnTabSwitchingShortcutsDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnTabSwitchingShortcutsDelay_after');
-        },
-        key:   'autoExpandOnTabSwitchingShortcuts',
-        type:  'checkbox',
-        expert: true
-      },
-      { type: 'separator', expert: true },
-      {
         title:   browser.i18n.getMessage('config_advanced_caption'),
         enabled: false
       },
@@ -1467,6 +1503,11 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('config_undoMultipleTabsClose_label'),
         key:   'undoMultipleTabsClose',
         type:  'checkbox'
+      },
+      {
+        title:       indent() + browser.i18n.getMessage('config_requestPermissions_bookmarks_context'),
+        type:        'checkbox',
+        permissions: Permissions.BOOKMARKS
       },
       { type: 'separator' },
       {
@@ -1589,8 +1630,20 @@ browser.menus.onShown.addListener((info, _tab) => {
         params.title = title;
       }
     }
-    if (item.type == 'checkbox' || item.type == 'radio')
+    if (item.type == 'checkbox' || item.type == 'radio') {
       params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+      if (item.permissions) {
+        Permissions.isGranted(item.permissions)
+          .then(async granted => {
+            if (item.checked == granted)
+              return;
+            item.checked = granted;
+            await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
+            await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+          });
+        delete params.checked;
+      }
+    }
     if ('visible' in item)
       params.visible = item.visible;
     if ('checked' in params || 'title' in params) {
@@ -1605,10 +1658,31 @@ browser.menus.onShown.addListener((info, _tab) => {
 browser.menus.onClicked.addListener((info, _tab) => {
   const item = mItemsById.get(info.menuItemId);
   log('onClicked ', { id: info.menuItemId, item });
-  if (!item || !item.key)
+  if (!item)
     return;
 
-  configs[item.key] = 'value' in item ? item.value : !configs[item.key];
+  if (item.key) {
+    configs[item.key] = 'value' in item ? item.value : !configs[item.key];
+  }
+  else if (item.permissions) {
+    if (item.checked) {
+      browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
+    }
+    else {
+      browser.permissions.request(item.permissions)
+        .then(async granted => {
+          if (granted === undefined)
+            granted = await Permissions.isGranted(item.permissions);
+          if (granted) {
+            browser.runtime.sendMessage({
+              type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+              permissions: item.permissions
+            }).catch(_error => {});
+          }
+        })
+        .catch(ApiTabs.createErrorHandler());
+    }
+  }
 });
 
 
