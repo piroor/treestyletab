@@ -26,6 +26,7 @@ export const kCOMMAND_OPEN_TAB                       = 'treestyletab:open-tab';
 export const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-from-tabs';
 export const kCOMMAND_NEW_TABS                       = 'treestyletab:open-new-tabs';
 export const kCOMMAND_NEW_TAB_AS                     = 'treestyletab:open-new-tab-as';
+export const kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION = 'treestyletab:remove-tabs-by-mouse-operation';
 export const kCOMMAND_REMOVE_TABS_INTERNALLY         = 'treestyletab:remove-tabs-internally';
 export const kCOMMAND_UPDATE_LOADING_STATE           = 'treestyletab:update-loading-state';
 export const kCOMMAND_CONFIRM_TO_CLOSE_TABS          = 'treestyletab:confirm-to-close-tabs';

@@ -632,9 +632,8 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         const tabIds = tabs.map(tab => tab.id);
         Scroll.tryLockPosition(tabIds);
         BackgroundConnection.sendMessage({
-          type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds,
-          byMouseOperation: true
+          type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
+          tabIds
         });
       });
   }
@@ -687,9 +686,8 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         const tabIds = tabsToBeClosed.map(tab => tab.id);
         Scroll.tryLockPosition(tabIds);
         BackgroundConnection.sendMessage({
-          type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-          tabIds,
-          byMouseOperation: true
+          type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
+          tabIds
         });
       });
   }
@@ -933,9 +931,8 @@ async function onDblClick(event) {
           const tabIds = [livingTab.id];
           Scroll.tryLockPosition(tabIds);
           BackgroundConnection.sendMessage({
-            type:   Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-            tabIds,
-            byMouseOperation: true
+            type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
+            tabIds
           });
           break;
       }
