@@ -31,13 +31,7 @@ export async function teardown() {
 }
 
 
-export async function testPromoteFirstChild() {
-  await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-  });
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
-
+async function assertFirstChildIsPromoted() {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -73,6 +67,257 @@ export async function testPromoteFirstChild() {
     ], Utils.treeStructure([A, C, D, F, G]),
        'the first child must be promoted');
   }
+}
+
+async function assertAllChildrenArePromoted() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+
+  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.E;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${F.id}`,
+      `${G.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted');
+  }
+}
+
+async function assertPromotedIntelligently() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
+  );
+
+  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, E, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${A.id} => ${E.id}`,
+      `${G.id}`,
+      `${G.id} => ${H.id}`,
+    ], Utils.treeStructure([A, C, D, E, G, H]),
+       'all children must be promoted if there parent, otherwise promote the first child');
+  }
+}
+
+async function assertAllChildrenDetached() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
+  );
+
+  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, E, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${E.id}`,
+      `${C.id}`,
+      `${D.id}`,
+      `${G.id}`,
+      `${H.id}`,
+    ], Utils.treeStructure([A, E, C, D, G, H]),
+       'all children must be detached');
+  }
+}
+
+async function assertAllChildrenSimplyDetached() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5, openerTabId: 'A' },
+      F: { index: 6 },
+      G: { index: 7, openerTabId: 'F' },
+      H: { index: 8, openerTabId: 'F' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'A => E',
+      'F',
+      'F => G',
+      'F => H' ]
+  );
+
+  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await wait(1000);
+
+  delete tabs.B;
+  delete tabs.F;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, E, G, H } = tabs;
+    is([
+      `${A.id}`,
+      `${C.id}`,
+      `${D.id}`,
+      `${A.id} => ${E.id}`,
+      `${G.id}`,
+      `${H.id}`,
+    ], Utils.treeStructure([A, C, D, E, G, H]),
+       'all children must be detached at their original position');
+  }
+}
+
+async function assertAllChildrenClosed() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await wait(1000);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length - 6,
+     afterTabs.length,
+     'all closed parents ant their children must be removed');
+  is(tabs.A.id,
+     afterTabs[afterTabs.length - 1].id,
+     'only upper level tab must be left');
+}
+
+async function assertClosedParentIsReplacedWithGroup() {
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await wait(1000);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length,
+     afterTabs.length,
+     'the total number of tabs must be same');
+
+  delete tabs.B;
+  delete tabs.E;
+  tabs.opened1 = afterTabs[afterTabs.length - 6];
+  tabs.opened2 = afterTabs[afterTabs.length - 3];
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, opened1, C, D, opened2, F, G} = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${opened1.id}`,
+      `${A.id} => ${opened1.id} => ${C.id}`,
+      `${A.id} => ${opened1.id} => ${D.id}`,
+      `${opened2.id}`,
+      `${opened2.id} => ${F.id}`,
+      `${opened2.id} => ${G.id}`,
+    ], Utils.treeStructure([A, opened1, C, D, opened2, F, G]),
+       'tree structure must be kept');
+  }
+}
+
+
+export async function testPromoteFirstChild() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+
+  await assertFirstChildIsPromoted();
 }
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
@@ -172,41 +417,7 @@ export async function testPromoteAllChildren() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' },
-      E: { index: 5 },
-      F: { index: 6, openerTabId: 'E' },
-      G: { index: 7, openerTabId: 'E' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => B => C',
-      'A => B => D',
-      'E',
-      'E => F',
-      'E => G' ]
-  );
-
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
-
-  delete tabs.B;
-  delete tabs.E;
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, C, D, F, G } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-      `${F.id}`,
-      `${G.id}`,
-    ], Utils.treeStructure([A, C, D, F, G]),
-       'all children must be promoted');
-  }
+  await assertAllChildrenArePromoted();
 }
 
 export async function testPromoteIntelligently() {
@@ -216,44 +427,7 @@ export async function testPromoteIntelligently() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' },
-      E: { index: 5, openerTabId: 'A' },
-      F: { index: 6 },
-      G: { index: 7, openerTabId: 'F' },
-      H: { index: 8, openerTabId: 'F' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => B => C',
-      'A => B => D',
-      'A => E',
-      'F',
-      'F => G',
-      'F => H' ]
-  );
-
-  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
-  await wait(1000);
-
-  delete tabs.B;
-  delete tabs.F;
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, C, D, E, G, H } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${C.id}`,
-      `${A.id} => ${D.id}`,
-      `${A.id} => ${E.id}`,
-      `${G.id}`,
-      `${G.id} => ${H.id}`,
-    ], Utils.treeStructure([A, C, D, E, G, H]),
-       'all children must be promoted if there parent, otherwise promote the first child');
-  }
+  await assertPromotedIntelligently();
 }
 
 export async function testDetachAllChildren() {
@@ -263,46 +437,7 @@ export async function testDetachAllChildren() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' },
-      E: { index: 5, openerTabId: 'A' },
-      F: { index: 6 },
-      G: { index: 7, openerTabId: 'F' },
-      H: { index: 8, openerTabId: 'F' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => B => C',
-      'A => B => D',
-      'A => E',
-      'F',
-      'F => G',
-      'F => H' ]
-  );
-
-  await browser.tabs.remove(tabs.B.id);
-  await wait(1000);
-  await browser.tabs.remove(tabs.F.id);
-  await wait(1000);
-
-  delete tabs.B;
-  delete tabs.F;
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, C, D, E, G, H } = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${E.id}`,
-      `${C.id}`,
-      `${D.id}`,
-      `${G.id}`,
-      `${H.id}`,
-    ], Utils.treeStructure([A, E, C, D, G, H]),
-       'all children must be detached');
-  }
+  await assertAllChildrenDetached();
 }
 
 export async function testSimplyDetachAllChildren() {
@@ -312,46 +447,17 @@ export async function testSimplyDetachAllChildren() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' },
-      E: { index: 5, openerTabId: 'A' },
-      F: { index: 6 },
-      G: { index: 7, openerTabId: 'F' },
-      H: { index: 8, openerTabId: 'F' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => B => C',
-      'A => B => D',
-      'A => E',
-      'F',
-      'F => G',
-      'F => H' ]
-  );
+  await assertAllChildrenSimplyDetached();
+}
 
-  await browser.tabs.remove(tabs.B.id);
-  await wait(1000);
-  await browser.tabs.remove(tabs.F.id);
-  await wait(1000);
+export async function testCloseAllChildren() {
+  await Utils.setConfigs({
+    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
+    closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  delete tabs.B;
-  delete tabs.F;
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, C, D, E, G, H } = tabs;
-    is([
-      `${A.id}`,
-      `${C.id}`,
-      `${D.id}`,
-      `${A.id} => ${E.id}`,
-      `${G.id}`,
-      `${H.id}`,
-    ], Utils.treeStructure([A, C, D, E, G, H]),
-       'all children must be detached');
-  }
+  await assertAllChildrenClosed();
 }
 
 export async function testReplaceRemovedParentWithGroup() {
@@ -361,51 +467,7 @@ export async function testReplaceRemovedParentWithGroup() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'B' },
-      D: { index: 4, openerTabId: 'B' },
-      E: { index: 5 },
-      F: { index: 6, openerTabId: 'E' },
-      G: { index: 7, openerTabId: 'E' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => B => C',
-      'A => B => D',
-      'E',
-      'E => F',
-      'E => G' ]
-  );
-
-  const beforeTabs = await browser.tabs.query({ windowId: win.id });
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
-  await wait(1000);
-  const afterTabs = await browser.tabs.query({ windowId: win.id });
-  is(beforeTabs.length,
-     afterTabs.length,
-     'the total number of tabs must be same');
-
-  delete tabs.B;
-  delete tabs.E;
-  tabs.opened1 = afterTabs[afterTabs.length - 6];
-  tabs.opened2 = afterTabs[afterTabs.length - 3];
-
-  tabs = await Utils.refreshTabs(tabs);
-  {
-    const { A, opened1, C, D, opened2, F, G} = tabs;
-    is([
-      `${A.id}`,
-      `${A.id} => ${opened1.id}`,
-      `${A.id} => ${opened1.id} => ${C.id}`,
-      `${A.id} => ${opened1.id} => ${D.id}`,
-      `${opened2.id}`,
-      `${opened2.id} => ${F.id}`,
-      `${opened2.id} => ${G.id}`,
-    ], Utils.treeStructure([A, opened1, C, D, opened2, F, G]),
-       'tree structure must be kept');
-  }
+  await assertClosedParentIsReplacedWithGroup();
 }
 
 // https://github.com/piroor/treestyletab/issues/2818
@@ -416,35 +478,7 @@ export async function testReplaceRemovedParentWithGroupForVisibleSidebar() {
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
-  let tabs = await Utils.prepareTabsInWindow(
-    { A: { index: 1 },
-      B: { index: 2, openerTabId: 'A' },
-      C: { index: 3, openerTabId: 'A' } },
-    win.id,
-    [ 'A',
-      'A => B',
-      'A => C' ]
-  );
-
-  const beforeTabs = await browser.tabs.query({ windowId: win.id });
-  await browser.tabs.remove(tabs.A.id);
-  await wait(1000);
-  const afterTabs = await browser.tabs.query({ windowId: win.id });
-  is(beforeTabs.length,
-     afterTabs.length,
-     'the total number of tabs must be same');
-
-  delete tabs.A;
-  tabs = await Utils.refreshTabs({ opened: afterTabs[afterTabs.length - 3], ...tabs });
-  {
-    const { opened, B, C } = tabs;
-    is([
-      `${opened.id}`,
-      `${opened.id} => ${B.id}`,
-      `${opened.id} => ${C.id}`,
-    ], Utils.treeStructure([opened, B, C]),
-       'tree structure must be kept');
-  }
+  await assertClosedParentIsReplacedWithGroup();
 }
 
 // https://github.com/piroor/treestyletab/issues/2819
