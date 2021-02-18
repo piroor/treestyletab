@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Limit maximum rows of pinned tabs as 50% height of the sidebar and allow to scroll pinned tab rows with the wheel. (You can change the maximum rows with TST Options => Development => All Configs => `maxPinnedTabsRowsAreaPercentage`.)
+   * Keep tree structure more robustly for tabs immediately closed and reopened with different contaienr by any other addon.
+   * Don't restore closed tabs doubledly on a restoration with Ctrl-Shift-T.
+   * Clean up only dummy group tabs even if "Close descendants too" is chosen for options under the "When a parent tab is closed or moved just as a solo tab" => "Custom" section.
+   * Apply "When a parent tab is closed or moved just as a solo tab" => "Recommended behavior for people who still use the native tab bar of Firefox itself also" => "Replace closed parent with a dummy tab and keep the tree" behavior correctly. (regression on recent versions)
+   * Show confirmation for closing descendants when a collapsed tree is closed via keyboard shortcuts. (regression on recent versions)
+   * Move detached descendants after all other existing descendants automatically, to keep correct tree structure. (regression on recent versions)
+   * Add an expert option to change acceptable accelerator key to match the one on Firefox itself modified via `ui.key.accelKey`.
  - 3.7.1 (2021.2.12)
    * Consistent the position of the new tab action selector button in both regular and private windows.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
