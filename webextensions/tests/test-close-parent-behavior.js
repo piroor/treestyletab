@@ -256,7 +256,7 @@ async function assertAllChildrenClosed() {
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))
   );
   is([tabs.A.id],
-     afterTabs.map(tab => tab.id),
+     afterTabs.filter(tab => !!tab).map(tab => tab.id),
      'all closed parents and their children must be removed, and only upper level tab must be left');
 }
 
