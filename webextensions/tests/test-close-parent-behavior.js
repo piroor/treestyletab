@@ -30,24 +30,26 @@ export async function teardown() {
   configs.sidebarVirtuallyClosedWindows = [];
 }
 
-async function expandAll() {
+async function expandAll(windowId) {
   await browser.runtime.sendMessage({
     type:  'treestyletab:api:expand-tree',
-    tabId: '*'
+    tabId: '*',
+    windowId
   });
   await wait(250);
 }
 
-async function collapseAll() {
+async function collapseAll(windowId) {
   await browser.runtime.sendMessage({
     type:  'treestyletab:api:collapse-tree',
-    tabId: '*'
+    tabId: '*',
+    windowId
   });
   await wait(250);
 }
 
 
-async function assertFirstChildIsPromoted() {
+async function assertFirstChildIsPromoted(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -65,9 +67,9 @@ async function assertFirstChildIsPromoted() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
   await wait(500);
 
   delete tabs.B;
@@ -86,7 +88,7 @@ async function assertFirstChildIsPromoted() {
   }
 }
 
-async function assertAllChildrenArePromoted() {
+async function assertAllChildrenArePromoted(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -104,9 +106,9 @@ async function assertAllChildrenArePromoted() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
   await wait(500);
 
   delete tabs.B;
@@ -125,7 +127,7 @@ async function assertAllChildrenArePromoted() {
   }
 }
 
-async function assertPromotedIntelligently() {
+async function assertPromotedIntelligently(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -145,9 +147,9 @@ async function assertPromotedIntelligently() {
       'F => G',
       'F => H' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
   await wait(500);
 
   delete tabs.B;
@@ -167,7 +169,7 @@ async function assertPromotedIntelligently() {
   }
 }
 
-async function assertAllChildrenDetached() {
+async function assertAllChildrenDetached(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -187,9 +189,9 @@ async function assertAllChildrenDetached() {
       'F => G',
       'F => H' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
   await wait(500);
 
   delete tabs.B;
@@ -209,7 +211,7 @@ async function assertAllChildrenDetached() {
   }
 }
 
-async function assertAllChildrenSimplyDetached() {
+async function assertAllChildrenSimplyDetached(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -229,9 +231,9 @@ async function assertAllChildrenSimplyDetached() {
       'F => G',
       'F => H' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.F.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
   await wait(500);
 
   delete tabs.B;
@@ -251,7 +253,7 @@ async function assertAllChildrenSimplyDetached() {
   }
 }
 
-async function assertAllChildrenClosed() {
+async function assertAllChildrenClosed(closer) {
   const tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -269,9 +271,9 @@ async function assertAllChildrenClosed() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
   await wait(500);
   const afterTabs = await Promise.all(
     Array.from(Object.values(tabs))
@@ -282,7 +284,7 @@ async function assertAllChildrenClosed() {
      'all closed parents and their children must be removed, and only upper level tab must be left');
 }
 
-async function assertAllChildrenClosedUnderCollapsed() {
+async function assertAllChildrenClosedUnderCollapsed(closer) {
   const tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -300,9 +302,9 @@ async function assertAllChildrenClosedUnderCollapsed() {
       'E => F',
       'E => G' ]
   );
-  await collapseAll();
+  await collapseAll(win.id);
 
-  await browser.tabs.remove([tabs.A.id, tabs.E.id]);
+  await (closer || closeTabsFromOutside)([tabs.A, tabs.E]);
   await wait(500);
   const afterTabs = await Promise.all(
     Array.from(Object.values(tabs))
@@ -313,7 +315,7 @@ async function assertAllChildrenClosedUnderCollapsed() {
      'all closed parents and their descendants must be removed');
 }
 
-async function assertClosedParentIsReplacedWithGroup() {
+async function assertClosedParentIsReplacedWithGroup(closer) {
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -331,10 +333,10 @@ async function assertClosedParentIsReplacedWithGroup() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
   const beforeTabIds = new Set((await browser.tabs.query({ windowId: win.id })).map(tab => tab.id));
-  await browser.tabs.remove([tabs.B.id, tabs.E.id]);
+  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
   await wait(500);
   const openedTabs = (await browser.tabs.query({ windowId: win.id })).filter(tab => !beforeTabIds.has(tab.id));
   is(2,
@@ -362,6 +364,17 @@ async function assertClosedParentIsReplacedWithGroup() {
   }
 }
 
+async function closeTabsFromSidebar(tabs) {
+  await browser.runtime.sendMessage({
+    type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
+    tabIds: tabs.map(tab => tab.id)
+  });
+}
+
+async function closeTabsFromOutside(tabs) {
+  await browser.tabs.remove(tabs.map(tab => tab.id));
+}
+
 
 export async function testPromoteFirstChild() {
   await Utils.setConfigs({
@@ -373,8 +386,8 @@ export async function testPromoteFirstChild() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertFirstChildIsPromoted();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertFirstChildIsPromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -388,13 +401,25 @@ export async function testPromoteFirstChild() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertFirstChildIsPromoted();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertFirstChildIsPromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted();
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertFirstChildIsPromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -449,7 +474,7 @@ export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
   await wait(500);
@@ -497,7 +522,7 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
       'E => F',
       'E => G' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
   await browser.tabs.remove([tabs.B.id, tabs.E.id]);
   await wait(500);
@@ -528,8 +553,8 @@ export async function testPromoteAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenArePromoted();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenArePromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -543,13 +568,25 @@ export async function testPromoteAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenArePromoted();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenArePromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenArePromoted(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -586,8 +623,8 @@ export async function testPromoteIntelligently() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertPromotedIntelligently();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertPromotedIntelligently(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -601,13 +638,25 @@ export async function testPromoteIntelligently() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertPromotedIntelligently();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertPromotedIntelligently(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertPromotedIntelligently(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -644,8 +693,8 @@ export async function testDetachAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenDetached();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -659,13 +708,25 @@ export async function testDetachAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenDetached();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -702,8 +763,8 @@ export async function testSimplyDetachAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenSimplyDetached();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenSimplyDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -717,13 +778,25 @@ export async function testSimplyDetachAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenSimplyDetached();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenSimplyDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenSimplyDetached(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -760,8 +833,8 @@ export async function testCloseAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenClosed();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenClosed(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -775,13 +848,25 @@ export async function testCloseAllChildren() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertAllChildrenClosed();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertAllChildrenClosed(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertAllChildrenClosed(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -818,8 +903,8 @@ export async function testReplaceRemovedParentWithGroup() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertClosedParentIsReplacedWithGroup();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertClosedParentIsReplacedWithGroup(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
@@ -834,13 +919,25 @@ export async function testReplaceRemovedParentWithGroup() {
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
   configs.sidebarVirtuallyClosedWindows = [];
-  await assertClosedParentIsReplacedWithGroup();
-  await assertAllChildrenClosedUnderCollapsed();
+  await assertClosedParentIsReplacedWithGroup(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   configs.sidebarVirtuallyOpenedWindows = [];
   configs.sidebarVirtuallyClosedWindows = [win.id];
   await assertFirstChildIsPromoted(); // should keep tree structure if possible
   await assertAllChildrenClosedUnderCollapsed();
+
+  await Utils.setConfigs({
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+  });
+
+  configs.sidebarVirtuallyOpenedWindows = [win.id];
+  configs.sidebarVirtuallyClosedWindows = [];
+  await assertClosedParentIsReplacedWithGroup(closeTabsFromSidebar);
+  await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
@@ -888,7 +985,7 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
       'A => B',
       'A => C' ]
   );
-  await expandAll();
+  await expandAll(win.id);
 
   const beforeTabs = await browser.tabs.query({ windowId: win.id });
   await browser.tabs.remove(tabs.C.id);
