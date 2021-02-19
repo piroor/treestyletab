@@ -330,6 +330,8 @@
   "config_faviconizePinnedTabs_label": { "message": "Показывать закрепленные вкладки как значок" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Показать " },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " или меньше вкладок на строку ( * 0 или \"-\" авторасчет)" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_before": { "message": "Максимум высоты области закрепленных вкладок:" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "% от боковой панели" },
   "config_animation_label": { "message": "Включить эффекты анимации" },
   "config_animationForce_label": { "message": "Включить анимацию независимо от настроек браузера" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке вкладки" },
@@ -589,6 +591,11 @@
   "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые потомки, переключая фокус вкладок сочетаниями клавиш. ( * Вы должны разрешить выполнение сценариев на веб-страницах.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Развернуть активное свернутое дерево при удержании клавиши Tab " },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": "мс" },
+  "config_accelKey_label":   { "message": "Модификатор сочетания клавиш ( * необходимо сопоставить с \"ui.key.accelKey\"):" },
+  "config_accelKey_auto":    { "message": "По умолчанию (macOS=⌘, другие=Ctrl)" },
+  "config_accelKey_alt":     { "message": "Alt" },
+  "config_accelKey_control": { "message": "Ctrl/Control" },
+  "config_accelKey_meta":    { "message": "Meta/⌘" },
 
   "config_shortcuts_resetAll": { "message": "Сбросить ВСЁ" },
 
