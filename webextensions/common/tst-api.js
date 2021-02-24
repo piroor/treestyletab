@@ -506,7 +506,7 @@ export async function initAsBackend() {
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
-  log('initAsBackend: notifyAddons = ', respondedAddons);
+  log('initAsBackend: notifyAddons = ', notifyAddons);
   await Promise.all(notifyAddons.map(async id => {
     if (id in notifiedAddons)
       return;
