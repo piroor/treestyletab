@@ -13,6 +13,7 @@ import * as Constants from './constants.js';
 const localKeys = mapAndFilter(`
   accelKey
   baseIndent
+  cachedExternalAddons
   chunkedSyncDataLocal0
   chunkedSyncDataLocal1
   chunkedSyncDataLocal2
@@ -27,7 +28,9 @@ const localKeys = mapAndFilter(`
   enableMacOSBehaviors
   enableWindowsBehaviors
   faviconizedTabScale
+  grantedExternalAddonPermissions
   grantedRemovingTabIds
+  incognitoAllowedExternalAddons
   lastConfirmedToCloseTabs
   lastDraggedTabs
   logFor
