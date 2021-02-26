@@ -155,6 +155,10 @@ const mItemsById = {
   'context_closeMultipleTabs': {
     title: browser.i18n.getMessage('tabContextMenu_closeMultipleTabs_label')
   },
+  'context_closeTabsToTheStart': {
+    parentId: 'context_closeMultipleTabs',
+    title: browser.i18n.getMessage('tabContextMenu_closeTabsToTop_label')
+  },
   'context_closeTabsToTheEnd': {
     parentId: 'context_closeMultipleTabs',
     title: browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
@@ -676,6 +680,11 @@ async function onShown(info, contextTab) {
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
+  updateItem('context_closeTabsToTheStart', {
+    visible: emulate && contextTab,
+    enabled: nextTab,
+    multiselected
+  }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
     visible: emulate && contextTab,
     enabled: nextTab,
@@ -972,9 +981,8 @@ async function onClick(info, contextTab) {
     case 'context_bookmarkSelected':
       Commands.bookmarkTab(contextTab || activeTab);
       break;
-    case 'context_closeTabsToTheEnd': {
+    case 'context_closeTabsToTheStart': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
-      let after = false;
       const closeTabs = [];
       const keptTabIds = new Set(
         multiselectedTabs ?
@@ -982,13 +990,36 @@ async function onClick(info, contextTab) {
           [contextTab.id]
       );
       for (const tab of tabs) {
-        if (keptTabIds.has(tab.id)) {
-          after = true;
-          continue;
-        }
-        if (after && !tab.pinned && !tab.hidden)
+        if (keptTabIds.has(tab.id))
+          break;
+        if (!tab.pinned && !tab.hidden)
           closeTabs.push(Tab.get(tab.id));
       }
+      const canceled = (await browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        tabs: closeTabs.map(tab => tab.$TST.sanitized),
+        windowId
+      }).catch(ApiTabs.createErrorHandler())) === false;
+      if (canceled)
+        break;
+      TabsInternalOperation.removeTabs(closeTabs);
+    }; break;
+    case 'context_closeTabsToTheEnd': {
+      const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
+      tabs.reverse();
+      const closeTabs = [];
+      const keptTabIds = new Set(
+        multiselectedTabs ?
+          multiselectedTabs.map(tab => tab.id) :
+          [contextTab.id]
+      );
+      for (const tab of tabs) {
+        if (keptTabIds.has(tab.id))
+          break;
+        if (!tab.pinned && !tab.hidden)
+          closeTabs.push(Tab.get(tab.id));
+      }
+      closeTabs.reverse();
       const canceled = (await browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
         tabs: closeTabs.map(tab => tab.$TST.sanitized),

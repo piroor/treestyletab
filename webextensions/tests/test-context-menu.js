@@ -26,6 +26,37 @@ export async function teardown() {
 }
 
 
+export async function testCloseTabsToTopTabs() {
+  await Utils.setConfigs({
+    warnOnCloseTabs: false
+  });
+
+  let tabs = await Utils.createTabs({
+    A: { index: 1 },
+    B: { index: 2 },
+    C: { index: 3 },
+    D: { index: 4 }
+  }, { windowId: win.id });
+
+  tabs = await Utils.refreshTabs(tabs);
+  await browser.runtime.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_CLICK,
+    info: {
+      menuItemId: 'context_closeTabsToTheStart'
+    },
+    tab: tabs.C.$TST.sanitized
+  });
+  await wait(1000);
+
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is([],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.B.id),
+     'tabs must be closed');
+  is([tabs.C.id, tabs.D.id],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.C.id || id == tabs.D.id),
+     'specified tab must be open');
+}
+
 export async function testCloseTabsToBottomTabs() {
   await Utils.setConfigs({
     warnOnCloseTabs: false

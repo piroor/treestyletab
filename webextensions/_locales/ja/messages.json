@@ -714,6 +714,7 @@
   "tabContextMenu_manageSyncDevices_label": { "message": "端末を管理..." },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "複数のタブを閉じる(&M)" },
+  "tabContextMenu_closeTabsToTop_label":  { "message": "上のタブをすべて閉じる(&T)" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 

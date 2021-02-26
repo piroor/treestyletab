@@ -718,6 +718,7 @@
   "tabContextMenu_manageSyncDevices_label": { "message": "Manage Devices…" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "Close &Multiple Tabs" },
+  "tabContextMenu_closeTabsToTop_label":  { "message": "Close Tabs to the &Top" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
