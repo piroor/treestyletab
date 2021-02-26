@@ -35,7 +35,8 @@ export async function testCloseTabsToTopTabs() {
     A: { index: 1 },
     B: { index: 2 },
     C: { index: 3 },
-    D: { index: 4 }
+    D: { index: 4 },
+    P: { pinned: true }
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
@@ -52,9 +53,9 @@ export async function testCloseTabsToTopTabs() {
   is([],
      afterTabs.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.B.id),
      'tabs must be closed');
-  is([tabs.C.id, tabs.D.id],
-     afterTabs.map(tab => tab.id).filter(id => id == tabs.C.id || id == tabs.D.id),
-     'specified tab must be open');
+  is([tabs.P.id, tabs.C.id, tabs.D.id],
+     afterTabs.map(tab => tab.id).filter(id => id == tabs.P.id || id == tabs.C.id || id == tabs.D.id),
+     'specified tabs and pinned tabs must be open');
 }
 
 export async function testCloseTabsToBottomTabs() {
@@ -66,7 +67,9 @@ export async function testCloseTabsToBottomTabs() {
     A: { index: 1 },
     B: { index: 2 },
     C: { index: 3 },
-    D: { index: 4 }
+    D: { index: 4 },
+    P1: { pinned: true },
+    P2: { pinned: true }
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
@@ -79,13 +82,30 @@ export async function testCloseTabsToBottomTabs() {
   });
   await wait(1000);
 
-  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  const afterTabs1 = await browser.tabs.query({ windowId: win.id });
   is([],
-     afterTabs.map(tab => tab.id).filter(id => id == tabs.C.id || id == tabs.D.id),
+     afterTabs1.map(tab => tab.id).filter(id => id == tabs.C.id || id == tabs.D.id),
      'tabs must be closed');
-  is([tabs.A.id, tabs.B.id],
-     afterTabs.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.B.id),
+  is([tabs.P1.id, tabs.P2.id, tabs.A.id, tabs.B.id],
+     afterTabs1.map(tab => tab.id).filter(id => id == tabs.P1.id || id == tabs.P2.id || id == tabs.A.id || id == tabs.B.id),
      'specified tab must be open');
+
+  await browser.runtime.sendMessage({
+    type: TSTAPI.kCONTEXT_MENU_CLICK,
+    info: {
+      menuItemId: 'context_closeTabsToTheEnd'
+    },
+    tab: tabs.P1.$TST.sanitized
+  });
+  await wait(1000);
+
+  const afterTabs2 = await browser.tabs.query({ windowId: win.id });
+  is([],
+     afterTabs2.map(tab => tab.id).filter(id => id == tabs.A.id || id == tabs.B.id),
+     'tabs must be closed');
+  is([tabs.P1.id, tabs.P2.id],
+     afterTabs2.map(tab => tab.id).filter(id => id == tabs.P1.id || id == tabs.P2.id),
+     'pinned tabs must be open');
 }
 
 export async function testCloseOtherTabs() {
