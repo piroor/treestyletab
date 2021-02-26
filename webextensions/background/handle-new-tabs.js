@@ -101,6 +101,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     }
     log('behave as a tab opened with any URL');
     if (!info.restored &&
+        !info.positionedBySelf &&
         configs.autoAttachOnAnyOtherTrigger != Constants.kNEWTAB_DO_NOTHING) {
       if (configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
         tab.$TST.anyOtherTrigger = true;
