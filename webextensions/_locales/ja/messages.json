@@ -450,6 +450,7 @@
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "現在のタブと同階層に" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnAnyOtherTrigger_after": { "message": "開く" },
+  "config_autoAttachOnAnyOtherTrigger_caution": { "message": "※警告：このオプションは他のアドオンの動作を妨げる危険性があります" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "コンテナー:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "（制御しない）" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "ツリー上での親から継承" },

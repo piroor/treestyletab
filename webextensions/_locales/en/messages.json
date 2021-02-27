@@ -454,6 +454,7 @@
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*CAUTION: This option has a risk breaking behavior of other addons." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Container:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(no control)" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Inherit from the parent tab on the tree" },
