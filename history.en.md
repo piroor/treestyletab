@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Add support for Firefox 88+ compatible "Close Tabs to the Left (Top)" context menu command.
+   * Prevent the cached helper addon IDs to be synchronized via Firefox Sync. This should solve problems around initialization of helper addons after TST is updated dynamically.
+   * Don't apply "Tabs from any other trigger" option for new tabs opened from TST's new tab button and the new tab action menu.
+   * Show tab drag feedback images at bottom-right of the cursor like Firefox does, for better visibility of drop targets.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.2 (2021.2.19)
    * Limit maximum rows of pinned tabs (50% height of the sidebar by default) and allow to scroll pinned tab rows with the wheel.
    * Keep tree structure more robustly for tabs immediately closed and reopened with different contaienr by any other addon.
