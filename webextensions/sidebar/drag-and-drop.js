@@ -887,9 +887,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }
   dt.setData(`${kTYPE_ADDON_DRAG_DATA}${mCurrentDragDataForExternalsId}`, JSON.stringify(mCurrentDragDataForExternals));
 
-  // We set negative offsets to get more visibility about drop targets.
-  // See also: https://github.com/piroor/treestyletab/issues/2826
-  dt.setDragImage(tab.$TST.element, -16 * window.devicePixelRatio, -16 * window.devicePixelRatio);
+  {
+    // We set negative offsets to get more visibility about drop targets.
+    // See also: https://github.com/piroor/treestyletab/issues/2826
+    const offet = -16;
+    dt.setDragImage(tab.$TST.element, offet, offet);
+  }
 
   TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
