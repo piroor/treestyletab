@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.7.3 (2021.3.1)
    * Add support for Firefox 88+ compatible "Close Tabs to the Left (Top)" context menu command.
    * Prevent the cached helper addon IDs to be synchronized via Firefox Sync. This should solve problems around initialization of helper addons after TST is updated dynamically.
    * Don't apply "Tabs from any other trigger" option for new tabs opened from TST's new tab button and the new tab action menu.
