@@ -454,6 +454,7 @@
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_caution": { "message": " * ВНИМАНИЕ: этот параметр может нарушить работу других надстроек." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Контейнер:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(не контролируется)" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
@@ -718,8 +719,9 @@
   "tabContextMenu_manageSyncDevices_label": { "message": "Управление устройствами…" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "&Закрыть несколько вкладок" },
-  "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки &снизу" },
-  "tabContextMenu_closeOther_label":  { "message": "&Закрыть другие вкладки" },
+  "tabContextMenu_closeTabsToTop_label":  { "message": "Закрыть вкладки с&верху" },
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки с&низу" },
+  "tabContextMenu_closeOther_label":  { "message": "Закрыть &другие вкладки" },
 
   "tabContextMenu_undoClose_label":   { "message": "Восстанов&ить закрытую вкладку" },
   "tabContextMenu_undoClose_label_multiple": { "message": "Восстанов&ить закрытые вкладки" },
