@@ -39,7 +39,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   if (opener) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
     if (!info.bypassTabControl)
-    TabsStore.addToBeGroupedTab(tab);
+      TabsStore.addToBeGroupedTab(tab);
   }
   else {
     let dontMove = false;
