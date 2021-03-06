@@ -54,6 +54,7 @@ export default class Window {
 
     this.openedNewTabs = new Map();
 
+    this.bypassTabControlCount       = 0;
     this.toBeOpenedTabsWithPositions = 0;
     this.toBeOpenedOrphanTabs        = 0;
 

@@ -38,11 +38,13 @@ Tab.onCreating.addListener((tab, info = {}) => {
   const opener = tab.$TST.openerTab;
   if (opener) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
+    if (!info.bypassTabControl)
     TabsStore.addToBeGroupedTab(tab);
   }
   else {
     let dontMove = false;
     if (!info.maybeOrphan &&
+        !info.bypassTabControl &&
         possibleOpenerTab &&
         !info.restored) {
       let autoAttachBehavior = configs.autoAttachOnNewTabCommand;
@@ -87,7 +89,8 @@ Tab.onCreating.addListener((tab, info = {}) => {
       }
       tab.$TST.isNewTab = !info.fromExternal;
     }
-    if (info.fromExternal) {
+    if (info.fromExternal &&
+        !info.bypassTabControl) {
       log('behave as a tab opened from external application');
       // we may need to reopen the tab with loaded URL
       if (configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
@@ -102,6 +105,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     log('behave as a tab opened with any URL');
     if (!info.restored &&
         !info.positionedBySelf &&
+        !info.bypassTabControl &&
         configs.autoAttachOnAnyOtherTrigger != Constants.kNEWTAB_DO_NOTHING) {
       if (configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
         tab.$TST.anyOtherTrigger = true;
@@ -118,17 +122,20 @@ Tab.onCreating.addListener((tab, info = {}) => {
   }
 
   log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
-  if (opener && opener.pinned &&
+  if (!info.bypassTabControl &&
+      opener &&
+      opener.pinned &&
       opener.windowId == tab.windowId) {
     return handleTabsFromPinnedOpener(tab, opener).then(moved => !moved);
   }
-  else if (!info.maybeOrphan) {
+  else if (!info.maybeOrphan || info.bypassTabControl) {
     if (info.fromExternal &&
+        !info.bypassTabControl &&
         configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
       tab.$TST.fromExternal = true;
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
-      behavior:  info.fromExternal ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
+      behavior:  info.fromExternal && !info.bypassTabControl ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
       broadcast: true
     }).then(moved => !moved);
@@ -259,7 +266,8 @@ async function handleTabsFromPinnedOpener(tab, opener) {
 }
 
 Tab.onCreated.addListener((tab, info = {}) => {
-  if (!info.duplicated)
+  if (!info.duplicated ||
+      info.bypassTabControl)
     return;
   const original = info.originalTab;
   log('duplicated ', dumpTab(tab), dumpTab(original));

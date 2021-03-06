@@ -351,6 +351,7 @@ async function onCreated(tab) {
 
 async function onNewTabTracked(tab, info) {
   const window               = Window.init(tab.windowId);
+  const bypassTabControl     = window.bypassTabControlCount > 0;
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
@@ -467,6 +468,8 @@ async function onNewTabTracked(tab, info) {
     // See also: https://github.com/piroor/treestyletab/issues/2278#issuecomment-521534290
     treeForActionDetection = maybeNeedToFixupTree ? Tree.snapshotForActionDetection(tab) : null;
 
+    if (bypassTabControl)
+      window.bypassTabControlCount--;
     if (positionedBySelf)
       window.toBeOpenedTabsWithPositions--;
     if (maybeOrphan)
@@ -514,6 +517,7 @@ async function onNewTabTracked(tab, info) {
     }
 
     let moved = Tab.onCreating.dispatch(tab, {
+      bypassTabControl,
       positionedBySelf,
       mayBeReplacedWithContainer,
       maybeOrphan,
@@ -569,6 +573,7 @@ async function onNewTabTracked(tab, info) {
     log(`onNewTabTracked(${dumpTab(tab)}): uniqueId = `, uniqueId);
 
     Tab.onCreated.dispatch(tab, {
+      bypassTabControl,
       positionedBySelf,
       mayBeReplacedWithContainer,
       movedBySelfWhileCreation: moved,

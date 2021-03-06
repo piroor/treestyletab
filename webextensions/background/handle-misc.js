@@ -602,7 +602,7 @@ function onMessageExternal(message, sender) {
         const window = TabsStore.windows.get(windowId);
         if (!window)
           throw new Error(`invalid windowId ${windowId}: it must be valid window id`);
-        window.toBeOpenedTabsWithPositions += 1;
+        window.bypassTabControlCount++;
         const tab = await TabsOpen.openURIInTab(message.params, { windowId });
         const treeItem = new TSTAPI.TreeItem(tab);
         return treeItem.exportFor(sender.id);
