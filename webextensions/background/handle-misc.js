@@ -29,6 +29,7 @@ import * as ContextualIdentities from '/common/contextual-identities.js';
 import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
+import * as TabsOpen from './tabs-open.js';
 import * as TabsGroup from './tabs-group.js';
 import * as Tree from './tree.js';
 import * as Commands from './commands.js';
@@ -593,6 +594,18 @@ function onMessageExternal(message, sender) {
           message.interval
         );
         return TSTAPI.formatResult(tabsArray.map(() => true), message);
+      })();
+
+    case TSTAPI.kCREATE:
+      return (async () => {
+        const windowId = message.params.windowId;
+        const window = TabsStore.windows.get(windowId);
+        if (!window)
+          throw new Error(`invalid windowId ${windowId}: it must be valid window id`);
+        window.toBeOpenedTabsWithPositions += 1;
+        const tab = await TabsOpen.openURIInTab(message.params, { windowId });
+        const treeItem = new TSTAPI.TreeItem(tab);
+        return treeItem.exportFor(sender.id);
       })();
 
     case TSTAPI.kDUPLICATE:

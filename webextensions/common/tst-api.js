@@ -116,6 +116,7 @@ export const kMOVE_TO_END           = 'move-to-end';
 export const kMOVE_BEFORE           = 'move-before';
 export const kMOVE_AFTER            = 'move-after';
 export const kFOCUS                 = 'focus';
+export const kCREATE                = 'create';
 export const kDUPLICATE             = 'duplicate';
 export const kGROUP_TABS            = 'group-tabs';
 export const kOPEN_IN_NEW_WINDOW    = 'open-in-new-window';

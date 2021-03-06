@@ -119,15 +119,27 @@ export async function openURIsInTabs(uris, options = {}) {
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
         windowId: options.windowId,
-        active:   index == 0 && !options.inBackground
+        active:   index == 0 && (options.active || !options.inBackground)
       };
-      if (uri && typeof uri == 'object') {
-        if ('title' in uri)
-          params.title = uri.title;
-        if ('discarded' in uri)
-          params.discarded = uri.discarded;
+      if (uri && typeof uri == 'object') { // tabs.create() compatible
+        if ('active' in uri)
+          params.active = uri.active;
         if ('cookieStoreId' in uri)
           params.cookieStoreId = uri.cookieStoreId;
+        if ('discarded' in uri)
+          params.discarded = uri.discarded;
+        if ('index' in uri)
+          params.index = uri.index;
+        if ('openerTabId' in uri)
+          params.openerTabId = uri.openerTabId;
+        if ('openInReaderMode' in uri)
+          params.openInReaderMode = uri.openInReaderMode;
+        if ('pinned' in uri)
+          params.pinned = uri.pinned;
+        if ('selected' in uri)
+          params.active = uri.selected;
+        if ('title' in uri)
+          params.title = uri.title;
         uri = uri.uri || uri.url;
       }
       let searchQuery = null;
@@ -156,9 +168,9 @@ export async function openURIsInTabs(uris, options = {}) {
         params.discarded = false; // discarded tab cannot be opened with any about: URL
       if (!params.discarded) // title cannot be set for non-discarded tabs
         params.title = null;
-      if (options.opener)
+      if (options.opener && !params.openerTabId)
         params.openerTabId = options.opener.id;
-      if (startIndex > -1)
+      if (startIndex > -1 && !('index' in params))
         params.index = startIndex + index;
       if (options.cookieStoreId && !params.cookieStoreId)
         params.cookieStoreId = options.cookieStoreId;
