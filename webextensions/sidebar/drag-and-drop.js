@@ -890,8 +890,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   {
     // We set negative offsets to get more visibility about drop targets.
     // See also: https://github.com/piroor/treestyletab/issues/2826
-    const offet = -16;
-    dt.setDragImage(tab.$TST.element, offet, offet);
+    const offset = -16;
+    dt.setDragImage(tab.$TST.element, offset, offset);
   }
 
   TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
