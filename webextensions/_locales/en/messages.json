@@ -612,7 +612,7 @@
 
   "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 
-  "config_undoMultipleTabsClose_label": { "message": "Restore the set of tabs most recently closed, when one of them is restored via the \"Undo Close Tab\" command" },
+  "config_undoMultipleTabsClose_label": { "message": "Restore the set of tabs most recently closed, when one of them is restored via the \"Reopen Closed Tab\" command" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for contents provided by Tree Style Tab" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
@@ -708,7 +708,7 @@
   "tabContextMenu_duplicate_label":   { "message": "&Duplicate Tab" },
   "tabContextMenu_selectAllTabs_label": { "message": "&Select All Tabs" },
   "tabContextMenu_bookmark_label":    { "message": "&Bookmark Tab" },
-  "tabContextMenu_reopenInContainer_label":             { "message": "R&eopen in Container" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "Op&en in New Container Tab" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "&No Container" },
   "tabContextMenu_moveTab_label":     { "message": "Mo&ve Tab" },
   "tabContextMenu_moveTabToStart_label": { "message": "Move to &Start" },
@@ -717,17 +717,19 @@
   "tabContextMenu_sendTabsToDevice_label": { "message": "Se&nd Tab to Device" },
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "Send to All Devices" },
   "tabContextMenu_manageSyncDevices_label": { "message": "Manage Devices…" },
+  "tabContextMenu_shareTabURL_label":   { "message": "S&hare" },
+
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "Close &Multiple Tabs" },
   "tabContextMenu_closeTabsToTop_label":  { "message": "Close Tabs to the &Top" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
-  "tabContextMenu_undoClose_label":   { "message": "&Undo Close Tab" },
-  "tabContextMenu_undoClose_label_multiple": { "message": "&Undo Close Tabs" },
+  "tabContextMenu_undoClose_label":   { "message": "Re&open Closed Tab" },
+  "tabContextMenu_undoClose_label_multiple": { "message": "Re&open Closed Tabs" },
   "tabContextMenu_close_label":       { "message": "&Close Tab" },
 
-  "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Selected Tabs" },
+  "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Tabs" },
   "tabContextMenu_mute_label_multiselected":        { "message": "&Mute Tabs" },
   "tabContextMenu_unmute_label_multiselected":      { "message": "Un&mute Tabs" },
 

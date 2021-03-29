@@ -704,7 +704,7 @@
   "tabContextMenu_duplicate_label":   { "message": "タブを複製(&D)" },
   "tabContextMenu_selectAllTabs_label": { "message": "すべてのタブを選択(&S)" },
   "tabContextMenu_bookmark_label":    { "message": "タブをブックマーク(&B)" },
-  "tabContextMenu_reopenInContainer_label":             { "message": "コンテナーを開きなおす(&E)" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "新しいコンテナータブで開く(&E)" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "コンテナーなし(&N)" },
   "tabContextMenu_moveTab_label":     { "message": "タブを移動(&V)" },
   "tabContextMenu_moveTabToStart_label": { "message": "先頭へ移動(&S)" },
@@ -713,17 +713,18 @@
   "tabContextMenu_sendTabsToDevice_label": { "message": "%S 個のタブを端末へ送信(&N)" },
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "すべての端末に送信" },
   "tabContextMenu_manageSyncDevices_label": { "message": "端末を管理..." },
+  "tabContextMenu_shareTabURL_label":   { "message": "共有(&H)" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "複数のタブを閉じる(&M)" },
   "tabContextMenu_closeTabsToTop_label":  { "message": "上のタブをすべて閉じる(&T)" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 
-  "tabContextMenu_undoClose_label":   { "message": "閉じたタブを元に戻す(&U)" },
-  "tabContextMenu_undoClose_label_multiple":  { "message": "閉じたタブを元に戻す(&U)" },
+  "tabContextMenu_undoClose_label":   { "message": "閉じたタブを開き直す(&U)" },
+  "tabContextMenu_undoClose_label_multiple":  { "message": "閉じたタブを開き直す(&U)" },
   "tabContextMenu_close_label":       { "message": "タブを閉じる(&C)" },
 
-  "tabContextMenu_reload_label_multiselected":      { "message": "選択したタブを再読み込み(&R)" },
+  "tabContextMenu_reload_label_multiselected":      { "message": "タブを再読み込み(&R)" },
   "tabContextMenu_mute_label_multiselected":        { "message": "タブをミュート(&M)" },
   "tabContextMenu_unmute_label_multiselected":      { "message": "タブのミュートを解除(&M)" },
 

@@ -86,9 +86,6 @@ const mItemsById = {
   'context_separator:afterDuplicate': {
     type: 'separator'
   },
-  'context_selectAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
-  },
   'context_bookmarkTab': {
     title:              browser.i18n.getMessage('tabContextMenu_bookmark_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
@@ -96,9 +93,6 @@ const mItemsById = {
   'context_topLevel_bookmarkTree': {
     title:              browser.i18n.getMessage('context_bookmarkTree_label'),
     titleMultiselected: browser.i18n.getMessage('context_bookmarkTree_label_multiselected')
-  },
-  'context_reopenInContainer': {
-    title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
   },
   'context_moveTab': {
     title:              browser.i18n.getMessage('tabContextMenu_moveTab_label'),
@@ -116,6 +110,9 @@ const mItemsById = {
     parentId: 'context_moveTab',
     title:    browser.i18n.getMessage('tabContextMenu_tearOff_label')
   },
+  'context_shareTabURL': {
+    title: browser.i18n.getMessage('tabContextMenu_shareTabURL_label'),
+  },
   'context_sendTabsToDevice': {
     title:              browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_sendTabsToDevice_label_multiselected')
@@ -124,7 +121,13 @@ const mItemsById = {
     title:              browser.i18n.getMessage('context_sendTreeToDevice_label'),
     titleMultiselected: browser.i18n.getMessage('context_sendTreeToDevice_label_multiselected')
   },
-  'context_separator:afterSendTab': {
+  'context_reopenInContainer': {
+    title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
+  },
+  'context_selectAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
+  },
+  'context_separator:afterSelectAllTabs': {
     type: 'separator'
   },
   'context_topLevel_collapseTree': {
@@ -151,6 +154,10 @@ const mItemsById = {
   },
   'context_separator:afterCollapseExpand': {
     type: 'separator'
+  },
+  'context_closeTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_close_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
   },
   'context_closeMultipleTabs': {
     title: browser.i18n.getMessage('tabContextMenu_closeMultipleTabs_label')
@@ -183,10 +190,6 @@ const mItemsById = {
     title: browser.i18n.getMessage('tabContextMenu_undoClose_label'),
     titleRegular: browser.i18n.getMessage('tabContextMenu_undoClose_label'),
     titleMultipleTabsRestorable: browser.i18n.getMessage('tabContextMenu_undoClose_label_multiple')
-  },
-  'context_closeTab': {
-    title:              browser.i18n.getMessage('tabContextMenu_close_label'),
-    titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
   },
   'context_separator:afterClose': {
     type: 'separator'
@@ -582,11 +585,6 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
 
-  updateItem('context_selectAllTabs', {
-    visible: emulate && contextTab,
-    enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
-    multiselected
-  }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
     visible: emulate && contextTab,
     multiselected: multiselected || !contextTab
@@ -595,6 +593,41 @@ async function onShown(info, contextTab) {
     visible: emulate && contextTab && configs.context_topLevel_bookmarkTree,
     multiselected
   }) && modifiedItemsCount++;
+
+  updateItem('context_moveTab', {
+    visible: emulate && contextTab,
+    enabled: contextTab && hasMultipleTabs,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_moveTabToStart', {
+    enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && ((previousSiblingTab || previousTab).pinned == contextTab.pinned),
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_moveTabToEnd', {
+    enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && ((nextSiblingTab || nextTab).pinned == contextTab.pinned),
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_openTabInWindow', {
+    enabled: emulate && contextTab && hasMultipleTabs,
+    multiselected
+  }) && modifiedItemsCount++;
+
+  updateItem('context_shareTabURL', {
+    visible: emulate && contextTab && false, // not implemented yet
+  }) && modifiedItemsCount++;
+
+  updateItem('context_sendTabsToDevice', {
+    enabled: emulate && contextTabs.filter(Sync.isSendableTab).length > 0,
+    multiselected,
+    count: contextTabs.length
+  }) && modifiedItemsCount++;
+  updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
+  updateItem('context_topLevel_sendTreeToDevice', {
+    visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
+    enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
+    multiselected
+  }) && modifiedItemsCount++;
+  mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
 
   let showContextualIdentities = false;
   if (contextTab && !contextTab.incognito) {
@@ -617,36 +650,11 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
 
-  updateItem('context_moveTab', {
+  updateItem('context_selectAllTabs', {
     visible: emulate && contextTab,
-    enabled: contextTab && hasMultipleTabs,
+    enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
-  updateItem('context_moveTabToStart', {
-    enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && ((previousSiblingTab || previousTab).pinned == contextTab.pinned),
-    multiselected
-  }) && modifiedItemsCount++;
-  updateItem('context_moveTabToEnd', {
-    enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && ((nextSiblingTab || nextTab).pinned == contextTab.pinned),
-    multiselected
-  }) && modifiedItemsCount++;
-  updateItem('context_openTabInWindow', {
-    enabled: emulate && contextTab && hasMultipleTabs,
-    multiselected
-  }) && modifiedItemsCount++;
-
-  updateItem('context_sendTabsToDevice', {
-    enabled: emulate && contextTabs.filter(Sync.isSendableTab).length > 0,
-    multiselected,
-    count: contextTabs.length
-  }) && modifiedItemsCount++;
-  updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
-  updateItem('context_topLevel_sendTreeToDevice', {
-    visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
-    enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
-    multiselected
-  }) && modifiedItemsCount++;
-  mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
 
   updateItem('context_topLevel_collapseTree', {
     visible: emulate && contextTab && configs.context_topLevel_collapseTree,
@@ -673,6 +681,11 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_topLevel_expandAll', {
     visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
+  }) && modifiedItemsCount++;
+
+  updateItem('context_closeTab', {
+    visible: emulate && contextTab,
+    multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_closeMultipleTabs', {
@@ -716,10 +729,6 @@ async function onShown(info, contextTab) {
     visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
-  updateItem('context_closeTab', {
-    visible: emulate && contextTab,
-    multiselected
-  }) && modifiedItemsCount++;
 
   updateItem('noContextTab:context_reloadTab', {
     visible: emulate && !contextTab
@@ -737,7 +746,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
-  updateSeparator('context_separator:afterSendTab') && modifiedItemsCount++;
+  updateSeparator('context_separator:afterSelectAllTabs') && modifiedItemsCount++;
   updateSeparator('context_separator:afterCollapseExpand') && modifiedItemsCount++;
   updateSeparator('context_separator:afterClose') && modifiedItemsCount++;
 
