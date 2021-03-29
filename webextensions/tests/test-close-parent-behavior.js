@@ -999,3 +999,108 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
      'other children of the group parent tab must be kept');
 }
 
+
+// https://github.com/piroor/treestyletab/issues/2837
+
+async function assertParentClosedWithDescendants() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                    false,
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+  });
+
+  const tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C' ]
+  );
+  await collapseAll(win.id);
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove(tabs.A.id);
+  await wait(500);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length - 3,
+     afterTabs.length,
+     'parent tab should be closed with collapsed descendants');
+}
+
+async function assertParentClosedWithoutDescendants() {
+  await Utils.setConfigs({
+    warnOnCloseTabs:                    false,
+    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+  });
+
+  const tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'A' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => C' ]
+  );
+  await collapseAll(win.id);
+
+  const beforeTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove(tabs.A.id);
+  await wait(500);
+  const afterTabs = await browser.tabs.query({ windowId: win.id });
+  is(beforeTabs.length - 1,
+     afterTabs.length,
+     'parent tab should be closed as a solo tab');
+}
+
+export async function testTreatTreeAsExpandedOnClosed_outsideSidebar() {
+  await Utils.setConfigs({
+    treatTreeAsExpandedOnClosed_outsideSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
+    sidebarVirtuallyOpenedWindows: [win.id],
+  });
+  await assertParentClosedWithDescendants();
+
+  configs.treatTreeAsExpandedOnClosed_outsideSidebar = true;
+  await assertParentClosedWithoutDescendants();
+
+  await Utils.setConfigs({
+    treatTreeAsExpandedOnClosed_outsideSidebar: false,
+    sidebarVirtuallyOpenedWindows: [],
+    sidebarVirtuallyClosedWindows: [win.id],
+  });
+  await assertParentClosedWithDescendants();
+
+  configs.treatTreeAsExpandedOnClosed_outsideSidebar = true;
+  await assertParentClosedWithDescendants();
+}
+
+export async function testTreatTreeAsExpandedOnClosed_noSidebar() {
+  await Utils.setConfigs({
+    treatTreeAsExpandedOnClosed_outsideSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
+    sidebarVirtuallyOpenedWindows: [win.id],
+  });
+  await assertParentClosedWithDescendants();
+
+  configs.treatTreeAsExpandedOnClosed_noSidebar = true;
+  await assertParentClosedWithDescendants();
+
+  await Utils.setConfigs({
+    treatTreeAsExpandedOnClosed_noSidebar: false,
+    sidebarVirtuallyOpenedWindows: [],
+    sidebarVirtuallyClosedWindows: [win.id],
+  });
+  await assertParentClosedWithDescendants();
+
+  configs.treatTreeAsExpandedOnClosed_noSidebar = true;
+  await assertParentClosedWithoutDescendants();
+}
+
