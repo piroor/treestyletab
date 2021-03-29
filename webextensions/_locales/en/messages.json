@@ -543,7 +543,7 @@
   "config_closeParentBehaviorMode_custom":            { "message": "Custom" },
   "config_closeParentBehaviorMode_custom_caption_insideSidebar":  { "message": "For operations inside the tree sidebar:" },
   "config_closeParentBehaviorMode_custom_caption_outsideSidebar": { "message": "For operations on the native tab bar, keyboard shortcuts, or other addons while the tree sidebar is visible:" },
-  "config_closeParentBehaviorMode_custom_caption_noSidebar":      { "message": "For operations on the native tab bar, keyboard shortcuts, or other addons" },
+  "config_closeParentBehaviorMode_custom_caption_noSidebar":      { "message": "For operations on the native tab bar, keyboard shortcuts, or other addons while the tree sidebar is hidden" },
   "config_closeParentBehavior_close":                { "message": "Close descendants too" },
   "config_closeParentBehavior_replaceWithGroupTab":  { "message": "Replace closed parent with a dummy tab and keep the tree" },
   "config_closeParentBehavior_promoteFirst":         { "message": "Promote the first child as the new parent always" },
