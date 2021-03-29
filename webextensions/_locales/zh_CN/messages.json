@@ -1261,7 +1261,7 @@
         "message": "释放来自该标签树的子标签页",
         "hash": "1312437055c8720e49ebe347501efb97"
     },
-    "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": {
+    "config_treatTreeAsExpandedOnClosed_noSidebar_label": {
         "message": "当侧栏不可见时，一个父标签页在被关闭时只会被单独关闭，即使其拥有折叠的后代项",
         "hash": "51551c98e1b4251b05300832c69a6a78"
     },

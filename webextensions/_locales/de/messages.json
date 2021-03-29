@@ -546,7 +546,7 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
   "config_closeParentBehavior_detach":               { "message": "Untergeordnete Tabs vom Zweig lösen" },
 
-  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Einen geschlossenen übergeordneten Tab als einzelnen Tab behandeln, auch wenn der Tab eingeklappte Untergeordnete Tabs besitzt, wenn die Seitenleiste unsichtbar ist" },
+  "config_treatTreeAsExpandedOnClosed_noSidebar_label": { "message": "Einen geschlossenen übergeordneten Tab als einzelnen Tab behandeln, auch wenn der Tab eingeklappte Untergeordnete Tabs besitzt, wenn die Seitenleiste unsichtbar ist" },
 
   "config_warnOnCloseTabs_label": { "message": "Warnen, wenn mehrere Tabs geschlossen werden sollen" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warnen, wenn mehrere Tabs durch einen Klick auf eine Schließen-Schaltfläche geschlossen werden sollen" },

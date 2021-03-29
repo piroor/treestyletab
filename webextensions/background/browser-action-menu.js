@@ -1285,8 +1285,19 @@ const mItems = [
         ]
       },
       {
-        title: indent() + browser.i18n.getMessage('config_treatTreeAsExpandedOnClosedWithNoSidebar_label'),
-        key:   'treatTreeAsExpandedOnClosedWithNoSidebar',
+        title:   indent() + browser.i18n.getMessage('config_treatTreeAsExpandedOnClosed_caption'),
+        enabled: false,
+        expert:  true
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_treatTreeAsExpandedOnClosed_outsideSidebar_label'),
+        key:   'treatTreeAsExpandedOnClosed_outsideSidebar',
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_treatTreeAsExpandedOnClosed_noSidebar_label'),
+        key:   'treatTreeAsExpandedOnClosed_noSidebar',
         type:  'checkbox',
         expert: true
       },

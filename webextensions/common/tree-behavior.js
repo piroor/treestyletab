@@ -29,12 +29,15 @@ export function shouldApplyTreeBehavior({ windowId } = {}) {
 
 export function getCloseParentBehaviorForTab(tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent } = {}) {
   const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
-  log('getCloseParentBehaviorForTab ', tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent }, { sidebarVisible });
+  const forceCloseAll = sidebarVisible ?
+    (byInternalOperation ||
+     !configs.treatTreeAsExpandedOnClosed_outsideSidebar) :
+    !configs.treatTreeAsExpandedOnClosed_noSidebar;
+  log('getCloseParentBehaviorForTab ', tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent }, { sidebarVisible, forceCloseAll });
   if (!asIndividualTab &&
       !keepDescendants &&
       tab.$TST.subtreeCollapsed &&
-      (sidebarVisible ||
-       !configs.treatTreeAsExpandedOnClosedWithNoSidebar) &&
+      forceCloseAll &&
       !applyTreeBehavior) {
     log(' => collapsed tree, kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN');
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;

@@ -21,7 +21,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 20;
+const kCONFIGS_VERSION = 21;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -205,6 +205,11 @@ export function migrateConfigs() {
       if (configs.suppressGapFromShownOrHiddenToolbar !== configs.$default.suppressGapFromShownOrHiddenToolbar) {
         configs.suppressGapFromShownOrHiddenToolbarOnNewTab =
           configs.suppressGapFromShownOrHiddenToolbarOnFullScreen = configs.suppressGapFromShownOrHiddenToolbar;
+      }
+
+    case 20:
+      if (configs.treatTreeAsExpandedOnClosedWithNoSidebar !== configs.$default.treatTreeAsExpandedOnClosedWithNoSidebar) {
+        configs.treatTreeAsExpandedOnClosed_noSidebar = configs.treatTreeAsExpandedOnClosedWithNoSidebar;
       }
   }
   configs.configsVersion = kCONFIGS_VERSION;

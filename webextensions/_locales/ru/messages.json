@@ -551,7 +551,7 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "Повысить первую дочернюю, когда корневая вкладка закрыта, иначе повысить все дочерние" },
   "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
 
-  "config_treatTreeAsExpandedOnClosedWithNoSidebar_label": { "message": "Рассматривать закрывающуюся родительскую вкладку как одиночную, даже если у нее есть свернутый потомок, при скрытой боковой панели" },
+  "config_treatTreeAsExpandedOnClosed_noSidebar_label": { "message": "Рассматривать закрывающуюся родительскую вкладку как одиночную, даже если у нее есть свернутый потомок, при скрытой боковой панели" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать при закрытии нескольких вкладок" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать при закрытии нескольких вкладок по крестику закрытия вкладки (свернутое дерево)" },

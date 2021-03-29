@@ -378,7 +378,7 @@ async function closeTabsFromOutside(tabs) {
 
 export async function testPromoteFirstChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
@@ -449,7 +449,7 @@ export async function testPromoteFirstChild() {
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
@@ -497,7 +497,7 @@ export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
 
 export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
@@ -545,7 +545,7 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
 
 export async function testPromoteAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
@@ -615,7 +615,7 @@ export async function testPromoteAllChildren() {
 
 export async function testPromoteIntelligently() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
@@ -685,7 +685,7 @@ export async function testPromoteIntelligently() {
 
 export async function testDetachAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
@@ -755,7 +755,7 @@ export async function testDetachAllChildren() {
 
 export async function testSimplyDetachAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
@@ -825,7 +825,7 @@ export async function testSimplyDetachAllChildren() {
 
 export async function testCloseAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
@@ -895,7 +895,7 @@ export async function testCloseAllChildren() {
 
 export async function testReplaceRemovedParentWithGroup() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:         false,
     closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
     closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
@@ -967,7 +967,7 @@ export async function testReplaceRemovedParentWithGroup() {
 // https://github.com/piroor/treestyletab/issues/2819
 export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosedWithNoSidebar: false,
+    treatTreeAsExpandedOnClosed_noSidebar: false,
     warnOnCloseTabs:                    false,
     closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
     closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,

@@ -256,7 +256,9 @@ export const configs = new Configs({
   parentTabBehaviorForChanges:        null, // obsolete, migrated to closeParentBehaviorMode
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
-  treatTreeAsExpandedOnClosedWithNoSidebar: true,
+  treatTreeAsExpandedOnClosedWithNoSidebar: null, // obsolete, migrated to "treatTreeAsExpandedOnClosed_noSidebar"
+  treatTreeAsExpandedOnClosed_outsideSidebar: false,
+  treatTreeAsExpandedOnClosed_noSidebar: true,
   moveFocusInTreeForClosedActiveTab: null, // obsolete, migrated to "successorTabControlLevel"
   successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,

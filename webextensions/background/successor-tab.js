@@ -106,7 +106,7 @@ async function updateInternal(tabId) {
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
       const firstChild = (
-        configs.treatTreeAsExpandedOnClosedWithNoSidebar &&
+        configs.treatTreeAsExpandedOnClosed_noSidebar &&
         !SidebarConnection.isOpen(tab.windowId)
       ) ? tab.$TST.firstChild : tab.$TST.firstVisibleChild;
       successor = firstChild || tab.$TST.nextVisibleSiblingTab || tab.$TST.nearestVisiblePrecedingTab;
