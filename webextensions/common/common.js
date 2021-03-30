@@ -525,23 +525,18 @@ export function getChunkedConfig(key) {
 }
 
 export function setChunkedConfig(key, value) {
-  let largestSlot = 0;
-  let count = 0;
-  while (true) {
-    if (!(`${key}${count}` in configs)) {
-      largestSlot = count - 1;
-      break;
-    }
-    count++;
+  let slotsSize = 0;
+  while (`${key}${slotsSize}` in configs.$default) {
+    slotsSize++;
   }
 
   const chunks = chunkString(value, Constants.kSYNC_STORAGE_SAFE_QUOTA);
-  if (chunks.length >= largestSlot)
+  if (chunks.length > slotsSize)
     throw new Error('too large data');
 
   [...chunks,
-    ...Array.from(new Uint8Array(largestSlot), _ => '')]
-    .slice(0, largestSlot)
+    ...Array.from(new Uint8Array(slotsSize), _ => '')]
+    .slice(0, slotsSize)
     .forEach((chunk, index) => {
       const slotKey = `${key}${index}`;
       if (slotKey in configs)
