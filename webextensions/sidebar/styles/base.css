@@ -11,6 +11,10 @@
   /* default size, they will be overridden. */
   --favicon-size: 16px;
   --tab-size: 32px;
+  --tab-margin-bottom: 0px;
+  --tab-margin-left: 0px;
+  --tab-margin-right: 0px;
+  --tab-margin-top: 0px;
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
 
@@ -267,14 +271,21 @@ tab-item {
   left: 0;
   line-height: 1;
   list-style: none;
-  margin-left: 0;
-  margin-right: 0;
+  margin: var(--tab-margin-top) var(--tab-margin-right) var(--tab-margin-bottom) var(--tab-margin-left);
   /* margin-top: 0; *//* don't set for animation */
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
   position: relative;
   top: 0;
+}
+
+:root.left tab-item {
+  margin-left: calc(var(--tab-margin-left) + var(--tab-indent));
+}
+
+:root.right tab-item {
+  margin-right: calc(var(--tab-margin-right) + var(--tab-indent));
 }
 
 tab-item,
@@ -310,7 +321,7 @@ tab-item.hidden {
 tab-item.removing,
 tab-item:not(.pinned).collapsed,
 tab-item.duplicating {
-  margin-top: calc(0px - var(--tab-current-size));
+  margin-top: calc(0px - var(--tab-current-size) - var(--tab-margin-bottom));
   opacity: 0;
   pointer-events: none;
   z-index: var(--invisible-z-index);

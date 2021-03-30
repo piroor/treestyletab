@@ -74,10 +74,8 @@ export function update(options = {}) {
     document.head.appendChild(mIndentDefinition);
   }
 
-  const indentProp = (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) ? 'margin-right' : 'margin-left';
   if (options.cache &&
-      options.cache.definition &&
-      options.cache.definition.includes(indentProp)) {
+      options.cache.definition) {
     mIndentDefinition.textContent = options.cache.definition;
   }
   else {
@@ -93,7 +91,7 @@ export function update(options = {}) {
       const indents = Object.keys(indentSet);
       indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
       for (const indent of indents) {
-        definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
+        definitions.push(`${indentSet[indent].join(',\n')} { --tab-indent: ${indent}; }`);
       }
     }
     mIndentDefinition.textContent = indentUnitDefinitions.concat(definitions).join('\n');
