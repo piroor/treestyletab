@@ -102,7 +102,7 @@ tab-item tab-closebox::after {
 /* multiselection of tabs */
 
 :root {
-  --multiselected-color: var(--tab-surface-hover-color, Highlight);
+  --multiselected-color: var(--tab-like-surface);
   --multiselected-color-opacity: 1;
 }
 
