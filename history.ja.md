@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+   * Nightly 89.0a1に合わせてタブのコンテキストメニューの構成を変更
+   * 折りたたまれた子タブを持つ親タブについて、サイドバーが表示されている場合にTSTのUI外での操作でタブを閉じるとき、親タブを単独で閉じられるようにする上級者向け設定を追加
+   * [複製されたタブを検出する処理の待ち時間を変更するデバッグ用設定](https://github.com/piroor/treestyletab/issues/2845)を追加
+   * APIの強化：[TSTのタブ位置制御に関する動作を迂回して新しいタブを開く`create`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior)を実装
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.7.3 (2021.3.1)
    * Firefox 88以降と互換性のある「左（上）のタブを閉じる」機能をコンテキストメニューに追加
    * 既知のヘルパーアドオンの情報をFirefox Syncで同期しないようにした（TSTが動的に更新された後にヘルパーアドオンが初期化されないことがある問題が発生しないようにした）
