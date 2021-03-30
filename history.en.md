@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Add a theme like [Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu) experimentally. Proton is the next UI theme of Firefox itself.
+   * Rename the theme "Plain" to "Photon". Photon is the current UI theme of Firefox itself.
    * Restructure tab context menu items to match to the one on Nightly 89.0a1.
    * Add a new expert option to close a parent tab as a solo tab by triggers outside of TST, even if it has collapsed children, with visible sidebar.
    * Add a [debug option to configure the delay to detect duplicated tabs](https://github.com/piroor/treestyletab/issues/2845).

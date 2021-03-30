@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+   * Firefoxの次期UIテーマの[Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu)風テーマを追加
+   * テーマ「Plain」を「Photon」に名称変更（Firefoxの現在のテーマ名に合わせた）
    * Nightly 89.0a1に合わせてタブのコンテキストメニューの構成を変更
    * 折りたたまれた子タブを持つ親タブについて、サイドバーが表示されている場合にTSTのUI外での操作でタブを閉じるとき、親タブを単独で閉じられるようにする上級者向け設定を追加
    * [複製されたタブを検出する処理の待ち時間を変更するデバッグ用設定](https://github.com/piroor/treestyletab/issues/2845)を追加
