@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.7.4 (2021.3.31)
    * Firefoxの次期UIテーマの[Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu)風テーマを追加
    * テーマ「Plain」を「Photon」に名称変更（Firefoxの現在のテーマ名に合わせた）
    * Nightly 89.0a1に合わせてタブのコンテキストメニューの構成を変更

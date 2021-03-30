@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.7.4 (2021.3.31)
    * Add a theme like [Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu) experimentally. Proton is the next UI theme of Firefox itself.
    * Rename the theme "Plain" to "Photon". Photon is the current UI theme of Firefox itself.
    * Restructure tab context menu items to match to the one on Nightly 89.0a1.
