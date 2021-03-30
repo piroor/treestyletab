@@ -38,6 +38,7 @@ import * as ContextMenu from './context-menu.js';
 import * as Migration from './migration.js';
 import './browser-action-menu.js';
 import './successor-tab.js';
+import './duplicated-tab-detection.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 

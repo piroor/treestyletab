@@ -521,6 +521,15 @@ function updateThemeInformation(theme) {
   document.getElementById('browserThemeCustomRulesBlock').style.display = rules ? 'block' : 'none';
 }
 
+function autoDetectDuplicatedTabDetectionDelay() {
+  browser.runtime.sendMessage({ type: Constants.kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY });
+}
+
+async function testDuplicatedTabDetection() {
+  const successRate = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_TEST_DUPLICATED_TAB_DETECTION });
+  document.querySelector('#delayForDuplicatedTabDetection_testResult').textContent = browser.i18n.getMessage('config_delayForDuplicatedTabDetection_test_resultMessage', [successRate * 100]);
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
   if (typeof browser.tabs.moveInSuccession == 'function')
@@ -546,6 +555,31 @@ window.addEventListener('DOMContentLoaded', async () => {
       return;
     showLogs();
   });
+
+  const autoDetectDuplicatedTabDetectionDelayButton = document.getElementById('delayForDuplicatedTabDetection_autoDetectButton');
+  autoDetectDuplicatedTabDetectionDelayButton.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    autoDetectDuplicatedTabDetectionDelay();
+  });
+  autoDetectDuplicatedTabDetectionDelayButton.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    autoDetectDuplicatedTabDetectionDelay();
+  });
+
+  const testDuplicatedTabDetectionButton = document.getElementById('delayForDuplicatedTabDetection_testButton');
+  testDuplicatedTabDetectionButton.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    testDuplicatedTabDetection();
+  });
+  testDuplicatedTabDetectionButton.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    testDuplicatedTabDetection();
+  });
+
 
   document.getElementById('link-optionsPage-top').setAttribute('href', `${location.href.split('#')[0]}#!`);
   document.getElementById('link-optionsPage').setAttribute('href', `${location.href.split('#')[0]}#!`);

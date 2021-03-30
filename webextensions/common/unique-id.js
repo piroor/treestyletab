@@ -6,7 +6,9 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs,
+  wait,
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
@@ -99,6 +101,8 @@ export async function request(tabOrId, options = {}) {
   let originalTabId = null;
   let duplicated    = false;
   if (!options.forceNew) {
+    if (configs.delayForDuplicatedTabDetection > 0)
+      await wait(configs.delayForDuplicatedTabDetection);
     let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;

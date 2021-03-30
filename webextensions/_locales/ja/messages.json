@@ -681,6 +681,14 @@
   "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
+  "config_delayForDuplicatedTabDetection_label_before": { "message": "複製されたタブの検出の待ち時間:" },
+  "config_delayForDuplicatedTabDetection_label_after": { "message": "ミリ秒（複製されたタブの検出に失敗する場合に数字を増やして下さい）" },
+  "config_delayForDuplicatedTabDetection_autoDetect": { "message": "自動設定" },
+  "config_delayForDuplicatedTabDetection_test": { "message": "検出率をテスト" },
+  "config_delayForDuplicatedTabDetection_test_resultMessage": { "message": "識別の成功率は $PERCENTAGE$% でした",
+    "placeholders": {
+      "percentage": { "content": "$1", "example": "50" }
+    }},
   "config_labelOverflowStyle_caption": { "message": "タブのラベルが長すぎる場合:" },
   "config_labelOverflowStyle_fade":    { "message": "フェードアウトする（視認性を重視）" },
   "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },

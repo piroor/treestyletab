@@ -81,6 +81,8 @@ export const kCOMMAND_GET_CONTEXT_MENU_ITEMS         = 'treestyletab:contextMenu
 export const kCOMMAND_NOTIFY_CONTEXT_MENU_UPDATED    = 'treestyletab:contextMenu-updated';
 export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab:contextMenu-item-checked-status-changed';
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
+export const kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY = 'treestyletab:autodetect-duplicated-tab-detection-delay';
+export const kCOMMAND_TEST_DUPLICATED_TAB_DETECTION             = 'treestyletab:test-duplicated-tab-detection';
 
 export const kCOMMAND_ACTIVATE_TAB            = 'treestyletab:activate-tab';
 export const kCOMMAND_TOGGLE_MUTED            = 'treestyletab:toggle-muted';

@@ -685,6 +685,14 @@
   "config_acceleratedTabCreation_label": { "message": "Accelerate operations around newly opened tabs (*NOTE: You'll see unstable behavior around tabs.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Abort tab duplication when it takes" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "milliseconds or more." },
+  "config_delayForDuplicatedTabDetection_label_before": { "message": "Delay to detect duplicated tabs:" },
+  "config_delayForDuplicatedTabDetection_label_after": { "message": "msec (please increase this if duplicated tabs are not detected correctly)" },
+  "config_delayForDuplicatedTabDetection_autoDetect": { "message": "Auto detect" },
+  "config_delayForDuplicatedTabDetection_test": { "message": "Test detection" },
+  "config_delayForDuplicatedTabDetection_test_resultMessage": { "message": "$PERCENTAGE$% successfully detected.",
+    "placeholders": {
+      "percentage": { "content": "$1", "example": "50" }
+    }},
   "config_labelOverflowStyle_caption": { "message": "Too long label of tabs:" },
   "config_labelOverflowStyle_fade":    { "message": "Fade Out (Better Visibility)" },
   "config_labelOverflowStyle_crop":    { "message": "Crop with \"..\" (Better Performance)" },

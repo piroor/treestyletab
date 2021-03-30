@@ -312,6 +312,7 @@ export const configs = new Configs({
   intervalToUpdateProgressForBlockedUserOperation: 50,
   delayToShowProgressForBlockedUserOperation: 1000,
   acceptableDelayForInternalFocusMoving: 150,
+  delayForDuplicatedTabDetection: 0, // https://github.com/piroor/treestyletab/issues/2845
   delayToRetrySyncTabsOrder: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: null, // obsolete, migrated to longPressDuration
