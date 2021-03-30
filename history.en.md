@@ -5,6 +5,7 @@
    * Rename the theme "Plain" to "Photon". Photon is the current UI theme of Firefox itself.
    * Restructure tab context menu items to match to the one on Nightly 89.0a1.
    * Add a new expert option to close a parent tab as a solo tab by triggers outside of TST, even if it has collapsed children, with visible sidebar.
+   * Increase the maximum size of the user styles about 12KB.
    * Add a [debug option to configure the delay to detect duplicated tabs](https://github.com/piroor/treestyletab/issues/2845).
    * API improvement: introduce [`create` which creates a new tab bypassing TST's tab position control behaviors](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior).
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!

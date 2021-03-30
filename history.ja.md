@@ -5,6 +5,7 @@
    * テーマ「Plain」を「Photon」に名称変更（Firefoxの現在のテーマ名に合わせた）
    * Nightly 89.0a1に合わせてタブのコンテキストメニューの構成を変更
    * 折りたたまれた子タブを持つ親タブについて、サイドバーが表示されている場合にTSTのUI外での操作でタブを閉じるとき、親タブを単独で閉じられるようにする上級者向け設定を追加
+   * ユーザースタイル定義の保存可能最大サイズを約12KB拡大
    * [複製されたタブを検出する処理の待ち時間を変更するデバッグ用設定](https://github.com/piroor/treestyletab/issues/2845)を追加
    * APIの強化：[TSTのタブ位置制御に関する動作を迂回して新しいタブを開く`create`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior)を実装
    * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
