@@ -70,7 +70,8 @@
   --notification-ui-z-index: 9000;
   --blocking-ui-z-index:     10000; /* frontmost of others */
 
-  --tab-extra-contents-behind-z-index: 10;
+  --tab-background-z-index:            10;
+  --tab-extra-contents-behind-z-index: 20;
   --tab-base-z-index:                  100;
   --tab-favicon-z-index:               200;
   --tab-burster-z-index:               4000;
@@ -355,6 +356,7 @@ tab-item .highlighter,
 tab-item .burster,
 tab-item.faviconized.unread tab-favicon::before,
 tab-item.attention tab-favicon::before,
+tab-item .background,
 tab-item .extra-items-container.behind,
 tab-item .extra-items-container.front {
   bottom: 0;
@@ -402,6 +404,10 @@ tab-item.attention tab-favicon::before {
   right: auto;
   top: var(--attention-marker-y-offset);
   width: var(--tab-current-size);
+}
+
+tab-item .background {
+  z-index: var(--tab-background-z-index);
 }
 
 tab-item .extra-items-container.behind {

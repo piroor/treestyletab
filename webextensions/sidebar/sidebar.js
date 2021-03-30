@@ -344,6 +344,9 @@ async function applyOwnTheme(style) {
   if (!style)
     style = configs.style;
   switch (style) {
+    case 'proton':
+      mStyleLoader.setAttribute('href', 'styles/proton/proton.css');
+      break;
     case 'sidebar':
       mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;

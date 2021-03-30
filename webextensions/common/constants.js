@@ -127,6 +127,7 @@ export const kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER = 'data-already-group
 export const kFAVICON_IMAGE   = 'favicon-image';
 export const kFAVICON_BUILTIN = 'favicon-builtin';
 export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions
+export const kBACKGROUND      = 'background';
 export const kTHROBBER        = 'throbber';
 export const kHIGHLIGHTER     = 'highlighter';
 export const kBURSTER         = 'burster';

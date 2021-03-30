@@ -58,10 +58,18 @@ export async function generateThemeDeclarations(theme) {
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
       extraColors.push('--browser-bg-active-for-header-image: rgba(255, 255, 255, 0.4)');
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/toolkit/themes/windows/global/global.css#138
-      if (Color.isBrightColor(inactiveTextColor))
-        extraColors.push('--browser-textshadow-for-header-image: 1px 1px 1.5px black'); // for bright text
-      else
-        extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white'); // for dark text
+      if (Color.isBrightColor(inactiveTextColor)) {
+        // for bright text
+        extraColors.push('--browser-textshadow-for-header-image: 1px 1px 1.5px black');
+        // https://searchfox.org/mozilla-central/rev/0e3d2eb698a51006943f3b4fb74c035da80aa2ff/browser/themes/shared/tabs.inc.css#840
+        extraColors.push('--browser-bg-hover-for-header-image-proton: rgba(255, 255, 255, 0.2);');
+      }
+      else {
+        // for dark text
+        extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white');
+        // https://searchfox.org/mozilla-central/rev/0e3d2eb698a51006943f3b4fb74c035da80aa2ff/browser/themes/shared/tabs.inc.css#834
+        extraColors.push('--browser-bg-hover-for-header-image-proton: rgba(0, 0, 0, 0.2);');
+      }
     }
     let imageUrl = frameImage;
     if (Array.isArray(theme.images.additional_backgrounds) &&

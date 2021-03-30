@@ -77,6 +77,12 @@ const mItems = [
             type:  'radio'
           },
           {
+            title: browser.i18n.getMessage('config_style_proton'),
+            key:   'style',
+            value: 'proton',
+            type:  'radio'
+          },
+          {
             title: browser.i18n.getMessage('config_style_sidebar'),
             key:   'style',
             value: 'sidebar',

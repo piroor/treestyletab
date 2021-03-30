@@ -314,6 +314,7 @@
   "config_sidebarDirection_rtl": { "message": "RTL" },
 
   "config_style_caption": { "message": "Theme" },
+  "config_style_proton": { "message": "Proton" },
   "config_style_photon": { "message": "Photon" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "High Contrast" },
