@@ -22,8 +22,8 @@
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
-  --tab-active-border-near: color-mix(in srgb, currentcolor 40%, transparent);
-  --tab-active-border-far: color-mix(in srgb, currentcolor 20%, transparent);
+  --tab-active-border-near: color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent);
+  --tab-active-border-far: color-mix(in srgb, var(--grey-90, currentcolor) 20%, transparent);
   --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, color-mix(in srgb, currentcolor 11%, transparent));
   --tab-surface-hover: var(--tab-surface-hover-color, var(--in-content-box-background-hover));
   --tab-surface-active: var(--browser-bg-active-for-header-image, var(--tab-like-surface, var(--in-content-button-background-mixed)));
