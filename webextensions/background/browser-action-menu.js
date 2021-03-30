@@ -71,9 +71,9 @@ const mItems = [
         title:    browser.i18n.getMessage('config_style_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_style_plain'),
+            title: browser.i18n.getMessage('config_style_photon'),
             key:   'style',
-            value: 'plain',
+            value: 'photon',
             type:  'radio'
           },
           {

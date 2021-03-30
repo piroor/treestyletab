@@ -21,7 +21,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 21;
+const kCONFIGS_VERSION = 22;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -166,7 +166,7 @@ export function migrateConfigs() {
     case 13:
       if (configs.style == 'mixed' ||
           configs.style == 'vertigo')
-        configs.style = 'plain';
+        configs.style = 'photon';
 
     case 14:
       if (configs.inheritContextualIdentityToNewChildTab !== null)
@@ -211,6 +211,10 @@ export function migrateConfigs() {
       if (configs.treatTreeAsExpandedOnClosedWithNoSidebar !== configs.$default.treatTreeAsExpandedOnClosedWithNoSidebar) {
         configs.treatTreeAsExpandedOnClosed_noSidebar = configs.treatTreeAsExpandedOnClosedWithNoSidebar;
       }
+
+    case 21:
+      if (configs.style == 'plain')
+        configs.style = 'photon';
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

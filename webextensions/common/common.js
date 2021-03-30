@@ -80,7 +80,7 @@ export const configs = new Configs({
 
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
-      'plain',
+      'photon',
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   unrepeatableBGImageAspectRatio: 4,

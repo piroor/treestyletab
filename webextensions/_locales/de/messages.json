@@ -314,7 +314,7 @@
   "config_sidebarDirection_rtl": { "message": "Von rechts nach links" },
 
   "config_style_caption": { "message": "Design" },
-  "config_style_plain": { "message": "Pur" },
+  "config_style_photon": { "message": "Pur" },
   "config_style_sidebar": { "message": "Seitenleiste" },
   "config_style_highcontrast": { "message": "Hoher Kontrast" },
   "config_style_none": { "message": "Keine Designvorgabe" },

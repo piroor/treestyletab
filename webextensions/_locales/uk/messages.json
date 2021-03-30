@@ -142,7 +142,7 @@
   "config_scrollbarMode_descriptionForMac": { "message": "*Лише \"Оверлей\" буде ефективним на останніх версіях macOS." },
 
   "config_style_caption": { "message": "Тема" },
-  "config_style_plain": { "message": "Проста" },
+  "config_style_photon": { "message": "Проста" },
   "config_style_sidebar": { "message": "Бічна панель" },
   "config_style_highcontrast": { "message": "Висококонтр." },
   "config_style_none": { "message": "Без стилю" },

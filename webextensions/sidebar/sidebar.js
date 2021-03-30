@@ -347,15 +347,16 @@ async function applyOwnTheme(style) {
     case 'sidebar':
       mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;
-    case 'plain':
+    case 'photon':
     // for backward compatibility, fall back to plain.
+    case 'plain':
     case 'flat':
     case 'vertigo':
     case 'mixed':
-      mStyleLoader.setAttribute('href', 'styles/square/plain.css');
+      mStyleLoader.setAttribute('href', 'styles/photon/photon.css');
       break;
     case 'highcontrast':
-      mStyleLoader.setAttribute('href', 'styles/square/highcontrast.css');
+      mStyleLoader.setAttribute('href', 'styles/photon/highcontrast.css');
       break;
     default:
       // as the base of customization. see also:

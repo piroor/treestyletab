@@ -207,7 +207,7 @@
   "config_sidebarDirection_rtl": { "message": "De droite à gauche" },
 
   "config_style_caption": { "message": "Thème" },
-  "config_style_plain": { "message": "Simple" },
+  "config_style_photon": { "message": "Simple" },
   "config_style_sidebar": { "message": "Panneau" },
   "config_style_highcontrast": { "message": "Contraste élevé" },
   "config_style_none": { "message": "Pas de décoration" },
