@@ -314,7 +314,8 @@
   "config_sidebarDirection_rtl": { "message": "Справа налево" },
 
   "config_style_caption": { "message": "Тема" },
-  "config_style_photon": { "message": "Простая" },
+  "config_style_proton": { "message": "Протон" },
+  "config_style_photon": { "message": "Фотон" },
   "config_style_sidebar": { "message": "Сайдбар" },
   "config_style_highcontrast": { "message": "Контраст" },
   "config_style_none": { "message": "Без стиля" },
@@ -551,7 +552,9 @@
   "config_closeParentBehavior_promoteIntelligently": { "message": "Повысить первую дочернюю, когда корневая вкладка закрыта, иначе повысить все дочерние" },
   "config_closeParentBehavior_detach":               { "message": "Освободить дочерние вкладки из дерева" },
 
-  "config_treatTreeAsExpandedOnClosed_noSidebar_label": { "message": "Рассматривать закрывающуюся родительскую вкладку как одиночную, даже если у нее есть свернутый потомок, при скрытой боковой панели" },
+  "config_treatTreeAsExpandedOnClosed_caption": { "message": "Для операций с нативной панелью вкладок: Рассматривать закрывающуюся родительскую вкладку (сочетаниями клавиш или другими аддонами) как закрывающуюся одиночную вкладку (даже если у нее есть свернутый потомок)" },
+  "config_treatTreeAsExpandedOnClosed_outsideSidebar_label": { "message": "Когда боковая панель видна" },
+  "config_treatTreeAsExpandedOnClosed_noSidebar_label": { "message": "Когда боковая панель скрыта" },
 
   "config_warnOnCloseTabs_label": { "message": "Предупреждать при закрытии нескольких вкладок" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать при закрытии нескольких вкладок по крестику закрытия вкладки (свернутое дерево)" },
@@ -683,6 +686,14 @@
   "config_acceleratedTabCreation_label": { "message": "Ускорение операций с повторно открытыми вкладками ( * ПРИМЕЧАНИЕ: Возможно вы увидите нестабильную работу вкладок.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Отменить дублирование вкладок, когда это продолжается" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "миллисекунд или больше." },
+  "config_delayForDuplicatedTabDetection_label_before": { "message": "Задержка обнаружения дублей вкладок:" },
+  "config_delayForDuplicatedTabDetection_label_after": { "message": "мс (увеличьте значение, если дубли вкладок не обнаруживаются правильно)" },
+  "config_delayForDuplicatedTabDetection_autoDetect": { "message": "Автоматическое обнаружение" },
+  "config_delayForDuplicatedTabDetection_test": { "message": "Тест обнаружения" },
+  "config_delayForDuplicatedTabDetection_test_resultMessage": { "message": "$PERCENTAGE$% успешно обнаружено.",
+    "placeholders": {
+      "percentage": { "content": "$1", "example": "50" }
+    }},
   "config_labelOverflowStyle_caption": { "message": "Слишком длинный заголовок вкладок:" },
   "config_labelOverflowStyle_fade":    { "message": "Увядание (лучшая видимость)" },
   "config_labelOverflowStyle_crop":    { "message": "Подставлять \"..\" (лучше производительность)" },
@@ -717,6 +728,8 @@
   "tabContextMenu_sendTabsToDevice_label": { "message": "Отправить вкладку на устройство" },
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "Отправить на все устройства" },
   "tabContextMenu_manageSyncDevices_label": { "message": "Управление устройствами…" },
+  "tabContextMenu_shareTabURL_label":   { "message": "Поделится" },
+
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "&Закрыть несколько вкладок" },
   "tabContextMenu_closeTabsToTop_label":  { "message": "Закрыть вкладки с&верху" },
