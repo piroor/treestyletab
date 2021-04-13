@@ -1018,9 +1018,16 @@ async function onClick(info, contextTab) {
       tabs.reverse();
       const closeTabs = [];
       const keptTabIds = new Set(
-        multiselectedTabs ?
-          multiselectedTabs.map(tab => tab.id) :
-          [contextTab.id]
+        (multiselectedTabs ?
+          multiselectedTabs :
+          [contextTab]
+        ).reduce((tabIds, tab, _index) => {
+          if (tab.$TST.subtreeCollapsed)
+            tabIds.push(tab.id, ...tab.$TST.descendants.map(tab => tab.id))
+          else
+            tabIds.push(tab.id);
+          return tabIds;
+        }, [])
       );
       for (const tab of tabs) {
         if (keptTabIds.has(tab.id))
