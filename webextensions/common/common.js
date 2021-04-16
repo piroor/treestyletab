@@ -75,9 +75,6 @@ export const configs = new Configs({
   sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
 
-  sidebarScrollbarPosition: null, // obsolete, migrated to user stylesheet
-  scrollbarMode: null, // obsolete, migrated to user stylesheet
-
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
       'photon',
@@ -107,7 +104,6 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
-  suppressGapFromShownOrHiddenToolbar: null, // obsolete, migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
   suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation: true,
   suppressGapFromShownOrHiddenToolbarOnFullScreen: false,
   suppressGapFromShownOrHiddenToolbarOnNewTab: true,
@@ -117,7 +113,6 @@ export const configs = new Configs({
 
 
   // context menu
-  fakeContextMenu: null, // obsolete, migrated to emulateDefaultContextMenu
   emulateDefaultContextMenu: true,
 
   context_reloadTree: true,
@@ -148,10 +143,6 @@ export const configs = new Configs({
   context_topLevel_bookmarkTree: false,
   context_topLevel_sendTreeToDevice: true,
 
-  context_closeTabOptions_closeTree: null, // obsolete, migrated to context_topLevel_closeTree
-  context_closeTabOptions_closeDescendants: null, // obsolete, migrated to context_topLevel_closeDescendants
-  context_closeTabOptions_closeOthers: null, // obsolete, migrated to context_topLevel_closeOthers
-
   context_collapsed: false,
   context_pinnedTab: false,
   context_unpinnedTab: false,
@@ -169,12 +160,10 @@ export const configs = new Configs({
   autoCollapseExpandSubtreeOnSelect: true,
   autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove: true,
 
-  collapseExpandSubtreeByDblClick: null, // obsolete, migrated to treeDoubleClickBehavior
   treeDoubleClickBehavior: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_NONE,
 
   autoExpandIntelligently: true,
   unfocusableCollapsedTab: true,
-  autoExpandOnCollapsedChildActive: null, // obsolete, migrate to unfocusableCollapsedTab
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,
@@ -189,8 +178,8 @@ export const configs = new Configs({
 
   dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
-  tabDragBehavior:      Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
-  tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
+  tabDragBehavior:      Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE,
+  tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
   showTabDragBehaviorNotification: true,
   guessDraggedNativeTabs: true,
 
@@ -238,28 +227,28 @@ export const configs = new Configs({
   autoAttachOnAnyOtherTrigger: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
-  inheritContextualIdentityToNewChildTab: null, // obsolete, migrated to inheritContextualIdentityToChildTabMode
   inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
-  inheritContextualIdentityToSameSiteOrphan: null, // obsolete, migrated to inheritContextualIdentityToSameSiteOrphanMode
   inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
-  inheritContextualIdentityToTabsFromExternal: null, // obsolete, migrated to inheritContextualIdentityToTabsFromExternalMode
   inheritContextualIdentityToTabsFromExternalMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
 
 
   // behavior around closed tab
-  closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-  closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  promoteFirstChildForClosedRoot:     null, // obsolete, migrated to Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges:        null, // obsolete, migrated to closeParentBehaviorMode
+  parentTabOperationBehaviorMode:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+  //closeParentBehavior_insideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE, // permanently consistent
+  closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  //moveParentBehavior_insideSidebar_collapsed:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE, // permanently consistent
+  //moveParentBehavior_insideSidebar_expanded:    Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE, // permanently consistent
+  moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+  moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
-  treatTreeAsExpandedOnClosedWithNoSidebar: null, // obsolete, migrated to "treatTreeAsExpandedOnClosed_noSidebar"
-  treatTreeAsExpandedOnClosed_outsideSidebar: false,
-  treatTreeAsExpandedOnClosed_noSidebar: true,
-  moveFocusInTreeForClosedActiveTab: null, // obsolete, migrated to "successorTabControlLevel"
   successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,
   simulateLockTabSizing: true,
@@ -315,13 +304,10 @@ export const configs = new Configs({
   delayForDuplicatedTabDetection: 0, // https://github.com/piroor/treestyletab/issues/2845
   delayToRetrySyncTabsOrder: 100,
   notificationTimeout: 10 * 1000,
-  startDragTimeout: null, // obsolete, migrated to longPressDuration
-  simulateCloseTabByDblclick: null, // obsolete, migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   delayToApplyHighlightedState: 50,
   acceptableFlickerToIgnoreClickOnTabAndTabbar: 10,
-  moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , obsolete and migrated to tabDragBehavior
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
@@ -369,15 +355,6 @@ export const configs = new Configs({
 }
 */
 `.trim(),
-  // obsolete, migrated to chunkedUserStyleRules0-5
-  userStyleRules0: '',
-  userStyleRules1: '',
-  userStyleRules2: '',
-  userStyleRules3: '',
-  userStyleRules4: '',
-  userStyleRules5: '',
-  userStyleRules6: '',
-  userStyleRules7: '',
   userStyleRulesFieldHeight: '10em',
   userStyleRulesFieldTheme: 'auto',
 
@@ -485,6 +462,44 @@ export const configs = new Configs({
   enableLinuxBehaviors: false,
   enableMacOSBehaviors: false,
   enableWindowsBehaviors: false,
+
+
+  // obsolete configs
+  sidebarScrollbarPosition: null, // migrated to user stylesheet
+  scrollbarMode: null, // migrated to user stylesheet
+  suppressGapFromShownOrHiddenToolbar: null, // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  fakeContextMenu: null, // migrated to emulateDefaultContextMenu
+  context_closeTabOptions_closeTree: null, // migrated to context_topLevel_closeTree
+  context_closeTabOptions_closeDescendants: null, // migrated to context_topLevel_closeDescendants
+  context_closeTabOptions_closeOthers: null, // migrated to context_topLevel_closeOthers
+  collapseExpandSubtreeByDblClick: null, // migrated to treeDoubleClickBehavior
+  autoExpandOnCollapsedChildActive: null, // migrate to unfocusableCollapsedTab
+  inheritContextualIdentityToNewChildTab: null, // migrated to inheritContextualIdentityToChildTabMode
+  inheritContextualIdentityToSameSiteOrphan: null, // migrated to inheritContextualIdentityToSameSiteOrphanMode
+  inheritContextualIdentityToTabsFromExternal: null, // migrated to inheritContextualIdentityToTabsFromExternalMode
+  promoteFirstChildForClosedRoot:     null, // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  parentTabBehaviorForChanges:        null, // migrated to parentTabOperationBehaviorMode
+  closeParentBehaviorMode: null, // migrated to parentTabOperationBehaviorMode
+  closeParentBehavior:                null, // migrated to closeParentBehavior_insideSidebar_expanded
+  closeParentBehavior_outsideSidebar: null, // migrated to closeParentBehavior_outsideSidebar_expanded
+  closeParentBehavior_noSidebar:      null, // migrated to closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosedWithNoSidebar: null, // migrated to treatTreeAsExpandedOnClosed_noSidebar
+  treatTreeAsExpandedOnClosed_outsideSidebar: null, // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosed_noSidebar: null, // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
+  moveFocusInTreeForClosedActiveTab: null, // migrated to "successorTabControlLevel"
+  startDragTimeout: null, // migrated to longPressDuration
+  simulateCloseTabByDblclick: null, // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
+  moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
+  // migrated to chunkedUserStyleRules0-5
+  userStyleRules0: '',
+  userStyleRules1: '',
+  userStyleRules2: '',
+  userStyleRules3: '',
+  userStyleRules4: '',
+  userStyleRules5: '',
+  userStyleRules6: '',
+  userStyleRules7: '',
+
 
   configsVersion: 0,
 

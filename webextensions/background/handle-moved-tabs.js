@@ -80,12 +80,14 @@ Tab.onMoving.addListener((tab, moveInfo) => {
 });
 
 async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
+  const parentTabOperationBehavior = TreeBehavior.getParentTabOperationBehavior(tab, {
+    context: Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE,
+    ...moveInfo,
+  });
   if (!moveInfo.isTabCreating &&
-      !TreeBehavior.shouldApplyTreeBehavior(moveInfo)) {
+      parentTabOperationBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
     Tree.detachAllChildren(tab, {
-      behavior: TreeBehavior.getCloseParentBehaviorForTab(tab, {
-        applyTreeBehavior: true
-      }),
+      behavior:  parentTabOperationBehavior,
       broadcast: true
     });
     Tree.detachTab(tab, {

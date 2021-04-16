@@ -239,7 +239,7 @@ export async function indent(tab, options = {}) {
   if (!options.followChildren)
     Tree.detachAllChildren(tab, {
       broadcast: true,
-      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   const insertAfter = newParent.$TST.lastDescendant || newParent;
   await Tree.attachTabTo(tab, newParent, {
@@ -259,7 +259,7 @@ export async function outdent(tab, options = {}) {
   if (!options.followChildren)
     Tree.detachAllChildren(tab, {
       broadcast: true,
-      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   if (newParent) {
     const insertAfter = parent.$TST.lastDescendant || parent;
@@ -586,7 +586,7 @@ export async function moveBefore(tab, options = {}) {
   if (!options.followChildren) {
     Tree.detachAllChildren(tab, {
       broadcast: true,
-      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
     await TabsMove.moveTabBefore(
       tab,
@@ -620,7 +620,7 @@ export async function moveAfter(tab, options = {}) {
   if (!options.followChildren) {
     Tree.detachAllChildren(tab, {
       broadcast: true,
-      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
     await TabsMove.moveTabAfter(
       tab,

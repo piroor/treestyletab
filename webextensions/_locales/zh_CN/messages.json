@@ -1197,71 +1197,71 @@
         "message": "什么都不做",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
     },
-    "config_closeParentBehaviorMode_caption": {
+    "config_parentTabOperationBehaviorMode_caption": {
         "message": "当一个父标签页被关闭或被单独移动时",
         "hash": "a7161c671b137ea9be76d23ab611889d"
     },
-    "config_closeParentBehaviorMode_withNativeTabs": {
+    "config_parentTabOperationBehaviorMode_parallel": {
         "message": "若用户仍然会使用到 Firefox 原生标签栏，则推荐此项",
         "hash": "f4c5eca1aa702ad5ebc4c142a6f293e4"
     },
-    "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": {
+    "config_parentTabOperationBehaviorMode_parallel_caption_withoutSidebar": {
         "message": "如果可能的话，对于在树状标签页侧栏不可见时进行的操作，请尽量保持标签树的结构和标签页的数量。",
         "hash": "5fed46d5f197881f1264acddd89dbc3e"
     },
-    "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar": {
+    "config_parentTabOperationBehaviorMode_parallel_caption_withSidebar": {
         "message": "当树状标签页侧栏可见时：",
         "hash": "966b2948e5a282ae55b262d4f18f9152"
     },
-    "config_closeParentBehaviorMode_withoutNativeTabs": {
+    "config_parentTabOperationBehaviorMode_consistent": {
         "message": "若用户不会再使用到 Firefox 原生标签栏，则推荐此项",
         "hash": "ad2c73a0d8820cea704f6b3d7b066d57"
     },
-    "config_closeParentBehaviorMode_withoutNativeTabs_caption": {
+    "_config_parentTabOperationBehaviorMode_consistent_caption": {
         "message": "不管树状标签页侧栏是否可见，对于任何操作：",
         "hash": "e2f5a3a381dff0c4f676c1f0b470c236"
     },
-    "config_closeParentBehaviorMode_custom": {
+    "config_parentTabOperationBehaviorMode_custom": {
         "message": "自定义",
         "hash": "1685452bc68395b620b0ce1fb9b76da5"
     },
-    "config_closeParentBehaviorMode_custom_caption_insideSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_insideSidebar": {
         "message": "对于在树状标签页侧栏之内进行的操作：",
         "hash": "4fc075578744df222867556e93af5f19"
     },
-    "config_closeParentBehaviorMode_custom_caption_outsideSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_outsideSidebar": {
         "message": "当树状标签页侧栏可见时，对于来自原生标签栏、键盘快捷键或其他附加组件的操作：",
         "hash": "e618479e7cbe39903dea5656e88789fc"
     },
-    "config_closeParentBehaviorMode_custom_caption_noSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_noSidebar": {
         "message": "通过原生标签栏、键盘快捷键、或其他附加组件的操作：",
         "hash": "4bdee6fa2193415c0d1f308b8f92f9ee"
     },
-    "config_closeParentBehavior_close": {
+    "config_parentTabOperationBehavior_entireTree": {
         "message": "后代项也一并关闭",
         "hash": "895074e7f503ce28d4235d73042dae96"
     },
-    "config_closeParentBehavior_replaceWithGroupTab": {
+    "config_parentTabOperationBehavior_replaceWithGroupTab": {
         "message": "用一个虚拟标签页替换已关闭的父标签页从而保留该标签树",
         "hash": "647fbebbedb16a43f51f65b0d768183d"
     },
-    "config_closeParentBehavior_promoteFirst": {
+    "config_parentTabOperationBehavior_promoteFirst": {
         "message": "总是将第一个子项提升为新的父标签页",
         "hash": "e441dfb29c1cfc3bd03cdbaca7def11c"
     },
-    "config_closeParentBehavior_promoteAll": {
+    "config_parentTabOperationBehavior_promoteAll": {
         "message": "总是将所有子项的级别按被关闭的父标签页级别进行提升",
         "hash": "1b27f1941ba3947924530632fe4c6ce4"
     },
-    "config_closeParentBehavior_promoteIntelligently": {
+    "config_parentTabOperationBehavior_promoteIntelligently": {
         "message": "若是一个根标签页被关闭，则提升第一个子项；否则就提升所有子项",
         "hash": "de0fb94e9c3528909029d2e9bb7724ba"
     },
-    "config_closeParentBehavior_detach": {
+    "config_parentTabOperationBehavior_detach": {
         "message": "释放来自该标签树的子标签页",
         "hash": "1312437055c8720e49ebe347501efb97"
     },
-    "config_treatTreeAsExpandedOnClosed_noSidebar_label": {
+    "config_treatClosedOrMovedTabAsSoloTab_noSidebar_label": {
         "message": "当侧栏不可见时，一个父标签页在被关闭时只会被单独关闭，即使其拥有折叠的后代项",
         "hash": "51551c98e1b4251b05300832c69a6a78"
     },
@@ -1293,35 +1293,21 @@
         "message": "按住 Shift 后拖动",
         "hash": "bbe432a46b307bcc31ee7a4f0f667c46"
     },
-    "config_tabDragBehavior_label_behavior": {
-        "message": "在侧栏 之内 / 之外 的行为",
-        "hash": "59f0069d2cad894d52c8ac1b30aee2ca"
-    },
-    "config_tabDragBehavior_tearoff_tree": {
-        "message": "移动整个标签树 / 从该窗口分离整个标签树（但不会创建书签）",
-        "hash": "22e37c5af01d15eac6612b4a1defc4bd"
-    },
-    "config_tabDragBehavior_bookmark_tree": {
-        "message": "移动整个标签树 / 为整个标签树创建链接或书签（但不会从该窗口分离）",
-        "hash": "0b9924753511cc71dc499f5f40a6e927"
-    },
-    "config_tabDragBehavior_none_tree": {
-        "message": "移动整个标签树 / 什么都不做",
+    "config_tabDragBehavior_label_behaviorInsideSidebar": {
+        "message": "在侧栏 之内",
         "hash": ""
     },
-    "config_tabDragBehavior_tearoff_tab": {
-        "message": "移动单个标签页 / 从该窗口分离单个标签页（但不会创建书签）",
-        "hash": "bfd07549cea04e48abb877763c6d6a4a"
-    },
-    "config_tabDragBehavior_bookmark_tab": {
-        "message": "移动单个标签页 / 为单个标签页创建链接或书签（但不会从该窗口分离）",
-        "hash": "f3592b9c978a8c82911ec0d008d3b870"
-    },
-    "config_tabDragBehavior_none_tab": {
-        "message": "移动单个标签页 / 什么都不做",
+    "config_tabDragBehavior_label_behaviorOutsideSidebar": {
+        "message": "之外 的行为",
         "hash": ""
     },
-    "config_tabDragBehavior_none_none":     { "message": "什么都不做 / 什么都不做" },
+    "config_tabDragBehavior_moveEntireTreeAlways":         { "message": "移动整个标签树" },
+    "config_tabDragBehavior_detachEntireTreeAlways":       { "message": "从该窗口分离整个标签树（但不会创建书签）" },
+    "config_tabDragBehavior_bookmarkEntireTreeAlways":     { "message": "为整个标签树创建链接或书签（但不会从该窗口分离）" },
+    "config_tabDragBehavior_moveSoloTabIfExpanded":        { "message": "移动单个标签页" },
+    "config_tabDragBehavior_detachSoloTabIfExpanded":      { "message": "从该窗口分离单个标签页（但不会创建书签）" },
+    "config_tabDragBehavior_bookmarkSoloTabIfExpanded":    { "message": "为单个标签页创建链接或书签（但不会从该窗口分离）" },
+    "config_tabDragBehavior_doNothing":                    { "message": "什么都不做" },
     "config_showTabDragBehaviorNotification_label": {
         "message": "在拖动标签页时显示通知提示，说明当这些标签页被拖放到侧栏之外时会发生的情况。",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"

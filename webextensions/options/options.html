@@ -755,129 +755,218 @@
                       type="checkbox">
                __MSG_config_simulateSelectOwnerOnClose_label__</label></p>
     </fieldset>
-    <fieldset id="closeParentBehaviorModeGroup">
-      <legend>__MSG_config_closeParentBehaviorMode_caption__</legend>
+    <fieldset id="parentTabOperationBehaviorModeGroup">
+      <legend>__MSG_config_parentTabOperationBehaviorMode_caption__</legend>
+      <p style="white-space: pre-wrap">__MSG_config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors__</p>
+      <hr>
       <ul>
         <li><label class="has-radio"
                   ><input type="radio"
-                          name="closeParentBehaviorMode" value="0">
-              __MSG_config_closeParentBehaviorMode_withNativeTabs__</label>
-            <div class="sub">
-            <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar__</p>
-            <p>__MSG_config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar__</p>
+                          name="parentTabOperationBehaviorMode" value="0">
+              <em>__MSG_config_parentTabOperationBehaviorMode_parallel__</em></label>
+          <div class="sub">
+            <p>__MSG_config_parentTabOperationBehaviorMode_parallel_insideSidebar__</p>
             <ul>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior0" value="5">
-                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded0" value="5">
+                    __MSG_config_parentTabOperationBehavior_replaceWithGroupTab__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior0" value="3">
-                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded0" value="3">
+                    __MSG_config_parentTabOperationBehavior_promoteFirst__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior0" value="0">
-                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded0" value="0">
+                    __MSG_config_parentTabOperationBehavior_promoteAll__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior0" value="6">
-                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded0" value="6">
+                    __MSG_config_parentTabOperationBehavior_promoteIntelligently__</label></li>
             </ul>
-            </div>
+            <hr>
+            <p>__MSG_config_parentTabOperationBehaviorMode_parallel_outsideSidebar__</p>
+            <ul>
+              <li><label class="has-radio"
+                        ><input type="radio"
+                                data-config-key="closeParentBehavior_outsideSidebar_expanded"
+                                name="closeParentBehavior_outsideSidebar_expanded0" value="5">
+                    __MSG_config_parentTabOperationBehavior_replaceWithGroupTab__</label></li>
+              <li><label class="has-radio"
+                        ><input type="radio"
+                                data-config-key="closeParentBehavior_outsideSidebar_expanded"
+                                name="ccloseParentBehavior_outsideSidebar_expanded0" value="3">
+                    __MSG_config_parentTabOperationBehavior_promoteFirst__</label></li>
+              <li><label class="has-radio"
+                        ><input type="radio"
+                                data-config-key="closeParentBehavior_outsideSidebar_expanded"
+                                name="closeParentBehavior_outsideSidebar_expanded0" value="0">
+                    __MSG_config_parentTabOperationBehavior_promoteAll__</label></li>
+              <li><label class="has-radio"
+                        ><input type="radio"
+                                data-config-key="closeParentBehavior_outsideSidebar_expanded"
+                                name="closeParentBehavior_outsideSidebar_expanded0" value="6">
+                    __MSG_config_parentTabOperationBehavior_promoteIntelligently__</label></li>
+            </ul>
+          </div>
         </li>
         <li><label class="has-radio"
                   ><input
                     type="radio"
-                    name="closeParentBehaviorMode" value="1">
-              __MSG_config_closeParentBehaviorMode_withoutNativeTabs__</label>
-            <div class="sub">
-            <p>__MSG_config_closeParentBehaviorMode_withoutNativeTabs_caption__</p>
+                    name="parentTabOperationBehaviorMode" value="1">
+              <em>__MSG_config_parentTabOperationBehaviorMode_consistent__</em></label>
+          <div class="sub">
+            <p>__MSG_config_parentTabOperationBehaviorMode_consistent_caption__</p>
             <ul>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior1" value="5">
-                    __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded1" value="5">
+                    __MSG_config_parentTabOperationBehavior_replaceWithGroupTab__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior1" value="3">
-                    __MSG_config_closeParentBehavior_promoteFirst__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded1" value="3">
+                    __MSG_config_parentTabOperationBehavior_promoteFirst__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior1" value="0">
-                    __MSG_config_closeParentBehavior_promoteAll__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded1" value="0">
+                    __MSG_config_parentTabOperationBehavior_promoteAll__</label></li>
               <li><label class="has-radio"
                         ><input type="radio"
-                                data-config-key="closeParentBehavior"
-                                name="closeParentBehavior1" value="6">
-                    __MSG_config_closeParentBehavior_promoteIntelligently__</label></li>
+                                data-config-key="closeParentBehavior_insideSidebar_expanded"
+                                name="closeParentBehavior_insideSidebar_expanded1" value="6">
+                    __MSG_config_parentTabOperationBehavior_promoteIntelligently__</label></li>
             </ul>
-            </div>
+            <p>__MSG_config_parentTabOperationBehaviorMode_consistent_notes__</p>
+          </div>
         </li>
         <li><label class="has-radio"
                   ><input
                     type="radio"
-                    name="closeParentBehaviorMode" value="-1">
-              __MSG_config_closeParentBehaviorMode_custom__</label>
-            <div class="sub">
+                    name="parentTabOperationBehaviorMode" value="-1">
+              <em>__MSG_config_parentTabOperationBehaviorMode_custom__</em></label>
+          <div class="sub">
             <p>
-            <label>__MSG_config_closeParentBehaviorMode_custom_caption_insideSidebar__
-              <select id="closeParentBehavior2" data-config-key="closeParentBehavior">
-                <option value="2">__MSG_config_closeParentBehavior_close__</option>
-                <option value="5">__MSG_config_closeParentBehavior_replaceWithGroupTab__</option>
-                <option value="3">__MSG_config_closeParentBehavior_promoteFirst__</option>
-                <option value="0">__MSG_config_closeParentBehavior_promoteAll__</option>
-                <option value="6">__MSG_config_closeParentBehavior_promoteIntelligently__</option>
-                <option value="1">__MSG_config_closeParentBehavior_detach__</option>
+            <label>__MSG_config_closeParentBehavior_insideSidebar_expanded_caption__
+              <select id="closeParentBehavior_insideSidebar_expanded2" data-config-key="closeParentBehavior_insideSidebar_expanded">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_close__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_close__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_close__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_close__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_close__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_close__</option>
               </select>
             </label>
             </p>
+            <hr>
             <p>
-            <label>__MSG_config_closeParentBehaviorMode_custom_caption_outsideSidebar__
-              <select id="closeParentBehavior_outsideSidebar">
-                <option value="2">__MSG_config_closeParentBehavior_close__</option>
-                <option value="5">__MSG_config_closeParentBehavior_replaceWithGroupTab__</option>
-                <option value="3">__MSG_config_closeParentBehavior_promoteFirst__</option>
-                <option value="0">__MSG_config_closeParentBehavior_promoteAll__</option>
-                <option value="6">__MSG_config_closeParentBehavior_promoteIntelligently__</option>
-                <option value="1">__MSG_config_closeParentBehavior_detach__</option>
+            <label>__MSG_config_closeParentBehavior_outsideSidebar_collapsed_caption__
+              <select id="closeParentBehavior_outsideSidebar_collapsed2" data-config-key="closeParentBehavior_outsideSidebar_collapsed">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_close__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_close__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_close__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_close__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_close__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_close__</option>
               </select>
             </label>
             </p>
-            <p>
-            <label>__MSG_config_closeParentBehaviorMode_custom_caption_noSidebar__
-              <select id="closeParentBehavior_noSidebar">
-                <option value="2">__MSG_config_closeParentBehavior_close__</option>
-                <option value="5">__MSG_config_closeParentBehavior_replaceWithGroupTab__</option>
-                <option value="3">__MSG_config_closeParentBehavior_promoteFirst__</option>
-                <option value="0">__MSG_config_closeParentBehavior_promoteAll__</option>
-                <option value="6">__MSG_config_closeParentBehavior_promoteIntelligently__</option>
-                <option value="1">__MSG_config_closeParentBehavior_detach__</option>
+            <p class="sub">
+            <label>__MSG_config_closeParentBehavior_noSidebar_collapsed_caption__
+              <select id="closeParentBehavior_noSidebar_collapsed2" data-config-key="closeParentBehavior_noSidebar_collapsed">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_close__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_close__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_close__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_close__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_close__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_close__</option>
               </select>
             </label>
             </p>
-            </div>
+            <hr>
+            <p>
+            <label>__MSG_config_closeParentBehavior_outsideSidebar_expanded_caption__
+              <select id="closeParentBehavior_outsideSidebar_expanded2" data-config-key="closeParentBehavior_outsideSidebar_expanded">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_close__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_close__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_close__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_close__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_close__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_close__</option>
+              </select>
+            </label>
+            </p>
+            <p class="sub">
+            <label>__MSG_config_closeParentBehavior_noSidebar_expanded_caption__
+              <select id="closeParentBehavior_noSidebar_expanded2" data-config-key="closeParentBehavior_noSidebar_expanded">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_close__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_close__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_close__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_close__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_close__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_close__</option>
+              </select>
+            </label>
+            </p>
+            <hr>
+            <p>
+            <label>__MSG_config_moveParentBehavior_outsideSidebar_collapsed_caption__
+              <select id="moveParentBehavior_outsideSidebar_collapsed2" data-config-key="moveParentBehavior_outsideSidebar_collapsed">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_move__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_move__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_move__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_move__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_move__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_move__</option>
+              </select>
+            </label>
+            </p>
+            <p class="sub">
+            <label>__MSG_config_moveParentBehavior_noSidebar_collapsed_caption__
+              <select id="moveParentBehavior_noSidebar_collapsed2" data-config-key="moveParentBehavior_noSidebar_collapsed">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_move__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_move__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_move__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_move__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_move__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_move__</option>
+              </select>
+            </label>
+            </p>
+            <hr>
+            <p>
+            <label>__MSG_config_moveParentBehavior_outsideSidebar_expanded_caption__
+              <select id="moveParentBehavior_outsideSidebar_expanded2" data-config-key="moveParentBehavior_outsideSidebar_expanded">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_move__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_move__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_move__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_move__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_move__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_move__</option>
+              </select>
+            </label>
+            </p>
+            <p class="sub">
+            <label>__MSG_config_moveParentBehavior_noSidebar_expanded_caption__
+              <select id="moveParentBehavior_noSidebar_expanded2" data-config-key="moveParentBehavior_noSidebar_expanded">
+                <option value="2">__MSG_config_parentTabOperationBehavior_entireTree_move__</option>
+                <option value="5">__MSG_config_parentTabOperationBehavior_replaceWithGroupTab_move__</option>
+                <option value="3">__MSG_config_parentTabOperationBehavior_promoteFirst_move__</option>
+                <option value="0">__MSG_config_parentTabOperationBehavior_promoteAll_move__</option>
+                <option value="6">__MSG_config_parentTabOperationBehavior_promoteIntelligently_move__</option>
+                <option value="1">__MSG_config_parentTabOperationBehavior_detach_move__</option>
+              </select>
+            </label>
+            </p>
+          </div>
         </li>
       </ul>
-      <div class="expert">
-        <p>__MSG_config_treatTreeAsExpandedOnClosed_caption__</p>
-        <p class="sub has-checkbox"
-          ><label class="has-checkbox"
-                 ><input id="treatTreeAsExpandedOnClosed_outsideSidebar"
-                         type="checkbox">
-                  __MSG_config_treatTreeAsExpandedOnClosed_outsideSidebar_label__</label></p>
-        <p class="sub has-checkbox"
-          ><label class="has-checkbox"
-                 ><input id="treatTreeAsExpandedOnClosed_noSidebar"
-                         type="checkbox">
-                  __MSG_config_treatTreeAsExpandedOnClosed_noSidebar_label__</label></p>
-      </div>
     </fieldset>
     <fieldset>
       <legend>__MSG_config_fixupTreeOnTabVisibilityChanged_caption__</legend>

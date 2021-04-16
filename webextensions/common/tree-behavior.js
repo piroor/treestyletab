@@ -16,99 +16,104 @@ function log(...args) {
   internalLogger('common/tree-behavior', ...args);
 }
 
-export function shouldApplyTreeBehavior({ windowId } = {}) {
-  switch (configs.closeParentBehaviorMode) {
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ALWAYS
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
-      return true;
-    default:
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR: // kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE
-      return SidebarConnection.isInitialized() ? (windowId && SidebarConnection.isOpen(windowId)) : true ;
-  }
-}
+export function getParentTabOperationBehavior(tab, { context, byInternalOperation, preventEntireTreeBehavior, parent, windowId } = {}) {
+  const sidebarVisible = SidebarConnection.isInitialized() ? ((windowId || tab) && SidebarConnection.isOpen(windowId || tab.windowId)) : true;
+  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible });
 
-export function getCloseParentBehaviorForTab(tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent } = {}) {
-  const sidebarVisible = SidebarConnection.isInitialized() ? (tab.windowId && SidebarConnection.isOpen(tab.windowId)) : true;
-  const forceCloseAll = sidebarVisible ?
-    (byInternalOperation ||
-     !configs.treatTreeAsExpandedOnClosed_outsideSidebar) :
-    !configs.treatTreeAsExpandedOnClosed_noSidebar;
-  log('getCloseParentBehaviorForTab ', tab, { asIndividualTab, byInternalOperation, keepDescendants, applyTreeBehavior, parent }, { sidebarVisible, forceCloseAll });
-  if (!asIndividualTab &&
-      !keepDescendants &&
-      tab.$TST.subtreeCollapsed &&
-      forceCloseAll &&
-      !applyTreeBehavior) {
-    log(' => collapsed tree, kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN');
-    return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
-  }
-
+  // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
   let behavior;
-  switch (configs.closeParentBehaviorMode) {
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR:
-      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR');
-      behavior = configs.closeParentBehavior;
+  switch (configs.parentTabOperationBehaviorMode) {
+    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT:
+      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT');
+      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+        behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE;
+      }
+      else {
+        behavior = tab.$TST.subtreeCollapsed ?
+          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+          configs.closeParentBehavior_insideSidebar_expanded;
+      }
       break;
     default:
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR:
-      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR');
-      behavior = sidebarVisible ? configs.closeParentBehavior : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL:
+      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL');
+      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+        behavior = byInternalOperation ?
+          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+          configs.moveParentBehavior_outsideSidebar_expanded;
+      }
+      else {
+        behavior = byInternalOperation ?
+          (tab.$TST.subtreeCollapsed ?
+            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+            configs.closeParentBehavior_insideSidebar_expanded) :
+          configs.closeParentBehavior_outsideSidebar_expanded;
+      }
       break;
-    case Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
-      log(' => kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM');
-      behavior = byInternalOperation ? configs.closeParentBehavior :
-        sidebarVisible ? configs.closeParentBehavior_outsideSidebar :
-          configs.closeParentBehavior_noSidebar;
+    case Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM: // kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR
+      log(' => kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM');
+      if (context == Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE) {
+        behavior = byInternalOperation ?
+          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+          sidebarVisible ?
+            (tab.$TST.subtreeCollapsed ?
+              configs.moveParentBehavior_outsideSidebar_collapsed :
+              configs.moveParentBehavior_outsideSidebar_expanded) :
+            (tab.$TST.subtreeCollapsed ?
+              configs.moveParentBehavior_noSidebar_collapsed :
+              configs.moveParentBehavior_noSidebar_expanded);
+      }
+      else {
+        behavior = byInternalOperation ?
+          (tab.$TST.subtreeCollapsed ?
+            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE :
+            configs.closeParentBehavior_insideSidebar_expanded) :
+          sidebarVisible ?
+            (tab.$TST.subtreeCollapsed ?
+              configs.closeParentBehavior_outsideSidebar_collapsed :
+              configs.closeParentBehavior_outsideSidebar_expanded) :
+            (tab.$TST.subtreeCollapsed ?
+              configs.closeParentBehavior_noSidebar_collapsed :
+              configs.closeParentBehavior_noSidebar_expanded);
+      }
       break;
   }
   const parentTab = parent || tab.$TST.parent;
 
   log(' => behavior: ', behavior);
 
-  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY) {
-    behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY) {
+    behavior = parentTab ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
     log(' => intelligent behavior: ', behavior);
   }
 
-  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      keepDescendants) {
-    behavior = parentTab ? Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-    log(' => keepDescendants behavior: ', behavior);
+  if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
+      preventEntireTreeBehavior) {
+    behavior = parentTab ? Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN : Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    log(' => preventEntireTreeBehavior behavior: ', behavior);
   }
 
   // Promote all children to upper level, if this is the last child of the parent.
   // This is similar to "taking by representation".
-  if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+  if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD &&
       parentTab &&
       parentTab.$TST.childIds.length == 1 &&
       configs.promoteAllChildrenWhenClosedParentIsLastChild) {
-    behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+    behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     log(' => blast child ehavior: ', behavior);
   }
 
   return behavior;
 }
 
-export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
-  const applyTreeBehavior = typeof removeInfo.applyTreeBehavior == 'boolean' ?
-    removeInfo.applyTreeBehavior :
-    false;
-  log('getCloseParentBehaviorForTabWithSidebarOpenState ', { tab, removeInfo, applyTreeBehavior });
-  return getCloseParentBehaviorForTab(tab, {
-    byInternalOperation: removeInfo.byInternalOperation,
-    keepDescendants:     removeInfo.keepDescendants,
-    applyTreeBehavior
-  });
-}
-
 export function getClosingTabsFromParent(tab, removeInfo = {}) {
   log('getClosingTabsFromParent: ', tab, removeInfo);
-  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
+  const closeParentBehavior = getParentTabOperationBehavior(tab, {
     ...removeInfo,
-    windowId: tab.windowId
+    context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
   });
   log('getClosingTabsFromParent: closeParentBehavior ', closeParentBehavior);
-  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  if (closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
     return [tab];
   return [tab].concat(tab.$TST.descendants);
 }

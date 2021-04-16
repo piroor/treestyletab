@@ -709,8 +709,8 @@ async function onRemoved(tabId, removeInfo) {
   const byInternalOperation = window.internalClosingTabs.has(tabId);
   if (byInternalOperation)
     window.internalClosingTabs.delete(tabId);
-  const keepDescendants = window.keepDescendantsTabs.has(tabId);
-  if (keepDescendants)
+  const preventEntireTreeBehavior = window.keepDescendantsTabs.has(tabId);
+  if (preventEntireTreeBehavior)
     window.keepDescendantsTabs.delete(tabId);
 
   if (Tab.needToWaitTracked(removeInfo.windowId))
@@ -740,14 +740,15 @@ async function onRemoved(tabId, removeInfo) {
     removeInfo = {
       ...removeInfo,
       byInternalOperation,
-      keepDescendants,
+      preventEntireTreeBehavior,
       oldChildren: oldTab.$TST.children,
-      oldParent:   oldTab.$TST.parent
+      oldParent:   oldTab.$TST.parent,
+      context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE
     };
 
     if (!removeInfo.isWindowClosing) {
-      const closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(oldTab, removeInfo);
-      if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      const closeParentBehavior = TreeBehavior.getParentTabOperationBehavior(oldTab, removeInfo);
+      if (closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
           oldTab.$TST.subtreeCollapsed)
         Tree.collapseExpandSubtree(oldTab, {
           collapsed: false
@@ -758,14 +759,14 @@ async function onRemoved(tabId, removeInfo) {
         tabId:           oldTab.id,
         isWindowClosing: removeInfo.isWindowClosing,
         byInternalOperation,
-        keepDescendants,
+        preventEntireTreeBehavior,
       });
     }
 
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, {
       ...removeInfo,
       byInternalOperation,
-      keepDescendants,
+      preventEntireTreeBehavior,
     });
     // don't do await if not needed, to process things synchronously
     if (onRemovingResult instanceof Promise)
@@ -793,7 +794,7 @@ async function onRemoved(tabId, removeInfo) {
       tabId:           oldTab.id,
       isWindowClosing: removeInfo.isWindowClosing,
       byInternalOperation,
-      keepDescendants,
+      preventEntireTreeBehavior,
     });
     oldTab.$TST.destroy();
 

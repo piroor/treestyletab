@@ -42,8 +42,8 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   let newParent;
   const successor = tab.$TST.possibleSuccessorWithDifferentContainer;
   if (successor) {
-    log('override closeParentBehaior with kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD for different container successor ', successor);
-    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    log('override closeParentBehaior with kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD for different container successor ', successor);
+    closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
     // When a new tab is created with a different container and this tab
     // is removed immediately before the new tab is completely handled,
     // TST fails to detect the new tab as the successor of this tab. Thus,
@@ -53,12 +53,15 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       newParent = successor;
   }
   else {
-    closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+    closeParentBehavior = TreeBehavior.getParentTabOperationBehavior(tab, {
+      context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+      ...removeInfo,
+    });
     log('detected closeParentBehaior: ', closeParentBehavior);
   }
 
   if (!SidebarConnection.isOpen(tab.windowId) &&
-      closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
       tab.$TST.subtreeCollapsed)
     Tree.collapseExpandSubtree(tab, {
       collapsed: false,
@@ -93,7 +96,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     // They will be processed again after confirmation.
     Tree.detachAllChildren(tab, {
       newParent,
-      behavior:         Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+      behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
       dontExpand:       true,
       dontUpdateIndent: true,
       broadcast:        true
@@ -113,13 +116,13 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
 });
 async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure } = {}) {
   log('handleRemovingPostProcess ', { closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure });
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
     await closeChildTabs(descendants, {
       triggerTab:        removedTab,
       originalStructure: structure
     });
 
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
+  if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       children.length > 1 &&
       countMatched(children,
                    tab => !tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)) > 1) {
@@ -179,7 +182,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   const self = tryGrantCloseTab;
 
   self.closingTabIds.push(tab.id);
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
+  if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(TreeBehavior.getClosingTabsFromParent(tab).map(tab => tab.id));
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
@@ -277,7 +280,7 @@ Tab.onRemoved.addListener((tab, info) => {
     Tree.detachAllChildren(tab, {
       children:  info.oldChildren,
       parent:    info.oldParent,
-      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
       broadcast: true
     });
   }
@@ -300,9 +303,12 @@ browser.windows.onRemoved.addListener(windowId  => {
 
 Tab.onDetached.addListener((tab, info = {}) => {
   log('Tabs.onDetached ', dumpTab(tab));
-  let closeParentBehavior = TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  let closeParentBehavior = TreeBehavior.getParentTabOperationBehavior(tab, {
+    context: Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE,
+    ...info
+  });
+  if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
+    closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   const dontSyncParentToOpenerTab = info.trigger == 'tabs.onDetached';
   Tree.detachAllChildren(tab, {

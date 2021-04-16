@@ -287,8 +287,9 @@ Tab.onPinned.addListener(tab => {
   });
   const children = tab.$TST.children;
   Tree.detachAllChildren(tab, {
-    behavior: TreeBehavior.getCloseParentBehaviorForTabWithSidebarOpenState(tab, {
-      applyTreeBehavior: true
+    behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
+      context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+      preventEntireTreeBehavior: true,
     }),
     broadcast: true
   });

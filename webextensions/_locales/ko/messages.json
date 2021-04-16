@@ -1109,67 +1109,67 @@
         "message": "동작 없음",
         "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
     },
-    "config_closeParentBehaviorMode_caption": {
+    "config_parentTabOperationBehaviorMode_caption": {
         "message": "상위 탭을 단독으로 닫거나 이동했을 때 행동",
         "hash": "a7161c671b137ea9be76d23ab611889d"
     },
-    "config_closeParentBehaviorMode_withNativeTabs": {
+    "config_parentTabOperationBehaviorMode_parallel": {
         "message": "Firefox 자신의 탭 바를 같이 사용하는 경우의 동작을 함",
         "hash": "f4c5eca1aa702ad5ebc4c142a6f293e4"
     },
-    "config_closeParentBehaviorMode_withNativeTabs_caption_withoutSidebar": {
+    "config_parentTabOperationBehaviorMode_parallel_caption_withoutSidebar": {
         "message": "사이드 바가 비표시일 때는 가능한 트리 구조를 유지하고, 불필요한 탭을 닫지 않음",
         "hash": "5fed46d5f197881f1264acddd89dbc3e"
     },
-    "config_closeParentBehaviorMode_withNativeTabs_caption_withSidebar": {
+    "config_parentTabOperationBehaviorMode_parallel_caption_withSidebar": {
         "message": "사이드 바가 표시일 때는",
         "hash": "966b2948e5a282ae55b262d4f18f9152"
     },
-    "config_closeParentBehaviorMode_withoutNativeTabs": {
+    "config_parentTabOperationBehaviorMode_consistent": {
         "message": "Firefox 자신의 탭 바를 같이 사용하지 않는 경우의 동작을 함",
         "hash": "ad2c73a0d8820cea704f6b3d7b066d57"
     },
-    "config_closeParentBehaviorMode_withoutNativeTabs_caption": {
+    "_config_parentTabOperationBehaviorMode_consistent_caption": {
         "message": "사이드 바의 표시 여부와 관계 없이 ",
         "hash": "e2f5a3a381dff0c4f676c1f0b470c236"
     },
-    "config_closeParentBehaviorMode_custom": {
+    "config_parentTabOperationBehaviorMode_custom": {
         "message": "커스텀",
         "hash": "1685452bc68395b620b0ce1fb9b76da5"
     },
-    "config_closeParentBehaviorMode_custom_caption_insideSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_insideSidebar": {
         "message": "사이트 바 내에서 탭을 조작했을 경우 ",
         "hash": "4fc075578744df222867556e93af5f19"
     },
-    "config_closeParentBehaviorMode_custom_caption_outsideSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_outsideSidebar": {
         "message": "사이드 바 표시일 때 사이드 바 밖에서 탭을 조작했을 경우",
         "hash": "e618479e7cbe39903dea5656e88789fc"
     },
-    "config_closeParentBehaviorMode_custom_caption_noSidebar": {
+    "config_parentTabOperationBehaviorMode_custom_caption_noSidebar": {
         "message": "사이드 바 비표시일 때 사이드 바 밖에서 탭을 조작했을 경우",
         "hash": "4bdee6fa2193415c0d1f308b8f92f9ee"
     },
-    "config_closeParentBehavior_close": {
+    "config_parentTabOperationBehavior_entireTree": {
         "message": "하위 항목의 탭도 같이 닫음",
         "hash": "895074e7f503ce28d4235d73042dae96"
     },
-    "config_closeParentBehavior_replaceWithGroupTab": {
+    "config_parentTabOperationBehavior_replaceWithGroupTab": {
         "message": "대신 묶음용 더미 탭을 열고 트리를 유지",
         "hash": "647fbebbedb16a43f51f65b0d768183d"
     },
-    "config_closeParentBehavior_promoteFirst": {
+    "config_parentTabOperationBehavior_promoteFirst": {
         "message": "항상 첫 하위 항목을 새 상위 항목으로 만듬",
         "hash": "e441dfb29c1cfc3bd03cdbaca7def11c"
     },
-    "config_closeParentBehavior_promoteAll": {
+    "config_parentTabOperationBehavior_promoteAll": {
         "message": "항상 모든 하위 항목을 상위 항목으로 만듦",
         "hash": "1b27f1941ba3947924530632fe4c6ce4"
     },
-    "config_closeParentBehavior_promoteIntelligently": {
+    "config_parentTabOperationBehavior_promoteIntelligently": {
         "message": "최상위 항목이 닫혔을 때는 최초의 하위 항목을 상위 항목으로 만들고, 그 외에는 모든 하위 탭을 상위 항목으로 만듦",
         "hash": "de0fb94e9c3528909029d2e9bb7724ba"
     },
-    "config_closeParentBehavior_detach": {
+    "config_parentTabOperationBehavior_detach": {
         "message": "하위 탭을 트리에서 내보냄",
         "hash": "1312437055c8720e49ebe347501efb97"
     },
@@ -1200,31 +1200,11 @@
         "message": "Shift + 드래그",
         "hash": "c26c7dbae02a5f950080f2e84b543a51"
     },
-    "config_tabDragBehavior_tearoff_tree": {
-        "message": "Move Entire Tree / 트리 전체를 다른 창으로 분리 (북마크 작성 불가)",
-        "hash": "4723ca0b18c76b5e9b4a8000d8ac2292"
-    },
-    "config_tabDragBehavior_bookmark_tree": {
-        "message": "Move Entire Tree / 트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)",
-        "hash": "356fc53a67e8318e0226f69d53783d6f"
-    },
-    "config_tabDragBehavior_none_tree": {
-        "message": "Move Entire Tree / 동작 없음",
-        "hash": ""
-    },
-    "config_tabDragBehavior_tearoff_tab": {
-        "message": "Move Solo Tab / 탭들을 다른 창으로 분리 (북마크 작성 불가)",
-        "hash": "024c0183bb540674a551b18d646d4ef5"
-    },
-    "config_tabDragBehavior_bookmark_tab": {
-        "message": "Move Solo Tab / 탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)",
-        "hash": "222b9f01d390b68db03215b3766565a4"
-    },
-    "config_tabDragBehavior_none_tab": {
-        "message": "Move Solo Tab / 동작 없음",
-        "hash": ""
-    },
-    "config_tabDragBehavior_none_none":     { "message": "동작 없음 / 동작 없음" },
+    "config_tabDragBehavior_detachEntireTreeAlways":       { "message": "트리 전체를 다른 창으로 분리 (북마크 작성 불가)" },
+    "config_tabDragBehavior_bookmarkEntireTreeAlways":     { "message": "트리 전체의 탭에서 링크나 북마크를 작성 (별도의 창으로 분리할 수 없음)" },
+    "config_tabDragBehavior_detachSoloTabIfExpanded":      { "message": "탭들을 다른 창으로 분리 (북마크 작성 불가)" },
+    "config_tabDragBehavior_bookmarkSoloTabIfExpanded":    { "message": "탭들에서 링크나 북마크 작성 (별도의 창으로 분리할 수 없음)" },
+    "config_tabDragBehavior_doNothing":                    { "message": "동작 없음" },
     "config_showTabDragBehaviorNotification_label": {
         "message": "탭 드래그 중 사이드 바 밖으로 드롭했을 때의 조작",
         "hash": "df5263d3994a4dcd81a68a1c3fdaa84c"

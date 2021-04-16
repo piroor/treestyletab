@@ -718,7 +718,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
       configs.tabDragBehavior;
 
   if (draggedTab.$TST.subtreeCollapsed)
-    behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+    behavior |= Constants.kDRAG_BEHAVIOR_ENTIRE_TREE;
 
   mCurrentDragDataForExternalsId = `${parseInt(Math.random() * 65000)}-${Date.now()}`;
   mCurrentDragDataForExternals = {};
@@ -763,7 +763,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
               if (data.data.allowLink)
                 behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
               if (data.data.asTree)
-                behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+                behavior |= Constants.kDRAG_BEHAVIOR_ENTIRE_TREE;
             }
           }
           break;
@@ -785,7 +785,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }
 
   const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
-  const asTree = !!(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  const asTree = !!(behavior & Constants.kDRAG_BEHAVIOR_ENTIRE_TREE);
   const dragData = getDragDataFromOneTab(draggedTab, { asTree });
   dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !asTree
   dragData.behavior = behavior;
@@ -995,7 +995,7 @@ function detectOverrideDragDataSet(dataSet, event) {
 }
 
 function getTabDragBehaviorNotificationMessageType(behavior, count) {
-  if (behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE && count > 1) {
+  if (behavior & Constants.kDRAG_BEHAVIOR_ENTIRE_TREE && count > 1) {
     if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
       return 'tree_bookmark';
     else if (behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF)

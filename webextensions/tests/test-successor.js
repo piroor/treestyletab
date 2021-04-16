@@ -98,10 +98,10 @@ export async function testSuccessorForLastChildWithoutPreviousSibling() {
 export async function testMissingSuccessor() {
   await Utils.setConfigs({
     successorTabControlLevel:           Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     simulateSelectOwnerOnClose:         true
   });
 

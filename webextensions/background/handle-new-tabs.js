@@ -391,23 +391,29 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 });
 
 
-Tab.onAttached.addListener(async (tab, info = {}) => {
-  if (!info.windowId ||
-      !TreeBehavior.shouldApplyTreeBehavior(info))
+Tab.onAttached.addListener(async (tab, attachInfo = {}) => {
+  if (!attachInfo.windowId)
     return;
 
-  log('Tabs.onAttached ', dumpTab(tab), info);
+  const parentTabOperationBehavior = TreeBehavior.getParentTabOperationBehavior(tab, {
+    context:  Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE,
+    ...attachInfo,
+  });
+  if (parentTabOperationBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
+    return;
 
-  log('descendants of attached tab: ', () => info.descendants.map(dumpTab));
-  const movedTabs = await Tree.moveTabs(info.descendants, {
+  log('Tabs.onAttached ', dumpTab(tab), attachInfo);
+
+  log('descendants of attached tab: ', () => attachInfo.descendants.map(dumpTab));
+  const movedTabs = await Tree.moveTabs(attachInfo.descendants, {
     destinationWindowId: tab.windowId,
     insertAfter:         tab
   });
   log('moved descendants: ', () => movedTabs.map(dumpTab));
-  if (info.descendants.length == movedTabs.length) {
+  if (attachInfo.descendants.length == movedTabs.length) {
     await Tree.applyTreeStructureToTabs(
       [tab, ...movedTabs],
-      info.structure
+      attachInfo.structure
     );
   }
   else {

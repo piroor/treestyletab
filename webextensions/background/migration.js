@@ -21,7 +21,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 22;
+const kCONFIGS_VERSION = 24;
 const kFEATURES_VERSION = 7;
 
 export function migrateConfigs() {
@@ -102,20 +102,20 @@ export function migrateConfigs() {
     case 6:
       if (configs.promoteFirstChildForClosedRoot != null &&
           configs.promoteFirstChildForClosedRoot &&
-          configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
-        configs.closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+          configs.closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+        configs.closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
       if (configs.parentTabBehaviorForChanges !== null) {
         switch (configs.parentTabBehaviorForChanges) {
           case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
-            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR;
+            configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
             break;
           default:
           case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR;
+            configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
             break;
           case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
-            configs.closeParentBehaviorMode = Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM;
-            configs.closeParentBehavior_outsideSidebar = configs.closeParentBehavior_noSidebar = configs.  closeParentBehavior;
+            configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM;
+            configs.closeParentBehavior_outsideSidebar_expanded = configs.closeParentBehavior_noSidebar_expanded = configs.  closeParentBehavior;
             break;
         }
       }
@@ -202,19 +202,53 @@ export function migrateConfigs() {
         configs.connectionTimeoutDelay = configs.$default.connectionTimeoutDelay;
 
     case 19:
-      if (configs.suppressGapFromShownOrHiddenToolbar !== configs.$default.suppressGapFromShownOrHiddenToolbar) {
+      if (configs.suppressGapFromShownOrHiddenToolbar !== null) {
         configs.suppressGapFromShownOrHiddenToolbarOnNewTab =
           configs.suppressGapFromShownOrHiddenToolbarOnFullScreen = configs.suppressGapFromShownOrHiddenToolbar;
       }
 
     case 20:
-      if (configs.treatTreeAsExpandedOnClosedWithNoSidebar !== configs.$default.treatTreeAsExpandedOnClosedWithNoSidebar) {
+      if (configs.treatTreeAsExpandedOnClosedWithNoSidebar !== null) {
         configs.treatTreeAsExpandedOnClosed_noSidebar = configs.treatTreeAsExpandedOnClosedWithNoSidebar;
       }
 
     case 21:
       if (configs.style == 'plain')
         configs.style = 'photon';
+
+    case 22:
+    case 23:
+      if (configs.closeParentBehaviorMode !== null) {
+        configs.parentTabOperationBehaviorMode = configs.closeParentBehaviorMode;
+      }
+      if (configs.closeParentBehavior !== null) {
+        configs.closeParentBehavior_insideSidebar_expanded =
+          configs.closeParentBehavior;
+      }
+      if (configs.closeParentBehavior_outsideSidebar !== null) {
+        configs.closeParentBehavior_outsideSidebar_expanded =
+          configs.moveParentBehavior_outsideSidebar_expanded =
+          configs.closeParentBehavior_outsideSidebar;
+      }
+      if (configs.closeParentBehavior_noSidebar !== null) {
+        configs.closeParentBehavior_noSidebar_expanded =
+          configs.closeParentBehavior_noSidebar_expanded =
+          configs.closeParentBehavior_noSidebar;
+      }
+      if (configs.treatTreeAsExpandedOnClosed_outsideSidebar === true) {
+        configs.closeParentBehavior_outsideSidebar_collapsed =
+          configs.moveParentBehavior_outsideSidebar_collapsed =
+          configs.moveParentBehavior_outsideSidebar_expanded;
+      }
+      if (configs.treatTreeAsExpandedOnClosed_noSidebar === false) {
+        configs.closeParentBehavior_noSidebar_collapsed =
+          configs.moveParentBehavior_noSidebar_collapsed =
+          Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE;
+      }
+      if (configs.treatTreeAsExpandedOnClosed_outsideSidebar === true ||
+          configs.treatTreeAsExpandedOnClosed_noSidebar === false) {
+        configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

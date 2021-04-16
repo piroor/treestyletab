@@ -135,8 +135,8 @@ function onConfigChanged(key) {
       }
     }; break;
 
-    case 'closeParentBehaviorMode': {
-      const nodes = document.querySelectorAll('#closeParentBehaviorModeGroup > ul > li > :not(label)');
+    case 'parentTabOperationBehaviorMode': {
+      const nodes = document.querySelectorAll('#parentTabOperationBehaviorModeGroup > ul > li > :not(label)');
       for (const node of nodes) {
         node.style.display = node.parentNode.querySelector('input[type="radio"]').checked ? '' : 'none';
         const chosen = node.querySelector(`[type="radio"][data-config-key="closeParentBehavior"][value="${configs.closeParentBehavior}"]`);
@@ -850,7 +850,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   onConfigChanged('successorTabControlLevel');
   onConfigChanged('showExpertOptions');
   await wait(0);
-  onConfigChanged('closeParentBehaviorMode');
+  onConfigChanged('parentTabOperationBehaviorMode');
   onConfigChanged('autoAttachOnAnyOtherTrigger');
   onConfigChanged('syncDeviceInfo');
 

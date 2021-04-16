@@ -378,10 +378,10 @@ async function closeTabsFromOutside(tabs) {
 
 export async function testPromoteFirstChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -395,8 +395,8 @@ export async function testPromoteFirstChild() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -410,10 +410,10 @@ export async function testPromoteFirstChild() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -422,10 +422,10 @@ export async function testPromoteFirstChild() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -434,10 +434,10 @@ export async function testPromoteFirstChild() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -449,10 +449,10 @@ export async function testPromoteFirstChild() {
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     promoteAllChildrenWhenClosedParentIsLastChild: false
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -497,10 +497,10 @@ export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
 
 export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     promoteAllChildrenWhenClosedParentIsLastChild: true
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -545,10 +545,10 @@ export async function testPromoteAllChildrenWhenClosedParentIsLastChild() {
 
 export async function testPromoteAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -562,8 +562,8 @@ export async function testPromoteAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -577,10 +577,10 @@ export async function testPromoteAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -589,10 +589,10 @@ export async function testPromoteAllChildren() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -601,10 +601,10 @@ export async function testPromoteAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -615,10 +615,10 @@ export async function testPromoteAllChildren() {
 
 export async function testPromoteIntelligently() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -632,8 +632,8 @@ export async function testPromoteIntelligently() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -647,10 +647,10 @@ export async function testPromoteIntelligently() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -659,10 +659,10 @@ export async function testPromoteIntelligently() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -671,10 +671,10 @@ export async function testPromoteIntelligently() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_INTELLIGENTLY
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -685,10 +685,10 @@ export async function testPromoteIntelligently() {
 
 export async function testDetachAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -702,8 +702,8 @@ export async function testDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -717,10 +717,10 @@ export async function testDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -729,10 +729,10 @@ export async function testDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -741,10 +741,10 @@ export async function testDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -755,10 +755,10 @@ export async function testDetachAllChildren() {
 
 export async function testSimplyDetachAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -772,8 +772,8 @@ export async function testSimplyDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -787,10 +787,10 @@ export async function testSimplyDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -799,10 +799,10 @@ export async function testSimplyDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -811,10 +811,10 @@ export async function testSimplyDetachAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -825,10 +825,10 @@ export async function testSimplyDetachAllChildren() {
 
 export async function testCloseAllChildren() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -842,8 +842,8 @@ export async function testCloseAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -857,10 +857,10 @@ export async function testCloseAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -869,10 +869,10 @@ export async function testCloseAllChildren() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -881,10 +881,10 @@ export async function testCloseAllChildren() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -895,10 +895,10 @@ export async function testCloseAllChildren() {
 
 export async function testReplaceRemovedParentWithGroup() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:         false,
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITHOUT_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -913,8 +913,8 @@ export async function testReplaceRemovedParentWithGroup() {
 
   // https://github.com/piroor/treestyletab/issues/2818
   await Utils.setConfigs({
-    closeParentBehaviorMode: Constants.kCLOSE_PARENT_BEHAVIOR_MODE_WITH_NATIVE_TABBAR,
-    closeParentBehavior:     Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
+    closeParentBehavior:     Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -928,10 +928,10 @@ export async function testReplaceRemovedParentWithGroup() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -940,10 +940,10 @@ export async function testReplaceRemovedParentWithGroup() {
   await assertAllChildrenClosedUnderCollapsed(closeTabsFromSidebar);
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN
   });
 
   configs.sidebarVirtuallyOpenedWindows = [win.id];
@@ -952,10 +952,10 @@ export async function testReplaceRemovedParentWithGroup() {
   await assertAllChildrenClosedUnderCollapsed();
 
   await Utils.setConfigs({
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
 
   configs.sidebarVirtuallyOpenedWindows = [];
@@ -967,12 +967,12 @@ export async function testReplaceRemovedParentWithGroup() {
 // https://github.com/piroor/treestyletab/issues/2819
 export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParentWithAllChildrenBehavior() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     warnOnCloseTabs:                    false,
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB
   });
   configs.sidebarVirtuallyOpenedWindows = [win.id];
 
@@ -1005,10 +1005,10 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
 async function assertParentClosedWithDescendants() {
   await Utils.setConfigs({
     warnOnCloseTabs:                    false,
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
 
   const tabs = await Utils.prepareTabsInWindow(
@@ -1034,10 +1034,10 @@ async function assertParentClosedWithDescendants() {
 async function assertParentClosedWithoutDescendants() {
   await Utils.setConfigs({
     warnOnCloseTabs:                    false,
-    closeParentBehaviorMode:            Constants.kCLOSE_PARENT_BEHAVIOR_MODE_CUSTOM,
-    closeParentBehavior:                Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_outsideSidebar: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
-    closeParentBehavior_noSidebar:      Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    parentTabOperationBehaviorMode:            Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
+    closeParentBehavior:                Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    closeParentBehavior_noSidebar_expanded:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD
   });
 
   const tabs = await Utils.prepareTabsInWindow(
@@ -1060,47 +1060,47 @@ async function assertParentClosedWithoutDescendants() {
      'parent tab should be closed as a solo tab');
 }
 
-export async function testTreatTreeAsExpandedOnClosed_outsideSidebar() {
+export async function testTreatClosedOrMovedTabAsSoloTab_outsideSidebar_onClose() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_outsideSidebar: false,
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_outsideSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     sidebarVirtuallyOpenedWindows: [win.id],
   });
   await assertParentClosedWithDescendants();
 
-  configs.treatTreeAsExpandedOnClosed_outsideSidebar = true;
+  configs.treatClosedOrMovedTabAsSoloTab_outsideSidebar = true;
   await assertParentClosedWithoutDescendants();
 
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_outsideSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_outsideSidebar: false,
     sidebarVirtuallyOpenedWindows: [],
     sidebarVirtuallyClosedWindows: [win.id],
   });
   await assertParentClosedWithDescendants();
 
-  configs.treatTreeAsExpandedOnClosed_outsideSidebar = true;
+  configs.treatClosedOrMovedTabAsSoloTab_outsideSidebar = true;
   await assertParentClosedWithDescendants();
 }
 
-export async function testTreatTreeAsExpandedOnClosed_noSidebar() {
+export async function testTreatClosedOrMovedTabAsSoloTab_noSidebar_onClose() {
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_outsideSidebar: false,
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_outsideSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     sidebarVirtuallyOpenedWindows: [win.id],
   });
   await assertParentClosedWithDescendants();
 
-  configs.treatTreeAsExpandedOnClosed_noSidebar = true;
+  configs.treatClosedOrMovedTabAsSoloTab_noSidebar = true;
   await assertParentClosedWithDescendants();
 
   await Utils.setConfigs({
-    treatTreeAsExpandedOnClosed_noSidebar: false,
+    treatClosedOrMovedTabAsSoloTab_noSidebar: false,
     sidebarVirtuallyOpenedWindows: [],
     sidebarVirtuallyClosedWindows: [win.id],
   });
   await assertParentClosedWithDescendants();
 
-  configs.treatTreeAsExpandedOnClosed_noSidebar = true;
+  configs.treatClosedOrMovedTabAsSoloTab_noSidebar = true;
   await assertParentClosedWithoutDescendants();
 }
 
