@@ -251,7 +251,7 @@ tbody tr {
 }
 
 .contextConfigs tbody th,
-.tabDragBehaviorConfigs thead th:nth-child(3),
+.tabDragBehaviorConfigs thead th,
 .tabDragBehaviorConfigs tbody th {
   text-align: left;
 }

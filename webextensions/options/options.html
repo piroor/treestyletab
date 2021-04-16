@@ -905,7 +905,8 @@
           <tr>
             <th>__MSG_config_tabDragBehavior_label__</th>
             <th>__MSG_config_tabDragBehaviorShift_label__</th>
-            <th>__MSG_config_tabDragBehavior_label_behavior__</th>
+            <th>__MSG_config_tabDragBehavior_label_behaviorInsideSidebar__</th>
+            <th>__MSG_config_tabDragBehavior_label_behaviorOutsideSidebar__</th>
           </tr>
         </thead>
         <tbody>
@@ -916,7 +917,8 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="13"></label></td>
-            <th><label for="tabDragBehavior_tearoff_tree">__MSG_config_tabDragBehavior_tearoff_tree__</label></th>
+            <th rowspan="3"><label for="tabDragBehavior_tearoff_tree">__MSG_config_tabDragBehavior_moveEntireTreeAlways__</label></th>
+            <th><label for="tabDragBehavior_tearoff_tree">__MSG_config_tabDragBehavior_detachEntireTreeAlways__</label></th>
           </tr>
           <tr>
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_bookmark_tree"
@@ -925,7 +927,7 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="11"></label></td>
-            <th><label for="tabDragBehavior_bookmark_tree">__MSG_config_tabDragBehavior_bookmark_tree__</label></th>
+            <th><label for="tabDragBehavior_bookmark_tree">__MSG_config_tabDragBehavior_bookmarkEntireTreeAlways__</label></th>
           </tr>
           <tr>
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_none_tree"
@@ -934,7 +936,7 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="9"></label></td>
-            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_none_tree__</label></th>
+            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_doNothing__</label></th>
           </tr>
           <tr>
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_tearoff_tab"
@@ -943,7 +945,8 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="12"></label></td>
-            <th><label for="tabDragBehavior_tearoff_tab">__MSG_config_tabDragBehavior_tearoff_tab__</label></th>
+            <th rowspan="3"><label for="tabDragBehavior_tearoff_tab">__MSG_config_tabDragBehavior_moveSoloTabIfExpanded__</label></th>
+            <th><label for="tabDragBehavior_tearoff_tab">__MSG_config_tabDragBehavior_detachSoloTabIfExpanded__</label></th>
           </tr>
           <tr>
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_bookmark_tab"
@@ -952,7 +955,7 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="10"></label></td>
-            <th><label for="tabDragBehavior_bookmark_tab">__MSG_config_tabDragBehavior_bookmark_tab__</label></th>
+            <th><label for="tabDragBehavior_bookmark_tab">__MSG_config_tabDragBehavior_bookmarkSoloTabIfExpanded__</label></th>
           </tr>
           <tr>
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_none_tab"
@@ -961,16 +964,7 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="8"></label></td>
-            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_none_tab__</label></th>
-          </tr>
-          <tr>
-            <td><label><input name="tabDragBehavior" id="tabDragBehavior_none_tab"
-                              type="radio"
-                              value="8"></label></td>
-            <td><label><input name="tabDragBehaviorShift"
-                              type="radio"
-                              value="8"></label></td>
-            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_none_tab__</label></th>
+            <th><label for="tabDragBehavior_none">__MSG_config_tabDragBehavior_doNothing__</label></th>
           </tr>
           <tr class="expert">
             <td><label><input name="tabDragBehavior" id="tabDragBehavior_none_none"
@@ -979,7 +973,8 @@
             <td><label><input name="tabDragBehaviorShift"
                               type="radio"
                               value="0"></label></td>
-            <th><label for="tabDragBehavior_none_none">__MSG_config_tabDragBehavior_none_none__</label></th>
+            <th><label for="tabDragBehavior_none_none">__MSG_config_tabDragBehavior_doNothing__</label></th>
+            <th><label for="tabDragBehavior_none_none">__MSG_config_tabDragBehavior_doNothing__</label></th>
           </tr>
         </tbody>
       </table>
