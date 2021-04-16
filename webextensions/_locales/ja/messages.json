@@ -559,11 +559,11 @@
 
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
-  "config_tabDragBehavior_caption":       { "message": "親タブをドラッグ＆ドロップした時の動作" },
+  "config_tabDragBehavior_caption":       { "message": "サイドバー内で親タブをドラッグ開始した時の動作" },
   "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。" },
   "config_tabDragBehavior_label":         { "message": "通常のドラッグ" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-ドラッグ" },
-  "config_tabDragBehavior_label_behavior": { "message": "サイドバー内の動作 / サイドバー外の動作" },
+  "config_tabDragBehavior_label_behavior": { "message": "サイドバー内へのドロップ / サイドバー外へのドロップ" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "ツリー全体を移動する / ツリー全体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
   "config_tabDragBehavior_bookmark_tree": { "message": "ツリー全体を移動する / ツリー全体のタブからリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
   "config_tabDragBehavior_none_tree":     { "message": "ツリー全体を移動する / 何もしない" },
@@ -571,6 +571,7 @@
   "config_tabDragBehavior_bookmark_tab":  { "message": "タブ単体を移動する / タブ単体からリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
   "config_tabDragBehavior_none_tab":      { "message": "タブ単体を移動する / 何もしない" },
   "config_tabDragBehavior_none_none":      { "message": "何もしない / 何もしない" },
+  "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "Firefox自身のタブバー上で親タブをドラッグ開始した時の動作は、「ツリーの挙動」→「親タブを閉じたり移動したりした時の挙動」での指定に準じます" },
   "config_showTabDragBehaviorNotification_label": { "message": "タブのドラッグ中、サイドバー外にドロップした時の操作説明を表示する" },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "タブにリンクやURL文字列をドロップしたとき" },

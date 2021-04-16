@@ -717,6 +717,9 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
+  if (draggedTab.$TST.subtreeCollapsed)
+    behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+
   mCurrentDragDataForExternalsId = `${parseInt(Math.random() * 65000)}-${Date.now()}`;
   mCurrentDragDataForExternals = {};
 

@@ -563,11 +563,11 @@
 
   "config_drag_caption": { "message": "Drag and Drop" },
 
-  "config_tabDragBehavior_caption":       { "message": "When a parent tab is dragged and dropped" },
+  "config_tabDragBehavior_caption":       { "message": "When a parent tab is dragged from the sidebar" },
   "config_tabDragBehavior_description":   { "message": "Due to Firefox's restrictions, you need to decide it when you start dragging: how tabs are treated on dropped outside of TST's sidebar." },
   "config_tabDragBehavior_label":         { "message": "Drag" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Drag" },
-  "config_tabDragBehavior_label_behavior": { "message": "Behavior Inside Sidebar / Outside Sidebar" },
+  "config_tabDragBehavior_label_behavior": { "message": "Behavior for Dropping Inside Sidebar / Behavior for Dropping Outside Sidebar" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Move Entire Tree / Detach Entire Tree from the window (but impossible to create bookmarks)" },
   "config_tabDragBehavior_bookmark_tree": { "message": "Move Entire Tree / Create links or bookmarks from Entire Tree (but impossible to detach from the window)" },
   "config_tabDragBehavior_none_tree":     { "message": "Move Entire Tree / Do nothing" },
@@ -575,6 +575,7 @@
   "config_tabDragBehavior_bookmark_tab":  { "message": "Move Solo Tab / Create link or bookmark from Individual Tab (but impossible to detach from the window)" },
   "config_tabDragBehavior_none_tab":      { "message": "Move Solo Tab / Do nothing" },
   "config_tabDragBehavior_none_none":     { "message": "Do nothing / Do nothing" },
+  "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "When a parent tabs is dragged from Firefox's native tab bar, it will behave according to the configuration under \"Tree Behavior\" => \"When a parent tab is closed or moved\"." },
   "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
