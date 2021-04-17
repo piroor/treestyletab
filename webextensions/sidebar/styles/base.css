@@ -112,6 +112,7 @@ tab-item {
 :root.debug tab-item::after {
   content: attr(data-tab-id);
   opacity: 0.65;
+  z-index: var(--tab-favicon-z-index);
 }
 :root.debug tab-item.faviconized::after {
   position: absolute;
