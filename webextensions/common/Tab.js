@@ -736,8 +736,15 @@ export default class Tab {
   }
 
   get nearestFollowingRootTab() {
-    const root = this.rootTab;
-    return root && root.$TST.nextSiblingTab;
+    return TabsStore.query({
+      windowId:  this.tab.windowId,
+      tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
+      fromId:    this.id,
+      living:    true,
+      index:     (index => index > this.tab.index),
+      hasParent: false,
+      first:     true
+    });
   }
 
   get nearestFollowingForeignerTab() {

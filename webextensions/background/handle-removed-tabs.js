@@ -125,9 +125,11 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
 
   if (!replacedGroupTab) {
     await Tree.detachAllChildren(null, {
+      windowId,
       parent,
       newParent,
       children,
+      descendants,
       nearestFollowingRootTab,
       behavior:  closeParentBehavior,
       broadcast: true

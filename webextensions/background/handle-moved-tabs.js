@@ -91,14 +91,13 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     const replacedGroupTab = (parentTabOperationBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) ?
       await TabsGroup.tryReplaceTabWithGroup(tab, { insertBefore: tab.$TST.firstChild }) :
       null;
-    if (!replacedGroupTab)
+    if (!replacedGroupTab && tab.$TST.hasChild)
       await Tree.detachAllChildren(tab, {
         behavior:  parentTabOperationBehavior,
-        justNow:   true,
+        nearestFollowingRootTab: tab.$TST.firstChild.$TST.nearestFollowingRootTab,
         broadcast: true
       });
     await Tree.detachTab(tab, {
-      justNow:   true,
       broadcast: true
     });
   }

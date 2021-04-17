@@ -573,7 +573,7 @@ export async function detachTabsFromTree(tabs, options = {}) {
 
 export async function detachAllChildren(
   tab = null,
-  { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
+  { windowId, children, descendants, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
     ...options } = {}
 ) {
   log('detachAllChildren: ',
@@ -608,10 +608,20 @@ export async function detachAllChildren(
     options.dontUpdateIndent = false;
   }
 
+  let previousTab = null;
   let nextTab = null;
   if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = tab ? tab.$TST.nearestFollowingRootTab : nearestFollowingRootTab;
+    nextTab = nearestFollowingRootTab !== undefined ?
+      nearestFollowingRootTab :
+      tab && tab.$TST.nearestFollowingRootTab;
+    if (!nextTab) {
+      previousTab = Tab.getLastTab(windowId || tab.windowId);
+      const descendantsSet = new Set(descendants || tab.$TST.descendants);
+      while (previousTab && descendantsSet.has(previousTab)) {
+        previousTab = previousTab.$TST.previousTab;
+      }
+    }
   }
 
   if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -621,7 +631,7 @@ export async function detachAllChildren(
 
   if (!dontExpand &&
       tab &&
-      behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)
+      !tab.$TST.collapsed)
     await collapseExpandSubtree(tab, {
       ...options,
       collapsed: false
@@ -634,7 +644,13 @@ export async function detachAllChildren(
     const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
-      promises.push(moveTabSubtreeBefore(child, nextTab, options));
+      if (nextTab) {
+        promises.push(moveTabSubtreeBefore(child, nextTab, options));
+      }
+      else {
+        promises.push(moveTabSubtreeAfter(child, previousTab, options));
+        previousTab = child.$TST.lastDescendant || child;
+      }
     }
     else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
