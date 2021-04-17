@@ -539,7 +539,7 @@
   "config_parentTabOperationBehaviorMode_caption":           { "message": "When a parent tab is Closed or Moved" },
   "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Whether you configured this section, there are some permanently consistent behaviors in the sidebar;\n･ Close a parent tab with Collapsed Tree: Close Entire Tree\n･ Move a parent tab with Collapsed Tree: Move Entire Tree\n･ Move a parent tab with Expanded Tree: Behave according to the section \"Drag and Drop\"" },
 
-  "config_parentTabOperationBehaviorMode_parallel":                { "message": "Recommended preset using Firefox's native tab bar as the solo tab operation UI" },
+  "config_parentTabOperationBehaviorMode_parallel":                { "message": "Recommended preset using Firefox's native tab bar as the Solo Tab Operation UI" },
   "config_parentTabOperationBehaviorMode_parallel_insideSidebar":  { "message": "When a parent tab with Expanded Tree is Closed/Moved via the sidebar," },
   "config_parentTabOperationBehaviorMode_parallel_outsideSidebar": { "message": "When a parent tab (whether its Tree is Expanded or Collapsed) is closed/moved via Firefox's native tab bar, keyboard shortcuts or other addons," },
 
