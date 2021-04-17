@@ -661,11 +661,11 @@ async function onNewTabTracked(tab, info) {
         previousTabId: currentActiveTab.id
       });
 
-    tab.$TST.memorizeNeighbors();
+    tab.$TST.memorizeNeighbors('newly tracked');
     if (tab.$TST.unsafePreviousTab)
-      tab.$TST.unsafePreviousTab.$TST.memorizeNeighbors();
+      tab.$TST.unsafePreviousTab.$TST.memorizeNeighbors('unsafePreviousTab');
     if (tab.$TST.unsafeNextTab)
-      tab.$TST.unsafeNextTab.$TST.memorizeNeighbors();
+      tab.$TST.unsafeNextTab.$TST.memorizeNeighbors('unsafeNextTab');
 
     Tree.onAttached.removeListener(onTreeModified);
 
@@ -795,7 +795,7 @@ async function onRemoved(tabId, removeInfo) {
     for (const tab of nearestTabs) {
       if (!tab || !tab.$TST)
         continue;
-      tab.$TST.memorizeNeighbors();
+      tab.$TST.memorizeNeighbors('neighbor of closed tab');
     }
 
     onCompleted();
@@ -921,16 +921,16 @@ async function onMoved(tabId, moveInfo) {
       window.internalMovingTabs.delete(tabId);
     completelyMoved();
 
-    movedTab.$TST.memorizeNeighbors();
+    movedTab.$TST.memorizeNeighbors('moved');
     if (movedTab.$TST.unsafePreviousTab)
-      movedTab.$TST.unsafePreviousTab.$TST.memorizeNeighbors();
+      movedTab.$TST.unsafePreviousTab.$TST.memorizeNeighbors('unsafePreviousTab');
     if (movedTab.$TST.unsafeNextTab)
-      movedTab.$TST.unsafeNextTab.$TST.memorizeNeighbors();
+      movedTab.$TST.unsafeNextTab.$TST.memorizeNeighbors('unsafeNextTab');
 
     if (oldPreviousTab)
-      oldPreviousTab.$TST.memorizeNeighbors();
+      oldPreviousTab.$TST.memorizeNeighbors('oldPreviousTab');
     if (oldNextTab)
-      oldNextTab.$TST.memorizeNeighbors();
+      oldNextTab.$TST.memorizeNeighbors('oldNextTab');
   }
   catch(e) {
     console.log(e);

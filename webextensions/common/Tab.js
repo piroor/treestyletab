@@ -1305,9 +1305,10 @@ export default class Tab {
     return resolver;
   }
 
-  memorizeNeighbors() {
+  memorizeNeighbors(hint) {
     if (!this.tab) // already closed tab
       return;
+    log(`memorizeNeighbors ${this.tab.id} as ${hint}`);
 
     const previousTab = this.unsafePreviousTab;
     this.lastPreviousTabId = previousTab && previousTab.id;
@@ -1319,13 +1320,17 @@ export default class Tab {
   get isSubstantiallyMoved() {
     const previousTab = this.unsafePreviousTab;
     if (this.lastPreviousTabId &&
-        this.lastPreviousTabId != (previousTab && previousTab.id))
+        this.lastPreviousTabId != (previousTab && previousTab.id)) {
+      log(`isSubstantiallyMoved lastPreviousTabId=${this.lastNextTabId}, previousTab=${previousTab && previousTab.id}`);
       return true;
+    }
 
     const nextTab = this.unsafeNextTab;
     if (this.lastNextTabId &&
-        this.lastNextTabId != (nextTab && nextTab.id))
+        this.lastNextTabId != (nextTab && nextTab.id)) {
+      log(`isSubstantiallyMoved lastNextTabId=${this.lastNextTabId}, nextTab=${nextTab && nextTab.id}`);
       return true;
+    }
 
     return false;
   }
