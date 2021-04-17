@@ -18,7 +18,6 @@ import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
-import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
 
@@ -60,8 +59,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     log('detected closeParentBehaior: ', closeParentBehavior);
   }
 
-  if (!SidebarConnection.isOpen(tab.windowId) &&
-      closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
+  if (closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
       tab.$TST.subtreeCollapsed)
     Tree.collapseExpandSubtree(tab, {
       collapsed: false,

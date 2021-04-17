@@ -747,12 +747,6 @@ async function onRemoved(tabId, removeInfo) {
     };
 
     if (!removeInfo.isWindowClosing) {
-      const closeParentBehavior = TreeBehavior.getParentTabOperationBehavior(oldTab, removeInfo);
-      if (closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
-          oldTab.$TST.subtreeCollapsed)
-        Tree.collapseExpandSubtree(oldTab, {
-          collapsed: false
-        });
       SidebarConnection.sendMessage({
         type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVING,
         windowId:        oldTab.windowId,
