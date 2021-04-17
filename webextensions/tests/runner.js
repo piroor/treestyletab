@@ -177,14 +177,14 @@ function logFailure(name, error) {
     expectedBlock.appendChild(document.createElement('legend')).textContent = 'Expected';
     const expected = expectedBlock.appendChild(document.createElement('pre'));
     expected.classList.add('expected');
-    expected.textContent = error.expected.trim();
+    expected.textContent = (error.expected || '').trim();
   }
 
   const actualBlock = item.appendChild(document.createElement('fieldset'));
   actualBlock.appendChild(document.createElement('legend')).textContent = 'Actual';
   const actual = actualBlock.appendChild(document.createElement('pre'));
   actual.classList.add('actual');
-  actual.textContent = error.actual.trim();
+  actual.textContent = (error.actual || '').trim();
 
   if ('expected' in error) {
     const diffBlock = item.appendChild(document.createElement('fieldset'));
