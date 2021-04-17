@@ -576,6 +576,12 @@ export async function detachAllChildren(
   { windowId, children, descendants, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
     ...options } = {}
 ) {
+  if (tab) {
+    windowId    = tab.$TST.windowId;
+    parent      = tab.$TST.parent;
+    children    = tab.$TST.children;
+    descendants = tab.$TST.descendants;
+  }
   log('detachAllChildren: ',
       tab && tab.id,
       { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab },
@@ -619,7 +625,7 @@ export async function detachAllChildren(
       previousTab = Tab.getLastTab(windowId || tab.windowId);
       const descendantsSet = new Set(descendants || tab.$TST.descendants);
       while (previousTab && descendantsSet.has(previousTab)) {
-        previousTab = previousTab.$TST.previousTab;
+        previousTab = previousTab.$TST.unsafePreviousTab;
       }
     }
   }
@@ -630,12 +636,24 @@ export async function detachAllChildren(
   }
 
   if (!dontExpand &&
-      tab &&
-      !tab.$TST.collapsed)
+      ((tab && !tab.$TST.collapsed) ||
+       behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)) {
+    if (tab) {
     await collapseExpandSubtree(tab, {
       ...options,
       collapsed: false
     });
+    }
+    else {
+      for (const child of children) {
+        await collapseExpandTabAndSubtree(child, {
+          ...options,
+          collapsed:   false,
+          forceExpand: behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+        });
+      }
+    }
+  }
 
   let count = 0;
   for (const child of children) {
@@ -1020,7 +1038,8 @@ export async function collapseExpandTab(tab, params = {}) {
   // When an asynchronous "expand" operation is processed after a
   // synchronous "collapse" operation, it can produce an expanded
   // child tab under "subtree-collapsed" parent. So this is a failsafe.
-  if (!params.collapsed &&
+  if (!params.forceExpand &&
+      !params.collapsed &&
       tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed)) {
     log('collapseExpandTab: canceled to avoid expansion under collapsed tree ',
         tab.$TST.ancestors.find(ancestor => ancestor.$TST.subtreeCollapsed));
