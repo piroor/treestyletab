@@ -9,7 +9,7 @@ import {
   wait,
   configs
 } from '/common/common.js';
-import { is /*, ok, ng*/ } from '/tests/assert.js';
+import { is, ok/*, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
 import * as Constants from '/common/constants.js';
@@ -18,8 +18,21 @@ import * as Utils from './utils.js';
 let win;
 
 export async function setup() {
-  configs.sidebarVirtuallyOpenedWindows = [];
-  configs.sidebarVirtuallyClosedWindows = [];
+  await Utils.setConfigs({
+    warnOnCloseTabs:                              false,
+    warnOnCloseTabsByClosebox:                    false,
+    moveTabsToBottomWhenDetachedFromClosedParent: false,
+    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    sidebarVirtuallyOpenedWindows:                [],
+    sidebarVirtuallyClosedWindows:                [],
+  });
   win = await browser.windows.create();
 }
 
@@ -58,8 +71,14 @@ function closeSidebar() {
   configs.sidebarVirtuallyClosedWindows = [win.id];
 }
 
+async function cleanupTabs() {
+  const tabs = await browser.tabs.query({ windowId: win.id });
+  await browser.tabs.remove(tabs.slice(1).map(tab => tab.id));
+}
 
-async function assertFirstChildPromoted({ closer, collapsed } = {}) {
+
+async function assertFirstChildPromoted({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -82,8 +101,9 @@ async function assertFirstChildPromoted({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
-  await wait(500);
+  await operator([tabs.B, tabs.E]);
+  await wait(250);
+  await wait(250);
 
   delete tabs.B;
   delete tabs.E;
@@ -101,7 +121,8 @@ async function assertFirstChildPromoted({ closer, collapsed } = {}) {
   }
 }
 
-async function assertAllChildrenPromoted({ closer, collapsed } = {}) {
+async function assertAllChildrenPromoted({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -124,8 +145,9 @@ async function assertAllChildrenPromoted({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
-  await wait(500);
+  await operator([tabs.B, tabs.E]);
+  await wait(250);
+  await wait(250);
 
   delete tabs.B;
   delete tabs.E;
@@ -143,7 +165,8 @@ async function assertAllChildrenPromoted({ closer, collapsed } = {}) {
   }
 }
 
-async function assertPromotedIntelligently({ closer, collapsed } = {}) {
+async function assertPromotedIntelligently({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -168,8 +191,9 @@ async function assertPromotedIntelligently({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
-  await wait(500);
+  await operator([tabs.B, tabs.F]);
+  await wait(250);
+  await wait(250);
 
   delete tabs.B;
   delete tabs.F;
@@ -188,7 +212,8 @@ async function assertPromotedIntelligently({ closer, collapsed } = {}) {
   }
 }
 
-async function assertAllChildrenDetached({ closer, collapsed } = {}) {
+async function assertAllChildrenDetached({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -213,8 +238,9 @@ async function assertAllChildrenDetached({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
-  await wait(500);
+  await operator([tabs.B, tabs.F]);
+  await wait(250);
+  await wait(250);
 
   delete tabs.B;
   delete tabs.F;
@@ -233,7 +259,9 @@ async function assertAllChildrenDetached({ closer, collapsed } = {}) {
   }
 }
 
-async function assertAllChildrenSimplyDetached({ closer, collapsed } = {}) {
+/*
+async function assertAllChildrenSimplyDetached({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -258,8 +286,9 @@ async function assertAllChildrenSimplyDetached({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.F]);
-  await wait(500);
+  await operator([tabs.B, tabs.F]);
+  await wait(250);
+  await wait(250);
 
   delete tabs.B;
   delete tabs.F;
@@ -277,8 +306,10 @@ async function assertAllChildrenSimplyDetached({ closer, collapsed } = {}) {
        'all children must be detached at their original position');
   }
 }
+*/
 
-async function assertEntireTreeClosed({ closer, collapsed } = {}) {
+async function assertEntireTreeClosed({ operator, collapsed } = {}) {
+  await cleanupTabs();
   const tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -301,8 +332,9 @@ async function assertEntireTreeClosed({ closer, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
-  await wait(500);
+  await operator([tabs.B, tabs.E]);
+  await wait(250);
+  await wait(250);
   const afterTabs = await Promise.all(
     Array.from(Object.values(tabs))
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))
@@ -312,7 +344,60 @@ async function assertEntireTreeClosed({ closer, collapsed } = {}) {
      'all closed parents and their children must be removed, and only upper level tab must be left');
 }
 
-async function assertClosedParentIsReplacedWithGroup({ closer, collapsed } = {}) {
+async function assertEntireTreeMoved({ operator, collapsed } = {}) {
+  await cleanupTabs();
+  const tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  const [allTabs] = await Promise.all([
+    browser.tabs.query({ windowId: win.id }),
+    collapsed ?
+      collapseAll(win.id) :
+      expandAll(win.id),
+  ]);
+
+  const operatedTabs = [tabs.B, tabs.E];
+  await operator(operatedTabs);
+  await wait(250);
+  await wait(250);
+  delete tabs.B;
+  delete tabs.E;
+  const [oldFirstTab, afterOperatedTabs, afterDescendants, afterOtherTabs] = await Promise.all([
+    browser.tabs.get(allTabs[0].id),
+    Promise.all(operatedTabs
+      .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
+    Promise.all([tabs.C, tabs.D, tabs.F, tabs.G]
+      .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
+    Promise.all([tabs.A]
+      .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
+  ]);
+  ok(afterOperatedTabs.every(tab => tab && tab.index < oldFirstTab.index),
+     'all operated tabs must be placed before the first tab: ' +
+       afterOperatedTabs.map(tab => tab && tab.index).join(',') + ' < ' + oldFirstTab.index);
+  ok(afterDescendants.every(tab => tab && tab.index < oldFirstTab.index),
+     'all descendants must be placed before the first tab also: ' +
+       afterDescendants.map(tab => tab && tab.index).join(',') + ' < ' + oldFirstTab.index);
+  ok(afterOtherTabs.every(tab => tab && tab.index > oldFirstTab.index),
+     'all other must be placed after the first tab also: ' +
+       afterOtherTabs.map(tab => tab && tab.index).join(',') + ' > ' + oldFirstTab.index);
+}
+
+async function assertClosedParentIsReplacedWithGroup({ operator, collapsed } = {}) {
+  await cleanupTabs();
   let tabs = await Utils.prepareTabsInWindow(
     { A: { index: 1 },
       B: { index: 2, openerTabId: 'A' },
@@ -336,8 +421,9 @@ async function assertClosedParentIsReplacedWithGroup({ closer, collapsed } = {})
     await expandAll(win.id);
 
   const beforeTabIds = new Set((await browser.tabs.query({ windowId: win.id })).map(tab => tab.id));
-  await (closer || closeTabsFromOutside)([tabs.B, tabs.E]);
-  await wait(500);
+  await operator([tabs.B, tabs.E]);
+  await wait(250);
+  await wait(250);
   const openedTabs = (await browser.tabs.query({ windowId: win.id })).filter(tab => !beforeTabIds.has(tab.id));
   is(2,
      openedTabs.length,
@@ -365,37 +451,60 @@ async function assertClosedParentIsReplacedWithGroup({ closer, collapsed } = {})
 }
 
 async function closeTabsFromSidebar(tabs) {
-  await browser.runtime.sendMessage({
-    type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
-    tabIds: tabs.map(tab => tab.id)
-  });
+  for (const tab of tabs) {
+    await browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
+      tabIds: [tab.id],
+    });
+    await wait(250);
+  }
 }
 
 async function closeTabsFromOutside(tabs) {
   await browser.tabs.remove(tabs.map(tab => tab.id));
 }
 
+/*
+async function moveTabsFromSidebar(tabs) {
+  const allTabs = await browser.tabs.query({ windowId: win.id });
+  await browser.runtime.sendMessage({
+    type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
+    windowId:            win.id,
+    tabs:                tabs.map(tab => tab && tab.$TST.sanitized),
+    structure:           [],
+    action:              'move',
+    allosedActions:      Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_TEAR_OFF | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE,
+    insertBeforeId:      allTabs[0].id,
+    destinationWindowId: win.id,
+    duplicate:           false,
+    import:              false,
+  });
+}
+*/
+
+async function moveTabsFromOutside(tabs) {
+  const tabIds = tabs.map(tab => tab.id);
+  for (const id of tabIds) {
+    await browser.tabs.move(id, { index: 0 });
+    await wait(300);
+  }
+  //await browser.tabs.remove(tabIds);
+}
+
 
 export async function testPermanentlyConsistentBehaviors() {
-  await Utils.setConfigs({
-    warnOnCloseTabs:                              false,
-    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
-    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-  });
+  openSidebar();
 
-  configs.sidebarVirtuallyOpenedWindows = [win.id];
-  configs.sidebarVirtuallyClosedWindows = [];
-  await assertEntireTreeClosed({ closer: closeTabsFromSidebar, collapsed: true });
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
+  await assertEntireTreeClosed({ operator: closeTabsFromSidebar, collapsed: true });
+  //await assertEntireTreeMoved({ operator: moveTabsFromSidebar, collapsed: true });
+  //await assertEntireTreeMoved({ operator: moveTabsFromSidebar });
 
   configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
-  await assertEntireTreeClosed({ closer: closeTabsFromSidebar, collapsed: true });
+  await assertEntireTreeClosed({ operator: closeTabsFromSidebar, collapsed: true });
 
   configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM;
-  await assertEntireTreeClosed({ closer: closeTabsFromSidebar, collapsed: true });
+  await assertEntireTreeClosed({ operator: closeTabsFromSidebar, collapsed: true });
 }
 
 
@@ -405,24 +514,30 @@ async function assertCloseBehaved({
   collapsed_noSidebar, expanded_noSidebar
 }) {
   openSidebar();
-  await collapsed_insideSidebar({ closer: closeTabsFromSidebar, collapsed: true });
-  await expanded_insideSidebar({ closer: closeTabsFromSidebar });
-  await collapsed_outsideSidebar({ closer: closeTabsFromOutside, collapsed: true });
-  await expanded_outsideSidebar({ closer: closeTabsFromOutside });
+  await collapsed_insideSidebar({ operator: closeTabsFromSidebar, collapsed: true });
+  await expanded_insideSidebar({ operator: closeTabsFromSidebar });
+  await collapsed_outsideSidebar({ operator: closeTabsFromOutside, collapsed: true });
+  await expanded_outsideSidebar({ operator: closeTabsFromOutside });
   closeSidebar();
-  await collapsed_noSidebar({ closer: closeTabsFromOutside, collapsed: true });
-  await expanded_noSidebar({ closer: closeTabsFromOutside });
+  await collapsed_noSidebar({ operator: closeTabsFromOutside, collapsed: true });
+  await expanded_noSidebar({ operator: closeTabsFromOutside });
 }
 
-export async function testConsistentMode_close() {
-  await Utils.setConfigs({
-    warnOnCloseTabs:                              false,
-    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT,
-    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-  });
+async function assertMoveBehaved({
+  collapsed_outsideSidebar, expanded_outsideSidebar,
+  collapsed_noSidebar, expanded_noSidebar
+}) {
+  openSidebar();
+  await collapsed_outsideSidebar({ operator: moveTabsFromOutside, collapsed: true });
+  await expanded_outsideSidebar({ operator: moveTabsFromOutside });
+  closeSidebar();
+  await collapsed_noSidebar({ operator: moveTabsFromOutside, collapsed: true });
+  await expanded_noSidebar({ operator: moveTabsFromOutside });
+}
+
+
+export async function testConsistentMode_entireTree() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE;
   await assertCloseBehaved({
@@ -433,6 +548,16 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertEntireTreeClosed,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+}
+
+export async function testConsistentMode_firstChild() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
   await assertCloseBehaved({
@@ -443,6 +568,16 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertFirstChildPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+}
+
+export async function testConsistentMode_allChildren() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   await assertCloseBehaved({
@@ -453,6 +588,16 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertAllChildrenPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+}
+
+export async function testConsistentMode_intelligently() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
   await assertCloseBehaved({
@@ -463,6 +608,16 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertPromotedIntelligently,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+}
+
+export async function testConsistentMode_detach() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN;
   await assertCloseBehaved({
@@ -473,16 +628,16 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertAllChildrenDetached,
   });
-
-  configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
-  await assertCloseBehaved({
-    collapsed_insideSidebar:  assertEntireTreeClosed,
-    expanded_insideSidebar:   assertAllChildrenSimplyDetached,
-    collapsed_outsideSidebar: assertEntireTreeClosed,
-    expanded_outsideSidebar:  assertAllChildrenSimplyDetached,
-    collapsed_noSidebar:      assertEntireTreeClosed,
-    expanded_noSidebar:       assertAllChildrenSimplyDetached,
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
   });
+}
+
+export async function testConsistentMode_group() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CONSISTENT;
 
   configs.closeParentBehavior_insideSidebar_expanded = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB;
   await assertCloseBehaved({
@@ -493,21 +648,25 @@ export async function testConsistentMode_close() {
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertClosedParentIsReplacedWithGroup,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
 }
 
 
-export async function testParallelMode_close() {
-  await Utils.setConfigs({
-    warnOnCloseTabs:                              false,
-    parentTabOperationBehaviorMode:               Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL,
-    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-  });
+// Suffixes of following tests just mean the first parameter.
+// Behaviors are rotated for better coverage.
+
+export async function testParallelMode_entireTree() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
     closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    moveParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
@@ -517,10 +676,21 @@ export async function testParallelMode_close() {
     collapsed_noSidebar:      assertFirstChildPromoted,
     expanded_noSidebar:       assertFirstChildPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertAllChildrenPromoted,
+    expanded_outsideSidebar:  assertAllChildrenPromoted,
+    collapsed_noSidebar:      assertAllChildrenPromoted,
+    expanded_noSidebar:       assertAllChildrenPromoted,
+  });
+}
+
+export async function testParallelMode_firstChild() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
@@ -530,10 +700,21 @@ export async function testParallelMode_close() {
     collapsed_noSidebar:      assertAllChildrenPromoted,
     expanded_noSidebar:       assertAllChildrenPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertClosedParentIsReplacedWithGroup,
+    expanded_outsideSidebar:  assertClosedParentIsReplacedWithGroup,
+    collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
+    expanded_noSidebar:       assertClosedParentIsReplacedWithGroup,
+  });
+}
+
+export async function testParallelMode_allChildren() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
     closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
@@ -543,32 +724,33 @@ export async function testParallelMode_close() {
     collapsed_noSidebar:      assertAllChildrenDetached,
     expanded_noSidebar:       assertAllChildrenDetached,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+}
+
+export async function testParallelMode_detach() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
     expanded_insideSidebar:   assertAllChildrenDetached,
-    collapsed_outsideSidebar: assertAllChildrenSimplyDetached,
-    expanded_outsideSidebar:  assertAllChildrenSimplyDetached,
-    collapsed_noSidebar:      assertAllChildrenSimplyDetached,
-    expanded_noSidebar:       assertAllChildrenSimplyDetached,
+    collapsed_outsideSidebar: assertFirstChildPromoted,
+    expanded_outsideSidebar:  assertFirstChildPromoted,
+    collapsed_noSidebar:      assertFirstChildPromoted,
+    expanded_noSidebar:       assertFirstChildPromoted,
   });
+}
 
-  await Utils.setConfigs({
-    closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-  });
-  await assertCloseBehaved({
-    collapsed_insideSidebar:  assertEntireTreeClosed,
-    expanded_insideSidebar:   assertAllChildrenSimplyDetached,
-    collapsed_outsideSidebar: assertClosedParentIsReplacedWithGroup,
-    expanded_outsideSidebar:  assertClosedParentIsReplacedWithGroup,
-    collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
-    expanded_noSidebar:       assertClosedParentIsReplacedWithGroup,
-  });
+export async function testParallelMode_group() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_PARALLEL;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
@@ -585,18 +767,19 @@ export async function testParallelMode_close() {
 }
 
 
-export async function testCustomMode_close() {
-  await Utils.setConfigs({
-    warnOnCloseTabs:                false,
-    parentTabOperationBehaviorMode: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
-  });
+export async function testCustomMode_entireTree() {
+  configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM;
 
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
     closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
     closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
@@ -604,79 +787,111 @@ export async function testCustomMode_close() {
     collapsed_outsideSidebar: assertFirstChildPromoted,
     expanded_outsideSidebar:  assertAllChildrenPromoted,
     collapsed_noSidebar:      assertAllChildrenDetached,
-    expanded_noSidebar:       assertAllChildrenSimplyDetached,
+    expanded_noSidebar:       assertClosedParentIsReplacedWithGroup,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertEntireTreeMoved,
+    expanded_outsideSidebar:  assertFirstChildPromoted,
+    collapsed_noSidebar:      assertAllChildrenPromoted,
+    expanded_noSidebar:       assertAllChildrenDetached,
+  });
+}
 
+export async function testCustomMode_firstChild() {
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
     closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
     expanded_insideSidebar:   assertFirstChildPromoted,
     collapsed_outsideSidebar: assertAllChildrenPromoted,
     expanded_outsideSidebar:  assertAllChildrenDetached,
-    collapsed_noSidebar:      assertAllChildrenSimplyDetached,
+    collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
+    expanded_noSidebar:       assertEntireTreeMoved,
+  });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertFirstChildPromoted,
+    expanded_outsideSidebar:  assertAllChildrenPromoted,
+    collapsed_noSidebar:      assertAllChildrenDetached,
     expanded_noSidebar:       assertClosedParentIsReplacedWithGroup,
   });
+}
 
+export async function testCustomMode_allChildren() {
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
     closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
     expanded_insideSidebar:   assertAllChildrenPromoted,
     collapsed_outsideSidebar: assertAllChildrenDetached,
-    expanded_outsideSidebar:  assertAllChildrenSimplyDetached,
-    collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
-    expanded_noSidebar:       assertEntireTreeClosed,
-  });
-
-  await Utils.setConfigs({
-    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
-    closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
-    closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
-    closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
-  });
-  await assertCloseBehaved({
-    collapsed_insideSidebar:  assertEntireTreeClosed,
-    expanded_insideSidebar:   assertAllChildrenDetached,
-    collapsed_outsideSidebar: assertAllChildrenSimplyDetached,
     expanded_outsideSidebar:  assertClosedParentIsReplacedWithGroup,
     collapsed_noSidebar:      assertEntireTreeClosed,
     expanded_noSidebar:       assertFirstChildPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertAllChildrenPromoted,
+    expanded_outsideSidebar:  assertAllChildrenDetached,
+    collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
+    expanded_noSidebar:       assertEntireTreeClosed,
+  });
+}
 
+export async function testCustomMode_detach() {
   await Utils.setConfigs({
-    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
+    closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
     closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
     closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
     closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
-    expanded_insideSidebar:   assertAllChildrenSimplyDetached,
+    expanded_insideSidebar:   assertAllChildrenDetached,
     collapsed_outsideSidebar: assertClosedParentIsReplacedWithGroup,
     expanded_outsideSidebar:  assertEntireTreeClosed,
     collapsed_noSidebar:      assertFirstChildPromoted,
     expanded_noSidebar:       assertAllChildrenPromoted,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertAllChildrenDetached,
+    expanded_outsideSidebar:  assertClosedParentIsReplacedWithGroup,
+    collapsed_noSidebar:      assertEntireTreeMoved,
+    expanded_noSidebar:       assertFirstChildPromoted,
+  });
+}
 
+export async function testCustomMode_group() {
   await Utils.setConfigs({
     closeParentBehavior_insideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
     closeParentBehavior_outsideSidebar_collapsed: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
     closeParentBehavior_outsideSidebar_expanded:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
     closeParentBehavior_noSidebar_collapsed:      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
     closeParentBehavior_noSidebar_expanded:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN,
+    moveParentBehavior_outsideSidebar_collapsed:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
+    moveParentBehavior_outsideSidebar_expanded:   Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE,
+    moveParentBehavior_noSidebar_collapsed:       Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+    moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
   });
   await assertCloseBehaved({
     collapsed_insideSidebar:  assertEntireTreeClosed,
@@ -686,7 +901,14 @@ export async function testCustomMode_close() {
     collapsed_noSidebar:      assertAllChildrenPromoted,
     expanded_noSidebar:       assertAllChildrenDetached,
   });
+  await assertMoveBehaved({
+    collapsed_outsideSidebar: assertClosedParentIsReplacedWithGroup,
+    expanded_outsideSidebar:  assertEntireTreeMoved,
+    collapsed_noSidebar:      assertFirstChildPromoted,
+    expanded_noSidebar:       assertAllChildrenPromoted,
+  });
 }
+
 
 export async function testPromoteOnlyFirstChildWhenClosedParentIsLastChild() {
   await Utils.setConfigs({
