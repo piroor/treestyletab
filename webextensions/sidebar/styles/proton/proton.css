@@ -19,7 +19,7 @@
   --tab-surface-regular: transparent;
   --tab-text-regular: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
-  --tab-text-active: var(--tab-text);
+  --tab-text-active: var(--tab-text-regular);
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
   --tab-active-border-near: color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent);
