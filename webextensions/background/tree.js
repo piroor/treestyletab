@@ -639,10 +639,10 @@ export async function detachAllChildren(
       ((tab && !tab.$TST.collapsed) ||
        behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)) {
     if (tab) {
-    await collapseExpandSubtree(tab, {
-      ...options,
-      collapsed: false
-    });
+      await collapseExpandSubtree(tab, {
+        ...options,
+        collapsed: false
+      });
     }
     else {
       for (const child of children) {
