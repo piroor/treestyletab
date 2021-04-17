@@ -20,6 +20,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import Tab from '/common/Tab.js';
 
 import * as Commands from './commands.js';
+import * as TabsGroup from './tabs-group.js';
 import * as Tree from './tree.js';
 import * as TreeStructure from './tree-structure.js';
 
@@ -87,12 +88,15 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   log('tryFixupTreeForInsertedTab ', { parentTabOperationBehavior, moveInfo });
   if (!moveInfo.isTabCreating &&
       parentTabOperationBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
-    log('Tree.detachAllChildren ', parentTabOperationBehavior);
-    await Tree.detachAllChildren(tab, {
-      behavior:  parentTabOperationBehavior,
-      justNow:   true,
-      broadcast: true
-    });
+    const replacedGroupTab = (parentTabOperationBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) ?
+      await TabsGroup.tryReplaceTabWithGroup(tab, { insertBefore: tab.$TST.firstChild }) :
+      null;
+    if (!replacedGroupTab)
+      await Tree.detachAllChildren(tab, {
+        behavior:  parentTabOperationBehavior,
+        justNow:   true,
+        broadcast: true
+      });
     await Tree.detachTab(tab, {
       justNow:   true,
       broadcast: true

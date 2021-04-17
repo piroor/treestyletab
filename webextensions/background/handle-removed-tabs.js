@@ -23,7 +23,6 @@ import Tab from '/common/Tab.js';
 
 import * as Background from './background.js';
 import * as TabsGroup from './tabs-group.js';
-import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
 import * as Commands from './commands.js';
 
@@ -120,44 +119,12 @@ async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent
       originalStructure: structure
     });
 
-  if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      children.length > 1 &&
-      countMatched(children,
-                   tab => !tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)) > 1) {
-    log('trying to replace the closing tab with a new group tab');
-    const firstChild = children[0];
-    const uri = TabsGroup.makeGroupTabURI({
-      title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
-      ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForOrphanedTabs)
-    });
-    const window = TabsStore.windows.get(windowId);
-    window.toBeOpenedTabsWithPositions++;
-    const groupTab = await TabsOpen.openURIInTab(uri, {
-      windowId,
-      insertBefore,
-      inBackground: true
-    });
-    log('group tab: ', dumpTab(groupTab));
-    if (!groupTab) // the window is closed!
-      return;
-    if (newParent || parent)
-      await Tree.attachTabTo(groupTab, newParent || parent, {
-        dontMove:  true,
-        broadcast: true
-      });
-    for (const child of children) {
-      await Tree.attachTabTo(child, groupTab, {
-        dontMove:  true,
-        broadcast: true
-      });
-    }
-    // This can be triggered on closing of multiple tabs,
-    // so we should cleanup it on such cases for safety.
-    // https://github.com/piroor/treestyletab/issues/2317
-    wait(1000).then(() => TabsGroup.reserveToCleanupNeedlessGroupTab(groupTab));
-  }
-  else {
-    Tree.detachAllChildren(null, {
+  const replacedGroupTab = (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) ?
+    await TabsGroup.tryReplaceTabWithGroup(null, { windowId, parent, children, insertBefore, newParent }) :
+    null;
+
+  if (!replacedGroupTab) {
+    await Tree.detachAllChildren(null, {
       parent,
       newParent,
       children,

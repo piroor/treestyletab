@@ -7,6 +7,9 @@
 
 import {
   log as internalLogger,
+  configs,
+  wait,
+  countMatched,
   dumpTab
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -131,4 +134,54 @@ function cleanupNeedlssGroupTab(tabs) {
   }
   log('=> to be removed: ', () => tabsToBeRemoved.map(dumpTab));
   TabsInternalOperation.removeTabs(tabsToBeRemoved, { keepDescendants: true });
+}
+
+export async function tryReplaceTabWithGroup(tab, { windowId, parent, children, insertBefore, newParent } = {}) {
+  if (tab) {
+    windowId     = tab.windowId;
+    parent       = tab.$TST.parent;
+    children     = tab.$TST.children;
+    insertBefore = insertBefore || tab.$TST.unsafeNextTab;
+  }
+
+  if (children.length <= 1 ||
+      countMatched(children,
+                   tab => !tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED)) <= 1)
+    return null;
+
+  log('trying to replace the closing tab with a new group tab');
+
+  const firstChild = children[0];
+  const uri = makeGroupTabURI({
+    title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
+    ...temporaryStateParams(configs.groupTabTemporaryStateForOrphanedTabs)
+  });
+  const window = TabsStore.windows.get(windowId);
+  window.toBeOpenedTabsWithPositions++;
+  const groupTab = await TabsOpen.openURIInTab(uri, {
+    windowId,
+    insertBefore,
+    inBackground: true
+  });
+  log('group tab: ', dumpTab(groupTab));
+  if (!groupTab) // the window is closed!
+    return;
+  if (newParent || parent)
+    await Tree.attachTabTo(groupTab, newParent || parent, {
+      dontMove:  true,
+      broadcast: true
+    });
+  for (const child of children) {
+    await Tree.attachTabTo(child, groupTab, {
+      dontMove:  true,
+      broadcast: true
+    });
+  }
+
+  // This can be triggered on closing of multiple tabs,
+  // so we should cleanup it on such cases for safety.
+  // https://github.com/piroor/treestyletab/issues/2317
+  wait(1000).then(() => reserveToCleanupNeedlessGroupTab(groupTab));
+
+  return groupTab;
 }

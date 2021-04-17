@@ -576,8 +576,6 @@ export async function detachAllChildren(
   { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
     ...options } = {}
 ) {
-  const promises = [];
-
   log('detachAllChildren: ',
       tab && tab.id,
       { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab },
@@ -624,7 +622,7 @@ export async function detachAllChildren(
   if (!dontExpand &&
       tab &&
       behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)
-    collapseExpandSubtree(tab, {
+    await collapseExpandSubtree(tab, {
       ...options,
       collapsed: false
     });
@@ -633,6 +631,7 @@ export async function detachAllChildren(
   for (const child of children) {
     if (!child)
       continue;
+    const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
       promises.push(moveTabSubtreeBefore(child, nextTab, options));
@@ -676,8 +675,8 @@ export async function detachAllChildren(
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
     }
     count++;
+    await Promise.all(promises);
   }
-  await Promise.all(promises);
 }
 
 // returns moved (or not)
