@@ -84,13 +84,17 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     context: Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE,
     ...moveInfo,
   });
+  log('tryFixupTreeForInsertedTab ', { parentTabOperationBehavior, moveInfo });
   if (!moveInfo.isTabCreating &&
       parentTabOperationBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
-    Tree.detachAllChildren(tab, {
+    log('Tree.detachAllChildren ', parentTabOperationBehavior);
+    await Tree.detachAllChildren(tab, {
       behavior:  parentTabOperationBehavior,
+      justNow:   true,
       broadcast: true
     });
-    Tree.detachTab(tab, {
+    await Tree.detachTab(tab, {
+      justNow:   true,
       broadcast: true
     });
   }

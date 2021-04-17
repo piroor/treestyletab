@@ -571,11 +571,13 @@ export async function detachTabsFromTree(tabs, options = {}) {
     await Promise.all(promisedAttach);
 }
 
-export function detachAllChildren(
+export async function detachAllChildren(
   tab = null,
   { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab,
     ...options } = {}
 ) {
+  const promises = [];
+
   log('detachAllChildren: ',
       tab && tab.id,
       { children, parent, nearestFollowingRootTab, newParent, behavior, dontExpand, dontSyncParentToOpenerTab },
@@ -632,49 +634,50 @@ export function detachAllChildren(
     if (!child)
       continue;
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
-      detachTab(child, { ...options, dontSyncParentToOpenerTab });
-      moveTabSubtreeBefore(child, nextTab, options);
+      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
+      promises.push(moveTabSubtreeBefore(child, nextTab, options));
     }
     else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD) {
-      detachTab(child, { ...options, dontSyncParentToOpenerTab });
+      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
       if (count == 0) {
         if (parent) {
-          attachTabTo(child, parent, {
+          promises.push(attachTabTo(child, parent, {
             ...options,
             dontSyncParentToOpenerTab,
             dontExpand: true,
             dontMove:   true
-          });
+          }));
         }
-        collapseExpandSubtree(child, {
+        promises.push(collapseExpandSubtree(child, {
           ...options,
           collapsed: false
-        });
+        }));
         //deleteTabValue(child, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
-        attachTabTo(child, children[0], {
+        promises.push(attachTabTo(child, children[0], {
           ...options,
           dontSyncParentToOpenerTab,
           dontExpand: true,
           dontMove:   true
-        });
+        }));
       }
     }
     else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
              parent) {
-      attachTabTo(child, parent, {
+      promises.push(attachTabTo(child, parent, {
         ...options,
         dontSyncParentToOpenerTab,
         dontExpand: true,
         dontMove:   true
-      });
+      }));
     }
     else { // behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
-      detachTab(child, { ...options, dontSyncParentToOpenerTab });
+      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
     }
     count++;
   }
+  await Promise.all(promises);
 }
 
 // returns moved (or not)
