@@ -219,16 +219,16 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 });
 
 if (Constants.IS_BACKGROUND) {
-// for automated tests
-browser.runtime.onMessage.addListener((message, _sender) => {
-  switch (message.type) {
-    case Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION:
-      Tab.waitUntilTracked(message.tabIds).then(() => {
-        removeTabs(message.tabIds.map(id => Tab.get(id)), {
-          byMouseOperation: true
+  // for automated tests
+  browser.runtime.onMessage.addListener((message, _sender) => {
+    switch (message.type) {
+      case Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION:
+        Tab.waitUntilTracked(message.tabIds).then(() => {
+          removeTabs(message.tabIds.map(id => Tab.get(id)), {
+            byMouseOperation: true
+          });
         });
-      });
-      break;
-  }
-});
+        break;
+    }
+  });
 }
