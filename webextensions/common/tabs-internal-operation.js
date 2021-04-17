@@ -218,6 +218,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
   }
 });
 
+if (Constants.IS_BACKGROUND) {
 // for automated tests
 browser.runtime.onMessage.addListener((message, _sender) => {
   switch (message.type) {
@@ -230,3 +231,4 @@ browser.runtime.onMessage.addListener((message, _sender) => {
       break;
   }
 });
+}
