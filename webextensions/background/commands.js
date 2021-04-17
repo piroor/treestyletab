@@ -318,6 +318,23 @@ async function performTabsDragDrop(params = {}) {
   }
 }
 
+async function performTabsDragDropWithMessage(message) {
+  const draggedTabIds = message.import ? [] : message.tabs.map(tab => tab.id);
+  await Tab.waitUntilTracked(draggedTabIds.concat([
+    message.attachToId,
+    message.insertBeforeId,
+    message.insertAfterId
+  ]));
+  log('perform tabs dragdrop requested: ', message);
+  return performTabsDragDrop({
+    ...message,
+    tabs:         message.import ? message.tabs : draggedTabIds.map(id => Tab.get(id)),
+    attachTo:     message.attachToId && Tab.get(message.attachToId),
+    insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
+    insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
+  });
+}
+
 // useful utility for general purpose
 export async function moveTabsWithStructure(tabs, params = {}) {
   log('moveTabsWithStructure ', () => tabs.map(dumpTab));
@@ -845,22 +862,9 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         });
     }; break;
 
-    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP: {
-      const draggedTabIds = message.import ? [] : message.tabs.map(tab => tab.id);
-      await Tab.waitUntilTracked(draggedTabIds.concat([
-        message.attachToId,
-        message.insertBeforeId,
-        message.insertAfterId
-      ]));
-      log('perform tabs dragdrop requested: ', message);
-      performTabsDragDrop({
-        ...message,
-        tabs:         message.import ? message.tabs : draggedTabIds.map(id => Tab.get(id)),
-        attachTo:     message.attachToId && Tab.get(message.attachToId),
-        insertBefore: message.insertBeforeId && Tab.get(message.insertBeforeId),
-        insertAfter:  message.insertAfterId && Tab.get(message.insertAfterId)
-      });
-    }; break;
+    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
+      performTabsDragDropWithMessage(message);
+      break;
 
     case Constants.kCOMMAND_TOGGLE_MUTED: {
       await Tab.waitUntilTracked(message.tabId);
@@ -910,6 +914,15 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         }
       }
     }; break;
+  }
+});
+
+// for automated tests
+browser.runtime.onMessage.addListener((message, _sender) => {
+  switch (message.type) {
+    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
+      performTabsDragDropWithMessage(message);
+      break;
   }
 });
 
