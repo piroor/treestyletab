@@ -205,7 +205,7 @@ export async function callAPI(message) {
 }
 
 export async function waitUntilAllTabChangesFinished(operation) {
-  return new Promise(async (resolve, _reject) => {
+  return new Promise(async (resolve, reject) => {
     let changeCount = 0;
     let operationFinished = false;
     const onChanged = () => {
@@ -224,8 +224,15 @@ export async function waitUntilAllTabChangesFinished(operation) {
     browser.tabs.onCreated.addListener(onChanged);
     browser.tabs.onRemoved.addListener(onChanged);
     browser.tabs.onMoved.addListener(onChanged);
-    if (typeof operation == 'function')
-      await operation();
+    if (typeof operation == 'function') {
+      try {
+        await operation();
+      }
+      catch(error) {
+        operationFinished = true;
+        return reject(error);
+      }
+    }
     operationFinished = true;
     if (changeCount == 0)
       resolve();
