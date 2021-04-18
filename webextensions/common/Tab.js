@@ -282,6 +282,10 @@ export default class Tab {
     return this.states.has(Constants.kTAB_STATE_DUPLICATING);
   }
 
+  get removing() {
+    return this.states.has(Constants.kTAB_STATE_REMOVING);
+  }
+
   get isNewTabCommandTab() {
     if (!this.tab ||
         !configs.guessNewOrphanTabAsOpenedByNewTabCommand)

@@ -621,12 +621,12 @@ export async function detachAllChildren(
     nextTab = nearestFollowingRootTab !== undefined ?
       nearestFollowingRootTab :
       tab && tab.$TST.nearestFollowingRootTab;
-    if (!nextTab) {
-      previousTab = Tab.getLastTab(windowId || tab.windowId);
-      const descendantsSet = new Set(descendants || tab.$TST.descendants);
-      while (previousTab && descendantsSet.has(previousTab)) {
-        previousTab = previousTab.$TST.unsafePreviousTab;
-      }
+    previousTab = nextTab ?
+      nextTab.$TST.previousTab :
+      Tab.getLastTab(windowId || tab.windowId);
+    const descendantsSet = new Set(descendants || tab.$TST.descendants);
+    while (previousTab && (!tab || descendantsSet.has(previousTab))) {
+      previousTab = previousTab.$TST.previousTab;
     }
   }
 
@@ -662,6 +662,13 @@ export async function detachAllChildren(
     const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
+
+      // reference tabs can be closed while waiting...
+      if (nextTab && nextTab.$TST.removing)
+        nextTab = null;
+      if (previousTab && previousTab.$TST.removing)
+        previousTab = null;
+
       if (nextTab) {
         promises.push(moveTabSubtreeBefore(child, nextTab, options));
       }
