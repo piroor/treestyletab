@@ -40,14 +40,13 @@ export async function testCloseTabsToTopTabs() {
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
-  await browser.runtime.sendMessage({
+  await Utils.waitUntilAllTabChangesFinished(() => browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
       menuItemId: 'context_closeTabsToTheStart'
     },
     tab: tabs.C.$TST.sanitized
-  });
-  await wait(1000);
+  }));
 
   const afterTabs = await browser.tabs.query({ windowId: win.id });
   is([],
@@ -73,14 +72,13 @@ export async function testCloseTabsToBottomTabs() {
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
-  await browser.runtime.sendMessage({
+  await Utils.waitUntilAllTabChangesFinished(() => browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
       menuItemId: 'context_closeTabsToTheEnd'
     },
     tab: tabs.B.$TST.sanitized
-  });
-  await wait(1000);
+  }));
 
   const afterTabs1 = await browser.tabs.query({ windowId: win.id });
   is([],
@@ -90,14 +88,13 @@ export async function testCloseTabsToBottomTabs() {
      afterTabs1.map(tab => tab.id).filter(id => id == tabs.P1.id || id == tabs.P2.id || id == tabs.A.id || id == tabs.B.id),
      'specified tab must be open');
 
-  await browser.runtime.sendMessage({
+  await Utils.waitUntilAllTabChangesFinished(() => browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
       menuItemId: 'context_closeTabsToTheEnd'
     },
     tab: tabs.P1.$TST.sanitized
-  });
-  await wait(1000);
+  }));
 
   const afterTabs2 = await browser.tabs.query({ windowId: win.id });
   is([],
@@ -121,14 +118,13 @@ export async function testCloseOtherTabs() {
   }, { windowId: win.id });
 
   tabs = await Utils.refreshTabs(tabs);
-  await browser.runtime.sendMessage({
+  await Utils.waitUntilAllTabChangesFinished(() => browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
       menuItemId: 'context_closeOtherTabs'
     },
     tab: tabs.B.$TST.sanitized
-  });
-  await wait(1000);
+  }));
 
   const afterTabs = await browser.tabs.query({ windowId: win.id });
   is([],

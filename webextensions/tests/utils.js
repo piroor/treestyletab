@@ -203,3 +203,31 @@ export async function callAPI(message) {
     type: `treestyletab:api:${message.type}`
   });
 }
+
+export async function waitUntilAllTabChangesFinished(operation) {
+  return new Promise(async (resolve, _reject) => {
+    let changeCount = 0;
+    let operationFinished = false;
+    const onChanged = () => {
+      changeCount++;
+      setTimeout(() => {
+        changeCount--;
+        if (changeCount > 0)
+          return;
+        browser.tabs.onCreated.removeListener(onChanged);
+        browser.tabs.onRemoved.removeListener(onChanged);
+        browser.tabs.onMoved.removeListener(onChanged);
+        if (operationFinished)
+          resolve();
+      }, 500);
+    };
+    browser.tabs.onCreated.addListener(onChanged);
+    browser.tabs.onRemoved.addListener(onChanged);
+    browser.tabs.onMoved.addListener(onChanged);
+    if (typeof operation == 'function')
+      await operation();
+    operationFinished = true;
+    if (changeCount == 0)
+      resolve();
+  });
+}

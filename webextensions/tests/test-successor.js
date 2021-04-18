@@ -51,8 +51,7 @@ export async function testSuccessorForLastChildWithPreviousSibling() {
   is('C', await getActiveTabName(tabs),
      'the last child tab must be active');
 
-  await browser.tabs.remove(tabs.C.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
 
   is('B', await getActiveTabName(tabs),
      'new last child tab must be the successor.');
@@ -126,8 +125,7 @@ export async function testMissingSuccessor() {
        'the parent tab must be active');
   }
 
-  await browser.tabs.remove(A.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(A.id));
 
   tabs = await Utils.refreshTabs({ B, C, D, E });
   is('B', await getActiveTabName(tabs),
@@ -135,8 +133,7 @@ export async function testMissingSuccessor() {
 
   await browser.tabs.update(C.id, { active: true });
   await wait(1000);
-  await browser.tabs.remove(C.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(C.id));
 
   tabs = await Utils.refreshTabs({ B, D, E });
   is('D', await getActiveTabName(tabs),
@@ -171,8 +168,7 @@ export async function testSimulateSelectOwnerOnClose() {
 
   await browser.tabs.update(tabs.C.id, { active: true });
   await wait(150);
-  await browser.tabs.remove(tabs.C.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
 
   is('A', await getActiveTabName(tabs),
      'the opener tab must be the successor.');
@@ -210,8 +206,7 @@ export async function testSimulateSelectOwnerOnCloseCleared() {
   await wait(50);
   await browser.tabs.update(tabs.C.id, { active: true });
   await wait(50);
-  await browser.tabs.remove(tabs.C.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
 
   is('B', await getActiveTabName(tabs),
      'the opener tab must not be the successor.');
@@ -258,8 +253,7 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
        'the last child tab must be active');
   }
 
-  await browser.tabs.remove(tabs.F.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.F.id));
   is('D', await getActiveTabName(tabs),
      'nearest loaded tab in the tree must become the successor.');
 
@@ -268,13 +262,11 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
      'the last child tab must be active');
 
   await wait(1000);
-  await browser.tabs.remove(tabs.C.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
   is('D', await getActiveTabName(tabs),
      'nearest loaded tab in the tree must become the successor.');
 
-  await browser.tabs.remove(tabs.D.id);
-  await wait(1000);
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.D.id));
   is('A', await getActiveTabName(tabs),
      'nearest loaded tab in the tree must become the successor.');
 }

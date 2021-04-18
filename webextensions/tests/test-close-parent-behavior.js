@@ -32,6 +32,19 @@ export async function setup() {
     moveParentBehavior_noSidebar_expanded:        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN,
     sidebarVirtuallyOpenedWindows:                [],
     sidebarVirtuallyClosedWindows:                [],
+
+    autoAttachOnNewTabCommand:                              Constants.kNEWTAB_DO_NOTHING,
+    autoAttachOnNewTabButtonMiddleClick:                    Constants.kNEWTAB_DO_NOTHING,
+    autoAttachOnNewTabButtonAccelClick:                     Constants.kNEWTAB_DO_NOTHING,
+    autoAttachOnDuplicated:                                 Constants.kNEWTAB_DO_NOTHING,
+    autoAttachSameSiteOrphan:                               Constants.kNEWTAB_DO_NOTHING,
+    autoAttachOnOpenedFromExternal:                         Constants.kNEWTAB_DO_NOTHING,
+    autoAttachOnAnyOtherTrigger:                            Constants.kNEWTAB_DO_NOTHING,
+    guessNewOrphanTabAsOpenedByNewTabCommand:               false,
+    inheritContextualIdentityToChildTabMode:                Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    inheritContextualIdentityToSameSiteOrphanMode:          Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    inheritContextualIdentityToTabsFromExternalMode:        Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+    inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   });
   win = await browser.windows.create();
 }
@@ -101,9 +114,7 @@ async function assertFirstChildPromoted({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.E]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.E]));
 
   delete tabs.B;
   delete tabs.E;
@@ -145,9 +156,7 @@ async function assertAllChildrenPromoted({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.E]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.E]));
 
   delete tabs.B;
   delete tabs.E;
@@ -191,9 +200,7 @@ async function assertPromotedIntelligently({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.F]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.F]));
 
   delete tabs.B;
   delete tabs.F;
@@ -238,9 +245,7 @@ async function assertAllChildrenDetached({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.F]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.F]));
 
   delete tabs.B;
   delete tabs.F;
@@ -286,9 +291,7 @@ async function assertAllChildrenSimplyDetached({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.F]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.F]));
 
   delete tabs.B;
   delete tabs.F;
@@ -332,9 +335,7 @@ async function assertEntireTreeClosed({ operator, collapsed } = {}) {
   else
     await expandAll(win.id);
 
-  await operator([tabs.B, tabs.E]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.E]));
   const afterTabs = await Promise.all(
     Array.from(Object.values(tabs))
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))
@@ -371,9 +372,7 @@ async function assertEntireTreeMoved({ operator, collapsed } = {}) {
   ]);
 
   const operatedTabs = [tabs.B, tabs.E];
-  await operator(operatedTabs);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator(operatedTabs));
   delete tabs.B;
   delete tabs.E;
   const [oldFirstTab, afterOperatedTabs, afterDescendants, afterOtherTabs] = await Promise.all([
@@ -421,9 +420,7 @@ async function assertClosedParentIsReplacedWithGroup({ operator, collapsed } = {
     await expandAll(win.id);
 
   const beforeTabIds = new Set((await browser.tabs.query({ windowId: win.id })).map(tab => tab.id));
-  await operator([tabs.B, tabs.E]);
-  await wait(250);
-  await wait(250);
+  await Utils.waitUntilAllTabChangesFinished(() => operator([tabs.B, tabs.E]));
   const openedTabs = (await browser.tabs.query({ windowId: win.id })).filter(tab => !beforeTabIds.has(tab.id));
   is(2,
      openedTabs.length,
@@ -815,7 +812,7 @@ export async function testCustomMode_firstChild() {
     collapsed_outsideSidebar: assertAllChildrenPromoted,
     expanded_outsideSidebar:  assertAllChildrenDetached,
     collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
-    expanded_noSidebar:       assertEntireTreeMoved,
+    expanded_noSidebar:       assertEntireTreeClosed,
   });
   await assertMoveBehaved({
     collapsed_outsideSidebar: assertFirstChildPromoted,
@@ -849,7 +846,7 @@ export async function testCustomMode_allChildren() {
     collapsed_outsideSidebar: assertAllChildrenPromoted,
     expanded_outsideSidebar:  assertAllChildrenDetached,
     collapsed_noSidebar:      assertClosedParentIsReplacedWithGroup,
-    expanded_noSidebar:       assertEntireTreeClosed,
+    expanded_noSidebar:       assertEntireTreeMoved,
   });
 }
 

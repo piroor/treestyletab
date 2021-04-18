@@ -206,8 +206,7 @@ export async function testNewTabBeforeHiddenTab() {
     is(expectedIndex, newTabs[0].index, 'a new tab must be placed before hidden tab');
 
     await browser.tabs.update(baseTab.id, { active: true });
-    await browser.tabs.remove(newTabs[0].id);
-    await wait(1000);
+    await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(newTabs[0].id));
   }
   await assertNewTabOpenedAs(tabs.A.index + 1, tabs.A, Constants.kNEWTAB_OPEN_AS_CHILD);
   await assertNewTabOpenedAs(tabs.A.index + 1, tabs.A, Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING);
