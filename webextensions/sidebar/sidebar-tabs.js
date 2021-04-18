@@ -241,7 +241,12 @@ Window.onInitialized.addListener(window => {
 });
 
 Tab.onInitialized.addListener((tab, _info) => {
-  if (tab.$TST.element) // restored from cache
+  const window = TabsStore.windows.get(tab.windowId);
+  if (tab.$TST.element && // restored from cache
+      // If this is a rebuilding process for a mis-synchronization,
+      // we need to ignore the existing tab element, because it is
+      // already detached from the document and going to be destroyed.
+      tab.$TST.element.parentNode == window.element)
     return;
 
   const id = `tab-${tab.id}`;
@@ -258,10 +263,15 @@ Tab.onInitialized.addListener((tab, _info) => {
   tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
   tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
 
-  const window  = TabsStore.windows.get(tab.windowId);
   const nextTab = tab.$TST.unsafeNextTab;
+  const referenceTabElement = nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`);
   log(`creating tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
+  window.element.insertBefore(
+    tabElement,
+    referenceTabElement && referenceTabElement.parentNode == window.element ?
+      referenceTabElement :
+      null
+  );
 });
 
 
