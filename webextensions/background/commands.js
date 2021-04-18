@@ -1012,13 +1012,17 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
   }, []);
 
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
-  const tabs = await TabsOpen.openURIsInTabs(items, {
+  const tabs = await TabsOpen.openURIsInTabs(
+    // we need to isolate it - unexpected parameter like "index" will break the behavior.
+    items.map(bookmark => ({ url: bookmark.url, title: bookmark.title })),
+    {
     windowId,
     isOrphan:     true,
     inBackground: true,
     fixPositions: true,
     discarded
-  });
+    }
+  );
 
   if (tabs.length > activeIndex)
     TabsInternalOperation.activateTab(tabs[activeIndex]);
