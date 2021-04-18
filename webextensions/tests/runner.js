@@ -12,6 +12,7 @@ import {
 
 import * as ApiTabsListener from '/background/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
+import * as Utils from './utils.js';
 
 import * as TestDOMUpdater from './test-dom-updater.js';
 import * as TestContextMenu from './test-context-menu.js';
@@ -53,11 +54,13 @@ function backupConfigs() {
 }
 
 async function restoreConfigs(values) {
+  const resetConfigs = {};
   for (const key of Object.keys(values)) {
     if (NO_RESET_CONFIG_KEYS.has(key))
       continue;
-    configs[key] = values[key];
+    resetConfigs[key] = values[key];
   }
+  await Utils.setConfigs(resetConfigs);
   // wait until updated configs are delivered to other namespaces
   await nextFrame();
 }
