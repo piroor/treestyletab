@@ -110,8 +110,9 @@ tab-item {
 
 /* Show internal tab id in the debug mode */
 :root.debug tab-item::after {
-  content: attr(data-tab-id);
+  content: attr(data-tab-id) !important; /* override definition for the highlighting marker */
   opacity: 0.65;
+  text-align: right;
   z-index: var(--tab-favicon-z-index);
 }
 :root.debug tab-item.faviconized::after {
