@@ -1016,11 +1016,11 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
     // we need to isolate it - unexpected parameter like "index" will break the behavior.
     items.map(bookmark => ({ url: bookmark.url, title: bookmark.title })),
     {
-    windowId,
-    isOrphan:     true,
-    inBackground: true,
-    fixPositions: true,
-    discarded
+      windowId,
+      isOrphan:     true,
+      inBackground: true,
+      fixPositions: true,
+      discarded,
     }
   );
 
