@@ -57,10 +57,10 @@ tab-item.pinned.last-row {
 
 
 /* macOS workaround */
-:root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) {
+:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac #tabbar:dir(ltr).overflow tab-item:not(.pinned) {
+:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
