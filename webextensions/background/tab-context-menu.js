@@ -1048,9 +1048,16 @@ async function onClick(info, contextTab) {
     case 'context_closeOtherTabs': {
       const tabs  = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       const keptTabIds = new Set(
-        multiselectedTabs ?
-          multiselectedTabs.map(tab => tab.id) :
-          [contextTab.id]
+        (multiselectedTabs ?
+          multiselectedTabs :
+          [contextTab]
+        ).reduce((tabIds, tab, _index) => {
+          if (tab.$TST.subtreeCollapsed)
+            tabIds.push(tab.id, ...tab.$TST.descendants.map(tab => tab.id))
+          else
+            tabIds.push(tab.id);
+          return tabIds;
+        }, [])
       );
       const closeTabs = mapAndFilter(tabs,
                                      tab => !tab.pinned && !tab.hidden && !keptTabIds.has(tab.id) && Tab.get(tab.id) || undefined);
