@@ -655,24 +655,41 @@ export function reserveToUpdateTabbarLayout({ reason, timeout } = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
-function updateTabbarLayout(params = {}) {
+function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
-      reason:  params.reasons,
-      timeout: Math.max(100, params.timeout)
+      reason:  reasons,
+      timeout: Math.max(100, timeout)
     });
     return;
   }
-  //log('updateTabbarLayout');
+  const readableReasons = [];
+  if (configs.debug) {
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_RESIZE)
+      readableReasons.push('resize');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_COLLAPSE)
+      readableReasons.push('collapse');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_EXPAND)
+      readableReasons.push('expand');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_ANIMATION_END)
+      readableReasons.push('animation end');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN)
+      readableReasons.push('tab open');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE)
+      readableReasons.push('tab close');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_MOVE)
+      readableReasons.push('tab move');
+  }
+  log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
   const range = document.createRange();
   range.selectNodeContents(mTabBar);
   const containerHeight = mTabBar.getBoundingClientRect().height;
   const contentHeight   = range.getBoundingClientRect().height;
-  //log('height: ', { container: containerHeight, content: contentHeight });
+  log('height: ', { container: containerHeight, content: contentHeight });
   const overflow = containerHeight < contentHeight;
   if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
-    //log('overflow');
+    log('overflow');
     mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
     const range = document.createRange();
     range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
@@ -690,7 +707,6 @@ function updateTabbarLayout(params = {}) {
         return;
       }
       const lastOpenedTab = Tab.getLastOpenedTab(TabsStore.getCurrentWindowId());
-      const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
@@ -702,15 +718,15 @@ function updateTabbarLayout(params = {}) {
     });
   }
   else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
-    //log('underflow');
+    log('underflow');
     mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
     mTabBar.style.bottom = '';
   }
 
-  if (params.justNow)
-    PinnedTabs.reposition(params);
+  if (justNow)
+    PinnedTabs.reposition({ reasons, timeout, justNow });
   else
-    PinnedTabs.reserveToReposition(params);
+    PinnedTabs.reserveToReposition({ reasons, timeout, justNow });
 }
 
 
