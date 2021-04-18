@@ -373,13 +373,9 @@ async function assertEntireTreeMoved({ operator, collapsed } = {}) {
 
   const operatedTabs = [tabs.B, tabs.E];
   await Utils.waitUntilAllTabChangesFinished(() => operator(operatedTabs));
-  delete tabs.B;
-  delete tabs.E;
-  const [oldFirstTab, afterOperatedTabs, afterDescendants, afterOtherTabs] = await Promise.all([
+  const [oldFirstTab, afterOperatedTabs, afterOtherTabs] = await Promise.all([
     browser.tabs.get(allTabs[0].id),
-    Promise.all(operatedTabs
-      .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
-    Promise.all([tabs.C, tabs.D, tabs.F, tabs.G]
+    Promise.all([tabs.B, tabs.C, tabs.D, tabs.E, tabs.F, tabs.G]
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
     Promise.all([tabs.A]
       .map(tab => browser.tabs.get(tab.id).catch(_error => null))),
@@ -387,9 +383,6 @@ async function assertEntireTreeMoved({ operator, collapsed } = {}) {
   ok(afterOperatedTabs.every(tab => tab && tab.index < oldFirstTab.index),
      'all operated tabs must be placed before the first tab: ' +
        afterOperatedTabs.map(tab => tab && tab.index).join(',') + ' < ' + oldFirstTab.index);
-  ok(afterDescendants.every(tab => tab && tab.index < oldFirstTab.index),
-     'all descendants must be placed before the first tab also: ' +
-       afterDescendants.map(tab => tab && tab.index).join(',') + ' < ' + oldFirstTab.index);
   ok(afterOtherTabs.every(tab => tab && tab.index > oldFirstTab.index),
      'all other must be placed after the first tab also: ' +
        afterOtherTabs.map(tab => tab && tab.index).join(',') + ' > ' + oldFirstTab.index);
