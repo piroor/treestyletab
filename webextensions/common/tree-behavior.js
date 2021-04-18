@@ -18,7 +18,7 @@ function log(...args) {
 
 export function getParentTabOperationBehavior(tab, { context, byInternalOperation, preventEntireTreeBehavior, parent, windowId } = {}) {
   const sidebarVisible = SidebarConnection.isInitialized() ? ((windowId || tab) && SidebarConnection.isOpen(windowId || tab.windowId)) : true;
-  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible });
+  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible /*, stack: configs.debug && new Error().stack */ });
 
   // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
   let behavior;
