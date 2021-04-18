@@ -759,8 +759,8 @@ function onResize(_event) {
 
 function onTransisionEnd(event) {
   if (event.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
-      event.target.localName != 'tab-item' || // ignore animations of twisty or something inside tabs
-      !/margin|height/.test(event.propertyName))
+      !event.target.parentNode.classList.has('tabs') || // ignore animations on elements not affect to the tab bar scroll size
+      !/margin|height|border-((top|bottom)-)?|/.test(event.propertyName))
     return;
   //log('transitionend ', event);
   reserveToUpdateTabbarLayout({
