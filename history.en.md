@@ -1,6 +1,23 @@
 # History
 
  - master/HEAD
+   * Restructure behaviors about closing and moving of a parent tab.
+     * In the sidebar, now there are some permanently fixed behaviors and some configurable presets:
+       * Closing a parent tab with collapsed tree: closes the entire tree.
+       * Moving a parent tab with collapsed tree: moves the entire tree.
+       * Moving a parent tab with expanded tree: behaves according to configurations under the section "Drag and Drop".
+     * There is a preset for people using Firefox's native tab bar as an UI to operate solo tab. In this case all tab operations done outside of the sidebar (Firefox's native tab bar, keyboard shortcuts, or other addons) are treated as operations for solo tabs, not tree of tabs.
+     * There is a preset for people desireing TST to control tabs as trees always. In this case all tab operations are treated same as operations in the sidebar, even if it is done on Firefox's native tab bar, keyboard shortcuts, or other addons.
+     * Otherwise you can configure behaviors for each case: closing of a parent with expanded tree in the sidebar, closing of a parent with collapsed/expanded tree outside of the sidebar, moving of a parent with collapsed/expanded tree outside of the sidebar, and more options for cases with closed sidebar.
+   * "Close Tabs to the Bottom" and "Close Other Tabs" context menu commands now skips collapsed descendants of the context tab.
+   * Open tabs from a bookmark folder with correct order. (This looks to be a regression on recent versions.)
+   * Prevent inifinite toggling of the sidebar scrollbar on macOS, when there are enough number of tabs which triggers overflowing.
+   * On macOS, in-tab padding is correctly applied avoiding the scrollbar covers clickable UIs. (It was applied to wrong side.)
+   * Proton theme: Show container identifier line at top of pinned tabs.
+   * Rebuild sidebar contents more certainly when mis-synchronization between the main process and the sidebar contents is detected.
+   * Becomes to more robust around tabs reopened immediately by other addons like Temporary Containers.
+   * Becomes to more robust around closing/moving of parent tabs as solo tabs.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.4 (2021.3.31)
    * Add a theme like [Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu) experimentally. Proton is the next UI theme of Firefox itself.
    * Rename the theme "Plain" to "Photon". Photon is the current UI theme of Firefox itself.
