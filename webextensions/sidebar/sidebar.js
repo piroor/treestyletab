@@ -487,6 +487,14 @@ export async function rebuildAll(importedTabs, cache) {
       windowId: mTargetWindow
     }).catch(ApiTabs.createErrorHandler()));
 
+  // Ignore tabs already closed. It can happen when the first tab is
+  // immediately reopened by other addons like Temporary Container.
+  const importedTabIds = new Set(importedTabs.map(tab => tab.id));
+  for (const tab of Tab.getAllTabs()) {
+    if (!importedTabIds.has(tab.id))
+      Tab.untrack(tab.id);
+  }
+
   let tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   if (cache) {
@@ -515,6 +523,7 @@ export async function rebuildAll(importedTabs, cache) {
       let tab = nativeTabs[index];
       Tab.track(tab);
       tab = importedTabs[index] && Tab.import(importedTabs[index]) || tab;
+      tab.$TST.unbindElement(); // The tab object can have old element already detached from the document, so we need to forget it.
       if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
         UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: re-track all tabs
         await nextFrame();
