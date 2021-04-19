@@ -74,6 +74,7 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
+  document.addEventListener('auxclick', onAuxClick);
   mTabBar.addEventListener('dblclick', onDblClick);
   mTabBar.addEventListener('mouseover', onMouseOver);
 
@@ -855,6 +856,13 @@ function onClick(_event) {
   DragAndDrop.clearDraggingTabsState();
 }
 onClick = EventUtils.wrapWithErrorHandler(onClick);
+
+function onAuxClick(event) {
+  // This is required to prevent new tab from middle-click on a UI link.
+  event.stopPropagation();
+  event.preventDefault();
+}
+onAuxClick = EventUtils.wrapWithErrorHandler(onAuxClick);
 
 function handleNewTabAction(event, options = {}) {
   log('handleNewTabAction ', { event, options });
