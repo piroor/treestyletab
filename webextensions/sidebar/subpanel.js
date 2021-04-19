@@ -126,7 +126,7 @@ async function applyProvider(id) {
       provider.subPanel) {
     log('applyProvider: load ', id);
     configs.lastSelectedSubPanelProviderId = mProviderId = id;
-    const height = await browser.sessions.getWindowValue(mTargetWindow, `${Constants.kWINDOW_STATE_SUBPANEL_HEIGHT}:${id}`).catch(ApiTabs.createErrorHandler());
+    const lastHeight = await browser.sessions.getWindowValue(mTargetWindow, `${Constants.kWINDOW_STATE_SUBPANEL_HEIGHT}:${id}`).catch(ApiTabs.createErrorHandler());
     for (const item of mSelector.querySelectorAll('.radio')) {
       item.classList.remove('checked');
     }
@@ -143,8 +143,23 @@ async function applyProvider(id) {
 
     mSelectorAnchor.querySelector('.label').textContent = provider.subPanel.title || provider.name || provider.id;
 
-    if (typeof height == 'number')
-      mHeight = height;
+    const headerHeight = mHeader.getBoundingClientRect().height;
+    if ('fixedHeight' in provider.subPanel) {
+      const unit = typeof provider.subPanel.fixedHeight == 'number' && 'px' || '';
+      mHeight = Size.calc(`${provider.subPanel.fixedHeight}${unit} + ${headerHeight}px`);
+      mHeader.classList.remove('resizable');
+    }
+    else {
+      mHeader.classList.add('resizable');
+      if (typeof lastHeight == 'number') {
+        mHeight = lastHeight;
+      }
+      else if ('initialHeight' in provider.subPanel) {
+        const unit = typeof provider.subPanel.initialHeight == 'number' && 'px' || '';
+        mHeight = Size.calc(`${provider.subPanel.initialHeight}${unit} + ${headerHeight}px`);
+      }
+    }
+
     if (mHeight > 0)
       load(provider.subPanel);
     else
@@ -155,6 +170,7 @@ async function applyProvider(id) {
     const icon = mSelectorAnchor.querySelector('.icon > img');
     icon.removeAttribute('src');
     mSelectorAnchor.querySelector('.label').textContent = '';
+    mHeader.classList.add('resizable');
     load();
   }
 }
@@ -245,6 +261,11 @@ function isFiredOnClickable(event) {
   return !!target.closest('.clickable');
 }
 
+function isResizable() {
+  const provider = mProviderId && TSTAPI.getAddon(mProviderId);
+  return !provider || !provider.subPanel || 'fixedHeight' in provider.subPanel;
+}
+
 mHeader.addEventListener('mousedown', event => {
   if (isFiredOnClickable(event))
     return;
@@ -263,6 +284,8 @@ mHeader.addEventListener('mouseup', event => {
   event.stopPropagation();
   event.preventDefault();
   document.releaseCapture();
+  if (!isResizable())
+    return;
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
   updateLayout();
   saveLastHeight();
@@ -291,6 +314,8 @@ window.addEventListener('resize', _event => {
 function onMouseMove(event) {
   event.stopPropagation();
   event.preventDefault();
+  if (!isResizable())
+    return;
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
   updateLayout();
 }

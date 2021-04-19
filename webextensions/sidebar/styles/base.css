@@ -805,13 +805,15 @@ iframe#subpanel {
 #subpanel-header {
   background: var(--tab-surface);
   border-top: 1px solid var(--tab-border);
-  cursor: ns-resize;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   line-height: 1;
   margin: 0;
   padding: 0.3em 0.2em 0.2em;
+}
+#subpanel-header.resizable {
+  cursor: ns-resize;
 }
 
 #subpanel-container:not(.collapsed) #subpanel-header {

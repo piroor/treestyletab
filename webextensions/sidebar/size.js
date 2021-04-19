@@ -82,3 +82,19 @@ export function update() {
     --visual-gap-hover-animation-delay: ${configs.cancelGapSuppresserHoverDelay}ms;
   }`;
 }
+
+export function calc(expression) {
+  const box = document.createElement('span');
+  const style = box.style;
+  style.display       = 'inline-block';
+  style.left          = 0;
+  style.pointerEvents = 'none';
+  style.position      = 'fixed';
+  style.top           = 0;
+  style.height        = `calc(${expression})`;
+  style.zIndex        = 0;
+  document.body.appendChild(box);
+  const height = box.getBoundingClientRect().height;
+  box.parentNode.removeChild(box);
+  return height;
+}
