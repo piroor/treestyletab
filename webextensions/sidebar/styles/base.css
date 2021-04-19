@@ -384,9 +384,6 @@ tab-item .extra-items-container.front {
   right: var(--tab-label-end-offset);
   z-index: var(--tab-extra-contents-front-z-index);
 }
-tab-item .extra-items-container.front:empty {
-  pointer-events: none;
-}
 
 tab-item:not(.bursting) .burster {
   display: none;
@@ -516,12 +513,8 @@ tab-item.active tab-label {
 }
 
 /* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
-tab-item .label-content,
-tab-item .label-content:hover,
-tab-item .label-content:active {
+tab-item .label-content {
   color: inherit;
-  cursor: default;
-  text-decoration: none; /* cancel link underline */
 }
 
 tab-item:not([data-child-ids]) .counter,

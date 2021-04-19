@@ -100,6 +100,7 @@ export class TabElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
+    this.setAttribute('role', 'button');
 
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
