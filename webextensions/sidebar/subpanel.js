@@ -263,7 +263,7 @@ function isFiredOnClickable(event) {
 
 function isResizable() {
   const provider = mProviderId && TSTAPI.getAddon(mProviderId);
-  return !provider || !provider.subPanel || 'fixedHeight' in provider.subPanel;
+  return !provider || !provider.subPanel || !('fixedHeight' in provider.subPanel);
 }
 
 mHeader.addEventListener('mousedown', event => {
