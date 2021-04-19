@@ -17,6 +17,8 @@
    * メインプロセスとサイドバーの間でタブの状態の同期が崩れたときの、サイドバーの内容の自動再構築処理を、より安定して動作するように修正
    * Temporary Containersなどの他のアドオンによって、新規に開かれた直後にタブが開き直される場面で、より安定して動作するようにした
    * 親タブを単独で閉じたり移動したりした後の挙動について、より安定して動作するように修正
+   * サブパネル領域の大きさを、アドオンごとに保存･復元するようにした
+   * APIの改善：サブパネルの登録時に[`initialHeight`（初期状態の高さ）および`fixedHeight`（固定の高さ）を指定できるようにした](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-register-a-subpanel)。
    * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.7.4 (2021.3.31)
    * Firefoxの次期UIテーマの[Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu)風テーマを追加

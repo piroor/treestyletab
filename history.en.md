@@ -17,6 +17,8 @@
    * Rebuild sidebar contents more certainly when mis-synchronization between the main process and the sidebar contents is detected.
    * Becomes to more robust around tabs reopened immediately by other addons like Temporary Containers.
    * Becomes to more robust around closing/moving of parent tabs as solo tabs.
+   * The height of the subpanel is now saved and restored for each provider addon.
+   * API improvement: now you can specify [`initialHeight` or `fixedHeight` for your subpanel](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-register-a-subpanel).
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.4 (2021.3.31)
    * Add a theme like [Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu) experimentally. Proton is the next UI theme of Firefox itself.
