@@ -77,7 +77,10 @@ export const configs = new Configs({
 
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :
-      'photon',
+      (() => {
+        const matched = navigator.userAgent.match(/Firefox\/(\d+)\.\d+/);
+        return (matched && parseInt(matched[1]) >= 89) ? 'proton' : 'photon'
+      })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   unrepeatableBGImageAspectRatio: 4,
