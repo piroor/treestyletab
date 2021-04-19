@@ -61,7 +61,12 @@ export async function init() {
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT).catch(ApiTabs.createErrorHandler())
   ]);
-  mHeight = typeof height == 'number' ? height : Math.max(configs.lastSubPanelHeight, 0);
+  const providerSpecificHeight = providerId && await browser.sessions.getWindowValue(mTargetWindow, `${Constants.kWINDOW_STATE_SUBPANEL_HEIGHT}:${providerId}`).catch(ApiTabs.createErrorHandler());
+  mHeight = (typeof providerSpecificHeight == 'number') ?
+    providerSpecificHeight :
+    (typeof height == 'number') ?
+      height :
+      Math.max(configs.lastSubPanelHeight, 0);
 
   log('initialize ', { providerId, height: mHeight });
 
@@ -76,7 +81,7 @@ export async function init() {
     //log('onMessage: ', message, sender);
     switch (message.type) {
       case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
-        wait(0).then(() => { // wait until addons are updated
+        wait(0).then(async () => { // wait until addons are updated
           updateSelector();
           const provider = TSTAPI.getAddon(message.sender.id);
           if (provider &&
@@ -85,7 +90,7 @@ export async function init() {
                provider.newlyInstalled)) {
             if (mHeight == 0)
               mHeight = getDefaultHeight();
-            applyProvider(provider.id);
+            await applyProvider(provider.id);
           }
         });
         break;
@@ -109,18 +114,19 @@ TSTAPI.onInitialized.addListener(async () => {
 
   const providerId = await browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID).catch(ApiTabs.createErrorHandler());
   if (providerId)
-    applyProvider(providerId);
+    await applyProvider(providerId);
   else
     restoreLastProvider();
 });
 
-function applyProvider(id) {
+async function applyProvider(id) {
   const provider = TSTAPI.getAddon(id);
   log('applyProvider ', id, provider);
   if (provider &&
       provider.subPanel) {
     log('applyProvider: load ', id);
     configs.lastSelectedSubPanelProviderId = mProviderId = id;
+    const height = await browser.sessions.getWindowValue(mTargetWindow, `${Constants.kWINDOW_STATE_SUBPANEL_HEIGHT}:${id}`).catch(ApiTabs.createErrorHandler());
     for (const item of mSelector.querySelectorAll('.radio')) {
       item.classList.remove('checked');
     }
@@ -137,6 +143,8 @@ function applyProvider(id) {
 
     mSelectorAnchor.querySelector('.label').textContent = provider.subPanel.title || provider.name || provider.id;
 
+    if (typeof height == 'number')
+      mHeight = height;
     if (mHeight > 0)
       load(provider.subPanel);
     else
@@ -151,15 +159,15 @@ function applyProvider(id) {
   }
 }
 
-function restoreLastProvider() {
+async function restoreLastProvider() {
   const lastProvider = TSTAPI.getAddon(configs.lastSelectedSubPanelProviderId);
   log('restoreLastProvider ', lastProvider);
   if (lastProvider && lastProvider.subPanel)
-    applyProvider(lastProvider.id);
+    await applyProvider(lastProvider.id);
   else if (mSelector.hasChildNodes())
-    applyProvider(mSelector.firstChild.dataset.value);
+    await applyProvider(mSelector.firstChild.dataset.value);
   else
-    applyProvider(mProviderId = null);
+    await applyProvider(mProviderId = null);
 }
 
 function getDefaultHeight() {
@@ -211,8 +219,10 @@ function updateLayout() {
 
   onResized.dispatch();
 
-  if (mProviderId)
+  if (mProviderId) {
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_HEIGHT, mHeight).catch(ApiTabs.createErrorHandler());
+    browser.sessions.setWindowValue(mTargetWindow, `${Constants.kWINDOW_STATE_SUBPANEL_HEIGHT}:${mProviderId}`, mHeight).catch(ApiTabs.createErrorHandler());
+  }
 }
 
 async function toggle() {
@@ -327,9 +337,9 @@ mSelector.ui = new MenuUI({
   animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001
 });
 
-function onSelect(item, _event) {
+async function onSelect(item, _event) {
   if (item.dataset.value) {
-    applyProvider(item.dataset.value);
+    await applyProvider(item.dataset.value);
     saveLastHeight();
   }
   mSelector.ui.close();
