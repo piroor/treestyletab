@@ -39,6 +39,9 @@ export class TabSoundButtonElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_SOUND_BUTTON_CLASS_NAME);
 
+    this.setAttribute('role', 'button');
+    this.setAttribute('tabindex', '0');
+
     this.invalidate();
 
     this.initialized = true;
