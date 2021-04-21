@@ -100,7 +100,7 @@ export class TabElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
-    this.setAttribute('role', 'button');
+    this.setAttribute('role', 'option');
 
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
@@ -230,6 +230,7 @@ export class TabElement extends HTMLElement {
   _applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
+    this.setAttribute('aria-selected', this.classList.contains('active') ? 'true' : 'false');
   }
 
   invalidate(targets) {

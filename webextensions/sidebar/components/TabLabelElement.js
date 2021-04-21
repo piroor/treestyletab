@@ -53,6 +53,7 @@ export class TabLabelElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(KLABEL_CLASS_NAME);
+    this.setAttribute('role', 'button');
 
     const content = this.appendChild(document.createElement('span'));
     content.classList.add(kCONTENT_CLASS_NAME);

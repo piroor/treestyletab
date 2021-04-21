@@ -500,6 +500,7 @@ export async function rebuildAll(importedTabs, cache) {
   if (cache) {
     const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs });
     if (restored) {
+      TabsInternalOperation.setTabActive(Tab.getActiveTab(mTargetWindow));
       MetricsData.add('rebuildAll: end (from cache)');
       return true;
     }
