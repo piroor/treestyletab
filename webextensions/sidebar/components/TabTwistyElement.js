@@ -42,6 +42,8 @@ export class TabTwistyElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_TWISTY_CLASS_NAME);
 
+    this.setAttribute('role', 'button');
+
     this.invalidate();
 
     this.initialized = true;
