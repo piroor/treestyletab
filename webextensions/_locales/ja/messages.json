@@ -477,7 +477,7 @@
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "1つのブックマークフォルダーから" },
-  "config_autoGroupNewTabsFromBookmarks_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+  "config_autoGroupNewTabsFromBookmarks_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する（「～など」というタイトルのグループ化用タブが開かれます）" },
   "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "この機能はブックマークへのアクセス権を必要とします。ここをクリックして必要な権限を与えてください。" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "タブとブックマークの対応関係の検出を許可する)" },
@@ -489,7 +489,7 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "自動的にグループ化する前に確認する" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "グループ化しようとしているタブの一覧を確認のダイアログに表示する" },
 
-  "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
+  "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する（「～から開いたタブ」というタイトルのグループ化用タブが開かれます）" },
   "config_renderTreeInGroupTabs_label": { "message": "グループ化用のタブにツリーを表示する" },
 
   "config_groupTabTemporaryState_caption": { "message": "場合ごとのグループ化用のタブの初期状態" },
