@@ -230,7 +230,7 @@ export class TabElement extends HTMLElement {
   _applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
-    this.setAttribute('aria-selected', this.classList.contains('active') ? 'true' : 'false');
+    this.setAttribute('aria-selected', this.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED) ? 'true' : 'false');
   }
 
   invalidate(targets) {

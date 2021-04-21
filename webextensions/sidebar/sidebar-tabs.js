@@ -237,7 +237,7 @@ Window.onInitialized.addListener(window => {
   container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
   container.setAttribute('role', 'listbox');
-  container.setAttribute('aria-multiselectable', 'false');
+  container.setAttribute('aria-multiselectable', 'true');
   container.$TST = TabsStore.windows.get(windowId);
   container.$TST.bindElement(container);
 });

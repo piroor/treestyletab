@@ -161,11 +161,6 @@ export function setTabActive(tab) {
   tab.active = true;
   tab.$TST.removeState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-  const tabElement = tab.$TST.element;
-  if (tabElement) {
-    tabElement.setAttribute('aria-selected', 'true');
-    tabElement.parentNode.setAttribute('aria-activedescendant', tabElement.id);
-  }
   TabsStore.activeTabsInWindow.get(tab.windowId).add(tab);
   return oldActiveTabs;
 }
@@ -177,8 +172,6 @@ export function clearOldActiveStateInWindow(windowId, exception) {
       continue;
     oldTab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
     oldTab.active = false;
-    if (oldTab.$TST.element)
-      oldTab.$TST.element.setAttribute('aria-selected', 'false');
   }
   return Array.from(oldTabs);
 }
