@@ -43,7 +43,7 @@ export class TabTwistyElement extends HTMLElement {
     this.classList.add(kTAB_TWISTY_CLASS_NAME);
 
     this.setAttribute('role', 'button');
-    this.setAttribute('tabindex', '0');
+    //this.setAttribute('tabindex', '0');
 
     this.invalidate();
 

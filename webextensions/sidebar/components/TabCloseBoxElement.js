@@ -44,7 +44,7 @@ export class TabCloseBoxElement extends HTMLElement {
     this.classList.add(kTAB_CLOSE_BOX_CLASS_NAME);
 
     this.setAttribute('role', 'button');
-    this.setAttribute('tabindex', '0');
+    //this.setAttribute('tabindex', '0');
 
     this.invalidate();
     this.setAttribute('draggable', true); // this is required to cancel click by dragging

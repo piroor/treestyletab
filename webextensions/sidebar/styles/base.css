@@ -98,6 +98,15 @@ tab-item {
                                                      rgba(255, 255, 255, 0) 23%);
 }
 
+tab-item:focus {
+  outline: none;
+}
+
+tab-item:not(.faviconized):focus tab-label,
+tab-item.faviconized:focus tab-favicon {
+  outline: 1px dotted;
+}
+
 @keyframes blink {
   0% { opacity: 0; }
   50% { opacity: 1; }
@@ -128,8 +137,11 @@ img {
   pointer-events: none;
 }
 
-button {
-  -moz-user-focus: ignore;
+button,
+tab-item,
+tab-twisty,
+tab-closebox {
+  -moz-user-focus: ignore !important;
 }
 
 .vbox {
