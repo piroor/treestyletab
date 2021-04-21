@@ -77,5 +77,6 @@ export class TabCloseBoxElement extends HTMLElement {
 
     const tooltip = browser.i18n.getMessage(key);
     this.setAttribute('title', tooltip);
+    this.setAttribute('aria-label', tooltip);
   }
 }
