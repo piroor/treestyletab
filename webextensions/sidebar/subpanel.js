@@ -143,10 +143,9 @@ async function applyProvider(id) {
 
     mSelectorAnchor.querySelector('.label').textContent = provider.subPanel.title || provider.name || provider.id;
 
-    const headerHeight = mHeader.getBoundingClientRect().height;
     if ('fixedHeight' in provider.subPanel) {
       const unit = typeof provider.subPanel.fixedHeight == 'number' && 'px' || '';
-      mHeight = Size.calc(`${provider.subPanel.fixedHeight}${unit} + ${headerHeight}px`);
+      mHeight = Size.calc(`${provider.subPanel.fixedHeight}${unit}`);
       mHeader.classList.remove('resizable');
     }
     else {
@@ -156,7 +155,7 @@ async function applyProvider(id) {
       }
       else if ('initialHeight' in provider.subPanel) {
         const unit = typeof provider.subPanel.initialHeight == 'number' && 'px' || '';
-        mHeight = Size.calc(`${provider.subPanel.initialHeight}${unit} + ${headerHeight}px`);
+        mHeight = Size.calc(`${provider.subPanel.initialHeight}${unit}`);
       }
     }
 
