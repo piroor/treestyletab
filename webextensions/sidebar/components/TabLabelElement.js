@@ -4,6 +4,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+import {
+  configs
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+
 export const kTAB_LABEL_ELEMENT_NAME = 'tab-label';
 
 const KLABEL_CLASS_NAME   = 'label';
@@ -29,6 +34,15 @@ export class TabLabelElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.setAttribute(
+      'role',
+      configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON ?
+        '' :
+        configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_OPTION ?
+          'button' :
+          ''
+    );
+
     if (this.initialized) {
       this._startListening();
       this.updateTextContent();
@@ -53,7 +67,6 @@ export class TabLabelElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(KLABEL_CLASS_NAME);
-    this.setAttribute('role', 'button');
 
     const content = this.appendChild(document.createElement('span'));
     content.classList.add(kCONTENT_CLASS_NAME);

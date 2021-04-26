@@ -72,6 +72,15 @@ export class TabElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.setAttribute(
+      'role',
+      configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON ?
+        'button' :
+        configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_OPTION ?
+          'option' :
+          ''
+    );
+
     if (this.initialized) {
       this.initializeContents();
       this.invalidate(TabInvalidationTarget.All);
@@ -100,8 +109,6 @@ export class TabElement extends HTMLElement {
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
-    this.setAttribute('role', 'option');
-    //this.setAttribute('tabindex', '0');
 
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
