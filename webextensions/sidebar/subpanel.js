@@ -144,8 +144,10 @@ async function applyProvider(id) {
     mSelectorAnchor.querySelector('.label').textContent = provider.subPanel.title || provider.name || provider.id;
 
     if ('fixedHeight' in provider.subPanel) {
-      const unit = typeof provider.subPanel.fixedHeight == 'number' && 'px' || '';
-      mHeight = Size.calc(`${provider.subPanel.fixedHeight}${unit}`);
+      if (typeof provider.subPanel.fixedHeight == 'number')
+        mHeight = provider.subPanel.fixedHeight;
+      else
+        mHeight = Size.calc(provider.subPanel.fixedHeight);
       mHeader.classList.remove('resizable');
     }
     else {
@@ -154,8 +156,10 @@ async function applyProvider(id) {
         mHeight = lastHeight;
       }
       else if ('initialHeight' in provider.subPanel) {
-        const unit = typeof provider.subPanel.initialHeight == 'number' && 'px' || '';
-        mHeight = Size.calc(`${provider.subPanel.initialHeight}${unit}`);
+        if (typeof provider.subPanel.initialHeight == 'number')
+          mHeight = provider.subPanel.initialHeight;
+        else
+          mHeight = Size.calc(provider.subPanel.initialHeight);
       }
     }
 
