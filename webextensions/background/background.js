@@ -127,7 +127,7 @@ export async function init() {
   MetricsData.add('init: started listening');
 
   TabContextMenu.init();
-  ContextMenu.init();
+  ContextMenu.init().then(() => updateIconForBrowserTheme());
   MetricsData.add('init: started initializing of context menu');
 
   Permissions.clearRequest();
@@ -770,28 +770,68 @@ Tree.onDetached.addListener((tab, detachInfo) => {
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
-// This section should be removed and define those flexible SVG icons
-// statically on manifest.json on future versions of Firefox, after
-// theming of extension icons are officially supported.
-// See also:
-//   https://github.com/piroor/treestyletab/issues/2053
-//   https://bugzilla.mozilla.org/show_bug.cgi?id=1367042
-function applyThemeColorToIcon() {
-  if (configs.applyThemeColorToIcon) {
-    const icons = { path: browser.runtime.getManifest().icons };
-    browser.browserAction.setIcon(icons);
-    browser.sidebarAction.setIcon(icons);
+
+const darkModeMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+async function updateIconForBrowserTheme(theme) {
+  if (!theme) {
+    const window = await browser.windows.getLastFocused();
+    theme = await browser.theme.getCurrent(window.id);
   }
+
+  // generate icons with theme specific color
+  const icons = {
+    '16': '/resources/16x16.svg',
+    '20': '/resources/20x20.svg',
+    '24': '/resources/24x24.svg',
+    '32': '/resources/32x32.svg',
+  };
+
+  log('updateIconForBrowserTheme: colors: ', theme.colors);
+  if (theme.colors) {
+    const color = theme.colors.icons || theme.colors.tab_text || theme.colors.textcolor;
+    log(' => ', theme.colors);
+    await Promise.all(Array.from(Object.keys(icons), async size => {
+      const request = new XMLHttpRequest();
+      await new Promise((resolve, _reject) => {
+        request.open('GET', `/resources/${size}x${size}-dark.svg`, true);
+        request.addEventListener('load', resolve, { once: true });
+        request.overrideMimeType('text/plain');
+        request.send(null);
+      });
+      const source = request.responseText.replace(/fill:[^;]+;/, `fill: ${color};`);
+      icons[size] = `data:image/svg+xml,${escape(source)}#toolbar`;
+    }));
+  }
+  else if (darkModeMatchMedia.matches) { // dark mode
+    for (const size of Object.keys(icons)) {
+      icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
+    }
+  }
+  log('updateIconForBrowserTheme: applying icons: ', icons);
+
+  await Promise.all([
+    ...ContextMenu.getItemIdsWithIcon().map(id => browser.menus.update(id, { icons })),
+    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()),
+    browser.browserAction.setIcon({ path: icons }),
+    browser.sidebarAction.setIcon({ path: icons }),
+  ]);
 }
-configs.$loaded.then(applyThemeColorToIcon);
+
+browser.theme.onUpdated.addListener(updateInfo => {
+  updateIconForBrowserTheme(updateInfo.theme);
+});
+
+darkModeMatchMedia.addListener(async _event => {
+  updateIconForBrowserTheme();
+});
+
+
 
 configs.$addObserver(key => {
   switch (key) {
     case 'style':
       updatePanelUrl();
-      break;
-    case 'applyThemeColorToIcon':
-      applyThemeColorToIcon();
       break;
     case 'debug':
       EventListenerManager.debug = configs.debug;

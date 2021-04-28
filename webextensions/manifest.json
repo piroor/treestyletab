@@ -33,36 +33,20 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "theme_icons": [
-      {
-        "light": "/resources/16x16-dark.svg#toolbar",
-        "dark":  "/resources/16x16-light.svg#toolbar",
-        "size": 16
-      },
-      {
-        "light": "/resources/20x20-dark.svg#toolbar",
-        "dark":  "/resources/20x20-light.svg#toolbar",
-        "size": 20
-      },
-      {
-        "light": "/resources/24x24-dark.svg#toolbar",
-        "dark":  "/resources/24x24-light.svg#toolbar",
-        "size": 24
-      },
-      {
-        "light": "/resources/32x32-dark.svg#toolbar",
-        "dark":  "/resources/32x32-light.svg#toolbar",
-        "size": 32
-      }
-    ]
+    "default_icon": {
+      "16": "/resources/16x16.svg",
+      "20": "/resources/20x20.svg",
+      "24": "/resources/24x24.svg",
+      "32": "/resources/32x32.svg"
+    }
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "/resources/16x16-light.svg",
-      "20": "/resources/20x20-light.svg",
-      "24": "/resources/24x24-light.svg",
-      "32": "/resources/32x32-light.svg"
+      "16": "/resources/16x16.svg",
+      "20": "/resources/20x20.svg",
+      "24": "/resources/24x24.svg",
+      "32": "/resources/32x32.svg"
     },
     "default_panel": "/sidebar/sidebar.html",
     "browser_style": false

@@ -144,12 +144,6 @@ const mItems = [
         expert: true
       },
       {
-        title: browser.i18n.getMessage('config_applyThemeColorToIcon_label'),
-        key:   'applyThemeColorToIcon',
-        type:  'checkbox',
-        expert: true
-      },
-      {
         title:   browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbar_caption'),
         enabled: false,
         expert:  true

@@ -325,7 +325,6 @@ export const configs = new Configs({
   // or https://bugzilla.mozilla.org/show_bug.cgi?id=1421329 become fixed.
   // Otherwise you need to set "svg.context-properties.content.enabled"="true" via "about:config".
   simulateSVGContextFill: true,
-  applyThemeColorToIcon: false,
 
   requestingPermissions: null,
   requestingPermissionsNatively: null,

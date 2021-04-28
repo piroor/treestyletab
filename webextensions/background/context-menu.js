@@ -24,9 +24,11 @@ function log(...args) {
   internalLogger('background/context-menu', ...args);
 }
 
-export function init() {
-  addTabItems();
-  addBookmarkItems();
+export async function init() {
+  return Promise.all([
+    addTabItems(),
+    addBookmarkItems(),
+  ]);
 }
 
 const SAFE_CREATE_PROPERTIES = [
@@ -196,25 +198,27 @@ const mAllTabItems = [
 ];
 
 function addTabItems() {
+  const promises = [];
   if (addTabItems.done) {
     for (const item of mAllTabItems) {
-      browser.menus.remove(item.id);
+      promises.push(browser.menus.remove(item.id));
     }
   }
 
   for (const item of mAllTabItems) {
     const params = getSafeCreateParams(item);
-    browser.menus.create(params);
+    promises.push(browser.menus.create(params));
     if (item.id == mTabSeparator.id ||
         addTabItems.done)
       continue;
-    TabContextMenu.onMessageExternal({
+    promises.push(TabContextMenu.onMessageExternal({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params
-    }, browser.runtime);
+    }, browser.runtime));
   }
 
   addTabItems.done = true;
+  return Promise.all(promises);
 }
 addTabItems.done = false;
 
@@ -275,15 +279,17 @@ const mAllBookmarkItems = [
 ];
 
 function addBookmarkItems() {
+  const promises = [];
   if (addBookmarkItems.done) {
     for (const item of mAllBookmarkItems) {
-      browser.menus.remove(item.id);
+      promises.push(browser.menus.remove(item.id));
     }
   }
   for (const item of mAllBookmarkItems) {
-    browser.menus.create(getSafeCreateParams(item));
+    promises.push(browser.menus.create(getSafeCreateParams(item)));
   }
   addBookmarkItems.done = true;
+  return Promise.all(promises);
 }
 addBookmarkItems.done = false;
 
@@ -649,4 +655,13 @@ async function onBookmarkContextMenuShown(info) {
     visible: visibleItemCount > 1
   });
   browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+}
+
+
+export function getItemIdsWithIcon() {
+  return [
+    kROOT_TAB_ITEM,
+    kROOT_BOOKMARK_ITEM,
+    ...Object.keys(mBookmarkItemsById),
+  ];
 }
