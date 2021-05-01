@@ -728,6 +728,8 @@
   "config_terms_delimiter": { "message": "" },
 
 
+  "tabContextMenu_newTab_label":      { "message": "新しいタブ(&W)" },
+
   "tabContextMenu_reload_label":      { "message": "タブを再読み込み(&R)" },
   "tabContextMenu_mute_label":        { "message": "タブをミュート(&M)" },
   "tabContextMenu_unmute_label":      { "message": "タブのミュートを解除(&M)" },

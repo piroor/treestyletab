@@ -197,6 +197,8 @@ export async function openNewTabAs(options = {}) {
       insertAfter = parent && parent.$TST.lastDescendant;
       break;
 
+    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER:
+      options.cookieStoreId = currentTab.cookieStoreId;
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       parent       = currentTab.$TST.parent;
       const refTabs = Tree.getReferenceTabsForNewNextSibling(currentTab, options);

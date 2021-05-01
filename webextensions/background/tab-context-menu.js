@@ -51,6 +51,12 @@ const SAFE_MENU_PROPERTIES = [
 ];
 
 const mItemsById = {
+  'context_newTab': {
+    title: browser.i18n.getMessage('tabContextMenu_newTab_label'),
+  },
+  'context_separator:afterNewTab': {
+    type: 'separator'
+  },
   'context_reloadTab': {
     title:              browser.i18n.getMessage('tabContextMenu_reload_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
@@ -551,6 +557,13 @@ async function onShown(info, contextTab) {
 
   const emulate = configs.emulateDefaultContextMenu;
 
+  updateItem('context_newTab', {
+    visible: emulate,
+  }) && modifiedItemsCount++;
+  updateItem('context_separator:afterNewTab', {
+    visible: emulate,
+  }) && modifiedItemsCount++;
+
   updateItem('context_reloadTab', {
     visible: emulate && contextTab,
     multiselected
@@ -892,6 +905,13 @@ async function onClick(info, contextTab) {
     multiselectedTabs = null;
 
   switch (info.menuItemId.replace(/^noContextTab:/, '')) {
+    case 'context_newTab':
+      Commands.openNewTabAs({
+        baseTab: contextTab || activeTab,
+        as:      contextTab ? configs.autoAttachOnContextNewTabCommand : configs.autoAttachOnNewTabCommand,
+      });
+      break;
+
     case 'context_reloadTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {

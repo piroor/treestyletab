@@ -732,6 +732,8 @@
   "config_terms_delimiter": { "message": " " },
 
 
+  "tabContextMenu_newTab_label":      { "message": "Ne&w Tab" },
+
   "tabContextMenu_reload_label":      { "message": "&Reload Tab" },
   "tabContextMenu_mute_label":        { "message": "&Mute Tab" },
   "tabContextMenu_unmute_label":      { "message": "Un&mute Tab" },
