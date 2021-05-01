@@ -617,7 +617,8 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_sendTabsToDevice', {
-    enabled: emulate && contextTabs.filter(Sync.isSendableTab).length > 0,
+    visible: emulate && contextTab,
+    enabled: contextTabs.filter(Sync.isSendableTab).length > 0,
     multiselected,
     count: contextTabs.length
   }) && modifiedItemsCount++;
