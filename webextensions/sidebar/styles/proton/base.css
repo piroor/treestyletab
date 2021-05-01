@@ -33,10 +33,6 @@ tab-item,
   padding-left: 0.35em;
 }
 
-:root.have-pinned-tabs #tabbar {
-  border-top: 1px solid var(--tab-border);
-}
-
 
 /* macOS workaround */
 :root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) {
