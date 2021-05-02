@@ -9,7 +9,8 @@ This is possibly a generic guideline for contributing any Firefox addon project 
 A good report is the fastest way to solve a problem.
 Even if the problem is very clear for you, it is potentially unclear to me.
 Unclear report can be left unfixed for long time.
-You'll see an example of [good report](https://github.com/piroor/treestyletab/issues/1134) and [another report with too little information](https://github.com/piroor/treestyletab/issues/1135).
+You'll see [a guidance to minimize conditions to reproduce the problem](
+https://github.com/piroor/treestyletab/wiki/How-to-minimize-conditions-to-reproduce-a-problem), an example of [good report](https://github.com/piroor/treestyletab/issues/1134) and [another report with too little information](https://github.com/piroor/treestyletab/issues/1135).
 
 Here is a list of typical questions I asked to existing reports:
 
