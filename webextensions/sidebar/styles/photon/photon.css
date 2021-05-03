@@ -108,6 +108,11 @@ tab-item:not(.active):hover,
   --tab-text: var(--tab-text-regular);
 }
 
+#subpanel-selector-anchor:hover {
+  background: var(--tab-surface-hover);
+  color: var(--tab-text-regular);
+}
+
 tab-item.active {
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--throbber-color-active);

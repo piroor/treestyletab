@@ -57,7 +57,8 @@ tab-item * {
 }
 
 tab-item:not(.collapsed):hover,
-.after-tabs button:hover {
+.after-tabs button:hover,
+#subpanel-selector-anchor:hover {
   opacity: 0.7;
   /*mix-blend-mode: multiply;*/
 }

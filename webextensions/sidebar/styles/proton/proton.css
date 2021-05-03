@@ -103,6 +103,11 @@ tab-item:not(.active):hover,
   --tab-text: var(--tab-text-regular);
 }
 
+#subpanel-selector-anchor:hover {
+  background: var(--tab-surface-hover);
+  color: var(--tab-text-regular);
+}
+
 tab-item.active {
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--throbber-color-active);
@@ -135,7 +140,8 @@ tab-item .burster {
 /* Dropshadow */
 
 tab-item:not(collapsed).active .background,
-.after-tabs button:hover {
+.after-tabs button:hover,
+#subpanel-selector-anchor:hover {
   box-shadow: 0 0 0.15em var(--tab-active-border-near),
               0 0 var(--tab-dropshadow-size) var(--tab-active-border-far);
 }
