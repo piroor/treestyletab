@@ -717,7 +717,7 @@ tab-item.faviconized .contextual-identity-marker {
   max-width: 1.5em;
   opacity: 0;
   overflow: hidden;
-  padding: 0.25em;
+  padding: calc((1.5em - var(--svg-small-icon-size)) / 2);
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -747,12 +747,32 @@ tab-item.faviconized .contextual-identity-marker {
   border: none;
 }
 
-.newtab-action-selector-anchor::before,
-.contextual-identities-selector-anchor::before,
 #subpanel-toggler::before {
   content: "▼";
   font-size: 0.65em;
   margin: 0.125em;
+}
+
+.newtab-action-selector-anchor::before,
+.contextual-identities-selector-anchor::before,
+#subpanel-selector-anchor::after {
+  -moz-context-properties: fill;
+  background: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
+  content: "";
+  display: inline-block;
+  fill: var(--tab-text);
+  height: var(--svg-small-icon-size);
+  line-height: 1;
+  margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  width: var(--svg-small-icon-size);
+}
+:root.simulate-svg-context-fill .newtab-action-selector-anchor::before,
+:root.simulate-svg-context-fill .contextual-identities-selector-anchor::before,
+:root.simulate-svg-context-fill #subpanel-selector-anchor::after {
+  background: var(--tab-text);
+  mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
 
 #contextual-identities-selector li {
@@ -827,19 +847,23 @@ iframe#subpanel {
 }
 
 #subpanel-header-main {
+  display: flex;
   flex-grow: 1;
+  justify-content: flex-start;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 #subpanel-selector-anchor,
 #subpanel-toggler {
+  align-items: center;
   background: none;
   border: none;
   color: var(--tab-text);
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
   font: -moz-button;
-  padding: 0 0.5em;
+  padding: 0 0 0 0.5em;
 }
 
 #subpanel-selector-anchor {
@@ -872,6 +896,7 @@ iframe#subpanel {
 
 #subpanel-toggler {
   cursor: default;
+  padding: 0 0.5em;
   max-width: 1.5em;
 }
 
