@@ -24,12 +24,12 @@ tab-item,
 
 
 :root.left tab-item:not(.pinned),
-:root.left .after-tabs button {
+:root.left .after-tabs button:not([data-menu-ui]) {
   padding-right: 0.35em;
 }
 
 :root.right tab-item:not(.pinned),
-:root.right .after-tabs button {
+:root.right .after-tabs button:not([data-menu-ui]) {
   padding-left: 0.35em;
 }
 
