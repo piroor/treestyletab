@@ -137,11 +137,11 @@ img {
   pointer-events: none;
 }
 
-button,
+button /*,
 tab-item,
 tab-twisty,
 tab-closebox,
-tab-sound-button {
+tab-sound-button */ {
   -moz-user-focus: ignore !important;
 }
 
