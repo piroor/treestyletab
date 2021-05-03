@@ -334,10 +334,6 @@ export const kTABBAR_UPDATE_REASON_TAB_OPEN      = 1 << 4;
 export const kTABBAR_UPDATE_REASON_TAB_CLOSE     = 1 << 5;
 export const kTABBAR_UPDATE_REASON_TAB_MOVE      = 1 << 6;
 
-export const kTAB_ACCESSIBILITY_ROLE_MODE_NONE   = 0;
-export const kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON = 1;
-export const kTAB_ACCESSIBILITY_ROLE_MODE_OPTION = 2;
-
 export const kDEFAULT_MIN_INDENT = 3;
 
 export const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');

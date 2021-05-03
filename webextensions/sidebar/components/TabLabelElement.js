@@ -4,11 +4,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-import {
-  configs
-} from '/common/common.js';
-import * as Constants from '/common/constants.js';
-
 export const kTAB_LABEL_ELEMENT_NAME = 'tab-label';
 
 const KLABEL_CLASS_NAME   = 'label';
@@ -34,14 +29,7 @@ export class TabLabelElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute(
-      'role',
-      configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON ?
-        '' :
-        configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_OPTION ?
-          'button' :
-          ''
-    );
+    this.setAttribute('role', 'button');
 
     if (this.initialized) {
       this._startListening();

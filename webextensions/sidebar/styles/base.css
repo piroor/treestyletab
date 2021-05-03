@@ -140,7 +140,8 @@ img {
 button,
 tab-item,
 tab-twisty,
-tab-closebox {
+tab-closebox,
+tab-sound-button {
   -moz-user-focus: ignore !important;
 }
 

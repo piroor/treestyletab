@@ -316,7 +316,6 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
   undoMultipleTabsClose: true,
-  tabAccessibilityRoleMode: Constants.kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON,
   migratedBookmarkUrls: [],
   notifiedFeaturesVersion: 0,
 

@@ -72,14 +72,7 @@ export class TabElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute(
-      'role',
-      configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_BUTTON ?
-        'button' :
-        configs.tabAccessibilityRoleMode == Constants.kTAB_ACCESSIBILITY_ROLE_MODE_OPTION ?
-          'option' :
-          ''
-    );
+    this.setAttribute('role', 'option');
 
     if (this.initialized) {
       this.initializeContents();
