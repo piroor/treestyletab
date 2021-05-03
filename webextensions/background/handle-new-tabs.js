@@ -133,9 +133,14 @@ Tab.onCreating.addListener((tab, info = {}) => {
         !info.bypassTabControl &&
         configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
       tab.$TST.fromExternal = true;
+    const behavior = info.fromExternal && !info.bypassTabControl ?
+      configs.autoAttachOnOpenedFromExternal :
+      info.duplicated ?
+        configs.autoAttachOnDuplicated :
+        configs.autoAttachOnOpenedWithOwner;
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
-      behavior:  info.fromExternal && !info.bypassTabControl ? configs.autoAttachOnOpenedFromExternal : configs.autoAttachOnOpenedWithOwner,
+      behavior,
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
       broadcast: true
     }).then(moved => !moved);
@@ -277,6 +282,10 @@ Tab.onCreated.addListener((tab, info = {}) => {
     TabsStore.addDuplicatingTab(tab);
   }
   else {
+    // On old versions of Firefox, duplicated tabs had no openerTabId so they were
+    // not handled by Tab.onCreating listener. Today they are already handled before
+    // here, so this is just a failsafe (or for old versions of Firefox).
+    // See also: https://github.com/piroor/treestyletab/issues/2830#issuecomment-831414189
     Tree.behaveAutoAttachedTab(tab, {
       baseTab:   original,
       behavior:  configs.autoAttachOnDuplicated,

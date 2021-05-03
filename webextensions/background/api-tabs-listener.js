@@ -386,7 +386,7 @@ async function onNewTabTracked(tab, info) {
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
 
   const mayBeReplacedWithContainer = tab.$TST.mayBeReplacedWithContainer;
-  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab, { window, positionedBySelf, mayBeReplacedWithContainer, duplicatedInternally, maybeOrphan, activeTab });
+  log(`onNewTabTracked(${dumpTab(tab)}): `, tab, { window, positionedBySelf, mayBeReplacedWithContainer, duplicatedInternally, maybeOrphan, activeTab });
 
   Tab.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
@@ -455,6 +455,7 @@ async function onNewTabTracked(tab, info) {
     const duplicated = duplicatedInternally || uniqueId.duplicated;
     const restored   = uniqueId.restored;
     const skipFixupTree = !nextTab;
+    log(`onNewTabTracked(${dumpTab(tab)}): `, { duplicated, restored, skipFixupTree });
 
     const maybeNeedToFixupTree = (
       (info.mayBeReplacedWithContainer ||
