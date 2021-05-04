@@ -825,6 +825,7 @@ export async function initAsFrontend() {
         typeof message == 'object' &&
         typeof message.type == 'string') {
       const results = onMessageExternal.dispatch(message, sender);
+      log('onMessageExternal: ', message, ' => ', results, 'sender: ', sender);
       const firstPromise = results.find(result => result instanceof Promise);
       if (firstPromise)
         return firstPromise;
