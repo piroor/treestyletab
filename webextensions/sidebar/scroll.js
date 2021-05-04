@@ -647,6 +647,22 @@ function onMessageExternal(message, _aSender) {
           return true;
         });
       })();
+
+    case TSTAPI.kSTOP_SCROLL:
+      return (async () => {
+        const currentWindow = TabsStore.getCurrentWindowId();
+        const windowId = message.window || message.windowId;
+        if (windowId == 'active') {
+          const currentWindow = await browser.windows.get(TabsStore.getCurrentWindowId());
+          if (!currentWindow.focused)
+            return;
+        }
+        else if (windowId != currentWindow) {
+          return;
+        }
+        cancelRunningScroll();
+        return true;
+      })();
   }
 }
 

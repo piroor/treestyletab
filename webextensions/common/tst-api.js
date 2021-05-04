@@ -129,6 +129,7 @@ export const kTOGGLE_TREE_COLLAPSED = 'toggle-tree-collapsed';
 export const kADD_TAB_STATE         = 'add-tab-state';
 export const kREMOVE_TAB_STATE      = 'remove-tab-state';
 export const kSCROLL                = 'scroll';
+export const kSTOP_SCROLL           = 'stop-scroll';
 export const kSCROLL_LOCK           = 'scroll-lock';
 export const kSCROLL_UNLOCK         = 'scroll-unlock';
 export const kNOTIFY_SCROLLED       = 'scrolled';
