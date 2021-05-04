@@ -630,10 +630,16 @@ function onMessageExternal(message, _aSender) {
           else if (windowId != currentWindow) {
             return;
           }
-          if ('delta' in message)
+          if ('delta' in message) {
             params.delta = message.delta;
-          if ('position' in message)
+            if (typeof params.delta == 'string')
+              params.delta = Size.calc(params.delta);
+          }
+          if ('position' in message) {
             params.position = message.position;
+            if (typeof params.position == 'string')
+              params.position = Size.calc(params.position);
+          }
         }
         return scrollTo(params).then(() => {
           return true;

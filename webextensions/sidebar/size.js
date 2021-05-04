@@ -84,6 +84,7 @@ export function update() {
 }
 
 export function calc(expression) {
+  expression = expression.replace(/^\s*calc\((.+)\)\s*$/, '$1');
   const box = document.createElement('span');
   const style = box.style;
   style.display       = 'inline-block';
