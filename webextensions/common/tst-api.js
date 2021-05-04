@@ -1122,84 +1122,84 @@ async function getTabsFromWrongIds(ids, sender) {
 }
 
 async function getTabFromWrongId({ id, activeWindow, sender }) {
-    if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
-      id = id.id;
-    let query   = String(id).toLowerCase();
-    let baseTab = Tab.getActiveTab(activeWindow.id);
-    const nonActiveTabMatched = query.match(/^([^-]+)-of-(.+)$/i);
-    if (nonActiveTabMatched) {
-      query = nonActiveTabMatched[1];
-      id    = nonActiveTabMatched[2];
-      if (/^\d+$/.test(id))
-        id = parseInt(id);
-      baseTab = Tab.get(id) || Tab.getByUniqueId(id);
+  if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
+    id = id.id;
+  let query   = String(id).toLowerCase();
+  let baseTab = Tab.getActiveTab(activeWindow.id);
+  const nonActiveTabMatched = query.match(/^([^-]+)-of-(.+)$/i);
+  if (nonActiveTabMatched) {
+    query = nonActiveTabMatched[1];
+    id    = nonActiveTabMatched[2];
+    if (/^\d+$/.test(id))
+      id = parseInt(id);
+    baseTab = Tab.get(id) || Tab.getByUniqueId(id);
+  }
+  switch (query) {
+    case 'active':
+    case 'current':
+      return baseTab;
+
+    case 'next':
+      return baseTab.$TST.nextTab;
+    case 'nextcyclic':
+      return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id);
+
+    case 'previous':
+    case 'prev':
+      return baseTab.$TST.previousTab;
+    case 'previouscyclic':
+    case 'prevcyclic':
+      return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id);
+
+    case 'nextsibling':
+      return baseTab.$TST.nextSiblingTab;
+    case 'nextsiblingcyclic': {
+      const nextSibling = baseTab.$TST.nextSiblingTab;
+      if (nextSibling)
+        return nextSibling;
+      const parent = baseTab.$TST.parent;
+      if (parent)
+        return parent.$TST.firstChild;
+      return Tab.getFirstTab(activeWindow.id);
     }
-    switch (query) {
-      case 'active':
-      case 'current':
-        return baseTab;
 
-      case 'next':
-        return baseTab.$TST.nextTab;
-      case 'nextcyclic':
-        return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id);
-
-      case 'previous':
-      case 'prev':
-        return baseTab.$TST.previousTab;
-      case 'previouscyclic':
-      case 'prevcyclic':
-        return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id);
-
-      case 'nextsibling':
-        return baseTab.$TST.nextSiblingTab;
-      case 'nextsiblingcyclic': {
-        const nextSibling = baseTab.$TST.nextSiblingTab;
-        if (nextSibling)
-          return nextSibling;
-        const parent = baseTab.$TST.parent;
-        if (parent)
-          return parent.$TST.firstChild;
-        return Tab.getFirstTab(activeWindow.id);
-      }
-
-      case 'previoussibling':
-      case 'prevsibling':
-        return baseTab.$TST.previousSiblingTab;
-      case 'previoussiblingcyclic':
-      case 'prevsiblingcyclic': {
-        const previousSiblingTab = baseTab.$TST.previousSiblingTab;
-        if (previousSiblingTab)
-          return previousSiblingTab;
-        const parent = baseTab.$TST.parent;
-        if (parent)
-          return parent.$TST.lastChild;
-        return Tab.getLastRootTab(activeWindow.id);
-      }
-
-      case 'nextvisible':
-        return baseTab.$TST.nearestVisibleFollowingTab;
-      case 'nextvisiblecyclic':
-        return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id);
-
-      case 'previousvisible':
-      case 'prevvisible':
-        return baseTab.$TST.nearestVisiblePrecedingTab;
-      case 'previousvisiblecyclic':
-      case 'prevvisiblecyclic':
-        return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
-
-      case 'lastdescendant':
-        return baseTab.$TST.lastDescendant;
-
-      case 'sendertab':
-        return sender.tab && Tab.get(sender.tab.id) || null;
-      case 'highlighted':
-      case 'multiselected':
-        return Tab.getHighlightedTabs(activeWindow.id);
-      default:
-        return Tab.get(id) || Tab.getByUniqueId(id);
+    case 'previoussibling':
+    case 'prevsibling':
+      return baseTab.$TST.previousSiblingTab;
+    case 'previoussiblingcyclic':
+    case 'prevsiblingcyclic': {
+      const previousSiblingTab = baseTab.$TST.previousSiblingTab;
+      if (previousSiblingTab)
+        return previousSiblingTab;
+      const parent = baseTab.$TST.parent;
+      if (parent)
+        return parent.$TST.lastChild;
+      return Tab.getLastRootTab(activeWindow.id);
     }
+
+    case 'nextvisible':
+      return baseTab.$TST.nearestVisibleFollowingTab;
+    case 'nextvisiblecyclic':
+      return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id);
+
+    case 'previousvisible':
+    case 'prevvisible':
+      return baseTab.$TST.nearestVisiblePrecedingTab;
+    case 'previousvisiblecyclic':
+    case 'prevvisiblecyclic':
+      return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
+
+    case 'lastdescendant':
+      return baseTab.$TST.lastDescendant;
+
+    case 'sendertab':
+      return sender.tab && Tab.get(sender.tab.id) || null;
+    case 'highlighted':
+    case 'multiselected':
+      return Tab.getHighlightedTabs(activeWindow.id);
+    default:
+      return Tab.get(id) || Tab.getByUniqueId(id);
+  }
 }
 
 export async function doProgressively(tabs, task, interval) {
