@@ -1082,7 +1082,8 @@ export default class Tab {
   //===================================================================
 
   async addState(state, options = {}) {
-    if (!this.tab)
+    state = state && String(state) || undefined;
+    if (!this.tab || !state)
       return;
 
     if (this.classList)
@@ -1157,7 +1158,8 @@ export default class Tab {
   }
 
   async removeState(state, options = {}) {
-    if (!this.tab)
+    state = state && String(state) || undefined;
+    if (!this.tab || !state)
       return;
 
     if (this.classList)
@@ -1228,7 +1230,9 @@ export default class Tab {
 
   async getPermanentStates() {
     const states = this.tab && await browser.sessions.getTabValue(this.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.handleMissingTabError);
-    return states || [];
+    // We need to cleanup invalid values stored accidentally.
+    // See also: https://github.com/piroor/treestyletab/issues/2882
+    return states && mapAndFilterUniq(states, state => state && String(state) || undefined) || [];
   }
 
   inheritSoundStateFromChildren() {
