@@ -164,7 +164,7 @@ async function smoothScrollTo(params = {}) {
   }
   smoothScrollTo.currentOffset = delta;
 
-  const duration  = params.duration || configs.smoothScrollDuration;
+  const duration  = Math.max(0, typeof params.duration == 'number' ? params.duration : configs.smoothScrollDuration);
   const startTime = Date.now();
 
   return new Promise((resolve, reject) => {
@@ -640,6 +640,8 @@ function onMessageExternal(message, _aSender) {
             if (typeof params.position == 'string')
               params.position = Size.calc(params.position);
           }
+          if ('duration' in message && typeof message.duration == 'number')
+            params.duration = message.duration;
         }
         return scrollTo(params).then(() => {
           return true;
