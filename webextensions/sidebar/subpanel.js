@@ -119,6 +119,36 @@ TSTAPI.onInitialized.addListener(async () => {
     restoreLastProvider();
 });
 
+function getProviderIconUrl(provider) {
+  if (!provider.icons || typeof provider.icons != 'object')
+    return null;
+
+  if ('16' in provider.icons)
+    return provider.icons['16'];
+
+  const sizes = Object.keys(provider.icons, size => parseInt(size)).sort();
+  if (sizes.length == 0)
+    return null;
+
+  // find a size most nearest to 16
+  sizes.sort((a, b) => {
+    if (a < 16) {
+      if (b >= 16)
+        return 1;
+      else
+        return b - a;
+    }
+    if (b < 16) {
+      if (a >= 16)
+        return -1;
+      else
+        return b - a;
+    }
+    return a - b;
+  });
+  return provider.icons[sizes[0]];
+}
+
 async function applyProvider(id) {
   const provider = TSTAPI.getAddon(id);
   log('applyProvider ', id, provider);
@@ -136,8 +166,9 @@ async function applyProvider(id) {
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
 
     const icon = mSelectorAnchor.querySelector('.icon > img');
-    if (provider.icons && provider.icons['16'])
-      icon.src = provider.icons['16'];
+    const url = getProviderIconUrl(provider);
+    if (url)
+      icon.src = url;
     else
       icon.removeAttribute('src');
 
@@ -341,8 +372,9 @@ function updateSelector() {
     const iconContainer = item.appendChild(document.createElement('span'));
     iconContainer.classList.add('icon');
     const icon = iconContainer.appendChild(document.createElement('img'));
-    if (addon.icons && addon.icons['16'])
-      icon.src = addon.icons['16'];
+    const url = getProviderIconUrl(addon);
+    if (url)
+      icon.src = url;
     item.appendChild(document.createTextNode(addon.subPanel.title || addon.name || id));
     items.push(item);
   }
