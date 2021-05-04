@@ -89,13 +89,25 @@ export function calc(expression) {
   const style = box.style;
   style.display       = 'inline-block';
   style.left          = 0;
+  style.height        = 0;
+  style.overflow      = 'hidden';
   style.pointerEvents = 'none';
   style.position      = 'fixed';
   style.top           = 0;
-  style.height        = `calc(${expression})`;
   style.zIndex        = 0;
+
+  const innerBox = box.appendChild(document.createElement('span'));
+  const innerStyle = innerBox.style;
+  innerStyle.display       = 'inline-block';
+  innerStyle.left          = 0;
+  innerStyle.height        = 0;
+  innerStyle.pointerEvents = 'none';
+  innerStyle.position      = 'fixed';
+  innerStyle.top           = `calc(${expression})`;
+  innerStyle.zIndex        = 0;
+
   document.body.appendChild(box);
-  const height = box.getBoundingClientRect().height;
+  const result = innerBox.getBoundingClientRect().top - box.getBoundingClientRect().top;
   box.parentNode.removeChild(box);
-  return height;
+  return result;
 }
