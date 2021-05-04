@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.0 (2021.5.5)
    * Restructure behaviors about closing and moving of a parent tab.
      * In the sidebar, now there are some permanently fixed behaviors and some configurable presets:
        * Closing a parent tab with collapsed tree: closes the entire tree.
