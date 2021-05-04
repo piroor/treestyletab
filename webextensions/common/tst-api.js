@@ -1105,7 +1105,6 @@ export async function getTargetTabs(message, sender) {
 }
 
 async function getTabsFromWrongIds(ids, sender) {
-  log('getTabsFromWrongIds ', ids, sender);
   let activeWindow = [];
   if (ids.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
@@ -1113,7 +1112,16 @@ async function getTabsFromWrongIds(ids, sender) {
     }).catch(ApiTabs.createErrorHandler());
     activeWindow = TabsStore.windows.get(window.id);
   }
-  const tabs = await Promise.all(ids.map(async (id) => {
+  const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, sender }).catch(error => {
+    console.error(error);
+    return null;
+  })));
+  log('getTabsFromWrongIds ', ids, ' => ', tabs, 'sender: ', sender);
+
+  return tabs.flat().filter(tab => !!tab);
+}
+
+async function getTabFromWrongId({ id, activeWindow, sender }) {
     if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
       id = id.id;
     let query   = String(id).toLowerCase();
@@ -1192,10 +1200,6 @@ async function getTabsFromWrongIds(ids, sender) {
       default:
         return Tab.get(id) || Tab.getByUniqueId(id);
     }
-  }));
-  log('=> ', tabs);
-
-  return tabs.flat().filter(tab => !!tab);
 }
 
 export async function doProgressively(tabs, task, interval) {

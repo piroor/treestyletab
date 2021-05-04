@@ -39,6 +39,10 @@ function log(...args) {
   internalLogger('background/handle-misc', ...args);
 }
 
+function logAPI(...args) {
+  internalLogger('background/tst-api', ...args);
+}
+
 let mInitialized = false;
 
 
@@ -389,7 +393,7 @@ function onMessage(message, sender) {
 // This must be synchronous and return Promise on demando, to avoid
 // blocking to other listeners.
 function onMessageExternal(message, sender) {
-  //log('onMessageExternal: ', message, sender);
+  logAPI('handle-misc.js: ', message, sender);
   switch (message.type) {
     case TSTAPI.kGET_TREE:
       return (async () => {
