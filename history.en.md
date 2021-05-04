@@ -9,16 +9,29 @@
      * There is a preset for people using Firefox's native tab bar as an UI to operate solo tab. In this case all tab operations done outside of the sidebar (Firefox's native tab bar, keyboard shortcuts, or other addons) are treated as operations for solo tabs, not tree of tabs.
      * There is a preset for people desireing TST to control tabs as trees always. In this case all tab operations are treated same as operations in the sidebar, even if it is done on Firefox's native tab bar, keyboard shortcuts, or other addons.
      * Otherwise you can configure behaviors for each case: closing of a parent with expanded tree in the sidebar, closing of a parent with collapsed/expanded tree outside of the sidebar, moving of a parent with collapsed/expanded tree outside of the sidebar, and more options for cases with closed sidebar.
+   * Better accessibility information for the sidebar. This change should help [controlling of the sidebar via speech recognition](https://github.com/piroor/treestyletab/wiki/How-to-control-Tree-Style-Tab-via-speech-recognition).
+   * Add the simulated "New Tab" context menu command on tabs.
    * "Close Tabs to the Bottom" and "Close Other Tabs" context menu commands now skips collapsed descendants of the context tab.
    * Open tabs from a bookmark folder with correct order. (This looks to be a regression on recent versions.)
    * Prevent inifinite toggling of the sidebar scrollbar on macOS, when there are enough number of tabs which triggers overflowing.
    * On macOS, in-tab padding is correctly applied avoiding the scrollbar covers clickable UIs. (It was applied to wrong side.)
    * Proton theme: Show container identifier line at top of pinned tabs.
+   * Proton theme: Remove separator border between pinned tabs and regular tabs.
+   * Apply the icon color or the text color defined by the active theme to TST's toolbar button icon, context menu icon, and the sidebar panel switcher.
    * Rebuild sidebar contents more certainly when mis-synchronization between the main process and the sidebar contents is detected.
    * Becomes to more robust around tabs reopened immediately by other addons like Temporary Containers.
    * Becomes to more robust around closing/moving of parent tabs as solo tabs.
+   * Don't show needless "Send Tab to Device" simulated context menu item in the context menu on non-tab area.
+   * Open duplicated tabs based on the configuration more correctly.
+   * Expose an expert option UI to control the number of scroll lines for keyboard shortcuts.
    * The height of the subpanel is now saved and restored for each provider addon.
+   * Better appearance for the subpanel switcher: more easily recognized as a switcher UI.
+   * Accept icon images with non 16px size for the subpanel switcher.
    * API improvement: now you can specify [`initialHeight` or `fixedHeight` for your subpanel](https://github.com/piroor/treestyletab/wiki/SubPanel-API#how-to-register-a-subpanel).
+   * API improvement: [custom state of tabs](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-set-custom-state-for-tabs) are added/removed safely even if they are given as any type value not a string.
+   * API improvement: Support CSS length `delta` and `position` parameters for the [`scroll` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar).
+   * API improvement: Support `duration` parameter for the [`scroll` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar).
+   * API improvement: Add new API [`stop-scroll`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#scroll-the-tab-bar) to cancel in-progress scroll animations.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.7.4 (2021.3.31)
    * Add a theme like [Proton](https://www.omgubuntu.co.uk/2021/02/try-firefox-proton-redesign-ubuntu) experimentally. Proton is the next UI theme of Firefox itself.
