@@ -18,10 +18,10 @@
   "command_focusLastChild":        { "message": "Focus to Last Child Tab" },
   "command_focusPreviousSibling":  { "message": "Focus to Previous Sibling Tab" },
   "command_focusNextSibling":      { "message": "Focus to Next Sibling Tab" },
-  "command_tabbarUp":              { "message": "Scroll Tabs Up by Line" },
+  "command_tabbarUp":              { "message": "Scroll Tabs Up by Lines" },
   "command_tabbarPageUp":          { "message": "Scroll Tabs Up by Page" },
   "command_tabbarHome":            { "message": "Scroll Tabs to Top" },
-  "command_tabbarDown":            { "message": "Scroll Tabs Down by Line" },
+  "command_tabbarDown":            { "message": "Scroll Tabs Down by Lines" },
   "command_tabbarPageDown":        { "message": "Scroll Tabs Down by Page" },
   "command_tabbarEnd":             { "message": "Scroll Tabs to End" },
   "command_toggleSubPanel":        { "message": "Toggle Sub Panel" },
@@ -638,6 +638,9 @@
   "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 
   "config_undoMultipleTabsClose_label": { "message": "Restore the set of tabs most recently closed, when one of them is restored via the \"Reopen Closed Tab\" command" },
+
+  "config_scrollLines_label_before": { "message": "Scroll up or down " },
+  "config_scrollLines_label_after":  { "message": "lines via \"Scroll Tabs Up/Down by Lines\" shortcut commands" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for contents provided by Tree Style Tab" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },

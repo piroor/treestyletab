@@ -18,10 +18,10 @@
   "command_focusLastChild":        { "message": "最後の子タブにフォーカスを移す" },
   "command_focusPreviousSibling":  { "message": "同階層の前のタブにフォーカスを移す" },
   "command_focusNextSibling":      { "message": "同階層の次のタブにフォーカスを移す" },
-  "command_tabbarUp":              { "message": "タブの一覧を1行上にスクロール" },
+  "command_tabbarUp":              { "message": "タブの一覧を数行上にスクロール" },
   "command_tabbarPageUp":          { "message": "タブの一覧を1ページ上にスクロール" },
   "command_tabbarHome":            { "message": "タブの一覧を先頭までスクロール" },
-  "command_tabbarDown":            { "message": "タブの一覧を1行下にスクロール" },
+  "command_tabbarDown":            { "message": "タブの一覧を数行下にスクロール" },
   "command_tabbarPageDown":        { "message": "タブの一覧を1ページ下にスクロール" },
   "command_tabbarEnd":             { "message": "タブの一覧を末尾までスクロール" },
   "command_toggleSubPanel":        { "message": "サブパネルの表示・非表示を切り替える" },
@@ -634,6 +634,9 @@
   "config_supportTabsMultiselect_label": { "message": "タブのフォーカスの制御にタブの複数選択APIを使う（※Firefoxの設定である\"browser.tabs.multiselect\"=\"true\"に依存)" },
 
   "config_undoMultipleTabsClose_label": { "message": "最後にまとめて閉じたタブ群のうちの1つが「閉じたタブを元に戻す」で復元されたとき、タブ群全体を復元する" },
+
+  "config_scrollLines_label_before": { "message": "キーボードショートカットの「タブの一覧を数行上/下にスクロール」で" },
+  "config_scrollLines_label_after":  { "message": "行分スクロールする" },
 
   "config_userStyleRules_label": { "message": "ツリー型タブが提供するページ用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
