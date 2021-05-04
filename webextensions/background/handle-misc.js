@@ -703,6 +703,9 @@ function onMessageExternal(message, sender) {
         let states = message.state || message.states;
         if (!Array.isArray(states))
           states = [states];
+        states = mapAndFilterUniq(states, state => state && String(state) || undefined);
+        if (states.length == 0)
+          return true;
         const tabsArray = await TSTAPI.doProgressively(
           tabs,
           tab => {
@@ -725,6 +728,9 @@ function onMessageExternal(message, sender) {
         let states = message.state || message.states;
         if (!Array.isArray(states))
           states = [states];
+        states = mapAndFilterUniq(states, state => state && String(state) || undefined);
+        if (states.length == 0)
+          return true;
         const tabsArray = await TSTAPI.doProgressively(
           tabs,
           tab => {
