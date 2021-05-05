@@ -85,6 +85,7 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [Add Last Active Class To Tab](https://addons.mozilla.org/firefox/addon/add-last-active-class-to-tab/) helps you to give custom appearance for the "previously active tab".
  * [TSTのタブを閉じるボタンの挙動を変更 (tst-change-close-tab-button-be)](https://addons.mozilla.org/firefox/addon/tst-change-close-tab-button-be/) allows you to close the parent and its all descendants with a middle click on the closebox of a parent tab, whether the tree is expanded or collapsed.
  * [TST Select Random Tab](https://addons.mozilla.org/firefox/addon/tst-select-random-tab/) adds a context menu option for selecting a random tab in a Tree Style Tab tree.
+ * [TST Tab Search](https://github.com/NiklasGollenstede/tst-search) provides a search field (as a subpanel) to filter opened tabs in the sidebar.
 
 
 ## Similar projects
