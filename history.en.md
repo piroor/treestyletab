@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.8.1 (2021.5.7)
+   * Prevent inifinite toggling of the sidebar scrollbar on macOS, when there are enough number of tabs which triggers overflowing. The fix was unexpectedly lost on the released version 3.8.0.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.8.0 (2021.5.5)
    * Restructure behaviors about closing and moving of a parent tab.
      * In the sidebar, now there are some permanently fixed behaviors and some configurable presets:
