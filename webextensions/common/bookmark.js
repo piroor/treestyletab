@@ -112,6 +112,9 @@ export async function bookmarkTab(tab, options = {}) {
       ${inSidebar ? 'align-items: stretch;' : ''}
       ${inSidebar ? 'text-align: start;' : ''}
     `;
+    const labelTextStyle = `
+      white-space: nowrap;
+    `;
     const inputFieldStyle = `
       display: flex;
       ${inSidebar ? '' : 'margin-left: 0.25em;'}
@@ -127,7 +130,8 @@ export async function bookmarkTab(tab, options = {}) {
         <div style="${divStyle}"
             ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
                     style="${labelStyle}"
-                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
+                   ><span style="${labelTextStyle}"
+                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
                    ><input type="text"
                            name="title"
                            style="${inputFieldStyle}"
@@ -135,14 +139,16 @@ export async function bookmarkTab(tab, options = {}) {
        ><div style="${divStyle}"
             ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
                     style="${labelStyle}"
-                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
+                   ><span style="${labelTextStyle}"
+                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
                    ><input type="text"
                            name="url"
                            style="${inputFieldStyle}"
                            value=${JSON.stringify(url)}></label></div
        ><div style="${divStyle}; margin-bottom: 3em;"
             ><label style="${labelStyle}"
-                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
+                   ><span style="${labelTextStyle}"
+                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
                    ><span style="${buttonContainerStyle}"
                          ><button name="parentId">-</button></span></label></div>
       `.trim(),
@@ -266,6 +272,9 @@ export async function bookmarkTabs(tabs, options = {}) {
       ${inSidebar ? 'align-items: stretch;' : ''}
       ${inSidebar ? 'text-align: start;' : ''}
     `;
+    const labelTextStyle = `
+      white-space: nowrap;
+    `;
     const inputFieldStyle = `
       display: flex;
       ${inSidebar ? '' : 'margin-left: 0.25em;'}
@@ -281,14 +290,16 @@ export async function bookmarkTabs(tabs, options = {}) {
         <div style="${divStyle}"
             ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
                     style="${labelStyle}"
-                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
+                   ><span style="${labelTextStyle}"
+                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
                    ><input type="text"
                            name="title"
                            style="${inputFieldStyle}"
                            value=${JSON.stringify(folderParams.title)}></label></div
        ><div style="${divStyle}; margin-bottom: 3em;"
             ><label style="${labelStyle}"
-                   ><span>${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
+                   ><span style="${labelTextStyle}"
+                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
                    ><span style="${buttonContainerStyle}"
                          ><button name="parentId">-</button></span></label></div>
       `.trim(),
