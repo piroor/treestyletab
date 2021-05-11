@@ -15,7 +15,7 @@
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-import": "^2.20.1",
     "jsonlint-cli": "*",
-    "lodash": ">=4.17.19",
+    "lodash": ">=4.17.21",
     "minimist": ">=1.2.2",
     "morphdom": "^2.5.12",
     "node-fetch": ">=2.6.1",
