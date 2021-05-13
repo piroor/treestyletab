@@ -314,7 +314,8 @@
   "config_sidebarDirection_rtl": { "message": "Von rechts nach links" },
 
   "config_style_caption": { "message": "Design" },
-  "config_style_photon": { "message": "Pur" },
+  "config_style_proton": { "message": "Proton" },
+  "config_style_photon": { "message": "Photon" },
   "config_style_sidebar": { "message": "Seitenleiste" },
   "config_style_highcontrast": { "message": "Hoher Kontrast" },
   "config_style_none": { "message": "Keine Designvorgabe" },
@@ -330,14 +331,15 @@
   "config_faviconizePinnedTabs_label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
   "config_maxFaviconizedPinnedTabsInOneRow_label_before": { "message": "Zeige " },
   "config_maxFaviconizedPinnedTabsInOneRow_label_after": { "message": " oder weniger Tabs für jede Reihe (*0 oder weniger bedeutet automatische Bestimmung)" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_before": { "message": "Maximale Höhe des Bereichs für angeheftete Tabs:" },
+  "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "% der Seitenleiste" },
   "config_animation_label": { "message": "Animationen aktivieren" },
   "config_animationForce_label": { "message": "Animationen unabhängig von der Einstellung \"Animationen verringern\" aktivieren" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Eingeklappte untergeordnete Tabs als Tooltip anzeigen" },
-  "config_applyThemeColorToIcon_label": { "message": "Wende Designfarbe auf die Toolbar-Schaltfläche an" },
-  "config_applyThemeColorToIcon_label_info": { "message": "(*\"svg.context-properties.content.enabled\" muss auf \"true\" gesetzt werden via \"about:config\")" },
   "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Den Abstand zwischen Seitenleisteninhalten in Fällen reduzieren, die durch vorübergehend angezeigte Toolbars entstehen" },
   "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Vollbildfenster" },
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Neuer leerer Tab unter Firefox 85 und später" },
+  "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Nur wenn von einer Mausaktion auf der Seitenleiste ausgelöst" },
   "config_showDialogInSidebar_label": { "message": "Zeige Dialoge in Seitenleiste falls möglich" },
 
 
@@ -443,6 +445,7 @@
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "Vom aktuellen Tab erben" },
 
+  "config_anyOtherTrigger_caption": { "message": "Tabs aus einem anderen Grund" },
   "config_autoAttachOnAnyOtherTrigger_before": { "message": "Öffnen als" },
   "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnAnyOtherTrigger_independent": { "message": "unabhängigen Tab" },
@@ -450,6 +453,7 @@
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*ACHTUNG: Diese Option birgt die Gefahr, andere Erweiterungen zu behindern." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Tab-Umgebung:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(keine Steuerung)" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
@@ -530,24 +534,47 @@
   "config_treeDoubleClickBehavior_close":               { "message": "Tab schließen (*Simuliert Firefox eingebautes Verhalten für \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Nichts machen" },
 
-  "config_parentTabOperationBehaviorMode_caption":          { "message": "Wenn ein übergeordneter Tab geschlossen oder als eigenständiger Tab verschoben wird" },
-  "config_parentTabOperationBehaviorMode_parallel":         { "message": "Empfohlenes Verhalten für Nutzer, welche auch die eingebaute Tableiste von Firefox verwenden" },
-  "_config_parentTabOperationBehaviorMode_parallel_caption_withoutSidebar": { "message": "Versuche Baumstruktur und Anzahl der Tabs beizubehalten, während die Seitenleiste versteckt ist." },
-  "_config_parentTabOperationBehaviorMode_parallel_caption_withSidebar":    { "message": "Wenn die Seitenleiste sichtbar ist:" },
-  "config_parentTabOperationBehaviorMode_consistent":       { "message": "Empfohlenes Verhalten für Nutzer, welche die eingebaute Tableiste von Firefox nicht verwenden" },
-  "_config_parentTabOperationBehaviorMode_consistent_caption":    { "message": "Für alle Operationen, unabhängig von der Sichtbarkeit der Seitenleiste:" },
-  "config_parentTabOperationBehaviorMode_custom":           { "message": "Benutzerdefiniert" },
-  "_config_parentTabOperationBehaviorMode_custom_caption_insideSidebar":  { "message": "Für Operationen innerhalb der Seitenleiste:" },
-  "_config_parentTabOperationBehaviorMode_custom_caption_outsideSidebar": { "message": "Für Operationen in der eingebauten Tableiste, Tastenkombinationen oder andere Erweiterungen während die Seitenleiste sichtbar ist:" },
-  "_config_parentTabOperationBehaviorMode_custom_caption_noSidebar":      { "message": "Für Operationen in der eingebauten Tableiste, Tastenkombinationen oder andere Erweiterungen" },
-  "config_parentTabOperationBehavior_entireTree":           { "message": "Untergeordnete Tabs ebenfalls schließen" },
-  "config_parentTabOperationBehavior_replaceWithGroupTab":  { "message": "Den geschlossenen übergeordneten Tab durch einen Platzhalter ersetzen, damit der Zweig erhalten bleibt" },
-  "config_parentTabOperationBehavior_promoteFirst":         { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
-  "config_parentTabOperationBehavior_promoteAll":           { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
-  "config_parentTabOperationBehavior_promoteIntelligently": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
-  "config_parentTabOperationBehavior_detach":               { "message": "Untergeordnete Tabs vom Zweig lösen" },
+  "config_parentTabOperationBehaviorMode_caption":           { "message": "Wenn ein übergeordneter Tab geschlossen oder verschoben wird" },
+  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Unabhängig von diesen Einstellungen gibt es einige festgelegte Verhaltensweisen in der Seitenleiste;\n･ Schließen eines eingeklappten, übergeordneten Tabs: den gesamten Zweig schließen\n･ Verschieben eines eingeklappten, übergeordneten Tabs: den gesamten Zweig verschieben\n･ Verschieben eines ausgeklappten, übergeordneten Tabs: Verhalten wie im Bereich \"Ziehen und Ablegen\" eingestellt" },
 
-  "_config_treatClosedOrMovedTabAsSoloTab_noSidebar_label": { "message": "Einen geschlossenen übergeordneten Tab als einzelnen Tab behandeln, auch wenn der Tab eingeklappte Untergeordnete Tabs besitzt, wenn die Seitenleiste unsichtbar ist" },
+  "config_parentTabOperationBehaviorMode_parallel": { "message": "Empfohlenes Verhalten für Nutzer, welche auch die eingebaute Tableiste von Firefox verwenden" },
+  "config_closeParentBehavior_insideSidebar":       { "message": "Wenn ein übergeordneter Tab mit ausgeklapptem Zweig über die Seitenleiste geschlossen wird," },
+  "config_closeParentBehavior_outsideSidebar":      { "message": "Wenn ein übergeordneter Tab (unabhängig ob der Zweig auf- oder zugeklappt ist) über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen geschlossen wird," },
+  "config_moveParentBehavior_outsideSidebar":       { "message": "Wenn ein übergeordneter Tab (unabhängig ob der Zweig auf- oder zugeklappt ist) über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen verschoben wird," },
+
+  "config_parentTabOperationBehaviorMode_consistent":         { "message": "Empfohlenes Verhalten für Nutzer, welche die eingebaute Tableiste von Firefox nicht verwenden" },
+  "config_parentTabOperationBehaviorMode_consistent_caption": { "message": "Wenn ein übergeordneter Tab mit ausgeklapptem Zweig geschlossen/verschoben wird," },
+  "config_parentTabOperationBehaviorMode_consistent_notes":   { "message": "Tabs verhalten sich konsistent wie oben festgelegt, auch bei der eingebauten Tableiste, Tastenkombinationen oder andere Erweiterungen." },
+
+  "config_parentTabOperationBehaviorMode_custom":                { "message": "Benutzerdefiniert" },
+  "config_closeParentBehavior_insideSidebar_expanded_caption":   { "message": "Schließen: Wenn ein übergeordneter Tab mit ausgeklapptem Zweig über die Seitenleiste geschlossen wird," },
+  "config_closeParentBehavior_outsideSidebar_collapsed_caption": { "message": "Schließen: Wenn ein übergeordneter Tab mit eingeklapptem Zweig über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen geschlossen wird," },
+  "config_closeParentBehavior_outsideSidebar_expanded_caption":  { "message": "Schließen: Wenn ein übergeordneter Tab mit ausgeklapptem Zweig über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen geschlossen wird," },
+  "config_closeParentBehavior_noSidebar_collapsed_caption":      { "message": "wenn die Seitenleiste geschlossen ist," },
+  "config_closeParentBehavior_noSidebar_expanded_caption":       { "message": "wenn die Seitenleiste geschlossen ist," },
+  "config_moveParentBehavior_outsideSidebar_collapsed_caption":  { "message": "Verschieben: Wenn ein übergeordneter Tab mit eingeklapptem Zweig über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen verschoben wird," },
+  "config_moveParentBehavior_outsideSidebar_expanded_caption":   { "message": "Verschieben: Wenn ein übergeordneter Tab mit ausgeklapptem Zweig über die eingebaute Tableiste, Tastenkombinationen oder andere Erweiterungen verschoben wird," },
+  "config_moveParentBehavior_noSidebar_collapsed_caption":       { "message": "wenn die Seitenleiste geschlossen ist," },
+  "config_moveParentBehavior_noSidebar_expanded_caption":        { "message": "wenn die Seitenleiste geschlossen ist," },
+
+  "config_parentTabOperationBehavior_entireTree":           { "message": "Untergeordnete Tabs ebenfalls schließen" },
+  "config_closeParentBehavior_entireTree":                  { "message": "Gesamten Zweig schließen" },
+  "config_moveParentBehavior_entireTree":                   { "message": "Gesamten Zweig verschieben" },
+  "config_parentTabOperationBehavior_replaceWithGroupTab":  { "message": "Den geschlossenen/verschobenen übergeordneten Tab durch einen Platzhalter ersetzen" },
+  "config_closeParentBehavior_replaceWithGroupTab":         { "message": "Den geschlossenen übergeordneten Tab durch einen Platzhalter ersetzen" },
+  "config_moveParentBehavior_replaceWithGroupTab":          { "message": "Den verschobenen übergeordneten Tab durch einen Platzhalter ersetzen" },
+  "config_parentTabOperationBehavior_promoteFirst":         { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
+  "config_closeParentBehavior_promoteFirst":                { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
+  "config_moveParentBehavior_promoteFirst":                 { "message": "Den geschlossenen übergeordneten Tab durch den ersten untergeordneten Tab ersetzen" },
+  "config_parentTabOperationBehavior_promoteAll":           { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
+  "config_closeParentBehavior_promoteAll":                  { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
+  "config_moveParentBehavior_promoteAll":                   { "message": "Alle untergeordneten Tabs auf die Ebene des geschlossenen übergeordneten Tabs bringen" },
+  "config_parentTabOperationBehavior_promoteIntelligently": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
+  "config_closeParentBehavior_promoteIntelligently":        { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
+  "config_moveParentBehavior_promoteIntelligently":         { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, wenn er sich auf der obersten Ebene befand, andernfalls alle untergeordneten Tabs auf die Ebene des geschlossenen Tabs bringen" },
+  "config_parentTabOperationBehavior_detach":               { "message": "Untergeordnete Tabs vom Zweig lösen" },
+  "config_closeParentBehavior_detach":                      { "message": "Untergeordnete Tabs vom Zweig lösen" },
+  "config_moveParentBehavior_detach":                       { "message": "Untergeordnete Tabs vom Zweig lösen" },
 
   "config_warnOnCloseTabs_label": { "message": "Warnen, wenn mehrere Tabs geschlossen werden sollen" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warnen, wenn mehrere Tabs durch einen Klick auf eine Schließen-Schaltfläche geschlossen werden sollen" },
@@ -569,6 +596,7 @@
   "config_tabDragBehavior_detachSoloTabIfExpanded":      { "message": "Einzelnen Tab vom Fenster ablösen (aber unmöglich, Lesezeichen anzulegen)" },
   "config_tabDragBehavior_bookmarkSoloTabIfExpanded":    { "message": "Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_doNothing":                    { "message": "Nichts machen" },
+  "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "Wenn ein übergeordneter Tab aus der eingebaute Tableiste von Firefox verschoben wird, wie im Abschnitt \"Verhalten der Zweige\" => \"Wenn ein übergeordneter Tab geschlossen oder verschoben wird\" verhalten." },
   "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Ziehen und Ablegen auf einen Tab abgelegt wird" },
@@ -589,6 +617,11 @@
   "config_requestPermissions_allUrls_ctrlTabTracking":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Das Ausführen von Scripts auf den Webseiten muss erlaubt sein.)" },
   "config_autoExpandOnTabSwitchingShortcutsDelay_before": { "message": "Aktiven eingeklappten Zweig ausklappen, wenn die Tab-Taste für mehr als " },
   "config_autoExpandOnTabSwitchingShortcutsDelay_after": { "message": " ms gedrückt ist" },
+  "config_accelKey_label":   { "message": "Taste für Tastenkürzel (*Muss mit der Konfiguration von \"ui.key.accelKey\" übereinstimmen):" },
+  "config_accelKey_auto":    { "message": "Standard (macOS=⌘, andere=Strg)" },
+  "config_accelKey_alt":     { "message": "Alt" },
+  "config_accelKey_control": { "message": "Strg/Control" },
+  "config_accelKey_meta":    { "message": "Meta/⌘" },
 
   "config_shortcuts_resetAll": { "message": "Alle Tastenkombinationen zurücksetzen" },
 
@@ -606,6 +639,9 @@
 
   "config_undoMultipleTabsClose_label": { "message": "Zuletzt geschlossene Tabs wiederherstellen, wenn einer der Tabs über den \"Geschlossener Tab wiederherstellen\" Befehl wiederhergestellt wird" },
 
+  "config_scrollLines_label_before": { "message": "Bewege " },
+  "config_scrollLines_label_after":  { "message": "Zeilen auf oder ab beim \"Zeilenweise hoch oder runter scrollen\" Befehl" },
+
   "config_userStyleRules_label": { "message": "Zusätzliche Style-Regeln für Seitenleisten-Inhalte" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
   "config_userStyleRules_description_link_label": { "message": "Codebeispiele im TST Wiki" },
@@ -620,7 +656,7 @@
   "config_userStyleRules_overwrite_overwrite": { "message": "Alles ersetzen" },
   "config_userStyleRules_overwrite_append":    { "message": "Am Ende anfügen" },
   "config_tooLargeUserStyleRulesCaution": { "message": "Die Style-Regeln sind zu lang! Bitte kürzen." },
-  "config_userStyleRulesTheme_label":     { "message": "Theme:" },
+  "config_userStyleRulesTheme_label":     { "message": "Design:" },
   "config_userStyleRulesTheme_auto":      { "message": "Auto" },
   "config_userStyleRulesTheme_separator": { "message": "-----------------" },
   "config_userStyleRulesTheme_default":   { "message": "Standard" },
@@ -675,6 +711,14 @@
   "config_acceleratedTabCreation_label": { "message": "Operationen zu neu geöffneten Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "Millisekunden dauert." },
+  "config_delayForDuplicatedTabDetection_label_before": { "message": "Verzögerung um duplizierte Tabs zu erkennen:" },
+  "config_delayForDuplicatedTabDetection_label_after": { "message": "ms (erhöhen, wenn duplizierte Tabs nicht korrekt erkannt werden)" },
+  "config_delayForDuplicatedTabDetection_autoDetect": { "message": "Automatisch erkennen" },
+  "config_delayForDuplicatedTabDetection_test": { "message": "Testerkennung" },
+  "config_delayForDuplicatedTabDetection_test_resultMessage": { "message": "$PERCENTAGE$% erfolgreich erkannt.",
+    "placeholders": {
+      "percentage": { "content": "$1", "example": "50" }
+    }},
   "config_labelOverflowStyle_caption": { "message": "Zu lange Beschriftung von Tabs:" },
   "config_labelOverflowStyle_fade":    { "message": "Ausblenden (bessere Sichtbarkeit)" },
   "config_labelOverflowStyle_crop":    { "message": "Abschneiden mit \"..\" (bessere Leistung)" },
@@ -690,6 +734,8 @@
 
   "config_terms_delimiter": { "message": " " },
 
+
+  "tabContextMenu_newTab_label":      { "message": "Neuer Ta&b" },
 
   "tabContextMenu_reload_label":      { "message": "Tab neu la&den" },
   "tabContextMenu_mute_label":        { "message": "Tab stu&mmschalten" },
@@ -709,8 +755,11 @@
   "tabContextMenu_sendTabsToDevice_label": { "message": "Sen&de Tab an Geräte" },
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "Sen&de Tab an alle Geräte" },
   "tabContextMenu_manageSyncDevices_label": { "message": "Geräte verwalten…" },
+  "tabContextMenu_shareTabURL_label":   { "message": "&Teilen" },
+
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "&Mehrere Tabs schließen" },
+  "tabContextMenu_closeTabsToTop_label":  { "message": "Tabs nach &oben schließen" },
   "tabContextMenu_closeTabsToBottom_label":  { "message": "Tabs nach un&ten schließen" },
   "tabContextMenu_closeOther_label":  { "message": "Andere Tabs &schließen" },
 
