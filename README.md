@@ -107,7 +107,6 @@ There are some similar project by someone not me providing similar features:
 * <details><summary>Vertical tab bar without tree or grouping</summary>
   
   * [Tab Center Reborn](https://addons.mozilla.org/firefox/addon/tabcenter-reborn/)
-  * [Tab Center Redux](https://addons.mozilla.org/firefox/addon/tab-center-redux/)
   * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
   * [Vertigo Tabs](https://addons.mozilla.org/firefox/addon/vertigo-tabs/)
   * [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
