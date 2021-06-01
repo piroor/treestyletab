@@ -67,7 +67,7 @@ export class TabSoundButtonElement extends HTMLElement {
     let key;
     if (tab.$TST.maybeMuted)
       key = `tab_soundButton_muted_tooltip${suffix}`;
-    else if (tab.$TST.maybeSoundPlaying)
+    else
       key = `tab_soundButton_playing_tooltip${suffix}`;
 
     const tooltip = browser.i18n.getMessage(key);
