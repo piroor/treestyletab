@@ -26,8 +26,8 @@
   --tab-active-border-far: color-mix(in srgb, var(--grey-90, currentcolor) 20%, transparent);
   --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, color-mix(in srgb, currentcolor 11%, transparent));
   --tab-surface-hover: var(--tab-surface-hover-color, var(--in-content-box-background-hover));
-  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--tab-like-surface, var(--in-content-button-background-mixed)));
-  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--tab-like-surface, var(--in-content-button-background-active-mixed)));
+  --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-mixed))));
+  --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-active-mixed))));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
   --throbber-color-active: var(--browser-loading-indicator, var(--tab-text-active));
@@ -113,6 +113,7 @@ tab-item:not(.active):hover,
 }
 
 tab-item.active {
+  --multiselected-color: transparent;
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--throbber-color-active);
   --tab-text: var(--tab-text-active);
@@ -144,6 +145,7 @@ tab-item .burster {
 /* Dropshadow */
 
 tab-item:not(collapsed).active .background,
+.mutiple-highlighted > tab-item.highlighted::after,
 .after-tabs button:hover,
 #subpanel-selector-anchor:hover {
   box-shadow: 0 0 0.15em var(--tab-active-border-near),

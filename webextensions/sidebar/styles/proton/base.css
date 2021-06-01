@@ -98,7 +98,7 @@ tab-item tab-closebox::after {
 /* multiselection of tabs */
 
 :root {
-  --multiselected-color: var(--tab-like-surface);
+  --multiselected-color: var(--browser-selected-tab-bg, var(--browser-toolbar, var(--tab-surface-active)));
   --multiselected-color-opacity: 1;
 }
 

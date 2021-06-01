@@ -112,9 +112,14 @@ export async function generateThemeDeclarations(theme) {
   const themeBaseColor    = Color.overrideCSSAlpha(themeFrameColor, bgAlpha);
   let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
   if (theme.colors.toolbar) {
-    toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
-    if (hasImage)
+    if (hasImage) {
       extraColors.push(`--browser-bg-for-header-image: ${theme.colors.toolbar};`);
+      toolbarColor = theme.colors.toolbar;
+    }
+    else {
+      toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
+    }
+    extraColors.push(`--browser-toolbar: ${theme.colors.toolbar}`);
   }
   else if (hasImage) {
     extraColors.push('--browser-bg-for-header-image: rgba(255, 255, 255, 0.25);');
@@ -123,6 +128,8 @@ export async function generateThemeDeclarations(theme) {
     extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
   if (theme.colors.tab_loading)
     extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
+  if (theme.colors.tab_selected)
+    extraColors.push(`--browser-selected-tab-bg: ${theme.colors.tab_selected}`);
   extraColors.push(generateThemeRules(theme));
   return `
     :root {
