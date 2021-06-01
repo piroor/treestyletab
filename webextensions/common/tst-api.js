@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK ***** 
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -716,6 +716,14 @@ function onBackendCommand(message, sender) {
         message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         message.id = sender.id;
         message.subPanel = message.subPanel || message.subpanel || null;
+        if (message.subPanel) {
+          const url = typeof message.subPanel.url === 'string' && new URL(message.subPanel.url, new URL('/', sender.url));
+          if (!url || url.hostname !== message.internalId) {
+            console.error(`"subPanel.url" must refer to a page packed in the registering extension.`);
+            message.subPanel.url = 'about:blank?error=invalid-origin'
+          } else
+            message.subPanel.url = url.href;
+        }
         message.newlyInstalled = !configs.cachedExternalAddons.includes(sender.id);
         registerAddon(sender.id, message);
         browser.runtime.sendMessage({
