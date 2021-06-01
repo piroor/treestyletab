@@ -885,9 +885,9 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 
       log('  toBeMuted: ', toBeMuted);
       if (!multiselected &&
-          root.$TST.subtreeCollapsed &&
-          !root.$TST.soundPlaying) {
-        const toBeUpdatedTabs = root.$TST.descendants.filter(tab =>
+          root.$TST.subtreeCollapsed) {
+        const tabsInTree = [root, ...root.$TST.descendants];
+        let toBeUpdatedTabs = tabsInTree.filter(tab =>
           // The "audible" possibly become "false" when the tab is
           // really audible but muted.
           // However, we can think more simply and robustly.
@@ -900,6 +900,11 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
             // expected state.
             (tab.$TST.muted != toBeMuted)
         );
+        // but if there is no target tab, we should update all of the tab and descendants.
+        if (toBeUpdatedTabs.length == 0)
+          toBeUpdatedTabs = tabsInTree.filter(tab =>
+            tab.$TST.muted != toBeMuted
+          );
         log('  toBeUpdatedTabs: ', toBeUpdatedTabs);
         for (const tab of toBeUpdatedTabs) {
           browser.tabs.update(tab.id, {
