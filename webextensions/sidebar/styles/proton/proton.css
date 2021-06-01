@@ -35,6 +35,10 @@
   --tabbar-bg: -moz-dialog;
 }
 
+:root.platform-mac {
+  --tabbar-bg: #f0f0f4; /* https://searchfox.org/mozilla-central/rev/e9eb869e90a8d717678c3f38bf75843e345729ab/browser/themes/osx/browser.css#52 */
+}
+
 :root,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
