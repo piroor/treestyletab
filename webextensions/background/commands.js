@@ -880,8 +880,8 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         Tab.getSelectedTabs(root.windowId, { iterator: true }) :
         [root] ;
       const toBeMuted = (!multiselected && root.$TST.subtreeCollapsed) ?
-        root.$TST.maybeSoundPlaying :
-        root.$TST.soundPlaying ;
+        !root.$TST.maybeMuted :
+        !root.$TST.muted ;
 
       log('  toBeMuted: ', toBeMuted);
       if (!multiselected &&
@@ -898,7 +898,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
           (tab.audible || tab.mutedInfo.muted) &&
             // And we really need to update only tabs not been the
             // expected state.
-            (tab.$TST.soundPlaying == toBeMuted)
+            (tab.$TST.muted != toBeMuted)
         );
         log('  toBeUpdatedTabs: ', toBeUpdatedTabs);
         for (const tab of toBeUpdatedTabs) {
