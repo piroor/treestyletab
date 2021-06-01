@@ -166,9 +166,9 @@ async function applyProvider(id) {
     browser.sessions.setWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SUBPANEL_PROVIDER_ID, id).catch(ApiTabs.createErrorHandler());
 
     const icon = mSelectorAnchor.querySelector('.icon > img');
-    const url = getProviderIconUrl(provider);
-    if (url)
-      icon.src = url;
+    const iconUrl = getProviderIconUrl(provider);
+    if (iconUrl)
+      icon.src = iconUrl;
     else
       icon.removeAttribute('src');
 
@@ -193,6 +193,10 @@ async function applyProvider(id) {
           mHeight = Size.calc(provider.subPanel.initialHeight);
       }
     }
+
+    const url = new URL(provider.subPanel.url);
+    url.searchParams.set('windowId', mTargetWindow);
+    provider.subPanel.url = url.href;
 
     if (mHeight > 0)
       load(provider.subPanel);
