@@ -195,7 +195,7 @@ async function applyProvider(id) {
     }
 
     const url = new URL(provider.subPanel.url);
-    url.searchParams.set('tst-windowId', mTargetWindow);
+    url.searchParams.set('windowId', mTargetWindow);
     provider.subPanel.url = url.href;
 
     if (mHeight > 0)
