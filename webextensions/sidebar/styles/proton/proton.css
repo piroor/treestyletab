@@ -33,6 +33,8 @@
   --throbber-color-active: var(--browser-loading-indicator, var(--tab-text-active));
 
   --tabbar-bg: -moz-dialog;
+
+  --tab-highlighted-glow: rgb(42, 195, 162); /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#927 */
 }
 
 :root.platform-mac {

@@ -88,6 +88,12 @@ tab-item {
   --tab-current-size: var(--tab-size);
   --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
   --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
+  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 14%),
+                                               var(--tab-highlighted-glow) 0,
+                                               var(--tab-highlighted-glow) 7%,
+                                               rgba(255, 255, 255, 0) 7%);
+  --attention-marker-gradient-hover: var(--attention-marker-gradient);
+  /* old style
   --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                                var(--tab-highlighted-highlight) 3%,
                                                var(--tab-highlighted-glow) 10%,
@@ -96,6 +102,7 @@ tab-item {
                                                      var(--tab-highlighted-highlight) 3%,
                                                      var(--tab-highlighted-glow) 10%,
                                                      rgba(255, 255, 255, 0) 23%);
+  */
 }
 
 tab-item:focus {
