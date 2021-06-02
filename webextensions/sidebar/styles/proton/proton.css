@@ -42,9 +42,10 @@
 :root,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: var(--browser-bg-url, var(--browser-header-url, none));
-  background-position: left;
-  background-size: var(--browser-background-image-size, auto);
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
 }
 :root.right,
 :root.right #background {
@@ -148,8 +149,8 @@ tab-item:not(collapsed).active .background,
 .mutiple-highlighted > tab-item.highlighted::after,
 .after-tabs button:hover,
 #subpanel-selector-anchor:hover {
-  box-shadow: 0 0 0.15em var(--tab-active-border-near),
-              0 0 var(--tab-dropshadow-size) var(--tab-active-border-far);
+  box-shadow: 0 0 0.15em var(--browser-tab-highlighter, var(--tab-active-border-near)),
+              0 0 var(--tab-dropshadow-size) var(--browser-tab-highlighter, var(--tab-active-border-far));
 }
 
 

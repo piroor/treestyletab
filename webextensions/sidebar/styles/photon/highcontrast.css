@@ -123,3 +123,10 @@ tab-item:not(.bundled-active) .highlighter::before {
 tab-item.bundled-active:not(.highlighted) .highlighter::before {
   opacity: 1;
 }
+
+
+tab-item.active tab-label {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25em;
+}

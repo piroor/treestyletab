@@ -34,9 +34,10 @@
 :root,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
-  background-image: var(--browser-bg-url, var(--browser-header-url, none));
-  background-position: left;
-  background-size: var(--browser-background-image-size, auto);
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
 }
 :root.right,
 :root.right #background {

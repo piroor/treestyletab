@@ -9,6 +9,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Color from './color.js';
+import * as Constants from './constants.js';
 
 export function generateThemeRules(theme) {
   const rules = [];
@@ -49,10 +50,11 @@ export async function generateThemeDeclarations(theme) {
   let bgAlpha = 1;
   let hasImage = false;
   if (theme.images) {
+    const isRightside = configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
+    const images    = [];
     const frameImage = theme.images.theme_frame || theme.images.headerURL /* old name */;
     if (frameImage) {
       hasImage = true;
-      extraColors.push(`--browser-header-url: url(${JSON.stringify(frameImage)})`);
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/themes/shared/tabs.inc.css#537
       extraColors.push('--browser-bg-hover-for-header-image: rgba(0, 0, 0, 0.1);');
       // https://searchfox.org/mozilla-central/rev/532e4b94b9e807d157ba8e55034aef05c1196dc9/browser/base/content/browser.css#20
@@ -66,47 +68,88 @@ export async function generateThemeDeclarations(theme) {
       }
       else {
         // for dark text
-        extraColors.push('--browser-textshadow-for-header-image: 0 -0.5px 1.5px white');
+        extraColors.push('--browser-textshadow-for-header-image: 0 0 1.5px white');
         // https://searchfox.org/mozilla-central/rev/0e3d2eb698a51006943f3b4fb74c035da80aa2ff/browser/themes/shared/tabs.inc.css#834
         extraColors.push('--browser-bg-hover-for-header-image-proton: rgba(0, 0, 0, 0.2);');
       }
+      images.push({
+        url:      frameImage,
+        position: isRightside ? 'top right' : 'top left',
+        repeat:   'no-repeat',
+      });
     }
-    let imageUrl = frameImage;
+
+    const positions = theme.properties && theme.properties.additional_backgrounds_alignment || [];
+    const repeats = theme.properties && theme.properties.additional_backgrounds_tiling || [];
     if (Array.isArray(theme.images.additional_backgrounds) &&
         theme.images.additional_backgrounds.length > 0) {
-      imageUrl = theme.images.additional_backgrounds[0];
-      extraColors.push(`--browser-bg-url: url(${JSON.stringify(imageUrl)})`);
+      const leftImageCount = positions.filter(position => position.includes('left')).length;
+      const rightImageCount = positions.filter(position => position.includes('right')).length;
+      const repeatableImageCount = repeats.filter(repeat => repeat != 'no-repeat').length;
+      for (let i = 0, maxi = theme.images.additional_backgrounds.length; i < maxi; i++) {
+        const image = theme.images.additional_backgrounds[i];
+        const position = positions.length > 0 && positions[Math.min(i, positions.length - 1)] || 'default';
+        const repeat = repeats.length > 0 && repeats[Math.min(i, repeats.length - 1)] || 'default';
+        if (repeatableImageCount > 0 &&
+            repeat.includes('no-repeat'))
+          continue;
+        if (position &&
+            position.includes('right') != isRightside &&
+            repeat == 'no-repeat' &&
+            leftImageCount > 0 &&
+            rightImageCount > 0)
+          continue;
+        images.push({
+          url: image,
+          position,
+          repeat,
+          size: repeat == 'reepat-y' ? 'auto' : 'auto 100%',
+        });
+      }
       bgAlpha = 0.75;
       hasImage = true;
     }
-    const loader = new Image();
-    try {
-      const shouldRepeat = (
-        theme.properties &&
-        Array.isArray(theme.properties.additional_backgrounds_tiling) &&
-        theme.properties.additional_backgrounds_tiling.some(value => value == 'repeat' || value == 'repeat-y')
-      );
-      const shouldNoRepeat = (
-        !theme.properties ||
-        !Array.isArray(theme.properties.additional_backgrounds_tiling) ||
-        theme.properties.additional_backgrounds_tiling.some(value => value == 'no-repeat')
-      );
-      let maybeRepeatable = false;
-      if (!shouldRepeat && !shouldNoRepeat) {
-        await new Promise((resolve, reject) => {
-          loader.addEventListener('load', resolve);
-          loader.addEventListener('error', reject);
-          loader.src = imageUrl;
-        });
-        maybeRepeatable = (loader.width / Math.max(1, loader.height)) <= configs.unrepeatableBGImageAspectRatio;
+
+    await Promise.all(images.map(async image => {
+      if (image.size)
+        return;
+
+      const loader = new Image();
+      try {
+        const shouldRepeat = (
+          theme.properties &&
+          Array.isArray(theme.properties.additional_backgrounds_tiling) &&
+          theme.properties.additional_backgrounds_tiling.some(value => value == 'repeat' || value == 'repeat-y')
+        );
+        const shouldNoRepeat = (
+          !theme.properties ||
+          !Array.isArray(theme.properties.additional_backgrounds_tiling) ||
+          theme.properties.additional_backgrounds_tiling.some(value => value == 'no-repeat')
+        );
+        let maybeRepeatable = false;
+        if (!shouldRepeat && !shouldNoRepeat) {
+          await new Promise((resolve, reject) => {
+            loader.addEventListener('load', resolve);
+            loader.addEventListener('error', reject);
+            loader.src = image;
+          });
+          maybeRepeatable = (loader.width / Math.max(1, loader.height)) <= configs.unrepeatableBGImageAspectRatio;
+        }
+        if (shouldNoRepeat)
+          image.size = 'cover';
+        else if (shouldRepeat || maybeRepeatable)
+          image.size = 'auto';
       }
-      if (shouldNoRepeat)
-        extraColors.push('--browser-background-image-size: cover;');
-      else if (shouldRepeat || maybeRepeatable)
-        extraColors.push('--browser-background-image-size: auto;');
-    }
-    catch(error) {
-      console.error(error);
+      catch(error) {
+        console.error(error);
+      }
+    }));
+
+    if (hasImage) {
+      extraColors.push('--browser-bg-images: ' + images.map(image => `url(${JSON.stringify(image.url)})`).join(','));
+      extraColors.push('--browser-bg-position: ' + images.map(image => image.position).join(','));
+      extraColors.push('--browser-bg-repeat: ' + images.map(image => image.repeat).join(','));
+      extraColors.push('--browser-bg-size: ' + images.map(image => image.size).join(','));
     }
   }
   const themeBaseColor    = Color.overrideCSSAlpha(themeFrameColor, bgAlpha);
