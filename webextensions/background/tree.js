@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2020
+ * Portions created by the Initial Developer are Copyright (C) 2011-2022
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -429,7 +429,7 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
         }
       }; break;
       case Constants.kINSERT_NO_CONTROL:
-        throw new Error(`getReferenceTabsForNewChild: unavailable insertion position kINSERT_NO_CONTROL for ${child && child.id}`);
+        break;
     }
   }
   else {
