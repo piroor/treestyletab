@@ -57,6 +57,8 @@ export const onTreeCompletelyAttached = new EventListenerManager();
 
 export const instanceId = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
 
+const mDarkModeMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
 let mInitialized = false;
 const mPreloadedCaches = new Map();
 
@@ -184,10 +186,21 @@ async function notifyReadyToSidebars() {
   return Promise.all(promisedResults);
 }
 
-function updatePanelUrl() {
+async function updatePanelUrl(theme) {
+  const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
+  url.searchParams.set('style', configs.style);
+  if (!theme)
+    theme = await browser.theme.getCurrent();
+  if (theme.colors.frame)
+    url.searchParams.set('bgcolor', theme.colors.frame);
+  else if (mDarkModeMatchMedia.matches)
+    url.searchParams.set('bgcolor', '#2A2A2E' /* --in-content-page-background */);
+  browser.sidebarAction.setPanel({ panel: url.href });
+/*
   const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
   url.searchParams.set('style', configs.style);
   browser.sidebarAction.setPanel({ panel: url.href });
+*/
 }
 
 function waitUntilCompletelyRestored() {
@@ -772,8 +785,6 @@ Tree.onDetached.addListener((tab, detachInfo) => {
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
 
-const darkModeMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
-
 async function updateIconForBrowserTheme(theme) {
   if (!theme) {
     const window = await browser.windows.getLastFocused();
@@ -804,7 +815,7 @@ async function updateIconForBrowserTheme(theme) {
       icons[size] = `data:image/svg+xml,${escape(source)}#toolbar`;
     }));
   }
-  else if (darkModeMatchMedia.matches) { // dark mode
+  else if (mDarkModeMatchMedia.matches) { // dark mode
     for (const size of Object.keys(icons)) {
       icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
     }
@@ -821,10 +832,12 @@ async function updateIconForBrowserTheme(theme) {
 
 browser.theme.onUpdated.addListener(updateInfo => {
   updateIconForBrowserTheme(updateInfo.theme);
+  updatePanelUrl(updateInfo.theme);
 });
 
-darkModeMatchMedia.addListener(async _event => {
+mDarkModeMatchMedia.addListener(async _event => {
   updateIconForBrowserTheme();
+  updatePanelUrl();
 });
 
 
