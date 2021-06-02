@@ -65,6 +65,7 @@ tab-item:not(.active) {
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
 :root,
+body,
 #background {
   background: var(--bg-color);
 }

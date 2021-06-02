@@ -12,6 +12,7 @@
   if (bgcolor)
     document.querySelector('#bgcolor').textContent = `
       :root,
+      body,
       #background {
         background-color: ${bgcolor};
       }

@@ -40,6 +40,7 @@
 }
 
 :root,
+body,
 #background {
   background-color: var(--browser-background, var(--tabbar-bg));
   background-image: var(--browser-bg-images, none);
