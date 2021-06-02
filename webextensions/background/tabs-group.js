@@ -27,22 +27,20 @@ function log(...args) {
 }
 
 export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerTabId } = {}) {
-  const base = Constants.kGROUP_TAB_URI;
-
-  const params = new URLSearchParams();
+  const url = new URL(Constants.kGROUP_TAB_URI);
 
   if (title)
-    params.set('title', title);
+    url.searchParams.set('title', title);
 
   if (temporaryAggressive)
-    params.set('temporaryAggressive', 'true');
+    url.searchParams.set('temporaryAggressive', 'true');
   else if (temporary)
-    params.set('temporary', 'true');
+    url.searchParams.set('temporary', 'true');
 
   if (openerTabId)
-    params.set('openerTabId', openerTabId);
+    url.searchParams.set('openerTabId', openerTabId);
 
-  return `${base}?${params.toString()}`;
+  return url.href;
 }
 
 export function temporaryStateParams(state) {

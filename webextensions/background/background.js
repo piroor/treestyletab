@@ -185,8 +185,9 @@ async function notifyReadyToSidebars() {
 }
 
 function updatePanelUrl() {
-  const panel = `${Constants.kSHORTHAND_URIS.tabbar}?style=${encodeURIComponent(configs.style)}`;
-  browser.sidebarAction.setPanel({ panel });
+  const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
+  url.searchParams.set('style', configs.style);
+  browser.sidebarAction.setPanel({ panel: url.href });
 }
 
 function waitUntilCompletelyRestored() {

@@ -27,12 +27,12 @@
   let gBrowserThemeDefinition;
   let gUserStyleRules;
 
-  const params = new URLSearchParams(location.search);
+  const url = new URL(location.href);
 
   document.title = getTitle();
 
   function getTitle() {
-    let title = params.get('title');
+    let title = url.searchParams.get('title');
     if (!title) {
       const matched = location.search.match(/^\?([^&;]*)/);
       if (matched)
@@ -49,15 +49,15 @@
   }
 
   function isTemporary() {
-    return params.get('temporary') == 'true';
+    return url.searchParams.get('temporary') == 'true';
   }
 
   function isTemporaryAggressive() {
-    return params.get('temporaryAggressive') == 'true';
+    return url.searchParams.get('temporaryAggressive') == 'true';
   }
 
   function getOpenerTabId() {
-    return params.get('openerTabId');
+    return url.searchParams.get('openerTabId');
   }
 
   function enterTitleEdit() {
@@ -84,27 +84,25 @@
   }
 
   function updateParameters({ title } = {}) {
-    params.set('title', title || getTitle() || '');
+    url.searchParams.set('title', title || getTitle() || '');
 
     if (gTemporaryCheck.checked)
-      params.set('temporary', 'true');
+      url.searchParams.set('temporary', 'true');
     else
-      params.delete('temporary');
+      url.searchParams.delete('temporary');
 
     if (gTemporaryAggressiveCheck.checked)
-      params.set('temporaryAggressive', 'true');
+      url.searchParams.set('temporaryAggressive', 'true');
     else
-      params.delete('temporaryAggressive');
+      url.searchParams.delete('temporaryAggressive');
 
     const opener = getOpenerTabId();
     if (opener)
-      params.set('openerTabId', opener);
+      url.searchParams.set('openerTabId', opener);
     else
-      params.delete('openerTabId');
+      url.searchParams.delete('openerTabId');
 
-    let uri = location.href.split('?')[0];
-    uri = `${uri}?${params.toString()}`;
-    history.replaceState({}, document.title, uri);
+    history.replaceState({}, document.title, url.href);
   }
 
   async function init(retryCount = 0) {

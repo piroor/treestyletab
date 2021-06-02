@@ -92,17 +92,17 @@ document.documentElement.dataset.userAgent = navigator.userAgent;
 document.documentElement.classList.toggle('platform-mac', isMacOS());
 
 {
-  const params = new URLSearchParams(location.search);
+  const url = new URL(location.href);
 
-  mTargetWindow = parseInt(params.get('windowId') || 0);
+  mTargetWindow = parseInt(url.searchParams.get('windowId') || 0);
   if (isNaN(mTargetWindow) || mTargetWindow < 1)
     mTargetWindow = null;
 
   // apply style ASAP!
-  const style = params.get('style');
+  const style = url.searchParams.get('style');
   applyTheme({ style });
 
-  const title = params.get('title');
+  const title = url.searchParams.get('title');
   if (title)
     document.title = title;
 }
