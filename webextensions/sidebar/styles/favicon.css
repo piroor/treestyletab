@@ -38,7 +38,7 @@ tab-item tab-favicon * {
 
 .favicon-builtin::before {
   -moz-context-properties: fill;
-  background: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -51,32 +51,32 @@ tab-item tab-favicon * {
 }
 :root.simulate-svg-context-fill tab-item .favicon-builtin::before {
   background: var(--tab-text);
-  mask: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
 }
 
 tab-item.group-tab .favicon-builtin::before {
-  background: url("/resources/icons/folder-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/folder.svg") no-repeat center / 100%;
 }
 :root.simulate-svg-context-fill tab-item.group-tab .favicon-builtin::before {
   background: var(--tab-text);
-  mask: url("/resources/icons/folder-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/folder.svg") no-repeat center / 100%;
 }
 
 
 tab-item[data-current-uri^="chrome:"] .favicon-builtin::before {
-  background: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
 }
 :root.simulate-svg-context-fill tab-item[data-current-uri^="chrome:"] .favicon-builtin::before {
   background: var(--tab-text);
-  mask: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
 }
 
 tab-item[data-current-uri^="about:addons"] .favicon-builtin::before {
-  background: url("/resources/icons/extensionGeneric-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/extensions.svg") no-repeat center / 100%;
 }
 :root.simulate-svg-context-fill tab-item[data-current-uri^="about:addons"] .favicon-builtin::before {
   background: var(--tab-text);
-  mask: url("/resources/icons/extensionGeneric-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/extensions.svg") no-repeat center / 100%;
 }
 
 tab-item[data-current-uri^="about:debugging"] .favicon-builtin::before {
