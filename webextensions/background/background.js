@@ -801,27 +801,27 @@ async function updateIconForBrowserTheme(theme) {
         theme = await browser.theme.getCurrent(window.id);
       }
 
-  log('updateIconForBrowserTheme: colors: ', theme.colors);
-  if (theme.colors) {
-    const color = theme.colors.icons || theme.colors.tab_text || theme.colors.textcolor;
-    log(' => ', theme.colors);
-    await Promise.all(Array.from(Object.keys(icons), async size => {
-      const request = new XMLHttpRequest();
-      await new Promise((resolve, _reject) => {
-        request.open('GET', `/resources/${size}x${size}-dark.svg`, true);
-        request.addEventListener('load', resolve, { once: true });
-        request.overrideMimeType('text/plain');
-        request.send(null);
-      });
-      const source = request.responseText.replace(/fill:[^;]+;/, `fill: ${color};`);
-      icons[size] = `data:image/svg+xml,${escape(source)}#toolbar`;
-    }));
-  }
-  else if (mDarkModeMatchMedia.matches) { // dark mode
-    for (const size of Object.keys(icons)) {
-      icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
-    }
-  }
+      log('updateIconForBrowserTheme: colors: ', theme.colors);
+      if (theme.colors) {
+        const color = theme.colors.icons || theme.colors.tab_text || theme.colors.textcolor;
+        log(' => ', theme.colors);
+        await Promise.all(Array.from(Object.keys(icons), async size => {
+          const request = new XMLHttpRequest();
+          await new Promise((resolve, _reject) => {
+            request.open('GET', `/resources/${size}x${size}-dark.svg`, true);
+            request.addEventListener('load', resolve, { once: true });
+            request.overrideMimeType('text/plain');
+            request.send(null);
+          });
+          const source = request.responseText.replace(/fill:[^;]+;/, `fill: ${color};`);
+          icons[size] = `data:image/svg+xml,${escape(source)}#toolbar`;
+        }));
+      }
+      else if (mDarkModeMatchMedia.matches) { // dark mode
+        for (const size of Object.keys(icons)) {
+          icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
+        }
+      }
     }; break;
 
     case 'bright':
