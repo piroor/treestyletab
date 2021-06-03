@@ -786,11 +786,6 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpda
 
 
 async function updateIconForBrowserTheme(theme) {
-  if (!theme) {
-    const window = await browser.windows.getLastFocused();
-    theme = await browser.theme.getCurrent(window.id);
-  }
-
   // generate icons with theme specific color
   const icons = {
     '16': '/resources/16x16.svg',
@@ -798,6 +793,13 @@ async function updateIconForBrowserTheme(theme) {
     '24': '/resources/24x24.svg',
     '32': '/resources/32x32.svg',
   };
+
+  switch (configs.iconColor) {
+    case 'auto': {
+      if (!theme) {
+        const window = await browser.windows.getLastFocused();
+        theme = await browser.theme.getCurrent(window.id);
+      }
 
   log('updateIconForBrowserTheme: colors: ', theme.colors);
   if (theme.colors) {
@@ -820,6 +822,21 @@ async function updateIconForBrowserTheme(theme) {
       icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
     }
   }
+    }; break;
+
+    case 'bright':
+      for (const size of Object.keys(icons)) {
+        icons[size] = `/resources/${size}x${size}-light.svg#toolbar`;
+      }
+      break;
+
+    case 'dark':
+      for (const size of Object.keys(icons)) {
+        icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
+      }
+      break;
+  }
+
   log('updateIconForBrowserTheme: applying icons: ', icons);
 
   await Promise.all([
@@ -847,6 +864,11 @@ configs.$addObserver(key => {
     case 'style':
       updatePanelUrl();
       break;
+
+    case 'iconColor':
+      updateIconForBrowserTheme();
+      break;
+
     case 'debug':
       EventListenerManager.debug = configs.debug;
       break;

@@ -82,6 +82,7 @@ export const configs = new Configs({
         return (matched && parseInt(matched[1]) >= 89) ? 'proton' : 'photon'
       })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
+  iconColor: 'auto',
 
   unrepeatableBGImageAspectRatio: 4,
 

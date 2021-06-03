@@ -342,6 +342,11 @@
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Only when triggered by a mouse operation in the sidebar" },
   "config_showDialogInSidebar_label": { "message": "Show dialogs in the sidebar if possible" },
 
+  "config_iconColor_caption": { "message": "Toolbar Icon Color:" },
+  "config_iconColor_auto":    { "message": "Auto" },
+  "config_iconColor_bright":  { "message": "for Bright Theme" },
+  "config_iconColor_dark":    { "message": "for Dark Theme" },
+
 
   "config_context_caption": { "message": "Context Menu" },
   "config_emulateDefaultContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
