@@ -64,6 +64,7 @@ body,
   :root {
     --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
     --tabbar-bg: var(--browser-bg-darker, var(--dark-frame));
+    --tab-highlighted-glow: rgb(84, 255, 189); /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#931 */
   }
 }
 
