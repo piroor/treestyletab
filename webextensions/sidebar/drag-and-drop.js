@@ -1024,12 +1024,12 @@ function onDragOver(event) {
   }
 
   if (!isLinux()) {
-  if (mDelayedClearDropPosition)
-    clearTimeout(mDelayedClearDropPosition);
-  mDelayedClearDropPosition = setTimeout(() => {
-    mDelayedClearDropPosition = null;
-    clearDropPosition();
-  }, 250);
+    if (mDelayedClearDropPosition)
+      clearTimeout(mDelayedClearDropPosition);
+    mDelayedClearDropPosition = setTimeout(() => {
+      mDelayedClearDropPosition = null;
+      clearDropPosition();
+    }, 250);
   }
 
   event.preventDefault(); // this is required to override default dragover actions!
