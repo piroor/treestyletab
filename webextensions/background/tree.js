@@ -418,7 +418,7 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
         // The result will become same to kINSERT_NO_CONTROL case,
         // but this is necessary for environments with disabled the preference.
         if ((lastRelatedTab === undefined) && parent)
-          lastRelatedTab = parent.$TST.lastRelatedTabId == child.id ? parent.$TST.previousLastRelatedTab : parent.$TST.lastRelatedTab; // it could be updated already...
+          lastRelatedTab = child && parent.$TST.lastRelatedTabId == child.id ? parent.$TST.previousLastRelatedTab : parent.$TST.lastRelatedTab; // it could be updated already...
         if (lastRelatedTab) {
           insertAfter  = lastRelatedTab.$TST.lastDescendant || lastRelatedTab;
           log(`  insert ${child && child.id} after lastRelatedTab ${lastRelatedTab.id} (insertAt=kINSERT_NEXT_TO_LAST_RELATED_TAB)`);
