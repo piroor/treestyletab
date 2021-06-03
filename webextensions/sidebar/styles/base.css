@@ -88,7 +88,7 @@ tab-item {
   --tab-current-size: var(--tab-size);
   --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
   --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
-  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 14%),
+  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 14% + 1px),
                                                var(--tab-highlighted-glow) 0,
                                                var(--tab-highlighted-glow) 7%,
                                                rgba(255, 255, 255, 0) 7%);
