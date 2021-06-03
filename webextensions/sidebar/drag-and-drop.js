@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2020
+ * Portions created by the Initial Developer are Copyright (C) 2010-2021
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -35,6 +35,7 @@ import {
   shouldApplyAnimation,
   sha1sum,
   isMacOS,
+  isLinux,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -1022,12 +1023,14 @@ function onDragOver(event) {
     mFinishCanceledDragOperation = null;
   }
 
+  if (!isLinux()) {
   if (mDelayedClearDropPosition)
     clearTimeout(mDelayedClearDropPosition);
   mDelayedClearDropPosition = setTimeout(() => {
     mDelayedClearDropPosition = null;
     clearDropPosition();
   }, 250);
+  }
 
   event.preventDefault(); // this is required to override default dragover actions!
   Scroll.autoScrollOnMouseEvent(event);
