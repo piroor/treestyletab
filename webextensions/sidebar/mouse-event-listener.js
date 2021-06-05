@@ -417,6 +417,9 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
 }
 
 function getMouseEventTargetType(event) {
+  if (event.target.closest('.rich-confirm'))
+    return 'outside';
+
   if (EventUtils.getTabFromEvent(event))
     return 'tab';
 
@@ -462,6 +465,10 @@ async function onMouseUp(event) {
   const extraContentsInfo = lastMousedown && lastMousedown.detail && lastMousedown.detail.$extraContentsInfo;
   if (!lastMousedown) {
     log(' => no lastMousedown');
+    return;
+  }
+  if (lastMousedown.detail.targetType == 'outside') {
+    log(' => out of contents');
     return;
   }
 
