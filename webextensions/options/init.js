@@ -350,7 +350,8 @@ async function updateBookmarksUI(enabled) {
   }
 }
 
-function initOtherDevices() {
+async function initOtherDevices() {
+  await Sync.ensureDeviceInfoInitialized();
   const container = document.querySelector('#otherDevices');
   const range = document.createRange();
   range.selectNodeContents(container);

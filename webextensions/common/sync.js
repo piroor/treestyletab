@@ -34,8 +34,12 @@ async function getMyDeviceInfo() {
   return mMyDeviceInfo = configs.syncDeviceInfo;
 }
 
-configs.$loaded.then(async () => {
+export async function ensureDeviceInfoInitialized() {
   await getMyDeviceInfo();
+}
+
+configs.$loaded.then(async () => {
+  await ensureDeviceInfoInitialized();
 });
 
 export async function init() {
@@ -63,6 +67,7 @@ export async function init() {
         break;
 
       case 'syncDeviceInfo':
+        mMyDeviceInfo = null;
         updateSelf();
         break;
 
@@ -108,7 +113,7 @@ configs.$addObserver(key => {
       break;
 
     case 'syncDeviceInfo':
-      getMyDeviceInfo(); // cache the last value
+      ensureDeviceInfoInitialized();
       break;
 
     default:
@@ -122,7 +127,7 @@ async function updateSelf() {
 
   updateSelf.updating = true;
 
-  configs.syncDeviceInfo = {
+  configs.syncDeviceInfo = mMyDeviceInfo = {
     ...clone(await getMyDeviceInfo()),
     timestamp: Date.now()
   };
@@ -280,11 +285,12 @@ function clone(value) {
 }
 
 export function getOtherDevices() {
+  if (!mMyDeviceInfo)
+    throw new Error('Not initialized yet. You need to call "ensureDeviceInfoInitialized" before this.');
   const devices = configs.syncDevices || {};
   const result = [];
   for (const [id, info] of Object.entries(devices)) {
-    if (mMyDeviceInfo &&
-        id == mMyDeviceInfo.id ||
+    if (id == mMyDeviceInfo.id ||
         !info.id /* ignore invalid device info accidentally saved (see also https://github.com/piroor/treestyletab/issues/2922 ) */)
       continue;
     result.push(info);
