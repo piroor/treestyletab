@@ -903,7 +903,12 @@ function onMessage(message, _sender, _respond) {
       return;
 
     case Constants.kCOMMAND_SHOW_DIALOG:
-      return RichConfirm.show(message.params);
+      return RichConfirm.show({
+        ...message.params,
+        onHidden() {
+          UserOperationBlocker.unblockIn(mTargetWindow, message.userOperationBlockerParams || {});
+        }
+      });
   }
 }
 

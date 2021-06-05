@@ -25,6 +25,7 @@ function log(...args) {
 
 export async function show(ownerWindow, dialogParams) {
   let result;
+  let unblocked = false;
   try {
     if (configs.showDialogInSidebar &&
         SidebarConnection.isOpen(ownerWindow.id)/* &&
@@ -32,7 +33,13 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false });
       result = await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SHOW_DIALOG,
-        params:   { ...dialogParams, onShown: null, onShownInTab: null, onShownInPopup: null },
+        params:   {
+          ...dialogParams,
+          onShown: null,
+          onShownInTab: null,
+          onShownInPopup: null,
+          userOperationBlockerParams: { throbber: false },
+        },
         windowId: ownerWindow.id
       }).catch(ApiTabs.createErrorHandler());
     }
@@ -59,7 +66,13 @@ export async function show(ownerWindow, dialogParams) {
             style.marginLeft = style.marginRight = 'auto';
           },
           dialogParams.onShownInTab || dialogParams.onShown
-        ]
+        ],
+        onHidden(...params) {
+          UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
+          unblocked = true;
+          if (typeof dialogParams.onHidden == 'function')
+            dialogParams.onHidden(...params);
+        },
       });
       browser.tabs.remove(tempTab.id);
     }
@@ -68,7 +81,13 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false });
       result = await RichConfirm.showInPopup(ownerWindow.id, {
         ...dialogParams,
-        onShown: dialogParams.onShownInPopup || dialogParams.onShown
+        onShown: dialogParams.onShownInPopup || dialogParams.onShown,
+        onHidden(...params) {
+          UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
+          unblocked = true;
+          if (typeof dialogParams.onHidden == 'function')
+            dialogParams.onHidden(...params);
+        },
       });
     }
   }
@@ -76,6 +95,7 @@ export async function show(ownerWindow, dialogParams) {
     result = { buttonIndex: -1 };
   }
   finally {
+    if (!unblocked)
     UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
   }
   return result;
