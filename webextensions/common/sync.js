@@ -25,12 +25,19 @@ export const onNewDevice = new EventListenerManager();
 export const onUpdatedDevice = new EventListenerManager();
 export const onObsoleteDevice = new EventListenerManager();
 
-export async function init() {
-  if (!configs.syncDeviceInfo) {
+let mMyDeviceInfo = null;
+
+async function getMyDeviceInfo() {
+  if (!configs.syncDeviceInfo || !configs.syncDeviceInfo.id) {
     configs.syncDeviceInfo = await generateDeviceInfo();
   }
-  updateSelf();
-  updateDevices();
+  return mMyDeviceInfo = configs.syncDeviceInfo;
+}
+
+export async function init() {
+  await getMyDeviceInfo();
+  await updateSelf();
+  await updateDevices();
   reserveToReceiveMessage();
   window.setInterval(updateSelf, 1000 * 60 * 60 * 24); // update info every day!
 
@@ -97,39 +104,44 @@ configs.$addObserver(key => {
       isSendableTab.unsendableUrlMatcher = null;
       break;
 
+    case 'syncDeviceInfo':
+      getMyDeviceInfo(); // cache the last value
+      break;
+
     default:
       break;
   }
 });
 
-function updateSelf() {
+async function updateSelf() {
   if (updateSelf.updating)
     return;
 
   updateSelf.updating = true;
 
   configs.syncDeviceInfo = {
-    ...clone(configs.syncDeviceInfo),
+    ...clone(await getMyDeviceInfo()),
     timestamp: Date.now()
   };
 
-  updateDevices();
+  await updateDevices();
 
   setTimeout(() => {
     updateSelf.updating = false;
   }, 250);
 }
 
-function updateDevices() {
+async function updateDevices() {
   if (updateDevices.updating)
     return;
   updateDevices.updating = true;
+  const myDeviceInfo = await getMyDeviceInfo();
 
   const remote = clone(configs.syncDevices);
   const local  = clone(configs.syncDevicesLocalCache);
   log('devices updated: ', local, remote);
   for (const [id, info] of Object.entries(remote)) {
-    if (id == configs.syncDeviceInfo.id)
+    if (id == myDeviceInfo.id)
       continue;
     local[id] = info;
     if (id in local) {
@@ -144,7 +156,7 @@ function updateDevices() {
 
   for (const [id, info] of Object.entries(local)) {
     if (id in remote ||
-        id == configs.syncDeviceInfo.id)
+        id == myDeviceInfo.id)
       continue;
     log('obsolete device: ', info);
     delete local[id];
@@ -163,7 +175,8 @@ function updateDevices() {
     }
   }
 
-  local[configs.syncDeviceInfo.id] = clone(configs.syncDeviceInfo);
+  local[myDeviceInfo.id] = clone(myDeviceInfo);
+  log('store myself: ', myDeviceInfo, local[myDeviceInfo.id]);
 
   if (!configs.syncOtherDevicesDetected && Object.keys(local).length > 1)
     configs.syncOtherDevicesDetected = true;
@@ -184,14 +197,15 @@ function reserveToReceiveMessage() {
   }, 250);
 }
 
-function receiveMessage() {
+async function receiveMessage() {
+  const myDeviceInfo = await getMyDeviceInfo();
   try {
     const messages = readMessages();
     log('receiveMessage: queued messages => ', messages);
     const restMessages = messages.filter(message => {
       if (message.timestamp <= configs.syncLastMessageTimestamp)
         return false;
-      if (message.to == configs.syncDeviceInfo.id) {
+      if (message.to == myDeviceInfo.id) {
         log('receiveMessage receive: ', message);
         configs.syncLastMessageTimestamp = message.timestamp;
         onMessage.dispatch(message);
@@ -209,12 +223,13 @@ function receiveMessage() {
   }
 }
 
-export function sendMessage(to, data) {
+export async function sendMessage(to, data) {
+  const myDeviceInfo = await getMyDeviceInfo();
   try {
     const messages = readMessages();
     messages.push({
       timestamp: Date.now(),
-      from:      configs.syncDeviceInfo.id,
+      from:      myDeviceInfo.id,
       to,
       data
     });
@@ -265,7 +280,9 @@ export function getOtherDevices() {
   const devices = configs.syncDevices || {};
   const result = [];
   for (const [id, info] of Object.entries(devices)) {
-    if (id == configs.syncDeviceInfo.id)
+    if (mMyDeviceInfo &&
+        id == mMyDeviceInfo.id ||
+        !info.id /* ignore invalid device info accidentally saved (see also https://github.com/piroor/treestyletab/issues/2922 ) */)
       continue;
     result.push(info);
   }

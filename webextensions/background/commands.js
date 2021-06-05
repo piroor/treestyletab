@@ -1092,12 +1092,13 @@ export function sendTabsToDevice(tabs, { to, recursively } = {}) {
   });
 }
 
-export function sendTabsToAllDevices(tabs, { recursively } = {}) {
+export async function sendTabsToAllDevices(tabs, { recursively } = {}) {
   if (recursively)
     tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
   tabs = tabs.filter(Sync.isSendableTab);
   const data = getTabsDataToSend(tabs);
-  for (const device of Sync.getOtherDevices()) {
+  const devices = await Sync.getOtherDevices();
+  for (const device of devices) {
     Sync.sendMessage(device.id, data);
   }
 
