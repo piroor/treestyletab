@@ -184,6 +184,10 @@ function onConfigChanged(key) {
       applyUserStyleRulesFieldTheme();
       break;
 
+    case 'userStyleRulesFieldHeight':
+      mUserStyleRulesField.style.height = configs.userStyleRulesFieldHeight;
+      break;
+
     default:
       if (key.startsWith('chunkedUserStyleRules') &&
           !mUserStyleRulesField.$saving)
