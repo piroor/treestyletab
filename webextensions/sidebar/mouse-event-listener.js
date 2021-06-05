@@ -417,7 +417,7 @@ async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraC
 }
 
 function getMouseEventTargetType(event) {
-  if (event.target.closest('.rich-confirm'))
+  if (event.target.closest('.rich-confirm, #blocking-screen'))
     return 'outside';
 
   if (EventUtils.getTabFromEvent(event))
