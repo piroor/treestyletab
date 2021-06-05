@@ -96,7 +96,7 @@ export async function show(ownerWindow, dialogParams) {
   }
   finally {
     if (!unblocked)
-    UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
+      UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
   }
   return result;
 }
