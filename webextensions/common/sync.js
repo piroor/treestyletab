@@ -34,8 +34,11 @@ async function getMyDeviceInfo() {
   return mMyDeviceInfo = configs.syncDeviceInfo;
 }
 
-export async function init() {
+configs.$loaded.then(async () => {
   await getMyDeviceInfo();
+});
+
+export async function init() {
   await updateSelf();
   await updateDevices();
   reserveToReceiveMessage();
