@@ -368,6 +368,13 @@ If you need any new API, please file API proposals to the issue tracker.
   * If you use [New Tab Override](https://addons.mozilla.org/firefox/addon/new-tab-override/) to set a custom URL for new tabs, you cannot get the actual internal URL of new tabs with the method above, because it is immediately redirected.
     It is `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/html/newtab.html`, the UUID part can be found at `about:debugging#/runtime/this-firefox` => `Extensions` => `New Tab Override` => `Internal UUID`.
   </details>
+* <details><summary>Tabs become flatten suddenly / tree structure is lost accidentally</summary>
+  
+  Such a problem may happen sometimes regardless I'm continuously struggling to solve them. Sadly on most cases there is no way to get back lost tree structure. (Sometimes, closing the window and restoring it via Ctrl-Shift-N may restore the window with correct tree structure, but it is effective only on very limited cases.)
+  There are some workarounds to save your tree of tabs before you encounter such a situation:
+
+  * [Tab Session Manager](https://addons.mozilla.org/firefox/addon/tab-session-manager/) supports saving sessions with tree information. Please remind that you need to activate compatibility option manually.
+  * TST allows you to take a snapshot of tabs tree to a bookmark folder. Select all tabs (via shift-click, ctrl-click, or "Select All Tabs"), and bookmark selected tabs via the "Bookmark Tabs..." command in tabs context menu on the sidebar panel. Created bookmarks will have `>` marks in their title, it means their tree level. Right click on the bookmark folder and choose the command "Open All as a Tree", then TST will open tabs from the bookmark folder with tree structure constructed from the `>` marks of their title.
 
 #### Other topics
 
