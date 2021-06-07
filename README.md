@@ -181,7 +181,16 @@ If you need any new API, please file API proposals to the issue tracker.
 * <details><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
   
   As a workaround, you can [create a `userChrome.css` file.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
-  But please remind that such an usage is not recommended by the original author of TST, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*.
+  But please remind that I - the original author of TST - never recommend such an usage, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*, and I also believe that TST is not enough stable to replace Firefox's tab bar completely.
+  Thus I usually use TST together with horizontal tab bar for safety.
+  
+  If I hid the tab bar on my environment in my daily use, I might maintain the userChrome.css hack by myself, but actually I don't do that.
+  So guidance to hide the tab bar need to be maintained by people who really use.
+  I think it is a nightmare for regular people who don't know how to research and find out solutions with debugger.
+  I intentionally don't describe details how to hide the horizontal tab bar, to save people from critical troubles.
+  
+  I say again, I don't recommend you to hide the horizontal tab bar if you cannot write any suitable userChrome.css hack by yourself.
+  I have no motivation to investigate how to hide the horizontal tab bar, because I'll never do that and it may lead people to troubles.
   </details>
 * <details><summary>How to apply GTK+ theme color on Linux?</summary>
   
