@@ -75,6 +75,7 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
   document.addEventListener('auxclick', onAuxClick);
+  document.addEventListener('dragstart', onDragStart);
   mTabBar.addEventListener('dblclick', onDblClick);
   mTabBar.addEventListener('mouseover', onMouseOver);
 
@@ -216,6 +217,8 @@ function onMouseOut(event) {
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
+let mLastDragStartTimestamp = -1;
+
 function onMouseDown(event) {
   EventUtils.cancelHandleMousedown(event.button);
   TabContextMenu.close();
@@ -256,7 +259,8 @@ function onMouseDown(event) {
   const mousedown = {
     detail: mousedownDetail,
     treeItem: new TSTAPI.TreeItem(tab),
-    promisedMousedownNotified: Promise.resolve()
+    promisedMousedownNotified: Promise.resolve(),
+    timestamp: Date.now(),
   };
 
   mousedown.promisedMousedownNotified = Promise.all([
@@ -319,7 +323,8 @@ function onMouseDown(event) {
 
     if (event.button == 0 &&
         mousedownDetail.targetType == 'newtabbutton' &&
-        configs.longPressOnNewTabButton) {
+        configs.longPressOnNewTabButton &&
+        mLastDragStartTimestamp < mousedown.timestamp) {
       mousedown.expired = true;
       const selector = document.getElementById(configs.longPressOnNewTabButton);
       if (selector) {
@@ -870,6 +875,32 @@ function onAuxClick(event) {
   event.preventDefault();
 }
 onAuxClick = EventUtils.wrapWithErrorHandler(onAuxClick);
+
+function onDragStart(event) {
+  log('onDragStart ', event);
+  mLastDragStartTimestamp = Date.now();
+
+  if (!event.target.closest('.newtab-button')) {
+    log('no draggable item in the tab bar');
+    return;
+  }
+
+  log('new tab button is going to be dragged');
+
+  const selector = document.getElementById(configs.longPressOnNewTabButton);
+  if (selector &&
+      selector.ui.opened) {
+    log('menu is shown: don\'t start dragging');
+    event.stopPropagation();
+    event.preventDefault();
+    return;
+  }
+
+  const dt = event.dataTransfer;
+  dt.effectAllowed = 'copy';
+  dt.setData('text/uri-list', 'about:newtab');
+}
+onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
 function handleNewTabAction(event, options = {}) {
   log('handleNewTabAction ', { event, options });

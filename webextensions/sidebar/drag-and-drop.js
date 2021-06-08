@@ -788,7 +788,7 @@ function onDragStart(event, options = {}) {
   const allowBookmark = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
   const asTree = !!(behavior & Constants.kDRAG_BEHAVIOR_ENTIRE_TREE);
   const dragData = getDragDataFromOneTab(draggedTab, { asTree });
-  dragData.individualOnOutside = !dragData.tab.$TST.multiselected && !asTree
+  dragData.individualOnOutside = dragData.tab && !dragData.tab.$TST.multiselected && !asTree
   dragData.behavior = behavior;
   if (!dragData.tab) {
     log('onDragStart: canceled / no dragged tab from drag data');
