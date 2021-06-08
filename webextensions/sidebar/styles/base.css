@@ -482,11 +482,21 @@ tab-item.faviconized {
 }
 
 tab-item.pinned tab-closebox,
-tab-item.faviconized :-moz-any(
-  tab-twisty,
-  tab-label
-) {
+tab-item.faviconized tab-twisty {
   display: none;
+}
+
+/* Keep label in faviconized tabs for voice operations. See also: https://github.com/piroor/treestyletab/issues/2864 */
+tab-item.faviconized tab-label,
+tab-item.faviconized tab-label * {
+  bottom: 0;
+  display: flex;
+  left: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 tab-item.faviconized.unread:not(.active):not(:hover) tab-favicon::before,
