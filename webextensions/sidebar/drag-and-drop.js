@@ -90,7 +90,7 @@ let mDragBehaviorNotification;
 let mInstanceId;
 
 export function init() {
-  document.addEventListener('dragstart', onDragStart); // eslint-disable-line no-use-before-define
+  document.addEventListener('dragstart', onDragStart);
   document.addEventListener('dragover', onDragOver);
   document.addEventListener('dragenter', onDragEnter);
   document.addEventListener('dragleave', onDragLeave);
@@ -707,7 +707,7 @@ let mFinishCanceledDragOperation;
 let mCurrentDragDataForExternalsId = null;
 let mCurrentDragDataForExternals = null;
 
-export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
+function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
   if (configs.enableWorkaroundForBug1548949)
@@ -945,7 +945,8 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   });
 
   log('onDragStart: started');
-});
+}
+onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
 /* acceptable input:
   {
