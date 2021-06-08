@@ -81,7 +81,28 @@ tab-item,
   text-shadow: var(--tab-text-shadow);
 }
 
-tab-item .background {
+.after-tabs button,
+.after-tabs [role="button"] {
+  padding-bottom: var(--tab-dropshadow-size) !important;
+  padding-top: var(--tab-dropshadow-size) !important;
+}
+
+.after-tabs button::after,
+.after-tabs [role="button"]::after {
+  content: " ";
+  display: inline-block;
+  position: absolute;
+}
+
+.after-tabs button::before {
+  height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
+  max-height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
+  min-height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
+}
+
+tab-item .background,
+.after-tabs button:hover::after,
+.after-tabs [role="button"]:hover::after {
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius-size);
   bottom: var(--tab-dropshadow-size);
@@ -152,10 +173,7 @@ tab-item .burster {
 /* Dropshadow */
 
 tab-item:not(collapsed).active .background,
-.mutiple-highlighted > tab-item.highlighted::after,
-.after-tabs button:hover,
-.after-tabs [role="button"]:hover,
-#subpanel-selector-anchor:hover {
+.mutiple-highlighted > tab-item.highlighted::after {
   box-shadow: 0 0 0.15em var(--browser-tab-highlighter, var(--tab-active-border-near)),
               0 0 var(--tab-dropshadow-size) var(--browser-tab-highlighter, var(--tab-active-border-far));
 }
