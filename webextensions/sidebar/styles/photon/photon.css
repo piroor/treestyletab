@@ -90,6 +90,7 @@ body,
 
 tab-item,
 .after-tabs button,
+.after-tabs [role="button"],
 #subpanel-container,
 #dummy-tab-color-box {
   --tab-surface: var(--tab-surface-regular);
@@ -105,7 +106,8 @@ tab-item * {
 }
 
 tab-item:not(.active):hover,
-.after-tabs button:hover {
+.after-tabs button:hover,
+.after-tabs [role="button"]:hover {
   --tab-surface: var(--tab-surface-hover);
   --tab-text: var(--tab-text-regular);
 }
@@ -154,7 +156,8 @@ tab-item .burster {
   box-shadow: 0.3em 0.3em var(--shadow-blur) var(--shadow-color);
 }
 
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   box-shadow: 0 0.3em var(--shadow-blur) var(--shadow-color);
 }
 
@@ -174,7 +177,8 @@ tab-item {
   z-index: auto;
 }
 
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   z-index: 100;
 }
 

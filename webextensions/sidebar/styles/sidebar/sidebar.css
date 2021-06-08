@@ -241,7 +241,8 @@ tab-item:not(.faviconized)[data-drop-position="before"]::before {
 
 /* changed from original SidebarStyleTab */
 
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   background: transparent;
   border: 0 none;
 }

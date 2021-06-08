@@ -144,7 +144,8 @@ img {
   pointer-events: none;
 }
 
-button /*,
+button,
+.after-tabs [role="button"] /*,
 tab-item,
 tab-twisty,
 tab-closebox,
@@ -333,7 +334,8 @@ tab-item.hidden {
 }
 
 :root.animation tab-item.animation-ready,
-:root.animation .after-tabs button {
+:root.animation .after-tabs button,
+:root.animation .after-tabs [role="button"] {
   transition: var(--tab-animation);
 }
 :root.animation tab-item.animation-ready:not(.expanding),

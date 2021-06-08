@@ -47,7 +47,8 @@
 /* Tab */
 
 tab-item,
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   background: var(--tab-surface);
   color: var(--tab-text);
 }
@@ -58,6 +59,7 @@ tab-item * {
 
 tab-item:not(.collapsed):hover,
 .after-tabs button:hover,
+.after-tabs [role="button"]:hover,
 #subpanel-selector-anchor:hover {
   opacity: 0.7;
   /*mix-blend-mode: multiply;*/

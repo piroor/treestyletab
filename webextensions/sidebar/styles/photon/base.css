@@ -5,7 +5,8 @@
 */
 
 tab-item,
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   border: 1px solid var(--tab-border);
   border-width: 1px 0;
   margin-bottom: -1px;
@@ -21,17 +22,20 @@ tab-item.pinned.last-row {
 }
 
 
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   padding: 0em;
 }
 
-#tabbar + .after-tabs button {
+#tabbar + .after-tabs button,
+#tabbar + .after-tabs [role="button"] {
   border-bottom: none;
 }
 
 
 :root.left tab-item:not(.pinned),
-:root.left .after-tabs button:not([data-menu-ui]) {
+:root.left .after-tabs button:not([data-menu-ui]),
+:root.left .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-right: 0.35em;
 }
 :root.left tab-item:not(.pinned)[data-parent-id] {
@@ -39,7 +43,8 @@ tab-item.pinned.last-row {
 }
 
 :root.right tab-item:not(.pinned),
-:root.right .after-tabs button:not([data-menu-ui]) {
+:root.right .after-tabs button:not([data-menu-ui]),
+:root.right .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-left: 0.35em;
 }
 :root.right tab-item:not(.pinned)[data-parent-id] {

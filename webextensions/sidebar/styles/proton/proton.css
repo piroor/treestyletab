@@ -70,6 +70,7 @@ body,
 
 tab-item,
 .after-tabs button,
+.after-tabs [role="button"],
 #subpanel-container,
 #dummy-tab-color-box {
   --tab-surface: var(--tab-surface-regular);
@@ -107,7 +108,8 @@ tab-item * {
 }
 
 tab-item:not(.active):hover,
-.after-tabs button:hover {
+.after-tabs button:hover,
+.after-tabs [role="button"]:hover {
   --tab-surface: var(--tab-surface-hover);
   --tab-text: var(--tab-text-regular);
 }
@@ -152,6 +154,7 @@ tab-item .burster {
 tab-item:not(collapsed).active .background,
 .mutiple-highlighted > tab-item.highlighted::after,
 .after-tabs button:hover,
+.after-tabs [role="button"]:hover,
 #subpanel-selector-anchor:hover {
   box-shadow: 0 0 0.15em var(--browser-tab-highlighter, var(--tab-active-border-near)),
               0 0 var(--tab-dropshadow-size) var(--browser-tab-highlighter, var(--tab-active-border-far));
@@ -164,7 +167,8 @@ tab-item {
   z-index: auto;
 }
 
-.after-tabs button {
+.after-tabs button,
+.after-tabs [role="button"] {
   z-index: 100;
 }
 

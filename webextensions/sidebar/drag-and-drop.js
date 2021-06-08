@@ -718,7 +718,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     event.shiftKey ? configs.tabDragBehaviorShift :
       configs.tabDragBehavior;
 
-  if (draggedTab.$TST.subtreeCollapsed)
+  if (draggedTab && draggedTab.$TST.subtreeCollapsed)
     behavior |= Constants.kDRAG_BEHAVIOR_ENTIRE_TREE;
 
   mCurrentDragDataForExternalsId = `${parseInt(Math.random() * 65000)}-${Date.now()}`;
@@ -1345,7 +1345,8 @@ async function onDragEnd(event) {
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);
 
-  if (!(dragData.behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF))
+  if (!dragData ||
+      !(dragData.behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF))
     return;
 
   let handledBySomeone = event.dataTransfer.dropEffect != 'none';
