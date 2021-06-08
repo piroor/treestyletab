@@ -317,6 +317,8 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
   undoMultipleTabsClose: true,
+  allowDragNewTabButton: true,
+  newTabButtonDragGestureModifiers: 'shift',
   migratedBookmarkUrls: [],
   notifiedFeaturesVersion: 0,
 

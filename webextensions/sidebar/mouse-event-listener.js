@@ -881,7 +881,19 @@ function onDragStart(event) {
   mLastDragStartTimestamp = Date.now();
 
   if (!event.target.closest('.newtab-button')) {
-    log('no draggable item in the tab bar');
+    log('not a draggable item in the tab bar');
+    return;
+  }
+
+  const modifiers = String(configs.newTabButtonDragGestureModifiers).toLowerCase();
+  if (!configs.allowDragNewTabButton ||
+      modifiers.includes('alt') != event.altKey ||
+      modifiers.includes('ctrl') != event.ctrlKey ||
+      modifiers.includes('meta') != event.metaKey ||
+      modifiers.includes('shift') != event.shiftKey) {
+    log('not allowed drag action on the new tab button');
+    event.stopPropagation();
+    event.preventDefault();
     return;
   }
 
