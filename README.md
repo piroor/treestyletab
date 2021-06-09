@@ -199,9 +199,13 @@ If you need any new API, please file API proposals to the issue tracker.
   * Firefox's about:config
     * *`widget.content.allow-gtk-dark-theme`=`true` (not default)*
     * `widget.content.gtk-theme-override`=unset (default)
-  * TST's options (pattern 1, using "Plain" theme)
-    * "Appearance" => "Theme" => "Plain" (default)
-    * *"Advanced" => "Extra style rules..." => [paste these lines](https://github.com/piroor/treestyletab/blob/0859730342a13060c7e4d5ce78e3ec809973d1be/webextensions/sidebar/styles/square/plain.css#L47-L74) (not default)*
+  * TST's options (pattern 1, using "Proton" theme)
+    * "Appearance" => "Theme" => "Proton" (default)
+    * *"Advanced" => "Extra style rules..." => [paste these lines](https://github.com/piroor/treestyletab/blob/180b6fa502587a3528af7f2e4f4671aca58d244a/webextensions/sidebar/styles/proton/proton.css#L72-L113) (not default)*
+    * "Development" => "Color scheme" => "System Color" (default)
+  * TST's options (pattern 1b, using "Photon" theme)
+    * "Appearance" => "Theme" => "Photon" (default)
+    * *"Advanced" => "Extra style rules..." => [paste these lines](https://github.com/piroor/treestyletab/blob/5a8569c22feeaedeecde623a86832db7bc0419a2/webextensions/sidebar/styles/photon/photon.css#L49-L76) (not default)*
     * "Development" => "Color scheme" => "System Color" (default)
   * TST's options (pattern 2, using less extra style rules)
     * *"Appearance" => "Theme" => "High Contrast" (not default)*
