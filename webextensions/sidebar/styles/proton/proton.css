@@ -68,6 +68,35 @@ body,
   }
 }
 
+@media not (prefers-color-scheme: dark) {
+  :root[color-scheme="system-color"] {
+    --tab-text-regular: var(--browser-fg, -moz-dialogtext);
+    --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
+    --tab-text-active-inverted: HighlightText;
+    --tab-text-active-inverted: Highlight;
+    --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
+    --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, ThreeDHighlight);
+    --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, -moz-dialog));
+    --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, -moz-dialog));
+    --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
+  }
+  :root[color-scheme="system-color"] #background::after {
+    background: var(--browser-bg-darker, AppWorkspace);
+    opacity: 0.15;
+
+    bottom: 0;
+    content: "";
+    left: 0;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 20;
+  }
+}
+
 tab-item,
 .after-tabs button,
 .after-tabs [role="button"],
