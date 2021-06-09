@@ -124,3 +124,11 @@ tab-item tab-closebox::after {
   top: var(--tab-dropshadow-size);
   z-index: 10;
 }
+
+/* cancel highlighter for collapsed tree */
+
+.highlighter::before,
+tab-item:not(.faviconized).subtree-collapsed.some-descendants-highlighted .highlighter::after,
+tab-item:not(.faviconized).subtree-collapsed.all-descendants-highlighted .highlighter::after {
+  display: none;
+}
