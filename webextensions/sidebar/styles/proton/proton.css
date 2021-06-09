@@ -72,8 +72,8 @@ body,
   :root[color-scheme="system-color"] {
     --tab-text-regular: var(--browser-fg, -moz-dialogtext);
     --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
-    --tab-text-active-inverted: HighlightText;
-    --tab-text-active-inverted: Highlight;
+    --tab-text-active: -moz-dialogtext;
+    --tab-text-active-inverted: -moz-dialog;
     --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
     --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, ThreeDHighlight);
     --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, -moz-dialog));
@@ -94,6 +94,22 @@ body,
     right: 0;
     top: 0;
     z-index: 20;
+  }
+  /* we cannot know the GNOME3 "headerbar" color, so use inverted menu color instead. */
+  :root[color-scheme="system-color"][data-user-agent*="Linux"] {
+    --tab-text-regular: var(--browser-fg, Menu);
+    --tab-text-inverted: var(--browser-bg-more-lighter, MenuText);
+    --tab-dropmarker: var(--browser-fg, var(--tab-text));
+  }
+  :root[color-scheme="system-color"][data-user-agent*="Linux"] tab-item:not(.active).highlighted {
+    --tab-text: var(--tab-text-active);
+  }
+  :root[color-scheme="system-color"][data-user-agent*="Linux"] tab-item:not(.active):not(.highlighted):hover .background {
+    opacity: 0.1;
+  }
+  :root[color-scheme="system-color"][data-user-agent*="Linux"] #background::after {
+    background: var(--browser-bg-darker, MenuText);
+    opacity: 1;
   }
 }
 
