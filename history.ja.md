@@ -1,6 +1,28 @@
 # 更新履歴
 
  - master/HEAD
+   * "Proton"テーマの外観を、よりFirefoxの物に近くなるようにした
+   * 「新しいタブ」ボタンをShift-ドラッグで `about:newtab` へのリンクとして取り扱うようにした（これにより、サイドバー内の任意の位置に新しいタブを開くこと画できます）
+   * 識別性を高めるために、新しいタブを位置を指定して開く操作のパネルの各項目にアイコンを表示するようにした
+   * ピン留めされたタブのラベルを、スクリーンリーダーや音声認識システムから参照できるようにした
+   * サイドバー内にドロップされた`about:newtab`のリンクをタブで開けるようにした
+   * サイドバー内で確認のダイアログを表示する設定の時に、操作スピードが速い場合でも安定して動作するようにした
+   * サイドバー内に表示された確認ダイアログ上でのミドルクリックでタブを開かないようにした
+   * 動機対象のデバイス一覧に、不正な「undefined」の項目が表示されないようにした
+   * 設定がインポートされたときに、ユーザースタイル編集欄の高さを即座に反映するようにした
+   * 新しいタブを開く位置が「制御しない」または「最後に開いたタブの隣」に設定されている場合に、新しい空のタブを開けない場合があったのを修正
+   * アクセシビリティ確保のため、ツールバーボタンの表示色を明示的に設定できるように設定UIを再導入した
+   * Linux環境において、ドラッグ操作中にドロップ位置の表示を消さないようにした
+   * ツールバーボタンの右クリックメニューからの設定変更で、新しいタブの挿入位置の設定が保存されない場合があったのを修正
+   * サイドバーの背景色をなるべく早いタイミングで反映するようにした
+   * （ユーザースタイルでボタンが強制表示されている場合に）音声を再生中でないタブでもミュート状態を切り替えられるようにした
+   * サブパネルとして読み込まれるページのURLに、親ウィンドウのIDを`windowId`というURLパラメータで渡すようにした（[by NiklasGollenstede](https://github.com/piroor/treestyletab/pull/2899). Thanks!）
+   * サブパネルとして読み込めるページを、提供元のアドオンのパッケージ内に含まれているページのみに制限するようにした（[by NiklasGollenstede](https://github.com/piroor/treestyletab/pull/2898). Thanks!）
+   * APIの改善：[通知型のメッセージ`new-tab-button-mousedown`、`new-tab-button-mouseup`、`new-tab-button-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-new-tab-button-is-clicked)を使って「新しいタブ」ボタンの動作を外部から制御できるようにした
+   * APIの改善：[`set-extra-new-tab-button-contents`と`clear-extra-new-tab-button-contents`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#extra-contents-in-the-new-tab-button)を使って、「新しいタブ」ボタンの中に任意のUI要素を挿入できるようにした
+   * APIの挙動の変更：[通知型のメッセージ`tab-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)を、`tab-mousedown`と`tab-mouseup`のいずれもキャンセルされなかった場合にのみ通知するように変更した
+   * `de`ロケール更新（by [SammysHP](https://github.com/SammysHP), thanks!）
+   * `ko`ロケール更新（by [BoredSomeone](https://github.com/BoredSomeone), thanks!）
  - 3.8.1 (2021.5.7)
    * macOSにおいて、サイドバーが表示されるギリギリの数のタブがあるときに、サイドバーのスクロールバーが表示されたり消えたりを繰り返す問題を修正（修正したはずが、リリースまでの間に再発してしまっていた）
    * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）

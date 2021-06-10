@@ -1,6 +1,28 @@
 # History
 
  - master/HEAD
+   * More natural appearance of the theme "Proton" matching to Firefox's Proton theme.
+   * The new tab button is now draggable as a link to the URI `about:newtab`, with the Shift key. This means that you can open a new tab at arbitrary position in the sidebar via drag and drop.
+   * Add icons to the new tab action selector panel for better user experience.
+   * Accessible labels of faviconized tabs from screen readers and voice recognition systems.
+   * Allow to open `about:newtab` links dropped in the sidebar.
+   * Show confirmation dialogs in the sidebar more safely even if they are triggered by quick actions.
+   * Never open new tab by middle click on confirmation dialogs shown in the sidebar.
+   * Never show invalid "undefined" item in the list of other devices.
+   * Apply the height of the user style editor immediately when a different value is imported.
+   * Open new blank tab as a child correctly, even if the insertion position is configured as "no control" or "next to the recently opened".
+   * Re-introduce an option to change the color of the toolbar icon, for better accessibility.
+   * Don't clear drop position marker while dragging, on Linux environment.
+   * Save changed config of the new tab insertion position via the right click menu on the toolbar button correctly.
+   * Try applying the background color to the sidebar ASAP.
+   * Allow to toggle muted state of tabs even if it is not sound-playing (if the mute button is shown forced by custom user styles).
+   * Subpanel contents now have its owner window's ID as the `windowId` URL parameter, [by NiklasGollenstede](https://github.com/piroor/treestyletab/pull/2899). Thanks!
+   * Subpanel is now restricted to a page contained in the provider extension itself, [by NiklasGollenstede](https://github.com/piroor/treestyletab/pull/2898). Thanks!
+   * API improvement: Add ability to handle and override events on the new tab button via [notification messages with types `new-tab-button-mousedown`, `new-tab-button-mouseup` and `new-tab-button-clicked`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-new-tab-button-is-clicked).
+   * API improvement: Add ability to control extra contents in the new tab button via [messages with types `set-extra-new-tab-button-contents` and `clear-extra-new-tab-button-contents`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#extra-contents-in-the-new-tab-button).
+   * API behavior change: [`tab-clicked` type message](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked) is now delivered only when both `tab-mousedown` and `tab-mouseup` are not canceled.
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
+   * Update `ko` locale by [BoredSomeone](https://github.com/BoredSomeone). Thanks!
  - 3.8.1 (2021.5.7)
    * Prevent inifinite toggling of the sidebar scrollbar on macOS, when there are enough number of tabs which triggers overflowing. The fix was unexpectedly lost on the released version 3.8.0.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
