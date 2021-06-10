@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2020
+ * Portions created by the Initial Developer are Copyright (C) 2011-2021
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -263,16 +263,19 @@ function onMouseDown(event) {
     timestamp: Date.now(),
   };
 
+  const apiEventType = tab ?
+    TSTAPI.kNOTIFY_TAB_MOUSEDOWN :
+    mousedownDetail.targetType == 'newtabbutton' ?
+      TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEDOWN :
+      TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
+
   mousedown.promisedMousedownNotified = Promise.all([
-    browser.runtime.sendMessage({type: Constants.kNOTIFY_TAB_MOUSEDOWN })
+    browser.runtime.sendMessage({type: apiEventType })
       .catch(ApiTabs.createErrorHandler()),
     (async () => {
-      if (mousedownDetail.targetType != 'tab')
-        return undefined;
-
       log('Sending message to mousedown listeners ', { extraContentsInfo });
       const allowed = await tryMouseOperationAllowedWithExtraContents(
-        TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+        apiEventType,
         mousedown,
         extraContentsInfo
       );
@@ -289,11 +292,14 @@ function onMouseDown(event) {
   // Firefox switches tab focus on mousedown, and keeps
   // tab multiselection for draging of them together.
   // We simulate the behavior here.
+  let eventHandlingCanceled = false;
   mousedown.promisedMousedownNotified.then(canceled => {
     if (!EventUtils.getLastMousedown(event.button) ||
         mousedown.expired ||
-        canceled)
+        canceled) {
+      eventHandlingCanceled = true;
       return;
+    }
 
     const onRegularArea = (
       !mousedown.detail.twisty &&
@@ -318,7 +324,8 @@ function onMouseDown(event) {
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {
-    if (!EventUtils.getLastMousedown(event.button))
+    if (!EventUtils.getLastMousedown(event.button) ||
+        eventHandlingCanceled)
       return;
 
     if (event.button == 0 &&
@@ -544,6 +551,18 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   if (EventUtils.isEventFiredOnNewTabButton(event)) {
     if (lastMousedown.detail.button != 2) {
       log('onMouseUp: click on the new tab button');
+      const mouseupInfo = {
+        ...lastMousedown,
+        detail:   getMouseEventDetail(event),
+        treeItem: null,
+      };
+      const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEUP,
+        mouseupInfo,
+        lastMousedown.detail.$extraContentsInfo
+      );
+      if (!mouseUpAllowed)
+        return;
       // Simulation of Firefox's built-in behavior.
       // See also: https://github.com/piroor/treestyletab/issues/2593
       if (event.shiftKey && !lastMousedown.detail.isAccelClick) {

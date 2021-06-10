@@ -77,6 +77,8 @@ export const kNOTIFY_TAB_MOUSEUP    = 'tab-mouseup';
 export const kNOTIFY_TABBAR_CLICKED = 'tabbar-clicked'; // for backward compatibility
 export const kNOTIFY_TABBAR_MOUSEDOWN = 'tabbar-mousedown';
 export const kNOTIFY_TABBAR_MOUSEUP = 'tabbar-mouseup';
+export const kNOTIFY_NEW_TAB_BUTTON_MOUSEDOWN = 'new-tab-button-mousedown';
+export const kNOTIFY_NEW_TAB_BUTTON_MOUSEUP   = 'new-tab-button-mouseup';
 export const kNOTIFY_TAB_MOUSEMOVE  = 'tab-mousemove';
 export const kNOTIFY_TAB_MOUSEOVER  = 'tab-mouseover';
 export const kNOTIFY_TAB_MOUSEOUT   = 'tab-mouseout';
@@ -335,6 +337,8 @@ function registerAddon(id, addon) {
       kNOTIFY_TAB_CLICKED,
       kNOTIFY_TAB_MOUSEDOWN,
       kNOTIFY_TAB_MOUSEUP,
+      kNOTIFY_NEW_TAB_BUTTON_MOUSEDOWN,
+      kNOTIFY_NEW_TAB_BUTTON_MOUSEUP,
       kNOTIFY_TABBAR_CLICKED,
       kNOTIFY_TABBAR_MOUSEDOWN,
       kNOTIFY_TABBAR_MOUSEUP
