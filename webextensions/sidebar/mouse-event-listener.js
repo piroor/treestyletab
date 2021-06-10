@@ -556,6 +556,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         detail:   getMouseEventDetail(event),
         treeItem: null,
       };
+
       const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEUP,
         mouseupInfo,
@@ -563,6 +564,15 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       );
       if (!mouseUpAllowed)
         return;
+
+      const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_NEW_TAB_BUTTON_CLICKED,
+        mouseupInfo,
+        lastMousedown.detail.$extraContentsInfo
+      );
+      if (!clickAllowed)
+        return;
+
       // Simulation of Firefox's built-in behavior.
       // See also: https://github.com/piroor/treestyletab/issues/2593
       if (event.shiftKey && !lastMousedown.detail.isAccelClick) {
