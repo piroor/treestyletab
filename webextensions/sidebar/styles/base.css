@@ -18,6 +18,7 @@
   --tab-margin-top: 0px;
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
+  --new-tab-button-anchor-size: 1.5em;
 
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;
@@ -445,6 +446,23 @@ tab-item .extra-items-container.behind {
   z-index: var(--tab-extra-contents-front-z-index);
 }
 
+:root.newtab-action-selectable
+  .newtab-button
+  .extra-items-container,
+:root:not(.newtab-action-selectable).contextual-identity-selectable:not(.incognito)
+  .newtab-button
+  .extra-items-container {
+  right: var(--new-tab-button-anchor-size);
+}
+
+:root.newtab-action-selectable.contextual-identity-selectable:not(.incognito)
+  .newtab-button
+  .extra-items-container {
+  left: var(--new-tab-button-anchor-size);
+}
+
+
+
 
 /* pinned tabs */
 
@@ -733,10 +751,10 @@ tab-item.faviconized .contextual-identity-marker {
   bottom: 0;
   color: var(--tab-text);
   display: none;
-  max-width: 1.5em;
+  max-width: var(--new-tab-button-anchor-size);
   opacity: 0;
   overflow: hidden;
-  padding: calc((1.5em - var(--svg-small-icon-size)) / 2);
+  padding: calc((var(--new-tab-button-anchor-size) - var(--svg-small-icon-size)) / 2);
   pointer-events: none;
   position: absolute;
   top: 0;
