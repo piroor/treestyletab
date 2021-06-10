@@ -63,21 +63,21 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     default:
-  Tab.waitUntilTracked(message.id, { element: true }).then(() => {
-    const tabElement = document.querySelector(`#tab-${message.id}`);
-    if (!tabElement)
-      return;
+      Tab.waitUntilTracked(message.id, { element: true }).then(() => {
+        const tabElement = document.querySelector(`#tab-${message.id}`);
+        if (!tabElement)
+          return;
 
-    switch (message.type) {
-      case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
-        setExtraTabContents(tabElement, sender.id, message);
-        break;
+        switch (message.type) {
+          case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
+            setExtraTabContents(tabElement, sender.id, message);
+            break;
 
-      case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
-        clearExtraTabContents(tabElement, sender.id);
-        break;
-    }
-  });
+          case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
+            clearExtraTabContents(tabElement, sender.id);
+            break;
+        }
+      });
       break;
   }
 });
