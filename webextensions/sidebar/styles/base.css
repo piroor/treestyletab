@@ -382,7 +382,8 @@ tab-item.faviconized.unread tab-favicon::before,
 tab-item.attention tab-favicon::before,
 tab-item .background,
 tab-item .extra-items-container.behind,
-tab-item .extra-items-container.front {
+tab-item .extra-items-container.front,
+.newtab-button .extra-items-container {
   bottom: 0;
   left: 0;
   pointer-events: none;
@@ -391,7 +392,8 @@ tab-item .extra-items-container.front {
   top: 0;
 }
 
-tab-item .extra-items-container {
+tab-item .extra-items-container,
+.newtab-button .extra-items-container {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -436,6 +438,11 @@ tab-item .background {
 
 tab-item .extra-items-container.behind {
   z-index: var(--tab-extra-contents-behind-z-index);
+}
+
+.newtab-button .extra-items-container {
+  pointer-events: auto;
+  z-index: var(--tab-extra-contents-front-z-index);
 }
 
 

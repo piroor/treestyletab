@@ -10,6 +10,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import {
   configs
 } from '/common/common.js';
+import * as Constants from '/common/constants.js';
 import { DOMUpdater } from '/extlib/dom-updater.js';
 
 import {
@@ -19,6 +20,15 @@ import {
 import Tab from '/common/Tab.js';
 
 const mAddonsWithExtraContents = new Set();
+
+const mNewTabButtonExtraItemsContainerRoots = Array.from(
+  document.querySelectorAll(`.${Constants.kNEWTAB_BUTTON} .${Constants.kEXTRA_ITEMS_CONTAINER}`),
+  container => {
+    const root = container.attachShadow({ mode: 'open' });
+    root.itemById = new Map();
+    return root;
+  }
+);
 
 TSTAPI.onRegistered.addListener(addon => {
   // Install stylesheet always, even if the addon is not allowed to access
@@ -30,7 +40,7 @@ TSTAPI.onRegistered.addListener(addon => {
 });
 
 TSTAPI.onUnregistered.addListener(addon => {
-  clearAllExtraContents(addon.id);
+  clearAllExtraTabContents(addon.id);
   uninstallStyle(addon.id)
 });
 
@@ -39,11 +49,20 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
        document.documentElement.classList.contains('incognito')))
     return;
 
-  if (message.type == TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS) {
-    clearAllExtraContents(sender.id);
-    return;
-  }
+  switch (message.type) {
+    case TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS:
+      clearAllExtraTabContents(sender.id);
+      return;
 
+    case TSTAPI.kSET_EXTRA_NEW_TAB_BUTTON_CONTENTS:
+      setExtraNewTabButtonContents(sender.id, message);
+      return;
+
+    case TSTAPI.kCLEAR_EXTRA_NEW_TAB_BUTTON_CONTENTS:
+      clearExtraNewTabButtonContents(sender.id);
+      return;
+
+    default:
   Tab.waitUntilTracked(message.id, { element: true }).then(() => {
     const tabElement = document.querySelector(`#tab-${message.id}`);
     if (!tabElement)
@@ -51,14 +70,16 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
     switch (message.type) {
       case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
-        setExtraContents(tabElement, sender.id, message);
+        setExtraTabContents(tabElement, sender.id, message);
         break;
 
       case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
-        clearExtraContents(tabElement, sender.id);
+        clearExtraTabContents(tabElement, sender.id);
         break;
     }
   });
+      break;
+  }
 });
 
 // https://developer.mozilla.org/docs/Web/HTML/Element
@@ -205,21 +226,7 @@ xmp
 `.trim().split('\n').filter(selector => !selector.startsWith('//'));
 const DANGEROUS_CONTENTS_SELECTOR = SAFE_CONTENTS.map(selector => `:not(${selector})`).join('');
 
-function setExtraContents(tabElement, id, params) {
-  let container;
-  switch (String(params.place).toLowerCase()) {
-    case 'behind':
-      container = tabElement.extraItemsContainerBehindRoot;
-      break;
-
-    case 'front':
-    default:
-      container = tabElement.extraItemsContainerFrontRoot;
-      break;
-  }
-
-  if (!container)
-    return;
+function setExtraContents(container, id, params = {}) {
 
   let item = container.itemById.get(id);
   if (!params.style &&
@@ -265,7 +272,7 @@ function setExtraContents(tabElement, id, params) {
     node.parentNode.removeChild(node);
   }
   if (dangerousContents.length > 0)
-    console.log(`Could not include some elements as extra tab contents. tab=#${tabElement.id}, provider=${id}:`, dangerousContents);
+    console.log(`Could not include some elements as extra contents. provider=${id}, container:`, container, dangerousContents);
 
   // Sanitize remote resources
   for (const node of contents.querySelectorAll('*[href], *[src], *[srcset], *[part]')) {
@@ -302,20 +309,52 @@ function getExtraContentsPartName(id) {
   return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
 }
 
-function clearExtraContents(tabElement, id) {
-  setExtraContents(tabElement, id, { place: 'front' });
-  setExtraContents(tabElement, id, { place: 'behind' });
+
+function setExtraTabContents(tabElement, id, params = {}) {
+  let container;
+  switch (String(params.place).toLowerCase()) {
+    case 'behind':
+      container = tabElement.extraItemsContainerBehindRoot;
+      break;
+
+    case 'front':
+    default:
+      container = tabElement.extraItemsContainerFrontRoot;
+      break;
+  }
+
+  if (container)
+    return setExtraContents(container, id, params);
 }
 
-function clearAllExtraContents(id) {
+function clearExtraTabContents(tabElement, id) {
+  setExtraTabContents(tabElement, id, { place: 'front' });
+  setExtraTabContents(tabElement, id, { place: 'behind' });
+}
+
+function clearAllExtraTabContents(id) {
   if (!mAddonsWithExtraContents.has(id))
     return;
 
   for (const tabElement of document.querySelectorAll(kTAB_ELEMENT_NAME)) {
-    clearExtraContents(tabElement, id);
+    clearExtraTabContents(tabElement, id);
   }
+  setExtraNewTabButtonContents(id);
   mAddonsWithExtraContents.delete(id);
 }
+
+
+function setExtraNewTabButtonContents(id, params = {}) {
+  for (const container of mNewTabButtonExtraItemsContainerRoots) {
+    setExtraContents(container, id, params);
+  }
+}
+
+function clearExtraNewTabButtonContents(id) {
+  setExtraNewTabButtonContents(id, {});
+}
+
+
 
 const mAddonStyles = new Map();
 
