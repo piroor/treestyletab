@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.2 (2021.6.11)
    * More natural appearance of the theme "Proton" matching to Firefox's Proton theme.
    * The new tab button is now draggable as a link to the URI `about:newtab`, with the Shift key. This means that you can open a new tab at arbitrary position in the sidebar via drag and drop.
    * Add icons to the new tab action selector panel for better user experience.
