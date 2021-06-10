@@ -1,6 +1,6 @@
 # Tree Style Tab (aka TST)
 
-[![Build Status](https://travis-ci.org/piroor/treestyletab.svg?branch=trunk)](https://travis-ci.org/piroor/treestyletab)
+![Build Status](https://github.com/piroor/treestyletab/actions/workflows/main.yml/badge.svg?branch=trunk)
 
 This extension to Firefox provides the ability to work with tabs as "trees".
 
