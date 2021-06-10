@@ -293,12 +293,13 @@ function onMouseDown(event) {
   // tab multiselection for draging of them together.
   // We simulate the behavior here.
   mousedown.promisedMousedownNotified.then(canceled => {
+    if (canceled)
+      EventUtils.cancelHandleMousedown(event.button);
+
     if (!EventUtils.getLastMousedown(event.button) ||
         mousedown.expired ||
-        canceled) {
-      EventUtils.cancelHandleMousedown(event.button);
+        canceled)
       return;
-    }
 
     const onRegularArea = (
       !mousedown.detail.twisty &&
