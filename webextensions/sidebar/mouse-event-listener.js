@@ -292,12 +292,11 @@ function onMouseDown(event) {
   // Firefox switches tab focus on mousedown, and keeps
   // tab multiselection for draging of them together.
   // We simulate the behavior here.
-  let eventHandlingCanceled = false;
   mousedown.promisedMousedownNotified.then(canceled => {
     if (!EventUtils.getLastMousedown(event.button) ||
         mousedown.expired ||
         canceled) {
-      eventHandlingCanceled = true;
+      EventUtils.cancelHandleMousedown(event.button);
       return;
     }
 
@@ -324,8 +323,7 @@ function onMouseDown(event) {
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {
-    if (!EventUtils.getLastMousedown(event.button) ||
-        eventHandlingCanceled)
+    if (!EventUtils.getLastMousedown(event.button))
       return;
 
     if (event.button == 0 &&
