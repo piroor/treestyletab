@@ -490,19 +490,24 @@ async function onMouseUp(event) {
       detail:   getMouseEventDetail(event, tab),
       treeItem: new TSTAPI.TreeItem(tab)
     };
+
     const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_MOUSEUP,
       mouseupInfo,
       extraContentsInfo
     );
+    if (!mouseupAllowed) {
+      log(' => not allowed (mouseup)');
+      return true;
+    }
+
     const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_CLICKED,
       mouseupInfo,
       extraContentsInfo
     );
-    if (!mouseupAllowed ||
-        !clickAllowed) {
-      log(' => not allowed');
+    if (!clickAllowed) {
+      log(' => not allowed (clicked');
       return true;
     }
   }
