@@ -63,6 +63,7 @@ body,
     --tab-highlighter: var(--browser-tab-highlighter, var(--dark-tab-line));
     --tabbar-bg: var(--browser-bg-darker, var(--dark-frame));
     --tab-highlighted-glow: rgb(84, 255, 189); /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#931 */
+    --tab-like-surface: var(--browser-bg-base, rgb(66,65,77) /* https://searchfox.org/mozilla-central/rev/0c7c41109902cb8967ec3ef2c0ddb326701cfbee/toolkit/mozapps/extensions/default-theme/manifest.json#23 */);
   }
 }
 
