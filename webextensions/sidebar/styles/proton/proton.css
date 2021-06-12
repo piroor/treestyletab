@@ -24,8 +24,6 @@
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
   --tab-active-border-near: var(--grey-90-a40) /* color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent) */;
   --tab-active-border-far: var(--grey-90-a20) /* color-mix(in srgb, var(--grey-90, currentcolor) 20%, transparent) */;
-  --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, var(--grey-90-a11) /* color-mix(in srgb, currentcolor 11%, transparent) */);
-  --tab-surface-hover: var(--tab-surface-hover-color, var(--in-content-box-background-hover));
   --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-mixed))));
   --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-active-mixed))));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
@@ -75,7 +73,6 @@ body,
     --tab-text-active: -moz-dialogtext;
     --tab-text-active-inverted: -moz-dialog;
     --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
-    --tab-surface-hover-color: var(--browser-bg-hover-for-header-image-proton, ThreeDHighlight);
     --tab-surface-active: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, -moz-dialog));
     --tab-surface-active-hover: var(--browser-bg-active-for-header-image, var(--browser-selected-tab-bg, -moz-dialog));
     --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
@@ -155,6 +152,11 @@ tab-item .background,
   right: var(--tab-dropshadow-size);
   top: var(--tab-dropshadow-size);
 }
+tab-item:not(.active):not(.bundled-active):not(.highlighted) .background,
+.after-tabs button:hover::before,
+.after-tabs [role="button"]:hover::before {
+  opacity: 0.11;
+}
 
 :root.left tab-item:not(.faviconized) .contextual-identity-marker {
   right: calc(var(--tab-dropshadow-size) - var(--tab-highlighter-size));
@@ -173,10 +175,10 @@ tab-item * {
   color: var(--tab-text);
 }
 
-tab-item:not(.active):hover,
+tab-item:not(.active):not(.bundled-active):not(.highlighted):hover,
 .after-tabs button:hover,
 .after-tabs [role="button"]:hover {
-  --tab-surface: var(--tab-surface-hover);
+  --tab-surface: var(--tab-text-regular);
   --tab-text: var(--tab-text-regular);
 }
 
