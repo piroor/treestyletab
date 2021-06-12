@@ -370,3 +370,11 @@ async function startBookmarksUrlAutoMigration() {
     }
   });
 }
+
+configs.$loaded.then(() => {
+  configs.$addObserver(key => {
+    if (key == 'configsVersion' &&
+        configs.configsVersion == 0)
+      migrateConfigs()
+  });
+});
