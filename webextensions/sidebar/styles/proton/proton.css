@@ -132,22 +132,22 @@ tab-item,
   padding-top: var(--tab-dropshadow-size) !important;
 }
 
-.after-tabs button::after,
-.after-tabs [role="button"]::after {
+.after-tabs button::before,
+.after-tabs [role="button"]::before {
   content: " ";
   display: inline-block;
   position: absolute;
 }
 
-.after-tabs button::before {
+.after-tabs button::after {
   height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
   max-height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
   min-height: calc(var(--tab-dropshadow-size) * 2 + var(--favicon-size));
 }
 
 tab-item .background,
-.after-tabs button:hover::after,
-.after-tabs [role="button"]:hover::after {
+.after-tabs button:hover::before,
+.after-tabs [role="button"]:hover::before {
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius-size);
   bottom: var(--tab-dropshadow-size);

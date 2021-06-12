@@ -710,7 +710,7 @@ tab-item.faviconized .contextual-identity-marker {
   text-align: center;
 }
 
-.newtab-button::before {
+.newtab-button::after {
   -moz-context-properties: fill;
   background: url("./icons/new-16.svg") no-repeat center / 100%;
   content: "";
@@ -720,7 +720,7 @@ tab-item.faviconized .contextual-identity-marker {
   opacity: var(--button-opacity);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill .newtab-button::before {
+:root.simulate-svg-context-fill .newtab-button::after {
   background: var(--tab-text);
   mask: url("./icons/new-16.svg") no-repeat center / 100%;
 }
@@ -790,8 +790,8 @@ tab-item.faviconized .contextual-identity-marker {
   margin: 0.125em;
 }
 
-.newtab-action-selector-anchor::before,
-.contextual-identities-selector-anchor::before,
+.newtab-action-selector-anchor::after,
+.contextual-identities-selector-anchor::after,
 #subpanel-selector-anchor::after {
   -moz-context-properties: fill;
   background: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
@@ -805,8 +805,8 @@ tab-item.faviconized .contextual-identity-marker {
   max-width: var(--favicon-size);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill .newtab-action-selector-anchor::before,
-:root.simulate-svg-context-fill .contextual-identities-selector-anchor::before,
+:root.simulate-svg-context-fill .newtab-action-selector-anchor::after,
+:root.simulate-svg-context-fill .contextual-identities-selector-anchor::after,
 :root.simulate-svg-context-fill #subpanel-selector-anchor::after {
   background: var(--tab-text);
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
