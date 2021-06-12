@@ -10,6 +10,7 @@ import {
   configs,
   saveUserStyleRules,
   notify,
+  wait,
   isLinux,
   isMacOS,
 } from '/common/common.js';
@@ -372,9 +373,12 @@ async function startBookmarksUrlAutoMigration() {
 }
 
 configs.$loaded.then(() => {
-  configs.$addObserver(key => {
+  configs.$addObserver(async key => {
+    // This may be triggered not only "reset all", but while importing of configs also.
+    // We should try initial migration after all configs are successfully imported.
+    await wait(100);
     if (key == 'configsVersion' &&
         configs.configsVersion == 0)
-      migrateConfigs()
+      migrateConfigs();
   });
 });
