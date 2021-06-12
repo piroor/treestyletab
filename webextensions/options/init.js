@@ -351,7 +351,7 @@ async function updateBookmarksUI(enabled) {
 }
 
 async function initOtherDevices() {
-  await Sync.ensureDeviceInfoInitialized();
+  await Sync.waitUntilDeviceInfoInitialized();
   const container = document.querySelector('#otherDevices');
   const range = document.createRange();
   range.selectNodeContents(container);
