@@ -201,7 +201,7 @@ If you need any new API, please file API proposals to the issue tracker.
     * `widget.content.gtk-theme-override`=unset (default)
   * TST's options (pattern 1, using "Proton" theme)
     * "Appearance" => "Theme" => "Proton" (default)
-    * *"Advanced" => "Extra style rules..." => [paste these lines](https://github.com/piroor/treestyletab/blob/180b6fa502587a3528af7f2e4f4671aca58d244a/webextensions/sidebar/styles/proton/proton.css#L72-L113) (not default)*
+    * *"Advanced" => "Extra style rules..." => paste [lines for a bright theme](https://github.com/piroor/treestyletab/blob/180b6fa502587a3528af7f2e4f4671aca58d244a/webextensions/sidebar/styles/proton/proton.css#L72-L113) or [lines for a dark theme](https://github.com/piroor/treestyletab/blob/180b6fa502587a3528af7f2e4f4671aca58d244a/webextensions/sidebar/styles/proton/proton.css#L72-L97) (not default)*
     * "Development" => "Color scheme" => "System Color" (default)
   * TST's options (pattern 1b, using "Photon" theme)
     * "Appearance" => "Theme" => "Photon" (default)
