@@ -67,20 +67,8 @@
   --toolbar-non-lwt-bgcolor: -moz-dialog;
   --in-content-box-border-color-mixed: ThreeDShadow;
 }
-:root[color-scheme="system-color"][data-user-agent*="Linux"] #background::after {
-  background: AppWorkspace;
-  opacity: 0.15;
-
-  bottom: 0;
-  content: "";
-  left: 0;
-  margin: 0;
-  overflow: hidden;
-  padding: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 20;
+:root[color-scheme="system-color"][data-user-agent*="Linux"] #background {
+  --tabbar-bg: AppWorkspace;
 }
 
 @media not (prefers-color-scheme: dark) {
@@ -89,20 +77,23 @@
   }
 
   /* we cannot know the GNOME3 "headerbar" color, so use inverted menu color instead. */
-  :root[color-scheme="system-color"][data-user-agent*="Linux"] {
-    --tab-text-regular: var(--browser-fg, Menu);
-    --tab-text-inverted: var(--browser-bg-more-lighter, MenuText);
-    --tab-dropmarker: var(--browser-fg, var(--tab-text));
-  }
-  :root[color-scheme="system-color"][data-user-agent*="Linux"] tab-item:not(.active).highlighted {
-    --tab-text: var(--tab-text-active);
-  }
-  :root[color-scheme="system-color"][data-user-agent*="Linux"] tab-item:not(.active):not(.highlighted):hover .background {
-    opacity: 0.1;
-  }
-  :root[color-scheme="system-color"][data-user-agent*="Linux"] #background::after {
-    background: var(--browser-bg-darker, MenuText);
-    opacity: 1;
+  :root[color-scheme="system-color"][data-user-agent*="Linux"]
+    tab-item:not(.active):not(.bundled-active):not(.highlighted),
+  :root[color-scheme="system-color"][data-user-agent*="Linux"]
+    .after-tabs button,
+  :root[color-scheme="system-color"][data-user-agent*="Linux"]
+    .after-tabs [role="button"],
+  :root[color-scheme="system-color"][data-user-agent*="Linux"]
+    #subpanel-selector-anchor,
+  :root[color-scheme="system-color"][data-user-agent*="Linux"]
+    #background {
+    --toolbar-non-lwt-bgcolor: MenuText;
+    --toolbar-non-lwt-textcolor: Menu;
+    --tabbar-bg: var(--toolbar-non-lwt-bgcolor);
+    /* these colors need to redefined here to apply new --toolbar-non-lwt-textcolor */
+    --tab-text-regular: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+    --tab-text-active: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
+    --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   }
 }
 
