@@ -381,17 +381,9 @@ function applyUserStyleRules() {
 async function applyBrowserTheme(theme) {
   log('applying theme ', theme);
 
-  let browserThemeStyle = '';
-  if (!theme ||
-      !theme.colors) {
-    // Reset colors
-    mBrowserThemeDefinition.textContent = '';
-  }
-  else {
-    browserThemeStyle = await BrowserTheme.generateThemeDeclarations(theme);
-    // Apply theme color at first, to use given colors as the base of following "face-*" colors.
-    mBrowserThemeDefinition.textContent = browserThemeStyle;
-  }
+  const browserThemeStyle = await BrowserTheme.generateThemeDeclarations(theme);
+  // Apply theme color at first, to use given colors as the base of following "face-*" colors.
+  mBrowserThemeDefinition.textContent = browserThemeStyle;
 
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-tab-color-box'), null).backgroundColor);
   const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
@@ -404,16 +396,10 @@ async function applyBrowserTheme(theme) {
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
 
-  if (!theme ||
-      !theme.colors) {
-    mBrowserThemeDefinition.textContent = defaultColors;
-  }
-  else {
-    mBrowserThemeDefinition.textContent = [
-      defaultColors,
-      browserThemeStyle
-    ].join('\n');
-  }
+  mBrowserThemeDefinition.textContent = [
+    defaultColors,
+    browserThemeStyle
+  ].join('\n');
 }
 
 function updateContextualIdentitiesStyle() {
