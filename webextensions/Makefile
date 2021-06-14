@@ -3,7 +3,7 @@ NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
 EXTERNAL_LIB_DIR := $(CURDIR)/extlib
 
-.PHONY: xpi install_dependency lint format update_extlib install_extlib
+.PHONY: xpi install_dependency lint format init_extlib update_extlib install_extlib
 
 all: xpi
 
@@ -17,12 +17,15 @@ lint: install_dependency
 format: install_dependency
 	"$(NPM_BIN_DIR)/eslint" . --ext=.js --report-unused-disable-directives --fix
 
-xpi: update_extlib install_extlib lint
+xpi: init_extlib install_extlib lint
 	rm -f ./*.xpi
 	zip -r -9 treestyletab-we.xpi manifest.json _locales common options background sidebar resources extlib tests -x '*/.*' >/dev/null 2>/dev/null
 
+init_extlib:
+	git submodule update --init
+
 update_extlib:
-	cd .. && git submodule update --init
+	git submodule foreach 'git checkout trunk || git checkout main || git checkout master && git pull'
 
 install_extlib: install_dependency
 	rm -f $(EXTERNAL_LIB_DIR)/*.js
