@@ -47,6 +47,7 @@
   --tabbar-bg: -moz-dialog;
 
   --tab-highlighted-glow: rgb(42, 195, 162); /* https://searchfox.org/mozilla-central/rev/74f3c420ee54001059e1850bef3be876749ff873/browser/themes/shared/tabs.inc.css#927 */
+  --multiselected-color: var(--tab-surface-active);
 }
 :root[data-user-agent*="Mac"] {
   --non-lwt-selected-tab-background-color-proton: transparent;
@@ -154,7 +155,6 @@ tab-item.bundled-active,
 tab-item.bundled-active:hover,
 .mutiple-highlighted > tab-item.highlighted,
 .mutiple-highlighted > tab-item.highlighted:hover {
-  --multiselected-color: transparent;
   --tab-surface: var(--tab-surface-active);
   --tab-surface-bgimage: var(--tab-surface-active-bgimage);
   --throbber-color: var(--throbber-color-active);
