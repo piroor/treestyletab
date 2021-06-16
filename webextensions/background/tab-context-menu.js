@@ -529,6 +529,7 @@ function hasVisiblePrecedingItem(separator) {
 let mOverriddenContext = null;
 
 async function onShown(info, contextTab) {
+  try {
   contextTab = contextTab && Tab.get(contextTab.id);
   const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({}).catch(ApiTabs.createErrorHandler())).id;
   const previousTab           = contextTab && contextTab.$TST.previousTab;
@@ -774,6 +775,10 @@ async function onShown(info, contextTab) {
 
   if (modifiedItemsCount > 0)
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+  }
+  catch(error) {
+    console.error(error);
+  }
 }
 
 let mLastOverriddenContextOwner = null;
