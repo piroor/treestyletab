@@ -535,20 +535,56 @@ async function testDuplicatedTabDetection() {
   document.querySelector('#delayForDuplicatedTabDetection_testResult').textContent = browser.i18n.getMessage('config_delayForDuplicatedTabDetection_test_resultMessage', [successRate * 100]);
 }
 
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
-  if (typeof browser.tabs.moveInSuccession == 'function')
-    document.documentElement.classList.add('successor-tab-support');
-  else
-    document.documentElement.classList.remove('successor-tab-support');
+  try {
+    document.documentElement.classList.toggle('successor-tab-support', typeof browser.tabs.moveInSuccession == 'function');
 
+    initAccesskeys();
+    initLogsButton();
+    initDuplicatedTabDetection();
+    initLinks();
+    initTheme();
+
+    await configs.$loaded;
+
+    const focusedItem = initFocusedItem();
+    initCollapsibleSections({ focusedItem });
+    initPermissionOptions();
+    initLogCheckboxes();
+    initPreviews();
+    initExternalAddons();
+    initSync();
+
+    options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
+    onConfigChanged('successorTabControlLevel');
+    onConfigChanged('showExpertOptions');
+    await wait(0);
+    onConfigChanged('parentTabOperationBehaviorMode');
+    onConfigChanged('autoAttachOnAnyOtherTrigger');
+    onConfigChanged('syncDeviceInfo');
+
+    if (focusedItem)
+      focusedItem.scrollIntoView({ block: 'start' });
+  }
+  catch(error) {
+    console.error(error);
+  }
+
+  document.documentElement.classList.add('initialized');
+}, { once: true });
+
+function initAccesskeys() {
   for (const label of document.querySelectorAll('.contextConfigs label')) {
     for (const child of label.childNodes) {
       if (child.nodeType == Node.TEXT_NODE)
         removeAccesskeyMark(child);
     }
   }
+}
 
+function initLogsButton() {
   const showLogsButton = document.getElementById('showLogsButton');
   showLogsButton.addEventListener('click', event => {
     if (event.button != 0)
@@ -560,7 +596,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       return;
     showLogs();
   });
+}
 
+function initDuplicatedTabDetection() {
   const autoDetectDuplicatedTabDetectionDelayButton = document.getElementById('delayForDuplicatedTabDetection_autoDetectButton');
   autoDetectDuplicatedTabDetectionDelayButton.addEventListener('click', event => {
     if (event.button != 0)
@@ -584,8 +622,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       return;
     testDuplicatedTabDetection();
   });
+}
 
-
+function initLinks() {
   document.getElementById('link-optionsPage-top').setAttribute('href', `${location.href.split('#')[0]}#!`);
   document.getElementById('link-optionsPage').setAttribute('href', `${location.href.split('#')[0]}#!`);
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
@@ -593,14 +632,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);
   document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
   document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
+}
 
+function initTheme() {
   if (browser.theme && browser.theme.getCurrent) {
     browser.theme.getCurrent().then(updateThemeInformation);
     browser.theme.onUpdated.addListener(updateInfo => updateThemeInformation(updateInfo.theme));
   }
+}
 
-  await configs.$loaded;
-
+function initFocusedItem() {
   const focusedItem = document.querySelector(':target');
   for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {
     if (configs.optionsExpandedGroups.includes(fieldset.id) ||
@@ -632,6 +673,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  return focusedItem;
+}
+
+function initCollapsibleSections({ focusedItem }) {
   for (const heading of document.querySelectorAll('body > section > h1')) {
     const section = heading.parentNode;
     section.style.maxHeight = `${heading.offsetHeight}px`;
@@ -647,7 +692,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         configs.optionsExpandedSections = otherExpandedSections.concat([section.id]);
     });
   }
+}
 
+function initPermissionOptions() {
   Permissions.isGranted(Permissions.BOOKMARKS).then(granted => updateBookmarksUI(granted));
 
   Permissions.bindToCheckbox(
@@ -703,7 +750,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   for (const checkbox of document.querySelectorAll('input[type="checkbox"].require-bookmarks-permission')) {
     checkbox.addEventListener('change', onChangeBookmarkPermissionRequiredCheckboxState);
   }
+}
 
+function initLogCheckboxes() {
   for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
     checkbox.addEventListener('change', onChangeChildCheckbox);
     checkbox.checked = configs.logFor[checkbox.id.replace(/^logFor-/, '')];
@@ -712,7 +761,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     checkbox.checked = isAllChildrenChecked(checkbox);
     checkbox.addEventListener('change', onChangeParentCheckbox);
   }
+}
 
+function initPreviews() {
   for (const previewImage of document.querySelectorAll('select ~ .preview-image')) {
     const container = previewImage.parentNode;
     container.classList.add('has-preview-image');
@@ -738,10 +789,13 @@ window.addEventListener('DOMContentLoaded', async () => {
       container.dataset.value = select.dataset.value = select.value;
     });
   }
+}
 
-  browser.runtime.sendMessage({
+async function initExternalAddons() {
+  const addons = browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS
-  }).then(addons => {
+  });
+
     const description = document.getElementById('externalAddonPermissionsGroupDescription');
     const range = document.createRange();
     range.selectNodeContents(description);
@@ -807,8 +861,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
       container.appendChild(row);
     }
-  });
+}
 
+function initSync() {
   const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
   deviceInfoNameField.addEventListener('input', () => {
     if (deviceInfoNameField.$throttling)
@@ -821,6 +876,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       }));
     }, 250);
   });
+
   const deviceInfoIconRadiogroup = document.querySelector('#syncDeviceInfoIcon');
   deviceInfoIconRadiogroup.addEventListener('change', _event => {
     if (deviceInfoIconRadiogroup.$throttling)
@@ -834,7 +890,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       }));
     }, 250);
   });
+
   initOtherDevices();
+
   const otherDevices = document.querySelector('#otherDevices');
   otherDevices.addEventListener('click', event => {
     if (event.target.localName != 'button')
@@ -849,21 +907,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const item = event.target.closest('li');
     removeOtherDevice(item.id.replace(/^otherDevice:/, ''));
   });
-
-
-  options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
-  onConfigChanged('successorTabControlLevel');
-  onConfigChanged('showExpertOptions');
-  await wait(0);
-  onConfigChanged('parentTabOperationBehaviorMode');
-  onConfigChanged('autoAttachOnAnyOtherTrigger');
-  onConfigChanged('syncDeviceInfo');
-
-  if (focusedItem)
-    focusedItem.scrollIntoView({ block: 'start' });
-
-  document.documentElement.classList.add('initialized');
-}, { once: true });
+}
 
 import('/extlib/codemirror.js').then(async () => {
   await Promise.all([
