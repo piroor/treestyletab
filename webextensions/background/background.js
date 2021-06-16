@@ -615,7 +615,7 @@ export function tabsToHTMLList(tabs, { maxRows, maxWidth }) {
                                        max-height: 1em;
                                        max-width: 1em;"
                                 alt=""
-                                src="${sanitizeForHTMLText(tab.favIconUrl || browser.extension.getURL('resources/icons/defaultFavicon.svg'))}"
+                                src="${sanitizeForHTMLText(tab.favIconUrl || browser.runtime.getURL('resources/icons/defaultFavicon.svg'))}"
                                ><span style="margin-left: 0.25em;
                                              overflow: hidden;
                                              text-overflow: ellipsis;

@@ -191,8 +191,8 @@ const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
 
-const mIsBackend  = location.href.startsWith(browser.extension.getURL('background/background.html'));
-const mIsFrontend = location.href.startsWith(browser.extension.getURL('sidebar/sidebar.html'));
+const mIsBackend  = location.href.startsWith(browser.runtime.getURL('background/background.html'));
+const mIsFrontend = location.href.startsWith(browser.runtime.getURL('sidebar/sidebar.html'));
 
 export class TreeItem {
   constructor(tab, options = {}) {

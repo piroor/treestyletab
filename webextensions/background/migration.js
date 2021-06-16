@@ -362,7 +362,7 @@ async function startBookmarksUrlAutoMigration() {
 
   browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
     if (changeInfo.url &&
-        changeInfo.url.startsWith(browser.extension.getURL(''))) {
+        changeInfo.url.startsWith(browser.runtime.getURL(''))) {
       const bookmark = await browser.bookmarks.get(id);
       if (Array.isArray(bookmark))
         bookmark.forEach(migrateBookmarkUrl);
