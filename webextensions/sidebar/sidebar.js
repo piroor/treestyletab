@@ -678,20 +678,22 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
       readableReasons.push('tab move');
   }
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
+
   const range = document.createRange();
   range.selectNodeContents(mTabBar);
   const containerHeight = mTabBar.getBoundingClientRect().height;
   const contentHeight   = range.getBoundingClientRect().height;
   log('height: ', { container: containerHeight, content: contentHeight });
+
+  range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
+  document.documentElement.style.setProperty('--new-tab-button-height', `${range.getBoundingClientRect().height}px`);
+
+  range.detach();
+
   const overflow = containerHeight < contentHeight;
   if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('overflow');
     mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
-    const range = document.createRange();
-    range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
-    const offset = range.getBoundingClientRect().height;
-    range.detach();
-    mTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
@@ -716,7 +718,6 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('underflow');
     mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
-    mTabBar.style.bottom = '';
   }
 
   if (justNow)

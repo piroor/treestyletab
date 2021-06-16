@@ -101,7 +101,7 @@ export function reposition(options = {}) {
     height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
     mMaxVisibleRows * height
   );
-  mTabBar.style.marginTop = `${mAreaHeight}px`;
+  document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
   const scrollRow = Math.max(0, Math.min(maxRow - mMaxVisibleRows, mScrollRow));
   for (const tab of pinnedTabs) {
     const style = tab.$TST.element.style;
@@ -157,7 +157,7 @@ export function reserveToReposition(options = {}) {
 }
 
 function reset() {
-  mTabBar.style.marginTop = '';
+  document.documentElement.style.setProperty('--pinned-tabs-area-size', '0px');
   for (const tab of Tab.getPinnedTabs(mTargetWindow, { iterator: true })) {
     clearStyle(tab);
   }

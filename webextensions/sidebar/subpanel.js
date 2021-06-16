@@ -243,18 +243,15 @@ async function load(params) {
 function updateLayout() {
   if (!mProviderId && !mSelector.hasChildNodes()) {
     mContainer.classList.add('collapsed');
-    mContainer.style.visibility = mSubPanel.style.visibility = 'collapse';
-    mTabBarContainer.style.bottom = 0;
+    document.documentElement.style.setProperty('--subpanel-area-size', '0px');
   }
   else {
     mHeight = Math.max(0, mHeight);
     mContainer.classList.toggle('collapsed', mHeight == 0);
-    mContainer.style.visibility = mSubPanel.style.visibility = 'visible';
     const headerSize = mHeader.getBoundingClientRect().height;
     const appliedHeight = Math.min(window.innerHeight * 0.66, mHeight);
-    mContainer.style.height = `${appliedHeight + headerSize}px`;
-    mSubPanel.style.height = `${appliedHeight}px`;
-    mTabBarContainer.style.bottom = `${appliedHeight + headerSize}px`;
+    document.documentElement.style.setProperty('--subpanel-content-size', `${appliedHeight}px`);
+    document.documentElement.style.setProperty('--subpanel-area-size', `${appliedHeight + headerSize}px`);
 
     if (mHeight > 0 &&
         (!mSubPanel.src || mSubPanel.src == 'about:blank')) {

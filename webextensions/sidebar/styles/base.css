@@ -19,6 +19,10 @@
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
   --new-tab-button-anchor-size: 1.5em;
+  --new-tab-button-height: 0px;
+  --pinned-tabs-area-size: 0px;
+  --subpanel-area-size: 0px;
+  --subpanel-content-size: auto;
 
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;
@@ -185,6 +189,7 @@ tab-sound-button */ {
 }
 
 #tabbar-container {
+  bottom: var(--subpanel-area-size);
   top: var(--visual-gap-offset);
 }
 :root.hover-on-top-edge:hover #tabbar-container {
@@ -193,11 +198,12 @@ tab-sound-button */ {
 }
 
 #tabbar {
-  --removed-tabs-count: 0;
+  margin-top: var(--pinned-tabs-area-size);
   position: absolute;
 }
 
 #tabbar.overflow {
+  bottom: var(--new-tab-button-height);
   overflow-y: scroll;
 }
 
@@ -850,11 +856,16 @@ tab-item.faviconized .contextual-identity-marker {
 
 #subpanel-container {
   top: auto;
+  height: var(--subpanel-area-size);
+}
+
+#subpanel-container.collapsed iframe#subpanel {
+  visibility: collapse;
 }
 
 iframe#subpanel {
   border: none;
-  height: auto;
+  height: var(--subpanel-content-size);
   margin: 0;
   max-height: none;
   max-width: 100%;
