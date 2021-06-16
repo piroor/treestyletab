@@ -171,7 +171,8 @@ export class TabElement extends HTMLElement {
     if (this._labelElement) {
       if (!this._labelElement.owner) {
         this._labelElement.addOverflowChangeListener(() => {
-          if (this.$TST.tab.pinned)
+          if (!this.$TST ||
+              this.$TST.tab.pinned)
             return;
           this.invalidateTooltip();
         });
