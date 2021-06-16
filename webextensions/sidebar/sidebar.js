@@ -81,7 +81,6 @@ const mPromisedTargetWindow = new Promise((resolve, _reject) => {
 });
 
 const mTabBar                     = document.querySelector('#tabbar');
-const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
 const mStyleLoader                = document.querySelector('#style-loader');
 const mBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 const mUserStyleRules             = document.querySelector('#user-style-rules');
@@ -679,18 +678,28 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   }
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
-  const range = document.createRange();
-  range.selectNodeContents(mTabBar);
-  const containerHeight = mTabBar.getBoundingClientRect().height;
-  const contentHeight   = range.getBoundingClientRect().height;
-  log('height: ', { container: containerHeight, content: contentHeight });
+  let allTabsHeight;
+  const firstNormalTab = mTabBar.querySelector('tab-item:not(.pinned)');
+  if (firstNormalTab) {
+    const range = document.createRange();
+    range.selectNodeContents(mTabBar);
+    range.setStartBefore(firstNormalTab);
+    range.setEndAfter(mTabBar.querySelector('tab-item:last-of-type'));
+    allTabsHeight   = range.getBoundingClientRect().height;
+    range.detach();
+  }
+  else {
+    allTabsHeight = 0;
+  }
+  const visibleNewTabButtonInTabbar = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box');
+  const visibleNewTabButtonAfterTabbar = document.querySelector('#tabbar.overflow ~ .after-tabs .newtab-button-box');
+  const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;
+  const containerHeight = mTabBar.getBoundingClientRect().height - (visibleNewTabButtonInTabbar ? visibleNewTabButtonInTabbar.getBoundingClientRect().height : 0);
+  log('height: ', { container: containerHeight, allTabsHeight, newTabButtonSize });
 
-  range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
-  document.documentElement.style.setProperty('--new-tab-button-height', `${range.getBoundingClientRect().height}px`);
+  document.documentElement.style.setProperty('--after-tabs-area-size', `${newTabButtonSize}px`);
 
-  range.detach();
-
-  const overflow = containerHeight < contentHeight;
+  const overflow = containerHeight < allTabsHeight;
   if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('overflow');
     mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);

@@ -19,7 +19,7 @@
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
   --new-tab-button-anchor-size: 1.5em;
-  --new-tab-button-height: 0px;
+  --after-tabs-area-size: 0px;
   --pinned-tabs-area-size: 0px;
   --subpanel-area-size: 0px;
   --subpanel-content-size: auto;
@@ -203,7 +203,7 @@ tab-sound-button */ {
 }
 
 #tabbar.overflow {
-  bottom: var(--new-tab-button-height);
+  bottom: var(--after-tabs-area-size);
   overflow-y: scroll;
 }
 
