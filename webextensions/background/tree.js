@@ -220,16 +220,23 @@ export async function attachTabTo(child, parent, options = {}) {
       next: dumpTab(nextTab),
       prev: dumpTab(prevTab)
     });
-    if (nextTab)
-      await moveTabSubtreeBefore(child, nextTab, {
-        ...options,
-        broadcast: true
-      });
-    else
+    if (!nextTab ||
+        // We should not use a descendant of the "child" tab as the reference tab
+        // when we are going to attach the "child" and its descendants to the new
+        // parent.
+        // See also: https://github.com/piroor/treestyletab/issues/2892#issuecomment-862424942
+        nextTab.$TST.parent == child) {
       await moveTabSubtreeAfter(child, prevTab, {
         ...options,
         broadcast: true
       });
+    }
+    else {
+      await moveTabSubtreeBefore(child, nextTab, {
+        ...options,
+        broadcast: true
+      });
+    }
   }
 
   child.$TST.opened.then(() => {
