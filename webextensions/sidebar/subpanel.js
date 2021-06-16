@@ -31,7 +31,6 @@ export const onResized = new EventListenerManager();
 let mTargetWindow;
 let mInitialized = false;
 
-const mTabBarContainer = document.querySelector('#tabbar-container');
 const mContainer       = document.querySelector('#subpanel-container');
 const mHeader          = document.querySelector('#subpanel-header');
 const mSelector        = document.querySelector('#subpanel-selector');
