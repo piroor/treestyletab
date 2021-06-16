@@ -45,6 +45,7 @@ export async function waitUntilDeviceInfoInitialized() {
   while (!configs.syncDeviceInfo) {
     await wait(100);
   }
+  mMyDeviceInfo = configs.syncDeviceInfo;
 }
 
 configs.$loaded.then(async () => {

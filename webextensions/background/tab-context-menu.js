@@ -387,7 +387,8 @@ function updateContextualIdentities() {
 
 const mLastDevicesSignature = new Map();
 const mSendToDeviceItems    = new Map();
-export function updateSendToDeviceItems(parentId, { manage } = {}) {
+export async function updateSendToDeviceItems(parentId, { manage } = {}) {
+  await Sync.waitUntilDeviceInfoInitialized();
   const devices = Sync.getOtherDevices();
   const signature = JSON.stringify(devices.map(device => ({ id: device.id, name: device.name })));
   if (signature == mLastDevicesSignature.get(parentId))
@@ -636,13 +637,13 @@ async function onShown(info, contextTab) {
       multiselected,
       count: contextTabs.length
     }) && modifiedItemsCount++;
-    updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
+    await updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
     updateItem('context_topLevel_sendTreeToDevice', {
       visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
       enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected
     }) && modifiedItemsCount++;
-    mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
+    mItemsById.context_topLevel_sendTreeToDevice.lastVisible && await updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
 
     let showContextualIdentities = false;
     if (contextTab && !contextTab.incognito) {
