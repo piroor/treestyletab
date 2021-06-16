@@ -796,71 +796,71 @@ async function initExternalAddons() {
     type: TSTAPI.kCOMMAND_GET_ADDONS
   });
 
-    const description = document.getElementById('externalAddonPermissionsGroupDescription');
-    const range = document.createRange();
-    range.selectNodeContents(description);
-    description.appendChild(range.createContextualFragment(browser.i18n.getMessage('config_externaladdonpermissions_description')));
-    range.detach();
+  const description = document.getElementById('externalAddonPermissionsGroupDescription');
+  const range = document.createRange();
+  range.selectNodeContents(description);
+  description.appendChild(range.createContextualFragment(browser.i18n.getMessage('config_externaladdonpermissions_description')));
+  range.detach();
 
-    const container = document.getElementById('externalAddonPermissions');
-    for (const addon of addons) {
-      if (addon.id == browser.runtime.id)
-        continue;
-      const row = document.createElement('tr');
+  const container = document.getElementById('externalAddonPermissions');
+  for (const addon of addons) {
+    if (addon.id == browser.runtime.id)
+      continue;
+    const row = document.createElement('tr');
 
-      const nameCell = row.appendChild(document.createElement('td'));
-      const nameLabel = nameCell.appendChild(document.createElement('label'));
-      nameLabel.appendChild(document.createTextNode(addon.label));
-      const controlledId = `api-permissions-${encodeURIComponent(addon.id)}`;
-      nameLabel.setAttribute('for', controlledId);
+    const nameCell = row.appendChild(document.createElement('td'));
+    const nameLabel = nameCell.appendChild(document.createElement('label'));
+    nameLabel.appendChild(document.createTextNode(addon.label));
+    const controlledId = `api-permissions-${encodeURIComponent(addon.id)}`;
+    nameLabel.setAttribute('for', controlledId);
 
-      const incognitoCell = row.appendChild(document.createElement('td'));
-      const incognitoLabel = incognitoCell.appendChild(document.createElement('label'));
-      const incognitoCheckbox = incognitoLabel.appendChild(document.createElement('input'));
-      if (addon.permissions.length == 0)
-        incognitoCheckbox.setAttribute('id', controlledId);
-      incognitoCheckbox.setAttribute('type', 'checkbox');
-      incognitoCheckbox.checked = configs.incognitoAllowedExternalAddons.includes(addon.id);
-      incognitoCheckbox.addEventListener('change', () => {
-        const updatedValue = new Set(configs.incognitoAllowedExternalAddons);
-        if (incognitoCheckbox.checked)
-          updatedValue.add(addon.id);
-        else
-          updatedValue.delete(addon.id);
-        configs.incognitoAllowedExternalAddons = Array.from(updatedValue);
+    const incognitoCell = row.appendChild(document.createElement('td'));
+    const incognitoLabel = incognitoCell.appendChild(document.createElement('label'));
+    const incognitoCheckbox = incognitoLabel.appendChild(document.createElement('input'));
+    if (addon.permissions.length == 0)
+      incognitoCheckbox.setAttribute('id', controlledId);
+    incognitoCheckbox.setAttribute('type', 'checkbox');
+    incognitoCheckbox.checked = configs.incognitoAllowedExternalAddons.includes(addon.id);
+    incognitoCheckbox.addEventListener('change', () => {
+      const updatedValue = new Set(configs.incognitoAllowedExternalAddons);
+      if (incognitoCheckbox.checked)
+        updatedValue.add(addon.id);
+      else
+        updatedValue.delete(addon.id);
+      configs.incognitoAllowedExternalAddons = Array.from(updatedValue);
+      browser.runtime.sendMessage({
+        type: TSTAPI.kCOMMAND_NOTIFY_PERMISSION_CHANGED,
+        id:   addon.id
+      });
+    });
+
+    const permissionsCell = row.appendChild(document.createElement('td'));
+    if (addon.permissions.length > 0) {
+      const permissionsLabel = permissionsCell.appendChild(document.createElement('label'));
+      const permissionsCheckbox = permissionsLabel.appendChild(document.createElement('input'));
+      permissionsCheckbox.setAttribute('id', controlledId);
+      permissionsCheckbox.setAttribute('type', 'checkbox');
+      permissionsCheckbox.checked = addon.permissionsGranted;
+      permissionsCheckbox.addEventListener('change', () => {
         browser.runtime.sendMessage({
-          type: TSTAPI.kCOMMAND_NOTIFY_PERMISSION_CHANGED,
-          id:   addon.id
+          type:        TSTAPI.kCOMMAND_SET_API_PERMISSION,
+          id:          addon.id,
+          permissions: permissionsCheckbox.checked ? addon.permissions : addon.permissions.map(permission => `!  ${permission}`)
         });
       });
-
-      const permissionsCell = row.appendChild(document.createElement('td'));
-      if (addon.permissions.length > 0) {
-        const permissionsLabel = permissionsCell.appendChild(document.createElement('label'));
-        const permissionsCheckbox = permissionsLabel.appendChild(document.createElement('input'));
-        permissionsCheckbox.setAttribute('id', controlledId);
-        permissionsCheckbox.setAttribute('type', 'checkbox');
-        permissionsCheckbox.checked = addon.permissionsGranted;
-        permissionsCheckbox.addEventListener('change', () => {
-          browser.runtime.sendMessage({
-            type:        TSTAPI.kCOMMAND_SET_API_PERMISSION,
-            id:          addon.id,
-            permissions: permissionsCheckbox.checked ? addon.permissions : addon.permissions.map(permission => `!  ${permission}`)
-          });
-        });
-        const permissionNames = addon.permissions.map(permission => {
-          try {
-            return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
-          }
-          catch(_error) {
-            return permission;
-          }
-        }).join(', ');
-        permissionsLabel.appendChild(document.createTextNode(permissionNames));
-      }
-
-      container.appendChild(row);
+      const permissionNames = addon.permissions.map(permission => {
+        try {
+          return browser.i18n.getMessage(`api_requestedPermissions_type_${permission}`) || permission;
+        }
+        catch(_error) {
+          return permission;
+        }
+      }).join(', ');
+      permissionsLabel.appendChild(document.createTextNode(permissionNames));
     }
+
+    container.appendChild(row);
+  }
 }
 
 function initSync() {
