@@ -546,17 +546,28 @@ window.addEventListener('DOMContentLoaded', async () => {
     initDuplicatedTabDetection();
     initLinks();
     initTheme();
+  }
+  catch(error) {
+    console.error(error);
+  }
 
-    await configs.$loaded;
+  await configs.$loaded;
 
-    const focusedItem = initFocusedItem();
+  let focusedItem;
+  try {
+    focusedItem = initFocusedItem();
     initCollapsibleSections({ focusedItem });
     initPermissionOptions();
     initLogCheckboxes();
     initPreviews();
     initExternalAddons();
     initSync();
+  }
+  catch(error) {
+    console.error(error);
+  }
 
+  try {
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('successorTabControlLevel');
     onConfigChanged('showExpertOptions');
