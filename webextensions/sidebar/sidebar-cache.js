@@ -253,7 +253,6 @@ export async function restoreTabsFromCache(cache, params = {}) {
   if (offset <= 0) {
     if (window.element)
       window.element.parentNode.removeChild(window.element);
-    mTabBar.setAttribute('style', cache.style);
   }
 
   const restored = (await MetricsData.addAsync('restoreTabsFromCache: restoring internally', restoreTabsFromCacheInternal({
