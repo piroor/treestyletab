@@ -4,24 +4,23 @@
 
 This extension to Firefox provides the ability to work with tabs as "trees".
 
-New tabs opened from the current tab are automatically organized as "children" of the current.
-Such "branches" are easily folded (collapsed) by clicking on down on the arrow shown in the "parent" tab, so you don't need to suffer from too many visible tabs anymore.
+New tabs opened from the current tab are automatically organized as "children" of the current tab.
+Such "branches" are easily folded (collapsed) by clicking on the arrow shown in the "parent" tab, so you no longer need to suffer from too many visible tabs.
 If you want, you can restructure the tree via drag and drop.
 
  * Such a tree of tabs will behave like a visual browsing history for you.
-   For example, if you see a list of search results for a topic, you'll open each search result link in new child tab.
-   For more details you'll also open more descendant tabs from them.
+   For example, if you see a list of search results for a topic, each search result link will open in new child tab.
+   New tabs opened from these "child" tabs will appear as descendants of their originating tabs.
    You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
- * Moreover, you'll treat a tree of tabs just as "grouped tabs" for similar topics.
+ * Moreover, each tree will reflect a group of tabs on a similar topic.
 
-Anyway this addon just provide uncolored "tree" feature.
 Please enjoy as you like!
 
 ## Release builds
 
-* The signed package of the latest version is available at [Mozilla Add-ons (AMO)](https://addons.mozilla.org/firefox/addon/tree-style-tab/). See also the [`strict_min_version` information in the install manifest](https://github.com/piroor/treestyletab/blob/master/webextensions/manifest.json#L203) to know the minimum supported Firefox version.
-* [Old packages are also downloadable on the AMO website](https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/). TST sometimes drops outdated versions of Firefox, but you may find out old packages supporting the dropped versions of Firefox. 
-* For more older versions of Firefox, Waterfox, or Palemoon, [Classic Add-ons Archive](https://github.com/JustOff/ca-archive) possibly contains legacy packages of TST.
+* The signed package of the latest version is available at [Mozilla Add-ons (AMO)](https://addons.mozilla.org/firefox/addon/tree-style-tab/). See also the [`strict_min_version` information in the install manifest](https://github.com/piroor/treestyletab/blob/master/webextensions/manifest.json#L219) to know the minimum supported Firefox version.
+* [Old packages are also downloadable on the AMO website](https://addons.mozilla.org/firefox/addon/tree-style-tab/versions/). TST sometimes drops outdated versions of Firefox, but you may find old packages that support the dropped versions of Firefox. 
+* For even older versions of Firefox, Waterfox, or Palemoon, [Classic Add-ons Archive](https://github.com/JustOff/ca-archive) possibly contains legacy packages of TST.
 
 ## Development builds
 
@@ -29,11 +28,11 @@ There is an [automated build based on the latest source code](https://piro.sakur
 Builds for each commit are avilable at ["Artifacts" of the CI/CD action](https://github.com/piroor/treestyletab/actions?query=workflow%3ACI%2FCD).
 
 <details>
-<p><summary>It is not signed, so you need to load it by non-regular way. (Please click this section to see instructions.)</summary></p>
+<p><summary>It is not signed, so you need to load it by an atypical method. (Please click this section to see instructions.)</summary></p>
 
 There are two methods to try them in your environment:
 
-* Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart your Firefox.
+* Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart Firefox.
 * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of the stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you will be able to install such an unsigned addon.
 
 Also, you can build a custom development build locally. For example, here are the steps to build an XPI on Ubuntu (native, or WSL on Windows 10):
@@ -92,19 +91,19 @@ Some extend the behavior of TST's sidebar panel:
 
 There are some similar project by someone not me providing similar features:
 
-* <details><summary>Vertical tab bar with tree (and more features)</summary>
+<details><summary>Vertical tab bar with tree (and more features)</summary>
   
   * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
   * [Sidebery](https://addons.mozilla.org/firefox/addon/sidebery/)
   * [ftt](https://addons.mozilla.org/firefox/addon/ftt/)
   </details>
-* <details><summary>Vertical tab bar with grouping</summary>
+<details><summary>Vertical tab bar with grouping</summary>
   
   * [Container Tabs Sidebar](https://addons.mozilla.org/firefox/addon/container-tabs-sidebar/)
   * [Sidebar Tabs](https://addons.mozilla.org/firefox/addon/sidebartabs/)
   * [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/)
   </details>
-* <details><summary>Vertical tab bar without tree or grouping</summary>
+<details><summary>Vertical tab bar without tree or grouping</summary>
   
   * [Tab Center Reborn](https://addons.mozilla.org/firefox/addon/tabcenter-reborn/)
   * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
@@ -112,7 +111,7 @@ There are some similar project by someone not me providing similar features:
   * [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
   * [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
   </details>
-* <details><summary>Listing tabs with a search field</summary>
+<details><summary>Listing tabs with a search field</summary>
   
   Some extensions provide a pop-up list of tabs with a search field that complements TST:
   
@@ -123,39 +122,39 @@ There are some similar project by someone not me providing similar features:
   * [Power Tabs](https://addons.mozilla.org/firefox/addon/power-tabs/)
   * [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button with a popup panel also. It has an option to show a search field in the panel by default.
   </details>
-* <details><summary>for Google Chrome and Chromium</summary>
+<details><summary>for Google Chrome and Chromium</summary>
   
   * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
   * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
   * [Treely: Tree Style Tab Manager](https://chrome.google.com/webstore/detail/treely-tree-style-tab-man/hbledhepdppepjnbnohiepcpcnphimdj)
   * [Tree Style Tab](https://chrome.google.com/webstore/detail/tree-style-tab/oicakdoenlelpjnkoljnaakdofplkgnd)
   </details>
-* <details><summary>for Vivaldi</summary>
+<details><summary>for Vivaldi</summary>
   
   * [Tree Tabs](https://drive.google.com/drive/folders/0B3jXQpRtOfvSdkN4RW5XN2tOc3c)
   </details>
 
 
-## If you have any request, proposal, or unexpected trouble from bugs?
+## Requests, proposals, or unexpected trouble from bugs
 
-All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).
-But please read FAQ below, before you post any new feature request.
+All feedback is handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).  
+Please read FAQ below, before you post any new feature request.
 
 ### Basics
 
- * *TST is basically designed to be used as an permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
-   * To avoid users' confusion, TST respects Firefox's built-in behavior and features around the tab bar - tab context menu, gestures, and so on.
- * And, of course *TST is designed to work with "tree of tabs"*.
-   * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess relation of tabs automatically, from the context.
-   * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
+ * *TST is basically designed to be used as a permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
+   * To avoid users' confusion, TST respects Firefox's built-in behavior and features regarding the tab bar: tab context menu, gestures, etc.
+ * *TST is designed to work with "tree of tabs"*.
+   * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess the relationship between tabs automatically, from the context.
+   * Better usability for ungrouped flat tabs in a vertical tab bar is an added benefit.
 
 Any feature request unrelated to these points may be rejected, even if many people love it.
 For example: [session management](https://addons.mozilla.org/firefox/addon/tab-session-manager/), [search field](https://addons.mozilla.org/firefox/addon/tab_search/), detailed focus control of tabs, and so on.
 
 Instead of adding more features, I hope to make TST *compatible with other tab-related extensions*.
-If it is required for more better compatibility I add [public APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations using this API](#addons-extend-tst).
+If it is required for better compatibility, I have added [public APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [there are many implementations using this API](#addons-extend-tst).
 
-If you need any new API, please file API proposals to the issue tracker.
+If you need any new APIs, please file API proposals in the issue tracker.
 
 ### FAQ / frequently rejected requests/proposals
 
@@ -172,8 +171,8 @@ If you need any new API, please file API proposals to the issue tracker.
 * <details><summary>Support for other browsers based on Chromium (ex. Google Chrome) and WebKit (ex. Safari)</a></summary>
   
   TST can't be ported to other browsers because [it depends on some Firefox specific APIs like `sidebar`](https://github.com/piroor/treestyletab/issues/2801#issuecomment-768584534), so it needs to be re-implemented completely.
-  Sorry but I won't re-implement TST as an extension for other browsers by myself because I still use Firefox.
-  (But [there are some alternatives developed by someone not me](#similar-projects).)
+  Sorry, but I won't re-implement TST as an extension for other browsers by myself because I use Firefox.
+  (But [there are some alternatives developed by others](#similar-projects).)
   </details>
 
 #### Appearance
@@ -392,7 +391,7 @@ If you need any new API, please file API proposals to the issue tracker.
 
 * <details><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
   
-  Thanks, but sorry, I have no plan about any donation from some reasons.
+  Thanks, but sorry, I have no plans to accept any dontations for these reasons:
   
   * The biggest reason is: because I want to keep me as the prime user of this project.
     I want to keep having a privilege to say "no" about requests that do not match my vision.
