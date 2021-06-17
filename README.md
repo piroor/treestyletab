@@ -12,7 +12,7 @@ If you want, you can restructure the tree via drag and drop.
    For example, if you see a list of search results for a topic, each search result link will open in new child tab.
    New tabs opened from these "child" tabs will appear as descendants of their originating tabs.
    You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
- * Moreover, you'll each tree will reflect a group of tabs on a similar topic.
+ * Moreover, each tree will reflect a group of tabs on a similar topic.
 
 Please enjoy as you like!
 
