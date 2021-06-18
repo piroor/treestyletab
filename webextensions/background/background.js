@@ -191,10 +191,6 @@ async function updatePanelUrl(theme) {
   url.searchParams.set('style', configs.style);
   if (!theme)
     theme = await browser.theme.getCurrent();
-  if (theme.colors.frame)
-    url.searchParams.set('bgcolor', theme.colors.frame);
-  else if (mDarkModeMatchMedia.matches)
-    url.searchParams.set('bgcolor', '#2A2A2E' /* --in-content-page-background */);
   browser.sidebarAction.setPanel({ panel: url.href });
 /*
   const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
@@ -849,12 +845,10 @@ async function updateIconForBrowserTheme(theme) {
 
 browser.theme.onUpdated.addListener(updateInfo => {
   updateIconForBrowserTheme(updateInfo.theme);
-  updatePanelUrl(updateInfo.theme);
 });
 
 mDarkModeMatchMedia.addListener(async _event => {
   updateIconForBrowserTheme();
-  updatePanelUrl();
 });
 
 
