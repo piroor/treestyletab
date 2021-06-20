@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.4 (2021.6.20)
    * Update overflow state of tabs more correctly to avoid unexpected covering of the bottom most tab with the new tab button.
    * Update visibility of tab context menu items correctly even if it the initial run.
    * Restore tree structure more correctly for tabs reopened via Shift-Ctrl-T after closing of multiple tabs at a time.
