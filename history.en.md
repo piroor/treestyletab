@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * Update overflow state of tabs more correctly to avoid unexpected covering of the bottom most tab with the new tab button.
+   * Update visibility of tab context menu items correctly even if it the initial run.
+   * Restore tree structure more correctly for tabs reopened via Shift-Ctrl-T after closing of multiple tabs at a time.
+   * Allow to override size of pinned tabs area (`--pinned-tabs-area-size`), subpanel area (`--subpanel-area-size`), and new tab button area (`--after-tabs-area-size`) easily by overriding these variables with custom user style.
+   * Rescue errors of options UI initialization, and reveal options UI even if some options don't work.
+   * Don't close the new tab button long-press menu on mouseup. (regression on 3.8.2)
+   * Restore lost compatibility with user styles containing `--multiselected-color`. (regression on 3.8.2)
  - 3.8.3 (2021.6.13)
    * Recontstruct "Proton" theme for better compatibility with Firefox's themes, dark mode of the platform, and GTK theme.
    * Avoid needless 1sec delay of confirmation dialogs.
