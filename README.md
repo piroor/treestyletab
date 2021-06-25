@@ -330,6 +330,10 @@ If you need any new APIs, please file API proposals in the issue tracker.
   There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
   See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspection for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
   </details>
+* <details><summary>Add an option to change the keyboard shortcut from F1</summary>
+  
+  [Firefox itself provides the feature.](https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox)
+  </details>
 
 #### Troubles, unexpected behaviors
 
