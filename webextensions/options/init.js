@@ -804,7 +804,7 @@ function initPreviews() {
 }
 
 async function initExternalAddons() {
-  const addons = browser.runtime.sendMessage({
+  const addons = await browser.runtime.sendMessage({
     type: TSTAPI.kCOMMAND_GET_ADDONS
   });
 
