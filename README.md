@@ -338,6 +338,21 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   [Firefox itself provides the feature.](https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox)
   </details>
+* <details><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
+  
+  TST should work well with any other session manager extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
+  [Tab Session Manager (aka TSM)](https://addons.mozilla.org/firefox/addon/tab-session-manager/) is one of examples.
+  (Moreover, TST also provides an [API to open tabs with structure more safely](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior).
+  TST and the session manager extension will work together more smoothly, if it opens tabs via the API.)
+  
+  In other words, TST can't collaborate with any other extension if it does not give `openerTabId` as a hint to construct trees.
+  On such cases it is required to improve the other collaborator extension itself.
+  Sadly it beyonds my power and needs a cooperation by the extension's author.
+  
+  As a workaround, you can use TST's bookmarking feature to save trees of tabs.
+  Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
+  After that please right-click on the bookmark folder and choose "Open All as a Tree", then you'll get tabs with restored tree structure.
+  </details>
 
 #### Troubles, unexpected behaviors
 
@@ -367,6 +382,15 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   For more preference, you can use a [small drag handles](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) with a helper addon: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
   You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
+  </details>
+* <details><summary>New tab is not opened as a child tab, if it is opened by something other extension</summary>
+  
+  TST should work well with any other extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
+  Tabs opened with the information will automatically organized as children of the opener tab, by TST.
+  
+  In other words, TST can't collaborate with any other extension if it does not give `openerTabId` as a hint to construct trees.
+  On such cases it is required to improve the other collaborator extension itself.
+  Sadly it beyonds my power and needs a cooperation by the extension's author.
   </details>
 * <details><summary>New tab is not opened with expected position and container, when it is opened as a blank tab instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2176#issuecomment-714853450">#2176</a>)</summary>
   
