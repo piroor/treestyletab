@@ -259,12 +259,13 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   To select multiple tabs, for drag-and-drop: <kbd>Shift</kbd>/<kbd>Ctrl</kbd>-click. [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) has additional features.
   </details>
-* <details><summary>Endlessly adding minor/trivial options</summary>
+* <details><summary>Add more minor/trivial options</summary>
   
   Please see the [list of helper extensions](#addons-that-extend-tst).
   For the appearance of tabs in the sidebar, [custom user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) may help.
   
-  The variety of configurations for TST will not increase infinitely. Instead, I hope to reduce the variety.
+  The variety of configurations for TST will not increase infinitely.
+  Instead, I hope to reduce the variety.
   High customizability is out of scope.
   I want to limit options to those that are truly essential.
   Too many options would kill this project, because they would cloud the main concept of TST and would attract people who don't share my core vision.
