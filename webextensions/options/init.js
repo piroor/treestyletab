@@ -276,7 +276,8 @@ function getUserStyleRulesFieldTheme() {
 
 function applyUserStyleRulesFieldTheme() {
   const theme = getUserStyleRulesFieldTheme();
-  if (!document.querySelector(`link[href$="/extlib/codemirror-theme/${theme}.css"]`)) {
+  if (theme != 'default' &&
+      !document.querySelector(`link[href$="/extlib/codemirror-theme/${theme}.css"]`)) {
     const range = document.createRange();
     range.selectNodeContents(document.querySelector('head'));
     range.collapse(false);
