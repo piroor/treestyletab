@@ -239,12 +239,15 @@ If you need any new APIs, please file API proposals in the issue tracker.
   This is beyond the scope of "Tree" Style Tab.
   There exist [complementary extensions that can provide vertical tabs without a tree](#similar-projects).
   </details>
+<!--
 * <details><summary>Better tab context menu</summary>
   
   Full-featured, expanded outside of the sidebar, access keys, and so on: [available with Firefox 64 and later](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64).
   
-  [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) restrictions prevent implementation of some features. See for example Mozilla bug [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_).
+  [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) restrictions prevent implementation of some features.
+  See for example Mozilla bug [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_).
   </details>
+-->
 * <details><summary>I don't need an automatically organized tree, I want to organize trees myself</summary>
   
   You can switch off this behavior:
