@@ -347,7 +347,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   In other words, TST can't collaborate with any other extension if it does not give `openerTabId` as a hint to construct trees.
   On such cases it is required to improve the other collaborator extension itself.
-  Sadly it beyonds my power and needs a cooperation by the extension's author.
+  Sadly [it beyonds my power and needs a cooperation by the extension's author](https://github.com/piroor/treestyletab/issues/2914).
   
   As a workaround, you can use TST's bookmarking feature to save trees of tabs.
   Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
