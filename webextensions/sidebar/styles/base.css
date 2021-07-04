@@ -565,13 +565,13 @@ tab-item.faviconized tab-label * {
   top: 0;
 }
 
-tab-item.faviconized.unread:not(.active):not(:hover) tab-favicon::before,
-tab-item.attention:not(:hover) tab-favicon::before {
+tab-item.faviconized.unread:not(.active) tab-item-substance:not(:hover) tab-favicon::before,
+tab-item.attention tab-item-substance:not(:hover) tab-favicon::before {
   background-image: var(--attention-marker-gradient);
 }
 
-tab-item.faviconized.unread:not(.active):hover tab-favicon::before,
-tab-item.attention:hover tab-favicon::before {
+tab-item.faviconized.unread:not(.active) tab-item-substance:hover tab-favicon::before,
+tab-item.attention tab-item-substance:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 

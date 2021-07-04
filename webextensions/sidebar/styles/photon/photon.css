@@ -154,11 +154,11 @@ tab-item .burster {
   --shadow-blur: 0.2em;
 }
 
-:root.left tab-item:not(.pinned):not(collapsed) {
+:root.left tab-item:not(.pinned):not(collapsed) tab-item-substance {
   box-shadow: -0.3em 0.3em var(--shadow-blur) var(--shadow-color);
 }
 
-:root.right tab-item:not(.pinned):not(collapsed) {
+:root.right tab-item:not(.pinned):not(collapsed) tab-item-substance {
   box-shadow: 0.3em 0.3em var(--shadow-blur) var(--shadow-color);
 }
 

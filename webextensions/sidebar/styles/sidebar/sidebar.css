@@ -153,7 +153,7 @@ tab-item.active tab-closebox {
   opacity: 1;
 }
 
-tab-item:not(.active):not(:hover):not(#dummy-tab) tab-closebox {
+tab-item:not(.active):not(#dummy-tab) tab-item-substance:not(:hover) tab-closebox {
   display: none;
 }
 
@@ -255,7 +255,8 @@ tab-item:not(.faviconized)[data-drop-position="before"] tab-item-substance::befo
 
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
 :root
-  tab-item:not(:hover):not(.active):not(#dummy-tab)
+  tab-item:not(.active):not(#dummy-tab)
+  tab-item-substance:not(:hover)
   tab-closebox {
   display: -moz-box !important;
   visibility: collapse !important;
@@ -263,7 +264,7 @@ tab-item:not(.faviconized)[data-drop-position="before"] tab-item-substance::befo
 
 
 /* for Multiple Tab Handler */
-tab-item:not(:hover):not(.active)[multipletab-ready-to-close="true"] tab-closebox {
+tab-item:not(.active)[multipletab-ready-to-close="true"] tab-item-substance:not(:hover) tab-closebox {
   visibility: visible;
 }
 

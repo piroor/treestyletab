@@ -247,16 +247,16 @@ tab-item .background,
 }
 
 tab-item.active .background,
-tab-item.active:hover .background,
+tab-item.active tab-item-substance:hover .background,
 tab-item.bundled-active .background,
-tab-item.bundled-active:hover .background,
+tab-item.bundled-active tab-item-substance:hover .background,
 .mutiple-highlighted > tab-item.highlighted .background,
-.mutiple-highlighted > tab-item.highlighted:hover .background {
+.mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
   box-shadow: 0 0 0.15em var(--browser-tab-highlighter, var(--tab-active-border-near)),
               0 0 var(--tab-dropshadow-size) var(--browser-tab-highlighter, var(--tab-active-border-far));
 }
 
-tab-item:not(.active):not(.bundled-active):not(.highlighted):hover .background,
+tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
