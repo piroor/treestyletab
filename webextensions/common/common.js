@@ -83,6 +83,7 @@ export const configs = new Configs({
       })(),
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
   iconColor: 'auto',
+  indentLine: 'auto',
 
   unrepeatableBGImageAspectRatio: 4,
 

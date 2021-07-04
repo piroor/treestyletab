@@ -233,6 +233,7 @@ export async function init() {
       onConfigChange('sidebarDirection');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
+      onConfigChange('indentLine');
 
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
@@ -866,6 +867,23 @@ function onConfigChange(changedKey) {
         rootClasses.add('simulate-svg-context-fill');
       else
         rootClasses.remove('simulate-svg-context-fill');
+      break;
+
+    case 'indentLine':
+      switch (configs[changedKey]) {
+        default:
+        case 'auto':
+          rootClasses.toggle('indent-line', configs.style == 'proton');
+          break;
+
+        case 'show':
+          rootClasses.add('indent-line');
+          break;
+
+        case 'hide':
+          rootClasses.remove('indent-line');
+          break;
+      }
       break;
 
     default:
