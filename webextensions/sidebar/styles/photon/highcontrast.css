@@ -46,7 +46,7 @@
 
 /* Tab */
 
-tab-item,
+tab-item-substance,
 .after-tabs button,
 .after-tabs [role="button"] {
   background: var(--tab-surface);
@@ -57,7 +57,7 @@ tab-item * {
   color: var(--tab-text);
 }
 
-tab-item:not(.collapsed):hover,
+tab-item:not(.collapsed) tab-item-substance:hover,
 .after-tabs button:hover,
 .after-tabs [role="button"]:hover,
 #subpanel-selector-anchor:hover {
@@ -109,10 +109,10 @@ tab-item.active tab-closebox:hover::before {
 }
 
 /* macOS workaround */
-:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) {
+:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) {
+:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 

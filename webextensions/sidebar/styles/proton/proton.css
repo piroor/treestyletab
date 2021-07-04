@@ -126,7 +126,7 @@ body,
 
 /* tab and tab-like items */
 
-tab-item,
+tab-item-substance,
 .after-tabs button,
 .after-tabs [role="button"],
 #subpanel-selector-anchor {
@@ -143,6 +143,12 @@ tab-item,
   --tab-surface: var(--tab-surface-regular);
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: var(--browser-textshadow-for-header-image, none);
+}
+tab-item-substance,
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
   background: transparent;
   color: var(--tab-text);
   line-height: 1;
@@ -170,7 +176,7 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted):hover,
   --tab-text: var(--tab-text-regular);
 }
 
-tab-item {
+tab-item-substance {
   padding: 0.45em 0.25em;
   /* Transparent tabs are shown above solid tabs.
      We have to set z-index to show all tabs in the same layer. */
@@ -184,23 +190,23 @@ tab-item {
   z-index: 100;
 }
 
-:root.left tab-item:not(.pinned),
+:root.left tab-item:not(.pinned) tab-item-substance,
 :root.left .after-tabs button:not([data-menu-ui]),
 :root.left .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-right: 0.35em;
 }
 
-:root.right tab-item:not(.pinned),
+:root.right tab-item:not(.pinned) tab-item-substance,
 :root.right .after-tabs button:not([data-menu-ui]),
 :root.right .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-left: 0.35em;
 }
 
 /* macOS workaround */
-:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) {
+:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) {
+:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 

@@ -21,6 +21,7 @@ import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './TabSoundButtonElement.js';
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './TabCloseBoxElement.js';
 
 export const kTAB_ELEMENT_NAME = 'tab-item';
+export const kTAB_SUBSTANCE_ELEMENT_NAME = 'tab-item-substance';
 
 export const TabInvalidationTarget = Object.freeze({
   Twisty:      1 << 0,
@@ -103,51 +104,55 @@ export class TabElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
 
+    const substance = document.createElement(kTAB_SUBSTANCE_ELEMENT_NAME);
+    substance.setAttribute('draggable', true);
+    this.appendChild(substance);
+
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
-    this.appendChild(background);
+    substance.appendChild(background);
 
     const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
-    this.appendChild(label);
+    substance.appendChild(label);
 
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
-    this.insertBefore(twisty, label);
+    substance.insertBefore(twisty, label);
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-    this.insertBefore(favicon, label);
+    substance.insertBefore(favicon, label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
-    this.appendChild(counter);
+    substance.appendChild(counter);
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-    this.appendChild(soundButton);
+    substance.appendChild(soundButton);
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
-    this.appendChild(closebox);
+    substance.appendChild(closebox);
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);
-    this.appendChild(burster);
+    substance.appendChild(burster);
 
     const activeMarker = document.createElement('span');
     activeMarker.classList.add(Constants.kHIGHLIGHTER);
-    this.appendChild(activeMarker);
+    substance.appendChild(activeMarker);
 
     const identityMarker = document.createElement('span');
     identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-    this.appendChild(identityMarker);
+    substance.appendChild(identityMarker);
 
     const extraItemsContainerBehind = document.createElement('span');
     extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerBehind.classList.add('behind');
-    this.appendChild(extraItemsContainerBehind);
+    substance.appendChild(extraItemsContainerBehind);
 
     const extraItemsContainerFront = document.createElement('span');
     extraItemsContainerFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerFront.classList.add('front');
-    this.appendChild(extraItemsContainerFront);
+    substance.appendChild(extraItemsContainerFront);
 
-    this.setAttribute('draggable', true);
+    this.removeAttribute('draggable');
 
     this.initializeContents();
     this.invalidate(TabInvalidationTarget.All);
@@ -162,7 +167,7 @@ export class TabElement extends HTMLElement {
   }
 
   get initialized() {
-    return !!this._labelElement;
+    return !!this._substanceElement;
   }
 
   initializeContents() {
@@ -203,6 +208,10 @@ export class TabElement extends HTMLElement {
   }
   set $TST(value) {
     return this._$TST = value;
+  }
+
+  get _substanceElement() {
+    return this.querySelector(kTAB_SUBSTANCE_ELEMENT_NAME);
   }
 
   get _twistyElement() {

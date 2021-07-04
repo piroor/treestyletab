@@ -96,6 +96,12 @@ tab-item,
   --tab-surface: var(--tab-surface-regular);
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: var(--browser-textshadow-for-header-image, none);
+}
+tab-item-substance,
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
   background: var(--tab-surface);
   color: var(--tab-text);
   text-shadow: var(--tab-text-shadow);
@@ -105,7 +111,7 @@ tab-item * {
   color: var(--tab-text);
 }
 
-tab-item:not(.active):hover,
+tab-item:not(.active) tab-item-substance:hover,
 .after-tabs button:hover,
 .after-tabs [role="button"]:hover {
   --tab-surface: var(--tab-surface-hover);
@@ -124,7 +130,7 @@ tab-item.active {
   --tab-text-inverted: var(--tab-text-active-inverted);
 }
 tab-item.bundled-active,
-tab-item.active:hover {
+tab-item.active tab-item-substance:hover {
   --tab-surface: var(--tab-surface-active-hover);
 }
 

@@ -131,15 +131,14 @@ tab-item.faviconized:focus tab-favicon {
 
 /* Show internal tab id in the debug mode */
 :root.debug tab-item::after {
+  bottom: 0;
   content: attr(data-tab-id) !important; /* override definition for the highlighting marker */
   opacity: 0.65;
-  text-align: right;
-  z-index: var(--tab-favicon-z-index);
-}
-:root.debug tab-item.faviconized::after {
+  pointer-events: none;
   position: absolute;
   right: 0;
-  bottom: 0;
+  text-align: right;
+  z-index: var(--tab-favicon-z-index);
 }
 
 /* This is required to prevent dragging of images (ex. favicon).
@@ -295,6 +294,21 @@ ul {
 /* tabs */
 
 tab-item {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  line-height: 1;
+  list-style: none;
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  position: relative;
+}
+
+tab-item-substance {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -308,15 +322,16 @@ tab-item {
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
+  pointer-events: auto;
   position: relative;
   top: 0;
 }
 
-:root.left tab-item {
+:root.left tab-item-substance {
   margin-left: calc(var(--tab-margin-left) + var(--tab-indent));
 }
 
-:root.right tab-item {
+:root.right tab-item-substance {
   margin-right: calc(var(--tab-margin-right) + var(--tab-indent));
 }
 
@@ -325,7 +340,8 @@ tab-item * {
   vertical-align: middle;
 }
 
-tab-item > * {
+tab-item > *,
+tab-item > * > * {
   position: relative;
   z-index: var(--tab-base-z-index);
 }
@@ -341,12 +357,15 @@ tab-item.hidden {
 }
 
 :root.animation tab-item.animation-ready,
+:root.animation tab-item.animation-ready tab-item-substance,
 :root.animation .after-tabs button,
 :root.animation .after-tabs [role="button"] {
   transition: var(--tab-animation);
 }
 :root.animation tab-item.animation-ready:not(.expanding),
-:root.animation tab-item.animation-ready.expanding.moving {
+:root.animation tab-item.animation-ready:not(.expanding) tab-item-substance,
+:root.animation tab-item.animation-ready.expanding.moving,
+:root.animation tab-item.animation-ready.expanding.moving tab-item-substance {
   transition: var(--tab-animation),
               var(--tab-indent-animation);
 }
@@ -355,16 +374,21 @@ tab-item.removing,
 tab-item:not(.pinned).collapsed,
 tab-item.duplicating {
   margin-top: calc(0px - var(--tab-current-size) - var(--tab-margin-bottom));
-  opacity: 0;
   pointer-events: none;
   z-index: var(--invisible-z-index);
+}
+tab-item.removing tab-item-substance,
+tab-item:not(.pinned).collapsed tab-item-substance,
+tab-item.duplicating tab-item-substance {
+  opacity: 0;
 }
 
 tab-item:not(.pinned).collapsed.collapsed-completely {
   visibility: collapse;
 }
 
-tab-item.duplicating {
+tab-item.duplicating,
+tab-item.duplicating tab-item-substance {
   transition: none;
 }
 
@@ -473,8 +497,6 @@ tab-item .extra-items-container.behind {
 /* pinned tabs */
 
 tab-item.pinned {
-  border-top: none;
-  border-left: none;
   bottom: var(--pinned-position-bottom);
   left: var(--pinned-position-left);
   margin: 0;
@@ -483,17 +505,28 @@ tab-item.pinned {
   top: calc(var(--pinned-position-top) + var(--visual-gap-offset));
   z-index: var(--over-tabs-z-index);
 }
+tab-item.pinned tab-item-substance {
+  border-top: none;
+  border-left: none;
+  margin: 0;
+}
 
 tab-item.pinned:not(.in-visible-area) {
-  opacity: 0;
   pointer-events: none;
+}
+tab-item.pinned:not(.in-visible-area) tab-item-substance {
+  opacity: 0;
 }
 
 :root.hover-on-top-edge:hover tab-item.pinned {
-  transition: var(--visual-gap-hover-animation);
   top: var(--pinned-position-top) !important;
 }
-:root.hover-on-top-edge.animation:hover tab-item.pinned {
+:root.hover-on-top-edge:hover tab-item.pinned,
+:root.hover-on-top-edge:hover tab-item.pinned tab-item-substance {
+  transition: var(--visual-gap-hover-animation);
+}
+:root.hover-on-top-edge.animation:hover tab-item.pinned,
+:root.hover-on-top-edge.animation:hover tab-item.pinned tab-item-substance {
   transition: var(--tab-animation),
               var(--visual-gap-hover-animation);
 }
@@ -509,6 +542,8 @@ tab-item.faviconized {
   max-height: var(--tab-current-size);
   max-width: var(--tab-current-size);
   width: var(--tab-current-size);
+}
+tab-item.faviconized tab-item-substance {
   padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 
@@ -540,7 +575,7 @@ tab-item.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 
-tab-item.faviconized.active:not([data-drop-position]) {
+tab-item.faviconized.active:not([data-drop-position]) tab-item-substance {
   /* For high contrast mode */
   outline: 2px solid transparent;
   outline-offset: -2px;

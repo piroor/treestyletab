@@ -29,6 +29,7 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   kTAB_ELEMENT_NAME,
+  kTAB_SUBSTANCE_ELEMENT_NAME,
   TabInvalidationTarget,
   TabUpdateTarget,
 } from './components/TabElement.js';
@@ -62,7 +63,8 @@ export function getTabFromDOMNode(node, options = {}) {
     return null;
   if (!(node instanceof Element))
     node = node.parentNode;
-  const tab = node && node.closest('.tab');
+  const tabSubstance = node && node.closest(kTAB_SUBSTANCE_ELEMENT_NAME);
+  const tab = tabSubstance && tabSubstance.closest(kTAB_ELEMENT_NAME);
   if (options.force)
     return tab && tab.apiTab;
   return TabsStore.ensureLivingTab(tab && tab.apiTab);
