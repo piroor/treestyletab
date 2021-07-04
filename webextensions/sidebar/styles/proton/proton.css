@@ -351,3 +351,42 @@ tab-item.faviconized .contextual-identity-marker {
 .after-tabs button.contextual-identities-selector-anchor::after {
     margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-dropshadow-size) + var(--tab-like-button-padding));
 }
+
+
+
+
+/* Indent line https://github.com/piroor/treestyletab/issues/2948 */
+
+:root tab-item:not(.pinned):not(.collapsed)::before {
+  bottom: 0;
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: var(--tab-indent);
+  z-index: 999999;
+}
+
+:root.left tab-item:not(.pinned)::before {
+  background: repeating-linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0) 0px,
+                var(--tab-border) 0px,
+                var(--tab-border) 1px,
+                rgba(0, 0, 0, 0) 1px,
+                rgba(0, 0, 0, 0) var(--indent-size)
+              );
+  left: calc(var(--indent-size) * 0.75);
+}
+
+:root.right tab-item:not(.pinned)::before {
+  background: repeating-linear-gradient(
+                to left,
+                rgba(0, 0, 0, 0) 0px,
+                var(--tab-border) 0px,
+                var(--tab-border) 1px,
+                rgba(0, 0, 0, 0) 1px,
+                rgba(0, 0, 0, 0) var(--indent-size)
+              );
+  right: calc(var(--indent-size) * 0.75);
+}
