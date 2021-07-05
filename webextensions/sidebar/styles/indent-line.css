@@ -15,28 +15,30 @@
   top: 0;
   width: var(--tab-indent);
   z-index: 999999;
+  --indent-line-left: repeating-linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0px,
+    var(--tab-border) 0px,
+    var(--tab-border) 1px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0) var(--indent-size)
+  );
+  --indent-line-right: repeating-linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0) 0px,
+    var(--tab-border) 0px,
+    var(--tab-border) 1px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0) var(--indent-size)
+  );
 }
 
 :root.left.indent-line tab-item:not(.pinned)::before {
-  background: repeating-linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0) 0px,
-                var(--tab-border) 0px,
-                var(--tab-border) 1px,
-                rgba(0, 0, 0, 0) 1px,
-                rgba(0, 0, 0, 0) var(--indent-size)
-              );
+  background: var(--indent-line-left);
   left: calc(var(--indent-size) * 0.75);
 }
 
 :root.right.indent-line tab-item:not(.pinned)::before {
-  background: repeating-linear-gradient(
-                to left,
-                rgba(0, 0, 0, 0) 0px,
-                var(--tab-border) 0px,
-                var(--tab-border) 1px,
-                rgba(0, 0, 0, 0) 1px,
-                rgba(0, 0, 0, 0) var(--indent-size)
-              );
+  background: var(--indent-line-right);
   right: calc(var(--indent-size) * 0.75);
 }
