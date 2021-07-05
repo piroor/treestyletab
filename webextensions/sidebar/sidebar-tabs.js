@@ -115,6 +115,7 @@ export function updateAll() {
         tab.$TST.element)
       tab.$TST.element.updateOverflow();
   }
+  reserveToUpdateActiveTreeStyle();
 }
 
 
@@ -461,6 +462,39 @@ async function activateRealActiveTab(windowId) {
   TabsInternalOperation.setTabActive(tab);
 }
 
+
+function reserveToUpdateActiveTreeStyle() {
+  if (reserveToUpdateActiveTreeStyle.timer)
+    clearTimeout(reserveToUpdateActiveTreeStyle.timer);
+  reserveToUpdateActiveTreeStyle.timer = setTimeout(() => {
+    reserveToUpdateActiveTreeStyle.timer = null;
+
+    const style = document.querySelector('#active-tree-rules');
+    if (!document.documentElement.classList.contains('indent-line')) {
+      style.textContent = '';
+      return;
+    }
+
+    const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
+
+    const highlightUpperLevel = !activeTab.$TST.hasChild || activeTab.$TST.subtreeCollapsed;
+    const highlightLevelOffset = highlightUpperLevel ? -1 : 0;
+    const level = parseInt(activeTab.$TST.getAttribute(Constants.kLEVEL) || 0) + highlightLevelOffset;
+
+    const parent = highlightUpperLevel ? activeTab.$TST.parent : activeTab;
+    const selector = parent ? parent.$TST.descendants.map(tab => `#tab-${tab.id}`).join(',') : null;
+
+    style.textContent = selector ? `
+      ${selector} {
+        --highlighted-indent-level: ${level};
+        --indent-line-opacity: 1;
+      }
+    ` : '';
+  }, 100);
+}
+reserveToUpdateActiveTreeStyle.timer = null;
+
+
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
 BackgroundConnection.onMessage.addListener(async message => {
@@ -592,6 +626,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
@@ -665,6 +700,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         await wait(configs.collapseDuration);
       }
       tab.$TST.removeState(Constants.kTAB_STATE_MOVING);
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
@@ -690,6 +726,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         // synchronization.
         reserveToSyncTabsOrder();
       }
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_UPDATE_LOADING_STATE: {
@@ -765,6 +802,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         await wait(configs.collapseDuration);
       }
       tab.$TST.destroy();
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
@@ -846,6 +884,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         TabsStore.removePinnedTab(tab);
         TabsStore.addUnpinnedTab(tab);
       }
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
@@ -881,6 +920,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           !lastMessage)
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
@@ -908,6 +948,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       if (tab.active)
         TabsInternalOperation.setTabActive(tab); // to clear "active" state of other tabs
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
@@ -925,6 +966,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
       wait(500).then(() => TabsStore.removeRemovedTab(tab));
+      reserveToUpdateActiveTreeStyle();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
@@ -981,6 +1023,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           ancestor.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
         }
       }
+      reserveToUpdateActiveTreeStyle();
     }; break;
   }
 });
