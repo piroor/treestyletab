@@ -315,7 +315,6 @@ tab-item-substance {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  left: 0;
   line-height: 1;
   list-style: none;
   margin: var(--tab-margin-top) var(--tab-margin-right) var(--tab-margin-bottom) var(--tab-margin-left);
@@ -325,7 +324,6 @@ tab-item-substance {
   opacity: 1;
   pointer-events: auto;
   position: relative;
-  top: 0;
 }
 
 :root.left tab-item-substance {
