@@ -318,7 +318,6 @@ tab-item-substance {
   line-height: 1;
   list-style: none;
   margin: var(--tab-margin-top) var(--tab-margin-right) var(--tab-margin-bottom) var(--tab-margin-left);
-  /* margin-top: 0; *//* don't set for animation */
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
