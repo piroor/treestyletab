@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.8.6 (2021.7.7)
+   * Fix visual corruption on very old versions of Firefox. (regression on  3.8.5)
  - 3.8.5 (2021.7.6)
    * Breaking change around DOM structure of tabs:
      * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
