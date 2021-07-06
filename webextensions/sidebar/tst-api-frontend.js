@@ -313,6 +313,10 @@ function getExtraContentsPartName(id) {
 function setExtraTabContents(tabElement, id, params = {}) {
   let container;
   switch (String(params.place).toLowerCase()) {
+    case 'indent':
+      container = tabElement.extraItemsContainerIndentRoot;
+      break;
+
     case 'behind':
       container = tabElement.extraItemsContainerBehindRoot;
       break;
@@ -328,6 +332,7 @@ function setExtraTabContents(tabElement, id, params = {}) {
 }
 
 function clearExtraTabContents(tabElement, id) {
+  setExtraTabContents(tabElement, id, { place: 'indent' });
   setExtraTabContents(tabElement, id, { place: 'front' });
   setExtraTabContents(tabElement, id, { place: 'behind' });
 }

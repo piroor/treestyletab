@@ -104,6 +104,11 @@ export class TabElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
 
+    const extraItemsContainerIndent = document.createElement('span');
+    extraItemsContainerIndent.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerIndent.classList.add('indent');
+    this.appendChild(extraItemsContainerIndent);
+
     const substance = document.createElement(kTAB_SUBSTANCE_ELEMENT_NAME);
     substance.setAttribute('draggable', true);
     this.appendChild(substance);
@@ -369,6 +374,10 @@ windowId = ${tab.windowId}
   }
 
   _initExtraItemsContainers() {
+    if (!this.extraItemsContainerIndentRoot) {
+      this.extraItemsContainerIndentRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`).attachShadow({ mode: 'open' });
+      this.extraItemsContainerIndentRoot.itemById = new Map();
+    }
     if (!this.extraItemsContainerBehindRoot) {
       this.extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
       this.extraItemsContainerBehindRoot.itemById = new Map();

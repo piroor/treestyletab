@@ -77,6 +77,7 @@
 
   --tab-background-z-index:            10;
   --tab-extra-contents-behind-z-index: 20;
+  --tab-indent-z-index:                90;
   --tab-base-z-index:                  100;
   --tab-favicon-z-index:               200;
   --tab-burster-z-index:               4000;
@@ -412,6 +413,7 @@ tab-item .burster,
 tab-item.faviconized.unread tab-favicon::before,
 tab-item.attention tab-favicon::before,
 tab-item .background,
+tab-item .extra-items-container.indent,
 tab-item .extra-items-container.behind,
 tab-item .extra-items-container.front,
 .newtab-button .extra-items-container {
@@ -430,6 +432,17 @@ tab-item .extra-items-container,
   flex-wrap: nowrap;
   justify-content: flex-start;
   overflow: hidden;
+}
+
+tab-item .extra-items-container.indent {
+  width: var(--tab-indent);
+  z-index: var(--tab-indent-z-index);
+}
+:root.left tab-item .extra-items-container.indent {
+  right: auto;
+}
+:root.right tab-item .extra-items-container.indent {
+  left: auto;
 }
 
 tab-item .extra-items-container.front {
