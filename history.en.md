@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Breaking change around DOM structure of tabs:
+     * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
+       If you use any custom user styles, [`>` (child combinator)](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator) after `tab-item` in selectors need to be removed.
+   * Open bookmarks including `about:newtab` correctly.
+   * Init list of external addons for permissions correctly.
+   * Reduce annoying errors in the error console.
+   * API improvement: introduce a new place `indent` [to insert extra tab contents](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents-to-tabs).
+   * API improvement: introduce [`parent`, `parent-of-<id>`, `root` and `root-of-<id>` keywords to get tabs based on tree structures](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs).
  - 3.8.4 (2021.6.20)
    * Update overflow state of tabs more correctly to avoid unexpected covering of the bottom most tab with the new tab button.
    * Update visibility of tab context menu items correctly even if it the initial run.

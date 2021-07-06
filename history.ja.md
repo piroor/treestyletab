@@ -1,6 +1,14 @@
 # 更新履歴
 
  - master/HEAD
+   * タブのDOM構造に破壊的な変更があります:
+     * 各タブの `tab-item` と内容（ `tab-favicon` など）との間に、中間コンテナとして `tab-item-substance` を追加しました。
+       ユーザースタイルを使用している場合、セレクタ内で `tab-item` の後に記述していた[`>`（子結合子）](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator)は削除する必要があります。
+   * `about:newtab`を含む項目がある時に、フォルダー内のブックマークをタブで開けなくなっていたのを修正
+   * 権限設定のためのUIに他のアドオンの一覧を表示できなくなっていたのを修正
+   * エラーコンソールに表示されるエラーの量を減らした
+   * APIの改善：[タブに追加の内容を挿入する位置として指定可能な選択肢](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents-to-tabs)に `indent` を追加した
+   * APIの改善：[ツリー構造に基づいてタブを取得するための `parent`, `parent-of-<id>`, `root`, `root-of-<id>` キーワード指定](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)に対応した
  - 3.8.4 (2021.6.20)
    * タブバーの内容が溢れたかどうかの状態をより正しく検出・更新し、「新しいタブ」ボタンが最後のタブの上に重ならないようにした
    * 初回起動時にタブのコンテキストメニューの項目の表示・非表示を正しく更新できていなかった問題を修正
