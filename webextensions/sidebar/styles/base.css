@@ -561,7 +561,8 @@ tab-item.faviconized tab-item-substance {
 }
 
 tab-item.pinned tab-closebox,
-tab-item.faviconized tab-twisty {
+tab-item.faviconized tab-twisty,
+tab-item.faviconized .extra-items-container.indent {
   display: none;
 }
 
