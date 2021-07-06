@@ -103,30 +103,6 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_indentLine_caption'),
-        expert:   true,
-        children: [
-          {
-            title: browser.i18n.getMessage('config_indentLine_auto'),
-            key:   'indentLine',
-            value: 'auto',
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_indentLine_show'),
-            key:   'indentLine',
-            value: 'show',
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_indentLine_hide'),
-            key:   'indentLine',
-            value: 'hide',
-            type:  'radio'
-          },
-        ],
-      },
-      {
         title: browser.i18n.getMessage('config_animation_label'),
         key:   'animation',
         type:  'checkbox'

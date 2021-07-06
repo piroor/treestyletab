@@ -321,11 +321,6 @@
   "config_style_none": { "message": "No Decoration" },
   "config_style_none_info": { "message": " (*Please decorate everything by yourself via \"Extra style rules for sidebar contents\")" },
 
-  "config_indentLine_caption": { "message": "Indent Line:" },
-  "config_indentLine_auto":    { "message": "Auto" },
-  "config_indentLine_show":    { "message": "Show" },
-  "config_indentLine_hide":    { "message": "Hide" },
-
   "config_colorScheme_caption": { "message": "Color scheme:" },
   "config_colorScheme_photon": { "message": "Photon" },
   "config_colorScheme_systemColor": { "message": "System Color" },
