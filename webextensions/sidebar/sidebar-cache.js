@@ -40,7 +40,7 @@ function log(...args) {
   internalLogger('sidebar/sidebar-cache', ...args);
 }
 
-const kCONTENTS_VERSION = 27;
+const kCONTENTS_VERSION = 28;
 
 export const onRestored = new EventListenerManager();
 
