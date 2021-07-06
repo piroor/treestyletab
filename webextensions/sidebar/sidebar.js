@@ -679,12 +679,12 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
   let allTabsHeight;
-  const firstNormalTab = mTabBar.querySelector('tab-item:not(.pinned)');
+  const firstNormalTab = Tab.getFirstNormalTab(mTargetWindow);
   if (firstNormalTab) {
     const range = document.createRange();
     range.selectNodeContents(mTabBar);
-    range.setStartBefore(firstNormalTab);
-    range.setEndAfter(mTabBar.querySelector('tab-item:last-of-type'));
+    range.setStartBefore(firstNormalTab.$TST.element);
+    range.setEndAfter(Tab.getLastVisibleTab(mTargetWindow).$TST.element);
     allTabsHeight   = range.getBoundingClientRect().height;
     range.detach();
   }
