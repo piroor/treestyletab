@@ -316,7 +316,6 @@ tab-item-substance {
   flex-wrap: nowrap;
   justify-content: flex-start;
   line-height: 1;
-  list-style: none;
   margin: var(--tab-margin-top) var(--tab-margin-right) var(--tab-margin-bottom) var(--tab-margin-left);
   max-width: 100%;
   overflow: hidden;
