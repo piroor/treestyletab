@@ -5,9 +5,9 @@
    * Fix visual corruption on very old versions of Firefox. (regression on  3.8.5)
  - 3.8.5 (2021.7.6)
    * Breaking change around DOM structure of tabs:
-     * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
-       If you use any custom user styles, [`>` (child combinator)](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator) after `tab-item` in selectors need to be removed.
-     * Helper addons depending DOM structure of TST 3.8.4 or older versions may not work.
+       * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
+         If you use any custom user styles, [`>` (child combinator)](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator) after `tab-item` in selectors need to be removed.
+       * Helper addons depending DOM structure of TST 3.8.4 or older versions may not work.
    * Open bookmarks including `about:newtab` correctly.
    * Init list of external addons for permissions correctly.
    * Reduce annoying errors in the error console.
@@ -53,13 +53,13 @@
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.8.0 (2021.5.5)
    * Restructure behaviors about closing and moving of a parent tab.
-     * In the sidebar, now there are some permanently fixed behaviors and some configurable presets:
-       * Closing a parent tab with collapsed tree: closes the entire tree.
-       * Moving a parent tab with collapsed tree: moves the entire tree.
-       * Moving a parent tab with expanded tree: behaves according to configurations under the section "Drag and Drop".
-     * There is a preset for people using Firefox's native tab bar as an UI to operate solo tab. In this case all tab operations done outside of the sidebar (Firefox's native tab bar, keyboard shortcuts, or other addons) are treated as operations for solo tabs, not tree of tabs.
-     * There is a preset for people desireing TST to control tabs as trees always. In this case all tab operations are treated same as operations in the sidebar, even if it is done on Firefox's native tab bar, keyboard shortcuts, or other addons.
-     * Otherwise you can configure behaviors for each case: closing of a parent with expanded tree in the sidebar, closing of a parent with collapsed/expanded tree outside of the sidebar, moving of a parent with collapsed/expanded tree outside of the sidebar, and more options for cases with closed sidebar.
+       * In the sidebar, now there are some permanently fixed behaviors and some configurable presets:
+           * Closing a parent tab with collapsed tree: closes the entire tree.
+           * Moving a parent tab with collapsed tree: moves the entire tree.
+           * Moving a parent tab with expanded tree: behaves according to configurations under the section "Drag and Drop".
+       * There is a preset for people using Firefox's native tab bar as an UI to operate solo tab. In this case all tab operations done outside of the sidebar (Firefox's native tab bar, keyboard shortcuts, or other addons) are treated as operations for solo tabs, not tree of tabs.
+       * There is a preset for people desireing TST to control tabs as trees always. In this case all tab operations are treated same as operations in the sidebar, even if it is done on Firefox's native tab bar, keyboard shortcuts, or other addons.
+       * Otherwise you can configure behaviors for each case: closing of a parent with expanded tree in the sidebar, closing of a parent with collapsed/expanded tree outside of the sidebar, moving of a parent with collapsed/expanded tree outside of the sidebar, and more options for cases with closed sidebar.
    * Better accessibility information for the sidebar. This change should help [controlling of the sidebar via speech recognition](https://github.com/piroor/treestyletab/wiki/How-to-control-Tree-Style-Tab-via-speech-recognition).
    * Add the simulated "New Tab" context menu command on tabs.
    * "Close Tabs to the Bottom" and "Close Other Tabs" context menu commands now skips collapsed descendants of the context tab.
