@@ -1162,6 +1162,9 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
     case 'current':
       return baseTab;
 
+    case 'parent':
+      return baseTab.$TST.parent;
+
     case 'next':
       return baseTab.$TST.nextTab;
     case 'nextcyclic':
