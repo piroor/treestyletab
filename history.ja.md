@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.5 (2021.7.6)
    * タブのDOM構造に破壊的な変更があります:
      * 各タブの `tab-item` と内容（ `tab-favicon` など）との間に、中間コンテナとして `tab-item-substance` を追加しました。
        ユーザースタイルを使用している場合、セレクタ内で `tab-item` の後に記述していた[`>`（子結合子）](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator)は削除する必要があります。

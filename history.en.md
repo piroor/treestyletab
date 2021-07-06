@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.5 (2021.7.6)
    * Breaking change around DOM structure of tabs:
      * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
        If you use any custom user styles, [`>` (child combinator)](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator) after `tab-item` in selectors need to be removed.
