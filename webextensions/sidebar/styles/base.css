@@ -385,7 +385,7 @@ tab-item.duplicating tab-item-substance {
 }
 
 tab-item:not(.pinned).collapsed.collapsed-completely {
-  visibility: collapse;
+  visibility: hidden;
 }
 
 tab-item.duplicating,
