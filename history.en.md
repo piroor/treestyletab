@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.7 (2021.7.8)
    * Fix odd appearance of the Photon theme. (regression on 3.8.5)
    * Calculate total height of visible tabs more safely.
  - 3.8.6 (2021.7.7)
