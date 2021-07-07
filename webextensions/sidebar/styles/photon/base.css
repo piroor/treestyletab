@@ -9,8 +9,12 @@ tab-item-substance,
 .after-tabs [role="button"] {
   border: 1px solid var(--tab-border);
   border-width: 1px 0;
-  margin-bottom: -1px;
   padding: 0.3em 0.25em;
+}
+tab-item,
+.after-tabs button,
+.after-tabs [role="button"] {
+  margin-bottom: -1px;
 }
 
 tab-item.pinned tab-item-substance {
