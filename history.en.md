@@ -7,6 +7,7 @@
    * Breaking change around DOM structure of tabs:
        * Each tab now has `tab-item-substance` as a mid-level container between `tab-item` and tab content elements like `tab-favicon`.
          If you use any custom user styles, [`>` (child combinator)](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator) after `tab-item` in selectors need to be removed.
+         [Here are more hints to update selectors](https://github.com/piroor/treestyletab/issues/2958#issuecomment-874987381).
        * Helper addons depending DOM structure of TST 3.8.4 or older versions may not work.
    * Open bookmarks including `about:newtab` correctly.
    * Init list of external addons for permissions correctly.
