@@ -7,7 +7,7 @@
    * タブのDOM構造に破壊的な変更があります:
        * 各タブの `tab-item` と内容（ `tab-favicon` など）との間に、中間コンテナとして `tab-item-substance` を追加しました。
          ユーザースタイルを使用している場合、セレクタ内で `tab-item` の後に記述していた[`>`（子結合子）](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator)は削除する必要があります。
-         [セレクタ更新のヒントも参照して下さい](https://github.com/piroor/treestyletab/issues/2958#issuecomment-874987381)。
+         [セレクタ更新のヒントも参照して下さい](https://github.com/piroor/treestyletab/discussions/2960#discussioncomment-972745)。
        * TST 3.8.4までのDOM構造に依存しているヘルパーアドオンは動作しない場合があります。
    * `about:newtab`を含む項目がある時に、フォルダー内のブックマークをタブで開けなくなっていたのを修正
    * 権限設定のためのUIに他のアドオンの一覧を表示できなくなっていたのを修正
