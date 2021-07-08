@@ -1,0 +1,67 @@
+name: Expired Issues Closure
+
+on:
+  schedule:
+  - cron: 0 5 * * *
+
+jobs:
+  cycle-weekly-close:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Close expired "duplicated" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: duplicated
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 3
+    - name: Close expired "expired" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: expired
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 3
+    - name: Close expired "wontfix" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: wontfix
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 3
+    - name: Close expired "out of scope" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: out of scope
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 3
+    - name: Close expired "intentional" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: intentional
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 3
+    - name: Close expired "invalid" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: invalid
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 7
+
+    - name: Close expired "has-workaround" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: has-workaround
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 7
+    - name: Close expired "fixed" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: fixed
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 7
+    - name: Close expired "maybe fixed" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: maybe fixed
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 7
