@@ -45,7 +45,7 @@ jobs:
       env:
         LABEL: invalid
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 7
+        EXPIRE_DAYS: 3
 
     - name: Close expired "has-workaround" issues
       uses: piroor/close-expired-issues-based-on-label@master
