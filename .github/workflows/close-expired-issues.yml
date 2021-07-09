@@ -50,10 +50,10 @@ jobs:
     - name: Close expired "has-workaround" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: has-workaround
+        LABEL: "has-workaround"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
-        KEEP_OPEN_LABELS: Firefox-issue, help wanted, in-progress
+        KEEP_OPEN_LABELS: "Firefox-issue, help wanted, in-progress"
     - name: Close expired "fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
@@ -63,7 +63,7 @@ jobs:
     - name: Close expired "maybe fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: maybe fixed
+        LABEL: "maybe fixed"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
-        KEEP_OPEN_LABELS: in-progress
+        KEEP_OPEN_LABELS: "in-progress"
