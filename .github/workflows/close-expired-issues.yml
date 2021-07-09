@@ -67,3 +67,24 @@ jobs:
         EXCEPTION_LABELS: "in-progress"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
+    - name: Close expired "stale" issues
+      uses: piroor/close-expired-issues-based-on-label@master
+      env:
+        LABEL: stale
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 7
+
+    - name: mark "help wanted" issues as stale
+      uses: piroor/auto-mark-as-stale-issues@main
+      env:
+        LABEL: stale
+        CANDIDATE_LABELS: help wanted
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 14
+    - name: mark "Firefox-issue" issues as stale
+      uses: piroor/auto-mark-as-stale-issues@main
+      env:
+        LABEL: stale
+        CANDIDATE_LABELS: Firefox-issue
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXPIRE_DAYS: 365
