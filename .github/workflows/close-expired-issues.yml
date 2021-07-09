@@ -51,9 +51,9 @@ jobs:
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: has-workaround
-        EXCEPTION_LABELS: Firefox-issue, help wanted, in-progress
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
+        EXCEPTION_LABELS: Firefox-issue, help wanted, in-progress
     - name: Close expired "fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
@@ -64,6 +64,6 @@ jobs:
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: maybe fixed
-        EXCEPTION_LABELS: in-progress
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
+        EXCEPTION_LABELS: in-progress
