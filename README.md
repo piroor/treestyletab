@@ -92,19 +92,19 @@ Some extend the behavior of TST's sidebar panel:
 
 There are some similar project by someone not me providing similar features:
 
-<details><summary>Vertical tab bar with tree (and more features)</summary>
+<details id="similar-projects-vertical-tab-bar-with-tree"><summary>Vertical tab bar with tree (and more features)</summary>
   
   * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/)
   * [Sidebery](https://addons.mozilla.org/firefox/addon/sidebery/)
   * [ftt](https://addons.mozilla.org/firefox/addon/ftt/)
   </details>
-<details><summary>Vertical tab bar with grouping</summary>
+<details id="similar-projects-vertical-tab-bar-with-grouping"><summary>Vertical tab bar with grouping</summary>
   
   * [Container Tabs Sidebar](https://addons.mozilla.org/firefox/addon/container-tabs-sidebar/)
   * [Sidebar Tabs](https://addons.mozilla.org/firefox/addon/sidebartabs/)
   * [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/)
   </details>
-<details><summary>Vertical tab bar without tree or grouping</summary>
+<details id="similar-projects-vertical-tab-bar-without-tree-or-grouping"><summary>Vertical tab bar without tree or grouping</summary>
   
   * [Tab Center Reborn](https://addons.mozilla.org/firefox/addon/tabcenter-reborn/)
   * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
@@ -112,7 +112,7 @@ There are some similar project by someone not me providing similar features:
   * [Sidebar+](https://addons.mozilla.org/firefox/addon/sidebar_plus/)
   * [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/)
   </details>
-<details><summary>Listing tabs with a search field</summary>
+<details id="similar-projects-listing-tabs-with-a-search-field"><summary>Listing tabs with a search field</summary>
   
   Some extensions provide a pop-up list of tabs with a search field that complements TST:
   
@@ -123,14 +123,14 @@ There are some similar project by someone not me providing similar features:
   * [Power Tabs](https://addons.mozilla.org/firefox/addon/power-tabs/)
   * [Tabs2List](https://addons.mozilla.org/firefox/addon/tabs-2-list/): provides not only sidebar panel but a toolbar button with a popup panel also. It has an option to show a search field in the panel by default.
   </details>
-<details><summary>for Google Chrome and Chromium</summary>
+<details id="similar-projects-for-google-chrome-and-chromium"><summary>for Google Chrome and Chromium</summary>
   
   * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
   * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
   * [Treely: Tree Style Tab Manager](https://chrome.google.com/webstore/detail/treely-tree-style-tab-man/hbledhepdppepjnbnohiepcpcnphimdj)
   * [Tree Style Tab](https://chrome.google.com/webstore/detail/tree-style-tab/oicakdoenlelpjnkoljnaakdofplkgnd)
   </details>
-<details><summary>for Vivaldi</summary>
+<details id="similar-projects-for-vivaldi"><summary>for Vivaldi</summary>
   
   * [Tree Tabs](https://drive.google.com/drive/folders/0B3jXQpRtOfvSdkN4RW5XN2tOc3c)
   </details>
@@ -161,7 +161,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 #### Other browsers support
 
-* <details><summary>Support for <a href="https://github.com/piroor/treestyletab/issues/1043">Pale Moon, Waterfox, and other Firefox forks</a></summary>
+* <details id="other-browsers-support-support-for-pale-moon-waterfox-and-other-firefox-forks"><summary>Support for <a href="https://github.com/piroor/treestyletab/issues/1043">Pale Moon, Waterfox, and other Firefox forks</a></summary>
   
   Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
   TST is designed for latest release of Mozilla Firefox (*Please see also the [`strict_min_version` information in the install manifest](https://github.com/piroor/treestyletab/blob/master/webextensions/manifest.json#L203) to know the minimum supported Firefox version)<!-- and Mozilla Firefox ESR-->, and other applications forked from Firefox are not supported.
@@ -169,7 +169,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   "Waterfox Current" looks based on Firefox ESR68 and you can install TST 2.0 and later to it.
   However "Waterfox Classic" based on Firefox 56 is never supported.
   </details>
-* <details><summary>Support for other browsers based on Chromium (ex. Google Chrome) and WebKit (ex. Safari)</a></summary>
+* <details id="other-browsers-support-support-for-other-browsers-based-on-chromium-ex-google-chrome-and-weblit-ex-safari"><summary>Support for other browsers based on Chromium (ex. Google Chrome) and WebKit (ex. Safari)</a></summary>
   
   TST can't be ported to other browsers because [it depends on some Firefox specific APIs like `sidebar`](https://github.com/piroor/treestyletab/issues/2801#issuecomment-768584534), so it needs to be re-implemented completely.
   Sorry, but I won't re-implement TST as an extension for other browsers by myself because I use Firefox.
@@ -178,7 +178,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 #### Appearance
 
-* <details><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
+* <details id="appearance-how-to-hide-the-top-tab-bar-horizontal-tab-strip"><summary>How to hide the top tab bar (horizontal tab strip)?</summary>
   
   As a workaround, you can [create a `userChrome.css` file.](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss)
   But please remind that I - the original author of TST - never recommend such an usage, because TST doesn't cover full features of the native tabs due to restrictions of WebExtensions API so *some tab features become inaccessible*, and I also believe that TST is not enough stable to replace Firefox's tab bar completely.
@@ -192,7 +192,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   I say again, I don't recommend you to hide the horizontal tab bar if you cannot write any suitable userChrome.css hack by yourself.
   I have no motivation to investigate how to hide the horizontal tab bar, because I'll never do that and it may lead people to troubles.
   </details>
-* <details><summary>How to apply GTK+ theme color on Linux?</summary>
+* <details id="appearance-how-to-apply-gtk-theme-color-on-linux"><summary>How to apply GTK+ theme color on Linux?</summary>
   
   Due to restrictions within Firefox, TST can not apply GTK+ theme color to its appearance by default. If you want TST's UI with colors to match other parts of Firefox, you need to configure Firefox and TST as:
   
@@ -213,7 +213,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   For more details, please see also [the discussions in the issue #2667](https://github.com/piroor/treestyletab/issues/2667).
   </details>
-* <details><summary>How to apply colors customized via <a href="https://color.firefox.com/">Firefox Color</a>?</summary>
+* <details id="appearance-how-to-apply-colors-customized-via-firefox-color"><summary>How to apply colors customized via <a href="https://color.firefox.com/">Firefox Color</a>?</summary>
   
   In short, there is a workaround:
   
@@ -223,25 +223,25 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   For more detailed background, please see also [my comment in the issue #2780](https://github.com/piroor/treestyletab/issues/2780#issuecomment-746043627).
   </details>
-* <details><summary>I cannot find out suitable <a href="https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules">code snippet</a> satisfying my demand. Is there any reference document?</summary>
+* <details id="appearance-i-cannot-find-out-suitable-code-snippet-satisfying-my-demand-is-there-any-reference-document"><summary>I cannot find out suitable <a href="https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules">code snippet</a> satisfying my demand. Is there any reference document?</summary>
   
   Sadly there is no stable reference document due to unstableness of TST's DOM structure. The [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) are just examples for the time they were written, and they may be broken by changes on TST itself, thus they need to be updated by users through [investigation with the debugger](https://github.com/piroor/treestyletab/wiki/How-to-inspect-tree-of-tabs#how-to-inspect-the-sidebar).
   </details>
 
 #### Feature requests
 
-* <details><summary>Horizontal tab bar</summary>
+* <details id="feature-requests-horizontal-tab-bar"><summary>Horizontal tab bar</summary>
   
   It is not possible for Tree Style Tab to support horizontal tabs. 
   TST 2.0 and later is implemented as a Firefox sidebar, there is no chance to provide a horizontal version of the extension.
   </details>
-* <details><summary>Better support for non-indented tabs</summary>
+* <details id="feature-requests-better-support-for-non-indented-tabs"><summary>Better support for non-indented tabs</summary>
   
   This is beyond the scope of "Tree" Style Tab.
   There exist [complementary extensions that can provide vertical tabs without a tree](#similar-projects).
   </details>
 <!--
-* <details><summary>Better tab context menu</summary>
+* <details id="feature-requests-better-tab-context-menu"><summary>Better tab context menu</summary>
   
   Full-featured, expanded outside of the sidebar, access keys, and so on: [available with Firefox 64 and later](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64).
   
@@ -249,7 +249,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   See for example Mozilla bug [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_).
   </details>
 -->
-* <details><summary>I don't need an automatically organized tree, I want to organize trees myself</summary>
+* <details id="feature-requests-i-dont-need-an-automatically-organized-tree-i-want-to-organize-trees-myself"><summary>I don't need an automatically organized tree, I want to organize trees myself</summary>
   
   You can switch off this behavior:
   
@@ -263,7 +263,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   To select multiple tabs, for drag-and-drop: <kbd>Shift</kbd>/<kbd>Ctrl</kbd>-click. [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) has additional features.
   </details>
-* <details><summary>Add more minor/trivial options</summary>
+* <details id="feature-requests-add-more-minor-trivial-options"><summary>Add more minor/trivial options</summary>
   
   Please see the [list of helper extensions](#addons-that-extend-tst).
   For the appearance of tabs in the sidebar, [custom user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) may help.
@@ -284,12 +284,12 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   Please remind that some existing options may violate these policies due to histrical reasons.
   </details>
-* <details><summary>Controlling where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
+* <details id="feature-requests-controlling-where-new-tabs-are-opened-from-links-or-bookmarks"><summary>Controlling where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
   Available with TST 3.7.0 and later, as an expert option: "Tabs from any other trigger" under the "New Tabs Behavior" section.
   [We cannot control the behavior for each detailed case, due to limitations of the WebExtensions API.](https://github.com/piroor/treestyletab/issues/2391#issuecomment-542302281)
   </details>
-* <details><summary>Context menu to reach Tree Style Tab options</summary>
+* <details id="feature-requests-context-menu-to-reach-tree-style-tab-options"><summary>Context menu to reach Tree Style Tab options</summary>
   
   If you use the TST toolbar button, you can open the options page directly from the context menu of the button. 
   Globally, Firefox provides a "Manage Extension" command in the context menus of toolbar buttons that are provided by extensions. 
@@ -302,13 +302,15 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   If you do frequently open TST options, you can bookmark this address: `ext+treestyletab:options` – your bookmark will open the options page in a tab.
   </details>
-* <details><summary>How to customize tab context menu?</summary>
+* <details id="feature-requests-how-to-customize-tab-context-menu"><summary>How to customize tab context menu?</summary>
   
   You can do this with `userChrome.css`. There's advice for [activation of `userChrome.css`](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss) and [style rules to hide specific context menu items](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#hide-context-menu-items-in-the-sidebar-2116).
   
-  I have no plan to add a configuration UI for items that are native to the tab context menu of Firefox. [Here are some comments describing my reasons for this decision.](https://github.com/piroor/treestyletab/issues/2658)
+  I have no plan to add a configuration UI for items that are native to the tab context menu of Firefox.
+  [Here are some comments describing my reasons for this decision.](https://github.com/piroor/treestyletab/issues/2658)
+  ([There is another FAQ topic, please see it also.](#feature-requests-add-more-minor-trivial-options))
   </details>
-* <details><summary>Automatically hide the sidebar</summary>
+* <details id="feature-requests-automatically-hide-the-sidebar"><summary>Automatically hide the sidebar</summary>
   
   Due to limitations of the WebExtensions API, this is impossible.
   There exists [a workaround with userChrome.css](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#auto-showhide-sidebar-by-mouseover-hover).
@@ -316,19 +318,20 @@ If you need any new APIs, please file API proposals in the issue tracker.
   The WebExtensions API allows us to toggle visibility of the sidebar with [keyboard shortcuts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#Key_combinations) and the toolbar button.
   Other arbitrary timings are disallowed, including `mouseover` and long-press of a key.
   </details>
-* <details><summary>I want the "Bookmarks" sidebar to appear alongside the sidebar of Tree Style Tab</summary>
+* <details id="feature-requests-i-want-the-bookmarks-sidebar-to-appear-alongside-the-sidebar-of-tree-style-tab"><summary>I want the "Bookmarks" sidebar to appear alongside the sidebar of Tree Style Tab</summary>
   
   This is currently impossible due to Mozilla bug [1328776 - Provide ability to show multiple sidebar contents parallelly)](https://bugzilla.mozilla.org/show_bug.cgi?id=1328776). Workarounds include:
   
   * [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/), which places a collapsible "Bookmarks" panel below Tree Style Tabs.
   * [Aggregate Tabs to Main Window](https://addons.mozilla.org/firefox/addon/aggregate-tabs-to-main-window/), through which multiple windows can help your workflow – "one window for a sidebar", "another window for browsing tabs". You can treat such windows as virtual multiple sidebars.
   </details>
-* <details><summary>High-power management of tree, like <a href="https://github.com/piroor/treestyletab/issues/94">sorting child tabs</a>, <a href="https://github.com/piroor/treestyletab/issues/509">auto-modification of tree</a>, <a href="https://github.com/piroor/treestyletab/issues/794">renaming tabs</a>, and so on</summary>
+* <details id="feature-requests-high-power-management-of-tree-like-sorting-child-tabs-auto-modification-of-tree-renaming-tabs-and-so-on"><summary>High-power management of tree, like <a href="https://github.com/piroor/treestyletab/issues/94">sorting child tabs</a>, <a href="https://github.com/piroor/treestyletab/issues/509">auto-modification of tree</a>, <a href="https://github.com/piroor/treestyletab/issues/794">renaming tabs</a>, and so on</summary>
   
   Please see the [list of helper extensions](#addons-that-extend-tst).
   [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/)'s [issue tracker](https://github.com/piroor/tst-more-tree-commands/issues) may be a good place to track your request.
   
   Please note that "useful" features won't be implemented to TST itself as a built-in feature.
+  ([There is another FAQ topic, please see it also.](#feature-requests-add-more-minor-trivial-options))
   
   I believe that generally "tree of tabs should be a visualized history of web browsing", because they are built on relations where you came from.
   Possibly such a tree is facially chaotic, but it just mirrors your actual footmarks, so you'll easily find out where is the target tab based on a map in your mind. Moreover, those relations themselves may let you recall forgotten idea you thought while you were browsing those tabs.
@@ -340,16 +343,16 @@ If you need any new APIs, please file API proposals in the issue tracker.
   By the way, my another addon [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) will help you if you frequently modify tree by drag and drop.
   It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you can drag selected tabs at once.
   </details>
-* <details><summary>Configuration UI to change appearance of tabs in the vertical tab bar, for example, <a href="https://github.com/piroor/treestyletab/issues/539">color</a>, <a href="https://github.com/piroor/treestyletab/issues/236">height</a>, <a href="https://github.com/piroor/treestyletab/issues/514">visibility of the scrollbar</a>, <a href="https://github.com/piroor/treestyletab/issues/651">transparency of tabs</a>, and so on</summary>
+* <details id="feature-requests-configuration-ui-to-change-appearance-of-tabs-in-the-vertical-tab-bar-for-example-color-height-visibility-of-the-scrollbar-transparency-of-tabs-and-so-on"><summary>Configuration UI to change appearance of tabs in the vertical tab bar, for example, <a href="https://github.com/piroor/treestyletab/issues/539">color</a>, <a href="https://github.com/piroor/treestyletab/issues/236">height</a>, <a href="https://github.com/piroor/treestyletab/issues/514">visibility of the scrollbar</a>, <a href="https://github.com/piroor/treestyletab/issues/651">transparency of tabs</a>, and so on</summary>
   
   There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
   See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspection for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
   </details>
-* <details><summary>Add an option to change the keyboard shortcut from F1</summary>
+* <details id="feature-requests-add-an-option-to-change-the-keyboard-shortcut-from-f1"><summary>Add an option to change the keyboard shortcut from F1</summary>
   
   [Firefox itself provides the feature.](https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox)
   </details>
-* <details><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
+* <details id="feature-requests-better^compatibility-with-session-manager-extensions-or-add-high-power-session-management-feature"><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
   
   TST should work well with any other session manager extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
   [Tab Session Manager (aka TSM)](https://addons.mozilla.org/firefox/addon/tab-session-manager/) is one of examples.
@@ -367,7 +370,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 #### Troubles, unexpected behaviors
 
-* <details><summary>TST suddenly became not working! No reaction on the sidebar!</summary>
+* <details id="feature-requests-tst-suddenly-become-not-working-no-reaction-on-the-sidebar"><summary>TST suddenly became not working! No reaction on the sidebar!</summary>
   
   1. Please try closing the sidebar and reopen it again, to reload the sidebar presentation module of TST.
      TST may work again if the trouble is due to a disconnection between TST's internal modules.
@@ -375,7 +378,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
      TST may work again if the trouble is due to something broken internal status of TST itself.
   3. If both reopening and reloading don't solve the problem, restart Firefox please.
      If the trouble is due to something problems happening in a deeply low layer, we cannot recover the normal status without restarting of Firefox.
-* <details><summary>I cannot drop tabs to the bookmarks toolbar to create bookmarks. (<a href="https://github.com/piroor/treestyletab/issues/2033">#2033</a>)</summary>
+* <details id="feature-requests-i-cannot-drop-tabs-to-the-bookmarks-toolbar-to-create-bookmarks-2033"><summary>I cannot drop tabs to the bookmarks toolbar to create bookmarks. (<a href="https://github.com/piroor/treestyletab/issues/2033">#2033</a>)</summary>
   
   In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar. Otherwise [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) possibly helps you.
   
@@ -394,7 +397,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   For more preference, you can use a [small drag handles](https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/) with a helper addon: they will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
   You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
   </details>
-* <details><summary>New tab is not opened as a child tab, if it is opened by something other extension</summary>
+* <details id="feature-requests-new-tab-is-not-opened-as-a-child-tab-if-it-is-opened-by-something-another-extension"><summary>New tab is not opened as a child tab, if it is opened by something other extension</summary>
   
   TST should work well with any other extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
   Tabs opened with the information will automatically organized as children of the opener tab, by TST.
@@ -403,7 +406,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   On such cases it is required to improve the other collaborator extension itself.
   Sadly it beyonds my power and needs a cooperation by the extension's author.
   </details>
-* <details><summary>New tab is not opened with expected position and container, when it is opened as a blank tab instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2176#issuecomment-714853450">#2176</a>)</summary>
+* <details id="feature-requests-new-tab-is-not-opened-with-expected-position-and-container-when-it-is-opened-as-a-blank-tab-instead-of-the-default-new-tab-page-2176"><summary>New tab is not opened with expected position and container, when it is opened as a blank tab instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2176#issuecomment-714853450">#2176</a>)</summary>
   
   This is a known issue and hard (or impossible) to be fixed on TST, due to restrictions of WebExtensions API.
   TST cannot detect "a new blank tab is intentionally opened by the user with the keyboard shortcut Ctrl-T", because all new tabs are initially opened with the `about:blank` URL even if you open a new tab from a link.
@@ -412,7 +415,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   For a workaround, you can define a custom shortcut to open a new blank tab with TST's settings: assigning something shortcut for the command "Open a new tab: Child Tab" at the add-ons manager.
   Go to `about:addons` => click the gear button => "Manage Extension Shortcuts" => "Tree Style Tab" => "Show 40 More" => "Open a new tab: Child Tab" => set something shortcut like Ctrl+Alt+T, then you'll get a child tab as expected with the shortcut instead of the default Ctrl-T.
   </details>
-* <details><summary>New tab is not opened with expected position and container, when it is opened with a custom URL instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2485#issuecomment-719673532">#2485</a>)</summary>
+* <details id="feature-requests-new-tab-is-not-opened-with-expected-position-and-container-when-it-is-opened-with-a-custom-url-instead-of-the-default-new-tab-page-2485"><summary>New tab is not opened with expected position and container, when it is opened with a custom URL instead of the default new tab page. (<a href="https://github.com/piroor/treestyletab/issues/2485#issuecomment-719673532">#2485</a>)</summary>
   
   You need to change the TST's option `New Tabs Behavior` => `Basic control for New Blank Tab` => `Guess a newly opened tab as opened by "New Blank Tab" action, when it is opened with the URL` to detect new tabs opened with any custom URL.
   It is `about:newtab` by default for Firefox's native new tabs.
@@ -422,7 +425,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   * If you use [New Tab Override](https://addons.mozilla.org/firefox/addon/new-tab-override/) to set a custom URL for new tabs, you cannot get the actual internal URL of new tabs with the method above, because it is immediately redirected.
     It is `moz-extension://XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/html/newtab.html`, the UUID part can be found at `about:debugging#/runtime/this-firefox` => `Extensions` => `New Tab Override` => `Internal UUID`.
   </details>
-* <details><summary>Tabs become flatten suddenly / tree structure is lost accidentally</summary>
+* <details id="feature-requests-tabs-become-flatten-suddenly-tree-strucutre-is-lost-accidentally"><summary>Tabs become flatten suddenly / tree structure is lost accidentally</summary>
   
   Such a problem may happen sometimes regardless I'm continuously struggling to solve them. Sadly on most cases there is no way to get back lost tree structure. (Sometimes, closing the window and restoring it via Ctrl-Shift-N may restore the window with correct tree structure, but it is effective only on very limited cases.)
   There are some workarounds to save your tree of tabs before you encounter such a situation:
@@ -433,7 +436,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 #### Other topics
 
-* <details><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
+* <details id="other-topics-how-to-donate-to-this-project"><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
   
   Thanks, but sorry, I have no plans to accept any dontations for these reasons:
   
