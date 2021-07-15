@@ -29,14 +29,14 @@
   "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
   "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
 
-  "tab_closebox_aria_label": { "message": "タブまたは折りたたまれたツリーを閉じる #$ID$",
+  "tab_closebox_aria_label": { "message": "タブを閉じる #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
   "tab_closebox_tree_tooltip": { "message": "ツリーを閉じる" },
-  "tab_soundButton_aria_label": { "message": "ミュート状態を切り替え #$ID$",
+  "tab_soundButton_aria_label": { "message": "タブをミュート #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},

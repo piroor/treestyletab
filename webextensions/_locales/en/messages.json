@@ -29,14 +29,14 @@
   "command_increaseSubPanel":      { "message": "Increase Size of the Sub Panel" },
   "command_decreaseSubPanel":      { "message": "Decrease Size of the Sub Panel" },
 
-  "tab_closebox_aria_label": { "message": "Close tab(s) or collapsed tree #$ID$",
+  "tab_closebox_aria_label": { "message": "Close tab #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},
   "tab_closebox_tab_tooltip": { "message": "Close tab" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Close tabs" },
   "tab_closebox_tree_tooltip": { "message": "Close tree" },
-  "tab_soundButton_aria_label": { "message": "Toggle muted state #$ID$",
+  "tab_soundButton_aria_label": { "message": "Mute tab #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},
@@ -44,7 +44,7 @@
   "tab_soundButton_muted_tooltip_multiselected": { "message": "Unmute tabs" },
   "tab_soundButton_playing_tooltip": { "message": "Mute tab" },
   "tab_soundButton_playing_tooltip_multiselected": { "message": "Mute tabs" },
-  "tab_twisty_aria_label": { "message": "Toggle collapsed state #$ID$",
+  "tab_twisty_aria_label": { "message": "Toggle tree #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},
