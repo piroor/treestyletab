@@ -1128,9 +1128,9 @@ export async function getTargetTabs(message, sender) {
 }
 
 async function getTabsFromWrongIds(ids, sender) {
-    const window = await browser.windows.getLastFocused({
-      populate: true
-    }).catch(ApiTabs.createErrorHandler());
+  const window = await browser.windows.getLastFocused({
+    populate: true
+  }).catch(ApiTabs.createErrorHandler());
   const activeWindow = TabsStore.windows.get(window.id) || window;
   const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, sender }).catch(error => {
     console.error(error);
