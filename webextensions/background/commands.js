@@ -296,10 +296,10 @@ async function performTabsDragDrop(params = {}) {
     windowId:            params.windowId,
     destinationWindowId: params.destinationWindowId,
     action:              params.action,
-    allosedActions:      params.allosedActions
+    allowedActions:      params.allowedActions
   }));
 
-  if (!(params.allosedActions & Constants.kDRAG_BEHAVIOR_MOVE) &&
+  if (!(params.allowedActions & Constants.kDRAG_BEHAVIOR_MOVE) &&
       !params.duplicate) {
     log('not allowed action');
     return;

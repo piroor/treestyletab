@@ -1275,7 +1275,7 @@ function onDrop(event) {
       tabs:                dropActionInfo.dragData.tabs,
       structure:           dropActionInfo.dragData.structure,
       action:              dropActionInfo.action,
-      allosedActions:      dropActionInfo.dragData.behavior,
+      allowedActions:      dropActionInfo.dragData.behavior,
       attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
       insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
       insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
