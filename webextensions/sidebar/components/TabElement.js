@@ -189,14 +189,20 @@ export class TabElement extends HTMLElement {
       }
       this._labelElement.owner = this;
     }
-    if (this._twistyElement)
+    if (this._twistyElement) {
       this._twistyElement.owner = this;
+      this._twistyElement.makeAccessible();
+    }
     if (this._counterElement)
       this._counterElement.owner = this;
-    if (this._soundButtonElement)
+    if (this._soundButtonElement) {
       this._soundButtonElement.owner = this;
-    if (this.closeBoxElement)
+      this._soundButtonElement.makeAccessible();
+    }
+    if (this.closeBoxElement) {
       this.closeBoxElement.owner = this;
+      this.closeBoxElement.makeAccessible();
+    }
   }
 
   // Elements restored from cache are initialized without bundled tabs.

@@ -29,13 +29,25 @@
   "command_increaseSubPanel":      { "message": "サブパネルの高さを広げる" },
   "command_decreaseSubPanel":      { "message": "サブパネルの高さを縮める" },
 
+  "tab_closebox_aria_label": { "message": "タブまたは折りたたまれたツリーを閉じる #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
   "tab_closebox_tree_tooltip": { "message": "ツリーを閉じる" },
+  "tab_soundButton_aria_label": { "message": "ミュート状態を切り替え #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_soundButton_muted_tooltip": { "message": "タブのミュートを解除" },
   "tab_soundButton_muted_tooltip_multiselected": { "message": "選択されたタブのミュートを解除" },
   "tab_soundButton_playing_tooltip": { "message": "タブをミュート" },
   "tab_soundButton_playing_tooltip_multiselected": { "message": "選択されたタブをミュート" },
+  "tab_twisty_aria_label": { "message": "ツリーを開閉 #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_twisty_expanded_tooltip": { "message": "ツリーをたたむ" },
   "tab_twisty_collapsed_tooltip": { "message": "ツリーを展開する" },
   "tab_tree_tooltip": { "message": "$TREE$\n  ...（省略されたタブ：$COUNT$個）",
@@ -707,6 +719,8 @@
   "config_loggingConnectionMessages_label": { "message": "内部通信のログを収集" },
   "config_showLogsButton_label": { "message": "ログを表示" },
   "config_simulateSVGContextFill_label": { "message": "Bug 1388193およびBug 1421329を回避して擬似的にSVGアイコンを表示する（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、これらのBugが修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
+  "config_staticARIALabel_label": { "message": "タブ要素のARIAラベルを固定する" },
+  "config_staticARIALabel_description": { "message": "※何らかのタブ操作のあとで音声認識システムがタブ要素を見失ってしまう場合、このチェックをONにしてください。" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_useCachedTree_description": { "message": "※キャッシュの不整合で動作が不安定になっている場合、このチェックをOFFにして再度ONにすることでキャッシュが刷新され状況が改善するかもしれません。" },
   "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
