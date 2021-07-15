@@ -1303,12 +1303,16 @@ function onDrop(event) {
         log('workaround for bug 1548949: setting last dropped tabs: ', configs.workaroundForBug1548949DroppedTabs);
       }
       const recentTab = tabs[0];
+      const allowedActions = event.shiftKey ?
+        configs.tabDragBehaviorShift :
+        configs.tabDragBehavior;
       BackgroundConnection.sendMessage({
         type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
         windowId:            recentTab.windowId,
         tabs:                [recentTab],
         structure:           [-1],
         action:              dropActionInfo.action,
+        allowedActions,
         attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
         insertBeforeId:      dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
         insertAfterId:       dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
