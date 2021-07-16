@@ -108,6 +108,10 @@ export async function attachTabTo(child, parent, options = {}) {
     stack:            `${configs.debug && new Error().stack}\n${options.stack || ''}`
   });
 
+  if (isTabIdUnattachable(child.id)) {
+    log('=> do not attach an unattachable tab to another (maybe already removed)');
+    return false;
+  }
   if (isTabIdUnattachable(parent.id)) {
     log('=> do not attach to an unattachable tab (maybe already removed)');
     return false;
@@ -155,8 +159,8 @@ export async function attachTabTo(child, parent, options = {}) {
     log('attachTabTo: parent or child is closed before attaching.');
     return false;
   }
-  if (isTabIdUnattachable(parent.id)) {
-    log('attachTabTo: parent is marked as unattachable (maybe already removed)');
+  if (isTabIdUnattachable(child.id) || isTabIdUnattachable(parent.id)) {
+    log('attachTabTo: parent or child is marked as unattachable (maybe already removed)');
     return false;
   }
 
