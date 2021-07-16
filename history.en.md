@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.8.8 (2021.7.17)
+   * Clear indentation of left tabs correctly after multiple ancestors are closed at a time.
+   * Allow to drop Firefox's native tabs to TST's sidebar. (regression on recent versions)
+   * Give static `aria-label` for in-tab button elements. This change should improve compatibility with some voice recognition systems including Dragon.
  - 3.8.7 (2021.7.8)
    * Fix odd appearance of the Photon theme. (regression on 3.8.5)
    * Calculate total height of visible tabs more safely.
