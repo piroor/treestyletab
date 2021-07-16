@@ -65,6 +65,21 @@ export const onSubtreeCollapsedStateChanging = new EventListenerManager();
 export const onSubtreeCollapsedStateChanged  = new EventListenerManager();
 
 
+const mUnattachableTabIds = new Set();
+
+export function markTabIdAsUnattachable(id) {
+  mUnattachableTabIds.add(id);
+}
+
+export function clearUnattachableTabId(id) {
+  mUnattachableTabIds.delete(id);
+}
+
+function isTabIdUnattachable(id) {
+  return mUnattachableTabIds.has(id);
+}
+
+
 // return moved (or not)
 export async function attachTabTo(child, parent, options = {}) {
   parent = TabsStore.ensureLivingTab(parent);
@@ -92,6 +107,11 @@ export async function attachTabTo(child, parent, options = {}) {
     broadcasted:      options.broadcasted,
     stack:            `${configs.debug && new Error().stack}\n${options.stack || ''}`
   });
+
+  if (isTabIdUnattachable(parent.id)) {
+    log('=> do not attach to an unattachable tab (maybe already removed)');
+    return false;
+  }
 
   if (parent.pinned || child.pinned) {
     log('=> pinned tabs cannot be attached');
@@ -133,6 +153,10 @@ export async function attachTabTo(child, parent, options = {}) {
   child = TabsStore.ensureLivingTab(child);
   if (!parent || !child) {
     log('attachTabTo: parent or child is closed before attaching.');
+    return false;
+  }
+  if (isTabIdUnattachable(parent.id)) {
+    log('attachTabTo: parent is marked as unattachable (maybe already removed)');
     return false;
   }
 

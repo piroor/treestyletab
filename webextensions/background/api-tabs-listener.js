@@ -702,6 +702,8 @@ function checkRecycledTab(windowId) {
 }
 
 async function onRemoved(tabId, removeInfo) {
+  Tree.markTabIdAsUnattachable(tabId);
+
   if (mPromisedStarted)
     await mPromisedStarted;
 
@@ -804,6 +806,9 @@ async function onRemoved(tabId, removeInfo) {
   catch(e) {
     console.log(e);
     onCompleted();
+  }
+  finally {
+    Tree.clearUnattachableTabId(tabId);
   }
 }
 
