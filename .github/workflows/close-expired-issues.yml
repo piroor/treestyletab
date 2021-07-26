@@ -81,6 +81,7 @@ jobs:
         CANDIDATE_LABELS: help wanted
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 14
+        COMMENT: This issue has been labeled as "stale" due to no response in 14 days. And it will be closed automatically 7 days later if not responded.
     - name: mark "Firefox-issue" issues as stale
       uses: piroor/auto-mark-as-stale-issues@main
       env:
@@ -88,3 +89,4 @@ jobs:
         CANDIDATE_LABELS: Firefox-issue
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 365
+        COMMENT: This issue has been labeled as "stale" due to no response in 365 days. And it will be closed automatically 7 days later if not responded.
