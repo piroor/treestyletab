@@ -919,6 +919,7 @@ export async function notifyScrolled(params = {}) {
     type: kNOTIFY_SCROLLED,
     tab:  tab && allTreeItems.find(treeItem => treeItem.tab.id == tab.id),
     tabs: allTreeItems,
+    overflow: params.overflow,
     window,
     windowId: window,
 

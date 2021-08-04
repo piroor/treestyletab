@@ -432,6 +432,7 @@ async function onWheel(event) {
   TSTAPI.notifyScrolled({
     tab,
     scrollContainer: mTabBar,
+    overflow: mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW),
     event
   });
 }
