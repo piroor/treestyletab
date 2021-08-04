@@ -196,7 +196,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   Due to restrictions within Firefox, TST can not apply GTK+ theme color to its appearance by default. If you want TST's UI with colors to match other parts of Firefox, you need to configure your environemnt, Firefox and TST as:
   
-  * Set and export an environment variable `GTK_THEME` in your `.profile` or somewhere like: `export GTK_THEME=<Your theme name like Arc-Dark>` (I don't know why but CSS system colors on Firefox won't respect GTK's theme colors, if this environemnt variable is missing.)
+  * Set and export an environment variable `GTK_THEME` in your `.profile` or somewhere like: `export GTK_THEME=<Your theme name like Arc-Dark>` (I don't know why but [CSS system colors on Firefox won't respect GTK's theme colors, if this environemnt variable is missing](https://github.com/piroor/treestyletab/issues/2969).)
   * Firefox's about:config
     * *`widget.content.allow-gtk-dark-theme`=`true` (not default)*
     * `widget.content.gtk-theme-override`=unset (default)
