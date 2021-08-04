@@ -29,16 +29,28 @@
   "command_increaseSubPanel":      { "message": "Увеличить размер суб-панели" },
   "command_decreaseSubPanel":      { "message": "Уменьшить размер суб-панели" },
 
+  "tab_closebox_aria_label": { "message": "Закрыть вкладку #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_closebox_tab_tooltip": { "message": "Закрыть вкладку" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "Закрыть вкладки" },
   "tab_closebox_tree_tooltip": { "message": "Закрыть дерево" },
+  "tab_soundButton_aria_label": { "message": "Выключить звук вкладки #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_soundButton_muted_tooltip": { "message": "Включить звук вкладки" },
   "tab_soundButton_muted_tooltip_multiselected": { "message": "Включить звук вкладок" },
   "tab_soundButton_playing_tooltip": { "message": "Выключить звук вкладки" },
   "tab_soundButton_playing_tooltip_multiselected": { "message": "Выключить звук вкладок" },
+  "tab_twisty_aria_label": { "message": "Свернуть/развернуть дерево #$ID$",
+    "placeholders": {
+      "id": { "content": "$1", "example": "1" }
+    }},
   "tab_twisty_expanded_tooltip": { "message": "Свернуть дерево" },
   "tab_twisty_collapsed_tooltip": { "message": "Развернуть дерево" },
-  "tab_tree_tooltip": { "message": "$TREE$\n  ...и $COUNT$ больше вкладок",
+  "tab_tree_tooltip": { "message": "$TREE$\n  ...и больше $COUNT$ вкладок",
     "placeholders": {
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
       "count": { "content": "$2", "example": "3" }
@@ -346,6 +358,7 @@
   "config_iconColor_auto":    { "message": "Авто" },
   "config_iconColor_bright":  { "message": "для светлой темы" },
   "config_iconColor_dark":    { "message": "для темной темы" },
+
 
   "config_context_caption": { "message": "Контекстное меню" },
   "config_emulateDefaultContextMenu_label": { "message": "Имитация контекстного меню вкладок на боковой панели" },
@@ -710,6 +723,8 @@
   "config_loggingConnectionMessages_label": { "message": "Лог внутренних сообщений" },
   "config_showLogsButton_label": { "message": "Показать журналы" },
   "config_simulateSVGContextFill_label": { "message": "Активировать обходной путь для бага 1388193 и бага 1421329 для симуляции SVG иконок ( * Это может увеличить нагрузку на процессор. Для деактивации переключите \"svg.context-properties.content.enabled\" в \"about:config\", пока эти баги не будут исправлены.)" },
+  "config_staticARIALabel_label": { "message": "Использовать статическую метку ARIA для вкладок" },
+  "config_staticARIALabel_description": { "message": " * Попробуйте отметить это, если ваша система распознавания речи пропускает вкладки после некоторых операций с ними." },
   "config_useCachedTree_label": { "message": "Оптимизация восстановления дерева с помощью кэша" },
   "config_useCachedTree_description": { "message": "* Попробуйте снять флажок и установить повторно, чтобы обновить кэш, если поведение дерева нестабильно." },
   "config_acceleratedTabCreation_label": { "message": "Ускорение операций с повторно открытыми вкладками ( * ПРИМЕЧАНИЕ: Возможно вы увидите нестабильную работу вкладок.)" },
