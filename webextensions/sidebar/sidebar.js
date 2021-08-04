@@ -699,21 +699,26 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
 
   document.documentElement.style.setProperty('--after-tabs-area-size', `${newTabButtonSize}px`);
 
+  const windowId = TabsStore.getCurrentWindowId();
   const overflow = containerHeight < allTabsHeight;
   if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('overflow');
     mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
+    TSTAPI.sendMessage({
+      type: TSTAPI.kNOTIFY_TABBAR_OVERFLOW,
+      windowId,
+    });
     nextFrame().then(() => {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
+      const activeTab = Tab.getActiveTab(windowId);
       if (activeTab && !Scroll.isTabInViewport(activeTab)) {
         log('scroll to active tab on updateTabbarLayout');
         Scroll.scrollToTab(activeTab);
         return;
       }
-      const lastOpenedTab = Tab.getLastOpenedTab(TabsStore.getCurrentWindowId());
+      const lastOpenedTab = Tab.getLastOpenedTab(windowId);
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
@@ -727,6 +732,10 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('underflow');
     mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
+    TSTAPI.sendMessage({
+      type: TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
+      windowId,
+    });
   }
 
   if (justNow)
