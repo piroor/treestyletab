@@ -15,37 +15,37 @@ jobs:
       env:
         LABEL: duplicated
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
     - name: Close expired "expired" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: expired
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
     - name: Close expired "wontfix" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: wontfix
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
     - name: Close expired "out of scope" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: out of scope
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
     - name: Close expired "intentional" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: intentional
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
     - name: Close expired "invalid" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: invalid
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 3
+        EXPIRE_DAYS: 7
 
     - name: Close expired "has-workaround" issues
       uses: piroor/close-expired-issues-based-on-label@master
@@ -53,26 +53,26 @@ jobs:
         LABEL: "has-workaround"
         EXCEPTION_LABELS: "Firefox-issue, help wanted, in-progress"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 7
+        EXPIRE_DAYS: 14
     - name: Close expired "fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: fixed
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 7
+        EXPIRE_DAYS: 14
     - name: Close expired "maybe fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: "maybe fixed"
         EXCEPTION_LABELS: "in-progress"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 7
+        EXPIRE_DAYS: 14
     - name: Close expired "stale" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: stale
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 7
+        EXPIRE_DAYS: 14
 
     - name: mark "help wanted" issues as stale
       uses: piroor/auto-mark-as-stale-issues@main
@@ -80,8 +80,8 @@ jobs:
         LABEL: stale
         CANDIDATE_LABELS: help wanted
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXPIRE_DAYS: 14
-        COMMENT: This issue has been labeled as "stale" due to no response in 14 days. And it will be closed automatically 7 days later if not responded.
+        EXPIRE_DAYS: 30
+        COMMENT: This issue has been labeled as "stale" due to no response in 1 month. And it will be closed automatically 14 days later if not responded.
     - name: mark "Firefox-issue" issues as stale
       uses: piroor/auto-mark-as-stale-issues@main
       env:
@@ -89,4 +89,4 @@ jobs:
         CANDIDATE_LABELS: Firefox-issue
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 365
-        COMMENT: This issue has been labeled as "stale" due to no response in 365 days. And it will be closed automatically 7 days later if not responded.
+        COMMENT: This issue has been labeled as "stale" due to no response in 1 year. And it will be closed automatically 14 days later if not responded.
