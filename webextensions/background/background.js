@@ -24,6 +24,7 @@ import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Dialog from '/common/dialog.js';
 import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 import * as Sync from '/common/sync.js';
+import * as UniqueId from '/common/unique-id.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -156,6 +157,7 @@ export async function init() {
   MetricsData.addAsync('init: initializing API for other addons', TSTAPI.initAsBackend());
 
   mInitialized = true;
+  UniqueId.readyToDetectDuplicatedTab();
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
