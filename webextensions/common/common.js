@@ -286,6 +286,7 @@ export const configs = new Configs({
   // subpanel
   lastSelectedSubPanelProviderId: null,
   lastSubPanelHeight: 0,
+  maxSubPanelSizeRatio: 0.66,
 
 
   // misc.

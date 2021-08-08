@@ -248,7 +248,8 @@ function updateLayout() {
     mHeight = Math.max(0, mHeight);
     mContainer.classList.toggle('collapsed', mHeight == 0);
     const headerSize = mHeader.getBoundingClientRect().height;
-    const appliedHeight = Math.min(window.innerHeight * 0.66, mHeight);
+    const maxHeight = window.innerHeight * Math.max(0, Math.min(1, configs.maxSubPanelSizeRatio));
+    const appliedHeight = Math.min(maxHeight, mHeight);
     document.documentElement.style.setProperty('--subpanel-content-size', `${appliedHeight}px`);
     document.documentElement.style.setProperty('--subpanel-area-size', `${appliedHeight + headerSize}px`);
 
