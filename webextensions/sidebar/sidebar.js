@@ -681,10 +681,16 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   let allTabsHeight;
   const firstNormalTab = Tab.getFirstNormalTab(mTargetWindow);
   if (firstNormalTab) {
+    const lastTab = Tab.getLastVisibleTab(mTargetWindow);
+    if (!lastTab) {
+      log('Failed to update layout: missing last visible tab, retrying with delay');
+      reserveToUpdateTabbarLayout({ reasons, timeout });
+      return;
+    }
     const range = document.createRange();
     range.selectNodeContents(mTabBar);
     range.setStartBefore(firstNormalTab.$TST.element);
-    range.setEndAfter(Tab.getLastVisibleTab(mTargetWindow).$TST.element);
+    range.setEndAfter(lastTab.$TST.element);
     allTabsHeight   = range.getBoundingClientRect().height;
     range.detach();
   }
