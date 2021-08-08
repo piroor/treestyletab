@@ -10,10 +10,7 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import * as Constants from './constants.js';
 
-const localKeys = mapAndFilter(`
-  accelKey
-  baseIndent
-  cachedExternalAddons
+export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   chunkedSyncDataLocal0
   chunkedSyncDataLocal1
   chunkedSyncDataLocal2
@@ -22,6 +19,27 @@ const localKeys = mapAndFilter(`
   chunkedSyncDataLocal5
   chunkedSyncDataLocal6
   chunkedSyncDataLocal7
+  lastConfirmedToCloseTabs
+  lastDraggedTabs
+  loggingConnectionMessages
+  loggingQueries
+  migratedBookmarkUrls
+  requestingPermissions
+  requestingPermissionsNatively
+  syncOtherDevicesDetected
+  syncAvailableNotified
+  syncDeviceInfo
+  syncDevicesLocalCache
+  syncLastMessageTimestamp
+`.trim().split('\n'), key => {
+  key = key.trim();
+  return key && key.indexOf('//') != 0 && key;
+});
+
+const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
+  accelKey
+  baseIndent
+  cachedExternalAddons
   colorScheme
   debug
   enableLinuxBehaviors
@@ -31,21 +49,14 @@ const localKeys = mapAndFilter(`
   grantedExternalAddonPermissions
   grantedRemovingTabIds
   incognitoAllowedExternalAddons
-  lastConfirmedToCloseTabs
-  lastDraggedTabs
   logFor
-  loggingConnectionMessages
-  loggingQueries
   logTimestamp
   maximumDelayForBug1561879
-  migratedBookmarkUrls
   minimumIntervalToProcessDragoverEvent
   minIndent
   notifiedFeaturesVersion
   optionsExpandedGroups
   optionsExpandedSections
-  requestingPermissions
-  requestingPermissionsNatively
   sidebarDirection
   sidebarPosition
   sidebarVirtuallyClosedWindows
@@ -54,18 +65,13 @@ const localKeys = mapAndFilter(`
   style
   subMenuCloseDelay
   subMenuOpenDelay
-  syncOtherDevicesDetected
-  syncAvailableNotified
-  syncDeviceInfo
-  syncDevicesLocalCache
-  syncLastMessageTimestamp
   testKey
   userStyleRulesFieldHeight
   userStyleRulesFieldTheme
 `.trim().split('\n'), key => {
   key = key.trim();
   return key && key.indexOf('//') != 0 && key;
-});
+}));
 
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],

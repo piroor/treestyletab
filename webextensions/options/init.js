@@ -10,6 +10,7 @@ import '/extlib/l10n.js';
 import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
+  DEVICE_SPECIFIC_CONFIG_KEYS,
   log,
   wait,
   configs,
@@ -28,29 +29,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Sync from '/common/sync.js';
 
 log.context = 'Options';
-
-const DEVICE_SPECIFIC_CONFIG_KEYS = [
-  'chunkedSyncDataLocal0',
-  'chunkedSyncDataLocal1',
-  'chunkedSyncDataLocal2',
-  'chunkedSyncDataLocal3',
-  'chunkedSyncDataLocal4',
-  'chunkedSyncDataLocal5',
-  'chunkedSyncDataLocal6',
-  'chunkedSyncDataLocal7',
-  'lastConfirmedToCloseTabs',
-  'lastDraggedTabs',
-  'loggingConnectionMessages',
-  'loggingQueries',
-  'migratedBookmarkUrls',
-  'requestingPermissions',
-  'requestingPermissionsNatively',
-  'syncOtherDevicesDetected',
-  'syncAvailableNotified',
-  'syncDeviceInfo',
-  'syncDevicesLocalCache',
-  'syncLastMessageTimestamp',
-];
 
 const options = new Options(configs, {
   steps: {
