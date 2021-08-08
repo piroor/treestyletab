@@ -28,10 +28,49 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Sync from '/common/sync.js';
 
 log.context = 'Options';
+
+const DEVICE_SPECIFIC_CONFIG_KEYS = [
+  'chunkedSyncDataLocal0',
+  'chunkedSyncDataLocal1',
+  'chunkedSyncDataLocal2',
+  'chunkedSyncDataLocal3',
+  'chunkedSyncDataLocal4',
+  'chunkedSyncDataLocal5',
+  'chunkedSyncDataLocal6',
+  'chunkedSyncDataLocal7',
+  'lastConfirmedToCloseTabs',
+  'lastDraggedTabs',
+  'loggingConnectionMessages',
+  'loggingQueries',
+  'migratedBookmarkUrls',
+  'requestingPermissions',
+  'requestingPermissionsNatively',
+  'syncOtherDevicesDetected',
+  'syncAvailableNotified',
+  'syncDeviceInfo',
+  'syncDevicesLocalCache',
+  'syncLastMessageTimestamp',
+];
+
 const options = new Options(configs, {
   steps: {
     faviconizedTabScale: '0.01'
-  }
+  },
+  onImporting(values) {
+    for (const key of DEVICE_SPECIFIC_CONFIG_KEYS) {
+      if (JSON.stringify(configs[key]) != JSON.stringify(configs.$default[key]))
+        values[key] = configs[key];
+      else
+        delete values[key];
+    }
+    return values;
+  },
+  onExporting(values) {
+    for (const key of DEVICE_SPECIFIC_CONFIG_KEYS) {
+      delete values[key];
+    }
+    return values;
+  },
 });
 
 document.title = browser.i18n.getMessage('config_title');
