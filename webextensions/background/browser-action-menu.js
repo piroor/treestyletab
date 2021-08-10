@@ -1741,13 +1741,13 @@ const mItems = [
         expert: true
       },
       {
-        title:   indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
+        title:  indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
         key:    'autoExpandOnLongHoverRestoreIniitalState',
         type:   'checkbox',
         expert: true
       },
       {
-        title:   indent() + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
+        title:  indent() + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
         key:    'autoExpandIntelligently',
         type:   'checkbox',
         expert: true
