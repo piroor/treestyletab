@@ -621,6 +621,7 @@
   "config_autoExpandOnLongHoverDelay_after":  { "message": "ミリ秒以上経過したらツリーを展開する" },
   "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "ドラッグ操作の終了後、ツリーを折りたたんだ状態に自動的に戻す" },
   "config_autoExpandIntelligently_label":  { "message": "折りたたまれたツリーを自動展開したときに、他のツリーを自動的に折りたたむ" },
+  "config_ignoreTabDropNearSidebarArea_label":  { "message": "サイドバーの近くにタブをドロップした場合はウィンドウから切り離さない（\"privacy.resistFingerprinting\"=\"true\" に設定しているときはチェックを外すことをおすすめします）" },
 
 
   "config_more_caption": { "message": "その他..." },

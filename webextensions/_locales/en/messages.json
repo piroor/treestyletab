@@ -625,6 +625,7 @@
   "config_autoExpandOnLongHoverDelay_after":  { "message": "msec while dragging" },
   "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Collapse such trees automatically after a drag action is finished" },
   "config_autoExpandIntelligently_label":  { "message": "Collapse other trees when collapsed tree is auto-expanded" },
+  "config_ignoreTabDropNearSidebarArea_label":  { "message": "Don't detach tab from window if it is dropped near the sidebar area (recommended to uncheck this if you use \"privacy.resistFingerprinting\"=\"true\")" },
 
 
   "config_more_caption": { "message": "More..." },

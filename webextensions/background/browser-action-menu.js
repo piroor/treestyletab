@@ -1751,6 +1751,12 @@ const mItems = [
         key:    'autoExpandIntelligently',
         type:   'checkbox',
         expert: true
+      },
+      {
+        title:  browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
+        key:    'ignoreTabDropNearSidebarArea',
+        type:   'checkbox',
+        expert: true
       }
     ]
   },

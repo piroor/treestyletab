@@ -484,6 +484,7 @@ export function clearDropPosition() {
   for (const target of document.querySelectorAll(`[${kDROP_POSITION}]`)) {
     target.removeAttribute(kDROP_POSITION)
   }
+  configs.lastDragOverSidebarOwnerWindowId = null;
 }
 
 export function clearDraggingTabsState() {
@@ -1093,6 +1094,8 @@ function isEventFiredOnTabDropBlocker(event) {
 }
 
 function onDragEnter(event) {
+  configs.lastDragOverSidebarOwnerWindowId = TabsStore.getCurrentWindowId();
+
   mDraggingOnSelfWindow = true;
 
   const info = getDropAction(event);
@@ -1188,6 +1191,9 @@ reserveToProcessLongHover.cancel = function() {
 };
 
 function onDragLeave(event) {
+  if (configs.lastDragOverSidebarOwnerWindowId == TabsStore.getCurrentWindowId())
+    configs.lastDragOverSidebarOwnerWindowId = null;
+
   let leftFromTabBar = false;
   try {
     const info       = getDropAction(event);
@@ -1334,6 +1340,7 @@ async function onDragEnd(event) {
   const lastDragEventCoordinatesX = mLastDragEventCoordinates.x;
   const lastDragEventCoordinatesY = mLastDragEventCoordinates.y;
   const lastDragEventCoordinatesTimestamp = mLastDragEventCoordinates.timestamp;
+  const droppedOnSidebarArea = !!configs.lastDragOverSidebarOwnerWindowId;
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
@@ -1387,6 +1394,12 @@ async function onDragEnd(event) {
     return;
   }
 
+  if (droppedOnSidebarArea) {
+    log('dropped on the tab bar (from event): detaching is canceled');
+    return;
+  }
+
+  if (configs.ignoreTabDropNearSidebarArea) {
   const windowX = window.mozInnerScreenX;
   const windowY = window.mozInnerScreenY;
   const windowW = window.innerWidth;
@@ -1437,6 +1450,7 @@ async function onDragEnd(event) {
         Math.abs(fixedEventScreenY - lastDragEventCoordinatesY) > offset))) {
     log('dropped near the tab bar (from coordinates): detaching is canceled');
     return;
+  }
   }
 
   log('trying to detach tab from window');

@@ -20,6 +20,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   chunkedSyncDataLocal6
   chunkedSyncDataLocal7
   lastConfirmedToCloseTabs
+  lastDragOverSidebarOwnerWindowId
   lastDraggedTabs
   loggingConnectionMessages
   loggingQueries
@@ -193,6 +194,7 @@ export const configs = new Configs({
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
   showTabDragBehaviorNotification: true,
   guessDraggedNativeTabs: true,
+  ignoreTabDropNearSidebarArea: true,
 
   fixupTreeOnTabVisibilityChanged: false,
 
@@ -328,6 +330,7 @@ export const configs = new Configs({
   allowDragNewTabButton: true,
   newTabButtonDragGestureModifiers: 'shift',
   migratedBookmarkUrls: [],
+  lastDragOverSidebarOwnerWindowId: null,
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,
