@@ -1,6 +1,13 @@
 # 更新履歴
 
  - master/HEAD
+   * `privacy.resistFingerprinting`=`true` を使用している場合向けに、サイドバーの近くにタブをドロップしても別ウィンドウに切り離せるようにするエキスパート設定を追加
+   * 最近のバージョンのFirefoxで複製されたタブの検出のための遅延を設定しているときに、ブラウザ起動直後のセッション復元でツリーが復元されない場合があったのを改善
+   * 新しいウィンドウが開かれたときに最初のタブを即座に開き直すアドオン（Temporary Containersなど）と併用時の安定性を向上
+   * 全設定のエクスポート・インポート時に、デバイス依存の情報を除外して安全に処理するようにした
+   * APIの改善：新しい通知型APIの [`tabbar-overflow` と `tabbar-underflow`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tab-bar-becomes-scrollable-or-unscrollable) を追加
+   * APIの改善：[`scrolled` の通知メッセージ](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#messages-notified-by-mouse-wheel-rotation)に、タブバーのスクロール可否を示すプロパティ `overflow` を追加
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.8.8 (2021.7.17)
    * 複数の祖先タブが一度に閉じられた時に残されたタブのインデントが解除されない場合があったのを修正
    * Firefoxのネイティブのタブのサイドバーへのドロップを受け付けるように修正（最近のバージョンでの後退バグ）

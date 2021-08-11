@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * Introduce an expert option to allow detach dragged tab from the window even if it is dropped near the sidebar, for people using `privacy.resistFingerprinting`=`true`.
+   * Better tree restoration on browser startup, if the delay to detect duplicated tabs is configured for recent versions of Firefox.
+   * Better compatibility with addons which reopen the initial tab of a new window immediately (e.g. Temporary Containers).
+   * Import and export all configs more safely with sanitization of device specific config keys.
+   * API improvement: introduce new notifications [`tabbar-overflow` and `tabbar-underflow`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tab-bar-becomes-scrollable-or-unscrollable).
+   * API improvement: [`scrolled` notification](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#messages-notified-by-mouse-wheel-rotation) now provides new property `overflow` indicating overflow state of the tab bar.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.8.8 (2021.7.17)
    * Clear indentation of left tabs correctly after multiple ancestors are closed at a time.
    * Allow to drop Firefox's native tabs to TST's sidebar. (regression on recent versions)
