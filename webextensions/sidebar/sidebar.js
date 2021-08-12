@@ -813,37 +813,23 @@ function onConfigChange(changedKey) {
           tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
         }
       }
-      if (configs.debug)
-        rootClasses.add('debug');
-      else
-        rootClasses.remove('debug');
+      rootClasses.toggle('debug', configs.debug);
     }; break;
 
     case 'sidebarPosition': {
       const isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO ?
         window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2 :
         configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
-      if (isRight) {
-        rootClasses.add('right');
-        rootClasses.remove('left');
-      }
-      else {
-        rootClasses.add('left');
-        rootClasses.remove('right');
-      }
+      rootClasses.toggle('right', isRight);
+      rootClasses.toggle('left', !isRight);
       Indent.update({ force: true });
     }; break;
 
-    case 'sidebarDirection':
-      if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {
-        rootClasses.add('rtl');
-        rootClasses.remove('ltr');
-      }
-      else {
-        rootClasses.add('ltr');
-        rootClasses.remove('rtl');
-      }
-      break;
+    case 'sidebarDirection': {
+      const isRTL = configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL;
+      rootClasses.toggle('rtl', isRTL);
+      rootClasses.toggle('ltr', !isRTL);
+    }; break;
 
     case 'baseIndent':
     case 'minIndent':
@@ -866,24 +852,15 @@ function onConfigChange(changedKey) {
       break;
 
     case 'showContextualIdentitiesSelector':
-      if (configs[changedKey])
-        rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
-      else
-        rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      rootClasses.toggle(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE, configs[changedKey]);
       break;
 
     case 'showNewTabActionSelector':
-      if (configs[changedKey])
-        rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
-      else
-        rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      rootClasses.toggle(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE, configs[changedKey]);
       break;
 
     case 'simulateSVGContextFill':
-      if (configs[changedKey])
-        rootClasses.add('simulate-svg-context-fill');
-      else
-        rootClasses.remove('simulate-svg-context-fill');
+      rootClasses.toggle('simulate-svg-context-fill', configs[changedKey]);
       break;
 
     default:
