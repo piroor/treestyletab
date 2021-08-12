@@ -37,12 +37,6 @@ const mItems = [
         title:    browser.i18n.getMessage('config_sidebarPosition_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_sidebarPosition_auto'),
-            key:   'sidebarPosition',
-            value: Constants.kTABBAR_POSITION_AUTO,
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_sidebarPosition_left'),
             key:   'sidebarPosition',
             value: Constants.kTABBAR_POSITION_LEFT,
@@ -53,7 +47,13 @@ const mItems = [
             key:   'sidebarPosition',
             value: Constants.kTABBAR_POSITION_RIGHT,
             type:  'radio'
-          }
+          },
+          {
+            title: browser.i18n.getMessage('config_sidebarPosition_auto'),
+            key:   'sidebarPosition',
+            value: Constants.kTABBAR_POSITION_AUTO,
+            type:  'radio'
+          },
         ]
       },
       {
