@@ -819,8 +819,14 @@ function onConfigChange(changedKey) {
         rootClasses.remove('debug');
     }; break;
 
-    case 'sidebarPosition':
-      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
+    case 'sidebarPosition': {
+      let isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
+      const WINDOW_MAX_BORDER = 16;
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
+          window.mozInnerScreenX - window.screenX > WINDOW_MAX_BORDER) {
+        isRight = true;
+      }
+      if (isRight) {
         rootClasses.add('right');
         rootClasses.remove('left');
       }
@@ -829,7 +835,7 @@ function onConfigChange(changedKey) {
         rootClasses.remove('right');
       }
       Indent.update({ force: true });
-      break;
+    }; break;
 
     case 'sidebarDirection':
       if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {

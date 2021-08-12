@@ -79,7 +79,7 @@ export const configs = new Configs({
   optionsExpandedGroups: [],
 
   // appearance
-  sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
+  sidebarPosition: Constants.kTABBAR_POSITION_AUTO,
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
 
   style:
