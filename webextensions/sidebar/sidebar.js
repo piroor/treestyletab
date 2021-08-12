@@ -821,10 +821,8 @@ function onConfigChange(changedKey) {
 
     case 'sidebarPosition': {
       let isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
-      const WINDOW_MAX_BORDER = 16;
-      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
-          window.mozInnerScreenX - window.screenX > WINDOW_MAX_BORDER) {
-        isRight = true;
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO) {
+        isRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
       }
       if (isRight) {
         rootClasses.add('right');
