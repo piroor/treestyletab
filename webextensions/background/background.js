@@ -180,7 +180,7 @@ async function notifyReadyToSidebars() {
     TabsUpdate.completeLoadingTabs(window.id); // failsafe
     log(`notifyReadyToSidebars: to ${window.id}`);
     promisedResults.push(browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
+      type:     Constants.kCOMMAND_NOTIFY_BACKGROUND_READY,
       windowId: window.id,
       tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
     }).catch(ApiTabs.createErrorSuppressor()));

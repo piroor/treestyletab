@@ -552,7 +552,7 @@ const mImportedTabs = new Promise((resolve, _reject) => {
       log(`mImportedTabs (${windowId}): onBackgroundIsReady `, message && message.type, message && message.windowId);
       if (!message ||
           !message.type ||
-          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
+          message.type != Constants.kCOMMAND_NOTIFY_BACKGROUND_READY ||
           message.windowId != windowId)
         return;
       browser.runtime.onMessage.removeListener(onBackgroundIsReady);
