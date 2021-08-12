@@ -820,10 +820,9 @@ function onConfigChange(changedKey) {
     }; break;
 
     case 'sidebarPosition': {
-      let isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
-      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO) {
-        isRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
-      }
+      const isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO ?
+        window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2 :
+        configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
       if (isRight) {
         rootClasses.add('right');
         rootClasses.remove('left');
