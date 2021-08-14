@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Apply appearance matching to sidebar position (left or right) automatically by default. After you switch the siderbar position, you need to reopen TST's sidebar panel to apply  matching apperance.
    * Introduce an expert option to allow detach dragged tab from the window even if it is dropped near the sidebar, for people using `privacy.resistFingerprinting`=`true`.
    * Better tree restoration on browser startup, if the delay to detect duplicated tabs is configured for recent versions of Firefox.
    * Better compatibility with addons which reopen the initial tab of a new window immediately (e.g. Temporary Containers).
