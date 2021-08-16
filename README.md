@@ -355,7 +355,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   [Firefox itself provides the feature.](https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox)
   </details>
-* <details id="feature-requests-better^compatibility-with-session-manager-extensions-or-add-high-power-session-management-feature"><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
+* <details id="feature-requests-better-compatibility-with-session-manager-extensions-or-add-high-power-session-management-feature"><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
   
   TST should work well with any other session manager extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
   [Tab Session Manager (aka TSM)](https://addons.mozilla.org/firefox/addon/tab-session-manager/) is one of examples.
