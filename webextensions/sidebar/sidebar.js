@@ -821,6 +821,8 @@ async function onConfigChange(changedKey) {
       const mayBeRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
       if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
           !configs.sidebarPositionRighsideNotificationShown) {
+        if (mTargetWindow != (await browser.windows.getLastFocused({})).id)
+          return;
         configs.sidebarPositionRighsideNotificationShown = true;
         const result = await RichConfirm.show({
           message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
