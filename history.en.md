@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.8.11 (2021.8.17)
+   * Never show unexpected confirmation about "Right Side" appearance for the sidebar panel shown at the left side.
  - 3.8.10 (2021.8.17)
    * Show a confirmation to apply "Right Side" appearance for the sidebar panel shown at the right side when it is initially detected.
  - 3.8.9 (2021.8.15)
