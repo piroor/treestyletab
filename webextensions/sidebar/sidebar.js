@@ -823,7 +823,6 @@ async function onConfigChange(changedKey) {
           !configs.sidebarPositionRighsideNotificationShown) {
         if (mTargetWindow != (await browser.windows.getLastFocused({})).id)
           return;
-        configs.sidebarPositionRighsideNotificationShown = true;
         const result = await RichConfirm.show({
           message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
           buttons: [
@@ -837,6 +836,7 @@ async function onConfigChange(changedKey) {
           url:     `moz-extension://${location.host}/options/options.html#section-appearance`,
           timeout: configs.sidebarPositionOptionNotificationTimeout,
         };
+        configs.sidebarPositionRighsideNotificationShown = true;
         switch (result.buttonIndex) {
           case 0:
             notify(notificationParams);
