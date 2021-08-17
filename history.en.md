@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.8.10 (2021.8.17)
+   * Show a confirmation to apply "Right Side" appearance for the sidebar panel shown at the right side when it is initially detected.
  - 3.8.9 (2021.8.15)
    * Apply appearance matching to sidebar position (left or right) automatically by default. After you switch the siderbar position, you need to reopen TST's sidebar panel to apply  matching apperance.
    * Introduce an expert option to allow detach dragged tab from the window even if it is dropped near the sidebar, for people using `privacy.resistFingerprinting`=`true`.
