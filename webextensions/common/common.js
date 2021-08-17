@@ -80,6 +80,9 @@ export const configs = new Configs({
 
   // appearance
   sidebarPosition: Constants.kTABBAR_POSITION_AUTO,
+  sidebarPositionRighsideNotificationShown: false,
+  sidebarPositionOptionNotificationTimeout: 20 * 1000,
+
   sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
 
   style:

@@ -15,6 +15,7 @@ import {
   shouldApplyAnimation,
   loadUserStyleRules,
   isMacOS,
+  notify,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -799,7 +800,7 @@ CollapseExpand.onUpdated.addListener((_tab, options) => {
   reserveToUpdateTabbarLayout({ reason });
 });
 
-function onConfigChange(changedKey) {
+async function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
@@ -817,8 +818,37 @@ function onConfigChange(changedKey) {
     }; break;
 
     case 'sidebarPosition': {
+      const mayBeRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
+          !configs.sidebarPositionRighsideNotificationShown) {
+        configs.sidebarPositionRighsideNotificationShown = true;
+        const result = await RichConfirm.show({
+          message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
+          buttons: [
+            browser.i18n.getMessage('sidebarPositionRighsideNotification_rightside'),
+            browser.i18n.getMessage('sidebarPositionRighsideNotification_leftside'),
+          ],
+        });
+        const notificationParams = {
+          title:   browser.i18n.getMessage('sidebarPositionOptionNotification_title'),
+          message: browser.i18n.getMessage('sidebarPositionOptionNotification_message'),
+          url:     `moz-extension://${location.host}/options/options.html#section-appearance`,
+          timeout: configs.sidebarPositionOptionNotificationTimeout,
+        };
+        switch (result.buttonIndex) {
+          case 0:
+            notify(notificationParams);
+            break;
+
+          case 1:
+          default:
+            configs.sidebarPosition = Constants.kTABBAR_POSITION_LEFT;
+            notify(notificationParams);
+            return;
+        }
+      }
       const isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO ?
-        window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2 :
+        mayBeRight :
         configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
       rootClasses.toggle('right', isRight);
       rootClasses.toggle('left', !isRight);

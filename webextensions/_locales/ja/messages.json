@@ -212,6 +212,13 @@
       "REST": { "content": "$3", "example": "3" }
     }},
 
+  "sidebarPositionRighsideNotification_message":   { "message": "サイドバーが右側に置かれていることを検出しました。現在の位置に合わせて表示を切り替えますか？" },
+  "sidebarPositionRighsideNotification_rightside": { "message": "右側用の表示に切り替える" },
+  "sidebarPositionRighsideNotification_leftside":  { "message": "左側用の表示を維持する" },
+
+  "sidebarPositionOptionNotification_title":   { "message": "サイドバーの内容の表示設定を保存しました" },
+  "sidebarPositionOptionNotification_message": { "message": "サイドバーの内容の表示を変更するには、Tree Style Tabの設定画面の「外観」を参照して下さい" },
+
   "startup_notification_title_installed":   { "message": "Tree Style Tabを使い始める方へ" },
   "startup_notification_message_installed": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ここをクリックして権限を設定してください。" },
   "startup_notification_message_installed_linux": { "message": "より自然な操作感を得るためには、追加の権限を許可する必要があります。ボタンをクリックして権限を設定してください。" },

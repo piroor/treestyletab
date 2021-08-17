@@ -212,6 +212,13 @@
       "REST": { "content": "$3", "example": "3" }
     }},
 
+  "sidebarPositionRighsideNotification_message":   { "message": "TST detected the sidebar position as \"Right Side\". Do you want the appearance to be switched to the one matching to the current position?" },
+  "sidebarPositionRighsideNotification_rightside": { "message": "Apply appearance for Right Side" },
+  "sidebarPositionRighsideNotification_leftside":  { "message": "Keep appearance for Left Side" },
+
+  "sidebarPositionOptionNotification_title":   { "message": "Saved the appearance option for the sidebar position" },
+  "sidebarPositionOptionNotification_message": { "message": "Please see the \"Appearance\" section of the Tree Style Tab's options page if you need to change the option." },
+
   "startup_notification_title_installed":   { "message": "For newcomer of Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Some extra permissions are required for more natural user experiences. Please click here to grant them." },
   "startup_notification_message_installed_linux": { "message": "Some extra permissions are required for more natural user experiences. Please click the button to grant them." },
