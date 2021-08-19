@@ -818,41 +818,7 @@ async function onConfigChange(changedKey) {
     }; break;
 
     case 'sidebarPosition': {
-      const mayBeRight = window.mozInnerScreenX - (window.devicePixelRatio * window.screenX) > (window.outerWidth - window.innerWidth) / 2;
-      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
-          mayBeRight &&
-          !configs.sidebarPositionRighsideNotificationShown) {
-        if (mTargetWindow != (await browser.windows.getLastFocused({})).id)
-          return;
-        const result = await RichConfirm.show({
-          message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
-          buttons: [
-            browser.i18n.getMessage('sidebarPositionRighsideNotification_rightside'),
-            browser.i18n.getMessage('sidebarPositionRighsideNotification_leftside'),
-          ],
-        });
-        const notificationParams = {
-          title:   browser.i18n.getMessage('sidebarPositionOptionNotification_title'),
-          message: browser.i18n.getMessage('sidebarPositionOptionNotification_message'),
-          url:     `moz-extension://${location.host}/options/options.html#section-appearance`,
-          timeout: configs.sidebarPositionOptionNotificationTimeout,
-        };
-        configs.sidebarPositionRighsideNotificationShown = true;
-        switch (result.buttonIndex) {
-          case 0:
-            notify(notificationParams);
-            break;
-
-          case 1:
-          default:
-            configs.sidebarPosition = Constants.kTABBAR_POSITION_LEFT;
-            notify(notificationParams);
-            return;
-        }
-      }
-      const isRight = configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO ?
-        mayBeRight :
-        configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
+      const isRight = await isSidebarRightSide();
       rootClasses.toggle('right', isRight);
       rootClasses.toggle('left', !isRight);
       Indent.update({ force: true });
@@ -901,6 +867,51 @@ async function onConfigChange(changedKey) {
         applyUserStyleRules();
       break;
   }
+}
+
+async function isSidebarRightSide() {
+  // This calculation logic is buggy for a window in a screen placed at
+  // left of the primary display and scaled. As the result, a sidebar
+  // placed at left can be mis-detected as placed at right. For safety
+  // I ignore such cases and always treat such cases as "left side placed".
+  // See also: https://github.com/piroor/treestyletab/issues/2984#issuecomment-901907503
+  if (window.screenX < 0 && window.devicePixelRatio > 1)
+    return false;
+  const mayBeRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
+  if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
+      mayBeRight &&
+      !configs.sidebarPositionRighsideNotificationShown) {
+    if (mTargetWindow != (await browser.windows.getLastFocused({})).id)
+      return;
+    const result = await RichConfirm.show({
+      message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
+      buttons: [
+        browser.i18n.getMessage('sidebarPositionRighsideNotification_rightside'),
+        browser.i18n.getMessage('sidebarPositionRighsideNotification_leftside'),
+      ],
+    });
+    const notificationParams = {
+      title:   browser.i18n.getMessage('sidebarPositionOptionNotification_title'),
+      message: browser.i18n.getMessage('sidebarPositionOptionNotification_message'),
+      url:     `moz-extension://${location.host}/options/options.html#section-appearance`,
+      timeout: configs.sidebarPositionOptionNotificationTimeout,
+    };
+    configs.sidebarPositionRighsideNotificationShown = true;
+    switch (result.buttonIndex) {
+      case 0:
+        notify(notificationParams);
+        break;
+
+      case 1:
+      default:
+        configs.sidebarPosition = Constants.kTABBAR_POSITION_LEFT;
+        notify(notificationParams);
+        return;
+    }
+  }
+  return configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO ?
+    mayBeRight :
+    configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT;
 }
 
 
