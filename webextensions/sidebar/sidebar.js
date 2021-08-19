@@ -883,13 +883,18 @@ async function isSidebarRightSide() {
       !configs.sidebarPositionRighsideNotificationShown) {
     if (mTargetWindow != (await browser.windows.getLastFocused({})).id)
       return;
-    const result = await RichConfirm.show({
-      message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
-      buttons: [
-        browser.i18n.getMessage('sidebarPositionRighsideNotification_rightside'),
-        browser.i18n.getMessage('sidebarPositionRighsideNotification_leftside'),
-      ],
-    });
+
+    let result;
+    do {
+      result = await RichConfirm.show({
+        message: browser.i18n.getMessage('sidebarPositionRighsideNotification_message'),
+        buttons: [
+          browser.i18n.getMessage('sidebarPositionRighsideNotification_rightside'),
+          browser.i18n.getMessage('sidebarPositionRighsideNotification_leftside'),
+        ],
+      });
+    } while (result.buttonIndex < 0);
+
     const notificationParams = {
       title:   browser.i18n.getMessage('sidebarPositionOptionNotification_title'),
       message: browser.i18n.getMessage('sidebarPositionOptionNotification_message'),
