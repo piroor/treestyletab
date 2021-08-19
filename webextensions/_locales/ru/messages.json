@@ -212,6 +212,13 @@
       "REST": { "content": "$3", "example": "3" }
     }},
 
+  "sidebarPositionRighsideNotification_message":   { "message": "TST определил положение панели как \"Справа\". Хотите переключить вид панели для этого положения?" },
+  "sidebarPositionRighsideNotification_rightside": { "message": "Применить вид для положения Справа" },
+  "sidebarPositionRighsideNotification_leftside":  { "message": "Сохранить вид для положения Слева" },
+
+  "sidebarPositionOptionNotification_title":   { "message": "Внешний вид для положения панели сохранен" },
+  "sidebarPositionOptionNotification_message": { "message": "Это можно изменить в секцим настроек TST \"Внешний вид\"." },
+
   "startup_notification_title_installed":   { "message": "Новым пользователям Tree Style Tab" },
   "startup_notification_message_installed": { "message": "Дополнительные разрешения требуются для взаимодействия с пользователем. Щелкните здесь, чтобы предоставить их." },
   "startup_notification_message_installed_linux": { "message": "Для более естественного взаимодействия с пользователем требуются некоторые дополнительные разрешения. Нажмите кнопку, чтобы предоставить их." },
@@ -319,6 +326,7 @@
   "config_sidebarPosition_caption": { "message": "Позиция содержимого боковой панели:" },
   "config_sidebarPosition_left": { "message": "Слева" },
   "config_sidebarPosition_right": { "message": "Справа" },
+  "config_sidebarPosition_auto": { "message": "Автоопределение" },
   "config_sidebarPosition_description": { "message": "* Эта настройка не меняет положение боковой панели. Если нужно переместить саму панель, то в меню заголовка боковой панели выберите \"Переместить боковую панель...\"." },
 
   "config_sidebarDirection_caption": { "message": "Стиль направления текста:" },
@@ -625,6 +633,7 @@
   "config_autoExpandOnLongHoverDelay_after":  { "message": "мс при перетягивании" },
   "config_autoExpandOnLongHoverRestoreIniitalState_label":  { "message": "Автосворачивать такие деревья после завершения перетягивания" },
   "config_autoExpandIntelligently_label":  { "message": "Свернуть другие деревья, когда свернутое дерево авторазворачивается" },
+  "config_ignoreTabDropNearSidebarArea_label":  { "message": "Не отделять вкладку от окна, если она отпущена в области боковой панели (снимите, если \"privacy.resistFingerprinting\"=\"true\")" },
 
 
   "config_more_caption": { "message": "Больше..." },
