@@ -818,7 +818,7 @@ async function onConfigChange(changedKey) {
     }; break;
 
     case 'sidebarPosition': {
-      const mayBeRight = window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
+      const mayBeRight = window.mozInnerScreenX - (window.devicePixelRatio * window.screenX) > (window.outerWidth - window.innerWidth) / 2;
       if (configs.sidebarPosition == Constants.kTABBAR_POSITION_AUTO &&
           mayBeRight &&
           !configs.sidebarPositionRighsideNotificationShown) {
