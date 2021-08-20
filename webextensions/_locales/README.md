@@ -17,7 +17,7 @@ Even if you don't have an account on GitLocalize.com, the-->
 [Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
 
 1. Click the "Load from GitHub" button (an octcat icon).
-2. Input an URL `https://github.com/piroor/treestyletab` in to the field and click the "OK" button.
+2. Input an URL `https://github.com/piroor/treestyletab/tree/trunk` in to the field and click the "OK" button.
 3. Choose your language from the rightside dropdown list.
 4. Find fields marked with red line - blank (untranslated) or updated messages, and translate them.
 5. Click the "Submit changes to the developers" button (a right arrow icon).
