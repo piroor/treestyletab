@@ -10,11 +10,9 @@
 
 ## Translation on a web service
 
-<!--
-You can translate TST's messages on [GitLocalize.com](https://gitlocalize.com/repo/3459). If you want to become a moderator of a language, please sign up to the service and contact me.
+You can translate TST's messages on [GitLocalize.com](https://gitlocalize.com/repo/6376). If you want to become a moderator of a language, please sign up to the service and contact me.
 
-Even if you don't have an account on GitLocalize.com, the-->
-[Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
+Even if you don't have an account on GitLocalize.com, the [Web Extension Translator](https://lusito.github.io/web-ext-translator/) will help your translation. Steps:
 
 1. Click the "Load from GitHub" button (an octcat icon).
 2. Input an URL `https://github.com/piroor/treestyletab/tree/trunk` in to the field and click the "OK" button.
