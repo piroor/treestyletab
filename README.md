@@ -243,15 +243,6 @@ If you need any new APIs, please file API proposals in the issue tracker.
   This is beyond the scope of "Tree" Style Tab.
   There exist [complementary extensions that can provide vertical tabs without a tree](#similar-projects).
   </details>
-<!--
-* <details id="feature-requests-better-tab-context-menu"><summary>Better tab context menu</summary>
-  
-  Full-featured, expanded outside of the sidebar, access keys, and so on: [available with Firefox 64 and later](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64).
-  
-  [WebExtensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions) restrictions prevent implementation of some features.
-  See for example Mozilla bug [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_).
-  </details>
--->
 * <details id="feature-requests-i-dont-need-an-automatically-organized-tree-i-want-to-organize-trees-myself"><summary>I don't need an automatically organized tree, I want to organize trees myself</summary>
   
   You can switch off this behavior:
@@ -435,6 +426,17 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
   * [Tab Session Manager](https://addons.mozilla.org/firefox/addon/tab-session-manager/) supports saving sessions with tree information. Please remind that you need to activate compatibility option manually.
   * TST allows you to take a snapshot of tabs tree to a bookmark folder. Select all tabs (via shift-click, ctrl-click, or "Select All Tabs"), and bookmark selected tabs via the "Bookmark Tabs..." command in tabs context menu on the sidebar panel. Created bookmarks will have `>` marks in their title, it means their tree level. Right click on the bookmark folder and choose the command "Open All as a Tree", then TST will open tabs from the bookmark folder with tree structure constructed from the `>` marks of their title.
+  </details>
+* <details id="feature-requests-"><summary>"Send Tab/Tree to Device" does not work [#2991](https://github.com/piroor/treestyletab/issues/2991)</summary>
+  
+  In short: it is inavoidable problem. You need to use the feature very carefully due to unavoidable restrictions.
+  
+  * Firefox does not allow addons to access Firefox Sync features like "send tab to device" directly. Such an API proposal was already rejected. See also: [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_)
+  * Instead, [storage.sync](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync) API is the only one method for addons to share user data across devices.
+  * Thus TST **simulates** Firefox's "send tab to device" feature based on storage.sync API. **The simulated feature does not work same as Firefox's native one due to various restrictions.**
+    * TST tries to suggest device name from available information, but it may have less identifiability because Firefox does not allow addons to get native device name. Thus **you need to give enough identifiable name manually**.
+    * storage.sync has **no guarantee that written data is synchronize immediately**. Even if you change device name from TST options or choose the "send tab/tree to device" command, you may need to wait until Firefox synchronize storage.sync data. Sadly we don't know when it happens.
+    * So, if you need to send or receive tabs via TST's "send tab/tree" command immediately, you'll need to run "sync now" command of Firefox itself on **both** sender and receiver Firefoxes after you ran the "send tab/tree" command.
   </details>
 
 #### Other topics
