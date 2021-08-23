@@ -2280,11 +2280,11 @@
         "hash": "c3ae3c72832dfedee6c48d0dc37eb954"
     },
     "tabContextMenu_pin_label": {
-        "message": "탭 잠금(&P)",
+        "message": "탭 고정(&P)",
         "hash": "84f0158295ff8a14fd6062c7ec19c77c"
     },
     "tabContextMenu_unpin_label": {
-        "message": "탭 잠금 해제(&P)",
+        "message": "탭 고정 해제(&P)",
         "hash": "60571db0ccb087c30009dadd2042ebd8"
     },
     "tabContextMenu_duplicate_label": {
@@ -2380,11 +2380,11 @@
         "hash": "c9aec61975e838ae00211e78c365ca82"
     },
     "tabContextMenu_pin_label_multiselected": {
-        "message": "탭 잠금(&P)",
+        "message": "탭 고정(&P)",
         "hash": "b32691b5170714cfdb1b406b5756149b"
     },
     "tabContextMenu_unpin_label_multiselected": {
-        "message": "탭 잠금 해제(&P)",
+        "message": "탭 고정 해제(&P)",
         "hash": "b6bb715b523238636abe60c06c9679e6"
     },
     "tabContextMenu_duplicate_label_multiselected": {
