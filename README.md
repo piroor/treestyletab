@@ -427,7 +427,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   * [Tab Session Manager](https://addons.mozilla.org/firefox/addon/tab-session-manager/) supports saving sessions with tree information. Please remind that you need to activate compatibility option manually.
   * TST allows you to take a snapshot of tabs tree to a bookmark folder. Select all tabs (via shift-click, ctrl-click, or "Select All Tabs"), and bookmark selected tabs via the "Bookmark Tabs..." command in tabs context menu on the sidebar panel. Created bookmarks will have `>` marks in their title, it means their tree level. Right click on the bookmark folder and choose the command "Open All as a Tree", then TST will open tabs from the bookmark folder with tree structure constructed from the `>` marks of their title.
   </details>
-* <details id="feature-requests-"><summary>"Send Tab/Tree to Device" does not work [#2991](https://github.com/piroor/treestyletab/issues/2991)</summary>
+* <details id="feature-requests-"><summary>"Send Tab/Tree to Device" does not work <a href="https://github.com/piroor/treestyletab/issues/2991">#2991</a></summary>
   
   In short: it is inavoidable problem. You need to use the feature very carefully due to unavoidable restrictions.
   
