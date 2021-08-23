@@ -147,6 +147,14 @@ tab-item[data-current-uri^="about:robots"] .favicon-builtin::before,
   mask: none;
 }
 
+tab-item[data-current-favicon-uri="chrome://global/skin/icons/info.svg"] .favicon-builtin::before {
+  background: url("/resources/icons/info.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill tab-item[data-current-favicon-uri="chrome://global/skin/icons/info.svg"] .favicon-builtin::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/info.svg") no-repeat center / 100%;
+}
+
 tab-item[data-current-favicon-uri="chrome://global/skin/icons/warning.svg"] .favicon-builtin::before {
   background: url("/resources/icons/warning.svg") no-repeat center / 100%;
 }
@@ -180,6 +188,7 @@ tab-item[data-current-uri^="about:processes"] .favicon-image,
 tab-item[data-current-uri^="about:profiling"] .favicon-image,
 tab-item[data-current-uri^="about:protections"] .favicon-image,
 tab-item[data-current-uri^="about:robots"] .favicon-image,
+tab-item[data-current-favicon-uri="chrome://global/skin/icons/info.svg"] .favicon-image,
 tab-item[data-current-favicon-uri="chrome://global/skin/icons/warning.svg"] .favicon-image,
 tab-item:not(.group-tab
        ):not([data-current-uri^="chrome:"]
@@ -194,6 +203,7 @@ tab-item:not(.group-tab
        ):not([data-current-uri^="about:profiling"]
        ):not([data-current-uri^="about:protections"]
        ):not([data-current-uri^="about:robots"]
+       ):not([data-current-favicon-uri="chrome://global/skin/icons/info.svg"]
        ):not([data-current-favicon-uri="chrome://global/skin/icons/warning.svg"])
   tab-favicon:not(.error) .favicon-image[src] ~ .favicon-builtin::before,
 tab-item.loading .favicon-image,
