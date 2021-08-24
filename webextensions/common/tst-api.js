@@ -1028,7 +1028,7 @@ function* spawnMessages(targets, params) {
     const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
 
     try {
-      const result = await browser.runtime.sendMessage(id, allowedMessage).catch(ApiTabs.createErrorHandler());
+      const result = await browser.runtime.sendMessage(id, allowedMessage);
       return {
         id,
         result
