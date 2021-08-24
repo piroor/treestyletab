@@ -301,6 +301,11 @@ async function setupDelayedExpand(tab) {
     return;
   TabsStore.addToBeExpandedTab(tab);
   tab.$TST.delayedExpand = setTimeout(() => {
+    if (!tab.$TST.delayedExpand) { // already canceled
+      log('delayed expand is already canceled ', tab.id);
+      return;
+    }
+    log('delayed expand by long-press of ctrl key on ', tab.id);
     TabsStore.removeToBeExpandedTab(tab);
     Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
