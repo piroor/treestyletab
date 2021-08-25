@@ -351,7 +351,7 @@
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "創建新樹時自動折疊其他樹" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "切換分頁時，自動開展該樹並折疊其他樹" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "" },
+  "config_collapseExpandSubtreeByDblClick_label": { "message": "\u200b" },
 
   "config_treeDoubleClickBehavior_caption":             { "message": "雙擊分頁" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "開關該樹" },
@@ -467,7 +467,7 @@
 
   "config_all_caption": { "message": "全部設定" },
 
-  "config_terms_delimiter": { "message": "" },
+  "config_terms_delimiter": { "message": "\u200b" },
 
 
   "tabContextMenu_reload_label":      { "message": "重新載入分頁(&R)" },

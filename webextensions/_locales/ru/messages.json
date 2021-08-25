@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "Теперь вкладки можно отправлять на другие устройства с TST." },
   "syncAvailable_notification_message": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присвоить этому устройству уникальное имя." },
   "syncAvailable_notification_message_linux": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присоить этому устройству уникальное имя." },
-  "sentTabs_notification_title":            { "message": "" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Вкладки отправлены на $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Вкладки отправлены на $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Вкладка отправлена на все устройства" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Вкладки отправлены на все устройства" },
   "receiveTabs_notification_title":            { "message": "Вкладка из $DEVICE$",
     "placeholders": {

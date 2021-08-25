@@ -167,19 +167,19 @@
   "syncAvailable_notification_title":   { "message": "Tabs können nun auf andere Geräte gesendet werden." },
   "syncAvailable_notification_message": { "message": "Tabs köknnen nun zwischen Geräten synchronisiert werden. Hier klicken um diesem Gerät einen Namen zu geben." },
   "syncAvailable_notification_message_linux": { "message": "Tabs köknnen nun zwischen Geräten synchronisiert werden. Auf die Schaltfläche klicken um diesem Gerät einen Namen zu geben." },
-  "sentTabs_notification_title":            { "message": "" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Tabs werden an $DEVICE$ gesendet",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox auf Gerät X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Tabs wurden an $DEVICE$ gesendet",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox auf Gerät X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Tab wird an alle Geräte gesendet" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Tabs werden an alle Geräte gesendet" },
   "receiveTabs_notification_title":            { "message": "Tab von $DEVICE$",
     "placeholders": {

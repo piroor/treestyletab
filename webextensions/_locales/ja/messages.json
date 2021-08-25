@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "タブをTSTから他の端末に送れます" },
   "syncAvailable_notification_message": { "message": "他の端末との間でタブを送受信できます。ここをクリックして、この端末に分かりやすい名前を設定してください。" },
   "syncAvailable_notification_message_linux": { "message": "他の端末との間でタブを送受信できます。ボタンをクリックして、この端末に分かりやすい名前を設定してください。" },
-  "sentTabs_notification_title":            { "message": "" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "$DEVICE$ にタブを送信しました",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "$DEVICE$ にタブを送信しました",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "すべての端末にタブを送信しました" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "すべての端末にタブを送信しました" },
   "receiveTabs_notification_title":            { "message": "$DEVICE$ からのタブ",
     "placeholders": {
@@ -756,7 +756,7 @@
 
   "config_all_caption": { "message": "すべての設定" },
 
-  "config_terms_delimiter": { "message": "" },
+  "config_terms_delimiter": { "message": "\u200b" },
 
 
   "tabContextMenu_newTab_label":      { "message": "新しいタブ(&W)" },
