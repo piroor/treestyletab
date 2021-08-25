@@ -1876,7 +1876,6 @@ browser.menus.onClicked.addListener((info, _tab) => {
     return;
 
   if (item.url) {
-	console.log('item.url ', item.url);
     browser.tabs.create({ url: item.url });
     return;
   }
