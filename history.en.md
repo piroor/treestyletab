@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.12 (2021.8.26)
    * Update scrollability status of the tab bar even if there are some "hidden via WebExtensions API, but visible by CSS hack" tabs.
    * Reduce (deactivate) mis-detection of the sidebar position on some unstable cases: leftside non-primary and high-dpi screen.
    * Use an info icon same to the one in the Proton theme of Firefox itself, for network error pages.
