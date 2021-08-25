@@ -378,16 +378,16 @@ function getMouseEventDetail(event, tab) {
 
 function getOriginalExtraContentsTarget(event) {
   try {
-  let target = event.originalTarget;
-  if (target && target.nodeType != Node.ELEMENT_NODE)
-    target = target.parentNode;
+    let target = event.originalTarget;
+    if (target && target.nodeType != Node.ELEMENT_NODE)
+      target = target.parentNode;
 
-  const extraContents = target.closest(`.extra-item`);
-  if (extraContents)
-    return {
-      owners: new Set([extraContents.dataset.owner]),
-      target: target.outerHTML
-    };
+    const extraContents = target.closest(`.extra-item`);
+    if (extraContents)
+      return {
+        owners: new Set([extraContents.dataset.owner]),
+        target: target.outerHTML
+      };
   }
   catch(_error) {
     // this may happen by mousedown on scrollbar
