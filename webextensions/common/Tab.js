@@ -1748,6 +1748,15 @@ Tab.getLastTab = windowId => {
   });
 };
 
+Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
+  return TabsStore.query({
+    windowId,
+    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
+    visible: true,
+    ordered: true
+  });
+};
+
 Tab.getLastVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
     windowId,
@@ -1774,20 +1783,28 @@ Tab.getLastPinnedTab = windowId => { // visible, pinned
   });
 };
 
+Tab.getFirstUnpinnedTab = windowId => { // not-pinned
+  return TabsStore.query({
+    windowId,
+    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
+    ordered: true
+  });
+};
+
+Tab.getLastUnpinnedTab = windowId => { // not-pinned
+  return TabsStore.query({
+    windowId,
+    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
+    ordered: true,
+    last:    true
+  });
+};
+
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
   return TabsStore.query({
     windowId,
     tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
     normal:  true,
-    ordered: true
-  });
-};
-
-Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
-  return TabsStore.query({
-    windowId,
-    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
-    visible: true,
     ordered: true
   });
 };
