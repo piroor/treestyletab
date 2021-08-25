@@ -540,8 +540,6 @@
   "syncAvailable_notification_message_linux": {
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
-  "sentTabs_notification_title": {
-  },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
     "placeholders": {
@@ -550,8 +548,6 @@
         "example": "设备 X 上的 Firefox"
       }
     }
-  },
-  "sentTabs_notification_title_multiple": {
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -562,12 +558,8 @@
       }
     }
   },
-  "sentTabsToAllDevices_notification_title": {
-  },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
-  },
-  "sentTabsToAllDevices_notification_title_multiple": {
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -2251,9 +2243,6 @@
   "config_all_caption": {
     "message": "所有配置",
     "hash": "e0437bb7bd8d7ce28700078c6bb12418"
-  },
-  "config_terms_delimiter": {
-    "hash": "18f081109e84f7393fd44c9b7c437cb8"
   },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
