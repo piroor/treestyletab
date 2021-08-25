@@ -510,6 +510,11 @@ export async function rebuildAll(importedTabs, cache) {
       let tab = nativeTabs[index];
       Tab.track(tab);
       tab = importedTabs[index] && Tab.import(importedTabs[index]) || tab;
+      if (!tab.$TST) {
+        console.log('FATAL ERROR: Imported tab is not untracked yet. Reload the sidebar to retry initialization. See also: https://github.com/piroor/treestyletab/issues/2986');
+        location.reload();
+        return;
+      }
       tab.$TST.unbindElement(); // The tab object can have old element already detached from the document, so we need to forget it.
       if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
         UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: re-track all tabs
