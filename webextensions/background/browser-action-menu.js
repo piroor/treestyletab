@@ -1611,101 +1611,14 @@ const mItems = [
         title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
         enabled: false
       },
+      // These options are too complex to put in the menu UI, so I simply redirect to the options page.
       {
-        title:    indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_TEAR_OFF,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tree'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_tree'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_TEAR_OFF,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_tab'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_none'),
-            key:   'tabDragBehavior',
-            value: Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio',
-            expert: true
-          }
-        ]
+        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
+        url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title:    indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_TEAR_OFF,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tree'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_tree'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ENTIRE_TREE | Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_TEAR_OFF,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_tab'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_MOVE | Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_tabDragBehavior_none_none'),
-            key:   'tabDragBehaviorShift',
-            value: Constants.kDRAG_BEHAVIOR_NONE,
-            type:  'radio',
-            expert: true
-          }
-        ]
+        title: indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
+        url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
         title: browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
@@ -1962,10 +1875,16 @@ browser.menus.onClicked.addListener((info, _tab) => {
   if (!item)
     return;
 
+  if (item.url) {
+	console.log('item.url ', item.url);
+    browser.tabs.create({ url: item.url });
+    return;
+  }
   if (item.key) {
     configs[item.key] = 'value' in item ? item.value : !configs[item.key];
+    return;
   }
-  else if (item.permissions) {
+  if (item.permissions) {
     if (item.checked) {
       browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
     }
@@ -1983,6 +1902,7 @@ browser.menus.onClicked.addListener((info, _tab) => {
         })
         .catch(ApiTabs.createErrorHandler());
     }
+    return;
   }
 });
 
