@@ -1,6 +1,15 @@
 # History
 
  - master/HEAD
+   * Update scrollability status of the tab bar even if there are some "hidden via WebExtensions API, but visible by CSS hack" tabs.
+   * Reduce (deactivate) mis-detection of the sidebar position on some unstable cases: leftside non-primary and high-dpi screen.
+   * Use an info icon same to the one in the Proton theme of Firefox itself, for network error pages.
+   * Suppress unexpected expansion after a parent tab lost its focus, while tab swhiching via Ctrl-Tab.
+   * Open the options page when some drag-and-drop options are chosen in the shorthand menu on the toolbar icon.
+   * Reload the sidebar automatically for unexpected fatal error while its initialization, to reduce failing of sidebar initialization.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
+   * Update `ko` locale by [OctopusET](https://github.com/OctopusET). Thanks!
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 3.8.11 (2021.8.17)
    * Never show unexpected confirmation about "Right Side" appearance for the sidebar panel shown at the left side.
  - 3.8.10 (2021.8.17)
