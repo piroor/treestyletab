@@ -377,6 +377,7 @@ function getMouseEventDetail(event, tab) {
 }
 
 function getOriginalExtraContentsTarget(event) {
+  try {
   let target = event.originalTarget;
   if (target && target.nodeType != Node.ELEMENT_NODE)
     target = target.parentNode;
@@ -387,6 +388,10 @@ function getOriginalExtraContentsTarget(event) {
       owners: new Set([extraContents.dataset.owner]),
       target: target.outerHTML
     };
+  }
+  catch(_error) {
+    // this may happen by mousedown on scrollbar
+  }
 
   return {
     owners: new Set(),
