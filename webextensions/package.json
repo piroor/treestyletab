@@ -19,7 +19,9 @@
     "minimist": ">=1.2.2",
     "morphdom": "^2.5.12",
     "node-fetch": ">=2.6.1",
-    "tunnel-agent": ">=0.6.0"
+    "trim-newlines": ">=3.0.1",
+    "tunnel-agent": ">=0.6.0",
+    "underscore": ">=1.12.1"
   },
   "dependencies": {
     "codemirror": "^5.57.0",
