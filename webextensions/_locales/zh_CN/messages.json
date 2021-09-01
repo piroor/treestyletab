@@ -1240,7 +1240,7 @@
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": "\u200b 打开新建标签页时，将其视作 \"新建空白标签页\"",
+    "message": " 打开新建标签页时，将其视作 \"新建空白标签页\"",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
@@ -1965,7 +1965,7 @@
     "hash": "c0117bbe4fb5cf897e9eaa639761276f"
   },
   "config_defaultBookmarkParentId_label_after": {
-    "message": "\u200b之下",
+    "message": "之下",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_supportTabsMultiselect_label": {
