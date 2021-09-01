@@ -540,6 +540,9 @@
   "syncAvailable_notification_message_linux": {
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
+  "sentTabs_notification_title": {
+    "message": "​"
+  },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
     "placeholders": {
@@ -548,6 +551,9 @@
         "example": "设备 X 上的 Firefox"
       }
     }
+  },
+  "sentTabs_notification_title_multiple": {
+    "message": "​"
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -558,8 +564,14 @@
       }
     }
   },
+  "sentTabsToAllDevices_notification_title": {
+    "message": "​"
+  },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
+  },
+  "sentTabsToAllDevices_notification_title_multiple": {
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -2244,6 +2256,8 @@
     "message": "所有配置",
     "hash": "e0437bb7bd8d7ce28700078c6bb12418"
   },
+  "config_terms_delimiter": {
+  },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
   },
@@ -2383,9 +2397,6 @@
     "message": "关闭所选标签页(&S)",
     "hash": "4b390c9abd8ac915b722d04f8555ce30"
   },
-  "__WET_LOCALE__": {
-    "message": "zh-CN"
-  },
   "config_treatClosedOrMovedTabAsSoloTab_noSidebar_label": {
     "hash": "51551c98e1b4251b05300832c69a6a78",
     "message": "当侧栏不可见时，一个父标签页在被关闭时只会被单独关闭，即使其拥有折叠的后代项"
@@ -2415,8 +2426,8 @@
     "message": "如果可能的话，对于在树状标签页侧栏不可见时进行的操作，请尽量保持标签树的结构和标签页的数量。"
   },
   "config_inheritContextualIdentityToNewChildTab_description": {
-    "hash": "d9de888723abfa7de39201222186cf2b",
-    "message": "（*请注意，如果新建标签页被作为一个独立的标签页打开，则其不会继承前一个活动标签页的身份。）"
+    "message": "（*请注意，如果新建标签页被作为一个独立的标签页打开，则其不会继承前一个活动标签页的身份。）",
+    "hash": "d9de888723abfa7de39201222186cf2b"
   },
   "config_inheritContextualIdentityToNewChildTab_label": {
     "hash": "f6e30954e0578b136171f7e44228f225",
@@ -2426,13 +2437,9 @@
     "hash": "503cd6c082057aaa3f5530cb097e91de",
     "message": "新建空白子标签页的身份"
   },
-  "config_autoGroupNewTabs_after": {
-    "hash": "d56ac1ec4670c8c1f4cf3d20bea43c00",
-    "message": "毫秒内打开的多个标签页"
-  },
-  "config_autoGroupNewTabs_before": {
-    "hash": "ee68a8bc30968b8e1744bfa5fab4c600",
-    "message": "自动分组在"
+  "config_inheritContextualIdentityToSameSiteOrphan_label": {
+    "hash": "05b8f966c86567dfc6b764aac8a83701",
+    "message": "继承当前标签页的身份"
   },
   "config_inheritContextualIdentityToTabsFromExternal_label": {
     "hash": "05b8f966c86567dfc6b764aac8a83701",
@@ -2446,6 +2453,10 @@
     "hash": "5e7505602601db21c833e6487cdb1792",
     "message": "对工具栏按钮应用主题色"
   },
+  "command_groupSelectedTabs": {
+    "hash": "90a2b9f0d172cd3b0f9e2353c6287fe7",
+    "message": "为所选标签页创建新分组"
+  },
   "context_groupTabs_command": {
     "hash": "3e6027e325bd2a64b63af660f3c3fe5f",
     "message": "用这些标签页创建新分组"
@@ -2454,13 +2465,8 @@
     "hash": "0300ecb3339104512e46cf906e80ed80",
     "message": "用这些标签页创建新分组(&G)"
   },
-  "command_groupSelectedTabs": {
-    "hash": "90a2b9f0d172cd3b0f9e2353c6287fe7",
-    "message": "为所选标签页创建新分组"
-  },
-  "config_inheritContextualIdentityToSameSiteOrphan_label": {
-    "hash": "05b8f966c86567dfc6b764aac8a83701",
-    "message": "继承当前标签页的身份"
+  "__WET_LOCALE__": {
+    "message": "zh-CN"
   },
   "command_outdent": {
     "hash": "ab5da17f574177cb4f0b19c41530cd98",
@@ -2469,5 +2475,13 @@
   "command_indent": {
     "hash": "f5220f12d533b1a065e02c75f78b3214",
     "message": "增加当前标签页缩进"
+  },
+  "config_autoGroupNewTabs_after": {
+    "hash": "d56ac1ec4670c8c1f4cf3d20bea43c00",
+    "message": "毫秒内打开的多个标签页"
+  },
+  "config_autoGroupNewTabs_before": {
+    "hash": "ee68a8bc30968b8e1744bfa5fab4c600",
+    "message": "自动分组在"
   }
 }
