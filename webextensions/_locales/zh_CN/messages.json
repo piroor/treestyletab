@@ -541,7 +541,7 @@
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
   "sentTabs_notification_title": {
-    "message": "200b"
+    "message": "​"
   },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -553,7 +553,7 @@
     }
   },
   "sentTabs_notification_title_multiple": {
-    "message": "200b"
+    "message": "​"
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -565,13 +565,13 @@
     }
   },
   "sentTabsToAllDevices_notification_title": {
-    "message": "200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
   },
   "sentTabsToAllDevices_notification_title_multiple": {
-    "message": "200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -1192,7 +1192,7 @@
     "hash": "cb1e8ee431dcf1087099758e3a26c0ff"
   },
   "config_longPressOnNewTabButton_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_showNewTabActionSelector_label": {
@@ -1232,7 +1232,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnNewTabCommand_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
@@ -1240,7 +1240,7 @@
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": "200b 打开新建标签页时，将其视作 \"新建空白标签页\"",
+    "message": "​ 打开新建标签页时，将其视作 \"新建空白标签页\"",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
@@ -1271,7 +1271,7 @@
     "message": "和 按住Ctrl后再点击 相同（紧随的下一个同级项，身份相同）"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonAccelClick_before": {
@@ -1296,7 +1296,7 @@
     "message": "紧随的下一个同级项，身份相同"
   },
   "config_autoAttachOnNewTabButtonAccelClick_after": {
-    "message": "200b"
+    "message": "​"
   },
   "config_autoAttachWithURL_caption": {
     "message": "非空白新建标签页",
@@ -1331,7 +1331,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnDuplicated_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_fromExternal_caption": {
@@ -1363,7 +1363,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnOpenedFromExternal_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": {
@@ -1407,7 +1407,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachSameSiteOrphan_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": {
@@ -1450,7 +1450,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnAnyOtherTrigger_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnAnyOtherTrigger_caution": {
@@ -1953,7 +1953,7 @@
     "hash": "46d9ae37bed79016f68a06e41d246291"
   },
   "config_bookmarkTreeFolderName_after": {
-    "message": "200b",
+    "message": "​",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_bookmarkTreeFolderName_description": {
@@ -1965,7 +1965,7 @@
     "hash": "c0117bbe4fb5cf897e9eaa639761276f"
   },
   "config_defaultBookmarkParentId_label_after": {
-    "message": "200b之下",
+    "message": "​之下",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_supportTabsMultiselect_label": {
