@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: escape invalid character in locales
+    - name: escape NBSP unexpectedly unescaped by GitLocalize
       run: "NBSP=$'\\u200b'; grep -r -E \"$NBSP\" webextensions/_locales | cut -d : -f 1 | uniq | xargs sed -i -E -e \"s/$NBSP/\\\\u200b/g\" || echo 'there is no fixable files'"
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
