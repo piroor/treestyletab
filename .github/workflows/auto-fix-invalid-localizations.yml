@@ -1,0 +1,22 @@
+name: auto-fix-invalid-localizations
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "trunk"
+
+jobs:
+  auto-fix-invalid-localizations:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: fixup invalid blank messages in locales
+      run: |
+        grep -r -E '"message" *: *""' webextensions/_locales | cut -d : -f 1 | uniq | xargs sed -i -E -e 's/("message" *: *")"/\1\\u200b"/g'
+   - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Fixup invalid blank messages in locales
+        file_pattern: webextensions/_locales/*/*.json
+ 
