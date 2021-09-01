@@ -3,8 +3,6 @@ name: auto-escape-invalid-characters-in-locales
 on:
   pull_request:
   push:
-    branches:
-      - "trunk"
 
 jobs:
   auto-escape-invalid-characters-in-locales:
