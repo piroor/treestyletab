@@ -2256,8 +2256,6 @@
     "message": "所有配置",
     "hash": "e0437bb7bd8d7ce28700078c6bb12418"
   },
-  "config_terms_delimiter": {
-  },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
   },
