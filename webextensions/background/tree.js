@@ -322,12 +322,19 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     return;
 
   if (options.forceExpand && allowed) {
-    log('  expand by forceExpand option');
+    log(`  expand tab ${tab.id} by forceExpand option`);
+    if (parentTreeCollasped)
     collapseExpandSubtree(parent, {
       ...options,
       collapsed: false,
       broadcast: true
     });
+    else
+      collapseExpandTabAndSubtree(tab, {
+        ...options,
+        collapsed: false,
+        broadcast: true
+      });
     parentTreeCollasped = false;
   }
   if (!options.dontExpand) {
