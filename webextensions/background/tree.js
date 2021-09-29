@@ -297,7 +297,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   // we need to apply "forceExpand" immediately. Otherwise, when
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
-  log('newly attached tab');
+  log('newly attached tab ', tab.id);
   if (parent.$TST.subtreeCollapsed &&
       !options.forceExpand) {
     log('  the tree is collapsed, but keep collapsed by forceExpand option');
