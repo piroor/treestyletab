@@ -276,7 +276,7 @@ export async function outdent(tab, options = {}) {
       broadcast: true,
     });
     const insertAfter = parent.$TST.lastDescendant || parent;
-    await TabsMove.moveTabAfter(tab, insertAfter, {
+    await Tree.moveTabSubtreeAfter(tab, insertAfter, {
       broadcast: true,
     });
   }
