@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Fix unexpectedly invisible children when a parent tab is restored and collapsed tabs are re-attached to the restored parent.
+   * Outdent tab via API correctly when a child tab is outdented to the root level with its descendants.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 3.8.12 (2021.8.26)
    * Update scrollability status of the tab bar even if there are some "hidden via WebExtensions API, but visible by CSS hack" tabs.
    * Reduce (deactivate) mis-detection of the sidebar position on some unstable cases: leftside non-primary and high-dpi screen.
