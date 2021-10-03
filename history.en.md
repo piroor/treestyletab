@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.13 (2021.10.3)
    * Fix unexpectedly invisible children when a parent tab is restored and collapsed tabs are re-attached to the restored parent.
    * Outdent tab via API correctly when a child tab is outdented to the root level with its descendants.
    * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
