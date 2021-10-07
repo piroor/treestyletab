@@ -52,7 +52,7 @@ export async function generateThemeDeclarations(theme) {
   const extraColors = [];
   const themeFrameColor   = theme.colors.frame || theme.colors.accentcolor /* old name */;
   const inactiveTextColor = theme.colors.tab_background_text || theme.colors.textcolor /* old name */;
-  const activeTextColor   = theme.colors.bookmark_text || theme.colors.toolbar_text /* old name */ || inactiveTextColor;
+  const activeTextColor   = theme.colors.tab_text || theme.colors.bookmark_text || theme.colors.toolbar_text /* old name */ || inactiveTextColor;
   let bgAlpha = 1;
   let hasImage = false;
   if (theme.images) {

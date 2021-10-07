@@ -801,7 +801,7 @@ async function updateIconForBrowserTheme(theme) {
 
       log('updateIconForBrowserTheme: colors: ', theme.colors);
       if (theme.colors) {
-        const color = theme.colors.icons || theme.colors.tab_text || theme.colors.textcolor;
+        const color = theme.colors.icons || theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.textcolor;
         log(' => ', theme.colors);
         await Promise.all(Array.from(Object.keys(icons), async size => {
           const request = new XMLHttpRequest();
