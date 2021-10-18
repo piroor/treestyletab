@@ -38,6 +38,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
 });
 
 const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
+  APIEnabled
   accelKey
   baseIndent
   cachedExternalAddons
@@ -422,6 +423,7 @@ export const configs = new Configs({
 
 
   debug:     false,
+  APIEnabled: true,
   logTimestamp: true,
   loggingQueries: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': false,/"

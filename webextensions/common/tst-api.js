@@ -985,6 +985,9 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
 }
 
 export async function sendMessage(message, options = {}) {
+  if (!configs.APIEnabled)
+    return [];
+
   const listenerAddons = getListenersForMessageType(message.type, options);
   const tabProperties = options.tabProperties || [];
   log(`sendMessage: sending message for ${message.type}: `, {
