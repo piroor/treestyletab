@@ -553,9 +553,11 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       await Tree.attachTabTo(tab, parent, memberOptions);
     else
       await Tree.detachTab(tab, memberOptions);
+    // The tree can remain being collapsed by other addons like TST Lock Tree Collapsed.
+    const collapsed = parent && parent.$TST.subtreeCollapsed;
     return Tree.collapseExpandTabAndSubtree(tab, {
       ...memberOptions,
-      collapsed: false
+      collapsed,
     });
   }));
 }
