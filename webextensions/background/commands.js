@@ -982,17 +982,12 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
 
   const lastItemIndicesWithLevel = new Map();
   let lastMaxLevel = 0;
-  const containerMatcher = new RegExp(`#${configs.containerRedirectKey}-(.+)$`);
   const structure = items.reduce((result, item, index) => {
-    // Respect container type stored by Container Bookmarks
-    // https://addons.mozilla.org/firefox/addon/container-bookmarks/
-    const matchedContainer = item.url.match(containerMatcher);
-    if (matchedContainer) {
-      const cookieStoreId = ContextualIdentities.getIdFromName(decodeURIComponent(matchedContainer[matchedContainer.length-1]));
-      if (cookieStoreId) {
-        item.cookieStoreId = cookieStoreId;
-        item.url = item.url.replace(containerMatcher, '');
-      }
+    const { cookieStoreId, url } = ContextualIdentities.getIdFromBookmark(item);
+    if (cookieStoreId) {
+      item.cookieStoreId = cookieStoreId;
+      if (url)
+        item.url = url;
     }
 
     let level = 0;
@@ -1023,7 +1018,11 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
   const tabs = await TabsOpen.openURIsInTabs(
     // we need to isolate it - unexpected parameter like "index" will break the behavior.
-    items.map(bookmark => ({ url: bookmark.url, title: bookmark.title })),
+    items.map(bookmark => ({
+      url:           bookmark.url,
+      title:         bookmark.title,
+      cookieStoreId: bookmark.cookieStoreId,
+    })),
     {
       windowId,
       isOrphan:     true,
