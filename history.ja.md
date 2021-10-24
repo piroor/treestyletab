@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.15 (2021.10.25)
+   * ブックマークフォルダのコンテキストメニューの「ツリーとしてすべて開く」でタブを開く際、[Container Bookmarks](https://addons.mozilla.org/firefox/addon/container-bookmarks/)によって保存されたコンテナーの情報を正しく反映するようにした
+   * TST Lock Tree Collapsedによって折りたたまれた状態に固定されたツリーにタブがドロップされたときに、正しく非表示にするようにした
+   * 他のアドオン向けのAPIを無効化する隠し設定 `APIEnabled` を追加した
+   * `zh_TW`ロケール更新（by [SiderealArt](https://github.com/SiderealArt), thanks!）
  - 3.8.14 (2021.10.15)
    * テーマが色情報を提供している（例：Firefox 95以降のColorwaysなど）場合、ツールバーボタンのアイコン、メニューのアイコン、およびサイドバーヘッダーのアイコンに適切な色を適用するようにした
  - 3.8.13 (2021.10.3)

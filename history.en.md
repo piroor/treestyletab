@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.8.15 (2021.10.25)
+   * Apply container information saved by [Container Bookmarks](https://addons.mozilla.org/firefox/addon/container-bookmarks/) correctly for tabs opened from a bookmark folder by the "Open All as Tree" context menu command.
+   * Collapse tabs dropped onto a collapsed tree correctly, when the drop target parent tab is kept collapsed by TST Lock Tree Collapsed.
+   * Add a secret option to deactivate API for other addons: `APIEnabled`
+   * Update `zh_TW` locale by [SiderealArt](https://github.com/SiderealArt). Thanks!
  - 3.8.14 (2021.10.15)
    * Apply given colors to the toolbar button icon, menu icons and the sidebar header icon, if the theme provides rich information (ex. Colorways of Firefox 95 and later).
  - 3.8.13 (2021.10.3)
