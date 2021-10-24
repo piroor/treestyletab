@@ -502,6 +502,8 @@ export async function initAsBackend() {
     bypassPermissionCheck: true
   });
   browser.runtime.onConnectExternal.addListener(port => {
+    if (!configs.APIEnabled)
+      return;
     const sender = port.sender;
     mConnections.set(sender.id, port);
     port.onMessage.addListener(message => {
@@ -845,6 +847,8 @@ export async function initAsFrontend() {
     await wait(10);
   }
   browser.runtime.onMessageExternal.addListener((message, sender) => {
+    if (!configs.APIEnabled)
+      return;
     if (message &&
         typeof message == 'object' &&
         typeof message.type == 'string') {
