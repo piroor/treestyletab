@@ -16,21 +16,21 @@ const kATTR_NAME_VALUE = 'value';
 // The MIT License (MIT)
 // Copyright (c) 2013 dhilipsiva
 const rtlChars = [
-	/* arabic ranges*/
-	'\u0600-\u06FF',
-	'\u0750-\u077F',
-	'\uFB50-\uFDFF',
-	'\uFE70-\uFEFF',
-	/* hebrew range*/
-	'\u05D0-\u05FF'
-].join("");
+  /* arabic ranges*/
+  '\u0600-\u06FF',
+  '\u0750-\u077F',
+  '\uFB50-\uFDFF',
+  '\uFE70-\uFEFF',
+  /* hebrew range*/
+  '\u05D0-\u05FF'
+].join('');
 
-const reRTL = new RegExp("[" + rtlChars + "]", "g");
+const reRTL = new RegExp(`[${rtlChars}]`, 'g');
 
 function isRTL(text) {
-	const textCount	= text.replace(/[0-9\s\\\/.,\-+="']/g, '').length; // remove multilengual characters from count
-	const rtlCount	= (text.match(reRTL) || []).length;
-	return rtlCount >= (textCount-rtlCount) && textCount > 0;
+  const textCount = text.replace(/[0-9\s\\\/.,\-+="']/g, '').length; // remove multilengual characters from count
+  const rtlCount  = (text.match(reRTL) || []).length;
+  return rtlCount >= (textCount-rtlCount) && textCount > 0;
 };
 //****************************************************************************
 
