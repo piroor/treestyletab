@@ -608,6 +608,7 @@ tab-item tab-label {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
 :root[data-label-overflow="fade"] tab-item tab-label.overflow.rtl {
+  direction: rtl;
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
