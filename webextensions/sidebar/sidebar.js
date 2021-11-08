@@ -231,7 +231,6 @@ export async function init() {
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
-      onConfigChange('sidebarDirection');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
 
@@ -827,12 +826,6 @@ async function onConfigChange(changedKey) {
       rootClasses.toggle('right', isRight);
       rootClasses.toggle('left', !isRight);
       Indent.update({ force: true });
-    }; break;
-
-    case 'sidebarDirection': {
-      const isRTL = configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL;
-      rootClasses.toggle('rtl', isRTL);
-      rootClasses.toggle('ltr', !isRTL);
     }; break;
 
     case 'baseIndent':

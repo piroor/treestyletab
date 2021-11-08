@@ -864,18 +864,6 @@
         "message": "※이 설정은 사이드바 자체의 위치를 변경하지 않습니다. 사이드바를 창 오른쪽으로 이동하려면 사이드바 헤더의 전환 메뉴에서 \"사이드바를 오른쪽으로 이동\"을 선택하세요.",
         "hash": "adbea9fc2751f205418a7f6b10e68b5f"
     },
-    "config_sidebarDirection_caption": {
-        "message": "글씨 방향에 맞춘 스타일",
-        "hash": "df500379330e44d98c6ab41c6eb09f07"
-    },
-    "config_sidebarDirection_ltr": {
-        "message": "LTR",
-        "hash": "4fb680668e028ece5611db5ae4f2380c"
-    },
-    "config_sidebarDirection_rtl": {
-        "message": "RTL",
-        "hash": "f24b22d165c8a43ef76a792dedb56421"
-    },
     "config_style_caption": {
         "message": "테마",
         "hash": "9da24ca7508eb181c632829fd698be9a"

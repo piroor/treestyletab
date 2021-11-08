@@ -130,10 +130,6 @@
   "config_sidebarPosition_right": { "message": "Праворуч" },
   "config_sidebarPosition_description": { "message": "*Ця конфігурація не змінює положення бічної панелі. Вам потрібно натиснути перемикач в заголовку бічної панелі і  натиснути \"Перемістити бічну панель вправо\"." },
 
-  "config_sidebarDirection_caption": { "message": "Стиль напрямку тексту:" },
-  "config_sidebarDirection_ltr": { "message": "Зліва направо" },
-  "config_sidebarDirection_rtl": { "message": "Справа наліво" },
-
   "config_scrollbarMode_caption": { "message": "Смуга прокрутки:" },
   "config_scrollbarMode_default": { "message": "За замовч." },
   "config_scrollbarMode_narrow":  { "message": "Вузька" },

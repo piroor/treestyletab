@@ -57,23 +57,6 @@ const mItems = [
         ]
       },
       {
-        title:    browser.i18n.getMessage('config_sidebarDirection_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_sidebarDirection_ltr'),
-            key:   'sidebarDirection',
-            value: Constants.kTABBAR_DIRECTION_LTR,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_sidebarDirection_rtl'),
-            key:   'sidebarDirection',
-            value: Constants.kTABBAR_DIRECTION_RTL,
-            type:  'radio'
-          }
-        ]
-      },
-      {
         title:    browser.i18n.getMessage('config_style_caption'),
         children: [
           {

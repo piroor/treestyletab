@@ -329,10 +329,6 @@
   "config_sidebarPosition_auto": { "message": "Автоопределение" },
   "config_sidebarPosition_description": { "message": "* Эта настройка не меняет положение боковой панели. Если нужно переместить саму панель, то в меню заголовка боковой панели выберите \"Переместить боковую панель...\"." },
 
-  "config_sidebarDirection_caption": { "message": "Стиль направления текста:" },
-  "config_sidebarDirection_ltr": { "message": "Слева направо" },
-  "config_sidebarDirection_rtl": { "message": "Справа налево" },
-
   "config_style_caption": { "message": "Тема" },
   "config_style_proton": { "message": "Протон" },
   "config_style_photon": { "message": "Фотон" },

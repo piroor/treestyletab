@@ -329,10 +329,6 @@
     "config_sidebarPosition_auto": { "message": "當側邊欄顯示時自動偵測" },
     "config_sidebarPosition_description": { "message": "※此設定不會改變側邊欄的位置，點擊側邊欄標題列並勾選「將側邊欄移至右方」以更改其位置。" },
   
-    "config_sidebarDirection_caption": { "message": "標題書寫方向：" },
-    "config_sidebarDirection_ltr": { "message": "左至右" },
-    "config_sidebarDirection_rtl": { "message": "右至左" },
-  
     "config_style_caption": { "message": "佈景主題" },
     "config_style_proton": { "message": "Proton" },
     "config_style_photon": { "message": "Photon" },

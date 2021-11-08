@@ -981,18 +981,6 @@
     "message": "* 此配置不会自动更改侧栏本身的位置。您需要单击侧栏标题处的切换器，然后手动点击 “移动侧栏到右侧” 。",
     "hash": "adbea9fc2751f205418a7f6b10e68b5f"
   },
-  "config_sidebarDirection_caption": {
-    "message": "有关于文本方向的样式：",
-    "hash": "df500379330e44d98c6ab41c6eb09f07"
-  },
-  "config_sidebarDirection_ltr": {
-    "message": "从左至右（LTR）",
-    "hash": "4fb680668e028ece5611db5ae4f2380c"
-  },
-  "config_sidebarDirection_rtl": {
-    "message": "从右至左（RTL）",
-    "hash": "f24b22d165c8a43ef76a792dedb56421"
-  },
   "config_style_caption": {
     "message": "主题",
     "hash": "9da24ca7508eb181c632829fd698be9a"

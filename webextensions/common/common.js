@@ -59,7 +59,6 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   notifiedFeaturesVersion
   optionsExpandedGroups
   optionsExpandedSections
-  sidebarDirection
   sidebarPosition
   sidebarVirtuallyClosedWindows
   sidebarVirtuallyOpenedWindows
@@ -83,8 +82,6 @@ export const configs = new Configs({
   sidebarPosition: Constants.kTABBAR_POSITION_AUTO,
   sidebarPositionRighsideNotificationShown: false,
   sidebarPositionOptionNotificationTimeout: 20 * 1000,
-
-  sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
 
   style:
     /^Mac/i.test(navigator.platform) ? 'sidebar' :

@@ -325,10 +325,6 @@
   "config_sidebarPosition_auto": { "message": "サイドバーが表示された時に自動で判定" },
   "config_sidebarPosition_description": { "message": "※この設定はサイドバー自体の位置を変更しません。サイドバーをウィンドウの右側に移動するには、サイドバーのヘッダ上の切り替えメニューから「サイドバーを右側に移動」を選択して下さい。" },
 
-  "config_sidebarDirection_caption": { "message": "書字方向に合わせたスタイル:" },
-  "config_sidebarDirection_ltr": { "message": "LTR" },
-  "config_sidebarDirection_rtl": { "message": "RTL" },
-
   "config_style_caption": { "message": "テーマ" },
   "config_style_proton": { "message": "Proton" },
   "config_style_photon": { "message": "Photon" },

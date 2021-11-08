@@ -202,10 +202,6 @@
   "config_sidebarPosition_right": { "message": "À droite" },
   "config_sidebarPosition_description": { "message": "*Cette configuration ne changera pas la position du panneau latéral lui-même. Vous devez sur le bouton dans l'entête du panneau latéral et cliquer sur « déplacer le panneau latéral à droite » manuellement." },
 
-  "config_sidebarDirection_caption": { "message": "Style pour la direction du texte :" },
-  "config_sidebarDirection_ltr": { "message": "De gauche à droite" },
-  "config_sidebarDirection_rtl": { "message": "De droite à gauche" },
-
   "config_style_caption": { "message": "Thème" },
   "config_style_photon": { "message": "Simple" },
   "config_style_sidebar": { "message": "Panneau" },

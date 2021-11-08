@@ -309,10 +309,6 @@
   "config_sidebarPosition_right": { "message": "Linksbündig" },
   "config_sidebarPosition_description": { "message": "*Diese Einstellung ändert nicht die Position der Seitenleiste. Klicke dafür auf die Seitenleisten-Überschrift und dann auf \"Seitenleiste nach rechts (links) verschieben\"." },
 
-  "config_sidebarDirection_caption": { "message": "Schriftrichtung:" },
-  "config_sidebarDirection_ltr": { "message": "Von links nach rechts" },
-  "config_sidebarDirection_rtl": { "message": "Von rechts nach links" },
-
   "config_style_caption": { "message": "Design" },
   "config_style_proton": { "message": "Proton" },
   "config_style_photon": { "message": "Photon" },

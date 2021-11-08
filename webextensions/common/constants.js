@@ -247,9 +247,6 @@ export const kTABBAR_POSITION_AUTO  = 0;
 export const kTABBAR_POSITION_LEFT  = 1;
 export const kTABBAR_POSITION_RIGHT = 2;
 
-export const kTABBAR_DIRECTION_LTR = 1;
-export const kTABBAR_DIRECTION_RTL = 2;
-
 export const kACTION_MOVE   = 1 << 0;
 export const kACTION_ATTACH = 1 << 10;
 export const kACTION_DETACH = 1 << 11;
