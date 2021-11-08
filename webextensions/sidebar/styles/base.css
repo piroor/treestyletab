@@ -607,9 +607,7 @@ tab-item tab-label {
 :root[data-label-overflow="fade"] tab-item tab-label.overflow {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
-:root[data-label-overflow="fade"] tab-item tab-label.overflow:dir(rtl),
-:root[data-label-overflow="fade"].rtl tab-item tab-label.overflow {
-  direction: rtl;
+:root[data-label-overflow="fade"] tab-item tab-label.overflow.rtl {
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
