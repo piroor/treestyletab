@@ -1,6 +1,10 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.16 (2021.11.10)
+   * タブのラベルが長い時に、単一の設定ではなくラベル文字列自体の書字方向のみに従って、右または左にフェードアウトするようにした
+   * タブのラベルの書字方向を制御する設定を廃止した
+   * `ko`ロケール更新（by [OctopusET](https://github.com/OctopusET), thanks!）
  - 3.8.15 (2021.10.25)
    * ブックマークフォルダのコンテキストメニューの「ツリーとしてすべて開く」でタブを開く際、[Container Bookmarks](https://addons.mozilla.org/firefox/addon/container-bookmarks/)によって保存されたコンテナーの情報を正しく反映するようにした
    * TST Lock Tree Collapsedによって折りたたまれた状態に固定されたツリーにタブがドロップされたときに、正しく非表示にするようにした

@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.8.16 (2021.11.10)
+   * Fade-out long tab labels to left or right, only based on the direction of the label text themselves instead of a global option.
+   * Remove an option to set global text direction of tab labels.
+   * Update `ko` locale by [OctopusET](https://github.com/OctopusET). Thanks!
  - 3.8.15 (2021.10.25)
    * Apply container information saved by [Container Bookmarks](https://addons.mozilla.org/firefox/addon/container-bookmarks/) correctly for tabs opened from a bookmark folder by the "Open All as Tree" context menu command.
    * Collapse tabs dropped onto a collapsed tree correctly, when the drop target parent tab is kept collapsed by TST Lock Tree Collapsed.
