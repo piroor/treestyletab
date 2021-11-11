@@ -1897,7 +1897,7 @@
         "hash": "2bff160a32604afc72ae4f0072ae8a59"
     },
     "config_accelKey_auto": {
-        "message": "기본(macOS=⌘, それ以外=Ctrl）",
+        "message": "기본(macOS=⌘, 기타=Ctrl）",
         "hash": "59c4f47d4df6c72706f01f5b421a452a"
     },
     "config_accelKey_alt": {
