@@ -1,7 +1,11 @@
 <!--
-NOTE: Please read the guideline to open a new issue at first.
-https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
-Or, please read an example of a helpful bug report: https://github.com/piroor/treestyletab/issues/2267
+PLEASE FILL THIS TEMPLATE TO MAKE YOUR REPORT MORE HELPFUL FOR THE DEVELOPER!!
+If you don't know what is "good feedback", here is a guideline:
+  https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
+And here is an example of enough helpful bug report:
+  https://github.com/piroor/treestyletab/issues/2267
+If you have any question about customization, it should be posted as a discussion instead of an issue:
+  https://github.com/piroor/treestyletab/discussions
 
 For Japanese people:
 英語は不得意、という場合は日本語で書いてもOKです。ただし、
