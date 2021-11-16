@@ -74,7 +74,7 @@ Otherwise, I'll be confused if the original reporter said "the issue is a compat
 
 To avoid such a confusion, please post your report with detailed reproduction steps always.
 
-## Feature requests can be tagged as "out of purpose"
+## Feature requests can be tagged as "out of scope"
 
 Please see [the readme page](./README.md) before you post a new feature request.
 Even if a requested feature is very useful, it is possibly rejected by the project policy.
