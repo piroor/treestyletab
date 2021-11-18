@@ -28,6 +28,8 @@ const rtlChars = [
 const reRTL = new RegExp(`[${rtlChars}]`, 'g');
 
 function isRTL(text) {
+  if (/^\s*\u200f[^\u200e]/.test(text)) // title starting with right-to-left-mark
+    return true;
   const textCount = text.replace(/[0-9\s\\\/.,\-+="']/g, '').length; // remove multilengual characters from count
   const rtlCount  = (text.match(reRTL) || []).length;
   return rtlCount >= (textCount-rtlCount) && textCount > 0;
