@@ -276,7 +276,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   * If it is impossible to be done via simple CSS tricks, TST should provide the option. (ex. unfaviconizing of pinned tabs, positioning options for new tabs, drag-and-drop behavior)
   * If it is already available during combination with another extension, TST don't provide options for them. (ex. coloring of tabs, suspending of tabs, detailed control of tab focus)
   
-  Please remind that some existing options may violate these policies due to histroical reasons.
+  Please remind that some existing options may violate these policies due to historical reasons.
   </details>
 * <details id="feature-requests-controlling-where-new-tabs-are-opened-from-links-or-bookmarks"><summary>Controlling where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
