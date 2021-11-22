@@ -270,7 +270,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   
   Here is a list of policies about accepting or rejecting new option requests:
   
-  * If Firefox has the option, TST also should provide similar option to emulate it. (ex. `browser.tabs.closeTabByDblclick` emulation, `browser.tabs.seleectOwnerOnClose` emulation, warnings for closing multiple tabs, style switch for leftside/rightside sidebar)
+  * If Firefox has the option, TST also should provide similar option to emulate it. (ex. `browser.tabs.closeTabByDblclick` emulation, `browser.tabs.selectOwnerOnClose` emulation, warnings for closing multiple tabs, style switch for leftside/rightside sidebar)
   * If TST imitates Firefox's UI and Firefox doesn't provide any options to control them, TST basically don't provide options for them. (ex. visibility options for imitated context menu commands)
   * If it is essential for accessibility, TST should provide the option. (ex. text direction option, animation effects, "High Contrast" theme, color switch for the toolbar button icon)
   * If it is impossible to be done via simple CSS tricks, TST should provide the option. (ex. unfaviconizing of pinned tabs, positioning options for new tabs, drag-and-drop behavior)
