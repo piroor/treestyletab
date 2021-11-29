@@ -191,7 +191,7 @@ tab-item.active tab-twisty {
 
 .counter {
   background-color: var(--badge-bg-color);
-  border-radius: 100%;
+  border-radius: 0.75em;
   box-sizing: content-box;
   color: var(--tab-text-active);
   font-size: 85%;
