@@ -194,6 +194,7 @@ tab-item.active tab-twisty {
   border-radius: 0.75em;
   box-sizing: content-box;
   color: var(--tab-text-active);
+  flex-shrink: 0;
   font-size: 85%;
   font-weight: bold;
   min-width: 1em;
