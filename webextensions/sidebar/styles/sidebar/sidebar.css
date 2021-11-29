@@ -190,13 +190,16 @@ tab-item.active tab-twisty {
 }
 
 .counter {
-  font-size: 85%;
   background-color: var(--badge-bg-color);
-  border-radius: 8px;
-  padding: 2px 4px;
+  border-radius: 100%;
+  box-sizing: content-box;
   color: var(--tab-text-active);
+  font-size: 85%;
   font-weight: bold;
+  min-width: 1em;
+  padding: 0.25em;
   text-shadow: none;
+  text-align: center;
 }
 
 tab-item.active .counter {
