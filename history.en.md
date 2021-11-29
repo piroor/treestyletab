@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better appearance of the counter for collapsed descendant tabs in the Sidebar theme.
  - 3.8.16 (2021.11.11)
    * Fade-out long tab labels to left or right, only based on the direction of the label text themselves instead of a global option.
    * Remove an option to set global text direction of tab labels.
