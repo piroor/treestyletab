@@ -136,6 +136,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       return;
 
     default:
+      log('tryFixupTreeForInsertedTab: apply action for unattached tab: ', tab, action);
       await action.apply();
       return;
   }
