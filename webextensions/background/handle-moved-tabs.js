@@ -103,8 +103,8 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 
   log('The tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
-  const action = Tree.detectTabActionFromNewPosition({ tab, moveInfo });
-  if (!action) {
+  const action = Tree.detectTabActionFromNewPosition(tab, moveInfo);
+  if (!action.action) {
     log('no action');
     return;
   }
@@ -136,11 +136,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       return;
 
     default:
-      await Tree.applyTabActionForNewPosition({
-        tab,
-        action,
-        isTabCreating: moveInfo && moveInfo.isTabCreating,
-      });
+      await action.apply();
       return;
   }
 }

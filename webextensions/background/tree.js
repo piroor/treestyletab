@@ -1662,12 +1662,74 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 // Fixup tree structure for unexpectedly inserted tabs
 //===================================================================
 
-export function detectTabActionFromNewPosition({ tab, moveInfo }) {
-  if (tab.pinned)
-    return tab.$TST.parentId ? { action: 'detach' } : { action: 'move' };
+class TabActionForNewPosition {
+  constructor(action, { tab, parent, insertBefore, insertAfter, isTabCreating } = {}) {
+    this.action        = action || null;
+    this.tab           = tab;
+    this.parent        = parent;
+    this.insertBefore  = insertBefore;
+    this.insertAfter   = insertAfter;
+    this.isTabCreating = isTabCreating;
+  }
 
-  if (!moveInfo)
-    moveInfo = {};
+  async apply() {
+    log('TabActionForNewPosition: applying ', this);
+    switch (this.action) {
+      case 'invalid':
+        throw new Error('invalid action: this must not happen!');
+
+      case 'attach': {
+        const attached = attachTabTo(this.tab, Tab.get(this.parent), {
+          insertBefore: Tab.get(this.insertBefore),
+          insertAfter:  Tab.get(this.insertAfter),
+          forceExpand:  this.isTabCreating,
+          broadcast:    true,
+          synchronously: this.isTabCreating,
+        });
+        if (!this.isTabCreating)
+          await attached;
+        followDescendantsToMovedRoot(this.tab);
+      }; break;
+
+      case 'detach':
+        detachTab(this.tab, { broadcast: true });
+        followDescendantsToMovedRoot(this.tab);
+        if (!this.insertBefore && !this.insertAfter)
+          break;
+
+      case 'move':
+        if (this.insertBefore) {
+          moveTabSubtreeBefore(
+            this.tab,
+            Tab.get(this.insertBefore),
+            { broadcast: true }
+          );
+          return;
+        }
+        else if (this.insertAfter) {
+          moveTabSubtreeAfter(
+            this.tab,
+            Tab.get(this.insertAfter),
+            { broadcast: true }
+          );
+          return;
+        }
+
+      default:
+        followDescendantsToMovedRoot(this.tab);
+        break;
+    }
+  }
+}
+
+export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
+  const isTabCreating = moveInfo && !!moveInfo.isTabCreating;
+
+  if (tab.pinned)
+    return new TabActionForNewPosition(tab.$TST.parentId ? 'detach' : 'move', {
+      tab,
+      isTabCreating,
+    });
 
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || snapshotForActionDetection(tab);
@@ -1678,7 +1740,7 @@ export function detectTabActionFromNewPosition({ tab, moveInfo }) {
   const fromIndex = moveInfo.fromIndex;
   if (toIndex == fromIndex) { // no move?
     log('=> no move');
-    return { action: null };
+    return new TabActionForNewPosition();
   }
 
   const prevTab = tree.tabsById[target.previous];
@@ -1700,11 +1762,11 @@ export function detectTabActionFromNewPosition({ tab, moveInfo }) {
   if (!oldParent) {
     if (!nextTab) {
       log('=> A root level tab, placed at the end of tabs. We should keep it in the root level.');
-      return { action: null };
+      return new TabActionForNewPosition();
     }
     if (!nextParent) {
       log(' => A root level tab, placed before another root level tab. We should keep it in the root level.');
-      return { action: null };
+      return new TabActionForNewPosition();
     }
   }
 
@@ -1784,19 +1846,21 @@ export function detectTabActionFromNewPosition({ tab, moveInfo }) {
           log('nearest foreigner tab: ', nearestForeigner && nearestForeigner.id);
           if (nearestForeigner) {
             if (nearestForeigner.$TST.hasChild)
-              return {
-                action:      'attach',
+              return new TabActionForNewPosition('attach', {
+                tab,
+                isTabCreating,
                 parent:      nearestForeigner.id,
-                insertAfter: nearestForeigner.id
-              };
-            return {
-              action:      tab.$TST.parent ? 'detach' : 'move',
-              insertAfter: nearestForeigner.id
-            };
+                insertAfter: nearestForeigner.id,
+              });
+            return new TabActionForNewPosition(tab.$TST.parent ? 'detach' : 'move', {
+              tab,
+              isTabCreating,
+              insertAfter: nearestForeigner.id,
+            });
           }
         }
         log('=> invalid move: a parent is moved inside its own tree!');
-        return { action: 'invalid' };
+        return new TabActionForNewPosition('invalid');
       }
       ancestor = tree.tabsById[ancestor.parent];
     }
@@ -1804,66 +1868,25 @@ export function detectTabActionFromNewPosition({ tab, moveInfo }) {
 
   if (newParent != oldParent) {
     if (newParent) {
-      return {
-        action:       'attach',
+      return new TabActionForNewPosition('attach', {
+        tab,
+        isTabCreating,
         parent:       newParent.id,
         insertBefore: nextTab && nextTab.id,
         insertAfter:  prevTab && prevTab.id
-      };
+      });
     }
     else {
-      return { action: 'detach' };
+      return new TabActionForNewPosition('detach', {
+        tab,
+        isTabCreating,
+      });
     }
   }
-  return { action: 'move' };
-}
-
-export async function applyTabActionForNewPosition({ tab, action, isTabCreating }) {
-  switch (action.action) {
-    case 'invalid':
-      throw new Error('invalid action: this must not happen!');
-
-    case 'attach': {
-      const attached = attachTabTo(tab, Tab.get(action.parent), {
-        insertBefore: Tab.get(action.insertBefore),
-        insertAfter:  Tab.get(action.insertAfter),
-        forceExpand:  isTabCreating,
-        broadcast:    true,
-        synchronously: isTabCreating,
-      });
-      if (!isTabCreating)
-        await attached;
-      followDescendantsToMovedRoot(tab);
-    }; break;
-
-    case 'detach':
-      detachTab(tab, { broadcast: true });
-      followDescendantsToMovedRoot(tab);
-      if (!action.insertBefore && !action.insertAfter)
-        break;
-
-    case 'move':
-      if (action.insertBefore) {
-        moveTabSubtreeBefore(
-          tab,
-          Tab.get(action.insertBefore),
-          { broadcast: true }
-        );
-        return;
-      }
-      else if (action.insertAfter) {
-        moveTabSubtreeAfter(
-          tab,
-          Tab.get(action.insertAfter),
-          { broadcast: true }
-        );
-        return;
-      }
-
-    default:
-      followDescendantsToMovedRoot(tab);
-      break;
-  }
+  return new TabActionForNewPosition('move', {
+    tab,
+    isTabCreating,
+  });
 }
 
 
