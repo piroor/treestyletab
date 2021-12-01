@@ -88,6 +88,7 @@
 
   --visual-gap-offset: 0px;
   --visual-gap-hover-animation: top var(--collapse-animation) var(--visual-gap-hover-animation-delay);
+  color-scheme: light dark;
 }
 
 tab-item {
