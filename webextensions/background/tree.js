@@ -1275,7 +1275,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
   window.subTreeMovingCount--;
 }
 
-export async function followDescendantsToMovedRoot(tab, options = {}) {
+async function followDescendantsToMovedRoot(tab, options = {}) {
   if (!tab.$TST.hasChild)
     return;
 
@@ -1656,6 +1656,215 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   MetricsData.add('applyTreeStructureToTabs: collapse/expand');
 }
 
+
+
+//===================================================================
+// Fixup tree structure for unexpectedly inserted tabs
+//===================================================================
+
+export function detectTabActionFromNewPosition({ tab, moveInfo }) {
+  if (tab.pinned)
+    return tab.$TST.parentId ? { action: 'detach' } : { action: 'move' };
+
+  if (!moveInfo)
+    moveInfo = {};
+
+  log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
+  const tree   = moveInfo.treeForActionDetection || snapshotForActionDetection(tab);
+  const target = tree.target;
+  log('  calculate new position: ', tab, tree);
+
+  const toIndex   = moveInfo.toIndex;
+  const fromIndex = moveInfo.fromIndex;
+  if (toIndex == fromIndex) { // no move?
+    log('=> no move');
+    return { action: null };
+  }
+
+  const prevTab = tree.tabsById[target.previous];
+  const nextTab = tree.tabsById[target.next];
+  log('prevTab: ', dumpTab(prevTab));
+  log('nextTab: ', dumpTab(nextTab));
+
+  const prevParent = prevTab && tree.tabsById[prevTab.parent];
+  const nextParent = nextTab && tree.tabsById[nextTab.parent];
+
+  const prevLevel  = prevTab ? prevTab.level : -1 ;
+  const nextLevel  = nextTab ? nextTab.level : -1 ;
+  log('prevLevel: '+prevLevel);
+  log('nextLevel: '+nextLevel);
+
+  const oldParent = tree.tabsById[target.parent];
+  let newParent = null;
+
+  if (!oldParent) {
+    if (!nextTab) {
+      log('=> A root level tab, placed at the end of tabs. We should keep it in the root level.');
+      return { action: null };
+    }
+    if (!nextParent) {
+      log(' => A root level tab, placed before another root level tab. We should keep it in the root level.');
+      return { action: null };
+    }
+  }
+
+  if (target.mayBeReplacedWithContainer) {
+    log('=> replaced by Firefox Multi-Acount Containers or Temporary Containers');
+    newParent = prevLevel < nextLevel ? prevTab : prevParent;
+  }
+  else if (oldParent &&
+           prevTab &&
+           oldParent == prevTab) {
+    log('=> no need to fix case');
+    newParent = oldParent;
+  }
+  else if (!prevTab) {
+    log('=> moved to topmost position');
+    newParent = null;
+  }
+  else if (!nextTab) {
+    log('=> moved to last position');
+    let ancestor = oldParent;
+    while (ancestor) {
+      if (ancestor == prevParent) {
+        log(' => moving in related tree: keep it attached in existing tree');
+        newParent = prevParent;
+        break;
+      }
+      ancestor = tree.tabsById[ancestor.parent];
+    }
+    if (!newParent) {
+      log(' => moving from other tree: keep it orphaned');
+    }
+  }
+  else if (prevParent == nextParent) {
+    log('=> moved into existing tree');
+    newParent = prevParent;
+  }
+  else if (prevLevel > nextLevel  &&
+           nextTab.parent != tab.id) {
+    log('=> moved to end of existing tree');
+    if (!target.active &&
+        target.children.length == 0 &&
+        (Date.now() - target.trackedAt) < 500) {
+      log('=> maybe newly opened tab');
+      newParent = prevParent;
+    }
+    else {
+      log('=> maybe drag and drop (or opened with active state and position)');
+      const realDelta = Math.abs(toIndex - fromIndex);
+      newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
+    }
+    while (newParent && newParent.collapsed) {
+      log('=> the tree is collapsed, up to parent tree')
+      newParent = tree.tabsById[newParent.parent];
+    }
+  }
+  else if (prevLevel < nextLevel &&
+           nextTab.parent == prevTab.id) {
+    log('=> moved to first child position of existing tree');
+    newParent = prevTab || oldParent || nextParent;
+  }
+
+  log('calculated parent: ', {
+    old: oldParent && oldParent.id,
+    new: newParent && newParent.id
+  });
+
+  if (newParent) {
+    let ancestor = newParent;
+    while (ancestor) {
+      if (ancestor == target) {
+        if (moveInfo.toIndex - moveInfo.fromIndex == 1) {
+          log('=> maybe move-down by keyboard shortcut or something.');
+          let nearestForeigner = tab.$TST.nearestFollowingForeignerTab;
+          if (nearestForeigner &&
+              nearestForeigner == tab)
+            nearestForeigner = nearestForeigner.$TST.nextTab;
+          log('nearest foreigner tab: ', nearestForeigner && nearestForeigner.id);
+          if (nearestForeigner) {
+            if (nearestForeigner.$TST.hasChild)
+              return {
+                action:      'attach',
+                parent:      nearestForeigner.id,
+                insertAfter: nearestForeigner.id
+              };
+            return {
+              action:      tab.$TST.parent ? 'detach' : 'move',
+              insertAfter: nearestForeigner.id
+            };
+          }
+        }
+        log('=> invalid move: a parent is moved inside its own tree!');
+        return { action: 'invalid' };
+      }
+      ancestor = tree.tabsById[ancestor.parent];
+    }
+  }
+
+  if (newParent != oldParent) {
+    if (newParent) {
+      return {
+        action:       'attach',
+        parent:       newParent.id,
+        insertBefore: nextTab && nextTab.id,
+        insertAfter:  prevTab && prevTab.id
+      };
+    }
+    else {
+      return { action: 'detach' };
+    }
+  }
+  return { action: 'move' };
+}
+
+export async function applyTabActionForNewPosition({ tab, action, isTabCreating }) {
+  switch (action.action) {
+    case 'invalid':
+      throw new Error('invalid action: this must not happen!');
+
+    case 'attach': {
+      const attached = attachTabTo(tab, Tab.get(action.parent), {
+        insertBefore: Tab.get(action.insertBefore),
+        insertAfter:  Tab.get(action.insertAfter),
+        forceExpand:  isTabCreating,
+        broadcast:    true,
+        synchronously: isTabCreating,
+      });
+      if (!isTabCreating)
+        await attached;
+      followDescendantsToMovedRoot(tab);
+    }; break;
+
+    case 'detach':
+      detachTab(tab, { broadcast: true });
+      followDescendantsToMovedRoot(tab);
+      if (!action.insertBefore && !action.insertAfter)
+        break;
+
+    case 'move':
+      if (action.insertBefore) {
+        moveTabSubtreeBefore(
+          tab,
+          Tab.get(action.insertBefore),
+          { broadcast: true }
+        );
+        return;
+      }
+      else if (action.insertAfter) {
+        moveTabSubtreeAfter(
+          tab,
+          Tab.get(action.insertAfter),
+          { broadcast: true }
+        );
+        return;
+      }
+
+    default:
+      followDescendantsToMovedRoot(tab);
+      break;
+  }
+}
 
 
 //===================================================================
