@@ -1,7 +1,12 @@
 # History
 
  - master/HEAD
+   * Attach tabs sent from other devices to the tree correctly, even if they are sent while the receiver Firefox is not running and `browser.tabs.insertAfterCurrent` is `true`.
+   * Respect the right-to-left mark at the beginning of a page title.
    * Better appearance of the counter for collapsed descendant tabs in the Sidebar theme.
+   * Don't collapse tree by double-click on tab closeboxes. It accidebtally collapsed the closing tree and closed all descendant tabs unexpectedly.
+   * Treat middle-click and accel-click actions on the "New Tab" command in the context menu on tabs same to actions on the "New Tab" button, in the sidebar.
+   * `<tab-item-substance>`, `<tab-label>` and `<span class="label-content">` now inherit `data-tab-id` and `data-window-id` attributes from the parent element (`<tab-item>`) for more customizability with custom user styles.
  - 3.8.16 (2021.11.11)
    * Fade-out long tab labels to left or right, only based on the direction of the label text themselves instead of a global option.
    * Remove an option to set global text direction of tab labels.
