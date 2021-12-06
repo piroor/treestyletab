@@ -221,7 +221,7 @@ function matcheSignatures(signatures) {
 }
 
 function signatureFromTabsCache(cachedTabs) {
-  const idMatcher = new RegExp(`${Constants.kAPI_TAB_ID}="([^"]+)"`);
+  const idMatcher = new RegExp(`\bid="tab-([^"]+)"`);
   const cookieStoreIdMatcher = new RegExp(/\bcontextual-identity-[^\s]+\b/);
   const incognitoMatcher = new RegExp(/\bincognito\b/);
   const pinnedMatcher = new RegExp(/\bpinned\b/);

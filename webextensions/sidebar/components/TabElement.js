@@ -253,6 +253,12 @@ export class TabElement extends HTMLElement {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
     this.setAttribute('aria-selected', this.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED) ? 'true' : 'false');
+
+    // for convenience on customization with custom user styles
+    this._substanceElement.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
+    this._substanceElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
+    this._labelElement.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
+    this._labelElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
   }
 
   invalidate(targets) {
