@@ -911,12 +911,19 @@ async function onClick(info, contextTab) {
     multiselectedTabs = null;
 
   switch (info.menuItemId.replace(/^noContextTab:/, '')) {
-    case 'context_newTab':
+    case 'context_newTab': {
+      const behavior = info.button == 1 ?
+        configs.autoAttachOnNewTabButtonMiddleClick :
+        (info.modifiers && (info.modifiers.includes('Ctrl') || info.modifiers.includes('Command'))) ?
+          configs.autoAttachOnNewTabButtonAccelClick :
+          contextTab ?
+            configs.autoAttachOnContextNewTabCommand :
+            configs.autoAttachOnNewTabCommand;
       Commands.openNewTabAs({
         baseTab: contextTab || activeTab,
-        as:      contextTab ? configs.autoAttachOnContextNewTabCommand : configs.autoAttachOnNewTabCommand,
+        as:      behavior,
       });
-      break;
+    }; break;
 
     case 'context_reloadTab':
       if (multiselectedTabs) {
