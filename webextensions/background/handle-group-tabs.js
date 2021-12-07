@@ -412,8 +412,8 @@ async function onNewTabsTimeout(window) {
   if (configs.autoGroupNewTabsFromBookmarks ||
       configs.autoGroupNewTabsFromPinned ||
       configs.autoGroupNewTabsFromOthers) {
-  mToBeGroupedTabSets.push(tabReferences);
-  tryGroupNewTabs();
+    mToBeGroupedTabSets.push(tabReferences);
+    tryGroupNewTabs();
   }
 }
 
