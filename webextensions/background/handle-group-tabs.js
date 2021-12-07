@@ -398,15 +398,11 @@ async function onNewTabsTimeout(window) {
     }
   }
 
-  if (areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences)) {
-    for (const tabReference of tabReferences) {
-      tabReference.fromOtherDevice = true;
-    }
-    if (configs.fixupOrderOfTabsFromOtherDevice) {
+  if (areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences) &&
+      configs.fixupOrderOfTabsFromOtherDevice) {
       const ids   = tabReferences.map(tabReference => tabReference.id);
       const index = tabReferences.map(tabReference => Tab.get(tabReference.id).index).sort()[0];
       await browser.tabs.move(ids, { index });
-    }
   }
 
   if (configs.autoGroupNewTabsFromBookmarks ||
