@@ -198,6 +198,7 @@ export const configs = new Configs({
   ignoreTabDropNearSidebarArea: true,
 
   fixupTreeOnTabVisibilityChanged: false,
+  fixupOrderOfTabsFromOtherDevice: true,
 
   scrollToExpandedTree: true,
 

@@ -346,6 +346,11 @@ async function onCreated(tab) {
     await mPromisedStarted;
 
   log('tabs.onCreated: ', dumpTab(tab));
+
+  // Cache the initial index for areTabsFromOtherDeviceWithInsertAfterCurrent()@handle-group-tabs.js
+  // See also: https://github.com/piroor/treestyletab/issues/2419
+  tab.$indexOnCreated = tab.index;
+
   return onNewTabTracked(tab, { trigger: 'tabs.onCreated' });
 }
 

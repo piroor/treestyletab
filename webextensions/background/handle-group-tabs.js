@@ -346,9 +346,11 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
     else {
       window.openedNewTabs.set(tab.id, {
         id:       tab.id,
+        windowId: tab.windowId,
+        indexOnCreated: tab.$indexOnCreated,
         openerId: openerTab && openerTab.id,
         openerIsPinned: openerTab && openerTab.pinned,
-        maybeFromBookmark: tab.$TST.maybeFromBookmark
+        maybeFromBookmark: tab.$TST.maybeFromBookmark,
       });
     }
   }
@@ -396,8 +398,23 @@ async function onNewTabsTimeout(window) {
     }
   }
 
+  if (areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences)) {
+    for (const tabReference of tabReferences) {
+      tabReference.fromOtherDevice = true;
+    }
+    if (configs.fixupOrderOfTabsFromOtherDevice) {
+      const ids   = tabReferences.map(tabReference => tabReference.id);
+      const index = tabReferences.map(tabReference => Tab.get(tabReference.id).index).sort()[0];
+      await browser.tabs.move(ids, { index });
+    }
+  }
+
+  if (configs.autoGroupNewTabsFromBookmarks ||
+      configs.autoGroupNewTabsFromPinned ||
+      configs.autoGroupNewTabsFromOthers) {
   mToBeGroupedTabSets.push(tabReferences);
   tryGroupNewTabs();
+  }
 }
 
 async function tryGroupNewTabs() {
@@ -692,4 +709,36 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     }
   }
   return true;
+}
+
+
+// Detect tabs sent from other device with `browser.tabs.insertAfterCurrent`=true based on their index
+// See also: https://github.com/piroor/treestyletab/issues/2419
+function areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences) {
+  if (tabReferences.length == 0)
+    return false;
+
+  const activeTab = Tab.getActiveTab(tabReferences[0].windowId);
+  if (!activeTab)
+    return false;
+
+  const activeIndex        = activeTab.index;
+  const followingTabsCount = Tab.getTabs(activeTab.windowId).filter(tab => tab.index > activeIndex).length;
+
+  const createdCount    = tabReferences.length;
+  const expectedIndices = [activeIndex + 1];
+  const actualIndices   = tabReferences.map(tabReference => tabReference.indexOnCreated);
+
+  const overTabsCount = Math.max(0, createdCount - followingTabsCount);
+  const shouldCountDown = Math.min(createdCount - 1, createdCount - Math.floor(overTabsCount / 2));
+  const shouldCountUp = createdCount - shouldCountDown - 1;
+  for (let i = 0; i < shouldCountUp; i++) {
+    expectedIndices.push(activeIndex + 2 + i + (createdCount - overTabsCount));
+  }
+  for (let i = shouldCountDown - 1; i > -1; i--) {
+    expectedIndices.push(activeIndex + 1 + i);
+  }
+  const received = actualIndices.join(',') == expectedIndices.join(',');
+  log('areTabsFromOtherDeviceWithInsertAfterCurrent:', received, { overTabsCount, shouldCountUp, shouldCountDown, size: expectedIndices.length, actualIndices, expectedIndices });
+  return received;
 }
