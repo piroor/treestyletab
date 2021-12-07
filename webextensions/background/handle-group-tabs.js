@@ -709,6 +709,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
 
 
 // Detect tabs sent from other device with `browser.tabs.insertAfterCurrent`=true based on their index
+// (Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1596787 )
 // See also: https://github.com/piroor/treestyletab/issues/2419
 function areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences) {
   if (tabReferences.length == 0)
