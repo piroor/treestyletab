@@ -21,7 +21,7 @@ import './handle-tab-focus.js';
 import './handle-tab-multiselect.js';
 import './handle-moved-tabs.js';
 import './handle-tree-changes.js';
-import './handle-group-tabs.js';
+import './handle-tab-bunches.js';
 import './handle-misc.js';
 
 log.context = 'BG';

@@ -431,7 +431,7 @@ export const configs = new Configs({
     'background/browser-action-menu': false,
     'background/commands': false,
     'background/context-menu': false,
-    'background/handle-group-tabs': false,
+    'background/handle-tab-bunches': false,
     'background/handle-misc': false,
     'background/handle-moved-tabs': false,
     'background/handle-new-tabs': false,

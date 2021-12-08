@@ -26,7 +26,7 @@ import * as Tree from './tree.js';
 import * as Background from './background.js';
 
 function log(...args) {
-  internalLogger('background/handle-group-tabs', ...args);
+  internalLogger('background/handle-tab-bunches', ...args);
 }
 
 

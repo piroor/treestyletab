@@ -347,7 +347,7 @@ async function onCreated(tab) {
 
   log('tabs.onCreated: ', dumpTab(tab));
 
-  // Cache the initial index for areTabsFromOtherDeviceWithInsertAfterCurrent()@handle-group-tabs.js
+  // Cache the initial index for areTabsFromOtherDeviceWithInsertAfterCurrent()@handle-tab-bunches.js
   // See also: https://github.com/piroor/treestyletab/issues/2419
   tab.$indexOnCreated = tab.index;
 
