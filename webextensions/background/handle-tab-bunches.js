@@ -57,6 +57,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
         openerId: openerTab && openerTab.id,
         openerIsPinned: openerTab && openerTab.pinned,
         maybeFromBookmark: tab.$TST.maybeFromBookmark,
+        shouldNotGrouped: TSTAPI.isGroupingBlocked(),
       });
     }
   }
@@ -82,10 +83,8 @@ async function onNewTabsTimeout(window) {
 
   window.openedNewTabs.clear();
 
-  const blocked = TSTAPI.isGroupingBlocked();
-  log('  blocked?: ', blocked);
   tabReferences = tabReferences.filter(tabReference => {
-    if (blocked || !tabReference.id)
+    if (!tabReference.id)
       return false;
     const tab = Tab.get(tabReference.id);
     if (!tab)
@@ -134,6 +133,8 @@ async function tryDetectTabBunches() {
     const fromOthers    = [];
     // extract only pure new tabs
     for (const tabReference of tabReferences) {
+      if (tabReference.shouldNotGrouped)
+        continue;
       const tab = Tab.get(tabReference.id);
       if (!tab)
         continue;
