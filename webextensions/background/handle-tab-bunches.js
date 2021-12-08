@@ -114,20 +114,20 @@ async function onNewTabsTimeout(window) {
       configs.autoGroupNewTabsFromPinned ||
       configs.autoGroupNewTabsFromOthers) {
     mPossibleTabBunches.push(tabReferences);
-    tryDetectTabBunches();
+    tryGroupTabBunches();
   }
 }
 
-async function tryDetectTabBunches() {
-  if (tryDetectTabBunches.running)
+async function tryGroupTabBunches() {
+  if (tryGroupTabBunches.running)
     return;
 
   const tabReferences = mPossibleTabBunches.shift();
   if (!tabReferences)
     return;
 
-  log('tryDetectTabBunches for ', tabReferences);
-  tryDetectTabBunches.running = true;
+  log('tryGroupTabBunches for ', tabReferences);
+  tryGroupTabBunches.running = true;
   try {
     const fromPinned    = [];
     const fromOthers    = [];
@@ -160,7 +160,7 @@ async function tryDetectTabBunches() {
     if (fromPinned.length > 0 && configs.autoGroupNewTabsFromPinned) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromPinned));
       if (newRootTabs.length > 0) {
-        await tryDetectTabBunchesFromPinnedOpener(newRootTabs);
+        await tryGroupTabBunchesFromPinnedOpener(newRootTabs);
       }
     }
 
@@ -203,12 +203,12 @@ async function tryDetectTabBunches() {
     }
   }
   catch(e) {
-    log('Error on tryDetectTabBunches: ', String(e), e.stack);
+    log('Error on tryGroupTabBunches: ', String(e), e.stack);
   }
   finally {
-    tryDetectTabBunches.running = false;
+    tryGroupTabBunches.running = false;
     if (mPossibleTabBunches.length > 0)
-      tryDetectTabBunches();
+      tryGroupTabBunches();
   }
 }
 
@@ -282,8 +282,8 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
   }
 }
 
-async function tryDetectTabBunchesFromPinnedOpener(rootTabs) {
-  log(`tryDetectTabBunchesFromPinnedOpener: ${rootTabs.length} root tabs are opened from pinned tabs`);
+async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
+  log(`tryGroupTabBunchesFromPinnedOpener: ${rootTabs.length} root tabs are opened from pinned tabs`);
 
   // First, collect pinned opener tabs.
   let pinnedOpeners = [];
