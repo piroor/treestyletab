@@ -31,7 +31,7 @@ function log(...args) {
 
 
 // ====================================================================
-// detection of a bunch of tabs opned at same time
+// detection of a bunch of tabs opened at same time
 // ====================================================================
 
 Tab.onBeforeCreate.addListener(async (tab, info) => {
