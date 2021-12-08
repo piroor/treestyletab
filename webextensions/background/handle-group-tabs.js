@@ -69,7 +69,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
   );
 });
 
-const mToBeGroupedTabSets = [];
+const mPossibleTabBunches = [];
 
 async function onNewTabsTimeout(window) {
   if (Tab.needToWaitTracked(window.id))
@@ -114,21 +114,21 @@ async function onNewTabsTimeout(window) {
   if (configs.autoGroupNewTabsFromBookmarks ||
       configs.autoGroupNewTabsFromPinned ||
       configs.autoGroupNewTabsFromOthers) {
-    mToBeGroupedTabSets.push(tabReferences);
-    tryGroupNewTabs();
+    mPossibleTabBunches.push(tabReferences);
+    tryDetectTabBunches();
   }
 }
 
-async function tryGroupNewTabs() {
-  if (tryGroupNewTabs.running)
+async function tryDetectTabBunches() {
+  if (tryDetectTabBunches.running)
     return;
 
-  const tabReferences = mToBeGroupedTabSets.shift();
+  const tabReferences = mPossibleTabBunches.shift();
   if (!tabReferences)
     return;
 
-  log('tryGroupNewTabs for ', tabReferences);
-  tryGroupNewTabs.running = true;
+  log('tryDetectTabBunches for ', tabReferences);
+  tryDetectTabBunches.running = true;
   try {
     const fromPinned    = [];
     const fromOthers    = [];
@@ -159,7 +159,7 @@ async function tryGroupNewTabs() {
     if (fromPinned.length > 0 && configs.autoGroupNewTabsFromPinned) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromPinned));
       if (newRootTabs.length > 0) {
-        await tryGroupNewTabsFromPinnedOpener(newRootTabs);
+        await tryDetectTabBunchesFromPinnedOpener(newRootTabs);
       }
     }
 
@@ -202,12 +202,12 @@ async function tryGroupNewTabs() {
     }
   }
   catch(e) {
-    log('Error on tryGroupNewTabs: ', String(e), e.stack);
+    log('Error on tryDetectTabBunches: ', String(e), e.stack);
   }
   finally {
-    tryGroupNewTabs.running = false;
-    if (mToBeGroupedTabSets.length > 0)
-      tryGroupNewTabs();
+    tryDetectTabBunches.running = false;
+    if (mPossibleTabBunches.length > 0)
+      tryDetectTabBunches();
   }
 }
 
@@ -281,8 +281,8 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
   }
 }
 
-async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
-  log(`tryGroupNewTabsFromPinnedOpener: ${rootTabs.length} root tabs are opened from pinned tabs`);
+async function tryDetectTabBunchesFromPinnedOpener(rootTabs) {
+  log(`tryDetectTabBunchesFromPinnedOpener: ${rootTabs.length} root tabs are opened from pinned tabs`);
 
   // First, collect pinned opener tabs.
   let pinnedOpeners = [];
