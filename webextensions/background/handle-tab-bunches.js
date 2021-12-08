@@ -93,7 +93,7 @@ async function onNewTabsTimeout(window) {
     return !uniqueId || (!uniqueId.duplicated && !uniqueId.restored);
   });
   if (tabReferences.length == 0) {
-    log(' => no tab to be grouped.');
+    log(' => there is no possible bunches of tabs.');
     return;
   }
 
