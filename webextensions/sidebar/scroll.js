@@ -318,7 +318,7 @@ export async function scrollToTab(tab, options = {}) {
   // To retry "scroll to tab" behavior for such cases, we need to
   // keep "last scrolled-to tab" information until the tab is
   // actually moved.
-  await wait(configs.autoGroupNewTabsTimeout);
+  await wait(configs.tabBunchesDetectionTimeout);
   if (scrollToTab.stopped)
     return;
   const retryOptions = {

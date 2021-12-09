@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 24;
+const kCONFIGS_VERSION = 25;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -250,6 +250,12 @@ export function migrateConfigs() {
           configs.treatTreeAsExpandedOnClosed_noSidebar === false) {
         configs.parentTabOperationBehaviorMode = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM;
       }
+
+    case 24:
+      if (configs.autoGroupNewTabsTimeout !== null)
+        configs.tabBunchesDetectionTimeout = configs.autoGroupNewTabsTimeout;
+      if (configs.autoGroupNewTabsDelayOnNewWindow !== null)
+        configs.tabBunchesDetectionDelayOnNewWindow = configs.autoGroupNewTabsDelayOnNewWindow;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

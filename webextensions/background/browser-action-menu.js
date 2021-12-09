@@ -817,7 +817,7 @@ const mItems = [
       {
         dynamicTitle: true,
         get title() {
-          return indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_after');
+          return indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_before') + delimiter + configs.tabBunchesDetectionTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_after');
         },
         key:   'autoGroupNewTabsFromBookmarks',
         type:  'checkbox'

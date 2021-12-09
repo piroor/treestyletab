@@ -507,8 +507,8 @@
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Рассматривать все новые вкладки как открытые из одной папки закладок, если более " },
   "config_tabsFromSameFolderMinThresholdPercentage_after": { "message": "% вкладок имеют соответствующую закладку в общей папке закладок" },
   "config_autoGroupNewTabsFromOthers_label": { "message": "Автогруппировать вкладки, открытые одновременно не из закладок" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Автогруппировать вкладки открытые в течении" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс, при открытии нового окна, в составе вкладок открытых как \"домашняя страница\"." },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "Автогруппировать вкладки открытые в течении" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "мс, при открытии нового окна, в составе вкладок открытых как \"домашняя страница\"." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Подтверждать группировку вкладок" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "Группировать список вкладок в диалоге подтверждения" },
 

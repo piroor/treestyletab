@@ -503,8 +503,8 @@
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "開かれたタブのURLのうち" },
   "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "%以上が共通のフォルダー内にブックマークされていれば、開かれたタブすべてがそのブックマークフォルダーから開かれたと判断する" },
   "config_autoGroupNewTabsFromOthers_label": { "message": "ブックマーク以外から連続して開かれたタブも自動的にグループ化する" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
   "config_warnOnAutoGroupNewTabs_label": { "message": "自動的にグループ化する前に確認する" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "グループ化しようとしているタブの一覧を確認のダイアログに表示する" },
 

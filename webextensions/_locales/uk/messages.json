@@ -233,8 +233,8 @@
 
   "config_autoGroupNewTabs_before": { "message": "Автоматично групувати вкладки відкриті протягом" },
   "config_autoGroupNewTabs_after": { "message": "мс" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Але не об'єднувати нові вкладки, відкриті протягом" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс коли нове вікно відкрито у складі відкритих вкладок як \"домашня сторінка\"." },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "Але не об'єднувати нові вкладки, відкриті протягом" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "мс коли нове вікно відкрито у складі відкритих вкладок як \"домашня сторінка\"." },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автоматично групувати вкладки відкриті із однієї закріпленої вкладки" },
 

@@ -1534,11 +1534,11 @@
   "config_autoGroupNewTabsFromOthers_label": {
     "message": "也对在一定时间内打开自非书签触发方式的标签页进行自动分组"
   },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": {
+  "config_tabBunchesDetectionDelayOnNewWindow_before": {
     "message": "但是对于在新建窗口打开后的",
     "hash": "2eb9969ecbaf2144590626aa33b20dff"
   },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": {
+  "config_tabBunchesDetectionDelayOnNewWindow_after": {
     "message": "毫秒内打开的多个新建标签页，其会被视作以 “主页” 方式打开的标签页的一部分，不会对其进行分组。",
     "hash": "a6e268352f07d4449db8c955fca074d7"
   },

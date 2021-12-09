@@ -482,8 +482,8 @@
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Alle neuen Tabs als aus einem Lesezeichen-Ordner stammend betrachten, falls mehr als " },
   "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "% Tabs ein entsprechendes Lesezeichen in einem Lesezeichen-Ordner haben" },
   "config_autoGroupNewTabsFromOthers_label": { "message": "Zeitgleich geöffnete Tabs gruppieren, auch wenn sie nicht aus den Lesezeichen stammen" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Aber neue Tabs nicht gruppieren, die innerhalb von" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "Millisekunden geöffnet werden, wenn ein neues Fenster geöffnet wird, als Teil von Tabs, die als \"Startseite\" geöffnet werden." },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "Aber neue Tabs nicht gruppieren, die innerhalb von" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "Millisekunden geöffnet werden, wenn ein neues Fenster geöffnet wird, als Teil von Tabs, die als \"Startseite\" geöffnet werden." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Bestätige Gruppierung von Tabs" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "Tabs, die gruppiert werden sollen, im Bestätigungsdialog auflisten" },
 

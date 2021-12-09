@@ -205,12 +205,12 @@ export const configs = new Configs({
   spreadMutedStateOnlyToSoundPlayingTabs: true,
 
 
-  // grouping
+  // tab bunches
+  tabBunchesDetectionTimeout: 100,
+  tabBunchesDetectionDelayOnNewWindow: 500,
   autoGroupNewTabsFromBookmarks: true,
   tabsFromSameFolderMinThresholdPercentage: 50,
   autoGroupNewTabsFromOthers: false,
-  autoGroupNewTabsTimeout: 100,
-  autoGroupNewTabsDelayOnNewWindow: 500,
   autoGroupNewTabsFromPinned: true,
   groupTabTemporaryStateForNewTabsFromBookmarks: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForNewTabsFromOthers: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
@@ -519,6 +519,8 @@ export const configs = new Configs({
   userStyleRules5: '',
   userStyleRules6: '',
   userStyleRules7: '',
+  autoGroupNewTabsTimeout: null, // migrated to tabBunchesDetectionTimeout
+  autoGroupNewTabsDelayOnNewWindow: null, // migrated to tabBunchesDetectionDelayOnNewWindow
 
 
   configsVersion: 0,

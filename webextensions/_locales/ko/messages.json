@@ -1464,11 +1464,11 @@
         "message": "북마크 이외에서 연속적으로 열린 탭은 자동으로 묶입니다.",
         "hash": "a8c3d0dacf027b072bdac938343c5131"
     },
-    "config_autoGroupNewTabsDelayOnNewWindow_before": {
+    "config_tabBunchesDetectionDelayOnNewWindow_before": {
         "message": "다만, 새 창이 열리고부터",
         "hash": "2eb9969ecbaf2144590626aa33b20dff"
     },
-    "config_autoGroupNewTabsDelayOnNewWindow_after": {
+    "config_tabBunchesDetectionDelayOnNewWindow_after": {
         "message": "밀리초 안에 열린 탭은 \"홈페이지\"의 일부로 간주해 묶지 않습니다.",
         "hash": "a6e268352f07d4449db8c955fca074d7"
     },

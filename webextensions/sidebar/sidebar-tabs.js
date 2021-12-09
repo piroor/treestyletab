@@ -304,7 +304,7 @@ export async function waitUntilNewTabIsMoved(tabId) {
   const timer = setTimeout(() => {
     if (mMovedNewTabResolvers.has(tabId))
       mMovedNewTabResolvers.get(tabId)();
-  }, Math.max(0, configs.autoGroupNewTabsTimeout));
+  }, Math.max(0, configs.tabBunchesDetectionTimeout));
   const promise = new Promise((resolve, _reject) => {
     mMovedNewTabResolvers.set(tabId, resolve);
   }).then(newIndex => {
@@ -325,7 +325,7 @@ function maybeNewTabIsMoved(tabId) {
     mAlreadyMovedNewTabs.add(tabId);
     setTimeout(() => {
       mAlreadyMovedNewTabs.delete(tabId);
-    }, Math.min(10 * 1000, configs.autoGroupNewTabsTimeout));
+    }, Math.min(10 * 1000, configs.tabBunchesDetectionTimeout));
   }
 }
 

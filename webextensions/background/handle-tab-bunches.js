@@ -46,8 +46,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
        openerTab.windowId == tab.windowId) ||
       (!openerTab &&
        !info.maybeOrphan)) {
-    if (window.preventAutoGroupNewTabsUntil > Date.now()) {
-      window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    if (window.preventToDetectTabBunchesUntil > Date.now()) {
+      window.preventToDetectTabBunchesUntil += configs.tabBunchesDetectionTimeout;
     }
     else {
       window.openedNewTabs.set(tab.id, {
@@ -65,7 +65,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
     clearTimeout(window.openedNewTabsTimeout);
   window.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
-    configs.autoGroupNewTabsTimeout,
+    configs.tabBunchesDetectionTimeout,
     window
   );
 });

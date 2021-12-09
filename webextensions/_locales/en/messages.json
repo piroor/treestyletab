@@ -507,8 +507,8 @@
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },
   "config_tabsFromSameFolderMinThresholdPercentage_after": { "message":  "% tabs have corresponding bookmark in common bookmark folder" },
   "config_autoGroupNewTabsFromOthers_label": { "message": "Auto-group tabs opened at a time from non-bookmark triggers also" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "But don't group new tabs opened within" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "But don't group new tabs opened within" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirm to group tabs" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "List tabs to be grouped in the confirmation dialog" },
 

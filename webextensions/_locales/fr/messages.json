@@ -314,8 +314,8 @@
 
   "config_autoGroupNewTabs_before": { "message": "Grouper automatiquement les onglets ouverts durant" },
   "config_autoGroupNewTabs_after": { "message": "msec" },
-  "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Mais ne pas grouper les nouveaux onglets ouverts durant" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "msec quand une nouvelle fenêtre est ouverte, s'ils font partie des onglets ouverts comme « Page d'accueil »." },
+  "config_tabBunchesDetectionDelayOnNewWindow_before": { "message": "Mais ne pas grouper les nouveaux onglets ouverts durant" },
+  "config_tabBunchesDetectionDelayOnNewWindow_after": { "message": "msec quand une nouvelle fenêtre est ouverte, s'ils font partie des onglets ouverts comme « Page d'accueil »." },
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirmer le groupement d'onglets" },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Grouper automatiquement les onglets ouverts depuis le même onglet épinglé" },
