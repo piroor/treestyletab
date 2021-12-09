@@ -29,9 +29,11 @@ function log(...args) {
   internalLogger('background/handle-tab-bunches', ...args);
 }
 
-
 // ====================================================================
-// detection of a bunch of tabs opened at same time
+// Detection of a bunch of tabs opened at same time.
+// Firefox's WebExtensions API doesn't provide ability to know which tabs
+// are opened together by a single trigger. Thus TST tries to detect such
+// "tab bunches" based on their opened timing.
 // ====================================================================
 
 Tab.onBeforeCreate.addListener(async (tab, info) => {
