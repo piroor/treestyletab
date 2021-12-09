@@ -63,10 +63,10 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
       });
     }
   }
-  if (window.openedNewTabsTimeout)
-    clearTimeout(window.openedNewTabsTimeout);
-  window.openedNewTabsTimeout = setTimeout(
-    onNewTabsTimeout,
+  if (window.delayedTabBunchesDetection)
+    clearTimeout(window.delayedTabBunchesDetection);
+  window.delayedTabBunchesDetection = setTimeout(
+    tryDetectTabBunches,
     configs.tabBunchesDetectionTimeout,
     window
   );
@@ -74,14 +74,14 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
 
 const mPossibleTabBunches = [];
 
-async function onNewTabsTimeout(window) {
+async function tryDetectTabBunches(window) {
   if (Tab.needToWaitTracked(window.id))
     await Tab.waitUntilTrackedAll(window.id);
   if (Tab.needToWaitMoved(window.id))
     await Tab.waitUntilMovedAll(window.id);
 
   let tabReferences = Array.from(window.openedNewTabs.values());
-  log('onNewTabsTimeout for ', tabReferences);
+  log('tryDetectTabBunches for ', tabReferences);
 
   window.openedNewTabs.clear();
 
