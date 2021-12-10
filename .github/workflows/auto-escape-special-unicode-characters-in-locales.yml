@@ -1,4 +1,4 @@
-name: auto-escape-invalid-characters-in-locales
+name: auto-escape-special-unicode-characters-in-locales
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - "trunk"
 
 jobs:
-  auto-escape-invalid-characters-in-locales:
+  auto-escape-special-unicode-characters-in-locales:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,10 +15,10 @@ jobs:
       with:
         ref: trunk
     - name: escape ZWSP unexpectedly unescaped by GitLocalize
-      run: "ZWSP=$'\\u200b'; grep -r -E \"$ZWSP\" webextensions/_locales | cut -d : -f 1 | uniq | xargs sed -i -r -e \"s/$ZWSP/\\\\\\\\u200b/g\" || echo 'there is no fixable files'"
+      run: "ZWSP=$'\\u200b'; grep -r -E \"$ZWSP\" webextensions/_locales | cut -d : -f 1 | uniq | xargs sed -i -r -e \"s/$ZWSP/\\\\\\\\u200b/g\" || echo 'there is no ZWSP'"
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Escape invalid characters in locales
+        commit_message: Escape special unicode characters in locales
         file_pattern: webextensions/_locales/*/*.json
         branch: trunk
  
