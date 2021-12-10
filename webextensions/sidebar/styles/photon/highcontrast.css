@@ -28,8 +28,8 @@
 }
 
 #background::after {
-  background: CaptionText;
-  opacity: 0.35;
+  background: GrayText;
+  opacity: 0.5;
 
   bottom: 0;
   content: "";
