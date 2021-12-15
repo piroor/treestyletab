@@ -13,6 +13,7 @@ import {
   notify,
   configs,
   shouldApplyAnimation,
+  compareAsNumber,
   isLinux,
   isMacOS,
 } from '/common/common.js';
@@ -193,7 +194,7 @@ function getAddonIcon(id) {
 function chooseIconForAddon(params) {
   const icons = params.icons || {};
   const addon = TSTAPI.getAddon(params.id) || {};
-  let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
+  let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort(compareAsNumber);
   const reducedSizes = sizes.filter(aSize => aSize < 16);
   if (reducedSizes.length > 0)
     sizes = reducedSizes;

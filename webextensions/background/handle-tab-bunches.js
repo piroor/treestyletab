@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   dumpTab,
   configs,
-  sanitizeForHTMLText
+  sanitizeForHTMLText,
+  compareAsNumber,
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -108,7 +109,8 @@ async function tryDetectTabBunches(window) {
   if (areTabsFromOtherDeviceWithInsertAfterCurrent(tabReferences) &&
       configs.fixupOrderOfTabsFromOtherDevice) {
     const ids   = tabReferences.map(tabReference => tabReference.id);
-    const index = tabReferences.map(tabReference => Tab.get(tabReference.id).index).sort()[0];
+    const index = tabReferences.map(tabReference => Tab.get(tabReference.id).index).sort(compareAsNumber)[0];
+    log(' => gather tabs from other device at ', ids, index);
     await browser.tabs.move(ids, { index });
   }
 

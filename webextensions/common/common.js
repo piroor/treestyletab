@@ -781,6 +781,10 @@ export async function notify({ icon, title, message, timeout, url } = {}) {
   });
 }
 
+export function compareAsNumber(a, b) {
+  return a - b;
+}
+
 
 // Helper functions for optimization
 // Originally implemented by @bb010g at

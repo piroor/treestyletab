@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   wait,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  compareAsNumber,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -125,7 +126,7 @@ function getProviderIconUrl(provider) {
   if ('16' in provider.icons)
     return provider.icons['16'];
 
-  const sizes = Object.keys(provider.icons, size => parseInt(size)).sort();
+  const sizes = Object.keys(provider.icons, size => parseInt(size)).sort(compareAsNumber);
   if (sizes.length == 0)
     return null;
 
