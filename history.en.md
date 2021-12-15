@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.17 (2021.12.15)
    * Attach tabs sent from other devices to the tree correctly, even if they are sent while the receiver Firefox is not running and `browser.tabs.insertAfterCurrent` is `true`.
    * Put a set of tabs from other device together in a place instead of jumped positions if possible, when `browser.tabs.insertAfterCurrent` is `true`. (Set a secret option `fixupOrderOfTabsFromOtherDevice` to `false` when you want to deactivate the behavior.)
    * Respect the right-to-left mark at the beginning of a page title.

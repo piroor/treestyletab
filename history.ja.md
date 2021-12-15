@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.17 (2021.12.15)
    * `browser.tabs.insertAfterCurrent`が`true`に設定されている場合に、受け側のFirefoxが動作していない状態で他のデバイスからタブが送られた時に、Firefox起動後に開かれたそれらのタブを、ツリー構造を壊さないよう既存のツリーに組み込むようにした
    * `browser.tabs.insertAfterCurrent`が`true`に設定されている場合に、他のデバイスから複数のタブを一度に送ると受け側のFirefoxでタブが飛び飛びに開かれてしまう問題について、可能な限りタブの位置を一箇所にまとめるようにした（この挙動は隠し設定 `fixupOrderOfTabsFromOtherDevice` で無効化できます）
    * ページのタイトルの最初に置かれたRight-to-Leftの制御文字を受け付けるようにした
