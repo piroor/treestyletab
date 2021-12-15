@@ -6,7 +6,7 @@
    * Put a set of tabs from other device together in a place instead of jumped positions if possible, when `browser.tabs.insertAfterCurrent` is `true`. (Set a secret option `fixupOrderOfTabsFromOtherDevice` to `false` when you want to deactivate the behavior.)
    * Respect the right-to-left mark at the beginning of a page title.
    * Better appearance of the counter for collapsed descendant tabs in the Sidebar theme.
-   * Don't collapse tree by double-click on tab closeboxes. It accidebtally collapsed the closing tree and closed all descendant tabs unexpectedly.
+   * Don't collapse tree by double-click on tab closeboxes. It accidentally collapsed the closing tree and closed all descendant tabs unexpectedly.
    * Treat middle-click and accel-click actions on the "New Tab" command in the context menu on tabs same to actions on the "New Tab" button, in the sidebar.
    * `<tab-item-substance>`, `<tab-label>` and `<span class="label-content">` now inherit `data-tab-id` and `data-window-id` attributes from the parent element (`<tab-item>`) for more customizability with custom user styles.
    * Highlight tabs with "attention" class same as Firefox's native tabs even if they are not faviconized.
