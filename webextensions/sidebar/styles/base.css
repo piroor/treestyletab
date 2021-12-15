@@ -92,8 +92,8 @@
 
 tab-item {
   --tab-current-size: var(--tab-size);
-  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
-  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
+  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2));
+  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2));
   --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 14% + 1px),
                                                var(--tab-highlighted-glow) 0,
                                                var(--tab-highlighted-glow) 7%,
@@ -109,6 +109,10 @@ tab-item {
                                                      var(--tab-highlighted-glow) 10%,
                                                      rgba(255, 255, 255, 0) 23%);
   */
+}
+tab-item.faviconized {
+  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
+  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
 }
 
 tab-item:focus {
@@ -584,6 +588,10 @@ tab-item.attention tab-item-substance:not(:hover) tab-favicon::before {
 tab-item.faviconized.unread:not(.active) tab-item-substance:hover tab-favicon::before,
 tab-item.attention tab-item-substance:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
+}
+
+tab-item.attention tab-label {
+  font-weight: bold;
 }
 
 tab-item.faviconized.active:not([data-drop-position]) tab-item-substance {
