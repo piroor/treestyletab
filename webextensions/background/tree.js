@@ -1663,13 +1663,20 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 //===================================================================
 
 class TabActionForNewPosition {
-  constructor(action, { tab, parent, insertBefore, insertAfter, isTabCreating } = {}) {
+  constructor(action, { tab, parent, insertBefore, insertAfter, isTabCreating, mustToApply } = {}) {
     this.action        = action || null;
     this.tab           = tab;
     this.parent        = parent;
     this.insertBefore  = insertBefore;
     this.insertAfter   = insertAfter;
     this.isTabCreating = isTabCreating;
+    this.mustToApply   = mustToApply;
+  }
+
+  async applyIfNeeded() {
+    if (!this.mustToApply)
+      return;
+    return this.apply();
   }
 
   async apply() {
@@ -1758,6 +1765,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
 
   const oldParent = tree.tabsById[target.parent];
   let newParent = null;
+  let mustToApply = false;
 
   if (!oldParent) {
     if (!nextTab) {
@@ -1773,6 +1781,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   if (target.mayBeReplacedWithContainer) {
     log('=> replaced by Firefox Multi-Acount Containers or Temporary Containers');
     newParent = prevLevel < nextLevel ? prevTab : prevParent;
+    mustToApply = true;
   }
   else if (oldParent &&
            prevTab &&
@@ -1783,6 +1792,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   else if (!prevTab) {
     log('=> moved to topmost position');
     newParent = null;
+    mustToApply = !!oldParent;
   }
   else if (!nextTab) {
     log('=> moved to last position');
@@ -1798,10 +1808,12 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
     if (!newParent) {
       log(' => moving from other tree: keep it orphaned');
     }
+    mustToApply = !!oldParent && newParent != oldParent;
   }
   else if (prevParent == nextParent) {
     log('=> moved into existing tree');
     newParent = prevParent;
+    mustToApply = !oldParent || newParent != oldParent;
   }
   else if (prevLevel > nextLevel  &&
            nextTab.parent != tab.id) {
@@ -1821,11 +1833,13 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
       log('=> the tree is collapsed, up to parent tree')
       newParent = tree.tabsById[newParent.parent];
     }
+    mustToApply = !!oldParent && newParent != oldParent;
   }
   else if (prevLevel < nextLevel &&
            nextTab.parent == prevTab.id) {
     log('=> moved to first child position of existing tree');
     newParent = prevTab || oldParent || nextParent;
+    mustToApply = !!oldParent && newParent != oldParent;
   }
 
   log('calculated parent: ', {
@@ -1851,11 +1865,13 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
                 isTabCreating,
                 parent:      nearestForeigner.id,
                 insertAfter: nearestForeigner.id,
+                mustToApply,
               });
             return new TabActionForNewPosition(tab.$TST.parent ? 'detach' : 'move', {
               tab,
               isTabCreating,
               insertAfter: nearestForeigner.id,
+              mustToApply,
             });
           }
         }
@@ -1873,19 +1889,22 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
         isTabCreating,
         parent:       newParent.id,
         insertBefore: nextTab && nextTab.id,
-        insertAfter:  prevTab && prevTab.id
+        insertAfter:  prevTab && prevTab.id,
+        mustToApply,
       });
     }
     else {
       return new TabActionForNewPosition('detach', {
         tab,
         isTabCreating,
+        mustToApply,
       });
     }
   }
   return new TabActionForNewPosition('move', {
     tab,
     isTabCreating,
+    mustToApply,
   });
 }
 

@@ -161,7 +161,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
           case 'attach':
           case 'detach':
             log('loadTreeStructure: apply action for unattached tab: ', tab, action);
-            await action.apply();
+            await action.applyIfNeeded();
             break;
         }
       }
