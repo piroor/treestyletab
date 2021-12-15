@@ -8,6 +8,7 @@
    * Don't collapse tree by double-click on tab closeboxes. It accidebtally collapsed the closing tree and closed all descendant tabs unexpectedly.
    * Treat middle-click and accel-click actions on the "New Tab" command in the context menu on tabs same to actions on the "New Tab" button, in the sidebar.
    * `<tab-item-substance>`, `<tab-label>` and `<span class="label-content">` now inherit `data-tab-id` and `data-window-id` attributes from the parent element (`<tab-item>`) for more customizability with custom user styles.
+   * Highlight tabs with "attention" class same as Firefox's native tabs even if they are not faviconized.
    * Use highly-visible (darker) background certainly with the "High Contrast" theme on Linux.
  - 3.8.16 (2021.11.11)
    * Fade-out long tab labels to left or right, only based on the direction of the label text themselves instead of a global option.
