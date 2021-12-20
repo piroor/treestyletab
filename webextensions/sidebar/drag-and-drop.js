@@ -1267,6 +1267,11 @@ function onDrop(event) {
     return;
   }
 
+  // We need to cancel the drop event explicitly to prevent Firefox tries to load the dropped URL to the tab itself.
+  // This is required to use "ext+treestyletab:tabbar" in a regular tab.
+  // See also: https://github.com/piroor/treestyletab/issues/3056
+  event.preventDefault();
+
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
