@@ -27,6 +27,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   migratedBookmarkUrls
   requestingPermissions
   requestingPermissionsNatively
+  standalone
   syncOtherDevicesDetected
   syncAvailableNotified
   syncDeviceInfo
