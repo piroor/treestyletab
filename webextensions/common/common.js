@@ -27,12 +27,12 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   migratedBookmarkUrls
   requestingPermissions
   requestingPermissionsNatively
-  standalone
-  syncOtherDevicesDetected
   syncAvailableNotified
   syncDeviceInfo
   syncDevicesLocalCache
+  syncEnabled
   syncLastMessageTimestamp
+  syncOtherDevicesDetected
 `.trim().split('\n'), key => {
   key = key.trim();
   return key && key.indexOf('//') != 0 && key;
@@ -422,7 +422,7 @@ export const configs = new Configs({
 
 
   debug:     false,
-  standalone: false,
+  syncEnabled: true,
   APIEnabled: true,
   logTimestamp: true,
   loggingQueries: false,
@@ -534,8 +534,8 @@ export const configs = new Configs({
 
 configs.$addLocalLoadedObserver((key, value) => {
   switch (key) {
-    case 'standalone':
-      configs.standalone = !!value;
+    case 'syncEnabled':
+      configs.sync = !!value;
       return;
 
     default:
