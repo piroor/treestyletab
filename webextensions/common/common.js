@@ -421,6 +421,7 @@ export const configs = new Configs({
 
 
   debug:     false,
+  standalone: false,
   APIEnabled: true,
   logTimestamp: true,
   loggingQueries: false,
@@ -528,6 +529,17 @@ export const configs = new Configs({
   testKey: 0 // for tests/utils.js
 }, {
   localKeys
+});
+
+configs.$addLocalLoadedObserver((key, value) => {
+  switch (key) {
+    case 'standalone':
+      configs.standalone = !!value;
+      return;
+
+    default:
+      return;
+  }
 });
 
 // cleanup old data
