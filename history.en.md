@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.8.18 (2021.12.26)
+   * Keep TST's sidebar page loaded in regular tabs even if tabs are dropped on some situations, for example a combination with [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/) and TST's option to deactivate tab detaching.
+   * Add a secret option to deactivate sync configs across devices via Firefox Sync (TST's options => Development => All Configs => `syncEnabled`). This was introduced for a workaround about [high CPU usage problem triggered by sync](https://github.com/piroor/treestyletab/issues/3057).
  - 3.8.17 (2021.12.15)
    * Attach tabs sent from other devices to the tree correctly, even if they are sent while the receiver Firefox is not running and `browser.tabs.insertAfterCurrent` is `true`.
    * Put a set of tabs from other device together in a place instead of jumped positions if possible, when `browser.tabs.insertAfterCurrent` is `true`. (Set a secret option `fixupOrderOfTabsFromOtherDevice` to `false` when you want to deactivate the behavior.)

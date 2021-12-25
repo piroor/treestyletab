@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.18 (2021.12.26)
+   * [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などによってタブバーが通常のタブに読み込まれている状況と、TSTでのタブの切り離しを無効化する設定が組み合わさった場面において、タブのドラッグ＆ドロップでタブバーの内容が失われてしまわないようにした
+   * Firefox Sync使用時に複数デバイス間でTSTの設定のみ同期しないようにする隠し設定（TSTの設定→開発用→すべての設定→`syncEnabled`）を追加した（[SyncによってCPU使用率が急上昇することがある問題](https://github.com/piroor/treestyletab/issues/3057)の回避策）
  - 3.8.17 (2021.12.15)
    * `browser.tabs.insertAfterCurrent`が`true`に設定されている場合に、受け側のFirefoxが動作していない状態で他のデバイスからタブが送られた時に、Firefox起動後に開かれたそれらのタブを、ツリー構造を壊さないよう既存のツリーに組み込むようにした
    * `browser.tabs.insertAfterCurrent`が`true`に設定されている場合に、他のデバイスから複数のタブを一度に送ると受け側のFirefoxでタブが飛び飛びに開かれてしまう問題について、可能な限りタブの位置を一箇所にまとめるようにした（この挙動は隠し設定 `fixupOrderOfTabsFromOtherDevice` で無効化できます）
