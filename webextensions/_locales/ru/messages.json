@@ -316,7 +316,7 @@
   "context_openAllBookmarksWithStructureRecursively_label": { "message": "Открыть все с подпапками" },
 
 
-  "config_title": { "message": "Открыть настройки Tree Style Tab в новой вкладке" },
+  "config_title": { "message": "Настройки Tree Style Tab в новой вкладке" },
 
   "config_showExpertOptions_label": { "message": "Режим эксперта" },
   "config_openOptionsInTab_label": { "message": "Открыть эту страницу в широком представлении " },
@@ -556,7 +556,7 @@
   "config_treeDoubleClickBehavior_none":                { "message": "Ничего не делать" },
 
   "config_parentTabOperationBehaviorMode_caption":           { "message": "Если родительская вкладка закрыта или перемещена" },
-  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Независимо от того, как вы настроили этот раздел, в боковой панели есть несколько констант поведения;\n･ Закрытие родительской вкладки вместе со свернутым деревом: Закрыть все дерево\n･ Перемещение родительской вкладки вместе со свернутым деревом: Переместить все дерево\n･ Перемещение родительской вкладки вместе с развернутым деревом: Ведет себя в соответствии с настройками раздела \"Перетягивание\" " },
+  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Независимо от того, как вы настроили этот раздел, в боковой панели есть несколько констант поведения:\n･ Закрытие родительской вкладки вместе со свернутым деревом: Закрыть все дерево\n･ Перемещение родительской вкладки вместе со свернутым деревом: Переместить все дерево\n･ Перемещение родительской вкладки вместе с развернутым деревом: Ведет себя в соответствии с настройками раздела \"Перетягивание\" " },
 
   "config_parentTabOperationBehaviorMode_parallel": { "message": "Рекомендуется тем, кто все еще использует нативную панель вкладок Firefox" },
   "config_closeParentBehavior_insideSidebar":       { "message": "Если родительская вкладка с развернутым деревом закрывается через боковую панель," },
@@ -565,7 +565,7 @@
 
   "config_parentTabOperationBehaviorMode_consistent":             { "message": "Рекомендуется для тех, кто не используют нативную панель вкладок Firefox" },
   "_config_parentTabOperationBehaviorMode_consistent_caption":    { "message": "Независимо от видимости боковой панели, для любой операции:" },
-  "config_parentTabOperationBehaviorMode_consistent_notes":       { "message": "Вкладки ведут себя так, как указано выше, даже при действиях в нативной панели вкладок Firefox, по сочетанию клавиш или из других аддонов," },
+  "config_parentTabOperationBehaviorMode_consistent_notes":       { "message": "Вкладки ведут себя так, как указано выше, даже при действиях в нативной панели вкладок Firefox, по сочетанию клавиш или из других аддонов." },
 
   "config_parentTabOperationBehaviorMode_custom":                { "message": "Свое" },
   "config_closeParentBehavior_insideSidebar_expanded_caption":   { "message": "Закрыть: Если родительская вкладка с развернутым деревом закрывается через боковую панель," },
@@ -709,9 +709,9 @@
 
   "config_debug_caption": { "message": "Разработка" },
 
-  "config_link_startupPage_label": { "message": "Открыть стартовую страницу Tree Style Tab" },
-  "config_link_groupPage_label":   { "message": "Открыть страницу группы вкладок Tree Style Tab" },
-  "config_link_tabbarPage_label":   { "message": "Открыть панель вкладок Tree Style Tab на странице" },
+  "config_link_startupPage_label": { "message": "Стартовая страница Tree Style Tab" },
+  "config_link_groupPage_label":   { "message": "Страница группы вкладок Tree Style Tab" },
+  "config_link_tabbarPage_label":   { "message": "Панель Tree Style Tab во вкладке" },
 
   "config_runTests_label": { "message": "Запустить автоматические тесты" },
   "config_runBenchmark_label": { "message": "Запустить бенчмарк" },
@@ -721,9 +721,9 @@
   "config_debug_label": { "message": "Режим отладки" },
   "config_log_caption":               { "message": "Детальное логирование" },
   "config_logTimestamp_label": { "message": "Лог с отметками времени" },
-  "config_logFor_common":     { "message": "Печать логов из общих модулей" },
-  "config_logFor_background": { "message": "Печать логов из фоновых модулей" },
-  "config_logFor_sidebar":    { "message": "Печать логов из модулей боковой панели" },
+  "config_logFor_common":     { "message": "Запись логов из общих модулей" },
+  "config_logFor_background": { "message": "Запись логов из фоновых модулей" },
+  "config_logFor_sidebar":    { "message": "Запись логов из модулей боковой панели" },
   "config_loggingQueries_label": { "message": "Лог запросов вкладок" },
   "config_loggingConnectionMessages_label": { "message": "Лог внутренних сообщений" },
   "config_showLogsButton_label": { "message": "Показать журналы" },
