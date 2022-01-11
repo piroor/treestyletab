@@ -564,7 +564,7 @@
   "config_moveParentBehavior_outsideSidebar":       { "message": "Если родительская вкладка (независимо от состояния ее дерева) перемещается в нативной панели вкладок Firefox, сочетанием клавиш или другим аддоном," },
 
   "config_parentTabOperationBehaviorMode_consistent":             { "message": "Рекомендуется для тех, кто не используют нативную панель вкладок Firefox" },
-  "_config_parentTabOperationBehaviorMode_consistent_caption":    { "message": "Независимо от видимости боковой панели, для любой операции:" },
+  "config_parentTabOperationBehaviorMode_consistent_caption":    { "message": "Независимо от видимости боковой панели, для любой операции:" },
   "config_parentTabOperationBehaviorMode_consistent_notes":       { "message": "Вкладки ведут себя так, как указано выше, даже при действиях в нативной панели вкладок Firefox, по сочетанию клавиш или из других аддонов." },
 
   "config_parentTabOperationBehaviorMode_custom":                { "message": "Свое" },
