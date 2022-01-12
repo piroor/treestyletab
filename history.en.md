@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.8.19 (2022.1.13)
+   * Show tabs with readable background color on the combination of "High Contrast" theme and the dark color scheme of Windows 10, on Firefox 96.0 and later.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.8.18 (2021.12.26)
    * Keep TST's sidebar page loaded in regular tabs even if tabs are dropped on some situations, for example a combination with [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/) and TST's option to deactivate tab detaching.
    * Add a secret option to deactivate sync configs across devices via Firefox Sync (TST's options => Development => All Configs => `syncEnabled`). This was introduced for a workaround about [high CPU usage problem triggered by sync](https://github.com/piroor/treestyletab/issues/3057).

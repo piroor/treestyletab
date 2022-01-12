@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.19 (2022.1.13)
+   * Firefox 96.0以降のバージョンで、Windows 10の暗い配色と「ハイコントラスト」テーマの組み合わせにおいてタブの背景色がタイトルを読みにくい色になっていたのを修正
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.8.18 (2021.12.26)
    * [Tree Style Tab in Separate Window](https://addons.mozilla.org/firefox/addon/tst-in-separate-window/)などによってタブバーが通常のタブに読み込まれている状況と、TSTでのタブの切り離しを無効化する設定が組み合わさった場面において、タブのドラッグ＆ドロップでタブバーの内容が失われてしまわないようにした
    * Firefox Sync使用時に複数デバイス間でTSTの設定のみ同期しないようにする隠し設定（TSTの設定→開発用→すべての設定→`syncEnabled`）を追加した（[SyncによってCPU使用率が急上昇することがある問題](https://github.com/piroor/treestyletab/issues/3057)の回避策）
