@@ -7,7 +7,7 @@
 @import url("base.css");
 
 :root {
-  --tab-like-surface: ThreeDFace;
+  --tab-like-surface: ButtonFace;
   --tab-surface-regular: var(--tab-like-surface);
   --tab-surface-active: Highlight;
   --tab-surface-hover: var(--tab-like-surface);
