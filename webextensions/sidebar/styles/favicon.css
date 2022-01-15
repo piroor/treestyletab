@@ -111,9 +111,11 @@ tab-item[data-current-uri^="about:processes"] .favicon-builtin::before {
   mask: url("/resources/icons/performance.svg") no-repeat center / 100%;
 }
 
+tab-item[data-current-uri^="about:config"] .favicon-builtin::before,
 tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
   background: url("/resources/icons/settings.svg") no-repeat center / 100%;
 }
+:root.simulate-svg-context-fill tab-item[data-current-uri^="about:config"] .favicon-builtin::before,
 :root.simulate-svg-context-fill tab-item[data-current-uri^="about:preferences"] .favicon-builtin::before {
   background: var(--tab-text);
   mask: url("/resources/icons/settings.svg") no-repeat center / 100%;
@@ -178,6 +180,7 @@ tab-favicon.error .favicon-image,
 .favicon-image:not([src]),
 tab-item[data-current-uri^="chrome:"] .favicon-image,
 tab-item[data-current-uri^="about:addons"] .favicon-image,
+tab-item[data-current-uri^="about:config"] .favicon-image,
 tab-item[data-current-uri^="about:debugging"] .favicon-image,
 tab-item[data-current-uri^="about:devtools-toolbox"] .favicon-image,
 tab-item[data-current-uri^="about:logins"] .favicon-image,
@@ -193,6 +196,7 @@ tab-item[data-current-favicon-uri="chrome://global/skin/icons/warning.svg"] .fav
 tab-item:not(.group-tab
        ):not([data-current-uri^="chrome:"]
        ):not([data-current-uri^="about:addons"]
+       ):not([data-current-uri^="about:config"]
        ):not([data-current-uri^="about:debugging"]
        ):not([data-current-uri^="about:logins"]
        ):not([data-current-uri^="about:devtools-toolbox"]
