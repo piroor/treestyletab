@@ -255,6 +255,20 @@ async function onChangeBookmarkPermissionRequiredCheckboxState(event) {
   }, 100);
 }
 
+function updateCtrlTabSubItems(enabled) {
+  const elements = document.querySelectorAll('#ctrlTabSubItemsContainer label, #ctrlTabSubItemsContainer input, #ctrlTabSubItemsContainer select');
+  if (enabled) {
+    for (const element of elements) {
+      element.removeAttribute('disabled');
+    }
+  }
+  else {
+    for (const element of elements) {
+      element.setAttribute('disabled', true);
+    }
+  }
+}
+
 
 function reserveToSaveUserStyleRules() {
   if (reserveToSaveUserStyleRules.timer)
@@ -725,11 +739,17 @@ function initCollapsibleSections({ focusedItem }) {
 
 function initPermissionOptions() {
   Permissions.isGranted(Permissions.BOOKMARKS).then(granted => updateBookmarksUI(granted));
+  Permissions.isGranted(Permissions.ALL_URLS).then(granted => updateCtrlTabSubItems(granted));
 
   Permissions.bindToCheckbox(
     Permissions.ALL_URLS,
     document.querySelector('#allUrlsPermissionGranted_ctrlTabTracking'),
-    { onChanged: (granted) => configs.skipCollapsedTabsForTabSwitchingShortcuts = granted }
+    {
+      onChanged: (granted) => {
+        configs.skipCollapsedTabsForTabSwitchingShortcuts = granted;
+        updateCtrlTabSubItems(granted);
+      }
+    }
   );
   Permissions.bindToCheckbox(
     Permissions.BOOKMARKS,

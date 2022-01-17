@@ -15,6 +15,7 @@ import {
 
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
+import * as Permissions from '/common/permissions.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -290,14 +291,19 @@ async function setupDelayedExpand(tab) {
     return;
   cancelDelayedExpand(tab);
   TabsStore.removeToBeExpandedTab(tab);
+  const [ctrlTabHandlingEnabled, allowedToExpandViaAPI] = await Promise.all([
+    Permissions.isGranted(Permissions.ALL_URLS),
+    TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
+      { tab: new TSTAPI.TreeItem(tab) },
+      { tabProperties: ['tab'] }
+    ),
+  ]);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed ||
-      !(await TSTAPI.tryOperationAllowed(
-        TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
-        { tab: new TSTAPI.TreeItem(tab) },
-        { tabProperties: ['tab'] }
-      )))
+      !ctrlTabHandlingEnabled ||
+      !allowedToExpandViaAPI)
     return;
   TabsStore.addToBeExpandedTab(tab);
   tab.$TST.delayedExpand = setTimeout(() => {
