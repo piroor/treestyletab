@@ -128,7 +128,7 @@ export async function bookmarkTab(tab, options = {}) {
     const dialogParams = {
       content: `
         <div style="${divStyle}"
-            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
                     style="${labelStyle}"
                    ><span style="${labelTextStyle}"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
@@ -137,7 +137,7 @@ export async function bookmarkTab(tab, options = {}) {
                            style="${inputFieldStyle}"
                            value=${JSON.stringify(sanitizeForHTMLText(title))}></label></div
        ><div style="${divStyle}"
-            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_url_accessKey'))}
+            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url_accessKey')))}
                     style="${labelStyle}"
                    ><span style="${labelTextStyle}"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
@@ -288,7 +288,7 @@ export async function bookmarkTabs(tabs, options = {}) {
     const dialogParams = {
       content: `
         <div style="${divStyle}"
-            ><label accesskey=${JSON.stringify(browser.i18n.getMessage('bookmarkDialog_title_accessKey'))}
+            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
                     style="${labelStyle}"
                    ><span style="${labelTextStyle}"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
