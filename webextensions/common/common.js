@@ -885,7 +885,11 @@ export async function sha1sum(string) {
 }
 
 export function sanitizeForHTMLText(text) {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 export function sanitizeAccesskeyMark(label) {
