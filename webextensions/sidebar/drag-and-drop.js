@@ -102,8 +102,6 @@ export function init() {
   mDragBehaviorNotification = document.getElementById('tab-drag-notification');
 
   browser.runtime.sendMessage({ type: Constants.kCOMMAND_GET_INSTANCE_ID }).then(id => mInstanceId = id);
-
-  updateLastDragEventCoordinates();
 }
 
 
@@ -1352,6 +1350,10 @@ onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 async function onDragEnd(event) {
   log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs, dropEffect: event.dataTransfer.dropEffect });
+  if (!mLastDragEventCoordinates) {
+    console.error(new Error('dragend is handled after finishDrag'));
+    return;
+  }
   const lastDragEventCoordinatesX = mLastDragEventCoordinates.x;
   const lastDragEventCoordinatesY = mLastDragEventCoordinates.y;
   const lastDragEventCoordinatesTimestamp = mLastDragEventCoordinates.timestamp;
@@ -1438,9 +1440,7 @@ async function onDragEnd(event) {
       devicePixelRatio: window.devicePixelRatio,
       lastDragEventCoordinatesX,
       lastDragEventCoordinatesY,
-      lastDragEventCoordinatesTimestamp,
-      delayFromLast: now - lastDragEventCoordinatesTimestamp,
-      offset
+      offset,
     });
     if ((event.screenX >= windowX - offset &&
          event.screenY >= windowY - offset &&
@@ -1450,20 +1450,37 @@ async function onDragEnd(event) {
         (fixedEventScreenX >= windowX - offset &&
          fixedEventScreenY >= windowY - offset &&
          fixedEventScreenX <= windowX + windowW + offset &&
-         fixedEventScreenY <= windowY + windowH + offset) ||
-        // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561879
-        // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
-        // (This happens on Windows also.)
-        (event.screenX == 0 &&
-         event.screenY == 0 &&
-         // We need to accept intentional drag and drop at left edge of the screen.
-         // For safety, cancel only when the coordinates become (0,0) accidently from the bug.
-         now - lastDragEventCoordinatesTimestamp < configs.maximumDelayForBug1561879 &&
-         (Math.abs(event.screenX - lastDragEventCoordinatesX) > offset ||
-          Math.abs(fixedEventScreenX - lastDragEventCoordinatesX) > offset) &&
-         (Math.abs(event.screenY - lastDragEventCoordinatesY) > offset ||
-          Math.abs(fixedEventScreenY - lastDragEventCoordinatesY) > offset))) {
+         fixedEventScreenY <= windowY + windowH + offset)) {
       log('dropped near the tab bar (from coordinates): detaching is canceled');
+      return;
+    }
+    // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561879
+    // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
+    // (This happens on Windows also.)
+    const delayFromLast = now - lastDragEventCoordinatesTimestamp;
+    const rawOffsetX    = Math.abs(event.screenX - lastDragEventCoordinatesX);
+    const rawOffsetY    = Math.abs(event.screenY - lastDragEventCoordinatesY);
+    const fixedOffsetX  = Math.abs(fixedEventScreenX - lastDragEventCoordinatesX);
+    const fixedOffsetY  = Math.abs(fixedEventScreenY - lastDragEventCoordinatesY);
+    log('check: ', {
+      now,
+      lastDragEventCoordinatesTimestamp,
+      delayFromLast,
+      maxDelay: configs.maximumDelayForBug1561879,
+      offset,
+      rawOffsetX,
+      rawOffsetY,
+      fixedOffsetX,
+      fixedOffsetY,
+    });
+    if (event.screenX == 0 &&
+        event.screenY == 0 &&
+        // We need to accept intentional drag and drop at left edge of the screen.
+        // For safety, cancel only when the coordinates become (0,0) accidently from the bug.
+        delayFromLast < configs.maximumDelayForBug1561879 &&
+        (rawOffsetX > offset || fixedOffsetX > offset) &&
+        (rawOffsetY > offset || fixedOffsetY > offset)) {
+      log('dropped at unknown position: detaching is canceled');
       return;
     }
   }
@@ -1526,10 +1543,10 @@ function onFinishDrag() {
 }
 
 function updateLastDragEventCoordinates(event = null) {
-  mLastDragEventCoordinates = {
-    x: event ? event.screenX : 0,
-    y: event ? event.screenY : 0,
-    timestamp: event ? Date.now() : 0
+  mLastDragEventCoordinates = !event ? null : {
+    x: event.screenX,
+    y: event.screenY,
+    timestamp: Date.now(),
   };
 }
 
