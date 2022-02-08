@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.20 (2022.2.8)
    * Fix odd behaviors around drag operations on Firefox 97 and later.
    * Inherit container from the active tab to new tabs more safely by reopening, without losing their URL.
    * Accept double quotations in tab titles for a bookmark title.
