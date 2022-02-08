@@ -59,7 +59,7 @@ const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
 const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
-const kTYPE_ADDON_DRAG_DATA = `application/x-moz-addon-drag-data;provider=${browser.runtime.id}&id=`;
+const kTYPE_ADDON_DRAG_DATA = `application/x-treestyletab-drag-data;provider=${browser.runtime.id}&id=`;
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
@@ -890,7 +890,17 @@ function onDragStart(event, options = {}) {
       dt.setData(kTYPE_URI_LIST, mCurrentDragDataForExternals[kTYPE_URI_LIST]);
     }
   }
-  dt.setData(`${kTYPE_ADDON_DRAG_DATA}${mCurrentDragDataForExternalsId}`, JSON.stringify(mCurrentDragDataForExternals));
+  {
+    const dragDataType    = `${kTYPE_ADDON_DRAG_DATA}${mCurrentDragDataForExternalsId}`;
+    const dragDataContent = JSON.stringify(mCurrentDragDataForExternals);
+    try {
+      dt.setData(dragDataType, dragDataContent);
+    }
+    catch(error) {
+      console.error(error);
+      console.log(`Failed to set drag data with the type ${dragDataType}:`, dragDataContent);
+    }
+  }
 
   {
     // We set negative offsets to get more visibility about drop targets.
