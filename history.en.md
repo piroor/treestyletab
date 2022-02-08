@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Fix odd behaviors around drag operations on Firefox 97 and later.
+   * Inherit container from the active tab to new tabs more safely by reopening, without losing their URL.
+   * Accept double quotations in tab titles for a bookmark title.
+   * Don't expand tree by long-press of the Ctrl key, when Ctrl-Tab handling is not granted.
+   * Show "gear" favicon for "about:config" tabs (follow-up of a change on Firefox 98).
+   * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
  - 3.8.19 (2022.1.13)
    * Show tabs with readable background color on the combination of "High Contrast" theme and the dark color scheme of Windows 10, on Firefox 96.0 and later.
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
