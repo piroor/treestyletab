@@ -580,7 +580,7 @@ async function retrieveURIsFromDragEvent(event) {
       break;
   }
   for (const type of dt.types) {
-    if (!/^application\/x-moz-addon-drag-data;(.+)$/.test(type))
+    if (!/^application\/x-treestyletab-drag-data;(.+)$/.test(type))
       continue;
     const params     = RegExp.$1;
     const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
