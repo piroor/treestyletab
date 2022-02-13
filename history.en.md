@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.8.21 (2022.2.13)
+   * Accept dragged items from TST Bookmarks Subpanel 1.2.4 and later.
  - 3.8.20 (2022.2.8)
    * Fix odd behaviors around drag operations on Firefox 97 and later.
    * Inherit container from the active tab to new tabs more safely by reopening, without losing their URL.
