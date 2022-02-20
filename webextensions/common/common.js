@@ -704,10 +704,10 @@ function uneval(value) {
 
 function getTimeStamp() {
   const time = new Date();
-  const hours = `0${time.getHours()}`.substr(-2);
-  const minutes = `0${time.getMinutes()}`.substr(-2);
-  const seconds = `0${time.getSeconds()}`.substr(-2);
-  const milliseconds = `00${time.getMilliseconds()}`.substr(-3);
+  const hours = `0${time.getHours()}`.slice(-2);
+  const minutes = `0${time.getMinutes()}`.slice(-2);
+  const seconds = `0${time.getSeconds()}`.slice(-2);
+  const milliseconds = `00${time.getMilliseconds()}`.slice(-3);
   return `${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
 
