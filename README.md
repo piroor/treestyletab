@@ -88,6 +88,8 @@ Some extend the behavior of TST's sidebar panel:
  * [TSTのタブを閉じるボタンの挙動を変更 (tst-change-close-tab-button-be)](https://addons.mozilla.org/firefox/addon/tst-change-close-tab-button-be/) allows you to close the parent and its all descendants with a middle click on the closebox of a parent tab, whether the tree is expanded or collapsed.
  * [TST Select Random Tab](https://addons.mozilla.org/firefox/addon/tst-select-random-tab/) adds a context menu option for selecting a random tab in a Tree Style Tab tree.
  * [TST Tab Search](https://addons.mozilla.org/firefox/addon/tst-search/) provides a search field (as a subpanel) to filter opened tabs in the sidebar.
+ * [TST Fade Old Tabs](https://addons.mozilla.org/firefox/addon/tst-fade-old-tabs/) sorts all tabs in 3 categories – 'recent', 'older' and 'oldest' by latest visit time, and applies different opacity to them.
+ * [TST Colorize Tabs](https://addons.mozilla.org/firefox/addon/tst-colorize-tabs/) allows to set individual color for each tab in order to highlight it.
 
 
 ## Similar projects
