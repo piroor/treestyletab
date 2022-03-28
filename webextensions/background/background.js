@@ -543,7 +543,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   const win = await browser.windows.get(windowId);
   const listing = configs.warnOnCloseTabsWithListing ?
     tabsToHTMLList(tabs, {
-      maxRows: configs.warnOnCloseTabsWithListingMaxRows,
+      maxHeight: Math.round(win.height * 0.8),
       maxWidth: Math.round(win.width * 0.75)
     }) :
     '';
@@ -590,7 +590,7 @@ Commands.onTabsClosing.addListener((tabIds, options = {}) => {
   return confirmToCloseTabs(tabIds.map(Tab.get), options);
 });
 
-export function tabsToHTMLList(tabs, { maxRows, maxWidth }) {
+export function tabsToHTMLList(tabs, { maxHeight, maxWidth }) {
   const rootLevelOffset = tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)).sort()[0];
   return (
     `<ul style="border: 1px inset;
@@ -599,8 +599,8 @@ export function tabsToHTMLList(tabs, { maxRows, maxWidth }) {
                 flex-grow: 1;
                 flex-shrink: 1;
                 margin: 0.5em 0;
-                min-height: ${(Math.max(1, maxRows || 0)) + 1}em;
-                max-height: ${(Math.max(1, maxRows || 0)) + 1}em;
+                min-height: 2em;
+                max-height: min(max(2em, ${tabs.length}em), ${maxHeight}px);
                 max-width: ${maxWidth}px;
                 overflow: auto;
                 padding: 0.5em;">` +

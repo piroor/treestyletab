@@ -274,7 +274,6 @@ export const configs = new Configs({
   warnOnCloseTabsNotificationTimeout: 20 * 1000,
   warnOnCloseTabsByClosebox: true,
   warnOnCloseTabsWithListing: true,
-  warnOnCloseTabsWithListingMaxRows: 5,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],
   sidebarVirtuallyOpenedWindows: [], // for automated tests
