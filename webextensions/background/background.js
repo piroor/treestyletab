@@ -600,7 +600,7 @@ export function tabsToHTMLList(tabs, { maxHeight, maxWidth }) {
                 flex-shrink: 1;
                 margin: 0.5em 0;
                 min-height: 2em;
-                max-height: min(max(2em, ${tabs.length}em), ${maxHeight}px);
+                max-height: calc(${maxHeight}px - 12em /* title bar, message, checkbox, buttons, and margins */);
                 max-width: ${maxWidth}px;
                 overflow: auto;
                 padding: 0.5em;">` +
