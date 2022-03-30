@@ -102,6 +102,8 @@ export const kNOTIFY_TAB_MOUSEDOWN_EXPIRED  = 'treestyletab:tab-mousedown-expire
 export const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
 export const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';
 
+export const kNOTIFY_CONFIRMATION_DIALOG_READY  = 'treestyletab:confirmation-dialog-ready';
+
 export const kAPI_TAB_ID       = 'data-tab-id';
 export const kAPI_WINDOW_ID    = 'data-window-id';
 
