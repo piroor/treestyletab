@@ -439,6 +439,9 @@ If you need any new APIs, please file API proposals in the issue tracker.
     * TST tries to suggest device name from available information, but it may have less identifiability because Firefox does not allow addons to get native device name. Thus **you need to give enough identifiable name manually**.
     * storage.sync has **no guarantee that written data is synchronize immediately**. Even if you change device name from TST options or choose the "send tab/tree to device" command, you may need to wait until Firefox synchronize storage.sync data. Sadly we don't know when it happens.
     * So, if you need to send or receive tabs via TST's "send tab/tree" command immediately, you'll need to run "sync now" command of Firefox itself on **both** sender and receiver Firefoxes after you ran the "send tab/tree" command.
+    * **You cannot send tabs from Firefox Desktop to Firefox Mobile via TST's tab context menu**. You need to install TST to both sender and receiver Firefoxes, but TST is not available on Firefox Mobile.
+   
+  To avoid those restrictions I always use both horizontal and vertical tab bars together. I ordinary use Firefox's native "Send Tab to Device" command instead of TST's one. This is one of reasons why I don't recommend to hide the horizontal tab bar.
   </details>
 
 #### Other topics
