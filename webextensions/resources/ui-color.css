@@ -116,6 +116,9 @@
   /* https://searchfox.org/mozilla-central/rev/35873cfc312a6285f54aa5e4ec2d4ab911157522/browser/themes/shared/tabs.inc.css#24 */
   --tab-loading-fill: #0A84FF;
 
+  --focus-outline-color: #0061E0; /* https://searchfox.org/mozilla-central/rev/f60e5304300b286376664b25143cdc6b38a0f0d7/browser/themes/shared/browser-shared.css#124 */
+  --focus-outline-color-a40: #0061E066; /* 40% alpha */
+
 
   --bg-color: var(--grey-10);
   --text-color: var(--grey-90);
@@ -222,6 +225,9 @@ hr {
     --in-content-link-color: var(--blue-40);
     --in-content-link-color-hover: var(--blue-50);
     --in-content-link-color-active: var(--blue-60);
+
+    --focus-outline-color: #00DDFF; /* https://searchfox.org/mozilla-central/rev/f60e5304300b286376664b25143cdc6b38a0f0d7/browser/themes/shared/browser-shared.css#129 */
+    --focus-outline-color-a40: #00DDFF66; /* 40% alpha */
 
     --bg-color: var(--in-content-page-background);
     --text-color: var(--in-content-text-color);
