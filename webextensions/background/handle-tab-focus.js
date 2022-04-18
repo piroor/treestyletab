@@ -212,7 +212,7 @@ async function handleNewActiveTab(tab, info = {}) {
       return;
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
-      Tree.collapseExpandTreesIntelligentlyFor(tab, {
+      await Tree.collapseExpandTreesIntelligentlyFor(tab, {
         broadcast: true
       });
     else
@@ -306,14 +306,14 @@ async function setupDelayedExpand(tab) {
       !allowedToExpandViaAPI)
     return;
   TabsStore.addToBeExpandedTab(tab);
-  tab.$TST.delayedExpand = setTimeout(() => {
+  tab.$TST.delayedExpand = setTimeout(async () => {
     if (!tab.$TST.delayedExpand) { // already canceled
       log('delayed expand is already canceled ', tab.id);
       return;
     }
     log('delayed expand by long-press of ctrl key on ', tab.id);
     TabsStore.removeToBeExpandedTab(tab);
-    Tree.collapseExpandTreesIntelligentlyFor(tab, {
+    await Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
     });
   }, configs.autoExpandOnTabSwitchingShortcutsDelay);

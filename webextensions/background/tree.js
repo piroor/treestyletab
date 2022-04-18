@@ -343,7 +343,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
           (isNewTreeCreatedManually ||
            parent.$TST.isAutoExpandable)) {
         log('  collapse others by collapseExpandTreesIntelligentlyFor');
-        collapseExpandTreesIntelligentlyFor(parent, {
+        await collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
         });
       }
@@ -1143,7 +1143,7 @@ export async function collapseExpandTab(tab, params = {}) {
 }
 collapseExpandTab.delayedNotify = new Map();
 
-export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
+export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   if (!tab)
     return;
 
@@ -1162,7 +1162,19 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     '!id': expandedAncestors
   });
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
+  const allowedToCollapse = new Map();
+  await Promise.all(collapseTabs.map(async tab => {
+    const allowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION,
+      { tab: new TSTAPI.TreeItem(tab) },
+      { tabProperties: ['tab'] }
+    );
+    if (allowed)
+      allowedToCollapse.add(tab);
+  }));
   for (const collapseTab of collapseTabs) {
+    if (!allowedToCollapse.has(tab))
+      continue;
     let dontCollapse = false;
     const parentTab = collapseTab.$TST.parent;
     if (parentTab) {
@@ -1993,7 +2005,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (tab)
-        collapseExpandTreesIntelligentlyFor(tab);
+        await collapseExpandTreesIntelligentlyFor(tab);
     }; break;
 
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS: {
