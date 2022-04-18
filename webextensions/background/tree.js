@@ -1162,7 +1162,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     '!id': expandedAncestors
   });
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
-  const allowedToCollapse = new Map();
+  const allowedToCollapse = new Set();
   await Promise.all(collapseTabs.map(async tab => {
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION,
