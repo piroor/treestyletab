@@ -1173,7 +1173,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
       allowedToCollapse.add(tab);
   }));
   for (const collapseTab of collapseTabs) {
-    if (!allowedToCollapse.has(tab))
+    if (!allowedToCollapse.has(collapseTab))
       continue;
     let dontCollapse = false;
     const parentTab = collapseTab.$TST.parent;
