@@ -916,7 +916,7 @@ function onDragStart(event, options = {}) {
   // a delay. (This timer will be cleared immediately by dragover
   // event, if the dragging operation is not canceled.)
   // See also: https://github.com/piroor/treestyletab/issues/1778#issuecomment-404569842
-  mFinishCanceledDragOperation = setTimeout(finishDrag, 250);
+  mFinishCanceledDragOperation = setTimeout(finishDrag, 500, 'onDragStart');
 
   if (!('behavior' in options) &&
       configs.showTabDragBehaviorNotification) {
@@ -1372,7 +1372,7 @@ async function onDragEnd(event) {
   }).catch(_error => {});
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
-  setTimeout(finishDrag, 0);
+  setTimeout(finishDrag, 0, 'onDragEnd');
 
   if (!dragData ||
       !(dragData.behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF))
@@ -1505,8 +1505,8 @@ async function onDragEnd(event) {
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 
-function finishDrag() {
-  log('finishDrag');
+function finishDrag(trigger) {
+  log(`finishDrag from ${trigger || 'unknown'}`);
 
   mDragBehaviorNotification.classList.add('hiding');
   mDragBehaviorNotification.classList.remove('shown');
