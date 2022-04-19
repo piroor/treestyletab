@@ -570,7 +570,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     ],
     checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true,
-    modal:   true, // for popup
+    modal:   !configs.debug, // for popup
     type:    'common-dialog', // for popup
     url:     '/resources/blank.html', // for popup, required on Firefox ESR68
     title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
