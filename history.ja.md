@@ -4,7 +4,7 @@
    * 複数のタブを閉じる確認のダイアログを、タブの数に合わせて自動的にリサイズするようにした
    * Protonテーマにおいて、複数選択されたタブの外観をFirefox 99での表示に合わせるようにした（[Bug 1751807](https://bugzilla.mozilla.org/show_bug.cgi?id=1751807)での変更への追従）
    * デバッグモードにおいて、ダイアログをmodal状態で開かないようにした
-   * APIの改善：他のツリーが展開されたときのツリーの折りたたみを制御する新しい通知型のメッセージ `try-collapse-tree-from-other-expansion` を追加
+   * APIの改善：他のツリーが展開されたときのツリーの折りたたみを制御する新しい通知型のメッセージ [`try-collapse-tree-from-other-expansion`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-collapsion-of-expanded-tree-by-tst) を追加
  - 3.8.21 (2022.2.13)
    * TST Bookmarks Subpanel 1.2.4以降のバージョンからドロップされた項目の読み込みに失敗する問題を修正
  - 3.8.20 (2022.2.8)
