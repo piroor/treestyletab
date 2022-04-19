@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Better auto-sizing of the dialog for confirmation of closing tabs.
+   * Match appearance of multiselected tabs in the Proton theme to Firefox 99's one (follow to changes introduced at [the bug 1751807](https://bugzilla.mozilla.org/show_bug.cgi?id=1751807)).
+   * Don't open dialogs as modal, on the debug mode.
+   * API improvement: Add a new notification message type `try-collapse-tree-from-other-expansion` to block collapsion of tabs from expansion of another tree.
  - 3.8.21 (2022.2.13)
    * Accept dragged items from TST Bookmarks Subpanel 1.2.4 and later.
  - 3.8.20 (2022.2.8)
