@@ -470,7 +470,8 @@ export async function initFolderChooser(anchor, params = {}) {
       }
       range.detach();
     },
-    animationDuration: params.animationDuration || getAnimationDuration()
+    animationDuration: params.animationDuration || getAnimationDuration(),
+    incrementalSearch: true,
   });
   anchor.addEventListener('click', () => {
     anchor.ui.open({
