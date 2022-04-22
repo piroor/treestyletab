@@ -152,7 +152,7 @@ export async function bookmarkTab(tab, options = {}) {
                    ><span style="${buttonContainerStyle}"
                          ><button name="parentId">-</button></span></label></div>
       `.trim(),
-      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout }) {
         if (container.classList.contains('simulation'))
           return;
         MenuUI.init();
@@ -165,7 +165,8 @@ export async function bookmarkTab(tab, options = {}) {
           MenuUI,
           animationDuration,
           defaultItem,
-          rootItems
+          rootItems,
+          incrementalSearchTimeout,
         });
         container.querySelector('[name="title"]').select();
       },
@@ -173,7 +174,8 @@ export async function bookmarkTab(tab, options = {}) {
         MenuUI,
         initFolderChooser,
         animationDuration: getAnimationDuration(),
-        parentId
+        parentId,
+        incrementalSearchTimeout: configs.incrementalSearchTimeout,
       },
       buttons: [
         browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -303,7 +305,7 @@ export async function bookmarkTabs(tabs, options = {}) {
                    ><span style="${buttonContainerStyle}"
                          ><button name="parentId">-</button></span></label></div>
       `.trim(),
-      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId }) {
+      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout }) {
         if (container.classList.contains('simulation'))
           return;
         MenuUI.init();
@@ -316,7 +318,8 @@ export async function bookmarkTabs(tabs, options = {}) {
           MenuUI,
           animationDuration,
           defaultItem,
-          rootItems
+          rootItems,
+          incrementalSearchTimeout,
         });
         container.querySelector('[name="title"]').select();
       },
@@ -324,7 +327,8 @@ export async function bookmarkTabs(tabs, options = {}) {
         MenuUI,
         initFolderChooser,
         animationDuration: getAnimationDuration(),
-        parentId: folderParams.parentId
+        parentId: folderParams.parentId,
+        incrementalSearchTimeout: configs.incrementalSearchTimeout,
       },
       buttons: [
         browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -472,6 +476,7 @@ export async function initFolderChooser(anchor, params = {}) {
     },
     animationDuration: params.animationDuration || getAnimationDuration(),
     incrementalSearch: true,
+    incrementalSearchTimeout: params.incrementalSearchTimeout,
   });
   anchor.addEventListener('click', () => {
     anchor.ui.open({

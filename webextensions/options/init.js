@@ -354,7 +354,8 @@ async function updateBookmarksUI(enabled) {
         if (item.dataset.id)
           configs.defaultBookmarkParentId = item.dataset.id;
       },
-      rootItems: (await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler()))[0].children
+      rootItems: (await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler()))[0].children,
+      incrementalSearchTimeout: configs.incrementalSearchTimeout,
     });
   }
   else {
