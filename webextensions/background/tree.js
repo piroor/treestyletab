@@ -1541,15 +1541,15 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     url: 'about:blank',
     incognito: tabs[0].incognito
   };
-  if ('left' in options && options.left !== null)
+  if (typeof options.left == 'number')
     windowParams.left = options.left;
-  if ('top' in options && options.top !== null)
+  if (typeof options.top == 'number')
     windowParams.top = options.top;
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
     .then(createdWindow => {
       newWindow = createdWindow;
-      log('openNewWindowFromTabs: new window is ready, ', newWindow);
+      log('openNewWindowFromTabs: new window is ready, ', newWindow, windowParams);
       UserOperationBlocker.blockIn(newWindow.id);
       return newWindow;
     })

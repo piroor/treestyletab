@@ -1349,7 +1349,7 @@ function onDrop(event) {
 onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 async function onDragEnd(event) {
-  log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs, dropEffect: event.dataTransfer.dropEffect });
+  log('onDragEnd, ', { event, mDraggingOnSelfWindow, mDraggingOnDraggedTabs, dropEffect: event.dataTransfer.dropEffect });
   if (!mLastDragEventCoordinates) {
     console.error(new Error('dragend is handled after finishDrag'));
     return;
