@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.22 (2022.4.22)
    * [Now you can search bookmark folder items incrementally by key inputs, on the bookmarks folder chooser UI.](https://github.com/piroor/treestyletab/issues/3077)
    * Better auto-sizing of the dialog for confirmation of closing tabs.
    * Match appearance of multiselected tabs in the Proton theme to Firefox 99's one (follow to changes introduced at [the bug 1751807](https://bugzilla.mozilla.org/show_bug.cgi?id=1751807)).

@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.22 (2022.4.22)
    * [ブックマークフォルダーの選択用UIにおいて、連続したキー入力による項目のインクリメンタルサーチに対応](https://github.com/piroor/treestyletab/issues/3077)
    * 複数のタブを閉じる確認のダイアログを、タブの数に合わせて自動的にリサイズするようにした
    * Protonテーマにおいて、複数選択されたタブの外観をFirefox 99での表示に合わせるようにした（[Bug 1751807](https://bugzilla.mozilla.org/show_bug.cgi?id=1751807)での変更への追従）
