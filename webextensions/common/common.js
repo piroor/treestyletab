@@ -19,6 +19,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   chunkedSyncDataLocal5
   chunkedSyncDataLocal6
   chunkedSyncDataLocal7
+  fixDragEndCoordinates
   lastConfirmedToCloseTabs
   lastDragOverSidebarOwnerWindowId
   lastDraggedTabs
@@ -334,6 +335,7 @@ export const configs = new Configs({
   newTabButtonDragGestureModifiers: 'shift',
   migratedBookmarkUrls: [],
   lastDragOverSidebarOwnerWindowId: null,
+  fixDragEndCoordinates: null, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,

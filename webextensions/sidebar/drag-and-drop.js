@@ -705,6 +705,7 @@ async function getDroppedLinksOnTabBehavior() {
 let mFinishCanceledDragOperation;
 let mCurrentDragDataForExternalsId = null;
 let mCurrentDragDataForExternals = null;
+let mLastBrowserInfo = null;
 
 function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
@@ -722,6 +723,10 @@ function onDragStart(event, options = {}) {
 
   mCurrentDragDataForExternalsId = `${parseInt(Math.random() * 65000)}-${Date.now()}`;
   mCurrentDragDataForExternals = {};
+
+  browser.runtime.getBrowserInfo().then(info => {
+    mLastBrowserInfo = info;
+  });
 
   const originalTarget = EventUtils.getElementOriginalTarget(event);
   const extraTabContentsDragData = originalTarget && JSON.parse(originalTarget.dataset && originalTarget.dataset.dragData || 'null');
@@ -1416,6 +1421,13 @@ async function onDragEnd(event) {
     return;
   }
 
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
+  const fixDragEndCoordinates = (configs.fixDragEndCoordinates === null && mLastBrowserInfo) ?
+    parseInt(mLastBrowserInfo.version.split('.')[0]) >= 99 :
+    configs.fixDragEndCoordinates;
+  const subframeXOffset = fixDragEndCoordinates ? (window.mozInnerScreenX - window.screenX) : 0;
+  const subframeYOffset = fixDragEndCoordinates ? (window.mozInnerScreenY - window.screenY) : 0;
+
   if (configs.ignoreTabDropNearSidebarArea) {
     const windowX = window.mozInnerScreenX;
     const windowY = window.mozInnerScreenY;
@@ -1423,8 +1435,8 @@ async function onDragEnd(event) {
     const windowH = window.innerHeight;
     const offset  = dragData.tab.$TST.element && dragData.tab.$TST.element.getBoundingClientRect().height / 2;
     // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
-    const fixedEventScreenX = event.screenX / window.devicePixelRatio;
-    const fixedEventScreenY = event.screenY / window.devicePixelRatio;
+    const fixedEventScreenX = (event.screenX - subframeXOffset) / window.devicePixelRatio;
+    const fixedEventScreenY = (event.screenY - subframeYOffset) / window.devicePixelRatio;
     const now = Date.now();
     log('dragend at: ', {
       windowX,
@@ -1441,6 +1453,8 @@ async function onDragEnd(event) {
       lastDragEventCoordinatesX,
       lastDragEventCoordinatesY,
       offset,
+      subframeXOffset,
+      subframeYOffset,
     });
     if ((event.screenX >= windowX - offset &&
          event.screenY >= windowY - offset &&
@@ -1458,8 +1472,8 @@ async function onDragEnd(event) {
     // On macOS sometimes drag gesture is canceled immediately with (0,0) coordinates.
     // (This happens on Windows also.)
     const delayFromLast = now - lastDragEventCoordinatesTimestamp;
-    const rawOffsetX    = Math.abs(event.screenX - lastDragEventCoordinatesX);
-    const rawOffsetY    = Math.abs(event.screenY - lastDragEventCoordinatesY);
+    const rawOffsetX    = Math.abs(event.screenX - subframeXOffset - lastDragEventCoordinatesX);
+    const rawOffsetY    = Math.abs(event.screenY - subframeYOffset - lastDragEventCoordinatesY);
     const fixedOffsetX  = Math.abs(fixedEventScreenX - lastDragEventCoordinatesX);
     const fixedOffsetY  = Math.abs(fixedEventScreenY - lastDragEventCoordinatesY);
     log('check: ', {
@@ -1472,6 +1486,8 @@ async function onDragEnd(event) {
       rawOffsetY,
       fixedOffsetX,
       fixedOffsetY,
+      subframeXOffset,
+      subframeYOffset,
     });
     if (event.screenX == 0 &&
         event.screenY == 0 &&
@@ -1499,8 +1515,8 @@ async function onDragEnd(event) {
     type:      Constants.kCOMMAND_NEW_WINDOW_FROM_TABS,
     tabIds:    detachTabs.map(tab => tab.id),
     duplicate: EventUtils.isAccelKeyPressed(event),
-    left:      event.screenX,
-    top:       event.screenY
+    left:      event.screenX - subframeXOffset,
+    top:       event.screenY - subframeYOffset,
   });
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
