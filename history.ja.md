@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.23 (2022.5.1)
    * Firefox 99以降のバージョンで`dragend`イベントの座標がおかしくなる問題（[bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)）への回避策を導入し、サイドバーを右側に置いている場合にタブが意図せず切り離されて画面外に配置されてしまう事態が発生しにくくなるようにした（この回避策を無効化するには、TSTの設定の「開発者向け」-「すべての設定」で`enableWorkaroundForBug1767165_fixDragEndCoordinates`のチェックを外して下さい）
  - 3.8.22 (2022.4.22)
    * [ブックマークフォルダーの選択用UIにおいて、連続したキー入力による項目のインクリメンタルサーチに対応](https://github.com/piroor/treestyletab/issues/3077)
