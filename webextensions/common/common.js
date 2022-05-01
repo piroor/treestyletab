@@ -310,6 +310,7 @@ export const configs = new Configs({
   acceleratedTabCreation: false,
   enableWorkaroundForBug1409262: false,
   enableWorkaroundForBug1548949: true,
+  enableWorkaroundForBug1767165_fixDragEndCoordinates: null, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
   maximumDelayForBug1561879: 500,
   workaroundForBug1548949DroppedTabs: null,
   heartbeatInterval: 1000,
@@ -335,7 +336,6 @@ export const configs = new Configs({
   newTabButtonDragGestureModifiers: 'shift',
   migratedBookmarkUrls: [],
   lastDragOverSidebarOwnerWindowId: null,
-  fixDragEndCoordinates: null, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,

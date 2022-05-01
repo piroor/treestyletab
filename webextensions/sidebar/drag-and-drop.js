@@ -1422,9 +1422,9 @@ async function onDragEnd(event) {
   }
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
-  const fixDragEndCoordinates = (configs.fixDragEndCoordinates === null && mLastBrowserInfo) ?
+  const fixDragEndCoordinates = (configs.enableWorkaroundForBug1767165_fixDragEndCoordinates && mLastBrowserInfo) ?
     parseInt(mLastBrowserInfo.version.split('.')[0]) >= 99 :
-    configs.fixDragEndCoordinates;
+    false;
   const subframeXOffset = fixDragEndCoordinates ? (window.mozInnerScreenX - window.screenX) : 0;
   const subframeYOffset = fixDragEndCoordinates ? (window.mozInnerScreenY - window.screenY) : 0;
 
