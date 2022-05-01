@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Introduce a workaround of problems around wrong coordinates of `dragend` events on Firefox 99 and later (the [bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)). It reduces unexpected detaching of tabs especially on a rightside placed sidebar. This workaround can be disabled by unchecking `enableWorkaroundForBug1767165_fixDragEndCoordinates` via TST Options - "Development" - "All Configs".
  - 3.8.22 (2022.4.22)
    * [Now you can search bookmark folder items incrementally by key inputs, on the bookmarks folder chooser UI.](https://github.com/piroor/treestyletab/issues/3077)
    * Better auto-sizing of the dialog for confirmation of closing tabs.
