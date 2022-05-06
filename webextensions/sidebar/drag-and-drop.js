@@ -1422,8 +1422,9 @@ async function onDragEnd(event) {
   }
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
+  // This is required only for Firefox 99 and 100, so should be removed after Firefox 101 is released.
   const fixDragEndCoordinates = (configs.enableWorkaroundForBug1767165_fixDragEndCoordinates && mLastBrowserInfo) ?
-    parseInt(mLastBrowserInfo.version.split('.')[0]) >= 99 :
+    parseInt(mLastBrowserInfo.version.split('.')[0]) >= 99 && parseInt(mLastBrowserInfo.version.split('.')[0]) <= 100 :
     false;
   const subframeXOffset = fixDragEndCoordinates ? (window.mozInnerScreenX - window.screenX) : 0;
   const subframeYOffset = fixDragEndCoordinates ? (window.mozInnerScreenY - window.screenY) : 0;
