@@ -168,7 +168,7 @@ function onResize() {
   );
   updateOffset.timeoutTimer = setTimeout(() => {
     cancelUpdateOffset();
-  }, configs.suppressGapFromShownOrHiddenToolbarTiemout);
+  }, configs.suppressGapFromShownOrHiddenToolbarTimeout);
 }
 
 function cancelUpdateOffset() {
