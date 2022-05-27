@@ -6,8 +6,13 @@ on:
     branches:
       - "trunk"
 
+permissions:
+  contents: read
+
 jobs:
   auto-escape-special-unicode-characters-in-locales:
+    permissions:
+      contents: write  # for stefanzweifel/git-auto-commit-action to push code in repo
     runs-on: ubuntu-latest
 
     steps:
