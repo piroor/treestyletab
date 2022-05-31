@@ -542,23 +542,11 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
 
   const win = await browser.windows.get(windowId);
   const listing = configs.warnOnCloseTabsWithListing ?
-    tabsToHTMLList(tabs, {
+    Dialog.tabsToHTMLList(tabs, {
       maxHeight: Math.round(win.height * 0.8),
       maxWidth: Math.round(win.width * 0.75)
     }) :
     '';
-
-  browser.runtime.onMessage.addListener(function onMessage(message, sender) {
-    switch (message.type) {
-      case Constants.kNOTIFY_CONFIRMATION_DIALOG_READY:
-        browser.runtime.onMessage.removeListener(onMessage);
-        tryRepositionDialogToCenterOfOwner({
-          ...message,
-          dialogWindowId: sender.tab.windowId,
-        });
-        break;
-    }
-  });
 
   const result = await Dialog.show(win, {
     content: `
@@ -574,11 +562,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     type:    'common-dialog', // for popup
     url:     '/resources/blank.html', // for popup, required on Firefox ESR68
     title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
-    inject:  {
-      type: Constants.kNOTIFY_CONFIRMATION_DIALOG_READY,
-      windowId,
-    },
-    onShownInPopup(container, { type, windowId }) {
+    onShownInPopup(container) {
       setTimeout(() => {
         // this need to be done on the next tick, to use the height of
         // the box for calculation of dialog size
@@ -586,16 +570,6 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
         style.height = '0px'; // this makes the box shrinkable
         style.maxHeight = 'none';
         style.minHeight = '0px';
-        // We cannot move this window by this callback function, thus I just send
-        // a request to update window position.
-        browser.runtime.sendMessage({
-          type,
-          ownerWindowId: windowId,
-          availLeft:     screen.availLeft,
-          availTop:      screen.availTop,
-          availWidth:    screen.availWidth,
-          availHeight:   screen.availHeight,
-        });
       }, 0);
     }
   });
@@ -616,67 +590,6 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
 Commands.onTabsClosing.addListener((tabIds, options = {}) => {
   return confirmToCloseTabs(tabIds.map(Tab.get), options);
 });
-
-async function tryRepositionDialogToCenterOfOwner({ dialogWindowId, ownerWindowId, availLeft, availTop, availWidth, availHeight }) {
-  const [dialogWin, ownerWin] = await Promise.all([
-    browser.windows.get(dialogWindowId),
-    browser.windows.get(ownerWindowId),
-  ]);
-  const placedOnOwner = (
-    dialogWin.left + dialogWin.width - (dialogWin.width / 2) < ownerWin.left &&
-    dialogWin.top + dialogWin.height - (dialogWin.height / 2) < ownerWin.top &&
-    dialogWin.left + (dialogWin.width / 2) < ownerWin.left + ownerWin.width &&
-    dialogWin.top + (dialogWin.height / 2) < ownerWin.top + ownerWin.height
-  );
-  const placedInsideViewArea = (
-    dialogWin.left >= availLeft &&
-    dialogWin.top >= availTop &&
-    dialogWin.left + dialogWin.width <= availLeft + availWidth &&
-    dialogWin.top + dialogWin.height <= availTop + availHeight
-  );
-  if (placedOnOwner && placedInsideViewArea)
-    return;
-
-  const top  = ownerWin.top + Math.round((ownerWin.height - dialogWin.height) / 2);
-  const left = ownerWin.left + Math.round((ownerWin.width - dialogWin.width) / 2);
-  return browser.windows.update(dialogWin.id, {
-    left: Math.min(availLeft + availWidth - dialogWin.width, Math.max(availLeft, left)),
-    top:  Math.min(availTop + availHeight - dialogWin.height, Math.max(availTop, top)),
-  });
-}
-
-export function tabsToHTMLList(tabs, { maxHeight, maxWidth }) {
-  const rootLevelOffset = tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)).sort()[0];
-  return (
-    `<ul style="border: 1px inset;
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
-                flex-shrink: 1;
-                margin: 0.5em 0;
-                min-height: 2em;
-                max-height: calc(${maxHeight}px - 12em /* title bar, message, checkbox, buttons, and margins */);
-                max-width: ${maxWidth}px;
-                overflow: auto;
-                padding: 0.5em;">` +
-      tabs.map(tab => `<li style="align-items: center;
-                                  display: flex;
-                                  flex-direction: row;
-                                  padding-left: calc((${tab.$TST.getAttribute(Constants.kLEVEL)} - ${rootLevelOffset}) * 0.25em);"
-                           title="${sanitizeForHTMLText(tab.title)}"
-                          ><img style="display: flex;
-                                       max-height: 1em;
-                                       max-width: 1em;"
-                                alt=""
-                                src="${sanitizeForHTMLText(tab.favIconUrl || browser.runtime.getURL('resources/icons/defaultFavicon.svg'))}"
-                               ><span style="margin-left: 0.25em;
-                                             overflow: hidden;
-                                             text-overflow: ellipsis;
-                                             white-space: nowrap;"
-                                     >${sanitizeForHTMLText(tab.title)}</span></li>`).join('') +
-      `</ul>`
-  );
-}
 
 function reserveToClearGrantedRemovingTabs() {
   const lastGranted = configs.grantedRemovingTabIds.join(',');
