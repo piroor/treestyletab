@@ -1421,8 +1421,8 @@ async function onDragEnd(event) {
     return;
   }
 
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
-  // the bug affects only on Firefox 99 and 100.
+  // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
+  // The bug affects only on Firefox 99 and 100. This hack should be removed after Firefox 101 is released.
   const fixDragEndCoordinates = (configs.enableWorkaroundForBug1767165_fixDragEndCoordinates && mLastBrowserInfo) ?
     ((major) => major >= 99 && major <= 100)(parseInt(mLastBrowserInfo.version.split('.')[0])) :
     false;
