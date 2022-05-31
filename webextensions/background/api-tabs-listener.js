@@ -38,6 +38,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TSTAPI from '/common/tst-api.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 
 import Tab from '/common/Tab.js';
@@ -620,6 +621,15 @@ async function onNewTabTracked(tab, info) {
 
     onCompleted(uniqueId);
     tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
+
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_NEW_TAB_PROCESSED)) {
+      const cache = {};
+      TSTAPI.sendMessage({
+        type:      TSTAPI.kNOTIFY_NEW_TAB_PROCESSED,
+        tab:       new TSTAPI.TreeItem(tab, { cache }),
+        ancestors: tab.$TST.ancestors.map(ancestor => new TSTAPI.TreeItem(ancestor, { cache })),
+      }, { tabProperties: ['tab', 'ancestors'] }).catch(_error => {});
+    }
 
     // tab can be changed while creating!
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
