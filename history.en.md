@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Shift twisties in tabs to avoid covered by the scrollbar, on macOS, Linux and Windows 11.
+   * Keep label of group tabs correctly after they are moved.
+   * Send `tab-mouseover` and other notifications to helper addons correctly after the sidebar is reopened.
    * Better auto-sizing of the dialog for confirmation on grouping of tabs.
    * Deactivate a workaround of problems around wrong coordinates of `dragend` events on Firefox 99 and 100 (the [bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)) on other versions.
    * API improvement: Add a new notification message type [`new-tab-processed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-finishes-its-handling-for-a-newly-opened-tab) to handle new independent tabs.

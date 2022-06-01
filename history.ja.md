@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * macOS、Linux、Windows 11において、スクロールバーに重ならないようにツリーの開閉つまみをずらして表示するようにした
+   * グループ化用のタブを移動した後にタブのラベルがおかしくなる問題を修正
+   * サイドバーを開き直した後にヘルパーアドオンに `tab-mouseover` などのメッセージが通知されなくなる問題を修正
    * タブの自動グループ化の確認のダイアログを、タブの数に合わせて自動的にリサイズするようにした
    * Firefox 99と100で`dragend`イベントの座標がおかしくなる問題（[bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)）への回避策を、対称範囲外のバージョンのFirefoxでは無効化するようにした
    * APIの改善：TSTによる処理が完了した時点での結果を通知する新しい通知型のメッセージ [`new-tab-processed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-finishes-its-handling-for-a-newly-opened-tab) を追加
