@@ -627,8 +627,7 @@ async function onNewTabTracked(tab, info) {
       TSTAPI.sendMessage({
         type:      TSTAPI.kNOTIFY_NEW_TAB_PROCESSED,
         tab:       new TSTAPI.TreeItem(tab, { cache }),
-        ancestors: tab.$TST.ancestors.map(ancestor => new TSTAPI.TreeItem(ancestor, { cache })),
-      }, { tabProperties: ['tab', 'ancestors'] }).catch(_error => {});
+      }, { tabProperties: ['tab'] }).catch(_error => {});
     }
 
     // tab can be changed while creating!
