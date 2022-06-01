@@ -80,42 +80,9 @@ export async function show(ownerWindow, dialogParams) {
     else {
       log('showDialog: show in a popup window on ', ownerWindow.id);
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false });
-      browser.runtime.onMessage.addListener(function onMessage(message, sender) {
-        switch (message.type) {
-          case Constants.kNOTIFY_CONFIRMATION_DIALOG_READY:
-            browser.runtime.onMessage.removeListener(onMessage);
-            tryRepositionDialogToCenterOfOwner({
-              ...message,
-              dialogWindowId: sender.tab.windowId,
-            });
-            break;
-        }
-      });
-      const callback = dialogParams.onShownInPopup || dialogParams.onShown;
       result = await RichConfirm.showInPopup(ownerWindow.id, {
         ...dialogParams,
-        inject: {
-          ...(dialogParams.inject || {}),
-          __dialog__reportScreenMessageType: Constants.kNOTIFY_CONFIRMATION_DIALOG_READY,
-          __dialog__ownerWindowId: ownerWindow.id,
-        },
-        onShown: [
-          ...(Array.isArray(callback) ? callback : [callback]),
-          (container, { __dialog__reportScreenMessageType, __dialog__ownerWindowId }) => {
-            setTimeout(() => {
-              // We cannot move this window by this callback function, thus I just send
-              // a request to update window position.
-              browser.runtime.sendMessage({
-                type:          __dialog__reportScreenMessageType,
-                ownerWindowId: __dialog__ownerWindowId,
-                availLeft:     screen.availLeft,
-                availTop:      screen.availTop,
-                availWidth:    screen.availWidth,
-                availHeight:   screen.availHeight,
-              });
-            }, 0);
-          },
-        ],
+        onShown: dialogParams.onShownInPopup || dialogParams.onShown,
         onHidden(...params) {
           UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
           unblocked = true;
@@ -133,34 +100,6 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.unblockIn(ownerWindow.id, { throbber: false });
   }
   return result;
-}
-
-async function tryRepositionDialogToCenterOfOwner({ dialogWindowId, ownerWindowId, availLeft, availTop, availWidth, availHeight }) {
-  const [dialogWin, ownerWin] = await Promise.all([
-    browser.windows.get(dialogWindowId),
-    browser.windows.get(ownerWindowId),
-  ]);
-  const placedOnOwner = (
-    dialogWin.left + dialogWin.width - (dialogWin.width / 2) < ownerWin.left &&
-    dialogWin.top + dialogWin.height - (dialogWin.height / 2) < ownerWin.top &&
-    dialogWin.left + (dialogWin.width / 2) < ownerWin.left + ownerWin.width &&
-    dialogWin.top + (dialogWin.height / 2) < ownerWin.top + ownerWin.height
-  );
-  const placedInsideViewArea = (
-    dialogWin.left >= availLeft &&
-    dialogWin.top >= availTop &&
-    dialogWin.left + dialogWin.width <= availLeft + availWidth &&
-    dialogWin.top + dialogWin.height <= availTop + availHeight
-  );
-  if (placedOnOwner && placedInsideViewArea)
-    return;
-
-  const top  = ownerWin.top + Math.round((ownerWin.height - dialogWin.height) / 2);
-  const left = ownerWin.left + Math.round((ownerWin.width - dialogWin.width) / 2);
-  return browser.windows.update(dialogWin.id, {
-    left: Math.min(availLeft + availWidth - dialogWin.width, Math.max(availLeft, left)),
-    top:  Math.min(availTop + availHeight - dialogWin.height, Math.max(availTop, top)),
-  });
 }
 
 export function tabsToHTMLList(tabs, { maxHeight, maxWidth }) {
