@@ -104,6 +104,14 @@ Sidebar.onReady.addListener(() => {
   updateSpecialEventListenersForAPIListeners();
 });
 
+TSTAPI.onRegistered.addListener(() => {
+  updateSpecialEventListenersForAPIListeners();
+});
+
+TSTAPI.onUnregistered.addListener(() => {
+  updateSpecialEventListenersForAPIListeners();
+});
+
 function updateSpecialEventListenersForAPIListeners() {
   const shouldListenMouseMove = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE);
   if (shouldListenMouseMove != onMouseMove.listening) {
