@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.8.24 (2022.6.2)
    * Shift twisties in tabs to avoid covered by the scrollbar, on macOS, Linux and Windows 11.
    * Keep label of group tabs correctly after they are moved.
    * Send `tab-mouseover` and other notifications to helper addons correctly after the sidebar is reopened.
