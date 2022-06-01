@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Better auto-sizing of the dialog for confirmation on grouping of tabs.
+   * Deactivate a workaround of problems around wrong coordinates of `dragend` events on Firefox 99 and 100 (the [bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)) on other versions.
+   * API improvement: Add a new notification message type [`new-tab-processed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-finishes-its-handling-for-a-newly-opened-tab) to handle new independent tabs.
  - 3.8.23 (2022.5.1)
    * Introduce a workaround of problems around wrong coordinates of `dragend` events on Firefox 99 and later (the [bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)). It reduces unexpected detaching of tabs especially on a rightside placed sidebar. This workaround can be disabled by unchecking `enableWorkaroundForBug1767165_fixDragEndCoordinates` via TST Options - "Development" - "All Configs".
  - 3.8.22 (2022.4.22)

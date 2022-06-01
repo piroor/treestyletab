@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * タブの自動グループ化の確認のダイアログを、タブの数に合わせて自動的にリサイズするようにした
+   * Firefox 99と100で`dragend`イベントの座標がおかしくなる問題（[bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)）への回避策を、対称範囲外のバージョンのFirefoxでは無効化するようにした
+   * APIの改善：TSTによる処理が完了した時点での結果を通知する新しい通知型のメッセージ [`new-tab-processed`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-finishes-its-handling-for-a-newly-opened-tab) を追加
  - 3.8.23 (2022.5.1)
    * Firefox 99以降のバージョンで`dragend`イベントの座標がおかしくなる問題（[bug 1767165](https://bugzilla.mozilla.org/show_bug.cgi?id=1767165)）への回避策を導入し、サイドバーを右側に置いている場合にタブが意図せず切り離されて画面外に配置されてしまう事態が発生しにくくなるようにした（この回避策を無効化するには、TSTの設定の「開発者向け」-「すべての設定」で`enableWorkaroundForBug1767165_fixDragEndCoordinates`のチェックを外して下さい）
  - 3.8.22 (2022.4.22)
