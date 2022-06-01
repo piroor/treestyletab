@@ -627,7 +627,11 @@ async function onNewTabTracked(tab, info) {
       TSTAPI.sendMessage({
         type:      TSTAPI.kNOTIFY_NEW_TAB_PROCESSED,
         tab:       new TSTAPI.TreeItem(tab, { cache }),
-      }, { tabProperties: ['tab'] }).catch(_error => {});
+        originalTab: duplicated && new TSTAPI.TreeItem(Tab.get(uniqueId.originalTabId), { cache }),
+        restored,
+        duplicated,
+        fromExternal,
+      }, { tabProperties: ['tab', 'originalTab'] }).catch(_error => {});
     }
 
     // tab can be changed while creating!
