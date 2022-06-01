@@ -749,6 +749,16 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
     });
   }
 
+  if (overflow) {
+    nextFrame().then(() => {
+      // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
+      const scrollbarOffset = mTabBar.firstElementChild ?
+        mTabBar.getBoundingClientRect().width - mTabBar.firstElementChild.getBoundingClientRect().width :
+        0;
+      mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
+    });
+  }
+
   if (justNow)
     PinnedTabs.reposition({ reasons, timeout, justNow });
   else

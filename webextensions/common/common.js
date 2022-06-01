@@ -95,6 +95,8 @@ export const configs = new Configs({
   iconColor: 'auto',
   indentLine: 'auto',
 
+  autoHiddenScrollbarPlaceholderSize: '1em',
+
   unrepeatableBGImageAspectRatio: 4,
 
   faviconizePinnedTabs: true,

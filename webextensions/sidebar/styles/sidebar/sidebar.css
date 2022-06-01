@@ -98,11 +98,11 @@ tab-item-substance {
   z-index: 0;
 }
 
-/* macOS workaround */
-:root.platform-mac #tabbar:dir(rtl).overflow tab-item:not(.pinned) tab-item-substance {
+/* auto-hidden scrollbar placeholder workaround */
+:root #tabbar:dir(rtl).overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac #tabbar:dir(ltr).overflow tab-item:not(.pinned) tab-item-substance {
+:root #tabbar:dir(ltr).overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 

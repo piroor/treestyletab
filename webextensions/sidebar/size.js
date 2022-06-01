@@ -80,6 +80,8 @@ export function update() {
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
     --visual-gap-hover-animation-delay: ${configs.cancelGapSuppresserHoverDelay}ms;
+
+    --scrollbar-placeholder-size: ${configs.autoHiddenScrollbarPlaceholderSize};
   }`;
 }
 

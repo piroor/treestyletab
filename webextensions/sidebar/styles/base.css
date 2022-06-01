@@ -59,9 +59,6 @@
   --tab-text: var(--tab-text-regular);
   --tab-text-shadow: none;
 
-  /* macOS workaround */
-  --scrollbar-placeholder-size: 1em;
-
   --multiselected-color: transparent;
   --multiselected-color-opacity: 0.15;
 

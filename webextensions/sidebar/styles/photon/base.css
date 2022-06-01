@@ -65,11 +65,11 @@ tab-item.pinned.last-row tab-item-substance {
 }
 
 
-/* macOS workaround */
-:root.platform-mac.left #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
+/* auto-hidden scrollbar placeholder workaround */
+:root.left #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.platform-mac.right #tabbar.overflow tab-item:not(.pinned) tab-item-substance {
+:root.right #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 
