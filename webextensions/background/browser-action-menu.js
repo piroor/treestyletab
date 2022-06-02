@@ -357,6 +357,69 @@ const mItems = [
     ]
   },
   {
+    title:    browser.i18n.getMessage('config_newTabWithOwner_caption'),
+    children: [
+      {
+        title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_noControl'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_NO_CONTROL,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_top'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_end'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_END,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_NO_CONTROL,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_END,
+            type:  'radio'
+          }
+        ]
+      },
+    ]
+  },
+  {
     title:    browser.i18n.getMessage('config_newTab_caption'),
     children: [
       {
@@ -720,89 +783,6 @@ const mItems = [
             ]
           }
         ]
-      },
-      { type: 'separator' },
-      {
-        title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_noControl'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_NO_CONTROL,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_top'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_end'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ]
-      },
-      {
-        title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_NO_CONTROL,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ]
-      },
-      {
-        title:    browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_INHERIT,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ],
-        expert: true
       },
       { type: 'separator' },
       {
@@ -1588,29 +1568,33 @@ const mItems = [
     ]
   },
   {
-    title:    browser.i18n.getMessage('config_drag_caption'),
+    title:    browser.i18n.getMessage('config_more_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
+        title:   browser.i18n.getMessage('config_drag_caption'),
+        enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_caption'),
         enabled: false
       },
       // These options are too complex to put in the menu UI, so I simply redirect to the options page.
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
+        title: indent(2) + browser.i18n.getMessage('config_tabDragBehavior_label'),
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
+        title: indent(2) + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title: browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
+        title: indent(2) + browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
         key:   'showTabDragBehaviorNotification',
         type:  'checkbox'
       },
       { type: 'separator' },
       {
-        title:    browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
+        title:    indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
         children: [
           {
             title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
@@ -1634,37 +1618,58 @@ const mItems = [
       },
       { type: 'separator', expert: true },
       {
+        title:    indent(2) + browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_INHERIT,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
+            key:   'insertDroppedTabsAt',
+            value: Constants.kINSERT_END,
+            type:  'radio'
+          }
+        ],
+        expert: true
+      },
+      { type: 'separator', expert: true },
+      {
         dynamicTitle: true,
         get title() {
-          return browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_before') + delimiter + configs.autoExpandOnLongHoverDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_after');
+          return indent(2) + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_before') + delimiter + configs.autoExpandOnLongHoverDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_after');
         },
         key:    'autoExpandOnLongHover',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
+        title:  indent(3) + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
         key:    'autoExpandOnLongHoverRestoreIniitalState',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
+        title:  indent(3) + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
         key:    'autoExpandIntelligently',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
+        title:  indent(2) + browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
         key:    'ignoreTabDropNearSidebarArea',
         type:   'checkbox',
         expert: true
-      }
-    ]
-  },
-  {
-    title:    browser.i18n.getMessage('config_more_caption'),
-    children: [
+      },
+      { type: 'separator' },
       {
         title:   browser.i18n.getMessage('config_advanced_caption'),
         enabled: false

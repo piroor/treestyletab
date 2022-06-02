@@ -388,7 +388,7 @@
   "config_removeDeviceButton_tooltip": { "message": "Delete this device from the list" },
 
 
-  "config_newTab_caption": { "message": "New Tabs Behavior" },
+  "config_newTab_caption": { "message": "New Tabs from Other Triggers" },
 
   "config_newTabButton_caption": { "message": "Special actions on the \"New Tab\" button" },
   "config_longPressOnNewTabButton_before":               { "message": "Long-press on the \"New Tab\" button to " },
@@ -479,6 +479,9 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(no control)" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Inherit from the parent tab on the tree" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Inherit from the current tab" },
+
+
+  "config_newTabWithOwner_caption": { "message": "New Tabs from Web Pages" },
 
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },

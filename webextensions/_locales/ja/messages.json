@@ -384,7 +384,7 @@
   "config_removeDeviceButton_tooltip": { "message": "この端末を一覧から削除する" },
 
 
-  "config_newTab_caption": { "message": "新しいタブの挙動" },
+  "config_newTab_caption": { "message": "他のきっかけで開かれたタブ" },
 
   "config_newTabButton_caption": { "message": "「新しいタブ」ボタンの特殊操作" },
   "config_longPressOnNewTabButton_before":               { "message": "ボタンの長押しで" },
@@ -475,6 +475,9 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "（制御しない）" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "ツリー上での親から継承" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "現在のタブから継承" },
+
+
+  "config_newTabWithOwner_caption": { "message": "Webページから開かれたタブ" },
 
   "config_insertNewChildAt_caption": { "message": "新しい子タブを開く位置" },
   "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
