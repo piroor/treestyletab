@@ -449,7 +449,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 * <details id="other-topics-how-to-donate-to-this-project"><summary>How to <a href="https://github.com/piroor/treestyletab/issues/761">donate</a> to this project?</summary>
   
-  Thanks, but sorry, I have no plans to accept any dontations for these reasons:
+  Thanks, but sorry, I have no plans to accept any donations for these reasons:
   
   * The biggest reason is: because I want to keep me as the prime user of this project.
     I want to keep having a privilege to say "no" about requests that do not match my vision.
@@ -465,3 +465,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   If you have fixed a bug you met, please send a pull request - I'll merge it.
   If you have different plans about TST, please fork this project freely for your purpose, if needed.
   </details>
+* <details id="other-topics-how-can-i-translate-thee-style-tabs"><summary>How can I translate Tree Style Tab?</summary>
+  
+  See the [Notes for translators](webextensions/_locales/README.md)
+ </details>
