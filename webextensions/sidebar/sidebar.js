@@ -336,6 +336,7 @@ async function applyTheme({ style } = {}) {
   ]);
   applyBrowserTheme(theme);
   applyUserStyleRules();
+  reloadAllMaskImages();
   Size.update();
 }
 
@@ -414,6 +415,50 @@ function updateContextualIdentitiesStyle() {
 
   mContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
+
+
+// Workaround for https://github.com/piroor/treestyletab/issues/3142
+
+function reloadAllMaskImages() {
+  const delayedTasks = [];
+  for (const sheet of document.styleSheets) {
+    reloadMaskImageIn(sheet, delayedTasks);
+  }
+  setTimeout(() => {
+    for (const task of delayedTasks) {
+      task();
+    }
+  }, 0);
+}
+
+function reloadMaskImageIn(sheet, delayedTasks) {
+  for (const rule of sheet.cssRules) {
+    if (rule.styleSheet)
+      reloadMaskImageIn(rule.styleSheet, delayedTasks);
+    else
+      reloadMaskImage(rule, delayedTasks);
+  }
+}
+
+function reloadMaskImage(rule, delayedTasks) {
+  if (!rule.style ||
+      !rule.style.maskImage)
+    return;
+
+  const background = rule.style.background;
+  const image = rule.style.maskImage;
+
+  if (background)
+    rule.style.background = 'none';
+  rule.style.maskImage = '';
+
+  delayedTasks.push(() => {
+    rule.style.maskImage = image;
+    if (background)
+      rule.style.background = background;
+  });
+}
+
 
 function updateContextualIdentitiesSelector() {
   const disabled = document.documentElement.classList.contains('incognito') || ContextualIdentities.getCount() == 0;
