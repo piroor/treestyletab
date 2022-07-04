@@ -29,7 +29,7 @@ Please enjoy as you like!
   Please note that you need to log in to the GitHub to see artifacts.
 
 <details>
-<p><summary>It is not signed, so you need to load it by an atypical method. (Please click this section to see instructions.)</summary></p>
+<p><summary>Development builds are not signed, so you need to load them by an atypical method. (Please click this section to see instructions.)</summary></p>
 
 There are two methods to try them in your environment:
 
