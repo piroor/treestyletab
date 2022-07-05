@@ -418,6 +418,11 @@ function updateContextualIdentitiesStyle() {
 
 
 // Workaround for https://github.com/piroor/treestyletab/issues/3142
+// Firefox 101 and later versions may have something edge case bug around CSS
+// mask-iamge, it sometimes fails to apply masks on the initial loading.
+// After I disable and re-enable a CSS rule for a mask image by the DOM inspector
+// the problem looks solved. These codes simulates the operation by scanning all
+// CSS rules via CSSOM automatically.
 
 function reloadAllMaskImages() {
   const delayedTasks = [];
