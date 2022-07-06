@@ -181,6 +181,13 @@ If you need any new APIs, please file API proposals in the issue tracker.
   Sorry, but I won't re-implement TST as an extension for other browsers by myself because I use Firefox.
   (But [there are some alternatives developed by others](#similar-projects).)
   </details>
+* <details id="other-browsers-support-support-for-firefox-mobile"><summary>Support for Firefox Mobile</a></summary>
+  
+  Currently I have no plan to add support for movile devices (Android and iPhone) from some reasons:
+  
+  * Firefox Mobile doesn't support Sidebar API.
+  * Mobile devices have limited RAM. Too many numbers of tabs opened by TST may lead OOM killer to kill Firefox Mobile.
+  </details>
 
 #### Appearance
 
