@@ -360,6 +360,46 @@ const mItems = [
     title:    browser.i18n.getMessage('config_newTabWithOwner_caption'),
     children: [
       {
+        title:   browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_before'),
+        enabled: false,
+        expert:  true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+        key:   'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_DO_NOTHING,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+        key:    'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_OPEN_AS_ORPHAN,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + browser.i18n.getMessage('config_recommended_choice'),
+        key:    'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_OPEN_AS_CHILD,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+        key:    'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_OPEN_AS_SIBLING,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+        key:    'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+        type:   'radio',
+        expert: true,
+      },
+      {
         title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
         enabled:  false,
       },
@@ -387,7 +427,7 @@ const mItems = [
         value: Constants.kINSERT_END,
         type:  'radio'
       },
-      { type: 'separator' },
+      //{ type: 'separator' },
       {
         title: browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
         key:   'autoGroupNewTabsFromPinned',

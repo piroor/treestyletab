@@ -318,6 +318,8 @@
 
   "config_title": { "message": "Tree Style Tab Options" },
 
+  "config_recommended_choice": { "message": "(Recommended)" },
+
   "config_showExpertOptions_label": { "message": "Unlock Expert Options" },
   "config_openOptionsInTab_label": { "message": "Open this options page in more wide space" },
 
@@ -389,6 +391,14 @@
 
 
   "config_newTabWithOwner_caption": { "message": "Tabs opened from Existing Tabs" },
+
+  "config_autoAttachOnOpenedWithOwner_before": { "message": "When a tab is opened from existing tab, open it as" },
+  "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(no control)" },
+  "config_autoAttachOnOpenedWithOwner_independent": { "message": "an independent tab" },
+  "config_autoAttachOnOpenedWithOwner_child": { "message": "a child of the parent tab" },
+  "config_autoAttachOnOpenedWithOwner_sibling": { "message": "a sibling of the parent tab" },
+  "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "the next sibling of the parent tab" },
+  "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs (will appear as root tabs) from pinned tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
