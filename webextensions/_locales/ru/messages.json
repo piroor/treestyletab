@@ -388,7 +388,7 @@
   "config_removeDeviceButton_tooltip": { "message": "Удалить это устройство из списка" },
 
 
-  "config_newTab_caption": { "message": "Поведение новой вкладки" },
+  "config_newTab_caption_TRANSLATION_NEED_UPDATED": { "message": "Поведение новой вкладки" },
 
   "config_newTabButton_caption": { "message": "Специальные действия для кнопки \"Новая вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Длительное нажатие кнопки \"Новая вкладка\", чтобы " },
@@ -521,7 +521,7 @@
   "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "Для открытых из закладок:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Для открытых одновременно не из закладок:" },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "Для открытых из одной закрепленной вкладки:" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": { "message": "Для открытых из одной закрепленной вкладки:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Для заменяющих родильскую вкладку:" },
 
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "Контейнер:" },

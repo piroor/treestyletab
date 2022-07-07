@@ -1048,7 +1048,7 @@
         "message": "이 기기를 목록에서 삭제",
         "hash": "915ab3b46ce271eb2878f602b12920e6"
     },
-    "config_newTab_caption": {
+    "config_newTab_caption_TRANSLATION_NEED_UPDATED": {
         "message": "새 탭을 실행",
         "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
     },
@@ -1512,7 +1512,7 @@
         "message": "북마크 이외에서 연속적으로 열린 탭을 묶는 경우:",
         "hash": "58f527403a14b4a7bccfbd6bc5e74344"
     },
-    "config_groupTabTemporaryStateForChildrenOfPinned_label": {
+    "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": {
         "message": "같은 고정된 탭에서 열린 탭을 묶는 경우:",
         "hash": "72e4456279cc0fa02821409f00c28c39"
     },

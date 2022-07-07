@@ -384,7 +384,19 @@
   "config_removeDeviceButton_tooltip": { "message": "この端末を一覧から削除する" },
 
 
-  "config_newTab_caption": { "message": "新しいタブの挙動" },
+  "config_newTabWithOwner_caption": { "message": "他のタブから開かれたタブ" },
+
+  "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから（最上位のタブとして表れる）新しい子タブを開く位置" },
+  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "直近に開いた子タブの隣、もしくは親タブの近く（Firefox既定の挙動の再現）" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "ツリーの先頭（親タブの近く）" },
+  "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾" },
+
+  "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する（「～から開いたタブ」というタイトルのグループ化用タブが開かれます）" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "同じピン留めされたタブから開かれたタブをまとめるグループ化用のタブの初期状態:" },
+
+
+  "config_newTab_caption": { "message": "他のタブ以外から開かれた新しいタブ" },
 
   "config_newTabButton_caption": { "message": "「新しいタブ」ボタンの特殊操作" },
   "config_longPressOnNewTabButton_before":               { "message": "ボタンの長押しで" },
@@ -476,23 +488,6 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "ツリー上での親から継承" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "現在のタブから継承" },
 
-  "config_insertNewChildAt_caption": { "message": "新しい子タブを開く位置" },
-  "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "直近に開いた子タブの隣、もしくは親タブの隣（Firefox既定の挙動の再現）" },
-  "config_insertNewChildAt_top": { "message": "ツリーの先頭（親タブの隣）" },
-  "config_insertNewChildAt_end": { "message": "ツリーの末尾" },
-
-  "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから（最上位のタブとして表れる）新しい子タブを開く位置" },
-  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "直近に開いた子タブの隣、もしくは親タブの近く（Firefox既定の挙動の再現）" },
-  "config_insertNewTabFromPinnedTabAt_top": { "message": "ツリーの先頭（親タブの近く）" },
-  "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾" },
-
-  "config_insertDroppedTabsAt_caption": { "message": "親タブにドロップされた子タブの挿入位置" },
-  "config_insertDroppedTabsAt_inherit": { "message": "親タブから新しい子タブを開いたときと同様に扱う" },
-  "config_insertDroppedTabsAt_first": { "message": "ツリーの先頭（親タブの隣）" },
-  "config_insertDroppedTabsAt_end": { "message": "ツリーの末尾" },
-
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "1つのブックマークフォルダーから" },
@@ -508,7 +503,6 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "自動的にグループ化する前に確認する" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "グループ化しようとしているタブの一覧を確認のダイアログに表示する" },
 
-  "config_autoGroupNewTabsFromPinned_label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する（「～から開いたタブ」というタイトルのグループ化用タブが開かれます）" },
   "config_renderTreeInGroupTabs_label": { "message": "グループ化用のタブにツリーを表示する" },
 
   "config_groupTabTemporaryState_caption": { "message": "場合ごとのグループ化用のタブの初期状態" },
@@ -517,7 +511,6 @@
   "config_groupTabTemporaryState_option_checked_after": { "message": "」をチェック済みにする" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "ブックマークから開かれたタブをグループ化した場合:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "ブックマーク以外から連続して開かれたタブをグループ化した場合:" },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "同じピン留めされたタブから開かれたタブをグループ化した場合:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "閉じられた親タブを置き換える形で開かれた場合:" },
 
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "コンテナー:" },
@@ -597,6 +590,12 @@
   "config_warnOnCloseTabsByClosebox_label": { "message": "クローズボックスの通常のクリック操作で同時に複数のタブを閉じるときは確認する" },
   "config_warnOnCloseTabsWithListing_label": { "message": "閉じようとしているタブの一覧を確認のダイアログに表示する" },
 
+  "config_insertNewChildAt_caption": { "message": "新しい子タブの挿入位置" },
+  "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "直近に開いた子タブの隣、もしくは親タブの隣（Firefox既定の挙動の再現）" },
+  "config_insertNewChildAt_top": { "message": "ツリーの先頭（親タブの隣）" },
+  "config_insertNewChildAt_end": { "message": "ツリーの末尾" },
+
 
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
@@ -620,6 +619,11 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "どうするか常に訊ねる" },
   "config_dropLinksOnTabBehavior_load":    { "message": "そのタブに読み込む" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
+
+  "config_insertDroppedTabsAt_caption": { "message": "親タブにドロップされた子タブの挿入位置" },
+  "config_insertDroppedTabsAt_inherit": { "message": "親タブから新しい子タブを開いたときと同様に扱う" },
+  "config_insertDroppedTabsAt_first": { "message": "ツリーの先頭（親タブの隣）" },
+  "config_insertDroppedTabsAt_end": { "message": "ツリーの末尾" },
 
   "config_autoExpandOnLongHoverDelay_before":  { "message": "ドラッグ操作中、折りたたまれたツリーの上で" },
   "config_autoExpandOnLongHoverDelay_after":  { "message": "ミリ秒以上経過したらツリーを展開する" },

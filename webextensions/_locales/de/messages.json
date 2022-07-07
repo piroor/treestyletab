@@ -388,7 +388,7 @@
   "config_removeDeviceButton_tooltip": { "message": "Dieses Gerät von der Liste löschen" },
 
 
-  "config_newTab_caption": { "message": "Verhalten für neue Tabs" },
+  "config_newTab_caption_TRANSLATION_NEED_UPDATED": { "message": "Verhalten für neue Tabs" },
 
   "config_newTabButton_caption": { "message": "Besondere Aktionen für die \"Neuer Tab\" Schaltfläche" },
   "config_longPressOnNewTabButton_before":               { "message": "Die Schaltfläche \"Neuer Tab\" lang gedrückt halten, um " },
@@ -521,7 +521,7 @@
   "config_groupTabTemporaryState_option_checked_after": { "message": "\" auswählen" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "Für Tabs, die aus Lesezeichen geöffnet wurden:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Für zeitgleich geöffnete Tabs, die nicht aus Lesezeichen geöffnet wurden:" },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "Für Tabs, die vom gleichen angehefteten Tab geöffnet wurden:" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": { "message": "Für Tabs, die vom gleichen angehefteten Tab geöffnet wurden:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Geöffnet, um einen geschlossenen übergeordneten Tab zu ersetzen:" },
 
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "Tab-Umgebung:" },

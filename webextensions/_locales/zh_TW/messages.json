@@ -388,7 +388,7 @@
     "config_removeDeviceButton_tooltip": { "message": "從列表中刪除此裝置" },
   
 
-    "config_newTab_caption": { "message": "新分頁行為" },
+    "config_newTab_caption_TRANSLATION_NEED_UPDATED": { "message": "新分頁行為" },
   
     "config_newTabButton_caption__": { "message": "「開新分頁」按鈕的特殊動作" },
     "config_longPressOnNewTabButton_before":               { "message": "長按按鈕" },
@@ -521,7 +521,7 @@
     "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
     "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "For tabs opened from bookmarks:" },
     "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "For tabs opened at a time from non-bookmark triggers:" },
-    "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "For tabs opened from same pinned tab:" },
+    "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": { "message": "For tabs opened from same pinned tab:" },
     "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
   
     "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },

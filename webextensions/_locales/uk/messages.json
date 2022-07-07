@@ -161,7 +161,7 @@
   "config_extraItems_tabs_caption": { "message": "Додаткові пункти контекстного меню" },
 
 
-  "config_newTab_caption": { "message": "Поведінка нової вкладки" },
+  "config_newTab_caption_TRANSLATION_NEED_UPDATED": { "message": "Поведінка нової вкладки" },
 
   "config_newTabButton_caption__": { "message": "кнопка \"Нова вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Тривале затискання кнопки \"Нова вкладка\", щоб " },

@@ -1155,7 +1155,7 @@
   "config_removeDeviceButton_tooltip": {
     "message": "从列表中删除此设备"
   },
-  "config_newTab_caption": {
+  "config_newTab_caption_TRANSLATION_NEED_UPDATED": {
     "message": "新建标签页行为",
     "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
   },
@@ -1575,7 +1575,7 @@
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": {
     "message": "对于在一定时间内打开自非书签触发方式的标签页："
   },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label": {
+  "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": {
     "message": "对于打开自相同固定标签页的标签页："
   },
   "config_groupTabTemporaryStateForOrphanedTabs_label": {

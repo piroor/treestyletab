@@ -388,7 +388,19 @@
   "config_removeDeviceButton_tooltip": { "message": "Delete this device from the list" },
 
 
-  "config_newTab_caption": { "message": "New Tabs Behavior" },
+  "config_newTabWithOwner_caption": { "message": "Tabs opened from Existing Tabs" },
+
+  "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs (will appear as root tabs) from pinned tabs" },
+  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener (simulates Firefox's default behavior)" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "The top of the tree (near the opener)" },
+  "config_insertNewTabFromPinnedTabAt_end": { "message": "The end of the tree" },
+
+  "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab (a new tab for grouping will be opened with a title like \"Tabs from ...\")" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "Default state of group tabs for tabs opened from same pinned tab:" },
+
+
+  "config_newTab_caption": { "message": "New Tabs not from Existing Tabs" },
 
   "config_newTabButton_caption": { "message": "Special actions on the \"New Tab\" button" },
   "config_longPressOnNewTabButton_before":               { "message": "Long-press on the \"New Tab\" button to " },
@@ -480,23 +492,6 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Inherit from the parent tab on the tree" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Inherit from the current tab" },
 
-  "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
-  "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent (simulates Firefox's  default behavior)" },
-  "config_insertNewChildAt_top": { "message": "The top of the tree (next to the parent)" },
-  "config_insertNewChildAt_end": { "message": "The end of the tree" },
-
-  "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs (will appear as root tabs) from pinned tabs" },
-  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener (simulates Firefox's default behavior)" },
-  "config_insertNewTabFromPinnedTabAt_top": { "message": "The top of the tree (near the opener)" },
-  "config_insertNewTabFromPinnedTabAt_end": { "message": "The end of the tree" },
-
-  "config_insertDroppedTabsAt_caption": { "message": "Insertion position of children dropped onto a parent" },
-  "config_insertDroppedTabsAt_inherit": { "message": "Treat same as new children opened from the parent" },
-  "config_insertDroppedTabsAt_first": { "message": "The top of the tree (next to the parent)" },
-  "config_insertDroppedTabsAt_end": { "message": "The end of the tree" },
-
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "Auto-group tabs opened from a bookmark folder within" },
@@ -512,7 +507,6 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "Confirm to group tabs" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "List tabs to be grouped in the confirmation dialog" },
 
-  "config_autoGroupNewTabsFromPinned_label": { "message": "Auto-group tabs opened from same pinned tab (a new tab for grouping will be opened with a title like \"Tabs from ...\")" },
   "config_renderTreeInGroupTabs_label": { "message": "Render tree in group tabs" },
 
   "config_groupTabTemporaryState_caption": { "message": "Default state of group tabs for each context" },
@@ -521,7 +515,6 @@
   "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "For tabs opened from bookmarks:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "For tabs opened at a time from non-bookmark triggers:" },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "For tabs opened from same pinned tab:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
 
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "Container:" },
@@ -601,6 +594,12 @@
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warn me when I attempt to close multiple tabs by a normal click on a closebox" },
   "config_warnOnCloseTabsWithListing_label": { "message": "List closing tabs in the confirmation dialog" },
 
+  "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
+  "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent (simulates Firefox's  default behavior)" },
+  "config_insertNewChildAt_top": { "message": "The top of the tree (next to the parent)" },
+  "config_insertNewChildAt_end": { "message": "The end of the tree" },
+
 
   "config_drag_caption": { "message": "Drag and Drop" },
 
@@ -624,6 +623,11 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Load to the tab" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
+
+  "config_insertDroppedTabsAt_caption": { "message": "Insertion position of children dropped onto a parent" },
+  "config_insertDroppedTabsAt_inherit": { "message": "Treat same as new children opened from the parent" },
+  "config_insertDroppedTabsAt_first": { "message": "The top of the tree (next to the parent)" },
+  "config_insertDroppedTabsAt_end": { "message": "The end of the tree" },
 
   "config_autoExpandOnLongHoverDelay_before":  { "message": "Expand collapsed tree with hovering over " },
   "config_autoExpandOnLongHoverDelay_after":  { "message": "msec while dragging" },

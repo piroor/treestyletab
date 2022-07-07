@@ -363,6 +363,48 @@
     </section>
 
 
+    <section id="section-newTabWithOwner">
+    <h1>__MSG_config_newTabWithOwner_caption__</h1>
+
+    <fieldset>
+      <legend>__MSG_config_insertNewTabFromPinnedTabAt_caption__</legend>
+      <ul>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromPinnedTabAt" value="-1">
+              __MSG_config_insertNewTabFromPinnedTabAt_noControl__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromPinnedTabAt" value="3">
+              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelateTab__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromPinnedTabAt" value="0">
+              __MSG_config_insertNewTabFromPinnedTabAt_top__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromPinnedTabAt" value="1">
+              __MSG_config_insertNewTabFromPinnedTabAt_end__</label></li>
+      </ul>
+      <hr>
+      <p><label class="has-checkbox"
+               ><input id="autoGroupNewTabsFromPinned"
+                       type="checkbox">
+                __MSG_config_autoGroupNewTabsFromPinned_label__</p>
+      <p><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
+                <select id="groupTabTemporaryStateForChildrenOfPinned">
+                  <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
+                  <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
+                                    __MSG_groupTab_temporary_label__
+                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
+                  <option value="2">__MSG_config_groupTabTemporaryState_option_checked_before__
+                                    __MSG_groupTab_temporaryAggressive_label__
+                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
+                </select></label></p>
+    </fieldset>
+    </section>
+
+
     <section id="section-newTab">
     <h1>__MSG_config_newTab_caption__</h1>
 
@@ -503,56 +545,8 @@
       </div>
     </fieldset>
 
-    <fieldset>
-      <legend>__MSG_config_insertNewChildAt_caption__</legend>
-      <ul>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewChildAt" value="-1">
-              __MSG_config_insertNewChildAt_noControl__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewChildAt" value="3">
-              __MSG_config_insertNewChildAt_nextToLastRelateTab__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewChildAt" value="0">
-              __MSG_config_insertNewChildAt_top__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewChildAt" value="1">
-              __MSG_config_insertNewChildAt_end__</label></li>
-      </ul>
-    </fieldset>
-
-    <fieldset>
-      <legend>__MSG_config_insertNewTabFromPinnedTabAt_caption__</legend>
-      <ul>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewTabFromPinnedTabAt" value="-1">
-              __MSG_config_insertNewTabFromPinnedTabAt_noControl__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewTabFromPinnedTabAt" value="3">
-              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelateTab__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewTabFromPinnedTabAt" value="0">
-              __MSG_config_insertNewTabFromPinnedTabAt_top__</label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="insertNewTabFromPinnedTabAt" value="1">
-              __MSG_config_insertNewTabFromPinnedTabAt_end__</label></li>
-      </ul>
-    </fieldset>
-
     <fieldset id="autoGroupNewTabsSection">
       <legend>__MSG_config_groupTab_caption__</legend>
-      <p><label class="has-checkbox"
-               ><input id="autoGroupNewTabsFromPinned"
-                       type="checkbox">
-                __MSG_config_autoGroupNewTabsFromPinned_label__</p>
       <p><label id="autoGroupNewTabsFromBookmarks_label"
                 class="has-checkbox"
                ><input id="autoGroupNewTabsFromBookmarks"
@@ -615,16 +609,6 @@
                 </select></label></p>
       <p><label>__MSG_config_groupTabTemporaryStateForNewTabsFromOthers_label__
                 <select id="groupTabTemporaryStateForNewTabsFromOthers">
-                  <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
-                  <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
-                                    __MSG_groupTab_temporary_label__
-                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
-                  <option value="2">__MSG_config_groupTabTemporaryState_option_checked_before__
-                                    __MSG_groupTab_temporaryAggressive_label__
-                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
-                </select></label></p>
-      <p><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
-                <select id="groupTabTemporaryStateForChildrenOfPinned">
                   <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
                   <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
                                     __MSG_groupTab_temporary_label__
@@ -994,6 +978,28 @@
                   ><input type="radio"
                           name="fixupTreeOnTabVisibilityChanged" value="false">
               __MSG_config_fixupTreeOnTabVisibilityChanged_keep__</label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>__MSG_config_insertNewChildAt_caption__</legend>
+      <ul>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewChildAt" value="-1">
+              __MSG_config_insertNewChildAt_noControl__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewChildAt" value="3">
+              __MSG_config_insertNewChildAt_nextToLastRelateTab__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewChildAt" value="0">
+              __MSG_config_insertNewChildAt_top__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewChildAt" value="1">
+              __MSG_config_insertNewChildAt_end__</label></li>
       </ul>
     </fieldset>
     </section>

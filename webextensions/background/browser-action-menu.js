@@ -357,6 +357,69 @@ const mItems = [
     ]
   },
   {
+    title:    browser.i18n.getMessage('config_newTabWithOwner_caption'),
+    children: [
+      {
+        title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
+        enabled:  false,
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
+        key:   'insertNewTabFromPinnedTabAt',
+        value: Constants.kINSERT_NO_CONTROL,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
+        key:   'insertNewTabFromPinnedTabAt',
+        value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
+        key:   'insertNewTabFromPinnedTabAt',
+        value: Constants.kINSERT_TOP,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
+        key:   'insertNewTabFromPinnedTabAt',
+        value: Constants.kINSERT_END,
+        type:  'radio'
+      },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
+        key:   'autoGroupNewTabsFromPinned',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfPinned_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfPinned',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
+      },
+    ]
+  },
+  {
     title:    browser.i18n.getMessage('config_newTab_caption'),
     children: [
       {
@@ -399,7 +462,7 @@ const mItems = [
         ]
       },
       {
-        title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_label'),
+        title: indent() + browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_label'),
         children: [
           {
             title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_default'),
@@ -723,72 +786,8 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_noControl'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_NO_CONTROL,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_top'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewChildAt_end'),
-            key:   'insertNewChildAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ]
-      },
-      {
-        title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_NO_CONTROL,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
-            key:   'insertNewTabFromPinnedTabAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ]
-      },
-      { type: 'separator' },
-      {
         title: browser.i18n.getMessage('config_groupTab_caption'),
         enabled: false
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
-        key:   'autoGroupNewTabsFromPinned',
-        type:  'checkbox'
       },
       {
         dynamicTitle: true,
@@ -874,30 +873,6 @@ const mItems = [
           {
             title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
             key:   'groupTabTemporaryStateForNewTabsFromOthers',
-            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
-            type:  'radio'
-          }
-        ]
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfPinned_label'),
-        expert: true,
-        children: [
-          {
-            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
-            key:   'groupTabTemporaryStateForChildrenOfPinned',
-            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
-            type:  'radio'
-          },
-          {
-            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
-            key:   'groupTabTemporaryStateForChildrenOfPinned',
-            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
-            type:  'radio'
-          },
-          {
-            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
-            key:   'groupTabTemporaryStateForChildrenOfPinned',
             value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
             type:  'radio'
           }
@@ -1560,113 +1535,143 @@ const mItems = [
             type:  'radio'
           }
         ]
-      }
+      },
+      {
+        title:    browser.i18n.getMessage('config_insertNewChildAt_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_noControl'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_NO_CONTROL,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_top'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewChildAt_end'),
+            key:   'insertNewChildAt',
+            value: Constants.kINSERT_END,
+            type:  'radio'
+          }
+        ]
+      },
     ]
   },
   {
-    title:    browser.i18n.getMessage('config_drag_caption'),
+    title:    browser.i18n.getMessage('config_more_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
+        title:    browser.i18n.getMessage('config_drag_caption'),
+        enabled:  false,
+      },
+      //{ type: 'separator' },
+      {
+        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_caption'),
         enabled: false,
       },
       // These options are too complex to put in the menu UI, so I simply redirect to the options page.
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_label') + '...',
+        title: indent(2) + browser.i18n.getMessage('config_tabDragBehavior_label') + '...',
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label') + '...',
+        title: indent(2) + browser.i18n.getMessage('config_tabDragBehaviorShift_label') + '...',
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title: browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
+        title: indent(2) + browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
         key:   'showTabDragBehaviorNotification',
         type:  'checkbox'
       },
-      { type: 'separator' },
+      //{ type: 'separator' },
       {
-        title:   browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
+        title:   indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
         enabled: false,
       },
       {
-        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
+        title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_ASK,
         type:  'radio'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
+        title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_LOAD,
         type:  'radio'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
+        title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_NEWTAB,
         type:  'radio'
       },
-      { type: 'separator', expert: true },
+      //{ type: 'separator', expert: true },
       {
-        title:   browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
+        title:   indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
         enabled: false,
         expert:  true,
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
+        title:  indent(2) + browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
         key:    'insertDroppedTabsAt',
         value:  Constants.kINSERT_INHERIT,
         type:   'radio',
         expert: true,
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
+        title:  indent(2) + browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
         key:    'insertDroppedTabsAt',
         value:  Constants.kINSERT_TOP,
         type:   'radio',
         expert: true,
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
+        title:  indent(2) + browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
         key:    'insertDroppedTabsAt',
         value:  Constants.kINSERT_END,
         type:   'radio',
         expert: true,
       },
-      { type: 'separator', expert: true },
+      //{ type: 'separator', expert: true },
       {
         dynamicTitle: true,
         get title() {
-          return browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_before') + delimiter + configs.autoExpandOnLongHoverDelay + delimiter + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_after');
+          return indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_before') + delimiter + configs.autoExpandOnLongHoverDelay +     delimiter + browser.i18n.getMessage('config_autoExpandOnLongHoverDelay_after');
         },
         key:    'autoExpandOnLongHover',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
+        title:  indent(2) + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
         key:    'autoExpandOnLongHoverRestoreIniitalState',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
+        title:  indent(2) + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
         key:    'autoExpandIntelligently',
         type:   'checkbox',
         expert: true
       },
       {
-        title:  browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
+        title:  indent() + browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
         key:    'ignoreTabDropNearSidebarArea',
         type:   'checkbox',
         expert: true
-      }
-    ]
-  },
-  {
-    title:    browser.i18n.getMessage('config_more_caption'),
-    children: [
+      },
+      { type: 'separator' },
       {
         title:   browser.i18n.getMessage('config_advanced_caption'),
         enabled: false
