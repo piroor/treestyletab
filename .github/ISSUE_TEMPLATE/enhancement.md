@@ -1,3 +1,10 @@
+---
+name: Enhancement
+description: Requests about enhancements, new features, improvements, etc.
+title: [Enhancement] (please put summary here)
+labels: enhancement,needs-triage
+---
+
 <!--
 PLEASE FILL THIS TEMPLATE TO MAKE YOUR REPORT MORE HELPFUL FOR THE DEVELOPER!!
 If you don't know what is "good feedback", here is a guideline:
@@ -13,15 +20,9 @@ For Japanese people:
 「期待される結果」「実際の結果」は必ず書くようにして下さい。
 -->
 
-## Short description
+## Abstract
 
-## Steps to reproduce
-
-<!--
-Please investigate complete steps required to reproduce the problem from scratch,
-on a clean environment with a new profile. See also:
-https://github.com/piroor/treestyletab/wiki/How-to-minimize-conditions-to-reproduce-a-problem
--->
+## Steps to see the situation
 
  1. Start Firefox with clean profile.
  2. Install TST.
@@ -29,8 +30,8 @@ https://github.com/piroor/treestyletab/wiki/How-to-minimize-conditions-to-reprod
  4. 
 
 <!--
-Please describe how to reproduce your problem on my (developer/author/other peoples') environment.
-If your issue is related to tree structure, figures or screenshots will help me a lot, like:
+Please describe how to see your situation on my (developer/author/other peoples') environment.
+If your request is related to tree structure, figures or screenshots will help me a lot, like:
 
 ```
 A
@@ -44,7 +45,7 @@ E (selected)
 ## Expected result
 
 
-## Actual result
+## Actual (present) result
 
 
 ## Environment
