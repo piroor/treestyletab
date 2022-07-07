@@ -95,7 +95,7 @@ jobs:
       env:
         LABEL: "stale"
         EXCEPTION_LABELS: "needs-triage"
-        CANDIDATE_LABELS: help wanted
+        CANDIDATE_LABELS: "help wanted"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 30
         EXTEND_DAYS_BY_COMMENTED: 7
@@ -105,7 +105,7 @@ jobs:
       env:
         LABEL: "stale"
         EXCEPTION_LABELS: "needs-triage"
-        CANDIDATE_LABELS: Firefox-issue
+        CANDIDATE_LABELS: "Firefox-issue"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 365
         EXTEND_DAYS_BY_COMMENTED: 7
