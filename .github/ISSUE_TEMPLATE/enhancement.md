@@ -1,8 +1,10 @@
 ---
 name: Enhancement
 about: Requests about enhancements, new features, improvements, etc.
-title: [Enhancement] (please put summary here)
-labels: enhancement,needs-triage
+title: "[Enhancement] (please put summary here)"
+labels: enhancement, needs-triage
+assignees: ''
+
 ---
 
 <!--
