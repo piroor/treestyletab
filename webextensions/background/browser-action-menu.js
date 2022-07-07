@@ -780,30 +780,6 @@ const mItems = [
           }
         ]
       },
-      {
-        title:    browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_INHERIT,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_TOP,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
-            key:   'insertDroppedTabsAt',
-            value: Constants.kINSERT_END,
-            type:  'radio'
-          }
-        ],
-        expert: true
-      },
       { type: 'separator' },
       {
         title: browser.i18n.getMessage('config_groupTab_caption'),
@@ -1592,15 +1568,15 @@ const mItems = [
     children: [
       {
         title: browser.i18n.getMessage('config_tabDragBehavior_caption'),
-        enabled: false
+        enabled: false,
       },
       // These options are too complex to put in the menu UI, so I simply redirect to the options page.
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
+        title: indent() + browser.i18n.getMessage('config_tabDragBehavior_label') + '...',
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
-        title: indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
+        title: indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label') + '...',
         url:   `${Constants.kSHORTHAND_URIS.options}#tabDragBehaviorConfigsGroup`,
       },
       {
@@ -1610,27 +1586,53 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title:    browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
-            key:   'dropLinksOnTabBehavior',
-            value: Constants.kDROPLINK_ASK,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
-            key:   'dropLinksOnTabBehavior',
-            value: Constants.kDROPLINK_LOAD,
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
-            key:   'dropLinksOnTabBehavior',
-            value: Constants.kDROPLINK_NEWTAB,
-            type:  'radio'
-          }
-        ]
+        title:   browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
+        enabled: false,
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
+        key:   'dropLinksOnTabBehavior',
+        value: Constants.kDROPLINK_ASK,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
+        key:   'dropLinksOnTabBehavior',
+        value: Constants.kDROPLINK_LOAD,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
+        key:   'dropLinksOnTabBehavior',
+        value: Constants.kDROPLINK_NEWTAB,
+        type:  'radio'
+      },
+      { type: 'separator', expert: true },
+      {
+        title:   browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),
+        enabled: false,
+        expert:  true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_inherit'),
+        key:    'insertDroppedTabsAt',
+        value:  Constants.kINSERT_INHERIT,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_first'),
+        key:    'insertDroppedTabsAt',
+        value:  Constants.kINSERT_TOP,
+        type:   'radio',
+        expert: true,
+      },
+      {
+        title:  indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_end'),
+        key:    'insertDroppedTabsAt',
+        value:  Constants.kINSERT_END,
+        type:   'radio',
+        expert: true,
       },
       { type: 'separator', expert: true },
       {
