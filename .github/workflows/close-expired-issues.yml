@@ -13,42 +13,42 @@ jobs:
     - name: Close expired "duplicated" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: duplicated
+        LABEL: "duplicated"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "expired" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: expired
+        LABEL: "expired"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "wontfix" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: wontfix
+        LABEL: "wontfix"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "out of scope" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: out of scope
+        LABEL: "out of scope"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "intentional" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: intentional
+        LABEL: "intentional"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "invalid" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: invalid
+        LABEL: "invalid"
         EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
@@ -57,7 +57,7 @@ jobs:
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: "has-workaround"
-        EXCEPTION_LABELS: "Firefox-issue, help wanted, in-progress"
+        EXCEPTION_LABELS: "Firefox-issue, help wanted, in-progress, needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 14
         EXTEND_DAYS_BY_REOPENED: 7
@@ -65,7 +65,8 @@ jobs:
     - name: Close expired "fixed" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: fixed
+        LABEL: "fixed"
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 14
         EXTEND_DAYS_BY_REOPENED: 7
@@ -74,7 +75,7 @@ jobs:
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: "maybe fixed"
-        EXCEPTION_LABELS: "in-progress"
+        EXCEPTION_LABELS: "in-progress, needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 14
         EXTEND_DAYS_BY_REOPENED: 7
@@ -82,7 +83,8 @@ jobs:
     - name: Close expired "stale" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
-        LABEL: stale
+        LABEL: "stale"
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 14
         EXTEND_DAYS_BY_REOPENED: 7
@@ -91,7 +93,8 @@ jobs:
     - name: mark "help wanted" issues as stale
       uses: piroor/auto-mark-as-stale-issues@main
       env:
-        LABEL: stale
+        LABEL: "stale"
+        EXCEPTION_LABELS: "needs-triage"
         CANDIDATE_LABELS: help wanted
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 30
@@ -100,7 +103,8 @@ jobs:
     - name: mark "Firefox-issue" issues as stale
       uses: piroor/auto-mark-as-stale-issues@main
       env:
-        LABEL: stale
+        LABEL: "stale"
+        EXCEPTION_LABELS: "needs-triage"
         CANDIDATE_LABELS: Firefox-issue
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 365
