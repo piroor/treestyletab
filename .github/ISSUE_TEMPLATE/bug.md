@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-description: Reports about problems, defunct features, breakages, etc.
+about: Reports about problems, defunct features, breakages, etc.
 title: [Bug] (please put summary here)
 labels: bug,needs-triage
 ---

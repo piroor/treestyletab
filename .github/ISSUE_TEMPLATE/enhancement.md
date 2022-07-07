@@ -1,6 +1,6 @@
 ---
 name: Enhancement
-description: Requests about enhancements, new features, improvements, etc.
+about: Requests about enhancements, new features, improvements, etc.
 title: [Enhancement] (please put summary here)
 labels: enhancement,needs-triage
 ---
