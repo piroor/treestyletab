@@ -14,36 +14,42 @@ jobs:
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: duplicated
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "expired" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: expired
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "wontfix" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: wontfix
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "out of scope" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: out of scope
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "intentional" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: intentional
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
     - name: Close expired "invalid" issues
       uses: piroor/close-expired-issues-based-on-label@master
       env:
         LABEL: invalid
+        EXCEPTION_LABELS: "needs-triage"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         EXPIRE_DAYS: 7
 
