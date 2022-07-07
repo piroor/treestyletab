@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.25 (2022.7.8)
+   * より動作が分かりやすくなるように、新しいタブの振る舞いに関する設定UIの構成を見直した
+   * [アイコンが消える問題](https://github.com/piroor/treestyletab/issues/3142)に対する回避策を導入
+   * ブロックされたページに対するfaviconを追加
+   * `fr`ロケール更新（by [tbertels](https://github.com/tbertels), thanks!）
  - 3.8.24 (2022.6.2)
    * macOS、Linux、Windows 11において、スクロールバーに重ならないようにツリーの開閉つまみをずらして表示するようにした
    * グループ化用のタブを移動した後にタブのラベルがおかしくなる問題を修正

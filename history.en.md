@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.8.25 (2022.7.8)
+   * Restructure options about new tabs behavior to make more understandable.
+   * Introduce workaround for [missing icons problem](https://github.com/piroor/treestyletab/issues/3142).
+   * Add special favicons for blocked pages.
+   * Update `fr` locale by [tbertels](https://github.com/tbertels). Thanks!
  - 3.8.24 (2022.6.2)
    * Shift twisties in tabs to avoid covered by the scrollbar, on macOS, Linux and Windows 11.
    * Keep label of group tabs correctly after they are moved.
