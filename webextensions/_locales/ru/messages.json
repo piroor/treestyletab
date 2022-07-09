@@ -318,6 +318,8 @@
 
   "config_title": { "message": "Настройки Tree Style Tab в новой вкладке" },
 
+  "config_recommended_choice": { "message": "(Рекомендуется)" },
+
   "config_showExpertOptions_label": { "message": "Режим эксперта" },
   "config_openOptionsInTab_label": { "message": "Открыть эту страницу в широком представлении " },
 
@@ -388,7 +390,27 @@
   "config_removeDeviceButton_tooltip": { "message": "Удалить это устройство из списка" },
 
 
-  "config_newTab_caption_TRANSLATION_NEED_UPDATED": { "message": "Поведение новой вкладки" },
+  "config_newTabWithOwner_caption": { "message": "Вкладки, открытые из существующих вкладок" },
+
+  "config_autoAttachOnOpenedWithOwner_before": { "message": "Если вкладка открывается из существующей вкладки, открыть ее как - " },
+  "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(не контролируется)" },
+  "config_autoAttachOnOpenedWithOwner_independent": { "message": "независимая вкладка" },
+  "config_autoAttachOnOpenedWithOwner_child": { "message": "дочернюю вкладку" },
+  "config_autoAttachOnOpenedWithOwner_sibling": { "message": "одноуровневую вкладку" },
+  "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "следующую одноуровневую" },
+  "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
+
+  "config_insertNewTabFromPinnedTabAt_caption": { "message": "Позиция новых дочерних вкладок открытых из закрепленных (будут отображаться как корневые)" },
+  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Не контролируется (решает Firefox или другие аддоны)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или рядом с родителем (имитация поведения Firefox)" },
+  "config_insertNewTabFromPinnedTabAt_top": { "message": "Добавить в начало дерева (рядом с родителем)" },
+  "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
+
+  "config_autoGroupNewTabsFromPinned_label": { "message": "Автогруппировка вкладок, открытых с одной закрепленной вкладки (с вкладкой группы с заголовком типа \"Вкладки из ...\")" },
+  "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "Состояние по умолчанию вкладки группы для вкладок, открытых с одной закрепленной вкладки:" },
+
+
+  "config_newTab_caption": { "message": "Вкладки, открытые НЕ из существующих вкладок" },
 
   "config_newTabButton_caption": { "message": "Специальные действия для кнопки \"Новая вкладка\" " },
   "config_longPressOnNewTabButton_before":               { "message": "Длительное нажатие кнопки \"Новая вкладка\", чтобы " },
@@ -415,8 +437,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "независимую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "одноуровневую вкладку" },
-  "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую вкладку" },
-  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "тоже для нажатия с Ctrl (следующую одноуровневую, тот же контейнер)" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую" },
+  "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "тоже что и с Ctrl (следующую одноуровневую, тот же контейнер)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "Щелчком ЛКМ+Ctrl, открыть новую пустую вкладку как" },
@@ -430,7 +452,7 @@
 
   "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
 
-  "config_duplicateTabAction_caption": { "message": "Дублирование вкладки (щелчком СКМ на кнопке \"Перезагрузить\" и т.п.)" },
+  "config_duplicateTabAction_caption": { "message": "Дублировать вкладки (щелчком СКМ на кнопке \"Перезагрузить\" и т.п.)" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Дублировать вкладку как" },
   "config_autoAttachOnDuplicated_noControl": { "message": "(не контролируется)" },
@@ -453,8 +475,8 @@
   "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
   "config_inheritContextualIdentityToTabsFromExternalMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
-  "config_sameSiteOrphan_caption": { "message": "Новая вкладка открывается с сайтом, как в текущей вкладке" },
-  "config_autoAttachSameSiteOrphan_before": { "message": "Открыть как" },
+  "config_sameSiteOrphan_caption": { "message": "Если новая вкладка открывается с сайтом, как в текущей вкладке -" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "Открыть ее как " },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(не контролируется)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "независимую вкладку" },
   "config_autoAttachSameSiteOrphan_child": { "message": "дочернюю текущей" },
@@ -480,23 +502,6 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Наследовать от текущей вкладки" },
 
-  "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
-  "config_insertNewChildAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или после родителя (имитация Firefox)" },
-  "config_insertNewChildAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
-  "config_insertNewChildAt_end": { "message": "Добавить в конец дерева" },
-
-  "config_insertNewTabFromPinnedTabAt_caption": { "message": "Место появления новых вкладок из закрепленных вкладок" },
-  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Без контроля (решает Firefox или другие аддоны)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или рядом с родителем (имитация Firefox)" },
-  "config_insertNewTabFromPinnedTabAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
-  "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
-
-  "config_insertDroppedTabsAt_caption": { "message": "Позиция вставки дочерних при перетягивании на родителя" },
-  "config_insertDroppedTabsAt_inherit": { "message": "Обрабатывать как новые дочерние, открытые из родителя" },
-  "config_insertDroppedTabsAt_first": { "message": "Вверху дерева (рядом с родителем)" },
-  "config_insertDroppedTabsAt_end": { "message": "В конце дерева" },
-
   "config_groupTab_caption": { "message": "Автогруппировка вкладок" },
 
   "config_autoGroupNewTabsFromBookmarks_before": { "message": "Автогруппировать вкладки открытые в течении" },
@@ -512,8 +517,7 @@
   "config_warnOnAutoGroupNewTabs_label": { "message": "Подтверждать группировку вкладок" },
   "config_warnOnAutoGroupNewTabsWithListing_label": { "message": "Группировать список вкладок в диалоге подтверждения" },
 
-  "config_autoGroupNewTabsFromPinned_label": { "message": "Автогруппировать вкладки, открытые с одной закрепленной вкладки (откроется новая вкладка группы с заголовком \"Вкладки из ...\")" },
-  "config_renderTreeInGroupTabs_label": { "message": "Отрисовывать дерево во вкладке(папке) группы" },
+  "config_renderTreeInGroupTabs_label": { "message": "Отрисовывать дерево во вкладке группы" },
 
   "config_groupTabTemporaryState_caption": { "message": "Состояние (по умолчанию) группы вкладок для разных контекстов" },
   "config_groupTabTemporaryState_option_default": { "message": "Не проверять" },
@@ -521,8 +525,7 @@
   "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "Для открытых из закладок:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Для открытых одновременно не из закладок:" },
-  "config_groupTabTemporaryStateForChildrenOfPinned_label_TRANSLATION_NEED_UPDATED": { "message": "Для открытых из одной закрепленной вкладки:" },
-  "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Для заменяющих родильскую вкладку:" },
+  "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Открытую для замены закрытой родительской вкладки::" },
 
   "config_inheritContextualIdentityToChildTabMode_label": { "message": "Контейнер:" },
   "config_inheritContextualIdentityToChildTabMode_default": { "message": "(не контролируется)" },
@@ -601,6 +604,12 @@
   "config_warnOnCloseTabsByClosebox_label": { "message": "Предупреждать при закрытии нескольких вкладок по крестику закрытия вкладки (свернутое дерево)" },
   "config_warnOnCloseTabsWithListing_label": { "message": "Список закрывающихся вкладок в диалоге подтверждения" },
 
+  "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
+  "config_insertNewChildAt_noControl": { "message": "Не контролируется (решает Firefox или другие аддоны)" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или после родителя (имитация Firefox)" },
+  "config_insertNewChildAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
+  "config_insertNewChildAt_end": { "message": "Добавить в конец дерева" },
+
 
   "config_drag_caption": { "message": "Перетягивание" },
 
@@ -624,6 +633,11 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Загрузить во вкладке" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
+
+  "config_insertDroppedTabsAt_caption": { "message": "Позиция вставки дочерних элементов, перетянутых на родителя" },
+  "config_insertDroppedTabsAt_inherit": { "message": "Рассматривать как новые дочерние, открытые из родителя" },
+  "config_insertDroppedTabsAt_first": { "message": "Добавить в начало дерева (сразу за родителем)" },
+  "config_insertDroppedTabsAt_end": { "message": "Добавить в конец дерева" },
 
   "config_autoExpandOnLongHoverDelay_before":  { "message": "Развернуть свернутое дерево при наведении указателя мыши более " },
   "config_autoExpandOnLongHoverDelay_after":  { "message": "мс при перетягивании" },
