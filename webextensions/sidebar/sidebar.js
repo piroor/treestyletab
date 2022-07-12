@@ -423,6 +423,7 @@ function updateContextualIdentitiesStyle() {
 // After I disable and re-enable a CSS rule for a mask image by the DOM inspector
 // the problem looks solved. These codes simulates the operation by scanning all
 // CSS rules via CSSOM automatically.
+// Related bug on Fierfox side: https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
 
 function reloadAllMaskImages() {
   const delayedTasks = [];
