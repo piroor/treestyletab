@@ -414,8 +414,13 @@ function cancelNotifyOutOfViewTab() {
 
 
 async function onWheel(event) {
+  // Ctrl-WheelScroll produces zoom-in/out on all platforms
+  // including macOS (not Meta-WheelScroll!).
+  // Pinch-in/out on macOS also produces zoom-in/out and
+  // it is cancelable via synthesized `wheel` event.
+  // (See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1777199#c5 )
   if (!configs.zoomable &&
-      EventUtils.isAccelKeyPressed(event)) {
+      event.ctrlKey) {
     event.preventDefault();
     return;
   }
