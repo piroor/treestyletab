@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.8.26 (2022.7.15)
+   * Make some user styles written for old versions of TST effective. See [the related issue](https://github.com/piroor/treestyletab/issues/3153) also for more details.
+   * Prevent zoom-in/out by pinch-in/out on macOS.
+   * Add a secret option `enableWorkaroundForBug1763420_reloadMaskImage` for an ability to deactivate a workaround for the [missing icons problem](https://github.com/piroor/treestyletab/issues/3142).
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.8.25 (2022.7.8)
    * Restructure options about new tabs behavior to make more understandable.
    * Introduce workaround for [missing icons problem](https://github.com/piroor/treestyletab/issues/3142).

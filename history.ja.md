@@ -1,6 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.8.26 (2022.7.15)
+   * 古いバージョンのTST向けに書かれたユーザースタイル定義が機能しない場合がある問題に対処（詳細は[関連issue](https://github.com/piroor/treestyletab/issues/3153)を参照）
+   * macOSでのピンチイン・アウト操作でサイドバーの内容がズームされないようにした
+   * [アイコンが消える問題](https://github.com/piroor/treestyletab/issues/3142)に対する回避策を無効化するための隠し設定 `enableWorkaroundForBug1763420_reloadMaskImage` を追加
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.8.25 (2022.7.8)
    * より動作が分かりやすくなるように、新しいタブの振る舞いに関する設定UIの構成を見直した
    * [アイコンが消える問題](https://github.com/piroor/treestyletab/issues/3142)に対する回避策を導入
