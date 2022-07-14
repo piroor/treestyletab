@@ -75,6 +75,7 @@ export const onReady   = new EventListenerManager();
 
 let mTargetWindow = null;
 let mInitialized = false;
+let mReloadMaskImage = false; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
 
 let mPromisedTargetWindowResolver;
 const mPromisedTargetWindow = new Promise((resolve, _reject) => {
@@ -97,6 +98,8 @@ document.documentElement.classList.toggle('platform-mac', isMacOS());
   mTargetWindow = parseInt(url.searchParams.get('windowId') || 0);
   if (isNaN(mTargetWindow) || mTargetWindow < 1)
     mTargetWindow = null;
+
+  mReloadMaskImage = url.searchParams.get('reloadMaskImage') == 'true';
 
   // apply style ASAP!
   const style = url.searchParams.get('style');
@@ -336,7 +339,8 @@ async function applyTheme({ style } = {}) {
   ]);
   applyBrowserTheme(theme);
   applyUserStyleRules();
-  reloadAllMaskImages();
+  if (mReloadMaskImage)
+    reloadAllMaskImages();
   Size.update();
 }
 
@@ -919,6 +923,10 @@ async function onConfigChange(changedKey) {
 
     case 'simulateSVGContextFill':
       rootClasses.toggle('simulate-svg-context-fill', configs[changedKey]);
+      break;
+
+    case 'enableWorkaroundForBug1763420_reloadMaskImage':
+      mReloadMaskImage = configs[changedKey];
       break;
 
     default:

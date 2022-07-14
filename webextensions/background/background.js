@@ -191,6 +191,7 @@ async function notifyReadyToSidebars() {
 async function updatePanelUrl(theme) {
   const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
   url.searchParams.set('style', configs.style);
+  url.searchParams.set('reloadMaskImage', !!configs.enableWorkaroundForBug1763420_reloadMaskImage);
   if (!theme)
     theme = await browser.theme.getCurrent();
   browser.sidebarAction.setPanel({ panel: url.href });
