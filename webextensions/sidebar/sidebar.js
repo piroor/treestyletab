@@ -379,7 +379,19 @@ async function applyOwnTheme(style) {
 }
 
 function applyUserStyleRules() {
-  mUserStyleRules.textContent = loadUserStyleRules();
+  mUserStyleRules.textContent = `
+    /* Simple selectors in user styles may have specificity lower than the one of
+       built-in CSS declarations of TST itself.
+       CSS media query (@media) should not affect to specificity of selectors in
+       itself, but actually declarations with lower specificity are applied if they
+       are wrapped with any media query - just for now (Firefox 102).
+       So TST wraps all user styles inside a needless media query for convenience.
+       This workaround should allow people to write more simpler user styles.
+       See also: https://github.com/piroor/treestyletab/issues/3153#issuecomment-1184619369 */
+    @media all {
+      ${loadUserStyleRules()}
+    }
+  `;
 }
 
 async function applyBrowserTheme(theme) {
