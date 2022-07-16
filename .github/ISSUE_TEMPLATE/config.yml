@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    about: General discussions and questions about TST including CSS customization
+    url: https://github.com/piroor/treestyletab/discussions
