@@ -162,10 +162,8 @@ export async function openURIsInTabs(uris, options = {}) {
         params.discarded = true;
       if (params.url == 'about:newtab')
         delete params.url
-      if (params.url &&
-          FORBIDDEN_URL_MATCHER.test(params.url) &&
-          !ALLOWED_URL_MATCHER.test(params.url))
-        params.url = `about:blank?${params.url}`;
+      if (params.url)
+        params.url = sanitizeURL(params.url);
       if (!('url' in params /* about:newtab case */) ||
           /^about:/.test(params.url))
         params.discarded = false; // discarded tab cannot be opened with any about: URL
@@ -239,6 +237,20 @@ export async function openURIsInTabs(uris, options = {}) {
     await TabsMove.waitUntilSynchronized(options.windowId);
   }
   return openedTabs;
+}
+
+function sanitizeURL(url) {
+  if (ALLOWED_URL_MATCHER.test(url))
+    return url;
+
+  // tabs.create() doesn't accept about:reader URLs so we fallback them to regular URLs.
+  if (/^about:reader\?/.test(url))
+    return (new URL(url)).searchParams.get('url') || 'about:blank';
+
+  if (FORBIDDEN_URL_MATCHER.test(url))
+    return `about:blank?${url}`;
+
+  return url;
 }
 
 
