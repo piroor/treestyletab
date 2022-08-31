@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2021
+ * Portions created by the Initial Developer are Copyright (C) 2010-2022
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -798,6 +798,7 @@ function onDragStart(event, options = {}) {
     log('onDragStart: canceled / no dragged tab from drag data');
     return;
   }
+  log('dragData: ', dragData);
 
   if (!(behavior & Constants.kDRAG_BEHAVIOR_MOVE) &&
       !(behavior & Constants.kDRAG_BEHAVIOR_TEAR_OFF) &&
