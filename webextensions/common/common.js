@@ -95,7 +95,7 @@ export const configs = new Configs({
   iconColor: 'auto',
   indentLine: 'auto',
 
-  autoHiddenScrollbarPlaceholderSize: '1em',
+  autoHiddenScrollbarPlaceholderSize: '0.5em',
 
   unrepeatableBGImageAspectRatio: 4,
 
