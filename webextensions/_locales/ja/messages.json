@@ -386,9 +386,9 @@
   "config_removeDeviceButton_tooltip": { "message": "この端末を一覧から削除する" },
 
 
-  "config_newTabWithOwner_caption": { "message": "他のタブから開かれたタブ" },
+  "config_newTabWithOwner_caption": { "message": "既存のタブから開かれたタブ" },
 
-  "config_autoAttachOnOpenedWithOwner_before": { "message": "他のタブからタブが開かれた場合、" },
+  "config_autoAttachOnOpenedWithOwner_before": { "message": "既存のタブからタブが開かれた場合、" },
   "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnOpenedWithOwner_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnOpenedWithOwner_child": { "message": "親のタブの子として" },
@@ -406,7 +406,7 @@
   "config_groupTabTemporaryStateForChildrenOfPinned_label": { "message": "同じピン留めされたタブから開かれたタブをまとめるグループ化用のタブの初期状態:" },
 
 
-  "config_newTab_caption": { "message": "他のタブ以外から開かれた新しいタブ" },
+  "config_newTab_caption": { "message": "既存のタブ以外から開かれた新しいタブ" },
 
   "config_newTabButton_caption": { "message": "「新しいタブ」ボタンの特殊操作" },
   "config_longPressOnNewTabButton_before":               { "message": "ボタンの長押しで" },
