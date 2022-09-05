@@ -156,7 +156,7 @@ async function tryClearOwnerSuccessor(tab) {
   delete tab.$TST.lastSuccessorTabIdByOwner;
   const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
-      renewedTab.successorTabId != tab.lastSuccessorTabId)
+      renewedTab.successorTabId != tab.$TST.lastSuccessorTabId)
     return;
   log(`${dumpTab(tab)} is unprepared for "selectOwnerOnClose" behavior`);
   delete tab.$TST.lastSuccessorTabId;
