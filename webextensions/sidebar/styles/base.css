@@ -326,12 +326,22 @@ tab-item-substance {
   position: relative;
 }
 
-:root.left tab-item-substance {
+:root.left tab-item:not(.pinned) tab-item-substance {
   margin-left: calc(var(--tab-margin-left) + var(--tab-indent));
 }
 
-:root.right tab-item-substance {
+/* auto-hidden scrollbar placeholder workaround */
+:root.left #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+  margin-left: calc(var(--tab-margin-left) + var(--tab-indent) + var(--scrollbar-placeholder-size));
+}
+
+:root.right tab-item:not(.pinned) tab-item-substance {
   margin-right: calc(var(--tab-margin-right) + var(--tab-indent));
+}
+
+/* auto-hidden scrollbar placeholder workaround */
+:root.right #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+  margin-right: calc(var(--tab-margin-right) + var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 
 tab-item,
@@ -435,6 +445,10 @@ tab-item .extra-items-container,
 tab-item .extra-items-container.indent {
   width: var(--tab-indent);
   z-index: var(--tab-indent-z-index);
+}
+/* auto-hidden scrollbar placeholder workaround */
+#tabbar.overflow.scrollbar-autohide tab-item .extra-items-container.indent{
+  width: calc(var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 :root.left tab-item .extra-items-container.indent {
   right: auto;

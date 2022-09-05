@@ -65,15 +65,6 @@ tab-item.pinned.last-row tab-item-substance {
 }
 
 
-/* auto-hidden scrollbar placeholder workaround */
-:root.left #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
-  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
-}
-:root.right #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
-  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
-}
-
-
 tab-item tab-label {
   margin-left: 0.25em;
   padding: 0 0 0.25em 0;

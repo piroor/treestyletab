@@ -108,14 +108,6 @@ tab-item.active tab-closebox:hover::before {
   --tab-text: HighlightText;
 }
 
-/* auto-hidden scrollbar placeholder workaround */
-:root.left #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
-  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
-}
-:root.right #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
-  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
-}
-
 
 /* hide regular active tab marker */
 tab-item:not(.bundled-active) .highlighter::before {
