@@ -61,6 +61,8 @@ export default class Tab {
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
 
+    this.newRelatedTabsCount = 0;
+
     this.lastSoundStateCounts = {
       soundPlaying: 0,
       muted:        0
@@ -1002,10 +1004,12 @@ export default class Tab {
     const window = TabsStore.windows.get(this.tab.windowId);
     if (relatedTab) {
       window.lastRelatedTabs.set(this.id, relatedTab.id);
-      successorTabLog(`set lastRelatedTab for ${this.id}: ${previousLastRelatedTabId} => ${relatedTab.id}`);
+      this.newRelatedTabsCount++;
+      successorTabLog(`set lastRelatedTab for ${this.id}: ${previousLastRelatedTabId} => ${relatedTab.id} (${this.newRelatedTabsCount})`);
     }
     else {
       window.lastRelatedTabs.delete(this.id);
+      this.newRelatedTabsCount = 0;
       successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
     window.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);

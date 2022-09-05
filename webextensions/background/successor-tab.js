@@ -170,12 +170,15 @@ Tab.onActivated.addListener(async (newActiveTab, info = {}) => {
     if (oldActiveTab) {
       await tryClearOwnerSuccessor(oldActiveTab);
       const lastRelatedTab = oldActiveTab.$TST.lastRelatedTab;
+      const newRelatedTabsCount = oldActiveTab.$TST.newRelatedTabsCount;
       if (lastRelatedTab) {
         log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated on ${newActiveTab.id}`);
         TabsStore.windows.get(info.windowId).clearLastRelatedTabs();
         if (lastRelatedTab.id != newActiveTab.id)
           await tryClearOwnerSuccessor(lastRelatedTab);
       }
+      if (newRelatedTabsCount > 1)
+        await tryClearOwnerSuccessor(newActiveTab);
     }
     update(info.previousTabId);
   }
