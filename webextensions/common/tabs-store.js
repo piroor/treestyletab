@@ -397,6 +397,12 @@ export function unprepareIndexesForWindow(windowId) {
   unsynchronizedTabsInWindow.delete(windowId);
 }
 
+export function getTabsMap(tabsStore, windowId = null) {
+  return windowId ?
+    tabsStore.get(windowId) :
+    new Map([...tabsStore.values()].map(tabs => [...tabs.entries()]).flat());
+}
+
 export function updateIndexesForTab(tab) {
   addLivingTab(tab);
 
