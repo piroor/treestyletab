@@ -1842,9 +1842,12 @@ Tab.getActiveTabs = () => {
 };
 
 Tab.getAllTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.livingTabsInWindow.get(windowId) :
+    [...TabsStore.livingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:     windowId && TabsStore.livingTabsInWindow.get(windowId),
+    tabs,
     living:   true,
     ordered:  true,
     ...options
@@ -1894,30 +1897,39 @@ Tab.getTabsBetween = (begin, end) => {
   });
 };
 
-Tab.getNormalTabs = (windowId, options = {}) => { // only visible, including collapsed, not pinned
+Tab.getNormalTabs = (windowId = null, options = {}) => { // only visible, including collapsed, not pinned
+  const tabs = windowId ?
+    TabsStore.unpinnedTabsInWindow.get(windowId) :
+    [...TabsStore.unpinnedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
+    tabs,
     normal:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getVisibleTabs = (windowId, options = {}) => { // visible, not-collapsed, not-hidden
+Tab.getVisibleTabs = (windowId = null, options = {}) => { // visible, not-collapsed, not-hidden
+  const tabs = windowId ?
+    TabsStore.visibleTabsInWindow.get(windowId) :
+    [...TabsStore.visibleTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getPinnedTabs = (windowId, options = {}) => { // visible, pinned
+Tab.getPinnedTabs = (windowId = null, options = {}) => { // visible, pinned
+  const tabs = windowId ?
+    TabsStore.pinnedTabsInWindow.get(windowId) :
+    [...TabsStore.pinnedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.pinnedTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
@@ -1925,20 +1937,26 @@ Tab.getPinnedTabs = (windowId, options = {}) => { // visible, pinned
 };
 
 
-Tab.getUnpinnedTabs = (windowId, options = {}) => { // visible, not pinned
+Tab.getUnpinnedTabs = (windowId = null, options = {}) => { // visible, not pinned
+  const tabs = windowId ?
+    TabsStore.unpinnedTabsInWindow.get(windowId) :
+    [...TabsStore.unpinnedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getRootTabs = (windowId, options = {}) => {
+Tab.getRootTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.rootTabsInWindow.get(windowId) :
+    [...TabsStore.rootTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:         TabsStore.rootTabsInWindow.get(windowId),
+    tabs,
     controllable: true,
     ordered:      true,
     ...options
@@ -1959,10 +1977,13 @@ Tab.collectRootTabs = tabs => {
   });
 };
 
-Tab.getSubtreeCollapsedTabs = (windowId, options = {}) => {
+Tab.getSubtreeCollapsedTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.subtreeCollapsableTabsInWindow.get(windowId) :
+    [...TabsStore.subtreeCollapsableTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:     TabsStore.subtreeCollapsableTabsInWindow.get(windowId),
+    tabs,
     living:   true,
     hidden:   false,
     ordered:  true,
@@ -1970,90 +1991,119 @@ Tab.getSubtreeCollapsedTabs = (windowId, options = {}) => {
   });
 };
 
-Tab.getCollapsingTabs = (windowId, options = {}) => {
+Tab.getCollapsingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.collapsingTabsInWindow.get(windowId) :
+    [...TabsStore.collapsingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs: TabsStore.collapsingTabsInWindow.get(windowId),
+    tabs,
     ...options
   });
 };
 
-Tab.getExpandingTabs = (windowId, options = {}) => {
+Tab.getExpandingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.expandingTabsInWindow.get(windowId) :
+    [...TabsStore.expandingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs: TabsStore.expandingTabsInWindow.get(windowId),
+    tabs,
     ...options
   });
 };
 
-Tab.getGroupTabs = (windowId, options = {}) => {
+Tab.getGroupTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.groupTabsInWindow.get(windowId) :
+    [...TabsStore.groupTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.groupTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getLoadingTabs = (windowId, options = {}) => {
+Tab.getLoadingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.loadingTabsInWindow.get(windowId) :
+    [...TabsStore.loadingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.loadingTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getDraggingTabs = (windowId, options = {}) => {
+Tab.getDraggingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.draggingTabsInWindow.get(windowId) :
+    [...TabsStore.draggingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.draggingTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getRemovingTabs = (windowId, options = {}) => {
+Tab.getRemovingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.removingTabsInWindow.get(windowId) :
+    [...TabsStore.removingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.removingTabsInWindow.get(windowId),
+    tabs,
     ordered: true,
     ...options
   });
 };
 
-Tab.getDuplicatingTabs = (windowId, options = {}) => {
+Tab.getDuplicatingTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.duplicatingTabsInWindow.get(windowId) :
+    [...TabsStore.duplicatingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.duplicatingTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getHighlightedTabs = (windowId, options = {}) => {
+Tab.getHighlightedTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.highlightedTabsInWindow.get(windowId) :
+    [...TabsStore.highlightedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.highlightedTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
 };
 
-Tab.getSelectedTabs = (windowId, options = {}) => {
+Tab.getSelectedTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.selectedTabsInWindow.get(windowId) :
+    [...TabsStore.selectedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   const selectedTabs = TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.selectedTabsInWindow.get(windowId),
+    tabs,
     living:  true,
     ordered: true,
     ...options
   });
-  const highlightedTabs = TabsStore.highlightedTabsInWindow.get(windowId);
+  const highlightedTabs = windowId ?
+    TabsStore.highlightedTabsInWindow.get(windowId) :
+    [...TabsStore.highlightedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   if (!highlightedTabs ||
       highlightedTabs.size < 2)
     return selectedTabs;
@@ -2074,10 +2124,13 @@ Tab.getSelectedTabs = (windowId, options = {}) => {
     return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
 };
 
-Tab.getNeedToBeSynchronizedTabs = (windowId, options = {}) => {
+Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.unsynchronizedTabsInWindow.get(windowId) :
+    [...TabsStore.unsynchronizedTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.unsynchronizedTabsInWindow.get(windowId),
+    tabs,
     visible: true,
     ...options
   });
@@ -2110,10 +2163,13 @@ Tab.hasMultipleTabs = (windowId, options = {}) => {
 };
 
 // "Recycled tab" is an existing but reused tab for session restoration.
-Tab.getRecycledTabs = (windowId, options = {}) => {
+Tab.getRecycledTabs = (windowId = null, options = {}) => {
+  const tabs = windowId ?
+    TabsStore.livingTabsInWindow.get(windowId) :
+    [...TabsStore.livingTabsInWindow.values()].map(tabs => [...tabs.values()]).flat();
   return TabsStore.queryAll({
     windowId,
-    tabs:       TabsStore.livingTabsInWindow.get(windowId),
+    tabs,
     living:     true,
     states:     [Constants.kTAB_STATE_RESTORED, false],
     attributes: [Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)],
