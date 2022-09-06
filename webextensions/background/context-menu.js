@@ -400,7 +400,9 @@ async function updateItems({ multiselected } = {}) {
     updated = true;
 
   if (mGroupedTabItemsById['grouped:sendTreeToDevice'].lastVisible &&
-      await TabContextMenu.updateSendToDeviceItems('grouped:sendTreeToDevice'))
+      await TabContextMenu.updateSendToDeviceItems('grouped:sendTreeToDevice', {
+        manage: navigator.userAgent.includes('Fennec'), // see also https://github.com/piroor/treestyletab/issues/3174
+      }))
     updated = true;
 
   return updated;
