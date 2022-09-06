@@ -275,7 +275,11 @@ function onMouseDown(event) {
     TSTAPI.kNOTIFY_TAB_MOUSEDOWN :
     mousedownDetail.targetType == 'newtabbutton' ?
       TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEDOWN :
-      TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
+      mousedownDetail.targetType == 'tabbar-top' ?
+        TSTAPI.kNOTIFY_TABBAR_TOP_MOUSEDOWN :
+        mousedownDetail.targetType == 'tabbar-bottom' ?
+          TSTAPI.kNOTIFY_TABBAR_BOTTOM_MOUSEDOWN :
+          TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
 
   mousedown.promisedMousedownNotified = Promise.all([
     browser.runtime.sendMessage({type: apiEventType })
@@ -454,6 +458,11 @@ function getMouseEventTargetType(event) {
       EventUtils.isEventFiredOnAnchor(event))
     return 'selector';
 
+  if (EventUtils.isEventFiredOnTabbarTop(event))
+    return 'tabbar-top';
+  if (EventUtils.isEventFiredOnTabbarBottom(event))
+    return 'tabbar-bottom';
+
   const allRange = document.createRange();
   allRange.selectNodeContents(document.body);
   const containerRect = allRange.getBoundingClientRect();
@@ -616,9 +625,16 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       Math.abs(mLastMouseUpY - event.clientY) < configs.acceptableFlickerToIgnoreClickOnTabAndTabbar / 2)
     return;
 
+  const onTabbarTop = EventUtils.isEventFiredOnTabbarTop(event);
+  const onTabbarBottom = EventUtils.isEventFiredOnTabbarBottom(event);
+
   log('onMouseUp: notify as a blank area click to other addons');
   const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
-    TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+    onTabbarTop ?
+      TSTAPI.kNOTIFY_TABBAR_TOP_MOUSEUP :
+      onTabbarBottom ?
+        TSTAPI.kNOTIFY_TABBAR_BOTTOM_MOUSEUP :
+        TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     {
       ...lastMousedown.detail,
       window:             mTargetWindow,
@@ -632,7 +648,11 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
     return;
 
   const clickAllowed = await TSTAPI.tryOperationAllowed(
-    TSTAPI.kNOTIFY_TABBAR_CLICKED,
+    onTabbarTop ?
+      TSTAPI.kNOTIFY_TABBAR_TOP_CLICKED :
+      onTabbarBottom ?
+        TSTAPI.kNOTIFY_TABBAR_BOTTOM_CLICKED :
+        TSTAPI.kNOTIFY_TABBAR_CLICKED,
     {
       ...lastMousedown.detail,
       window:             mTargetWindow,

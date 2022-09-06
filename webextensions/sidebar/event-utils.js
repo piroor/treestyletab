@@ -96,6 +96,16 @@ export function isEventFiredOnClickable(event) {
   return target && target.closest && !!target.closest(`button, scrollbar, select`);
 }
 
+export function isEventFiredOnTabbarTop(event) {
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest('#tabbar-top');
+}
+
+export function isEventFiredOnTabbarBottom(event) {
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest('#tabbar-bottom');
+}
+
 
 export function getTabFromEvent(event, options = {}) {
   return SidebarTabs.getTabFromDOMNode(event.target, options);
