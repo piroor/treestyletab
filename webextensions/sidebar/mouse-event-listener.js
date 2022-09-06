@@ -592,19 +592,19 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       return;
   }
   else {
-  const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
-    TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    {
-      ...lastMousedown.detail,
-      window:             mTargetWindow,
-      windowId:           mTargetWindow,
-      tab:                lastMousedown.treeItem,
-      $extraContentsInfo: null
-    },
-    { tabProperties: ['tab'] }
-  );
-  if (!mouseUpAllowed)
-    return;
+    const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+      {
+        ...lastMousedown.detail,
+        window:             mTargetWindow,
+        windowId:           mTargetWindow,
+        tab:                lastMousedown.treeItem,
+        $extraContentsInfo: null
+      },
+      { tabProperties: ['tab'] }
+    );
+    if (!mouseUpAllowed)
+      return;
   }
 
   if (onTabbarTop || onTabbarBottom) {
@@ -624,19 +624,19 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       return;
   }
   else {
-  const clickAllowed = await TSTAPI.tryOperationAllowed(
-    TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    {
-      ...lastMousedown.detail,
-      window:             mTargetWindow,
-      windowId:           mTargetWindow,
-      tab:                lastMousedown.treeItem,
-      $extraContentsInfo: null
-    },
-    { tabProperties: ['tab'] }
-  );
-  if (!clickAllowed)
-    return;
+    const clickAllowed = await TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TABBAR_CLICKED,
+      {
+        ...lastMousedown.detail,
+        window:             mTargetWindow,
+        windowId:           mTargetWindow,
+        tab:                lastMousedown.treeItem,
+        $extraContentsInfo: null
+      },
+      { tabProperties: ['tab'] }
+    );
+    if (!clickAllowed)
+      return;
   }
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
