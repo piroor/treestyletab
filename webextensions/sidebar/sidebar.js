@@ -60,7 +60,6 @@ import * as Scroll from './scroll.js';
 import * as GapCanceller from './gap-canceller.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import * as SubPanel from './subpanel.js';
-import './tst-api-frontend.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -772,9 +771,13 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   const visibleNewTabButtonInTabbar = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box');
   const visibleNewTabButtonAfterTabbar = document.querySelector('#tabbar.overflow ~ .after-tabs .newtab-button-box');
   const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;
+  const extraTabbarTopContainerSize = document.querySelector('#tabbar-top > *').getBoundingClientRect().height;
+  const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').getBoundingClientRect().height;
   const containerHeight = mTabBar.getBoundingClientRect().height - (visibleNewTabButtonInTabbar ? visibleNewTabButtonInTabbar.getBoundingClientRect().height : 0);
-  log('height: ', { container: containerHeight, allTabsHeight, newTabButtonSize });
+  log('height: ', { container: containerHeight, allTabsHeight, newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
 
+  document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
+  document.documentElement.style.setProperty('--tabbar-bottom-area-size', `${extraTabbarBottomContainerSize}px`);
   document.documentElement.style.setProperty('--after-tabs-area-size', `${newTabButtonSize}px`);
 
   const windowId = TabsStore.getCurrentWindowId();

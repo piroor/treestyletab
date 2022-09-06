@@ -19,6 +19,8 @@
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
   --new-tab-button-anchor-size: 1.5em;
+  --tabbar-top-area-size: 0px;
+  --tabbar-bottom-area-size: 0px;
   --after-tabs-area-size: 0px;
   --pinned-tabs-area-size: 0px;
   --subpanel-area-size: 0px;
@@ -177,6 +179,8 @@ tab-sound-button */ {
 
 #tabbar-container,
 #tabbar,
+#tabbar-top,
+#tabbar-bottom,
 #background,
 #subpanel-container {
   bottom: 0;
@@ -192,11 +196,11 @@ tab-sound-button */ {
 
 #tabbar-container {
   bottom: var(--subpanel-area-size);
-  top: var(--visual-gap-offset);
+  top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset));
 }
 :root.hover-on-top-edge:hover #tabbar-container {
   transition: var(--visual-gap-hover-animation);
-  top: 0 !important;
+  top: var(--tabbar-top-area-size) !important;
 }
 
 #tabbar {
@@ -205,7 +209,7 @@ tab-sound-button */ {
 }
 
 #tabbar.overflow {
-  bottom: var(--after-tabs-area-size);
+  bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size));
   overflow-y: scroll;
 }
 
@@ -527,7 +531,7 @@ tab-item.pinned {
   margin: 0;
   position: fixed;
   right: var(--pinned-position-right);
-  top: calc(var(--pinned-position-top) + var(--visual-gap-offset));
+  top: calc(var(--tabbar-top-area-size) + var(--pinned-position-top) + var(--visual-gap-offset));
   z-index: var(--over-tabs-z-index);
 }
 tab-item.pinned tab-item-substance {
@@ -753,20 +757,35 @@ tab-item.faviconized .contextual-identity-marker {
 
 /* non-tab items */
 
+#tabbar-top,
+#tabbar-bottom,
+#tabbar ~ .after-tabs {
+  height: 0;
+  left: 0;
+  overflow: visible;
+  position: absolute;
+  right: 0;
+  z-index: var(--over-tabs-z-index);
+}
+
+#tabbar-top {
+  top: 0;
+}
+
+#tabbar-bottom {
+  bottom: 0;
+  justify-content: flex-end;
+  top: auto;
+}
+
 #tabbar.overflow .after-tabs,
 #tabbar:not(.overflow) ~ .after-tabs {
   display: none;
 }
 
 #tabbar ~ .after-tabs {
-  bottom: 0;
-  height: 0;
+  bottom: var(--tabbar-bottom-area-size);
   justify-content: flex-end;
-  left: 0;
-  overflow: visible;
-  position: absolute;
-  right: 0;
-  z-index: var(--over-tabs-z-index);
 }
 
 

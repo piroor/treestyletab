@@ -19,6 +19,8 @@ import {
 
 import Tab from '/common/Tab.js';
 
+import * as Sidebar from './sidebar.js';
+
 const mAddonsWithExtraContents = new Set();
 
 const mNewTabButtonExtraItemsContainerRoots = Array.from(
@@ -29,6 +31,20 @@ const mNewTabButtonExtraItemsContainerRoots = Array.from(
     return root;
   }
 );
+
+const mTabbarTopExtraItemsContainerRoot = (() => {
+  const container = document.querySelector(`#tabbar-top > .${Constants.kEXTRA_ITEMS_CONTAINER}`);
+  const root = container.attachShadow({ mode: 'open' });
+  root.itemById = new Map();
+  return root;
+})();
+
+const mTabbarBottomExtraItemsContainerRoot = (() => {
+  const container = document.querySelector(`#tabbar-bottom > .${Constants.kEXTRA_ITEMS_CONTAINER}`);
+  const root = container.attachShadow({ mode: 'open' });
+  root.itemById = new Map();
+  return root;
+})();
 
 TSTAPI.onRegistered.addListener(addon => {
   // Install stylesheet always, even if the addon is not allowed to access
@@ -60,6 +76,22 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
     case TSTAPI.kCLEAR_EXTRA_NEW_TAB_BUTTON_CONTENTS:
       clearExtraNewTabButtonContents(sender.id);
+      return;
+
+    case TSTAPI.kSET_EXTRA_TABBAR_TOP_CONTENTS:
+      setExtraTabbarTopContents(sender.id, message);
+      return;
+
+    case TSTAPI.kCLEAR_EXTRA_TABBAR_TOP_CONTENTS:
+      clearExtraTabbarTopContents(sender.id);
+      return;
+
+    case TSTAPI.kSET_EXTRA_TABBAR_BOTTOM_CONTENTS:
+      setExtraTabbarBottomContents(sender.id, message);
+      return;
+
+    case TSTAPI.kCLEAR_EXTRA_TABBAR_BOTTOM_CONTENTS:
+      clearExtraTabbarBottomContents(sender.id);
       return;
 
     default:
@@ -345,6 +377,8 @@ function clearAllExtraTabContents(id) {
     clearExtraTabContents(tabElement, id);
   }
   setExtraNewTabButtonContents(id);
+  clearExtraTabbarTopContents(id);
+  clearExtraTabbarBottomContents(id);
   mAddonsWithExtraContents.delete(id);
 }
 
@@ -353,12 +387,41 @@ function setExtraNewTabButtonContents(id, params = {}) {
   for (const container of mNewTabButtonExtraItemsContainerRoots) {
     setExtraContents(container, id, params);
   }
+  Sidebar.reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
+    timeout: 100,
+  });
 }
 
 function clearExtraNewTabButtonContents(id) {
   setExtraNewTabButtonContents(id, {});
 }
 
+
+function setExtraTabbarTopContents(id, params = {}) {
+  setExtraContents(mTabbarTopExtraItemsContainerRoot, id, params);
+  Sidebar.reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
+    timeout: 100,
+  });
+}
+
+function clearExtraTabbarTopContents(id) {
+  setExtraTabbarTopContents(id, {});
+}
+
+
+function setExtraTabbarBottomContents(id, params = {}) {
+  setExtraContents(mTabbarBottomExtraItemsContainerRoot, id, params);
+  Sidebar.reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
+    timeout: 100,
+  });
+}
+
+function clearExtraTabbarBottomContents(id) {
+  setExtraTabbarBottomContents(id, {});
+}
 
 
 const mAddonStyles = new Map();

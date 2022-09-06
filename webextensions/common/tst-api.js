@@ -149,6 +149,10 @@ export const kCLEAR_EXTRA_TAB_CONTENTS = 'clear-extra-tab-contents';
 export const kCLEAR_ALL_EXTRA_TAB_CONTENTS = 'clear-all-extra-tab-contents';
 export const kSET_EXTRA_NEW_TAB_BUTTON_CONTENTS   = 'set-extra-new-tab-button-contents';
 export const kCLEAR_EXTRA_NEW_TAB_BUTTON_CONTENTS = 'clear-extra-new-tab-button-contents';
+export const kSET_EXTRA_TABBAR_TOP_CONTENTS       = 'set-extra-tabbar-top-contents';
+export const kCLEAR_EXTRA_TABBAR_TOP_CONTENTS     = 'clear-extra-tabbar-top-contents';
+export const kSET_EXTRA_TABBAR_BOTTOM_CONTENTS    = 'set-extra-tabbar-bottom-contents';
+export const kCLEAR_EXTRA_TABBAR_BOTTOM_CONTENTS  = 'clear-extra-tabbar-bottom-contents';
 export const kGET_DRAG_DATA         = 'get-drag-data';
 
 export const kCONTEXT_MENU_OPEN       = 'contextMenu-open';

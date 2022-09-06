@@ -18,6 +18,7 @@ import * as Sidebar from './sidebar.js';
 import * as BackgroundConnection from './background-connection.js';
 import './mouse-event-listener.js';
 import './collapse-expand.js';
+import './tst-api-frontend.js';
 
 import './tab-context-menu.js';
 
