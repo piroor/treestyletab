@@ -103,7 +103,10 @@ export default class Window {
 
   clearLastRelatedTabs() {
     for (const id of this.lastRelatedTabs.keys()) {
-      this.tabs.get(id).$TST.newRelatedTabsCount = 0;
+      const tab = this.tabs.get(id);
+      if (!tab)
+        continue;
+      tab.$TST.newRelatedTabsCount = 0;
     }
     this.lastRelatedTabs.clear();
     this.previousLastRelatedTabs.clear();
