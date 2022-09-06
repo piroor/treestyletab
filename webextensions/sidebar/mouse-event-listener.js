@@ -301,6 +301,20 @@ function onMouseDown(event) {
           return true;
         }
       }
+      else if (extraContentsInfo) {
+        const allowed = await tryMouseOperationAllowedWithExtraContents(
+          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
+          {
+            ...mousedown,
+            containerType: mousedownDetail.targetType,
+          },
+          extraContentsInfo
+        );
+        if (!allowed) {
+          log(' => canceled');
+          return true;
+        }
+      }
       const allowed = await tryMouseOperationAllowedWithExtraContents(
         apiEventType,
         mousedown,
@@ -527,6 +541,20 @@ async function onMouseUp(event) {
       treeItem: new TSTAPI.TreeItem(tab)
     };
 
+    if (extraContentsInfo) {
+      const allowed = await tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
+        {
+          ...mouseupInfo,
+          containerType: 'tab',
+        },
+        extraContentsInfo
+      );
+      if (!allowed) {
+        log(' => not allowed (mouseup)');
+        return true;
+      }
+    }
     const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_MOUSEUP,
       mouseupInfo,
@@ -537,6 +565,20 @@ async function onMouseUp(event) {
       return true;
     }
 
+    if (extraContentsInfo) {
+      const allowed = await tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
+        {
+          ...mouseupInfo,
+          containerType: 'tab',
+        },
+        extraContentsInfo
+      );
+      if (!allowed) {
+        log(' => not allowed (clicked)');
+        return true;
+      }
+    }
     const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_TAB_CLICKED,
       mouseupInfo,
@@ -598,6 +640,18 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         treeItem: null,
       };
 
+      if (lastMousedown.detail.$extraContentsInfo) {
+        const allowed = await tryMouseOperationAllowedWithExtraContents(
+          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
+          {
+            ...mouseupInfo,
+            containerType: 'newtabbutton',
+          },
+          lastMousedown.detail.$extraContentsInfo
+        );
+        if (!allowed)
+          return;
+      }
       const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEUP,
         mouseupInfo,
@@ -606,6 +660,18 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       if (!mouseUpAllowed)
         return;
 
+      if (lastMousedown.detail.$extraContentsInfo) {
+        const allowed = await tryMouseOperationAllowedWithExtraContents(
+          TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
+          {
+            ...mouseupInfo,
+            containerType: 'newtabbutton',
+          },
+          lastMousedown.detail.$extraContentsInfo
+        );
+        if (!allowed)
+          return;
+      }
       const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
         TSTAPI.kNOTIFY_NEW_TAB_BUTTON_CLICKED,
         mouseupInfo,
