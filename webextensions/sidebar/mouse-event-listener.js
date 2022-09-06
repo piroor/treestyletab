@@ -426,8 +426,10 @@ function getOriginalExtraContentsTarget(event) {
     const extraContents = target.closest(`.extra-item`);
     if (extraContents)
       return {
-        owners: new Set([extraContents.dataset.owner]),
-        target: target.outerHTML
+        owners:  new Set([extraContents.dataset.owner]),
+        target:  target.outerHTML,
+        value:   'value' in target ? target.value : null,
+        checked: 'checked' in target ? target.checked : null,
       };
   }
   catch(_error) {
