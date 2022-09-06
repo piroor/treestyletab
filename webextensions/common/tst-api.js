@@ -78,6 +78,7 @@ export const kNOTIFY_TABBAR_CLICKED = 'tabbar-clicked'; // for backward compatib
 export const kNOTIFY_TABBAR_MOUSEDOWN = 'tabbar-mousedown';
 export const kNOTIFY_TABBAR_MOUSEUP = 'tabbar-mouseup';
 export const kNOTIFY_EXTRA_CONTENTS_CLICKED      = 'extra-contents-clicked';
+export const kNOTIFY_EXTRA_CONTENTS_DBLCLICKED   = 'extra-contents-dblclicked';
 export const kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN    = 'extra-contents-mousedown';
 export const kNOTIFY_EXTRA_CONTENTS_MOUSEUP      = 'extra-contents-mouseup';
 export const kNOTIFY_EXTRA_CONTENTS_KEYDOWN      = 'extra-contents-keydown';

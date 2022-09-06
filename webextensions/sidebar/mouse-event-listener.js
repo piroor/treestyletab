@@ -53,6 +53,7 @@ import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import * as Scroll from './scroll.js';
+import * as TSTAPIFrontend from './tst-api-frontend.js';
 
 function log(...args) {
   internalLogger('sidebar/mouse-event-listener', ...args);
@@ -250,7 +251,7 @@ function onMouseDown(event) {
   const tab = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
   log('onMouseDown: found target tab: ', tab, event);
 
-  const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
+  const extraContentsInfo = TSTAPIFrontend.getOriginalExtraContentsTarget(event);
   const mousedownDetail   = getMouseEventDetail(event, tab);
   mousedownDetail.$extraContentsInfo = extraContentsInfo;
   log('onMouseDown ', mousedownDetail);
@@ -282,40 +283,8 @@ function onMouseDown(event) {
       .catch(ApiTabs.createErrorHandler()),
     (async () => {
       log('Sending message to mousedown listeners ', { extraContentsInfo });
-      if (mousedownDetail.targetType == 'tabbar-top' ||
-          mousedownDetail.targetType == 'tabbar-bottom') {
-        const mousedownInfo = {
-          ...mousedown,
-          detail:        getMouseEventDetail(event),
-          treeItem:      null,
-          tab:           null,
-          containerType: mousedownDetail.targetType,
-        };
-        const allowed = await tryMouseOperationAllowedWithExtraContents(
-          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
-          mousedownInfo,
-          extraContentsInfo
-        );
-        if (!allowed) {
-          log(' => canceled');
-          return true;
-        }
-      }
-      else if (extraContentsInfo) {
-        const allowed = await tryMouseOperationAllowedWithExtraContents(
-          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
-          {
-            ...mousedown,
-            containerType: mousedownDetail.targetType,
-          },
-          extraContentsInfo
-        );
-        if (!allowed) {
-          log(' => canceled');
-          return true;
-        }
-      }
-      const allowed = await tryMouseOperationAllowedWithExtraContents(
+      const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
         apiEventType,
         mousedown,
         extraContentsInfo
@@ -417,39 +386,6 @@ function getMouseEventDetail(event, tab) {
   };
 }
 
-async function tryMouseOperationAllowedWithExtraContents(type, mousedown, extraContentsInfo) {
-  if (extraContentsInfo &&
-      extraContentsInfo.owners &&
-      extraContentsInfo.owners.size > 0) {
-    const allowed = await TSTAPI.tryOperationAllowed(
-      type,
-      {
-        ...mousedown.detail,
-        tab:                mousedown.treeItem,
-        originalTarget:     extraContentsInfo.target,
-        $extraContentsInfo: null
-      },
-      { tabProperties: ['tab'],
-        targets:       extraContentsInfo.owners }
-    );
-    if (!allowed)
-      return false;
-  }
-  const allowed = await TSTAPI.tryOperationAllowed(
-    type,
-    {
-      ...mousedown.detail,
-      tab:                mousedown.treeItem,
-      $extraContentsInfo: null
-    },
-    { tabProperties: ['tab'],
-      except:        extraContentsInfo && extraContentsInfo.owners }
-  );
-  if (!allowed)
-    return false;
-  return true;
-}
-
 function getMouseEventTargetType(event) {
   if (event.target.closest('.rich-confirm, #blocking-screen'))
     return 'outside';
@@ -518,21 +454,8 @@ async function onMouseUp(event) {
       treeItem: new TSTAPI.TreeItem(tab)
     };
 
-    if (extraContentsInfo) {
-      const allowed = await tryMouseOperationAllowedWithExtraContents(
-        TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
-        {
-          ...mouseupInfo,
-          containerType: 'tab',
-        },
-        extraContentsInfo
-      );
-      if (!allowed) {
-        log(' => not allowed (mouseup)');
-        return true;
-      }
-    }
-    const mouseupAllowed = await tryMouseOperationAllowedWithExtraContents(
+    const mouseupAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
       TSTAPI.kNOTIFY_TAB_MOUSEUP,
       mouseupInfo,
       extraContentsInfo
@@ -542,21 +465,8 @@ async function onMouseUp(event) {
       return true;
     }
 
-    if (extraContentsInfo) {
-      const allowed = await tryMouseOperationAllowedWithExtraContents(
-        TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
-        {
-          ...mouseupInfo,
-          containerType: 'tab',
-        },
-        extraContentsInfo
-      );
-      if (!allowed) {
-        log(' => not allowed (clicked)');
-        return true;
-      }
-    }
-    const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+    const clickAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
       TSTAPI.kNOTIFY_TAB_CLICKED,
       mouseupInfo,
       extraContentsInfo
@@ -617,19 +527,8 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         treeItem: null,
       };
 
-      if (lastMousedown.detail.$extraContentsInfo) {
-        const allowed = await tryMouseOperationAllowedWithExtraContents(
-          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
-          {
-            ...mouseupInfo,
-            containerType: 'newtabbutton',
-          },
-          lastMousedown.detail.$extraContentsInfo
-        );
-        if (!allowed)
-          return;
-      }
-      const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
+      const mouseUpAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
         TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEUP,
         mouseupInfo,
         lastMousedown.detail.$extraContentsInfo
@@ -637,19 +536,8 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       if (!mouseUpAllowed)
         return;
 
-      if (lastMousedown.detail.$extraContentsInfo) {
-        const allowed = await tryMouseOperationAllowedWithExtraContents(
-          TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
-          {
-            ...mouseupInfo,
-            containerType: 'newtabbutton',
-          },
-          lastMousedown.detail.$extraContentsInfo
-        );
-        if (!allowed)
-          return;
-      }
-      const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+      const clickAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
         TSTAPI.kNOTIFY_NEW_TAB_BUTTON_CLICKED,
         mouseupInfo,
         lastMousedown.detail.$extraContentsInfo
@@ -688,21 +576,22 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
 
   log('onMouseUp: notify as a blank area click to other addons');
   if (onTabbarTop || onTabbarBottom) {
-    const mouseupInfo = {
+    const eventInfo = {
       ...lastMousedown,
-      detail:        getMouseEventDetail(event),
-      treeItem:      null,
-      tab:           null,
-      containerType: onTabbarTop ? 'tabbar-top' : 'tabbar-bottom',
+      detail:   getMouseEventDetail(event),
+      treeItem: null,
+      tab:      null,
     };
-    const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
+    const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
-      mouseupInfo,
+      TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+      eventInfo,
       lastMousedown.detail.$extraContentsInfo
     );
-    if (!mouseUpAllowed)
+    if (!allowed)
       return;
   }
+  else {
   const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     {
@@ -716,23 +605,25 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   );
   if (!mouseUpAllowed)
     return;
+  }
 
   if (onTabbarTop || onTabbarBottom) {
-    const clickedInfo = {
+    const eventInfo = {
       ...lastMousedown,
-      detail:        getMouseEventDetail(event),
-      treeItem:      null,
-      tab:           null,
-      containerType: onTabbarTop ? 'tabbar-top' : 'tabbar-bottom',
+      detail:   getMouseEventDetail(event),
+      treeItem: null,
+      tab:      null,
     };
-    const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+    const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
-      clickedInfo,
+      TSTAPI.kNOTIFY_TABBAR_CLICKED,
+      eventInfo,
       lastMousedown.detail.$extraContentsInfo
     );
-    if (!clickAllowed)
+    if (!allowed)
       return;
   }
+  else {
   const clickAllowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TABBAR_CLICKED,
     {
@@ -746,6 +637,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   );
   if (!clickAllowed)
     return;
+  }
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
     log('onMouseUp: default action for middle click on the blank area');
@@ -1090,29 +982,12 @@ async function onDblClick(event) {
       !EventUtils.isEventFiredOnSoundButton(event)) {
     const detail   = getMouseEventDetail(event, livingTab);
     const treeItem = new TSTAPI.TreeItem(livingTab);
-    const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
-    if (extraContentsInfo.owners) {
-      const allowed = await TSTAPI.tryOperationAllowed(
-        TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-        {
-          ...detail,
-          tab:            treeItem,
-          originalTarget: extraContentsInfo.target
-        },
-        { tabProperties: ['tab'],
-          targets:       extraContentsInfo.owners }
-      );
-      if (!allowed)
-        return;
-    }
-    const allowed = await TSTAPI.tryOperationAllowed(
+    const extraContentsInfo = TSTAPIFrontend.getOriginalExtraContentsTarget(event);
+    const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_DBLCLICKED,
       TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-      {
-        ...detail,
-        tab: treeItem
-      },
-      { tabProperties: ['tab'],
-        except:        extraContentsInfo.owners }
+      { detail, treeItem },
+      extraContentsInfo
     );
     if (!allowed)
       return;

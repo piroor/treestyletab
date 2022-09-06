@@ -196,32 +196,6 @@ export function cancelHandleMousedown(button = null) {
 }
 
 
-export function getOriginalExtraContentsTarget(event) {
-  try {
-    let target = event.originalTarget;
-    if (target && target.nodeType != Node.ELEMENT_NODE)
-      target = target.parentNode;
-
-    const extraContents = target.closest(`.extra-item`);
-    if (extraContents)
-      return {
-        owners:  new Set([extraContents.dataset.owner]),
-        target:  target.outerHTML,
-        value:   'value' in target ? target.value : null,
-        checked: 'checked' in target ? target.checked : null,
-      };
-  }
-  catch(_error) {
-    // this may happen by mousedown on scrollbar
-  }
-
-  return {
-    owners: new Set(),
-    target: null
-  };
-}
-
-
 export function wrapWithErrorHandler(func) {
   return (...args) => {
     try {

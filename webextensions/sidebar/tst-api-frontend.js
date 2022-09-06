@@ -444,3 +444,71 @@ function uninstallStyle(id) {
   document.head.removeChild(styleElement);
   mAddonStyles.delete(id);
 }
+
+
+
+export function getOriginalExtraContentsTarget(event) {
+  try {
+    let target = event.originalTarget;
+    if (target && target.nodeType != Node.ELEMENT_NODE)
+      target = target.parentNode;
+
+    const extraContents = target.closest(`.extra-item`);
+    if (extraContents)
+      return {
+        owners:  new Set([extraContents.dataset.owner]),
+        target:  target.outerHTML,
+        value:   'value' in target ? target.value : null,
+        checked: 'checked' in target ? target.checked : null,
+      };
+  }
+  catch(_error) {
+    // this may happen by mousedown on scrollbar
+  }
+
+  return {
+    owners: new Set(),
+    target: null
+  };
+}
+
+export async function tryMouseOperationAllowedWithExtraContents(extraContentsEventType, rawEventType, mousedown, extraContentsInfo) {
+  if (extraContentsInfo &&
+      extraContentsInfo.owners &&
+      extraContentsInfo.owners.size > 0) {
+    const eventInfo = {
+      ...mousedown.detail,
+      tab:                mousedown.treeItem,
+      originalTarget:     extraContentsInfo.target,
+      $extraContentsInfo: null,
+    };
+    const options = {
+      tabProperties: ['tab'],
+      targets:       extraContentsInfo.owners,
+    };
+    const allowed = (await TSTAPI.tryOperationAllowed(
+      extraContentsEventType,
+      eventInfo,
+      options
+    )) && (await TSTAPI.tryOperationAllowed(
+      rawEventType, // for backward compatibility
+      eventInfo,
+      options
+    ));
+    if (!allowed)
+      return false;
+  }
+  const allowed = await TSTAPI.tryOperationAllowed(
+    rawEventType,
+    {
+      ...mousedown.detail,
+      tab:                mousedown.treeItem,
+      $extraContentsInfo: null
+    },
+    { tabProperties: ['tab'],
+      except:        extraContentsInfo && extraContentsInfo.owners }
+  );
+  if (!allowed)
+    return false;
+  return true;
+}
