@@ -174,11 +174,15 @@ Tab.onActivated.addListener(async (newActiveTab, info = {}) => {
       if (lastRelatedTab) {
         log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated on ${newActiveTab.id}`);
         TabsStore.windows.get(info.windowId).clearLastRelatedTabs();
-        if (lastRelatedTab.id != newActiveTab.id)
+        if (lastRelatedTab.id != newActiveTab.id) {
+          log(`non last-related-tab is activated: cancel "back to owner" behavior for ${lastRelatedTab.id}`);
           await tryClearOwnerSuccessor(lastRelatedTab);
+        }
       }
-      if (newRelatedTabsCount > 1)
+      if (newRelatedTabsCount > 1) {
+        log(`multiple related tabs were opened: cancel "back to owner" behavior for ${newActiveTab.id}`);
         await tryClearOwnerSuccessor(newActiveTab);
+      }
     }
     update(info.previousTabId);
   }
