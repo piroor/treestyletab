@@ -2050,9 +2050,7 @@ Tab.getHighlightedTabs = (windowId = null, options = {}) => {
 };
 
 Tab.getSelectedTabs = (windowId = null, options = {}) => {
-  const tabs = windowId ?
-    TabsStore.selectedTabsInWindow.get(windowId) :
-    new Map([...TabsStore.selectedTabsInWindow.values()].map(tabs => [...tabs.entries()]).flat());
+  const tabs = TabsStore.getTabsMap(TabsStore.selectedTabsInWindow, windowId);
   const selectedTabs = TabsStore.queryAll({
     windowId,
     tabs,
