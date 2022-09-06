@@ -250,7 +250,7 @@ function onMouseDown(event) {
   const tab = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
   log('onMouseDown: found target tab: ', tab, event);
 
-  const extraContentsInfo = getOriginalExtraContentsTarget(event);
+  const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
   const mousedownDetail   = getMouseEventDetail(event, tab);
   mousedownDetail.$extraContentsInfo = extraContentsInfo;
   log('onMouseDown ', mousedownDetail);
@@ -414,31 +414,6 @@ function getMouseEventDetail(event, tab) {
     isMiddleClick: EventUtils.isMiddleClick(event),
     isAccelClick:  EventUtils.isAccelAction(event),
     lastInnerScreenY: window.mozInnerScreenY
-  };
-}
-
-function getOriginalExtraContentsTarget(event) {
-  try {
-    let target = event.originalTarget;
-    if (target && target.nodeType != Node.ELEMENT_NODE)
-      target = target.parentNode;
-
-    const extraContents = target.closest(`.extra-item`);
-    if (extraContents)
-      return {
-        owners:  new Set([extraContents.dataset.owner]),
-        target:  target.outerHTML,
-        value:   'value' in target ? target.value : null,
-        checked: 'checked' in target ? target.checked : null,
-      };
-  }
-  catch(_error) {
-    // this may happen by mousedown on scrollbar
-  }
-
-  return {
-    owners: new Set(),
-    target: null
   };
 }
 
@@ -1115,7 +1090,7 @@ async function onDblClick(event) {
       !EventUtils.isEventFiredOnSoundButton(event)) {
     const detail   = getMouseEventDetail(event, livingTab);
     const treeItem = new TSTAPI.TreeItem(livingTab);
-    const extraContentsInfo = getOriginalExtraContentsTarget(event);
+    const extraContentsInfo = EventUtils.getOriginalExtraContentsTarget(event);
     if (extraContentsInfo.owners) {
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TAB_DBLCLICKED,
