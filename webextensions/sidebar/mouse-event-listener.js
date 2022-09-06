@@ -275,17 +275,32 @@ function onMouseDown(event) {
     TSTAPI.kNOTIFY_TAB_MOUSEDOWN :
     mousedownDetail.targetType == 'newtabbutton' ?
       TSTAPI.kNOTIFY_NEW_TAB_BUTTON_MOUSEDOWN :
-      mousedownDetail.targetType == 'tabbar-top' ?
-        TSTAPI.kNOTIFY_TABBAR_TOP_MOUSEDOWN :
-        mousedownDetail.targetType == 'tabbar-bottom' ?
-          TSTAPI.kNOTIFY_TABBAR_BOTTOM_MOUSEDOWN :
-          TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
+      TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
 
   mousedown.promisedMousedownNotified = Promise.all([
     browser.runtime.sendMessage({type: apiEventType })
       .catch(ApiTabs.createErrorHandler()),
     (async () => {
       log('Sending message to mousedown listeners ', { extraContentsInfo });
+      if (mousedownDetail.targetType == 'tabbar-top' ||
+          mousedownDetail.targetType == 'tabbar-bottom') {
+        const mousedownInfo = {
+          ...mousedown,
+          detail:        getMouseEventDetail(event),
+          treeItem:      null,
+          tab:           null,
+          containerType: mousedownDetail.targetType,
+        };
+        const allowed = await tryMouseOperationAllowedWithExtraContents(
+          TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
+          mousedownInfo,
+          extraContentsInfo
+        );
+        if (!allowed) {
+          log(' => canceled');
+          return true;
+        }
+      }
       const allowed = await tryMouseOperationAllowedWithExtraContents(
         apiEventType,
         mousedown,
@@ -629,12 +644,24 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   const onTabbarBottom = EventUtils.isEventFiredOnTabbarBottom(event);
 
   log('onMouseUp: notify as a blank area click to other addons');
+  if (onTabbarTop || onTabbarBottom) {
+    const mouseupInfo = {
+      ...lastMousedown,
+      detail:        getMouseEventDetail(event),
+      treeItem:      null,
+      tab:           null,
+      containerType: onTabbarTop ? 'tabbar-top' : 'tabbar-bottom',
+    };
+    const mouseUpAllowed = await tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
+      mouseupInfo,
+      lastMousedown.detail.$extraContentsInfo
+    );
+    if (!mouseUpAllowed)
+      return;
+  }
   const mouseUpAllowed = await TSTAPI.tryOperationAllowed(
-    onTabbarTop ?
-      TSTAPI.kNOTIFY_TABBAR_TOP_MOUSEUP :
-      onTabbarBottom ?
-        TSTAPI.kNOTIFY_TABBAR_BOTTOM_MOUSEUP :
-        TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
+    TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     {
       ...lastMousedown.detail,
       window:             mTargetWindow,
@@ -647,12 +674,24 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   if (!mouseUpAllowed)
     return;
 
+  if (onTabbarTop || onTabbarBottom) {
+    const clickedInfo = {
+      ...lastMousedown,
+      detail:        getMouseEventDetail(event),
+      treeItem:      null,
+      tab:           null,
+      containerType: onTabbarTop ? 'tabbar-top' : 'tabbar-bottom',
+    };
+    const clickAllowed = await tryMouseOperationAllowedWithExtraContents(
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
+      clickedInfo,
+      lastMousedown.detail.$extraContentsInfo
+    );
+    if (!clickAllowed)
+      return;
+  }
   const clickAllowed = await TSTAPI.tryOperationAllowed(
-    onTabbarTop ?
-      TSTAPI.kNOTIFY_TABBAR_TOP_CLICKED :
-      onTabbarBottom ?
-        TSTAPI.kNOTIFY_TABBAR_BOTTOM_CLICKED :
-        TSTAPI.kNOTIFY_TABBAR_CLICKED,
+    TSTAPI.kNOTIFY_TABBAR_CLICKED,
     {
       ...lastMousedown.detail,
       window:             mTargetWindow,
