@@ -576,16 +576,15 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
 
   log('onMouseUp: notify as a blank area click to other addons');
   if (onTabbarTop || onTabbarBottom) {
-    const eventInfo = {
-      ...lastMousedown,
-      detail:   getMouseEventDetail(event),
-      treeItem: null,
-      tab:      null,
-    };
     const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
       TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-      eventInfo,
+      {
+        ...lastMousedown,
+        detail:   getMouseEventDetail(event),
+        treeItem: null,
+        tab:      null,
+      },
       lastMousedown.detail.$extraContentsInfo
     );
     if (!allowed)
@@ -608,16 +607,15 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
   }
 
   if (onTabbarTop || onTabbarBottom) {
-    const eventInfo = {
-      ...lastMousedown,
-      detail:   getMouseEventDetail(event),
-      treeItem: null,
-      tab:      null,
-    };
     const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_CLICKED,
       TSTAPI.kNOTIFY_TABBAR_CLICKED,
-      eventInfo,
+      {
+        ...lastMousedown,
+        detail:   getMouseEventDetail(event),
+        treeItem: null,
+        tab:      null,
+      },
       lastMousedown.detail.$extraContentsInfo
     );
     if (!allowed)
