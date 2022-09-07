@@ -103,11 +103,11 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
           return;
 
         default: // tabs
-          Tab.waitUntilTracked(message.id, { element: true }).then(() => {
-            const tabElement = document.querySelector(`#tab-${message.id}`);
-            if (!tabElement)
-              return;
-            setExtraTabContents(tabElement, sender.id, message);
+          TSTAPI.getTargetTabs(message, sender).then(tabs => {
+            for (const tab of tabs) {
+              if (tab.$TST.element)
+                setExtraTabContents(tab.$TST.element, sender.id, message);
+            }
           });
           return;
       }
@@ -130,11 +130,11 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
           return;
 
         default: // tabs
-          Tab.waitUntilTracked(message.id, { element: true }).then(() => {
-            const tabElement = document.querySelector(`#tab-${message.id}`);
-            if (!tabElement)
-              return;
-            clearExtraTabContents(tabElement, sender.id);
+          TSTAPI.getTargetTabs(message, sender).then(tabs => {
+            for (const tab of tabs) {
+              if (tab.$TST.element)
+                clearExtraTabContents(tab.$TST.element, sender.id);
+            }
           });
           return;
       }
@@ -144,8 +144,8 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       clearAllExtraTabContents(sender.id);
       return;
 
-    case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES: {
-      const tabs = TSTAPI.getTargetTabs(message, sender);
+    case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES:
+      TSTAPI.getTargetTabs(message, sender).then(tabs => {
       setExtraContentsProperties({
         id:    sender.id,
         tabs,
@@ -153,17 +153,19 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
         part:  message.part,
         properties: message.properties || {},
       });
-    }; return;
+      });
+      return;
 
-    case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS: {
-      const tabs = TSTAPI.getTargetTabs(message, sender);
+    case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS:
+      TSTAPI.getTargetTabs(message, sender).then(tabs => {
       focusToExtraContents({
         id:    sender.id,
         tabs,
         place: message.place || null,
         part:  message.part,
       });
-    }; return;
+      });
+      return;
 
     default:
       Tab.waitUntilTracked(message.id, { element: true }).then(() => {
