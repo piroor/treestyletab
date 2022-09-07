@@ -166,6 +166,8 @@ export const kSET_EXTRA_TABBAR_TOP_CONTENTS       = 'set-extra-tabbar-top-conten
 export const kCLEAR_EXTRA_TABBAR_TOP_CONTENTS     = 'clear-extra-tabbar-top-contents';
 export const kSET_EXTRA_TABBAR_BOTTOM_CONTENTS    = 'set-extra-tabbar-bottom-contents';
 export const kCLEAR_EXTRA_TABBAR_BOTTOM_CONTENTS  = 'clear-extra-tabbar-bottom-contents';
+export const kSET_EXTRA_CONTENTS_PROPERTIES       = 'set-extra-contents-properties';
+export const kFOCUS_TO_EXTRA_CONTENTS             = 'focus-to-extra-contents';
 export const kGET_DRAG_DATA         = 'get-drag-data';
 
 export const kCONTEXT_MENU_OPEN       = 'contextMenu-open';

@@ -18,9 +18,16 @@ import {
 } from './components/TabElement.js';
 
 import Tab from '/common/Tab.js';
+import * as TabsStore from '/common/tabs-store.js';
 
 import * as EventUtils from './event-utils.js';
 import * as Sidebar from './sidebar.js';
+
+let mTargetWindow;
+
+Sidebar.onInit.addListener(() => {
+  mTargetWindow = TabsStore.getCurrentWindowId();
+});
 
 const mAddonsWithExtraContents = new Set();
 
@@ -93,6 +100,25 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
     case TSTAPI.kCLEAR_EXTRA_TABBAR_BOTTOM_CONTENTS:
       clearExtraTabbarBottomContents(sender.id);
+      return;
+
+    case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES:
+      setExtraContentsProperties({
+        id:    sender.id,
+        tabId: message.tabId || message.tab || message.tabIds || message.tabs,
+        place: message.place || null,
+        part:  message.part,
+        properties: message.properties || {},
+      });
+      return;
+
+    case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS:
+      focusToExtraContents({
+        id:    sender.id,
+        tabId: message.tabId || message.tab || message.tabIds || message.tabs,
+        place: message.place || null,
+        part:  message.part,
+      });
       return;
 
     default:
@@ -422,6 +448,96 @@ function setExtraTabbarBottomContents(id, params = {}) {
 
 function clearExtraTabbarBottomContents(id) {
   setExtraTabbarBottomContents(id, {});
+}
+
+function collectExtraContentsRoots({ id, tabId, place }) {
+  if (!id)
+    return [];
+
+  const roots = [];
+  if (tabId) {
+    const tabs = Array.isArray(tabId) ?
+      tabId.map(oneTabId => Tab.get(oneTabId)) :
+      [Tab.get(tabId)];
+    if (tabs.length == 0 || !tabs[0])
+      return;
+    switch (String(place).toLowerCase()) {
+      case 'indent':
+        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerIndentRoot));
+        break;
+
+      case 'behind':
+        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerBehindRoot));
+        break;
+
+      case 'front':
+      default:
+        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerFrontRoot));
+        break;
+    }
+  }
+  else {
+    switch (String(place).toLowerCase()) {
+      case 'indent':
+        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerIndentRoot));
+        break;
+
+      case 'behind':
+        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerBehindRoot));
+        break;
+
+      case 'front':
+        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerFrontRoot));
+        break;
+
+      case 'newtabbutton':
+      case 'new-tab-button':
+      case 'newtab-button':
+        roots.push.apply(roots, mNewTabButtonExtraItemsContainerRoots);
+        break;
+
+      case 'tabbar-top':
+        roots.push(mTabbarTopExtraItemsContainerRoot);
+        break;
+
+      case 'tabbar-bottom':
+        roots.push(mTabbarBottomExtraItemsContainerRoot);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return roots;
+}
+
+function setExtraContentsProperties({ id, tabId, place, part, properties }) {
+  if (!id || !part || !properties)
+    return;
+
+  const roots = collectExtraContentsRoots({ id, tabId, place });
+  for (const root of roots) {
+    const node = root.querySelector(`[part~="${getExtraContentsPartName(id)}"][part~="${part}"]`);
+    if (!node)
+      continue;
+    for (const [property, value] of Object.entries(properties)) {
+      node[property] = value;
+    }
+  }
+}
+
+function focusToExtraContents({ id, tabId, place, part }) {
+  if (!id || !part)
+    return;
+
+  const roots = collectExtraContentsRoots({ id, tabId, place });
+  for (const root of roots) {
+    const node = root.querySelector(`[part~="${getExtraContentsPartName(id)}"][part~="${part}"]`);
+    if (!node || typeof node.focus != 'function')
+      continue;
+    node.focus();
+  }
 }
 
 
