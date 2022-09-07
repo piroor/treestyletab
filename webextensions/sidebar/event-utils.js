@@ -62,7 +62,18 @@ export function getElementTarget(eventOrTarget) {
 export function getElementOriginalTarget(eventOrTarget) {
   const target = eventOrTarget instanceof Node ?
     eventOrTarget :
-    (eventOrTarget.explicitOriginalTarget || eventOrTarget.originalTarget || eventOrTarget.target);
+    (event => {
+      try {
+        if (event.originalTarget &&
+            event.originalTarget.nodeType)
+          return event.originalTarget;
+      }
+      catch(_error) {
+        // Access to the origianlTarget can be restricted on some cases,
+        // ex. mousedown in extra contents of the new tab button. Why?
+      }
+      return event.explicitOriginalTarget || eventOrTarget.target;
+    })(eventOrTarget);
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
   return target instanceof Element ? target : null;
