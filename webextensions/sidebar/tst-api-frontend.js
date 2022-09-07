@@ -589,10 +589,8 @@ export function getOriginalExtraContentsTarget(event) {
     const extraContents = target.closest(`.extra-item`);
     if (extraContents)
       return {
-        owners:  new Set([extraContents.dataset.owner]),
-        target:  target.outerHTML,
-        value:   'value' in target ? target.value : null,
-        checked: 'checked' in target ? target.checked : null,
+        owners: new Set([extraContents.dataset.owner]),
+        target: target.outerHTML,
       };
   }
   catch(_error) {
@@ -601,7 +599,7 @@ export function getOriginalExtraContentsTarget(event) {
 
   return {
     owners: new Set(),
-    target: null
+    target: null,
   };
 }
 
