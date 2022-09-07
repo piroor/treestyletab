@@ -595,8 +595,8 @@ function getFieldValues(event) {
     return {};
 
   return {
-    value:   'value' in fieldNode ? fieldNode.value : null,
-    checked: 'checked' in fieldNode ? fieldNode.checked : null,
+    fieldValue:   'value' in fieldNode ? fieldNode.value : null,
+    fieldChecked: 'checked' in fieldNode ? fieldNode.checked : null,
   };
 }
 
