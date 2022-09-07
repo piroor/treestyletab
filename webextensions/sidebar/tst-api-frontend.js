@@ -482,7 +482,8 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
     return;
 
   const target = EventUtils.getElementOriginalTarget(event);
-  if (target && target.closest('tab-item, button, input[type="submit"]')) {
+  if (target &&
+      target.closest('tab-item, button, *[role="button"], input[type="submit"]')) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     event.preventDefault();
