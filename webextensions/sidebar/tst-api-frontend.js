@@ -146,24 +146,24 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
     case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES:
       TSTAPI.getTargetTabs(message, sender).then(tabs => {
-      setExtraContentsProperties({
-        id:    sender.id,
-        tabs,
-        place: message.place || null,
-        part:  message.part,
-        properties: message.properties || {},
-      });
+        setExtraContentsProperties({
+          id:    sender.id,
+          tabs,
+          place: message.place || null,
+          part:  message.part,
+          properties: message.properties || {},
+        });
       });
       return;
 
     case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS:
       TSTAPI.getTargetTabs(message, sender).then(tabs => {
-      focusToExtraContents({
-        id:    sender.id,
-        tabs,
-        place: message.place || null,
-        part:  message.part,
-      });
+        focusToExtraContents({
+          id:    sender.id,
+          tabs,
+          place: message.place || null,
+          part:  message.part,
+        });
       });
       return;
 
