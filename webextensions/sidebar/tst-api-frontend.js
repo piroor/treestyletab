@@ -19,6 +19,7 @@ import {
 
 import Tab from '/common/Tab.js';
 
+import * as EventUtils from './event-utils.js';
 import * as Sidebar from './sidebar.js';
 
 const mAddonsWithExtraContents = new Set();
@@ -446,6 +447,138 @@ function uninstallStyle(id) {
 }
 
 
+// we should not handle dblclick on #tabbar here - it is handled by mouse-event-listener.js
+for (const container of document.querySelectorAll('#tabbar-top, #tabbar-bottom')) {
+  container.addEventListener('dblclick', onExtraContentsDblClick, { capture: true });
+}
+document.addEventListener('keydown',  onExtraContentsKeyEvent, { capture: true });
+document.addEventListener('keyup',    onExtraContentsKeyEvent, { capture: true });
+document.addEventListener('input',    onExtraContentsInput,    { capture: true });
+document.addEventListener('change',   onExtraContentsChange,   { capture: true });
+document.addEventListener('compositionstart',  onExtraContentsCompositionEvent, { capture: true });
+document.addEventListener('compositionupdate', onExtraContentsCompositionEvent, { capture: true });
+document.addEventListener('compositionend',    onExtraContentsCompositionEvent, { capture: true });
+document.addEventListener('focus',    onExtraContentsFocusEvent, { capture: true });
+document.addEventListener('blur',     onExtraContentsFocusEvent, { capture: true });
+
+async function onExtraContentsDblClick(event) {
+  const detail            = EventUtils.getMouseEventDetail(event, null);
+  const extraContentsInfo = getOriginalExtraContentsTarget(event);
+  const allowed = await tryMouseOperationAllowedWithExtraContents(
+    TSTAPI.kNOTIFY_EXTRA_CONTENTS_DBLCLICKED,
+    null,
+    { detail },
+    extraContentsInfo
+  );
+  if (allowed)
+    return;
+}
+
+async function notifyExtraContentsEvent(event, eventType, details = {}) {
+  const extraContentsInfo = getOriginalExtraContentsTarget(event);
+  if (!extraContentsInfo ||
+      !extraContentsInfo.owners ||
+      extraContentsInfo.owners.size == 0)
+    return;
+
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  event.preventDefault();
+
+  const livingTab = EventUtils.getTabFromEvent(event);
+  const eventInfo = {
+    ...EventUtils.getTabEventDetail(event, livingTab),
+    originalTarget:     extraContentsInfo.target,
+    $extraContentsInfo: null,
+    ...details,
+  };
+  const options = {
+    targets: extraContentsInfo.owners,
+  };
+  if (livingTab) {
+    eventInfo.tab = new TSTAPI.TreeItem(livingTab);
+    options.tabProperties = ['tab'];
+  }
+
+  await TSTAPI.tryOperationAllowed(
+    eventType,
+    eventInfo,
+    options
+  );
+}
+
+async function onExtraContentsKeyEvent(event) {
+  await notifyExtraContentsEvent(
+    event,
+    event.type == 'keydown' ?
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_KEYDOWN :
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_KEYUP,
+    {
+      key:         event.key,
+      isComposing: event.isComposing,
+      locale:      event.locale,
+      location:    event.location,
+      repeat:      event.repeat,
+    }
+  );
+}
+
+async function onExtraContentsInput(event) {
+  await notifyExtraContentsEvent(
+    event,
+    TSTAPI.kNOTIFY_EXTRA_CONTENTS_INPUT,
+    {
+      data:        event.data,
+      inputType:   event.inputType,
+      isComposing: event.isComposing,
+    }
+  );
+}
+
+async function onExtraContentsChange(event) {
+  await notifyExtraContentsEvent(
+    event,
+    TSTAPI.kNOTIFY_EXTRA_CONTENTS_CHANGE,
+    {
+      value:   'value' in event.originalTarget ? event.originalTarget.value : null,
+      checked: 'checked' in event.originalTarget ? event.originalTarget.checked : null,
+    }
+  );
+}
+
+async function onExtraContentsCompositionEvent(event) {
+  await notifyExtraContentsEvent(
+    event,
+    event.type == 'compositionstart' ?
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_COMPOSITIONSTART : 
+      event.type == 'compositionupdate' ?
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_COMPOSITIONUPDATE :
+        TSTAPI.kNOTIFY_EXTRA_CONTENTS_COMPOSITIONEND,
+    {
+      data:   event.data,
+      locale: event.locale,
+    }
+  );
+}
+
+async function onExtraContentsFocusEvent(event) {
+  const extraContents = event.originalTarget.closest(`.extra-item`);
+
+  let relatedTarget = null;
+  const relatedExtraContents = event.relatedTarget && event.relatedTarget.closest(`.extra-item`);
+  if (relatedExtraContents &&
+      extraContents.dataset.owner == relatedExtraContents.dataset.owner)
+    relatedTarget = event.relatedTarget.outerHTML;
+
+  await notifyExtraContentsEvent(
+    event,
+    event.type == 'focus' ?
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_FOCUS : 
+      TSTAPI.kNOTIFY_EXTRA_CONTENTS_BLUR,
+    { relatedTarget }
+  );
+}
+
 
 export function getOriginalExtraContentsTarget(event) {
   try {
@@ -472,25 +605,27 @@ export function getOriginalExtraContentsTarget(event) {
   };
 }
 
-export async function tryMouseOperationAllowedWithExtraContents(extraContentsEventType, rawEventType, mousedown, extraContentsInfo) {
+export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEventType, mousedown, extraContentsInfo) {
   if (extraContentsInfo &&
       extraContentsInfo.owners &&
       extraContentsInfo.owners.size > 0) {
     const eventInfo = {
       ...mousedown.detail,
-      tab:                mousedown.treeItem,
       originalTarget:     extraContentsInfo.target,
       $extraContentsInfo: null,
     };
     const options = {
-      tabProperties: ['tab'],
-      targets:       extraContentsInfo.owners,
+      targets: extraContentsInfo.owners,
     };
+    if (mousedown.treeItem) {
+      eventInfo.tab = mousedown.treeItem;
+      options.tabProperties = ['tab'];
+    }
     const allowed = (await TSTAPI.tryOperationAllowed(
-      extraContentsEventType,
+      eventType,
       eventInfo,
       options
-    )) && (await TSTAPI.tryOperationAllowed(
+    )) && (!rawEventType || await TSTAPI.tryOperationAllowed(
       rawEventType, // for backward compatibility
       eventInfo,
       options
@@ -498,17 +633,27 @@ export async function tryMouseOperationAllowedWithExtraContents(extraContentsEve
     if (!allowed)
       return false;
   }
-  const allowed = await TSTAPI.tryOperationAllowed(
-    rawEventType,
-    {
+
+  if (rawEventType) {
+    const eventInfo = {
       ...mousedown.detail,
-      tab:                mousedown.treeItem,
-      $extraContentsInfo: null
-    },
-    { tabProperties: ['tab'],
-      except:        extraContentsInfo && extraContentsInfo.owners }
-  );
-  if (!allowed)
-    return false;
+      $extraContentsInfo: null,
+    };
+    const options = {
+      except: extraContentsInfo && extraContentsInfo.owners,
+    };
+    if (mousedown.treeItem) {
+      eventInfo.tab = mousedown.treeItem;
+      options.tabProperties = ['tab'];
+    }
+    const allowed = await TSTAPI.tryOperationAllowed(
+      rawEventType,
+      eventInfo,
+      options
+    );
+    if (!allowed)
+      return false;
+  }
+
   return true;
 }

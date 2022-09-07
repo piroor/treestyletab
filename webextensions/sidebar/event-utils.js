@@ -24,6 +24,13 @@ function log(...args) {
   internalLogger('sidebar/event-utils', ...args);
 }
 
+let mTargetWindow;
+
+export function setTargetWindowId(windowId) {
+  mTargetWindow = windowId;
+}
+
+
 export function isMiddleClick(event) {
   return event.button == 1;
 }
@@ -193,6 +200,72 @@ export function cancelHandleMousedown(button = null) {
     return true;
   }
   return false;
+}
+
+
+export function getEventDetail(event) {
+  return {
+    targetType: getEventTargetType(event),
+    window:     mTargetWindow,
+    windowId:   mTargetWindow,
+    ctrlKey:    event.ctrlKey,
+    shiftKey:   event.shiftKey,
+    altKey:     event.altKey,
+    metaKey:    event.metaKey,
+  };
+}
+
+export function getTabEventDetail(event, tab) {
+  return {
+    ...getEventDetail(event),
+    tab:   tab && tab.id,
+    tabId: tab && tab.id,
+  };
+}
+
+export function getMouseEventDetail(event, tab) {
+  return {
+    ...getTabEventDetail(event, tab),
+    twisty:        isEventFiredOnTwisty(event),
+    soundButton:   isEventFiredOnSoundButton(event),
+    closebox:      isEventFiredOnClosebox(event),
+    button:        event.button,
+    isMiddleClick: isMiddleClick(event),
+    isAccelClick:  isAccelAction(event),
+    lastInnerScreenY: window.mozInnerScreenY,
+  };
+}
+
+export function getEventTargetType(event) {
+  if (event.target.closest('.rich-confirm, #blocking-screen'))
+    return 'outside';
+
+  if (getTabFromEvent(event))
+    return 'tab';
+
+  if (isEventFiredOnNewTabButton(event))
+    return 'newtabbutton';
+
+  if (isEventFiredOnMenuOrPanel(event) ||
+      isEventFiredOnAnchor(event))
+    return 'selector';
+
+  if (isEventFiredOnTabbarTop(event))
+    return 'tabbar-top';
+  if (isEventFiredOnTabbarBottom(event))
+    return 'tabbar-bottom';
+
+  const allRange = document.createRange();
+  allRange.selectNodeContents(document.body);
+  const containerRect = allRange.getBoundingClientRect();
+  allRange.detach();
+  if (event.clientX < containerRect.left ||
+      event.clientX > containerRect.right ||
+      event.clientY < containerRect.top ||
+      event.clientY > containerRect.bottom)
+    return 'outside';
+
+  return 'blank';
 }
 
 

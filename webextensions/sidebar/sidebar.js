@@ -48,6 +48,7 @@ import {
 } from './components/TabElement.js';
 
 import * as BackgroundConnection from './background-connection.js';
+import * as EventUtils from './event-utils.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
@@ -97,6 +98,8 @@ document.documentElement.classList.toggle('platform-mac', isMacOS());
   mTargetWindow = parseInt(url.searchParams.get('windowId') || 0);
   if (isNaN(mTargetWindow) || mTargetWindow < 1)
     mTargetWindow = null;
+
+  EventUtils.setTargetWindowId(mTargetWindow);
 
   mReloadMaskImage = url.searchParams.get('reloadMaskImage') == 'true';
 
@@ -159,8 +162,10 @@ export async function init() {
 
       const tabs = window.tabs;
       SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
-      if (!mTargetWindow)
+      if (!mTargetWindow) {
         mTargetWindow = tabs[0].windowId;
+        EventUtils.setTargetWindowId(mTargetWindow);
+      }
       TabsStore.setCurrentWindowId(mTargetWindow);
       mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;

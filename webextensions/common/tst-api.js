@@ -84,6 +84,7 @@ export const kNOTIFY_EXTRA_CONTENTS_MOUSEUP      = 'extra-contents-mouseup';
 export const kNOTIFY_EXTRA_CONTENTS_KEYDOWN      = 'extra-contents-keydown';
 export const kNOTIFY_EXTRA_CONTENTS_KEYUP        = 'extra-contents-keyup';
 export const kNOTIFY_EXTRA_CONTENTS_INPUT        = 'extra-contents-input';
+export const kNOTIFY_EXTRA_CONTENTS_CHANGE       = 'extra-contents-change';
 export const kNOTIFY_EXTRA_CONTENTS_COMPOSITIONSTART  = 'extra-contents-compositionstart';
 export const kNOTIFY_EXTRA_CONTENTS_COMPOSITIONUPDATE = 'extra-contents-compositionupdate';
 export const kNOTIFY_EXTRA_CONTENTS_COMPOSITIONEND    = 'extra-contents-compositionend';
