@@ -462,7 +462,6 @@ function collectExtraContentsRoots({ tabs, place }) {
 
     case 'front':
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerFrontRoot);
-      break;
 
     case 'newtabbutton':
     case 'new-tab-button':
