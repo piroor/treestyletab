@@ -74,32 +74,74 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
     return;
 
   switch (message.type) {
-    case TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS:
+    case TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS: // for backward compatibility
       clearAllExtraTabContents(sender.id);
       return;
 
-    case TSTAPI.kSET_EXTRA_NEW_TAB_BUTTON_CONTENTS:
+    case TSTAPI.kSET_EXTRA_NEW_TAB_BUTTON_CONTENTS: // for backward compatibility
       setExtraNewTabButtonContents(sender.id, message);
       return;
 
-    case TSTAPI.kCLEAR_EXTRA_NEW_TAB_BUTTON_CONTENTS:
+    case TSTAPI.kCLEAR_EXTRA_NEW_TAB_BUTTON_CONTENTS: // for backward compatibility
       clearExtraNewTabButtonContents(sender.id);
       return;
 
-    case TSTAPI.kSET_EXTRA_TABBAR_TOP_CONTENTS:
-      setExtraTabbarTopContents(sender.id, message);
+    case TSTAPI.kSET_EXTRA_CONTENTS:
+      switch (String(message.place).toLowerCase()) {
+        case 'newtabbutton':
+        case 'new-tab-button':
+        case 'newtab-button':
+          setExtraNewTabButtonContents(sender.id, message);
+          return;
+
+        case 'tabbar-top':
+          setExtraTabbarTopContents(sender.id, message);
+          return;
+
+        case 'tabbar-bottom':
+          setExtraTabbarBottomContents(sender.id, message);
+          return;
+
+        default: // tabs
+          Tab.waitUntilTracked(message.id, { element: true }).then(() => {
+            const tabElement = document.querySelector(`#tab-${message.id}`);
+            if (!tabElement)
+              return;
+            setExtraTabContents(tabElement, sender.id, message);
+          });
+          return;
+      }
       return;
 
-    case TSTAPI.kCLEAR_EXTRA_TABBAR_TOP_CONTENTS:
-      clearExtraTabbarTopContents(sender.id);
+    case TSTAPI.kCLEAR_EXTRA_CONTENTS:
+      switch (String(message.place).toLowerCase()) {
+        case 'newtabbutton':
+        case 'new-tab-button':
+        case 'newtab-button':
+          clearExtraNewTabButtonContents(sender.id);
+          return;
+
+        case 'tabbar-top':
+          clearExtraTabbarTopContents(sender.id);
+          return;
+
+        case 'tabbar-bottom':
+          clearExtraTabbarBottomContents(sender.id);
+          return;
+
+        default: // tabs
+          Tab.waitUntilTracked(message.id, { element: true }).then(() => {
+            const tabElement = document.querySelector(`#tab-${message.id}`);
+            if (!tabElement)
+              return;
+            clearExtraTabContents(tabElement, sender.id);
+          });
+          return;
+      }
       return;
 
-    case TSTAPI.kSET_EXTRA_TABBAR_BOTTOM_CONTENTS:
-      setExtraTabbarBottomContents(sender.id, message);
-      return;
-
-    case TSTAPI.kCLEAR_EXTRA_TABBAR_BOTTOM_CONTENTS:
-      clearExtraTabbarBottomContents(sender.id);
+    case TSTAPI.kCLEAR_ALL_EXTRA_CONTENTS:
+      clearAllExtraTabContents(sender.id);
       return;
 
     case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES: {
@@ -130,16 +172,16 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
           return;
 
         switch (message.type) {
-          case TSTAPI.kSET_EXTRA_TAB_CONTENTS:
+          case TSTAPI.kSET_EXTRA_TAB_CONTENTS: // for backward compatibility
             setExtraTabContents(tabElement, sender.id, message);
             break;
 
-          case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS:
+          case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS: // for backward compatibility
             clearExtraTabContents(tabElement, sender.id);
             break;
         }
       });
-      break;
+      return;
   }
 });
 
@@ -374,15 +416,18 @@ function getExtraContentsPartName(id) {
 function setExtraTabContents(tabElement, id, params = {}) {
   let container;
   switch (String(params.place).toLowerCase()) {
-    case 'indent':
+    case 'indent': // for backward compatibility
+    case 'tab-indent':
       container = tabElement.extraItemsContainerIndentRoot;
       break;
 
-    case 'behind':
+    case 'behind': // for backward compatibility
+    case 'tab-behind':
       container = tabElement.extraItemsContainerBehindRoot;
       break;
 
-    case 'front':
+    case 'front': // for backward compatibility
+    case 'tab-front':
     default:
       container = tabElement.extraItemsContainerFrontRoot;
       break;
@@ -454,13 +499,16 @@ function clearExtraTabbarBottomContents(id) {
 
 function collectExtraContentsRoots({ tabs, place }) {
   switch (String(place).toLowerCase()) {
-    case 'indent':
+    case 'indent': // for backward compatibility
+    case 'tab-indent':
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerIndentRoot);
 
-    case 'behind':
+    case 'behind': // for backward compatibility
+    case 'tab-behind':
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerBehindRoot);
 
-    case 'front':
+    case 'front': // for backward compatibility
+    case 'tab-front':
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerFrontRoot);
 
     case 'newtabbutton':
