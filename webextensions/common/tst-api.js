@@ -1250,7 +1250,7 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
       return baseTab.$TST.lastDescendant;
 
     case 'sendertab':
-      return sender.tab && Tab.get(sender.tab.id) || null;
+      return sender && sender.tab && Tab.get(sender.tab.id) || null;
     case 'highlighted':
     case 'multiselected':
       return Tab.getHighlightedTabs(activeWindow.id);
