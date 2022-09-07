@@ -102,24 +102,26 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       clearExtraTabbarBottomContents(sender.id);
       return;
 
-    case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES:
+    case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES: {
+      const tabs = TSTAPI.getTargetTabs(message, sender);
       setExtraContentsProperties({
         id:    sender.id,
-        tabId: message.tabId || message.tab || message.tabIds || message.tabs,
+        tabs,
         place: message.place || null,
         part:  message.part,
         properties: message.properties || {},
       });
-      return;
+    }; return;
 
-    case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS:
+    case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS: {
+      const tabs = TSTAPI.getTargetTabs(message, sender);
       focusToExtraContents({
         id:    sender.id,
-        tabId: message.tabId || message.tab || message.tabIds || message.tabs,
+        tabs,
         place: message.place || null,
         part:  message.part,
       });
-      return;
+    }; return;
 
     default:
       Tab.waitUntilTracked(message.id, { element: true }).then(() => {
@@ -450,73 +452,39 @@ function clearExtraTabbarBottomContents(id) {
   setExtraTabbarBottomContents(id, {});
 }
 
-function collectExtraContentsRoots({ id, tabId, place }) {
-  if (!id)
-    return [];
+function collectExtraContentsRoots({ tabs, place }) {
+  switch (String(place).toLowerCase()) {
+    case 'indent':
+      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerIndentRoot);
 
-  const roots = [];
-  if (tabId) {
-    const tabs = Array.isArray(tabId) ?
-      tabId.map(oneTabId => Tab.get(oneTabId)) :
-      [Tab.get(tabId)];
-    if (tabs.length == 0 || !tabs[0])
-      return;
-    switch (String(place).toLowerCase()) {
-      case 'indent':
-        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerIndentRoot));
-        break;
+    case 'behind':
+      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerBehindRoot);
 
-      case 'behind':
-        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerBehindRoot));
-        break;
+    case 'front':
+      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerFrontRoot);
+      break;
 
-      case 'front':
-      default:
-        roots.push.apply(roots, tabs.map(tab => tab.$TST.element.extraItemsContainerFrontRoot));
-        break;
-    }
+    case 'newtabbutton':
+    case 'new-tab-button':
+    case 'newtab-button':
+      return mNewTabButtonExtraItemsContainerRoots;
+
+    case 'tabbar-top':
+      return [mTabbarTopExtraItemsContainerRoot];
+
+    case 'tabbar-bottom':
+      return [mTabbarBottomExtraItemsContainerRoot];
+
+    default:
+      return [];
   }
-  else {
-    switch (String(place).toLowerCase()) {
-      case 'indent':
-        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerIndentRoot));
-        break;
-
-      case 'behind':
-        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerBehindRoot));
-        break;
-
-      case 'front':
-        roots.push.apply(roots, Tab.getAllTabs(mTargetWindow).map(tab => tab.$TST.element.extraItemsContainerFrontRoot));
-        break;
-
-      case 'newtabbutton':
-      case 'new-tab-button':
-      case 'newtab-button':
-        roots.push.apply(roots, mNewTabButtonExtraItemsContainerRoots);
-        break;
-
-      case 'tabbar-top':
-        roots.push(mTabbarTopExtraItemsContainerRoot);
-        break;
-
-      case 'tabbar-bottom':
-        roots.push(mTabbarBottomExtraItemsContainerRoot);
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  return roots;
 }
 
-function setExtraContentsProperties({ id, tabId, place, part, properties }) {
+function setExtraContentsProperties({ id, tabs, place, part, properties }) {
   if (!id || !part || !properties)
     return;
 
-  const roots = collectExtraContentsRoots({ id, tabId, place });
+  const roots = collectExtraContentsRoots({ id, tabs, place });
   for (const root of roots) {
     const node = root.querySelector(`[part~="${getExtraContentsPartName(id)}"][part~="${part}"]`);
     if (!node)
@@ -527,11 +495,11 @@ function setExtraContentsProperties({ id, tabId, place, part, properties }) {
   }
 }
 
-function focusToExtraContents({ id, tabId, place, part }) {
+function focusToExtraContents({ id, tabs, place, part }) {
   if (!id || !part)
     return;
 
-  const roots = collectExtraContentsRoots({ id, tabId, place });
+  const roots = collectExtraContentsRoots({ id, tabs, place });
   for (const root of roots) {
     const node = root.querySelector(`[part~="${getExtraContentsPartName(id)}"][part~="${part}"]`);
     if (!node || typeof node.focus != 'function')
