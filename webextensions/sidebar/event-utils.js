@@ -51,14 +51,18 @@ export function isCopyAction(event) {
 }
 
 export function getElementTarget(eventOrTarget) {
-  const target = eventOrTarget instanceof Node ? eventOrTarget : eventOrTarget.target;
+  const target = eventOrTarget instanceof Node ?
+    eventOrTarget :
+    eventOrTarget.target;
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
   return target instanceof Element ? target : null;
 }
 
 export function getElementOriginalTarget(eventOrTarget) {
-  const target = eventOrTarget instanceof Node ? eventOrTarget : eventOrTarget.originalTarget || eventOrTarget.target;
+  const target = eventOrTarget instanceof Node ?
+    eventOrTarget :
+    (eventOrTarget.explicitOriginalTarget || eventOrTarget.originalTarget || eventOrTarget.target);
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
   return target instanceof Element ? target : null;
