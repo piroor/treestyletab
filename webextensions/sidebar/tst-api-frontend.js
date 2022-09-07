@@ -488,6 +488,7 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
   const livingTab = EventUtils.getTabFromEvent(event);
   const eventInfo = {
     ...EventUtils.getTabEventDetail(event, livingTab),
+    ...extraContentsInfo.fieldValues,
     originalTarget:     extraContentsInfo.target,
     $extraContentsInfo: null,
     ...details,
@@ -538,11 +539,7 @@ async function onExtraContentsInput(event) {
 async function onExtraContentsChange(event) {
   await notifyExtraContentsEvent(
     event,
-    TSTAPI.kNOTIFY_EXTRA_CONTENTS_CHANGE,
-    {
-      value:   'value' in event.originalTarget ? event.originalTarget.value : null,
-      checked: 'checked' in event.originalTarget ? event.originalTarget.checked : null,
-    }
+    TSTAPI.kNOTIFY_EXTRA_CONTENTS_CHANGE
   );
 }
 
@@ -579,6 +576,23 @@ async function onExtraContentsFocusEvent(event) {
   );
 }
 
+function getFieldValues(event) {
+  let target = event.originalTarget || event.target;
+  if (!target)
+    return {};
+
+  if (target.nodeType == Node.TEXT_NODE)
+    target = target.parentNode;
+
+  const fieldNode = target.closest('input, select, textarea');
+  if (!fieldNode)
+    return {};
+
+  return {
+    value:   'value' in fieldNode ? fieldNode.value : null,
+    checked: 'checked' in fieldNode ? fieldNode.checked : null,
+  };
+}
 
 export function getOriginalExtraContentsTarget(event) {
   try {
@@ -591,6 +605,7 @@ export function getOriginalExtraContentsTarget(event) {
       return {
         owners: new Set([extraContents.dataset.owner]),
         target: target.outerHTML,
+        fieldValues: getFieldValues(event),
       };
   }
   catch(_error) {
@@ -600,6 +615,7 @@ export function getOriginalExtraContentsTarget(event) {
   return {
     owners: new Set(),
     target: null,
+    fieldValues: {},
   };
 }
 
@@ -610,6 +626,7 @@ export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEv
     const eventInfo = {
       ...mousedown.detail,
       originalTarget:     extraContentsInfo.target,
+      ...extraContentsInfo.fieldValues,
       $extraContentsInfo: null,
     };
     const options = {
