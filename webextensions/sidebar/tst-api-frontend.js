@@ -481,9 +481,12 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
       extraContentsInfo.owners.size == 0)
     return;
 
-  event.stopPropagation();
-  event.stopImmediatePropagation();
-  event.preventDefault();
+  const target = EventUtils.getElementOriginalTarget(event);
+  if (target && target.closest('tab-item, button, input[type="submit"]')) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    event.preventDefault();
+  }
 
   const livingTab = EventUtils.getTabFromEvent(event);
   const eventInfo = {
@@ -559,13 +562,18 @@ async function onExtraContentsCompositionEvent(event) {
 }
 
 async function onExtraContentsFocusEvent(event) {
-  const extraContents = event.originalTarget.closest(`.extra-item`);
+  const target = EventUtils.getElementOriginalTarget(event);
+  if (!target)
+    return {};
+
+  const extraContents = target.closest(`.extra-item`);
 
   let relatedTarget = null;
-  const relatedExtraContents = event.relatedTarget && event.relatedTarget.closest(`.extra-item`);
+  const relatedTargetNode    = event.relatedTarget && EventUtils.getElementTarget(event.relatedTarget);
+  const relatedExtraContents = relatedTargetNode && relatedTargetNode.closest(`.extra-item`)
   if (relatedExtraContents &&
       extraContents.dataset.owner == relatedExtraContents.dataset.owner)
-    relatedTarget = event.relatedTarget.outerHTML;
+    relatedTarget = relatedTargetNode.outerHTML;
 
   await notifyExtraContentsEvent(
     event,
@@ -577,12 +585,9 @@ async function onExtraContentsFocusEvent(event) {
 }
 
 function getFieldValues(event) {
-  let target = event.originalTarget || event.target;
+  const target = EventUtils.getElementOriginalTarget(event);
   if (!target)
     return {};
-
-  if (target.nodeType == Node.TEXT_NODE)
-    target = target.parentNode;
 
   const fieldNode = target.closest('input, select, textarea');
   if (!fieldNode)
@@ -596,11 +601,8 @@ function getFieldValues(event) {
 
 export function getOriginalExtraContentsTarget(event) {
   try {
-    let target = event.originalTarget;
-    if (target && target.nodeType != Node.ELEMENT_NODE)
-      target = target.parentNode;
-
-    const extraContents = target.closest(`.extra-item`);
+    const target        = EventUtils.getElementOriginalTarget(event);
+    const extraContents = target && target.closest(`.extra-item`);
     if (extraContents)
       return {
         owners: new Set([extraContents.dataset.owner]),
