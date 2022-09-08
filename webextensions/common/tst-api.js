@@ -1131,16 +1131,16 @@ async function sanitizeMessage(message, params) {
 export async function getTargetTabs(message, sender) {
   await Tab.waitUntilTrackedAll(message.window || message.windowId);
   if (Array.isArray(message.tabs))
-    return getTabsFromWrongIds(message.tabs, sender);
+    return getTabsFromWrongIds(message.tabs, (message.window || message.windowId), sender);
   if (Array.isArray(message.tabIds))
-    return getTabsFromWrongIds(message.tabIds, sender);
+    return getTabsFromWrongIds(message.tabIds, (message.window || message.windowId), sender);
   if (message.window || message.windowId) {
     if (message.tab == '*' ||
         message.tabId == '*' ||
         message.tabs == '*' ||
         message.tabIds == '*')
       return Tab.getAllTabs(message.window || message.windowId, { iterator: true });
-    else
+    else if (!message.tab && !message.tabId)
       return Tab.getRootTabs(message.window || message.windowId, { iterator: true });
   }
   if (message.tab == '*' ||
@@ -1153,25 +1153,26 @@ export async function getTargetTabs(message, sender) {
     return Tab.getAllTabs(window.id, { iterator: true });
   }
   if (message.tab || message.tabId)
-    return getTabsFromWrongIds([message.tab || message.tabId], sender);
+    return getTabsFromWrongIds([message.tab || message.tabId], (message.window || message.windowId), sender);
   return [];
 }
 
-async function getTabsFromWrongIds(ids, sender) {
-  const window = await browser.windows.getLastFocused({
+async function getTabsFromWrongIds(ids, windowId, sender) {
+  const window = !windowId && await browser.windows.getLastFocused({
     populate: true
   }).catch(ApiTabs.createErrorHandler());
-  const activeWindow = TabsStore.windows.get(window.id) || window;
+  const activeWindow = TabsStore.windows.get(windowId || window.id) || window;
   const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, sender }).catch(error => {
     console.error(error);
     return null;
   })));
-  log('getTabsFromWrongIds ', ids, ' => ', tabs, 'sender: ', sender);
+  log('getTabsFromWrongIds: ', ids, ' => ', tabs, 'sender: ', sender, windowId);
 
   return tabs.flat().filter(tab => !!tab);
 }
 
 async function getTabFromWrongId({ id, activeWindow, sender }) {
+  log('getTabsFromWrongId: ', { id, activeWindow, sender });
   if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
     id = id.id;
   let query   = String(id).toLowerCase();
