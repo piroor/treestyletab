@@ -39,6 +39,10 @@ export async function blur(tab, unactivatableTabs = []) {
   }
 
   const allTabs     = await browser.tabs.query({ windowId: tab.windowId });
+
+  if (allTabs.length == (new Set([tab.id, ...unactivatableTabs.map(tab => tab.id)]).size))
+    return; // there is no other focusible tab!
+
   const previousTab = minUnactivatableIndex > 0 && allTabs[minUnactivatableIndex - 1];
   const nextTab     = maxUnactivatableIndex < allTabs.length - 1 && allTabs[maxUnactivatableIndex + 1];
   const allTabById  = new Map();
