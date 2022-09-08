@@ -1129,31 +1129,37 @@ async function sanitizeMessage(message, params) {
 // =======================================================================
 
 export async function getTargetTabs(message, sender) {
-  await Tab.waitUntilTrackedAll(message.window || message.windowId);
-  if (Array.isArray(message.tabs))
-    return getTabsFromWrongIds(message.tabs, (message.window || message.windowId), sender);
-  if (Array.isArray(message.tabIds))
-    return getTabsFromWrongIds(message.tabIds, (message.window || message.windowId), sender);
-  if (message.window || message.windowId) {
-    if (message.tab == '*' ||
-        message.tabId == '*' ||
-        message.tabs == '*' ||
-        message.tabIds == '*')
-      return Tab.getAllTabs(message.window || message.windowId, { iterator: true });
-    else if (!message.tab && !message.tabId)
-      return Tab.getRootTabs(message.window || message.windowId, { iterator: true });
+  const tabQuery = message.tabs || message.tabIds || message.tab || message.tabId;
+  const windowId = message.window || message.windowId;
+
+  if (Array.isArray(tabQuery))
+    await Promise.all(tabQuery.map(oneTabQuery => {
+      if (typeof oneTabQuery == 'number')
+        return Tab.waitUntilTracked(oneTabQuery)
+      return true;
+    }));
+  else if (typeof tabQuery == 'number')
+    await Tab.waitUntilTracked(tabQuery);
+
+  if (windowId)
+    await Tab.waitUntilTrackedAll(windowId);
+
+  if (Array.isArray(tabQuery))
+    return getTabsFromWrongIds(tabQuery, windowId, sender);
+  if (windowId) {
+    if (tabQuery == '*')
+      return Tab.getAllTabs(windowId, { iterator: true });
+    else if (!tabQuery)
+      return Tab.getRootTabs(windowId, { iterator: true });
   }
-  if (message.tab == '*' ||
-      message.tabId == '*' ||
-      message.tabs == '*' ||
-      message.tabIds == '*') {
+  if (tabQuery == '*') {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
     return Tab.getAllTabs(window.id, { iterator: true });
   }
-  if (message.tab || message.tabId)
-    return getTabsFromWrongIds([message.tab || message.tabId], (message.window || message.windowId), sender);
+  if (tabQuery)
+    return getTabsFromWrongIds([tabQuery], windowId, sender);
   return [];
 }
 
