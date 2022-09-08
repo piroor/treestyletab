@@ -13,8 +13,18 @@ export function split(selectors) {
   let parens     = 0;
   let angulars   = 0;
   let soFar      = '';
+  let escaped    = false;
   for (const char of selectors) {
-    if (char === '(') {
+    if (escaped) {
+      soFar += char;
+      escaped = false;
+      continue;
+    }
+    if (char === '\\' && !escaped) {
+      escaped = true;
+      continue;
+    }
+    else if (char === '(') {
       parens++;
     }
     else if (char === ')') {
