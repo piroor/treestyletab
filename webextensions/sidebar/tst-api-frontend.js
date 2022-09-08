@@ -8,7 +8,8 @@
 import * as TSTAPI from '/common/tst-api.js';
 
 import {
-  configs
+  configs,
+  log as internalLogger,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import { DOMUpdater } from '/extlib/dom-updater.js';
@@ -22,6 +23,10 @@ import * as TabsStore from '/common/tabs-store.js';
 
 import * as EventUtils from './event-utils.js';
 import * as Sidebar from './sidebar.js';
+
+function log(...args) {
+  internalLogger('sidebar/tst-api-frontend', ...args);
+}
 
 let mTargetWindow;
 
@@ -87,6 +92,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     case TSTAPI.kSET_EXTRA_CONTENTS:
+      log('setting contents: ', message, sender.id);
       switch (String(message.place).toLowerCase()) {
         case 'newtabbutton':
         case 'new-tab-button':
@@ -104,6 +110,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
         default: // tabs
           TSTAPI.getTargetTabs(message, sender).then(tabs => {
+            log(' => setting contents in tabs: ', tabs, message);
             for (const tab of tabs) {
               if (tab.$TST.element)
                 setExtraTabContents(tab.$TST.element, sender.id, message);
@@ -114,6 +121,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     case TSTAPI.kCLEAR_EXTRA_CONTENTS:
+      log('clearing contents: ', message, sender.id);
       switch (String(message.place).toLowerCase()) {
         case 'newtabbutton':
         case 'new-tab-button':
@@ -131,6 +139,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
         default: // tabs
           TSTAPI.getTargetTabs(message, sender).then(tabs => {
+            log(' => clearing contents in tabs: ', tabs, message);
             for (const tab of tabs) {
               if (tab.$TST.element)
                 clearExtraTabContents(tab.$TST.element, sender.id);
@@ -141,11 +150,14 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     case TSTAPI.kCLEAR_ALL_EXTRA_CONTENTS:
+      log('clearing all contents: ', sender.id);
       clearAllExtraTabContents(sender.id);
       return;
 
     case TSTAPI.kSET_EXTRA_CONTENTS_PROPERTIES:
+      log('setting properties for contents: ', message, sender.id);
       TSTAPI.getTargetTabs(message, sender).then(tabs => {
+        log(' => setting properties for contents in tabs: ', tabs, message);
         setExtraContentsProperties({
           id:    sender.id,
           tabs,
@@ -157,7 +169,9 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     case TSTAPI.kFOCUS_TO_EXTRA_CONTENTS:
+      log('focus to contents: ', message, sender.id);
       TSTAPI.getTargetTabs(message, sender).then(tabs => {
+        log(' => focus to contents in tabs: ', tabs, message);
         focusToExtraContents({
           id:    sender.id,
           tabs,

@@ -483,7 +483,8 @@ export const configs = new Configs({
     'sidebar/sidebar': false,
     'sidebar/size': false,
     'sidebar/subpanel': false,
-    'sidebar/tab-context-menu': false
+    'sidebar/tab-context-menu': false,
+    'sidebar/tst-api-frontend': false,
   },
   loggingConnectionMessages: false,
   enableLinuxBehaviors: false,
