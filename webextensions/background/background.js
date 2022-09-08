@@ -510,6 +510,9 @@ async function updateSubtreeCollapsed(tab) {
 }
 
 export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey, minConfirmCount } = {}) {
+  if (!windowId)
+    windowId = tabs[0].windowId;
+
   const grantedIds = new Set(configs.grantedRemovingTabIds);
   let count = 0;
   const tabIds = [];
@@ -531,14 +534,6 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
       deltaFromLastConfirmation < 500) {
     log('confirmToCloseTabs: skip confirmation and treated as granted');
     return true;
-  }
-
-  if (!windowId) {
-    const activeTabs = await browser.tabs.query({
-      active:   true,
-      windowId
-    }).catch(ApiTabs.createErrorHandler());
-    windowId = activeTabs[0].windowId;
   }
 
   const win = await browser.windows.get(windowId);

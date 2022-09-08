@@ -40,7 +40,9 @@ Window.onInitialized.addListener(window => {
     active:   true
   })
     .then(activeTabs => {
-      if (!window.lastActiveTab)
+      // There may be no active tab on a startup...
+      if (activeTabs.length > 0 &&
+          !window.lastActiveTab)
         window.lastActiveTab = activeTabs[0].id;
     });
 });
@@ -53,8 +55,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = TabsStore.windows.get(tab.windowId);
-  log('  lastActiveTab: ', window.lastActiveTab);
-  const lastActiveTab = Tab.get(window.lastActiveTab);
+  log('  lastActiveTab: ', window.lastActiveTab); // it may be blank on a startup
+  const lastActiveTab = Tab.get(window.lastActiveTab || info.previousTabId);
   cancelDelayedExpand(lastActiveTab);
   let shouldSkipCollapsed = (
     !info.byInternalOperation &&
