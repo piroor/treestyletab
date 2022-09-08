@@ -29,6 +29,7 @@ import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as Color from '/common/color.js';
 import * as BrowserTheme from '/common/browser-theme.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as CssSelectorParser from '/common/css-selector-parser.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -382,21 +383,40 @@ async function applyOwnTheme(style) {
   });
 }
 
+const CSS_SPECIFICITY_INCREASER = ':not(#___NEVER___#___USED___#___ID___)';
+
 function applyUserStyleRules() {
-  mUserStyleRules.textContent = `
-    /* Simple selectors in user styles may have specificity lower than the one of
-       built-in CSS declarations of TST itself.
-       CSS media query (@media) should not affect to specificity of selectors in
-       itself, but actually declarations with lower specificity are applied if they
-       are wrapped with any media query - just for now (Firefox 102).
-       So TST wraps all user styles inside a needless media query for convenience.
-       This workaround should allow people to write more simpler user styles.
-       See also: https://github.com/piroor/treestyletab/issues/3153#issuecomment-1184619369 */
-    @media all {
-      ${loadUserStyleRules()}
-    }
-  `;
+  mUserStyleRules.textContent = loadUserStyleRules();
+
+  // Simple selectors in user styles may have specificity lower than the one of
+  // built-in CSS declarations of TST itself.
+  // So TST adds needless selector which increase specificity of the selector.
+  // See also:
+  //   https://github.com/piroor/treestyletab/issues/3153
+  //   https://github.com/piroor/treestyletab/issues/3163
+  processAllStyleRulesIn(mUserStyleRules.sheet, rule => {
+    if (!rule.selectorText)
+      return;
+
+    rule.selectorText = CssSelectorParser.splitSelectors(rule.selectorText)
+      .map(selector => {
+        const parts = CssSelectorParser.splitSelectorParts(selector);
+        parts[0] += CSS_SPECIFICITY_INCREASER;
+        return parts.join(' ');
+      })
+      .join(', ');
+  });
 }
+
+function processAllStyleRulesIn(sheet, processor) {
+  for (const rule of sheet.cssRules) {
+    if (rule.styleSheet)
+      processAllStyleRulesIn(rule.styleSheet, processor);
+    else
+      processor(rule);
+  }
+}
+
 
 async function applyBrowserTheme(theme) {
   log('applying theme ', theme);
@@ -448,41 +468,30 @@ function updateContextualIdentitiesStyle() {
 function reloadAllMaskImages() {
   const delayedTasks = [];
   for (const sheet of document.styleSheets) {
-    reloadMaskImageIn(sheet, delayedTasks);
+    processAllStyleRulesIn(sheet, rule => {
+      if (!rule.style ||
+          !rule.style.maskImage)
+        return;
+
+      const background = rule.style.background;
+      const image = rule.style.maskImage;
+
+      if (background)
+        rule.style.background = 'none';
+      rule.style.maskImage = '';
+
+      delayedTasks.push(() => {
+        rule.style.maskImage = image;
+        if (background)
+          rule.style.background = background;
+      });
+    });
   }
   setTimeout(() => {
     for (const task of delayedTasks) {
       task();
     }
   }, 0);
-}
-
-function reloadMaskImageIn(sheet, delayedTasks) {
-  for (const rule of sheet.cssRules) {
-    if (rule.styleSheet)
-      reloadMaskImageIn(rule.styleSheet, delayedTasks);
-    else
-      reloadMaskImage(rule, delayedTasks);
-  }
-}
-
-function reloadMaskImage(rule, delayedTasks) {
-  if (!rule.style ||
-      !rule.style.maskImage)
-    return;
-
-  const background = rule.style.background;
-  const image = rule.style.maskImage;
-
-  if (background)
-    rule.style.background = 'none';
-  rule.style.maskImage = '';
-
-  delayedTasks.push(() => {
-    rule.style.maskImage = image;
-    if (background)
-      rule.style.background = background;
-  });
 }
 
 

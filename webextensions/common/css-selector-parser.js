@@ -5,9 +5,31 @@
 
 'use strict';
 
-export function split(selectors) {
+export function splitSelectors(selectors) {
   if (isAtRule(selectors))
     return [selectors];
+
+  return split(selectors, {
+    splitter: ',',
+    appendSplitter: false,
+  });
+}
+
+export function splitSelectorParts(selector) {
+  return split(selector, {
+    splitters: [
+      ' ', '\t', '\n', // https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_combinator
+      '>', // https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator
+      '+', // https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_combinator
+      '~', // https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_combinator
+      // '||', // https://developer.mozilla.org/en-US/docs/Web/CSS/Column_combinator
+    ],
+    appendSplitter: true,
+  }).filter(part => part !== '');
+}
+
+function split(input, { splitter, splitters, appendSplitter }) {
+  const splittersSet = splitters && new Set(splitters);
 
   const splitted = [];
   let parens     = 0;
@@ -16,13 +38,14 @@ export function split(selectors) {
   let escaped    = false;
   let singleQuoted = false;
   let doubleQuoted = false;
-  for (const char of selectors) {
+  for (const char of input) {
     if (escaped) {
       soFar += char;
       escaped = false;
       continue;
     }
     if (char === '\\' && !escaped) {
+      soFar += char;
       escaped = true;
       continue;
     }
@@ -50,13 +73,27 @@ export function split(selectors) {
     else if (char === ']') {
       angulars--;
     }
-    else if (char === ',') {
+    else if (splitter && char === splitter) {
       if (!parens &&
           !angulars &&
           !singleQuoted &&
           !doubleQuoted) {
         splitted.push(soFar.trim());
         soFar = '';
+        if (appendSplitter)
+          soFar += char;
+        continue;
+      }
+    }
+    else if (splittersSet && splittersSet.has(char)) {
+      if (!parens &&
+          !angulars &&
+          !singleQuoted &&
+          !doubleQuoted) {
+        splitted.push(soFar);
+        soFar = '';
+        if (appendSplitter)
+          soFar += char;
         continue;
       }
     }
