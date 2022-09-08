@@ -534,29 +534,29 @@ export function detachTab(child, options = {}) {
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
 
   if (parent) {
-  // we need to set children and parent via setters, to invalidate cached information.
-  parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
-  log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
-    windowId: parent.windowId,
-    tabId:    parent.id,
-    childIds: parent.$TST.childIds,
-    addedChildIds:   [],
-    removedChildIds: [child.id],
-    detached: true
-  });
-  if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
-    const cache = {};
-    TSTAPI.sendMessage({
-      type:      TSTAPI.kNOTIFY_TREE_DETACHED,
-      tab:       new TSTAPI.TreeItem(child, { cache }),
-      oldParent: new TSTAPI.TreeItem(parent, { cache })
-    }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
-  }
-  // We don't need to clear its parent information, because the old parent's
-  // "children" setter removes the parent ifself from the detached child
-  // automatically.
+    // we need to set children and parent via setters, to invalidate cached information.
+    parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
+    log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
+    SidebarConnection.sendMessage({
+      type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
+      windowId: parent.windowId,
+      tabId:    parent.id,
+      childIds: parent.$TST.childIds,
+      addedChildIds:   [],
+      removedChildIds: [child.id],
+      detached: true
+    });
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
+      const cache = {};
+      TSTAPI.sendMessage({
+        type:      TSTAPI.kNOTIFY_TREE_DETACHED,
+        tab:       new TSTAPI.TreeItem(child, { cache }),
+        oldParent: new TSTAPI.TreeItem(parent, { cache })
+      }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
+    }
+    // We don't need to clear its parent information, because the old parent's
+    // "children" setter removes the parent ifself from the detached child
+    // automatically.
   }
   else {
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
