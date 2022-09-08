@@ -1,0 +1,13 @@
+name: Clear needless "needs-triage" from closed issues
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  clear-needless-label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: andymckay/labeler@master
+        with:
+          remove-labels: "needs-triage"
