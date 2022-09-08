@@ -16,6 +16,9 @@ export function splitSelectors(selectors) {
 }
 
 export function splitSelectorParts(selector) {
+  if (isAtRule(selector))
+    return [selector];
+
   return split(selector, {
     splitters: [
       ' ', '\t', '\n', // https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_combinator
