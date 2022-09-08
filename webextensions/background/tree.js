@@ -533,11 +533,7 @@ export function detachTab(child, options = {}) {
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
 
-  if (!parent) {
-    log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
-    return;
-  }
-
+  if (parent) {
   // we need to set children and parent via setters, to invalidate cached information.
   parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
   log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
@@ -561,6 +557,12 @@ export function detachTab(child, options = {}) {
   // We don't need to clear its parent information, because the old parent's
   // "children" setter removes the parent ifself from the detached child
   // automatically.
+  }
+  else {
+    log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
+    // This can happen when the parent tab was detached via the native tab bar
+    // or Firefox's built-in command to detach tab from window.
+  }
 
   if (!options.toBeRemoved && !options.toBeDetached)
     updateTabsIndent(child);
