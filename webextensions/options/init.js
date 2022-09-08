@@ -768,7 +768,9 @@ function initPermissionOptions() {
     { onChanged: async (granted) => {
       if (granted) {
         // try to hide/show the tab to ensure the permission is really granted
-        const activeTabs = await browser.tabs.query({ active: true, currentWindow: true });
+        let activeTabs = await browser.tabs.query({ active: true, currentWindow: true });
+        if (activeTabs.length == 0)
+          activeTabs = await browser.tabs.query({ currentWindow: true });
         const tab = await browser.tabs.create({ active: false, windowId: activeTabs[0].windowId });
         await wait(200);
         let aborted = false;

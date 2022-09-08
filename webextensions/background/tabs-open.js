@@ -55,10 +55,14 @@ export async function loadURI(uri, options = {}) {
       tabId = options.tab.id;
     }
     else {
-      const tabs = await browser.tabs.query({
+      let tabs = await browser.tabs.query({
         windowId: options.windowId,
         active:   true
       }).catch(ApiTabs.createErrorHandler());
+      if (tabs.length == 0)
+        tabs = await browser.tabs.query({
+          windowId: options.windowId,
+        }).catch(ApiTabs.createErrorHandler());
       tabId = tabs[0].id;
     }
     let searchQuery = null;

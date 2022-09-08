@@ -165,11 +165,18 @@ export async function bookmarkTree(rootTabs, options = {}) {
 
 
 export async function openNewTabAs(options = {}) {
-  const currentTab = options.baseTab ||
-    Tab.get((await browser.tabs.query({
+  let activeTabs;
+  if (!options.baseTab) {
+    activeTabs = await browser.tabs.query({
       active:        true,
-      currentWindow: true
-    }).catch(ApiTabs.createErrorHandler()))[0].id);
+      currentWindow: true,
+    }).catch(ApiTabs.createErrorHandler());
+    if (activeTabs.length == 0)
+      activeTabs = await browser.tabs.query({
+        currentWindow: true,
+      }).catch(ApiTabs.createErrorHandler());
+  }
+  const activeTab = options.baseTab || Tab.get(activeTabs[0].id);
 
   let parent, insertBefore, insertAfter;
   let isOrphan = false;
@@ -180,11 +187,11 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       isOrphan    = true;
-      insertAfter = Tab.getLastTab(currentTab.windowId);
+      insertAfter = Tab.getLastTab(activeTab.windowId);
       break;
 
     case Constants.kNEWTAB_OPEN_AS_CHILD: {
-      parent = currentTab;
+      parent = activeTab;
       const refTabs = Tree.getReferenceTabsForNewChild(null, parent);
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
@@ -193,15 +200,15 @@ export async function openNewTabAs(options = {}) {
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
-      parent      = currentTab.$TST.parent;
+      parent      = activeTab.$TST.parent;
       insertAfter = parent && parent.$TST.lastDescendant;
       break;
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER:
-      options.cookieStoreId = currentTab.cookieStoreId;
+      options.cookieStoreId = activeTab.cookieStoreId;
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      parent       = currentTab.$TST.parent;
-      const refTabs = Tree.getReferenceTabsForNewNextSibling(currentTab, options);
+      parent       = activeTab.$TST.parent;
+      const refTabs = Tree.getReferenceTabsForNewNextSibling(activeTab, options);
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
     }; break;
@@ -215,7 +222,7 @@ export async function openNewTabAs(options = {}) {
         break;
 
       case Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE:
-        options.cookieStoreId = currentTab.cookieStoreId;
+        options.cookieStoreId = activeTab.cookieStoreId;
         break;
 
       default:
@@ -226,7 +233,7 @@ export async function openNewTabAs(options = {}) {
   TabsOpen.openNewTab({
     parent, insertBefore, insertAfter,
     isOrphan,
-    windowId:      currentTab.windowId,
+    windowId:      activeTab.windowId,
     inBackground:  !!options.inBackground,
     cookieStoreId: options.cookieStoreId
   });

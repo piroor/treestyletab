@@ -86,10 +86,15 @@ function onToolbarButtonClick(tab) {
 }
 
 async function onShortcutCommand(command) {
-  const activeTab = Tab.get((await browser.tabs.query({
+  let activeTabs = await browser.tabs.query({
     active:        true,
-    currentWindow: true
-  }).catch(ApiTabs.createErrorHandler()))[0].id);
+    currentWindow: true,
+  }).catch(ApiTabs.createErrorHandler());
+  if (activeTabs.length == 0)
+    activeTabs = await browser.tabs.query({
+      currentWindow: true,
+    }).catch(ApiTabs.createErrorHandler());
+  const activeTab = Tab.get(activeTabs[0].id);
   const selectedTabs = activeTab.$TST.multiselected ? Tab.getSelectedTabs(activeTab.windowId) : [activeTab];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
