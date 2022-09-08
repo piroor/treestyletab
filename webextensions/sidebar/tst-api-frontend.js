@@ -5,24 +5,24 @@
 */
 'use strict';
 
-import * as TSTAPI from '/common/tst-api.js';
+import { DOMUpdater } from '/extlib/dom-updater.js';
 
 import {
   configs,
   log as internalLogger,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import { DOMUpdater } from '/extlib/dom-updater.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TSTAPI from '/common/tst-api.js';
+
+import Tab from '/common/Tab.js';
+
+import * as EventUtils from './event-utils.js';
+import * as Sidebar from './sidebar.js';
 
 import {
   kTAB_ELEMENT_NAME,
 } from './components/TabElement.js';
-
-import Tab from '/common/Tab.js';
-import * as TabsStore from '/common/tabs-store.js';
-
-import * as EventUtils from './event-utils.js';
-import * as Sidebar from './sidebar.js';
 
 function log(...args) {
   internalLogger('sidebar/tst-api-frontend', ...args);

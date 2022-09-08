@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   dumpTab,
@@ -13,24 +15,22 @@ import {
   configs,
   notify
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from '/common/tabs-store.js';
-import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Bookmark from '/common/bookmark.js';
-import * as TreeBehavior from '/common/tree-behavior.js';
-import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as Constants from '/common/constants.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Sync from '/common/sync.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsStore from '/common/tabs-store.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
-import * as TabsOpen from './tabs-open.js';
-import * as TabsMove from './tabs-move.js';
 import * as TabsGroup from './tabs-group.js';
+import * as TabsMove from './tabs-move.js';
+import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('background/commands', ...args);

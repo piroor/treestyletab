@@ -5,14 +5,14 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   configs,
   log as internalLogger,
   isWindows,
 } from './common.js';
 import * as ApiTabs from '/common/api-tabs.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

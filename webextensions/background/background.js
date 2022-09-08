@@ -5,43 +5,42 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   wait,
   configs,
   sanitizeForHTMLText
 } from '/common/common.js';
-
-import * as Constants from '/common/constants.js';
-import * as MetricsData from '/common/metrics-data.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from '/common/constants.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Dialog from '/common/dialog.js';
+import * as MetricsData from '/common/metrics-data.js';
+import * as Permissions from '/common/permissions.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as Sync from '/common/sync.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as ContextualIdentities from '/common/contextual-identities.js';
-import * as Permissions from '/common/permissions.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as Dialog from '/common/dialog.js';
-import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
-import * as Sync from '/common/sync.js';
 import * as UniqueId from '/common/unique-id.js';
+import '/common/bookmark.js'; // we need to load this once in the background page to register the global listener
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 import * as ApiTabsListener from './api-tabs-listener.js';
-import * as Commands from './commands.js';
-import * as Tree from './tree.js';
-import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
-import * as TabContextMenu from './tab-context-menu.js';
+import * as Commands from './commands.js';
 import * as ContextMenu from './context-menu.js';
 import * as Migration from './migration.js';
+import * as TabContextMenu from './tab-context-menu.js';
+import * as Tree from './tree.js';
+import * as TreeStructure from './tree-structure.js';
 import './browser-action-menu.js';
-import './successor-tab.js';
 import './duplicated-tab-detection.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
+import './successor-tab.js';
 
 function log(...args) {
   internalLogger('background/background', ...args);

@@ -11,14 +11,14 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TSTAPI from '/common/tst-api.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as Sync from '/common/sync.js';
-import * as TabContextMenu from './tab-context-menu.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
 import * as Commands from './commands.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
 function log(...args) {
   internalLogger('background/context-menu', ...args);

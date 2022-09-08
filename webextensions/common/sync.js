@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   configs,
@@ -15,7 +17,6 @@ import {
   isLinux,
 } from './common.js';
 import * as Constants from '/common/constants.js';
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('common/sync', ...args);

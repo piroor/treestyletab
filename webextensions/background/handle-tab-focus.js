@@ -12,7 +12,6 @@ import {
   configs,
   isMacOS,
 } from '/common/common.js';
-
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';

@@ -26,6 +26,8 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   wait,
@@ -34,22 +36,20 @@ import {
   configs,
   shouldApplyAnimation
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as TabsStore from '/common/tabs-store.js';
-import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
-import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
-import * as TSTAPI from '/common/tst-api.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 import * as TabsMove from './tabs-move.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('background/tree', ...args);

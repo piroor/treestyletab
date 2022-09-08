@@ -5,11 +5,11 @@
 */
 'use strict';
 
-import * as Constants from './constants.js';
 import {
   log as internalLogger,
   configs
 } from './common.js';
+import * as Constants from './constants.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

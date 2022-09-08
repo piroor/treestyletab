@@ -33,9 +33,11 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
+
 import Tab from '/common/Tab.js';
-import * as Size from './size.js';
+
 import * as BackgroundConnection from './background-connection.js';
+import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

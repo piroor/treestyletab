@@ -26,8 +26,8 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,
@@ -35,10 +35,10 @@ import {
   configs,
   isLinux,
 } from './common.js';
-import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from './tabs-store.js';
+import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
+import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
 

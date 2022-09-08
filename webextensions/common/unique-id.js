@@ -10,9 +10,9 @@ import {
   configs,
   wait,
 } from './common.js';
+import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
-import * as ApiTabs from './api-tabs.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

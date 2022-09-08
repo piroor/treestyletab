@@ -12,12 +12,11 @@ import {
   sanitizeForHTMLText,
   compareAsNumber,
 } from '/common/common.js';
-
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from '/common/constants.js';
+import * as Dialog from '/common/dialog.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Dialog from '/common/dialog.js';
 
 import Tab from '/common/Tab.js';
 

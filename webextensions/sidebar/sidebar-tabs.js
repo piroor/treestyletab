@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+import { SequenceMatcher } from '/extlib/diff.js';
+
 import {
   log as internalLogger,
   wait,
@@ -12,20 +15,17 @@ import {
   shouldApplyAnimation
 } from '/common/common.js';
 
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from '/common/tabs-store.js';
+import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import { SequenceMatcher } from '/extlib/diff.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   kTAB_ELEMENT_NAME,

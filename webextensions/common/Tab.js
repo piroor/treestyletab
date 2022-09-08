@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   dumpTab,
@@ -14,16 +16,14 @@ import {
   configs
 } from './common.js';
 
-import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from './constants.js';
+import * as ContextualIdentities from './contextual-identities.js';
+import * as SidebarConnection from './sidebar-connection.js';
 import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
-import * as SidebarConnection from './sidebar-connection.js';
-import * as ContextualIdentities from './contextual-identities.js';
 
 import Window from './Window.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('common/Tab', ...args);

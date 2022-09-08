@@ -34,9 +34,9 @@ import {
 } from './common.js';
 
 import * as Constants from './constants.js';
-import * as TabsStore from './tabs-store.js';
-import * as SidebarConnection from './sidebar-connection.js';
 import * as ContextualIdentities from './contextual-identities.js';
+import * as SidebarConnection from './sidebar-connection.js';
+import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
 

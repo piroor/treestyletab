@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+import MenuUI from '/extlib/MenuUI.js';
+
 import {
   log as internalLogger,
   wait,
@@ -12,13 +15,10 @@ import {
   shouldApplyAnimation,
   compareAsNumber,
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TSTAPI from '/common/tst-api.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
-import MenuUI from '/extlib/MenuUI.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as Size from './size.js';

@@ -38,21 +38,21 @@ import {
   shouldApplyAnimation,
   isMacOS,
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Constants from '/common/constants.js';
+import * as MetricsData from '/common/metrics-data.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 
 import * as BackgroundConnection from './background-connection.js';
-import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
-import * as TabContextMenu from './tab-context-menu.js';
 import * as Scroll from './scroll.js';
+import * as Sidebar from './sidebar.js';
+import * as TabContextMenu from './tab-context-menu.js';
 import * as TSTAPIFrontend from './tst-api-frontend.js';
 
 function log(...args) {

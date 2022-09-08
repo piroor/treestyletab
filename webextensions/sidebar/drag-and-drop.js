@@ -37,15 +37,15 @@ import {
   isMacOS,
   isLinux,
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as BackgroundConnection from './background-connection.js';
+import * as Constants from '/common/constants.js';
+import * as EventUtils from './event-utils.js';
+import * as Scroll from './scroll.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as Scroll from './scroll.js';
-import * as EventUtils from './event-utils.js';
-import * as SidebarTabs from './sidebar-tabs.js';
-import * as BackgroundConnection from './background-connection.js';
 
 import Tab from '/common/Tab.js';
 

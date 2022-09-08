@@ -5,6 +5,7 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
 import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
@@ -17,53 +18,50 @@ import {
   isMacOS,
   notify,
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from '/common/tabs-store.js';
+import * as Bookmark from '/common/bookmark.js';
+import * as BrowserTheme from '/common/browser-theme.js';
+import * as Color from '/common/color.js';
+import * as Constants from '/common/constants.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as CssSelectorParser from '/common/css-selector-parser.js';
+import * as MetricsData from '/common/metrics-data.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TSTAPI from '/common/tst-api.js';
-import * as ContextualIdentities from '/common/contextual-identities.js';
-import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
-import * as Color from '/common/color.js';
-import * as BrowserTheme from '/common/browser-theme.js';
-import * as MetricsData from '/common/metrics-data.js';
-import * as CssSelectorParser from '/common/css-selector-parser.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
+import * as BackgroundConnection from './background-connection.js';
+import * as CollapseExpand from './collapse-expand.js';
+import * as DragAndDrop from './drag-and-drop.js';
+import * as EventUtils from './event-utils.js';
+import * as GapCanceller from './gap-canceller.js';
+import * as Indent from './indent.js';
+import * as SidebarCache from './sidebar-cache.js';
+import * as SidebarTabs from './sidebar-tabs.js';
+import * as PinnedTabs from './pinned-tabs.js';
+import * as RestoringTabCount from './restoring-tab-count.js';
+import * as Scroll from './scroll.js';
+import * as Size from './size.js';
+import * as SubPanel from './subpanel.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
-import { TabTwistyElement } from './components/TabTwistyElement.js';
 import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
-import { TabFaviconElement } from './components/TabFaviconElement.js';
-import { TabLabelElement } from './components/TabLabelElement.js';
 import { TabCounterElement } from './components/TabCounterElement.js';
-import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
 import {
   kTAB_ELEMENT_NAME,
   TabElement,
   TabInvalidationTarget,
   TabUpdateTarget,
 } from './components/TabElement.js';
-
-import * as BackgroundConnection from './background-connection.js';
-import * as EventUtils from './event-utils.js';
-import * as SidebarCache from './sidebar-cache.js';
-import * as SidebarTabs from './sidebar-tabs.js';
-import * as PinnedTabs from './pinned-tabs.js';
-import * as DragAndDrop from './drag-and-drop.js';
-import * as RestoringTabCount from './restoring-tab-count.js';
-import * as CollapseExpand from './collapse-expand.js';
-import * as Size from './size.js';
-import * as Indent from './indent.js';
-import * as Scroll from './scroll.js';
-import * as GapCanceller from './gap-canceller.js';
-import * as TabContextMenu from './tab-context-menu.js';
-import * as SubPanel from './subpanel.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
+import { TabFaviconElement } from './components/TabFaviconElement.js';
+import { TabLabelElement } from './components/TabLabelElement.js';
+import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
+import { TabTwistyElement } from './components/TabTwistyElement.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar', ...args);

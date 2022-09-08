@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import MenuUI from '/extlib/MenuUI.js';
+import RichConfirm from '/extlib/RichConfirm.js';
+
 import {
   log as internalLogger,
   configs,
@@ -15,15 +18,13 @@ import {
   sanitizeForHTMLText,
   isLinux,
 } from './common.js';
-import * as Permissions from './permissions.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
-import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as Dialog from './dialog.js';
-import Tab from '/common/Tab.js';
+import * as Permissions from './permissions.js';
+import * as UserOperationBlocker from './user-operation-blocker.js';
 
-import MenuUI from '/extlib/MenuUI.js';
-import RichConfirm from '/extlib/RichConfirm.js';
+import Tab from '/common/Tab.js';
 
 function log(...args) {
   internalLogger('common/bookmarks', ...args);

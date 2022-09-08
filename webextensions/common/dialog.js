@@ -14,10 +14,11 @@ import {
   sanitizeForHTMLText,
 } from '/common/common.js';
 
-import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
+import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
+
 import Tab from './Tab.js';
 
 function log(...args) {
