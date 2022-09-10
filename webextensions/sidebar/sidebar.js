@@ -765,7 +765,9 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   const firstTab = Tab.getFirstUnpinnedTab(mTargetWindow);
   if (firstTab) {
     const lastTab = Tab.getLastUnpinnedTab(mTargetWindow);
-    if (!lastTab) {
+    if (!firstTab.$TST.element ||
+        !lastTab ||
+        !lastTab.$TST.element) {
       log('Failed to update layout: missing last visible tab, retrying with delay');
       reserveToUpdateTabbarLayout({ reasons, timeout });
       return;
