@@ -1179,8 +1179,6 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "紧随源标签页的同级项"
   },
-  "config_autoAttachOnOpenedWithOwner_after": {
-  },
   "config_insertNewTabFromPinnedTabAt_caption": {
     "message": "打开自固定标签页的新建子标签页（将显示为根标签页）的插入位置",
     "hash": "1b592c0035e4eba9b82695ac4726df67"
@@ -2268,8 +2266,6 @@
   "config_all_caption": {
     "message": "所有配置",
     "hash": "e0437bb7bd8d7ce28700078c6bb12418"
-  },
-  "config_terms_delimiter": {
   },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
