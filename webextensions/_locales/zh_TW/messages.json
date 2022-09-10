@@ -179,19 +179,19 @@
       "syncAvailable_notification_title":   { "message": "Tabs are sendable to other devices from TST now." },
       "syncAvailable_notification_message": { "message": "分頁能夠在您的裝置間傳送。請點擊此處以為您的裝置設置方便辨認的名稱。" },
       "syncAvailable_notification_message_linux": { "message": "分頁能夠在您的裝置間傳送。請點擊按鈕以為您的裝置設置方便辨認的名稱。" },
-      "sentTabs_notification_title":            { "message": "\u200b" },
+      "sentTabs_notification_title":            { "message": "\\u200b" },
       "sentTabs_notification_message":          { "message": "將分頁傳送至 $DEVICE$",
         "placeholders": {
           "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
         }},
-      "sentTabs_notification_title_multiple":   { "message": "\u200b" },
+      "sentTabs_notification_title_multiple":   { "message": "\\u200b" },
       "sentTabs_notification_message_multiple": { "message": "將分頁傳送至 $DEVICE$",
         "placeholders": {
           "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
         }},
-      "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
+      "sentTabsToAllDevices_notification_title":            { "message": "\\u200b" },
       "sentTabsToAllDevices_notification_message":          { "message": "將分頁傳送至所有裝置" },
-      "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
+      "sentTabsToAllDevices_notification_title_multiple":   { "message": "\\u200b" },
       "sentTabsToAllDevices_notification_message_multiple": { "message": "將分頁傳送至所有裝置" },
       "receiveTabs_notification_title":            { "message": "$DEVICE$ 的分頁",
         "placeholders": {
@@ -249,7 +249,7 @@
     "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
     "message_startup_userChromeCss_description_2": { "message": "。但" },
     "message_startup_userChromeCss_description_note": { "message": "這種自訂方法非常低階，在 Firefox 的後續版本可能無效甚至產生問題。有自信解決可能問題時再行使用，並請自行負責。" },
-    "message_startup_userChromeCss_description_3": { "message": "\u200b" },
+    "message_startup_userChromeCss_description_3": { "message": "\\u200b" },
   
     "api_requestedPermissions_title": { "message": "要求操作權限" },
     "api_requestedPermissions_message": { "message": "⚠附加元件「$NAME$」想利用 Tree Style Tab API 操作\n\n$PERMISSIONS$\n\n，若允許請點擊此處賦與權限。",
@@ -395,7 +395,7 @@
     "config_longPressOnNewTabButton_newTabAction":         { "message": "開新分頁於特定位置" },
     "config_longPressOnNewTabButton_contextualIdentities": { "message": "開新容器分頁" },
     "config_longPressOnNewTabButton_none":                 { "message": "不做任何事" },
-    "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
+    "config_longPressOnNewTabButton_after":                { "message": "\\u200b" },
     "config_showNewTabActionSelector_label":               { "message": "顯示特定位置開新分頁按鈕" },
     "config_showContextualIdentitiesSelector_label":       { "message": "顯示新容器分頁按鈕" },
   
@@ -406,7 +406,7 @@
     "config_autoAttachOnNewTabCommand_child": { "message": "目前分頁之子分頁" },
     "config_autoAttachOnNewTabCommand_sibling": { "message": "目前分頁同層分頁" },
     "config_autoAttachOnNewTabCommand_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-    "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
+    "config_autoAttachOnNewTabCommand_after": { "message": "\\u200b" },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "䦒啟的分頁網址為" },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "時，視同以其他動作開新分頁" },
   
@@ -417,7 +417,7 @@
     "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "目前分頁同層分頁" },
     "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "目前分頁同層相鄰分頁" },
     "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "與 Ctrl-click 相同 (next sibling, same container)" },
-    "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
+    "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\\u200b" },
   
     "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "For Ctrl/⌘-click, open new blank tab as" },
     "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(不控制)" },
@@ -426,7 +426,7 @@
     "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "目前分頁之子分頁" },
     "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "目前分頁同層相鄰分頁" },
     "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "next sibling, same container" },
-    "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
+    "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\\u200b" },
 
     "config_autoAttachWithURL_caption": { "message": "非空白分頁的新分頁" },
   
@@ -438,7 +438,7 @@
     "config_autoAttachOnDuplicated_child": { "message": "目前分頁之子分頁" },
     "config_autoAttachOnDuplicated_sibling": { "message": "目前分頁同層分頁" },
     "config_autoAttachOnDuplicated_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-    "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
+    "config_autoAttachOnDuplicated_after": { "message": "\\u200b" },
   
     "config_fromExternal_caption": { "message": "Firefox 之外開啟的分頁" },
     "config_autoAttachOnOpenedFromExternal_before": { "message": "開啟為" },
@@ -447,7 +447,7 @@
     "config_autoAttachOnOpenedFromExternal_child": { "message": "目前分頁之子分頁" },
     "config_autoAttachOnOpenedFromExternal_sibling": { "message": "目前分頁同層分頁" },
     "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-    "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
+    "config_autoAttachOnOpenedFromExternal_after": { "message": "\\u200b" },
     "config_inheritContextualIdentityToTabsFromExternal_label": { "message": "繼承目前分頁之容器" },
     "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(不控制)" },
     "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Inherit from the parent tab on the tree" },
@@ -460,7 +460,7 @@
     "config_autoAttachSameSiteOrphan_child": { "message": "目前分頁之子分頁" },
     "config_autoAttachSameSiteOrphan_sibling": { "message": "同前分頁同層分頁" },
     "config_autoAttachSameSiteOrphan_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-    "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
+    "config_autoAttachSameSiteOrphan_after": { "message": "\\u200b" },
     "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Container:" },
     "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(不控制)" },
     "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Inherit from the parent tab on the tree" },
@@ -473,7 +473,7 @@
     "config_autoAttachOnAnyOtherTrigger_child": { "message": "目前分頁之子分頁" },
     "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "同前分頁同層分頁" },
     "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-    "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
+    "config_autoAttachOnAnyOtherTrigger_after": { "message": "\\u200b" },
     "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*警告: This option has a risk breaking behavior of other addons." },
     "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Container:" },
     "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(不控制)" },
@@ -651,7 +651,7 @@
     "config_advanced_caption": { "message": "進階設定" },
   
     "config_bookmarkTreeFolderName_before": { "message": "「此樹加入書籤」時的資料夾名：" },
-    "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+    "config_bookmarkTreeFolderName_after": { "message": "\\u200b" },
     "config_bookmarkTreeFolderName_description": { "message": "可使用以下的佔位符：%TITLE%(第一個分頁的標題)、%URL%(第一個分頁的網址)、%YEAR%(4 位數的年份)、%MONTH%(2 位數的月份)、%DATE%(2 位數的日期)" },
   
     "config_defaultBookmarkParentId_label_before":  { "message": "加入新書籤到" },
@@ -756,7 +756,7 @@
   
     "config_all_caption": { "message": "全部設定" },
   
-    "config_terms_delimiter": { "message": "\u200b" },
+    "config_terms_delimiter": { "message": "\\u200b" },
 
     "tabContextMenu_newTab_label":      { "message": "新分頁 (&W)" },
   

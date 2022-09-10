@@ -633,7 +633,7 @@
         "hash": "e7071ae5b062918ec74e5cc5ae50e373"
     },
     "message_startup_userChromeCss_description_3": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "d905a836615e096ddcdd4b5360fef509"
     },
     "api_requestedPermissions_title": {
@@ -1025,7 +1025,7 @@
         "hash": "13b5f38218d1ebdd99cd929f5092c99b"
     },
     "config_syncDeviceExpirationDays_label_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "2ff57631264dc28c905f22b9f120b5ad"
     },
     "config_syncDeviceExpirationDays_label_after": {
@@ -1073,7 +1073,7 @@
         "hash": "cb1e8ee431dcf1087099758e3a26c0ff"
     },
     "config_longPressOnNewTabButton_after": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
     "config_showNewTabActionSelector_label": {
@@ -1229,7 +1229,7 @@
         "hash": "68b7be2c2199f59cd4010c0413d33846"
     },
     "config_autoAttachOnOpenedFromExternal_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
     },
     "config_autoAttachOnOpenedFromExternal_noControl": {
@@ -1277,7 +1277,7 @@
         "hash": "6d9400686c5fd159966123e8c7d73bf2"
     },
     "config_autoAttachSameSiteOrphan_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
     },
     "config_autoAttachSameSiteOrphan_noControl": {
@@ -1325,7 +1325,7 @@
         "hash": "b365c004a995a75d37a421d5377b5681"
     },
     "config_autoAttachOnAnyOtherTrigger_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
     },
     "config_autoAttachOnAnyOtherTrigger_noControl": {
@@ -1925,7 +1925,7 @@
         "hash": "46d9ae37bed79016f68a06e41d246291"
     },
     "config_bookmarkTreeFolderName_after": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
     "config_bookmarkTreeFolderName_description": {
@@ -1961,7 +1961,7 @@
         "hash": "8802e1f6f7cf2ff4db4e8d0aaf9bc73e"
     },
     "config_userStyleRules_description_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "bc1357f01fd9f60f7fba1eb7fb3ee6c5"
     },
     "config_userStyleRules_description_link_label": {
@@ -2033,7 +2033,7 @@
         "hash": "903240c121c787c03ebf3d32229d36b8"
     },
     "config_addons_description_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "9003599648d97da3215830dbf6d548b8"
     },
     "config_addons_description_link_label": {
@@ -2185,7 +2185,7 @@
         "hash": "7ff05a0f0be2c1b3a45ff150d49c4b29"
     },
     "config_maximumAcceptableDelayForTabDuplication_before": {
-        "message": "\u200b",
+        "message": "\\u200b",
         "hash": "55dacfa185bc95de8863bf133d726af3"
     },
     "config_maximumAcceptableDelayForTabDuplication_after": {
