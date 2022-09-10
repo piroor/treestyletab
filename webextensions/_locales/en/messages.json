@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "Tabs are sendable to other devices from TST now." },
   "syncAvailable_notification_message": { "message": "Tabs can be transferred between your devices. Please click here to set an identifiable name to this device." },
   "syncAvailable_notification_message_linux": { "message": "Tabs can be transferred between your devices. Please click the button to set an identifiable name to this device." },
-  "sentTabs_notification_title":            { "message": "\\u200b" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Tabs is sent to $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Tabs are sent to $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Tab is sent to all devices" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Tabs are sent to all devices" },
   "receiveTabs_notification_title":            { "message": "Tab from $DEVICE$",
     "placeholders": {
@@ -398,7 +398,7 @@
   "config_autoAttachOnOpenedWithOwner_child": { "message": "a child of the parent tab" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "a sibling of the parent tab" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "the next sibling of the parent tab" },
-  "config_autoAttachOnOpenedWithOwner_after": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs (will appear as root tabs) from pinned tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
@@ -417,7 +417,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "specify where the new tab is opened in" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "choose container" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nothing)" },
-  "config_longPressOnNewTabButton_after":                { "message": "\\u200b" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in, when the button is pointed" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Show container selector button on the \"New Tab\" button, when the button is pointed" },
 
@@ -428,9 +428,9 @@
   "config_autoAttachOnNewTabCommand_child": { "message": "a child of the current tab" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "the next sibling of the current tab" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Guess a newly opened tab as opened by \"New Blank Tab\" action, when it is opened with the URL " },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\\u200b" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "For middle click, open new blank tab as" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(no control)" },
@@ -439,7 +439,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "same to Ctrl-click (next sibling, same container)" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "For Ctrl/⌘-click, open new blank tab as" },
   "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(no control)" },
@@ -448,7 +448,7 @@
   "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "next sibling, same container" },
-  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Non-blank new tabs" },
 
@@ -460,7 +460,7 @@
   "config_autoAttachOnDuplicated_child": { "message": "a child of the current tab" },
   "config_autoAttachOnDuplicated_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "the next sibling of the current tab" },
-  "config_autoAttachOnDuplicated_after": { "message": "\\u200b" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_fromExternal_caption": { "message": "New tab from outside Firefox" },
   "config_autoAttachOnOpenedFromExternal_before": { "message": "Open as" },
@@ -469,7 +469,7 @@
   "config_autoAttachOnOpenedFromExternal_child": { "message": "a child of the current tab" },
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "the next sibling of the current tab" },
-  "config_autoAttachOnOpenedFromExternal_after": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Container:" },
   "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(no control)" },
   "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Inherit from the parent tab on the tree" },
@@ -482,7 +482,7 @@
   "config_autoAttachSameSiteOrphan_child": { "message": "a child of the current tab" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "the next sibling of the current tab" },
-  "config_autoAttachSameSiteOrphan_after": { "message": "\\u200b" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Container:" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(no control)" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Inherit from the parent tab on the tree" },
@@ -495,7 +495,7 @@
   "config_autoAttachOnAnyOtherTrigger_child": { "message": "a child of the current tab" },
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "the next sibling of the current tab" },
-  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
   "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*CAUTION: This option has a risk breaking behavior of other addons." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Container:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(no control)" },
@@ -665,11 +665,11 @@
   "config_advanced_caption": { "message": "Advanced" },
 
   "config_bookmarkTreeFolderName_before": { "message": "Folder name for \"Bookmark this Tree\":" },
-  "config_bookmarkTreeFolderName_after": { "message": "\\u200b" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %SHORT_YEAR% (year, two digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Create new bookmarks under" },
-  "config_defaultBookmarkParentId_label_after":   { "message": "\\u200b" },
+  "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
   "config_supportTabsMultiselect_label": { "message": "Use tab multiselection API to control tab focus (*depends on a built-in preference \"browser.tabs.multiselect\"=\"true\" of Firefox itself)" },
 

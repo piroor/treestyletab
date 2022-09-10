@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "Теперь вкладки можно отправлять на другие устройства с TST." },
   "syncAvailable_notification_message": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присвоить этому устройству уникальное имя." },
   "syncAvailable_notification_message_linux": { "message": "Вкладки можно переносить между вашими устройствами. Нажмите кнопку, чтобы присоить этому устройству уникальное имя." },
-  "sentTabs_notification_title":            { "message": "\\u200b" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Вкладки отправлены на $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Вкладки отправлены на $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox на устройстве X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Вкладка отправлена на все устройства" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Вкладки отправлены на все устройства" },
   "receiveTabs_notification_title":            { "message": "Вкладка из $DEVICE$",
     "placeholders": {
@@ -398,7 +398,7 @@
   "config_autoAttachOnOpenedWithOwner_child": { "message": "дочернюю вкладку" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachOnOpenedWithOwner_after": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Позиция новых дочерних вкладок открытых из закрепленных (будут отображаться как корневые)" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Не контролируется (решает Firefox или другие аддоны)" },
@@ -417,7 +417,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "указать, где откроется новая вкладка" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "выбрать контейнер" },
   "config_longPressOnNewTabButton_none":                 { "message": "(ничего)" },
-  "config_longPressOnNewTabButton_after":                { "message": "\\u200b" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "Показывать кнопку выбора позиции на кнопке \"Новая вкладка\" " },
   "config_showContextualIdentitiesSelector_label":       { "message": "Показывать кнопку выбора контейнера на кнопке \"Новая вкладка\" " },
 
@@ -428,9 +428,9 @@
   "config_autoAttachOnNewTabCommand_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Считать недавно открытой вкладку, открытую действием \"Новая вкладка\", если она открывается с URL: " },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\\u200b" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Щелчком СКМ, открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(не контролируется)" },
@@ -439,7 +439,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "тоже что и с Ctrl (следующую одноуровневую, тот же контейнер)" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "Щелчком ЛКМ+Ctrl, открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(не контролируется)" },
@@ -448,7 +448,7 @@
   "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "следующую одноуровневую, тот же контейнер" },
-  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Непустые новые вкладки" },
 
@@ -460,7 +460,7 @@
   "config_autoAttachOnDuplicated_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnDuplicated_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachOnDuplicated_after": { "message": "\\u200b" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_fromExternal_caption": { "message": "Новая вкладка передается извне Firefox" },
   "config_autoAttachOnOpenedFromExternal_before": { "message": "Открыть как" },
@@ -469,7 +469,7 @@
   "config_autoAttachOnOpenedFromExternal_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachOnOpenedFromExternal_after": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Контейнер:" },
   "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(не контролируется)" },
   "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
@@ -482,7 +482,7 @@
   "config_autoAttachSameSiteOrphan_child": { "message": "дочернюю текущей" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachSameSiteOrphan_after": { "message": "\\u200b" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Контейнер:" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(не контролируется)" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Наследовать от родительской вкладки в дереве" },
@@ -495,7 +495,7 @@
   "config_autoAttachOnAnyOtherTrigger_child": { "message": "дочернюю текущей" },
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "следующую одноуровневую" },
-  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
   "config_autoAttachOnAnyOtherTrigger_caution": { "message": " * ВНИМАНИЕ: этот параметр может нарушить работу других надстроек." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Контейнер:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(не контролируется)" },
@@ -665,11 +665,11 @@
   "config_advanced_caption": { "message": "Расширенные настройки" },
 
   "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Это дерево в закладки…\":" },
-  "config_bookmarkTreeFolderName_after": { "message": "\\u200b" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %SHORT_YEAR% (год, 2 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
-  "config_defaultBookmarkParentId_label_after":   { "message": "\\u200b" },
+  "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс API выбора нескольких вкладок  ( * зависит от \"browser.tabs.multiselect\"=\"true\")" },
 

@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "Tabs können nun auf andere Geräte gesendet werden." },
   "syncAvailable_notification_message": { "message": "Tabs köknnen nun zwischen Geräten synchronisiert werden. Hier klicken um diesem Gerät einen Namen zu geben." },
   "syncAvailable_notification_message_linux": { "message": "Tabs köknnen nun zwischen Geräten synchronisiert werden. Auf die Schaltfläche klicken um diesem Gerät einen Namen zu geben." },
-  "sentTabs_notification_title":            { "message": "\\u200b" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Tabs werden an $DEVICE$ gesendet",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox auf Gerät X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Tabs wurden an $DEVICE$ gesendet",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox auf Gerät X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Tab wird an alle Geräte gesendet" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Tabs werden an alle Geräte gesendet" },
   "receiveTabs_notification_title":            { "message": "Tab von $DEVICE$",
     "placeholders": {
@@ -395,7 +395,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "auszuwählen, wo der neue Tab geöffnet werden soll" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "eine Tab-Umgebung auszuwählen" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nichts)" },
-  "config_longPressOnNewTabButton_after":                { "message": "\\u200b" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
 
@@ -408,7 +408,7 @@
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "öffnen" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer leerer Tab\" geöffnet worden, wenn er mit dieser URL geöffnet wird:" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\\u200b" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(keine Steuerung)" },
@@ -417,7 +417,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "identisch mit Strg-Klick (nächster Nachbar, gleiche Umgebung)" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "Für Strg/⌘-Klick, neuen leeren Tab öffnen als" },
   "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(keine Steuerung)" },
@@ -426,7 +426,7 @@
   "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "direkter Nachbar, gleiche Umgebung" },
-  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\\u200b" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Nicht-leere neue Tabs" },
 
@@ -438,7 +438,7 @@
   "config_autoAttachOnDuplicated_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnDuplicated_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachOnDuplicated_after": { "message": "\\u200b" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_fromExternal_caption": { "message": "Neuer Tab außerhalb von Firefox" },
   "config_autoAttachOnOpenedFromExternal_before": { "message": "Öffnen als" },
@@ -447,7 +447,7 @@
   "config_autoAttachOnOpenedFromExternal_child": { "message": "untergeordneten Tab des aktuellen Tab" },
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachOnOpenedFromExternal_after": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Tab-Umgebung:" },
   "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(keine Steuerung)" },
   "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
@@ -460,7 +460,7 @@
   "config_autoAttachSameSiteOrphan_child": { "message": "untergeordneten Tab des aktuellen Tab" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachSameSiteOrphan_after": { "message": "\\u200b" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Tab-Umgebung:" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(keine Steuerung)" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Vom übergeordneten Tab im Zweig erben" },
@@ -473,7 +473,7 @@
   "config_autoAttachOnAnyOtherTrigger_child": { "message": "untergeordneten Tab des aktuellen Tab" },
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
   "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*ACHTUNG: Diese Option birgt die Gefahr, andere Erweiterungen zu behindern." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Tab-Umgebung:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(keine Steuerung)" },
@@ -651,11 +651,11 @@
   "config_advanced_caption": { "message": "Erweitert" },
 
   "config_bookmarkTreeFolderName_before": { "message": "Ordnernamen für \"Lesezeichen für diesen Zweig erstellen\":" },
-  "config_bookmarkTreeFolderName_after": { "message": "\\u200b" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "Verfügbare Platzhalter: %TITLE% (Titel des ersten Tabs), %URL% (URL des ersten Tabs), %YEAR% (Jahr, vierstellig), %MONTH% (Monat, zweistellig), %DATE% (Tag, zweistellig)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Neue Lesezeichen erstellen unter" },
-  "config_defaultBookmarkParentId_label_after":   { "message": "\\u200b" },
+  "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
   "config_supportTabsMultiselect_label": { "message": "Verwende Schnittstelle zur Mehrfachauswahl von Tabs um den Tab-Fokus zu steuern (*hängt von der eingebauten Einstellung von Firefox \"browser.tabs.multiselect\"=\"true\" ab)" },
 

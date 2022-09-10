@@ -179,19 +179,19 @@
   "syncAvailable_notification_title":   { "message": "タブをTSTから他の端末に送れます" },
   "syncAvailable_notification_message": { "message": "他の端末との間でタブを送受信できます。ここをクリックして、この端末に分かりやすい名前を設定してください。" },
   "syncAvailable_notification_message_linux": { "message": "他の端末との間でタブを送受信できます。ボタンをクリックして、この端末に分かりやすい名前を設定してください。" },
-  "sentTabs_notification_title":            { "message": "\\u200b" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "$DEVICE$ にタブを送信しました",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "$DEVICE$ にタブを送信しました",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "すべての端末にタブを送信しました" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\\u200b" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "すべての端末にタブを送信しました" },
   "receiveTabs_notification_title":            { "message": "$DEVICE$ からのタブ",
     "placeholders": {
@@ -249,7 +249,7 @@
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": "を参照して下さい。ただし、" },
   "message_startup_userChromeCss_description_note": { "message": "この方法は低レイヤのカスタマイズ手段のため、Firefoxの将来のバージョンで使えなくなったり、トラブルの原因になったりする恐れがあります。自己の責任と判断に基づいて、トラブルを自己解決できる自信がある場合にだけこの方法を使って下さい。" },
-  "message_startup_userChromeCss_description_3": { "message": "\\u200b" },
+  "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
   "api_requestedPermissions_title": { "message": "アクセス権の要求" },
   "api_requestedPermissions_message": { "message": "⚠アドオン「$NAME$」がTree Style TabのAPIを経由して以下のことをしようとしています。\n\n$PERMISSIONS$\n\n許可する場合はこの通知をクリックしてアドオンに許可を与えてください。",
@@ -378,7 +378,7 @@
   "config_syncDeviceInfo_name_description_link": { "message": "Firefox Syncと同じ端末名" },
   "config_syncDeviceInfo_name_description_href": { "message": "https://accounts.firefox.com/settings/clients" },
   "config_syncDeviceInfo_name_description_after": { "message": "に設定することを推奨します）" },
-  "config_syncDeviceExpirationDays_label_before": { "message": "\\u200b" },
+  "config_syncDeviceExpirationDays_label_before": { "message": "\u200b" },
   "config_syncDeviceExpirationDays_label_after": { "message": "日以上接続接続していない端末は自動的に端末一覧から削除する（\"0\"=自動削除しない）" },
   "config_syncUnsendableUrlPattern_label": { "message": "送信できないタブを識別するためのマッチングルール（※Firefox自身の \"services.sync.engine.tabs.filteredUrls\" と同じ内容を設定してください）" },
   "config_otherDevices_caption": { "message": "使用可能な他の端末:" },
@@ -413,7 +413,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "関係を指定して新しいタブを開く" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "コンテナータブを開く" },
   "config_longPressOnNewTabButton_none":                 { "message": "何もしない" },
-  "config_longPressOnNewTabButton_after":                { "message": "\\u200b" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "ボタンをポイントした時に、関係を指定して新しいタブを開くためのボタンを表示する" },
   "config_showContextualIdentitiesSelector_label":       { "message": "ボタンをポイントした時に、コンテナータブを選択するためのボタンを表示する" },
 
@@ -459,7 +459,7 @@
   "config_autoAttachOnDuplicated_after": { "message": "開く" },
 
   "config_fromExternal_caption": { "message": "Firefoxの外から開かれたタブ" },
-  "config_autoAttachOnOpenedFromExternal_before": { "message": "\\u200b" },
+  "config_autoAttachOnOpenedFromExternal_before": { "message": "\u200b" },
   "config_autoAttachOnOpenedFromExternal_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnOpenedFromExternal_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnOpenedFromExternal_child": { "message": "現在のタブの子として" },
@@ -472,7 +472,7 @@
   "config_inheritContextualIdentityToTabsFromExternalMode_lastActive": { "message": "現在のタブから継承" },
 
   "config_sameSiteOrphan_caption": { "message": "ロケーションバー、ブックマーク、履歴、およびその他のきっかけから開かれた、現在のタブと同じWebサイトのタブ" },
-  "config_autoAttachSameSiteOrphan_before": { "message": "\\u200b" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
   "config_autoAttachSameSiteOrphan_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "独立したタブとして" },
   "config_autoAttachSameSiteOrphan_child": { "message": "現在のタブの子として" },
@@ -485,7 +485,7 @@
   "config_inheritContextualIdentityToSameSiteOrphanMode_lastActive": { "message": "現在のタブから継承" },
 
   "config_anyOtherTrigger_caption": { "message": "それ以外の契機で開かれたタブ" },
-  "config_autoAttachOnAnyOtherTrigger_before": { "message": "\\u200b" },
+  "config_autoAttachOnAnyOtherTrigger_before": { "message": "\u200b" },
   "config_autoAttachOnAnyOtherTrigger_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnAnyOtherTrigger_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnAnyOtherTrigger_child": { "message": "現在のタブの子として" },
@@ -661,7 +661,7 @@
   "config_advanced_caption": { "message": "詳細設定" },
 
   "config_bookmarkTreeFolderName_before": { "message": "ツリーをブックマークする時のフォルダー名:" },
-  "config_bookmarkTreeFolderName_after": { "message": "\\u200b" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %SHORT_YEAR%（2桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
@@ -675,7 +675,7 @@
   "config_scrollLines_label_after":  { "message": "行分スクロールする" },
 
   "config_userStyleRules_label": { "message": "ツリー型タブが提供するページ用の追加のスタイル指定" },
-  "config_userStyleRules_description_before": { "message": "\\u200b" },
+  "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
@@ -696,7 +696,7 @@
 
   "config_addons_caption": { "message": "他のアドオンによる機能追加" },
 
-  "config_addons_description_before": { "message": "\\u200b" },
+  "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他のアドオン" },
   "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加できます。" },
   "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
@@ -743,7 +743,7 @@
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_useCachedTree_description": { "message": "※キャッシュの不整合で動作が不安定になっている場合、このチェックをOFFにして再度ONにすることでキャッシュが刷新され状況が改善するかもしれません。" },
   "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
-  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\\u200b" },
+  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
   "config_delayForDuplicatedTabDetection_label_before": { "message": "複製されたタブの検出の待ち時間:" },
   "config_delayForDuplicatedTabDetection_label_after": { "message": "ミリ秒（複製されたタブの検出に失敗する場合に数字を増やして下さい）" },
@@ -766,7 +766,7 @@
 
   "config_all_caption": { "message": "すべての設定" },
 
-  "config_terms_delimiter": { "message": "\\u200b" },
+  "config_terms_delimiter": { "message": "\u200b" },
 
 
   "tabContextMenu_newTab_label":      { "message": "新しいタブ(&W)" },

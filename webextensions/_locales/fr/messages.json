@@ -696,7 +696,7 @@
     "hash": "cb1e8ee431dcf1087099758e3a26c0ff"
   },
   "config_longPressOnNewTabButton_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_showNewTabActionSelector_label": {
@@ -732,7 +732,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnNewTabCommand_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
@@ -740,7 +740,7 @@
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
@@ -768,7 +768,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_duplicateTabAction_caption": {
@@ -800,7 +800,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnDuplicated_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_fromExternal_caption": {
@@ -832,7 +832,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnOpenedFromExternal_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_sameSiteOrphan_caption": {
@@ -864,7 +864,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachSameSiteOrphan_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnAnyOtherTrigger_before": {
@@ -892,7 +892,7 @@
     "hash": "98dcf1ec311682e253fe9675e33b268f"
   },
   "config_autoAttachOnAnyOtherTrigger_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_insertNewChildAt_caption": {
@@ -1148,7 +1148,7 @@
     "hash": "46d9ae37bed79016f68a06e41d246291"
   },
   "config_bookmarkTreeFolderName_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_bookmarkTreeFolderName_description": {
@@ -1160,7 +1160,7 @@
     "hash": "c0117bbe4fb5cf897e9eaa639761276f"
   },
   "config_defaultBookmarkParentId_label_after": {
-    "message": "\\u200b",
+    "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_supportTabsMultiselect_label": {
