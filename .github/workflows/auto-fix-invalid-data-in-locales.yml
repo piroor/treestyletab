@@ -21,11 +21,11 @@ jobs:
         ref: trunk
     - name: escape ZWSP unexpectedly unescaped by GitLocalize
       run: |
-        ZWSP=$'\\u200b'; \
+        ZWSP=$'\u200b'; \
         grep -r -E "$ZWSP" webextensions/_locales | \
           cut -d : -f 1 | \
           uniq | \
-          xargs sed -i -r -e "s/$ZWSP/\\u200b/g" || echo 'there is no ZWSP'
+          xargs sed -i -r -e "s/$ZWSP/\\\\u200b/g" || echo 'there is no ZWSP'
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Escape special unicode characters in locales
@@ -43,14 +43,16 @@ jobs:
         ref: trunk
     - name: clear blank entries with no message by GitLocalize
       run: |
-        ls "webextensions/_locales/*/*.json" | \
+        ZWSP=$'\u200b'; \
+        ls webextensions/_locales/*/*.json | \
           while read path; do \
             if cat "$path" | \
                  jq '. | to_entries | .[] | select(.value.message | not) | .key' -r | \
                  grep . > /dev/null; then \
               cat "$path" | \
                 jq 'to_entries[] | select(.value.message)' | \
-                jq -s 'from_entries' \
+                jq -s 'from_entries' | \
+                sed -r -e "s/$ZWSP/\\\\u200b/g" \
                   > "$path.fixed"; \
               rm "$path"; \
               mv "$path.fixed" "$path"; \
@@ -61,4 +63,4 @@ jobs:
         commit_message: Clear blank entries in locales
         file_pattern: webextensions/_locales/*/*.json
         branch: trunk
- 
+
