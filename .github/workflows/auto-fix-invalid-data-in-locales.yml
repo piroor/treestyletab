@@ -21,11 +21,11 @@ jobs:
         ref: trunk
     - name: escape ZWSP unexpectedly unescaped by GitLocalize
       run: |
-        "ZWSP=$'\\u200b'; \
-        grep -r -E \"$ZWSP\" webextensions/_locales | \
+        ZWSP=$'\\u200b'; \
+        grep -r -E "$ZWSP" webextensions/_locales | \
           cut -d : -f 1 | \
           uniq | \
-          xargs sed -i -r -e \"s/$ZWSP/\\\\\\\\u200b/g\" || echo 'there is no ZWSP'"
+          xargs sed -i -r -e "s/$ZWSP/\\\\u200b/g" || echo 'there is no ZWSP'
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Escape special unicode characters in locales
