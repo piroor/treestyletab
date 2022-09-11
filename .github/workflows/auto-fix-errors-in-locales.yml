@@ -23,12 +23,12 @@ jobs:
       run: |
         cd webextensions && \
           find ./_locales -name messages.json | \
-            xargs webextensions/tools/shell/escape-special-characters.sh
+            xargs tools/shell/escape-special-characters.sh
     - name: remove blank entries made by GitLocalize
       run: |
         cd webextensions && \
           find ./_locales -name messages.json | \
-            xargs webextensions/tools/shell/remove-blank-entries.sh
+            xargs tools/shell/remove-blank-entries.sh
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Fix errors in locales
