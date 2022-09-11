@@ -1,0 +1,28 @@
+name: auto-fix-errors-in-locales
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "trunk"
+
+permissions:
+  contents: read
+
+jobs:
+  fix-errors-in-locales:
+    permissions:
+      contents: write  # for stefanzweifel/git-auto-commit-action to push code in repo
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: trunk
+    - name: fix errors in locales made by GitLocalize
+      run: make fix_locale_errors
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Fix errors in locales
+        file_pattern: webextensions/_locales/*/*.json
+        branch: trunk

@@ -1,6 +1,6 @@
 PACKAGE_NAME = treestyletab
 
-.PHONY: all xpi install_hook lint format
+.PHONY: all xpi install_hook lint format fix_locale_errors
 
 all: xpi
 
@@ -17,3 +17,5 @@ lint:
 format:
 	cd webextensions && $(MAKE) $@
 
+fix_locale_errors:
+	cd webextensions && $(MAKE) $@
