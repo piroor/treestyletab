@@ -2,8 +2,9 @@ NPM_MOD_DIR := $(CURDIR)/node_modules
 NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
 EXTERNAL_LIB_DIR := $(CURDIR)/extlib
+TOOLS_DIR := $(CURDIR)/tools
 
-.PHONY: xpi install_dependency lint format init_extlib update_extlib install_extlib
+.PHONY: xpi install_dependency lint format init_extlib update_extlib install_extlib fix_locale_errors
 
 all: xpi
 
@@ -56,3 +57,6 @@ install_extlib: install_dependency
 	echo 'window["codemirror-picker"] = self["codemirror-picker"];' >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.js
 	cat node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.css >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.css
 
+fix_locale_errors:
+	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/escape-special-unicode-characters.sh"
+	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/remove-blank-entry-in-locales.sh"
