@@ -222,7 +222,8 @@ async function syncTabsOrder() {
         break;
     }
   }
-  if (modificationsCount == 0)
+  if (modificationsCount == 0 &&
+      reserveToSyncTabsOrder.retryCount == 0)
     return;
 
   // Tabs can be moved while processing by other addons like Simple Tab Groups,
