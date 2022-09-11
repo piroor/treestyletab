@@ -4,7 +4,7 @@ tools_dir="$(cd "$(dirname "$0")" && pwd)"
 base_dir="$tools_dir/../.."
 
 for path in "$@"; do
-  echo "checking blank entry in $path" 1>&2
+  echo "checking blank entries in $path" 1>&2
   if cat "$path" |
        jq '. | to_entries | .[] | select(.value.message | not) | .key' -r |
        grep . >/dev/null; then

@@ -59,4 +59,4 @@ install_extlib: install_dependency
 
 fix_locale_errors:
 	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/escape-special-unicode-characters.sh"
-	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/remove-blank-entry-in-locales.sh"
+	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/remove-blank-entries-in-locales.sh"
