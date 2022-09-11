@@ -902,6 +902,34 @@ export function sanitizeAccesskeyMark(label) {
   return String(label || '').replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
 
+export function getWindowParamsFromSource(sourceWindow, { left, top, width, height } = {}) {
+  const params = {
+    // inherit properties of the source window
+    incognito: sourceWindow.incognito,
+    state:     sourceWindow.state,
+    width:     sourceWindow.width,
+    height:    sourceWindow.height,
+    left:      sourceWindow.left,
+    top:       sourceWindow.top,
+  };
+  if (typeof left == 'number')
+    params.left = left;
+  if (typeof top == 'number')
+    params.top = top;
+  if (typeof width == 'number')
+    params.width = width;
+  if (typeof height == 'number')
+    params.height = height;
+  if (params.state == 'fullscreen' ||
+      params.state == 'maximized') {
+    delete params.left;
+    delete params.top;
+    delete params.width;
+    delete params.height;
+  }
+  return params;
+}
+
 
 export function isLinux() {
   return configs.enableLinuxBehaviors || /^Linux/i.test(navigator.platform);

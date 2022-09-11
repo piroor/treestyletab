@@ -34,7 +34,8 @@ import {
   dumpTab,
   mapAndFilter,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  getWindowParamsFromSource,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -1538,15 +1539,12 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     return [];
 
   log('openNewWindowFromTabs: ', tabs, options);
+  const sourceWindow = await browser.windows.get(tabs[0].windowId);
   const windowParams = {
     //active: true,  // not supported in Firefox...
-    url: 'about:blank',
-    incognito: tabs[0].incognito
+    url:       'about:blank',
+    ...getWindowParamsFromSource(sourceWindow, options),
   };
-  if (typeof options.left == 'number')
-    windowParams.left = options.left;
-  if (typeof options.top == 'number')
-    windowParams.top = options.top;
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
     .then(createdWindow => {

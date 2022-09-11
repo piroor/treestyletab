@@ -13,7 +13,8 @@ import {
   wait,
   countMatched,
   configs,
-  notify
+  notify,
+  getWindowParamsFromSource,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -756,10 +757,13 @@ export async function openTabInWindow(tab, options = {}) {
     return openTabsInWindow(Tab.getSelectedTabs(tab.windowId));
   }
   else {
-    const window = await browser.windows.create({
+    const sourceWindow = await browser.windows.get(tab.windowId);
+    const windowParams = {
+      //active: true,  // not supported in Firefox...
       tabId:     tab.id,
-      incognito: tab.incognito
-    }).catch(ApiTabs.createErrorHandler());
+      ...getWindowParamsFromSource(sourceWindow, options),
+    };
+    const window = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
     return window.id;
   }
 }
