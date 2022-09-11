@@ -1,6 +1,6 @@
 PACKAGE_NAME = treestyletab
 
-.PHONY: all xpi install_hook lint format fix_locale_errors
+.PHONY: all xpi install_hook update_extlib lint format fix_locale_errors
 
 all: xpi
 
@@ -10,6 +10,9 @@ xpi:
 
 install_hook:
 	echo '#!/bin/sh\nmake lint' > "$(CURDIR)/.git/hooks/pre-commit" && chmod +x "$(CURDIR)/.git/hooks/pre-commit"
+
+update_extlib:
+	cd webextensions && $(MAKE) $@
 
 lint:
 	cd webextensions && $(MAKE) $@
