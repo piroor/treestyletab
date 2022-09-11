@@ -199,6 +199,7 @@ async function syncTabsOrder() {
 
   const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
   log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
+  let modificationsCount = 0;
   for (const operation of DOMElementsOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
@@ -217,9 +218,12 @@ async function syncTabsOrder() {
           if (tab)
             trackedWindow.element.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element || trackedWindow.element.lastChild);
         }
+        modificationsCount++;
         break;
     }
   }
+  if (modificationsCount == 0)
+    return;
 
   // Tabs can be moved while processing by other addons like Simple Tab Groups,
   // so resync until they are completely synchronized.
