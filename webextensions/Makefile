@@ -58,5 +58,5 @@ install_extlib: install_dependency
 	cat node_modules/codemirror-colorpicker/dist/codemirror-colorpicker.css >> $(EXTERNAL_LIB_DIR)/codemirror-colorpicker.css
 
 fix_locale_errors:
-	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/escape-special-unicode-characters.sh"
-	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/remove-blank-entries-in-locales.sh"
+	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/escape-special-characters.sh"
+	find ./_locales -name messages.json | xargs "$(TOOLS_DIR)/shell/remove-blank-entries.sh"
