@@ -240,7 +240,7 @@ export async function bookmarkTabs(tabs, options = {}) {
   const title = configs.bookmarkTreeFolderName
     .replace(/%TITLE%/gi, tabs[0].title)
     .replace(/%URL%/gi, tabs[0].url)
-    .replace(/%SHORT_?YEAR%/gi, year.substr(-2))
+    .replace(/%SHORT_?YEAR%/gi, year.slice(-2))
     .replace(/%(FULL_?)?YEAR%/gi, year)
     .replace(/%MONTH%/gi, String(now.getMonth() + 1).padStart(2, '0'))
     .replace(/%DATE%/gi, String(now.getDate()).padStart(2, '0'));
