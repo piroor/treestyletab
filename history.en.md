@@ -1,6 +1,24 @@
 # History
 
  - master/HEAD
+ - 3.9.0 (2022.9.12)
+   * Windows for tabs detached from an existing window inherits the size and state ("maximized" or "fullscreen") from the source window like Firefox does.
+   * Reduce some edge case problems (like infinite loop, stop working, and so on) around re-layouting and synchronization of the sidebar contents.
+   * Update indent level and parent information correctly for descendant tabs orphaned by tab detaching via any operation ouside of TST.
+   * Imitate tab focus behavior about Firefox's `browser.tabs.insertRelatedAfterCurrent` and `browser.tabs.selectOwnerOnClose` more correctly.
+   * Never load pending tabs after they are moved across windows.
+   * Fix unexpected fail of drag-and-drop of selected multiple trees after drag-and-drop across windows.
+   * Open `about:reader` URL bookmarks with their original URL (because addons cannot open `about:reader` URLs.)
+   * Always expose the "Manage Devices..." item under the "Send Tree to Device" menu [in the tab context menu, if it is running on Fennec](https://github.com/piroor/treestyletab/issues/3174).
+   * Brush up wording of "other tabs" in Japanese locale.
+   * Reset configs more safely with the "Reset" in the options page.
+   * Change the method to keep space to show auto-hidden scrollbar: using `margin` instead of `padding` in `tab-item-substance`.
+   * Never change coloring of auto-hidden scroll bar.
+   * Reintroduce support for `@import` rule in user styles.
+   * Totally reconstruct [API to insert extra contents to TST's sidebar area](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API). Now we can insert arbitrary UI element above/below all tabs, and track events about keyboard input and focus.
+   * Respond to a [`get-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#get-tree-information) request more certainly even if it is requested with a `Tab.id` and from a `tabs.onCreated` listener.
+   * Add a new log module `sidebar/tst-api-frontend`.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 3.8.26 (2022.7.15)
    * Make some user styles written for old versions of TST effective. See [the related issue](https://github.com/piroor/treestyletab/issues/3153) also for more details.
    * Prevent zoom-in/out by pinch-in/out on macOS.

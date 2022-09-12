@@ -1,6 +1,24 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.9.0 (2022.9.12)
+   * Firefox自身がそうするのと同様に、既存のウィンドウからタブを切り離した際に、新しいウィンドウが元のウィンドウのサイズと状態（最大化またはフルスクリーン）を引き継ぐようにした
+   * サイドバーの内容の再レイアウト処理やFirefoxのタブバーとの同期について、いくつかのエッジケースの問題（無限ループ、動作の停止など）が発生しにくくなるようにした
+   * TSTの外の操作で親タブがウィンドウから切り離された際に、残された子孫タブのツリー情報とインデントが更新されないままとなっていたのを修正
+   * `browser.tabs.insertRelatedAfterCurrent`と`browser.tabs.selectOwnerOnClose`に基づくFirefoxのタブの取り扱いの動作をより正しく模倣するようにした
+   * 読み込み保留状態のタブをウィンドウ間で移動した後に、タブの内容が読み込まれてしまわないようにした
+   * ウィンドウ間でのドラッグ＆ドロップの以後、選択した複数のツリーのドラッグ&ドロップに失敗するようになる問題を修正
+   * `about:reader`のURLのブックマークを開く際、（そのままではアドオンから開けないため）元のURLを開くようにした
+   * [Fennec上で実行されている場合、タブのコンテキストメニューにおいて](https://github.com/piroor/treestyletab/issues/3174)「タブを端末に送信」配下に「端末を管理...」を常に表示するようにした
+   * 設定画面の見出しの「他のタブ」表記を「既存のタブ」に変更
+   * 設定のリセット操作で、設定値をより安全に初期値にリセットするようにした
+   * 自動的に隠れるスクロールバーが表示されるスペースを確保するための方法を、`tab-item-substance`の`padding`から`margin`へ変更
+   * 自動的に隠れるスクロールバーの配色を変更しないようにした
+   * ユーザースタイルで再び`@import`を使用できるようにした
+   * [TSTのサイドバー領域に追加の要素を挿入するAPI](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API)を全面的に刷新し、タブ全体の上や下への任意のUI要素の挿入や、キーボード入力およびフォーカス移動のイベントを検知できるようにした
+   * `tabs.onCreated`のリスナーから`Tab.id`を伴ってリクエストされた[`get-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#get-tree-information)に対し、より確実に結果を返すようにした
+   * ログ出力対象モジュールに`sidebar/tst-api-frontend`を追加
+   * `zh_CN`ロケール更新（by [NightSharp](https://github.com/NightSharp), thanks!）
  - 3.8.26 (2022.7.15)
    * 古いバージョンのTST向けに書かれたユーザースタイル定義が機能しない場合がある問題に対処（詳細は[関連issue](https://github.com/piroor/treestyletab/issues/3153)を参照）
    * macOSでのピンチイン・アウト操作でサイドバーの内容がズームされないようにした
