@@ -1,7 +1,7 @@
 # History
 
  - master/HEAD
- - 3.9.0 (2022.9.12)
+ - 3.9.0 (2022.9.13)
    * Windows for tabs detached from an existing window inherits the size and state ("maximized" or "fullscreen") from the source window like Firefox does.
    * Reduce some edge case problems (like infinite loop, stop working, and so on) around re-layouting and synchronization of the sidebar contents.
    * Update indent level and parent information correctly for descendant tabs orphaned by tab detaching via any operation ouside of TST.
