@@ -836,8 +836,10 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   if (overflow) {
     nextFrame().then(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
-      const scrollbarOffset = mTabBar.firstElementChild ?
-        mTabBar.getBoundingClientRect().width - mTabBar.firstElementChild.getBoundingClientRect().width :
+      const firstTab        = Tab.getFirstUnpinnedTab(mTargetWindow);
+      const firstTabElement = firstTab && firstTab.$TST.element;
+      const scrollbarOffset = firstTabElement ?
+        mTabBar.getBoundingClientRect().width - firstTabElement.getBoundingClientRect().width :
         0;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
     });
