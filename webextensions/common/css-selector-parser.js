@@ -111,7 +111,7 @@ function isAtRule(selector) {
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
-const PSEUD_ELEMENTS = `
+const PSEUDO_ELEMENTS = `
   :after
   ::after
   ::backdrop
@@ -133,10 +133,10 @@ const PSEUD_ELEMENTS = `
   ::spelling-error
   ::target-text
 `.trim().split('\n').map(item => item.trim());
-const PSEUD_ELEMENTS_MATCHER = new RegExp(`(${PSEUD_ELEMENTS.join('|')})$`, 'i')
+const PSEUDO_ELEMENTS_MATCHER = new RegExp(`(${PSEUDO_ELEMENTS.join('|')})$`, 'i')
 
 export function appendPart(baseSelector, appendant) {
-  if (PSEUD_ELEMENTS_MATCHER.test(baseSelector))
-    return baseSelector.replace(PSEUD_ELEMENTS_MATCHER, `${appendant}$1`);
+  if (PSEUDO_ELEMENTS_MATCHER.test(baseSelector))
+    return baseSelector.replace(PSEUDO_ELEMENTS_MATCHER, `${appendant}$1`);
   return `${baseSelector}${appendant}`;
 }
