@@ -30,7 +30,7 @@ export async function getIndexes(...queriedTabIds) {
 }
 
 export async function blur(tab, unactivatableTabs = []) {
-  const unactivatableIndices  = [tab, ...unactivatableTabs].map(tab => tab.index);
+  const unactivatableIndices  = Array.from(new Set([tab, ...unactivatableTabs].map(tab => tab.index)));
   const minUnactivatableIndex = Math.min.apply(null, unactivatableIndices);
   const maxUnactivatableIndex = Math.max.apply(null, unactivatableIndices);
   const unactivatableTabById  = new Map();
@@ -50,8 +50,12 @@ export async function blur(tab, unactivatableTabs = []) {
     allTabById.set(tab.id, tab);
   }
 
+  const scannedTabIds = new Set();
   let successorTab = tab;
   do {
+    if (scannedTabIds.has(successorTab.id))
+      break; // prevent infinite loop!
+    scannedTabIds.add(successorTab.id);
     let nextSuccessorTab = unactivatableTabById.get(successorTab.successorTabId);
     if (nextSuccessorTab) {
       successorTab = nextSuccessorTab;
