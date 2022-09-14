@@ -396,6 +396,7 @@ function applyUserStyleRules() {
     if (!rule.selectorText)
       return;
 
+    log ('updating selector: ', rule.selectorText);
     rule.selectorText = CssSelectorParser.splitSelectors(rule.selectorText)
       .map(selector => {
         const parts = CssSelectorParser.splitSelectorParts(selector);
@@ -403,13 +404,16 @@ function applyUserStyleRules() {
         return parts.join(' ');
       })
       .join(', ');
+    log (' => ', rule.selectorText);
   });
 }
 
-function processAllStyleRulesIn(sheet, processor) {
-  for (const rule of sheet.cssRules) {
-    if (rule.styleSheet)
-      processAllStyleRulesIn(rule.styleSheet, processor);
+function processAllStyleRulesIn(sheetOrRule, processor) {
+  for (const rule of sheetOrRule.cssRules) {
+    if (sheetOrRule.styleSheet)
+      processAllStyleRulesIn(sheetOrRule.styleSheet, processor);
+    else if (rule.cssRules) // @media and so son
+      processAllStyleRulesIn(rule, processor);
     else
       processor(rule);
   }
