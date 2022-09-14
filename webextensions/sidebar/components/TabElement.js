@@ -189,9 +189,9 @@ export class TabElement extends HTMLElement {
       }
       this._labelElement.owner = this;
     }
-    if (this._twistyElement) {
-      this._twistyElement.owner = this;
-      this._twistyElement.makeAccessible();
+    if (this.twisty) {
+      this.twisty.owner = this;
+      this.twisty.makeAccessible();
     }
     if (this._counterElement)
       this._counterElement.owner = this;
@@ -199,9 +199,9 @@ export class TabElement extends HTMLElement {
       this._soundButtonElement.owner = this;
       this._soundButtonElement.makeAccessible();
     }
-    if (this.closeBoxElement) {
-      this.closeBoxElement.owner = this;
-      this.closeBoxElement.makeAccessible();
+    if (this.closeBox) {
+      this.closeBox.owner = this;
+      this.closeBox.makeAccessible();
     }
   }
 
@@ -225,11 +225,11 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_SUBSTANCE_ELEMENT_NAME);
   }
 
-  get _twistyElement() {
+  get twisty() {
     return this.querySelector(kTAB_TWISTY_ELEMENT_NAME);
   }
 
-  get _favIconElement() {
+  get favicon() {
     return this.querySelector(kTAB_FAVICON_ELEMENT_NAME);
   }
 
@@ -245,7 +245,7 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_COUNTER_ELEMENT_NAME);
   }
 
-  get closeBoxElement() {
+  get closeBox() {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
   }
 
@@ -266,7 +266,7 @@ export class TabElement extends HTMLElement {
       return;
 
     if (targets & TabInvalidationTarget.Twisty) {
-      const twisty = this._twistyElement;
+      const twisty = this.twisty;
       if (twisty)
         twisty.invalidate();
     }
@@ -278,7 +278,7 @@ export class TabElement extends HTMLElement {
     }
 
     if (targets & TabInvalidationTarget.CloseBox) {
-      const closeBox = this.closeBoxElement;
+      const closeBox = this.closeBox;
       if (closeBox)
         closeBox.invalidate();
     }
@@ -596,7 +596,7 @@ windowId = ${tab.windowId}
     if (!this.initialized)
       return null;
 
-    return this._favIconElement.src;
+    return this.favicon.src;
   }
 
   set favIconUrl(url) {
@@ -605,7 +605,7 @@ windowId = ${tab.windowId}
       return url;
 
     TabFavIconHelper.loadToImage({
-      image: this._favIconElement,
+      image: this.favicon,
       tab: this.$TST.tab,
       url
     });
