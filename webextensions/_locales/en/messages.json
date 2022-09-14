@@ -356,6 +356,7 @@
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_shiftTabsForScrollbarDistance_label_before": { "message": "Shift tabs aside " },
   "config_shiftTabsForScrollbarDistance_label_after": { "message": " to keep in-tab buttons touchable avoiding covered with the auto-shown scrollbar" },
+  "config_shiftTabsForScrollbarDistance_placeholder": { "message": "(CSS length)" },
   "config_shiftTabsForScrollbarOnlyOnHover_label": { "message": "Shift tabs only when the mouse cursor is near the scrollbar" },
   "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Suppress visual gap of the sidebar contents produced by temporarily shown/hidden toolbars on following cases" },
   "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Fullscreen windows" },

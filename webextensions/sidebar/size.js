@@ -67,6 +67,8 @@ export function update() {
   const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
 
   let shiftTabsForScrollbarDistance = configs.shiftTabsForScrollbarDistance.trim() || '0';
+  if (!/^[0-9\.]+(cm|mm|Q|in|pc|pt|px|em|ex|ch|rem|lh|vw|vh|vmin|vmax|%)$/.test(shiftTabsForScrollbarDistance))
+    shiftTabsForScrollbarDistance = '0'; // ignore invalid length
   if (shiftTabsForScrollbarDistance == '0')
     shiftTabsForScrollbarDistance += 'px'; // it is used with CSS calc() and it requires any length unit for each value.
 
