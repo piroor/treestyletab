@@ -399,7 +399,7 @@ function applyUserStyleRules() {
     rule.selectorText = CssSelectorParser.splitSelectors(rule.selectorText)
       .map(selector => {
         const parts = CssSelectorParser.splitSelectorParts(selector);
-        parts[0] += CSS_SPECIFICITY_INCREASER;
+        parts[0] = CssSelectorParser.appendPart(parts[0], CSS_SPECIFICITY_INCREASER);
         return parts.join(' ');
       })
       .join(', ');

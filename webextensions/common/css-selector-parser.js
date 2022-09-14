@@ -109,3 +109,34 @@ function split(input, { splitter, splitters, appendSplitter }) {
 function isAtRule(selector) {
   return selector.startsWith('@');
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
+const PSEUD_ELEMENTS = `
+  :after
+  ::after
+  ::backdrop
+  :before
+  ::before
+  ::cue
+  ::cue-region
+  :first-letter
+  ::first-letter
+  :first-line
+  ::first-line
+  ::file-selector-button
+  ::grammer-error
+  ::marker
+  ::part
+  ::placeholder
+  ::selection
+  ::slotted
+  ::spelling-error
+  ::target-text
+`.trim().split('\n').map(item => item.trim());
+const PSEUD_ELEMENTS_MATCHER = new RegExp(`(${PSEUD_ELEMENTS.join('|')})$`, 'i')
+
+export function appendPart(baseSelector, appendant) {
+  if (PSEUD_ELEMENTS_MATCHER.test(baseSelector))
+    return baseSelector.replace(PSEUD_ELEMENTS_MATCHER, `${appendant}$1`);
+  return `${baseSelector}${appendant}`;
+}
