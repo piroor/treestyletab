@@ -703,7 +703,7 @@
   "config_addons_description_before": { "message": "Имеются " },
   "config_addons_description_link_label": { "message": "аддоны, расширяющие возможности TST" },
   "config_addons_description_after": { "message": ". Посмотрите их, если вам нужно больше функций для панели TST." },
-  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
+  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#extensions-that-extend-tst" },
 
   "config_theme_description_before": { "message": "В настоящее время доступны только три встроенные темы \"Простая\", \"Сайдбар\" и \"Контраст\". Если вы хотите использовать не встроенную тему, см. " },
   "config_theme_description_link_label": { "message": "'Восстановление старых встроенных тем'" },

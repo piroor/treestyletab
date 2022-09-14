@@ -270,7 +270,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   </details>
 * <details id="feature-requests-add-more-minor-trivial-options"><summary>Add more minor/trivial options</summary>
   
-  Please see the [list of helper extensions](#addons-that-extend-tst).
+  Please see the [list of helper extensions](#extensions-that-extend-tst).
   For the appearance of tabs in the sidebar, [custom user styles](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) may help.
   
   The variety of configurations for TST will not increase infinitely.
@@ -332,7 +332,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   </details>
 * <details id="feature-requests-high-power-management-of-tree-like-sorting-child-tabs-auto-modification-of-tree-renaming-tabs-and-so-on"><summary>High-power management of tree, like <a href="https://github.com/piroor/treestyletab/issues/94">sorting child tabs</a>, <a href="https://github.com/piroor/treestyletab/issues/509">auto-modification of tree</a>, <a href="https://github.com/piroor/treestyletab/issues/794">renaming tabs</a>, and so on</summary>
   
-  Please see the [list of helper extensions](#addons-that-extend-tst).
+  Please see the [list of helper extensions](#extensions-that-extend-tst).
   [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/)'s [issue tracker](https://github.com/piroor/tst-more-tree-commands/issues) may be a good place to track your request.
   
   Please note that "useful" features won't be implemented to TST itself as a built-in feature.

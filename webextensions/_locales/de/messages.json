@@ -689,7 +689,7 @@
   "config_addons_description_before": { "message": "Es existieren " },
   "config_addons_description_link_label": { "message": "Erweiterungen, welche TST erweitern" },
   "config_addons_description_after": { "message": ". Probiere sie aus, wenn Du mehr Funktionen in der Seitenleiste von TST haben möchtest." },
-  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
+  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#extensions-that-extend-tst" },
 
   "config_theme_description_before": { "message": "Aktuell gibt es nur die eingebauten Designs \"Pur\", \"Seitenleiste\" und \"Hoher Kontrast\". Für weitere Designs siehe " },
   "config_theme_description_link_label": { "message": "die Code-Beispiele im Wiki" },

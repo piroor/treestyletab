@@ -689,7 +689,7 @@
     "config_addons_description_before": { "message": "結合" },
     "config_addons_description_link_label": { "message": "擴張 TST 本身的其他附加元件" },
     "config_addons_description_after": { "message": "，在 TST 的側邊欄追加額外功能。" },
-    "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#addons-that-extend-tst" },
+    "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/blob/master/README.md#extensions-that-extend-tst" },
   
     "config_theme_description_before": { "message": "Currently there are available built-in themes only \"Plain\", \"Sidebar\" and \"High Contrast\". If you want to use non-built-in theme, see " },
     "config_theme_description_link_label": { "message": "the code snippets" },
