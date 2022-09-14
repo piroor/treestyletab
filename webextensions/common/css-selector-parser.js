@@ -133,7 +133,7 @@ const PSEUDO_ELEMENTS = `
   ::spelling-error
   ::target-text
 `.trim().split('\n').map(item => item.trim());
-const PSEUDO_ELEMENTS_MATCHER = new RegExp(`(${PSEUDO_ELEMENTS.join('|')})$`, 'i')
+const PSEUDO_ELEMENTS_MATCHER = new RegExp(`(${PSEUDO_ELEMENTS.join('|')})$`, 'i');
 
 export function appendPart(baseSelector, appendant) {
   if (PSEUDO_ELEMENTS_MATCHER.test(baseSelector))
