@@ -297,6 +297,11 @@ ul {
   color: HighlightText;
 }
 
+#dummy-auto-hidden-scrollbar-placeholder-size-box {
+  height: var(--scrollbar-placeholder-size, 0);
+  width: var(--scrollbar-placeholder-size, 0);
+}
+
 
 /* tabs */
 
@@ -335,7 +340,7 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.left #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.left.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   margin-left: calc(var(--tab-margin-left) + var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 
@@ -344,7 +349,7 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.right #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.right.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   margin-right: calc(var(--tab-margin-right) + var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 

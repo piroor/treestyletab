@@ -105,6 +105,10 @@ Sidebar.onReady.addListener(() => {
   updateSpecialEventListenersForAPIListeners();
 });
 
+Sidebar.onLayoutUpdated.addListener(() => {
+  updateSpecialEventListenersForAPIListeners();
+});
+
 TSTAPI.onRegistered.addListener(() => {
   updateSpecialEventListenersForAPIListeners();
 });
@@ -114,7 +118,10 @@ TSTAPI.onUnregistered.addListener(() => {
 });
 
 function updateSpecialEventListenersForAPIListeners() {
-  const shouldListenMouseMove = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE);
+  const shouldListenMouseMove = (
+    TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) ||
+    mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE)
+  );
   if (shouldListenMouseMove != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
@@ -146,7 +153,30 @@ function updateSpecialEventListenersForAPIListeners() {
 
 function onMouseMove(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (tab) {
+  if (mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE)) {
+    const tabbarRect  = mTabBar.getBoundingClientRect();
+    const twistyRect  = tab && tab.$TST.element.twisty.getBoundingClientRect();
+    const faviconRect = tab && tab.$TST.element.favicon.getBoundingClientRect();
+    const closeRect   = tab && tab.$TST.element.closeBox.getBoundingClientRect();
+    const placeholderSizeRect = document.querySelector('#dummy-auto-hidden-scrollbar-placeholder-size-box').getBoundingClientRect();
+    const isRightSide = document.documentElement.classList.contains('right');
+    const leftAreaSize = tab && (
+      isRightSide ? closeRect.width :
+        Math.max(twistyRect.right, faviconRect.right) - Math.min(twistyRect.left, faviconRect.left)
+    ) + placeholderSizeRect.width;
+    const rightAreaSize = tab && (
+      !isRightSide ? closeRect.width :
+        Math.max(twistyRect.right, faviconRect.right) - Math.min(twistyRect.left, faviconRect.left)
+    ) + placeholderSizeRect.width;
+    document.documentElement.classList.toggle('on-scrollbar-area', (
+      tab &&
+      isRightSide ? event.clientX >= tabbarRect.right - rightAreaSize :
+        event.clientX <= tabbarRect.left + leftAreaSize
+    ));
+  }
+
+  if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) &&
+      tab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
       tab:      new TSTAPI.TreeItem(tab),
