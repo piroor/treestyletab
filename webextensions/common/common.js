@@ -96,7 +96,7 @@ export const configs = new Configs({
   indentLine: 'auto',
 
   autoHiddenScrollbarPlaceholderSize: '0.5em',
-  applyAutoHiddenScrollbarPlaceholderAlways: false,
+  applyAutoHiddenScrollbarPlaceholderOnlyOnHover: true,
 
   unrepeatableBGImageAspectRatio: 4,
 

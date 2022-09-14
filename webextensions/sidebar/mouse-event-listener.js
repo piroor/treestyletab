@@ -120,7 +120,7 @@ TSTAPI.onUnregistered.addListener(() => {
 configs.$addObserver(changedKey => {
   switch (changedKey) {
     case 'autoHiddenScrollbarPlaceholderSize':
-    case 'applyAutoHiddenScrollbarPlaceholderAlways':
+    case 'applyAutoHiddenScrollbarPlaceholderOnlyOnHover':
       updateSpecialEventListenersForAPIListeners();
       break;
   }
@@ -129,7 +129,7 @@ configs.$addObserver(changedKey => {
 function updateSpecialEventListenersForAPIListeners() {
   const shouldListenMouseMove = (
     TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) ||
-    (!configs.applyAutoHiddenScrollbarPlaceholderAlways &&
+    (configs.applyAutoHiddenScrollbarPlaceholderOnlyOnHover &&
      mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE))
   );
   if (shouldListenMouseMove != onMouseMove.listening) {
