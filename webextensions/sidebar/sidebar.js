@@ -240,7 +240,7 @@ export async function init() {
       onConfigChange('sidebarPosition');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
-      onConfigChange('applyAutoHiddenScrollbarPlaceholderOnlyOnHover');
+      onConfigChange('shiftTabsForScrollbarOnlyOnHover');
 
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
@@ -974,11 +974,11 @@ async function onConfigChange(changedKey) {
       mReloadMaskImage = configs[changedKey];
       break;
 
-    case 'autoHiddenScrollbarPlaceholderSize':
+    case 'shiftTabsForScrollbarDistance':
       Size.update();
       break;
 
-    case 'applyAutoHiddenScrollbarPlaceholderOnlyOnHover':
+    case 'shiftTabsForScrollbarOnlyOnHover':
       document.documentElement.classList.toggle('shift-tabs-for-scrollbar-only-on-hover', !!configs[changedKey]);
       break;
 

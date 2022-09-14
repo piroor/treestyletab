@@ -119,8 +119,8 @@ TSTAPI.onUnregistered.addListener(() => {
 
 configs.$addObserver(changedKey => {
   switch (changedKey) {
-    case 'autoHiddenScrollbarPlaceholderSize':
-    case 'applyAutoHiddenScrollbarPlaceholderOnlyOnHover':
+    case 'shiftTabsForScrollbarDistance':
+    case 'shiftTabsForScrollbarOnlyOnHover':
       updateSpecialEventListenersForAPIListeners();
       break;
   }
@@ -129,7 +129,7 @@ configs.$addObserver(changedKey => {
 function updateSpecialEventListenersForAPIListeners() {
   const shouldListenMouseMove = (
     TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) ||
-    (configs.applyAutoHiddenScrollbarPlaceholderOnlyOnHover &&
+    (configs.shiftTabsForScrollbarOnlyOnHover &&
      mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE))
   );
   if (shouldListenMouseMove != onMouseMove.listening) {
@@ -168,7 +168,7 @@ function onMouseMove(event) {
     const twistyRect  = tab && tab.$TST.element.twisty.getBoundingClientRect();
     const faviconRect = tab && tab.$TST.element.favicon.getBoundingClientRect();
     const closeRect   = tab && tab.$TST.element.closeBox.getBoundingClientRect();
-    const placeholderSizeRect = document.querySelector('#dummy-auto-hidden-scrollbar-placeholder-size-box').getBoundingClientRect();
+    const placeholderSizeRect = document.querySelector('#dummy-shift-tabs-for-scrollbar-distance-box').getBoundingClientRect();
     const isRightSide = document.documentElement.classList.contains('right');
     const leftAreaSize = tab && (
       isRightSide ? closeRect.width :

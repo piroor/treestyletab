@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 25;
+const kCONFIGS_VERSION = 26;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -256,6 +256,10 @@ export function migrateConfigs() {
         configs.tabBunchesDetectionTimeout = configs.autoGroupNewTabsTimeout;
       if (configs.autoGroupNewTabsDelayOnNewWindow !== null)
         configs.tabBunchesDetectionDelayOnNewWindow = configs.autoGroupNewTabsDelayOnNewWindow;
+
+    case 25:
+      if (configs.autoHiddenScrollbarPlaceholderSize !== null)
+        configs.shiftTabsForScrollbarDistance = configs.autoHiddenScrollbarPlaceholderSize;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

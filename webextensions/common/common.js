@@ -95,8 +95,8 @@ export const configs = new Configs({
   iconColor: 'auto',
   indentLine: 'auto',
 
-  autoHiddenScrollbarPlaceholderSize: '0.5em',
-  applyAutoHiddenScrollbarPlaceholderOnlyOnHover: true,
+  shiftTabsForScrollbarDistance: '0.5em',
+  shiftTabsForScrollbarOnlyOnHover: true,
 
   unrepeatableBGImageAspectRatio: 4,
 
@@ -530,6 +530,7 @@ export const configs = new Configs({
   userStyleRules7: '',
   autoGroupNewTabsTimeout: null, // migrated to tabBunchesDetectionTimeout
   autoGroupNewTabsDelayOnNewWindow: null, // migrated to tabBunchesDetectionDelayOnNewWindow
+  autoHiddenScrollbarPlaceholderSize: null, // migrated to shiftTabsForScrollbarDistance
 
 
   configsVersion: 0,

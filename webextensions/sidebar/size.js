@@ -81,7 +81,7 @@ export function update() {
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
     --visual-gap-hover-animation-delay: ${configs.cancelGapSuppresserHoverDelay}ms;
 
-    --scrollbar-placeholder-size: ${configs.autoHiddenScrollbarPlaceholderSize};
+    --shift-tabs-for-scrollbar-distance: ${configs.shiftTabsForScrollbarDistance};
   }`;
 }
 
