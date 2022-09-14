@@ -117,10 +117,20 @@ TSTAPI.onUnregistered.addListener(() => {
   updateSpecialEventListenersForAPIListeners();
 });
 
+configs.$addObserver(changedKey => {
+  switch (changedKey) {
+    case 'autoHiddenScrollbarPlaceholderSize':
+    case 'applyAutoHiddenScrollbarPlaceholderAlways':
+      updateSpecialEventListenersForAPIListeners();
+      break;
+  }
+});
+
 function updateSpecialEventListenersForAPIListeners() {
   const shouldListenMouseMove = (
     TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) ||
-    mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE)
+    (!configs.applyAutoHiddenScrollbarPlaceholderAlways &&
+     mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE))
   );
   if (shouldListenMouseMove != onMouseMove.listening) {
     if (!onMouseMove.listening) {

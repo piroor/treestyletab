@@ -340,7 +340,8 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.left.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.left.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance,
+:root.left.apply-auto-hidden-scrollbar-placeholder-always #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   margin-left: calc(var(--tab-margin-left) + var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 
@@ -349,7 +350,8 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.right.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.right.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance,
+:root.right.apply-auto-hidden-scrollbar-placeholder-always #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
   margin-right: calc(var(--tab-margin-right) + var(--tab-indent) + var(--scrollbar-placeholder-size));
 }
 

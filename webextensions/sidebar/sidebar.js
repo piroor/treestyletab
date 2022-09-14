@@ -240,6 +240,7 @@ export async function init() {
       onConfigChange('sidebarPosition');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
+      onConfigChange('applyAutoHiddenScrollbarPlaceholderAlways');
 
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
@@ -975,6 +976,10 @@ async function onConfigChange(changedKey) {
 
     case 'autoHiddenScrollbarPlaceholderSize':
       Size.update();
+      break;
+
+    case 'applyAutoHiddenScrollbarPlaceholderAlways':
+      document.documentElement.classList.toggle('apply-auto-hidden-scrollbar-placeholder-always', !!configs[changedKey]);
       break;
 
     default:
