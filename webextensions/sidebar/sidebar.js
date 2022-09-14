@@ -70,6 +70,7 @@ function log(...args) {
 export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
+export const onLayoutUpdated = new EventListenerManager();
 
 
 let mTargetWindow = null;
@@ -826,6 +827,8 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
           notifyOnOutOfView: true
         });
       }
+    }).then(() => {
+      onLayoutUpdated.dispatch()
     });
   }
   else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
@@ -834,6 +837,9 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
     TSTAPI.sendMessage({
       type: TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
       windowId,
+    });
+    nextFrame().then(() => {
+      onLayoutUpdated.dispatch()
     });
   }
 
@@ -846,6 +852,9 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
         mTabBar.getBoundingClientRect().width - firstTabElement.getBoundingClientRect().width :
         0;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
+    });
+    nextFrame().then(() => {
+      onLayoutUpdated.dispatch()
     });
   }
 
