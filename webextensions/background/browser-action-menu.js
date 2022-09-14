@@ -132,6 +132,20 @@ const mItems = [
         expert: true
       },
       {
+        dynamicTitle: true,
+        get title() {
+          return browser.i18n.getMessage('config_shiftTabsForScrollbarDistance_label_before') + configs.shiftTabsForScrollbarDistance + browser.i18n.getMessage('config_shiftTabsForScrollbarDistance_label_after')
+        },
+        enabled: false,
+        expert:  true
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_shiftTabsForScrollbarOnlyOnHover_label'),
+        key:   'shiftTabsForScrollbarOnlyOnHover',
+        type:  'checkbox',
+        expert: true
+      },
+      {
         title:   browser.i18n.getMessage('config_suppressGapFromShownOrHiddenToolbar_caption'),
         enabled: false,
         expert:  true
