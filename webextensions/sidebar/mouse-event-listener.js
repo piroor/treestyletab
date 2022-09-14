@@ -55,6 +55,10 @@ import * as Sidebar from './sidebar.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import * as TSTAPIFrontend from './tst-api-frontend.js';
 
+import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+import { kTAB_FAVICON_ELEMENT_NAME } from './components/TabFaviconElement.js';
+import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
+
 function log(...args) {
   internalLogger('sidebar/mouse-event-listener', ...args);
 }
@@ -64,6 +68,7 @@ let mTargetWindow;
 const mTabBar = document.querySelector('#tabbar');
 const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
 const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
+const mRootClasses = document.documentElement.classList;
 
 let mHasMouseOverListeners = false;
 
@@ -85,7 +90,7 @@ Sidebar.onBuilt.addListener(async () => {
   browser.runtime.onMessage.addListener(onMessage);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
 
-  if (!document.documentElement.classList.contains('incognito'))
+  if (!mRootClasses.contains('incognito'))
     mContextualIdentitySelector.ui = new MenuUI({
       root:       mContextualIdentitySelector,
       appearance: 'panel',
@@ -161,25 +166,31 @@ function updateSpecialEventListenersForAPIListeners() {
 
 /* handlers for DOM events */
 
+const mCloseBoxSizeBox = document.querySelector(`#dummy-tab ${kTAB_CLOSE_BOX_ELEMENT_NAME}`);
+const mFaviconSizeBox  = document.querySelector(`#dummy-tab ${kTAB_FAVICON_ELEMENT_NAME}`);
+const mTwistySizeBox   = document.querySelector(`#dummy-tab ${kTAB_TWISTY_ELEMENT_NAME}`);
+const mDistanceBox     = document.querySelector('#dummy-shift-tabs-for-scrollbar-distance-box');
+
 function onMouseMove(event) {
   const tab = EventUtils.getTabFromEvent(event);
   if (mTabBar.classList.contains(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE)) {
+    const onTabBar    = mTabBar.contains(event.target);
     const tabbarRect  = mTabBar.getBoundingClientRect();
-    const twistyRect  = tab && tab.$TST.element.twisty.getBoundingClientRect();
-    const faviconRect = tab && tab.$TST.element.favicon.getBoundingClientRect();
-    const closeRect   = tab && tab.$TST.element.closeBox.getBoundingClientRect();
-    const placeholderSizeRect = document.querySelector('#dummy-shift-tabs-for-scrollbar-distance-box').getBoundingClientRect();
-    const isRightSide = document.documentElement.classList.contains('right');
-    const leftAreaSize = tab && (
+    const twistyRect  = mTwistySizeBox.getBoundingClientRect();
+    const faviconRect = mFaviconSizeBox.getBoundingClientRect();
+    const closeRect   = mCloseBoxSizeBox.getBoundingClientRect();
+    const placeholderSizeRect = mDistanceBox.getBoundingClientRect();
+    const isRightSide = mRootClasses.contains('right');
+    const leftAreaSize = onTabBar &&(
       isRightSide ? closeRect.width :
         Math.max(twistyRect.right, faviconRect.right) - Math.min(twistyRect.left, faviconRect.left)
     ) + placeholderSizeRect.width;
-    const rightAreaSize = tab && (
+    const rightAreaSize = onTabBar &&(
       !isRightSide ? closeRect.width :
         Math.max(twistyRect.right, faviconRect.right) - Math.min(twistyRect.left, faviconRect.left)
     ) + placeholderSizeRect.width;
-    document.documentElement.classList.toggle('on-scrollbar-area', (
-      tab &&
+    mRootClasses.toggle('on-scrollbar-area', (
+      onTabBar &&
       isRightSide ? event.clientX >= tabbarRect.right - rightAreaSize :
         event.clientX <= tabbarRect.left + leftAreaSize
     ));
