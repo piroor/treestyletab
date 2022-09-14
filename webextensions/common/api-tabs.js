@@ -43,6 +43,8 @@ export async function blur(tab, unactivatableTabs = []) {
   if (allTabs.length == (new Set([tab.id, ...unactivatableTabs.map(tab => tab.id)]).size))
     return; // there is no other focusible tab!
 
+  const restTabs    = allTabs.filter(tab => unactivatableTabs.has(tab.id));
+  const middleTabs  = restTabs.filter(tab => tab.index > minUnactivatableIndex || tab.index < maxUnactivatableIndex);
   const previousTab = minUnactivatableIndex > 0 && allTabs[minUnactivatableIndex - 1];
   const nextTab     = maxUnactivatableIndex < allTabs.length - 1 && allTabs[maxUnactivatableIndex + 1];
   const allTabById  = new Map();
@@ -61,7 +63,11 @@ export async function blur(tab, unactivatableTabs = []) {
       successorTab = nextSuccessorTab;
       continue;
     }
-    nextSuccessorTab = allTabById.get(successorTab.successorTabId) || nextTab || previousTab || allTabs[0];
+    nextSuccessorTab = allTabById.get(successorTab.successorTabId) ||
+      nextTab ||
+      (middleTabs.length > 0 && middleTabs[0]) ||
+      previousTab ||
+      restTabs[0];
     if (unactivatableTabById.has(nextSuccessorTab.id)) {
       successorTab = nextSuccessorTab;
       continue;
