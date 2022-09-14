@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.9.2 (2022.9.15)
+   * Fix hanging after a tree is moved across windows via drag and drop. (regression on 3.9.0)
+   * Keep tabs shifted when the mouse cursor moves onto the scrollbar.
+   * Becomes more safe for invalid value of distance to shift tabs for auto-shown scrollbar.
  - 3.9.1 (2022.9.14)
    * Fix incompatibility with user styles including `@media` and pseudo elements.
    * Expose options for experts: shifting of tabs avoiding covered by the auto-shown scrollbar.
