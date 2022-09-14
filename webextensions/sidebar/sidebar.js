@@ -964,6 +964,10 @@ async function onConfigChange(changedKey) {
       mReloadMaskImage = configs[changedKey];
       break;
 
+    case 'autoHiddenScrollbarPlaceholderSize':
+      Size.update();
+      break;
+
     default:
       if (changedKey.startsWith('chunkedUserStyleRules'))
         applyUserStyleRules();
