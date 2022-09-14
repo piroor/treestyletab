@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.9.1 (2022.9.14)
+   * Fix incompatibility with user styles including `@media` and pseudo elements.
+   * Expose options for experts: shifting of tabs avoiding covered by the auto-shown scrollbar.
+   * Shift tabs to avoid auto-shown scrollbar, only on hover around the scrollbar by default.
  - 3.9.0 (2022.9.13)
    * Windows for tabs detached from an existing window inherits the size and state ("maximized" or "fullscreen") from the source window like Firefox does.
    * Reduce some edge case problems (like infinite loop, stop working, and so on) around re-layouting and synchronization of the sidebar contents.
