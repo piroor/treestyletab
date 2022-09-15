@@ -39,11 +39,11 @@ export async function blur(tab, unactivatableTabs = []) {
   }
 
   const allTabs     = await browser.tabs.query({ windowId: tab.windowId });
-
-  if (allTabs.length == (new Set([tab.id, ...unactivatableTabs.map(tab => tab.id)]).size))
+  const unactivatableTabIds = new Set([tab.id, ...unactivatableTabs.map(tab => tab.id)]);
+  if (allTabs.length == unactivatableTabIds.size)
     return; // there is no other focusible tab!
 
-  const restTabs    = allTabs.filter(tab => unactivatableTabs.has(tab.id));
+  const restTabs    = allTabs.filter(tab => unactivatableTabIds.has(tab.id));
   const middleTabs  = restTabs.filter(tab => tab.index > minUnactivatableIndex || tab.index < maxUnactivatableIndex);
   const previousTab = minUnactivatableIndex > 0 && allTabs[minUnactivatableIndex - 1];
   const nextTab     = maxUnactivatableIndex < allTabs.length - 1 && allTabs[maxUnactivatableIndex + 1];
