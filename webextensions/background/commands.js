@@ -140,11 +140,13 @@ export function expandAll(windowId) {
   }
 }
 
-export async function bookmarkTree(rootTabs, options = {}) {
+export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {}) {
   const tabs = uniqTabsAndDescendantsSet(rootTabs);
   if (tabs.length > 1 &&
       tabs[0].$TST.isGroupTab)
     tabs.shift();
+
+  const options = { parentId, index, showDialog };
 
   const tab = tabs[0];
   if (configs.showDialogInSidebar &&

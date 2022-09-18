@@ -79,7 +79,7 @@ if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
   });
 }
 
-export async function bookmarkTab(tab, options = {}) {
+export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
       throw new Error('not permitted');
@@ -93,14 +93,15 @@ export async function bookmarkTab(tab, options = {}) {
     return null;
   }
   const parent = (
-    (await getItemById(options.parentId || configs.defaultBookmarkParentId)) ||
+    (await getItemById(parentId || configs.defaultBookmarkParentId)) ||
     (await getItemById(configs.$defaults.defaultBookmarkParentId))
   );
 
   let title    = tab.title;
   let url      = tab.url;
-  let parentId = parent && parent.id;
-  if (options.showDialog) {
+  if (!parentId)
+    parentId = parent && parent.id;
+  if (showDialog) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const divStyle = `
@@ -222,7 +223,7 @@ export async function bookmarkTab(tab, options = {}) {
   return item;
 }
 
-export async function bookmarkTabs(tabs, options = {}) {
+export async function bookmarkTabs(tabs, { parentId, index, showDialog } = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
       throw new Error('not permitted');
@@ -249,10 +250,10 @@ export async function bookmarkTabs(tabs, options = {}) {
     title
   };
   let parent;
-  if (options.parentId) {
-    parent = await getItemById(options.parentId);
-    if ('index' in options)
-      folderParams.index = options.index;
+  if (parentId) {
+    parent = await getItemById(parentId);
+    if (index !== undefined)
+      folderParams.index = index;
   }
   else {
     parent = await getItemById(configs.defaultBookmarkParentId);
@@ -262,7 +263,7 @@ export async function bookmarkTabs(tabs, options = {}) {
   if (parent)
     folderParams.parentId = parent.id;
 
-  if (options.showDialog) {
+  if (showDialog) {
     const windowId = tabs[0].windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const divStyle = `
