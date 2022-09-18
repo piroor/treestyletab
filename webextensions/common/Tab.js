@@ -408,22 +408,44 @@ export default class Tab {
       const url = this.tab.$possibleInitialUrl;
       try {
         const possibleBookmarks = await Promise.all([
-          browser.bookmarks.search({ url: `http://${url}` }).catch(_error => []),
-          browser.bookmarks.search({ url: `http://www.${url}` }).catch(_error => []),
-          browser.bookmarks.search({ url: `https://${url}` }).catch(_error => []),
-          browser.bookmarks.search({ url: `https://www.${url}` }).catch(_error => []),
-          browser.bookmarks.search({ url: `ftp://${url}` }).catch(_error => []),
-          browser.bookmarks.search({ url: `moz-extension://${url}` }).catch(_error => [])
+          this._safeSearchBookmstksWithUrl(`http://${url}`),
+          this._safeSearchBookmstksWithUrl(`http://www.${url}`),
+          this._safeSearchBookmstksWithUrl(`https://${url}`),
+          this._safeSearchBookmstksWithUrl(`https://www.${url}`),
+          this._safeSearchBookmstksWithUrl(`ftp://${url}`),
+          this._safeSearchBookmstksWithUrl(`moz-extension://${url}`),
         ]);
         log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
         resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
       }
-      catch(_error) {
+      catch(error) {
+        log(`promisedPossibleOpenerBookmarks for the tab {this.id} (${url}): `, error);
         // If it is detected as "not a valid URL", then
         // it cannot be a tab opened from a bookmark.
         resolve(this.possibleOpenerBookmarks = []);
       }
     });
+  }
+  async _safeSearchBookmstksWithUrl(url) {
+    try {
+      return browser.bookmarks.search({ url });
+    }
+    catch(error) {
+      log(`_searchBookmstksWithUrl failed: tab ${this.id} (${url}): `, error);
+      try {
+        // bookmarks.search() does not accept "moz-extension:" URL
+        // via a queyr with "url" on Firefox 105 and later - it raises an error as
+        // "Uncaught Error: Type error for parameter query (Value must either:
+        // be a string value, or .url must match the format "url") for bookmarks.search."
+        // Thus we use a query with "query" to avoid the error.
+        // See also: https://github.com/piroor/treestyletab/issues/3203
+        const bookmarks = await browser.bookmarks.search({ query: url }).catch(_error => []);
+        return bookmarks.filter(bookmark => bookmark.url == url);
+      }
+      catch(error) {
+        return [];
+      }
+    }
   }
 
   get cookieStoreName() {
