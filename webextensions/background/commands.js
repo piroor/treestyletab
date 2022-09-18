@@ -147,7 +147,7 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
     tabs.shift();
 
   const options = { parentId, index, showDialog };
-  const topLevelTabs = rootTabs.filte(tab => tab.$TST.ancestorIds.length == 0);
+  const topLevelTabs = rootTabs.filter(tab => tab.$TST.ancestorIds.length == 0);
   if (topLevelTabs.length == 1 &&
       topLevelTabs[0].$TST.isGroupTab)
     options.title = topLevelTabs[0].title;
