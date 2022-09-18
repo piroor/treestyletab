@@ -442,7 +442,7 @@ export default class Tab {
         const bookmarks = await browser.bookmarks.search({ query: url }).catch(_error => []);
         return bookmarks.filter(bookmark => bookmark.url == url);
       }
-      catch(error) {
+      catch(_error) {
         return [];
       }
     }
