@@ -439,6 +439,7 @@ export default class Tab {
         // be a string value, or .url must match the format "url") for bookmarks.search."
         // Thus we use a query with "query" to avoid the error.
         // See also: https://github.com/piroor/treestyletab/issues/3203
+        //           https://bugzilla.mozilla.org/show_bug.cgi?id=1791313
         const bookmarks = await browser.bookmarks.search({ query: url }).catch(_error => []);
         return bookmarks.filter(bookmark => bookmark.url == url);
       }
