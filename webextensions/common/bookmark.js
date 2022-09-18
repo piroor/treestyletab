@@ -223,7 +223,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
   return item;
 }
 
-export async function bookmarkTabs(tabs, { parentId, index, showDialog } = {}) {
+export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
       throw new Error('not permitted');
@@ -238,7 +238,8 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog } = {}) {
   }
   const now = new Date();
   const year = String(now.getFullYear());
-  const title = configs.bookmarkTreeFolderName
+  if (!title)
+    title = configs.bookmarkTreeFolderName
     .replace(/%TITLE%/gi, tabs[0].title)
     .replace(/%URL%/gi, tabs[0].url)
     .replace(/%SHORT_?YEAR%/gi, year.slice(-2))
