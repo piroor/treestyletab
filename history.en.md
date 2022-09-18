@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.9.3 (2022.9.19)
+   * Use the name of the parent "group tab" as the default folder name for the "Bookmark This Tree" command, if possible.
+   * Detect tabs as opened from bookmarks correctly on Firefox 105 and later.
+   * Never load pending tabs after they are moved across windows more certainly.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.9.2 (2022.9.15)
    * Fix hanging after a tree is moved across windows via drag and drop. (regression on 3.9.0)
    * Keep tabs shifted when the mouse cursor moves onto the scrollbar.
