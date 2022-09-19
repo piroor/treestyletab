@@ -361,6 +361,8 @@ async function onCreated(tab) {
   // Cache the initial index for areTabsFromOtherDeviceWithInsertAfterCurrent()@handle-tab-bunches.js
   // See also: https://github.com/piroor/treestyletab/issues/2419
   tab.$indexOnCreated = tab.index;
+  // Cache the initial windowId for Tab.onUpdated listner@handle-new-tabs.js
+  tab.$windowIdOnCreated = tab.windowId;
 
   return onNewTabTracked(tab, { trigger: 'tabs.onCreated' });
 }

@@ -313,6 +313,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if (tab.$TST.openedCompletely &&
+      tab.windowId == tab.$windowIdOnCreated && // Don't treat tab as "opened from active tab" if it is moved across windows while loading
       (changeInfo.url || changeInfo.status == 'complete') &&
       (tab.$TST.isNewTab ||
        tab.$TST.fromExternal ||
