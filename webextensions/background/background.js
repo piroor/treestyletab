@@ -378,12 +378,16 @@ async function updateInsertionPosition(tab) {
       tab.id,
       Constants.kPERSISTENT_INSERT_AFTER,
       prev.$TST.uniqueId.id
-    ).catch(ApiTabs.createErrorSuppressor());
+    ).catch(ApiTabs.createErrorSuppressor(
+      ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+    ));
   else
     browser.sessions.removeTabValue(
       tab.id,
       Constants.kPERSISTENT_INSERT_AFTER
-    ).catch(ApiTabs.createErrorSuppressor());
+    ).catch(ApiTabs.createErrorSuppressor(
+      ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+    ));
 
   const next = tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab;
   if (next)
@@ -391,12 +395,16 @@ async function updateInsertionPosition(tab) {
       tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE,
       next.$TST.uniqueId.id
-    ).catch(ApiTabs.createErrorSuppressor());
+    ).catch(ApiTabs.createErrorSuppressor(
+      ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+    ));
   else
     browser.sessions.removeTabValue(
       tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE
-    ).catch(ApiTabs.createErrorSuppressor());
+    ).catch(ApiTabs.createErrorSuppressor(
+      ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+    ));
 }
 
 
@@ -435,7 +443,9 @@ async function updateAncestors(tab) {
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
     ancestors
-  ).catch(ApiTabs.createErrorSuppressor());
+  ).catch(ApiTabs.createErrorSuppressor(
+    ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+  ));
 }
 
 export function reserveToUpdateChildren(tabOrTabs) {
@@ -473,7 +483,9 @@ async function updateChildren(tab) {
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
     children
-  ).catch(ApiTabs.createErrorSuppressor());
+  ).catch(ApiTabs.createErrorSuppressor(
+    ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+  ));
 }
 
 function reserveToUpdateSubtreeCollapsed(tab) {

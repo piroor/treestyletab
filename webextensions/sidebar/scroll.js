@@ -553,6 +553,8 @@ async function onBackgroundMessage(message) {
       if (message.maybeMoved)
         await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       const tab = Tab.get(message.tabId);
+      if (!tab) // it can be closed while waiting
+        break;
       const needToWaitForTreeExpansion = (
         !tab.active &&
         !Tab.getActiveTab(tab.windowId).pinned
@@ -606,8 +608,9 @@ async function onBackgroundMessage(message) {
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (tab && // it can be closed while waiting...
-          !reReserveScrollingForTab(tab) &&
+      if (!tab) // it can be closed while waiting
+        break;
+      if (!reReserveScrollingForTab(tab) &&
           tab.active)
         reserveToScrollToTab(tab);
     }; break;
