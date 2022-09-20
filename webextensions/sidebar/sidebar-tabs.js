@@ -469,6 +469,8 @@ async function activateRealActiveTab(windowId) {
 
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
+const mRemovedTabIdsNotifiedBeforeTracked = new Set();
+
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_SYNC_TABS_ORDER:
@@ -503,6 +505,11 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
       const nativeTab = message.tab;
       nativeTab.reindexedBy = `creating (${nativeTab.index})`;
+
+      if (mRemovedTabIdsNotifiedBeforeTracked.has(nativeTab.id)) {
+        log(`ignore kCOMMAND_NOTIFY_TAB_CREATING for already closed tab: ${nativeTab.id}`);
+        return;
+      }
 
       // The "index" property of the tab was already updated by the background process
       // with other newly opened tabs. However, such other tabs are not tracked on
@@ -554,8 +561,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       await Tab.waitUntilTracked(message.tabId, { element: true });
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      if (!tab) {
+        log(`ignore kCOMMAND_NOTIFY_TAB_CREATED for already closed tab: ${message.tabId}`);
         return;
+      }
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
@@ -734,8 +743,14 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING: {
       const tab = Tab.get(message.tabId);
-      if (!tab)
+      if (!tab) {
+        log(`ignore kCOMMAND_NOTIFY_TAB_REMOVING for already closed tab: ${message.tabId}`);
+        mRemovedTabIdsNotifiedBeforeTracked.add(message.tabId);
+        wait(10000).then(() => {
+          mRemovedTabIdsNotifiedBeforeTracked.delete(message.tabId);
+        });
         return;
+      }
       tab.$TST.parent = null;
       // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
       TabsStore.removeHighlightedTab(tab);
@@ -753,8 +768,10 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVED: {
       const tab = Tab.get(message.tabId);
       TabsStore.windows.get(message.windowId).detachTab(message.tabId);
-      if (!tab)
+      if (!tab) {
+        log(`ignore kCOMMAND_NOTIFY_TAB_REMOVED for already closed tab: ${message.tabId}`);
         return;
+      }
       if (tab.active) {
         // This should not, but sometimes happens on some edge cases for example:
         // https://github.com/piroor/treestyletab/issues/2385
