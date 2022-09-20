@@ -777,9 +777,9 @@ async function updateIconForBrowserTheme(theme) {
         theme = await browser.theme.getCurrent(window.id);
       }
 
-      log('updateIconForBrowserTheme: colors: ', theme.colors);
+      log('updateIconForBrowserTheme: ', theme);
       if (theme.colors) {
-        const toolbarIconColor = theme.colors.icons || theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.textcolor;
+        const toolbarIconColor = theme.colors.icons || theme.colors.toolbar_text || theme.colors.tab_text || theme.colors.tab_background_text || theme.colors.bookmark_text || theme.colors.textcolor;
         const menuIconColor    = theme.colors.popup_text || toolbarIconColor;
         const sidebarIconColor = theme.colors.sidebar_text || toolbarIconColor;
         log(' => ', { toolbarIconColor, menuIconColor, sidebarIconColor }, theme.colors);
