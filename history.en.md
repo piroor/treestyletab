@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.5 (2022.9.21)
    * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
  - 3.9.4 (2022.9.21)
    * Becomes more robust around tabs opened and closed immediately (ex. new tabs for download links), and less ghost tabs left on the sidebar.
