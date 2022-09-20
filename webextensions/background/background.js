@@ -758,16 +758,17 @@ Tree.onDetached.addListener((tab, detachInfo) => {
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
 
+const BASE_ICONS = {
+  '16': '/resources/16x16.svg',
+  '20': '/resources/20x20.svg',
+  '24': '/resources/24x24.svg',
+  '32': '/resources/32x32.svg',
+};
 async function updateIconForBrowserTheme(theme) {
   // generate icons with theme specific color
-  const icons = {
-    '16': '/resources/16x16.svg',
-    '20': '/resources/20x20.svg',
-    '24': '/resources/24x24.svg',
-    '32': '/resources/32x32.svg',
-  };
-  const menuIcons    = { ...icons };
-  const sidebarIcons = { ...icons };
+  const toolbarIcons = {};
+  const menuIcons    = {};
+  const sidebarIcons = {};
 
   switch (configs.iconColor) {
     case 'auto': {
@@ -782,48 +783,61 @@ async function updateIconForBrowserTheme(theme) {
         const menuIconColor    = theme.colors.popup_text || toolbarIconColor;
         const sidebarIconColor = theme.colors.sidebar_text || toolbarIconColor;
         log(' => ', { toolbarIconColor, menuIconColor, sidebarIconColor }, theme.colors);
-        await Promise.all(Array.from(Object.keys(icons), async size => {
+        await Promise.all(Array.from(Object.entries(BASE_ICONS), async ([size, url]) => {
           const request = new XMLHttpRequest();
           await new Promise((resolve, _reject) => {
-            request.open('GET', `/resources/${size}x${size}-dark.svg`, true);
+            request.open('GET', url, true);
             request.addEventListener('load', resolve, { once: true });
             request.overrideMimeType('text/plain');
             request.send(null);
           });
-          const toolbarIconSource = request.responseText.replace(/fill:[^;]+;/, `fill: ${toolbarIconColor};`);
-          icons[size] = `data:image/svg+xml,${escape(toolbarIconSource)}#toolbar`;
-          const menuIconSource = request.responseText.replace(/fill:[^;]+;/, `fill: ${menuIconColor};`);
-          menuIcons[size] = `data:image/svg+xml,${escape(menuIconSource)}#toolbar`;
-          const sidebarIconSource = request.responseText.replace(/fill:[^;]+;/, `fill: ${sidebarIconColor};`);
-          sidebarIcons[size] = `data:image/svg+xml,${escape(sidebarIconSource)}#toolbar`;
+          const toolbarIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, toolbarIconColor);
+          toolbarIcons[size] = `data:image/svg+xml,${escape(toolbarIconSource)}#toolbar-theme`;
+          const menuIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, menuIconColor);
+          menuIcons[size] = `data:image/svg+xml,${escape(menuIconSource)}#default-theme`;
+          const sidebarIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, sidebarIconColor);
+          sidebarIcons[size] = `data:image/svg+xml,${escape(sidebarIconSource)}#default-theme`;
         }));
       }
       else if (mDarkModeMatchMedia.matches) { // dark mode
-        for (const size of Object.keys(icons)) {
-          icons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
+        for (const [size, url] of Object.entries(BASE_ICONS)) {
+          toolbarIcons[size] = `${url}#toolbar-dark`;
+          menuIcons[size] = sidebarIcons[size] = `${url}#default-dark`;
+        }
+      }
+      else {
+        for (const [size, url] of Object.entries(BASE_ICONS)) {
+          toolbarIcons[size] = `${url}#toolbar-bright`;
+          menuIcons[size] = sidebarIcons[size] = `${url}#default-bright`;
         }
       }
     }; break;
 
     case 'bright':
-      for (const size of Object.keys(icons)) {
-        icons[size] = menuIcons[size] = sidebarIcons[size] = `/resources/${size}x${size}-light.svg#toolbar`;
+      for (const [size, url] of Object.entries(BASE_ICONS)) {
+        toolbarIcons[size] = `${url}#toolbar-bright`;
+        menuIcons[size] = sidebarIcons[size] = `${url}#default-bright`;
       }
       break;
 
     case 'dark':
-      for (const size of Object.keys(icons)) {
-        icons[size] = menuIcons[size] = sidebarIcons[size] = `/resources/${size}x${size}-dark.svg#toolbar`;
+      for (const [size, url] of Object.entries(BASE_ICONS)) {
+        toolbarIcons[size] = `${url}#toolbar-dark`;
+        menuIcons[size] = sidebarIcons[size] = `${url}#default-dark`;
       }
       break;
   }
 
-  log('updateIconForBrowserTheme: applying icons: ', icons);
+  log('updateIconForBrowserTheme: applying icons: ', {
+    toolbarIcons,
+    menuIcons,
+    sidebarIcons,
+  });
 
   await Promise.all([
     ...ContextMenu.getItemIdsWithIcon().map(id => browser.menus.update(id, { icons: menuIcons })),
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()),
-    browser.browserAction.setIcon({ path: icons }),
+    browser.browserAction.setIcon({ path: toolbarIcons }),
     browser.sidebarAction.setIcon({ path: sidebarIcons }),
   ]);
 }
