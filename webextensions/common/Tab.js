@@ -58,8 +58,10 @@ export default class Tab {
     this.tab = tab;
     this.id  = tab.id;
     this.trackedAt = Date.now();
-    tab.$TST.opened = new Promise((resolve, _reject) => {
-      this.$resolveOpened = resolve;
+    tab.$TST.opened = new Promise((resolve, reject) => {
+      const resolvers = mOpenedResolvers.set(tab.id) || new Set();
+      resolvers.add({ resolve, reject });
+      mOpenedResolvers.set(tab.id, resolvers);
     });
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
@@ -1350,13 +1352,17 @@ export default class Tab {
   resolveOpened() {
     if (!mOpenedResolvers.has(this.id))
       return;
-    mOpenedResolvers.get(this.id).resolve();
+    for (const resolver of mOpenedResolvers.get(this.id)) {
+      resolver.resolve();
+    }
     mOpenedResolvers.delete(this.id);
   }
   rejectOpened() {
     if (!mOpenedResolvers.has(this.id))
       return;
-    mOpenedResolvers.get(this.id).reject();
+    for (const resolver of mOpenedResolvers.get(this.id)) {
+      resolver.reject();
+    }
     mOpenedResolvers.delete(this.id);
   }
 
@@ -1721,8 +1727,7 @@ Tab.init = (tab, options = {}) => {
   if (options.existing) {
     tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
     tab.$TST.opened = Promise.resolve(true).then(() => {
-      tab.$TST.$resolveOpened();
-      return true;
+      tab.$TST.resolveOpened();
     });
     tab.$TST.opening = false;
     tab.$TST.openedCompletely = true;
@@ -1732,11 +1737,11 @@ Tab.init = (tab, options = {}) => {
     tab.$TST.openedCompletely = false;
     tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
-      mOpenedResolvers.set(tab.id, { resolve, reject });
+      const resolvers = mOpenedResolvers.set(tab.id) || new Set();
+      resolvers.add({ resolve, reject });
+      mOpenedResolvers.set(tab.id, resolvers);
     }).then(() => {
       tab.$TST.openedCompletely = true;
-      tab.$TST.$resolveOpened();
-      return true;
     });
   }
 
