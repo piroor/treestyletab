@@ -639,7 +639,7 @@ async function onNewTabTracked(tab, info) {
     }
 
     // tab can be changed while creating!
-    const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
+    const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     if (!renewedTab) {
       log(`onNewTabTracked(${dumpTab(tab)}): tab ${tab.id} is closed while tracking`);
       onCompleted(uniqueId);
