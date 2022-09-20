@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.4 (2022.9.21)
    * Becomes more robust around tabs opened and closed immediately (ex. new tabs for download links), and less ghost tabs left on the sidebar.
    * Don't treat tabs as "opened from the active tab of the destination window" anymore if they are moved across windows while opening. This improves compatibilit with [Aggregate Tabs to Main Window](https://addons.mozilla.org/firefox/addon/aggregate-tabs-to-main-window/).
  - 3.9.3 (2022.9.19)
