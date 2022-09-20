@@ -704,8 +704,8 @@ async function onNewTabTracked(tab, info) {
 
     return tab;
   }
-  catch(e) {
-    console.log(e, e.stack);
+  catch(error) {
+    console.log(error, error.stack);
     onCompleted();
     tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
     Tree.onAttached.removeListener(onTreeModified);
