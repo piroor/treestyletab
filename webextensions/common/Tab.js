@@ -58,6 +58,9 @@ export default class Tab {
     this.tab = tab;
     this.id  = tab.id;
     this.trackedAt = Date.now();
+    tab.$TST.opened = new Promise((resolve, _reject) => {
+      this.$resolveOpened = resolve;
+    });
 
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
 
@@ -1717,7 +1720,10 @@ Tab.init = (tab, options = {}) => {
 
   if (options.existing) {
     tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
-    tab.$TST.opened = Promise.resolve(true);
+    tab.$TST.opened = Promise.resolve(true).then(() => {
+      tab.$TST.$resolveOpened();
+      return true;
+    });
     tab.$TST.opening = false;
     tab.$TST.openedCompletely = true;
   }
@@ -1729,6 +1735,8 @@ Tab.init = (tab, options = {}) => {
       mOpenedResolvers.set(tab.id, { resolve, reject });
     }).then(() => {
       tab.$TST.openedCompletely = true;
+      tab.$TST.$resolveOpened();
+      return true;
     });
   }
 

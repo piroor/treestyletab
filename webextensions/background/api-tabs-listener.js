@@ -296,7 +296,9 @@ async function onUpdated(tabId, changeInfo, tab) {
       browser.tabs.get(tabId).then(tab => {
         if (tab.favIconUrl != updatedTab.favIconUrl)
           onUpdated(tabId, { favIconUrl: tab.favIconUrl }, tab);
-      }).catch(ApiTabs.createErrorSuppressor());
+      }).catch(ApiTabs.createErrorSuppressor(
+        ApiTabs.handleMissingTabError // the tab can be closed while waiting
+      ));
     }
     if (configs.enableWorkaroundForBug1409262 &&
         tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
