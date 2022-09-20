@@ -640,8 +640,15 @@ async function onNewTabTracked(tab, info) {
 
     // tab can be changed while creating!
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
-    if (!renewedTab)
-      throw new Error(`tab ${tab.id} is closed while tracking`);
+    if (!renewedTab) {
+      log(`onNewTabTracked(${dumpTab(tab)}): tab ${tab.id} is closed while tracking`);
+      onCompleted(uniqueId);
+      tab.$TST.rejectOpened();
+      Tab.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
+      Tree.onAttached.removeListener(onTreeModified);
+      return;
+    }
 
     const updatedOpenerTabId = tab.openerTabId;
     const changedProps = {};
