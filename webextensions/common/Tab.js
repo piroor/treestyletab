@@ -59,7 +59,7 @@ export default class Tab {
     this.id  = tab.id;
     this.trackedAt = Date.now();
     tab.$TST.opened = new Promise((resolve, reject) => {
-      const resolvers = mOpenedResolvers.set(tab.id) || new Set();
+      const resolvers = mOpenedResolvers.get(tab.id) || new Set();
       resolvers.add({ resolve, reject });
       mOpenedResolvers.set(tab.id, resolvers);
     });
@@ -1737,7 +1737,7 @@ Tab.init = (tab, options = {}) => {
     tab.$TST.openedCompletely = false;
     tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
-      const resolvers = mOpenedResolvers.set(tab.id) || new Set();
+      const resolvers = mOpenedResolvers.get(tab.id) || new Set();
       resolvers.add({ resolve, reject });
       mOpenedResolvers.set(tab.id, resolvers);
     }).then(() => {
