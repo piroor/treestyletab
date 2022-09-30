@@ -450,7 +450,7 @@ Tab.onPinned.addListener(async tab => {
 
   const [openedGroupTab, ] = await Promise.all([
     configs.autoGroupNewTabsFromPinned && groupTabs(tab.$TST.children, {
-      title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
+      title:       tab.$TST.isGroupTab ? tab.title : browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
       temporary:   true,
       openerTabId: tab.$TST.uniqueId.id
     }),
