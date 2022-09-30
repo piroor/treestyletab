@@ -436,11 +436,28 @@ Tab.onActivating.addListener((tab, _info = {}) => {
   tryInitGroupTab(tab);
 });
 
-Tab.onPinned.addListener(tab => {
+Tab.onPinned.addListener(async tab => {
   Tree.collapseExpandSubtree(tab, {
     collapsed: false,
     broadcast: true
   });
+
+  if (tab.$TST.isTemporaryGroupTab || tab.$TST.isTemporaryAggressiveGroupTab) {
+    // Such a group tab will be closed automatically when all children are detached.
+    // To prevent the auto close behavior, the tab type need to be turned to permanent.
+    const url = new URL(tab.url);
+    url.searchParams.delete('temporary');
+    url.searchParams.delete('temporaryAggressive');
+    await browser.tabs.executeScript(tab.id, {
+      runAt: 'document_start',
+      code:  `
+        document.querySelector('#temporary').checked = false;
+        document.querySelector('#temporaryAggressive').checked = false;
+        history.replaceState({}, document.title, ${JSON.stringify(url.href)});
+      `,
+    }).catch(ApiTabs.createErrorHandler());
+  }
+
   const children = tab.$TST.children;
   Tree.detachAllChildren(tab, {
     behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
