@@ -1883,7 +1883,11 @@ Tab.getSubstanceFromAliasGroupTab = groupTab => {
   TabsStore.assertValidTab(groupTab);
   const aliasTabId = (new URL(groupTab.url)).searchParams.get('aliasTabId');
   const aliasTab = aliasTabId && Tab.getByUniqueId(aliasTabId);
-  return aliasTab != groupTab && aliasTab;
+  if (!aliasTab ||
+      aliasTab == groupTab ||
+      aliasTab.pinned == groupTab.pinned)
+    return null;
+  return aliasTab;
 };
 
 
