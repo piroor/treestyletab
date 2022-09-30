@@ -193,6 +193,7 @@ function getDropAction(event) {
   const info = {
     dragOverTab,
     targetTab,
+    substanceTargetTab: targetTab && targetTab.pinned && targetTab.$TST.bundledTab,
     dropPosition:  null,
     action:        null,
     parent:        null,
@@ -335,7 +336,7 @@ function getDropAction(event) {
    * have to ignore the [center] area.
    */
   const onFaviconizedTab    = targetTab.pinned && configs.faviconizePinnedTabs;
-  const dropAreasCount      = (info.draggedTab && onFaviconizedTab) ? 2 : 3 ;
+  const dropAreasCount      = (info.draggedTab && onFaviconizedTab && !info.substanceTargetTab) ? 2 : 3 ;
   const targetTabRect       = targetTab.$TST.element.getBoundingClientRect();
   const targetTabCoordinate = onFaviconizedTab ? targetTabRect.left : targetTabRect.top ;
   const targetTabSize       = onFaviconizedTab ? targetTabRect.width : targetTabRect.height ;
@@ -370,15 +371,16 @@ function getDropAction(event) {
       log('drop position = on ', info.targetTab.id);
       const insertAt = configs.insertDroppedTabsAt == Constants.kINSERT_INHERIT ? configs.insertNewChildAt : configs.insertDroppedTabsAt;
       info.action       = Constants.kACTION_ATTACH;
-      info.parent       = targetTab;
+      info.parent       = info.substanceTargetTab || targetTab;
       info.insertBefore = insertAt == Constants.kINSERT_TOP ?
-        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
-        (targetTab.$TST.nextSiblingTab || targetTab.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
+        (info.parent && info.parent.$TST.firstChild || info.parent.$TST.unsafeNextTab /* instead of nearestVisibleFollowingTab, to avoid placing the tab after hidden tabs (too far from the target) */) :
+        (info.parent.$TST.nextSiblingTab || info.parent.$TST.unsafeNearestFollowingForeignerTab /* instead of nearestFollowingForeignerTab, to avoid placing the tab after hidden tabs (too far from the target) */);
       info.insertAfter  = insertAt == Constants.kINSERT_TOP ?
-        targetTab :
-        (targetTab.$TST.lastDescendant || targetTab);
+        info.parent :
+        (info.parent.$TST.lastDescendant || info.parent);
       if (info.draggedTab &&
-          info.draggedTab.pinned != targetTab.pinned)
+          info.draggedTab.pinned != targetTab.pinned &&
+          !info.substanceTargetTab)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (info.draggedTab &&
           info.insertBefore == info.draggedTab) // failsafe
@@ -1091,6 +1093,9 @@ function onDragOver(event) {
     }
     clearDropPosition();
     dropPositionTargetTab.$TST.element.setAttribute(kDROP_POSITION, info.dropPosition);
+    if (info.substanceTargetTab &&
+        info.dropPosition == kDROP_ON_SELF)
+      info.substanceTargetTab.$TST.element.setAttribute(kDROP_POSITION, info.dropPosition);
     mLastDropPosition = dropPosition;
     log('onDragOver: set drop position to ', dropPosition);
   }
