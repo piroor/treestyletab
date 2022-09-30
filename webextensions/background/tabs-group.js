@@ -448,13 +448,16 @@ Tab.onPinned.addListener(async tab => {
     broadcast: true
   });
 
+  const shouldGroupChildren = configs.autoGroupNewTabsFromPinned || tab.$TST.isGroupTab;
   const [openedGroupTab, ] = await Promise.all([
-    configs.autoGroupNewTabsFromPinned && groupTabs(tab.$TST.children, {
+    shouldGroupChildren && groupTabs(tab.$TST.children, {
+      // If the tab is a group tab, the opened tab should be treated as an alias of the pinned group tab.
+      // Otherwise it should be treated just as a temporary group tab to group children.
       title:       tab.$TST.isGroupTab ? tab.title : browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
       temporary:   !tab.$TST.isGroupTab,
       openerTabId: tab.$TST.uniqueId.id
     }),
-    !configs.autoGroupNewTabsFromPinned && Tree.detachAllChildren(tab, {
+    !shouldGroupChildren && Tree.detachAllChildren(tab, {
       behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
         context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
         preventEntireTreeBehavior: true,
