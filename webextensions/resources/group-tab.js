@@ -60,6 +60,10 @@
     return url.searchParams.get('openerTabId');
   }
 
+  function getAliasTabId() {
+    return url.searchParams.get('aliasTabId');
+  }
+
   function enterTitleEdit() {
     if (!gTitle)
       init();
@@ -101,6 +105,12 @@
       url.searchParams.set('openerTabId', opener);
     else
       url.searchParams.delete('openerTabId');
+
+    const aliasTabId = getAliasTabId();
+    if (aliasTabId)
+      url.searchParams.set('aliasTabId', aliasTabId);
+    else
+      url.searchParams.delete('aliasTabId');
 
     history.replaceState({}, document.title, url.href);
   }
@@ -315,32 +325,52 @@
 
     document.documentElement.classList.add('updating');
 
-    const tabs = await browser.runtime.sendMessage({
+    const baseRequest = {
       type: 'treestyletab:api:get-tree',
-      tabs: [
-        'senderTab',
-        getOpenerTabId()
-      ],
-      interval: 50
-    });
+      interval: 50,
+    };
+    const [thisTab, openerTab, aliasTab] = await Promise.all([
+      // We need to request them separately because
+      // get-tree always compact the returned array (null tab will be removved).
+      browser.runtime.sendMessage({
+        ...baseRequest,
+        tab: 'senderTab',
+      }),
+      browser.runtime.sendMessage({
+        ...baseRequest,
+        tab: getOpenerTabId(),
+      }),
+      browser.runtime.sendMessage({
+        ...baseRequest,
+        tab: getAliasTabId(),
+      }),
+    ]);
 
     // called again while waiting
     if (runAt != updateTree.lastRun)
       return;
 
-    if (!tabs) {
+    if (!thisTab) {
       console.error(new Error('Couldn\'t get tree of tabs unexpectedly.'));
       document.documentElement.classList.remove('updating');
       return;
     }
 
+    if (aliasTab)
+      thisTab.children = aliasTab.children;
+
     let tree;
-    if (tabs[1]) {
-      tabs[1].children = tabs[0].children;
-      tree = buildChildren({ children: [tabs[1]] });
+    if (!aliasTab && openerTab) {
+      openerTab.children = thisTab.children;
+      tree = buildChildren({
+        children: [
+          openerTab,
+        ],
+      });
     }
     else
-      tree = buildChildren(tabs[0]);
+      tree = buildChildren(thisTab);
+
     if (tree) {
       container.appendChild(tree);
       reflow();

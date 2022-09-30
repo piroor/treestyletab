@@ -29,7 +29,7 @@ function log(...args) {
   internalLogger('background/tabs-group', ...args);
 }
 
-export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerTabId } = {}) {
+export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerTabId, aliasTabId } = {}) {
   const url = new URL(Constants.kGROUP_TAB_URI);
 
   if (title)
@@ -42,6 +42,9 @@ export function makeGroupTabURI({ title, temporary, temporaryAggressive, openerT
 
   if (openerTabId)
     url.searchParams.set('openerTabId', openerTabId);
+
+  if (aliasTabId)
+    url.searchParams.set('aliasTabId', aliasTabId);
 
   return url.href;
 }
@@ -271,9 +274,12 @@ async function tryInitGroupTab(tab) {
 }
 
 function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
-  const ancestorGroupTabs = [tab]
-    .concat(tab.$TST.ancestors)
-    .filter(tab => tab.$TST.isGroupTab);
+  const ancestorGroupTabs = [
+    tab,
+    tab.$TST.bundledTab,
+    ...tab.$TST.ancestors,
+    ...tab.$TST.ancestors.map(tab => tab.$TST.bundledTab),
+  ].filter(tab => tab && tab.$TST.isGroupTab);
   for (const tab of ancestorGroupTabs) {
     if (tab.$TST.reservedUpdateRelatedGroupTab)
       clearTimeout(tab.$TST.reservedUpdateRelatedGroupTab);
@@ -442,40 +448,54 @@ Tab.onPinned.addListener(async tab => {
     broadcast: true
   });
 
+  const [openedGroupTab, ] = await Promise.all([
+    configs.autoGroupNewTabsFromPinned && groupTabs(tab.$TST.children, {
+      title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
+      temporary:   true,
+      openerTabId: tab.$TST.uniqueId.id
+    }),
+    !configs.autoGroupNewTabsFromPinned && Tree.detachAllChildren(tab, {
+      behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
+        context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+        preventEntireTreeBehavior: true,
+      }),
+      broadcast: true
+    }),
+    Tree.detachTab(tab, {
+      broadcast: true
+    }),
+  ]);
+
+  const url = new URL(tab.url);
+  let needUpdateUrl = false;
+
   if (tab.$TST.isTemporaryGroupTab || tab.$TST.isTemporaryAggressiveGroupTab) {
     // Such a group tab will be closed automatically when all children are detached.
     // To prevent the auto close behavior, the tab type need to be turned to permanent.
-    const url = new URL(tab.url);
     url.searchParams.delete('temporary');
     url.searchParams.delete('temporaryAggressive');
+    needUpdateUrl = true;
     await browser.tabs.executeScript(tab.id, {
       runAt: 'document_start',
       code:  `
         document.querySelector('#temporary').checked = false;
         document.querySelector('#temporaryAggressive').checked = false;
-        history.replaceState({}, document.title, ${JSON.stringify(url.href)});
       `,
     }).catch(ApiTabs.createErrorHandler());
   }
 
-  const children = tab.$TST.children;
-  Tree.detachAllChildren(tab, {
-    behavior: TreeBehavior.getParentTabOperationBehavior(tab, {
-      context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
-      preventEntireTreeBehavior: true,
-    }),
-    broadcast: true
-  });
-  Tree.detachTab(tab, {
-    broadcast: true
-  });
+  if (tab.$TST.isGroupTab && openedGroupTab) {
+    url.searchParams.set('aliasTabId', openedGroupTab.$TST.uniqueId.id);
+    needUpdateUrl = true;
+  }
 
-  if (configs.autoGroupNewTabsFromPinned)
-    groupTabs(children, {
-      title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', tab.title),
-      temporary:   true,
-      openerTabId: tab.$TST.uniqueId.id
-    });
+  if (needUpdateUrl)
+    await browser.tabs.executeScript(tab.id, {
+      runAt: 'document_start',
+      code:  `
+        history.replaceState({}, document.title, ${JSON.stringify(url.href)});
+      `,
+    }).catch(ApiTabs.createErrorHandler());
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {

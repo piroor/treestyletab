@@ -989,6 +989,9 @@ export default class Tab {
   get bundledTab() {
     if (!this.tab)
       return null;
+    const substance = Tab.getSubstanceFromAliasGroupTab(this.tab);
+    if (substance)
+      return substance;
     if (this.tab.pinned)
       return Tab.getGroupTabForOpener(this.tab);
     if (this.isGroupTab)
@@ -1853,7 +1856,7 @@ Tab.getGroupTabForOpener = opener => {
   if (!opener)
     return null;
   TabsStore.assertValidTab(opener);
-  return TabsStore.query({
+  const groupTab = TabsStore.query({
     windowId:   opener.windowId,
     tabs:       TabsStore.groupTabsInWindow.get(opener.windowId),
     living:     true,
@@ -1862,14 +1865,25 @@ Tab.getGroupTabForOpener = opener => {
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
     ]
   });
+  return groupTab != opener && groupTab;
 };
 
 Tab.getOpenerFromGroupTab = groupTab => {
   if (!groupTab.$TST.isGroupTab)
     return null;
   TabsStore.assertValidTab(groupTab);
-  const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
-  return matchedOpenerTabId && Tab.getByUniqueId(matchedOpenerTabId[1]);
+  const openerTabId = (new URL(groupTab.url)).searchParams.get('openerTabId');
+  const openerTab = openerTabId && Tab.getByUniqueId(openerTabId);
+  return openerTab != groupTab && openerTab;
+};
+
+Tab.getSubstanceFromAliasGroupTab = groupTab => {
+  if (!groupTab.$TST.isGroupTab)
+    return null;
+  TabsStore.assertValidTab(groupTab);
+  const aliasTabId = (new URL(groupTab.url)).searchParams.get('aliasTabId');
+  const aliasTab = aliasTabId && Tab.getByUniqueId(aliasTabId);
+  return aliasTab != groupTab && aliasTab;
 };
 
 
