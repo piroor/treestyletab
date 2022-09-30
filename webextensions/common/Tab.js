@@ -330,13 +330,13 @@ export default class Tab {
   get isTemporaryGroupTab() {
     if (!this.tab || !this.isGroupTab)
       return false;
-    return /[&?]temporary=true/.test(this.tab.url);
+    return (new URL(this.tab.url)).searchParams.get('temporary') == 'true';
   }
 
   get isTemporaryAggressiveGroupTab() {
     if (!this.tab || !this.isGroupTab)
       return false;
-    return /[&?]temporaryAggressive=true/.test(this.tab.url);
+    return (new URL(this.tab.url)).searchParams.get('temporaryAggressive') == 'true';
   }
 
   // Firefox Multi-Account Containers
