@@ -64,6 +64,9 @@ export default class Tab {
       mOpenedResolvers.set(tab.id, resolvers);
     });
 
+    // We should not change the shape of the object, so temporary data should be held in this map.
+    this.temporaryMetadata = new Map();
+
     this.updatingOpenerTabIds = []; // this must be an array, because same opener tab id can appear multiple times.
 
     this.newRelatedTabsCount = 0;

@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   dumpTab,
-  configs
+  configs,
+  wait,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -90,14 +91,24 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     const replacedGroupTab = (parentTabOperationBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) ?
       await TabsGroup.tryReplaceTabWithGroup(tab, { insertBefore: tab.$TST.firstChild }) :
       null;
-    if (!replacedGroupTab && tab.$TST.hasChild)
+    if (!replacedGroupTab && tab.$TST.hasChild) {
+      tab.$TST.temporaryMetadata.set('childIdsBeforeMoved', tab.$TST.childIds.slice(0));
+      await TabsGroup.clearTemporaryState(tab);
       await Tree.detachAllChildren(tab, {
         behavior:  parentTabOperationBehavior,
         nearestFollowingRootTab: tab.$TST.firstChild.$TST.nearestFollowingRootTab,
         broadcast: true
       });
+    }
+    tab.$TST.temporaryMetadata.set('parentIdBeforeMoved', tab.$TST.parentId);
     await Tree.detachTab(tab, {
       broadcast: true
+    });
+    // Pinned tab is moved at first, so Tab.onPinned handler cannot know tree information
+    // before the pinned tab was moved. Thus we cache tree information for the handler.
+    wait(100).then(() => {
+      tab.$TST.temporaryMetadata.delete('childIdsBeforeMoved');
+      tab.$TST.temporaryMetadata.delete('parentIdBeforeMoved');
     });
   }
 
