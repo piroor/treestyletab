@@ -71,34 +71,34 @@ async function updateInternal(tabId) {
       !TabsStore.ensureLivingTab(tab))
     return;
   log('update: ', dumpTab(tab));
-  if (tab.$TST.lastSuccessorTabIdByOwner) {
+  if (tab.$TST.temporaryMetadata.has('lastSuccessorTabIdByOwner')) {
     const successor = Tab.get(renewedTab.successorTabId);
     if (successor) {
       log(`  ${dumpTab(tab)} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
       return;
     }
     // clear broken information
-    delete tab.$TST.lastSuccessorTabIdByOwner;
-    delete tab.$TST.lastSuccessorTabId;
+    tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
+    tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
     clearSuccessor(tab.id);
   }
-  const lastSuccessorTab = tab.$TST.lastSuccessorTabId && Tab.get(tab.$TST.lastSuccessorTabId);
+  const lastSuccessorTab = tab.$TST.temporaryMetadata.has('lastSuccessorTabId') && Tab.get(tab.$TST.temporaryMetadata.get('lastSuccessorTabId'));
   if (!lastSuccessorTab) {
     log(`  ${dumpTab(tab)}'s successor is missing: it was already closed.`);
   }
   else {
     log(`  ${dumpTab(tab)} is under control: `, {
       successorTabId: renewedTab.successorTabId,
-      lastSuccessorTabId: tab.$TST.lastSuccessorTabId
+      lastSuccessorTabId: tab.$TST.temporaryMetadata.get('lastSuccessorTabId'),
     });
     if (renewedTab.successorTabId != -1 &&
-        renewedTab.successorTabId != tab.$TST.lastSuccessorTabId) {
+        renewedTab.successorTabId != tab.$TST.temporaryMetadata.get('lastSuccessorTabId')) {
       log(`  ${dumpTab(tab)}'s successor is modified by someone! Now it is out of control.`);
-      delete tab.$TST.lastSuccessorTabId;
+      tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
       return;
     }
   }
-  delete tab.$TST.lastSuccessorTabId;
+  tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
   let successor = null;
@@ -137,7 +137,7 @@ async function updateInternal(tabId) {
   if (successor) {
     log(`  ${dumpTab(tab)} is under control: successor = ${successor.id}`);
     setSuccessor(renewedTab.id, successor.id);
-    tab.$TST.lastSuccessorTabId = successor.id;
+    tab.$TST.temporaryMetadata.set('lastSuccessorTabId', successor.id);
   }
   else {
     log(`  ${dumpTab(tab)} is out of control.`, {
@@ -150,15 +150,15 @@ async function updateInternal(tabId) {
 
 async function tryClearOwnerSuccessor(tab) {
   if (!tab ||
-      !tab.$TST.lastSuccessorTabIdByOwner)
+      !tab.$TST.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
     return;
-  delete tab.$TST.lastSuccessorTabIdByOwner;
+  tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
   const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
-      renewedTab.successorTabId != tab.$TST.lastSuccessorTabId)
+      renewedTab.successorTabId != tab.$TST.temporaryMetadata.get('lastSuccessorTabId'))
     return;
   log(`${dumpTab(tab)} is unprepared for "selectOwnerOnClose" behavior`);
-  delete tab.$TST.lastSuccessorTabId;
+  tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
   clearSuccessor(tab.id);
 }
 
@@ -205,8 +205,8 @@ Tab.onCreating.addListener((tab, info = {}) => {
 
       log(`${dumpTab(tab)} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
       setSuccessor(tab.id, ownerTabId);
-      tab.$TST.lastSuccessorTabId = ownerTabId;
-      tab.$TST.lastSuccessorTabIdByOwner = true;
+      tab.$TST.temporaryMetadata.set('lastSuccessorTabId', ownerTabId);
+      tab.$TST.temporaryMetadata.set('lastSuccessorTabIdByOwner', true);
 
       if (!tab.openerTabId)
         return;

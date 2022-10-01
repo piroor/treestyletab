@@ -34,7 +34,6 @@ function successorTabLog(...args) {
 }
 
 const mOpenedResolvers            = new Map();
-const mClosedWhileActiveResolvers = new Map();
 
 const mIncompletelyTrackedTabs = new Map();
 const mMovingTabs              = new Map();
@@ -58,7 +57,7 @@ export default class Tab {
     this.tab = tab;
     this.id  = tab.id;
     this.trackedAt = Date.now();
-    tab.$TST.opened = new Promise((resolve, reject) => {
+    this.opened = new Promise((resolve, reject) => {
       const resolvers = mOpenedResolvers.get(tab.id) || new Set();
       resolvers.add({ resolve, reject });
       mOpenedResolvers.set(tab.id, resolvers);
@@ -134,9 +133,9 @@ export default class Tab {
     Tab.onDestroyed.dispatch(this.tab);
     this.detach();
 
-    if (this.reservedCleanupNeedlessGroupTab) {
-      clearTimeout(this.reservedCleanupNeedlessGroupTab);
-      delete this.reservedCleanupNeedlessGroupTab;
+    if (this.temporaryMetadata.has('reservedCleanupNeedlessGroupTab')) {
+      clearTimeout(this.temporaryMetadata.get('reservedCleanupNeedlessGroupTab'));
+      this.temporaryMetadata.delete('reservedCleanupNeedlessGroupTab');
     }
 
     TabsStore.tabs.delete(this.id);
@@ -379,11 +378,11 @@ export default class Tab {
        firstChild.$TST.$possiblePredecessorPreviousTab == this.tab &&
        firstChild) ||
       (nextTab &&
-       !nextTab.$TST.openedCompletely &&
+       !nextTab.$TST.temporaryMetadata.get('openedCompletely') &&
        nextTab.$TST.$possiblePredecessorPreviousTab == this.tab &&
        nextTab) ||
       (prevTab &&
-       !prevTab.$TST.openedCompletely &&
+       !prevTab.$TST.temporaryMetadata.get('openedCompletely') &&
        prevTab.$TST.$possiblePredecessorNextTab == this.tab &&
        prevTab)
     );
@@ -1372,12 +1371,6 @@ export default class Tab {
     mOpenedResolvers.delete(this.id);
   }
 
-  fetchClosedWhileActiveResolver() {
-    const resolver = mClosedWhileActiveResolvers.get(this.id);
-    mClosedWhileActiveResolvers.delete(this.id);
-    return resolver;
-  }
-
   memorizeNeighbors(hint) {
     if (!this.tab) // already closed tab
       return;
@@ -1735,25 +1728,21 @@ Tab.init = (tab, options = {}) => {
     tab.$TST.opened = Promise.resolve(true).then(() => {
       tab.$TST.resolveOpened();
     });
-    tab.$TST.opening = false;
-    tab.$TST.openedCompletely = true;
+    tab.$TST.temporaryMetadata.set('opening', false);
+    tab.$TST.temporaryMetadata.set('openedCompletely', true);
   }
   else {
-    tab.$TST.opening = true;
-    tab.$TST.openedCompletely = false;
+    tab.$TST.temporaryMetadata.set('opening', true);
+    tab.$TST.temporaryMetadata.set('openedCompletely', false);
     tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
       const resolvers = mOpenedResolvers.get(tab.id) || new Set();
       resolvers.add({ resolve, reject });
       mOpenedResolvers.set(tab.id, resolvers);
     }).then(() => {
-      tab.$TST.openedCompletely = true;
+      tab.$TST.temporaryMetadata.set('openedCompletely', true);
     });
   }
-
-  tab.$TST.closedWhileActive = new Promise((resolve, _reject) => {
-    mClosedWhileActiveResolvers.set(tab.id, resolve);
-  });
 
   return tab;
 };

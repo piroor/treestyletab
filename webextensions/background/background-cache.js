@@ -259,7 +259,7 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
 
-  tab.$TST.treeStructureAlreadyRestoredFromSessionData = true;
+  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 }
 
 function fixupTabRestoredFromCachePostProcess(tab) {

@@ -101,14 +101,14 @@ function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingTab(tab))
       continue;
-    if (tab.$TST.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.$TST.reservedCleanupNeedlessGroupTab);
-    tab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+    if (tab.$TST.temporaryMetadata.has('reservedCleanupNeedlessGroupTab'))
+      clearTimeout(tab.$TST.temporaryMetadata.get('reservedCleanupNeedlessGroupTab'));
+    tab.$TST.temporaryMetadata.set('reservedCleanupNeedlessGroupTab', setTimeout(() => {
       if (!tab.$TST)
         return;
-      delete tab.$TST.reservedCleanupNeedlessGroupTab;
+      tab.$TST.temporaryMetadata.delete('reservedCleanupNeedlessGroupTab');
       cleanupNeedlssGroupTab(tab);
-    }, 100);
+    }, 100));
   }
 }
 
@@ -281,19 +281,20 @@ function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
     ...tab.$TST.ancestors.map(tab => tab.$TST.bundledTab),
   ].filter(tab => tab && tab.$TST.isGroupTab);
   for (const tab of ancestorGroupTabs) {
-    if (tab.$TST.reservedUpdateRelatedGroupTab)
-      clearTimeout(tab.$TST.reservedUpdateRelatedGroupTab);
-    tab.$TST.reservedUpdateRelatedGroupTabChangedInfo = tab.$TST.reservedUpdateRelatedGroupTabChangedInfo || new Set();
+    if (tab.$TST.temporaryMetadata.has('reservedUpdateRelatedGroupTab'))
+      clearTimeout(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTab'));
+    const reservedUpdateRelatedGroupTabChangedInfo = tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo') || new Set()
     for (const info of changedInfo) {
-      tab.$TST.reservedUpdateRelatedGroupTabChangedInfo.add(info);
+      reservedUpdateRelatedGroupTabChangedInfo.add(info);
     }
-    tab.$TST.reservedUpdateRelatedGroupTab = setTimeout(() => {
+    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTabChangedInfo', reservedUpdateRelatedGroupTabChangedInfo);
+    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTab', setTimeout(() => {
       if (!tab.$TST)
         return;
-      delete tab.$TST.reservedUpdateRelatedGroupTab;
-      updateRelatedGroupTab(tab, Array.from(tab.$TST.reservedUpdateRelatedGroupTabChangedInfo));
-      delete tab.$TST.reservedUpdateRelatedGroupTabChangedInfo;
-    }, 100);
+      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTab');
+      updateRelatedGroupTab(tab, Array.from(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo')));
+      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTabChangedInfo');
+    }, 100));
   }
 }
 

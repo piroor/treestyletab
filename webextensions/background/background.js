@@ -296,7 +296,7 @@ async function rebuildAll(windows) {
     });
     for (const tab of Tab.getGroupTabs(window.id, { iterator: true })) {
       if (!tab.discarded)
-        tab.$TST.shouldReloadOnSelect = true;
+        tab.$TST.temporaryMetadata.set('shouldReloadOnSelect', true);
     }
   }));
   return restoredFromCache;

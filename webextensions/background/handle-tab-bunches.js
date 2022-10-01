@@ -100,7 +100,7 @@ async function tryDetectTabBunches(window) {
 
   if (tabReferences.length > 1) {
     for (const tabReference of tabReferences) {
-      Tab.get(tabReference.id).$TST.openedWithOthers = true;
+      Tab.get(tabReference.id).$TST.temporaryMetadata.set('openedWithOthers', true);
     }
   }
 
@@ -345,7 +345,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     if (!pinnedOpeners.includes(opener) ||
         Tab.getGroupTabForOpener(opener) ||
         siblings.length == 0 ||
-        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener)
+        tab.$TST.temporaryMetadata.has('alreadyMovedAsOpenedFromPinnedOpener'))
       continue;
     let refTabs = {};
     try {
@@ -378,7 +378,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     else {
       continue;
     }
-    tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+    tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
   }
 
   // Finally, try to group opened tabs.

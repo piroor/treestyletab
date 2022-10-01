@@ -300,10 +300,11 @@ async function onUpdated(tabId, changeInfo, tab) {
         ApiTabs.handleMissingTabError // the tab can be closed while waiting
       ));
     }
+    const updatedOpenerTabId = updatedTab.$TST.temporaryMetadata.get('updatedOpenerTabId');
     if (configs.enableWorkaroundForBug1409262 &&
-        tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
-      log(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.$TST.updatedOpenerTabId} (original) => ${tab.openerTabId} (changed by someone) `, configs.debug && new Error().stack);
-      updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = changeInfo.openerTabId = tab.openerTabId;
+        tab.openerTabId != updatedOpenerTabId) {
+      log(`openerTabId of ${tabId} is changed by someone!: ${updatedOpenerTabId} (original) => ${tab.openerTabId} (changed by someone) `, configs.debug && new Error().stack);
+      updatedTab.$TST.temporaryMetadata.set('updatedOpenerTabId', updatedTab.openerTabId = changeInfo.openerTabId = tab.openerTabId);
     }
 
     TabsUpdate.updateTab(updatedTab, changeInfo, { tab, old: oldState });
@@ -659,7 +660,7 @@ async function onNewTabTracked(tab, info) {
       if (key == 'openerTabId' &&
           info.trigger == 'tabs.onAttached' &&
           value != tab.openerTabId &&
-          tab.openerTabId == tab.$TST.updatedOpenerTabId) {
+          tab.openerTabId == tab.$TST.temporaryMetadata.get('updatedOpenerTabId')) {
         log(`openerTabId of ${tab.id} is different from the raw value but it has been updated by TST while attaching, so don't detect as updated for now`);
         continue;
       }

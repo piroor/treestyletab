@@ -225,7 +225,7 @@ export async function attachTabTo(child, parent, options = {}) {
     log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${parent.id} (changed by TST)`, new Error().stack);
     child.openerTabId = parent.id;
     child.$TST.updatingOpenerTabIds.push(parent.id);
-    child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    child.$TST.temporaryMetadata.set('updatedOpenerTabId', child.openerTabId); // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(child.id, { openerTabId: parent.id })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     wait(200).then(() => {
@@ -573,7 +573,7 @@ export function detachTab(child, options = {}) {
       configs.syncParentTabAndOpenerTab) {
     log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, configs.debug && new Error().stack);
     child.openerTabId = child.id;
-    child.$TST.updatedOpenerTabId = child.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    child.$TST.temporaryMetadata.set('updatedOpenerTabId', child.openerTabId); // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }

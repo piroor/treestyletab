@@ -84,16 +84,16 @@ Tab.onCreating.addListener((tab, info = {}) => {
         return false;
       }
       else if (possibleOpenerTab != tab) {
-        tab.$TST.possibleOpenerTab = possibleOpenerTab.id;
+        tab.$TST.temporaryMetadata.set('possibleOpenerTab', possibleOpenerTab.id);
       }
-      tab.$TST.isNewTab = !info.fromExternal;
+      tab.$TST.temporaryMetadata.set('isNewTab', !info.fromExternal);
     }
     if (info.fromExternal &&
         !info.bypassTabControl) {
       log('behave as a tab opened from external application');
       // we may need to reopen the tab with loaded URL
       if (configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
-        tab.$TST.fromExternal = true;
+        tab.$TST.temporaryMetadata.set('fromExternal', true);
       return Tree.behaveAutoAttachedTab(tab, {
         baseTab:   possibleOpenerTab,
         behavior:  configs.autoAttachOnOpenedFromExternal,
@@ -107,7 +107,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
         !info.bypassTabControl &&
         configs.autoAttachOnAnyOtherTrigger != Constants.kNEWTAB_DO_NOTHING) {
       if (configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
-        tab.$TST.anyOtherTrigger = true;
+        tab.$TST.temporaryMetadata.set('anyOtherTrigger', true);
       log('controlled as a new tab from other unknown trigger');
       return Tree.behaveAutoAttachedTab(tab, {
         baseTab:   possibleOpenerTab,
@@ -116,7 +116,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
         broadcast: true
       }).then(moved => !moved);
     }
-    tab.$TST.positionedBySelf = info.positionedBySelf;
+    tab.$TST.temporaryMetadata.set('positionedBySelf', info.positionedBySelf);
     return true;
   }
 
@@ -131,7 +131,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     if (info.fromExternal &&
         !info.bypassTabControl &&
         configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
-      tab.$TST.fromExternal = true;
+      tab.$TST.temporaryMetadata.set('fromExternal', true);
     const behavior = info.fromExternal && !info.bypassTabControl ?
       configs.autoAttachOnOpenedFromExternal :
       info.duplicated ?
@@ -206,7 +206,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
   if (parent) {
     log('handleTabsFromPinnedOpener: attach to corresponding group tab');
     tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
-    tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+    tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
     // it could be updated already...
     const lastRelatedTab = opener.$TST.lastRelatedTabId == tab.id ? opener.$TST.previousLastRelatedTab : opener.$TST.lastRelatedTab;
     return Tree.attachTabTo(tab, parent, {
@@ -227,7 +227,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const lastRelatedTab = opener.$TST.lastRelatedTab;
       if (lastRelatedTab) {
         log(`handleTabsFromPinnedOpener: place after last related tab ${dumpTab(lastRelatedTab)}`);
-        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+        tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
         return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
           delayedMove: true,
           broadcast:   true
@@ -238,7 +238,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
       if (lastPinnedTab) {
         log(`handleTabsFromPinnedOpener: opened from pinned opener: place after last pinned tab ${dumpTab(lastPinnedTab)}`);
-        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+        tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
         return TabsMove.moveTabAfter(tab, lastPinnedTab, {
           delayedMove: true,
           broadcast:   true
@@ -247,7 +247,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
       const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
       if (firstNormalTab) {
         log(`handleTabsFromPinnedOpener: opened from pinned opener: place before first pinned tab ${dumpTab(firstNormalTab)}`);
-        tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+        tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
         return TabsMove.moveTabBefore(tab, firstNormalTab, {
           delayedMove: true,
           broadcast:   true
@@ -258,7 +258,7 @@ async function handleTabsFromPinnedOpener(tab, opener) {
     case Constants.kINSERT_END: {
       const lastTab = Tab.getLastTab(tab.windowId);
       log('handleTabsFromPinnedOpener: opened from pinned opener: place after the last tab ', lastTab);
-      tab.$TST.alreadyMovedAsOpenedFromPinnedOpener = true;
+      tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
       return TabsMove.moveTabAfter(tab, lastTab, {
         delayedMove: true,
         broadcast:   true
@@ -312,20 +312,24 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     });
   }
 
-  if (tab.$TST.openedCompletely &&
+  if (tab.$TST.temporaryMetadata.get('openedCompletely') &&
       tab.windowId == tab.$windowIdOnCreated && // Don't treat tab as "opened from active tab" if it is moved across windows while loading
       (changeInfo.url || changeInfo.status == 'complete') &&
-      (tab.$TST.isNewTab ||
-       tab.$TST.fromExternal ||
-       tab.$TST.anyOtherTrigger)) {
-    log('loaded tab ', dumpTab(tab), { isNewTab: tab.$TST.isNewTab, fromExternal: tab.$TST.fromExternal, anyOtherTrigger: tab.$TST.anyOtherTrigger });
-    delete tab.$TST.isNewTab;
-    const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
-    delete tab.$TST.possibleOpenerTab;
+      (tab.$TST.temporaryMetadata.has('isNewTab') ||
+       tab.$TST.temporaryMetadata.has('fromExternal') ||
+       tab.$TST.temporaryMetadata.has('anyOtherTrigger'))) {
+    log('loaded tab ', dumpTab(tab), {
+      isNewTab: tab.$TST.temporaryMetadata.has('isNewTab'),
+      fromExternal: tab.$TST.temporaryMetadata.has('fromExternal'),
+      anyOtherTrigger: tab.$TST.temporaryMetadata.has('anyOtherTrigger'),
+    });
+    tab.$TST.temporaryMetadata.delete('isNewTab');
+    const possibleOpenerTab = Tab.get(tab.$TST.temporaryMetadata.get('possibleOpenerTab'));
+    tab.$TST.temporaryMetadata.delete('possibleOpenerTab');
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
 
-    if (tab.$TST.fromExternal) {
-      delete tab.$TST.fromExternal;
+    if (tab.$TST.temporaryMetadata.has('fromExternal')) {
+      tab.$TST.temporaryMetadata.delete('fromExternal');
       log('behave as a tab opened from external application (delayed)');
       handleNewTabFromActiveTab(tab, {
         url:                           tab.url,
@@ -336,8 +340,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       return;
     }
 
-    if (tab.$TST.anyOtherTrigger) {
-      delete tab.$TST.anyOtherTrigger;
+    if (tab.$TST.temporaryMetadata.has('anyOtherTrigger')) {
+      tab.$TST.temporaryMetadata.delete('anyOtherTrigger');
       log('behave as a tab opened from any other trigger (delayed)');
       handleNewTabFromActiveTab(tab, {
         url:                           tab.url,
@@ -353,8 +357,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     if (tab.$TST.parent ||
         !possibleOpenerTab ||
         window.openedNewTabs.has(tab.id) ||
-        tab.$TST.openedWithOthers ||
-        tab.$TST.positionedBySelf) {
+        tab.$TST.temporaryMetadata.has('openedWithOthers') ||
+        tab.$TST.temporaryMetadata.has('positionedBySelf')) {
       log(' => no need to control');
       return;
     }

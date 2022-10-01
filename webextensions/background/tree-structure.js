@@ -112,7 +112,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
           const structureRestoreTabs = tabs.slice(tabsOffset);
           await Tree.applyTreeStructureToTabs(structureRestoreTabs, structure);
           for (const tab of structureRestoreTabs) {
-            tab.$TST.treeStructureAlreadyRestoredFromSessionData = true;
+            tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
           }
           MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
         }
@@ -211,7 +211,7 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab, options);
-  if (tab.$TST.treeStructureAlreadyRestoredFromSessionData) {
+  if (tab.$TST.temporaryMetadata.has('treeStructureAlreadyRestoredFromSessionData')) {
     log(' => already restored');
     return;
   }
@@ -372,7 +372,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   };
 
-  tab.$TST.treeStructureAlreadyRestoredFromSessionData = true;
+  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 
   if (options.bulk)
     await Promise.all(promises).then(updateCollapsedState);

@@ -48,10 +48,10 @@ Window.onInitialized.addListener(window => {
 
 Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the activation should be canceled
   log('Tabs.onActivating ', { tab: dumpTab(tab), info });
-  if (tab.$TST.shouldReloadOnSelect) {
+  if (tab.$TST.temporaryMetadata.has('shouldReloadOnSelect')) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-    delete tab.$TST.shouldReloadOnSelect;
+    tab.$TST.temporaryMetadata.delete('shouldReloadOnSelect');
   }
   const window = TabsStore.windows.get(tab.windowId);
   log('  lastActiveTab: ', window.lastActiveTab); // it may be blank on a startup
@@ -160,7 +160,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         TabsInternalOperation.activateTab(successor, { silently: true });
         log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
         if (tab.discarded)
-          tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
+          tab.$TST.temporaryMetadata.set('discardURLAfterCompletelyLoaded', tab.url);
         return false;
       }
       else {
@@ -181,7 +181,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     log('=> reaction for newly active parent tab');
     await handleNewActiveTab(tab, info);
   }
-  delete tab.$TST.discardOnCompletelyLoaded;
+  tab.$TST.temporaryMetadata.delete('discardOnCompletelyLoaded');
   window.lastActiveTab = tab.id;
 
   if (mMaybeTabSwitchingByShortcut)
@@ -252,9 +252,9 @@ async function tryHighlightBundledTab(tab, info) {
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
   if ('url' in changeInfo) {
-    if (tab.$TST.discardURLAfterCompletelyLoaded &&
-        tab.$TST.discardURLAfterCompletelyLoaded != changeInfo.url)
-      delete tab.$TST.discardURLAfterCompletelyLoaded;
+    if (tab.$TST.temporaryMetadata.has('discardURLAfterCompletelyLoaded') &&
+        tab.$TST.temporaryMetadata.get('discardURLAfterCompletelyLoaded') != changeInfo.url)
+      tab.$TST.temporaryMetadata.delete('discardURLAfterCompletelyLoaded');
   }
 });
 
@@ -263,7 +263,7 @@ Tab.onStateChanged.addListener(tab => {
     return;
 
   if (typeof browser.tabs.discard == 'function') {
-    if (tab.url == tab.$TST.discardURLAfterCompletelyLoaded &&
+    if (tab.url == tab.$TST.temporaryMetadata.get('discardURLAfterCompletelyLoaded') &&
         configs.autoDiscardTabForUnexpectedFocus) {
       log('Try to discard accidentally restored tab (on restored) ', dumpTab(tab));
       wait(configs.autoDiscardTabForUnexpectedFocusDelay).then(() => {
@@ -274,17 +274,17 @@ Tab.onStateChanged.addListener(tab => {
           browser.tabs.discard(tab.id)
             .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         else
-          tab.$TST.discardOnCompletelyLoaded = true;
+          tab.$TST.temporaryMetadata.set('discardOnCompletelyLoaded', true);
       });
     }
-    else if (tab.$TST.discardOnCompletelyLoaded && !tab.active) {
+    else if (tab.$TST.temporaryMetadata.has('discardOnCompletelyLoaded') && !tab.active) {
       log('Discard accidentally restored tab (on complete) ', dumpTab(tab));
       browser.tabs.discard(tab.id)
         .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
   }
-  delete tab.$TST.discardURLAfterCompletelyLoaded;
-  delete tab.$TST.discardOnCompletelyLoaded;
+  tab.$TST.temporaryMetadata.delete('discardURLAfterCompletelyLoaded');
+  tab.$TST.temporaryMetadata.delete('discardOnCompletelyLoaded');
 });
 
 async function setupDelayedExpand(tab) {
@@ -307,8 +307,8 @@ async function setupDelayedExpand(tab) {
       !allowedToExpandViaAPI)
     return;
   TabsStore.addToBeExpandedTab(tab);
-  tab.$TST.delayedExpand = setTimeout(async () => {
-    if (!tab.$TST.delayedExpand) { // already canceled
+  tab.$TST.temporaryMetadata.set('delayedExpand', setTimeout(async () => {
+    if (!tab.$TST.temporaryMetadata.has('delayedExpand')) { // already canceled
       log('delayed expand is already canceled ', tab.id);
       return;
     }
@@ -317,15 +317,15 @@ async function setupDelayedExpand(tab) {
     await Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
     });
-  }, configs.autoExpandOnTabSwitchingShortcutsDelay);
+  }, configs.autoExpandOnTabSwitchingShortcutsDelay));
 }
 
 function cancelDelayedExpand(tab) {
   if (!tab ||
-      !tab.$TST.delayedExpand)
+      !tab.$TST.temporaryMetadata.has('delayedExpand'))
     return;
-  clearTimeout(tab.$TST.delayedExpand);
-  delete tab.$TST.delayedExpand;
+  clearTimeout(tab.$TST.temporaryMetadata.get('delayedExpand'));
+  tab.$TST.temporaryMetadata.delete('delayedExpand');
   TabsStore.removeToBeExpandedTab(tab);
 }
 
