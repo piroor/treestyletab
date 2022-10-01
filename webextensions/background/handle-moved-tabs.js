@@ -161,7 +161,8 @@ function reserveToEnsureRootTabVisible(tab) {
     const tabs = Array.from(reserveToEnsureRootTabVisible.tabIds, Tab.get);
     reserveToEnsureRootTabVisible.tabIds.clear();
     for (const tab of tabs) {
-      if (tab.$TST.parent ||
+      if (!tab.$TST ||
+          tab.$TST.parent ||
           !tab.$TST.collapsed)
         continue;
       Tree.collapseExpandTabAndSubtree(tab, {
