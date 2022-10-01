@@ -1865,7 +1865,11 @@ Tab.getGroupTabForOpener = opener => {
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
     ]
   });
-  return groupTab != opener && groupTab;
+  if (!groupTab ||
+      groupTab == opener ||
+      groupTab.pinned == opener.pinned)
+    return null;
+  return groupTab;
 };
 
 Tab.getOpenerFromGroupTab = groupTab => {
@@ -1874,7 +1878,11 @@ Tab.getOpenerFromGroupTab = groupTab => {
   TabsStore.assertValidTab(groupTab);
   const openerTabId = (new URL(groupTab.url)).searchParams.get('openerTabId');
   const openerTab = openerTabId && Tab.getByUniqueId(openerTabId);
-  return openerTab != groupTab && openerTab;
+  if (!openerTab ||
+      openerTab == groupTab ||
+      openerTab.pinned == groupTab.pinned)
+    return null;
+  return openerTab;
 };
 
 Tab.getSubstanceFromAliasGroupTab = groupTab => {
