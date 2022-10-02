@@ -453,14 +453,15 @@ export async function clearTemporaryState(tab) {
   const url = new URL(tab.url);
   url.searchParams.delete('temporary');
   url.searchParams.delete('temporaryAggressive');
-  await browser.tabs.executeScript(tab.id, {
-    runAt: 'document_start',
-    code:  `
-      document.querySelector('#temporary').checked = false;
-      document.querySelector('#temporaryAggressive').checked = false;
-      history.replaceState({}, document.title, ${JSON.stringify(url.href)});
-    `,
-  }).catch(ApiTabs.createErrorHandler());
+  await Promise.all([
+    browser.tabs.sendMessage(tab.id, {
+      type: 'treestyletab:clear-temporary-state',
+    }).catch(ApiTabs.createErrorHandler()),
+    browser.tabs.executeScript(tab.id, { // failsafe
+      runAt: 'document_start',
+      code:  `history.replaceState({}, document.title, ${JSON.stringify(url.href)});`,
+    }).catch(ApiTabs.createErrorHandler()),
+  ]);
   tab.url = url.href;
 }
 
@@ -537,12 +538,16 @@ Tab.onPinned.addListener(async tab => {
   if (tab.$TST.isGroupTab && openedGroupTab) {
     const url = new URL(tab.url);
     url.searchParams.set('aliasTabId', openedGroupTab.$TST.uniqueId.id);
-    await browser.tabs.executeScript(tab.id, {
-      runAt: 'document_start',
-      code:  `
-        history.replaceState({}, document.title, ${JSON.stringify(url.href)});
-      `,
-    }).catch(ApiTabs.createErrorHandler());
+    await Promise.all([
+      browser.tabs.sendMessage(tab.id, {
+        type: 'treestyletab:replace-state-url',
+        url: url.href,
+      }).catch(ApiTabs.createErrorHandler()),
+      browser.tabs.executeScript(tab.id, { // failsafe
+        runAt: 'document_start',
+        code:  `history.replaceState({}, document.title, ${JSON.stringify(url.href)});`,
+      }).catch(ApiTabs.createErrorHandler()),
+    ]);
     tab.url = url.href;
   }
 });

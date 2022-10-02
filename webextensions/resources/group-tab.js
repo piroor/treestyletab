@@ -304,6 +304,19 @@
       });
     }
 
+    browser.runtime.onMessage.addListener((message, _sender) => {
+      switch (message && message.type) {
+        case 'treestyletab:clear-temporary-state':
+          gTemporaryCheck.checked = gTemporaryAggressiveCheck.checked = false;
+          updateParameters();
+          return Promise.resolve(true);
+
+        case 'treestyletab:replace-state-url':
+          history.replaceState({}, document.title, message.url);
+          return Promise.resolve(true);
+      }
+    });
+
     document.documentElement.classList.add('initialized');
   }
   //document.addEventListener('DOMContentLoaded', init, { once: true });
