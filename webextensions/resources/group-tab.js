@@ -322,6 +322,10 @@
         case 'treestyletab:update-tree':
           updateTree();
           return Promise.resolve(true);
+
+        case 'treestyletab:update-title':
+          setTitle(message.title);
+          return Promise.resolve(true);
       }
     });
 

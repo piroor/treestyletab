@@ -306,10 +306,8 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   await tryInitGroupTab(groupTab);
   if (changedInfo.includes('tree')) {
     try {
-      await browser.tabs.executeScript(groupTab.id, {
-        runAt:           'document_start',
-        matchAboutBlank: true,
-        code:            `window.updateTree && window.updateTree()`,
+      await browser.tabs.sendMessage(groupTab.id, {
+        type: 'treestyletab:update-tree',
       }).catch(error => {
         if (ApiTabs.isMissingHostPermissionError(error))
           throw error;
@@ -351,10 +349,9 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
     }
 
     if (newTitle && groupTab.title != newTitle) {
-      browser.tabs.executeScript(groupTab.id, {
-        runAt:           'document_start',
-        matchAboutBlank: true,
-        code:            `window.setTitle && window.setTitle(${JSON.stringify(newTitle)})`,
+      browser.tabs.sendMessage(groupTab.id, {
+        type:  'treestyletab:update-title',
+        title: newTitle,
       }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
     }
   }
