@@ -85,22 +85,29 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     context: Constants.kPARENT_TAB_OPERATION_CONTEXT_MOVE,
     ...moveInfo,
   });
-  log('tryFixupTreeForInsertedTab ', { parentTabOperationBehavior, moveInfo });
+  log('tryFixupTreeForInsertedTab ', {
+    parentTabOperationBehavior,
+    moveInfo,
+    childIds: tab.$TST.childIds,
+    parentId: tab.$TST.parentId,
+  });
   if (!moveInfo.isTabCreating &&
       parentTabOperationBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
+    if (tab.$TST.hasChild)
+      tab.$TST.temporaryMetadata.set('childIdsBeforeMoved', tab.$TST.childIds.slice(0));
+    tab.$TST.temporaryMetadata.set('parentIdBeforeMoved', tab.$TST.parentId);
     const replacedGroupTab = (parentTabOperationBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB) ?
       await TabsGroup.tryReplaceTabWithGroup(tab, { insertBefore: tab.$TST.firstChild }) :
       null;
     if (!replacedGroupTab && tab.$TST.hasChild) {
-      tab.$TST.temporaryMetadata.set('childIdsBeforeMoved', tab.$TST.childIds.slice(0));
-      await TabsGroup.clearTemporaryState(tab);
+      if (tab.$TST.isGroupTab)
+        await TabsGroup.clearTemporaryState(tab);
       await Tree.detachAllChildren(tab, {
         behavior:  parentTabOperationBehavior,
         nearestFollowingRootTab: tab.$TST.firstChild.$TST.nearestFollowingRootTab,
         broadcast: true
       });
     }
-    tab.$TST.temporaryMetadata.set('parentIdBeforeMoved', tab.$TST.parentId);
     await Tree.detachTab(tab, {
       broadcast: true
     });

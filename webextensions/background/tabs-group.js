@@ -61,7 +61,7 @@ export function temporaryStateParams(state) {
   return {};
 }
 
-export async function groupTabs(tabs, { broadcast, parent, ...groupTabOptions } = {}) {
+export async function groupTabs(tabs, { broadcast, parent, withDescendants, ...groupTabOptions } = {}) {
   const rootTabs = Tab.collectRootTabs(tabs);
   if (rootTabs.length <= 0)
     return null;
@@ -80,6 +80,7 @@ export async function groupTabs(tabs, { broadcast, parent, ...groupTabOptions } 
     inBackground: true
   });
 
+  if (!withDescendants)
   await Tree.detachTabsFromTree(tabs, {
     broadcast: !!broadcast
   });
@@ -471,6 +472,9 @@ Tab.onPinned.addListener(async tab => {
     broadcast: true
   });
 
+  log('  childIdsBeforeMoved: ', tab.$TST.temporaryMetadata.get('childIdsBeforeMoved'));
+  log('  parentIdBeforeMoved: ', tab.$TST.temporaryMetadata.get('parentIdBeforeMoved'));
+
   const children = (
     tab.$TST.temporaryMetadata.has('childIdsBeforeMoved') ?
       tab.$TST.temporaryMetadata.get('childIdsBeforeMoved').map(id => Tab.get(id)) :
@@ -493,6 +497,7 @@ Tab.onPinned.addListener(async tab => {
       temporary:   !tab.$TST.isGroupTab,
       openerTabId: tab.$TST.uniqueId.id,
       parent,
+      withDescendants: true,
     });
     log(' openedGroupTab: ', openedGroupTab);
     // Tree structure of left tabs can be modified by someone like tryFixupTreeForInsertedTab@handle-moved-tabs.js.
