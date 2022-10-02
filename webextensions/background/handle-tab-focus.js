@@ -33,6 +33,8 @@ function log(...args) {
 let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
+const mLastTabsCountInWindow = new Map();
+
 Window.onInitialized.addListener(window => {
   browser.tabs.query({
     windowId: window.id,
@@ -46,8 +48,24 @@ Window.onInitialized.addListener(window => {
     });
 });
 
+browser.windows.onRemoved.addListener(windowId => {
+  mLastTabsCountInWindow.delete(windowId);
+});
+
+
 Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the activation should be canceled
-  log('Tabs.onActivating ', { tab: dumpTab(tab), info });
+  log('Tabs.onActivating ', { tab: dumpTab(tab), info, mMaybeTabSwitchingByShortcut });
+
+  if (mMaybeTabSwitchingByShortcut) {
+    const lastCount = mLastTabsCountInWindow.get(tab.windowId);
+    const count = Tab.getAllTabs(tab.windowId).length;
+    if (lastCount != count) {
+      log('tabs are created or removed: cancel tab switching');
+      mMaybeTabSwitchingByShortcut = false;
+    }
+    mLastTabsCountInWindow.set(tab.windowId, count);
+  }
+
   if (tab.$TST.temporaryMetadata.has('shouldReloadOnSelect')) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
@@ -227,6 +245,12 @@ async function handleNewActiveTab(tab, info = {}) {
 async function tryHighlightBundledTab(tab, info) {
   const bundledTab = tab.$TST.bundledTab;
   const oldBundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
+  log('tryHighlightBundledTab ', {
+    tab: tab.id,
+    info,
+    bundledTab: bundledTab && bundledTab.id,
+    oldBundledTabs,
+  });
   for (const tab of oldBundledTabs.values()) {
     if (tab == bundledTab)
       continue;
@@ -375,6 +399,8 @@ function onMessage(message, sender) {
         const window = TabsStore.windows.get(sender.tab.windowId);
         window.lastActiveTab = sender.tab.id;
       }
+      if (sender.tab)
+        mLastTabsCountInWindow.set(sender.tab.windowId, Tab.getAllTabs(sender.tab.windowId).length);
     }; break;
     case Constants.kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH:
       if (message.modifier != (configs.accelKey || (isMacOS() ? 'meta' : 'control')))
