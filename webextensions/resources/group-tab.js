@@ -27,11 +27,10 @@
   let gBrowserThemeDefinition;
   let gUserStyleRules;
 
-  const url = new URL(location.href);
-
   document.title = getTitle();
 
   function getTitle() {
+    const url = new URL(location.href);
     let title = url.searchParams.get('title');
     if (!title) {
       const matched = location.search.match(/^\?([^&;]*)/);
@@ -49,18 +48,22 @@
   }
 
   function isTemporary() {
+    const url = new URL(location.href);
     return url.searchParams.get('temporary') == 'true';
   }
 
   function isTemporaryAggressive() {
+    const url = new URL(location.href);
     return url.searchParams.get('temporaryAggressive') == 'true';
   }
 
   function getOpenerTabId() {
+    const url = new URL(location.href);
     return url.searchParams.get('openerTabId');
   }
 
   function getAliasTabId() {
+    const url = new URL(location.href);
     return url.searchParams.get('aliasTabId');
   }
 
@@ -88,6 +91,7 @@
   }
 
   function updateParameters({ title } = {}) {
+    const url = new URL(location.href);
     url.searchParams.set('title', title || getTitle() || '');
 
     if (gTemporaryCheck.checked)
@@ -314,6 +318,10 @@
         case 'treestyletab:replace-state-url':
           history.replaceState({}, document.title, message.url);
           return Promise.resolve(true);
+
+        case 'treestyletab:update-tree':
+          updateTree();
+          return Promise.resolve(true);
       }
     });
 
@@ -358,6 +366,16 @@
         tab: getAliasTabId(),
       }),
     ]);
+
+    /*
+    console.log('updateTree ', {
+      ur: location.href,
+      openerTabId: getOpenerTabId(),
+      openerTab,
+      aliasTabId: getAliasTabId(),
+      aliasTab,
+    });
+    */
 
     // called again while waiting
     if (runAt != updateTree.lastRun)

@@ -548,6 +548,10 @@ Tab.onPinned.addListener(async tab => {
         code:  `history.replaceState({}, document.title, ${JSON.stringify(url.href)});`,
       }).catch(ApiTabs.createErrorHandler()),
     ]);
+    await browser.tabs.sendMessage(tab.id, {
+      type: 'treestyletab:update-tree',
+      url: url.href,
+    }).catch(ApiTabs.createErrorHandler());
     tab.url = url.href;
   }
 });
