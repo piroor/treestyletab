@@ -81,9 +81,9 @@ export async function groupTabs(tabs, { broadcast, parent, withDescendants, ...g
   });
 
   if (!withDescendants)
-  await Tree.detachTabsFromTree(tabs, {
-    broadcast: !!broadcast
-  });
+    await Tree.detachTabsFromTree(tabs, {
+      broadcast: !!broadcast
+    });
   await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
     broadcast: !!broadcast
   });
