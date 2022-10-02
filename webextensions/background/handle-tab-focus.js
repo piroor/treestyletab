@@ -213,13 +213,13 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
   return true;
 });
 
-async function handleNewActiveTab(tab, info = {}) {
-  log('handleNewActiveTab: ', dumpTab(tab), info);
+async function handleNewActiveTab(tab, { allowed, silently } = {}) {
+  log('handleNewActiveTab: ', dumpTab(tab), { allowed, silently });
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
-  const canExpandTree           = shouldCollapseExpandNow && !info.silently;
+  const canExpandTree           = shouldCollapseExpandNow && !silently;
   if (canExpandTree &&
-      info.allowed !== false) {
+      allowed !== false) {
     const allowed = await TSTAPI.tryOperationAllowed(
       tab.active ?
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
@@ -242,14 +242,16 @@ async function handleNewActiveTab(tab, info = {}) {
   }
 }
 
-async function tryHighlightBundledTab(tab, info) {
+async function tryHighlightBundledTab(tab, { shouldSkipCollapsed, allowed, silently } = {}) {
   const bundledTab = tab.$TST.bundledTab;
   const oldBundledTabs = TabsStore.bundledActiveTabsInWindow.get(tab.windowId);
   log('tryHighlightBundledTab ', {
     tab: tab.id,
-    info,
     bundledTab: bundledTab && bundledTab.id,
     oldBundledTabs,
+    shouldSkipCollapsed,
+    allowed,
+    silently,
   });
   for (const tab of oldBundledTabs.values()) {
     if (tab == bundledTab)
@@ -270,8 +272,8 @@ async function tryHighlightBundledTab(tab, info) {
 
   if (bundledTab.$TST.hasChild &&
       bundledTab.$TST.subtreeCollapsed &&
-      !info.shouldSkipCollapsed)
-    await handleNewActiveTab(bundledTab, info);
+      !shouldSkipCollapsed)
+    await handleNewActiveTab(bundledTab, { allowed, silently });
 }
 
 Tab.onUpdated.addListener((tab, changeInfo = {}) => {
