@@ -172,6 +172,7 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
 
 
 export async function openNewTabAs(options = {}) {
+  log('openNewTabAs ', options);
   let activeTabs;
   if (!options.baseTab) {
     activeTabs = await browser.tabs.query({
@@ -184,6 +185,7 @@ export async function openNewTabAs(options = {}) {
       }).catch(ApiTabs.createErrorHandler());
   }
   const activeTab = options.baseTab || Tab.get(activeTabs[0].id);
+  log('activeTab ', activeTab);
 
   let parent, insertBefore, insertAfter;
   let isOrphan = false;

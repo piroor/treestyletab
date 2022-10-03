@@ -39,8 +39,10 @@ Tab.onCreated.addListener((tab, info = {}) => {
        info.skipFixupTree ||
        // do nothing for already attached tabs
        (tab.openerTabId &&
-        tab.$TST.parent == Tab.get(tab.openerTabId))))
+        tab.$TST.parent == Tab.get(tab.openerTabId)))) {
+    log('skip to fixup tree for replaced/duplicated/restored tab ', tab, info);
     return;
+  }
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!(info.positionedBySelf ||
         info.movedBySelfWhileCreation) &&
@@ -49,13 +51,17 @@ Tab.onCreated.addListener((tab, info = {}) => {
        (info.treeForActionDetection &&
         info.treeForActionDetection.target &&
         (info.treeForActionDetection.target.next ||
-         info.treeForActionDetection.target.previous))))
+         info.treeForActionDetection.target.previous)))) {
     tryFixupTreeForInsertedTab(tab, {
       toIndex:   tab.index,
       fromIndex: Tab.getLastTab(tab.windowId).index,
       treeForActionDetection: info.treeForActionDetection,
       isTabCreating: true
     });
+  }
+  else {
+    log('no need to fixup tree for newly created tab ', tab, info);
+  }
 });
 
 Tab.onMoving.addListener((tab, moveInfo) => {
