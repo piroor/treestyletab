@@ -191,6 +191,10 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
             configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
     window.lastActiveTab = tab.id;
+    tryHighlightBundledTab(tab, {
+      ...info,
+      shouldSkipCollapsed
+    });
     return true;
   }
   else if (tab.$TST.hasChild &&
@@ -377,6 +381,15 @@ Background.onInit.addListener(() => {
 
 Background.onBuilt.addListener(() => {
   browser.runtime.onMessage.addListener(onMessage);
+});
+
+Background.onReady.addListener(() => {
+  for (const tab of Tab.getAllTabs(null, { iterator: true })) {
+    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
+  }
+  for (const tab of Tab.getActiveTabs({ iterator: true })) {
+    tryHighlightBundledTab(tab);
+  }
 });
 
 
