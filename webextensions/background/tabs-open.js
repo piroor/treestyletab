@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2021
+ * Portions created by the Initial Developer are Copyright (C) 2011-2022
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -117,6 +117,9 @@ export async function openURIsInTabs(uris, options = {}) {
     const startIndex = Tab.calculateNewTabIndex(options);
     log('startIndex: ', startIndex);
     const window = TabsStore.windows.get(options.windowId);
+    if (options.insertBefore ||
+        options.insertAfter ||
+        uris.some(uri => uri && typeof uri == 'object' && 'index' in uri))
     window.toBeOpenedTabsWithPositions += uris.length;
     if (options.isOrphan)
       window.toBeOpenedOrphanTabs += uris.length;
