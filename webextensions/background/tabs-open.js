@@ -120,7 +120,7 @@ export async function openURIsInTabs(uris, options = {}) {
     if (options.insertBefore ||
         options.insertAfter ||
         uris.some(uri => uri && typeof uri == 'object' && 'index' in uri))
-    window.toBeOpenedTabsWithPositions += uris.length;
+      window.toBeOpenedTabsWithPositions += uris.length;
     if (options.isOrphan)
       window.toBeOpenedOrphanTabs += uris.length;
     return Promise.all(uris.map(async (uri, index) => {
