@@ -34,3 +34,6 @@
 [submodule "submodules/webextensions-lib-dom-updater"]
 	path = submodules/webextensions-lib-dom-updater
 	url = https://github.com/piroor/webextensions-lib-dom-updater.git
+[submodule "submodules/webextensions-lib-placeholder-parser"]
+	path = submodules/webextensions-lib-placeholder-parser
+	url = https://github.com/piroor/webextensions-lib-placeholder-parser.git
