@@ -84,7 +84,7 @@
     "groupTab_options_label": { "message": "可在偏好設定中改為不開啟此類分頁" },
     "groupTab_options_dismiss": { "message": "不需顯示此提示" },
   
-    "bookmarkFolder_label_default": { "message": "$TITLE$ 等 (%YEAR%.%MONTH%.%DATE%)",
+    "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ 等\")% (%YEAR%.%MONTH%.%DATE%)",
       "placeholders": {
         "title": { "content": "$1", "example": "標題" }
       }},

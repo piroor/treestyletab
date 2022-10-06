@@ -84,7 +84,7 @@
   "groupTab_options_label": { "message": "Вы можете отключить открытие вкладки этого типа." },
   "groupTab_options_dismiss": { "message": "Отключить подсказку" },
 
-  "bookmarkFolder_label_default": { "message": "$TITLE$ и больше (%YEAR%.%MONTH%.%DATE%)",
+  "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ и больше\")% (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" }
     }},

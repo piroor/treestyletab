@@ -84,7 +84,7 @@
   "groupTab_options_label": { "message": "There is an option to deactivate opening of this type tab." },
   "groupTab_options_dismiss": { "message": "Dismiss this hint" },
 
-  "bookmarkFolder_label_default": { "message": "$TITLE$ and more (%YEAR%.%MONTH%.%DATE%)",
+  "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ and more\")% (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" }
     }},
@@ -670,7 +670,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "Folder name for \"Bookmark this Tree\":" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %SHORT_YEAR% (year, two digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
+  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %SHORT_YEAR% (year, two digits), %MONTH% (month, two digits), %DATE% (date, two digits), %GROUP% (title of the first tab if it is group tab - otherwise blank), %ANY(value1, value2, ...)% (the first effective value from the given list)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Create new bookmarks under" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },

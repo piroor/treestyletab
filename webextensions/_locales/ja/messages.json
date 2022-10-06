@@ -84,7 +84,7 @@
   "groupTab_options_label": { "message": "オプション設定でこのタブを開かないようにできます" },
   "groupTab_options_dismiss": { "message": "このヒント情報を表示しない" },
 
-  "bookmarkFolder_label_default": { "message": "$TITLE$ など (%YEAR%.%MONTH%.%DATE%)",
+  "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ など\")% (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" }
     }},
@@ -666,7 +666,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "ツリーをブックマークする時のフォルダー名:" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %SHORT_YEAR%（2桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
+  "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %SHORT_YEAR%（2桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）, %GROUP%（最初のタブがグループタブだった場合はそのタイトル、それ以外の場合は空）, %ANY(値1, 値2, ...)%（与えられたリストの中で最初に有効な値）" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
   "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },

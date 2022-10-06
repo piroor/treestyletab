@@ -84,7 +84,7 @@
   "groupTab_options_label": { "message": "Es gibt eine Einstellung um das Öffnen von Tabs dieser Art zu deaktivieren." },
   "groupTab_options_dismiss": { "message": "Diesen Hinweis ausblenden" },
 
-  "bookmarkFolder_label_default": { "message": "$TITLE$ und mehr (%YEAR%.%MONTH%.%DATE%)",
+  "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ und mehr\")% (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
     }},

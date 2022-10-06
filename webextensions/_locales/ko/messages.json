@@ -234,7 +234,7 @@
         "hash": "4404d3672d98fdfbbb1d183e347d0b3e"
     },
     "bookmarkFolder_label_default": {
-        "message": "$TITLE$ 등 (%YEAR%.%MONTH%.%DATE%)",
+        "message": "%ANY(\"%GROUP%\", \"$TITLE$ 등\")% (%YEAR%.%MONTH%.%DATE%)",
         "placeholders": {
             "title": { "content": "$1", "example": "Title" }
         },

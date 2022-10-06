@@ -59,7 +59,7 @@
       "title": { "content": "$1", "example": "title" }
     }},
 
-  "bookmarkFolder_label_default": { "message": "$TITLE$ і більше (%YEAR%.%MONTH%.%DATE%)",
+  "bookmarkFolder_label_default": { "message": "%ANY(\"%GROUP%\", \"$TITLE$ і більше\")% (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "year":  { "content": "$2", "example": "2018" },
