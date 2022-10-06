@@ -240,8 +240,15 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
   const now = new Date();
   const year = String(now.getFullYear());
   if (!title)
-    title = PlaceHolderParser.process(configs.bookmarkTreeFolderName, (name, _rawArgs, ..._args) => {
+    title = PlaceHolderParser.process(configs.bookmarkTreeFolderName, (name, _rawArgs, ...args) => {
       switch (name.toLowerCase()) {
+        case 'any':
+          for (const arg of args) {
+            if (!!arg)
+              return arg;
+          }
+          return '';
+
         case 'title':
           return tabs[0].title;
 
