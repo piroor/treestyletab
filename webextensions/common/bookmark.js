@@ -252,6 +252,9 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
         case 'title':
           return tabs[0].title;
 
+        case 'group':
+          return tabs[0].isGroupTab ? tabs[0].title : '';
+
         case 'url':
           return tabs[0].url;
 
