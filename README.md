@@ -485,3 +485,6 @@ If you need any new APIs, please file API proposals in the issue tracker.
 
 This software does not collect any privacy data automatically, but this includes ability to synchronize options across multiple devices automatically via Firefox Sync.
 Any data you input to options, and URL of tabs you send to other devices may be sent to Mozilla's Sync server, if you configure Firefox to activate Firefox Sync.
+
+このソフトウェアはいかなるプライバシー情報も自動的に収集しませんが、Firefox Syncを介して自動的に設定情報をデバイス間で同期する機能を含みます。
+Firefox Syncを有効化している場合、設定画面に入力されたデータおよび他のデバイスに送信するよう指示したタブのURLは、Mozillaが運用するSyncサーバーに送信される場合があります。
