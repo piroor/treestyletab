@@ -14,6 +14,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -75,10 +76,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
           return handleNewTabFromActiveTab(tab, {
-            activeTab:                 possibleOpenerTab,
+            activeTab: possibleOpenerTab,
             autoAttachBehavior,
             dontMove,
-            inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode
+            inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode,
+            context: TSTAPI.kNEWTAB_CONTEXT_NEWTAB_COMMAND,
           }).then(moved => !moved);
         }
         return false;
@@ -94,12 +96,19 @@ Tab.onCreating.addListener((tab, info = {}) => {
       // we may need to reopen the tab with loaded URL
       if (configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
         tab.$TST.temporaryMetadata.set('fromExternal', true);
+      return notifyToTryHandleNewTab(tab, TSTAPI.kNEWTAB_CONTEXT_FROM_EXTERNAL)
+        .then(allowed => {
+          if (!allowed) {
+            log(' => handling is canceled by someone');
+            return true;
+          }
       return Tree.behaveAutoAttachedTab(tab, {
         baseTab:   possibleOpenerTab,
         behavior:  configs.autoAttachOnOpenedFromExternal,
         dontMove,
         broadcast: true
       }).then(moved => !moved);
+        });
     }
     log('behave as a tab opened with any URL');
     if (!info.restored &&
@@ -109,12 +118,19 @@ Tab.onCreating.addListener((tab, info = {}) => {
       if (configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
         tab.$TST.temporaryMetadata.set('anyOtherTrigger', true);
       log('controlled as a new tab from other unknown trigger');
+      return notifyToTryHandleNewTab(tab, TSTAPI.kNEWTAB_CONTEXT_UNKNOWN)
+        .then(allowed => {
+          if (!allowed) {
+            log(' => handling is canceled by someone');
+            return true;
+          }
       return Tree.behaveAutoAttachedTab(tab, {
         baseTab:   possibleOpenerTab,
         behavior:  configs.autoAttachOnAnyOtherTrigger,
         dontMove,
         broadcast: true
       }).then(moved => !moved);
+        });
     }
     tab.$TST.temporaryMetadata.set('positionedBySelf', info.positionedBySelf);
     return true;
@@ -132,6 +148,17 @@ Tab.onCreating.addListener((tab, info = {}) => {
         !info.bypassTabControl &&
         configs.inheritContextualIdentityToTabsFromExternalMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT)
       tab.$TST.temporaryMetadata.set('fromExternal', true);
+    return notifyToTryHandleNewTab(tab,
+      info.fromExternal && !info.bypassTabControl ?
+        TSTAPI.kNEWTAB_CONTEXT_FROM_EXTERNAL :
+        info.duplicated ?
+          TSTAPI.kNEWTAB_CONTEXT_DUPLICATED :
+          TSTAPI.kNEWTAB_CONTEXT_WITH_OPENER
+    ).then(allowed => {
+      if (!allowed) {
+        log(' => handling is canceled by someone');
+        return true;
+      }
     const behavior = info.fromExternal && !info.bypassTabControl ?
       configs.autoAttachOnOpenedFromExternal :
       info.duplicated ?
@@ -143,23 +170,40 @@ Tab.onCreating.addListener((tab, info = {}) => {
       dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
       broadcast: true
     }).then(moved => !moved);
+    });
   }
   return true;
 });
 
-async function handleNewTabFromActiveTab(tab, params = {}) {
-  const activeTab = params.activeTab;
-  log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), params);
+async function notifyToTryHandleNewTab(tab, context) {
+  const cache = {};
+  return TSTAPI.tryOperationAllowed(
+    TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,
+    { tab: new TSTAPI.TreeItem(tab, { cache }),
+      context },
+    { tabProperties: ['tab'] }
+  );
+}
+
+async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavior, dontMove, inheritContextualIdentityMode, context } = {}) {
+  log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), { url, activeTab, autoAttachBehavior, dontMove, inheritContextualIdentityMode, context });
   if (activeTab &&
       activeTab.$TST.ancestors.includes(tab)) {
     log(' => ignore restored ancestor tab');
     return false;
   }
+
+  const allowed = await notifyToTryHandleNewTab(tab, context);
+  if (!allowed) {
+    log(' => handling is canceled by someone');
+    return false;
+  }
+
   const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
-    behavior:  params.autoAttachBehavior,
+    behavior:  autoAttachBehavior,
     broadcast: true,
-    dontMove:  params.dontMove || false
+    dontMove:  dontMove || false
   });
   if (tab.cookieStoreId && tab.cookieStoreId != 'firefox-default') {
     log('handleNewTabFromActiveTab: do not reopen tab opened with non-default contextual identity ', tab.cookieStoreId);
@@ -168,7 +212,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
 
   const parent = tab.$TST.parent;
   let cookieStoreId = null;
-  switch (params.inheritContextualIdentityMode) {
+  switch (inheritContextualIdentityMode) {
     case Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT:
       if (parent)
         cookieStoreId = parent.cookieStoreId;
@@ -191,7 +235,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   // by the "multiple tab opened in XXX msec" feature.
   const window = TabsStore.windows.get(tab.windowId);
   window.openedNewTabs.delete(tab.id);
-  await TabsOpen.openURIInTab(params.url || null, {
+  await TabsOpen.openURIInTab(url || null, {
     windowId: activeTab.windowId,
     parent,
     insertBefore: tab,
@@ -202,6 +246,12 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
 }
 
 async function handleTabsFromPinnedOpener(tab, opener) {
+  const allowed = await notifyToTryHandleNewTab(tab, TSTAPI.kNEWTAB_CONTEXT_FROM_PINNED);
+  if (!allowed) {
+    log('handleTabsFromPinnedOpener: handling is canceled by someone');
+    return false;
+  }
+
   const parent = Tab.getGroupTabForOpener(opener);
   if (parent) {
     log('handleTabsFromPinnedOpener: attach to corresponding group tab');
@@ -335,7 +385,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         url:                           tab.url,
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnOpenedFromExternal,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromExternalMode,
+        context:                       TSTAPI.kNEWTAB_CONTEXT_FROM_EXTERNAL,
       });
       return;
     }
@@ -347,7 +398,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         url:                           tab.url,
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnAnyOtherTrigger,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToTabsFromAnyOtherTriggerMode,
+        context:                       TSTAPI.kNEWTAB_CONTEXT_UNKNOWN,
       });
       return;
     }
@@ -368,7 +420,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       handleNewTabFromActiveTab(tab, {
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnNewTabCommand,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode,
+        context:                       TSTAPI.kNEWTAB_CONTEXT_NEWTAB_COMMAND,
       });
       return;
     }
@@ -382,7 +435,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         url:                           tab.url,
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachSameSiteOrphan,
-        inheritContextualIdentityMode: configs.inheritContextualIdentityToSameSiteOrphanMode
+        inheritContextualIdentityMode: configs.inheritContextualIdentityToSameSiteOrphanMode,
+        context:                       TSTAPI.kNEWTAB_CONTEXT_WEBSITE_SAME_TO_ACTIVE_TAB,
       });
       return;
     }
@@ -395,7 +449,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         handleNewTabFromActiveTab(tab, {
           url:                tab.url,
           activeTab:          possibleOpenerTab,
-          autoAttachBehavior: Constants.kNEWTAB_OPEN_AS_CHILD
+          autoAttachBehavior: Constants.kNEWTAB_OPEN_AS_CHILD,
+          context:            TSTAPI.kNEWTAB_CONTEXT_FROM_ABOUT_ADDONS,
         });
         return;
       }

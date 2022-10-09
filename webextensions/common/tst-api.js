@@ -122,6 +122,7 @@ export const kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY = 'try-expand-tree
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH = 'try-expand-tree-from-end-tab-switch';
 export const kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION = 'try-collapse-tree-from-other-expansion';
 export const kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED = 'try-fixup-tree-on-tab-moved';
+export const kNOTIFY_TRY_HANDLE_NEWTAB = 'try-handle-newtab';
 export const kGET_TREE              = 'get-tree';
 export const kATTACH                = 'attach';
 export const kDETACH                = 'detach';
@@ -196,6 +197,15 @@ export const kCOMMAND_GET_ADDONS                 = 'treestyletab:get-addons';
 export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permisssion';
 export const kCOMMAND_NOTIFY_PERMISSION_CHANGED  = 'treestyletab:notify-api-permisssion-changed';
 export const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
+
+export const kNEWTAB_CONTEXT_NEWTAB_COMMAND             = 'newtab-command';
+export const kNEWTAB_CONTEXT_WITH_OPENER                = 'with-opener';
+export const kNEWTAB_CONTEXT_DUPLICATED                 = 'duplicated';
+export const kNEWTAB_CONTEXT_FROM_PINNED                = 'from-pinned';
+export const kNEWTAB_CONTEXT_FROM_EXTERNAL              = 'from-external';
+export const kNEWTAB_CONTEXT_WEBSITE_SAME_TO_ACTIVE_TAB = 'website-same-to-active-tab';
+export const kNEWTAB_CONTEXT_FROM_ABOUT_ADDONS          = 'from-about-addons';
+export const kNEWTAB_CONTEXT_UNKNOWN                    = 'unknown';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
