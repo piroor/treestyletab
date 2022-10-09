@@ -953,6 +953,7 @@
   "config_recommended_choice": {
     "message": "(推荐选项)"
   },
+  "config_firefoxCompatible_choice": { "message": "（模拟 Firefox 默认行为）" },
   "config_showExpertOptions_label": {
     "message": "解锁专家选项",
     "hash": "b19e02c05e20c20be54ce37e54fb9ca2"
@@ -1188,7 +1189,7 @@
     "hash": "a9ad40068782c9923062b5cc735bdcb2"
   },
   "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": {
-    "message": "紧随最近打开的子项，或者紧随开启页（模拟 Firefox 默认行为）"
+    "message": "紧随最近打开的子项，或者紧随开启页"
   },
   "config_insertNewTabFromPinnedTabAt_top": {
     "message": "该标签树的顶部（紧随开启页）",
@@ -1805,7 +1806,7 @@
     "hash": "a9ad40068782c9923062b5cc735bdcb2"
   },
   "config_insertNewChildAt_nextToLastRelateTab": {
-    "message": "紧随最近打开的子项，或者紧随父项（模拟 Firefox 默认行为）"
+    "message": "紧随最近打开的子项，或者紧随父项"
   },
   "config_insertNewChildAt_top": {
     "message": "该标签树的顶部（紧随父项）",

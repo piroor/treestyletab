@@ -1380,8 +1380,9 @@
         "message": "제어하지 않음(Firefox나 다른 확장 기능의 판단에 맞김)",
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
+    "config_firefoxCompatible_choice": { "message": "(Firefox 기본 동작과 유사)" },
     "config_insertNewChildAt_nextToLastRelateTab": {
-        "message": "최근 열린 자식 탭 근처, 또는 부모 탭 근처 (Firefox 기본 동작과 유사)",
+        "message": "최근 열린 자식 탭 근처, 또는 부모 탭 근처",
         "hash": "907f48ad7dd3356725b628a3e216a602"
     },
     "config_insertNewChildAt_top": {
@@ -1401,7 +1402,7 @@
         "hash": "a9ad40068782c9923062b5cc735bdcb2"
     },
     "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": {
-        "message": "최근 열린 탭 근처, 또는 부모 탭 근처 (Firefox 기본 동작과 유사)",
+        "message": "최근 열린 탭 근처, 또는 부모 탭 근처",
         "hash": "0f4bf8107da383d1eba57b0d42fc6d6c"
     },
     "config_insertNewTabFromPinnedTabAt_top": {

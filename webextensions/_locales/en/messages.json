@@ -319,6 +319,7 @@
   "config_title": { "message": "Tree Style Tab Options" },
 
   "config_recommended_choice": { "message": "(Recommended)" },
+  "config_firefoxCompatible_choice": { "message": "(simulates Firefox's default behavior)" },
 
   "config_showExpertOptions_label": { "message": "Unlock Expert Options" },
   "config_openOptionsInTab_label": { "message": "Open this options page in more wide space" },
@@ -406,7 +407,7 @@
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs (will appear as root tabs) from pinned tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener (simulates Firefox's default behavior)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener" },
   "config_insertNewTabFromPinnedTabAt_top": { "message": "The top of the tree (near the opener)" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "The end of the tree" },
 
@@ -610,7 +611,7 @@
 
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent (simulates Firefox's  default behavior)" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent" },
   "config_insertNewChildAt_top": { "message": "The top of the tree (next to the parent)" },
   "config_insertNewChildAt_end": { "message": "The end of the tree" },
 

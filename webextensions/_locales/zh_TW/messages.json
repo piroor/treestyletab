@@ -482,13 +482,13 @@
   
     "config_insertNewChildAt_caption": { "message": "新子分頁開啟於" },
     "config_insertNewChildAt_noControl": { "message": "不控制(由 Firefox 或其他附加元件決定)" },
-    "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent (simulates Firefox's  default behavior)" },
+    "config_insertNewChildAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or next to the parent" },
     "config_insertNewChildAt_top": { "message": "樹的前端" },
     "config_insertNewChildAt_end": { "message": "樹的末尾" },
   
     "config_insertNewTabFromPinnedTabAt_caption": { "message": "由釘選分開啟的新分頁開啟於" },
     "config_insertNewTabFromPinnedTabAt_noControl": { "message": "不控制(由 Firefox 或其他附加元件決定)" },
-    "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener (simulates Firefox's default behavior)" },
+    "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Next to the recently opened child, or near the opener" },
     "config_insertNewTabFromPinnedTabAt_top": { "message": "樹的前端" },
     "config_insertNewTabFromPinnedTabAt_end": { "message": "樹的末尾" },
   

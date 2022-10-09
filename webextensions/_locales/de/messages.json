@@ -319,6 +319,7 @@
   "config_title": { "message": "Tree Style Tab Einstellungen" },
 
   "config_recommended_choice": { "message": "(empfohlen)" },
+  "config_firefoxCompatible_choice": { "message": "(simuliert das Standardverhalten von Firefox)" },
 
   "config_showExpertOptions_label": { "message": "Experteneinstellungen anzeigen" },
   "config_openOptionsInTab_label": { "message": "Diese Einstellungsseite verbreitert anzeigen" },
@@ -406,7 +407,7 @@
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Einfügeposition von neuen untergeordneten Tabs (werden als Wurzel-Tab behandelt) für angeheftete Tabs" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Keine Steuerung (berücksichtigt die Entscheidung von Firefox oder anderen Erweiterungen)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Neben dem zuletzt geöffneten Tab oder in der Nähe des öffnenden Tabs (simuliert das Standardverhalten von Firefox)" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "Neben dem zuletzt geöffneten Tab oder in der Nähe des öffnenden Tabs" },
   "config_insertNewTabFromPinnedTabAt_top": { "message": "Am Anfang des Baums (nahe des öffnenden Tabs)" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Am Ende des Baums" },
 
@@ -610,7 +611,7 @@
 
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Steuerung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Neben dem zuletzt untergeordneten Tab oder neben dem übergeordneten Tab (simuliert Firefox Standardverhalten)" },
+  "config_insertNewChildAt_nextToLastRelateTab": { "message": "Neben dem zuletzt untergeordneten Tab oder neben dem übergeordneten Tab" },
   "config_insertNewChildAt_top": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
   "config_insertNewChildAt_end": { "message": "Am Ende des Zweigs" },
 
