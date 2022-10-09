@@ -290,7 +290,7 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
         case 'msec':
         case 'millisecond':
         case 'milliseconds':
-          return String(now.getSeconds()).padStart(2, '0');
+          return String(now.getSeconds()).padStart(3, '0');
       }
     });
   const folderParams = {
