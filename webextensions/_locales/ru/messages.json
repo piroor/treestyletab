@@ -407,7 +407,7 @@
 
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Позиция новых дочерних вкладок открытых из закрепленных (будут отображаться как корневые)" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "Не контролируется (решает Firefox или другие аддоны)" },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или рядом с родителем" },
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab": { "message": "После недавно открытой дочерней или рядом с родителем" },
   "config_insertNewTabFromPinnedTabAt_top": { "message": "Добавить в начало дерева (рядом с родителем)" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
 
@@ -611,7 +611,7 @@
 
   "config_insertNewChildAt_caption": { "message": "Место появления новых дочерних вкладок" },
   "config_insertNewChildAt_noControl": { "message": "Не контролируется (решает Firefox или другие аддоны)" },
-  "config_insertNewChildAt_nextToLastRelateTab": { "message": "После недавно открытой дочерней или после родителя" },
+  "config_insertNewChildAt_nextToLastRelatedTab": { "message": "После недавно открытой дочерней или после родителя" },
   "config_insertNewChildAt_top": { "message": "Добавить в начало дерева, как первую дочернюю" },
   "config_insertNewChildAt_end": { "message": "Добавить в конец дерева" },
 

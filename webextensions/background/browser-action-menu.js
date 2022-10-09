@@ -423,7 +423,7 @@ const mItems = [
         type:  'radio'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelateTab'),
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab'),
         key:   'insertNewTabFromPinnedTabAt',
         value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
         type:  'radio'
@@ -1599,7 +1599,7 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelateTab'),
+            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelatedTab'),
             key:   'insertNewChildAt',
             value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
             type:  'radio'

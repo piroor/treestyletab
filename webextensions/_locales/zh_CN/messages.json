@@ -1188,7 +1188,7 @@
     "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）",
     "hash": "a9ad40068782c9923062b5cc735bdcb2"
   },
-  "config_insertNewTabFromPinnedTabAt_nextToLastRelateTab": {
+  "config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab": {
     "message": "紧随最近打开的子项，或者紧随开启页"
   },
   "config_insertNewTabFromPinnedTabAt_top": {
@@ -1805,7 +1805,7 @@
     "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）",
     "hash": "a9ad40068782c9923062b5cc735bdcb2"
   },
-  "config_insertNewChildAt_nextToLastRelateTab": {
+  "config_insertNewChildAt_nextToLastRelatedTab": {
     "message": "紧随最近打开的子项，或者紧随父项"
   },
   "config_insertNewChildAt_top": {
