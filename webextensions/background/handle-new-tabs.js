@@ -100,16 +100,16 @@ Tab.onCreating.addListener((tab, info = {}) => {
         context: TSTAPI.kNEWTAB_CONTEXT_FROM_EXTERNAL,
         activeTab,
       }).then(allowed => {
-          if (!allowed) {
-            log(' => handling is canceled by someone');
-            return true;
-          }
-      return Tree.behaveAutoAttachedTab(tab, {
-        baseTab:   activeTab,
-        behavior:  configs.autoAttachOnOpenedFromExternal,
-        dontMove,
-        broadcast: true
-      }).then(moved => !moved);
+        if (!allowed) {
+          log(' => handling is canceled by someone');
+          return true;
+        }
+        return Tree.behaveAutoAttachedTab(tab, {
+          baseTab:   activeTab,
+          behavior:  configs.autoAttachOnOpenedFromExternal,
+          dontMove,
+          broadcast: true
+        }).then(moved => !moved);
       });
     }
     log('behave as a tab opened with any URL');
@@ -123,19 +123,18 @@ Tab.onCreating.addListener((tab, info = {}) => {
       return notifyToTryHandleNewTab(tab, {
         context: TSTAPI.kNEWTAB_CONTEXT_UNKNOWN,
         activeTab,
-      })
-        .then(allowed => {
-          if (!allowed) {
-            log(' => handling is canceled by someone');
-            return true;
-          }
-      return Tree.behaveAutoAttachedTab(tab, {
-        baseTab:   activeTab,
-        behavior:  configs.autoAttachOnAnyOtherTrigger,
-        dontMove,
-        broadcast: true
-      }).then(moved => !moved);
-        });
+      }).then(allowed => {
+        if (!allowed) {
+          log(' => handling is canceled by someone');
+          return true;
+        }
+        return Tree.behaveAutoAttachedTab(tab, {
+          baseTab:   activeTab,
+          behavior:  configs.autoAttachOnAnyOtherTrigger,
+          dontMove,
+          broadcast: true
+        }).then(moved => !moved);
+      });
     }
     tab.$TST.temporaryMetadata.set('positionedBySelf', info.positionedBySelf);
     return true;
@@ -166,17 +165,17 @@ Tab.onCreating.addListener((tab, info = {}) => {
         log(' => handling is canceled by someone');
         return true;
       }
-    const behavior = info.fromExternal && !info.bypassTabControl ?
-      configs.autoAttachOnOpenedFromExternal :
-      info.duplicated ?
-        configs.autoAttachOnDuplicated :
-        configs.autoAttachOnOpenedWithOwner;
-    return Tree.behaveAutoAttachedTab(tab, {
-      baseTab:   opener,
-      behavior,
-      dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
-      broadcast: true
-    }).then(moved => !moved);
+      const behavior = info.fromExternal && !info.bypassTabControl ?
+        configs.autoAttachOnOpenedFromExternal :
+        info.duplicated ?
+          configs.autoAttachOnDuplicated :
+          configs.autoAttachOnOpenedWithOwner;
+      return Tree.behaveAutoAttachedTab(tab, {
+        baseTab:   opener,
+        behavior,
+        dontMove:  info.positionedBySelf || info.mayBeReplacedWithContainer,
+        broadcast: true
+      }).then(moved => !moved);
     });
   }
   return true;
