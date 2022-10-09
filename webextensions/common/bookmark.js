@@ -272,6 +272,25 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
 
         case 'date':
           return String(now.getDate()).padStart(2, '0');
+
+        case 'hour':
+        case 'hours':
+          return String(now.getHours()).padStart(2, '0');
+
+        case 'min':
+        case 'minute':
+        case 'minutes':
+          return String(now.getMinutes()).padStart(2, '0');
+
+        case 'sec':
+        case 'second':
+        case 'seconds':
+          return String(now.getSeconds()).padStart(2, '0');
+
+        case 'msec':
+        case 'millisecond':
+        case 'milliseconds':
+          return String(now.getSeconds()).padStart(2, '0');
       }
     });
   const folderParams = {
