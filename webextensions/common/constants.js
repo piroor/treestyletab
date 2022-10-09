@@ -317,6 +317,7 @@ export const kDRAG_BEHAVIOR_MOVE           = 1 << 3;
 export const kNEWTAB_DO_NOTHING           = -1;
 export const kNEWTAB_OPEN_AS_ORPHAN       = 0;
 export const kNEWTAB_OPEN_AS_CHILD        = 1;
+export const kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB = 5;
 export const kNEWTAB_OPEN_AS_SIBLING      = 2;
 export const kNEWTAB_OPEN_AS_NEXT_SIBLING = 3;
 export const kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER = 4;

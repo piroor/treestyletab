@@ -397,6 +397,7 @@
   "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(制御せず既定の位置に)" },
   "config_autoAttachOnOpenedWithOwner_independent": { "message": "独立したタブとして" },
   "config_autoAttachOnOpenedWithOwner_child": { "message": "親のタブの子として" },
+  "config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab": { "message": "親のタブの子として、直近に開いた子タブの隣に" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "親のタブと同階層に" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "親のタブと同階層で隣に" },
   "config_autoAttachOnOpenedWithOwner_after": { "message": "開く" },

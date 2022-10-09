@@ -401,6 +401,7 @@
   "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(no control)" },
   "config_autoAttachOnOpenedWithOwner_independent": { "message": "an independent tab" },
   "config_autoAttachOnOpenedWithOwner_child": { "message": "a child of the parent tab" },
+  "config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab": { "message": "a child of the parent tab, next to the recently opened child" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "a sibling of the parent tab" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "the next sibling of the parent tab" },
   "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },

@@ -803,6 +803,24 @@ export async function behaveAutoAttachedTab(
         });
       return false;
 
+    case Constants.kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB:
+      log(' => kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB');
+      const lastRelatedTab = baseTab.$TST.lastRelatedTab;
+      if (lastRelatedTab) {
+        log(` place after last related tab ${dumpTab(lastRelatedTab)}`);
+        return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+        return attachTabTo(tab, baseTab, {
+          insertAfter: lastRelatedTab,
+          lastRelatedTab,
+          forceExpand: true,
+          delayedMove: true,
+          broadcast
+        });
+      }
+      log(` no lastRelatedTab: fallback to kNEWTAB_OPEN_AS_CHILD`);
     case Constants.kNEWTAB_OPEN_AS_CHILD:
       log(' => kNEWTAB_OPEN_AS_CHILD');
       return attachTabTo(tab, baseTab, {
