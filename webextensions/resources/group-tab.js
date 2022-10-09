@@ -27,7 +27,13 @@
   let gBrowserThemeDefinition;
   let gUserStyleRules;
 
+  // Firefox sometimes clears the document title set at here, so we need to re-set it later.
   document.title = getTitle();
+  // Failsafe 1: This is effective on newly opened tabs,
+  // but won't effective on already opened and reinitialized tabs.
+  window.addEventListener('DOMContentLoaded', () => {
+    document.title = getTitle();
+  }, { once: true });
 
   function getTitle() {
     const url = new URL(location.href);
@@ -328,6 +334,9 @@
           return Promise.resolve(true);
       }
     });
+
+    // Failsafe 2: This is effective on any case, but too slow for newly opened tabs.
+    document.title = getTitle();
 
     document.documentElement.classList.add('initialized');
   }
