@@ -69,6 +69,16 @@ const HEX_RGBA_MATCHER     = new RegExp(`^#?(${HEX})(${HEX})(${HEX})(${HEX})?$`,
 const RGBA_MATCHER         = new RegExp(`^rgba?\\(\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})(?:\\s*[,/]?\\s*(${FLOAT_OR_PERCENTAGE})\\s*)?\\)$`, 'i');
 const HSLA_MATCHER         = new RegExp(`^hsla?\\(\\s*(${FLOAT})(deg|rad|grad|turn)?\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})\\s*,?\\s*(${FLOAT_OR_PERCENTAGE})(?:\\s*[,/]?\\s*(${FLOAT_OR_PERCENTAGE})\\s*)?\\)$`, 'i');
 
+export function isParsable(color) {
+  if (!color)
+    return false;
+  const stringifiedColor = String(color);
+  return HEX_RRGGBBAA_MATCHER.test(stringifiedColor) ||
+    HEX_RGBA_MATCHER.test(stringifiedColor) ||
+    RGBA_MATCHER.test(stringifiedColor) ||
+    HSLA_MATCHER.test(stringifiedColor);
+}
+
 export function parseCSSColor(color, baseColor) {
   if (typeof color!= 'string')
     return color;

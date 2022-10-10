@@ -165,6 +165,9 @@ export async function generateThemeDeclarations(theme) {
       toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
     }
     extraColors.push(`--browser-toolbar: ${theme.colors.toolbar}`);
+    if (Color.isParsable(theme.colors.toolbar) &&
+        Color.isParsable(theme.colors.toolbar_text))
+      extraColors.push(`--browser-toolbar_text-darker: ${Color.mixCSSColors(theme.colors.toolbar_text, theme.colors.toolbar, 0.5)}`);
   }
   else if (hasImage) {
     extraColors.push('--browser-bg-for-header-image: rgba(255, 255, 255, 0.25);');

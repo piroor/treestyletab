@@ -77,7 +77,7 @@ body,
 }
 
 #tabbar:not(.scrollbar-autohide) {
-  scrollbar-color: var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed))
+  scrollbar-color: var(--browser-toolbar_text-darker, var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed)))
                    var(--theme-colors-toolbar, var(--in-content-box-background));
 }
 
