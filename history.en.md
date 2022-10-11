@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.6 (2022.10.12)
    * Fix invisible icons on desktop notifications and the startup page (regression on 3.9.4)
    * Use more visible color for scrollbar thumb on some theme including "Dark".
    * Add a new expert choice for new child tab from existing tab: simulating Firefox's default behavior `browser.tabs.insertRelatedAfterCurrent`=`true`.
