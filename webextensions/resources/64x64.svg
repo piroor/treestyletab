@@ -16,7 +16,11 @@
 	g.dark:target {
 		fill: #F9F9FA;
 	}
-	g:not(:target) {
+	g.mask {
+		fill: black;
+	}
+	g:not(.mask):not(:target),
+	g:target ~ g.mask {
 		display: none;
 	}
 </style>
@@ -44,6 +48,9 @@
 	<use href="#icon"/>
 </g>
 <g id="default-dark" class="dark" fill-opacity="1">
+	<use href="#icon"/>
+</g>
+<g id="mask" class="mask" fill-opacity="1">
 	<use href="#icon"/>
 </g>
 </svg>

@@ -362,7 +362,7 @@ export const kAGGRESSIVE_OPENER_TAB_DETECTION_RULES_WITH_URL = [
     child:  /^https:\/\/addons.mozilla.org\/([^\/]+\/)?[^\/]+\/search\// }
 ];
 
-export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg';
+export const kNOTIFICATION_DEFAULT_ICON = '/resources/64x64.svg#default-bright';
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
 // Use 6 * 1024 instead of 8 * 1024 (max of the quota) for safety.
