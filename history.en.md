@@ -9,15 +9,15 @@
    * Update the title of a group tab more certainly.
    * Clear wrongly memorized "Ctrl key is pressed down" state after tab open/close to avoid unstable behavior after some operations.
    * Introduce new placeholders for bookmark folder name to bookmark multiple tabs.
-     * `%GROUP%`: the title of the parent tab if it is a group tab, otherwise blank.
-     * `%HOURS%`: hours of the time in two digits.
-     * `%MINUTES%`: minutes of the time in two digits.
-     * `%SECONDS%`: seconds of the time in two digits.
-     * `%MILLISECONDS%`: milliseconds of the time in three digits.
-     * `%ANY(value1, value2, ...)%`: the first effective value in the given list.
+       * `%GROUP%`: the title of the parent tab if it is a group tab, otherwise blank.
+       * `%HOURS%`: hours of the time in two digits.
+       * `%MINUTES%`: minutes of the time in two digits.
+       * `%SECONDS%`: seconds of the time in two digits.
+       * `%MILLISECONDS%`: milliseconds of the time in three digits.
+       * `%ANY(value1, value2, ...)%`: the first effective value in the given list.
    * Allow to pin group tabs.
-     * It will leave an alias group tab at its original position.
-     * Drag-and-drop onto pinned group tab is treated as the action on the alias group tab.
+       * It will leave an alias group tab at its original position.
+       * Drag-and-drop onto pinned group tab is treated as the action on the alias group tab.
    * API: add a new notification message type [`try-handle-newtab`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-handling-of-new-tabs-by-tst) to allow helper addons to override TST's behavior of opened tab handling.
  - 3.9.5 (2022.9.21)
    * Update `de` locale by [SammysHP](https://github.com/SammysHP). Thanks!
