@@ -360,7 +360,7 @@
   "config_shiftTabsForScrollbarDistance_placeholder": { "message": "(CSS length)" },
   "config_shiftTabsForScrollbarOnlyOnHover_label": { "message": "Сдвигать вкладки только если курсор рядом со скролбаром" },
   "config_suppressGapFromShownOrHiddenToolbar_caption": { "message": "Исправлять глюки сайдбара при отображении/скрытии других панелей, для:" },
-  "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Полноэкранных окнон" },
+  "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "Полноэкранных окон" },
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Пустых новых вкладок (Firefox 85 и новее)" },
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Только при щелчках на боковой панели." },
   "config_showDialogInSidebar_label": { "message": "Показать диалоги на боковой панели, если возможно" },
@@ -671,7 +671,7 @@
 
   "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Это дерево в закладки…\":" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-  "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %SHORT_YEAR% (год, 2 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
+  "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (адрес первой вкладки), %YEAR% (год, 4 символа), %SHORT_YEAR% (год, 2 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа), %HOURS% (часов, два символа), %MINUTES% (минут, два символа), %SECONDS% (секунд, два символа), %MILLISECONDS% (мс, три символа), %GROUP% (заголовок первой вкладки, если это вкладка группы - иначе пусто), %ANY(значение1, значение2, ...)% (первое эффективное значение из заданного списка)" },
 
   "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку в" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
