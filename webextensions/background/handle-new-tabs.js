@@ -79,6 +79,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
             activeTab,
             autoAttachBehavior,
             dontMove,
+            openedWithCookieStoreId: info.openedWithCookieStoreId,
             inheritContextualIdentityMode: configs.inheritContextualIdentityToChildTabMode,
             context: TSTAPI.kNEWTAB_CONTEXT_NEWTAB_COMMAND,
           }).then(moved => !moved);
@@ -193,7 +194,7 @@ async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = 
   );
 }
 
-async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavior, dontMove, inheritContextualIdentityMode, context } = {}) {
+async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavior, dontMove, openedWithCookieStoreId, inheritContextualIdentityMode, context } = {}) {
   log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), { url, activeTab, autoAttachBehavior, dontMove, inheritContextualIdentityMode, context });
   if (activeTab &&
       activeTab.$TST.ancestors.includes(tab)) {
@@ -216,6 +217,10 @@ async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavi
     broadcast: true,
     dontMove:  dontMove || false
   });
+  if (openedWithCookieStoreId) {
+    log('handleNewTabFromActiveTab: do not reopen tab opened with contextual identity explicitly');
+    return moved;
+  }
   if (tab.cookieStoreId && tab.cookieStoreId != 'firefox-default') {
     log('handleNewTabFromActiveTab: do not reopen tab opened with non-default contextual identity ', tab.cookieStoreId);
     return moved;

@@ -223,15 +223,19 @@ export async function openNewTabAs(options = {}) {
     }; break;
   }
 
+  log('options.cookieStoreId: ', options.cookieStoreId);
   if (!options.cookieStoreId) {
     switch (configs.inheritContextualIdentityToChildTabMode) {
       case Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT:
-        if (parent)
+        if (parent) {
           options.cookieStoreId = parent.cookieStoreId;
+          log(' => inherit from parent tab: ', options.cookieStoreId);
+        }
         break;
 
       case Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE:
         options.cookieStoreId = activeTab.cookieStoreId;
+        log(' => inherit from active tab: ', options.cookieStoreId);
         break;
 
       default:

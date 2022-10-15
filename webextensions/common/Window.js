@@ -56,6 +56,7 @@ export default class Window {
 
     this.bypassTabControlCount       = 0;
     this.toBeOpenedTabsWithPositions = 0;
+    this.toBeOpenedTabsWithCookieStoreId = 0;
     this.toBeOpenedOrphanTabs        = 0;
 
     this.toBeAttachedTabs = new Set();

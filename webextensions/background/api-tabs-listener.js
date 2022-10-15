@@ -374,6 +374,7 @@ async function onNewTabTracked(tab, info) {
   const window               = Window.init(tab.windowId);
   const bypassTabControl     = window.bypassTabControlCount > 0;
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
+  const openedWithCookieStoreId = window.toBeOpenedTabsWithCookieStoreId > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
@@ -411,6 +412,7 @@ async function onNewTabTracked(tab, info) {
 
   Tab.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
+    openedWithCookieStoreId,
     mayBeReplacedWithContainer,
     maybeOrphan,
     activeTab,
@@ -494,6 +496,8 @@ async function onNewTabTracked(tab, info) {
       window.bypassTabControlCount--;
     if (positionedBySelf)
       window.toBeOpenedTabsWithPositions--;
+    if (openedWithCookieStoreId)
+      window.toBeOpenedTabsWithCookieStoreId--;
     if (maybeOrphan)
       window.toBeOpenedOrphanTabs--;
     if (duplicatedInternally)
@@ -541,6 +545,7 @@ async function onNewTabTracked(tab, info) {
     let moved = Tab.onCreating.dispatch(tab, {
       bypassTabControl,
       positionedBySelf,
+      openedWithCookieStoreId,
       mayBeReplacedWithContainer,
       maybeOrphan,
       restored,
