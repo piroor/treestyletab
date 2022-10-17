@@ -2,9 +2,9 @@
 
  - master/HEAD
  - 3.9.7 (2022.10.18)
-   * Fix performance regression with large number tabs on 3.9.6.
-   * Open new tab with specified "default" container correctly, even if the active tab is in non-default container and new tabs are configured to inherit the container of the active tab.
-   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
+   * 3.9.6での、タブの数が多いときのパフォーマンス低下の後退バグを修正
+   * 現在のタブが何らかのコンテナーで開かれていて、新しいタブに現在のタブのコンテナーを引き継ぐ設定のときに、明示的に「コンテナーなし」を指定して新しいタブを開けない不具合を修正
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.9.6 (2022.10.12)
    * デスクトップ通知と初回起動時の通知ページのアイコンが見えなくなっていたのを修正（3.9.4での後退バグ）
    * 「Dark」を含むいくつかのテーマにおいて、スクロールバーのつまみをより見やすい色で表示するようにした
