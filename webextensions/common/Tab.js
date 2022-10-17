@@ -1223,7 +1223,7 @@ export default class Tab {
         break;
 
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
-        TabsStore.addBundledActiveTab(this.tab);
+        TabsStore.removeBundledActiveTab(this.tab);
         break;
 
       case Constants.kTAB_STATE_SOUND_PLAYING: {
