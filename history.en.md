@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 3.9.7 (2022.10.18)
+   * Fix performance regression with large number tabs on 3.9.6.
+   * Open new tab with specified "default" container correctly, even if the active tab is in non-default container and new tabs are configured to inherit the container of the active tab.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.9.6 (2022.10.12)
    * Fix invisible icons on desktop notifications and the startup page (regression on 3.9.4)
    * Use more visible color for scrollbar thumb on some theme including "Dark".
