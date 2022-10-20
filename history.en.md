@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Restoer saved tree structure for tabs opened from a bookmark folder with middle-click, if it is possible.
  - 3.9.7 (2022.10.18)
    * Fix performance regression with large number tabs on 3.9.6.
    * Open new tab with specified "default" container correctly, even if the active tab is in non-default container and new tabs are configured to inherit the container of the active tab.
