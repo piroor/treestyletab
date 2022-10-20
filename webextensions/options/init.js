@@ -802,6 +802,14 @@ function initPermissionOptions() {
   for (const checkbox of document.querySelectorAll('input[type="checkbox"].require-bookmarks-permission')) {
     checkbox.addEventListener('change', onChangeBookmarkPermissionRequiredCheckboxState);
   }
+
+  for (const node of document.querySelectorAll('.with-bookmarks-permission')) {
+    Permissions.bindToClickable(
+      Permissions.BOOKMARKS,
+      node,
+      { onChanged: (granted) => updateBookmarksUI(granted) }
+    );
+  }
 }
 
 function initLogCheckboxes() {

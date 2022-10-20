@@ -509,9 +509,9 @@
 
   "config_groupTab_caption": { "message": "Автогруппировка вкладок" },
 
-  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Автогруппировать вкладки открытые в течении" },
-  "config_autoGroupNewTabsFromBookmarks_after": { "message": "мс (откроется новая вкладка для группировки с заголовком \"... и более\")" },
-  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "Эта функция требует права доступа к закладкам. Нажмите здесь, чтобы запросить необходимое разрешение." },
+  "config_tabBunchesDetectionTimeout_before": { "message": "Автогруппировать вкладки открытые в течении" },
+  "config_tabBunchesDetectionTimeout_after": { "message": "мс (откроется новая вкладка для группировки с заголовком \"... и более\")" },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "Эта функция требует права доступа к закладкам. Нажмите здесь, чтобы запросить необходимое разрешение." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Разрешить обнаруживать закладки, соответствующие вкладкам)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Рассматривать все новые вкладки как открытые из одной папки закладок, если более " },

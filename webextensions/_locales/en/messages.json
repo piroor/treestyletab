@@ -510,9 +510,11 @@
 
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 
-  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Auto-group tabs opened from a bookmark folder within" },
-  "config_autoGroupNewTabsFromBookmarks_after": { "message": "msec (a new tab for grouping will be opened with a title like \"... and more\")" },
-  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
+  "config_tabBunchesDetectionTimeout_before": { "message": "Detect tabs opened from a bookmark folder within" },
+  "config_tabBunchesDetectionTimeout_after": { "message": "msec, and:" },
+  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Group tabs under a tab with a title like \"... and more\"" },
+  "config_restoreTreeForTabsFromBookmarks_label": { "message": "Restore tree structure" },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Allow to detect bookmarks corresponding to tabs)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },

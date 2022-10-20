@@ -1433,15 +1433,15 @@
         "message": "탭을 자동으로 묶기",
         "hash": "998c6484eb3eccfe367c727c71d482ae"
     },
-    "config_autoGroupNewTabsFromBookmarks_before": {
+    "config_tabBunchesDetectionTimeout_before": {
         "message": "하나의 북마크 폴더에서",
         "hash": "c04deb8d45bc0d72f4bb8223fdddbbc8"
     },
-    "config_autoGroupNewTabsFromBookmarks_after": {
+    "config_tabBunchesDetectionTimeout_after": {
         "message": "밀리초 이내에 연속해서 열린 탭을 자동적으로 묶음. (\"~등\"이라는 이름의 묶음 탭이 열립니다.)",
         "hash": "d2bbc8cf4a5955e5370a08f3f012dfce"
     },
-    "config_autoGroupNewTabsFromBookmarks_tooltiptext": {
+    "config_requireBookmarksPermission_tooltiptext": {
         "message": "이 기능은 북마크에 대한 접근 권한이 필요합니다. 여기를 클릭하여 권한을 부여해주세요.",
         "hash": "a47346c1e6c41c3aba8aa708432d2c47"
     },

@@ -1510,13 +1510,13 @@
     "message": "标签页自动分组",
     "hash": "998c6484eb3eccfe367c727c71d482ae"
   },
-  "config_autoGroupNewTabsFromBookmarks_before": {
+  "config_tabBunchesDetectionTimeout_before": {
     "message": "对于在"
   },
-  "config_autoGroupNewTabsFromBookmarks_after": {
+  "config_tabBunchesDetectionTimeout_after": {
     "message": "毫秒内打开自同一书签文件夹的标签页进行自动分组（将会打开一个标题类似于 “... 等多项” 的新建标签页用来分组）"
   },
-  "config_autoGroupNewTabsFromBookmarks_tooltiptext": {
+  "config_requireBookmarksPermission_tooltiptext": {
     "message": "此功能需要一个访问书签项的权限。点击此处以请求所需权限。"
   },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": {

@@ -570,16 +570,24 @@
       <legend>__MSG_config_groupTab_caption__</legend>
       <p><label id="autoGroupNewTabsFromBookmarks_label"
                 class="has-checkbox"
-               ><input id="autoGroupNewTabsFromBookmarks"
-                       type="checkbox"
-                       class="require-bookmarks-permission"
-                       data-request-permission-message="__MSG_config_autoGroupNewTabsFromBookmarks_tooltiptext__">
-                <span>__MSG_config_autoGroupNewTabsFromBookmarks_before__</span>
+               ><span>__MSG_config_tabBunchesDetectionTimeout_before__</span>
                 <input id="tabBunchesDetectionTimeout"
                        type="number"
                        size="3"
                        class="with-bookmarks-permission">
-                <span>__MSG_config_autoGroupNewTabsFromBookmarks_after__</span></label></p>
+                <span>__MSG_config_tabBunchesDetectionTimeout_after__</span></label></p>
+      <p class="sub with-bookmarks-permission"
+        ><label><input id="autoGroupNewTabsFromBookmarks"
+                       type="checkbox"
+                       class="require-bookmarks-permission"
+                       data-request-permission-message="__MSG_config_requireBookmarksPermission_tooltiptext__">
+                __MSG_config_autoGroupNewTabsFromBookmarks_label__</label></p>
+      <p class="sub with-bookmarks-permission"
+        ><label><input id="restoreTreeForTabsFromBookmarks"
+                       type="checkbox"
+                       class="require-bookmarks-permission"
+                       data-request-permission-message="__MSG_config_requireBookmarksPermission_tooltiptext__">
+                __MSG_config_restoreTreeForTabsFromBookmarks_label__</label></p>
       <div class="expert">
         <p class="sub with-bookmarks-permission"
           ><label>__MSG_config_tabsFromSameFolderMinThresholdPercentage_before__

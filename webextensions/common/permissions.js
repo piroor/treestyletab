@@ -125,6 +125,53 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
   };
 }
 
+export function bindToClickable(permissions, node, options = {}) {
+  node.addEventListener('click', _event => {
+    node.requestPermissions()
+  });
+
+  node.requestPermissions = async () => {
+    try {
+      if (configs.requestingPermissionsNatively ||
+          await isGranted(permissions))
+        return;
+
+      configs.requestingPermissionsNatively = permissions;
+      let granted = await browser.permissions.request(permissions).catch(ApiTabs.createErrorHandler());
+      configs.requestingPermissionsNatively = null;
+
+      if (granted === undefined)
+        granted = await isGranted(permissions);
+      else if (!granted)
+        return;
+
+      if (granted) {
+        if (options.onChanged)
+          options.onChanged(true);
+        browser.runtime.sendMessage({
+          type: Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          permissions
+        }).catch(_error => {});
+        return;
+      }
+
+      configs.requestingPermissions = permissions;
+      browser.browserAction.setBadgeText({ text: '!' });
+      browser.browserAction.setPopup({ popup: '' });
+
+      notify({
+        title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
+        message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
+        icon:    'resources/24x24.svg#default-bright'
+      });
+      return;
+    }
+    catch(error) {
+      console.log(error);
+    }
+  };
+}
+
 export function requestPostProcess() {
   if (!configs.requestingPermissions)
     return false;

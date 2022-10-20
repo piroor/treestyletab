@@ -499,9 +499,9 @@
 
     "config_groupTab_caption": { "message": "自動聚合分頁" },
   
-    "config_autoGroupNewTabsFromBookmarks_before": { "message": "Auto-group tabs opened from a bookmark folder within" },
-    "config_autoGroupNewTabsFromBookmarks_after": { "message": "msec (a new tab for grouping will be opened with a title like \"... and more\")" },
-    "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
+    "config_tabBunchesDetectionTimeout_before": { "message": "Auto-group tabs opened from a bookmark folder within" },
+    "config_tabBunchesDetectionTimeout_after": { "message": "msec (a new tab for grouping will be opened with a title like \"... and more\")" },
+    "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
     "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
     "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Allow to detect bookmarks corresponding to tabs)" },
     "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },

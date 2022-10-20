@@ -509,9 +509,9 @@
 
   "config_groupTab_caption": { "message": "Automatische Gruppierung der Tabs" },
 
-  "config_autoGroupNewTabsFromBookmarks_before": { "message": "Tabs automatisch gruppieren, die innerhalb von" },
-  "config_autoGroupNewTabsFromBookmarks_after": { "message": "Millisekunden aus einem Lesezeichen-Ordner geöffnet wurden" },
-  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "Diese Funktion benötigt Zugriff auf die Lesezeichen. Hier klicken um die zusätzliche Berechtigung zu gewähren." },
+  "config_tabBunchesDetectionTimeout_before": { "message": "Tabs automatisch gruppieren, die innerhalb von" },
+  "config_tabBunchesDetectionTimeout_after": { "message": "Millisekunden aus einem Lesezeichen-Ordner geöffnet wurden" },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "Diese Funktion benötigt Zugriff auf die Lesezeichen. Hier klicken um die zusätzliche Berechtigung zu gewähren." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Erkennen von zu Tabs gehörenden Lesezeichen erlauben)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Alle neuen Tabs als aus einem Lesezeichen-Ordner stammend betrachten, falls mehr als " },

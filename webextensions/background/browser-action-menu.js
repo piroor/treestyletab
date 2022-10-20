@@ -852,10 +852,21 @@ const mItems = [
       {
         dynamicTitle: true,
         get title() {
-          return indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_before') + delimiter + configs.tabBunchesDetectionTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_after');
+          return indent() + browser.i18n.getMessage('config_tabBunchesDetectionTimeout_before') + delimiter + configs.tabBunchesDetectionTimeout + delimiter + browser.i18n.getMessage('config_tabBunchesDetectionTimeout_after');
         },
+        enabled: false
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_label'),
         key:   'autoGroupNewTabsFromBookmarks',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true
+      },
+      {
+        title: indent(2) + browser.i18n.getMessage('config_restoreTreeForTabsFromBookmarks_label'),
+        key:   'restoreTreeForTabsFromBookmarks',
+        type:  'checkbox',
+        expert: true
       },
       {
         title: indent() + browser.i18n.getMessage('config_autoGroupNewTabsFromOthers_label'),

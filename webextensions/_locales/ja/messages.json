@@ -506,9 +506,11 @@
 
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
-  "config_autoGroupNewTabsFromBookmarks_before": { "message": "1つのブックマークフォルダーから" },
-  "config_autoGroupNewTabsFromBookmarks_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する（「～など」というタイトルのグループ化用タブが開かれます）" },
-  "config_autoGroupNewTabsFromBookmarks_tooltiptext": { "message": "この機能はブックマークへのアクセス権を必要とします。ここをクリックして必要な権限を与えてください。" },
+  "config_tabBunchesDetectionTimeout_before": { "message": "1つのブックマークフォルダーから" },
+  "config_tabBunchesDetectionTimeout_after": { "message": "ミリ秒以内に連続して開かれたタブを検出して、" },
+  "config_autoGroupNewTabsFromBookmarks_label": { "message": "グループ化する（「～など」というタイトルのグループ化用タブが開かれます）" },
+  "config_restoreTreeForTabsFromBookmarks_label": { "message": "ツリー構造を復元する" },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "この機能はブックマークへのアクセス権を必要とします。ここをクリックして必要な権限を与えてください。" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "タブとブックマークの対応関係の検出を許可する)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "開かれたタブのURLのうち" },
