@@ -392,7 +392,7 @@ const mItems = [
         expert: true,
       },
       {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + browser.i18n.getMessage('config_recommended_choice'),
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_recommended_choice'),
         key:    'autoAttachOnOpenedWithOwner',
         value:  Constants.kNEWTAB_OPEN_AS_CHILD,
         type:   'radio',
@@ -423,7 +423,7 @@ const mItems = [
         type:  'radio'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab'),
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
         key:   'insertNewTabFromPinnedTabAt',
         value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
         type:  'radio'
@@ -1599,7 +1599,7 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelatedTab'),
+            title: browser.i18n.getMessage('config_insertNewChildAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
             key:   'insertNewChildAt',
             value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
             type:  'radio'
