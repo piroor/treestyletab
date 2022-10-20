@@ -421,6 +421,7 @@ export default class Tab {
           this._safeSearchBookmstksWithUrl(`https://www.${url}`),
           this._safeSearchBookmstksWithUrl(`ftp://${url}`),
           this._safeSearchBookmstksWithUrl(`moz-extension://${url}`),
+          this._safeSearchBookmstksWithUrl(url), // about:* and so on
         ]);
         log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
         resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
@@ -435,7 +436,7 @@ export default class Tab {
   }
   async _safeSearchBookmstksWithUrl(url) {
     try {
-      return browser.bookmarks.search({ url });
+      return await browser.bookmarks.search({ url });
     }
     catch(error) {
       log(`_searchBookmstksWithUrl failed: tab ${this.id} (${url}): `, error);
