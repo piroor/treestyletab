@@ -959,8 +959,6 @@ browser.runtime.onMessage.addListener((message, _sender) => {
 });
 
 
-const DESCENDANT_MATCHER = /^(>+) /;
-
 async function collectBookmarkItems(root, recursively) {
   let items = await browser.bookmarks.getChildren(root.id);
   if (recursively) {
@@ -980,10 +978,10 @@ async function collectBookmarkItems(root, recursively) {
   else {
     items = items.filter(item => item.type == 'bookmark');
   }
-  if (countMatched(items, item => !DESCENDANT_MATCHER.test(item.title)) > 1) {
+  if (countMatched(items, item => !Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER.test(item.title)) > 1) {
     for (const item of items) {
-      item.title = DESCENDANT_MATCHER.test(item.title) ?
-        item.title.replace(DESCENDANT_MATCHER, '>$1 ') :
+      item.title = Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER.test(item.title) ?
+        item.title.replace(Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER, '>$1 ') :
         `> ${item.title}`;
     }
     items.unshift({
@@ -1003,40 +1001,7 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
 
-  const lastItemIndicesWithLevel = new Map();
-  let lastMaxLevel = 0;
-  const structure = items.reduce((result, item, index) => {
-    const { cookieStoreId, url } = ContextualIdentities.getIdFromBookmark(item);
-    if (cookieStoreId) {
-      item.cookieStoreId = cookieStoreId;
-      if (url)
-        item.url = url;
-    }
-
-    let level = 0;
-    if (lastItemIndicesWithLevel.size > 0 &&
-        item.title.match(DESCENDANT_MATCHER)) {
-      level = RegExp.$1.length;
-      if (level - lastMaxLevel > 1) {
-        level = lastMaxLevel + 1;
-      }
-      else {
-        while (lastMaxLevel > level) {
-          lastItemIndicesWithLevel.delete(lastMaxLevel--);
-        }
-      }
-      lastItemIndicesWithLevel.set(level, index);
-      lastMaxLevel = level;
-      result.push(lastItemIndicesWithLevel.get(level - 1) - lastItemIndicesWithLevel.get(0));
-      item.title = item.title.replace(DESCENDANT_MATCHER, '')
-    }
-    else {
-      result.push(-1);
-      lastItemIndicesWithLevel.clear();
-      lastItemIndicesWithLevel.set(0, index);
-    }
-    return result;
-  }, []);
+  const structure = Bookmark.getTreeStructureFromBookmarks(items);
 
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
   const tabs = await TabsOpen.openURIsInTabs(

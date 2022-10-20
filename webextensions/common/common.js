@@ -214,6 +214,7 @@ export const configs = new Configs({
   tabBunchesDetectionTimeout: 100,
   tabBunchesDetectionDelayOnNewWindow: 500,
   autoGroupNewTabsFromBookmarks: true,
+  restoreTreeForTabsFromBookmarks: true,
   tabsFromSameFolderMinThresholdPercentage: 50,
   autoGroupNewTabsFromOthers: false,
   autoGroupNewTabsFromPinned: true,

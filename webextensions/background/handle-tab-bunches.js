@@ -13,6 +13,7 @@ import {
   compareAsNumber,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as Bookmark from '/common/bookmark.js';
 import * as Constants from '/common/constants.js';
 import * as Dialog from '/common/dialog.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -71,7 +72,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
   );
 });
 
-const mPossibleTabBunches = [];
+const mPossibleTabBunchesToBeGrouped = [];
+const mPossibleTabBunchesFromBookmarks = [];
 
 async function tryDetectTabBunches(window) {
   if (Tab.needToWaitTracked(window.id))
@@ -112,11 +114,15 @@ async function tryDetectTabBunches(window) {
     await browser.tabs.move(ids, { index });
   }
 
-  if (configs.autoGroupNewTabsFromBookmarks ||
-      configs.autoGroupNewTabsFromPinned ||
+  if (configs.autoGroupNewTabsFromPinned ||
       configs.autoGroupNewTabsFromOthers) {
-    mPossibleTabBunches.push(tabReferences);
+    mPossibleTabBunchesToBeGrouped.push(tabReferences);
     tryGroupTabBunches();
+  }
+  if (configs.autoGroupNewTabsFromBookmarks ||
+      configs.restoreTreeForTabsFromBookmarks) {
+    mPossibleTabBunchesFromBookmarks.push(tabReferences);
+    tryHandlTabBunchesFromBookmarks();
   }
 }
 
@@ -124,7 +130,7 @@ async function tryGroupTabBunches() {
   if (tryGroupTabBunches.running)
     return;
 
-  const tabReferences = mPossibleTabBunches.shift();
+  const tabReferences = mPossibleTabBunchesToBeGrouped.shift();
   if (!tabReferences)
     return;
 
@@ -168,70 +174,28 @@ async function tryGroupTabBunches() {
 
     // We can assume that new tabs from a bookmark folder and from other
     // sources won't be mixed.
-    const openedFromBookmarkFolder = fromOthers.length > 0 && await new Promise((resolve, _reject) => {
-      const maybeFromBookmarks = [];
-      let restCount = fromOthers.length;
-      for (const tab of fromOthers) {
-        tab.$TST.promisedPossibleOpenerBookmarks.then(bookmarks => {
-          log(` bookmarks from tab ${tab.id}: `, bookmarks);
-          restCount--;
-          if (bookmarks.length > 0)
-            maybeFromBookmarks.push(tab);
-          if (areMostTabsFromSameBookmarkFolder(maybeFromBookmarks, tabReferences.length))
-            resolve(true);
-          else if (restCount == 0)
-            resolve(false);
-        });
-      }
-    });
-    log(' => openedFromBookmarkFolder: ', openedFromBookmarkFolder);
-    const newRootTabs = Tab.collectRootTabs(Tab.sort(fromOthers));
-    if (newRootTabs.length > 1) {
-      if (openedFromBookmarkFolder) {
-        if (configs.autoGroupNewTabsFromBookmarks)
-          await TabsGroup.groupTabs(newRootTabs, {
-            ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromBookmarks),
-            broadcast: true
-          });
-      }
-      else if (configs.autoGroupNewTabsFromOthers) {
+    const openedFromBookmarkFolder = fromOthers.length > 0 && await detectBookmarkFolderFromTabs(fromOthers, tabReferences.length);
+    log(' => tryGroupTabBunches:openedFromBookmarkFolder: ', !!openedFromBookmarkFolder);
+    const newRootTabs = Tab.collectRootTabs(Tab.sort(openedFromBookmarkFolder ? openedFromBookmarkFolder.tabs : fromOthers));
+    if (newRootTabs.length > 1 &&
+        openedFromBookmarkFolder && // we should ignore tabs from bookmark folder: they should be handled by tryHandlTabBunchesFromBookmarks
+        configs.autoGroupNewTabsFromOthers) {
         const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
         if (granted)
           await TabsGroup.groupTabs(newRootTabs, {
             ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromOthers),
             broadcast: true
           });
-      }
     }
   }
-  catch(e) {
-    log('Error on tryGroupTabBunches: ', String(e), e.stack);
+  catch(error) {
+    log('Error on tryGroupTabBunches: ', String(error), error.stack);
   }
   finally {
     tryGroupTabBunches.running = false;
-    if (mPossibleTabBunches.length > 0)
+    if (mPossibleTabBunchesToBeGrouped.length > 0)
       tryGroupTabBunches();
   }
-}
-
-function areMostTabsFromSameBookmarkFolder(bookmarkedTabs, allNewTabsCount) {
-  log('areMostTabsFromSameBookmarkFolder ', { bookmarkedTabs, allNewTabsCount });
-  const parentIds = bookmarkedTabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId)).flat();
-  const counts    = [];
-  const countById = {};
-  for (const id of parentIds) {
-    if (!(id in countById))
-      counts.push(countById[id] = { id, count: 0 });
-    countById[id].count++;
-  }
-  log(' counts: ', counts);
-  if (counts.length == 0)
-    return false;
-
-  const greatestCount = counts.sort((a, b) => b.count - a.count)[0];
-  const minCount = allNewTabsCount * configs.tabsFromSameFolderMinThresholdPercentage / 100;
-  log(' => ', { greatestCount, minCount });
-  return greatestCount.count > minCount;
 }
 
 async function confirmToAutoGroupNewTabsFromOthers(tabs) {
@@ -418,6 +382,119 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     }
   }
   return true;
+}
+
+async function tryHandlTabBunchesFromBookmarks() {
+  if (tryHandlTabBunchesFromBookmarks.running)
+    return;
+
+  const tabReferences = mPossibleTabBunchesFromBookmarks.shift();
+  if (!tabReferences)
+    return;
+
+  log('tryHandlTabBunchesFromBookmarks for ', tabReferences);
+  tryHandlTabBunchesFromBookmarks.running = true;
+  try {
+    const tabs = [];
+    for (const tabReference of tabReferences) {
+      const tab = Tab.get(tabReference.id);
+      if (!tab)
+        continue;
+      if (tabReference.openerTabId)
+        tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
+      const uniqueId = tab.$TST.uniqueId;
+      if (uniqueId.duplicated || uniqueId.restored)
+        continue;
+      tabs.push(tab);
+    }
+    log(' => ', { tabs });
+
+    // We can assume that new tabs from a bookmark folder and from other
+    // sources won't be mixed.
+    const openedFromBookmarkFolder = tabs.length > 0 && await detectBookmarkFolderFromTabs(tabs, tabReferences.length);
+    log(' => tryHandlTabBunchesFromBookmarks:openedFromBookmarkFolder: ', openedFromBookmarkFolder);
+    if (openedFromBookmarkFolder) {
+      if (configs.restoreTreeForTabsFromBookmarks) {
+        log(' ==> trying to restore tree structure from bookmark information');
+        const structure = await Bookmark.getTreeStructureFromBookmarkFolder(openedFromBookmarkFolder.folder);
+        log(' ==> structure:', structure);
+        if (structure.length == openedFromBookmarkFolder.tabs.length) {
+          log(' ===> apply');
+          await Tree.applyTreeStructureToTabs(openedFromBookmarkFolder.tabs, structure);
+        }
+      }
+
+      const newRootTabs = Tab.collectRootTabs(Tab.sort(openedFromBookmarkFolder.tabs));
+      if (newRootTabs.length > 1 &&
+          configs.autoGroupNewTabsFromBookmarks &&
+          tabReferences.every(tabReference => !tabReference.shouldNotGrouped)) {
+        log(' => tryHandlTabBunchesFromBookmarks:group');
+        await TabsGroup.groupTabs(openedFromBookmarkFolder.tabs, {
+          ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromBookmarks),
+          broadcast: true
+        });
+      }
+    }
+  }
+  catch(error) {
+    log('Error on tryHandlTabBunchesFromBookmarks: ', String(error), error.stack);
+  }
+  finally {
+    tryHandlTabBunchesFromBookmarks.running = false;
+    if (mPossibleTabBunchesFromBookmarks.length > 0)
+      tryHandlTabBunchesFromBookmarks();
+  }
+}
+
+async function detectBookmarkFolderFromTabs(tabs, allNewTabsCount = tabs.length) {
+  log('detectBookmarkFolderFromTabs: ', tabs, allNewTabsCount);
+  return new Promise((resolve, _reject) => {
+    const maybeFromBookmarks = [];
+    let restCount = tabs.length;
+    for (const tab of tabs) {
+      tab.$TST.promisedPossibleOpenerBookmarks.then(async bookmarks => {
+        log(` bookmarks from tab ${tab.id}: `, bookmarks);
+        restCount--;
+        if (bookmarks.length > 0)
+          maybeFromBookmarks.push(tab);
+        const folder = await tryDetectMostTabsContainedBookmarkFolder(maybeFromBookmarks, allNewTabsCount);
+        if (folder) {
+          log('detectBookmarkFolderFromTabs: found folder => ', { folder, tabs });
+          resolve({
+            folder,
+            tabs: maybeFromBookmarks,
+          });
+        }
+        else if (restCount == 0) {
+          resolve(null);
+        }
+      });
+    }
+  });
+}
+
+async function tryDetectMostTabsContainedBookmarkFolder(bookmarkedTabs, allNewTabsCount = bookmarkedTabs.length) {
+  log('tryDetectMostTabsContainedBookmarkFolder ', { bookmarkedTabs, allNewTabsCount });
+  const parentIds = bookmarkedTabs.map(tab => tab.$TST.possibleOpenerBookmarks.map(bookmark => bookmark.parentId)).flat();
+  const counts    = [];
+  const countById = {};
+  for (const id of parentIds) {
+    if (!(id in countById))
+      counts.push(countById[id] = { id, count: 0 });
+    countById[id].count++;
+  }
+  log(' counts: ', counts);
+  if (counts.length == 0)
+    return null;
+
+  const greatestCountParent = counts.sort((a, b) => b.count - a.count)[0];
+  const minCount = allNewTabsCount * configs.tabsFromSameFolderMinThresholdPercentage / 100;
+  log(' => ', { greatestCountParent, minCount });
+  if (greatestCountParent.count <= minCount)
+    return null;
+
+  const items = await browser.bookmarks.get(greatestCountParent.id);
+  return Array.isArray(items) ? items[0] : items;
 }
 
 

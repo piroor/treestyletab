@@ -21,6 +21,7 @@ import {
 } from './common.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
+import * as ContextualIdentities from './contextual-identities.js';
 import * as Dialog from './dialog.js';
 import * as Permissions from './permissions.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
@@ -737,3 +738,50 @@ export async function startTracking() {
   if (granted && !browser.bookmarks.onCreated.hasListener(onBookmarksCreated))
     browser.bookmarks.onCreated.addListener(onBookmarksCreated);
 }
+
+
+export const BOOKMARK_TITLE_DESCENDANT_MATCHER = /^(>+) /;
+
+export async function getTreeStructureFromBookmarkFolder(folderOrId) {
+  const items = folderOrId.children || await browser.bookmarks.getChildren(folderOrId.id || folderOrId);
+  return getTreeStructureFromBookmarks(items);
+}
+
+export function getTreeStructureFromBookmarks(items) {
+  const lastItemIndicesWithLevel = new Map();
+  let lastMaxLevel = 0;
+  return items.reduce((result, item, index) => {
+    const { cookieStoreId, url } = ContextualIdentities.getIdFromBookmark(item);
+    if (cookieStoreId) {
+      item.cookieStoreId = cookieStoreId;
+      if (url)
+        item.url = url;
+    }
+
+    let level = 0;
+    if (lastItemIndicesWithLevel.size > 0 &&
+        item.title.match(BOOKMARK_TITLE_DESCENDANT_MATCHER)) {
+      level = RegExp.$1.length;
+      if (level - lastMaxLevel > 1) {
+        level = lastMaxLevel + 1;
+      }
+      else {
+        while (lastMaxLevel > level) {
+          lastItemIndicesWithLevel.delete(lastMaxLevel--);
+        }
+      }
+      lastItemIndicesWithLevel.set(level, index);
+      lastMaxLevel = level;
+      result.push(lastItemIndicesWithLevel.get(level - 1) - lastItemIndicesWithLevel.get(0));
+      item.title = item.title.replace(BOOKMARK_TITLE_DESCENDANT_MATCHER, '')
+    }
+    else {
+      result.push(-1);
+      lastItemIndicesWithLevel.clear();
+      lastItemIndicesWithLevel.set(0, index);
+    }
+    return result;
+  }, []);
+}
+
+
