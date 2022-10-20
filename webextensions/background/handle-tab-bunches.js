@@ -180,12 +180,12 @@ async function tryGroupTabBunches() {
     if (newRootTabs.length > 1 &&
         openedFromBookmarkFolder && // we should ignore tabs from bookmark folder: they should be handled by tryHandlTabBunchesFromBookmarks
         configs.autoGroupNewTabsFromOthers) {
-        const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
-        if (granted)
-          await TabsGroup.groupTabs(newRootTabs, {
-            ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromOthers),
-            broadcast: true
-          });
+      const granted = await confirmToAutoGroupNewTabsFromOthers(fromOthers);
+      if (granted)
+        await TabsGroup.groupTabs(newRootTabs, {
+          ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromOthers),
+          broadcast: true
+        });
     }
   }
   catch(error) {
