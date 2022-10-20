@@ -399,6 +399,13 @@ const mItems = [
         expert: true,
       },
       {
+        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
+        key:    'autoAttachOnOpenedWithOwner',
+        value:  Constants.kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB,
+        type:   'radio',
+        expert: true,
+      },
+      {
         title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
         key:    'autoAttachOnOpenedWithOwner',
         value:  Constants.kNEWTAB_OPEN_AS_SIBLING,
