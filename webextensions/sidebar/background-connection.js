@@ -69,11 +69,24 @@ export function sendMessage(message) {
     counts[message.type] = counts[message.type] || 0;
     counts[message.type]++;
   }
-  // Se should not send messages immediately, instead we should throttle
+  // We should not send messages immediately, instead we should throttle
   // it and bulk-send multiple messages, for better user experience.
   // Sending too much messages in one event loop may block everything
   // and makes Firefox like frozen.
-  //mConnectionPort.postMessage(message);
+  //
+  // Heartbeats, however, are the one exception. They run constantly, even
+  // in an idle browser. Consequently, they should be computationally cheap.
+  // Moreover, they run in a predictable pattern with plenty of time in between
+  // so we can be fairly certain they won't cause the US to freeze.
+  //
+  // Processing an individual heartbeat message in the general batch message
+  // flow is inefficient, boxing the single message into an array and using
+  // iterators to process the list unnecessarily.
+  if (message.type == Constants.kCOMMAND_HEARTBEAT) {
+    mConnectionPort.postMessage(message);
+    return;
+  }
+
   mReservedMessages.push(message);
   if (!mOnFrame) {
     mOnFrame = () => {

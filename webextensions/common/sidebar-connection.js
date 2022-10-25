@@ -205,7 +205,8 @@ export function init() {
         return message.forEach(receiver);
       if (message.type == Constants.kCOMMAND_HEARTBEAT)
         updateTimeoutTimer();
-      onMessage.dispatch(windowId, message);
+      else
+        onMessage.dispatch(windowId, message);
     };
     port.onMessage.addListener(receiver);
     mReceivers.set(windowId, receiver);
