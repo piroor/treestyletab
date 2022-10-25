@@ -41,7 +41,7 @@ export function connect() {
     clearInterval(mHeartbeatTimer);
   mHeartbeatTimer = setInterval(() => {
     sendMessage({
-      type: Constants.kCOMMAND_HEARTBEAT
+      type: Constants.kCONNECTION_HEARTBEAT
     });
   }, configs.heartbeatInterval);
 }
@@ -82,7 +82,7 @@ export function sendMessage(message) {
   // Processing an individual heartbeat message in the general batch message
   // flow is inefficient, boxing the single message into an array and using
   // iterators to process the list unnecessarily.
-  if (message.type == Constants.kCOMMAND_HEARTBEAT) {
+  if (message.type == Constants.kCONNECTION_HEARTBEAT) {
     mConnectionPort.postMessage(message);
     return;
   }

@@ -203,7 +203,7 @@ export function init() {
     const receiver = message => {
       if (Array.isArray(message))
         return message.forEach(receiver);
-      if (message.type == Constants.kCOMMAND_HEARTBEAT)
+      if (message.type == Constants.kCONNECTION_HEARTBEAT)
         updateTimeoutTimer();
       else
         onMessage.dispatch(windowId, message);
