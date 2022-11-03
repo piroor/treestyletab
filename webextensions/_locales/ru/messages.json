@@ -509,8 +509,10 @@
 
   "config_groupTab_caption": { "message": "Автогруппировка вкладок" },
 
-  "config_tabBunchesDetectionTimeout_before": { "message": "Автогруппировать вкладки открытые в течении" },
-  "config_tabBunchesDetectionTimeout_after": { "message": "мс (откроется новая вкладка для группировки с заголовком \"... и более\")" },
+  "config_tabBunchesDetectionTimeout_before": { "message": "Обнаружение вкладок, открытых из закладок в течение" },
+  "config_tabBunchesDetectionTimeout_after": { "message": "мс, и:" },
+  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Группировать вкладки с заголовком типа \"... и больше\"" },
+  "config_restoreTreeForTabsFromBookmarks_label": { "message": "Восстановить структуру дерева" },
   "config_requireBookmarksPermission_tooltiptext": { "message": "Эта функция требует права доступа к закладкам. Нажмите здесь, чтобы запросить необходимое разрешение." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Разрешить обнаруживать закладки, соответствующие вкладкам)" },
