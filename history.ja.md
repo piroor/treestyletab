@@ -1,7 +1,8 @@
 # 更新履歴
 
  - master/HEAD
-   * メモリ消費を削減（[by @nirvdrum, thanks!](https://github.com/piroor/webextensions-lib-event-listener-manager/pull/1)）
+ - 3.9.8 (2022.11.3)
+   * [メモリ消費](https://github.com/piroor/webextensions-lib-event-listener-manager/pull/1)と[CPU使用率](https://github.com/piroor/treestyletab/pull/3238)を削減（by [nirvdrum](https://github.com/nirvdrum), thanks!）
    * ブックマークフォルダーを中クリックして開かれたタブについて、可能であればツリー構造を復元するようにした
    * 3.9.6で追加した選択肢がツールバーボタンのメニューからの簡易設定に含まれていなかったのを修正
  - 3.9.7 (2022.10.18)

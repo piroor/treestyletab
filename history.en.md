@@ -1,7 +1,8 @@
 # History
 
  - master/HEAD
-   * Reduce memory allocation ([by @nirvdrum, thanks!](https://github.com/piroor/webextensions-lib-event-listener-manager/pull/1))
+ - 3.9.8 (2022.11.3)
+   * Reduce [memory allocation](https://github.com/piroor/webextensions-lib-event-listener-manager/pull/1) and [CPU usage](https://github.com/piroor/treestyletab/pull/3238) (by [nirvdrum](https://github.com/nirvdrum), thanks!)
    * Restoer saved tree structure for tabs opened from a bookmark folder with middle-click, if it is possible.
    * Add missing choice corresponding to the option added at 3.9.6 to the shortcut menu on the toolbar button.
  - 3.9.7 (2022.10.18)
