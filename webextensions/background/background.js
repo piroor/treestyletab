@@ -784,18 +784,13 @@ async function updateIconForBrowserTheme(theme) {
         const sidebarIconColor = theme.colors.sidebar_text || toolbarIconColor;
         log(' => ', { toolbarIconColor, menuIconColor, sidebarIconColor }, theme.colors);
         await Promise.all(Array.from(Object.entries(BASE_ICONS), async ([size, url]) => {
-          const request = new XMLHttpRequest();
-          await new Promise((resolve, _reject) => {
-            request.open('GET', url, true);
-            request.addEventListener('load', resolve, { once: true });
-            request.overrideMimeType('text/plain');
-            request.send(null);
-          });
-          const toolbarIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, toolbarIconColor);
+          const response = await fetch(url);
+          const body = await response.text();
+          const toolbarIconSource = body.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, toolbarIconColor);
           toolbarIcons[size] = `data:image/svg+xml,${escape(toolbarIconSource)}#toolbar-theme`;
-          const menuIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, menuIconColor);
+          const menuIconSource = body.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, menuIconColor);
           menuIcons[size] = `data:image/svg+xml,${escape(menuIconSource)}#default-theme`;
-          const sidebarIconSource = request.responseText.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, sidebarIconColor);
+          const sidebarIconSource = body.replace(/transparent\s*\/\*\s*TO BE REPLACED WITH THEME COLOR\s*\*\//g, sidebarIconColor);
           sidebarIcons[size] = `data:image/svg+xml,${escape(sidebarIconSource)}#default-theme`;
         }));
       }
