@@ -809,7 +809,10 @@ function initPermissionOptions() {
     Permissions.bindToClickable(
       Permissions.BOOKMARKS,
       node,
-      { onChanged: (granted) => updateBookmarksUI(granted) }
+      {
+        onChanged: (granted) => updateBookmarksUI(granted),
+        permissionCheckbox: document.querySelector('#bookmarksPermissionGranted'),
+      }
     );
   }
 }

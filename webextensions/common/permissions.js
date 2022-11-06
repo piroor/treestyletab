@@ -125,7 +125,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
   };
 }
 
-export function bindToClickable(permissions, node, options = {}) {
+export function bindToClickable(permissions, node, { permissionCheckbox, onChanged } = {}) {
   node.addEventListener('click', _event => {
     node.requestPermissions()
   });
@@ -135,7 +135,8 @@ export function bindToClickable(permissions, node, options = {}) {
 
   node.requestPermissions = async () => {
     try {
-      if (configs.requestingPermissionsNatively)
+      if (configs.requestingPermissionsNatively ||
+          permissionCheckbox.checked)
         return;
 
       configs.requestingPermissionsNatively = permissions;
@@ -149,8 +150,10 @@ export function bindToClickable(permissions, node, options = {}) {
         return;
 
       if (granted) {
-        if (options.onChanged)
-          options.onChanged(true);
+        if (!permissionCheckbox.checked)
+          permissionCheckbox.checked = true;
+        if (onChanged)
+          onChanged(true);
         browser.runtime.sendMessage({
           type: Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
           permissions
