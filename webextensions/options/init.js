@@ -754,16 +754,20 @@ function initPermissionOptions() {
       }
     }
   );
-  Permissions.bindToCheckbox(
-    Permissions.BOOKMARKS,
+
+  const bookmarksPermissionCheckboxes = [
     document.querySelector('#bookmarksPermissionGranted'),
-    { onChanged: (granted) => updateBookmarksUI(granted) }
-  );
-  Permissions.bindToCheckbox(
-    Permissions.BOOKMARKS,
+    document.querySelector('#bookmarksPermissionGranted_autoGroup'),
     document.querySelector('#bookmarksPermissionGranted_context'),
-    { onChanged: (granted) => updateBookmarksUI(granted) }
-  );
+  ];
+  for (const checkbox of bookmarksPermissionCheckboxes) {
+    Permissions.bindToCheckbox(
+      Permissions.BOOKMARKS,
+      checkbox,
+      { onChanged: (granted) => updateBookmarksUI(granted) }
+    );
+  }
+
   Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
     document.querySelector('#tabHidePermissionGranted'),
@@ -811,7 +815,6 @@ function initPermissionOptions() {
       node,
       {
         onChanged: (granted) => updateBookmarksUI(granted),
-        permissionCheckbox: document.querySelector('#bookmarksPermissionGranted'),
       }
     );
   }

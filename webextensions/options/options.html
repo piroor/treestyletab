@@ -568,14 +568,17 @@
 
     <fieldset id="autoGroupNewTabsSection">
       <legend>__MSG_config_groupTab_caption__</legend>
-      <p class="with-bookmarks-permission"
-        ><label id="autoGroupNewTabsFromBookmarks_label"
+      <p><label id="autoGroupNewTabsFromBookmarks_label"
                 class="has-checkbox"
-               ><span>__MSG_config_tabBunchesDetectionTimeout_before__</span>
-                <input id="tabBunchesDetectionTimeout"
-                       type="number"
-                       size="3">
-                <span>__MSG_config_tabBunchesDetectionTimeout_after__</span></label></p>
+               ><input id="bookmarksPermissionGranted_autoGroup"
+                       type="checkbox">
+                __MSG_config_tabBunchesDetectionTimeout_before__
+                <label><input id="tabBunchesDetectionTimeout"
+                              type="number"
+                              class="with-bookmarks-permission"
+                              size="3">
+                       __MSG_config_tabBunchesDetectionTimeout_after__</label>
+                </label></p>
       <p class="sub with-bookmarks-permission"
         ><label><input id="autoGroupNewTabsFromBookmarks"
                        type="checkbox"

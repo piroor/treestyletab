@@ -21,6 +21,8 @@ export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const ALL_URLS = { origins: ['<all_urls>'] };
 export const TAB_HIDE = { permissions: ['tabHide'] };
 
+const checkboxesForPermission = new Map();
+
 export function clearRequest() {
   configs.requestingPermissions = null;
 }
@@ -35,6 +37,10 @@ export function isGranted(permissions) {
 }
 
 export function bindToCheckbox(permissions, checkbox, options = {}) {
+  const checkboxes = checkboxesForPermission.get(permissions) || [];
+  checkboxes.push(checkbox);
+  checkboxesForPermission.set(permissions, checkboxes);
+
   isGranted(permissions)
     .then(granted => {
       checkbox.checked = granted;
@@ -75,15 +81,22 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
   */
 
   checkbox.requestPermissions = async () => {
+    const checkboxes = checkboxesForPermission.get(permissions);
     try {
       if (!checkbox.checked) {
         await browser.permissions.remove(permissions).catch(ApiTabs.createErrorSuppressor());
+        for (const checkbox of checkboxes) {
+          checkbox.checked = false;
+        }
         if (options.onChanged)
           options.onChanged(false);
         return;
       }
 
-      checkbox.checked = false;
+      for (const checkbox of checkboxes) {
+        checkbox.checked = false;
+      }
+
       if (configs.requestingPermissionsNatively)
         return;
 
@@ -97,7 +110,9 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         return;
 
       if (granted) {
-        checkbox.checked = true;
+        for (const checkbox of checkboxes) {
+          checkbox.checked = true;
+        }
         if (options.onChanged)
           options.onChanged(true);
         browser.runtime.sendMessage({
@@ -121,11 +136,13 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
     catch(error) {
       console.log(error);
     }
-    checkbox.checked = false;
+    for (const checkbox of checkboxes) {
+      checkbox.checked = false;
+    }
   };
 }
 
-export function bindToClickable(permissions, node, { permissionCheckbox, onChanged } = {}) {
+export function bindToClickable(permissions, node, { onChanged } = {}) {
   node.addEventListener('click', _event => {
     node.requestPermissions()
   });
@@ -135,8 +152,9 @@ export function bindToClickable(permissions, node, { permissionCheckbox, onChang
 
   node.requestPermissions = async () => {
     try {
+      const checkboxes = checkboxesForPermission.get(permissions);
       if (configs.requestingPermissionsNatively ||
-          permissionCheckbox.checked)
+          checkboxes.every(checkbox => checkbox.checked))
         return;
 
       configs.requestingPermissionsNatively = permissions;
@@ -150,8 +168,9 @@ export function bindToClickable(permissions, node, { permissionCheckbox, onChang
         return;
 
       if (granted) {
-        if (!permissionCheckbox.checked)
-          permissionCheckbox.checked = true;
+        for (const checkbox of checkboxes) {
+          checkbox.checked = true;
+        }
         if (onChanged)
           onChanged(true);
         browser.runtime.sendMessage({
