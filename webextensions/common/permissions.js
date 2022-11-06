@@ -197,3 +197,6 @@ export function requestPostProcess() {
   return true;
 }
 
+configs.$loaded.then(() => {
+  configs.requestingPermissionsNatively = null;
+});

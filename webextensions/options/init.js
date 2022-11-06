@@ -739,6 +739,8 @@ function initCollapsibleSections({ focusedItem }) {
 }
 
 function initPermissionOptions() {
+  configs.requestingPermissionsNatively = null;
+
   Permissions.isGranted(Permissions.BOOKMARKS).then(granted => updateBookmarksUI(granted));
   Permissions.isGranted(Permissions.ALL_URLS).then(granted => updateCtrlTabSubItems(granted));
 
