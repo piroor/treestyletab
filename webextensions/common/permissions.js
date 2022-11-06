@@ -135,11 +135,11 @@ export function bindToClickable(permissions, node, options = {}) {
 
   node.requestPermissions = async () => {
     try {
-      if (configs.requestingPermissionsNatively ||
-          await isGranted(permissions))
+      if (configs.requestingPermissionsNatively)
         return;
 
       configs.requestingPermissionsNatively = permissions;
+      // We need to call this without delay to avoid "permissions.request may only be called from a user input handler" error.
       let granted = await browser.permissions.request(permissions).catch(ApiTabs.createErrorHandler());
       configs.requestingPermissionsNatively = null;
 
