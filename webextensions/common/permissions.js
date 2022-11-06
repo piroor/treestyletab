@@ -130,6 +130,9 @@ export function bindToClickable(permissions, node, options = {}) {
     node.requestPermissions()
   });
 
+  if (node.requestPermissions)
+    return;
+
   node.requestPermissions = async () => {
     try {
       if (configs.requestingPermissionsNatively ||
