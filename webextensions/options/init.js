@@ -345,7 +345,7 @@ async function updateBookmarksUI(enabled) {
     }
     const defaultParentFolder = (
       (await Bookmark.getItemById(configs.defaultBookmarkParentId)) ||
-      (await Bookmark.getItemById(configs.$defaults.defaultBookmarkParentId))
+      (await Bookmark.getItemById(configs.$default.defaultBookmarkParentId))
     );
     const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
     Bookmark.initFolderChooser(defaultBookmarkParentChooser, {
