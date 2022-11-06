@@ -744,7 +744,7 @@ export const BOOKMARK_TITLE_DESCENDANT_MATCHER = /^(>+) /;
 
 export async function getTreeStructureFromBookmarkFolder(folderOrId) {
   const items = folderOrId.children || await browser.bookmarks.getChildren(folderOrId.id || folderOrId);
-  return getTreeStructureFromBookmarks(items);
+  return getTreeStructureFromBookmarks(items.filter(item => item.type == 'bookmark'));
 }
 
 export function getTreeStructureFromBookmarks(items) {
