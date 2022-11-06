@@ -364,7 +364,7 @@ async function updateBookmarksUI(enabled) {
     }
   }
 
-  const triboolChecks = document.querySelectorAll('.require-bookmarks-permission');
+  const triboolChecks = document.querySelectorAll('input[type="checkbox"].require-bookmarks-permission, .require-bookmarks-permission input[type="checkbox"]');
   if (enabled) {
     for (const checkbox of triboolChecks) {
       checkbox.classList.remove('missing-permission');
