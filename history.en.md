@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.9 (2022.11.9)
    * Group tabs correctly even if they are opened from a bookmark folder containing any subfolders.
    * Fix disability to request "bookmarks" optional permission via options UI about auto-grouping of tabs from bookmarks.
    * Fix disability to request optional permissions due to a garbage in internal configs.
