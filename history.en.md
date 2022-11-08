@@ -1,10 +1,15 @@
 # History
 
  - master/HEAD
+   * Group tabs correctly even if they are opened from a bookmark folder containing any subfolders.
+   * Fix disability to request "bookmarks" optional permission via options UI about auto-grouping of tabs from bookmarks.
+   * Fix disability to request optional permissions due to a garbage in internal configs.
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.9.8 (2022.11.3)
    * Reduce [memory allocation](https://github.com/piroor/webextensions-lib-event-listener-manager/pull/1) and [CPU usage](https://github.com/piroor/treestyletab/pull/3238) (by [nirvdrum](https://github.com/nirvdrum), thanks!)
    * Restoer saved tree structure for tabs opened from a bookmark folder with middle-click, if it is possible.
    * Add missing choice corresponding to the option added at 3.9.6 to the shortcut menu on the toolbar button.
+   * Load internal pages via `ext+treestyletab:` URLs with fragment identifiers correctly.
  - 3.9.7 (2022.10.18)
    * Fix performance regression with large number tabs on 3.9.6.
    * Open new tab with specified "default" container correctly, even if the active tab is in non-default container and new tabs are configured to inherit the container of the active tab.
