@@ -412,8 +412,8 @@ function applyUserStyleRules() {
 
 function processAllStyleRulesIn(sheetOrRule, processor) {
   for (const rule of sheetOrRule.cssRules) {
-    if (sheetOrRule.styleSheet)
-      processAllStyleRulesIn(sheetOrRule.styleSheet, processor);
+    if (rule.styleSheet)
+      processAllStyleRulesIn(rule.styleSheet, processor);
     else if (rule.cssRules) // @media and so son
       processAllStyleRulesIn(rule, processor);
     else
