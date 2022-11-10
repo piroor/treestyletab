@@ -378,11 +378,11 @@ export default class Tab {
        firstChild.$TST.$possiblePredecessorPreviousTab == this.tab &&
        firstChild) ||
       (nextTab &&
-       !nextTab.$TST.temporaryMetadata.get('openedCompletely') &&
+       !nextTab.$TST.temporaryMetadata.has('openedCompletely') &&
        nextTab.$TST.$possiblePredecessorPreviousTab == this.tab &&
        nextTab) ||
       (prevTab &&
-       !prevTab.$TST.temporaryMetadata.get('openedCompletely') &&
+       !prevTab.$TST.temporaryMetadata.has('openedCompletely') &&
        prevTab.$TST.$possiblePredecessorNextTab == this.tab &&
        prevTab)
     );
@@ -1729,12 +1729,12 @@ Tab.init = (tab, options = {}) => {
     tab.$TST.opened = Promise.resolve(true).then(() => {
       tab.$TST.resolveOpened();
     });
-    tab.$TST.temporaryMetadata.set('opening', false);
+    tab.$TST.temporaryMetadata.delete('opening');
     tab.$TST.temporaryMetadata.set('openedCompletely', true);
   }
   else {
     tab.$TST.temporaryMetadata.set('opening', true);
-    tab.$TST.temporaryMetadata.set('openedCompletely', false);
+    tab.$TST.temporaryMetadata.delete('openedCompletely');
     tab.$TST.opened = new Promise((resolve, reject) => {
       tab.$TST.opening = false;
       const resolvers = mOpenedResolvers.get(tab.id) || new Set();

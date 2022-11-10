@@ -89,7 +89,8 @@ Tab.onCreating.addListener((tab, info = {}) => {
       else if (activeTab != tab) {
         tab.$TST.temporaryMetadata.set('possibleOpenerTab', activeTab.id);
       }
-      tab.$TST.temporaryMetadata.set('isNewTab', !info.fromExternal);
+      if (!info.fromExternal)
+        tab.$TST.temporaryMetadata.set('isNewTab', true);
     }
     if (info.fromExternal &&
         !info.bypassTabControl) {
@@ -137,7 +138,8 @@ Tab.onCreating.addListener((tab, info = {}) => {
         }).then(moved => !moved);
       });
     }
-    tab.$TST.temporaryMetadata.set('positionedBySelf', info.positionedBySelf);
+    if (info.positionedBySelf)
+      tab.$TST.temporaryMetadata.set('positionedBySelf', true);
     return true;
   }
 
@@ -382,7 +384,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     });
   }
 
-  if (tab.$TST.temporaryMetadata.get('openedCompletely') &&
+  if (tab.$TST.temporaryMetadata.has('openedCompletely') &&
       tab.windowId == tab.$windowIdOnCreated && // Don't treat tab as "opened from active tab" if it is moved across windows while loading
       (changeInfo.url || changeInfo.status == 'complete') &&
       (tab.$TST.temporaryMetadata.has('isNewTab') ||
@@ -431,7 +433,13 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         window.openedNewTabs.has(tab.id) ||
         tab.$TST.temporaryMetadata.has('openedWithOthers') ||
         tab.$TST.temporaryMetadata.has('positionedBySelf')) {
-      log(' => no need to control');
+      log(' => no need to control ', {
+        parent: tab.$TST.parent,
+        possibleOpenerTab,
+        openedNewTab: window.openedNewTabs.has(tab.id),
+        openedWithOthers: tab.$TST.temporaryMetadata.has('openedWithOthers'),
+        positionedBySelf: tab.$TST.temporaryMetadata.has('positionedBySelf')
+      });
       return;
     }
 
