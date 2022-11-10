@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.9.10 (2022.11.10)
+   * Fix incompletely applied workaround for [missing icons problem](https://github.com/piroor/treestyletab/issues/3142).
+   * Fix regressions from misdetected temporary state of tabs on recent versions.
  - 3.9.9 (2022.11.9)
    * Group tabs correctly even if they are opened from a bookmark folder containing any subfolders.
    * Fix disability to request "bookmarks" optional permission via options UI about auto-grouping of tabs from bookmarks.
