@@ -23,6 +23,23 @@ Please enjoy as you like!
 <li>"Tree Style Tab" toolbar button also toggles the sidebar. If it's unnecessary, you can remove it from the toolbar.</li>
 </ul>
 
+<strong>Permissions:</strong>
+
+This extension needs following permissions to work as expected:
+
+<ul>
+<li>Required:<ul>
+<li>Access browser tabs: to list both active and non-active tabs in the UI.</li>
+<li>Access recently closed tabs (access to the session information): to save tree information of tabs (structure, collapsed/expanded state, etc.) to tabs' session information and ask to Firefox to manage them as bundled.</li>
+<li>Display notifications to you: to present information and navigate users without blocking.</li>
+</ul></li>
+<li>Optional:<ul>
+<li>Read and modify bookmarks: to simulate bookmark related commands in the tab context menu. / to detect tabs whether they were opened from bookmarks or not.</li>
+<li>Access your data for all websites (run scripts on webpages): to detect the Ctrl key is pressed/released and prevent needless expansion of collapsed trees while tab switching with Ctrl-Tab/Ctrl-Shift-Tab.</li>
+<li>Hide and show browser tabs: just for automated tests, not required on regular use.</li>
+</ul></li>
+</ul>
+
 <strong>Extensions extend TST:</strong>
 
 TST provides an <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">API for other extensions</a>.
