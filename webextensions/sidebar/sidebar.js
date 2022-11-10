@@ -495,7 +495,7 @@ function reloadAllMaskImages() {
     for (const task of delayedTasks) {
       task();
     }
-  }, 0);
+  }, configs.enableWorkaroundForBug1763420_reloadMaskImageDelay);
 }
 
 

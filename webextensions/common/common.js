@@ -316,6 +316,7 @@ export const configs = new Configs({
   enableWorkaroundForBug1548949: true,
   enableWorkaroundForBug1767165_fixDragEndCoordinates: null, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1767165
   enableWorkaroundForBug1763420_reloadMaskImage: true, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
+  enableWorkaroundForBug1763420_reloadMaskImageDelay: 100, // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
   maximumDelayForBug1561879: 500,
   workaroundForBug1548949DroppedTabs: null,
   heartbeatInterval: 1000,
