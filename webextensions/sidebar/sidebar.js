@@ -469,12 +469,14 @@ function updateContextualIdentitiesStyle() {
 // CSS rules via CSSOM automatically.
 // Related bug on Fierfox side: https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
 
+const URL_PATTERN = /^(?:url\()?(?:'(.+)'|"(.+)")(?:\))?$/;
 function reloadAllMaskImages() {
   const delayedTasks = [];
   for (const sheet of document.styleSheets) {
     processAllStyleRulesIn(sheet, rule => {
       if (!rule.style ||
-          !rule.style.maskImage)
+          !rule.style.maskImage ||
+          !URL_PATTERN.test(rule.style.maskImage))
         return;
 
       const background = rule.style.background;
