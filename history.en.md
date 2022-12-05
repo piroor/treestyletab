@@ -1,7 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.9.11 (2022.12.6)
    * Group tabs not from bookmarks with user's choice correctly. (regression on 3.9.8)
+   * Enlarge input fields for some options to input numbers.
  - 3.9.10 (2022.11.10)
    * Fix incompletely applied workaround for [missing icons problem](https://github.com/piroor/treestyletab/issues/3142).
    * Fix regressions from misdetected temporary state of tabs on recent versions.
