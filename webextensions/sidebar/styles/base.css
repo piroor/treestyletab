@@ -268,13 +268,15 @@ ul {
 
 #dummy-tabs {
   bottom: 0;
-  clip: rect(0, 0, 0, 0);
   left: 0;
   overflow-y: scroll;
   pointer-events: none;
   position: fixed;
   right: 0;
   z-index: var(--dummy-element-z-index); /* Put it below the background. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
+}
+:root:not(.have-unsynchronized-throbber) #dummy-tabs {
+  clip: rect(0, 0, 0, 0); /* Don't hide animated throbber when its appearance is copied with -moz-element since doing so causes stuttering in the copied animation */
 }
 
 #dummy-favicon-size-box {

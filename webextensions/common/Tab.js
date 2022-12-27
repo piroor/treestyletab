@@ -2143,6 +2143,14 @@ Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
   });
 };
 
+Tab.hasNeedToBeSynchronizedTab = windowId => {
+  return !!TabsStore.query({
+    windowId,
+    tabs:     TabsStore.unsynchronizedTabsInWindow.get(windowId),
+    visible:  true
+  });
+};
+
 Tab.hasLoadingTab = windowId => {
   return !!TabsStore.query({
     windowId,
