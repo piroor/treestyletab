@@ -164,7 +164,7 @@
     display: none !important;
   }
 
-  :root.updating .throbber {
+  :root.updating:not(.has-contents) .throbber {
     display: inline-block;
     font-size: var(--throbber-size);
     height: var(--throbber-size);
@@ -182,7 +182,7 @@
     transform: scale(2, 2);
   }
 
-  :root.updating .throbber::before {
+  :root.updating:not(.has-contents) .throbber::before {
     animation: throbber 1.05s steps(30) infinite; /* The FPS is reduced from 60 to 30 at https://bugzilla.mozilla.org/show_bug.cgi?id=1511095 */
     background: Highlight;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
@@ -245,7 +245,7 @@
 <p id="optionHint"><a href="#">__MSG_groupTab_options_label__</a>
                    <button id="dismissOptionHint" title="__MSG_groupTab_options_dismiss__"></button></p>
 </header>
-<div id="tabs"></div>
+<div id="tabs"><ul id="top-level-tree"></ul></div>
 <span class="throbber"></span>
 </main>
 </html>

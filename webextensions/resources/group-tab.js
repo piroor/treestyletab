@@ -5,7 +5,7 @@
 */
 'use strict';
 
-(function prepare(retryCount = 0) {
+(async function prepare(retryCount = 0) {
   if (retryCount > 10)
     throw new Error('could not prepare group tab contents');
 
@@ -361,21 +361,28 @@
   //document.addEventListener('DOMContentLoaded', init, { once: true });
 
 
+  const loadedIconUrls = new Set();
+  const failedIconUrls = new Set();
+
   async function updateTree() {
     const runAt = updateTree.lastRun = Date.now();
 
     const container = document.getElementById('tabs');
-    const range = document.createRange();
-    range.selectNodeContents(container);
-    range.deleteContents();
-    range.detach();
+    function clear() {
+      const range = document.createRange();
+      range.selectNodeContents(container.firstChild);
+      range.deleteContents();
+      range.detach();
+    }
 
+    const rootClassList = document.documentElement.classList;
     if (!updateTree.enabled) {
-      document.documentElement.classList.remove('updating');
+      rootClassList.remove('updating');
+      clear();
       return;
     }
 
-    document.documentElement.classList.add('updating');
+    rootClassList.add('updating');
 
     const baseRequest = {
       type: 'treestyletab:api:get-tree',
@@ -414,7 +421,8 @@
 
     if (!thisTab) {
       console.error(new Error('Couldn\'t get tree of tabs unexpectedly.'));
-      document.documentElement.classList.remove('updating');
+      clear();
+      rootClassList.remove('updating');
       return;
     }
 
@@ -434,11 +442,33 @@
       tree = buildChildren(thisTab);
 
     if (tree) {
-      container.appendChild(tree);
+      const { DOMUpdater } = await import('/extlib/dom-updater.js');
+      tree.setAttribute('id', 'top-level-tree');
+      const newContents = document.createDocumentFragment();
+      newContents.appendChild(tree);
+      DOMUpdater.update(container, newContents);
+      for (const icon of container.querySelectorAll('li.favicon-loading img')) {
+        const item = icon.closest('li');
+        const url  = icon.dataset.faviconUrl;
+        icon.onerror = () => {
+          item.classList.remove('favicon-loading');
+          item.classList.add('use-default-favicon');
+          failedIconUrls.add(url);
+        };
+        icon.onload = () => {
+          item.classList.remove('favicon-loading');
+          loadedIconUrls.add(url);
+        };
+        icon.src = url;
+      }
       reflow();
     }
+    else {
+      clear();
+    }
 
-    document.documentElement.classList.remove('updating');
+    rootClassList.remove('updating');
+    rootClassList.add('has-contents');
   }
   updateTree.enabled = true;
 
@@ -452,30 +482,34 @@
 
   function buildItem(tab) {
     const item = document.createElement('li');
+    item.setAttribute('id', `tab-item-${tab.id}`);
 
     const link = item.appendChild(document.createElement('span'));
+    link.setAttribute('id', `tab-link-${tab.id}`);
     link.setAttribute('class', 'link');
     link.setAttribute('title', tab.cookieStoreName ? `${tab.title} - ${tab.cookieStoreName}` : tab.title);
     link.dataset.tabId = tab.id;
     link.dataset.cookieStoreId = tab.cookieStoreId;
 
     const contextualIdentityMarker = link.appendChild(document.createElement('span'));
+    contextualIdentityMarker.setAttribute('id', `tab-contextual-identity-marker-${tab.id}`);
     contextualIdentityMarker.classList.add('contextual-identity-marker');
 
     const defaultFavIcon = link.appendChild(document.createElement('span'));
+    defaultFavIcon.setAttribute('id', `tab-default-favicon-${tab.id}`);
     defaultFavIcon.classList.add('default-favicon');
 
     const icon = link.appendChild(document.createElement('img'));
-    if (tab.effectiveFavIconUrl || tab.favIconUrl) {
-      icon.src = tab.effectiveFavIconUrl || tab.favIconUrl;
-      icon.onerror = () => {
-        item.classList.remove('favicon-loading');
-        item.classList.add('use-default-favicon');
-      };
-      icon.onload = () => {
-        item.classList.remove('favicon-loading');
-      };
-      item.classList.add('favicon-loading');
+    icon.setAttribute('id', `tab-icon-${tab.id}`);
+    const favIconUrl = tab.effectiveFavIconUrl || tab.favIconUrl;
+    if (favIconUrl && !failedIconUrls.has(favIconUrl)) {
+      if (loadedIconUrls.has(favIconUrl)) {
+        icon.src = favIconUrl;
+      }
+      else {
+        icon.dataset.faviconUrl = favIconUrl;
+        item.classList.add('favicon-loading');
+      }
     }
     else {
       item.classList.add('use-default-favicon');
@@ -486,6 +520,7 @@
       item.classList.add('group-tab');
 
     const label = link.appendChild(document.createElement('span'));
+    label.setAttribute('id', `tab-label-${tab.id}`);
     label.classList.add('label');
     label.textContent = tab.title;
 
@@ -493,9 +528,11 @@
     if (!children)
       return item;
 
+    children.setAttribute('id', `tab-${tab.id}-children`);
     const fragment = document.createDocumentFragment();
     fragment.appendChild(item);
     const childrenWrapped = document.createElement('li');
+    childrenWrapped.setAttribute('id', `tabr-${tab.id}-children-wrappe`);
     childrenWrapped.appendChild(children);
     fragment.appendChild(childrenWrapped);
     return fragment;
