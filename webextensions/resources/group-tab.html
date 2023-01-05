@@ -111,16 +111,19 @@
     white-space: pre;
   }
 
-  #tabs a {
+  #tabs a,
+  #tabs span.link {
     align-items: start;
     color: inherit;
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     text-decoration: none;
     padding: 0.25em 0;
   }
 
-  #tabs a:hover {
+  #tabs a:hover,
+  #tabs span.link:hover {
     text-decoration: underline;
   }
 
@@ -133,7 +136,8 @@
     width: calc(var(--favicon-size) / 5);
   }
 
-  #tabs a span.label {
+  #tabs a span.label,
+  #tabs span.link span.label {
     display: inline-block;
     vertical-alignt: calc(var(--favicon-size) - 1em);
     margin: 0;

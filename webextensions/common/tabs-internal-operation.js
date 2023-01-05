@@ -219,9 +219,19 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 });
 
 if (Constants.IS_BACKGROUND) {
-  // for automated tests
   browser.runtime.onMessage.addListener((message, _sender) => {
     switch (message.type) {
+      // for operations from group-tab.html
+      case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+        Tab.waitUntilTracked(message.tabIds).then(() => {
+          removeTabs(message.tabIds.map(id => Tab.get(id)), {
+            byMouseOperation: message.byMouseOperation,
+            keepDescendants:  message.keepDescendants,
+          });
+        });
+        break;
+
+      // for automated tests
       case Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION:
         Tab.waitUntilTracked(message.tabIds).then(() => {
           removeTabs(message.tabIds.map(id => Tab.get(id)), {

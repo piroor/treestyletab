@@ -96,6 +96,10 @@
            event.shiftKey;
   }
 
+  function isAcceled(event) {
+    return /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
+  }
+
   function updateParameters({ title } = {}) {
     const url = new URL(location.href);
     url.searchParams.set('title', title || getTitle() || '');
@@ -184,24 +188,38 @@
           break;
       }
     });
-    window.addEventListener('click', event => {
-      const link = event.target.closest('a');
-      if (link) {
-        browser.runtime.sendMessage({
-          type: 'treestyletab:api:focus',
-          tab:  parseInt(link.dataset.tabId)
-        });
-        return;
+    window.addEventListener('mouseup', event => {
+      const link  = event.target.closest('a, span.link');
+      const tabId = link?.dataset?.tabId;
+      if (tabId) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        if ((event.button == 0 && isAcceled(event)) ||
+            (event.button == 1 && !hasModifier(event))) {
+          browser.runtime.sendMessage({
+            type:             'treestyletab:remove-tabs-internally',
+            tabIds:           [parseInt(tabId)],
+            byMouseOperation: true,
+            keepDescendants:  true,
+          });
+        }
+        else {
+          browser.runtime.sendMessage({
+            type: 'treestyletab:api:focus',
+            tab:  parseInt(tabId),
+          });
+        }
+        return false;
       }
       if (event.button != 0 ||
           hasModifier(event))
-        return;
+        return false;
       if (event.target != gTitleField) {
         setTitle(gTitleField.value);
         exitTitleEdit();
         event.stopPropagation();
       }
-    });
+    }, { useCapture: true });
     window.addEventListener('keyup', event => {
       if (event.key == 'F2' &&
           !hasModifier(event))
@@ -435,8 +453,8 @@
   function buildItem(tab) {
     const item = document.createElement('li');
 
-    const link = item.appendChild(document.createElement('a'));
-    link.href = '#';
+    const link = item.appendChild(document.createElement('span'));
+    link.setAttribute('class', 'link');
     link.setAttribute('title', tab.cookieStoreName ? `${tab.title} - ${tab.cookieStoreName}` : tab.title);
     link.dataset.tabId = tab.id;
     link.dataset.cookieStoreId = tab.cookieStoreId;
