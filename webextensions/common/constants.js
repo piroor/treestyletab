@@ -219,6 +219,7 @@ export const kTABBAR_STATE_BLOCKING               = 'blocking';
 export const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 export const kTABBAR_STATE_BLOCKING_WITH_SHADE    = 'blocking-shade';
 export const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
+export const kTABBAR_STATE_HAVE_UNSYNCHRONIZED_THROBBER = 'have-unsynchronized-throbber';
 export const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 export const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
 export const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable';

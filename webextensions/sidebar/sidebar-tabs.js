@@ -84,6 +84,7 @@ async function reserveToUpdateLoadingState() {
 
 function updateLoadingState() {
   document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_LOADING_TAB, Tab.hasLoadingTab(TabsStore.getCurrentWindowId()));
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_UNSYNCHRONIZED_THROBBER, Tab.hasNeedToBeSynchronizedTab(TabsStore.getCurrentWindowId()));
 }
 
 async function synchronizeThrobberAnimation() {
@@ -95,6 +96,8 @@ async function synchronizeThrobberAnimation() {
   }
   if (processedCount == 0)
     return;
+
+  document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_UNSYNCHRONIZED_THROBBER);
 
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   void document.documentElement.offsetWidth;
