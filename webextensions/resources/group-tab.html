@@ -78,7 +78,10 @@
 
   #tabs li img,
   #tabs li.use-default-favicon .default-favicon,
-  #tabs li.favicon-loading .default-favicon {
+  #tabs li.favicon-loading .default-favicon,
+  #tabs li .closebox,
+  #tabs li .closebox::before,
+  #tabs li .closebox::after {
     height: var(--favicon-size);
     max-width: var(--favicon-size);
     max-height: var(--favicon-size);
@@ -94,7 +97,6 @@
   #tabs li.use-default-favicon .default-favicon,
   #tabs li.favicon-loading .default-favicon {
     background: var(--text-color);
-    display: none;
     display: inline-block;
     mask: url("./icons/defaultFavicon.svg") no-repeat center / 100%;
   }
@@ -103,12 +105,52 @@
     mask-image: url("./icons/folder.svg");
   }
 
+  #tabs .closebox {
+    position: relative;
+    opacity: 0;
+  }
+
+  #tabs li:hover > .closebox {
+    opacity: 1;
+  }
+
+  #tabs .closebox::before {
+    background: var(--text-color);
+    box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
+    content: " ";
+    display: inline-block;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  #tabs .closebox:hover::before {
+    opacity: 0.1;
+  }
+
+  #tabs .closebox::after {
+    background: var(--text-color);
+    content: " ";
+    display: inline-block;
+    mask: url("/sidebar/styles/icons/close-16.svg") no-repeat center / 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
   #tabs li {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
     list-style: none;
     margin: 0 0 0 0.15em;
     padding: 0;
     white-space: pre;
+  }
+
+  #tabs li ul {
+    width: 100%;
   }
 
   #tabs a,
@@ -118,6 +160,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
     text-decoration: none;
     padding: 0.25em 0;
   }

@@ -189,6 +189,18 @@
       }
     });
     window.addEventListener('mouseup', event => {
+      const closebox = event.target.closest('li span.closebox');
+      if (closebox) {
+        const tabId = closebox.dataset.tabId;
+        browser.runtime.sendMessage({
+          type:             'treestyletab:remove-tabs-internally',
+          tabIds:           [parseInt(tabId)],
+          byMouseOperation: true,
+          keepDescendants:  true,
+        });
+        return;
+      }
+
       const link  = event.target.closest('a, span.link');
       const tabId = link?.dataset?.tabId;
       if (tabId) {
@@ -523,6 +535,11 @@
     label.setAttribute('id', `tab-label-${tab.id}`);
     label.classList.add('label');
     label.textContent = tab.title;
+
+    const closeBox = item.appendChild(document.createElement('span'));
+    closeBox.setAttribute('id', `tab-closebox-${tab.id}`);
+    closeBox.classList.add('closebox');
+    closeBox.dataset.tabId = tab.id;
 
     const children = buildChildren(tab);
     if (!children)
