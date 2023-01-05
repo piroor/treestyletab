@@ -435,7 +435,7 @@
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "öffnen" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer leerer Tab\" geöffnet worden, wenn er mit dieser URL geöffnet wird:" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
+  "_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(keine Steuerung)" },

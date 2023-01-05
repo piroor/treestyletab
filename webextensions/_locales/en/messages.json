@@ -435,8 +435,8 @@
   "config_autoAttachOnNewTabCommand_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Guess a newly opened tab as opened by \"New Blank Tab\" action, when it is opened with the URL " },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Guess a newly opened tab as opened by \"New Blank Tab\" action, when it is opened with URL(s) " },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "(*You can list multiple URLs with a separator \"|\")" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "For middle click, open new blank tab as" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(no control)" },

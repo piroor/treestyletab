@@ -739,7 +739,7 @@
     "message": "Deviner qu'un nouvel onglet est un « nouvel onglet vide » quand son URL est :",
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
   },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
+  "_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
     "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },

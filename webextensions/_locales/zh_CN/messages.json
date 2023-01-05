@@ -1278,7 +1278,7 @@
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": " 打开新建标签页时，将其视作 \"新建空白标签页\"",
+    "message": " 打开新建标签页时，将其视作 \"新建空白标签页\" (*You can list multiple URLs with a separator \"|\")",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {

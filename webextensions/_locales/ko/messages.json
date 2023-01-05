@@ -1121,7 +1121,7 @@
         "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
     },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-        "message": "에 어떤 탭이 열린 경우, 빈 새 탭이 열린 것으로 취급",
+        "message": "에 어떤 탭이 열린 경우, 빈 새 탭이 열린 것으로 취급 (*You can list multiple URLs with a separator \"|\")",
         "hash": "aa7906338dbdd2af4993295aa9112e97"
     },
     "config_autoAttachOnNewTabButtonMiddleClick_before": {

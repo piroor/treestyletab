@@ -180,7 +180,7 @@
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "наступний однорівневий елемент поточної вкладки" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "__OLD__config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Визначити знову відкриту вкладку, відкриту з допомогою дії \"Нова вкладка\", коли вона відкривається з URL-ом: " },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
+  "_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Кліком коліщатка миші відкрити нову порожню вкладку як " },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "окрему вкладку" },

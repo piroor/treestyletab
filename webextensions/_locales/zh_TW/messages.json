@@ -408,7 +408,7 @@
     "config_autoAttachOnNewTabCommand_nextSibling": { "message": "目前分頁同層相鄰分頁" },
     "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
     "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "䦒啟的分頁網址為" },
-    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "時，視同以其他動作開新分頁" },
+    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "時，視同以其他動作開新分頁 (*You can list multiple URLs with a separator \"|\")" },
   
     "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中鍵點擊「開啟新分頁」按鈕時，開新分頁為" },
     "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(不控制)" },
