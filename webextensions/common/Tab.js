@@ -13,7 +13,9 @@ import {
   mapAndFilter,
   mapAndFilterUniq,
   toLines,
-  configs
+  sanitizeForRegExpSource,
+  isNewTabCommandURL,
+  configs,
 } from './common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -300,8 +302,7 @@ export default class Tab {
         !configs.guessNewOrphanTabAsOpenedByNewTabCommand)
       return false;
 
-    const newTabUrl = configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
-    if (this.tab.url != newTabUrl)
+    if (!isNewTabCommandURL(this.tab.url))
       return false;
 
     // Firefox always opens a blank tab as the placeholder, when trying to
@@ -314,7 +315,7 @@ export default class Tab {
     // URL and the previous URL become "about:blank". This is an important
     // difference between "a new blank tab" and "a blank tab opened for an
     // Open in New Tab command".
-    if (newTabUrl == 'about:blank')
+    if (this.tab.url == 'about:blank')
       return this.tab.previousUrl == 'about:blank';
 
     return true;
@@ -2179,12 +2180,13 @@ Tab.hasMultipleTabs = (windowId, options = {}) => {
 
 // "Recycled tab" is an existing but reused tab for session restoration.
 Tab.getRecycledTabs = (windowId = null, options = {}) => {
+  const userNewTabUrls = configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.split('|').map(part => sanitizeForRegExpSource(part.trim())).join('|');
   return TabsStore.queryAll({
     windowId,
     tabs:       TabsStore.getTabsMap(TabsStore.livingTabsInWindow, windowId),
     living:     true,
     states:     [Constants.kTAB_STATE_RESTORED, false],
-    attributes: [Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)],
+    attributes: [Constants.kCURRENT_URI, new RegExp(`^(|${userNewTabUrls}|about:newtab|about:blank|about:privatebrowsing)$`)],
     ...options
   });
 };

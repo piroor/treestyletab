@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 26;
+const kCONFIGS_VERSION = 27;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -260,6 +260,10 @@ export function migrateConfigs() {
     case 25:
       if (configs.autoHiddenScrollbarPlaceholderSize !== null)
         configs.shiftTabsForScrollbarDistance = configs.autoHiddenScrollbarPlaceholderSize;
+
+    case 26:
+      if (!configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.includes('about:privatebrowsing'))
+        configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl = `${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.trim().replace(/\|$/, '')}|about:privatebrowsing`;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

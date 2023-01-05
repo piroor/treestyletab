@@ -181,7 +181,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     const restorableClosingTabsCount = countMatched(
       allClosingTabs,
       tab => tab.url != 'about:blank' &&
-             tab.url != configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl
+             !tab.$TST.isNewTabCommandTab
     );
     log(' => restorableClosingTabsCount: ', restorableClosingTabsCount);
     if (restorableClosingTabsCount > 0) {

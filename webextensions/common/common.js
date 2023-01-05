@@ -248,7 +248,7 @@ export const configs = new Configs({
   autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnAnyOtherTrigger: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
-  guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
+  guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab|about:privatebrowsing',
   inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
   inheritContextualIdentityToTabsFromExternalMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
@@ -901,6 +901,10 @@ export function sanitizeForHTMLText(text) {
     .replace(/"/g, '&quot;');
 }
 
+export function sanitizeForRegExpSource(source) { // https://stackoverflow.com/questions/6300183/sanitize-string-of-regex-characters-before-regexp-build
+  return source.replace(/[#-.]|[[-^]|[?|{}]/g, '\\$&');
+}
+
 export function sanitizeAccesskeyMark(label) {
   return String(label || '').replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
@@ -931,6 +935,11 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
     delete params.height;
   }
   return params;
+}
+
+export function isNewTabCommandURL(url) {
+  const newTabUrls = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.split('|'));
+  return newTabUrls.has(url);
 }
 
 

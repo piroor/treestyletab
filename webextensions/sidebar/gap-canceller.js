@@ -10,6 +10,7 @@
 import {
   log as internalLogger,
   configs,
+  isNewTabCommandURL,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -87,7 +88,7 @@ function getWindowDimension() {
 function updateOffset() {
   const dimension = getWindowDimension();
 
-  const isNewTab     = mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+  const isNewTab     = isNewTabCommandURL(mDataset.activeTabUrl);
   const isFullScreen = mDataset.ownerWindowState == 'fullscreen'
   const shouldSuppressGapOnNewTab = (
     configs.suppressGapFromShownOrHiddenToolbarOnNewTab &&
@@ -104,7 +105,7 @@ function updateOffset() {
   );
   log('updateOffset: ', {
     url:               mDataset.activeTabUrl,
-    isNewTab:          mDataset.activeTabUrl == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl,
+    isNewTab,
     state:             mDataset.ownerWindowState,
     mByMouseOperation,
     dimension,
