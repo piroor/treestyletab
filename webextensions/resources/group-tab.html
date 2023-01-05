@@ -76,12 +76,31 @@
     padding: 0 1em 0 0;
   }
 
-  #tabs li img,
-  #tabs li.use-default-favicon .default-favicon,
-  #tabs li.favicon-loading .default-favicon,
-  #tabs li .closebox,
-  #tabs li .closebox::before,
-  #tabs li .closebox::after {
+  ul {
+    margin: 0 0 0 20px;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    list-style: none;
+    margin: 0 0 0 0.15em;
+    padding: 0;
+    white-space: pre;
+  }
+
+  li ul {
+    width: 100%;
+  }
+
+  li img,
+  li.use-default-favicon .default-favicon,
+  li.favicon-loading .default-favicon,
+  li .closebox,
+  li .closebox::before,
+  li .closebox::after {
     height: var(--favicon-size);
     max-width: var(--favicon-size);
     max-height: var(--favicon-size);
@@ -89,32 +108,32 @@
     width: var(--favicon-size);
   }
 
-  #tabs li.use-default-favicon img,
-  #tabs li.favicon-loading img {
+  li.use-default-favicon img,
+  li.favicon-loading img {
     display: none;
   }
 
-  #tabs li.use-default-favicon .default-favicon,
-  #tabs li.favicon-loading .default-favicon {
+  li.use-default-favicon .default-favicon,
+  li.favicon-loading .default-favicon {
     background: var(--text-color);
     display: inline-block;
     mask: url("./icons/defaultFavicon.svg") no-repeat center / 100%;
   }
 
-  #tabs li.use-default-favicon.group-tab .default-favicon {
+  li.use-default-favicon.group-tab .default-favicon {
     mask-image: url("./icons/folder.svg");
   }
 
-  #tabs .closebox {
+  .closebox {
     position: relative;
     opacity: 0;
   }
 
-  #tabs li:hover > .closebox {
+  li:hover > .closebox {
     opacity: 1;
   }
 
-  #tabs .closebox::before {
+  .closebox::before {
     background: var(--text-color);
     box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
     content: " ";
@@ -125,11 +144,11 @@
     top: 0;
   }
 
-  #tabs .closebox:hover::before {
+  .closebox:hover::before {
     opacity: 0.1;
   }
 
-  #tabs .closebox::after {
+  .closebox::after {
     background: var(--text-color);
     content: " ";
     display: inline-block;
@@ -137,20 +156,6 @@
     position: absolute;
     right: 0;
     top: 0;
-  }
-
-  #tabs li {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    list-style: none;
-    margin: 0 0 0 0.15em;
-    padding: 0;
-    white-space: pre;
-  }
-
-  #tabs li ul {
-    width: 100%;
   }
 
   #tabs a,
@@ -170,7 +175,7 @@
     text-decoration: underline;
   }
 
-  #tabs .contextual-identity-marker {
+  .contextual-identity-marker {
     background-color: transparent;
     content: ' ';
     display: inline-bock;
@@ -186,11 +191,6 @@
     margin: 0;
     padding: 0 0 0 0.25em;
     white-space: pre-wrap;
-  }
-
-  #tabs ul {
-    margin: 0 0 0 20px;
-    padding: 0;
   }
 
 
