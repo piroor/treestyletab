@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 3.9.12 (2023.1.7)
+   * Allow to close tabs via group tab pages (middle-click or closeboxes.)
+   * Reduce flicker while updating tab list in group tab pages.
+   * Accept multiple URLs for new tabs (to support new tabs on both regular and private browsing windows.)
+   * Better synchronization of loading throbbers ([by Lej77](https://github.com/piroor/treestyletab/pull/3269), thanks!)
  - 3.9.11 (2022.12.6)
    * Group tabs not from bookmarks with user's choice correctly. (regression on 3.9.8)
    * Enlarge input fields for some options to input numbers.
