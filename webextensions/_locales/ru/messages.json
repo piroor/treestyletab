@@ -401,6 +401,7 @@
   "config_autoAttachOnOpenedWithOwner_noControl": { "message": "(не контролируется)" },
   "config_autoAttachOnOpenedWithOwner_independent": { "message": "независимая вкладка" },
   "config_autoAttachOnOpenedWithOwner_child": { "message": "дочернюю вкладку" },
+  "config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab": { "message": "дочерняя вкладка, рядом с недавно открытой дочерней" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "одноуровневую вкладку" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
@@ -435,7 +436,7 @@
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "следующую одноуровневую" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Считать недавно открытой вкладку, открытую действием \"Новая вкладка\", если она открывается с URL: " },
-  "_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "( * Вы можете перечислить несколько URL разделяя их \"|\")" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Щелчком СКМ, открыть новую пустую вкладку как" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(не контролируется)" },
