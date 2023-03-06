@@ -96,7 +96,7 @@ export const configs = new Configs({
   indentLine: 'auto',
 
   shiftTabsForScrollbarDistance: '0.5em',
-  shiftTabsForScrollbarOnlyOnHover: true,
+  shiftTabsForScrollbarOnlyOnHover: false,
 
   unrepeatableBGImageAspectRatio: 4,
 
