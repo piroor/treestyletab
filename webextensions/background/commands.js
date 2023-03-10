@@ -142,10 +142,10 @@ export function expandTree(rootTabs, { recursively, expandAll } = {}) {
     ).then(allowed => {
       if (!allowed)
         return;
-    Tree.collapseExpandSubtree(tab, {
-      collapsed: false,
-      broadcast: true
-    });
+      Tree.collapseExpandSubtree(tab, {
+        collapsed: false,
+        broadcast: true
+      });
     });
   }
 }
