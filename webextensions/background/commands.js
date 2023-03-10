@@ -25,6 +25,7 @@ import * as Sync from '/common/sync.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
@@ -120,23 +121,38 @@ export function collapseAll(windowId) {
   }
 }
 
-export function expandTree(rootTabs, { recursively } = {}) {
+export function expandTree(rootTabs, { recursively, expandAll } = {}) {
+  rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
+  const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
       uniqTabsAndDescendantsSet(rootTabs) :
-      Array.isArray(rootTabs) && rootTabs || [rootTabs]
+      rootTabs
   ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
+  const cache = {};
   for (const tab of tabs) {
+    TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_COMMAND,
+      {
+        tab: new TSTAPI.TreeItem(tab, { cache }),
+        recursivelyExpanded: !expandAll && !rootTabsSet.has(tab),
+        expandAll,
+      },
+      { tabProperties: ['tab'] }
+    ).then(allowed => {
+      if (!allowed)
+        return;
     Tree.collapseExpandSubtree(tab, {
       collapsed: false,
       broadcast: true
+    });
     });
   }
 }
 
 export function expandAll(windowId) {
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
-    expandTree(tab);
+    expandTree(tab, { expandAll: true });
   }
 }
 

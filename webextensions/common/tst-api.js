@@ -120,6 +120,7 @@ export const kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD = 'try-expand-tree-from
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB = 'try-expand-tree-from-focused-collapsed-tab';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY = 'try-expand-tree-from-long-press-ctrl-key';
 export const kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH = 'try-expand-tree-from-end-tab-switch';
+export const kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_COMMAND = 'try-expand-tree-from-expand-command';
 export const kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION = 'try-collapse-tree-from-other-expansion';
 export const kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED = 'try-fixup-tree-on-tab-moved';
 export const kNOTIFY_TRY_HANDLE_NEWTAB = 'try-handle-newtab';
