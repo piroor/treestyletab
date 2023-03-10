@@ -100,9 +100,9 @@ export async function closeOthers(exceptionRoots) {
   TabsInternalOperation.removeTabs(closeTabs);
 }
 
-export function collapseTree(rootTabs, options = {}) {
+export function collapseTree(rootTabs, { recursively } = {}) {
   const tabs = (
-    options.recursively ?
+    recursively ?
       uniqTabsAndDescendantsSet(rootTabs) :
       Array.isArray(rootTabs) && rootTabs || [rootTabs]
   ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
@@ -120,9 +120,9 @@ export function collapseAll(windowId) {
   }
 }
 
-export function expandTree(rootTabs, options = {}) {
+export function expandTree(rootTabs, { recursively } = {}) {
   const tabs = (
-    options.recursively ?
+    recursively ?
       uniqTabsAndDescendantsSet(rootTabs) :
       Array.isArray(rootTabs) && rootTabs || [rootTabs]
   ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
