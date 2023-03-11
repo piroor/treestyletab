@@ -649,7 +649,8 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const tab = await TabsGroup.groupTabs(Array.from(tabs), {
-          broadcast: true
+          title:     message.title,
+          broadcast: true,
         });
         if (!tab)
           return null;
