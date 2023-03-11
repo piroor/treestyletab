@@ -23,7 +23,7 @@ const delimiter = browser.i18n.getMessage('config_terms_delimiter');
 function indent(level = 1) {
   let result = '';
   for (let i = 0, maxi = level; i < maxi; i++) {
-    result += '   ';
+    result += '\u00A0\u00A0\u00A0';
   }
   return result;
 }
