@@ -1687,6 +1687,11 @@ const mItems = [
         value: Constants.kDROPLINK_NEWTAB,
         type:  'radio'
       },
+      {
+        title: indent() + browser.i18n.getMessage('config_simulateTabsLoadInBackgroundInverted_label'),
+        type:  'checkbox',
+        key:   'simulateTabsLoadInBackgroundInverted',
+      },
       //{ type: 'separator', expert: true },
       {
         title:   indent() + browser.i18n.getMessage('config_insertDroppedTabsAt_caption'),

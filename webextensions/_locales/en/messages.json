@@ -641,6 +641,7 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Load to the tab" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
+  "config_simulateTabsLoadInBackgroundInverted_label": { "message": "When you open a dropped link in a new tab, switch to it immediately (*simulation of Firefox's built-in option \"When you open a link, image or media in a new tab, switch to it immediately\" (\"browser.tabs.loadInBackground\"))" },
 
   "config_insertDroppedTabsAt_caption": { "message": "Insertion position of children dropped onto a parent" },
   "config_insertDroppedTabsAt_inherit": { "message": "Treat same as new children opened from the parent" },

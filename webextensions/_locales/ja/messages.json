@@ -637,6 +637,7 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "どうするか常に訊ねる" },
   "config_dropLinksOnTabBehavior_load":    { "message": "そのタブに読み込む" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
+  "config_simulateTabsLoadInBackgroundInverted_label": { "message": "ドロップされたリンクを新しいタブで開いたとき、すぐにそのタブに切り替える（※Firefox組み込みの設定項目「リンク、画像、メディアを新しいタブで開いたとき、すぐにそのタブに切り替える」（\"browser.tabs.loadInBackground\"）の再現）" },
 
   "config_insertDroppedTabsAt_caption": { "message": "親タブにドロップされた子タブの挿入位置" },
   "config_insertDroppedTabsAt_inherit": { "message": "親タブから新しい子タブを開いたときと同様に扱う" },
