@@ -103,32 +103,32 @@ export async function openURIInTab(uri, options = {}) {
 const FORBIDDEN_URL_MATCHER = /^(about|chrome|resource|file):/;
 const ALLOWED_URL_MATCHER = /^about:blank(\?|$)/;
 
-export async function openURIsInTabs(uris, options = {}) {
-  log('openURIsInTabs: ', { uris, options });
-  if (!options.windowId)
+export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter, cookieStoreId, isOrphan, active, inBackground, discarded, opener, parent, fixPositions } = {}) {
+  log('openURIsInTabs: ', { uris, windowId, insertBefore, insertAfter, cookieStoreId, isOrphan, active, inBackground, discarded, opener, parent, fixPositions });
+  if (!windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
   const tabs = [];
   // Don't return the result of Tab.doAndGetNewTabs because their order can
   // be inverted due to browser.tabs.insertAfterCurrent=true
   const actuallyOpenedTabIds = new Set(await Tab.doAndGetNewTabs(async () => {
-    await Tab.waitUntilTrackedAll(options.windowId);
-    await TabsMove.waitUntilSynchronized(options.windowId);
-    const startIndex = Tab.calculateNewTabIndex(options);
+    await Tab.waitUntilTrackedAll(windowId);
+    await TabsMove.waitUntilSynchronized(windowId);
+    const startIndex = Tab.calculateNewTabIndex({ insertAfter, insertBefore });
     log('startIndex: ', startIndex);
-    const window = TabsStore.windows.get(options.windowId);
-    if (options.insertBefore ||
-        options.insertAfter ||
+    const window = TabsStore.windows.get(windowId);
+    if (insertBefore ||
+        insertAfter ||
         uris.some(uri => uri && typeof uri == 'object' && 'index' in uri))
       window.toBeOpenedTabsWithPositions += uris.length;
-    if (options.cookieStoreId)
+    if (cookieStoreId)
       window.toBeOpenedTabsWithCookieStoreId += uris.length;
-    if (options.isOrphan)
+    if (isOrphan)
       window.toBeOpenedOrphanTabs += uris.length;
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
-        windowId: options.windowId,
-        active:   index == 0 && (options.active || !options.inBackground)
+        windowId: windowId,
+        active:   index == 0 && (active || !inBackground)
       };
       if (uri && typeof uri == 'object') { // tabs.create() compatible
         if ('active' in uri)
@@ -165,7 +165,7 @@ export async function openURIsInTabs(uris, options = {}) {
           params.url = uri;
         }
       }
-      if (options.discarded &&
+      if (discarded &&
           !params.active &&
           !('discarded' in params))
         params.discarded = true;
@@ -178,12 +178,12 @@ export async function openURIsInTabs(uris, options = {}) {
         params.discarded = false; // discarded tab cannot be opened with any about: URL
       if (!params.discarded) // title cannot be set for non-discarded tabs
         params.title = null;
-      if (options.opener && !params.openerTabId)
-        params.openerTabId = options.opener.id;
+      if (opener && !params.openerTabId)
+        params.openerTabId = opener.id;
       if (startIndex > -1 && !('index' in params))
         params.index = startIndex + index;
-      if (options.cookieStoreId && !params.cookieStoreId)
-        params.cookieStoreId = options.cookieStoreId;
+      if (cookieStoreId && !params.cookieStoreId)
+        params.cookieStoreId = cookieStoreId;
         // Tabs opened with different container can take time to be tracked,
         // then TabsStore.waitUntilTabsAreCreated() may be resolved before it is
         // tracked like as "the tab is already closed". So we wait until the
@@ -209,21 +209,21 @@ export async function openURIsInTabs(uris, options = {}) {
       log('created tab: ', tab);
       if (!tab)
         throw new Error('tab is already closed');
-      if (!options.opener &&
-          options.parent &&
-          !options.isOrphan)
-        await Tree.attachTabTo(tab, options.parent, {
-          insertBefore: options.insertBefore,
-          insertAfter:  options.insertAfter,
+      if (!opener &&
+          parent &&
+          !isOrphan)
+        await Tree.attachTabTo(tab, parent, {
+          insertBefore: insertBefore,
+          insertAfter:  insertAfter,
           forceExpand:  params.active,
           broadcast:    true
         });
-      else if (options.insertBefore)
-        await TabsMove.moveTabInternallyBefore(tab, options.insertBefore, {
+      else if (insertBefore)
+        await TabsMove.moveTabInternallyBefore(tab, insertBefore, {
           broadcast: true
         });
-      else if (options.insertAfter)
-        await TabsMove.moveTabInternallyAfter(tab, options.insertAfter, {
+      else if (insertAfter)
+        await TabsMove.moveTabInternallyAfter(tab, insertAfter, {
           broadcast: true
         });
       log('tab is opened.');
@@ -231,10 +231,10 @@ export async function openURIsInTabs(uris, options = {}) {
       tabs.push(tab);
       return tab;
     }));
-  }, options.windowId));
+  }, windowId));
   const openedTabs = tabs.filter(tab => actuallyOpenedTabIds.has(tab));
 
-  if (options.fixPositions &&
+  if (fixPositions &&
       openedTabs.every((tab, index) => (index == 0) || (openedTabs[index-1].index - tab.index) == 1)) {
     // tabs are opened with reversed order due to browser.tabs.insertAfterCurrent=true
     let lastTab;
@@ -243,7 +243,7 @@ export async function openURIsInTabs(uris, options = {}) {
         TabsMove.moveTabInternallyBefore(tab, lastTab);
       lastTab = tab;
     }
-    await TabsMove.waitUntilSynchronized(options.windowId);
+    await TabsMove.waitUntilSynchronized(windowId);
   }
   return openedTabs;
 }

@@ -2257,23 +2257,21 @@ Tab.getOtherTabs = (windowId, ignoreTabs, options = {}) => {
   return TabsStore.queryAll({ ...query, ...options });
 };
 
-function getTabIndex(tab, options = {}) {
-  if (typeof options != 'object')
-    options = {};
+function getTabIndex(tab, { ignoreTabs } = {}) {
   if (!TabsStore.ensureLivingTab(tab))
     return -1;
   TabsStore.assertValidTab(tab);
-  return Tab.getOtherTabs(tab.windowId, options.ignoreTabs).indexOf(tab);
+  return Tab.getOtherTabs(tab.windowId, ignoreTabs).indexOf(tab);
 }
 
-Tab.calculateNewTabIndex = params => {
+Tab.calculateNewTabIndex = ({ insertAfter, insertBefore, ignoreTabs } = {}) => {
   // We need to calculate new index based on "insertAfter" at first, to avoid
   // placing of the new tab after hidden tabs (too far from the location it
   // should be.)
-  if (params.insertAfter)
-    return getTabIndex(params.insertAfter, params) + 1;
-  if (params.insertBefore)
-    return getTabIndex(params.insertBefore, params);
+  if (insertAfter)
+    return getTabIndex(insertAfter, { ignoreTabs }) + 1;
+  if (insertBefore)
+    return getTabIndex(insertBefore, { ignoreTabs });
   return -1;
 };
 
