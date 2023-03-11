@@ -128,7 +128,7 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
         windowId: windowId,
-        active:   index == 0 && (active || !inBackground)
+        active:   index == 0 && (active || (inBackground === false))
       };
       if (uri && typeof uri == 'object') { // tabs.create() compatible
         if ('active' in uri)
@@ -303,7 +303,8 @@ function onMessage(message, openerTab) {
           opener:       Tab.get(message.openerId),
           parent:       Tab.get(message.parentId),
           insertBefore: Tab.get(message.insertBeforeId),
-          insertAfter:  Tab.get(message.insertAfterId)
+          insertAfter:  Tab.get(message.insertAfterId),
+          active:       message.active,
         });
       });
       break;

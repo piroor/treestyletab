@@ -559,7 +559,8 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     windowId:       TabsStore.getCurrentWindowId(),
     parentId:       dropActionInfo.parent && dropActionInfo.parent.id,
     insertBeforeId: dropActionInfo.insertBefore && dropActionInfo.insertBefore.id,
-    insertAfterId:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id
+    insertAfterId:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
+    active:         !configs.simulateTabsLoadInBackground,
   });
 }
 
