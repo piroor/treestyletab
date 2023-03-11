@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * Windows 11その他の環境において、ホバー状態以外でもスクロールバーの表示幅分サイドバーの内容をずらして表示して、ツリー操作用のUIが操作不能になら内容にした
+   * API: コンテキストメニューのコマンド「このツリーを再帰的に展開」「すべてのツリーを展開」によるツリーの展開をキャンセルできるようにする通知型 [`try-expand-tree-from-expand-command` と `try-expand-tree-from-expand-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst) を追加
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.9.12 (2023.1.7)
    * グループ化用のタブのページ内UIで、中クリックまたはクローズボックスでタブを閉じられるようにした
    * グループ化用のタブのページ内UIにおいて、タブの一覧の更新時の画面のチラつきをなくした

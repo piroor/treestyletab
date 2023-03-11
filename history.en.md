@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * On Windows 11 and other environments, shift sidebar contents without hovering by default to avoid covering scrollbar on tab UI.
+   * API: Add new notification types [`try-expand-tree-from-expand-command` and `try-expand-tree-from-expand-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst) to allow blocking of expansion of tree by context menu commands "Expand this Tree recursively" and "Expand All".
+   * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
  - 3.9.12 (2023.1.7)
    * Allow to close tabs via group tab pages (middle-click or closeboxes.)
    * Reduce flicker while updating tab list in group tab pages.
