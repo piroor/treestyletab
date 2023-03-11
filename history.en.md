@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.13 (2023.3.12)
    * [Better handling of new blank tabs opened as a child of an active pinned tab, when child tabs from pinned parent are controlled.](https://github.com/piroor/treestyletab/issues/3296)
    * Better simulation of `browser.tabs.selectOwnerOnClose` for tabs opened by other applications.
    * Add a new simulated option for Firefox's built-in "When you open a link, image or media in a new tab, switch to it immediately" about dropped links.
