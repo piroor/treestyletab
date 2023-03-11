@@ -121,7 +121,7 @@ export function collapseAll(windowId) {
   }
 }
 
-export function expandTree(rootTabs, { recursively, expandAll } = {}) {
+export function expandTree(rootTabs, { recursively } = {}) {
   rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
@@ -135,8 +135,7 @@ export function expandTree(rootTabs, { recursively, expandAll } = {}) {
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_COMMAND,
       {
         tab: new TSTAPI.TreeItem(tab, { cache }),
-        recursivelyExpanded: !expandAll && !rootTabsSet.has(tab),
-        expandAll,
+        recursivelyExpanded: !rootTabsSet.has(tab),
       },
       { tabProperties: ['tab'] }
     ).then(allowed => {
@@ -144,15 +143,29 @@ export function expandTree(rootTabs, { recursively, expandAll } = {}) {
         return;
       Tree.collapseExpandSubtree(tab, {
         collapsed: false,
-        broadcast: true
+        broadcast: true,
       });
     });
   }
 }
 
 export function expandAll(windowId) {
+  const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
-    expandTree(tab, { expandAll: true });
+    if (!tab.$TST.hasChild || !tab.$TST.subtreeCollapsed)
+      continue;
+    TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_ALL_COMMAND,
+      { tab: new TSTAPI.TreeItem(tab, { cache }) },
+      { tabProperties: ['tab'] }
+    ).then(allowed => {
+      if (!allowed)
+        return;
+      Tree.collapseExpandSubtree(tab, {
+        collapsed: false,
+        broadcast: true,
+      });
+    });
   }
 }
 
