@@ -42,10 +42,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
     activeTab && activeTab.pinned &&
     !tab.pinned &&
     tab.$TST.isNewTabCommandTab &&
-    configs.autoAttachOnNewTabCommand >= Constants.kNEWTAB_OPEN_AS_CHILD &&
-    (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_TOP ||
-     configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEAREST ||
-     configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB)
+    Constants.kCONTROLLED_NEWTAB_POSITION.has(configs.autoAttachOnNewTabCommand) &&
+    Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromPinnedTabAt)
   );
   if (shouldAttachToPinnedOpener)
     tab.openerTabId = activeTab.id;
