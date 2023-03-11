@@ -2,6 +2,7 @@
 
  - master/HEAD
    * [Better handling of new blank tabs opened as a child of an active pinned tab, when child tabs from pinned parent are controlled.](https://github.com/piroor/treestyletab/issues/3296)
+   * Add a new simulated option for Firefox's built-in "When you open a link, image or media in a new tab, switch to it immediately" about dropped links.
    * On Windows 11 and other environments, shift sidebar contents without hovering by default to avoid covering scrollbar on tab UI.
    * API: Add new notification types [`try-expand-tree-from-expand-command` and `try-expand-tree-from-expand-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst) to allow blocking of expansion of tree by context menu commands "Expand this Tree recursively" and "Expand All".
    * Update `ru` locale by [wvxwxvw](https://github.com/wvxwxvw). Thanks!
