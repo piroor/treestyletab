@@ -27,6 +27,30 @@ function log(...args) {
 }
 
 
+Tab.onBeforeCreate.addListener(async (tab, info) => {
+  const activeTab = info.activeTab || Tab.getActiveTab(tab.windowId);
+
+  // Special case, when all these conditions are true:
+  // 1) A new blank tab is configured to be opened as a child of the active tab.
+  // 2) The active tab is pinned.
+  // 3) Tabs opened from a pinned parent are configured to be placed near the
+  //    opener pinned tab.
+  // then we fakely attach the new blank tab to the active pinned tab.
+  // See also https://github.com/piroor/treestyletab/issues/3296
+  const shouldAttachToPinnedOpener = (
+    !tab.openerTabId &&
+    activeTab && activeTab.pinned &&
+    !tab.pinned &&
+    tab.$TST.isNewTabCommandTab &&
+    configs.autoAttachOnNewTabCommand >= Constants.kNEWTAB_OPEN_AS_CHILD &&
+    (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_TOP ||
+     configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEAREST ||
+     configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB)
+  );
+  if (shouldAttachToPinnedOpener)
+    tab.openerTabId = activeTab.id;
+});
+
 // this should return false if the tab is / may be moved while processing
 Tab.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
@@ -296,11 +320,29 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
 
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
-      const lastRelatedTab = opener.$TST.lastRelatedTab;
+      const lastRelatedTab = opener.$TST.lastRelatedTab != tab && opener.$TST.lastRelatedTab;
       if (lastRelatedTab) {
         log(`handleTabsFromPinnedOpener: place after last related tab ${dumpTab(lastRelatedTab)}`);
         tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
         return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+      }
+      const lastPinnedTab = Tab.getLastPinnedTab(tab.windowId);
+      if (lastPinnedTab) {
+        log(`handleTabsFromPinnedOpener: place after last pinned tab ${dumpTab(lastPinnedTab)}`);
+        tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
+        return TabsMove.moveTabAfter(tab, lastPinnedTab, {
+          delayedMove: true,
+          broadcast:   true
+        });
+      }
+      const firstNormalTab = Tab.getFirstNormalTab(tab.windowId);
+      if (firstNormalTab) {
+        log(`handleTabsFromPinnedOpener: place before first unpinned tab ${dumpTab(firstNormalTab)}`);
+        tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
+        return TabsMove.moveTabBefore(tab, firstNormalTab, {
           delayedMove: true,
           broadcast:   true
         });
