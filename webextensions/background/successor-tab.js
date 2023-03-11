@@ -25,6 +25,19 @@ function log(...args) {
 
 const mTabsToBeUpdated = new Set();
 
+const mPromisedUpdatedSuccessorTabId = new Map();
+
+browser.tabs.onUpdated.addListener((tabId, updateInfo, _tab) => {
+  if (!('successorTabId' in updateInfo) ||
+      !mPromisedUpdatedSuccessorTabId.has(tabId))
+    return;
+  const promisedUpdate = mPromisedUpdatedSuccessorTabId.get(tabId);
+  mPromisedUpdatedSuccessorTabId.delete(tabId);
+  promisedUpdate.resolver(updateInfo.successorTabId);
+}, {
+  // we cannot watch only the property...
+  // properties: ['successorTabId'],
+});
 
 function setSuccessor(tabId, successorTabId = -1) {
   const tab          = Tab.get(tabId);
@@ -34,6 +47,19 @@ function setSuccessor(tabId, successorTabId = -1) {
       !successorTab ||
       tab.windowId != successorTab.windowId)
     return;
+
+  const promisedUpdate = {};
+  promisedUpdate.promisedSuccessorTabId = new Promise((resolve, _reject) => {
+    promisedUpdate.resolver = resolve;
+    setTimeout(() => {
+      if (!mPromisedUpdatedSuccessorTabId.has(tabId))
+        return;
+      mPromisedUpdatedSuccessorTabId.delete(tabId);
+      resolve(null);
+    }, 2000);
+  });
+  mPromisedUpdatedSuccessorTabId.set(tabId, promisedUpdate);
+
   browser.tabs.update(tabId, {
     successorTabId
   }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, error => {
@@ -64,13 +90,21 @@ function update(tabId) {
   }, 100);
 }
 async function updateInternal(tabId) {
+  const promisedUpdate = mPromisedUpdatedSuccessorTabId.get(tabId);
+  if (promisedUpdate)
+    await promisedUpdate.promisedSuccessorTabId;
   const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   const tab = Tab.get(tabId);
   if (!renewedTab ||
       !tab ||
       !TabsStore.ensureLivingTab(tab))
     return;
-  log('update: ', dumpTab(tab));
+  log('updateInternal: ', dumpTab(tab), {
+    tabSuccessorTabId: tab.successorTabId,
+    renewedSuccessorTabId: renewedTab.successorTabId,
+    lastSuccessorTabIdByOwner: tab.$TST.temporaryMetadata.get('lastSuccessorTabIdByOwner'),
+    lastSuccessorTabId: tab.$TST.temporaryMetadata.get('lastSuccessorTabId'),
+  });
   if (tab.$TST.temporaryMetadata.has('lastSuccessorTabIdByOwner')) {
     const successor = Tab.get(renewedTab.successorTabId);
     if (successor) {
@@ -213,8 +247,11 @@ Tab.onCreating.addListener((tab, info = {}) => {
 
       const opener = Tab.get(tab.openerTabId);
       const lastRelatedTab = opener && opener.$TST.lastRelatedTab;
-      if (lastRelatedTab)
+      log(`opener ${dumpTab(opener)}'s lastRelatedTab: ${dumpTab(lastRelatedTab)})`);
+      if (lastRelatedTab) {
+        log(' => clear successor');
         tryClearOwnerSuccessor(lastRelatedTab);
+      }
       opener.$TST.lastRelatedTab = tab;
     });
   }
