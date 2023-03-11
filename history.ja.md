@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * [ピン留めされたタブから開かれた子タブの位置が制御されているときに、ピン留めされたタブがアクティブな状態で新しい空のタブがアクティブなタブの子として開かれたら、ピン留めされたタブから開かれた子タブとしての制御を適用するようにした](https://github.com/piroor/treestyletab/issues/3296)
    * Windows 11その他の環境において、ホバー状態以外でもスクロールバーの表示幅分サイドバーの内容をずらして表示して、ツリー操作用のUIが操作不能になら内容にした
    * API: コンテキストメニューのコマンド「このツリーを再帰的に展開」「すべてのツリーを展開」によるツリーの展開をキャンセルできるようにする通知型 [`try-expand-tree-from-expand-command` と `try-expand-tree-from-expand-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst) を追加
    * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
