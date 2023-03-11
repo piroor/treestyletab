@@ -77,7 +77,7 @@ async function updateInternal(tabId) {
       log(`  ${dumpTab(tab)} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
       return;
     }
-    // clear broken information
+    log(`  clear successor of ${dumpTab(tab)}`);
     tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
     tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
     clearSuccessor(tab.id);
