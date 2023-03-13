@@ -90,13 +90,20 @@ function update(tabId) {
   }, 100);
 }
 async function updateInternal(tabId) {
-  const promisedUpdate = mPromisedUpdatedSuccessorTabId.get(tabId);
-  if (promisedUpdate)
-    await promisedUpdate.promisedSuccessorTabId;
-  const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  // tabs.onActivated can be notified before the tab is completely tracked...
+  await Tab.waitUntilTracked(tabId);
   const tab = Tab.get(tabId);
+  if (!tab)
+    return;
+
+  const promisedUpdate = mPromisedUpdatedSuccessorTabId.get(tabId);
+  await Promise.all([
+    tab.$TST.opened,
+    promisedUpdate && promisedUpdate.promisedSuccessorTabId,
+  ]);
+
+  const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
-      !tab ||
       !TabsStore.ensureLivingTab(tab))
     return;
   log('updateInternal: ', dumpTab(tab), {
@@ -230,6 +237,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     configs.simulateSelectOwnerOnClose
   );
 
+  log(`shouldControlSuccesor: `, shouldControlSuccesor);
   if (shouldControlSuccesor) {
     // don't use await here, to prevent that other onCreating handlers are treated async.
     tryClearOwnerSuccessor(info.activeTab).then(() => {
