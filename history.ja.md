@@ -1,9 +1,11 @@
 # 更新履歴
 
  - master/HEAD
+ - 3.9.14 (2023.3.13)
+   * 遅い環境での`browser.tabs.selectOwnerOnClose`再現の挙動を改善
  - 3.9.13 (2023.3.12)
    * [ピン留めされたタブから開かれた子タブの位置が制御されているときに、ピン留めされたタブがアクティブな状態で新しい空のタブがアクティブなタブの子として開かれたら、ピン留めされたタブから開かれた子タブとしての制御を適用するようにした](https://github.com/piroor/treestyletab/issues/3296)
-   * 他のアプリケーションから開かれたタブに対する`browser.tabs.selectOwnerOnClose`の挙動を改善
+   * 他のアプリケーションから開かれたタブに対する`browser.tabs.selectOwnerOnClose`再現の挙動を改善
    * リンクのドロップ操作に対するFirefox組み込みの設定項目「リンク、画像、メディアを新しいタブで開いたとき、すぐにそのタブに切り替える」の振る舞いを再現するための設定項目を追加
    * Windows 11その他の環境において、ホバー状態以外でもスクロールバーの表示幅分サイドバーの内容をずらして表示して、ツリー操作用のUIが操作不能になら内容にした
    * API: コンテキストメニューのコマンド「このツリーを再帰的に展開」「すべてのツリーを展開」によるツリーの展開をキャンセルできるようにする通知型 [`try-expand-tree-from-expand-command` と `try-expand-tree-from-expand-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst) を追加
