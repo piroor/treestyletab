@@ -172,7 +172,6 @@ export function init() {
       // may produce needless reloadings even if the sidebar is still alive.
       // See also https://github.com/piroor/treestyletab/issues/3130
       const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
-      console.log('timeout: ', timeout);
       connectionTimeoutTimer = setTimeout(async () => {
         log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
         try {
