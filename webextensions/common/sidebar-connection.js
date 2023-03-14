@@ -13,6 +13,7 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
+import * as TabsStore from './tabs-store.js';
 
 function log(...args) {
   internalLogger('common/sidebar-connection', ...args);
@@ -166,6 +167,12 @@ export function init() {
         clearTimeout(connectionTimeoutTimer);
         connectionTimeoutTimer = null;
       }
+      // On slow situation (like having too many tabs - 5000 or more)
+      // we should wait more for the pong. Otherwise the vital check
+      // may produce needless reloadings even if the sidebar is still alive.
+      // See also https://github.com/piroor/treestyletab/issues/3130
+      const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
+      console.log('timeout: ', timeout);
       connectionTimeoutTimer = setTimeout(async () => {
         log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
         try {
@@ -183,7 +190,7 @@ export function init() {
         log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
         cleanup(); // eslint-disable-line no-use-before-define
         port.disconnect();
-      }, configs.heartbeatInterval + configs.connectionTimeoutDelay);
+      }, timeout);
     };
     const cleanup = _diconnectedPort => {
       if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
