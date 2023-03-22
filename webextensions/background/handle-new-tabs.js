@@ -279,6 +279,7 @@ async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavi
     windowId: activeTab.windowId,
     parent,
     insertBefore: tab,
+    active: tab.active,
     cookieStoreId
   });
   TabsInternalOperation.removeTab(tab);
