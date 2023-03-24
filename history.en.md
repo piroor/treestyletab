@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.15 (2023.3.24)
    * Never reload infinitely after tabs are detached from a regular window to a popup window (by [Popup window](https://addons.mozilla.org/firefox/addon/popup-window/) or someone).
    * New blank tabs reoepend with the container inherited from the active tab are activated correctly.
    * Increase heartbeat interval automatically between sidebars and the controller, to prevent unexpected disconnection on cases where very large number of tabs. This introduces a side effect: the toolbar button and the keyboard shortcut to toggle the sidbar  visibility may requrie more delay when there are large number of tabs.
