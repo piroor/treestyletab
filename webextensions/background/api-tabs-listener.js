@@ -1012,12 +1012,13 @@ async function onAttached(tabId, attachInfo) {
     });
     if (!attachedTab) {
       // We sometimes fail to get window and tab via API if it is opened
-      // as a popup window. So for safety we should retry for a while.
+      // as a popup window but not exposed to API yet. So for safety
+      // we should retry for a while.
       // See also: https://github.com/piroor/treestyletab/issues/3311
       const newWindow = await browser.windows.get(attachInfo.newWindowId, { populate: true }).then(_error => null);
       attachedTab = newWindow && newWindow.tabs.find(tab => tab.id == tabId);
       if (!newWindow || !attachedTab) {
-        if ('$TST_retryCount' in attachInfo)
+        if (!('$TST_retryCount' in attachInfo))
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
@@ -1031,7 +1032,7 @@ async function onAttached(tabId, attachInfo) {
     }
 
     if (!tab) {
-      console.log(`tabs.onAttached: Moved tab ${tabId} is not tracked yet.`);
+      log(`tabs.onAttached: Moved tab ${tabId} is not tracked yet.`);
       const newWindow = await browser.windows.get(attachInfo.newWindowId, { populate: true }).then(_error => null);
       attachedTab = newWindow && newWindow.tabs.find(tab => tab.id == tabId);
       if (!attachedTab) {
