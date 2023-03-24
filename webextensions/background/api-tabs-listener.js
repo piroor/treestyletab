@@ -1044,9 +1044,9 @@ async function onAttached(tabId, attachInfo) {
       tab = Tab.get(tabId);
     }
 
-      tab.windowId = attachInfo.newWindowId
-      tab.index    = attachedTab.index;
-      tab.reindexedBy = `tabs.onAttached (${tab.index})`;
+    tab.windowId = attachInfo.newWindowId
+    tab.index    = attachedTab.index;
+    tab.reindexedBy = `tabs.onAttached (${tab.index})`;
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
     const info = {
