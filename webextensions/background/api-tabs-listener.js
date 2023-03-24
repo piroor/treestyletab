@@ -1005,25 +1005,48 @@ async function onAttached(tabId, attachInfo) {
 
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
-    const tab = Tab.get(tabId);
-    if (!tab) {
-      // See also: https://github.com/piroor/treestyletab/issues/3311
-      console.log(`tabs.onAttached: The tab ${tabId} is not tracked yet - it is moving from a window to a new window. Retrying after tracked...`);
-      await Tab.waitUntilTracked(tabId);
-      onAttached(tabId, attachInfo);
-      return;
-    }
-    const attachedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler());
+    let tab = Tab.get(tabId);
+    let attachedTab = await browser.tabs.get(tabId).catch(error => {
+      console.error(error);
+      return null;
+    });
     if (!attachedTab) {
-      onCompleted();
-      return;
+      // We sometimes fail to get window and tab via API if it is opened
+      // as a popup window. So for safety we should retry for a while.
+      // See also: https://github.com/piroor/treestyletab/issues/3311
+      const newWindow = await browser.windows.get(attachInfo.newWindowId, { populate: true }).then(_error => null);
+      attachedTab = newWindow && newWindow.tabs.find(tab => tab.id == tabId);
+      if (!newWindow || !attachedTab) {
+        if ('$TST_retryCount' in attachInfo)
+          attachInfo.$TST_retryCount = 0;
+        if (attachInfo.$TST_retryCount < 10) {
+          attachInfo.$TST_retryCount++;
+          setTimeout(onAttached, 100, tabId, attachInfo);
+          return;
+        }
+        console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);
+        onCompleted();
+        return;
+      }
     }
 
-    if (tab) {
+    if (!tab) {
+      console.log(`tabs.onAttached: Moved tab ${tabId} is not tracked yet.`);
+      const newWindow = await browser.windows.get(attachInfo.newWindowId, { populate: true }).then(_error => null);
+      attachedTab = newWindow && newWindow.tabs.find(tab => tab.id == tabId);
+      if (!attachedTab) {
+        console.log(`tabs.onAttached: the tab ${tabId} is already closed.`);
+        onCompleted();
+        return;
+      }
+      onWindowCreated(newWindow);
+      await onNewTabTracked(attachedTab, { trigger: 'tabs.onAttached' });
+      tab = Tab.get(tabId);
+    }
+
       tab.windowId = attachInfo.newWindowId
       tab.index    = attachedTab.index;
       tab.reindexedBy = `tabs.onAttached (${tab.index})`;
-    }
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
     const info = {
