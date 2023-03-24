@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * New blank tabs reoepend with the container inherited from the active tab are activated correctly.
+   * Increase heartbeat interval automatically between sidebars and the controller, to prevent unexpected disconnection on cases where very large number of tabs. This introduces a side effect: the toolbar button and the keyboard shortcut to toggle the sidbar  visibility may requrie more delay when there are large number of tabs.
  - 3.9.14 (2023.3.13)
    * Better simulation of `browser.tabs.selectOwnerOnClose` on slow environment.
  - 3.9.13 (2023.3.12)
