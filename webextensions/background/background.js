@@ -65,7 +65,10 @@ const mPreloadedCaches = new Map();
 async function getAllWindows() {
   return browser.windows.getAll({
     populate:    true,
-    windowTypes: ['normal']
+    // We need to track all type windows because
+    // popup windows can be destination of tabs.move().
+    // See also: https://github.com/piroor/treestyletab/issues/3311
+    windowTypes: ['normal', 'panel', 'popup'],
   }).catch(ApiTabs.createErrorHandler());
 }
 
