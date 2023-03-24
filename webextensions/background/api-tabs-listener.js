@@ -1006,6 +1006,13 @@ async function onAttached(tabId, attachInfo) {
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
     const tab = Tab.get(tabId);
+    if (!tab) {
+      // See also: https://github.com/piroor/treestyletab/issues/3311
+      console.log(`tabs.onAttached: The tab ${tabId} is not tracked yet - it is moving from a window to a new window. Retrying after tracked...`);
+      await Tab.waitUntilTracked(tabId);
+      onAttached(tabId, attachInfo);
+      return;
+    }
     const attachedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler());
     if (!attachedTab) {
       onCompleted();
