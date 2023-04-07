@@ -736,16 +736,16 @@ export function tryLockPosition(tabIds) {
   spacer.style.height = `${Size.getTabHeight() * count}px`;
   spacer.dataset.removedTabsCount = count;
 
-  if (!unlockPosition.listening) {
-    unlockPosition.listening = true;
-    window.addEventListener('mousemove', unlockPosition);
-    window.addEventListener('mouseout', unlockPosition);
+  if (!tryUnlockPosition.listening) {
+    tryUnlockPosition.listening = true;
+    window.addEventListener('mousemove', tryUnlockPosition);
+    window.addEventListener('mouseout', tryUnlockPosition);
   }
 }
 tryLockPosition.tabIds = new Set();
 
-function unlockPosition(event) {
-  log('unlockPosition ', event);
+function tryUnlockPosition(event) {
+  log('tryUnlockPosition ', event);
   switch (event && event.type) {
     case 'mouseout':
       const relatedTarget = event.relatedTarget;
@@ -755,7 +755,7 @@ function unlockPosition(event) {
       }
 
     case 'mousemove':
-      if (unlockPosition.contextMenuOpen ||
+      if (tryUnlockPosition.contextMenuOpen ||
           (event.type == 'mousemove' && event.target.closest('#tabContextMenu'))) {
         log(' => ignore events while the context menu is opened');
         return;
@@ -771,9 +771,9 @@ function unlockPosition(event) {
       break;
   }
 
-  window.removeEventListener('mousemove', unlockPosition);
-  window.removeEventListener('mouseout', unlockPosition);
-  unlockPosition.listening = false;
+  window.removeEventListener('mousemove', tryUnlockPosition);
+  window.removeEventListener('mouseout', tryUnlockPosition);
+  tryUnlockPosition.listening = false;
 
   tryLockPosition.tabIds.clear();
   const spacer = mTabBar.querySelector(`.${Constants.kTABBAR_SPACER}`);
@@ -781,21 +781,21 @@ function unlockPosition(event) {
   spacer.style.height = '';
   onPositionUnlocked.dispatch();
 }
-unlockPosition.contextMenuOpen = false;
+tryUnlockPosition.contextMenuOpen = false;
 
 browser.menus.onShown.addListener((info, tab) => {
-  unlockPosition.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == TabsStore.getCurrentWindowId());
+  tryUnlockPosition.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == TabsStore.getCurrentWindowId());
 });
 
 browser.menus.onHidden.addListener((_info, _tab) => {
-  unlockPosition.contextMenuOpen = false;
+  tryUnlockPosition.contextMenuOpen = false;
 });
 
 browser.tabs.onCreated.addListener(_tab => {
-  unlockPosition();
+  tryUnlockPosition();
 });
 
 browser.tabs.onRemoved.addListener(tabId => {
   if (!tryLockPosition.tabIds.has(tabId))
-    unlockPosition();
+    tryUnlockPosition();
 });
