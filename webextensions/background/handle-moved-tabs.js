@@ -10,6 +10,7 @@ import {
   dumpTab,
   configs,
   wait,
+  isMacOS,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -30,6 +31,9 @@ function log(...args) {
 function logApiTabs(...args) {
   internalLogger('common/api-tabs', ...args);
 }
+
+
+let mMaybeTabMovingByShortcut = false;
 
 
 Tab.onCreated.addListener((tab, info = {}) => {
@@ -126,7 +130,10 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 
   log('The tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
-  const action = Tree.detectTabActionFromNewPosition(tab, moveInfo);
+  const action = Tree.detectTabActionFromNewPosition(tab, {
+    isMovingByShortcut: mMaybeTabMovingByShortcut,
+    ...moveInfo,
+  });
   if (!action.action) {
     log('no action');
     return;
@@ -199,6 +206,33 @@ Tab.onMoved.addListener((tab, moveInfo = {}) => {
   }
   reserveToEnsureRootTabVisible(tab);
 });
+
+function onMessage(message, _sender) {
+  if (!message ||
+      typeof message.type != 'string')
+    return;
+
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
+    case Constants.kNOTIFY_TAB_MOUSEDOWN:
+      mMaybeTabMovingByShortcut = false;
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH:
+      if (message.modifier != (configs.accelKey || (isMacOS() ? 'meta' : 'control')))
+        return;
+      mMaybeTabMovingByShortcut = true;
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_MAY_END_TAB_SWITCH:
+      if (message.modifier != (configs.accelKey || (isMacOS() ? 'meta' : 'control')))
+        return;
+      mMaybeTabMovingByShortcut = false;
+      break;
+  }
+}
+browser.runtime.onMessage.addListener(onMessage);
+
 
 Commands.onMoveUp.addListener(async tab => {
   await tryFixupTreeForInsertedTab(tab, {

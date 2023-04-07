@@ -1693,13 +1693,14 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 //===================================================================
 
 class TabActionForNewPosition {
-  constructor(action, { tab, parent, insertBefore, insertAfter, isTabCreating, mustToApply } = {}) {
+  constructor(action, { tab, parent, insertBefore, insertAfter, isTabCreating, isMovingByShortcut, mustToApply } = {}) {
     this.action        = action || null;
     this.tab           = tab;
     this.parent        = parent;
     this.insertBefore  = insertBefore;
     this.insertAfter   = insertAfter;
     this.isTabCreating = isTabCreating;
+    this.isMovingByShortcut = isMovingByShortcut;
     this.mustToApply   = mustToApply;
   }
 
@@ -1719,7 +1720,7 @@ class TabActionForNewPosition {
         const attached = attachTabTo(this.tab, Tab.get(this.parent), {
           insertBefore: Tab.get(this.insertBefore),
           insertAfter:  Tab.get(this.insertAfter),
-          forceExpand:  this.isTabCreating,
+          forceExpand:  this.isTabCreating || this.isMovingByShortcut,
           broadcast:    true,
           synchronously: this.isTabCreating,
         });
@@ -1761,11 +1762,13 @@ class TabActionForNewPosition {
 
 export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   const isTabCreating = moveInfo && !!moveInfo.isTabCreating;
+  const isMovingByShortcut = moveInfo && !!moveInfo.isMovingByShortcut;
 
   if (tab.pinned)
     return new TabActionForNewPosition(tab.$TST.parentId ? 'detach' : 'move', {
       tab,
       isTabCreating,
+      isMovingByShortcut,
     });
 
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
@@ -1893,6 +1896,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
               return new TabActionForNewPosition('attach', {
                 tab,
                 isTabCreating,
+                isMovingByShortcut,
                 parent:      nearestForeigner.id,
                 insertAfter: nearestForeigner.id,
                 mustToApply,
@@ -1900,6 +1904,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
             return new TabActionForNewPosition(tab.$TST.parent ? 'detach' : 'move', {
               tab,
               isTabCreating,
+              isMovingByShortcut,
               insertAfter: nearestForeigner.id,
               mustToApply,
             });
@@ -1917,6 +1922,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
       return new TabActionForNewPosition('attach', {
         tab,
         isTabCreating,
+        isMovingByShortcut,
         parent:       newParent.id,
         insertBefore: nextTab && nextTab.id,
         insertAfter:  prevTab && prevTab.id,
@@ -1927,6 +1933,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
       return new TabActionForNewPosition('detach', {
         tab,
         isTabCreating,
+        isMovingByShortcut,
         mustToApply,
       });
     }
@@ -1934,6 +1941,7 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   return new TabActionForNewPosition('move', {
     tab,
     isTabCreating,
+    isMovingByShortcut,
     mustToApply,
   });
 }
