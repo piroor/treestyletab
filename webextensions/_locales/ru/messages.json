@@ -68,7 +68,7 @@
   "tabbar_newTabAction_nextSibling_command": { "message": "Следующую одноуровневую вкладку" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Новая вкладка контейнера" },
-  "tabbar_newTabWithContexualIdentity_default": { "message": "По умолчанию" },
+  "tabbar_newTabWithContexualIdentity_default": { "message": "Переоткрыть &без контейнера" },
 
   "groupTab_label": { "message": "$TITLE$ и больше",
     "placeholders": {

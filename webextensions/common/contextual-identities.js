@@ -170,3 +170,29 @@ function onContextualIdentityUpdated(updatedInfo) {
   mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   onUpdated.dispatch();
 }
+
+
+export function generateMenuItems({ hasDefault } = {}) {
+  const fragment = document.createDocumentFragment();
+
+  if (hasDefault) {
+    const defaultCotnainerItem = document.createElement('li');
+    defaultCotnainerItem.dataset.value = 'firefox-default';
+    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
+    fragment.appendChild(defaultCotnainerItem);
+
+    const separator = document.createElement('li');
+    separator.classList.add('separator');
+    fragment.appendChild(separator);
+  }
+
+  forEach(identity => {
+    const item = document.createElement('li');
+    item.dataset.value = identity.cookieStoreId;
+    item.textContent = identity.name;
+    item.dataset.icon = identity.iconUrl;
+    fragment.appendChild(item);
+  });
+
+  return fragment;
+}

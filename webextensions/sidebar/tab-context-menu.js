@@ -20,6 +20,7 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as BackgroundConnection from './background-connection.js';
 import * as Constants from '/common/constants.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as EventUtils from './event-utils.js';
 import * as Permissions from '/common/permissions.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -38,6 +39,9 @@ export const onTabsClosing = new EventListenerManager();
 let mUI;
 let mMenu;
 
+let mNewTabButtonUI;
+let mNewTabButtonMenu;
+
 let mContextTab      = null;
 let mLastOpenOptions = null;
 let mIsDirty         = false;
@@ -46,17 +50,26 @@ const mExtraItems = new Map();
 
 export function init() {
   mMenu = document.querySelector('#tabContextMenu');
+  mNewTabButtonMenu = document.querySelector('#newTabButtonContextMenu');
   document.addEventListener('contextmenu', onContextMenu, { capture: true });
 
+  const commonOptions = {
+    appearance:        'menu',
+    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001,
+    subMenuOpenDelay:  configs.subMenuOpenDelay,
+    subMenuCloseDelay: configs.subMenuCloseDelay,
+  };
   mUI = new MenuUI({
+    ...commonOptions,
     root: mMenu,
     onCommand,
     //onShown,
     onHidden,
-    appearance:        'menu',
-    animationDuration: shouldApplyAnimation() ? configs.collapseDuration : 0.001,
-    subMenuOpenDelay:  configs.subMenuOpenDelay,
-    subMenuCloseDelay: configs.subMenuCloseDelay
+  });
+  mNewTabButtonUI = new MenuUI({
+    ...commonOptions,
+    root: mNewTabButtonMenu,
+    onCommand: onNewTabButtonMenuCommand,
   });
 
   browser.runtime.onMessage.addListener(onMessage);
@@ -68,6 +81,8 @@ export function init() {
     importExtraItems(items);
     mIsDirty = true;
   }).catch(ApiTabs.createErrorSuppressor());
+
+  updateContextualIdentitiesSelector();
 }
 
 async function rebuild() {
@@ -471,6 +486,46 @@ async function onHidden() {
   ]);
 }
 
+
+function updateContextualIdentitiesSelector() {
+  const disabled = document.documentElement.classList.contains('incognito') || ContextualIdentities.getCount() == 0;
+
+  const range    = document.createRange();
+  range.selectNodeContents(mNewTabButtonMenu);
+  range.deleteContents();
+
+  if (disabled)
+    return;
+
+  const fragment = ContextualIdentities.generateMenuItems({
+    hasDefault: true,
+  });
+  range.insertNode(fragment);
+  range.detach();
+}
+
+ContextualIdentities.onUpdated.addListener(() => {
+  updateContextualIdentitiesSelector();
+});
+
+async function onNewTabButtonMenuCommand(item, event) {
+  if (item.dataset.value) {
+    const action = EventUtils.isAccelAction(event) ?
+      configs.autoAttachOnNewTabButtonMiddleClick :
+      configs.autoAttachOnNewTabCommand;
+    BackgroundConnection.sendMessage({
+      type:          Constants.kCOMMAND_NEW_TAB_AS,
+      baseTabId:     Tab.getActiveTab(TabsStore.getCurrentWindowId()).id,
+      as:            action,
+      cookieStoreId: item.dataset.value,
+      inBackground:  event.shiftKey,
+    });
+  }
+
+  mNewTabButtonUI.close();
+}
+
+
 function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
@@ -631,6 +686,16 @@ async function onContextMenu(event) {
     return;
   }
 
+  if (EventUtils.isEventFiredOnNewTabButton(event)) {
+    event.stopPropagation();
+    event.preventDefault();
+    mNewTabButtonUI.open({
+      left: event.clientX,
+      top:  event.clientY,
+    });
+    return;
+  }
+
   if (!configs.emulateDefaultContextMenu)
     return;
 
@@ -657,6 +722,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED:
       close();
+      mNewTabButtonUI.close();
       break;
   }
 });

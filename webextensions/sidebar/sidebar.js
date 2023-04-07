@@ -520,23 +520,9 @@ function updateContextualIdentitiesSelector() {
   if (disabled)
     return;
 
-  const fragment = document.createDocumentFragment();
-  ContextualIdentities.forEach(identity => {
-    const item = document.createElement('li');
-    item.dataset.value = identity.cookieStoreId;
-    item.textContent = identity.name;
-    item.dataset.icon = identity.iconUrl;
-    fragment.appendChild(item);
+  const fragment = ContextualIdentities.generateMenuItems({
+    hasDefault: configs.inheritContextualIdentityToChildTabMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   });
-  if (configs.inheritContextualIdentityToChildTabMode != Constants.kCONTEXTUAL_IDENTITY_DEFAULT) {
-    const defaultCotnainerItem = document.createElement('li');
-    defaultCotnainerItem.dataset.value = 'firefox-default';
-    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
-    const icon = document.createElement('span');
-    icon.classList.add('icon');
-    defaultCotnainerItem.insertBefore(icon, defaultCotnainerItem.firstChild);
-    fragment.appendChild(defaultCotnainerItem);
-  }
   range.insertNode(fragment);
   range.detach();
 }

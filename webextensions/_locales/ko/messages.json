@@ -196,7 +196,7 @@
         "hash": "939c6fb543496a7a8485c982ad5530ce"
     },
     "tabbar_newTabWithContexualIdentity_default": {
-        "message": "기본 값",
+        "message": "컨테이너 없음(&N)",
         "hash": "229c53203d001a81c6535deec232da82"
     },
     "groupTab_label": {

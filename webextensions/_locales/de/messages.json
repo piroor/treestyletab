@@ -68,7 +68,7 @@
   "tabbar_newTabAction_nextSibling_command": { "message": "Direkter Nachbar auf der Ebene des aktiven Tab" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Neuer Tab in Umgebung" },
-  "tabbar_newTabWithContexualIdentity_default": { "message": "Standard" },
+  "tabbar_newTabWithContexualIdentity_default": { "message": "Keine Tab-&Umgebung" },
 
   "groupTab_label": { "message": "$TITLE$ und mehr",
     "placeholders": {

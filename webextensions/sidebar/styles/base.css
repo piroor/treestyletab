@@ -909,10 +909,6 @@ tab-item.faviconized .contextual-identity-marker {
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
 
-#contextual-identities-selector li:not([data-icon]) {
-  padding-left: calc(var(--favicon-size) + 0.7em);
-}
-
 
 #out-of-view-tab-notifier {
   background: transparent repeat-x bottom;

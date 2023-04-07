@@ -68,7 +68,7 @@
   "tabbar_newTabAction_nextSibling_command": { "message": "Next Sibling Tab" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "New Container Tab" },
-  "tabbar_newTabWithContexualIdentity_default": { "message": "Default" },
+  "tabbar_newTabWithContexualIdentity_default": { "message": "&No Container" },
 
   "groupTab_label": { "message": "$TITLE$ and more",
     "placeholders": {

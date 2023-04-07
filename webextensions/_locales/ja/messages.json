@@ -68,7 +68,7 @@
   "tabbar_newTabAction_nextSibling_command": { "message": "同階層の隣のタブ" },
 
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "新しいコンテナータブ" },
-  "tabbar_newTabWithContexualIdentity_default": { "message": "既定" },
+  "tabbar_newTabWithContexualIdentity_default": { "message": "コンテナーなし(&N)" },
 
   "groupTab_label": { "message": "$TITLE$ など",
     "placeholders": {
