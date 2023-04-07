@@ -773,7 +773,7 @@ function tryUnlockPosition(event) {
         const spacer = mTabBar.querySelector(`.${Constants.kTABBAR_SPACER}`);
         const pinnedTabsAreaSize = parseFloat(document.documentElement.style.getPropertyValue('--pinned-tabs-area-size'));
         if ((!spacer || event.clientY < spacer.getBoundingClientRect().top) &&
-            (pinnedTabsAreaSize && !isNaN(pinnedTabsAreaSize) && event.clientY > pinnedTabsAreaSize)) {
+            (!pinnedTabsAreaSize || isNaN(pinnedTabsAreaSize) || event.clientY > pinnedTabsAreaSize)) {
           log(' => ignore mousemove on any tab (removing)');
           return;
         }
