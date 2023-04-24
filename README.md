@@ -24,7 +24,7 @@ Please enjoy as you like!
 
 ## Development builds
 
-* Builds for each commit are avilable at ["Artifacts" of the CI/CD action](https://github.com/piroor/treestyletab/actions?query=workflow%3ACI%2FCD).
+* Builds for each commit are available at ["Artifacts" of the CI/CD action](https://github.com/piroor/treestyletab/actions?query=workflow%3ACI%2FCD).
   Please note that you need to log in to the GitHub to see artifacts.
 * There is an [automated build based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi) also.
   It is available for everyone, but sometimes the automation system fails to update the build.
@@ -40,7 +40,7 @@ There are two methods to try them in your environment:
 Also, you can build a custom development build locally. For example, here are the steps to build an XPI on Ubuntu (native, or WSL on Windows 10):
 
 ```bash
-$ sudo apt install git nodejs npm
+$ sudo apt install git nodejs npm jq zip
 $ git clone --recursive https://github.com/piroor/treestyletab.git
 $ cd treestyletab/webextensions
 $ make
@@ -64,7 +64,7 @@ Then you will see new `.xpi` files in the current directory. You can install suc
 TST provides an [API for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
 Some extend the behavior of TST's sidebar panel:
 
- * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs with long-press on tabs. It also allows you to close mutiple tabs with long-press on the closebox on tabs.
+ * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs with long-press on tabs. It also allows you to close multiple tabs with long-press on the closebox on tabs.
  * [TST Bookmarks Subpanel](https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/) allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.
  * [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/) provides more context menu and keyboard shortcut commands to manipulate TST's tree.
  * [TST Active Tab in Collapsed Tree](https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/) shows [a small tab on a collapsed tree as an alias for the last active tab under the tree](https://github.com/piroor/treestyletab/issues/2192).
@@ -184,7 +184,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   </details>
 * <details id="other-browsers-support-support-for-firefox-mobile"><summary>Support for Firefox Mobile</a></summary>
   
-  Currently I have no plan to add support for movile devices (Android and iPhone) from some reasons:
+  Currently I have no plan to add support for mobile devices (Android and iPhone) from some reasons:
   
   * Firefox Mobile doesn't support Sidebar API.
   * Mobile devices have limited RAM. Too many numbers of tabs opened by TST may lead OOM killer to kill Firefox Mobile.
@@ -208,9 +208,9 @@ If you need any new APIs, please file API proposals in the issue tracker.
   </details>
 * <details id="appearance-how-to-apply-gtk-theme-color-on-linux"><summary>How to apply GTK+ theme color on Linux?</summary>
   
-  Due to restrictions within Firefox, TST can not apply GTK+ theme color to its appearance by default. If you want TST's UI with colors to match other parts of Firefox, you need to configure your environemnt, Firefox and TST as:
+  Due to restrictions within Firefox, TST can not apply GTK+ theme color to its appearance by default. If you want TST's UI with colors to match other parts of Firefox, you need to configure your environment, Firefox and TST as:
   
-  * Set and export an environment variable `GTK_THEME` in your `.profile` or somewhere like: `export GTK_THEME=<Your theme name like Arc-Dark>` (I don't know why but [CSS system colors on Firefox won't respect GTK's theme colors, if this environemnt variable is missing](https://github.com/piroor/treestyletab/issues/2969).)
+  * Set and export an environment variable `GTK_THEME` in your `.profile` or somewhere like: `export GTK_THEME=<Your theme name like Arc-Dark>` (I don't know why but [CSS system colors on Firefox won't respect GTK's theme colors, if this environment variable is missing](https://github.com/piroor/treestyletab/issues/2969).)
   * Firefox's about:config
     * *`widget.content.allow-gtk-dark-theme`=`true` (not default)*
     * `widget.content.gtk-theme-override`=unset (default)
@@ -441,7 +441,7 @@ If you need any new APIs, please file API proposals in the issue tracker.
   </details>
 * <details id="feature-requests-send-tab-tree-to-device-does-not-work"><summary>"Send Tab/Tree to Device" does not work (<a href="https://github.com/piroor/treestyletab/issues/2991">#2991</a>)</summary>
   
-  In short: it is inavoidable problem. You need to use the feature very carefully due to unavoidable restrictions.
+  In short: it is unavoidable problem. You need to use the feature very carefully due to unavoidable restrictions.
   
   * Firefox does not allow addons to access Firefox Sync features like "send tab to device" directly. Such an API proposal was already rejected. See also: [1417183 - Provide a web extensions API-based way to send pages between devices](https://bugzilla.mozilla.org/show_bug.cgi?id=1417183) (_WONTFIX_)
   * Instead, [storage.sync](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync) API is the only one method for addons to share user data across devices.
