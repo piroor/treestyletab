@@ -632,7 +632,7 @@
   "config_tabDragBehavior_bookmarkSoloTabIfExpanded":    { "message": "Verweis oder Lesezeichen vom einzelnen Tab erstellen (aber unmöglich, vom Fenster abzulösen)" },
   "config_tabDragBehavior_doNothing":                    { "message": "Nichts machen" },
   "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "Wenn ein übergeordneter Tab aus der eingebaute Tableiste von Firefox verschoben wird, wie im Abschnitt \"Verhalten der Zweige\" => \"Wenn ein übergeordneter Tab geschlossen oder verschoben wird\" verhalten." },
-  "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschenen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
+  "config_showTabDragBehaviorNotification_label": { "message": "Zeige Benachrichtigung was geschehen wird, wenn Tabs außerhalb der Seitenleiste abgelegt werden, während ein Tab gezogen wird." },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Ziehen und Ablegen auf einen Tab abgelegt wird" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Immer nachfragen" },
@@ -771,7 +771,7 @@
   "config_requestPermissions_tabHide":   { "message": "Erlaube, einzelne Tabs anzuzeigen/auszublenden (*Aus- und wieder einschalten, bevor Tests ausgeführt werden, um sicherzustellen, dass die Berechtigung gewährt wurde.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
-  "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Wegen eines Bugs in Firefox, kannst du Berechtigungen nicht in diesem Menü erteilen. Bitte klicke auf das das \"Tree Style Tab\" Symbol in der Symbolleiste um Berechtigungen zu erteilen." },
+  "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Wegen eines Bugs in Firefox, kannst du Berechtigungen nicht in diesem Menü erteilen. Bitte klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste um Berechtigungen zu erteilen." },
 
   "config_all_caption": { "message": "Alle Einstellungen" },
 
