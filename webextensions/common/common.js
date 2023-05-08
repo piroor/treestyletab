@@ -169,6 +169,7 @@ export const configs = new Configs({
   context_openAllBookmarksWithStructureRecursively: false,
 
   openAllBookmarksWithStructureDiscarded: true,
+  openAllBookmarksWithGroupAlways: false,
 
 
   // tree behavior

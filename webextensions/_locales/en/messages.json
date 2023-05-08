@@ -379,6 +379,7 @@
   "config_extraItems_tabs_middleClick": { "message": "Action on Middle Click" },
   "config_extraItems_bookmarks_caption": { "message": "Additional Bookmarks Context Menu Items" },
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Keep tabs pended until they become active" },
+  "config_openAllBookmarksWithGroupAlways_label": { "message": "Put opened tabs under a group tab always, even if they are already organized as a tree" },
 
   "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices with the context menu via Firefox Sync" },
   "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also." },

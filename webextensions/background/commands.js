@@ -988,7 +988,7 @@ browser.runtime.onMessage.addListener((message, _sender) => {
 });
 
 
-async function collectBookmarkItems(root, recursively) {
+async function collectBookmarkItems(root, { recursively,  grouped } = {}) {
   let items = await browser.bookmarks.getChildren(root.id);
   if (recursively) {
     let expandedItems = [];
@@ -998,7 +998,7 @@ async function collectBookmarkItems(root, recursively) {
           expandedItems.push(item);
           break;
         case 'folder':
-          expandedItems = expandedItems.concat(await collectBookmarkItems(item, recursively));
+          expandedItems = expandedItems.concat(await collectBookmarkItems(item, { recursively }));
           break;
       }
     }
@@ -1007,7 +1007,8 @@ async function collectBookmarkItems(root, recursively) {
   else {
     items = items.filter(item => item.type == 'bookmark');
   }
-  if (countMatched(items, item => !Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER.test(item.title)) > 1) {
+  if (grouped ||
+      countMatched(items, item => !Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER.test(item.title)) > 1) {
     for (const item of items) {
       item.title = Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER.test(item.title) ?
         item.title.replace(Bookmark.BOOKMARK_TITLE_DESCENDANT_MATCHER, '>$1 ') :
@@ -1067,9 +1068,11 @@ export async function openBookmarksWithStructure(items, { activeIndex = 0, disca
     });
 }
 
-export async function openAllBookmarksWithStructure(id, { discarded, recursively } = {}) {
+export async function openAllBookmarksWithStructure(id, { discarded, recursively, grouped } = {}) {
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
+  if (typeof grouped == 'undefined')
+    grouped = configs.openAllBookmarksWithGroupAlways;
 
   let item = await browser.bookmarks.get(id);
   if (Array.isArray(item))
@@ -1083,7 +1086,10 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
       item = item[0];
   }
 
-  const items = await collectBookmarkItems(item, recursively);
+  const items = await collectBookmarkItems(item, {
+    recursively,
+    grouped,
+  });
   const activeIndex = items.findIndex(item => !item.group);
 
   openBookmarksWithStructure(items, { activeIndex, discarded });
