@@ -171,9 +171,13 @@ export function expandAll(windowId) {
 
 export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {}) {
   const tabs = uniqTabsAndDescendantsSet(rootTabs);
-  if (tabs.length > 1 &&
-      tabs[0].$TST.isGroupTab)
-    tabs.shift();
+
+  if (tabs.length > 1) {
+    const tabsSet = new Set(tabs);
+    const rootGroupTabs = tabs.filter(tab => tab.$TST.isGroupTab && !tabsSet.has(tab.$TST.parent));
+    if (rootGroupTabs.length == 1)
+      tabs.splice(tabs.indexOf(rootGroupTabs[0]), 1);
+  }
 
   const options = { parentId, index, showDialog };
   const topLevelTabs = rootTabs.filter(tab => tab.$TST.ancestorIds.length == 0);
