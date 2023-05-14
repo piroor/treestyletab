@@ -93,6 +93,7 @@ Some extend the behavior of TST's sidebar panel:
  * [TST Fade Old Tabs](https://addons.mozilla.org/firefox/addon/tst-fade-old-tabs/) sorts all tabs in 3 categories – 'recent', 'older' and 'oldest' by latest visit time, and applies different opacity to them.
  * [TST Colorize Tabs](https://addons.mozilla.org/firefox/addon/tst-colorize-tabs/) allows to set individual color for each tab in order to highlight it.
  * [TST New Tabs First](https://addons.mozilla.org/firefox/addon/tst-new-tabs-first/) puts a newly opened root level at the top of the sidebar.
+ * [TST Tab Favorites](https://addons.mozilla.org/firefox/addon/tst-tab-favorites/) Mark frequently visited tabs as favorites and quickly navigate between them using hotkeys.
 
 
 ## Similar projects
