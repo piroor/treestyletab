@@ -325,6 +325,8 @@ export async function init() {
   MetricsData.add('init: end');
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
+
+  cachedContents = null; // it is so large, we need to wipe it out from the RAM.
 }
 
 function applyAnimationState(active) {
