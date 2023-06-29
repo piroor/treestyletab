@@ -617,6 +617,8 @@ export async function rebuildAll(importedTabs, cache) {
   }
   SidebarTabs.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll: end (from scratch)');
+
+  importedTabs = null; // wipe it out from the RAM.
   return false;
 }
 
