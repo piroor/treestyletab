@@ -37,8 +37,7 @@
   --tab-text-active: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
-  --tab-active-border-near: var(--browser-bg-active-for-header-image, var(--grey-90-a40) /* color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent) */);
-  --tab-active-border-far: var(--browser-bg-active-for-header-image, var(--grey-90-a20) /* color-mix(in srgb, var(--grey-90, currentcolor) 20%, transparent) */);
+  --tab-active-border: var(--browser-bg-active-for-header-image, var(--grey-90-a40) /* color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent) */);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-mixed)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
@@ -244,8 +243,9 @@ tab-item.bundled-active .background,
 tab-item.bundled-active tab-item-substance:hover .background,
 .mutiple-highlighted > tab-item.highlighted .background,
 .mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
-  box-shadow: 0 0 0.15em var(--browser-tab-highlighter, var(--tab-active-border-near)),
-              0 0 var(--tab-dropshadow-size) var(--browser-tab-highlighter, var(--tab-active-border-far));
+  box-shadow: 0 0 var(--tab-dropshadow-size) rgba(0, 0, 0, 0.4);
+  outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border), currentcolor);
+  outline-offset: -1px;
 }
 
 tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background,
@@ -258,7 +258,7 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
 /* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
 .mutiple-highlighted > tab-item.highlighted .background,
 .mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
-  outline: 1px solid var(--focus-outline-color-a40);
+  outline: 1px solid var(--focus-outline-color);
   outline-offset: -1px;
 }
 .mutiple-highlighted > tab-item.highlighted.active .background,

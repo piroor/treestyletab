@@ -117,7 +117,6 @@
   --tab-loading-fill: #0A84FF;
 
   --focus-outline-color: #0061E0; /* https://searchfox.org/mozilla-central/rev/f60e5304300b286376664b25143cdc6b38a0f0d7/browser/themes/shared/browser-shared.css#124 */
-  --focus-outline-color-a40: #0061E066; /* 40% alpha */
 
 
   --bg-color: var(--grey-10);
@@ -227,7 +226,6 @@ hr {
     --in-content-link-color-active: var(--blue-60);
 
     --focus-outline-color: #00DDFF; /* https://searchfox.org/mozilla-central/rev/f60e5304300b286376664b25143cdc6b38a0f0d7/browser/themes/shared/browser-shared.css#129 */
-    --focus-outline-color-a40: #00DDFF66; /* 40% alpha */
 
     --bg-color: var(--in-content-page-background);
     --text-color: var(--in-content-text-color);
