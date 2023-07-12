@@ -137,7 +137,7 @@ export class TabElement extends HTMLElement {
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);
-    substance.appendChild(burster);
+    background.appendChild(burster);
 
     const activeMarker = document.createElement('span');
     activeMarker.classList.add(Constants.kHIGHLIGHTER);

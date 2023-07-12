@@ -501,6 +501,7 @@ tab-item.attention tab-favicon::before {
 }
 
 tab-item .background {
+  overflow: hidden; /* to crop burster*/
   z-index: var(--tab-background-z-index);
 }
 
