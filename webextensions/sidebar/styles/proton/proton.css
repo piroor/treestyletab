@@ -9,7 +9,8 @@
 :root {
   --color-animation: 0s ease-out;
   --tab-border-radius-size: 0.35em;
-  --tab-dropshadow-size: 0.2em;
+  --tab-dropshadow-size: 0.4em;
+  --tab-dropshadow-padding: 0.2em;
   --tab-closebox-offset: calc((var(--tab-size) - 1em) / 2);
   --tab-closebox-negative-offset: calc((1em - var(--tab-size)) / 2);
 
@@ -224,10 +225,10 @@ tab-item .background,
 tab-item .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before {
-  bottom: var(--tab-dropshadow-size);
-  left: var(--tab-dropshadow-size);
-  right: var(--tab-dropshadow-size);
-  top: var(--tab-dropshadow-size);
+  bottom: var(--tab-dropshadow-padding);
+  left: var(--tab-dropshadow-padding);
+  right: var(--tab-dropshadow-padding);
+  top: var(--tab-dropshadow-padding);
 }
 
 #subpanel-selector-anchor:hover::before {

@@ -316,7 +316,7 @@ tab-item {
   list-style: none;
   margin: 0;
   max-width: 100%;
-  overflow: hidden;
+  /*overflow: hidden;*/ /* we should not apply overflow:hidden here to allow rendering box-shadow of contents */
   pointer-events: none;
   position: relative;
 }
@@ -330,7 +330,8 @@ tab-item-substance {
   line-height: 1;
   margin: var(--tab-margin-top) var(--tab-margin-right) var(--tab-margin-bottom) var(--tab-margin-left);
   max-width: 100%;
-  overflow: hidden;
+  min-height: 0;
+  /*overflow: hidden;*/ /* we should not apply overflow:hidden here to allow rendering box-shadow of contents */
   opacity: 1;
   pointer-events: auto;
   position: relative;
