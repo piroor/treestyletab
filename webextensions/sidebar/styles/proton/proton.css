@@ -9,8 +9,9 @@
 :root {
   --color-animation: 0s ease-out;
   --tab-border-radius-size: 0.35em;
-  --tab-dropshadow-size: 0.4em;
+  --tab-dropshadow-blur: 0.4em;
   --tab-dropshadow-padding: 0.2em;
+  --tab-dropshadow-size: var(--tab-dropshadow-padding); /* for backward compatibility */
   --tab-closebox-offset: calc((var(--tab-size) - 1em) / 2);
   --tab-closebox-negative-offset: calc((1em - var(--tab-size)) / 2);
 
@@ -186,7 +187,7 @@ tab-item-substance {
 .after-tabs button,
 .after-tabs [role="button"] {
   --tab-like-button-padding: 0.2em;
-  padding: calc(var(--tab-dropshadow-size) + var(--tab-like-button-padding)) 0;
+  padding: calc(var(--tab-dropshadow-blur) + var(--tab-like-button-padding)) 0;
   z-index: 100;
 }
 
@@ -244,7 +245,7 @@ tab-item.bundled-active .background,
 tab-item.bundled-active tab-item-substance:hover .background,
 .mutiple-highlighted > tab-item.highlighted .background,
 .mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
-  box-shadow: 0 0 var(--tab-dropshadow-size) rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 var(--tab-dropshadow-blur) rgba(0, 0, 0, 0.4);
   outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border), currentcolor);
   outline-offset: -1px;
 }
@@ -341,11 +342,11 @@ tab-item:not(.faviconized).subtree-collapsed.all-descendants-highlighted .highli
 /* contextual identity marker in tabs */
 
 :root.left tab-item:not(.faviconized) .contextual-identity-marker {
-  right: calc(var(--tab-dropshadow-size) - var(--tab-highlighter-size));
+  right: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
 }
 
 :root.right tab-item:not(.faviconized) .contextual-identity-marker {
-  left: calc(var(--tab-dropshadow-size) - var(--tab-highlighter-size));
+  left: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
 }
 
 tab-item.faviconized .contextual-identity-marker {
@@ -355,5 +356,5 @@ tab-item.faviconized .contextual-identity-marker {
 
 .after-tabs button.newtab-action-selector-anchor::after,
 .after-tabs button.contextual-identities-selector-anchor::after {
-    margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-dropshadow-size) + var(--tab-like-button-padding));
+    margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-dropshadow-blur) + var(--tab-like-button-padding));
 }
