@@ -216,6 +216,7 @@ export async function attachTabTo(child, parent, options = {}) {
         tab:    new TSTAPI.TreeItem(child, { cache }),
         parent: new TSTAPI.TreeItem(parent, { cache })
       }, { tabProperties: ['tab', 'parent'] }).catch(_error => {});
+      TSTAPI.clearCache(cache);
     }
   }
 
@@ -319,6 +320,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     { tab: new TSTAPI.TreeItem(parent, { cache }) },
     { tabProperties: ['tab'] }
   );
+  TSTAPI.clearCache(cache);
   if (!TabsStore.ensureLivingTab(tab))
     return;
 
@@ -363,6 +365,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
             { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
             { tabProperties: ['tab'] }
           );
+          TSTAPI.clearCache(cache);
           if (!allowed) {
             parentTreeCollasped = true;
             parentCollasped     = true;
@@ -554,6 +557,7 @@ export function detachTab(child, options = {}) {
         tab:       new TSTAPI.TreeItem(child, { cache }),
         oldParent: new TSTAPI.TreeItem(parent, { cache })
       }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
+      TSTAPI.clearCache(cache);
     }
     // We don't need to clear its parent information, because the old parent's
     // "children" setter removes the parent ifself from the detached child
@@ -985,11 +989,13 @@ export async function collapseExpandSubtree(tab, params = {}) {
   await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED)) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:      TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED,
-      tab:       new TSTAPI.TreeItem(tab),
+      tab:       treeItem,
       collapsed: !!params.collapsed
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
   }
 }
 async function collapseExpandSubtreeInternal(tab, params = {}) {
@@ -1065,11 +1071,13 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
       tab.active &&
       configs.unfocusableCollapsedTab) {
     logCollapseExpand('current tree is going to be collapsed');
+    const treeItem = new TSTAPI.TreeItem(tab);
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE,
-      { tab: new TSTAPI.TreeItem(tab) },
+      { tab: treeItem },
       { tabProperties: ['tab'] }
     );
+    treeItem.clearCache();
     if (allowed) {
       let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
       if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
@@ -1185,11 +1193,13 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
   const allowedToCollapse = new Set();
   await Promise.all(collapseTabs.map(async tab => {
+    const treeItem = new TSTAPI.TreeItem(tab);
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION,
-      { tab: new TSTAPI.TreeItem(tab) },
+      { tab: treeItem },
       { tabProperties: ['tab'] }
     );
+    treeItem.clearCache();
     if (allowed)
       allowedToCollapse.add(tab);
   }));

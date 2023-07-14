@@ -147,6 +147,7 @@ export function expandTree(rootTabs, { recursively } = {}) {
       });
     });
   }
+  TSTAPI.clearCache(cache);
 }
 
 export function expandAll(windowId) {
@@ -167,6 +168,7 @@ export function expandAll(windowId) {
       });
     });
   }
+  TSTAPI.clearCache(cache);
 }
 
 export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {}) {

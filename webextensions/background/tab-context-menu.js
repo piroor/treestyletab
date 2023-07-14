@@ -805,6 +805,7 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     }
   }
 
+  const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null;
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -829,7 +830,7 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
       viewType:      'sidebar',
       wasChecked:    false
     },
-    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+    tab: treeItem,
     windowId
   }
   TSTAPI.sendMessage(message, {
@@ -843,6 +844,8 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     targets: [mOverriddenContext.owner],
     tabProperties: ['tab']
   });
+  if (treeItem)
+    treeItem.clearCache();
 
   reserveRefresh();
 }
@@ -1148,7 +1151,10 @@ async function onClick(info, contextTab) {
       if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;
         const menuItemId = RegExp.$2;
-        const tab = contextTab && (await (new TSTAPI.TreeItem(contextTab, { isContextTab: true })).exportFor      (owner)) || null;
+        const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true });
+        const tab = treeItem && (await treeItem.exportFor(owner)) || null;
+        if (treeItem)
+          treeItem.clearCache();
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {

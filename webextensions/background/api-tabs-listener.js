@@ -642,6 +642,7 @@ async function onNewTabTracked(tab, info) {
         duplicated,
         fromExternal,
       }, { tabProperties: ['tab', 'originalTab'] }).catch(_error => {});
+      TSTAPI.clearCache(cache);
     }
 
     // tab can be changed while creating!

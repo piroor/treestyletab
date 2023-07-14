@@ -154,6 +154,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     },
     { tabProperties: ['tab', 'parent', 'insertBefore', 'insertAfter'] }
   );
+  TSTAPI.clearCache(cache);
   if (!allowed) {
     log('no action - canceled by a helper addon');
     return;

@@ -404,7 +404,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const cache = {};
-        return TSTAPI.formatTabResult(
+        const result = TSTAPI.formatTabResult(
           Array.from(tabs, tab => new TSTAPI.TreeItem(tab, {
             interval: message.interval,
             cache
@@ -417,6 +417,8 @@ function onMessageExternal(message, sender) {
           },
           sender.id
         );
+        TSTAPI.clearCache(cache);
+        return result;
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
@@ -614,7 +616,9 @@ function onMessageExternal(message, sender) {
         window.bypassTabControlCount++;
         const tab = await TabsOpen.openURIInTab(message.params, { windowId });
         const treeItem = new TSTAPI.TreeItem(tab);
-        return treeItem.exportFor(sender.id);
+        const exported = treeItem.exportFor(sender.id);
+        treeItem.clearCache();
+        return exported;
       })();
 
     case TSTAPI.kDUPLICATE:
@@ -661,7 +665,9 @@ function onMessageExternal(message, sender) {
         if (!tab)
           return null;
         const treeItem = new TSTAPI.TreeItem(tab);
-        return treeItem.exportFor(sender.id);
+        const exported = treeItem.exportFor(sender.id);
+        treeItem.clearCache();
+        return exported;
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
@@ -681,7 +687,7 @@ function onMessageExternal(message, sender) {
           message.containerId || 'firefox-default'
         );
         const cache = {};
-        return TSTAPI.formatTabResult(
+        const result = TSTAPI.formatTabResult(
           reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, {
             interval: message.interval,
             cache
@@ -689,6 +695,8 @@ function onMessageExternal(message, sender) {
           message,
           sender.id
         );
+        TSTAPI.clearCache(cache);
+        return result;
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:

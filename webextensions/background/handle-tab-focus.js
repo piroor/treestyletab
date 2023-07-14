@@ -116,6 +116,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
             focusDirection },
           { tabProperties: ['tab'] }
         );
+        TSTAPI.clearCache(cache);
         if (allowed) {
           const toBeExpandedAncestors = [tab].concat(tab.$TST.ancestors) ;
           for (const ancestor of toBeExpandedAncestors) {
@@ -171,6 +172,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
           focusDirection },
         { tabProperties: ['tab'] }
       );
+      TSTAPI.clearCache(cache);
       if (allowed) {
         window.lastActiveTab = successor.id;
         if (mMaybeTabSwitchingByShortcut)
@@ -224,13 +226,15 @@ async function handleNewActiveTab(tab, { allowed, silently } = {}) {
   const canExpandTree           = shouldCollapseExpandNow && !silently;
   if (canExpandTree &&
       allowed !== false) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     const allowed = await TSTAPI.tryOperationAllowed(
       tab.active ?
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT,
-      { tab: new TSTAPI.TreeItem(tab) },
+      { tab: treeItem },
       { tabProperties: ['tab'] }
     );
+    treeItem.clearCache();
     if (!allowed)
       return;
     if (canCollapseTree &&
@@ -322,14 +326,16 @@ async function setupDelayedExpand(tab) {
     return;
   cancelDelayedExpand(tab);
   TabsStore.removeToBeExpandedTab(tab);
+  const treeItem = new TSTAPI.TreeItem(tab);
   const [ctrlTabHandlingEnabled, allowedToExpandViaAPI] = await Promise.all([
     Permissions.isGranted(Permissions.ALL_URLS),
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
-      { tab: new TSTAPI.TreeItem(tab) },
+      { tab: treeItem },
       { tabProperties: ['tab'] }
     ),
   ]);
+  treeItem.clearCache();
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed ||
@@ -435,12 +441,13 @@ function onMessage(message, sender) {
             tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
+          const treeItem = new TSTAPI.TreeItem(tab);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id &&
               (await TSTAPI.tryOperationAllowed(
                 TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH,
-                { tab: new TSTAPI.TreeItem(tab) },
+                { tab: treeItem },
                 { tabProperties: ['tab'] }
               ))) {
             Tree.collapseExpandSubtree(tab, {
@@ -448,6 +455,7 @@ function onMessage(message, sender) {
               broadcast: true
             });
           }
+          treeItem.clearCache();
         }
         mMaybeTabSwitchingByShortcut =
           mTabSwitchedByShortcut = false;

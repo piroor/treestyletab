@@ -198,9 +198,10 @@ function onMouseMove(event) {
 
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) &&
       tab) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
-      tab:      new TSTAPI.TreeItem(tab),
+      tab:      treeItem,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -209,6 +210,7 @@ function onMouseMove(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
@@ -236,9 +238,10 @@ function onMouseOver(event) {
   const enterTabFromAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (enterTabFromAncestor) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
-      tab:      new TSTAPI.TreeItem(tab),
+      tab:      treeItem,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -247,6 +250,7 @@ function onMouseOver(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
   }
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
@@ -262,9 +266,10 @@ function onMouseOut(event) {
   const leaveTabToAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (leaveTabToAncestor) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      new TSTAPI.TreeItem(tab),
+      tab:      treeItem,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -273,6 +278,7 @@ function onMouseOut(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
   }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
@@ -316,9 +322,10 @@ function onMouseDown(event) {
     event.preventDefault();
   }
 
+  const treeItem = new TSTAPI.TreeItem(tab);
   const mousedown = {
     detail: mousedownDetail,
-    treeItem: new TSTAPI.TreeItem(tab),
+    treeItem,
     promisedMousedownNotified: Promise.resolve(),
     timestamp: Date.now(),
   };
@@ -340,6 +347,7 @@ function onMouseDown(event) {
         mousedown,
         extraContentsInfo
       );
+      treeItem.clearCache();
       if (!allowed) {
         log(' => canceled');
         return true;
@@ -446,10 +454,11 @@ async function onMouseUp(event) {
   }
 
   if (tab) {
+    const treeItem = new TSTAPI.TreeItem(tab);
     const mouseupInfo = {
       ...lastMousedown,
       detail:   EventUtils.getMouseEventDetail(event, tab),
-      treeItem: new TSTAPI.TreeItem(tab)
+      treeItem,
     };
 
     const mouseupAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
@@ -460,6 +469,7 @@ async function onMouseUp(event) {
     );
     if (!mouseupAllowed) {
       log(' => not allowed (mouseup)');
+      treeItem.clearCache();
       return true;
     }
 
@@ -471,8 +481,11 @@ async function onMouseUp(event) {
     );
     if (!clickAllowed) {
       log(' => not allowed (clicked');
+      treeItem.clearCache();
       return true;
     }
+
+    treeItem.clearCache();
   }
 
   let promisedCanceled = null;
@@ -985,6 +998,7 @@ async function onDblClick(event) {
       { detail, treeItem },
       extraContentsInfo
     );
+    treeItem.clearCache();
     if (!allowed)
       return;
 

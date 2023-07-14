@@ -208,7 +208,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
 
 async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = {}) {
   const cache = {};
-  return TSTAPI.tryOperationAllowed(
+  const result = TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,
     { tab: new TSTAPI.TreeItem(tab, { cache }),
       activeTab: activeTab && new TSTAPI.TreeItem(activeTab, { cache }),
@@ -216,6 +216,8 @@ async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = 
       context },
     { tabProperties: ['tab', 'activeTab', 'openerTab'] }
   );
+  TSTAPI.clearCache(cache);
+  return result;
 }
 
 async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavior, dontMove, openedWithCookieStoreId, inheritContextualIdentityMode, context } = {}) {

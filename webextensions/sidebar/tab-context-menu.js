@@ -355,7 +355,8 @@ async function onCommand(item, event) {
   const owner      = item.getAttribute('data-item-owner-id');
   const checked    = item.matches('.radio, .checkbox:not(.checked)');
   const wasChecked = item.matches('.radio.checked, .checkbox.checked');
-  const tab        = contextTab && (await (new TSTAPI.TreeItem(contextTab, { isContextTab: true })).exportFor(owner)) || null
+  const treeItem   = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true });
+  const tab        = treeItem && (await treeItem.exportFor(owner)) || null
   const message = {
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
@@ -375,6 +376,8 @@ async function onCommand(item, event) {
     },
     tab
   };
+  if (treeItem)
+    treeItem.clearCache();
   if (owner == browser.runtime.id) {
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   }
@@ -440,6 +443,7 @@ async function onCommand(item, event) {
 
 async function onShown(contextTab) {
   contextTab = contextTab || mContextTab
+  const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null;
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -455,10 +459,10 @@ async function onShown(contextTab) {
       viewType:         'sidebar',
       bookmarkId:       null
     },
-    tab: contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null,
+    tab: treeItem,
     windowId: TabsStore.getCurrentWindowId()
   };
-  return Promise.all([
+  const result = Promise.all([
     browser.runtime.sendMessage({
       ...message,
       tab: message.tab && await message.tab.exportFor(browser.runtime.id)
@@ -469,6 +473,9 @@ async function onShown(contextTab) {
       type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
     }, { tabProperties: ['tab'] })
   ]);
+  if (treeItem)
+    treeItem.destroy();
+  return result;
 }
 
 async function onHidden() {

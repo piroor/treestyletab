@@ -660,6 +660,8 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
     eventInfo,
     options
   );
+  if (eventInfo.tab)
+    eventInfo.tab.clearCache();
 }
 
 async function onExtraContentsKeyEvent(event) {

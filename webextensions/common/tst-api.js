@@ -228,6 +228,11 @@ let mGroupingBlockedBy = {};
 const mIsBackend  = location.href.startsWith(browser.runtime.getURL('background/background.html'));
 const mIsFrontend = location.href.startsWith(browser.runtime.getURL('sidebar/sidebar.html'));
 
+// you should use this to reduce memory usage around effective favicons
+export function clearCache(cache) {
+  cache.effectiveFavIconUrls = {};
+}
+
 export class TreeItem {
   constructor(tab, options = {}) {
     this.tab          = tab;
@@ -240,6 +245,11 @@ export class TreeItem {
       this.cache.effectiveFavIconUrls = {};
 
     this.exportTab = this.exportTab.bind(this);
+  }
+
+  // you should use this to reduce memory usage around effective favicons
+  clearCache() {
+    clearCache(this.cache);
   }
 
   async exportFor(addonId) {
@@ -981,6 +991,7 @@ export async function notifyScrolled(params = {}) {
     if (!result || result.error || result.result === undefined)
       delete mScrollLockedBy[result.id];
   }
+  clearCache(cache);
 }
 
 

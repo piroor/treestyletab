@@ -139,6 +139,7 @@ export function endMultiDrag(tab, coordinates) {
   }
   mCapturingForDragging = false;
   mReadyToCaptureMouseEvents = false;
+  treeItem.clearCache();
 }
 
 function setDragData(dragData) {
@@ -832,13 +833,15 @@ function onDragStart(event, options = {}) {
     if (startOnClosebox)
       mLastDragEnteredTarget = tab.$TST.element.closeBoxElement;
     const windowId = TabsStore.getCurrentWindowId();
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-      tab:    new TSTAPI.TreeItem(tab),
+      tab:    treeItem,
       window: windowId,
       windowId,
       startOnClosebox
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
@@ -947,11 +950,13 @@ function onDragStart(event, options = {}) {
     }
   }
 
+  const treeItem = new TSTAPI.TreeItem(tab);
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
-    tab:      new TSTAPI.TreeItem(tab),
+    tab:      treeItem,
     windowId: TabsStore.getCurrentWindowId()
   }, { tabProperties: ['tab'] }).catch(_error => {});
+  treeItem.clearCache();
 
   updateLastDragEventCoordinates(event);
   // Don't store raw URLs to save privacy!
@@ -1590,12 +1595,14 @@ function onTSTAPIDragEnter(event) {
       (!mDragTargetIsClosebox ||
        EventUtils.isEventFiredOnClosebox(event))) {
     if (target != mLastDragEnteredTarget) {
+      const treeItem = new TSTAPI.TreeItem(tab);
       TSTAPI.sendMessage({
         type:     TSTAPI.kNOTIFY_TAB_DRAGENTER,
-        tab:      new TSTAPI.TreeItem(tab),
+        tab:      treeItem,
         window:   tab.windowId,
         windowId: tab.windowId
       }, { tabProperties: ['tab'] }).catch(_error => {});
+      treeItem.clearCache();
     }
   }
   mLastDragEnteredTarget = target;
@@ -1614,12 +1621,14 @@ function onTSTAPIDragExit(event) {
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
+    const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_DRAGEXIT,
-      tab:      new TSTAPI.TreeItem(tab),
+      tab:      treeItem,
       window:   tab.windowId,
       windowId: tab.windowId
     }, { tabProperties: ['tab'] }).catch(_error => {});
+    treeItem.clearCache();
   }, 10);
 }
 
