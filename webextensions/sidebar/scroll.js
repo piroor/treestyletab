@@ -166,12 +166,13 @@ async function smoothScrollTo(params = {}) {
   const duration  = Math.max(0, typeof params.duration == 'number' ? params.duration : configs.smoothScrollDuration);
   const startTime = Date.now();
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const radian = 90 * Math.PI / 180;
     const scrollStep = () => {
       if (smoothScrollTo.stopped) {
         smoothScrollTo.currentOffset = 0;
-        reject();
+        //reject('smooth scroll is canceled');
+        resolve();
         return;
       }
       const nowTime = Date.now();
