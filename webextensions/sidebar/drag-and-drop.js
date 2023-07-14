@@ -139,7 +139,8 @@ export function endMultiDrag(tab, coordinates) {
   }
   mCapturingForDragging = false;
   mReadyToCaptureMouseEvents = false;
-  treeItem.clearCache();
+  if (treeItem)
+    treeItem.clearCache();
 }
 
 function setDragData(dragData) {
