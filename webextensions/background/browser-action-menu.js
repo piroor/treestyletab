@@ -366,7 +366,13 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('config_openAllBookmarksWithStructureDiscarded_label'),
         key:   'openAllBookmarksWithStructureDiscarded',
         type:  'checkbox'
-      }
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_suppressGroupTabForStructuredTabsFromBookmarks_label'),
+        key:   'suppressGroupTabForStructuredTabsFromBookmarks',
+        type:  'checkbox',
+        expert: true,
+      },
     ]
   },
   {

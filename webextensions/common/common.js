@@ -169,7 +169,7 @@ export const configs = new Configs({
   context_openAllBookmarksWithStructureRecursively: false,
 
   openAllBookmarksWithStructureDiscarded: true,
-  openAllBookmarksWithGroupAlways: false,
+  suppressGroupTabForStructuredTabsFromBookmarks: true,
 
 
   // tree behavior
@@ -522,6 +522,7 @@ export const configs = new Configs({
   startDragTimeout: null, // migrated to longPressDuration
   simulateCloseTabByDblclick: null, // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
   moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
+  openAllBookmarksWithGroupAlways: null, // migrated to suppressGroupTabForStructuredTabsFromBookmarks
   // migrated to chunkedUserStyleRules0-5
   userStyleRules0: '',
   userStyleRules1: '',

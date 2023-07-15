@@ -1078,7 +1078,7 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
   if (typeof grouped == 'undefined')
-    grouped = configs.openAllBookmarksWithGroupAlways;
+    grouped = !configs.suppressGroupTabForStructuredTabsFromBookmarks;
 
   let item = await browser.bookmarks.get(id);
   if (Array.isArray(item))

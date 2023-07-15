@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 27;
+const kCONFIGS_VERSION = 28;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -264,6 +264,10 @@ export function migrateConfigs() {
     case 26:
       if (!configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.includes('about:privatebrowsing'))
         configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl = `${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.trim().replace(/\|$/, '')}|about:privatebrowsing`;
+
+    case 27:
+      if (configs.openAllBookmarksWithGroupAlways !== null)
+        configs.suppressGroupTabForStructuredTabsFromBookmarks = !configs.openAllBookmarksWithGroupAlways;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
