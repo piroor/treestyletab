@@ -604,7 +604,7 @@ windowId = ${tab.windowId}
     if (!this.initialized || !this.$TST)
       return url;
 
-    if (url.startsWith('data:')) { // we don't need to use the helper for data: URI.
+    if (url && url.startsWith('data:')) { // we don't need to use the helper for data: URI.
       this.favicon.src = url;
       return url;
     }
