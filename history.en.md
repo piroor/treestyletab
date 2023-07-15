@@ -1,6 +1,17 @@
 # History
 
  - master/HEAD
+   * Reduce RAM usage around favicons.
+   * Right-click on the "new tab" button now opens containers selector like recent versions of Firefox.
+   * Expand ancestors tree while a tab is moved by Ctrl-PageUp/PageDown for better usability.
+   * Keep tabs scroll-locked even if the cursor is moved while the last tab is being removed.
+   * Keyboard shortcuts to move focus to next/previous sibling now cycles focus between sibling tabs.
+   * Add a new expert option to put tabs under a group tab always, even if they are opened from a bookmark folder and already organized as a tree. On such situations TST suppresses opening a group tab, because the group tab was initially introduced just to organize flat tabs opened from a bookmark folder as a tree.
+   * Create bookmark item for the first group tab correctly, if there are multiple root level group tabs in the selection.
+   * Use bright border color for "drag and drop" options on the dark mode.
+   * Match styling of active and highlighted tabs on Proton theme, for Firefox 102 and later.
+   * Render box-shadow of the active tab on Proton theme more similar to Firefox's native tabs.
+   * Update `de` locale by [juwbr](https://github.com/juwbr). Thanks!
  - 3.9.15 (2023.3.24)
    * Never reload infinitely after tabs are detached from a regular window to a popup window (by [Popup window](https://addons.mozilla.org/firefox/addon/popup-window/) or someone).
    * New blank tabs reoepend with the container inherited from the active tab are activated correctly.
