@@ -832,7 +832,7 @@ function onDragStart(event, options = {}) {
     mLastDragEnteredTarget = tab.$TST.element;
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      mLastDragEnteredTarget = tab.$TST.element.closeBoxElement;
+      mLastDragEnteredTarget = tab.$TST.element.closeBox;
     const windowId = TabsStore.getCurrentWindowId();
     const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
@@ -1590,7 +1590,7 @@ function onTSTAPIDragEnter(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = tab.$TST.element.closeBoxElement;
+    target = tab.$TST.element.closeBox;
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!mDragTargetIsClosebox ||
@@ -1618,10 +1618,11 @@ function onTSTAPIDragExit(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = tab.$TST.element.closeBoxElement;
+    target = tab.$TST.element.closeBox;
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
-    delete target.onTSTAPIDragExitTimeout;
+    if (target)
+      delete target.onTSTAPIDragExitTimeout;
     const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_DRAGEXIT,
