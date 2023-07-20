@@ -812,7 +812,7 @@ export async function behaveAutoAttachedTab(
       const lastRelatedTab = baseTab.$TST.lastRelatedTab;
       if (lastRelatedTab) {
         log(` place after last related tab ${dumpTab(lastRelatedTab)}`);
-        return TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
+        await TabsMove.moveTabAfter(tab, lastRelatedTab.$TST.lastDescendant || lastRelatedTab, {
           delayedMove: true,
           broadcast:   true
         });
