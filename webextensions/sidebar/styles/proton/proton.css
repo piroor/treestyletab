@@ -246,7 +246,7 @@ tab-item.bundled-active tab-item-substance:hover .background,
 .mutiple-highlighted > tab-item.highlighted .background,
 .mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
   box-shadow: 0 0 var(--tab-dropshadow-blur) rgba(0, 0, 0, 0.4);
-  outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border), currentcolor);
+  outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border, currentcolor));
   outline-offset: -1px;
 }
 
