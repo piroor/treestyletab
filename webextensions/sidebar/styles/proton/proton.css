@@ -39,7 +39,7 @@
   --tab-text-active: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-text-active-inverted: var(--toolbar-non-lwt-bgcolor);
   --tab-border: var(--browser-border, var(--browser-bg-more-darker, var(--in-content-box-border-color-mixed)));
-  --tab-active-border: var(--browser-bg-active-for-header-image, var(--grey-90-a40) /* color-mix(in srgb, var(--grey-90, currentcolor) 40%, transparent) */);
+  --tab-active-border: var(--browser-bg-active-for-header-image, transparent);
   --tab-surface-active: var(--browser-selected-tab-bg, var(--tab-like-surface, var(--in-content-button-background-mixed)));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--browser-loading-indicator, var(--tab-text));
