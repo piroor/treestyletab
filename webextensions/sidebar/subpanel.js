@@ -307,7 +307,7 @@ mHeader.addEventListener('mousedown', event => {
     return;
   event.stopPropagation();
   event.preventDefault();
-  mHeader.setPointerCapture(true);
+  mHeader.setPointerCapture(event.pointerId);
   mDragStartY = event.clientY;
   mDragStartHeight = mHeight;
   mHeader.addEventListener('mousemove', onMouseMove);
@@ -319,7 +319,7 @@ mHeader.addEventListener('mouseup', event => {
   mHeader.removeEventListener('mousemove', onMouseMove);
   event.stopPropagation();
   event.preventDefault();
-  document.releasePointerCapture();
+  mHeader.releasePointerCapture(event.pointerId);
   if (!isResizable())
     return;
   mHeight = mDragStartHeight - (event.clientY - mDragStartY);
