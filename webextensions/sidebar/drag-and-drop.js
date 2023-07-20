@@ -114,7 +114,7 @@ export function endMultiDrag(tab, coordinates) {
   if (mCapturingForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
-    document.body.releasePointerCapture(event.pointerId);
+    document.releaseCapture();
 
     TSTAPI.sendMessage({
       type:    TSTAPI.kNOTIFY_TAB_DRAGEND,
@@ -845,7 +845,7 @@ function onDragStart(event, options = {}) {
     treeItem.clearCache();
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
-    document.body.setPointerCapture(event.pointerId);
+    document.body.setCapture(false);
     mCapturingForDragging = true;
     return;
   }
