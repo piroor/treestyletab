@@ -471,10 +471,10 @@ async function onShown(contextTab) {
     TSTAPI.sendMessage({
       ...message,
       type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
-    }, { tabProperties: ['tab'] })
+    }, { tabProperties: ['tab'] }),
   ]);
   if (treeItem)
-    treeItem.destroy();
+    treeItem.clearCache();
   return result;
 }
 
