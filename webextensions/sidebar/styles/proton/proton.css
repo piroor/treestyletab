@@ -232,6 +232,10 @@ tab-item .background,
   top: var(--tab-dropshadow-padding);
 }
 
+tab-item.faviconized .background {
+  --tab-dropshadow-padding: 0.13em;
+}
+
 #subpanel-selector-anchor:hover::before {
   bottom: 0;
   left: 0;
