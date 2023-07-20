@@ -62,7 +62,7 @@
   --tab-text-shadow: none;
 
   --multiselected-color: transparent;
-  --multiselected-color-opacity: 0.15;
+  --multiselected-color-opacity: 0.35;
 
   /* z-index of elements: we should define them here to keep their strict priorities */
   --invisible-z-index:       -100;
