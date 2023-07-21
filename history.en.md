@@ -7,6 +7,7 @@
    * Keep tabs scroll-locked even if the cursor is moved while the last tab is being removed.
    * Keyboard shortcuts to move focus to next/previous sibling now cycles focus between sibling tabs.
    * Add a new expert option to put tabs under a group tab always, even if they are opened from a bookmark folder and already organized as a tree. On such situations TST suppresses opening a group tab, because the group tab was initially introduced just to organize flat tabs opened from a bookmark folder as a tree.
+   * Attach child tab to the opener tab correctly even if the opener had no child and "when a tab is opened from existing tab, open it as: a child of the parent tab, next to the recently opened child" is chosen.
    * Create bookmark item for the first group tab correctly, if there are multiple root level group tabs in the selection.
    * Use bright border color for "drag and drop" options on the dark mode.
    * Match styling of active and highlighted tabs on Proton theme, for Firefox 102 and later.
