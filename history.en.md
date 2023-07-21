@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.16 (2023.7.21)
    * Reduce RAM usage around favicons.
    * Right-click on the "new tab" button now opens containers selector like recent versions of Firefox.
    * Expand ancestors tree while a tab is moved by Ctrl-PageUp/PageDown for better usability.
