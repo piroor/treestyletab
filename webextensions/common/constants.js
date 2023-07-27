@@ -146,6 +146,7 @@ export const kTABBAR_SPACER   = 'tabs-spacer';
 export const kTAB_STATE_ACTIVE                    = 'active';
 export const kTAB_STATE_PINNED                    = 'pinned';
 export const kTAB_STATE_LAST_ROW                  = 'last-row';
+export const kTAB_STATE_LAST_VISIBLE              = 'last-visible';
 export const kTAB_STATE_AUDIBLE                   = 'audible';
 export const kTAB_STATE_SOUND_PLAYING             = 'sound-playing';
 export const kTAB_STATE_HAS_SOUND_PLAYING_MEMBER  = 'has-sound-playing-member';
@@ -184,6 +185,7 @@ export const kTAB_STATE_GROUP_TAB                 = 'group-tab';
 export const kTAB_INTERNAL_STATES = new Set([
   'tab',
   kTAB_STATE_LAST_ROW,
+  kTAB_STATE_LAST_VISIBLE,
   kTAB_STATE_ANIMATION_READY,
   kTAB_STATE_COLLAPSED_DONE,
   kTAB_STATE_CREATING,

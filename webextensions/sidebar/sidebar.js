@@ -759,6 +759,14 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   }
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
+  const lastVisibleTab = Tab.getLastVisibleTab(mTargetWindow);
+  for (const tab of document.querySelectorAll(`.${Constants.kTAB_STATE_LAST_VISIBLE}`)) {
+    if (tab == lastVisibleTab)
+      continue;
+    tab.$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
+  }
+  lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
+
   let allTabsHeight;
   const firstTab = Tab.getFirstUnpinnedTab(mTargetWindow);
   if (firstTab) {

@@ -120,6 +120,13 @@ tab-item tab-closebox::after {
   position: relative;
 }
 
+/* This is required to avoid needless padding in the scrollbox produced by the box-shadow.
+   See also: https://github.com/piroor/treestyletab/issues/3364 */
+#tabbar.overflow tab-item:not(.pinned).last-visible,
+#tabbar.overflow tab-item:not(.pinned).last-visible ~ tab-item {
+  overflow: hidden;
+}
+
 
 /* multiselection of tabs */
 
