@@ -612,7 +612,7 @@
     "hash": "fc73fb5ff95b04bc07c426cef2cd7328"
   },
   "config_style_none_info": {
-    "message": " (*Veuillez tout décorer par vous-même via « Règles d'apparence supplémentaires pour les contenus du panneau »)",
+    "message": " (*Veuillez tout décorer par vous-même via « Avancé » => « User Style Sheet »)",
     "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
   },
   "config_colorScheme_caption": {
@@ -1168,7 +1168,7 @@
     "hash": "68ba74a927292849c18ea65fa865c5a2"
   },
   "config_userStyleRules_label": {
-    "message": "Règles d'apparence supplémentaires pour les contenus du panneau",
+    "message": "User Style Sheet (Règles d'apparence supplémentaires pour les contenus du panneau)",
     "hash": "8802e1f6f7cf2ff4db4e8d0aaf9bc73e"
   },
   "config_userStyleRules_description_before": {

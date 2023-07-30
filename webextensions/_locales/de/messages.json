@@ -338,7 +338,7 @@
   "config_style_sidebar": { "message": "Seitenleiste" },
   "config_style_highcontrast": { "message": "Hoher Kontrast" },
   "config_style_none": { "message": "Keine Designvorgabe" },
-  "config_style_none_info": { "message": " (*Passe alles selbst über das Feld \"Style-Regeln für Seitenleisten-Inhalte\" an)" },
+  "config_style_none_info": { "message": " (*Passe alles selbst über das Feld \"Erweitert\" => \"User Style Sheet\" an)" },
 
   "config_colorScheme_caption": { "message": "Farbschema:" },
   "config_colorScheme_photon": { "message": "Photon" },
@@ -683,7 +683,7 @@
   "config_scrollLines_label_before": { "message": "Bewege " },
   "config_scrollLines_label_after":  { "message": "Zeilen auf oder ab beim \"Zeilenweise hoch oder runter scrollen\" Befehl" },
 
-  "config_userStyleRules_label": { "message": "Zusätzliche Style-Regeln für Seitenleisten-Inhalte" },
+  "config_userStyleRules_label": { "message": "User Style Sheet (Zusätzliche Style-Regeln für Seitenleisten-Inhalte)" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
   "config_userStyleRules_description_link_label": { "message": "Codebeispiele im TST Wiki" },
   "config_userStyleRules_description_after": { "message": "." },

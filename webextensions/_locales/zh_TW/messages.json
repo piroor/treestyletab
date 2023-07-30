@@ -335,7 +335,7 @@
     "config_style_sidebar": { "message": "側邊欄" },
     "config_style_highcontrast": { "message": "高對比" },
     "config_style_none": { "message": "無裝飾" },
-    "config_style_none_info": { "message": "(※在「額外的側邊欄樣式規則」中自行裝飾)" },
+    "config_style_none_info": { "message": "(※在「進階設定」=>「User Style Sheet」中自行裝飾)" },
   
     "config_colorScheme_caption": { "message": "配色:" },
     "config_colorScheme_photon": { "message": "Photon" },
@@ -664,7 +664,7 @@
     "config_scrollLines_label_before": { "message": "Scroll up or down " },
     "config_scrollLines_label_after":  { "message": "lines via \"Scroll Tabs Up/Down by Lines\" shortcut commands" },
   
-    "config_userStyleRules_label": { "message": "額外的側邊欄樣式規則" },
+    "config_userStyleRules_label": { "message": "User Style Sheet (額外的側邊欄樣式規則)" },
     "config_userStyleRules_description_before": { "message": "亦可參照" },
     "config_userStyleRules_description_link_label": { "message": " TST wiki 上的範例" },
     "config_userStyleRules_description_after": { "message": "。" },

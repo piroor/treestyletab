@@ -142,7 +142,7 @@
   "config_style_sidebar": { "message": "Бічна панель" },
   "config_style_highcontrast": { "message": "Висококонтр." },
   "config_style_none": { "message": "Без стилю" },
-  "config_style_none_info": { "message": " (*Будь ласка, прикрасьте все самостійно через \"Додаткові правила стилю  бічної панелі\")" },
+  "config_style_none_info": { "message": " (*Будь ласка, прикрасьте все самостійно через \"Розширені налашт\" => \"User Style Sheet\")" },
 
   "config_colorScheme_caption": { "message": "Колірна схема:" },
   "config_colorScheme_photon": { "message": "Фотон" },
@@ -282,7 +282,7 @@
 
   "config_advanced_caption": { "message": "Розширені налашт." },
 
-  "config_userStyleRules_label": { "message": "Додаткові правила стилю бічної панелі" },
+  "config_userStyleRules_label": { "message": "User Style Sheet (Додаткові правила стилю бічної панелі)" },
   "config_userStyleRules_description_before": { "message": "Для ознайомлення із додатковими можливостями " },
   "config_userStyleRules_description_link_label": { "message": "читай про код-сніпети на TST-" },
   "config_userStyleRules_description_after": { "message": "вікі." },

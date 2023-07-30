@@ -338,7 +338,7 @@
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "High Contrast" },
   "config_style_none": { "message": "No Decoration" },
-  "config_style_none_info": { "message": " (*Please decorate everything by yourself via \"Extra style rules for sidebar contents\")" },
+  "config_style_none_info": { "message": " (*Please decorate everything by yourself via \"Advanced\" => \"User Style Sheet\")" },
 
   "config_colorScheme_caption": { "message": "Color scheme:" },
   "config_colorScheme_photon": { "message": "Photon" },
@@ -688,7 +688,7 @@
   "config_scrollLines_label_before": { "message": "Scroll up or down " },
   "config_scrollLines_label_after":  { "message": "lines via \"Scroll Tabs Up/Down by Lines\" shortcut commands" },
 
-  "config_userStyleRules_label": { "message": "Extra style rules for contents provided by Tree Style Tab" },
+  "config_userStyleRules_label": { "message": "User Style Sheet (extra style rules for contents provided by Tree Style Tab, ex. the sidebar)" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },
   "config_userStyleRules_description_after": { "message": " also." },

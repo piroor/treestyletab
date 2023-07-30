@@ -334,7 +334,7 @@
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "ハイコントラスト" },
   "config_style_none": { "message": "装飾無し" },
-  "config_style_none_info": { "message": "（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
+  "config_style_none_info": { "message": "（※「詳細設定」→「ユーザースタイルシート」でお好みの装飾を設定してください)" },
 
   "config_colorScheme_caption": { "message": "配色:" },
   "config_colorScheme_photon": { "message": "Photon" },
@@ -684,7 +684,7 @@
   "config_scrollLines_label_before": { "message": "キーボードショートカットの「タブの一覧を数行上/下にスクロール」で" },
   "config_scrollLines_label_after":  { "message": "行分スクロールする" },
 
-  "config_userStyleRules_label": { "message": "ツリー型タブが提供するページ用の追加のスタイル指定" },
+  "config_userStyleRules_label": { "message": "ユーザースタイルシート（サイドバーなど、ツリー型タブが提供するページ用の追加のスタイル指定）" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },

@@ -338,7 +338,7 @@
   "config_style_sidebar": { "message": "Сайдбар" },
   "config_style_highcontrast": { "message": "Контраст" },
   "config_style_none": { "message": "Без стиля" },
-  "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Дополнительные стили боковой панели\")" },
+  "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Расширенные настройки\" => \"User Style Sheet\")" },
 
   "config_colorScheme_caption": { "message": "Цветовая схема:" },
   "config_colorScheme_photon": { "message": "Фотон" },
@@ -686,7 +686,7 @@
   "config_scrollLines_label_before": { "message": "Прокручивать вверх или вниз на " },
   "config_scrollLines_label_after":  { "message": "строк командами \"Листать вкладки вверх/вниз построчно\" " },
 
-  "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },
+  "config_userStyleRules_label": { "message": "User Style Sheet (Дополнительные стили боковой панели)" },
   "config_userStyleRules_description_before": { "message": "Смотрите " },
   "config_userStyleRules_description_link_label": { "message": "примеры кода и описания на TST-вики" },
   "config_userStyleRules_description_after": { "message": " ." },

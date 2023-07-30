@@ -889,7 +889,7 @@
         "hash": "fc73fb5ff95b04bc07c426cef2cd7328"
     },
     "config_style_none_info": {
-        "message": "(※\"사이드바 내용 추가 스타일 지정\"에서 원하는 장식을 설정해주세요.)",
+        "message": "(※\"상세 설정\" => \"User Style Sheet\"에서 원하는 장식을 설정해주세요.)",
         "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
     },
     "config_colorScheme_caption": {
@@ -1958,7 +1958,7 @@
         "hash": "67959cbebad54fb34409aa96c9d1c9b3"
     },
     "config_userStyleRules_label": {
-        "message": "트리 스타일 탭에서 제공하는 페이지의 추가 스타일 설정",
+        "message": "User Style Sheet (트리 스타일 탭에서 제공하는 페이지의 추가 스타일 설정)",
         "hash": "8802e1f6f7cf2ff4db4e8d0aaf9bc73e"
     },
     "config_userStyleRules_description_before": {

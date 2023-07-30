@@ -1009,7 +1009,7 @@
     "hash": "fc73fb5ff95b04bc07c426cef2cd7328"
   },
   "config_style_none_info": {
-    "message": "（ * 请通过 “额外的侧栏内容样式规则” 自行布置所有相关内容）",
+    "message": "（ * 请通过 “高级”=>“User Style Sheet” 自行布置所有相关内容）",
     "hash": "2fb7a28dcc5acd2918ced74dde5ec714"
   },
   "config_colorScheme_caption": {
@@ -1994,7 +1994,7 @@
     "message": "行"
   },
   "config_userStyleRules_label": {
-    "message": "Tree Style Tab 侧栏相关内容的额外样式规则",
+    "message": "User Style Sheet (Tree Style Tab 侧栏相关内容的额外样式规则)",
     "hash": "0d2ad9050b3b2549d69092af9c751a0b"
   },
   "config_userStyleRules_description_before": {
