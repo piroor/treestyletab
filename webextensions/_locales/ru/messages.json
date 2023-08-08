@@ -338,7 +338,7 @@
   "config_style_sidebar": { "message": "Сайдбар" },
   "config_style_highcontrast": { "message": "Контраст" },
   "config_style_none": { "message": "Без стиля" },
-  "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Расширенные настройки\" => \"User Style Sheet\")" },
+  "config_style_none_info": { "message": " ( * Украсьте все самостоятельно используя \"Расширенные настройки\" => \"Дополнительные стили боковой панели\")" },
 
   "config_colorScheme_caption": { "message": "Цветовая схема:" },
   "config_colorScheme_photon": { "message": "Фотон" },
@@ -379,6 +379,7 @@
   "config_extraItems_tabs_middleClick": { "message": "Действие щелчка СКМ" },
   "config_extraItems_bookmarks_caption": { "message": "Пункты контекстного меню закладок" },
   "config_openAllBookmarksWithStructureDiscarded_label": { "message": "Открывать незагруженными" },
+  "config_suppressGroupTabForStructuredTabsFromBookmarks_label": { "message": "Отмена групповой вкладки верхнего уровня, если вкладки уже организованы в дерево" },
 
   "config_sendTabsToDevice_caption": { "message": "Отправляйте вкладки на другие устройства через контекстное меню используя Firefox Sync" },
   "config_syncRequirements_description": { "message": "Эта функция зависит от Firefox Sync. Вкладки можно отправлять только на устройства с установленным TST. Сначала активируйте Firefox Sync в настройках Firefox и установите TST на другие устройства." },
@@ -641,6 +642,7 @@
   "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
   "config_dropLinksOnTabBehavior_load":    { "message": "Загрузить во вкладке" },
   "config_dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
+  "config_simulateTabsLoadInBackgroundInverted_label": { "message": "При открытии ссылки в новой вкладке, переключатся на эту вкладку (* имитация параметра Firefox \"Переключаться на открываемую ссылку, изображение или медиа\" (\"browser.tabs.loadInBackground\"))" },
 
   "config_insertDroppedTabsAt_caption": { "message": "Позиция вставки дочерних элементов, перетянутых на родителя" },
   "config_insertDroppedTabsAt_inherit": { "message": "Рассматривать как новые дочерние, открытые из родителя" },
@@ -686,7 +688,7 @@
   "config_scrollLines_label_before": { "message": "Прокручивать вверх или вниз на " },
   "config_scrollLines_label_after":  { "message": "строк командами \"Листать вкладки вверх/вниз построчно\" " },
 
-  "config_userStyleRules_label": { "message": "User Style Sheet (Дополнительные стили боковой панели)" },
+  "config_userStyleRules_label": { "message": "Дополнительные стили боковой панели" },
   "config_userStyleRules_description_before": { "message": "Смотрите " },
   "config_userStyleRules_description_link_label": { "message": "примеры кода и описания на TST-вики" },
   "config_userStyleRules_description_after": { "message": " ." },
