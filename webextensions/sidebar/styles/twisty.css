@@ -22,11 +22,6 @@ tab-item tab-twisty {
   z-index: var(--tab-ui-z-index);
 }
 
-:root.animation tab-item:not(.collapsed) tab-twisty {
-  transition: transform 0.2s ease-out,
-              opacity 0.15s ease-out;
-}
-
 tab-item:not([data-child-ids]) tab-twisty,
 tab-item.pinned tab-twisty,
 tab-item.collapsed tab-twisty {
@@ -52,26 +47,31 @@ tab-item:not(.collapsed) tab-twisty::before {
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
 
-tab-item:not(.collapsed).subtree-collapsed
-  tab-twisty {
+tab-item:not(.collapsed).subtree-collapsed tab-twisty {
   opacity: 0.9;
-  transform: rotatez(-90deg);
 }
-:root.right
-  tab-item:not(.collapsed).subtree-collapsed
-  tab-twisty {
-  transform: rotatez(90deg);
-}
-
-tab-item:not(.collapsed).subtree-collapsed
-  tab-twisty:hover {
+tab-item:not(.collapsed).subtree-collapsed tab-twisty:hover {
   opacity: 1;
 }
 
 tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty {
   opacity: 0.9;
-  transform: rotatez(0);
 }
 tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty:hover {
   opacity: 1;
+}
+
+
+:root.animation tab-item:not(.collapsed) tab-twisty::before {
+  transition: transform 0.2s ease-out,
+              opacity 0.15s ease-out;
+  transform: rotatez(0);
+}
+:root.left
+  tab-item:not(.collapsed).subtree-collapsed tab-twisty::before {
+  transform: rotatez(-90deg);
+}
+:root.right
+  tab-item:not(.collapsed).subtree-collapsed tab-twisty::before {
+  transform: rotatez(90deg);
 }
