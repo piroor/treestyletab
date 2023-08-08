@@ -29,6 +29,21 @@ tab-item.collapsed tab-twisty {
   pointer-events: none !important;
 }
 
+tab-item:not(.collapsed).subtree-collapsed tab-twisty {
+  opacity: 0.9;
+}
+tab-item:not(.collapsed).subtree-collapsed tab-twisty:hover {
+  opacity: 1;
+}
+
+tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty {
+  opacity: 0.9;
+}
+tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty:hover {
+  opacity: 1;
+}
+
+
 tab-item:not(.collapsed) tab-twisty::before {
   -moz-context-properties: fill;
   background: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
@@ -46,21 +61,6 @@ tab-item:not(.collapsed) tab-twisty::before {
   background: var(--tab-text);
   mask: url("./icons/ArrowheadDown.svg") no-repeat center / 60%;
 }
-
-tab-item:not(.collapsed).subtree-collapsed tab-twisty {
-  opacity: 0.9;
-}
-tab-item:not(.collapsed).subtree-collapsed tab-twisty:hover {
-  opacity: 1;
-}
-
-tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty {
-  opacity: 0.9;
-}
-tab-item:not(.collapsed):not(.subtree-collapsed) tab-twisty:hover {
-  opacity: 1;
-}
-
 
 :root.animation tab-item:not(.collapsed) tab-twisty::before {
   transition: transform 0.2s ease-out,
