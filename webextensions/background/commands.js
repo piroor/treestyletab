@@ -127,6 +127,7 @@ export function collapseTree(rootTabs, { recursively } = {}) {
       });
     });
   }
+  TSTAPI.clearCache(cache);
 }
 
 export function collapseAll(windowId) {
