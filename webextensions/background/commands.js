@@ -102,23 +102,52 @@ export async function closeOthers(exceptionRoots) {
 }
 
 export function collapseTree(rootTabs, { recursively } = {}) {
+  rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
+  const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
       uniqTabsAndDescendantsSet(rootTabs) :
-      Array.isArray(rootTabs) && rootTabs || [rootTabs]
+      rootTabs
   ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
+  const cache = {};
   for (const tab of tabs) {
+    TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_COMMAND,
+      {
+        tab: new TSTAPI.TreeItem(tab, { cache }),
+        recursivelyCollapsed: !rootTabsSet.has(tab),
+      },
+      { tabProperties: ['tab'] }
+    ).then(allowed => {
+      if (!allowed)
+        return;
     Tree.collapseExpandSubtree(tab, {
       collapsed: true,
       broadcast: true
+    });
     });
   }
 }
 
 export function collapseAll(windowId) {
+  const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
-    collapseTree(tab);
+    if (!tab.$TST.hasChild || !tab.$TST.subtreeCollapsed)
+      continue;
+    TSTAPI.tryOperationAllowed(
+      TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_ALL_COMMAND,
+      { tab: new TSTAPI.TreeItem(tab, { cache }) },
+      { tabProperties: ['tab'] }
+    ).then(allowed => {
+      if (!allowed)
+        return;
+      Tree.collapseExpandSubtree(tab, {
+        collapsed: true,
+        broadcast: true,
+      });
+    });
   }
+  TSTAPI.clearCache(cache);
 }
 
 export function expandTree(rootTabs, { recursively } = {}) {
