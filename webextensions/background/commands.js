@@ -133,7 +133,7 @@ export function collapseTree(rootTabs, { recursively } = {}) {
 export function collapseAll(windowId) {
   const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
-    if (!tab.$TST.hasChild || !tab.$TST.subtreeCollapsed)
+    if (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed)
       continue;
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_ALL_COMMAND,
