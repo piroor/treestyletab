@@ -121,10 +121,10 @@ export function collapseTree(rootTabs, { recursively } = {}) {
     ).then(allowed => {
       if (!allowed)
         return;
-    Tree.collapseExpandSubtree(tab, {
-      collapsed: true,
-      broadcast: true
-    });
+      Tree.collapseExpandSubtree(tab, {
+        collapsed: true,
+        broadcast: true
+      });
     });
   }
 }
