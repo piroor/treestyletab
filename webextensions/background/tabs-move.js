@@ -102,8 +102,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       if (oldNextTab && oldNextTab.id == referenceTab.id) // no move case
         continue;
       if (SidebarConnection.isInitialized()) { // only on the background page
-      window.internalMovingTabs.add(tab.id);
-      window.alreadyMovedTabs.add(tab.id);
+        window.internalMovingTabs.add(tab.id);
+        window.alreadyMovedTabs.add(tab.id);
       }
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
@@ -206,8 +206,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
       if (SidebarConnection.isInitialized()) { // only on the background page
-      window.internalMovingTabs.add(tab.id);
-      window.alreadyMovedTabs.add(tab.id);
+        window.internalMovingTabs.add(tab.id);
+        window.alreadyMovedTabs.add(tab.id);
       }
       if (nextTab) {
         if (nextTab.index > tab.index)
@@ -363,12 +363,12 @@ async function syncToNativeTabsInternal(windowId) {
         let reallyMovedTabIds = new Set();
         try {
           const reallyMovedTabs = await browser.tabs.move(moveTabIds, {
-          windowId,
-          index: toIndex
-        }).catch(ApiTabs.createErrorHandler(e => {
-          log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
-          throw e;
-        }));
+            windowId,
+            index: toIndex
+          }).catch(ApiTabs.createErrorHandler(e => {
+            log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
+            throw e;
+          }));
           reallyMovedTabIds = new Set(reallyMovedTabs.map(tab => tab.id));
         }
         catch(error) {
