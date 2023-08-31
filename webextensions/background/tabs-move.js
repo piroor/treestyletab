@@ -372,7 +372,7 @@ async function syncToNativeTabsInternal(windowId) {
           reallyMovedTabIds = new Set(reallyMovedTabs.map(tab => tab.id));
         }
         catch(error) {
-          log(`syncToNativeTabs(${windowId}): clear internal information for unmoved tabs: ${moveTabIds.join(', ')}`);
+          console.error(error);
         }
         for (const id of moveTabIds) {
           if (reallyMovedTabIds.has(id))
