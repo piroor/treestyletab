@@ -316,6 +316,9 @@ async function syncToNativeTabsInternal(windowId) {
     return;
 
   for (const tab of oldMovedTabs) {
+    if (window.internalMovingTabs.has(tab.id)) {
+      log(`syncToNativeTabsInternal: timeout internally moved tab ${tab.id}`);
+    }
     window.internalMovingTabs.delete(tab.id);
     window.alreadyMovedTabs.delete(tab.id);
   }

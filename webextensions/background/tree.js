@@ -505,7 +505,8 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
     if (parent)
       allTabsInTree.unshift(parent);
     const lastMember    = allTabsInTree[allTabsInTree.length - 1];
-    if (insertAfter.index >= lastMember.index) {
+    if (lastMember != insertAfter &&
+        insertAfter.index >= lastMember.index) {
       insertAfter = lastMember;
       log(`  => do not put ${child && child.id} after the last tab ${insertAfter && insertAfter.id} in the tree`);
     }
