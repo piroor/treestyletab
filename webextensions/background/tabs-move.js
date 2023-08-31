@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2019
+ * Portions created by the Initial Developer are Copyright (C) 2011-2023
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -101,8 +101,10 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       const oldNextTab     = tab.$TST.unsafeNextTab;
       if (oldNextTab && oldNextTab.id == referenceTab.id) // no move case
         continue;
+      if (SidebarConnection.isInitialized()) { // only on the background page
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
+      }
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
@@ -203,8 +205,10 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       if ((!oldNextTab && !nextTab) ||
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
+      if (SidebarConnection.isInitialized()) { // only on the background page
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
+      }
       if (nextTab) {
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
@@ -260,7 +264,6 @@ export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
 // ========================================================
 // Synchronize order of tab elements to browser's tabs
 
-const mMovedTabs        = new Map();
 const mPreviousSync     = new Map();
 const mDelayedSync      = new Map();
 const mDelayedSyncTimer = new Map();
@@ -279,8 +282,6 @@ export async function waitUntilSynchronized(windowId) {
 function syncToNativeTabs(tabs) {
   const windowId = tabs[0].windowId;
   //log(`syncToNativeTabs(${windowId})`);
-  const movedTabs = mMovedTabs.get(windowId) || [];
-  mMovedTabs.set(windowId, movedTabs.concat(tabs));
   if (mDelayedSyncTimer.has(windowId))
     clearTimeout(mDelayedSyncTimer.get(windowId));
   const delayedSync = new Promise((resolve, _reject) => {
@@ -303,9 +304,6 @@ function syncToNativeTabs(tabs) {
 async function syncToNativeTabsInternal(windowId) {
   mDelayedSyncTimer.delete(windowId);
 
-  const oldMovedTabs = mMovedTabs.get(windowId) || [];
-  mMovedTabs.delete(windowId);
-
   if (Tab.needToWaitTracked(windowId))
     await Tab.waitUntilTrackedAll(windowId);
   if (Tab.needToWaitMoved(windowId))
@@ -314,14 +312,6 @@ async function syncToNativeTabsInternal(windowId) {
   const window = TabsStore.windows.get(windowId);
   if (!window) // already destroyed
     return;
-
-  for (const tab of oldMovedTabs) {
-    if (window.internalMovingTabs.has(tab.id)) {
-      log(`syncToNativeTabsInternal: timeout internally moved tab ${tab.id}`);
-    }
-    window.internalMovingTabs.delete(tab.id);
-    window.alreadyMovedTabs.delete(tab.id);
-  }
 
   // Tabs may be removed while waiting.
   const internalOrder   = TabsStore.windows.get(windowId).order;
@@ -370,13 +360,27 @@ async function syncToNativeTabsInternal(windowId) {
           windowId,
           index: toIndex
         });
-        browser.tabs.move(moveTabIds, {
+        let reallyMovedTabIds = new Set();
+        try {
+          const reallyMovedTabs = await browser.tabs.move(moveTabIds, {
           windowId,
           index: toIndex
         }).catch(ApiTabs.createErrorHandler(e => {
           log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
           throw e;
         }));
+          reallyMovedTabIds = new Set(reallyMovedTabs.map(tab => tab.id));
+        }
+        catch(error) {
+          log(`syncToNativeTabs(${windowId}): clear internal information for unmoved tabs: ${moveTabIds.join(', ')}`);
+        }
+        for (const id of moveTabIds) {
+          if (reallyMovedTabIds.has(id))
+            continue;
+          log(`syncToNativeTabs(${windowId}): failed to move tab ${id}: maybe unplacable position (regular tabs in pinned tabs/pinned tabs in regular tabs), or any other reason`);
+          window.internalMovingTabs.delete(id);
+          window.alreadyMovedTabs.delete(id);
+        }
         tabIdsForUpdatedIndices = tabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
         tabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
         break;
