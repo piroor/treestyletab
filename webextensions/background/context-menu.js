@@ -542,8 +542,12 @@ async function onShown(info, tab) {
 }
 browser.menus.onShown.addListener(onShown);
 
+let mLastContextTabId = null;
 async function onTabContextMenuShown(info, tab) {
-  tab = tab && Tab.get(tab.id);
+  const contextTabId = tab && tab.id;
+  mLastContextTabId = contextTabId;
+
+  tab = tab && Tab.get(contextTabId);
   const multiselected = tab && tab.$TST.multiselected;
   const contextTabs      = multiselected ? Tab.getSelectedTabs(tab.windowId) : tab ? [tab] : [];
   const hasChild         = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.hasChild);
@@ -551,6 +555,8 @@ async function onTabContextMenuShown(info, tab) {
   const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
 
   let updated = await updateItems({ multiselected });
+  if (mLastContextTabId != contextTabId)
+    return; // Skip further operations if the menu was already reopened on a different context tab.
 
   for (const item of mTabItems) {
     let newEnabled;
@@ -612,10 +618,16 @@ async function onTabContextMenuShown(info, tab) {
 }
 TabContextMenu.onTSTTabContextMenuShown.addListener(onTabContextMenuShown);
 
+let mLastContextItemId = null;
 async function onBookmarkContextMenuShown(info) {
+  const contextItemId = info.bookmarkId;
+  mLastContextItemId = contextItemId;
+
   let isFolder = true;
   if (info.bookmarkId) {
     const item = await Bookmark.getItemById(info.bookmarkId);
+    if (mLastContextItemId != contextItemId)
+      return; // Skip further operations if the menu was already reopened on a different context item.
     isFolder = (
       item.type == 'folder' ||
       (item.type == 'bookmark' &&

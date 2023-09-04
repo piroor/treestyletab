@@ -528,11 +528,17 @@ function hasVisiblePrecedingItem(separator) {
 }
 
 let mOverriddenContext = null;
+let mLastContextTabId = null;
 
 async function onShown(info, contextTab) {
+  const contextTabId = contextTab && contextTab.id;
+  mLastContextTabId = contextTabId;
   try {
-    contextTab = contextTab && Tab.get(contextTab.id);
+    contextTab = contextTab && Tab.get(contextTabId);
+
     const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({}).catch(ApiTabs.createErrorHandler())).id;
+    if (mLastContextTabId != contextTabId)
+      return; // Skip further operations if the menu was already reopened on a different context tab.
     const previousTab           = contextTab && contextTab.$TST.previousTab;
     const previousSiblingTab    = contextTab && contextTab.$TST.previousSiblingTab;
     const nextTab               = contextTab && contextTab.$TST.nextTab;
@@ -638,12 +644,16 @@ async function onShown(info, contextTab) {
       count: contextTabs.length
     }) && modifiedItemsCount++;
     await updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
+    if (mLastContextTabId != contextTabId)
+      return; // Skip further operations if the menu was already reopened on a different context tab.
     updateItem('context_topLevel_sendTreeToDevice', {
       visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
       enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected
     }) && modifiedItemsCount++;
     mItemsById.context_topLevel_sendTreeToDevice.lastVisible && await updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
+    if (mLastContextTabId != contextTabId)
+      return; // Skip further operations if the menu was already reopened on a different context tab.
 
     let showContextualIdentities = false;
     if (contextTab && !contextTab.incognito) {
