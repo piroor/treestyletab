@@ -643,17 +643,11 @@ async function onShown(info, contextTab) {
       multiselected,
       count: contextTabs.length
     }) && modifiedItemsCount++;
-    await updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }) && modifiedItemsCount++;
-    if (mLastContextTabId != contextTabId)
-      return; // Skip further operations if the menu was already reopened on a different context tab.
     updateItem('context_topLevel_sendTreeToDevice', {
       visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
       enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected
     }) && modifiedItemsCount++;
-    mItemsById.context_topLevel_sendTreeToDevice.lastVisible && await updateSendToDeviceItems('context_topLevel_sendTreeToDevice') && modifiedItemsCount++;
-    if (mLastContextTabId != contextTabId)
-      return; // Skip further operations if the menu was already reopened on a different context tab.
 
     let showContextualIdentities = false;
     if (contextTab && !contextTab.incognito) {
@@ -781,6 +775,21 @@ async function onShown(info, contextTab) {
     updateSeparator('lastSeparatorBeforeExtraItems', {
       hasVisibleFollowing: contextTab && flattenExtraItems.some(item => !item.parentId && item.visible !== false)
     }) && modifiedItemsCount++;
+
+    // these items should be updated at the last to reduce flicking of showing context menu
+    await Promise.all([
+      updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }),
+      mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice'),
+      modifiedItemsCount > 0 && browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()).then(_ => false),
+    ]).then(results => {
+      modifiedItemsCount = 0;
+      for (const modified of results) {
+        if (modified)
+          modifiedItemsCount++;
+      }
+    });
+    if (mLastContextTabId != contextTabId)
+      return; // Skip further operations if the menu was already reopened on a different context tab.
 
     /* eslint-enable no-unused-expressions */
 
