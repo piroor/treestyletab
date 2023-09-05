@@ -337,8 +337,15 @@ function onMouseDown(event) {
       TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN;
 
   mousedown.promisedMousedownNotified = Promise.all([
-    browser.runtime.sendMessage({type: apiEventType })
-      .catch(ApiTabs.createErrorHandler()),
+    browser.runtime.sendMessage({
+      type:     apiEventType,
+      button:   mousedownDetail.button,
+      altKey:   mousedownDetail.altKey,
+      ctrlKey:  mousedownDetail.ctrlKey,
+      metaKey:  mousedownDetail.metaKey,
+      shiftKey: mousedownDetail.shiftKey,
+      tab:      tab && tab.$TST.export(true),
+    }).catch(ApiTabs.createErrorHandler()),
     (async () => {
       log('Sending message to mousedown listeners ', { extraContentsInfo });
       const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(

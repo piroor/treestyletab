@@ -1302,6 +1302,18 @@ function onMessage(message, _sender) {
         mOverriddenContext.windowId = message.windowId;
       }
       break;
+
+    // For optimization we update the context menu before the menu is actually opened if possible, to reduce visual flickings.
+    // But this optimization does not work as expected on environments which shows the context menu with mousedown, like macOS.
+    case TSTAPI.kNOTIFY_TAB_MOUSEDOWN:
+      if (message.button == 2) {
+        onShown(
+          message,
+          message.tab,
+        );
+        onTSTTabContextMenuShown.dispatch(message, message.tab);
+      }
+      break;
   }
 }
 
