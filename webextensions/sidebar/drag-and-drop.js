@@ -1168,8 +1168,14 @@ onDragEnter = EventUtils.wrapWithErrorHandler(onDragEnter);
 
 function reserveToProcessLongHover(params = {}) {
   mLongHoverTimerNext = setTimeout(() => {
+    if (!mLongHoverTimerNext)
+      return; // already canceled
     mLongHoverTimerNext = null;
     mLongHoverTimer = setTimeout(async () => {
+      if (!mLongHoverTimer)
+        return; // already canceled
+
+      mLongHoverTimer = null;
       log('reservedProcessLongHover: ', params);
 
       const dragOverTab = Tab.get(params.dragOverTabId);
@@ -1212,8 +1218,14 @@ function reserveToProcessLongHover(params = {}) {
   }, 0);
 }
 reserveToProcessLongHover.cancel = function() {
+  if (mLongHoverTimer) {
   clearTimeout(mLongHoverTimer);
+    mLongHoverTimer = null;
+  }
+  if (mLongHoverTimerNext) {
   clearTimeout(mLongHoverTimerNext);
+    mLongHoverTimerNext = null;
+  }
 };
 
 function onDragLeave(event) {
@@ -1570,6 +1582,7 @@ function onFinishDrag() {
   collapseAutoExpandedTabsWhileDragging();
   mDraggingOnSelfWindow = false;
   mDraggingOnDraggedTabs = false;
+  reserveToProcessLongHover.cancel();
 }
 
 function updateLastDragEventCoordinates(event = null) {
