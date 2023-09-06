@@ -1219,11 +1219,11 @@ function reserveToProcessLongHover(params = {}) {
 }
 reserveToProcessLongHover.cancel = function() {
   if (mLongHoverTimer) {
-  clearTimeout(mLongHoverTimer);
+    clearTimeout(mLongHoverTimer);
     mLongHoverTimer = null;
   }
   if (mLongHoverTimerNext) {
-  clearTimeout(mLongHoverTimerNext);
+    clearTimeout(mLongHoverTimerNext);
     mLongHoverTimerNext = null;
   }
 };
