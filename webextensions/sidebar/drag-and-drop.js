@@ -1268,6 +1268,7 @@ function onDragLeave(event) {
       clearDropPosition();
       clearDraggingState();
       mLastDropPosition = null;
+      reserveToProcessLongHover.cancel();
     }, 10);
   }
   else if (onDragLeave.delayedLeftFromTabBar) {
