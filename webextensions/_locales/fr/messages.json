@@ -1208,7 +1208,7 @@
     "hash": "59a6e79ef78c82f7ac8ef391e4de01f5"
   },
   "helper_addons_list_link_uri": {
-    "message": "https://github.com/piroor/treestyletab/blob/master/README.md#extensions-that-extend-tst",
+    "message": "https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST",
     "hash": "8273bc1584de40aaa4ec5f04b3cd200c"
   },
   "config_externaladdonpermissions_label": {
