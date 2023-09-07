@@ -721,7 +721,6 @@ let mLastBrowserInfo = null;
 function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
-  mFinishedDragSessionIds.clear();
   if (configs.enableWorkaroundForBug1548949)
     configs.workaroundForBug1548949DroppedTabs = '';
 
@@ -877,6 +876,12 @@ function onDragStart(event, options = {}) {
 
   const sanitizedDragData = sanitizeDragData(dragData);
   dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
+
+  mFinishedDragSessionIds.clear();
+  browser.runtime.sendMessage({
+    type:      Constants.kNOTIFY_TAB_DRAG_START,
+    sessionId: sanitizedDragData.sessionId,
+  });
   log(`onDragStart: starting drag session ${sanitizedDragData.sessionId}`);
 
   // Because addon cannot read drag data across private browsing mode,
@@ -1314,8 +1319,13 @@ function onDrop(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
-  if (sessionId)
+  if (sessionId) {
     mFinishedDragSessionIds.add(sessionId);
+    browser.runtime.sendMessage({
+      type: Constants.kNOTIFY_TAB_DRAG_FINISH,
+      sessionId,
+    });
+  }
 
   log(`onDrop ${sessionId}`, dropActionInfo, event.dataTransfer);
 
@@ -1423,6 +1433,10 @@ async function onDragEnd(event) {
     dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
     dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
     mFinishedDragSessionIds.add(dragData.sessionId);
+    browser.runtime.sendMessage({
+      type:      Constants.kNOTIFY_TAB_DRAG_FINISH,
+      sessionId: dragData.sessionId,
+    });
     log(`onDragEnd: finishing drag session ${dragData.sessionId}`);
   }
 
@@ -1695,6 +1709,14 @@ function onMessage(message, _sender, _respond) {
       setDragData(message.dragData || null);
       if (!message.dragData)
         onFinishDrag();
+      break;
+
+    case Constants.kNOTIFY_TAB_DRAG_START:
+      mFinishedDragSessionIds.clear();
+      break;
+
+    case Constants.kNOTIFY_TAB_DRAG_FINISH:
+      mFinishedDragSessionIds.add(message.sessionId);
       break;
   }
 }
