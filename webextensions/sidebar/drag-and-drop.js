@@ -89,7 +89,7 @@ let mCurrentDragData       = null;
 let mDragBehaviorNotification;
 let mInstanceId;
 
-const mFinishedDragSessionIds = new Set();
+const mLivingDragSessionIds = new Set();
 
 export function init() {
   document.addEventListener('dragstart', onDragStart);
@@ -721,6 +721,7 @@ let mLastBrowserInfo = null;
 function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
+  mLivingDragSessionIds.clear();
   if (configs.enableWorkaroundForBug1548949)
     configs.workaroundForBug1548949DroppedTabs = '';
 
@@ -877,7 +878,7 @@ function onDragStart(event, options = {}) {
   const sanitizedDragData = sanitizeDragData(dragData);
   dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
 
-  mFinishedDragSessionIds.clear();
+  mLivingDragSessionIds.add(sanitizedDragData.sessionId);
   browser.runtime.sendMessage({
     type:      Constants.kNOTIFY_TAB_DRAG_START,
     sessionId: sanitizedDragData.sessionId,
@@ -1088,7 +1089,7 @@ function onDragOver(event) {
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
   if (sessionId &&
-      mFinishedDragSessionIds.has(sessionId)) {
+      !mLivingDragSessionIds.has(sessionId)) {
     // On Linux, zombie drag session can produce dragover event after it is already dropped.
     // As a workaround TST ignores such dragover events based on its custom session ID.
     // See also: https://github.com/piroor/treestyletab/issues/3374
@@ -1320,7 +1321,7 @@ function onDrop(event) {
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
   if (sessionId) {
-    mFinishedDragSessionIds.add(sessionId);
+    mLivingDragSessionIds.delete(sessionId);
     browser.runtime.sendMessage({
       type: Constants.kNOTIFY_TAB_DRAG_FINISH,
       sessionId,
@@ -1432,7 +1433,7 @@ async function onDragEnd(event) {
   if (dragData) {
     dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
     dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
-    mFinishedDragSessionIds.add(dragData.sessionId);
+    mLivingDragSessionIds.delete(dragData.sessionId);
     browser.runtime.sendMessage({
       type:      Constants.kNOTIFY_TAB_DRAG_FINISH,
       sessionId: dragData.sessionId,
@@ -1712,11 +1713,12 @@ function onMessage(message, _sender, _respond) {
       break;
 
     case Constants.kNOTIFY_TAB_DRAG_START:
-      mFinishedDragSessionIds.clear();
+      mLivingDragSessionIds.clear();
+      mLivingDragSessionIds.add(message.sessionId);
       break;
 
     case Constants.kNOTIFY_TAB_DRAG_FINISH:
-      mFinishedDragSessionIds.add(message.sessionId);
+      mLivingDragSessionIds.delete(message.sessionId);
       break;
   }
 }
