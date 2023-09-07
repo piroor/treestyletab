@@ -1090,8 +1090,8 @@ function onDragOver(event) {
   const sessionId = dragData && dragData.sessionId || '';
   if (sessionId &&
       !mLivingDragSessionIds.has(sessionId)) {
-    // On Linux, zombie drag session can produce dragover event after it is already dropped.
-    // As a workaround TST ignores such dragover events based on its custom session ID.
+    // On Linux, unexpected dragover events can be fired on various triggers unrelated to drag and drop.
+    // As a workaround TST ignores such dragover events based on the custom session ID.
     // See also: https://github.com/piroor/treestyletab/issues/3374
     log(`onDragOver: ignore already finished drag session ${sessionId}`);
     return;
