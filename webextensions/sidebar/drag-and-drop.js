@@ -1088,7 +1088,7 @@ function onDragOver(event) {
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
   if (sessionId &&
-    mFinishedDragSessionIds.has(sessionId)) {
+      mFinishedDragSessionIds.has(sessionId)) {
     // On Linux, zombie drag session can produce dragover event after it is already dropped.
     // As a workaround TST ignores such dragover events based on its custom session ID.
     // See alsp: https://github.com/piroor/treestyletab/issues/3374
