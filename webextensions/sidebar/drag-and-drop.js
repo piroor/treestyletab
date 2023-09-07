@@ -1096,6 +1096,7 @@ function onDragOver(event) {
     log(`onDragOver: ignore already finished drag session ${sessionId}`);
     return;
   }
+  log(`onDragOver: sessionId=${sessionId}, types=${dt.types}, dropEffect=${dt.dropEffect}, effectAllowed=${dt.effectAllowed}`);
 
   if (isEventFiredOnTabDropBlocker(event) ||
       !info.canDrop) {
