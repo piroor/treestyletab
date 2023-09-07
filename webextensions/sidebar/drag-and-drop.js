@@ -89,6 +89,8 @@ let mCurrentDragData       = null;
 let mDragBehaviorNotification;
 let mInstanceId;
 
+const mFinishedDragSessionIds = new Set();
+
 export function init() {
   document.addEventListener('dragstart', onDragStart);
   document.addEventListener('dragover', onDragOver);
@@ -151,12 +153,14 @@ function setDragData(dragData) {
 /* helpers */
 
 function getDragDataFromOneTab(tab, options = {}) {
+  const sessionId = `${Date.now()}-${Math.floor(Math.random() * 65000)}`;
   if (!tab)
     return {
       tab:      null,
       tabs:     [],
       windowId: null,
       instanceId: mInstanceId,
+      sessionId,
       structure:  []
     };
   const tabs = getDraggedTabsFromOneTab(tab, options);
@@ -165,7 +169,8 @@ function getDragDataFromOneTab(tab, options = {}) {
     tabs,
     structure:  TreeBehavior.getTreeStructureFromTabs(tabs),
     windowId:   tab.windowId,
-    instanceId: mInstanceId
+    instanceId: mInstanceId,
+    sessionId,
   };
 }
 
@@ -184,6 +189,7 @@ function sanitizeDragData(dragData) {
     structure:  dragData.structure,
     windowId:   dragData.windowId,
     instanceId: dragData.instanceId,
+    sessionId:  dragData.sessionId,
     behavior:   dragData.behavior,
     individualOnOutside: dragData.individualOnOutside
   };
@@ -715,6 +721,7 @@ let mLastBrowserInfo = null;
 function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
+  mFinishedDragSessionIds.clear();
   if (configs.enableWorkaroundForBug1548949)
     configs.workaroundForBug1548949DroppedTabs = '';
 
@@ -870,6 +877,7 @@ function onDragStart(event, options = {}) {
 
   const sanitizedDragData = sanitizeDragData(dragData);
   dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
+  log(`onDragStart: starting drag session ${sanitizedDragData.sessionId}`);
 
   // Because addon cannot read drag data across private browsing mode,
   // we need to share detailed information of dragged tabs in different way!
@@ -1071,9 +1079,21 @@ function onDragOver(event) {
   const info = getDropAction(event);
   const dt   = event.dataTransfer;
 
+  let dragData = dt.getData(kTREE_DROP_TYPE);
+  dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
+  const sessionId = dragData && dragData.sessionId || '';
+  if (sessionId &&
+    mFinishedDragSessionIds.has(sessionId)) {
+    // On Linux, zombie drag session can produce dragover event after it is already dropped.
+    // As a workaround TST ignores such dragover events based on its custom session ID.
+    // See alsp: https://github.com/piroor/treestyletab/issues/3374
+    log(`onDragOver: ignore already finished drag session ${sessionId}`);
+    return;
+  }
+
   if (isEventFiredOnTabDropBlocker(event) ||
       !info.canDrop) {
-    log('onDragOver: not droppable');
+    log(`onDragOver: not droppable ${sessionId}`);
     dt.dropEffect = 'none';
     if (mLastDropPosition)
       clearDropPosition();
@@ -1085,7 +1105,7 @@ function onDragOver(event) {
   if (dropPositionTargetTab && dropPositionTargetTab.$TST.collapsed)
     dropPositionTargetTab = info.targetTab.$TST.nearestVisiblePrecedingTab || info.targetTab;
   if (!dropPositionTargetTab) {
-    log('onDragOver: no drop target tab');
+    log(`onDragOver: no drop target tab ${sessionId}`);
     dt.dropEffect = 'none';
     mLastDropPosition = null;
     return;
@@ -1095,7 +1115,7 @@ function onDragOver(event) {
       dropPositionTargetTab.id != info.draggedTab.id) {
     const dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
     if (dropPosition == mLastDropPosition) {
-      log('onDragOver: no move');
+      log(`onDragOver: no move ${sessionId}`);
       return;
     }
     clearDropPosition();
@@ -1104,7 +1124,7 @@ function onDragOver(event) {
         info.dropPosition == kDROP_ON_SELF)
       info.substanceTargetTab.$TST.element.setAttribute(kDROP_POSITION, info.dropPosition);
     mLastDropPosition = dropPosition;
-    log('onDragOver: set drop position to ', dropPosition);
+    log(`onDragOver: set drop position to ${dropPosition}, ${sessionId}`);
   }
   else {
     mLastDropPosition = null;
@@ -1290,7 +1310,14 @@ function onDrop(event) {
   }
 
   const dropActionInfo = getDropAction(event);
-  log('onDrop ', dropActionInfo, event.dataTransfer);
+
+  let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
+  dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
+  const sessionId = dragData && dragData.sessionId || '';
+  if (sessionId)
+    mFinishedDragSessionIds.add(sessionId);
+
+  log(`onDrop ${sessionId}`, dropActionInfo, event.dataTransfer);
 
   if (!dropActionInfo.canDrop) {
     log('undroppable');
@@ -1395,6 +1422,8 @@ async function onDragEnd(event) {
   if (dragData) {
     dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
     dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
+    mFinishedDragSessionIds.add(dragData.sessionId);
+    log(`onDragEnd: finishing drag session ${dragData.sessionId}`);
   }
 
   TSTAPI.sendMessage({
