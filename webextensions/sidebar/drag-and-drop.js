@@ -1091,7 +1091,7 @@ function onDragOver(event) {
       mFinishedDragSessionIds.has(sessionId)) {
     // On Linux, zombie drag session can produce dragover event after it is already dropped.
     // As a workaround TST ignores such dragover events based on its custom session ID.
-    // See alsp: https://github.com/piroor/treestyletab/issues/3374
+    // See also: https://github.com/piroor/treestyletab/issues/3374
     log(`onDragOver: ignore already finished drag session ${sessionId}`);
     return;
   }
