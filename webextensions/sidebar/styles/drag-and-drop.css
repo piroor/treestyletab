@@ -63,7 +63,7 @@ tab-item.faviconized[data-drop-position="after"] tab-item-substance::before {
 }
 
 
-tab-item-drop-blocker {
+.tab-drop-blocker {
   display: none;
   min-height: calc(var(--favicon-size) / 5);
   min-width: calc(var(--favicon-size) / 5);
@@ -71,34 +71,34 @@ tab-item-drop-blocker {
   z-index: var(--blocking-ui-z-index);
 }
 
-:root.debug tab-item-drop-blocker {
+:root.debug .tab-drop-blocker {
   background: rgba(255, 0, 0, 0.5);
 }
 
-:roottab-item-dragging tab-item-drop-blocker,
-:root.link-dragging tab-item-drop-blocker {
+:root.tab-dragging .tab-drop-blocker,
+:root.link-dragging .tab-drop-blocker {
   display: block;
 }
 
-tab-item-drop-blocker#tab-drop-blocker-top {
+.tab-drop-blocker#tab-drop-blocker-top {
   left: 0;
   right: 0;
   top: 0;
 }
 
-tab-item-drop-blocker#tab-drop-blocker-right {
+.tab-drop-blocker#tab-drop-blocker-right {
   bottom: 0;
   right: 0;
   top: 0;
 }
 
-tab-item-drop-blocker#tab-drop-blocker-bottom {
+.tab-drop-blocker#tab-drop-blocker-bottom {
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-tab-item-drop-blocker#tab-drop-blocker-left {
+.tab-drop-blocker#tab-drop-blocker-left {
   bottom: 0;
   left: 0;
   top: 0;
