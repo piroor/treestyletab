@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2022
+ * Portions created by the Initial Developer are Copyright (C) 2010-2023
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1049,6 +1049,16 @@ let mLastDragOverTimestamp = null;
 let mDelayedClearDropPosition = null;
 
 function onDragOver(event) {
+  const dt = event.dataTransfer;
+  if (dt.types.length == 0 ||
+      dt.effectAllowed == 'uninitialized') {
+    // On Linux, unexpected invalid dragover events can be fired on various triggers unrelated to drag and drop.
+    // TST ignores such events as a workaround.
+    // See also: https://github.com/piroor/treestyletab/issues/3374
+    log('onDragOver: ignore invalid dragover event');
+    return;
+  }
+
   if (mFinishCanceledDragOperation) {
     clearTimeout(mFinishCanceledDragOperation);
     mFinishCanceledDragOperation = null;
@@ -1075,7 +1085,6 @@ function onDragOver(event) {
   mLastDragOverTimestamp = now;
 
   const info = getDropAction(event);
-  const dt   = event.dataTransfer;
 
   let dragData = dt.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
