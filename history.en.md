@@ -4,6 +4,7 @@
    * Handle tabs internally moved by TST itself more correctly. Reduced wrong placements of tabs opened from a pinned parent on some situations.
    * Optimize initialization process of the tab context menu on the sidebar page. Reduced delayed update of menu items after the menu appears on the screen.
    * Reduced visual gap between the last tab and the new tab button in a scrollable tab bar with the Proton theme.
+   * Successfully detach a tab to a new window when a tab is dragged, moved to streight left or right and dropped at undroppable location, more certainly. The operation was unexpectedly blocked by a workaround for [an old issue already fixed at Firefox 71](https://github.com/piroor/treestyletab/issues/1778).
    * Update link to the list of known helper addons: now [it is an wiki page](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST).
    * Introduce a workaround for [a platform specific problem: unexpected reaction for drag events is triggered after a finished drag-and-drop actions](https://github.com/piroor/treestyletab/issues/3374).
    * API: Add new notification type [`try-collapse-tree-from-collapse-command` and `try-collapse-tree-from-collapse-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-collapsion-of-expanded-tree-by-tst) to allow blocing of collaption of tree by commands.
