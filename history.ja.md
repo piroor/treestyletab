@@ -1,6 +1,15 @@
 # 更新履歴
 
  - master/HEAD
+   * TSTによる内部的なタブの再配置時の取り扱いを改善し、ピン留めされたタブを親として開かれた子タブが誤った位置に配置されにくくなるようにした
+   * サイドバー上でのコンテキストメニューの初期化処理を最適化し、メニューが画面に現れてから遅れて項目が更新される様子を観測されにくくした
+   * Protonテーマでの最後のタブと「新しいタブ」ボタンの間の無駄なスペースを減らした
+   * ヘルパーアドオンの一覧へのリンクを更新（[Wikiのページになりました](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST)）
+   * [特定のプラットフォームでドラッグ＆ドロップ操作の後に予期されないドラッグイベントへの反応が起こる事がある問題](https://github.com/piroor/treestyletab/issues/3374)を回避するようにした
+   * API: 新しい通知型の [`try-collapse-tree-from-collapse-command` と `try-collapse-tree-from-collapse-all-command`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-collapsion-of-expanded-tree-by-tst) を追加し、ユーザーの操作でツリーが折りたたまれるのを防げるようにした
+   * ツリーの開閉つまみのスタイル定義を更新し、`margin`と`padding`で簡単に位置を調整できるようにした
+   * ユーザー定義のスタイル指定によるカスタマイズ機能の名前付けを「ユーザースタイルシート」に統一した
+   * `ru`ロケール更新（by [wvxwxvw](https://github.com/wvxwxvw), thanks!）
  - 3.9.16 (2023.7.21)
    * faviconの取り扱いに関するメモリ消費を削減
    * 「新しいタブ」ボタンの上での右クリックでコンテナーの選択肢を表示するようにした（最近のバージョンのFirefoxの挙動を再現）
