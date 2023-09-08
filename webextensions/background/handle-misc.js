@@ -358,7 +358,11 @@ function onMessage(message, sender) {
         while (!mInitialized) {
           await wait(10);
         }
-        const structure = TreeBehavior.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
+        const structure = TreeBehavior.getTreeStructureFromTabs(
+          message.windowId ?
+            Tab.getAllTabs(message.windowId) :
+            message.tabIds.map(id => Tab.get(id))
+        );
         return { structure };
       })();
 

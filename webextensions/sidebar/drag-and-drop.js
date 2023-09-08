@@ -1373,7 +1373,13 @@ function onDrop(event) {
         windowId:    recentTab.windowId,
         highlighted: true,
       });
-      log('maybe dragged tabs: ', multiselectedTabs);
+      const structure = (recentTab.windowId == TabsStore.getCurrentWindowId()) ?
+        TreeBehavior.getTreeStructureFromTabs(multiselectedTabs.map(tab => Tab.get(tab.id))) :
+        (await browser.runtime.sendMessage({
+          type: Constants.kCOMMAND_PULL_TREE_STRUCTURE,
+          tabIds: multiselectedTabs.map(tab => tab.id),
+        })).structure;
+      log('maybe dragged tabs: ', multiselectedTabs, structure);
 
       const allowedActions = event.shiftKey ?
         configs.tabDragBehaviorShift :
@@ -1382,7 +1388,7 @@ function onDrop(event) {
         type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
         windowId:            recentTab.windowId,
         tabs:                multiselectedTabs,
-        structure:           TreeBehavior.getTreeStructureFromTabs(multiselectedTabs.map(tab => Tab.get(tab.id))),
+        structure,
         action:              dropActionInfo.action,
         allowedActions,
         attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
