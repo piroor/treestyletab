@@ -1353,9 +1353,9 @@ function onDrop(event) {
 
   if (dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL) &&
       configs.guessDraggedNativeTabs) {
-    log('there are dragged native tabs');
     const url = dt.getData(kTYPE_MOZ_TEXT_INTERNAL);
-    browser.tabs.query({ url }).then(tabs => {
+    log(`there are dragged native tabs with the URL: ${url}`);
+    browser.tabs.query({ url }).then(async tabs => {
       if (!tabs.length) {
         log('=> from other profile');
         handleDroppedNonTabItems(event, dropActionInfo);
@@ -1368,14 +1368,21 @@ function onDrop(event) {
         log('workaround for bug 1548949: setting last dropped tabs: ', configs.workaroundForBug1548949DroppedTabs);
       }
       const recentTab = tabs[0];
+
+      const multiselectedTabs = await browser.tabs.query({
+        windowId:    recentTab.windowId,
+        highlighted: true,
+      });
+      log('maybe dragged tabs: ', multiselectedTabs);
+
       const allowedActions = event.shiftKey ?
         configs.tabDragBehaviorShift :
         configs.tabDragBehavior;
       BackgroundConnection.sendMessage({
         type:                Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
         windowId:            recentTab.windowId,
-        tabs:                [recentTab],
-        structure:           [-1],
+        tabs:                multiselectedTabs,
+        structure:           TreeBehavior.getTreeStructureFromTabs(multiselectedTabs.map(tab => Tab.get(tab.id))),
         action:              dropActionInfo.action,
         allowedActions,
         attachToId:          dropActionInfo.parent && dropActionInfo.parent.id,
