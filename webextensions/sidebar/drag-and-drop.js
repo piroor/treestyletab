@@ -1294,11 +1294,11 @@ function onDragLeave(event) {
 onDragLeave = EventUtils.wrapWithErrorHandler(onDragLeave);
 
 function onDrop(event) {
-  setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
-  if (mLastDropPosition) {
-    clearDropPosition();
-    mLastDropPosition = null;
-  }
+  setTimeout(() => {
+    collapseAutoExpandedTabsWhileDragging();
+    // Don't clear flags immediately, because they are referred by following operations in this function.
+    finishDrag('onDrop');
+  }, 0);
 
   const dropActionInfo = getDropAction(event);
 
