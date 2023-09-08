@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.17 (2023.9.8)
    * Handle tabs internally moved by TST itself more correctly. Reduced wrong placements of tabs opened from a pinned parent on some situations.
    * Optimize initialization process of the tab context menu on the sidebar page. Reduced delayed update of menu items after the menu appears on the screen.
    * Reduced visual gap between the last tab and the new tab button in a scrollable tab bar with the Proton theme.
