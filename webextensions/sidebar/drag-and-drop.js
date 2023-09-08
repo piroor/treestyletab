@@ -89,8 +89,6 @@ let mCurrentDragData       = null;
 let mDragBehaviorNotification;
 let mInstanceId;
 
-const mLivingDragSessionIds = new Set();
-
 export function init() {
   document.addEventListener('dragstart', onDragStart);
   document.addEventListener('dragover', onDragOver);
@@ -721,7 +719,6 @@ let mLastBrowserInfo = null;
 function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
-  mLivingDragSessionIds.clear();
   if (configs.enableWorkaroundForBug1548949)
     configs.workaroundForBug1548949DroppedTabs = '';
 
@@ -878,11 +875,6 @@ function onDragStart(event, options = {}) {
   const sanitizedDragData = sanitizeDragData(dragData);
   dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
 
-  mLivingDragSessionIds.add(sanitizedDragData.sessionId);
-  browser.runtime.sendMessage({
-    type:      Constants.kNOTIFY_TAB_DRAG_START,
-    sessionId: sanitizedDragData.sessionId,
-  });
   log(`onDragStart: starting drag session ${sanitizedDragData.sessionId}`);
 
   // Because addon cannot read drag data across private browsing mode,
@@ -1088,14 +1080,6 @@ function onDragOver(event) {
   let dragData = dt.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
-  if (sessionId &&
-      !mLivingDragSessionIds.has(sessionId)) {
-    // On Linux, unexpected dragover events can be fired on various triggers unrelated to drag and drop.
-    // As a workaround TST ignores such dragover events based on the custom session ID.
-    // See also: https://github.com/piroor/treestyletab/issues/3374
-    log(`onDragOver: ignore already finished drag session ${sessionId}`);
-    return;
-  }
   log(`onDragOver: sessionId=${sessionId}, types=${dt.types}, dropEffect=${dt.dropEffect}, effectAllowed=${dt.effectAllowed}`);
 
   if (isEventFiredOnTabDropBlocker(event) ||
@@ -1321,14 +1305,6 @@ function onDrop(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   const sessionId = dragData && dragData.sessionId || '';
-  if (sessionId) {
-    mLivingDragSessionIds.delete(sessionId);
-    browser.runtime.sendMessage({
-      type: Constants.kNOTIFY_TAB_DRAG_FINISH,
-      sessionId,
-    });
-  }
-
   log(`onDrop ${sessionId}`, dropActionInfo, event.dataTransfer);
 
   if (!dropActionInfo.canDrop) {
@@ -1434,11 +1410,6 @@ async function onDragEnd(event) {
   if (dragData) {
     dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
     dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
-    mLivingDragSessionIds.delete(dragData.sessionId);
-    browser.runtime.sendMessage({
-      type:      Constants.kNOTIFY_TAB_DRAG_FINISH,
-      sessionId: dragData.sessionId,
-    });
     log(`onDragEnd: finishing drag session ${dragData.sessionId}`);
   }
 
@@ -1711,15 +1682,6 @@ function onMessage(message, _sender, _respond) {
       setDragData(message.dragData || null);
       if (!message.dragData)
         onFinishDrag();
-      break;
-
-    case Constants.kNOTIFY_TAB_DRAG_START:
-      mLivingDragSessionIds.clear();
-      mLivingDragSessionIds.add(message.sessionId);
-      break;
-
-    case Constants.kNOTIFY_TAB_DRAG_FINISH:
-      mLivingDragSessionIds.delete(message.sessionId);
       break;
   }
 }

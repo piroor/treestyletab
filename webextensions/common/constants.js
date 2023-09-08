@@ -97,8 +97,6 @@ export const kCOMMAND_BOOKMARK_TABS_WITH_DIALOG = 'treestyletab:bookmark-tabs-wi
 
 export const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
 export const kNOTIFY_TAB_MOUSEDOWN_EXPIRED  = 'treestyletab:tab-mousedown-expired';
-export const kNOTIFY_TAB_DRAG_START  = 'treestyletab:tab-drag-start';
-export const kNOTIFY_TAB_DRAG_FINISH = 'treestyletab:tab-drag-finish';
 
 export const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
 export const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';
