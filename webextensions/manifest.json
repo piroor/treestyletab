@@ -216,7 +216,7 @@
   "applications": {
     "gecko": {
       "id": "treestyletab@piro.sakura.ne.jp",
-      "strict_min_version": "67.0"
+      "strict_min_version": "102.0"
     }
   }
 }

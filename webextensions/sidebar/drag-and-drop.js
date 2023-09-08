@@ -929,14 +929,6 @@ function onDragStart(event, options = {}) {
   TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
-  // The drag operation can be canceled by something, then
-  // "dragend" event is not dispatched and TST wrongly keeps
-  // its "dragging" state. So we clear the dragging state with
-  // a delay. (This timer will be cleared immediately by dragover
-  // event, if the dragging operation is not canceled.)
-  // See also: https://github.com/piroor/treestyletab/issues/1778#issuecomment-404569842
-  mFinishCanceledDragOperation = setTimeout(finishDrag, 500, 'onDragStart');
-
   if (!('behavior' in options) &&
       configs.showTabDragBehaviorNotification) {
     const invertedBehavior = event.shiftKey ? configs.tabDragBehavior : configs.tabDragBehaviorShift;
