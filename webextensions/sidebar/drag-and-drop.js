@@ -1050,8 +1050,7 @@ let mDelayedClearDropPosition = null;
 
 function onDragOver(event) {
   const dt = event.dataTransfer;
-  if (dt.types.length == 0 ||
-      dt.effectAllowed == 'uninitialized') {
+  if (dt.types.length == 0) {
     // On Linux, unexpected invalid dragover events can be fired on various triggers unrelated to drag and drop.
     // TST ignores such events as a workaround.
     // See also: https://github.com/piroor/treestyletab/issues/3374
