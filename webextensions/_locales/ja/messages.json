@@ -709,7 +709,7 @@
   "config_addons_description_before": { "message": "\u200b" },
   "config_addons_description_link_label": { "message": "TST自体を拡張する他のアドオン" },
   "config_addons_description_after": { "message": "を組み合わせると、TSTのサイドバーにさらに機能を追加できます。" },
-  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST" },
+  "helper_addons_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/TST%E3%81%AE%E6%A9%9F%E8%83%BD%E3%82%92%E6%8B%A1%E5%BC%B5%E3%81%99%E3%82%8B%E3%82%A2%E3%83%89%E3%82%AA%E3%83%B3" },
 
   "config_theme_description_before": { "message": "組み込みのテーマは現在「Plain」「Sidebar」「ハイコントラスト」のみ利用可能です。他のテーマを使用したい場合、" },
   "config_theme_description_link_label": { "message": "コードスニペット" },
