@@ -146,15 +146,12 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
     delete updateVisualMaxTreeLevel.waiting;
   }
 
-  if (!shouldApplyAnimation()) {
-    updateVisualMaxTreeLevel();
-    return;
-  }
+  const delay = shouldApplyAnimation() ? configs.collapseDuration * 1.5 : 0;
 
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
     delete updateVisualMaxTreeLevel.waiting;
     updateVisualMaxTreeLevel();
-  }, configs.collapseDuration * 1.5);
+  }, delay);
 }
 
 function updateVisualMaxTreeLevel() {
