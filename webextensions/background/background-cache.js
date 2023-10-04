@@ -10,6 +10,8 @@ import {
   dumpTab,
   wait,
   mapAndFilter,
+  compress,
+  decompress,
   configs
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -297,10 +299,11 @@ async function updateWindowCache(owner, key, value) {
   }
   else {
     try {
-      return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
+      const valueToSave = await compress(value);
+      return browser.sessions.setWindowValue(owner.windowId, key, valueToSave).catch(ApiTabs.createErrorSuppressor());
     }
-    catch(e) {
-      console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
+    catch(error) {
+      console.log(new Error('fatal error: failed to update window cache'), error, owner, key, value);
     }
   }
 }
@@ -318,7 +321,8 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
+  const value = await browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
+  return decompress(value);
 }
 
 function getWindowCacheOwner(windowId) {
