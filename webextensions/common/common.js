@@ -941,7 +941,6 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
 }
 
 export async function compress(input) {
-  return input;
   try {
     const start = Date.now();
     const streamToCompress = new Blob([JSON.stringify(input)]).stream();
