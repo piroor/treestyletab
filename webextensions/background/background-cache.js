@@ -298,15 +298,22 @@ async function updateWindowCache(owner, key, value) {
     }
   }
   else {
+    const lastUpdateKey = `${owner.windowId}-${key}`;
+    const startAt = Date.now();
+    updateWindowCache.lastUpdateAt.set(lastUpdateKey, startAt);
     try {
       const valueToSave = await compress(value);
+      if (updateWindowCache.lastUpdateAt.get(lastUpdateKey) != startAt)
+        return null;
       return browser.sessions.setWindowValue(owner.windowId, key, valueToSave).catch(ApiTabs.createErrorSuppressor());
     }
     catch(error) {
       console.log(new Error('fatal error: failed to update window cache'), error, owner, key, value);
     }
+    updateWindowCache.lastUpdateAt.delete(lastUpdateKey);
   }
 }
+updateWindowCache.lastUpdateAt = new Map();
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
   const window = TabsStore.windows.get(tab.windowId);

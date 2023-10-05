@@ -513,7 +513,9 @@ async function updateCachedTabbar() {
   const signature = getWindowSignature(Tab.getAllTabs(mTargetWindow));
   log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
-  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, await compress({
+  const startAt = Date.now();
+  updateCachedTabbar.lastUpdateAt = startAt;
+  const cache = await compress({
     version: kCONTENTS_VERSION,
     tabbar: {
       contents:        SidebarTabs.wholeContainer.innerHTML,
@@ -522,7 +524,10 @@ async function updateCachedTabbar() {
     },
     indent: Indent.getCacheInfo(),
     signature
-  }));
+  });
+  if (updateCachedTabbar.lastUpdateAt != startAt)
+    return;
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, cache);
 }
 
 
