@@ -943,7 +943,8 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
 export async function compress(input) {
   try {
     const start = Date.now();
-    const streamToCompress = new Blob([JSON.stringify(input)]).stream();
+    const brobToCompress = new Blob([JSON.stringify(input)]);
+    const streamToCompress = brobToCompress.stream();
     const format = 'deflate-raw';
     // eslint-disable-next-line no-undef
     const compressedStream = streamToCompress.pipeThrough(new CompressionStream(format));
@@ -954,7 +955,7 @@ export async function compress(input) {
     for (let i = 0, maxi = compressedBytes.byteLength; i < maxi; i++) {
       compressedString += String.fromCharCode(compressedBytes[i]);
     }
-    console.log('compressed: ', Date.now() - start);
+    console.log(`compressed: ${Date.now() - start} msec to reduce ${brobToCompress.size - compressedBytes.byteLength} bytes (${brobToCompress.size} => ${compressedBytes.byteLength})`);
     return `compressed(deflate-raw):${btoa(compressedString)}`;
   }
   catch(error) {
