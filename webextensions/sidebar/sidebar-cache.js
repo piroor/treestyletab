@@ -14,9 +14,7 @@ import {
   countMatched,
   toLines,
   configs,
-  shouldApplyAnimation,
-  compress,
-  decompress,
+  shouldApplyAnimation
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -81,10 +79,10 @@ export async function tryPreload(tab = null) {
 
 async function preload(tab) {
   const cache = await Promise.all([
-    browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR).then(decompress),
+    browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR),
     browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
     browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-    browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR).then(decompress),
+    browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR),
     browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
     browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
   ]).catch(ApiTabs.createErrorSuppressor());
@@ -112,7 +110,7 @@ export async function getEffectiveWindowCache(options = {}) {
       let tabsDirty, collapsedDirty;
       const preloadedCache = mPreloadedCaches.get(`window${mLastWindowCacheOwner.windowId}`);
       [cache, tabsDirty, collapsedDirty] = preloadedCache || await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
-        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR).then(decompress),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]));
@@ -513,9 +511,7 @@ async function updateCachedTabbar() {
   const signature = getWindowSignature(Tab.getAllTabs(mTargetWindow));
   log('updateCachedTabbar ', { stack: configs.debug && new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
-  const startAt = Date.now();
-  updateCachedTabbar.lastUpdateAt = startAt;
-  const cache = {
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: kCONTENTS_VERSION,
     tabbar: {
       contents:        SidebarTabs.wholeContainer.innerHTML,
@@ -524,13 +520,7 @@ async function updateCachedTabbar() {
     },
     indent: Indent.getCacheInfo(),
     signature
-  };
-  const dataToSave = configs.cacheCompressionEnabled ?
-    (await compress(cache)) :
-    cache;
-  if (updateCachedTabbar.lastUpdateAt != startAt)
-    return;
-  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, dataToSave);
+  });
 }
 
 

@@ -10,8 +10,6 @@ import {
   dumpTab,
   wait,
   mapAndFilter,
-  compress,
-  decompress,
   configs
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
@@ -298,24 +296,14 @@ async function updateWindowCache(owner, key, value) {
     }
   }
   else {
-    const lastUpdateKey = `${owner.windowId}-${key}`;
-    const startAt = Date.now();
-    updateWindowCache.lastUpdateAt.set(lastUpdateKey, startAt);
     try {
-      const valueToSave = configs.cacheCompressionEnabled ?
-        (await compress(value)) :
-        value;
-      if (updateWindowCache.lastUpdateAt.get(lastUpdateKey) != startAt)
-        return null;
-      return browser.sessions.setWindowValue(owner.windowId, key, valueToSave).catch(ApiTabs.createErrorSuppressor());
+      return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
     }
-    catch(error) {
-      console.log(new Error('fatal error: failed to update window cache'), error, owner, key, value);
+    catch(e) {
+      console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
     }
-    updateWindowCache.lastUpdateAt.delete(lastUpdateKey);
   }
 }
-updateWindowCache.lastUpdateAt = new Map();
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
   const window = TabsStore.windows.get(tab.windowId);
@@ -330,8 +318,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  const value = await browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
-  return decompress(value);
+  return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
 }
 
 function getWindowCacheOwner(windowId) {

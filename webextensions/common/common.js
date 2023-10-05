@@ -346,7 +346,6 @@ export const configs = new Configs({
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,
-  cacheCompressionEnabled: false,
 
   // This should be removed after https://bugzilla.mozilla.org/show_bug.cgi?id=1388193
   // or https://bugzilla.mozilla.org/show_bug.cgi?id=1421329 become fixed.
@@ -939,57 +938,6 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
     delete params.height;
   }
   return params;
-}
-
-export async function compress(input) {
-  try {
-    const start = Date.now();
-    const brobToCompress = new Blob([JSON.stringify(input)]);
-    const streamToCompress = brobToCompress.stream();
-    const format = 'deflate-raw';
-    // eslint-disable-next-line no-undef
-    const compressedStream = streamToCompress.pipeThrough(new CompressionStream(format));
-    const response = new Response(compressedStream);
-    const compressedArrayBuffer = await response.arrayBuffer();
-    const compressedBytes = new Uint8Array(compressedArrayBuffer);
-    let compressedString = '';
-    for (let i = 0, maxi = compressedBytes.byteLength; i < maxi; i++) {
-      compressedString += String.fromCharCode(compressedBytes[i]);
-    }
-    console.log(`compressed: ${Date.now() - start} msec to reduce ${brobToCompress.size - compressedBytes.byteLength} bytes (${brobToCompress.size} => ${compressedBytes.byteLength})`);
-    return `compressed(deflate-raw):${btoa(compressedString)}`;
-  }
-  catch(error) {
-    console.log('could not compress data: ', error);
-  }
-  return input;
-}
-
-export async function decompress(input) {
-  const matched = typeof input == 'string' && input.match(/^compressed\(([^\)]+)\):/);
-  if (!matched)
-    return input;
-
-  try {
-    const start = Date.now();
-    const format = matched[1];
-    const valueToDecompress = atob(input.replace(/^compressed\([^\)]+\):/, ''));
-    const compressedBytes = new Uint8Array(valueToDecompress.length);
-    for (let i = 0, maxi = valueToDecompress.length; i < maxi; i++) {
-      compressedBytes[i] = valueToDecompress.charCodeAt(i);
-    }
-    const compressedStream = new Blob([compressedBytes]).stream();
-    // eslint-disable-next-line no-undef
-    const decompressedStream = compressedStream.pipeThrough(new DecompressionStream(format));
-    const response = new Response(decompressedStream);
-    const decompressedValue = await response.text();
-    console.log('decompressed: ', Date.now() - start);
-    return JSON.parse(decompressedValue);
-  }
-  catch(error) {
-    console.log('could not decompress data: ', error);
-  }
-  return null;
 }
 
 export function isNewTabCommandURL(url) {
