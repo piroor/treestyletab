@@ -752,6 +752,7 @@
   "config_staticARIALabel_description": { "message": "※何らかのタブ操作のあとで音声認識システムがタブ要素を見失ってしまう場合、このチェックをONにしてください。" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_useCachedTree_description": { "message": "※キャッシュの不整合で動作が不安定になっている場合、このチェックをOFFにして再度ONにすることでキャッシュが刷新され状況が改善するかもしれません。" },
+  "config_cacheCompressionEnabled_label": { "message": "セッションデータの削減のためキャッシュを圧縮する（※CPUの使用率が上昇し、サイドバーの内容の描画に時間がかかるようになる恐れがあります）" },
   "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },

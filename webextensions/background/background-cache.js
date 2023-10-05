@@ -302,7 +302,9 @@ async function updateWindowCache(owner, key, value) {
     const startAt = Date.now();
     updateWindowCache.lastUpdateAt.set(lastUpdateKey, startAt);
     try {
-      const valueToSave = await compress(value);
+      const valueToSave = configs.cacheCompressionEnabled ?
+        (await compress(value)) :
+        value;
       if (updateWindowCache.lastUpdateAt.get(lastUpdateKey) != startAt)
         return null;
       return browser.sessions.setWindowValue(owner.windowId, key, valueToSave).catch(ApiTabs.createErrorSuppressor());
