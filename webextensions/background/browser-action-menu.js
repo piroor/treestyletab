@@ -173,29 +173,6 @@ const mItems = [
         key:   'showDialogInSidebar',
         type:  'checkbox'
       },
-      {
-        title:    browser.i18n.getMessage('config_iconColor_caption'),
-        children: [
-          {
-            title: browser.i18n.getMessage('config_iconColor_auto'),
-            key:   'iconColor',
-            value: 'auto',
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_iconColor_bright'),
-            key:   'iconColor',
-            value: 'bright',
-            type:  'radio'
-          },
-          {
-            title: browser.i18n.getMessage('config_iconColor_dark'),
-            key:   'iconColor',
-            value: 'dark',
-            type:  'radio'
-          },
-        ],
-      },
     ]
   },
   {

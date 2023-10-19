@@ -773,8 +773,6 @@ async function updateIconForBrowserTheme(theme) {
   const menuIcons    = {};
   const sidebarIcons = {};
 
-  switch (configs.iconColor) {
-    case 'auto': {
       if (!theme) {
         const window = await browser.windows.getLastFocused();
         theme = await browser.theme.getCurrent(window.id);
@@ -797,34 +795,12 @@ async function updateIconForBrowserTheme(theme) {
           sidebarIcons[size] = `data:image/svg+xml,${escape(sidebarIconSource)}#default-theme`;
         }));
       }
-      else if (mDarkModeMatchMedia.matches) { // dark mode
-        for (const [size, url] of Object.entries(BASE_ICONS)) {
-          toolbarIcons[size] = `${url}#toolbar-dark`;
-          menuIcons[size] = sidebarIcons[size] = `${url}#default-dark`;
-        }
-      }
       else {
         for (const [size, url] of Object.entries(BASE_ICONS)) {
-          toolbarIcons[size] = `${url}#toolbar-bright`;
-          menuIcons[size] = sidebarIcons[size] = `${url}#default-bright`;
+          toolbarIcons[size] = `${url}#toolbar`;
+          menuIcons[size] = sidebarIcons[size] = `${url}#default`;
         }
       }
-    }; break;
-
-    case 'bright':
-      for (const [size, url] of Object.entries(BASE_ICONS)) {
-        toolbarIcons[size] = `${url}#toolbar-bright`;
-        menuIcons[size] = sidebarIcons[size] = `${url}#default-bright`;
-      }
-      break;
-
-    case 'dark':
-      for (const [size, url] of Object.entries(BASE_ICONS)) {
-        toolbarIcons[size] = `${url}#toolbar-dark`;
-        menuIcons[size] = sidebarIcons[size] = `${url}#default-dark`;
-      }
-      break;
-  }
 
   log('updateIconForBrowserTheme: applying icons: ', {
     toolbarIcons,
@@ -854,10 +830,6 @@ configs.$addObserver(key => {
   switch (key) {
     case 'style':
       updatePanelUrl();
-      break;
-
-    case 'iconColor':
-      updateIconForBrowserTheme();
       break;
 
     case 'debug':
