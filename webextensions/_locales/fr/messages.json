@@ -507,6 +507,10 @@
     "message": "Replier cet arbre",
     "hash": "a95425b3c370c1bbb988df427f1d7fc6"
   },
+  "context_collapseTreeRecursively_command": {
+    "message": "Replier cet arbre de manière récursive",
+    "hash": "44b057ea5001462a41d718e9cb1241fa"
+  },
   "context_collapseAll_label": {
     "message": "Replier tout",
     "hash": "a4afcd42a5e734361d983f6f07b785fc"
@@ -523,6 +527,10 @@
     "message": "Déplier cet arbre",
     "hash": "904fbb34e0e5498cae6331847ae47cdf"
   },
+  "context_expandTreeRecursively_command": {
+    "message": "Déplier cet arbre de manière récursive",
+    "hash": "87dad53b83d57450ee231257899205b6"
+  },
   "context_expandAll_label": {
     "message": "Déplier tout",
     "hash": "f7c1013fa700568a2d6d13707c8aa179"
@@ -534,6 +542,10 @@
   "context_bookmarkTree_label": {
     "message": "Ajouter cet arbre aux marque-pages…",
     "hash": "3ebdc5bea63419b433495f0e2468a70f"
+  },
+  "context_bookmarkTree_label_multiselected": {
+    "message": "Ajouter les arbres sélectionnés aux marque-pages…",
+    "hash": "37b118aedc5561864d12950abfbc3877"
   },
   "context_bookmarkTree_command": {
     "message": "Ajouter cet arbre aux marque-pages…",
@@ -566,6 +578,10 @@
   "context_unpinnedTab_label": {
     "message": "Désépinglé (pour tester un menu type bouton radio)",
     "hash": "b2b1a6039b6830829f470b9df32328e4"
+  },
+  "context_openAllBookmarksWithStructure_label": {
+    "message": "Ouvrir tout le dossier en tant qu'arbre",
+    "hash": "764953a77356c4ff886ad85096e3894c"
   },
   "config_title": {
     "message": "Options de Tree Style Tab",
@@ -675,9 +691,25 @@
     "message": "Sous-menu",
     "hash": "522d8c2da823fd4d30e6631167896222"
   },
-  "config_newTab_caption_TRANSLATION_NEED_UPDATED": {
-    "message": "Comportement des nouveaux onglets",
-    "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
+  "config_insertNewTabFromPinnedTabAt_caption": {
+    "message": "Position de l'insertion des nouveaux onglets ouverts depuis des onglets épinglés",
+    "hash": "f9f9426299003b53682d1859532aa18d"
+  },
+  "config_insertNewTabFromPinnedTabAt_noControl": {
+    "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)",
+    "hash": "a9ad40068782c9923062b5cc735bdcb2"
+  },
+  "config_insertNewTabFromPinnedTabAt_top": {
+    "message": "Insérer en haut de l'arbre, comme premier enfant",
+    "hash": "bda67b6e138e3b7b79fe858e8afb7702"
+  },
+  "config_insertNewTabFromPinnedTabAt_end": {
+    "message": "Ajouter à la fin de l'arbre",
+    "hash": "fb8149b1acff1a3722270b8ba8d4f816"
+  },
+  "config_autoGroupNewTabsFromPinned_label": {
+    "message": "Grouper automatiquement les onglets ouverts depuis le même onglet épinglé",
+    "hash": "73c8ab8287681c2d6185c5de3e5a2c6d"
   },
   "config_longPressOnNewTabButton_before": {
     "message": "Faire un appui long sur le bouton « Nouvel onglet » pour ",
@@ -738,10 +770,6 @@
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
     "message": "Deviner qu'un nouvel onglet est un « nouvel onglet vide » quand son URL est :",
     "hash": "5f31a28b4ce2ed39bfe9b2e7fb741cc4"
-  },
-  "_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": "\u200b",
-    "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
     "message": "Avec le clic du milieu, ouvrir un nouvel onglet vierge comme",
@@ -895,38 +923,6 @@
     "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
-  "config_insertNewChildAt_caption": {
-    "message": "Position d'insertion des nouveaux onglets enfants",
-    "hash": "1c30663590c21f4fc422a876cca96a7a"
-  },
-  "config_insertNewChildAt_noControl": {
-    "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)",
-    "hash": "a9ad40068782c9923062b5cc735bdcb2"
-  },
-  "config_insertNewChildAt_top": {
-    "message": "Insérer en haut de l'arbre, comme premier enfant",
-    "hash": "5478175bb6c93e5c90749dc5ffd56639"
-  },
-  "config_insertNewChildAt_end": {
-    "message": "Ajouter à la fin de l'arbre",
-    "hash": "fb8149b1acff1a3722270b8ba8d4f816"
-  },
-  "config_insertNewTabFromPinnedTabAt_caption": {
-    "message": "Position de l'insertion des nouveaux onglets ouverts depuis des onglets épinglés",
-    "hash": "f9f9426299003b53682d1859532aa18d"
-  },
-  "config_insertNewTabFromPinnedTabAt_noControl": {
-    "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)",
-    "hash": "a9ad40068782c9923062b5cc735bdcb2"
-  },
-  "config_insertNewTabFromPinnedTabAt_top": {
-    "message": "Insérer en haut de l'arbre, comme premier enfant",
-    "hash": "bda67b6e138e3b7b79fe858e8afb7702"
-  },
-  "config_insertNewTabFromPinnedTabAt_end": {
-    "message": "Ajouter à la fin de l'arbre",
-    "hash": "fb8149b1acff1a3722270b8ba8d4f816"
-  },
   "config_groupTab_caption": {
     "message": "Groupement automatique des onglets",
     "hash": "998c6484eb3eccfe367c727c71d482ae"
@@ -942,10 +938,6 @@
   "config_warnOnAutoGroupNewTabs_label": {
     "message": "Confirmer le groupement d'onglets",
     "hash": "bf0d9bbb7f1c65e48bcd6dad00d5fa55"
-  },
-  "config_autoGroupNewTabsFromPinned_label": {
-    "message": "Grouper automatiquement les onglets ouverts depuis le même onglet épinglé",
-    "hash": "73c8ab8287681c2d6185c5de3e5a2c6d"
   },
   "config_renderTreeInGroupTabs_label": {
     "message": "Afficher les arbres dans les onglets de groupe",
@@ -1035,9 +1027,33 @@
     "message": "Personnalisé",
     "hash": "1685452bc68395b620b0ce1fb9b76da5"
   },
+  "config_closeParentBehavior_noSidebar_collapsed_caption": {
+    "message": "si la barre latérale est fermée,",
+    "hash": "04048d7d2cb0e5b7b226483683babbb9"
+  },
+  "config_closeParentBehavior_noSidebar_expanded_caption": {
+    "message": "si la barre latérale est fermée,",
+    "hash": "04048d7d2cb0e5b7b226483683babbb9"
+  },
+  "config_moveParentBehavior_noSidebar_collapsed_caption": {
+    "message": "si la barre latérale est fermée,",
+    "hash": "04048d7d2cb0e5b7b226483683babbb9"
+  },
+  "config_moveParentBehavior_noSidebar_expanded_caption": {
+    "message": "si la barre latérale est fermée,",
+    "hash": "04048d7d2cb0e5b7b226483683babbb9"
+  },
   "config_parentTabOperationBehavior_entireTree": {
     "message": "Fermer également les descendants",
     "hash": "5cca2c7e00509b533ac27480faa107b2"
+  },
+  "config_closeParentBehavior_entireTree": {
+    "message": "Fermer tout l'arbre",
+    "hash": "1d55090de466314823ee70319c0dcf49"
+  },
+  "config_moveParentBehavior_entireTree": {
+    "message": "Déplacer l'arbre entier",
+    "hash": "4e4d80e740ebfa8c2f6b86d352d3fa57"
   },
   "config_parentTabOperationBehavior_replaceWithGroupTab": {
     "message": "Remplacer l'onglet parent par un onglet factice et garder l'arbre",
@@ -1063,9 +1079,37 @@
     "message": "M'avertir quand j'essaie de fermer plusieurs onglets",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
   },
+  "config_warnOnCloseTabsByClosebox_label": {
+    "message": "M'avertir quand j'essaie de fermer plusieurs onglets par un clic normal sur une croix (X)",
+    "hash": "63cc3d8cd52b7fb540c6e928a131fcc2"
+  },
+  "config_insertNewChildAt_caption": {
+    "message": "Position d'insertion des nouveaux onglets enfants",
+    "hash": "1c30663590c21f4fc422a876cca96a7a"
+  },
+  "config_insertNewChildAt_noControl": {
+    "message": "Aucun contrôle (respecter la décision de Firefox ou d'autres extensions d'onglets)",
+    "hash": "a9ad40068782c9923062b5cc735bdcb2"
+  },
+  "config_insertNewChildAt_nextToLastRelatedTab": {
+    "message": "À côté de l'enfant récemment ouvert, ou à côté du parent",
+    "hash": "a66e4ff20bed08136c0a144698572246"
+  },
+  "config_insertNewChildAt_top": {
+    "message": "Insérer en haut de l'arbre, comme premier enfant",
+    "hash": "5478175bb6c93e5c90749dc5ffd56639"
+  },
+  "config_insertNewChildAt_end": {
+    "message": "Ajouter à la fin de l'arbre",
+    "hash": "fb8149b1acff1a3722270b8ba8d4f816"
+  },
   "config_drag_caption": {
     "message": "Glisser-déposer",
     "hash": "b2c8578361430cf0cdd6ef3978051b33"
+  },
+  "config_tabDragBehavior_caption": {
+    "message": "Lorsqu'un onglet parent est déplacé depuis la barre latérale",
+    "hash": "14259d7efe02613e2f194ef13a7f3eff"
   },
   "config_tabDragBehavior_description": {
     "message": "À cause de restrictions de Firefox, vous devez décider quand vous commencez le glisser-déposer : comment les onglets sont traités lorsque déposés en dehors du panneau latéral de TST.",
@@ -1078,6 +1122,14 @@
   "config_tabDragBehaviorShift_label": {
     "message": "Maj-glisser",
     "hash": "bbe432a46b307bcc31ee7a4f0f667c46"
+  },
+  "config_tabDragBehavior_label_behaviorInsideSidebar": {
+    "message": "Comportement en cas de glisser-déposer dans la barre latérale",
+    "hash": "e7b737eb36b423b8cd85992d8c42d633"
+  },
+  "config_tabDragBehavior_label_behaviorOutsideSidebar": {
+    "message": "Comportement en cas de glisser-déposer à l'extérieur de la barre latérale",
+    "hash": "8f00f07b0cc499ff8f7d843fb304e76c"
   },
   "config_tabDragBehavior_moveEntireTreeAlways": {
     "message": "Move Entire Tree",
@@ -1106,6 +1158,10 @@
   "config_tabDragBehavior_doNothing": {
     "message": "Ne rien faire",
     "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+  },
+  "config_tabDragBehavior_noteForDragstartOutsideSidebar": {
+    "message": "Lorsqu'un onglet parent est déplacé depuis la barre d'onglets native de Firefox, il se comportera comme indiqué dans la section \"Comportement de l'arbre\" => \"Quand un onglet parent est fermé ou déplacé en tant qu'onglet seul\".",
+    "hash": "8414be6295a5492bcd4b171daf67c72a"
   },
   "config_showTabDragBehaviorNotification_label": {
     "message": "Afficher pendant le déplacement ce qui arrivera aux onglets déposés en dehors",
@@ -1191,6 +1247,22 @@
     "message": "Les propriétés personnalisées suivantes sont aussi disponible via \"var()\", basées sur le thème courant du navigateur :",
     "hash": "e73fd67e65cb8ab90eb69ce9223fe064"
   },
+  "config_userStyleRules_import": {
+    "message": "Charger depuis un fichier",
+    "hash": "765c44ddc666ca50fb3edb4098d3b3eb"
+  },
+  "config_userStyleRules_export": {
+    "message": "Enregistrer en tant que fichier",
+    "hash": "5023ad10eb843c4425dcf5d43ff5f3df"
+  },
+  "config_userStyleRules_overwrite_overwrite": {
+    "message": "Remplacer tout",
+    "hash": "598cdf5c77a1ac76a6cf65d6c64f7592"
+  },
+  "config_userStyleRulesTheme_label": {
+    "message": "Thème :",
+    "hash": "8de15c4fb2b8322a6cf5fee4a5eb9041"
+  },
   "config_addons_caption": {
     "message": "Fonctionnalités supplémentaires avec d'autres extensions",
     "hash": "903240c121c787c03ebf3d32229d36b8"
@@ -1210,6 +1282,10 @@
   "helper_addons_list_link_uri": {
     "message": "https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST",
     "hash": "8273bc1584de40aaa4ec5f04b3cd200c"
+  },
+  "config_theme_description_after": {
+    "message": " par exemple.",
+    "hash": "ed4d532b17826f2408abe7eee175fd60"
   },
   "config_externaladdonpermissions_label": {
     "message": "Permissions pour les appels d'API depuis d'autres extensions",
@@ -1322,6 +1398,10 @@
   "config_requestPermissions_bookmarks": {
     "message": "Permettre de lire et de créer des marques-pages",
     "hash": "7478a48fc3307a59c38920d562baf3b2"
+  },
+  "config_requestPermissions_bookmarks_context": {
+    "message": "Permettre l'ouverture du menu contextuel sur les marques-pages",
+    "hash": "d4a816c21da05576f381fe5709fe4b70"
   },
   "config_requestPermissions_tabHide": {
     "message": "Autoriser à montrer/masquer des onglets individuels (*Vous devez décocher et recocher ceci avant de lancer des tests, pour s'assurer que la permission a vraiment été accordée.)",
