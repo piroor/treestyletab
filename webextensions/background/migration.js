@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 28;
+const kCONFIGS_VERSION = 29;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -268,6 +268,10 @@ export function migrateConfigs() {
     case 27:
       if (configs.openAllBookmarksWithGroupAlways !== null)
         configs.suppressGroupTabForStructuredTabsFromBookmarks = !configs.openAllBookmarksWithGroupAlways;
+
+    case 28:
+      if (configs.heartbeatInterval == 1000)
+        configs.heartbeatInterval = configs.$default.heartbeatInterval;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
