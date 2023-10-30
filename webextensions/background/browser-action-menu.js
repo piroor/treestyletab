@@ -193,6 +193,16 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
+        key:   'context_topLevel_toggleMuteTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_toggleMuteDescendants_command'),
+        key:   'context_topLevel_toggleMuteDescendants',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_closeTree_command'),
         key:   'context_topLevel_closeTree',
         type:  'checkbox'
@@ -266,6 +276,16 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_reloadDescendants',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
+        key:   'context_toggleMuteTree',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_toggleMuteDescendants_command'),
+        key:   'context_toggleMuteDescendants',
         type:  'checkbox'
       },
       {

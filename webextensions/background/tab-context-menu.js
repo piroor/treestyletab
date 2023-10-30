@@ -77,6 +77,18 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_unmute_label_multiselected')
   },
+  'context_topLevel_toggleMuteTree': {
+    titleMuteTree:                browser.i18n.getMessage('context_toggleMuteTree_label_mute'),
+    titleMultiselectedMuteTree:   browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_mute'),
+    titleUnmuteTree:              browser.i18n.getMessage('context_toggleMuteTree_label_unmute'),
+    titleMultiselectedUnmuteTree: browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_unmute')
+  },
+  'context_topLevel_toggleMuteDescendants': {
+    titleMuteDescendant:                browser.i18n.getMessage('context_toggleMuteDescendants_label_mute'),
+    titleMultiselectedMuteDescendant:   browser.i18n.getMessage('context_toggleMuteDescendants_label_multiselected_mute'),
+    titleUnmuteDescendant:              browser.i18n.getMessage('context_toggleMuteDescendants_label_unmute'),
+    titleMultiselectedUnmuteDescendant: browser.i18n.getMessage('context_toggleMuteDescendants_label_multiselected_unmute')
+  },
   'context_pinTab': {
     title:              browser.i18n.getMessage('tabContextMenu_pin_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_pin_label_multiselected')
@@ -552,6 +564,7 @@ async function onShown(info, contextTab) {
         [contextTab] :
         [];
     const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
+    const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
 
     if (mOverriddenContext)
       return onOverriddenMenuShown(info, contextTab, windowId);
@@ -592,6 +605,22 @@ async function onShown(info, contextTab) {
     updateItem('context_toggleMuteTab-unmute', {
       visible: emulate && contextTab && contextTab.mutedInfo && contextTab.mutedInfo.muted,
       multiselected
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_toggleMuteTree', {
+      visible: emulate && contextTab && configs.context_topLevel_toggleMuteTree,
+      enabled: hasChild,
+      multiselected,
+      title: Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleMuteTree, { multiselected, hasUnmutedTab, hasUnmutedDescendant }),
+      hasUnmutedTab,
+      hasUnmutedDescendant,
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_toggleMuteDescendants', {
+      visible: emulate && contextTab && configs.context_topLevel_toggleMuteDescendants,
+      enabled: hasChild,
+      multiselected,
+      title: Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleMuteDescendants, { multiselected, hasUnmutedTab, hasUnmutedDescendant }),
+      hasUnmutedTab,
+      hasUnmutedDescendant,
     }) && modifiedItemsCount++;
     updateItem('context_pinTab', {
       visible: emulate && contextTab && !contextTab.pinned,

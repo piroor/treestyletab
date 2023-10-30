@@ -108,6 +108,12 @@ async function onShortcutCommand(command) {
     case 'reloadDescendants':
       Commands.reloadDescendants(selectedTabs);
       return;
+    case 'toggleMuteTree':
+      Commands.toggleMuteTree(selectedTabs);
+      return;
+    case 'toggleMuteDescendants':
+      Commands.toggleMuteDescendants(selectedTabs);
+      return;
     case 'closeTree':
       Commands.closeTree(selectedTabs);
       return;

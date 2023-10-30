@@ -135,6 +135,8 @@ export const configs = new Configs({
 
   context_reloadTree: true,
   context_reloadDescendants: false,
+  context_toggleMuteTree: true,
+  context_toggleMuteDescendants: false,
   context_closeTree: true,
   context_closeDescendants: false,
   context_closeOthers: false,
@@ -149,6 +151,8 @@ export const configs = new Configs({
 
   context_topLevel_reloadTree: false,
   context_topLevel_reloadDescendants: false,
+  context_topLevel_toggleMuteTree: false,
+  context_topLevel_toggleMuteDescendants: false,
   context_topLevel_closeTree: false,
   context_topLevel_closeDescendants: false,
   context_topLevel_closeOthers: false,

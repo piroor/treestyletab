@@ -68,6 +68,18 @@ const mTabItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
+  'toggleMuteTree': {
+    titleMuteTree:                browser.i18n.getMessage('context_toggleMuteTree_label_mute'),
+    titleMultiselectedMuteTree:   browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_mute'),
+    titleUnmuteTree:              browser.i18n.getMessage('context_toggleMuteTree_label_unmute'),
+    titleMultiselectedUnmuteTree: browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_unmute')
+  },
+  'toggleMuteDescendants': {
+    titleMuteDescendant:                browser.i18n.getMessage('context_toggleMuteDescendants_label_mute'),
+    titleMultiselectedMuteDescendant:   browser.i18n.getMessage('context_toggleMuteDescendants_label_multiselected_mute'),
+    titleUnmuteDescendant:              browser.i18n.getMessage('context_toggleMuteDescendants_label_unmute'),
+    titleMultiselectedUnmuteDescendant: browser.i18n.getMessage('context_toggleMuteDescendants_label_multiselected_unmute')
+  },
   'separatorAfterReload': {
     type: 'separator'
   },
@@ -317,7 +329,7 @@ function updateItem(id, params) {
   }, browser.runtime);
 }
 
-function updateItemsVisibility(items, { forceVisible = null, multiselected = false } = {}) {
+function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false } = {}) {
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -334,7 +346,7 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
       lastSeparator = item;
     }
     else {
-      const title = multiselected && item.titleMultiselected || item.title;
+      const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
       let visible = !(item.configKey in configs) || configs[item.configKey];
       if (forceVisible !== null)
         visible = forceVisible;
@@ -374,10 +386,10 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
   return { updated, visibleItemsCount };
 }
 
-async function updateItems({ multiselected } = {}) {
+async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant } = {}) {
   let updated = false;
 
-  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected });
+  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
   if (groupedItems.updated)
     updated = true;
 
@@ -395,7 +407,7 @@ async function updateItems({ multiselected } = {}) {
     updated = true;
   }
 
-  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected });
+  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant });
   if (topLevelItems.updated)
     updated = true;
 
@@ -444,6 +456,19 @@ function onTabItemClick(info, tab) {
         Commands.reloadTree(contextTabs);
       else
         Commands.reloadDescendants(contextTabs);
+      break;
+
+    case 'toggleMuteTree':
+      if (inverted)
+        Commands.toggleMuteDescendants(contextTabs);
+      else
+        Commands.toggleMuteTree(contextTabs);
+      break;
+    case 'toggleMuteDescendants':
+      if (inverted)
+        Commands.toggleMuteTree(contextTabs);
+      else
+        Commands.toggleMuteDescendants(contextTabs);
       break;
 
     case 'closeTree':
@@ -553,8 +578,9 @@ async function onTabContextMenuShown(info, tab) {
   const hasChild         = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.hasChild);
   const subtreeCollapsed = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.subtreeCollapsed);
   const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
+  const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
 
-  let updated = await updateItems({ multiselected });
+  let updated = await updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant });
   if (mLastContextTabId != contextTabId)
     return; // Skip further operations if the menu was already reopened on a different context tab.
 

@@ -65,6 +65,75 @@ export function reloadDescendants(rootTabs) {
   }
 }
 
+function isUnmuted(tab) {
+  return !tab.mutedInfo || !tab.mutedInfo.muted;
+}
+
+export function toggleMuteTree(tabs) {
+  const tabsToUpdate = [];
+  let shouldMute = false;
+  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
+    if (!shouldMute && isUnmuted(tab))
+      shouldMute = true;
+    tabsToUpdate.push(tab);
+  }
+  for (const tab of tabsToUpdate) {
+    if (shouldMute != isUnmuted(tab))
+      continue;
+    browser.tabs.update(tab.id, { muted: shouldMute })
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }
+}
+
+export function toggleMuteDescendants(rootTabs) {
+  const rootTabsSet = new Set(rootTabs);
+  const tabsToUpdate = [];
+  let shouldMute = false;
+  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+    if (rootTabsSet.has(tab))
+      continue;
+    if (!shouldMute && isUnmuted(tab))
+      shouldMute = true;
+    tabsToUpdate.push(tab);
+  }
+  for (const tab of tabsToUpdate) {
+    if (shouldMute != isUnmuted(tab))
+      continue;
+    browser.tabs.update(tab.id, { muted: shouldMute })
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }
+}
+
+export function getUnmutedState(rootTabs) {
+  let hasUnmutedTab        = false;
+  let hasUnmutedDescendant = false;
+  const rootTabsSet = new Set(rootTabs);
+  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+    if (!isUnmuted(tab))
+      continue;
+    hasUnmutedTab = true;
+    if (!rootTabsSet.has(tab))
+      hasUnmutedDescendant = true;
+    if (hasUnmutedTab && hasUnmutedDescendant)
+      break;
+  }
+  return { hasUnmutedTab, hasUnmutedDescendant };
+}
+
+export function getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+  const muteTreeSuffix       = hasUnmutedTab ? 'Mute' : 'Unmute';
+  const muteDescendantSuffix = hasUnmutedDescendant ? 'Mute' : 'Unmute';
+  return multiselected && (
+    item[`titleMultiselected${muteTreeSuffix}Tree`] ||
+    item[`titleMultiselected${muteDescendantSuffix}Descendant`] ||
+    item.titleMultiselected
+  ) || (
+    item[`title${muteTreeSuffix}Tree`] ||
+    item[`title${muteDescendantSuffix}Descendant`] ||
+    item.title
+  );
+}
+
 export async function closeTree(tabs) {
   tabs = uniqTabsAndDescendantsSet(tabs);
   const windowId = tabs[0].windowId;
