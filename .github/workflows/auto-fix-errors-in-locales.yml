@@ -29,7 +29,7 @@ jobs:
         cd webextensions && \
           find ./_locales -name messages.json | \
             xargs bash tools/shell/remove-blank-entries.sh
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Fix errors in locales
         file_pattern: webextensions/_locales/*/*.json
