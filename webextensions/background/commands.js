@@ -1027,10 +1027,10 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
       performTabsDragDropWithMessage(message);
       break;
 
-    case Constants.kCOMMAND_TOGGLE_MUTED: {
+    case Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON: {
       await Tab.waitUntilTracked(message.tabId);
       const root = Tab.get(message.tabId);
-      log('toggle muted state: ', message, root);
+      log('toggle muted state from sound button: ', message, root);
       if (!root)
         break;
 

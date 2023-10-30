@@ -728,7 +728,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
            EventUtils.isEventFiredOnSoundButton(event)) {
     log('clicked on sound button');
     BackgroundConnection.sendMessage({
-      type:  Constants.kCOMMAND_TOGGLE_MUTED,
+      type:  Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON,
       tabId: tab.id
     });
   }
