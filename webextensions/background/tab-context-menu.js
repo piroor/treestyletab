@@ -69,13 +69,11 @@ const mItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
-  'context_toggleMuteTab-mute': {
-    title:              browser.i18n.getMessage('tabContextMenu_mute_label'),
-    titleMultiselected: browser.i18n.getMessage('tabContextMenu_mute_label_multiselected')
-  },
-  'context_toggleMuteTab-unmute': {
-    title:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
-    titleMultiselected: browser.i18n.getMessage('tabContextMenu_unmute_label_multiselected')
+  'context_toggleMuteTab': {
+    titleMute:                browser.i18n.getMessage('tabContextMenu_mute_label'),
+    titleUnmute:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
+    titleMultiselectedMute:   browser.i18n.getMessage('tabContextMenu_mute_label_multiselected'),
+    titleMultiselectedUnmute: browser.i18n.getMessage('tabContextMenu_unmute_label_multiselected')
   },
   'context_topLevel_toggleMuteTree': {
     titleMuteTree:                browser.i18n.getMessage('context_toggleMuteTree_label_mute'),
@@ -598,13 +596,13 @@ async function onShown(info, contextTab) {
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
-    updateItem('context_toggleMuteTab-mute', {
-      visible: emulate && contextTab && (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
-      multiselected
-    }) && modifiedItemsCount++;
-    updateItem('context_toggleMuteTab-unmute', {
-      visible: emulate && contextTab && contextTab.mutedInfo && contextTab.mutedInfo.muted,
-      multiselected
+    updateItem('context_toggleMuteTab', {
+      visible: emulate && contextTab,
+      multiselected,
+      title: Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
+        multiselected,
+        unmuted: (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
+      }),
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_toggleMuteTree', {
       visible: emulate && contextTab && configs.context_topLevel_toggleMuteTree,
@@ -989,30 +987,20 @@ async function onClick(info, contextTab) {
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
-    case 'context_toggleMuteTab-mute':
+    case 'context_toggleMuteTab': {
+      const tab = contextTab || activeTab;
+      const unmuted = !tab.mutedInfo || !tab.mutedInfo.muted;
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { muted: true })
+          browser.tabs.update(tab.id, { muted: unmuted })
             .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
-        browser.tabs.update(contextTab.id, { muted: true })
+        browser.tabs.update(contextTab.id, { muted: unmuted })
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
-      break;
-    case 'context_toggleMuteTab-unmute':
-      if (multiselectedTabs) {
-        for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { muted: false })
-            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-        }
-      }
-      else {
-        browser.tabs.update(contextTab.id, { muted: false })
-          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-      }
-      break;
+    }; break;
     case 'context_pinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {

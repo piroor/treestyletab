@@ -120,14 +120,17 @@ export function getUnmutedState(rootTabs) {
   return { hasUnmutedTab, hasUnmutedDescendant };
 }
 
-export function getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+  const muteTabSuffix        = unmuted ? 'Mute' : 'Unmute';
   const muteTreeSuffix       = hasUnmutedTab ? 'Mute' : 'Unmute';
   const muteDescendantSuffix = hasUnmutedDescendant ? 'Mute' : 'Unmute';
   return multiselected && (
+    item[`titleMultiselected${muteTabSuffix}`] ||
     item[`titleMultiselected${muteTreeSuffix}Tree`] ||
     item[`titleMultiselected${muteDescendantSuffix}Descendant`] ||
     item.titleMultiselected
   ) || (
+    item[`title${muteTabSuffix}`] ||
     item[`title${muteTreeSuffix}Tree`] ||
     item[`title${muteDescendantSuffix}Descendant`] ||
     item.title
