@@ -136,12 +136,14 @@ export function getCacheInfo() {
   };
 }
 
-function startBatchToUpdateMaxTreeLevel() {
+function startBatchToUpdateMaxTreeLevel(trigger) {
   reserveToUpdateVisualMaxTreeLevel.batchCount++;
+  console.log('start ', trigger);
 }
 
-function finishBatchToUpdateMaxTreeLevel() {
+function finishBatchToUpdateMaxTreeLevel(trigger) {
   reserveToUpdateVisualMaxTreeLevel.batchCount--;
+  console.log('finish ', trigger);
   if (reserveToUpdateVisualMaxTreeLevel.batchCount > 0)
     return;
 
@@ -242,14 +244,14 @@ const restVisibilityChangedTabIds = new Set();
 CollapseExpand.onUpdated.addListener((tab, _options) => {
   restVisibilityChangedTabIds.delete(tab.id);
 
-  if (!configs.indentAutoShrink ||
-      !configs.indentAutoShrinkOnlyForVisible)
-    return;
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    reserveToUpdateVisualMaxTreeLevel();
 
-  reserveToUpdateVisualMaxTreeLevel();
+  console.log('restVisibilityChangedTabIds ', restVisibilityChangedTabIds);
 
   if (restVisibilityChangedTabIds.size == 0)
-    finishBatchToUpdateMaxTreeLevel();
+    finishBatchToUpdateMaxTreeLevel('CollapseExpand.onUpdated');
 });
 
 const BUFFER_KEY_PREFIX = 'indent-';
@@ -286,18 +288,19 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED:
+      if (restVisibilityChangedTabIds.size == 0)
+        startBatchToUpdateMaxTreeLevel('Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED');
       for (const id of message.visibilityChangedTabIds) {
         restVisibilityChangedTabIds.add(id);
       }
-      startBatchToUpdateMaxTreeLevel();
       break;
 
     case Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION:
-      startBatchToUpdateMaxTreeLevel();
+      startBatchToUpdateMaxTreeLevel(message.trigger);
       break;
 
     case Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION:
-      finishBatchToUpdateMaxTreeLevel();
+      finishBatchToUpdateMaxTreeLevel(message.trigger);
       break;
   }
 });

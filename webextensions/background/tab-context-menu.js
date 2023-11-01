@@ -1147,10 +1147,17 @@ async function onClick(info, contextTab) {
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 }).catch(ApiTabs.createErrorHandler());
       if (sessions.length && sessions[0].tab) {
-        SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+        SidebarConnection.sendMessage({
+          type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+          trigger: 'context_undoCloseTab',
+        });
         browser.sessions.restore(sessions[0].tab.sessionId).catch(ApiTabs.createErrorSuppressor())
+          .catch(console.error)
           .then(() => {
-            SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+            SidebarConnection.sendMessage({
+              type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+              trigger: 'context_undoCloseTab',
+            });
           });
       }
     }; break;

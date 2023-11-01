@@ -180,7 +180,10 @@ export async function attachTabTo(child, parent, options = {}) {
   if (!newlyAttached)
     log('=> already attached');
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.attachTabTo',
+  });
 
   if (newlyAttached) {
     detachTab(child, {
@@ -293,13 +296,19 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   });
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.attachTabTo',
+  });
 
   return !options.dontMove && moved;
 }
 
 async function collapseExpandForAttachedTab(tab, parent, options = {}) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandForAttachedTab',
+  });
 
   // Because the tab is possibly closing for "reopen" operation,
   // we need to apply "forceExpand" immediately. Otherwise, when
@@ -411,7 +420,10 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     });
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandForAttachedTab',
+  });
 }
 
 export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTabs, lastRelatedTab, children, descendants } = {}) {
@@ -546,7 +558,10 @@ export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
       { stack: `${configs.debug && new Error().stack}\n${options.stack || ''}` });
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.detachTab',
+  });
 
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
@@ -602,11 +617,17 @@ export function detachTab(child, options = {}) {
     toBeDetached: !!options.toBeDetached
   });
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.detachTab',
+  });
 }
 
 export async function detachTabsFromTree(tabs, options = {}) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.detachTabsFromTree',
+  });
 
   if (!Array.isArray(tabs))
     tabs = [tabs];
@@ -637,7 +658,10 @@ export async function detachTabsFromTree(tabs, options = {}) {
   if (promisedAttach.length > 0)
     await Promise.all(promisedAttach);
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.detachTabsFromTree',
+  });
 }
 
 export async function detachAllChildren(
@@ -704,7 +728,10 @@ export async function detachAllChildren(
     behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.detachAllChildren',
+  });
 
   if (!dontExpand &&
       ((tab && !tab.$TST.collapsed) ||
@@ -790,7 +817,10 @@ export async function detachAllChildren(
     await Promise.all(promises);
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.detachAllChildren',
+  });
 }
 
 // returns moved (or not)
@@ -1038,7 +1068,10 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandSubtreeInternal',
+  });
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
@@ -1077,7 +1110,10 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     last:      true
   });
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandSubtreeInternal',
+  });
 
   return visibilityChangedTabIds;
 }
@@ -1232,7 +1268,10 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     return;
   }
   window.doingIntelligentlyCollapseExpandCount++;
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandTreesIntelligentlyFor',
+  });
 
   const expandedAncestors = [tab.id]
     .concat(tab.$TST.ancestors.map(ancestor => ancestor.id))
@@ -1284,7 +1323,10 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     collapsed: false
   });
   window.doingIntelligentlyCollapseExpandCount--;
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.collapseExpandTreesIntelligentlyFor',
+  });
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1301,7 +1343,10 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
     collapsedStateMismatched,
     nextIsFirstChild
   });
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Tree.fixupSubtreeCollapsedState',
+  });
   if (collapsedStateMismatched) {
     log(' => set collapsed state');
     await collapseExpandSubtree(tab, {
@@ -1315,7 +1360,10 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
     await followDescendantsToMovedRoot(tab, options);
     fixed = true;
   }
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Tree.fixupSubtreeCollapsedState',
+  });
   return fixed;
 }
 

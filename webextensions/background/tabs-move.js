@@ -89,7 +89,10 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   if (!tabs.length)
     return [];
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'TabsMove.moveTabsInternallyBefore',
+  });
 
   const movedTabs = [];
   try {
@@ -146,7 +149,10 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     log('moveTabsInternallyBefore failed: ', String(e));
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'TabsMove.moveTabsInternallyBefore',
+  });
 
   return movedTabs;
 }
@@ -192,7 +198,10 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   if (!tabs.length)
     return [];
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'TabsMove.moveTabsInternallyAfter',
+  });
 
   const movedTabs = [];
   try {
@@ -260,7 +269,10 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     log('moveTabsInternallyAfter failed: ', String(e));
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'TabsMove.moveTabsInternallyAfter',
+  });
 
   return movedTabs;
 }
@@ -329,7 +341,10 @@ async function syncToNativeTabsInternal(windowId) {
   log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
   let tabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'TabsMove.syncToNativeTabsInternal',
+  });
 
   const moveOperations = (new SequenceMatcher(nativeTabsOrder, internalOrder)).operations();
   const movedTabs = new Set();
@@ -397,7 +412,10 @@ async function syncToNativeTabsInternal(windowId) {
     }
   }
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'TabsMove.syncToNativeTabsInternal',
+  });
 
   log(`syncToNativeTabs(${windowId}): step1, rearrange completed.`);
 

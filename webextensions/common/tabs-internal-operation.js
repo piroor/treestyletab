@@ -126,7 +126,10 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
   const sortedTabs = Tab.sort(Array.from(tabs));
   Tab.onMultipleTabsRemoving.dispatch(sortedTabs, { triggerTab, originalStructure });
 
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'TabsInternalOperation.removeTabs',
+  });
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (window) {
@@ -142,6 +145,10 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
       log(`${canceledTabs.size} tabs may be canceled to close.`);
       if (canceledTabs.size == 0) {
         Tab.onMultipleTabsRemoved.dispatch(sortedTabs, { triggerTab, originalStructure });
+        SidebarConnection.sendMessage({
+          type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+          trigger: 'TabsInternalOperation.removeTabs (no cancel)',
+        });
         return;
       }
       log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
@@ -153,7 +160,16 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
       }
       Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab, originalStructure });
 
-      SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+      SidebarConnection.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+        trigger: 'TabsInternalOperation.removeTabs (with cancel)',
+      });
+    });
+  }
+  else {
+    SidebarConnection.sendMessage({
+      type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+      trigger: 'TabsInternalOperation.removeTabs (no window)',
     });
   }
   return promisedRemoved;

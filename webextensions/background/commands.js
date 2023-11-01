@@ -174,7 +174,10 @@ export async function closeOthers(exceptionRoots) {
 }
 
 export function collapseTree(rootTabs, { recursively } = {}) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Commands.collapseTree',
+  });
   rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
@@ -200,12 +203,18 @@ export function collapseTree(rootTabs, { recursively } = {}) {
       });
     });
   }
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Commands.collapseTree',
+  });
   TSTAPI.clearCache(cache);
 }
 
 export function collapseAll(windowId) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Commands.collapseAll',
+  });
   const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     if (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed)
@@ -223,12 +232,18 @@ export function collapseAll(windowId) {
       });
     });
   }
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Commands.collapseAll',
+  });
   TSTAPI.clearCache(cache);
 }
 
 export function expandTree(rootTabs, { recursively } = {}) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Commands.expandTree',
+  });
   rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
@@ -254,12 +269,18 @@ export function expandTree(rootTabs, { recursively } = {}) {
       });
     });
   }
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Commands.expandTree',
+  });
   TSTAPI.clearCache(cache);
 }
 
 export function expandAll(windowId) {
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION,
+    trigger: 'Commands.expandAll',
+  });
   const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     if (!tab.$TST.hasChild || !tab.$TST.subtreeCollapsed)
@@ -277,7 +298,10 @@ export function expandAll(windowId) {
       });
     });
   }
-  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION,
+    trigger: 'Commands.expandAll',
+  });
   TSTAPI.clearCache(cache);
 }
 
