@@ -599,7 +599,7 @@ async function onShown(info, contextTab) {
     updateItem('context_toggleMuteTab', {
       visible: emulate && contextTab,
       multiselected,
-      title: Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
         multiselected,
         unmuted: (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
       }),
