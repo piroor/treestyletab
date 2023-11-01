@@ -150,13 +150,12 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
 
   const animation = shouldApplyAnimation();
 
-  // Immediate update may cause a performance issue when this function
-  // is called too many times.
-  // On the other hand, delayed update exposes "not updated yet" visual
-  // to people unexpectedly and it may stress some people sensitive to
-  // flickers.
-  // The threshold is a workaround to run immediate update while the
-  // slowing down is acceptable.
+  // On no-animation mode, we should update max indent level immediately
+  // as possible as we can without delay, to reduce visual flicking which
+  // can trigger an epileptic seizure.
+  // But we also have to reduce needless function calls for better performance.
+  // This threshold is a safe guard for uncared cases with too many call
+  // of updateVisualMaxTreeLevel().
   // See also: https://github.com/piroor/treestyletab/issues/3383
   if (reserveToUpdateVisualMaxTreeLevel.calledCount <= configs.maxAllowedImmediateRefreshCount &&
       !animation) {
@@ -214,10 +213,28 @@ async function reserveToUpdateIndent() {
 }
 
 
-CollapseExpand.onUpdated.addListener((_tab, _options) => {
+const restVisibilityChangedTabIds = new Set();
+
+CollapseExpand.onUpdated.addListener((tab, _options) => {
+  const isFinishBatch = restVisibilityChangedTabIds.has(tab.id);
+  restVisibilityChangedTabIds.delete(tab.id);
+
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
+
+  // On no-animation mode, we should update max indent level immediately
+  // as possible as we can without delay, to reduce visual flicking which
+  // can trigger an epileptic seizure.
+  // But we also have to reduce needless function calls for better performance.
+  // So we throttle the function call of updateVisualMaxTreeLevel() until
+  // collapsed state of all tabs notified with "kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED"
+  // are completely updated.
+  // See also: https://github.com/piroor/treestyletab/issues/3383
+  if (isFinishBatch &&
+      restVisibilityChangedTabIds.size == 0 &&
+      !shouldApplyAnimation())
+    updateVisualMaxTreeLevel();
 });
 
 const BUFFER_KEY_PREFIX = 'indent-';
@@ -253,8 +270,15 @@ BackgroundConnection.onMessage.addListener(async message => {
       reserveToUpdateIndent();
     }; break;
 
+    case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED:
+      for (const id of message.visibilityChangedTabIds) {
+        restVisibilityChangedTabIds.add(id);
+      }
+      break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
-      if (!shouldApplyAnimation())
+      if (!restVisibilityChangedTabIds.has(message.tabId) &&
+          !shouldApplyAnimation())
         updateVisualMaxTreeLevel();
       break;
   }
