@@ -156,7 +156,10 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
 
-  log('reserveToUpdateVisualMaxTreeLevel');
+  log('reserveToUpdateVisualMaxTreeLevel ', {
+    called: reserveToUpdateVisualMaxTreeLevel.calledCount,
+    batch: reserveToUpdateVisualMaxTreeLevel.batchCount,
+  });
   if (updateVisualMaxTreeLevel.waiting) {
     clearTimeout(updateVisualMaxTreeLevel.waiting);
     delete updateVisualMaxTreeLevel.waiting;
