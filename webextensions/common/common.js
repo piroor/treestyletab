@@ -294,6 +294,7 @@ export const configs = new Configs({
   // animation
   animation: true,
   animationForce: false,
+  maxAllowedImmediateRefreshCount: 10,
   smoothScrollEnabled:  true,
   smoothScrollDuration: 150,
   burstDuration:    375,

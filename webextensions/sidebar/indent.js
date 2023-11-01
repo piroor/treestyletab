@@ -146,16 +146,39 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
     delete updateVisualMaxTreeLevel.waiting;
   }
 
-  if (!shouldApplyAnimation()) {
+  reserveToUpdateVisualMaxTreeLevel.calledCount++;
+
+  const animation = shouldApplyAnimation();
+
+  // Immediate update may cause a performance issue when this function
+  // is called too many times.
+  // On the other hand, delayed update exposes "not updated yet" visual
+  // to people unexpectedly and it may stress some people sensitive to
+  // flickers.
+  // The threshold is a workaround to run immediate update while the
+  // slowing down is acceptable.
+  // See also: https://github.com/piroor/treestyletab/issues/3383
+  if (reserveToUpdateVisualMaxTreeLevel.calledCount <= configs.maxAllowedImmediateRefreshCount &&
+      !animation) {
     updateVisualMaxTreeLevel();
+    if (reserveToUpdateVisualMaxTreeLevel.waitingToResetCalledCount)
+      clearTimeout(reserveToUpdateVisualMaxTreeLevel.waitingToResetCalledCount);
+    reserveToUpdateVisualMaxTreeLevel.waitingToResetCalledCount = setTimeout(() => {
+      delete reserveToUpdateVisualMaxTreeLevel.waitingToResetCalledCount;
+      reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
+    }, 0);
     return;
   }
 
+  const delay = animation ? configs.collapseDuration * 1.5 : 0;
+
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
     delete updateVisualMaxTreeLevel.waiting;
+    reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
     updateVisualMaxTreeLevel();
-  }, configs.collapseDuration * 1.5);
+  }, delay);
 }
+reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
 
 function updateVisualMaxTreeLevel() {
   const maxLevel = getMaxTreeLevel(mTargetWindow, {
