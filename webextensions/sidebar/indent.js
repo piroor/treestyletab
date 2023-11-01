@@ -136,6 +136,24 @@ export function getCacheInfo() {
   };
 }
 
+function startBatchToUpdateMaxTreeLevel() {
+  reserveToUpdateVisualMaxTreeLevel.batchCount++;
+  //console.log('startBatchToUpdateMaxTreeLevel ', reserveToUpdateVisualMaxTreeLevel.batchCount, reserveToUpdateVisualMaxTreeLevel.calledCount, new Error().stack);
+}
+
+function finishBatchToUpdateMaxTreeLevel() {
+  reserveToUpdateVisualMaxTreeLevel.batchCount--;
+  //console.log('finishBatchToUpdateMaxTreeLevel ', reserveToUpdateVisualMaxTreeLevel.batchCount, reserveToUpdateVisualMaxTreeLevel.calledCount, new Error().stack);
+  if (reserveToUpdateVisualMaxTreeLevel.batchCount > 0)
+    return;
+
+  if (reserveToUpdateVisualMaxTreeLevel.calledCount <= 0)
+    return;
+
+  //console.log('finishBatchToUpdateMaxTreeLevel:update');
+  reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
+  updateVisualMaxTreeLevel();
+}
 
 export async function reserveToUpdateVisualMaxTreeLevel() {
   if (mPromisedInitialized)
@@ -149,6 +167,9 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
   reserveToUpdateVisualMaxTreeLevel.calledCount++;
 
   const animation = shouldApplyAnimation();
+  if (!animation &&
+      reserveToUpdateVisualMaxTreeLevel.batchCount > 0)
+    return;
 
   // Immediate update may cause a performance issue when this function
   // is called too many times.
@@ -179,6 +200,7 @@ export async function reserveToUpdateVisualMaxTreeLevel() {
   }, delay);
 }
 reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
+reserveToUpdateVisualMaxTreeLevel.batchCount = 0;
 
 function updateVisualMaxTreeLevel() {
   const maxLevel = getMaxTreeLevel(mTargetWindow, {
@@ -220,6 +242,20 @@ CollapseExpand.onUpdated.addListener((_tab, _options) => {
     reserveToUpdateVisualMaxTreeLevel();
 });
 
+CollapseExpand.onRefreshStarted.addListener((_tab, _options) => {
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    startBatchToUpdateMaxTreeLevel();
+});
+
+CollapseExpand.onRefreshFinished.addListener((_tab, _options) => {
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible) {
+    reserveToUpdateVisualMaxTreeLevel();
+    finishBatchToUpdateMaxTreeLevel();
+  }
+});
+
 const BUFFER_KEY_PREFIX = 'indent-';
 
 BackgroundConnection.onMessage.addListener(async message => {
@@ -256,6 +292,14 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
       if (!shouldApplyAnimation())
         updateVisualMaxTreeLevel();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION:
+      startBatchToUpdateMaxTreeLevel();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION:
+      finishBatchToUpdateMaxTreeLevel();
       break;
   }
 });

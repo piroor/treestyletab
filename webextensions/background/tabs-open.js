@@ -108,6 +108,8 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
   if (!windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   const tabs = [];
   // Don't return the result of Tab.doAndGetNewTabs because their order can
   // be inverted due to browser.tabs.insertAfterCurrent=true
@@ -245,6 +247,7 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
     }
     await TabsMove.waitUntilSynchronized(windowId);
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   return openedTabs;
 }
 

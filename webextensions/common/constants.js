@@ -83,6 +83,8 @@ export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
 export const kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY = 'treestyletab:autodetect-duplicated-tab-detection-delay';
 export const kCOMMAND_TEST_DUPLICATED_TAB_DETECTION             = 'treestyletab:test-duplicated-tab-detection';
+export const kCOMMAND_NOTIFY_START_BATCH_OPERATION   = 'treestyletab:start-batch-operation';
+export const kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION  = 'treestyletab:finish-batch-operation';
 
 export const kCOMMAND_ACTIVATE_TAB            = 'treestyletab:activate-tab';
 export const kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON = 'treestyletab:toggle-muted-from-sound-button';

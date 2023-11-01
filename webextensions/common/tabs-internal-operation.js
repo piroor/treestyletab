@@ -126,6 +126,8 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
   const sortedTabs = Tab.sort(Array.from(tabs));
   Tab.onMultipleTabsRemoving.dispatch(sortedTabs, { triggerTab, originalStructure });
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (window) {
     promisedRemoved.then(() => {
@@ -150,6 +152,8 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
           window.keepDescendantsTabs.delete(tab.id);
       }
       Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab, originalStructure });
+
+      SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
     });
   }
   return promisedRemoved;

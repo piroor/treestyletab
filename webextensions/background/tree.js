@@ -180,6 +180,8 @@ export async function attachTabTo(child, parent, options = {}) {
   if (!newlyAttached)
     log('=> already attached');
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   if (newlyAttached) {
     detachTab(child, {
       ...options,
@@ -291,10 +293,14 @@ export async function attachTabTo(child, parent, options = {}) {
     newIndex, newlyAttached
   });
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+
   return !options.dontMove && moved;
 }
 
 async function collapseExpandForAttachedTab(tab, parent, options = {}) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   // Because the tab is possibly closing for "reopen" operation,
   // we need to apply "forceExpand" immediately. Otherwise, when
   // the tab is closed with "subtree collapsed" state, descendant
@@ -321,8 +327,10 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     { tabProperties: ['tab'] }
   );
   TSTAPI.clearCache(cache);
-  if (!TabsStore.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab)) {
+    SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
     return;
+  }
 
   if (options.forceExpand && allowed) {
     log(`  expand tab ${tab.id} by forceExpand option`);
@@ -402,6 +410,8 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
       broadcast: true
     });
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTabs, lastRelatedTab, children, descendants } = {}) {
@@ -535,6 +545,9 @@ export function getReferenceTabsForNewNextSibling(base, options = {}) {
 export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
       { stack: `${configs.debug && new Error().stack}\n${options.stack || ''}` });
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingTab(options.parent) || child.$TST.parent;
 
@@ -588,9 +601,13 @@ export function detachTab(child, options = {}) {
     toBeRemoved:  !!options.toBeRemoved,
     toBeDetached: !!options.toBeDetached
   });
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 export async function detachTabsFromTree(tabs, options = {}) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   if (!Array.isArray(tabs))
     tabs = [tabs];
   tabs = Array.from(tabs).reverse();
@@ -619,6 +636,8 @@ export async function detachTabsFromTree(tabs, options = {}) {
   }
   if (promisedAttach.length > 0)
     await Promise.all(promisedAttach);
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 export async function detachAllChildren(
@@ -684,6 +703,8 @@ export async function detachAllChildren(
     // open new group tab and replace the detaching tab with it.
     behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
 
   if (!dontExpand &&
       ((tab && !tab.$TST.collapsed) ||
@@ -768,6 +789,8 @@ export async function detachAllChildren(
     count++;
     await Promise.all(promises);
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 // returns moved (or not)
@@ -1013,6 +1036,8 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
@@ -1046,6 +1071,8 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     anchorId:  tab.id,
     last:      true
   });
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 export function manualCollapseExpandSubtree(tab, params = {}) {
@@ -1184,6 +1211,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     return;
   }
   window.doingIntelligentlyCollapseExpandCount++;
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
 
   const expandedAncestors = [tab.id]
     .concat(tab.$TST.ancestors.map(ancestor => ancestor.id))
@@ -1235,6 +1263,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     collapsed: false
   });
   window.doingIntelligentlyCollapseExpandCount--;
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1251,6 +1280,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
     collapsedStateMismatched,
     nextIsFirstChild
   });
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
   if (collapsedStateMismatched) {
     log(' => set collapsed state');
     await collapseExpandSubtree(tab, {
@@ -1264,6 +1294,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
     await followDescendantsToMovedRoot(tab, options);
     fixed = true;
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   return fixed;
 }
 

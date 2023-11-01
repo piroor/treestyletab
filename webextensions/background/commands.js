@@ -174,6 +174,7 @@ export async function closeOthers(exceptionRoots) {
 }
 
 export function collapseTree(rootTabs, { recursively } = {}) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
   rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
@@ -199,10 +200,12 @@ export function collapseTree(rootTabs, { recursively } = {}) {
       });
     });
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   TSTAPI.clearCache(cache);
 }
 
 export function collapseAll(windowId) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
   const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     if (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed)
@@ -220,10 +223,12 @@ export function collapseAll(windowId) {
       });
     });
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   TSTAPI.clearCache(cache);
 }
 
 export function expandTree(rootTabs, { recursively } = {}) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
   rootTabs = Array.isArray(rootTabs) && rootTabs || [rootTabs];
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
@@ -249,10 +254,12 @@ export function expandTree(rootTabs, { recursively } = {}) {
       });
     });
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   TSTAPI.clearCache(cache);
 }
 
 export function expandAll(windowId) {
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
   const cache = {};
   for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     if (!tab.$TST.hasChild || !tab.$TST.subtreeCollapsed)
@@ -270,6 +277,7 @@ export function expandAll(windowId) {
       });
     });
   }
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
   TSTAPI.clearCache(cache);
 }
 

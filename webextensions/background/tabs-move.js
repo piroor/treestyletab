@@ -89,6 +89,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   if (!tabs.length)
     return [];
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   const movedTabs = [];
   try {
     /*
@@ -135,16 +137,17 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         () => toLines(Array.from(window.getOrderedTabs()),
                       tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
     }
-    if (SidebarConnection.isInitialized()) { // only on the background page
-      if (options.delayedMove) // Wait until opening animation is finished.
-        await wait(configs.newTabAnimationDuration);
-      syncToNativeTabs(tabs);
-    }
+    if (options.delayedMove) // Wait until opening animation is finished.
+      await wait(configs.newTabAnimationDuration);
+    syncToNativeTabs(tabs);
   }
   catch(e) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+
   return movedTabs;
 }
 export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
@@ -188,6 +191,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   }
   if (!tabs.length)
     return [];
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
 
   const movedTabs = [];
   try {
@@ -254,6 +259,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+
   return movedTabs;
 }
 export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
@@ -321,6 +329,8 @@ async function syncToNativeTabsInternal(windowId) {
   log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
   let tabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
 
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+
   const moveOperations = (new SequenceMatcher(nativeTabsOrder, internalOrder)).operations();
   const movedTabs = new Set();
   for (const operation of moveOperations) {
@@ -386,6 +396,9 @@ async function syncToNativeTabsInternal(windowId) {
         break;
     }
   }
+
+  SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+
   log(`syncToNativeTabs(${windowId}): step1, rearrange completed.`);
 
   if (movedTabs.size > 0) {

@@ -16,6 +16,7 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as Sync from '/common/sync.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -1145,8 +1146,13 @@ async function onClick(info, contextTab) {
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 }).catch(ApiTabs.createErrorHandler());
-      if (sessions.length && sessions[0].tab)
-        browser.sessions.restore(sessions[0].tab.sessionId).catch(ApiTabs.createErrorSuppressor());
+      if (sessions.length && sessions[0].tab) {
+        SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION });
+        browser.sessions.restore(sessions[0].tab.sessionId).catch(ApiTabs.createErrorSuppressor())
+          .then(() => {
+            SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+          });
+      }
     }; break;
     case 'context_closeTab': {
       const closeTabs = (multiselectedTabs || TreeBehavior.getClosingTabsFromParent(contextTab, {
