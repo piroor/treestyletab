@@ -142,7 +142,8 @@ function startBatchToUpdateMaxTreeLevel(trigger) {
 }
 
 function finishBatchToUpdateMaxTreeLevel(trigger) {
-  reserveToUpdateVisualMaxTreeLevel.batchCount--;
+  if (reserveToUpdateVisualMaxTreeLevel.batchCount > 0) // safe guard for accidental negative count
+    reserveToUpdateVisualMaxTreeLevel.batchCount--;
   console.log('finish ', trigger);
   if (reserveToUpdateVisualMaxTreeLevel.batchCount > 0)
     return;
@@ -242,6 +243,7 @@ async function reserveToUpdateIndent() {
 const restVisibilityChangedTabIds = new Set();
 
 CollapseExpand.onUpdated.addListener((tab, _options) => {
+  const isFinishBatch = restVisibilityChangedTabIds.has(tab.id);
   restVisibilityChangedTabIds.delete(tab.id);
 
   if (configs.indentAutoShrink &&
@@ -250,7 +252,7 @@ CollapseExpand.onUpdated.addListener((tab, _options) => {
 
   console.log('restVisibilityChangedTabIds ', restVisibilityChangedTabIds);
 
-  if (restVisibilityChangedTabIds.size == 0)
+  if (isFinishBatch && restVisibilityChangedTabIds.size == 0)
     finishBatchToUpdateMaxTreeLevel('CollapseExpand.onUpdated');
 });
 
@@ -288,7 +290,8 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED:
-      if (restVisibilityChangedTabIds.size == 0)
+      if (restVisibilityChangedTabIds.size == 0 &&
+          message.visibilityChangedTabIds.length > 0)
         startBatchToUpdateMaxTreeLevel('Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED');
       for (const id of message.visibilityChangedTabIds) {
         restVisibilityChangedTabIds.add(id);
