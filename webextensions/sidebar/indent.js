@@ -242,20 +242,6 @@ CollapseExpand.onUpdated.addListener((_tab, _options) => {
     reserveToUpdateVisualMaxTreeLevel();
 });
 
-CollapseExpand.onRefreshStarted.addListener((_tab, _options) => {
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible)
-    startBatchToUpdateMaxTreeLevel();
-});
-
-CollapseExpand.onRefreshFinished.addListener((_tab, _options) => {
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible) {
-    reserveToUpdateVisualMaxTreeLevel();
-    finishBatchToUpdateMaxTreeLevel();
-  }
-});
-
 const BUFFER_KEY_PREFIX = 'indent-';
 
 BackgroundConnection.onMessage.addListener(async message => {

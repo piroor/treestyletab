@@ -49,8 +49,6 @@ function log(...args) {
 
 export const onUpdating = new EventListenerManager();
 export const onUpdated = new EventListenerManager();
-export const onRefreshStarted = new EventListenerManager();
-export const onRefreshFinished = new EventListenerManager();
 
 export function setCollapsed(tab, info = {}) {
   log('setCollapsed ', tab.id, info);
@@ -77,8 +75,6 @@ export function setCollapsed(tab, info = {}) {
 
   if (tab.status == 'loading')
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-
-  onRefreshStarted.dispatch(tab, { collapsed: info.cpllapsed });
 
   const manager = tab.$TST.collapsedStateChangedManager || new EventListenerManager();
 
@@ -119,7 +115,6 @@ export function setCollapsed(tab, info = {}) {
       anchor:    info.anchor,
       last:      info.last
     });
-    onRefreshFinished.dispatch(tab, { collapsed: info.cpllapsed });
   };
   manager.addListener(onCompleted);
 
@@ -147,7 +142,6 @@ export function setCollapsed(tab, info = {}) {
 
   const onCanceled = () => {
     manager.removeListener(onCompleted);
-    onRefreshFinished.dispatch(tab, { collapsed: info.cpllapsed });
   };
 
   nextFrame().then(() => {
