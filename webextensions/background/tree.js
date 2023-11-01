@@ -1002,15 +1002,16 @@ function updateTabIndentNow(tab, level = undefined, options = {}) {
 
 // collapse/expand tabs
 
+// returns an array of tab ids which are changed their visibility
 export async function collapseExpandSubtree(tab, params = {}) {
   params.collapsed = !!params.collapsed;
   if (!tab || !TabsStore.ensureLivingTab(tab))
-    return;
+    return [];
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
-    return;
+    return [];
   params.stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
-  await collapseExpandSubtreeInternal(tab, params);
+  const visibilityChangedTabIds = await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED)) {
     const treeItem = new TSTAPI.TreeItem(tab);
@@ -1021,11 +1022,12 @@ export async function collapseExpandSubtree(tab, params = {}) {
     }, { tabProperties: ['tab'] }).catch(_error => {});
     treeItem.clearCache();
   }
+  return visibilityChangedTabIds;
 }
 async function collapseExpandSubtreeInternal(tab, params = {}) {
   if (!params.force &&
       tab.$TST.subtreeCollapsed == params.collapsed)
-    return;
+    return [];
 
   if (params.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
@@ -1040,26 +1042,28 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
+  const allVisibilityChangedTabIds = [];
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
     const childTab = childTabs[i];
     if (i == lastExpandedTabIndex &&
         !params.collapsed) {
-      await collapseExpandTabAndSubtree(childTab, {
+      allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
         anchor:    tab,
         last:      true,
         broadcast: false
-      });
+      })));
     }
     else {
-      await collapseExpandTabAndSubtree(childTab, {
+      allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
         broadcast: false
-      });
+      })));
     }
   }
+  const visibilityChangedTabIds = [...new Set(allVisibilityChangedTabIds)];
 
   onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
   SidebarConnection.sendMessage({
@@ -1069,31 +1073,40 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     collapsed: !!params.collapsed,
     justNow:   params.justNow,
     anchorId:  tab.id,
+    visibilityChangedTabIds,
     last:      true
   });
 
   SidebarConnection.sendMessage({ type: Constants.kCOMMAND_NOTIFY_FINISH_BATCH_OPERATION });
+
+  return visibilityChangedTabIds;
 }
 
+// returns an array of tab ids which are changed their visibility
 export function manualCollapseExpandSubtree(tab, params = {}) {
   params.manualOperation = true;
-  collapseExpandSubtree(tab, params);
+  const visibilityChangedTabIds = collapseExpandSubtree(tab, params);
   if (!params.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
   }
+  return visibilityChangedTabIds;
 }
 
+// returns an array of tab ids which are changed their visibility
 export async function collapseExpandTabAndSubtree(tab, params = {}) {
+  const visibilityChangedTabIds = [];
+
   if (!tab)
-    return;
+    return visibilityChangedTabIds;
 
   // allow to expand root collapsed tab
   if (!tab.$TST.collapsed &&
       !tab.$TST.parent)
-    return;
+    return visibilityChangedTabIds;
 
-  collapseExpandTab(tab, params);
+  if (collapseExpandTab(tab, params))
+    visibilityChangedTabIds.push(tab.id);
 
   if (params.collapsed &&
       tab.active &&
@@ -1119,7 +1132,7 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
 
   if (!tab.$TST.subtreeCollapsed) {
     const children = tab.$TST.children;
-    await Promise.all(children.map((child, index) => {
+    const allVisibilityChangedTabs = await Promise.all(children.map((child, index) => {
       const last = params.last &&
                      (index == children.length - 1);
       return collapseExpandTabAndSubtree(child, {
@@ -1131,9 +1144,13 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
         broadcast: params.broadcast
       });
     }));
+    visibilityChangedTabIds.push(...allVisibilityChangedTabs.flat());
   }
+
+  return [...new Set(visibilityChangedTabIds)];
 }
 
+// returns true if the tab's visibility is changed
 export async function collapseExpandTab(tab, params = {}) {
   if (tab.pinned && params.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
@@ -1149,8 +1166,10 @@ export async function collapseExpandTab(tab, params = {}) {
       tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed)) {
     log('collapseExpandTab: canceled to avoid expansion under collapsed tree ',
         tab.$TST.ancestors.find(ancestor => ancestor.$TST.subtreeCollapsed));
-    return;
+    return false;
   }
+
+  const visibilityChanged = tab.$TST.collapsed != params.collapsed;
 
   const stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
@@ -1197,6 +1216,8 @@ export async function collapseExpandTab(tab, params = {}) {
     });
   }, shouldApplyAnimation() ? 100 : 0);
   collapseExpandTab.delayedNotify.set(tab.id, timer);
+
+  return visibilityChanged;
 }
 collapseExpandTab.delayedNotify = new Map();
 

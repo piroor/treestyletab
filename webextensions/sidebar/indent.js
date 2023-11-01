@@ -138,19 +138,16 @@ export function getCacheInfo() {
 
 function startBatchToUpdateMaxTreeLevel() {
   reserveToUpdateVisualMaxTreeLevel.batchCount++;
-  //console.log('startBatchToUpdateMaxTreeLevel ', reserveToUpdateVisualMaxTreeLevel.batchCount, reserveToUpdateVisualMaxTreeLevel.calledCount, new Error().stack);
 }
 
 function finishBatchToUpdateMaxTreeLevel() {
   reserveToUpdateVisualMaxTreeLevel.batchCount--;
-  //console.log('finishBatchToUpdateMaxTreeLevel ', reserveToUpdateVisualMaxTreeLevel.batchCount, reserveToUpdateVisualMaxTreeLevel.calledCount, new Error().stack);
   if (reserveToUpdateVisualMaxTreeLevel.batchCount > 0)
     return;
 
   if (reserveToUpdateVisualMaxTreeLevel.calledCount <= 0)
     return;
 
-  //console.log('finishBatchToUpdateMaxTreeLevel:update');
   reserveToUpdateVisualMaxTreeLevel.calledCount = 0;
   updateVisualMaxTreeLevel();
 }
@@ -158,6 +155,7 @@ function finishBatchToUpdateMaxTreeLevel() {
 export async function reserveToUpdateVisualMaxTreeLevel() {
   if (mPromisedInitialized)
     await mPromisedInitialized;
+
   log('reserveToUpdateVisualMaxTreeLevel');
   if (updateVisualMaxTreeLevel.waiting) {
     clearTimeout(updateVisualMaxTreeLevel.waiting);
@@ -236,10 +234,19 @@ async function reserveToUpdateIndent() {
 }
 
 
-CollapseExpand.onUpdated.addListener((_tab, _options) => {
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible)
-    reserveToUpdateVisualMaxTreeLevel();
+const restVisibilityChangedTabIds = new Set();
+
+CollapseExpand.onUpdated.addListener((tab, _options) => {
+  restVisibilityChangedTabIds.delete(tab.id);
+
+  if (!configs.indentAutoShrink ||
+      !configs.indentAutoShrinkOnlyForVisible)
+    return;
+
+  reserveToUpdateVisualMaxTreeLevel();
+
+  if (restVisibilityChangedTabIds.size == 0)
+    finishBatchToUpdateMaxTreeLevel();
 });
 
 const BUFFER_KEY_PREFIX = 'indent-';
@@ -275,9 +282,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       reserveToUpdateIndent();
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
-      if (!shouldApplyAnimation())
-        updateVisualMaxTreeLevel();
+    case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED:
+      for (const id of message.visibilityChangedTabIds) {
+        restVisibilityChangedTabIds.add(id);
+      }
+      startBatchToUpdateMaxTreeLevel();
       break;
 
     case Constants.kCOMMAND_NOTIFY_START_BATCH_OPERATION:
