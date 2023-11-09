@@ -343,6 +343,36 @@ If you need any new APIs, please file API proposals in the issue tracker.
   Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
   After that please right-click on the bookmark folder and choose "Open All as a Tree", then you'll get tabs with restored tree structure.
   </details>
+* <details id="feature-requests-better-compatibility-with-session-manager-extensions-or-add-high-power-session-management-feature"><summary>Better compatibility with session manager extensions, or add high-power session management feature</summary>
+  
+  TST should work well with any other session manager extension together, if it respects [`openerTabId` of `tabs.Tab`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab).
+  [Tab Session Manager (aka TSM)](https://addons.mozilla.org/firefox/addon/tab-session-manager/) is one of examples.
+  (Moreover, TST also provides an [API to open tabs with structure more safely](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#open-new-tab-bypassing-tsts-tab-control-behavior).
+  TST and the session manager extension will work together more smoothly, if it opens tabs via the API.)
+  
+  In other words, TST can't collaborate with any other extension if it does not give `openerTabId` as a hint to construct trees.
+  On such cases it is required to improve the other collaborator extension itself.
+  Sadly [it beyonds my power and needs a cooperation by the extension's author](https://github.com/piroor/treestyletab/issues/2914).
+  
+  As a workaround, you can use TST's bookmarking feature to save trees of tabs.
+  Select tabs (via Ctrl-click or Shift-click on tabs in the sidebar) and choose "Bookmark Tabs..." from the context menu, then TST creates a bookmark folder and bookmarks under the folder from selected tabs.
+  After that please right-click on the bookmark folder and choose "Open All as a Tree", then you'll get tabs with restored tree structure.
+  </details>
+* <details id="feature-requests-how-to-open-new-group-folder-tab-intentionally"><summary>How to open new "group (folder) tab" intentionally?</summary>
+  
+  A helper addon [TST More Tree Commands](https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/) provides a context menu command to create a new "group" from multiselected tabs.
+  
+  If you hope to open a new "group (folder) tab" individually, preparing bookmark items to do that may become a solution, because a "group tab" is actually just an internal page with special URL. Such a "group tab" is actually implemented as a local page with internal URL of TST itself. Because of such internal pages have unique host part for each installation due to security reasons, TST provides special URI `ext+treestyletab:group` as a stable alias across installations. For example:
+
+  |Title|URL|What will happen|
+  |-----|---|-------|
+  |New Group|`ext+treestyletab:group?title=New%20Group`|Creates a new permanent group tab (it won't be closed automatically by TST.)|
+  |New Temporary Group|`ext+treestyletab:group?title=New%20Temporary%20Group&temporary=true`|Creates a new temporary group tab. It will be closed automatically by TST when there is no child.|
+  |New Quite Temporary Group|`ext+treestyletab:group?title=New%20Temporary%20Group&temporaryAggressive=true`|Creates a new temporary group tab. It will be closed automatically by TST when there is only one child tab is left.|
+  
+  There are some more URL options but they are quite internal and unstable. Instead it is recommended to create bookmarks from existing group tabs whici is opened with URL like `moz-extension://xxxxx/resources/group-tab.html?...`, after you configure it with their UI (checkboxes and title input field.) TST automatically detects creation of bookmarks with such internal URLs and updates the saved URL to an alias prefixed with `ext+treestyletab:group?`.
+  </details>
+
 
 #### Troubles, unexpected behaviors
 
