@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.18 (2023.11.10)
    * Add context menu commands and keyboard shortcut slots "Mute/Unmute this Tree" and "Mute/Unmute Descendants".
    * Increase default interval of the heartbeat between sidebar pages and the background page from 1sec to 5sec for less CPU usage.
    * Optimize performance of updating maximum tree level on situations with disabled animation.
