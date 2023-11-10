@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Add context menu commands and keyboard shortcut slots "Mute/Unmute this Tree" and "Mute/Unmute Descendants".
+   * Increase default interval of the heartbeat between sidebar pages and the background page from 1sec to 5sec for less CPU usage.
+   * Optimize performance of updating maximum tree level on situations with disabled animation.
+   * Determine color of SVG icons for the platform color mode (dark or bright), based on the CSS prefers-color-scheme feature.
+   * [Update `fr` locale by cayenne17](https://github.com/piroor/treestyletab/pull/3406). Thanks!
  - 3.9.17 (2023.9.8)
    * Handle tabs internally moved by TST itself more correctly. Reduced wrong placements of tabs opened from a pinned parent on some situations.
    * Optimize initialization process of the tab context menu on the sidebar page. Reduced delayed update of menu items after the menu appears on the screen.
