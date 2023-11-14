@@ -14,11 +14,11 @@
 		fill: transparent /* TO BE REPLACED WITH THEME COLOR */;
 	}
 	g.prefer-color-scheme:target {
-		fill: #0C0C0D; /* --grey-90 at https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/devtools/client/themes/variables.css#128 */
+		fill: rgb(91, 91, 102); /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/browser/themes/shared/browser-custom-colors.css#74 */
 	}
 	@media (prefers-color-scheme: dark) {
 		g.prefer-color-scheme:target {
-			fill: #B1B1B3; /* --grey-40 at https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/devtools/client/themes/variables.css#254 */
+			fill: rgb(251, 251, 254); /* https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/browser/themes/shared/browser-custom-colors.css#74 */
 		}
 	}
 	g.mask {
