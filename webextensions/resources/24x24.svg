@@ -14,11 +14,11 @@
 		fill: transparent /* TO BE REPLACED WITH THEME COLOR */;
 	}
 	g.prefer-color-scheme:target {
-		fill: #0C0C0D;
+		fill: #0C0C0D; /* --grey-90 at https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/devtools/client/themes/variables.css#128 */
 	}
 	@media (prefers-color-scheme: dark) {
 		g.prefer-color-scheme:target {
-			fill: #F9F9FA;
+			fill: #B1B1B3; /* --grey-40 at https://searchfox.org/mozilla-central/rev/d6576544301cacc0e393fbc919c53e4e6b0d46ec/devtools/client/themes/variables.css#254 */
 		}
 	}
 	g.mask {
@@ -37,19 +37,19 @@
 	<circle cx="11" cy="12.375" r="1"/>
 	<circle cx="16" cy="18.5" r="1"/>
 </symbol>
-<g id="toolbar-theme" class="theme" fill-opacity="0.8">
+<g id="toolbar-theme" class="theme">
 	<use href="#icon"/>
 </g>
-<g id="default-theme" class="theme" fill-opacity="1">
+<g id="default-theme" class="theme">
 	<use href="#icon"/>
 </g>
-<g id="toolbar" class="prefer-color-scheme" fill-opacity="0.8">
+<g id="toolbar" class="prefer-color-scheme">
 	<use href="#icon"/>
 </g>
-<g id="default" class="prefer-color-scheme" fill-opacity="1">
+<g id="default" class="prefer-color-scheme">
 	<use href="#icon"/>
 </g>
-<g id="mask" class="mask" fill-opacity="1">
+<g id="mask" class="mask">
 	<use href="#icon"/>
 </g>
 </svg>
