@@ -695,7 +695,7 @@ async function onShown(info, contextTab) {
     }
     updateItem('context_reopenInContainer', {
       visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
-      enabled: TabsOpen.isOpenable(contextTab.url),
+      enabled: contextTabs.every(tab => TabsOpen.isOpenable(tab.url)),
       multiselected
     }) && modifiedItemsCount++;
 
