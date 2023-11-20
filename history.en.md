@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Don't reopen tabs with URL unopenable with addon's permission (local file, about: URL and so on) even for container inheritance.
+   * Deactivate "Open in New Container Tab" context menu command for tabs with unreopenable URL.
+   * Use icon color same to Firefox 120.
  - 3.9.18 (2023.11.10)
    * Add context menu commands and keyboard shortcut slots "Mute/Unmute this Tree" and "Mute/Unmute Descendants".
    * Increase default interval of the heartbeat between sidebar pages and the background page from 1sec to 5sec for less CPU usage.
