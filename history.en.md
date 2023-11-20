@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 3.9.19 (2023.11.20)
    * Don't reopen tabs with URL unopenable with addon's permission (local file, about: URL and so on) even for container inheritance.
    * Deactivate "Open in New Container Tab" context menu command for tabs with unreopenable URL.
    * Use icon color same to Firefox 120.
