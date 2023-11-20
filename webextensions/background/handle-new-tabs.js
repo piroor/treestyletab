@@ -272,6 +272,12 @@ async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavi
     return moved;
   }
 
+  if (!configs.inheritContextualIdentityToUnopenableURLTabs &&
+      !TabsOpen.isOpenable(url)) {
+    log('handleNewTabFromActiveTab: not openable URL, skip reopening ', cookieStoreId, url);
+    return moved;
+  }
+
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   // We need to prevent grouping of this original tab and the reopened tab
   // by the "multiple tab opened in XXX msec" feature.

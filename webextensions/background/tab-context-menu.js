@@ -25,6 +25,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import Tab from '/common/Tab.js';
 
 import * as Commands from './commands.js';
+import * as TabsOpen from './tabs-open.js';
 
 function log(...args) {
   internalLogger('background/tab-context-menu', ...args);
@@ -694,6 +695,7 @@ async function onShown(info, contextTab) {
     }
     updateItem('context_reopenInContainer', {
       visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
+      enabled: TabsOpen.isOpenable(contextTab.url),
       multiselected
     }) && modifiedItemsCount++;
 

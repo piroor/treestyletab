@@ -510,6 +510,8 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "ツリー上での親から継承" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "現在のタブから継承" },
 
+  "config_inheritContextualIdentityToUnopenableURLTabs_label": { "message": "アドオンの権限で開けないURLのタブを、コンテナーを継承するために安全なURLで強制的に開き直す" },
+
   "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
 
   "config_tabBunchesDetectionTimeout_before": { "message": "1つのブックマークフォルダーから" },

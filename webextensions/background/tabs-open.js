@@ -262,6 +262,10 @@ function sanitizeURL(url) {
   return url;
 }
 
+export function isOpenable(url) {
+  return !url || url == sanitizeURL(url);
+}
+
 
 function onMessage(message, openerTab) {
   switch (message.type) {

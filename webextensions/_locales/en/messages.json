@@ -514,6 +514,8 @@
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent": { "message": "Inherit from the parent tab on the tree" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive": { "message": "Inherit from the current tab" },
 
+  "config_inheritContextualIdentityToUnopenableURLTabs_label": { "message": "Reopen tab with inherited container anyway, even if it has a URL unable to open by addon's permission" },
+
   "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
 
   "config_tabBunchesDetectionTimeout_before": { "message": "Detect tabs opened from a bookmark folder within" },

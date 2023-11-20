@@ -258,6 +258,7 @@ export const configs = new Configs({
   inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
   inheritContextualIdentityToTabsFromExternalMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToTabsFromAnyOtherTriggerMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
+  inheritContextualIdentityToUnopenableURLTabs: false,
 
 
   // behavior around closed tab
