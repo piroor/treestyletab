@@ -151,17 +151,31 @@ export async function request(tabOrId, options = {}) {
     }
   }
 
-  const adjective   = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
-  const noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
-  const randomValue = Math.floor(Math.random() * 1000);
-  const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
+  const id = `tab-${generate()}`;
   // tabId is for detecttion of duplicated tabs
   await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id }).catch(ApiTabs.createErrorSuppressor());
   return { id, originalId, originalTabId, duplicated };
+}
+
+function generate() {
+  const adjective   = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
+  const noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
+  const randomValue = Math.floor(Math.random() * 1000);
+  return `${adjective}-${noun}-${Date.now()}-${randomValue}`;
 }
 
 export async function getFromTabs(tabs) {
   return Promise.all(tabs.map(tab =>
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
   ));
+}
+
+export async function ensureWindowId(windowId) {
+  const storedUniqueId = await browser.sessions.getWindowValue(windowId, 'uniqueId').catch(_ => null);
+  if (storedUniqueId)
+    return storedUniqueId;
+
+  const uniqueId = `window-${generate()}`;
+  await browser.sessions.setWindowValue(windowId, 'uniqueId', uniqueId).catch(_ => null);
+  return uniqueId;
 }

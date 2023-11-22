@@ -18,6 +18,7 @@ import * as MetricsData from '/common/metrics-data.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as UniqueId from '/common/unique-id.js';
 
 import Tab from '/common/Tab.js';
 
@@ -300,7 +301,7 @@ async function updateWindowCache(owner, key, value) {
 
   if (!configs.persistCachedTree &&
       browser.storage.session) {
-    const storagKey = `backgroundCache-window${owner.windowId}-${key}`;
+    const storagKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
     if (value) {
       const data = {};
       data[storagKey] = value;
@@ -343,7 +344,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 
 async function getWindowCache(owner, key) {
   if (!configs.persistCachedTree) {
-    const storageKey = `backgroundCache-window${owner.windowId}-${key}`;
+    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
     const defaultData = {};
     defaultData[storageKey] = undefined;
     return browser.storage.session.get(defaultData).then(data => {

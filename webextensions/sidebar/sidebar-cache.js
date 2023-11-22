@@ -21,6 +21,7 @@ import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as UniqueId from '/common/unique-id.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
@@ -435,10 +436,10 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
 // updating cache
 // ===================================================================
 
-function updateWindowCache(key, value) {
+async function updateWindowCache(key, value) {
   if (!configs.persistCachedTree &&
       browser.storage.session) {
-    const storagKey = `sidebarCache-window${mTargetWindow}-${key}`;
+    const storagKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
     if (value) {
       const data = {};
       data[storagKey] = value;
@@ -493,7 +494,7 @@ export function markWindowCacheDirty(key) {
 
 async function getWindowCache(key) {
   if (!configs.persistCachedTree) {
-    const storageKey = `sidebarCache-window${mTargetWindow}-${key}`;
+    const storageKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
     const defaultData = {};
     defaultData[storageKey] = undefined;
     return browser.storage.session.get(defaultData).then(data => {
