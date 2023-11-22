@@ -34,6 +34,16 @@ let mActivated = false;
 export function activate() {
   mActivated = true;
   configs.$addObserver(onConfigChange);
+
+  if (!configs.persistCachedTree &&
+      browser.storage.session) {
+    browser.windows.getAll().then(windows => {
+      for (const win of windows) {
+        browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS).catch(ApiTabs.createErrorSuppressor());
+        browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY).catch(ApiTabs.createErrorSuppressor());
+      }
+    });
+  }
 }
 
 
@@ -287,6 +297,20 @@ function fixupTabRestoredFromCachePostProcess(tab) {
 async function updateWindowCache(owner, key, value) {
   if (!owner)
     return;
+
+  if (!configs.persistCachedTree &&
+      browser.storage.session) {
+    const storagKey = `backgroundCache-window${owner.windowId}-${key}`;
+    if (value) {
+      const data = {};
+      data[storagKey] = value;
+      return browser.storage.session.set(data);
+    }
+    else {
+      return browser.storage.session.remove(storagKey);
+    }
+  }
+
   if (value === undefined) {
     try {
       return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
@@ -318,6 +342,14 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
+  if (!configs.persistCachedTree) {
+    const storageKey = `backgroundCache-window${owner.windowId}-${key}`;
+    const defaultData = {};
+    defaultData[storageKey] = undefined;
+    return browser.storage.session.get(defaultData).then(data => {
+      return data[storageKey];
+    });
+  }
   return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
 }
 
@@ -495,6 +527,7 @@ Tab.onHidden.addListener(tab => {
 function onConfigChange(key) {
   switch (key) {
     case 'useCachedTree':
+    case 'persistCachedTree':
       browser.windows.getAll({
         populate:    true,
         windowTypes: ['normal']

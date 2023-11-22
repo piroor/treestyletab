@@ -53,6 +53,9 @@ let mTabBar;
 export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
   mTabBar       = document.querySelector('#tabbar');
+
+  if (!configs.persistCachedTree)
+    clearPersistentWindowCache();
 }
 
 export function startTracking() {
@@ -433,6 +436,20 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
 // ===================================================================
 
 function updateWindowCache(key, value) {
+  if (!configs.persistCachedTree &&
+      browser.storage.session) {
+    const storagKey = `sidebarCache-window${mTargetWindow}-${key}`;
+    if (value) {
+      const data = {};
+      data[storagKey] = value;
+      browser.storage.session.set(data);
+    }
+    else {
+      browser.storage.session.remove(storagKey);
+    }
+    return;
+  }
+
   if (!mLastWindowCacheOwner ||
       !Tab.get(mLastWindowCacheOwner.id))
     return;
@@ -448,9 +465,21 @@ function updateWindowCache(key, value) {
 
 function clearWindowCache() {
   log('clearWindowCache ', { stack: configs.debug && new Error().stack });
+  if (!configs.persistCachedTree)
+    clearPersistentWindowCache();
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+}
+
+function clearPersistentWindowCache() {
+  if (!mLastWindowCacheOwner ||
+      !Tab.get(mLastWindowCacheOwner.id))
+    return;
+  log('clearPersistentWindowCache ', { stack: configs.debug && new Error().stack });
+  browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR).catch(ApiTabs.createErrorSuppressor());
+  browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY).catch(ApiTabs.createErrorSuppressor());
+  browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY).catch(ApiTabs.createErrorSuppressor());
 }
 
 export function markWindowCacheDirty(key) {
@@ -463,6 +492,15 @@ export function markWindowCacheDirty(key) {
 }
 
 async function getWindowCache(key) {
+  if (!configs.persistCachedTree) {
+    const storageKey = `sidebarCache-window${mTargetWindow}-${key}`;
+    const defaultData = {};
+    defaultData[storageKey] = undefined;
+    return browser.storage.session.get(defaultData).then(data => {
+      return data[storageKey];
+    });
+  }
+
   if (!mLastWindowCacheOwner)
     return null;
   return browser.sessions.getWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorHandler());
@@ -527,6 +565,7 @@ async function updateCachedTabbar() {
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
+    case 'persistCachedTree':
       if (configs[changedKey]) {
         reserveToUpdateCachedTabbar();
       }
