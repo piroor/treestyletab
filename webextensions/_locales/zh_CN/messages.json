@@ -1025,8 +1025,6 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "紧随源标签页的同级项"
   },
-  "config_autoAttachOnOpenedWithOwner_after": {
-  },
   "config_insertNewTabFromPinnedTabAt_caption": {
     "message": "打开自固定标签页的新建子标签页（将显示为根标签页）的插入位置"
   },
@@ -1953,8 +1951,6 @@
   },
   "config_all_caption": {
     "message": "所有配置"
-  },
-  "config_terms_delimiter": {
   },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
