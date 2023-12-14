@@ -1490,9 +1490,6 @@ async function onDragEnd(event) {
     const windowW = window.innerWidth;
     const windowH = window.innerHeight;
     const offset  = dragData.tab.$TST.element && dragData.tab.$TST.element.getBoundingClientRect().height / 2;
-    // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
-    const fixedEventScreenX = (event.screenX - subframeXOffset) / window.devicePixelRatio;
-    const fixedEventScreenY = (event.screenY - subframeYOffset) / window.devicePixelRatio;
     const now = Date.now();
     log('dragend at: ', {
       windowX,
@@ -1503,24 +1500,16 @@ async function onDragEnd(event) {
       eventScreenY: event.screenY,
       eventClientX: event.clientX,
       eventClientY: event.clientY,
-      fixedEventScreenX,
-      fixedEventScreenY,
-      devicePixelRatio: window.devicePixelRatio,
       lastDragEventCoordinatesX,
       lastDragEventCoordinatesY,
       offset,
       subframeXOffset,
       subframeYOffset,
     });
-    if ((event.screenX >= windowX - offset &&
-         event.screenY >= windowY - offset &&
-         event.screenX <= windowX + windowW + offset &&
-         event.screenY <= windowY + windowH + offset) ||
-        // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1561522
-        (fixedEventScreenX >= windowX - offset &&
-         fixedEventScreenY >= windowY - offset &&
-         fixedEventScreenX <= windowX + windowW + offset &&
-         fixedEventScreenY <= windowY + windowH + offset)) {
+    if (event.screenX >= windowX - offset &&
+        event.screenY >= windowY - offset &&
+        event.screenX <= windowX + windowW + offset &&
+        event.screenY <= windowY + windowH + offset) {
       log('dropped near the tab bar (from coordinates): detaching is canceled');
       return;
     }
@@ -1530,8 +1519,6 @@ async function onDragEnd(event) {
     const delayFromLast = now - lastDragEventCoordinatesTimestamp;
     const rawOffsetX    = Math.abs(event.screenX - subframeXOffset - lastDragEventCoordinatesX);
     const rawOffsetY    = Math.abs(event.screenY - subframeYOffset - lastDragEventCoordinatesY);
-    const fixedOffsetX  = Math.abs(fixedEventScreenX - lastDragEventCoordinatesX);
-    const fixedOffsetY  = Math.abs(fixedEventScreenY - lastDragEventCoordinatesY);
     log('check: ', {
       now,
       lastDragEventCoordinatesTimestamp,
@@ -1540,8 +1527,6 @@ async function onDragEnd(event) {
       offset,
       rawOffsetX,
       rawOffsetY,
-      fixedOffsetX,
-      fixedOffsetY,
       subframeXOffset,
       subframeYOffset,
     });
@@ -1550,8 +1535,8 @@ async function onDragEnd(event) {
         // We need to accept intentional drag and drop at left edge of the screen.
         // For safety, cancel only when the coordinates become (0,0) accidently from the bug.
         delayFromLast < configs.maximumDelayForBug1561879 &&
-        (rawOffsetX > offset || fixedOffsetX > offset) &&
-        (rawOffsetY > offset || fixedOffsetY > offset)) {
+        rawOffsetX > offset &&
+        rawOffsetY > offset) {
       log('dropped at unknown position: detaching is canceled');
       return;
     }
