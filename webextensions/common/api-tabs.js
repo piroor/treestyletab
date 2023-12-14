@@ -78,45 +78,6 @@ export async function blur(tab, unactivatableTabs = []) {
   while (successorTab);
 }
 
-// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477 + fix pinned/unpinned status
-export async function safeMoveAcrossWindows(tabIds, moveOptions) {
-  log('safeMoveAcrossWindows ', tabIds, moveOptions);
-  if (!Array.isArray(tabIds))
-    tabIds = [tabIds];
-  const tabs = await Promise.all(tabIds.map(id => browser.tabs.get(id).catch(handleMissingTabError)));
-  const activeTab = tabs.find(tab => tab.active);
-  if (activeTab)
-    await blur(activeTab, tabs);
-  const window = await browser.windows.get(moveOptions.windowId || tabs[0].windowId, { populate: true });
-  return (await Promise.all(tabs.map(async (tab, index) => {
-    try {
-      const destIndex = moveOptions.index + index;
-      if (tab.pinned) {
-        if (window.tabs[destIndex - 1] &&
-            window.tabs[destIndex - 1].pinned != tab.pinned)
-          await browser.tabs.update(tab.id, { pinned: false });
-      }
-      else {
-        if (window.tabs[destIndex] &&
-            window.tabs[destIndex].pinned != tab.pinned)
-          await browser.tabs.update(tab.id, { pinned: true });
-      }
-      let movedTab = await browser.tabs.move(tab.id, {
-        ...moveOptions,
-        index: destIndex
-      });
-      log(`safeMoveAcrossWindows: movedTab[${index}] = `, movedTab);
-      if (Array.isArray(movedTab))
-        movedTab = movedTab[0];
-      return movedTab;
-    }
-    catch(e) {
-      handleMissingTabError(e);
-      return null;
-    }
-  }))).filter(tab => !!tab);
-}
-
 export function isMissingTabError(error) {
   return (
     error &&

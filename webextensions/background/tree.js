@@ -1492,7 +1492,7 @@ export async function moveTabs(tabs, options = {}) {
         toIndex--;
       log(' => ', toIndex);
       if (isAcrossWindows) {
-        movedTabs = await ApiTabs.safeMoveAcrossWindows(movedTabIds, {
+        movedTabs = await browser.tabs.move(movedTabIds, {
           windowId: destinationWindowId,
           index:    toIndex
         });
