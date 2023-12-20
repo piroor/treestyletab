@@ -49,47 +49,65 @@ export async function waitUntilDeviceInfoInitialized() {
   mMyDeviceInfo = configs.syncDeviceInfo;
 }
 
-configs.$loaded.then(async () => {
-  await ensureDeviceInfoInitialized();
-});
+let initialized = false;
+let preChanges = [];
+
+function onConfigChanged(key, value = undefined) {
+  if (!initialized) {
+    preChanges.push({ key, value: value === undefined ? configs[key] : value });
+    return;
+  }
+  switch (key) {
+    case 'syncOtherDevicesDetected':
+      if (!configs.syncAvailableNotified) {
+        configs.syncAvailableNotified = true;
+        notify({
+          title:   browser.i18n.getMessage('syncAvailable_notification_title'),
+          message: browser.i18n.getMessage(`syncAvailable_notification_message${isLinux() ? '_linux' : ''}`),
+          url:     `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`,
+          timeout: configs.syncAvailableNotificationTimeout
+        });
+      }
+      return;
+
+    case 'syncDevices':
+      // This may happen when all configs are reset.
+      // We need to try updating devices after syncDeviceInfo is completely cleared.
+      wait(100).then(updateDevices);
+      break;
+
+    case 'syncDeviceInfo':
+      if (configs.syncDeviceInfo &&
+          mMyDeviceInfo &&
+          configs.syncDeviceInfo.id == mMyDeviceInfo.id &&
+          configs.syncDeviceInfo.timestamp == mMyDeviceInfo.timestamp)
+        return; // ignore updating triggered by myself
+      mMyDeviceInfo = null;
+      updateSelf();
+      break;
+
+    default:
+      if (key.startsWith('chunkedSyncData'))
+        reserveToReceiveMessage();
+      break;
+  }
+}
 
 export async function init() {
+  configs.$addObserver(onConfigChanged); // we need to register the listener to collect pre-sent changes
+  await configs.$loaded;
+  await ensureDeviceInfoInitialized();
   await updateSelf();
   await updateDevices();
+  initialized = true;
+
   reserveToReceiveMessage();
   window.setInterval(updateSelf, 1000 * 60 * 60 * 24); // update info every day!
 
-  configs.$addObserver(key => {
-    switch (key) {
-      case 'syncOtherDevicesDetected':
-        if (!configs.syncAvailableNotified) {
-          configs.syncAvailableNotified = true;
-          notify({
-            title:   browser.i18n.getMessage('syncAvailable_notification_title'),
-            message: browser.i18n.getMessage(`syncAvailable_notification_message${isLinux() ? '_linux' : ''}`),
-            url:     `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`,
-            timeout: configs.syncAvailableNotificationTimeout
-          });
-        }
-        return;
-
-      case 'syncDevices':
-        // This may happen when all configs are reset.
-        // We need to try updating devices after syncDeviceInfo is completely cleared.
-        wait(100).then(updateDevices);
-        break;
-
-      case 'syncDeviceInfo':
-        mMyDeviceInfo = null;
-        updateSelf();
-        break;
-
-      default:
-        if (key.startsWith('chunkedSyncData'))
-          reserveToReceiveMessage();
-        break;
-    }
-  });
+  for (const change of preChanges) {
+    onConfigChanged(change.key, change.value);
+  }
+  preChanges = [];
 }
 
 export async function generateDeviceInfo({ name, icon } = {}) {
@@ -139,7 +157,7 @@ async function updateSelf() {
   await ensureDeviceInfoInitialized();
   configs.syncDeviceInfo = mMyDeviceInfo = {
     ...clone(configs.syncDeviceInfo),
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 
   await updateDevices();
