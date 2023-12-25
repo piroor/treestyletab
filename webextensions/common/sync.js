@@ -182,7 +182,10 @@ async function updateDevices() {
   if (updateDevices.updating)
     return;
   updateDevices.updating = true;
-  await waitUntilDeviceInfoInitialized();
+  const [devicesFromSimulator] = await Promise.all([
+    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' }),
+    waitUntilDeviceInfoInitialized(),
+  ]);
 
   const remote = clone(configs.syncDevices);
   const local  = clone(configs.syncDevicesLocalCache);
@@ -198,6 +201,19 @@ async function updateDevices() {
     else {
       log('new device: ', info);
       onNewDevice.dispatch(info);
+    }
+  }
+
+  if (devicesFromSimulator) {
+    const knownDeviceIdsFromSimulator = new Set(Object.values(local).map(device => device.simulatorId).filter(id => !!id));
+    for (const deviceFromSimulator of devicesFromSimulator) {
+      if (knownDeviceIdsFromSimulator.has(deviceFromSimulator.id))
+        continue;
+      const localId = `device-from-simulator:${deviceFromSimulator.id}`;
+      local[localId] = {
+        ...deviceFromSimulator,
+        id: localId,
+      };
     }
   }
 
