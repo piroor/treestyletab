@@ -27,6 +27,8 @@ export const onNewDevice = new EventListenerManager();
 export const onUpdatedDevice = new EventListenerManager();
 export const onObsoleteDevice = new EventListenerManager();
 
+const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
+
 let mMyDeviceInfo = null;
 
 async function getMyDeviceInfo() {
@@ -154,7 +156,16 @@ async function updateSelf() {
 
   updateSelf.updating = true;
 
-  await ensureDeviceInfoInitialized();
+  const [devices] = await Promise.all([
+    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'get-devices' }),
+    ensureDeviceInfoInitialized(),
+  ]);
+  if (devices) {
+    const myDeviceFromSimulator = devices.find(device => device.myself);
+    if (mMyDeviceInfo.simulatorId != myDeviceFromSimulator.id)
+      mMyDeviceInfo.simulatorId = myDeviceFromSimulator.id;
+  }
+
   configs.syncDeviceInfo = mMyDeviceInfo = {
     ...clone(configs.syncDeviceInfo),
     timestamp: Date.now(),
