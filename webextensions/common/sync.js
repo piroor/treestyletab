@@ -100,7 +100,6 @@ export async function init() {
   await configs.$loaded;
   await ensureDeviceInfoInitialized();
   await updateSelf();
-  await updateDevices();
   initialized = true;
 
   reserveToReceiveMessage();
