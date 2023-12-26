@@ -109,6 +109,25 @@ export async function init() {
     onConfigChanged(change.key, change.value);
   }
   preChanges = [];
+
+  browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' });
+  browser.runtime.onMessageExternal.addListener((message, sender) => {
+    if (!message ||
+        typeof message != 'object' ||
+        typeof message.type != 'string' ||
+        sender.id != SEND_TABS_SIMULATOR_ID)
+      return;
+
+    switch (message.type) {
+      case 'ready':
+        browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' });
+      case 'device-added':
+      case 'device-updated':
+      case 'device-removed':
+        updateSelf();
+        break;
+    }
+  });
 }
 
 export async function generateDeviceInfo({ name, icon } = {}) {
