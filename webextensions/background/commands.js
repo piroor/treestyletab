@@ -336,9 +336,16 @@ export async function openNewTabAs(options = {}) {
       insertAfter = Tab.getLastTab(activeTab.windowId);
       break;
 
-    case Constants.kNEWTAB_OPEN_AS_CHILD: {
+    case Constants.kNEWTAB_OPEN_AS_CHILD:
+    case Constants.kNEWTAB_OPEN_AS_CHILD_TOP:
+    case Constants.kNEWTAB_OPEN_AS_CHILD_END: {
       parent = activeTab;
-      const refTabs = Tree.getReferenceTabsForNewChild(null, parent);
+      const insertAt = options.as == Constants.kNEWTAB_OPEN_AS_CHILD_TOP ?
+        Constants.kINSERT_TOP :
+        options.as == Constants.kNEWTAB_OPEN_AS_CHILD_END ?
+          Constants.kINSERT_END :
+          undefined;
+      const refTabs = Tree.getReferenceTabsForNewChild(null, parent, { insertAt });
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
       log('detected reference tabs: ',

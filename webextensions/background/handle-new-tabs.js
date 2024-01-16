@@ -526,7 +526,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         handleNewTabFromActiveTab(tab, {
           url:                tab.url,
           activeTab:          possibleOpenerTab,
-          autoAttachBehavior: Constants.kNEWTAB_OPEN_AS_CHILD,
+          autoAttachBehavior: configs.autoAttachOnOpenedWithOwner,
           context:            TSTAPI.kNEWTAB_CONTEXT_FROM_ABOUT_ADDONS,
         });
         return;

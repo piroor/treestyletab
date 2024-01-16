@@ -922,7 +922,9 @@ export async function behaveAutoAttachedTabs(tabs, options = {}) {
       }
       return false;
 
-    case Constants.kNEWTAB_OPEN_AS_CHILD: {
+    case Constants.kNEWTAB_OPEN_AS_CHILD:
+    case Constants.kNEWTAB_OPEN_AS_CHILD_TOP:
+    case Constants.kNEWTAB_OPEN_AS_CHILD_END: {
       if (options.baseTabs && !options.baseTab)
         options.baseTab = options.baseTabs[0];
       let moved = false;

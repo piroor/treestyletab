@@ -106,6 +106,12 @@
     "newChildTab": {
       "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_child_command__"
     },
+    "newChildTabTop": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_childTop_command__"
+    },
+    "newChildTabEnd": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_childEnd_command__"
+    },
     "newSiblingTab": {
       "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_sibling_command__"
     },

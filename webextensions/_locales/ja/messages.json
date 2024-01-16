@@ -62,6 +62,8 @@
   "tabbar_newTabAction_independent_command": { "message": "独立したタブ" },
   "tabbar_newTabAction_child_label":       { "message": "子タブ(&C)" },
   "tabbar_newTabAction_child_command":       { "message": "子タブ" },
+  "tabbar_newTabAction_childTop_command":    { "message": "最初の子タブ" },
+  "tabbar_newTabAction_childEnd_command":    { "message": "最後の子タブ" },
   "tabbar_newTabAction_sibling_label":     { "message": "同階層のタブ(&S)" },
   "tabbar_newTabAction_sibling_command":     { "message": "同階層のタブ" },
   "tabbar_newTabAction_nextSibling_label": { "message": "同階層の隣のタブ(&N)" },

@@ -157,6 +157,18 @@ async function onShortcutCommand(command) {
         as:      Constants.kNEWTAB_OPEN_AS_CHILD
       });
       return;
+    case 'newChildTabTop':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_CHILD_TOP
+      });
+      return;
+    case 'newChildTabEnd':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_CHILD_END
+      });
+      return;
     case 'newSiblingTab':
       Commands.openNewTabAs({
         baseTab: activeTab,
@@ -637,7 +649,17 @@ function onMessageExternal(message, sender) {
         let behavior = configs.autoAttachOnDuplicated;
         switch (String(message.as || 'sibling').toLowerCase()) {
           case 'child':
-            behavior = Constants.kNEWTAB_OPEN_AS_CHILD;
+            behavior = behavior == Constants.kNEWTAB_OPEN_AS_CHILD_TOP ?
+              Constants.kNEWTAB_OPEN_AS_CHILD_TOP :
+              behavior == Constants.kNEWTAB_OPEN_AS_CHILD_END ?
+                Constants.kNEWTAB_OPEN_AS_CHILD_END :
+                Constants.kNEWTAB_OPEN_AS_CHILD;
+            break;
+          case 'first-child':
+            behavior = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
+            break;
+          case 'last-child':
+            behavior = Constants.kNEWTAB_OPEN_AS_CHILD_END;
             break;
           case 'sibling':
             behavior = Constants.kNEWTAB_OPEN_AS_SIBLING;

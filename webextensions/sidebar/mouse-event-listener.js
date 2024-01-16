@@ -1069,7 +1069,17 @@ function onNewTabActionSelect(item, event) {
         action = Constants.kNEWTAB_OPEN_AS_ORPHAN;
         break;
       case 'child':
-        action = Constants.kNEWTAB_OPEN_AS_CHILD;
+        const hints = new Set([
+          configs.autoAttachOnNewTabCommand,
+          configs.autoAttachOnNewTabButtonMiddleClick,
+          configs.autoAttachOnNewTabButtonAccelClick,
+        ]);
+        if (hints.has(Constants.kNEWTAB_OPEN_AS_CHILD_TOP))
+          action = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
+        else if (hints.has(Constants.kNEWTAB_OPEN_AS_CHILD_END))
+          action = Constants.kNEWTAB_OPEN_AS_CHILD_END;
+        else
+          action = Constants.kNEWTAB_OPEN_AS_CHILD;
         break;
       case 'sibling':
         action = Constants.kNEWTAB_OPEN_AS_SIBLING;

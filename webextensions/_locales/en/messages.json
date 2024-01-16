@@ -62,6 +62,8 @@
   "tabbar_newTabAction_independent_command": { "message": "Independent Tab" },
   "tabbar_newTabAction_child_label":       { "message": "&Child Tab" },
   "tabbar_newTabAction_child_command":       { "message": "Child Tab" },
+  "tabbar_newTabAction_childTop_command":    { "message": "First Child Tab" },
+  "tabbar_newTabAction_childEnd_command":    { "message": "Last Child Tab" },
   "tabbar_newTabAction_sibling_label":     { "message": "&Sibling Tab" },
   "tabbar_newTabAction_sibling_command":     { "message": "Sibling Tab" },
   "tabbar_newTabAction_nextSibling_label": { "message": "&Next Sibling Tab" },
