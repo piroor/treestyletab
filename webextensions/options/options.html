@@ -374,6 +374,19 @@
                        type="checkbox">
                 __MSG_config_suppressGroupTabForStructuredTabsFromBookmarks_label__</label></p>
     </fieldset>
+    <p class="expert"
+      ><label>__MSG_config_autoAttachOnContextNewTabCommand_before__
+              <select id="autoAttachOnContextNewTabCommand">
+                <option value="-1">__MSG_config_autoAttachOnContextNewTabCommand_noControl__</option>
+                <option value="0">__MSG_config_autoAttachOnContextNewTabCommand_independent__</option>
+                <option value="6">__MSG_config_autoAttachOnContextNewTabCommand_childTop__</option>
+                <option value="7">__MSG_config_autoAttachOnContextNewTabCommand_childEnd__</option>
+                <option value="2">__MSG_config_autoAttachOnContextNewTabCommand_sibling__</option>
+                <option value="3">__MSG_config_autoAttachOnContextNewTabCommand_nextSibling__ </option>
+                <option value="4">__MSG_config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer__ __MSG_config_firefoxCompatible_choice__</option>
+              </select>
+              __MSG_config_autoAttachOnContextNewTabCommand_after__
+              <span class="preview-image"></span></label></p>
     </section>
 
 
@@ -384,7 +397,8 @@
               <select id="autoAttachOnOpenedWithOwner">
                 <option value="-1">__MSG_config_autoAttachOnOpenedWithOwner_noControl__</option>
                 <option value="0">__MSG_config_autoAttachOnOpenedWithOwner_independent__</option>
-                <option value="1">__MSG_config_autoAttachOnOpenedWithOwner_child__ __MSG_config_recommended_choice__</option>
+                <option value="6">__MSG_config_autoAttachOnOpenedWithOwner_childTop__</option>
+                <option value="7">__MSG_config_autoAttachOnOpenedWithOwner_childEnd__ __MSG_config_recommended_choice__</option>
                 <option value="5">__MSG_config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab__ __MSG_config_firefoxCompatible_choice__</option>
                 <option value="2">__MSG_config_autoAttachOnOpenedWithOwner_sibling__</option>
                 <option value="3">__MSG_config_autoAttachOnOpenedWithOwner_nextSibling__</option>
@@ -401,7 +415,7 @@
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="3">
-              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab__ __MSG_config_firefoxCompatible_choice__</label></li>
+              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab__</label></li>
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="0">
@@ -437,9 +451,10 @@
       <legend>__MSG_config_newTabAction_caption__</legend>
     <p><label>__MSG_config_autoAttachOnNewTabCommand_before__
               <select id="autoAttachOnNewTabCommand">
-                <option value="-1">__MSG_config_autoAttachOnNewTabCommand_noControl__</option>
-                <option value="0">__MSG_config_autoAttachOnNewTabCommand_independent__</option>
-                <option value="1">__MSG_config_autoAttachOnNewTabCommand_child__</option>
+                <option value="-1">__MSG_config_autoAttachOnNewTabCommand_noControl__ __MSG_config_recommended_choice__</option>
+                <option value="0">__MSG_config_autoAttachOnNewTabCommand_independent__ __MSG_config_firefoxCompatible_choice__</option>
+                <option value="6">__MSG_config_autoAttachOnNewTabCommand_childTop__</option>
+                <option value="7">__MSG_config_autoAttachOnNewTabCommand_childEnd__</option>
                 <option value="2">__MSG_config_autoAttachOnNewTabCommand_sibling__</option>
                 <option value="3">__MSG_config_autoAttachOnNewTabCommand_nextSibling__</option>
               </select>
@@ -466,10 +481,11 @@
               <select id="autoAttachOnNewTabButtonMiddleClick">
                 <option value="-1">__MSG_config_autoAttachOnNewTabButtonMiddleClick_noControl__</option>
                 <option value="0">__MSG_config_autoAttachOnNewTabButtonMiddleClick_independent__</option>
-                <option value="1">__MSG_config_autoAttachOnNewTabButtonMiddleClick_child__</option>
+                <option value="6">__MSG_config_autoAttachOnNewTabButtonMiddleClick_childTop__</option>
+                <option value="7">__MSG_config_autoAttachOnNewTabButtonMiddleClick_childEnd__</option>
                 <option value="2">__MSG_config_autoAttachOnNewTabButtonMiddleClick_sibling__</option>
                 <option value="3">__MSG_config_autoAttachOnNewTabButtonMiddleClick_nextSibling__</option>
-                <option value="4">__MSG_config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer__</option>
+                <option value="4">__MSG_config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer__ __MSG_config_firefoxCompatible_choice__</option>
               </select>
               __MSG_config_autoAttachOnNewTabButtonMiddleClick_after__
               <span class="preview-image"></span></label></p>
@@ -478,10 +494,11 @@
               <select id="autoAttachOnNewTabButtonAccelClick">
                 <option value="-1">__MSG_config_autoAttachOnNewTabButtonAccelClick_noControl__</option>
                 <option value="0">__MSG_config_autoAttachOnNewTabButtonAccelClick_independent__</option>
-                <option value="1">__MSG_config_autoAttachOnNewTabButtonAccelClick_child__</option>
+                <option value="6">__MSG_config_autoAttachOnNewTabButtonAccelClick_childTop__</option>
+                <option value="7">__MSG_config_autoAttachOnNewTabButtonAccelClick_childEnd__</option>
                 <option value="2">__MSG_config_autoAttachOnNewTabButtonAccelClick_sibling__</option>
-                <option value="3">__MSG_config_autoAttachOnNewTabButtonAccelClick_nextSibling__</option>
-                <option value="4">__MSG_config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer__</option>
+                <option value="3">__MSG_config_autoAttachOnNewTabButtonAccelClick_nextSibling__ </option>
+                <option value="4">__MSG_config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer__ __MSG_config_firefoxCompatible_choice__</option>
               </select>
               __MSG_config_autoAttachOnNewTabButtonAccelClick_after__
               <span class="preview-image"></span></label></p>
@@ -507,9 +524,10 @@
                 <select id="autoAttachOnDuplicated">
                   <option value="-1">__MSG_config_autoAttachOnDuplicated_noControl__</option>
                   <option value="0">__MSG_config_autoAttachOnDuplicated_independent__</option>
-                  <option value="1">__MSG_config_autoAttachOnDuplicated_child__</option>
+                  <option value="6">__MSG_config_autoAttachOnDuplicated_childTop__</option>
+                  <option value="7">__MSG_config_autoAttachOnDuplicated_childEnd__</option>
                   <option value="2">__MSG_config_autoAttachOnDuplicated_sibling__</option>
-                  <option value="3">__MSG_config_autoAttachOnDuplicated_nextSibling__</option>
+                  <option value="3">__MSG_config_autoAttachOnDuplicated_nextSibling__ __MSG_config_recommended_choice__</option>
                 </select>
                 __MSG_config_autoAttachOnDuplicated_after__
               <span class="preview-image"></span></label></p>
@@ -517,7 +535,8 @@
                 <select id="autoAttachSameSiteOrphan">
                   <option value="-1">__MSG_config_autoAttachSameSiteOrphan_noControl__</option>
                   <option value="0">__MSG_config_autoAttachSameSiteOrphan_independent__</option>
-                  <option value="1">__MSG_config_autoAttachSameSiteOrphan_child__</option>
+                  <option value="6">__MSG_config_autoAttachSameSiteOrphan_childTop__</option>
+                  <option value="7">__MSG_config_autoAttachSameSiteOrphan_childEnd__ __MSG_config_recommended_choice__</option>
                   <option value="2">__MSG_config_autoAttachSameSiteOrphan_sibling__</option>
                   <option value="3">__MSG_config_autoAttachSameSiteOrphan_nextSibling__</option>
                 </select>
@@ -532,9 +551,10 @@
                 </select></label></p>
       <p><label>__MSG_config_fromExternal_caption__: __MSG_config_autoAttachOnOpenedFromExternal_before__
                 <select id="autoAttachOnOpenedFromExternal">
-                  <option value="-1">__MSG_config_autoAttachOnOpenedFromExternal_noControl__</option>
+                  <option value="-1">__MSG_config_autoAttachOnOpenedFromExternal_noControl__ __MSG_config_recommended_choice__</option>
                   <option value="0">__MSG_config_autoAttachOnOpenedFromExternal_independent__</option>
-                  <option value="1">__MSG_config_autoAttachOnOpenedFromExternal_child__</option>
+                  <option value="6">__MSG_config_autoAttachOnOpenedFromExternal_childTop__</option>
+                  <option value="7">__MSG_config_autoAttachOnOpenedFromExternal_childEnd__</option>
                   <option value="2">__MSG_config_autoAttachOnOpenedFromExternal_sibling__</option>
                   <option value="3">__MSG_config_autoAttachOnOpenedFromExternal_nextSibling__</option>
                 </select>
@@ -554,9 +574,10 @@
         <hr>
         <p><label>__MSG_config_anyOtherTrigger_caption__: __MSG_config_autoAttachOnAnyOtherTrigger_before__
                   <select id="autoAttachOnAnyOtherTrigger">
-                    <option value="-1">__MSG_config_autoAttachOnAnyOtherTrigger_noControl__</option>
+                    <option value="-1">__MSG_config_autoAttachOnAnyOtherTrigger_noControl__ __MSG_config_recommended_choice__</option>
                     <option value="0">__MSG_config_autoAttachOnAnyOtherTrigger_independent__</option>
-                    <option value="1">__MSG_config_autoAttachOnAnyOtherTrigger_child__</option>
+                    <option value="6">__MSG_config_autoAttachOnAnyOtherTrigger_childTop__</option>
+                    <option value="7">__MSG_config_autoAttachOnAnyOtherTrigger_childEnd__</option>
                     <option value="2">__MSG_config_autoAttachOnAnyOtherTrigger_sibling__</option>
                     <option value="3">__MSG_config_autoAttachOnAnyOtherTrigger_nextSibling__</option>
                   </select>
@@ -1020,7 +1041,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="expert">
       <legend>__MSG_config_insertNewChildAt_caption__</legend>
       <ul>
         <li><label class="has-radio"
@@ -1030,7 +1051,7 @@
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewChildAt" value="3">
-              __MSG_config_insertNewChildAt_nextToLastRelatedTab__ __MSG_config_firefoxCompatible_choice__</label></li>
+              __MSG_config_insertNewChildAt_nextToLastRelatedTab__</label></li>
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewChildAt" value="0">

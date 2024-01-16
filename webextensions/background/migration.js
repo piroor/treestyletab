@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 29;
+const kCONFIGS_VERSION = 30;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -272,6 +272,38 @@ export function migrateConfigs() {
     case 28:
       if (configs.heartbeatInterval == 1000)
         configs.heartbeatInterval = configs.$default.heartbeatInterval;
+
+    case 29:
+      const autoAttachKeys = [
+        'autoAttachOnOpenedWithOwner',
+        'autoAttachOnNewTabCommand',
+        'autoAttachOnContextNewTabCommand',
+        'autoAttachOnNewTabButtonMiddleClick',
+        'autoAttachOnNewTabButtonAccelClick',
+        'autoAttachOnDuplicated',
+        'autoAttachSameSiteOrphan',
+        'autoAttachOnOpenedFromExternal',
+        'autoAttachOnAnyOtherTrigger',
+      ];
+      if (configs.insertNewChildAt != configs.$default.insertNewChildAt &&
+          (configs.insertNewChildAt == Constants.kINSERT_TOP ||
+           configs.insertNewChildAt == Constants.kINSERT_END)) {
+        for (const key of autoAttachKeys) {
+          if (configs[key] != configs.$default[key] &&
+              configs[key] != Constants.kNEWTAB_OPEN_AS_CHILD)
+            continue;
+          if (configs.insertNewChildAt == Constants.kINSERT_TOP)
+            configs[key] = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
+          else
+            configs[key] = Constants.kNEWTAB_OPEN_AS_CHILD_END;
+        }
+      }
+      else {
+        for (const key of autoAttachKeys) {
+          if (configs[key] == Constants.kNEWTAB_OPEN_AS_CHILD)
+            configs[key] = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
+        }
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

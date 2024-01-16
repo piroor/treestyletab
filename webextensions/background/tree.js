@@ -835,6 +835,26 @@ export async function behaveAutoAttachedTab(
         broadcast
       });
 
+    case Constants.kNEWTAB_OPEN_AS_CHILD_TOP:
+      log(' => kNEWTAB_OPEN_AS_CHILD_TOP');
+      return attachTabTo(tab, baseTab, {
+        dontMove,
+        forceExpand: true,
+        delayedMove: true,
+        insertAt:    Constants.kINSERT_TOP,
+        broadcast
+      });
+
+    case Constants.kNEWTAB_OPEN_AS_CHILD_END:
+      log(' => kNEWTAB_OPEN_AS_CHILD_END');
+      return attachTabTo(tab, baseTab, {
+        dontMove,
+        forceExpand: true,
+        delayedMove: true,
+        insertAt:    Constants.kINSERT_END,
+        broadcast
+      });
+
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
       log(' => kNEWTAB_OPEN_AS_SIBLING');
       const parent = baseTab.$TST.parent;

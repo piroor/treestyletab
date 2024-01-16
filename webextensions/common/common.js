@@ -235,7 +235,7 @@ export const configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: Constants.kINSERT_END,
+  insertNewChildAt: Constants.kINSERT_NO_CONTROL, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
   insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
   insertDroppedTabsAt: Constants.kINSERT_END,
 
@@ -243,13 +243,13 @@ export const configs = new Configs({
   scrollLines: 3,
 
   autoAttach: true,
-  autoAttachOnOpenedWithOwner: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnOpenedWithOwner: Constants.kNEWTAB_OPEN_AS_CHILD_END,
   autoAttachOnNewTabCommand: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnContextNewTabCommand: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
-  autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD_END,
   autoAttachOnNewTabButtonAccelClick: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
   autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-  autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD_END,
   autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnAnyOtherTrigger: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,

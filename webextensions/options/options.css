@@ -157,7 +157,10 @@ label input[type="checkbox"] ~ img {
 .has-preview-image[data-value="0"] .preview-image {
   background-image: url("as-independent.png");
 }
-.has-preview-image[data-value="1"] .preview-image {
+.has-preview-image[data-value="1"] .preview-image,
+.has-preview-image[data-value="5"] .preview-image,
+.has-preview-image[data-value="6"] .preview-image,
+.has-preview-image[data-value="7"] .preview-image {
   background-image: url("as-child.png");
 }
 .has-preview-image[data-value="2"] .preview-image {
@@ -346,11 +349,11 @@ body > section.collapsed > h1:first-child ~ * {
 }
 
 
-:root:not(.show-expert-options) .expert {
+:root:not(.show-expert-options) .expert:not(option.expert[selected]) {
   display: none;
 }
 
-.expert {
+.expert:not(option) {
   background: var(--in-content-box-info-background);
   box-shadow: 0 0 0.5em var(--in-content-box-info-background),
               0 0 0.5em var(--in-content-box-info-background),
