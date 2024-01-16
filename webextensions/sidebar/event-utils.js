@@ -252,7 +252,10 @@ export function getMouseEventDetail(event, tab) {
 }
 
 export function getEventTargetType(event) {
-  if (event.target.closest('.rich-confirm, #blocking-screen'))
+  const element = event.target.closest ?
+    event.target :
+    event.target.parentNode;
+  if (element.closest('.rich-confirm, #blocking-screen'))
     return 'outside';
 
   if (getTabFromEvent(event))
