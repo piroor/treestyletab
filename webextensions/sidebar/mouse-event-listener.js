@@ -1070,11 +1070,14 @@ function onNewTabActionSelect(item, event) {
         break;
       case 'child':
         const hints = new Set([
-          configs.autoAttachOnNewTabCommand,
           configs.autoAttachOnNewTabButtonMiddleClick,
           configs.autoAttachOnNewTabButtonAccelClick,
         ]);
-        if (hints.has(Constants.kNEWTAB_OPEN_AS_CHILD_TOP))
+        if (configs.autoAttachOnNewTabCommand == Constants.kNEWTAB_OPEN_AS_CHILD_TOP)
+          action = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
+        else if (configs.autoAttachOnNewTabCommand == Constants.kNEWTAB_OPEN_AS_CHILD_END)
+          action = Constants.kNEWTAB_OPEN_AS_CHILD_END;
+        else if (hints.has(Constants.kNEWTAB_OPEN_AS_CHILD_TOP))
           action = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
         else if (hints.has(Constants.kNEWTAB_OPEN_AS_CHILD_END))
           action = Constants.kNEWTAB_OPEN_AS_CHILD_END;
