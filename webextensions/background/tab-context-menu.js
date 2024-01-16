@@ -661,8 +661,9 @@ async function onShown(info, contextTab) {
       multiselected
     }) && modifiedItemsCount++;
 
+    // Not implemented yet. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
-      visible: emulate && contextTab && false, // not implemented yet
+      visible: emulate && contextTab && false,
     }) && modifiedItemsCount++;
 
     updateItem('context_sendTabsToDevice', {
