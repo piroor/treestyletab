@@ -129,6 +129,8 @@ export const configs = new Configs({
   suppressGapFromShownOrHiddenToolbarTimeout: 500,
   cancelGapSuppresserHoverDelay: 1000, // msec
 
+  watchWindowStateInterval: 500,
+
 
   // context menu
   emulateDefaultContextMenu: true,

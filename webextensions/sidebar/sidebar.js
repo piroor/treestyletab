@@ -322,6 +322,8 @@ export async function init() {
 
   GapCanceller.init();
 
+  startWatchingWindowState();
+
   MetricsData.add('init: end');
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
@@ -659,6 +661,16 @@ async function importTabsFromBackground() {
   }
   log('importTabsFromBackground: waiting for mImportedTabs');
   return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', mImportedTabs);
+}
+
+
+// Workaround for https://github.com/piroor/treestyletab/issues/3413
+function startWatchingWindowState() {
+  startWatchingWindowState.timer = window.setInterval(async () => {
+    const win = await browser.windows.get(mTargetWindow);
+    document.documentElement.classList.toggle('minimized', win.state == 'minimized');
+    document.documentElement.classList.toggle('maximized', win.state == 'maximized');
+  }, configs.watchWindowStateInterval);
 }
 
 

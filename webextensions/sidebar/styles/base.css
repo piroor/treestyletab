@@ -220,7 +220,7 @@ tab-sound-button */ {
   visibility: hidden;
 }
 
-:root.animation .tabs-spacer {
+:root.animation:not(.minimized) .tabs-spacer {
   transition: height var(--collapse-animation);
 }
 
@@ -232,7 +232,7 @@ tab-sound-button */ {
   opacity: 0;
 }
 
-:root.animation #tabbar {
+:root.animation:not(.minimized) #tabbar {
   transition: margin-top var(--collapse-animation);
 }
 
@@ -378,16 +378,16 @@ tab-item.hidden {
   visibility: collapse;
 }
 
-:root.animation tab-item.animation-ready,
-:root.animation tab-item.animation-ready tab-item-substance,
-:root.animation .after-tabs button,
-:root.animation .after-tabs [role="button"] {
+:root.animation:not(.minimized) tab-item.animation-ready,
+:root.animation:not(.minimized) tab-item.animation-ready tab-item-substance,
+:root.animation:not(.minimized) .after-tabs button,
+:root.animation:not(.minimized) .after-tabs [role="button"] {
   transition: var(--tab-animation);
 }
-:root.animation tab-item.animation-ready:not(.expanding),
-:root.animation tab-item.animation-ready:not(.expanding) tab-item-substance,
-:root.animation tab-item.animation-ready.expanding.moving,
-:root.animation tab-item.animation-ready.expanding.moving tab-item-substance {
+:root.animation:not(.minimized) tab-item.animation-ready:not(.expanding),
+:root.animation:not(.minimized) tab-item.animation-ready:not(.expanding) tab-item-substance,
+:root.animation:not(.minimized) tab-item.animation-ready.expanding.moving,
+:root.animation:not(.minimized) tab-item.animation-ready.expanding.moving tab-item-substance {
   transition: var(--tab-animation),
               var(--tab-indent-animation);
 }
@@ -564,8 +564,8 @@ tab-item.pinned:not(.in-visible-area) tab-item-substance {
 :root.hover-on-top-edge:hover tab-item.pinned tab-item-substance {
   transition: var(--visual-gap-hover-animation);
 }
-:root.hover-on-top-edge.animation:hover tab-item.pinned,
-:root.hover-on-top-edge.animation:hover tab-item.pinned tab-item-substance {
+:root.hover-on-top-edge.animation:not(.minimized):hover tab-item.pinned,
+:root.hover-on-top-edge.animation:not(.minimized):hover tab-item.pinned tab-item-substance {
   transition: var(--tab-animation),
               var(--visual-gap-hover-animation);
 }
@@ -936,7 +936,7 @@ tab-item.faviconized .contextual-identity-marker {
   opacity: 1;
 }
 
-:root.animation #out-of-view-tab-notifier.notifying {
+:root.animation:not(.minimized) #out-of-view-tab-notifier.notifying {
   animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
 }
 
@@ -1073,8 +1073,8 @@ iframe#subpanel {
 :root.blocking-shade #blocking-screen {
   background: rgba(0, 0, 0, 0.01);
 }
-:root.animation.blocking-throbber #blocking-screen,
-:root.animation.blocking-shade #blocking-screen {
+:root.animation.blocking-throbber:not(.minimized) #blocking-screen,
+:root.animation.blocking-shade:not(.minimized) #blocking-screen {
   background: rgba(0, 0, 0, 0.35);
 }
 
@@ -1094,3 +1094,19 @@ See also: https://github.com/piroor/treestyletab/issues/2777
 body > ul[id$="selector"] {
   opacity: 0;
 }
+
+
+/* Workaround for issues */
+
+/*
+  Workaround for https://github.com/piroor/treestyletab/issues/3413
+  The RAM usage will be unexpectedly get increased when the window is
+  minimized and it contains animated background image. To avoid it
+  we deactivate all dangerous (possibly from outside) background images
+  while the window is minimized.
+*/
+:root.minimized {
+  --browser-bg-images: none !important;
+  --theme-images-theme_frame: none !important;
+}
+
