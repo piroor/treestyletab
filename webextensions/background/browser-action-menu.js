@@ -1912,6 +1912,11 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent(2) + browser.i18n.getMessage('config_persistCachedTree_label'),
+        key:   'persistCachedTree',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('config_supportTabsMultiselect_label'),
         key:   'supportTabsMultiselect',
         type:  'checkbox',
