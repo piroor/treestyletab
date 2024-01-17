@@ -1100,6 +1100,7 @@ body > ul[id$="selector"] {
 
 /*
   Workaround for https://github.com/piroor/treestyletab/issues/3413
+  ( https://bugzilla.mozilla.org/show_bug.cgi?id=1875100 )
   The RAM usage will be unexpectedly get increased when the window is
   minimized and it contains animated background image. To avoid it
   we deactivate all dangerous (possibly from outside) background images

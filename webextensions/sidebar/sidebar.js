@@ -665,6 +665,7 @@ async function importTabsFromBackground() {
 
 
 // Workaround for https://github.com/piroor/treestyletab/issues/3413
+// ( https://bugzilla.mozilla.org/show_bug.cgi?id=1875100 )
 function startWatchingWindowState() {
   startWatchingWindowState.timer = window.setInterval(async () => {
     const win = await browser.windows.get(mTargetWindow);
