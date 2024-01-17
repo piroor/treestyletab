@@ -318,7 +318,7 @@ export default class Tab {
     if (this.tab.url == 'about:blank')
       return this.tab.previousUrl == 'about:blank';
 
-    return true;
+    return false;
   }
 
   get isGroupTab() {
