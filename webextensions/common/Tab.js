@@ -14,7 +14,7 @@ import {
   mapAndFilterUniq,
   toLines,
   sanitizeForRegExpSource,
-  isNewTabCommandURL,
+  isNewTabCommandTab,
   configs,
 } from './common.js';
 
@@ -302,8 +302,8 @@ export default class Tab {
         !configs.guessNewOrphanTabAsOpenedByNewTabCommand)
       return false;
 
-    if (!isNewTabCommandURL(this.tab.url))
-      return false;
+    if (isNewTabCommandTab(this.tab))
+      return true;
 
     // Firefox always opens a blank tab as the placeholder, when trying to
     // open a bookmark in a new tab. So, we cannot determine is the tab

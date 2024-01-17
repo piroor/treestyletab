@@ -268,6 +268,10 @@
   "api_requestedPermissions_type_tabs":      { "message": "ブラウザーのタブへのアクセス" },
   "api_requestedPermissions_type_cookies":   { "message": "ブラウザーのタブのコンテナーの識別" },
 
+
+  "guessNewOrphanTabAsOpenedByNewTabCommandTitle": { "message": "新しいタブ|新しいプライベートタブ" },
+
+
   "context_menu_label": { "message": "タブのツリーを操作" },
 
   "context_reloadTree_label": { "message": "このツリーを再読み込み(&R)" },
@@ -451,8 +455,9 @@
   "config_autoAttachOnNewTabCommand_sibling": { "message": "現在のタブと同階層に" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnNewTabCommand_after": { "message": "開く" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "URLが" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "であるタブが開かれた場合、新しい空のタブが開かれたとみなす（※「|」で区切って複数URLを列挙可能）" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": { "message": "タイトルが" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "またはURLが" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "であるタブが開かれた場合、新しい空のタブが開かれたとみなす（※「|」で区切って複数の値を列挙可能）" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中クリックした時、新しい空のタブを" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(制御せず既定の位置に)" },

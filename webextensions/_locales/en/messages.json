@@ -269,6 +269,9 @@
   "api_requestedPermissions_type_cookies":   { "message": "Detect container of browser tabs" },
 
 
+  "guessNewOrphanTabAsOpenedByNewTabCommandTitle": { "message": "New Tab|New Private Tab" },
+
+
   "context_menu_label": { "message": "Tree of tabs" },
 
   "context_reloadTree_label": { "message": "&Reload this Tree" },
@@ -455,8 +458,9 @@
   "config_autoAttachOnNewTabCommand_sibling": { "message": "Sibling of the current tab" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "Next Sibling of the current tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Guess a newly opened tab as opened by \"New Blank Tab\" action, when it is opened with URL(s) " },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "(*You can list multiple URLs with a separator \"|\")" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": { "message": "Guess a newly opened tab as opened by \"New Blank Tab\" action, when it is opened with title(s) " },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": " or URL(s) " },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "(*You can list multiple values with a separator \"|\")" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "For middle click, open new blank tab as" },
   "config_autoAttachOnNewTabButtonMiddleClick_noControl": { "message": "(no control)" },

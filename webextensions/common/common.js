@@ -255,6 +255,7 @@ export const configs = new Configs({
   autoAttachOnOpenedFromExternal: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnAnyOtherTrigger: Constants.kNEWTAB_DO_NOTHING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
+  guessNewOrphanTabAsOpenedByNewTabCommandTitle: browser.i18n.getMessage('guessNewOrphanTabAsOpenedByNewTabCommandTitle'),
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab|about:privatebrowsing',
   inheritContextualIdentityToChildTabMode: Constants.kCONTEXTUAL_IDENTITY_DEFAULT,
   inheritContextualIdentityToSameSiteOrphanMode: Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE,
@@ -949,9 +950,10 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
   return params;
 }
 
-export function isNewTabCommandURL(url) {
-  const newTabUrls = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.split('|'));
-  return newTabUrls.has(url);
+export function isNewTabCommandTab(tab) {
+  const newTabTitles = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandTitle.split('|'));
+  const newTabUrls   = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.split('|'));
+  return newTabTitles.has(tab.title) || newTabUrls.has(tab.url);
 }
 
 

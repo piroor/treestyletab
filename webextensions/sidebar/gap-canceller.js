@@ -10,7 +10,7 @@
 import {
   log as internalLogger,
   configs,
-  isNewTabCommandURL,
+  isNewTabCommandTab,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -38,14 +38,14 @@ export function init() {
   browser.tabs.query({ active: true, windowId: mWindowId }).then(async tabs => {
     if (tabs.length == 0)
       tabs = await browser.tabs.query({ windowId: mWindowId });
-    onLocationChange(tabs[0].url);
+    onLocationChange(tabs[0]);
   });
   BackgroundConnection.onMessage.addListener(async message => {
     switch (message.type) {
       case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATING:
         const tab = Tab.get(message.tabId);
         if (tab) {
-          onLocationChange(tab.url, { byMouseOperation: message.byMouseOperation });
+          onLocationChange(tab, { byMouseOperation: message.byMouseOperation });
           if (!message.byMouseOperation)
             updateOffset();
         }
@@ -54,7 +54,7 @@ export function init() {
   });
   browser.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
     if (tab.active && changeInfo.status == 'complete')
-      onLocationChange(tab.url);
+      onLocationChange(tab);
   }, { windowId: mWindowId, properties: ['status'] });
 
   if (shouldWatchVisualGap())
@@ -88,7 +88,10 @@ function getWindowDimension() {
 function updateOffset() {
   const dimension = getWindowDimension();
 
-  const isNewTab     = isNewTabCommandURL(mDataset.activeTabUrl);
+  const isNewTab     = isNewTabCommandTab({
+    title: mDataset.activeTabTitle,
+    url:   mDataset.activeTabUrl,
+  });
   const isFullScreen = mDataset.ownerWindowState == 'fullscreen'
   const shouldSuppressGapOnNewTab = (
     configs.suppressGapFromShownOrHiddenToolbarOnNewTab &&
@@ -104,6 +107,7 @@ function updateOffset() {
     (mByMouseOperation || !configs.suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation)
   );
   log('updateOffset: ', {
+    title:             mDataset.activeTabTitle,
     url:               mDataset.activeTabUrl,
     isNewTab,
     state:             mDataset.ownerWindowState,
@@ -186,8 +190,9 @@ function cancelUpdateOffset() {
   }
 }
 
-function onLocationChange(url, { byMouseOperation } = {}) {
-  mDataset.activeTabUrl = url;
+function onLocationChange(tab, { byMouseOperation } = {}) {
+  mDataset.activeTabTitle = tab.title;
+  mDataset.activeTabUrl   = tab.url;
   if (byMouseOperation)
     mByMouseOperation = true;
 }

@@ -136,7 +136,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
         }).then(moved => !moved);
       });
     }
-    log('behave as a tab opened with any URL');
+    log('behave as a tab opened with any URL ', tab.title, tab.url);
     if (!info.restored &&
         !info.positionedBySelf &&
         !info.bypassTabControl &&
