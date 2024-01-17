@@ -311,9 +311,21 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
     tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
     // it could be updated already...
-    const lastRelatedTab = opener.$TST.lastRelatedTabId == tab.id ? opener.$TST.previousLastRelatedTab : opener.$TST.lastRelatedTab;
+    const lastRelatedTab = opener.$TST.lastRelatedTabId == tab.id ?
+      opener.$TST.previousLastRelatedTab :
+      opener.$TST.lastRelatedTab;
+    // If there is already opened group tab, it is more natural that
+    // opened tabs are treated as a tab opened from unpinned tabs.
+    const insertAt = configs.autoAttachOnOpenedWithOwner == Constants.kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB ?
+      Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB :
+      configs.autoAttachOnOpenedWithOwner == Constants.kNEWTAB_OPEN_AS_CHILD_TOP ?
+        Constants.kINSERT_TOP :
+        configs.autoAttachOnOpenedWithOwner == Constants.kNEWTAB_OPEN_AS_CHILD_END ?
+          Constants.kINSERT_END :
+          undefined;
     return Tree.attachTabTo(tab, parent, {
       lastRelatedTab,
+      insertAt,
       forceExpand:    true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       broadcast:      true
     });
