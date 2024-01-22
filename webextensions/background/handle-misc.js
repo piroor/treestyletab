@@ -50,9 +50,15 @@ let mInitialized = false;
 // unneeded cases.
 // See also: https://github.com/piroor/treestyletab/issues/2200
 
-Background.onInit.addListener(() => {
-  (browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
+if (browser.action) { // Manifest V3
+  browser.action.onClicked.addListener(onToolbarButtonClick);
   browser.commands.onCommand.addListener(onShortcutCommand);
+}
+Background.onInit.addListener(() => {
+  if (browser.browserAction) { // Manifest V2
+    browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+    browser.commands.onCommand.addListener(onShortcutCommand);
+  }
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
 });
 

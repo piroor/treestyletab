@@ -74,6 +74,7 @@ async function getAllWindows() {
 
 log('init: Start queuing of messages notified via WE APIs');
 ApiTabsListener.init();
+const promisedRestored = waitUntilCompletelyRestored(); // this must be called synchronosly
 
 export async function init() {
   log('init: start');
@@ -101,7 +102,7 @@ export async function init() {
   let promisedWindows;
   log('init: Getting existing windows and tabs');
   await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
-    waitUntilCompletelyRestored().then(() => {
+    promisedRestored.then(() => {
       // don't wait at here for better performance
       promisedWindows = getAllWindows();
     }),
