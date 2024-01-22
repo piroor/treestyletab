@@ -72,6 +72,9 @@ async function getAllWindows() {
   }).catch(ApiTabs.createErrorHandler());
 }
 
+log('init: Start queuing of messages notified via WE APIs');
+ApiTabsListener.init();
+
 export async function init() {
   log('init: start');
   MetricsData.add('init: start');
@@ -101,8 +104,6 @@ export async function init() {
     waitUntilCompletelyRestored().then(() => {
       // don't wait at here for better performance
       promisedWindows = getAllWindows();
-      log('init: Start queuing of messages notified via WE APIs');
-      ApiTabsListener.init();
     }),
     ContextualIdentities.init(),
     configs.$loaded
