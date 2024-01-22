@@ -1998,6 +1998,10 @@ const mItemsById = new Map();
 const mUpdatableItemsById = new Map();
 const mExpertItems = new Set();
 
+const MENU_CONTEXT = browser.browserAction ?
+  'browser_action' : // Manifest V2
+  'action'; // Manifest V3
+
 function createItem(id, item, parent) {
   if (item.visible === false)
     return;
@@ -2018,7 +2022,7 @@ function createItem(id, item, parent) {
     id,
     title:    item.title && item.title.replace(/^:|:$/g, ''),
     type:     item.type || 'normal',
-    contexts: ['browser_action'],
+    contexts: [MENU_CONTEXT],
     parentId
   };
   if ('enabled' in item)
@@ -2040,7 +2044,7 @@ for (let i = 0, maxi = mItems.length; i < maxi; i++) {
 }
 
 browser.menus.onShown.addListener((info, _tab) => {
-  if (!info.contexts.includes('browser_action'))
+  if (!info.contexts.includes(MENU_CONTEXT))
     return;
 
   let updated = false;

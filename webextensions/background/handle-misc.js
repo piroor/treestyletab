@@ -51,7 +51,7 @@ let mInitialized = false;
 // See also: https://github.com/piroor/treestyletab/issues/2200
 
 Background.onInit.addListener(() => {
-  browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+  (browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
   browser.commands.onCommand.addListener(onShortcutCommand);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
 });
@@ -69,7 +69,7 @@ Background.onReady.addListener(() => {
 Background.onDestroy.addListener(() => {
   browser.runtime.onMessage.removeListener(onMessage);
   TSTAPI.onMessageExternal.removeListener(onMessageExternal);
-  browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+  (browser.action || browser.browserAction).onClicked.removeListener(onToolbarButtonClick);
 });
 
 
