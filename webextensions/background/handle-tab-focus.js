@@ -30,6 +30,23 @@ function log(...args) {
 }
 
 
+const PHASE_LOADING                = 0;
+const PHASE_BACKGROUND_INITIALIZED = 1;
+const PHASE_BACKGROUND_BUILT       = 2;
+const PHASE_BACKGROUND_READY       = 3;
+let mInitializationPhase = PHASE_LOADING;
+
+Background.onInit.addListener(() => {
+  mInitializationPhase = PHASE_BACKGROUND_INITIALIZED;
+});
+Background.onBuilt.addListener(() => {
+  mInitializationPhase = PHASE_BACKGROUND_BUILT;
+});
+Background.onReady.addListener(() => {
+  mInitializationPhase = PHASE_BACKGROUND_READY;
+});
+
+
 let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
@@ -379,16 +396,6 @@ Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
 });
 
 
-Background.onInit.addListener(() => {
-  browser.windows.onFocusChanged.addListener(() => {
-    mMaybeTabSwitchingByShortcut = false;
-  });
-});
-
-Background.onBuilt.addListener(() => {
-  browser.runtime.onMessage.addListener(onMessage);
-});
-
 Background.onReady.addListener(() => {
   for (const tab of Tab.getAllTabs(null, { iterator: true })) {
     tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
@@ -398,9 +405,15 @@ Background.onReady.addListener(() => {
   }
 });
 
+browser.windows.onFocusChanged.addListener(() => {
+  mMaybeTabSwitchingByShortcut = false;
+});
+
+browser.runtime.onMessage.addListener(onMessage);
 
 function onMessage(message, sender) {
-  if (!message ||
+  if (mInitializationPhase < PHASE_BACKGROUND_BUILT ||
+      !message ||
       typeof message.type != 'string')
     return;
 

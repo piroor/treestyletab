@@ -55,11 +55,6 @@ const PHASE_BACKGROUND_BUILT       = 2;
 const PHASE_BACKGROUND_READY       = 3;
 let mInitializationPhase = PHASE_LOADING;
 
-browser.action.onClicked.addListener(onToolbarButtonClick);
-browser.commands.onCommand.addListener(onShortcutCommand);
-browser.runtime.onMessage.addListener(onMessage);
-TSTAPI.onMessageExternal.addListener(onMessageExternal);
-
 Background.onInit.addListener(() => {
   mInitializationPhase = PHASE_BACKGROUND_INITIALIZED;
 });
@@ -70,6 +65,15 @@ Background.onBuilt.addListener(() => {
 
 Background.onReady.addListener(() => {
   mInitializationPhase = PHASE_BACKGROUND_READY;
+});
+
+browser.action.onClicked.addListener(onToolbarButtonClick);
+browser.commands.onCommand.addListener(onShortcutCommand);
+browser.runtime.onMessage.addListener(onMessage);
+TSTAPI.onMessageExternal.addListener(onMessageExternal);
+
+
+Background.onReady.addListener(() => {
   Bookmark.startTracking();
 });
 
