@@ -11,8 +11,8 @@ const DB_NAME = 'PermanentStorage';
 const DB_VERSION = 2;
 const EXPIRATION_TIME_IN_MSEC = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export const STORE_BACKGROUND_CACHES = 'backgroundCaches';
-export const STORE_SIDEBAR_CACHES    = 'sidebarCaches';
+export const BACKGROUND = 'backgroundCaches';
+export const SIDEBAR    = 'sidebarCaches';
 
 let mOpenedDB;
 
@@ -39,14 +39,14 @@ async function openDB() {
       const db = event.target.result;
       if (event.oldVersion < DB_VERSION) {
         try {
-          db.deleteObjectStore(STORE_BACKGROUND_CACHES);
-          db.deleteObjectStore(STORE_SIDEBAR_CACHES);
+          db.deleteObjectStore(BACKGROUND);
+          db.deleteObjectStore(SIDEBAR);
         }
         catch(_error) {
         }
 
-        const backgroundCachesStore = db.createObjectStore(STORE_BACKGROUND_CACHES, { keyPath: 'key', unique: true });
-        const sidebarCachesStore = db.createObjectStore(STORE_SIDEBAR_CACHES, { keyPath: 'key', unique: true });
+        const backgroundCachesStore = db.createObjectStore(BACKGROUND, { keyPath: 'key', unique: true });
+        const sidebarCachesStore = db.createObjectStore(SIDEBAR, { keyPath: 'key', unique: true });
 
         backgroundCachesStore.createIndex('windowId', 'windowId', { unique: false });
         sidebarCachesStore.createIndex('windowId', 'windowId', { unique: false });
@@ -180,9 +180,9 @@ export async function clearForWindow(windowId) {
     }
 
     try {
-      const transaction = db.transaction([STORE_BACKGROUND_CACHES, STORE_SIDEBAR_CACHES], 'readwrite');
-      const backgroundCacheStore = transaction.objectStore(STORE_BACKGROUND_CACHES);
-      const sidebarCacheStore = transaction.objectStore(STORE_SIDEBAR_CACHES);
+      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const backgroundCacheStore = transaction.objectStore(BACKGROUND);
+      const sidebarCacheStore = transaction.objectStore(SIDEBAR);
 
       const backgroundCacheIndex = backgroundCacheStore.index('windowId');
       const sidebarCacheIndex = sidebarCacheStore.index('windowId');
@@ -237,9 +237,9 @@ async function expireOldEntries() {
     }
 
     try {
-      const transaction = db.transaction([STORE_BACKGROUND_CACHES, STORE_SIDEBAR_CACHES], 'readwrite');
-      const backgroundCacheStore = transaction.objectStore(STORE_BACKGROUND_CACHES);
-      const sidebarCacheStore = transaction.objectStore(STORE_SIDEBAR_CACHES);
+      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const backgroundCacheStore = transaction.objectStore(BACKGROUND);
+      const sidebarCacheStore = transaction.objectStore(SIDEBAR);
 
       const backgroundCacheIndex = backgroundCacheStore.index('timestamp');
       const sidebarCacheIndex = sidebarCacheStore.index('timestamp');

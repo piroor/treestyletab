@@ -441,13 +441,13 @@ async function updateWindowCache(key, value) {
       windowId: mTargetWindow,
       key,
       value,
-      store: CacheStorage.STORE_SIDEBAR_CACHES,
+      store: CacheStorage.SIDEBAR,
     });
   else
     CacheStorage.deleteValue({
       windowId: mTargetWindow,
       key,
-      store: CacheStorage.STORE_SIDEBAR_CACHES,
+      store: CacheStorage.SIDEBAR,
     });
 }
 
@@ -481,7 +481,7 @@ async function getWindowCache(key) {
   return CacheStorage.getValue({
     windowId: mTargetWindow,
     key,
-    store: CacheStorage.STORE_SIDEBAR_CACHES,
+    store: CacheStorage.SIDEBAR,
   });
 }
 

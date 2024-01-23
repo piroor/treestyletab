@@ -302,13 +302,13 @@ async function updateWindowCache(owner, key, value) {
       windowId: owner.windowId,
       key,
       value,
-      store: CacheStorage.STORE_BACKGROUND_CACHES,
+      store: CacheStorage.BACKGROUND,
     });
   else
     CacheStorage.deleteValue({
       windowId: owner.windowId,
       key,
-      store: CacheStorage.STORE_BACKGROUND_CACHES,
+      store: CacheStorage.BACKGROUND,
     });
 }
 
@@ -328,7 +328,7 @@ async function getWindowCache(owner, key) {
   return CacheStorage.getValue({
     windowId: owner.windowId,
     key,
-    store: CacheStorage.STORE_BACKGROUND_CACHES,
+    store: CacheStorage.BACKGROUND,
   });
 }
 
