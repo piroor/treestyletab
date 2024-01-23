@@ -517,10 +517,27 @@ Tab.onHidden.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
+browser.runtime.onMessage.addListener((message, _sender) => {
+  switch (message && message.type) {
+    case Constants.kCOMMAND_GET_ON_MEMORY_CACHE:
+      return mCaches[message.key];
+
+    case Constants.kCOMMAND_SET_ON_MEMORY_CACHE:
+      if (message.value)
+        mCaches[message.key] = message.value;
+      else
+        delete mCaches[message.key];
+      return;
+
+    default:
+      return;
+  }
+});
+
 browser.windows.onRemoved.addListener(async windowId => {
-  const storageKeyPrefix = `backgroundCache-${await UniqueId.ensureWindowId(windowId)}-`;
+  const storageKeyPart = `Cache-${await UniqueId.ensureWindowId(windowId)}-`;
   for (const key in mCaches) {
-    if (key.startsWith(storageKeyPrefix))
+    if (key.includes(storageKeyPart))
       delete mCaches[key];
   }
 });
