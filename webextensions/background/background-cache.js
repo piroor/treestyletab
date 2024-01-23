@@ -301,14 +301,14 @@ async function updateWindowCache(owner, key, value) {
 
   if (!configs.persistCachedTree &&
       browser.storage.session) {
-    const storagKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
+    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
     if (value) {
       const data = {};
-      data[storagKey] = value;
+      data[storageKey] = value;
       return browser.storage.session.set(data);
     }
     else {
-      return browser.storage.session.remove(storagKey);
+      return browser.storage.session.remove(storageKey);
     }
   }
 
