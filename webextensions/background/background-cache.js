@@ -31,7 +31,6 @@ function log(...args) {
 const kCONTENTS_VERSION = 5;
 
 let mActivated = false;
-const mCaches = {};
 
 export function activate() {
   mActivated = true;
@@ -302,9 +301,9 @@ async function updateWindowCache(owner, key, value) {
   if (!configs.persistCachedTree) {
     const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
     if (value)
-      mCaches[storageKey] = value;
+      sessionStorage.setItem(storageKey, value);
     else
-      delete mCaches[storageKey];
+      sessionStorage.removeItem(storageKey);
     return;
   }
 
@@ -341,7 +340,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 async function getWindowCache(owner, key) {
   if (!configs.persistCachedTree) {
     const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    return mCaches[storageKey];
+    return sessionStorage.getItem(storageKey);
   }
   return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
 }
@@ -520,13 +519,13 @@ Tab.onHidden.addListener(tab => {
 browser.runtime.onMessage.addListener((message, _sender) => {
   switch (message && message.type) {
     case Constants.kCOMMAND_GET_ON_MEMORY_CACHE:
-      return mCaches[message.key];
+      return sessionStorage.getItem(message.key);
 
     case Constants.kCOMMAND_SET_ON_MEMORY_CACHE:
       if (message.value)
-        mCaches[message.key] = message.value;
+        sessionStorage.setItem(message.key, message.value);
       else
-        delete mCaches[message.key];
+        sessionStorage.removeItem(message.key);
       return;
 
     default:
@@ -536,9 +535,10 @@ browser.runtime.onMessage.addListener((message, _sender) => {
 
 browser.windows.onRemoved.addListener(async windowId => {
   const storageKeyPart = `Cache-${await UniqueId.ensureWindowId(windowId)}-`;
-  for (const key in mCaches) {
+  for (let i = sessionStorage.length; i > -1; i--) {
+    const key = sessionStorage.key(i);
     if (key.includes(storageKeyPart))
-      delete mCaches[key];
+      sessionStorage.removeItem(key);
   }
 });
 
