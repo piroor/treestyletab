@@ -437,17 +437,13 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
 // ===================================================================
 
 async function updateWindowCache(key, value) {
-  if (!configs.persistCachedTree &&
-      browser.storage.session) {
+  if (!configs.persistCachedTree) {
     const storagKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    if (value) {
-      const data = {};
-      data[storagKey] = value;
-      browser.storage.session.set(data);
-    }
-    else {
-      browser.storage.session.remove(storagKey);
-    }
+    browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SET_ON_MEMORY_CACHE,
+      key:  storagKey,
+      value,
+    });
     return;
   }
 
@@ -495,10 +491,9 @@ export function markWindowCacheDirty(key) {
 async function getWindowCache(key) {
   if (!configs.persistCachedTree) {
     const storageKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    const defaultData = {};
-    defaultData[storageKey] = undefined;
-    return browser.storage.session.get(defaultData).then(data => {
-      return data[storageKey];
+    return browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_GET_ON_MEMORY_CACHE,
+      key:  storageKey,
     });
   }
 
