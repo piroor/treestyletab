@@ -38,8 +38,6 @@ function log(...args) {
   internalLogger('background/handle-misc', ...args);
 }
 
-let mInitialized = false;
-
 
 /* message observer */
 
@@ -48,27 +46,30 @@ let mInitialized = false;
 // and BackgroundConnection, because making listeners asynchornous (async
 // functions) will break things - those listeners must not return Promise for
 // unneeded cases.
+// So we simply ignore messages delivered before completely initialized, for now.
 // See also: https://github.com/piroor/treestyletab/issues/2200
 
-if (browser.action) { // Manifest V3
-  browser.action.onClicked.addListener(onToolbarButtonClick);
-  browser.commands.onCommand.addListener(onShortcutCommand);
-}
+const PHASE_LOADING                = 0;
+const PHASE_BACKGROUND_INITIALIZED = 1;
+const PHASE_BACKGROUND_BUILT       = 2;
+const PHASE_BACKGROUND_READY       = 3;
+let mInitializationPhase = PHASE_LOADING;
+
+browser.action.onClicked.addListener(onToolbarButtonClick);
+browser.commands.onCommand.addListener(onShortcutCommand);
+browser.runtime.onMessage.addListener(onMessage);
+TSTAPI.onMessageExternal.addListener(onMessageExternal);
+
 Background.onInit.addListener(() => {
-  if (browser.browserAction) { // Manifest V2
-    browser.browserAction.onClicked.addListener(onToolbarButtonClick);
-    browser.commands.onCommand.addListener(onShortcutCommand);
-  }
-  TSTAPI.onMessageExternal.addListener(onMessageExternal);
+  mInitializationPhase = PHASE_BACKGROUND_INITIALIZED;
 });
 
 Background.onBuilt.addListener(() => {
-  log('Start listening of messages');
-  browser.runtime.onMessage.addListener(onMessage);
+  mInitializationPhase = PHASE_BACKGROUND_BUILT;
 });
 
 Background.onReady.addListener(() => {
-  mInitialized = true;
+  mInitializationPhase = PHASE_BACKGROUND_READY;
   Bookmark.startTracking();
 });
 
@@ -80,7 +81,8 @@ Background.onDestroy.addListener(() => {
 
 
 function onToolbarButtonClick(tab) {
-  if (Permissions.requestPostProcess())
+  if (mInitializationPhase < PHASE_BACKGROUND_INITIALIZED ||
+      Permissions.requestPostProcess())
     return;
 
   if (typeof browser.sidebarAction.toggle == 'function')
@@ -92,6 +94,9 @@ function onToolbarButtonClick(tab) {
 }
 
 async function onShortcutCommand(command) {
+  if (mInitializationPhase < PHASE_BACKGROUND_INITIALIZED)
+    return;
+
   let activeTabs = await browser.tabs.query({
     active:        true,
     currentWindow: true,
@@ -320,7 +325,8 @@ async function onShortcutCommand(command) {
 // This must be synchronous and return Promise on demando, to avoid
 // blocking to other listeners.
 function onMessage(message, sender) {
-  if (!message ||
+  if (mInitializationPhase < PHASE_BACKGROUND_BUILT ||
+      !message ||
       typeof message.type != 'string' ||
       message.type.indexOf('treestyletab:') != 0)
     return;
@@ -379,7 +385,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
-        while (!mInitialized) {
+        while (mInitializationPhase < PHASE_BACKGROUND_READY) {
           await wait(10);
         }
         const structure = TreeBehavior.getTreeStructureFromTabs(
@@ -427,6 +433,9 @@ function onMessage(message, sender) {
 // This must be synchronous and return Promise on demando, to avoid
 // blocking to other listeners.
 function onMessageExternal(message, sender) {
+  if (mInitializationPhase < PHASE_BACKGROUND_INITIALIZED)
+    return;
+
   switch (message.type) {
     case TSTAPI.kGET_TREE:
       return (async () => {
