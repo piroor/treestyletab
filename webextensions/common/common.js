@@ -355,7 +355,6 @@ export const configs = new Configs({
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,
-  persistCachedTree: false,
 
   // This should be removed after https://bugzilla.mozilla.org/show_bug.cgi?id=1388193
   // or https://bugzilla.mozilla.org/show_bug.cgi?id=1421329 become fixed.

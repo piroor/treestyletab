@@ -17,11 +17,11 @@ import {
   shouldApplyAnimation
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as CacheStorage from '/common/cache-storage.js';
 import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as UniqueId from '/common/unique-id.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 
 import Tab from '/common/Tab.js';
@@ -55,8 +55,7 @@ export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
   mTabBar       = document.querySelector('#tabbar');
 
-  if (!configs.persistCachedTree)
-    clearPersistentWindowCache();
+  clearObsoleteWindowCache();
 }
 
 export function startTracking() {
@@ -437,43 +436,33 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
 // ===================================================================
 
 async function updateWindowCache(key, value) {
-  if (!configs.persistCachedTree) {
-    const storagKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SET_ON_MEMORY_CACHE,
-      key:  storagKey,
+  if (value)
+    CacheStorage.setValue({
+      windowId: mTargetWindow,
+      key,
       value,
+      store: CacheStorage.STORE_SIDEBAR_CACHES,
     });
-    return;
-  }
-
-  if (!mLastWindowCacheOwner ||
-      !Tab.get(mLastWindowCacheOwner.id))
-    return;
-  if (value === undefined) {
-    //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
-    return browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorSuppressor());
-  }
-  else {
-    //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
-    return browser.sessions.setWindowValue(mLastWindowCacheOwner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
-  }
+  else
+    CacheStorage.deleteValue({
+      windowId: mTargetWindow,
+      key,
+      store: CacheStorage.STORE_SIDEBAR_CACHES,
+    });
 }
 
 function clearWindowCache() {
   log('clearWindowCache ', { stack: configs.debug && new Error().stack });
-  if (!configs.persistCachedTree)
-    clearPersistentWindowCache();
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-function clearPersistentWindowCache() {
+function clearObsoleteWindowCache() {
   if (!mLastWindowCacheOwner ||
       !Tab.get(mLastWindowCacheOwner.id))
     return;
-  log('clearPersistentWindowCache ', { stack: configs.debug && new Error().stack });
+  log('clearObsoleteWindowCache ', { stack: configs.debug && new Error().stack });
   browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR).catch(ApiTabs.createErrorSuppressor());
   browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY).catch(ApiTabs.createErrorSuppressor());
   browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY).catch(ApiTabs.createErrorSuppressor());
@@ -489,17 +478,11 @@ export function markWindowCacheDirty(key) {
 }
 
 async function getWindowCache(key) {
-  if (!configs.persistCachedTree) {
-    const storageKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    return browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_GET_ON_MEMORY_CACHE,
-      key:  storageKey,
-    });
-  }
-
-  if (!mLastWindowCacheOwner)
-    return null;
-  return browser.sessions.getWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorHandler());
+  return CacheStorage.getValue({
+    windowId: mTargetWindow,
+    key,
+    store: CacheStorage.STORE_SIDEBAR_CACHES,
+  });
 }
 
 function getWindowCacheOwner() {
@@ -561,7 +544,6 @@ async function updateCachedTabbar() {
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
-    case 'persistCachedTree':
       if (configs[changedKey]) {
         reserveToUpdateCachedTabbar();
       }

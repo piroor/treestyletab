@@ -13,12 +13,12 @@ import {
   configs
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as CacheStorage from '/common/cache-storage.js';
 import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as UniqueId from '/common/unique-id.js';
 
 import Tab from '/common/Tab.js';
 
@@ -36,14 +36,13 @@ export function activate() {
   mActivated = true;
   configs.$addObserver(onConfigChange);
 
-  if (!configs.persistCachedTree) {
-    browser.windows.getAll().then(windows => {
-      for (const win of windows) {
-        browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS).catch(ApiTabs.createErrorSuppressor());
-        browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY).catch(ApiTabs.createErrorSuppressor());
-      }
-    });
-  }
+  // clear obsolete cache
+  browser.windows.getAll().then(windows => {
+    for (const win of windows) {
+      browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS).catch(ApiTabs.createErrorSuppressor());
+      browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY).catch(ApiTabs.createErrorSuppressor());
+    }
+  });
 }
 
 
@@ -298,31 +297,19 @@ async function updateWindowCache(owner, key, value) {
   if (!owner)
     return;
 
-  if (!configs.persistCachedTree) {
-    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    if (value)
-      sessionStorage.setItem(storageKey, value);
-    else
-      sessionStorage.removeItem(storageKey);
-    return;
-  }
-
-  if (value === undefined) {
-    try {
-      return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
-    }
-    catch(e) {
-      console.log(new Error('fatal error: failed to delete window cache'), e, owner, key, value);
-    }
-  }
-  else {
-    try {
-      return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
-    }
-    catch(e) {
-      console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
-    }
-  }
+  if (value)
+    CacheStorage.setValue({
+      windowId: owner.windowId,
+      key,
+      value,
+      store: CacheStorage.STORE_BACKGROUND_CACHES,
+    });
+  else
+    CacheStorage.deleteValue({
+      windowId: owner.windowId,
+      key,
+      store: CacheStorage.STORE_BACKGROUND_CACHES,
+    });
 }
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
@@ -338,11 +325,11 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  if (!configs.persistCachedTree) {
-    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    return sessionStorage.getItem(storageKey);
-  }
-  return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
+  return CacheStorage.getValue({
+    windowId: owner.windowId,
+    key,
+    store: CacheStorage.STORE_BACKGROUND_CACHES,
+  });
 }
 
 function getWindowCacheOwner(windowId) {
@@ -516,36 +503,13 @@ Tab.onHidden.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
-browser.runtime.onMessage.addListener((message, _sender) => {
-  switch (message && message.type) {
-    case Constants.kCOMMAND_GET_ON_MEMORY_CACHE:
-      return sessionStorage.getItem(message.key);
-
-    case Constants.kCOMMAND_SET_ON_MEMORY_CACHE:
-      if (message.value)
-        sessionStorage.setItem(message.key, message.value);
-      else
-        sessionStorage.removeItem(message.key);
-      return;
-
-    default:
-      return;
-  }
-});
-
 browser.windows.onRemoved.addListener(async windowId => {
-  const storageKeyPart = `Cache-${await UniqueId.ensureWindowId(windowId)}-`;
-  for (let i = sessionStorage.length; i > -1; i--) {
-    const key = sessionStorage.key(i);
-    if (key.includes(storageKeyPart))
-      sessionStorage.removeItem(key);
-  }
+  CacheStorage.clearForWindow(windowId);
 });
 
 function onConfigChange(key) {
   switch (key) {
     case 'useCachedTree':
-    case 'persistCachedTree':
       browser.windows.getAll({
         populate:    true,
         windowTypes: ['normal']

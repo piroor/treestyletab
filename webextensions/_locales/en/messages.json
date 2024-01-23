@@ -787,8 +787,6 @@
   "config_staticARIALabel_description": { "message": "*Please try checking this if your speech recognition system misses tab elements after some tab operations." },
   "config_useCachedTree_label": { "message": "Optimize tree restoration with cache" },
   "config_useCachedTree_description": { "message": "*Please try unchecking and re-checking this to refresh the cache, when the behavior around tree is unstable." },
-  "config_persistCachedTree_label": { "message": "Persist tree cache" },
-  "config_persistCachedTree_description": { "message": "*Initialization process at the browser startup may be optimized, but it will broat the size of browser's session file and increase disk I/O." },
   "config_acceleratedTabCreation_label": { "message": "Accelerate operations around newly opened tabs (*NOTE: You'll see unstable behavior around tabs.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Abort tab duplication when it takes" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "milliseconds or more." },
