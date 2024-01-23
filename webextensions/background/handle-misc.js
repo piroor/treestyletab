@@ -67,7 +67,7 @@ Background.onReady.addListener(() => {
   mInitializationPhase = PHASE_BACKGROUND_READY;
 });
 
-browser.action.onClicked.addListener(onToolbarButtonClick);
+(browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
 browser.commands.onCommand.addListener(onShortcutCommand);
 browser.runtime.onMessage.addListener(onMessage);
 TSTAPI.onMessageExternal.addListener(onMessageExternal);
