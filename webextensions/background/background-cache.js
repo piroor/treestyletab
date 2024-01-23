@@ -31,13 +31,13 @@ function log(...args) {
 const kCONTENTS_VERSION = 5;
 
 let mActivated = false;
+const mCaches = {};
 
 export function activate() {
   mActivated = true;
   configs.$addObserver(onConfigChange);
 
-  if (!configs.persistCachedTree &&
-      browser.storage.session) {
+  if (!configs.persistCachedTree) {
     browser.windows.getAll().then(windows => {
       for (const win of windows) {
         browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS).catch(ApiTabs.createErrorSuppressor());
@@ -299,17 +299,13 @@ async function updateWindowCache(owner, key, value) {
   if (!owner)
     return;
 
-  if (!configs.persistCachedTree &&
-      browser.storage.session) {
+  if (!configs.persistCachedTree) {
     const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    if (value) {
-      const data = {};
-      data[storageKey] = value;
-      return browser.storage.session.set(data);
-    }
-    else {
-      return browser.storage.session.remove(storageKey);
-    }
+    if (value)
+      mCaches[storageKey] = value;
+    else
+      delete mCaches[storageKey];
+    return;
   }
 
   if (value === undefined) {
@@ -345,11 +341,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 async function getWindowCache(owner, key) {
   if (!configs.persistCachedTree) {
     const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    const defaultData = {};
-    defaultData[storageKey] = undefined;
-    return browser.storage.session.get(defaultData).then(data => {
-      return data[storageKey];
-    });
+    return mCaches[storageKey];
   }
   return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
 }
@@ -523,6 +515,14 @@ Tab.onShown.addListener(tab => {
 
 Tab.onHidden.addListener(tab => {
   reserveToCacheTree(tab.windowId);
+});
+
+browser.windows.onRemoved.addListener(async windowId => {
+  const storageKeyPrefix = `backgroundCache-${await UniqueId.ensureWindowId(windowId)}-`;
+  for (const key in mCaches) {
+    if (key.startsWith(storageKeyPrefix))
+      delete mCaches[key];
+  }
 });
 
 function onConfigChange(key) {
