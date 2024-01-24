@@ -13,6 +13,7 @@ import {
   configs
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as CacheStorage from '/common/cache-storage.js';
 import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -38,6 +39,7 @@ export function activate() {
   configs.$addObserver(onConfigChange);
 
   if (!configs.persistCachedTree) {
+    // clear obsolete cache
     browser.windows.getAll().then(windows => {
       for (const win of windows) {
         browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS).catch(ApiTabs.createErrorSuppressor());
@@ -299,31 +301,32 @@ async function updateWindowCache(owner, key, value) {
   if (!owner)
     return;
 
-  if (!configs.persistCachedTree) {
-    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    if (value)
-      mCaches[storageKey] = value;
-    else
-      delete mCaches[storageKey];
-    return;
+  if (configs.persistCachedTree) {
+    try {
+      if (value)
+        await CacheStorage.setValue({
+          windowId: owner.windowId,
+          key,
+          value,
+          store: CacheStorage.BACKGROUND,
+        });
+      else
+        await CacheStorage.deleteValue({
+          windowId: owner.windowId,
+          key,
+          store: CacheStorage.BACKGROUND,
+        });
+      return;
+    }
+    catch(_error) {
+    }
   }
 
-  if (value === undefined) {
-    try {
-      return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
-    }
-    catch(e) {
-      console.log(new Error('fatal error: failed to delete window cache'), e, owner, key, value);
-    }
-  }
-  else {
-    try {
-      return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
-    }
-    catch(e) {
-      console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
-    }
-  }
+  const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
+  if (value)
+    mCaches[storageKey] = value;
+  else
+    delete mCaches[storageKey];
 }
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
@@ -339,11 +342,21 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  if (!configs.persistCachedTree) {
-    const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
-    return mCaches[storageKey];
+  if (configs.persistCachedTree) {
+    try {
+      const value = await CacheStorage.getValue({
+        windowId: owner.windowId,
+        key,
+        store: CacheStorage.BACKGROUND,
+      });
+      return value;
+    }
+    catch(_error) {
+    }
   }
-  return browser.sessions.getWindowValue(owner.windowId, key).catch(ApiTabs.createErrorHandler());
+
+  const storageKey = `backgroundCache-${await UniqueId.ensureWindowId(owner.windowId)}-${key}`;
+  return mCaches[storageKey];
 }
 
 function getWindowCacheOwner(windowId) {
@@ -535,6 +548,12 @@ browser.runtime.onMessage.addListener((message, _sender) => {
 });
 
 browser.windows.onRemoved.addListener(async windowId => {
+  try {
+    CacheStorage.clearForWindow(windowId);
+  }
+  catch(_error) {
+  }
+
   const storageKeyPart = `Cache-${await UniqueId.ensureWindowId(windowId)}-`;
   for (const key in mCaches) {
     if (key.includes(storageKeyPart))

@@ -17,6 +17,7 @@ import {
   shouldApplyAnimation
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
+import * as CacheStorage from '/common/cache-storage.js';
 import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -437,27 +438,33 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
 // ===================================================================
 
 async function updateWindowCache(key, value) {
-  if (!configs.persistCachedTree) {
-    const storagKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_SET_ON_MEMORY_CACHE,
-      key:  storagKey,
-      value,
-    });
-    return;
+  if (configs.persistCachedTree) {
+    try {
+      if (value)
+        await CacheStorage.setValue({
+          windowId: mTargetWindow,
+          key,
+          value,
+          store: CacheStorage.SIDEBAR,
+        });
+      else
+        await CacheStorage.deleteValue({
+          windowId: mTargetWindow,
+          key,
+          store: CacheStorage.SIDEBAR,
+        });
+      return;
+    }
+    catch(_error) {
+    }
   }
 
-  if (!mLastWindowCacheOwner ||
-      !Tab.get(mLastWindowCacheOwner.id))
-    return;
-  if (value === undefined) {
-    //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
-    return browser.sessions.removeWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorSuppressor());
-  }
-  else {
-    //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
-    return browser.sessions.setWindowValue(mLastWindowCacheOwner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
-  }
+  const storagKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_SET_ON_MEMORY_CACHE,
+    key:  storagKey,
+    value,
+  });
 }
 
 function clearWindowCache() {
@@ -489,17 +496,24 @@ export function markWindowCacheDirty(key) {
 }
 
 async function getWindowCache(key) {
-  if (!configs.persistCachedTree) {
-    const storageKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
-    return browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_GET_ON_MEMORY_CACHE,
-      key:  storageKey,
-    });
+  if (configs.persistCachedTree) {
+    try {
+      const value = CacheStorage.getValue({
+        windowId: mTargetWindow,
+        key,
+        store: CacheStorage.SIDEBAR,
+      });
+      return value;
+    }
+    catch(_error) {
+    }
   }
 
-  if (!mLastWindowCacheOwner)
-    return null;
-  return browser.sessions.getWindowValue(mLastWindowCacheOwner.windowId, key).catch(ApiTabs.createErrorHandler());
+  const storageKey = `sidebarCache-${await UniqueId.ensureWindowId(mTargetWindow)}-${key}`;
+  return browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_GET_ON_MEMORY_CACHE,
+    key:  storageKey,
+  });
 }
 
 function getWindowCacheOwner() {
