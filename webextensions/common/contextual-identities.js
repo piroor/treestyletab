@@ -20,6 +20,7 @@ function log(...args) {
 }
 
 const mContextualIdentities = new Map();
+let mIsObserving = false;
 
 export function get(id) {
   return mContextualIdentities.get(id);
@@ -96,16 +97,26 @@ export function forEach(callback) {
   }
 }
 
+if (browser.contextualIdentities) { // already granted
+  browser.contextualIdentities.onCreated.addListener(onContextualIdentityCreated);
+  browser.contextualIdentities.onRemoved.addListener(onContextualIdentityRemoved);
+  browser.contextualIdentities.onUpdated.addListener(onContextualIdentityUpdated);
+  mIsObserving = true;
+}
+
 export function startObserve() {
-  if (!browser.contextualIdentities)
+  if (!browser.contextualIdentities ||
+      mIsObserving)
     return;
+  mIsObserving = true;
   browser.contextualIdentities.onCreated.addListener(onContextualIdentityCreated);
   browser.contextualIdentities.onRemoved.addListener(onContextualIdentityRemoved);
   browser.contextualIdentities.onUpdated.addListener(onContextualIdentityUpdated);
 }
 
 export function endObserve() {
-  if (!browser.contextualIdentities)
+  if (!browser.contextualIdentities ||
+      !mIsObserving)
     return;
   browser.contextualIdentities.onCreated.removeListener(onContextualIdentityCreated);
   browser.contextualIdentities.onRemoved.removeListener(onContextualIdentityRemoved);
@@ -154,18 +165,27 @@ function safeColor(color) {
 export const onUpdated = new EventListenerManager();
 
 function onContextualIdentityCreated(createdInfo) {
+  if (!mIsObserving)
+    return;
+
   const identity = createdInfo.contextualIdentity;
   mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   onUpdated.dispatch();
 }
 
 function onContextualIdentityRemoved(removedInfo) {
+  if (!mIsObserving)
+    return;
+
   const identity = removedInfo.contextualIdentity;
   delete mContextualIdentities.delete(identity.cookieStoreId);
   onUpdated.dispatch();
 }
 
 function onContextualIdentityUpdated(updatedInfo) {
+  if (!mIsObserving)
+    return;
+
   const identity = updatedInfo.contextualIdentity;
   mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   onUpdated.dispatch();
