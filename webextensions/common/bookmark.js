@@ -608,8 +608,12 @@ export async function initFolderChooser(anchor, params = {}) {
 }
 
 let mCreatedBookmarks = [];
+let mIsTracking = false;
 
 async function onBookmarksCreated(id, bookmark) {
+  if (!mIsTracking)
+    return;
+
   log('onBookmarksCreated ', { id, bookmark });
 
   if (mCreatingCount > 0)
@@ -733,7 +737,17 @@ async function tryGroupCreatedBookmarks() {
   }
 }
 
+if (browser.bookmarks &&
+    browser.bookmarks.onCreated) { // already granted
+  browser.bookmarks.onCreated.addListener(onBookmarksCreated);
+  mIsTracking = true;
+}
+
 export async function startTracking() {
+  if (!mIsTracking)
+    return;
+
+  mIsTracking = true;
   const granted = await Permissions.isGranted(Permissions.BOOKMARKS);
   if (granted && !browser.bookmarks.onCreated.hasListener(onBookmarksCreated))
     browser.bookmarks.onCreated.addListener(onBookmarksCreated);
