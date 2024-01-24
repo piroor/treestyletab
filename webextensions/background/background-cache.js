@@ -519,7 +519,7 @@ Tab.onHidden.addListener(tab => {
 browser.runtime.onMessage.addListener((message, _sender) => {
   switch (message && message.type) {
     case Constants.kCOMMAND_GET_ON_MEMORY_CACHE:
-      return sessionStorage.getItem(message.key);
+      return Promise.resolve(sessionStorage.getItem(message.key));
 
     case Constants.kCOMMAND_SET_ON_MEMORY_CACHE:
       if (message.value)
