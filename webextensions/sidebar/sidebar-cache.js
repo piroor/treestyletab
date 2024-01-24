@@ -83,18 +83,13 @@ export async function tryPreload(tab = null) {
 }
 
 async function preload(tab) {
-  const cache = await Promise.all([
-    browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR),
-    browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-    browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR),
-    browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-  ]).catch(ApiTabs.createErrorSuppressor());
-  if (!cache)
-    return;
-  mPreloadedCaches.set(`window${tab.windowId}`, cache.slice(0, 2));
-  mPreloadedCaches.set(`tab${tab.id}`, cache.slice(3, 5));
+  mTargetWindow = tab.windowId;
+  const cache = await MetricsData.addAsync('preload: reading window cache', Promise.all([
+    getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+    getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+    getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
+  ]).catch(ApiTabs.createErrorSuppressor()));
+  mPreloadedCaches.set(`window${mTargetWindow}`, cache);
 }
 
 export async function getEffectiveWindowCache(options = {}) {
