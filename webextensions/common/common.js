@@ -763,6 +763,50 @@ export function nextFrame() {
   });
 }
 
+
+const mNotificationTasks = new Map();
+
+function destroyNotificationTask(task) {
+  if (!mNotificationTasks.has(task.id))
+    return;
+
+  mNotificationTasks.delete(task.id);
+
+  const resolve = task.resolve;
+  const url     = task.url;
+
+  task.id      = undefined;
+  task.url     = undefined;
+  task.resolve = undefined;
+
+  return { resolve, url };
+}
+
+function onNotificationClicked(notificationId) {
+  const task = mNotificationTasks.get(notificationId);
+  if (!task)
+    return;
+
+  const { resolve, url } = destroyNotificationTask(task);
+  if (url) {
+    browser.tabs.create({
+      url
+    });
+  }
+  resolve(true);
+}
+browser.notifications.onClicked.addListener(onNotificationClicked);
+
+function onNotificationClosed(notificationId) {
+  const task = mNotificationTasks.get(notificationId);
+  if (!task)
+    return;
+
+  const { resolve } = destroyNotificationTask(task);
+  resolve(false);
+}
+browser.notifications.onClosed.addListener(onNotificationClosed);
+
 export async function notify({ icon, title, message, timeout, url } = {}) {
   const id = await browser.notifications.create({
     type:    'basic',
@@ -771,33 +815,11 @@ export async function notify({ icon, title, message, timeout, url } = {}) {
     message
   });
 
-  let onClicked;
-  let onClosed;
+  const task = { id, url };
+  mNotificationTasks.set(id, task);
+
   return new Promise(async (resolve, _reject) => {
-    let resolved = false;
-
-    onClicked = notificationId => {
-      if (notificationId != id)
-        return;
-      if (url) {
-        browser.tabs.create({
-          url
-        });
-      }
-      resolved = true;
-      resolve(true);
-    };
-    browser.notifications.onClicked.addListener(onClicked);
-
-    onClosed = notificationId => {
-      if (notificationId != id)
-        return;
-      if (!resolved) {
-        resolved = true;
-        resolve(false);
-      }
-    };
-    browser.notifications.onClosed.addListener(onClosed);
+    task.resolve = resolve;
 
     if (typeof timeout != 'number')
       timeout = configs.notificationTimeout;
@@ -805,16 +827,15 @@ export async function notify({ icon, title, message, timeout, url } = {}) {
       await wait(timeout);
     }
     await browser.notifications.clear(id);
-    if (!resolved)
+    if (task.resolve) {
+      destroyNotificationTask(task);
       resolve(false);
+    }
   }).then(clicked => {
-    browser.notifications.onClicked.removeListener(onClicked);
-    onClicked = null;
-    browser.notifications.onClosed.removeListener(onClosed);
-    onClosed = null;
     return clicked;
   });
 }
+
 
 export function compareAsNumber(a, b) {
   return a - b;
