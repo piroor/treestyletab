@@ -1565,6 +1565,95 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
   }));
 };
 
+const mWaitingTasks = new Map();
+
+function destroyWaitingTabTask(task) {
+  const tasks = mWaitingTasks.get(task.tabId);
+  if (tasks)
+    tasks.delete(task);
+
+  if (task.timeout)
+    clearTimeout(task.timeout);
+
+  const resolve     = task.resolve;
+  const waitElement = task.waitElement;
+  const stack       = task.stack;
+
+  task.tabId       = undefined;
+  task.resolve     = undefined;
+  task.timeout     = undefined;
+  task.waitElement = undefined;
+  task.stack       = undefined;
+
+  return { resolve, waitElement, stack };
+}
+
+function onWaitingTabTracked(tab) {
+  const tasks = mWaitingTasks.get(tab.id);
+  if (!tasks)
+    return;
+
+  mWaitingTasks.delete(tab.id);
+
+  for (const task of tasks) {
+    tasks.delete(task);
+    const { resolve, waitElement } = destroyWaitingTabTask(task);
+    if (!resolve)
+      continue;
+    if (waitElement) {
+      if (tab.$TST.element)
+        resolve(tab);
+      else
+        tab.$TST.promisedElement.then(() => resolve(tab));
+    }
+    else {
+      resolve(tab);
+    }
+  }
+}
+Tab.onElementBound.addListener(onWaitingTabTracked);
+Tab.onTracked.addListener(onWaitingTabTracked);
+
+function onWaitingTabDestroyed(tab) {
+  const tasks = mWaitingTasks.get(tab.id);
+  if (!tasks)
+    return;
+
+  mWaitingTasks.delete(tab.id);
+
+  const scope = TabsStore.getCurrentWindowId() || 'bg';
+  for (const task of tasks) {
+    tasks.delete(task);
+    const { resolve, stack } = destroyWaitingTabTask(task);
+    if (!resolve)
+      continue;
+
+    log(`Tab.waitUntilTracked: ${tab.id} is destroyed while waiting (in ${scope})\n${stack}`);
+    resolve(null);
+  }
+}
+Tab.onDestroyed.addListener(onWaitingTabDestroyed);
+
+function onWaitingTabRemoved(removedTabId, _removeInfo) {
+  const tasks = mWaitingTasks.get(removedTabId);
+  if (!tasks)
+    return;
+
+  mWaitingTasks.delete(removedTabId);
+
+  const scope = TabsStore.getCurrentWindowId() || 'bg';
+  for (const task of tasks) {
+    tasks.delete(task);
+    const { resolve, stack } = destroyWaitingTabTask(task);
+    if (!resolve)
+      continue;
+
+    log(`Tab.waitUntilTracked: ${removedTabId} is removed while waiting (in ${scope})\n${stack}`);
+    resolve(null);
+  }
+}
+browser.tabs.onRemoved.addListener(onWaitingTabRemoved);
+
 async function waitUntilTracked(tabId, options = {}) {
   const stack = configs.debug && new Error().stack;
   const tab = Tab.get(tabId);
@@ -1573,69 +1662,34 @@ async function waitUntilTracked(tabId, options = {}) {
       return tab.$TST.promisedElement;
     return tab;
   }
-  let resolved = false;
+  const tasks = mWaitingTasks.get(tabId) || new Set();
+  const task = {
+    tabId,
+    stack,
+    waitElement: !!options.element,
+  };
+  tasks.add(task);
+  mWaitingTasks.set(tabId, tasks);
   return new Promise((resolve, _reject) => {
-    const timeout = setTimeout(() => {
-      unregisterListeners();
-      log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`);
-      if (!resolved)
+    task.resolve = resolve;
+    task.timeout = setTimeout(() => {
+      const { resolve } = destroyWaitingTabTask(task);
+      if (resolve) {
+        log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`);
         resolve(null);
+      }
     }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
-    const onDestroyed = (tab) => {
-      if (tab.id != tabId)
-        return;
-      unregisterListeners();
-      log(`Tab.waitUntilTracked: ${tabId} is destroyed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`);
-      if (!resolved)
-        resolve(null);
-    };
-    const onRemoved = (removedTabId, _removeInfo) => {
-      if (removedTabId != tabId)
-        return;
-      unregisterListeners();
-      log(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`);
-      if (!resolved)
-        resolve(null);
-    };
-    const onTracked = (tab) => {
-      if (tab.id != tabId)
-        return;
-      unregisterListeners();
-      if (resolved)
-        return;
-      if (options.element) {
-        if (tab.$TST.element)
-          resolve(tab);
-        else
-          tab.$TST.promisedElement.then(() => resolve(tab));
-      }
-      else {
-        resolve(tab);
-      }
-    };
-    if (options.element)
-      Tab.onElementBound.addListener(onTracked);
-    else
-      Tab.onTracked.addListener(onTracked);
-    Tab.onDestroyed.addListener(onDestroyed);
-    browser.tabs.onRemoved.addListener(onRemoved);
     browser.tabs.get(tabId).catch(_error => null).then(tab => {
-      if (tab || resolved)
+      if (tab)
         return;
-      unregisterListeners();
-      log('waitUntilTracked was called for unexisting tab');
-      if (!resolved)
+      const { resolve } = destroyWaitingTabTask(task);
+      if (resolve) {
+        log('waitUntilTracked was called for unexisting tab');
         resolve(null);
+      }
     });
-    function unregisterListeners() {
-      Tab.onElementBound.removeListener(onTracked);
-      Tab.onTracked.removeListener(onTracked);
-      Tab.onDestroyed.removeListener(onDestroyed);
-      browser.tabs.onRemoved.removeListener(onRemoved);
-      clearTimeout(timeout);
-    }
-  }).then(() => resolved = true);
-};
+  }).then(() => destroyWaitingTabTask(task));
+}
 
 Tab.waitUntilTracked = async (tabId, options = {}) => {
   if (!tabId)
