@@ -36,6 +36,76 @@ export function isGranted(permissions) {
   }
 }
 
+
+const mRequests = new Map();
+
+function destroyRequest(request) {
+  const permissions = JSON.stringify(request.permissions);
+  const requests = mRequests.get(permissions);
+  if (requests)
+    requests.delete(request);
+
+  const onChanged = request.resolve;
+  const checkbox  = request.url;
+
+  request.permissions = undefined;
+  request.onChanged   = undefined;
+  request.checkbox    = undefined;
+
+  return { onChanged, checkbox };
+}
+
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      !message.type ||
+      message.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED)
+    return;
+
+  const permissions = JSON.stringify(message.permissions);
+  const requests = mRequests.get(permissions);
+  if (!requests)
+    return;
+
+  mRequests.delete(permissions);
+
+  for (const request of requests) {
+    const { onChanged, checkbox } = destroyRequest(request);
+    if (onChanged)
+      onChanged(true);
+    checkbox.checked = true;
+  }
+});
+
+/*
+// These events are not available yet on Firefox...
+browser.permissions.onAdded.addListener(addedPermissions => {
+  const permissions = JSON.stringify(addedPermissions.permissions);
+  const requests = mRequests.get(permissions);
+  if (!requests)
+    return;
+
+  mRequests.delete(permissions);
+
+  for (const request of requests) {
+    const { checkbox } = destroyRequest(request);
+    checkbox.checked = true;
+  }
+});
+browser.permissions.onRemoved.addListener(removedPermissions => {
+  const permissions = JSON.stringify(addedPermissions.permissions);
+  const requests = mRequests.get(permissions);
+  if (!requests)
+    return;
+
+  mRequests.delete(permissions);
+
+  for (const request of requests) {
+    const { checkbox } = destroyRequest(request);
+    checkbox.checked = false;
+  }
+});
+*/
+
 export function bindToCheckbox(permissions, checkbox, options = {}) {
   const checkboxes = checkboxesForPermission.get(permissions) || [];
   checkboxes.push(checkbox);
@@ -57,28 +127,15 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
     checkbox.requestPermissions()
   });
 
-  browser.runtime.onMessage.addListener((message, _sender) => {
-    if (!message ||
-        !message.type ||
-        message.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
-        JSON.stringify(message.permissions) != JSON.stringify(permissions))
-      return;
-    if (options.onChanged)
-      options.onChanged(true);
-    checkbox.checked = true;
-  });
-
-  /*
-  // These events are not available yet on Firefox...
-  browser.permissions.onAdded.addListener(addedPermissions => {
-    if (addedPermissions.permissions.includes('...'))
-      checkbox.checked = true;
-  });
-  browser.permissions.onRemoved.addListener(removedPermissions => {
-    if (removedPermissions.permissions.includes('...'))
-      checkbox.checked = false;
-  });
-  */
+  const key = JSON.stringify(permissions);
+  const requests = mRequests.get(key) || new Set();
+  const request = {
+    permissions,
+    onChanged: options.onChanged,
+    checkbox,
+  };
+  requests.add(request);
+  mRequests.set(key, requests);
 
   checkbox.requestPermissions = async () => {
     const checkboxes = checkboxesForPermission.get(permissions);
