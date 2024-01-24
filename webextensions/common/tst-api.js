@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2023
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -227,9 +227,6 @@ const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
 
-const mIsBackend  = location.href.startsWith(browser.runtime.getURL('background/background.html'));
-const mIsFrontend = location.href.startsWith(browser.runtime.getURL('sidebar/sidebar.html'));
-
 // you should use this to reduce memory usage around effective favicons
 export function clearCache(cache) {
   cache.effectiveFavIconUrls = {};
@@ -404,7 +401,7 @@ function registerAddon(id, addon) {
   const grantedPermissions = configs.grantedExternalAddonPermissions[id] || [];
   addon.grantedPermissions = new Set(grantedPermissions);
 
-  if (mIsBackend &&
+  if (Constants.IS_BACKGROUND &&
       !addon.bypassPermissionCheck &&
       addon.requestedPermissions.size > 0 &&
       addon.grantedPermissions.size != addon.requestedPermissions.size)
@@ -531,24 +528,13 @@ function onCommonCommand(message, sender) {
 // for backend
 // =======================================================================
 
-export async function initAsBackend() {
-  // We must listen API messages from other addons here beacause:
-  //  * Before notification messages are sent to other addons.
-  //  * After configs are loaded and TST's background page is almost completely initialized.
-  //    (to prevent troubles like breakage of `configs.cachedExternalAddons`, see also:
-  //     https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370 )
-  browser.runtime.onMessageExternal.addListener(onBackendCommand);
+let mInitialized = false;
 
-  const manifest = browser.runtime.getManifest();
-  registerAddon(browser.runtime.id, {
-    id:         browser.runtime.id,
-    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
-    icons:      manifest.icons,
-    listeningTypes: [],
-    bypassPermissionCheck: true
-  });
+if (Constants.IS_BACKGROUND) {
+  browser.runtime.onMessageExternal.addListener(onBackendCommand);
   browser.runtime.onConnectExternal.addListener(port => {
-    if (!configs.APIEnabled)
+    if (!mInitialized ||
+        !configs.APIEnabled)
       return;
     const sender = port.sender;
     mConnections.set(sender.id, port);
@@ -568,6 +554,25 @@ export async function initAsBackend() {
       }).catch(ApiTabs.createErrorSuppressor());
     });
   });
+}
+
+export async function initAsBackend() {
+  // We must listen API messages from other addons here beacause:
+  //  * Before notification messages are sent to other addons.
+  //  * After configs are loaded and TST's background page is almost completely initialized.
+  //    (to prevent troubles like breakage of `configs.cachedExternalAddons`, see also:
+  //     https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370 )
+  mInitialized = true;
+
+  const manifest = browser.runtime.getManifest();
+  registerAddon(browser.runtime.id, {
+    id:         browser.runtime.id,
+    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
+    icons:      manifest.icons,
+    listeningTypes: [],
+    bypassPermissionCheck: true
+  });
+
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
@@ -603,8 +608,11 @@ export async function initAsBackend() {
   onInitialized.dispatch();
 }
 
-if (mIsBackend) {
+if (Constants.IS_BACKGROUND) {
   browser.notifications.onClicked.addListener(notificationId => {
+    if (!mInitialized)
+      return;
+
     for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
       if (id != notificationId)
         continue;
@@ -617,6 +625,9 @@ if (mIsBackend) {
   });
 
   browser.notifications.onClosed.addListener((notificationId, _byUser) => {
+    if (!mInitialized)
+      return;
+
     for (const [addonId, id] of mPermissionNotificationForAddon.entries()) {
       if (id != notificationId)
         continue;
@@ -650,6 +661,9 @@ if (mIsBackend) {
   const mConnectionsForAddons = new Map();
 
   browser.runtime.onConnectExternal.addListener(port => {
+    if (!mInitialized)
+      return;
+
     const sender = port.sender;
     log('Connected: ', sender.id);
 
@@ -705,7 +719,8 @@ if (mIsBackend) {
   */
 
   browser.runtime.onMessage.addListener((message, _sender) => {
-    if (!message ||
+    if (!mInitialized ||
+        !message ||
         typeof message.type != 'string')
       return;
 
@@ -760,7 +775,8 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
 const mWaitingShutdownMessages = new Map();
 
 function onBackendCommand(message, sender) {
-  if (!message ||
+  if (!mInitialized ||
+      !message ||
       typeof message != 'object' ||
       typeof message.type != 'string')
     return;
@@ -920,7 +936,7 @@ export async function initAsFrontend() {
   log('initAsFrontend: finish');
 }
 
-if (mIsFrontend) {
+if (Constants.IS_SIDEBAR) {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         typeof message != 'object' ||
@@ -1095,7 +1111,7 @@ function* spawnMessages(targets, params) {
         browser.runtime.sendMessage(id, { type: kNOTIFY_READY }).catch(_error => {
           console.log(`Unregistering missing helper addon ${id}...`);
           unregisterAddon(id);
-          if (mIsFrontend)
+          if (Constants.IS_SIDEBAR)
             browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
         });
       }
