@@ -51,7 +51,7 @@ function getAnimationDuration() {
   return shouldApplyAnimation() ? configs.collapseDuration : 0.001;
 }
 
-if (/^moz-extension:\/\/[^\/]+\/background\//.test(location.href)) {
+if (Constants.IS_BACKGROUND) {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         typeof message != 'object')
