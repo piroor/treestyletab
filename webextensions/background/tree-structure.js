@@ -529,6 +529,18 @@ Tab.onMultipleTabsRemoved.addListener((tabs, { triggerTab } = {}) => {
   mPendingRecentlyClosedTabsInfo.structure = [];
 });
 
+let mToBeActivatedRestoredTabId = null;
+
+function onRestoredTabActivated(activeInfo) {
+  if (mToBeActivatedRestoredTabId &&
+      activeInfo.id != mToBeActivatedRestoredTabId) {
+    TabsInternalOperation.activateTab(mToBeActivatedRestoredTabId);
+  }
+  mToBeActivatedRestoredTabId = null;
+}
+
+browser.tabs.onActivated.addListener(onRestoredTabActivated);
+
 async function tryRestoreClosedSetFor(tab, countToBeRestored) {
   const lastRecentlyClosedTabs = mRecentlyClosedTabs;
   const lastRecentlyClosedTabsTreeStructure = mRecentlyClosedTabsTreeStructure;
@@ -670,11 +682,6 @@ async function tryRestoreClosedSetFor(tab, countToBeRestored) {
 
   // Firefox itself activates the initially restored tab with delay,
   // so we need to activate the first tab of the restored tabs again.
-  const onActivated = activeInfo => {
-    browser.tabs.onActivated.removeListener(onActivated);
-    if (activeInfo.id != restoredTabs[0].id)
-      TabsInternalOperation.activateTab(restoredTabs[0]);
-  };
-  browser.tabs.onActivated.addListener(onActivated);
-  wait(100).then(() => onActivated({ id: -1 })); // failsafe
+  mToBeActivatedRestoredTabId = restoredTabs[0].id;
+  wait(100).then(() => onRestoredTabActivated({ id: -1 })); // failsafe
 }
