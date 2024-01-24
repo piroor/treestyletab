@@ -408,23 +408,29 @@ async function startBookmarksUrlAutoMigration() {
     return;
 
   mObservingBookmarks = true;
-
-  browser.bookmarks.onCreated.addListener((id, bookmark) => {
-    if (bookmark.url)
-      migrateBookmarkUrl(bookmark);
-  });
-
-  browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
-    if (changeInfo.url &&
-        changeInfo.url.startsWith(browser.runtime.getURL(''))) {
-      const bookmark = await browser.bookmarks.get(id);
-      if (Array.isArray(bookmark))
-        bookmark.forEach(migrateBookmarkUrl);
-      else
-        migrateBookmarkUrl(bookmark);
-    }
-  });
 }
+
+browser.bookmarks.onCreated.addListener((id, bookmark) => {
+  if (!mObservingBookmarks)
+    return;
+
+  if (bookmark.url)
+    migrateBookmarkUrl(bookmark);
+});
+
+browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
+  if (!mObservingBookmarks)
+    return;
+
+  if (changeInfo.url &&
+      changeInfo.url.startsWith(browser.runtime.getURL(''))) {
+    const bookmark = await browser.bookmarks.get(id);
+    if (Array.isArray(bookmark))
+      bookmark.forEach(migrateBookmarkUrl);
+    else
+      migrateBookmarkUrl(bookmark);
+  }
+});
 
 configs.$loaded.then(() => {
   configs.$addObserver(async key => {

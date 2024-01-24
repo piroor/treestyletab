@@ -235,6 +235,14 @@ const mExtraItems = new Map();
 
 const SIDEBAR_URL_PATTERN = [`${Constants.kSHORTHAND_URIS.tabbar}*`];
 
+let mInitialized = false;
+
+browser.runtime.onMessage.addListener(onMessage);
+browser.menus.onShown.addListener(onShown);
+browser.menus.onHidden.addListener(onHidden);
+browser.menus.onClicked.addListener(onClick);
+TSTAPI.onMessageExternal.addListener(onMessageExternal);
+
 function getItemPlacementSignature(item) {
   if (item.placementSignature)
     return item.placementSignature;
@@ -243,8 +251,7 @@ function getItemPlacementSignature(item) {
   });
 }
 export async function init() {
-  browser.runtime.onMessage.addListener(onMessage);
-  TSTAPI.onMessageExternal.addListener(onMessageExternal);
+  mInitialized = true;
 
   window.addEventListener('unload', () => {
     browser.runtime.onMessage.removeListener(onMessage);
@@ -309,9 +316,6 @@ export async function init() {
       params: info
     }, browser.runtime);
   }
-  browser.menus.onShown.addListener(onShown);
-  browser.menus.onHidden.addListener(onHidden);
-  browser.menus.onClicked.addListener(onClick);
   onTSTItemClick.addListener(onClick);
 
   await ContextualIdentities.init();
@@ -542,6 +546,9 @@ let mOverriddenContext = null;
 let mLastContextTabId = null;
 
 async function onShown(info, contextTab) {
+  if (!mInitialized)
+    return;
+
   const contextTabId = contextTab && contextTab.id;
   mLastContextTabId = contextTabId;
   try {
@@ -931,6 +938,9 @@ function cleanupOverriddenMenu() {
 }
 
 function onHidden() {
+  if (!mInitialized)
+    return;
+
   const owner = mOverriddenContext && mOverriddenContext.owner;
   const windowId = mOverriddenContext && mOverriddenContext.windowId;
   if (mLastOverriddenContextOwner &&
@@ -952,6 +962,9 @@ function onHidden() {
 }
 
 async function onClick(info, contextTab) {
+  if (!mInitialized)
+    return;
+
   contextTab = contextTab && Tab.get(contextTab.id);
   const window    = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
   const windowId  = contextTab && contextTab.windowId || window.id;
@@ -1288,6 +1301,9 @@ function reserveRefresh() {
 }
 
 function onMessage(message, _sender) {
+  if (!mInitialized)
+    return;
+
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
     case Constants.kCOMMAND_GET_CONTEXT_MENU_ITEMS:
@@ -1338,6 +1354,9 @@ function onMessage(message, _sender) {
 }
 
 export function onMessageExternal(message, sender) {
+  if (!mInitialized)
+    return;
+
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE:
     case TSTAPI.kFAKE_CONTEXT_MENU_CREATE: {
