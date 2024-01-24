@@ -146,7 +146,14 @@ export async function getValue({ windowId, key, store } = {}) {
           resolve(null);
           return;
         }
-        cacheStore.put({ key: cacheKey, timestamp });
+        // IndexedDB does not support partial update, so
+        // we need to put all properties not only timestamp.
+        cacheStore.put({
+          key:      cacheKey,
+          windowId: windowUniqueId,
+          value:    cache.value,
+          timestamp,
+        });
         resolve(cache.value);
         cache.key      = undefined;
         cache.windowId = undefined;
