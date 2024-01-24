@@ -23,16 +23,17 @@ export const onMessage = new EventListenerManager();
 export const onConnected = new EventListenerManager();
 export const onDisconnected = new EventListenerManager();
 
-let mConnections;
+const mConnections = new Map();
 const mReceivers = new Map();
 const mFocusState = new Map();
+let mIsListening = false;
 
 export function isInitialized() {
-  return !!mConnections;
+  return mIsListening;
 }
 
 export function isSidebarOpen(windowId) {
-  if (!mConnections)
+  if (!mIsListening)
     return false;
 
   // for automated tests
@@ -54,7 +55,7 @@ export function isSidebarOpen(windowId) {
 }
 
 export function isOpen(windowId) {
-  if (!mConnections)
+  if (!mIsListening)
     return false;
 
   // for automated tests
@@ -78,11 +79,11 @@ export const counts = {
 };
 
 export function getOpenWindowIds() {
-  return mConnections ? Array.from(mConnections.keys()) : [];
+  return mIsListening ? Array.from(mConnections.keys()) : [];
 }
 
 export function sendMessage(message) {
-  if (!mConnections)
+  if (!mIsListening)
     return false;
 
   if (message.windowId) {
@@ -147,78 +148,83 @@ function sendMessageToPort(port, message) {
   }
 }
 
-export function init() {
-  if (isInitialized())
+const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}([0-9]+):(.+)$`);
+
+browser.runtime.onConnect.addListener(port => {
+  if (!mIsListening ||
+      !matcher.test(port.name))
     return;
-  mConnections = new Map();
-  const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}([0-9]+):(.+)$`);
-  browser.runtime.onConnect.addListener(port => {
-    if (!matcher.test(port.name))
+
+  const windowId   = parseInt(RegExp.$1);
+  const type       = RegExp.$2;
+  const connection = { port, type };
+  const connections = mConnections.get(windowId) || new Set();
+  connections.add(connection);
+  mConnections.set(windowId, connections);
+  let connectionTimeoutTimer = null;
+  const updateTimeoutTimer = () => {
+    if (connectionTimeoutTimer) {
+      clearTimeout(connectionTimeoutTimer);
+      connectionTimeoutTimer = null;
+    }
+    // On slow situation (like having too many tabs - 5000 or more)
+    // we should wait more for the pong. Otherwise the vital check
+    // may produce needless reloadings even if the sidebar is still alive.
+    // See also https://github.com/piroor/treestyletab/issues/3130
+    const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
+    connectionTimeoutTimer = setTimeout(async () => {
+      log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
+      try {
+        const pong = await browser.runtime.sendMessage({
+          type: Constants.kCOMMAND_PING_TO_SIDEBAR,
+          windowId
+        });
+        if (pong) {
+          log(`Sidebar for the window ${windowId} responded. Keep connected.`);
+          return;
+        }
+      }
+      catch(_error) {
+      }
+      log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
+      cleanup(); // eslint-disable-line no-use-before-define
+      port.disconnect();
+    }, timeout);
+  };
+  const cleanup = _diconnectedPort => {
+    if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
       return;
-    const windowId   = parseInt(RegExp.$1);
-    const type       = RegExp.$2;
-    const connection = { port, type };
-    const connections = mConnections.get(windowId) || new Set();
-    connections.add(connection);
-    mConnections.set(windowId, connections);
-    let connectionTimeoutTimer = null;
-    const updateTimeoutTimer = () => {
-      if (connectionTimeoutTimer) {
-        clearTimeout(connectionTimeoutTimer);
-        connectionTimeoutTimer = null;
-      }
-      // On slow situation (like having too many tabs - 5000 or more)
-      // we should wait more for the pong. Otherwise the vital check
-      // may produce needless reloadings even if the sidebar is still alive.
-      // See also https://github.com/piroor/treestyletab/issues/3130
-      const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
-      connectionTimeoutTimer = setTimeout(async () => {
-        log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
-        try {
-          const pong = await browser.runtime.sendMessage({
-            type: Constants.kCOMMAND_PING_TO_SIDEBAR,
-            windowId
-          });
-          if (pong) {
-            log(`Sidebar for the window ${windowId} responded. Keep connected.`);
-            return;
-          }
-        }
-        catch(_error) {
-        }
-        log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
-        cleanup(); // eslint-disable-line no-use-before-define
-        port.disconnect();
-      }, timeout);
-    };
-    const cleanup = _diconnectedPort => {
-      if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
-        return;
-      if (connectionTimeoutTimer) {
-        clearTimeout(connectionTimeoutTimer);
-        connectionTimeoutTimer = null;
-      }
-      connections.delete(connection);
-      if (connections.size == 0)
-        mConnections.delete(windowId);
-      port.onMessage.removeListener(receiver); // eslint-disable-line no-use-before-define
-      mReceivers.delete(windowId);
-      mFocusState.delete(windowId);
-      onDisconnected.dispatch(windowId, connections.size);
-    };
-    const receiver = message => {
-      if (Array.isArray(message))
-        return message.forEach(receiver);
-      if (message.type == Constants.kCONNECTION_HEARTBEAT)
-        updateTimeoutTimer();
-      else
-        onMessage.dispatch(windowId, message);
-    };
-    port.onMessage.addListener(receiver);
-    mReceivers.set(windowId, receiver);
-    onConnected.dispatch(windowId, connections.size);
-    port.onDisconnect.addListener(cleanup);
-  });
+    if (connectionTimeoutTimer) {
+      clearTimeout(connectionTimeoutTimer);
+      connectionTimeoutTimer = null;
+    }
+    connections.delete(connection);
+    if (connections.size == 0)
+      mConnections.delete(windowId);
+    port.onMessage.removeListener(receiver); // eslint-disable-line no-use-before-define
+    mReceivers.delete(windowId);
+    mFocusState.delete(windowId);
+    onDisconnected.dispatch(windowId, connections.size);
+  };
+  const receiver = message => {
+    if (Array.isArray(message))
+      return message.forEach(receiver);
+    if (message.type == Constants.kCONNECTION_HEARTBEAT)
+      updateTimeoutTimer();
+    else
+      onMessage.dispatch(windowId, message);
+  };
+  port.onMessage.addListener(receiver);
+  mReceivers.set(windowId, receiver);
+  onConnected.dispatch(windowId, connections.size);
+  port.onDisconnect.addListener(cleanup);
+});
+
+export function init() {
+  if (mIsListening)
+    return;
+
+  mIsListening = true;
 }
 
 onMessage.addListener(async (windowId, message) => {
