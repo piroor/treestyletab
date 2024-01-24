@@ -26,6 +26,7 @@ Please enjoy as you like!
 
 * Builds for each commit are available at ["Artifacts" of the CI/CD action](https://github.com/piroor/treestyletab/actions?query=workflow%3ACI%2FCD).
   Please note that you need to log in to the GitHub to see artifacts.
+  And you'll need to unzip the downloaded file `treestyletab-we.xpi.zip` manually to extract the XPI package file `treestyletab-we.xpi`, otherwise you'll see an error about invalid manifest.
 * There is an [automated build based on the latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi) also.
   It is available for everyone, but sometimes the automation system fails to update the build.
 
