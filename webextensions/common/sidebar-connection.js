@@ -33,7 +33,8 @@ export function isInitialized() {
 }
 
 export function isSidebarOpen(windowId) {
-  if (!mIsListening)
+  if (!mIsListening ||
+      Constants.IS_SIDEBAR)
     return false;
 
   // for automated tests
@@ -55,7 +56,8 @@ export function isSidebarOpen(windowId) {
 }
 
 export function isOpen(windowId) {
-  if (!mIsListening)
+  if (!mIsListening ||
+      Constants.IS_SIDEBAR)
     return false;
 
   // for automated tests
@@ -83,7 +85,8 @@ export function getOpenWindowIds() {
 }
 
 export function sendMessage(message) {
-  if (!mIsListening)
+  if (!mIsListening ||
+      Constants.IS_SIDEBAR)
     return false;
 
   if (message.windowId) {
@@ -148,77 +151,90 @@ function sendMessageToPort(port, message) {
   }
 }
 
-const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}([0-9]+):(.+)$`);
-
-browser.runtime.onConnect.addListener(port => {
-  if (!mIsListening ||
-      !matcher.test(port.name))
-    return;
-
-  const windowId   = parseInt(RegExp.$1);
-  const type       = RegExp.$2;
-  const connection = { port, type };
-  const connections = mConnections.get(windowId) || new Set();
-  connections.add(connection);
-  mConnections.set(windowId, connections);
-  let connectionTimeoutTimer = null;
-  const updateTimeoutTimer = () => {
-    if (connectionTimeoutTimer) {
-      clearTimeout(connectionTimeoutTimer);
-      connectionTimeoutTimer = null;
-    }
-    // On slow situation (like having too many tabs - 5000 or more)
-    // we should wait more for the pong. Otherwise the vital check
-    // may produce needless reloadings even if the sidebar is still alive.
-    // See also https://github.com/piroor/treestyletab/issues/3130
-    const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
-    connectionTimeoutTimer = setTimeout(async () => {
-      log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
-      try {
-        const pong = await browser.runtime.sendMessage({
-          type: Constants.kCOMMAND_PING_TO_SIDEBAR,
-          windowId
-        });
-        if (pong) {
-          log(`Sidebar for the window ${windowId} responded. Keep connected.`);
-          return;
-        }
-      }
-      catch(_error) {
-      }
-      log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
-      cleanup(); // eslint-disable-line no-use-before-define
-      port.disconnect();
-    }, timeout);
-  };
-  const cleanup = _diconnectedPort => {
-    if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
+if (Constants.IS_BACKGROUND) {
+  const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}([0-9]+):(.+)$`);
+  browser.runtime.onConnect.addListener(port => {
+    if (!mIsListening ||
+        !matcher.test(port.name))
       return;
-    if (connectionTimeoutTimer) {
-      clearTimeout(connectionTimeoutTimer);
-      connectionTimeoutTimer = null;
+
+    const windowId   = parseInt(RegExp.$1);
+    const type       = RegExp.$2;
+    const connection = { port, type };
+    const connections = mConnections.get(windowId) || new Set();
+    connections.add(connection);
+    mConnections.set(windowId, connections);
+    let connectionTimeoutTimer = null;
+    const updateTimeoutTimer = () => {
+      if (connectionTimeoutTimer) {
+        clearTimeout(connectionTimeoutTimer);
+        connectionTimeoutTimer = null;
+      }
+      // On slow situation (like having too many tabs - 5000 or more)
+      // we should wait more for the pong. Otherwise the vital check
+      // may produce needless reloadings even if the sidebar is still alive.
+      // See also https://github.com/piroor/treestyletab/issues/3130
+      const timeout = configs.heartbeatInterval + Math.max(configs.connectionTimeoutDelay, TabsStore.tabs.size);
+      connectionTimeoutTimer = setTimeout(async () => {
+        log(`Missing heartbeat from window ${windowId}. Maybe disconnected or resumed.`);
+        try {
+          const pong = await browser.runtime.sendMessage({
+            type: Constants.kCOMMAND_PING_TO_SIDEBAR,
+            windowId
+          });
+          if (pong) {
+            log(`Sidebar for the window ${windowId} responded. Keep connected.`);
+            return;
+          }
+        }
+        catch(_error) {
+        }
+        log(`Sidebar for the window ${windowId} did not respond. Disconnect now.`);
+        cleanup(); // eslint-disable-line no-use-before-define
+        port.disconnect();
+      }, timeout);
+    };
+    const cleanup = _diconnectedPort => {
+      if (!port.onMessage.hasListener(receiver)) // eslint-disable-line no-use-before-define
+        return;
+      if (connectionTimeoutTimer) {
+        clearTimeout(connectionTimeoutTimer);
+        connectionTimeoutTimer = null;
+      }
+      connections.delete(connection);
+      if (connections.size == 0)
+        mConnections.delete(windowId);
+      port.onMessage.removeListener(receiver); // eslint-disable-line no-use-before-define
+      mReceivers.delete(windowId);
+      mFocusState.delete(windowId);
+      onDisconnected.dispatch(windowId, connections.size);
+    };
+    const receiver = message => {
+      if (Array.isArray(message))
+        return message.forEach(receiver);
+      if (message.type == Constants.kCONNECTION_HEARTBEAT)
+        updateTimeoutTimer();
+      else
+        onMessage.dispatch(windowId, message);
+    };
+    port.onMessage.addListener(receiver);
+    mReceivers.set(windowId, receiver);
+    onConnected.dispatch(windowId, connections.size);
+    port.onDisconnect.addListener(cleanup);
+  });
+
+  onMessage.addListener(async (windowId, message) => {
+    switch (message.type) {
+      case Constants.kNOTIFY_SIDEBAR_FOCUS:
+        mFocusState.set(windowId, true);
+        break;
+
+      case Constants.kNOTIFY_SIDEBAR_BLUR:
+        mFocusState.delete(windowId);
+        break;
     }
-    connections.delete(connection);
-    if (connections.size == 0)
-      mConnections.delete(windowId);
-    port.onMessage.removeListener(receiver); // eslint-disable-line no-use-before-define
-    mReceivers.delete(windowId);
-    mFocusState.delete(windowId);
-    onDisconnected.dispatch(windowId, connections.size);
-  };
-  const receiver = message => {
-    if (Array.isArray(message))
-      return message.forEach(receiver);
-    if (message.type == Constants.kCONNECTION_HEARTBEAT)
-      updateTimeoutTimer();
-    else
-      onMessage.dispatch(windowId, message);
-  };
-  port.onMessage.addListener(receiver);
-  mReceivers.set(windowId, receiver);
-  onConnected.dispatch(windowId, connections.size);
-  port.onDisconnect.addListener(cleanup);
-});
+  });
+}
 
 export function init() {
   if (mIsListening)
@@ -227,28 +243,17 @@ export function init() {
   mIsListening = true;
 }
 
-onMessage.addListener(async (windowId, message) => {
-  switch (message.type) {
-    case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      mFocusState.set(windowId, true);
-      break;
-
-    case Constants.kNOTIFY_SIDEBAR_BLUR:
-      mFocusState.delete(windowId);
-      break;
-  }
-});
-
 
 //===================================================================
 // Logging
 //===================================================================
 
 browser.runtime.onMessage.addListener((message, _sender) => {
-  if (!message ||
+  if (!mIsListening ||
+      !message ||
       typeof message != 'object' ||
       message.type != Constants.kCOMMAND_REQUEST_CONNECTION_MESSAGE_LOGS ||
-      !isInitialized())
+      !Constants.IS_BACKGROUND)
     return;
 
   browser.runtime.sendMessage({
