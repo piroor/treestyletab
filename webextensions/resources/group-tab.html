@@ -116,6 +116,7 @@
   li.use-default-favicon .default-favicon,
   li.favicon-loading .default-favicon {
     background: var(--text-color);
+    break-inside: avoid; /* This is required to avoid unexpected slicing. See also: https://github.com/piroor/treestyletab/issues/3361 */
     display: inline-block;
     mask: url("./icons/defaultFavicon.svg") no-repeat center / 100%;
   }
