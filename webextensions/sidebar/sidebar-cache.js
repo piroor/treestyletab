@@ -86,6 +86,7 @@ async function preload(tab) {
   mTargetWindow = tab.windowId;
   const cache = await MetricsData.addAsync('preload: reading window cache', Promise.all([
     getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+    getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS),
     getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
     getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
   ]).catch(ApiTabs.createErrorSuppressor()));
@@ -97,6 +98,7 @@ export async function getEffectiveWindowCache(options = {}) {
   log('getEffectiveWindowCache: start');
   cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
   let cache;
+  let cachedContents;
   let cachedSignature;
   let actualSignature;
   await Promise.all([
@@ -109,12 +111,19 @@ export async function getEffectiveWindowCache(options = {}) {
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
       const preloadedCache = mPreloadedCaches.get(`window${mLastWindowCacheOwner.windowId}`);
-      [cache, tabsDirty, collapsedDirty] = preloadedCache || await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
+      [cache, cachedContents, tabsDirty, collapsedDirty] = preloadedCache || await MetricsData.addAsync('getEffectiveWindowCache: reading window cache', Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]));
       mPreloadedCaches.clear();
+      if (cache && cache.tabbar && cachedContents) {
+        const contents = await cachedContents.text();
+        const versionPart = contents.match(/^version=(\d+)\n/);
+        if (versionPart && versionPart[1] == cache.version)
+          cache.tabbar.contents = contents.replace(/^version=(\d+)\n/, '');
+      }
       cachedSignature = cache && cache.signature;
       log(`getEffectiveWindowCache: got from the owner `, mLastWindowCacheOwner, {
         cachedSignature, cache, tabsDirty, collapsedDirty
@@ -467,6 +476,7 @@ function clearWindowCache() {
   if (!configs.persistCachedTree)
     clearPersistentWindowCache();
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
@@ -557,13 +567,16 @@ async function updateCachedTabbar() {
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: kCONTENTS_VERSION,
     tabbar: {
-      contents:        SidebarTabs.wholeContainer.innerHTML,
       style:           mTabBar.getAttribute('style'),
       pinnedTabsCount: Tab.getPinnedTabs(mTargetWindow).length
     },
     indent: Indent.getCacheInfo(),
     signature
   });
+  updateWindowCache(
+    Constants.kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS,
+    new Blob([`version=${kCONTENTS_VERSION}\n${SidebarTabs.wholeContainer.innerHTML}`])
+  );
 }
 
 
