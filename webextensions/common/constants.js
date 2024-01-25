@@ -237,12 +237,14 @@ export const kWINDOW_STATE_SUBPANEL_HEIGHT = 'subpanel-height';
 export const kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT = 'subpanel-effective-height';
 export const kWINDOW_STATE_CACHED_TABS     = 'cached-tabs';
 export const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
+export const kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS  = 'cached-sidebar-contents:contents';
 export const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';
 export const kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY = 'cached-sidebar-contents:collapsed-dirty';
 
 export const kCACHE_KEYS = [
   kWINDOW_STATE_CACHED_TABS,
   kWINDOW_STATE_CACHED_SIDEBAR,
+  kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS,
   kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY,
   kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY,
 ];
