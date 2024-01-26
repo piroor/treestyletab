@@ -41,7 +41,7 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as EventUtils from './event-utils.js';
 import * as GapCanceller from './gap-canceller.js';
 import * as Indent from './indent.js';
-import * as SidebarCache from './sidebar-cache.js';
+//import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
@@ -141,7 +141,7 @@ export async function init() {
 
   // Read caches from existing tabs at first, for better performance.
   // Those promises will be resolved while waiting other operations.
-  SidebarCache.tryPreload();
+  //SidebarCache.tryPreload();
 
   let promisedAllTabsTracked;
   UserOperationBlocker.setProgress(0);
@@ -161,7 +161,7 @@ export async function init() {
         document.documentElement.classList.add('incognito');
 
       const tabs = window.tabs;
-      SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
+      //SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
       if (!mTargetWindow) {
         mTargetWindow = tabs[0].windowId;
         EventUtils.setTargetWindowId(mTargetWindow);
@@ -191,8 +191,8 @@ export async function init() {
       PinnedTabs.init();
       Indent.init();
 
-      SidebarCache.init();
-      SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
+      //SidebarCache.init();
+      //SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
 
       return tabs;
     }),
@@ -224,8 +224,8 @@ export async function init() {
   let restoredFromCache;
   await Promise.all([
     MetricsData.addAsync('parallel initialization: main', async () => {
-      if (configs.useCachedTree)
-        cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs }));
+      //if (configs.useCachedTree)
+      //  cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs }));
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedTabs, cachedContents && cachedContents.tabbar));
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
@@ -278,11 +278,11 @@ export async function init() {
 
   await MetricsData.addAsync('parallel initialization: post process', Promise.all([
     MetricsData.addAsync('parallel initialization: post process: main', async () => {
-      SidebarCache.startTracking();
+      //SidebarCache.startTracking();
       Indent.updateRestoredTree(cachedContents && cachedContents.indent);
       if (!restoredFromCache) {
         SidebarTabs.updateAll();
-        SidebarCache.reserveToUpdateCachedTabbar();
+        //SidebarCache.reserveToUpdateCachedTabbar();
       }
       updateTabbarLayout({ justNow: true });
       SubPanel.onResized.addListener(() => {
@@ -559,7 +559,7 @@ export async function rebuildAll(importedTabs, cache) {
   let tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   if (cache) {
-    const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs });
+    const restored = false;//await SidebarCache.restoreTabsFromCache(cache, { tabs });
     if (restored) {
       TabsInternalOperation.setTabActive(Tab.getActiveTab(mTargetWindow));
       MetricsData.add('rebuildAll: end (from cache)');
@@ -1160,9 +1160,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked(message.tabId, { element: true });
       log('Tabs.onWindowRestoring');
       const window = TabsStore.windows.get(mTargetWindow);
-      const cache = await SidebarCache.getEffectiveWindowCache({
-        ignorePinnedTabs: true
-      });
+      const cache = null; //await SidebarCache.getEffectiveWindowCache({
+      //  ignorePinnedTabs: true
+      //});
       if (!cache ||
           !cache.tabbar.cache ||
           (cache.offset &&
@@ -1179,10 +1179,10 @@ BackgroundConnection.onMessage.addListener(async message => {
         type:     Constants.kCOMMAND_PULL_TABS,
         windowId: message.windowId
       });
-      const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
-        offset: cache.offset || 0,
-        tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
-      });
+      const restored = false;//await SidebarCache.restoreTabsFromCache(cache.tabbar, {
+      //  offset: cache.offset || 0,
+      //  tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
+      //});
       if (!restored) {
         await rebuildAll();
       }
