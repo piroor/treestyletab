@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 3.9.21 (2024.1.26)
+   * Fix [performance regression on 3.9.20 with on-memory cache](https://github.com/piroor/treestyletab/issues/3434).
+   * [Prevent unexpected slicing of built-in icons in group tabs.](https://github.com/piroor/treestyletab/pull/3435)
  - 3.9.20 (2024.1.18)
    * Drop support of Firefox older than 115.
    * Restructure options about new tab position control, to reduce overlapped effects of multiple options. Now you can choose "open tab as a first/last child" for each option directly.
