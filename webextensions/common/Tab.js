@@ -1131,12 +1131,6 @@ export default class Tab {
       this.states.add(state);
 
     switch (state) {
-      case Constants.kTAB_STATE_ACTIVE:
-        if (this.element &&
-            this.element.parentNode)
-          this.element.parentNode.setAttribute('aria-activedescendant', this.element.id);
-        break;
-
       case Constants.kTAB_STATE_HIGHLIGHTED:
         if (this.element)
           this.element.setAttribute('aria-selected', 'true');

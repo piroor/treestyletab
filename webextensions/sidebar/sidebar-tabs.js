@@ -611,8 +611,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(lastMessage.tabId);
       if (!tab)
         return;
+      const lastActive = TabsStore.activeTabInWindow.get(lastMessage.windowId);
+      if (lastActive &&
+          lastActive.$TST.element)
+        lastActive.$TST.element.parentNode.removeAttribute('aria-activedescendant');
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
+      tab.$TST.element.parentNode.setAttribute('aria-activedescendant', tab.$TST.element.id);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
