@@ -31,8 +31,9 @@ export default class Window {
     this.tabs  = new Map();
     this.order = [];
 
-    this.element = null;
-    this.classList = null;
+    this.containerElement = null;
+    this.containerClassList = null;
+    this.pinnedContainerElement = null;
 
     this.internalMovingTabs  = new Set();
     this.alreadyMovedTabs    = new Set();
@@ -81,13 +82,17 @@ export default class Window {
     TabsStore.windows.delete(this.id);
     TabsStore.unprepareIndexesForWindow(this.id);
 
-    if (this.element) {
-      const element = this.element;
-      if (element.parentNode && !element.hasChildNodes()) {
+    if (this.containerElement) {
+      const element = this.containerElement;
+      if (element.parentNode && !element.hasChildNodes())
         element.parentNode.removeChild(element);
-        this.unbindElement();
-      }
     }
+    if (this.pinnedContainerElement) {
+      const element = this.element;
+      if (element.parentNode && !element.hasChildNodes())
+        element.parentNode.removeChild(element);
+    }
+    this.unbindElements();
 
     this.tabs = null;
     this.order = null;
@@ -113,14 +118,21 @@ export default class Window {
     this.previousLastRelatedTabs.clear();
   }
 
-  bindElement(element) {
-    this.element = element;
-    this.classList = element.classList;
+  bindContainerElement(element) {
+    this.containerElement = element;
+    this.containerClassList = element.classList;
   }
 
-  unbindElement() {
-    this.element = null;
-    this.classList = null;
+  bindPinnedContainerElement(element) {
+    this.pinnedContainerElement = element;
+    this.pinnedContainerClassList = element.classList;
+  }
+
+  unbindElements() {
+    this.containerElement = null;
+    this.containerClassList = null;
+    this.pinnedContainerElement = null;
+    this.pinnedContainerClassList = null;
   }
 
   getOrderedTabs(startId, endId, tabs) {

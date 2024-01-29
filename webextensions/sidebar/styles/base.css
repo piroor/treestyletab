@@ -179,6 +179,7 @@ tab-sound-button */ {
 
 #tabbar-container,
 #tabbar,
+#pinned-tabs-container-wrapper,
 #tabbar-top,
 #tabbar-bottom,
 #background,
@@ -204,12 +205,18 @@ tab-sound-button */ {
 }
 
 #tabbar {
-  margin-top: var(--pinned-tabs-area-size);
   position: absolute;
+}
+
+#normal-tabs-container-wrapper {
+  margin-top: var(--pinned-tabs-area-size);
 }
 
 #tabbar.overflow {
   bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size));
+}
+
+#tabbar.overflow #normal-tabs-container-wrapper {
   overflow-y: scroll;
 }
 
@@ -246,7 +253,8 @@ tab-sound-button */ {
 :root.left #tabbar {
   direction: rtl;
 }
-:root.left #all-tabs,
+:root.left .tabs.pinned,
+:root.left .vertual-scroll-container,
 :root.left #tabbar .after-tabs {
   direction: ltr;
 }
@@ -395,9 +403,19 @@ tab-item.hidden {
 tab-item.removing,
 tab-item:not(.pinned).collapsed,
 tab-item.duplicating {
-  margin-top: calc(0px - var(--tab-current-size) - var(--tab-margin-bottom));
   pointer-events: none;
   z-index: var(--invisible-z-index);
+}
+tab-item.removing:not(.pinned.faviconized),
+tab-item:not(.pinned.faviconized).collapsed,
+tab-item.duplicating {
+  margin-top: calc(0px - var(--tab-current-size) - var(--tab-margin-bottom));
+}
+:root.left tab-item.removing.pinned.faviconized {
+  margin-left: calc(0px - var(--tab-current-size) - var(--tab-margin-right));
+}
+:root.right tab-item.removing.pinned.faviconized {
+  margin-right: calc(0px - var(--tab-current-size) - var(--tab-margin-left));
 }
 tab-item.removing tab-item-substance,
 tab-item:not(.pinned).collapsed tab-item-substance,
@@ -535,54 +553,64 @@ tab-item .extra-items-container.behind {
 
 /* pinned tabs */
 
-tab-item.pinned {
-  bottom: var(--pinned-position-bottom);
-  left: var(--pinned-position-left);
-  margin: 0;
-  position: fixed;
-  right: var(--pinned-position-right);
-  top: calc(var(--tabbar-top-area-size) + var(--pinned-position-top) + var(--visual-gap-offset));
+#pinned-tabs-container-wrapper {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  max-height: var(--pinned-tabs-area-size);
+  overflow: hidden;
   z-index: var(--over-tabs-z-index);
 }
-tab-item.pinned tab-item-substance {
-  border-top: none;
-  border-left: none;
-  margin: 0;
+
+#pinned-tabs-container-wrapper.overflow {
+  overflow-y: scroll;
 }
 
-tab-item.pinned:not(.in-visible-area) {
-  pointer-events: none;
-}
-tab-item.pinned:not(.in-visible-area) tab-item-substance {
-  opacity: 0;
+.tabs.pinned {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
-:root.hover-on-top-edge:hover tab-item.pinned {
+:root.faviconize-pinned-tabs .tabs.pinned {
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+/* auto-hidden scrollbar placeholder workaround */
+:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow .tabs.pinned,
+:root.left:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned {
+  padding-left: var(--shift-tabs-for-scrollbar-distance);
+}
+:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned,
+:root.right:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned {
+  padding-right: var(--shift-tabs-for-scrollbar-distance);
+}
+
+:root.hover-on-top-edge:hover .tabs.pinned {
   top: var(--pinned-position-top) !important;
 }
-:root.hover-on-top-edge:hover tab-item.pinned,
-:root.hover-on-top-edge:hover tab-item.pinned tab-item-substance {
+:root.hover-on-top-edge:hover .tabs.pinned,
+:root.hover-on-top-edge.animation:not(.minimized):hover .tabs.pinned {
   transition: var(--visual-gap-hover-animation);
 }
-:root.hover-on-top-edge.animation:not(.minimized):hover tab-item.pinned,
-:root.hover-on-top-edge.animation:not(.minimized):hover tab-item.pinned tab-item-substance {
-  transition: var(--tab-animation),
-              var(--visual-gap-hover-animation);
-}
 
-tab-item.pinned:not(.faviconized) {
-  left: 0;
-  right: 0;
-}
 
 tab-item.faviconized {
   --tab-current-size: var(--faviconized-tab-size);
   height: var(--tab-current-size);
+  margin: 0;
   max-height: var(--tab-current-size);
   max-width: var(--tab-current-size);
   width: var(--tab-current-size);
 }
 tab-item.faviconized tab-item-substance {
+  border-top: none;
+  border-left: none;
+  margin: 0;
   padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 

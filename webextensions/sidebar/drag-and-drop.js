@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2023
+ * Portions created by the Initial Developer are Copyright (C) 2010-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -502,7 +502,8 @@ export function clearDraggingTabsState() {
 
 export function clearDraggingState() {
   const window = TabsStore.windows.get(TabsStore.getCurrentWindowId());
-  window.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  window.containerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  window.pinnedContainerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }
@@ -926,7 +927,9 @@ function onDragStart(event, options = {}) {
     dt.setDragImage(tab.$TST.element, offset, offset);
   }
 
-  TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  const win = TabsStore.windows.get(TabsStore.getCurrentWindowId());
+  win.containerClassList.add(kTABBAR_STATE_TAB_DRAGGING);
+  win.pinnedContainerClassList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   if (!('behavior' in options) &&
@@ -1145,7 +1148,9 @@ function onDragEnter(event) {
         info.dragData.tabs.some(tab => tab.id == enteredTab.id)
       );
     }
-    TabsStore.windows.get(TabsStore.getCurrentWindowId()).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+    const win = TabsStore.windows.get(TabsStore.getCurrentWindowId());
+    win.containerClassList.add(kTABBAR_STATE_TAB_DRAGGING);
+    win.pinnedContainerClassList.add(kTABBAR_STATE_TAB_DRAGGING);
     document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   }
   catch(_e) {

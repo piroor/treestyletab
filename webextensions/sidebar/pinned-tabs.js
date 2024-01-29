@@ -48,25 +48,10 @@ let mTargetWindow;
 let mTabBar;
 let mAreaHeight     = 0;
 let mMaxVisibleRows = 0;
-let mScrollRow      = 0;
 
 export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
   mTabBar       = document.querySelector('#tabbar');
-  configs.$addObserver(onConfigChange);
-
-  // We need to register the lister as non-passive to cancel the event.
-  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
-  document.addEventListener('wheel', event => {
-    if (event.clientY > mAreaHeight ||
-        Tab.getPinnedTabs(mTargetWindow).length == 0)
-      return;
-    event.preventDefault();
-    event.stopPropagation();
-    const deltaRows = Math.floor(event.deltaY / Math.max(1, getTabHeight()));
-    mScrollRow = Math.min(mMaxVisibleRows + 1, Math.max(0, mScrollRow + deltaRows));
-    reserveToReposition();
-  }, { capture: true, passive: false });
 }
 
 function getTabHeight() {
@@ -104,9 +89,7 @@ export function reposition(options = {}) {
     mMaxVisibleRows * height
   );
   document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
-  const scrollRow = Math.max(0, Math.min(maxRow - mMaxVisibleRows, mScrollRow));
   for (const tab of pinnedTabs) {
-    const style = tab.$TST.element.style;
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
 
@@ -119,14 +102,6 @@ export function reposition(options = {}) {
       tab.$TST.addState(Constants.kTAB_STATE_LAST_ROW);
     else
       tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
-
-    style.setProperty('--pinned-position-bottom', 'auto');
-    style.setProperty('--pinned-position-left', `${width * col}px`);
-    style.setProperty('--pinned-position-right', faviconized ? 'auto' : 0 );
-    style.setProperty('--pinned-position-top', `${height * row}px`);
-    style.marginTop = `${height * -scrollRow}px`; // this need to pe separated from "top", because its animation can be delayed by the visual gap canceller.
-    const inVisibleArea = scrollRow <= row && row - scrollRow < mMaxVisibleRows;
-    tab.$TST.element.classList.toggle('in-visible-area', inVisibleArea);
 
     if (options.justNow)
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -165,7 +140,6 @@ function reset() {
   }
   mAreaHeight     = 0;
   mMaxVisibleRows = 0;
-  mScrollRow      = 0;
 }
 
 function clearStyle(tab) {
@@ -228,11 +202,3 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
   }
 });
-
-function onConfigChange(key) {
-  switch (key) {
-    case 'faviconizePinnedTabs':
-      reserveToReposition();
-      break;
-  }
-}

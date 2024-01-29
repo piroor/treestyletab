@@ -21,10 +21,6 @@ tab-item.pinned tab-item-substance {
   border-width: 0 1px 1px 0;
 }
 
-tab-item.pinned.last-row tab-item-substance {
-  border-bottom-width: 0;
-}
-
 
 .after-tabs button,
 .after-tabs [role="button"] {

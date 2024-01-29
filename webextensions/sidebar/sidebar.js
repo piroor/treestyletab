@@ -41,7 +41,6 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as EventUtils from './event-utils.js';
 import * as GapCanceller from './gap-canceller.js';
 import * as Indent from './indent.js';
-//import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
@@ -53,7 +52,6 @@ import * as TabContextMenu from './tab-context-menu.js';
 import { TabCloseBoxElement } from './components/TabCloseBoxElement.js';
 import { TabCounterElement } from './components/TabCounterElement.js';
 import {
-  kTAB_ELEMENT_NAME,
   TabElement,
   TabInvalidationTarget,
   TabUpdateTarget,
@@ -139,10 +137,6 @@ export async function init() {
   TabSoundButtonElement.define();
   TabElement.define();
 
-  // Read caches from existing tabs at first, for better performance.
-  // Those promises will be resolved while waiting other operations.
-  //SidebarCache.tryPreload();
-
   let promisedAllTabsTracked;
   UserOperationBlocker.setProgress(0);
   await Promise.all([
@@ -161,7 +155,6 @@ export async function init() {
         document.documentElement.classList.add('incognito');
 
       const tabs = window.tabs;
-      //SidebarCache.tryPreload(tabs.filter(tab => !tab.pinned)[0] || tabs[0]);
       if (!mTargetWindow) {
         mTargetWindow = tabs[0].windowId;
         EventUtils.setTargetWindowId(mTargetWindow);
@@ -171,7 +164,7 @@ export async function init() {
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
       // Track only the first tab for now, because it is required to initialize
-      // the container and it will be used by the SidebarCache module.
+      // the container.
       Tab.track(tabs[0]);
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
@@ -191,14 +184,11 @@ export async function init() {
       PinnedTabs.init();
       Indent.init();
 
-      //SidebarCache.init();
-      //SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
-
       return tabs;
     }),
     configs.$loaded
   ]);
-  MetricsData.add('browser.tabs.query finish, SidebarCache initialized, configs are loaded.');
+  MetricsData.add('browser.tabs.query finish, configs are loaded.');
   EventListenerManager.debug = configs.debug;
 
   onConfigChange('colorScheme');
@@ -220,13 +210,9 @@ export async function init() {
   // we don't need await for these features
   MetricsData.addAsync('API for other addons', TSTAPI.initAsFrontend());
 
-  let cachedContents;
-  let restoredFromCache;
   await Promise.all([
     MetricsData.addAsync('parallel initialization: main', async () => {
-      //if (configs.useCachedTree)
-      //  cachedContents = await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', SidebarCache.getEffectiveWindowCache({ tabs: importedTabs }));
-      restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedTabs, cachedContents && cachedContents.tabbar));
+      await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(importedTabs));
 
       TabsUpdate.completeLoadingTabs(mTargetWindow);
 
@@ -238,6 +224,7 @@ export async function init() {
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
+      onConfigChange('faviconizePinnedTabs');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
       onConfigChange('shiftTabsForScrollbarOnlyOnHover');
@@ -246,6 +233,14 @@ export async function init() {
       document.addEventListener('blur', onBlur);
       window.addEventListener('resize', onResize);
       mTabBar.addEventListener('transitionend', onTransisionEnd);
+      SidebarTabs.pinnedContainerWrapper.addEventListener('overflow', event => {
+        if (event.target == event.currentTarget)
+          event.currentTarget.classList.add('overflow');
+      });
+      SidebarTabs.pinnedContainerWrapper.addEventListener('underflow', event => {
+        if (event.target == event.currentTarget)
+          event.currentTarget.classList.remove('overflow');
+      });
 
       browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
@@ -278,12 +273,8 @@ export async function init() {
 
   await MetricsData.addAsync('parallel initialization: post process', Promise.all([
     MetricsData.addAsync('parallel initialization: post process: main', async () => {
-      //SidebarCache.startTracking();
-      Indent.updateRestoredTree(cachedContents && cachedContents.indent);
-      if (!restoredFromCache) {
-        SidebarTabs.updateAll();
-        //SidebarCache.reserveToUpdateCachedTabbar();
-      }
+      Indent.updateRestoredTree();
+      SidebarTabs.updateAll();
       updateTabbarLayout({ justNow: true });
       SubPanel.onResized.addListener(() => {
         updateTabbarLayout();
@@ -327,8 +318,6 @@ export async function init() {
   MetricsData.add('init: end');
   if (configs.debug)
     log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
-
-  cachedContents = null; // it is so large, we need to wipe it out from the RAM.
 }
 
 function applyAnimationState(active) {
@@ -531,10 +520,12 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-export async function rebuildAll(importedTabs, cache) {
+export async function rebuildAll(importedTabs) {
   MetricsData.add('rebuildAll: start');
   const range = document.createRange();
-  range.selectNodeContents(SidebarTabs.wholeContainer);
+  range.selectNodeContents(SidebarTabs.pinnedContainerWrapper);
+  range.deleteContents();
+  range.selectNodeContents(SidebarTabs.noramlContainerWrapper);
   range.deleteContents();
   range.detach();
 
@@ -558,17 +549,8 @@ export async function rebuildAll(importedTabs, cache) {
 
   let tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
-  if (cache) {
-    const restored = false;//await SidebarCache.restoreTabsFromCache(cache, { tabs });
-    if (restored) {
-      TabsInternalOperation.setTabActive(Tab.getActiveTab(mTargetWindow));
-      MetricsData.add('rebuildAll: end (from cache)');
-      return true;
-    }
-  }
-
   // Re-get tabs before rebuilding tree, because they can be modified while
-  // waiting for SidebarCache.restoreTabsFromCache().
+  // waiting for initialization
   await MetricsData.addAsync('rebuildAll: re-import tabs before rebuilding tree', async () => {
     const [nativeTabs, importedTabs] = await Promise.all([
       browser.tabs.query({ windowId: mTargetWindow }).catch(ApiTabs.createErrorHandler()),
@@ -601,7 +583,12 @@ export async function rebuildAll(importedTabs, cache) {
   });
 
   const window = Window.init(mTargetWindow);
-  window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
+  // remove from the document for better pefromance
+  const pinnedContainerParent = window.pinnedContainerElement.parentNode;
+  const pinnedContainerNext   = window.pinnedContainerElement.nextSibling;
+  pinnedContainerParent.removeChild(window.pinnedContainerElement);
+  const containerParent = window.containerElement.parentNode;
+  containerParent.removeChild(window.containerElement);
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
@@ -617,7 +604,8 @@ export async function rebuildAll(importedTabs, cache) {
       lastDraw = Date.now();
     }
   }
-  SidebarTabs.wholeContainer.appendChild(window.element);
+  pinnedContainerParent.insertBefore(window.pinnedContainerElement, pinnedContainerNext);
+  containerParent.appendChild(window.containerElement);
   MetricsData.add('rebuildAll: end (from scratch)');
 
   importedTabs = null; // wipe it out from the RAM.
@@ -806,7 +794,7 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;
   const extraTabbarTopContainerSize = document.querySelector('#tabbar-top > *').getBoundingClientRect().height;
   const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').getBoundingClientRect().height;
-  const containerHeight = mTabBar.getBoundingClientRect().height - (visibleNewTabButtonInTabbar ? visibleNewTabButtonInTabbar.getBoundingClientRect().height : 0);
+  const containerHeight = mTabBar.getBoundingClientRect().height - SidebarTabs.pinnedContainerWrapper.getBoundingClientRect().height - (visibleNewTabButtonInTabbar ? visibleNewTabButtonInTabbar.getBoundingClientRect().height : 0);
   log('height: ', { container: containerHeight, allTabsHeight, newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
 
   document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
@@ -957,6 +945,10 @@ async function onConfigChange(changedKey) {
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
       Indent.update({ force: true });
+      break;
+
+    case 'faviconizePinnedTabs':
+      rootClasses.toggle(Constants.kTABBAR_STATE_FAVICONIZE_PINNED_TABS, configs[changedKey]);
       break;
 
     case 'style':
@@ -1139,57 +1131,6 @@ BackgroundConnection.onMessage.addListener(async message => {
           reason: Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE
         });
       }
-    }; break;
-
-    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING: {
-      if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
-        return;
-
-      const window = TabsStore.windows.get(mTargetWindow);
-      // When we are restoring two or more tabs.
-      // (But we don't need do this again for third, fourth, and later tabs.)
-      if (window.restoredCount == 2)
-        UserOperationBlocker.block({ throbber: true });
-    }; break;
-
-    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
-      // Tree restoration for "Restore Previous Session"
-      if (!configs.useCachedTree)
-        return;
-
-      await Tab.waitUntilTracked(message.tabId, { element: true });
-      log('Tabs.onWindowRestoring');
-      const window = TabsStore.windows.get(mTargetWindow);
-      const cache = null; //await SidebarCache.getEffectiveWindowCache({
-      //  ignorePinnedTabs: true
-      //});
-      if (!cache ||
-          !cache.tabbar.cache ||
-          (cache.offset &&
-           window.element.querySelectorAll(kTAB_ELEMENT_NAME).length <= cache.offset)) {
-        log('Tabs.onWindowRestoring: no effective cache');
-        UserOperationBlocker.unblock({ throbber: true });
-        return;
-      }
-
-      log('Tabs.onWindowRestoring restore! ', cache);
-      MetricsData.add('Tabs.onWindowRestoring restore start');
-      cache.tabbar.tabsDirty = true;
-      const importedTabs = await browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_PULL_TABS,
-        windowId: message.windowId
-      });
-      const restored = false;//await SidebarCache.restoreTabsFromCache(cache.tabbar, {
-      //  offset: cache.offset || 0,
-      //  tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
-      //});
-      if (!restored) {
-        await rebuildAll();
-      }
-      Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
-      updateTabbarLayout({ justNow: true });
-      UserOperationBlocker.unblock({ throbber: true });
-      MetricsData.add('Tabs.onWindowRestoring restore end');
     }; break;
 
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG: {
