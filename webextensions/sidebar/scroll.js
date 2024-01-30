@@ -206,7 +206,7 @@ function renderVirtualScrollTabs() {
   }
 
   // clear needless tab elements
-  const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"], [data-tab-id="')}"])`);
+  const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"]):not([data-tab-id="')}"])`);
   for (const tabElement of toBeClearedTabs) {
     const tab = tabElement.apiTab;
     SidebarTabs.unrenderTab(tab);
