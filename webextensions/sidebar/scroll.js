@@ -74,7 +74,7 @@ export function init(scrollPosition) {
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
-  reserveToRenderVirtualScrollTabs();
+  renderVirtualScrollTabs();
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
