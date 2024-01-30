@@ -142,6 +142,7 @@ reserveToSyncTabsOrder.retryCount = 0;
 
 async function syncTabsOrder() {
   log('syncTabsOrder');
+  return;
   const windowId      = TabsStore.getCurrentWindowId();
   const [internalOrder, nativeOrder] = await Promise.all([
     browser.runtime.sendMessage({
@@ -227,7 +228,7 @@ async function syncTabsOrder() {
         for (const id of moveTabIds) {
           const tab = Tab.get(id);
           if (tab)
-            placeTabElementBefore(tab, referenceTab);
+            renderTabBefore(tab, referenceTab);
         }
         modificationsCount++;
         break;
@@ -242,45 +243,51 @@ async function syncTabsOrder() {
   reserveToSyncTabsOrder();
 }
 
-function placeTabElement(tab) {
-  return placeTabElementBefore(tab);
+export function renderTab(tab) {
+  return renderTabBefore(tab);
 }
 
-function placeTabElementBefore(tab, referenceTab) {
+export function renderTabBefore(tab, referenceTab) {
+  if (!tab.$TST.element ||
+      !tab.$TST.element.parentNode) {
+    const tabElement = document.createElement(kTAB_ELEMENT_NAME);
+    tab.$TST.bindElement(tabElement);
+    tab.$TST.setAttribute('id', `tab-${tab.id}`);
+    tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
+    tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+  }
+
   const win = TabsStore.windows.get(tab.windowId);
   const tabElement = tab.$TST.element;
-  if (tab.pinned) {
-    const nextTab = tab.$TST.unsafeNextTab;
-    const referenceTabElement = (referenceTab && referenceTab.pinned && referenceTab.$TST.element) ||
-      (nextTab && nextTab.pinned && nextTab.$TST.element) ||
-      null;
-    log(`placing pinned tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-    if (tabElement.parentNode == win.pinnedContainerElement &&
-        tabElement.nextSibling == referenceTabElement)
-      return;
-    win.pinnedContainerElement.insertBefore(
-      tabElement,
-      referenceTabElement && referenceTabElement.parentNode == win.pinnedContainerElement ?
-        referenceTabElement :
-        null
-    );
-  }
-  else {
-    const nextTab = tab.$TST.unsafeNextTab;
-    const referenceTabElement = (referenceTab && !referenceTab.pinned && referenceTab.$TST.element) ||
-      (nextTab && !nextTab.pinned && nextTab.$TST.element) ||
-      win.containerElement.querySelector(`.${Constants.kTABBAR_SPACER}`);
-    log(`placing tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-    if (tabElement.parentNode == win.containerElement &&
-        tabElement.nextSibling == referenceTabElement)
-      return;
-    win.containerElement.insertBefore(
-      tabElement,
-      referenceTabElement && referenceTabElement.parentNode == win.containerElement ?
-        referenceTabElement :
-        null
-    );
-  }
+  const containerElement = tab.pinned ?
+    win.pinnedContainerElement :
+    win.containerElement;
+
+  const nextTab = (referenceTab && referenceTab.pinned == tab.pinned && referenceTab.$TST.element && referenceTab) ||
+    tab.$TST.nearestSameTypeRenderedTab;
+  log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
+  const nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
+    nextTab.$TST.element :
+    tab.pinned ?
+      null :
+      win.containerElement.querySelector(`.${Constants.kTABBAR_SPACER}`)
+
+  if (tabElement.parentNode == containerElement &&
+      tabElement.nextSibling == nextElement)
+    return false;
+
+  containerElement.insertBefore(tabElement, nextElement);
+  return true;
+}
+
+export function unrenderTab(tab) {
+  if (!tab.$TST.element)
+    return false;
+
+  if (tab.$TST.element.parentNode)
+    tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+
+  tab.$TST.unbindElement();
 }
 
 Window.onInitialized.addListener(window => {
@@ -307,7 +314,7 @@ Window.onInitialized.addListener(window => {
     const spacer = container.appendChild(document.createElement('li'));
     spacer.classList.add(Constants.kTABBAR_SPACER);
     const wrapper = document.createElement('div');
-    wrapper.classList.add('vertual-scroll-container');
+    wrapper.classList.add('virtual-scroll-container');
     wrapper.classList.add('vbox');
     wrapper.appendChild(container);
     noramlContainerWrapper.appendChild(wrapper);
@@ -323,29 +330,7 @@ Window.onInitialized.addListener(window => {
 });
 
 Tab.onInitialized.addListener((tab, _info) => {
-  const window = TabsStore.windows.get(tab.windowId);
-  if (tab.$TST.element && // restored from cache
-      // If this is a rebuilding process for a mis-synchronization,
-      // we need to ignore the existing tab element, because it is
-      // already detached from the document and going to be destroyed.
-      (tab.$TST.element.parentNode == window.pinnedContainerElement ||
-       tab.$TST.element.parentNode == window.containerElement))
-    return;
-
-  const id = `tab-${tab.id}`;
-  let tabElement = document.getElementById(id);
-  if (tabElement) {
-    tab.$TST.bindElement(tabElement);
-    return;
-  }
-
-  tabElement = document.createElement(kTAB_ELEMENT_NAME);
-  tab.$TST.bindElement(tabElement);
-
-  tab.$TST.setAttribute('id', id);
-  tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
-  tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-  placeTabElement(tab);
+  renderTab(tab);
 });
 
 
@@ -741,7 +726,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
-      placeTabElement(tab);
+      renderTab(tab);
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -763,7 +748,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.index = message.newIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
       Tab.track(tab);
-      placeTabElement(tab);
+      renderTab(tab);
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger
@@ -939,7 +924,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         TabsStore.removePinnedTab(tab);
         TabsStore.addUnpinnedTab(tab);
       }
-      placeTabElement(tab);
+      renderTab(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:

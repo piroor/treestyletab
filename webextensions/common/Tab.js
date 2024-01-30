@@ -189,6 +189,10 @@ export default class Tab {
   }
 
   unbindElement() {
+    if (this.element) {
+      this.element.$TST = null;
+      this.element.apiTab = null;
+    }
     this.element = null;
     this.classList = null;
   }
@@ -675,6 +679,19 @@ export default class Tab {
         last:      true
       })
     );
+  }
+
+  get nearestSameTypeRenderedTab() {
+    let tab = this.tab;
+    const pinned = tab.pinned;
+    while (tab.$TST.unsafeNextTab) {
+      tab = tab.$TST.unsafeNextTab;
+      if (tab.pinned != pinned)
+        return null;
+      if (tab.$TST.element)
+        return tab;
+    }
+    return null;
   }
 
   //===================================================================

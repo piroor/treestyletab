@@ -212,6 +212,10 @@ tab-sound-button */ {
   margin-top: var(--pinned-tabs-area-size);
 }
 
+.virtual-scroll-container {
+  overflow: hidden;
+}
+
 #tabbar.overflow {
   bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size));
 }
@@ -254,7 +258,7 @@ tab-sound-button */ {
   direction: rtl;
 }
 :root.left .tabs.pinned,
-:root.left .vertual-scroll-container,
+:root.left .tabs.unpinned,
 :root.left #tabbar .after-tabs {
   direction: ltr;
 }

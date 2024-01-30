@@ -50,6 +50,10 @@ import * as RestoringTabCount from './restoring-tab-count.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
+import {
+  kTAB_ELEMENT_NAME,
+} from './components/TabElement.js';
+
 export const onPositionUnlocked = new EventListenerManager();
 
 function log(...args) {
@@ -62,6 +66,15 @@ const mNormalScrollBox  = document.querySelector('#normal-tabs-container-wrapper
 const mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
 export function init(scrollPosition) {
+  // We need to register the lister as non-passive to cancel the event.
+  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
+  document.addEventListener('wheel', onWheel, { capture: true, passive: false });
+  mPinnedScrollBox.addEventListener('scroll', onScroll);
+  mNormalScrollBox.addEventListener('scroll', onScroll);
+  BackgroundConnection.onMessage.addListener(onBackgroundMessage);
+  TSTAPI.onMessageExternal.addListener(onMessageExternal);
+
+  reserveToRenderVirtualScrollTabs();
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
@@ -70,14 +83,6 @@ export function init(scrollPosition) {
       justNow:  true
     });
   }
-
-  // We need to register the lister as non-passive to cancel the event.
-  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
-  document.addEventListener('wheel', onWheel, { capture: true, passive: false });
-  mPinnedScrollBox.addEventListener('scroll', onScroll);
-  mNormalScrollBox.addEventListener('scroll', onScroll);
-  BackgroundConnection.onMessage.addListener(onBackgroundMessage);
-  TSTAPI.onMessageExternal.addListener(onMessageExternal);
 }
 
 /* basics */
@@ -138,6 +143,77 @@ export function isTabInViewport(tab) {
     return true;
 
   return calculateScrollDeltaForTab(tab) == 0;
+}
+
+export function reserveToRenderVirtualScrollTabs() {
+  if (reserveToRenderVirtualScrollTabs.throttled)
+    clearTimeout(reserveToRenderVirtualScrollTabs.throttled);
+  reserveToRenderVirtualScrollTabs.throttled = setTimeout(() => {
+    reserveToRenderVirtualScrollTabs.throttled = null;
+    renderVirtualScrollTabs();
+  }, 0);
+}
+
+function renderVirtualScrollTabs() {
+  const windowId = TabsStore.getCurrentWindowId();
+  const win      = TabsStore.windows.get(windowId);
+
+  const tabSize               = Size.getTabHeight();
+  const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
+  const scrollableSize        = tabSize * renderableTabs.length;
+  const viewPortSize          = mNormalScrollBox.getBoundingClientRect().height;
+  const scrollPosition        = Math.max(0, Math.min(scrollableSize - tabSize, mNormalScrollBox.scrollTop));
+  const renderablePaddingSize = viewPortSize;
+
+  // We need to use min-height instead of height for a flexbox.
+  win.containerElement.parentNode.style.minHeight = `${scrollableSize}px`;
+
+  const minRenderablePosition = Math.max(
+    0,
+    scrollPosition - renderablePaddingSize
+  );
+  const maxRenderablePosition = Math.min(
+    scrollableSize - tabSize,
+    scrollPosition + viewPortSize + renderablePaddingSize - tabSize
+  );
+  log('renderVirtualScrollTabs ', {
+    tabSize, scrollableSize, viewPortSize, renderablePaddingSize,
+    minRenderablePosition, maxRenderablePosition,
+  });
+
+  const startAt = Date.now();
+  let firstRendered = false;
+  let index = 0;
+  const renderableTabIds = [];
+  for (const tab of renderableTabs) {
+    renderableTabIds.push(tab.id);
+
+    const position = tabSize * index;
+    if (position < minRenderablePosition ||
+        position > maxRenderablePosition) {
+      SidebarTabs.unrenderTab(tab);
+      log(`  - tab ${tab.id} (at ${index}, position = ${position})`);
+    }
+    else {
+      if (!firstRendered)
+        win.containerElement.style.transform = `translateY(${position}px)`;
+      if (SidebarTabs.renderTab(tab))
+        log(`  + tab ${tab.id} (at ${index}, position = ${position})`);
+      firstRendered = true;
+    }
+
+    index++;
+  }
+
+  // clear needless tab elements
+  const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"], [data-tab-id="')}"])`);
+  for (const tabElement of toBeClearedTabs) {
+    const tab = tabElement.apiTab;
+    SidebarTabs.unrenderTab(tab);
+    log(`  - tab ${tab.id}`);
+  }
+
+  log(`${Date.now() - startAt}msec`);
 }
 
 async function smoothScrollTo(params = {}) {
@@ -448,7 +524,9 @@ async function onWheel(event) {
   });
 }
 
-function onScroll(_event) {
+function onScroll(event) {
+  if (event.currentTarget == mNormalScrollBox)
+    reserveToRenderVirtualScrollTabs();
   reserveToSaveScrollPosition();
 }
 
@@ -687,6 +765,7 @@ function onMessageExternal(message, _aSender) {
 CollapseExpand.onUpdating.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
+  reserveToRenderVirtualScrollTabs();
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
@@ -697,6 +776,7 @@ CollapseExpand.onUpdating.addListener((tab, options) => {
 CollapseExpand.onUpdated.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
+  reserveToRenderVirtualScrollTabs();
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
