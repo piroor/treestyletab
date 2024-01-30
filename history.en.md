@@ -10,7 +10,7 @@
    * Drop support of Firefox older than 115.
    * Restructure options about new tab position control, to reduce overlapped effects of multiple options. Now you can choose "open tab as a first/last child" for each option directly.
    * Expose expert options to control behavior of new tabs opened from links and the "New Tab" command in the simulated tab context menu.
-   * Use on-memory storage for the cache of sidebar contents, to prevent broating of Firefox's session file. This means that inititalization on the browser startup takes more time, and you can take the old behavior back by a new advanced option.
+   * Use on-memory storage for the cache of sidebar contents, to prevent bloating of Firefox's session file. This means that initialization on the browser startup takes more time, and you can take the old behavior back by a new advanced option.
    * Guess tabs opened by the "New Tab" command more certainly.
    * Suppress too much RAM usage problem with some themes with animations. (See also the [bug 1875100](https://bugzilla.mozilla.org/show_bug.cgi?id=1875100).)
    * Store device ID more safely for the simulated Sync feature.
