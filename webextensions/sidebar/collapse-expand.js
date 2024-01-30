@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2019
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -110,6 +110,8 @@ export function setCollapsed(tab, info = {}) {
     else
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
+    TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+
     onUpdated.dispatch(tab, {
       collapsed: tab.$TST.collapsed,
       anchor:    info.anchor,
@@ -137,6 +139,8 @@ export function setCollapsed(tab, info = {}) {
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
     TabsStore.addExpandingTab(tab);
   }
+
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
 
   onUpdated.dispatch(tab, { collapsed: info.cpllapsed });
 

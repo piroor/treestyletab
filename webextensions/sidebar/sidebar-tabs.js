@@ -604,6 +604,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
       TabsStore.addUnsynchronizedTab(tab);
       TabsStore.addLoadingTab(tab);
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       if (shouldApplyAnimation()) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true,
@@ -821,6 +822,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.removeGroupTab(tab);
       TabsStore.addRemovingTab(tab);
       TabsStore.addRemovedTab(tab); // reserved
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       reserveToUpdateLoadingState();
       if (tab.active) {
         // This should not, but sometimes happens on some edge cases for example:

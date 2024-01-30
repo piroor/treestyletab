@@ -339,6 +339,7 @@ export const duplicatingTabsInWindow = new Map();
 export const toBeGroupedTabsInWindow = new Map();
 export const loadingTabsInWindow     = new Map();
 export const unsynchronizedTabsInWindow = new Map();
+export const virtualScrollRenderableTabsInWindow  = new Map();
 
 function createMapWithName(name) {
   const map = new Map();
@@ -370,6 +371,7 @@ export function prepareIndexesForWindow(windowId) {
   toBeGroupedTabsInWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
   loadingTabsInWindow.set(windowId, createMapWithName(`loading tabs in window ${windowId}`));
   unsynchronizedTabsInWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
+  virtualScrollRenderableTabsInWindow.set(windowId, createMapWithName(`virtual scroll renderable tabs in window ${windowId}`));
 }
 
 export function unprepareIndexesForWindow(windowId) {
@@ -395,6 +397,7 @@ export function unprepareIndexesForWindow(windowId) {
   toBeGroupedTabsInWindow.delete(windowId);
   loadingTabsInWindow.delete(windowId);
   unsynchronizedTabsInWindow.delete(windowId);
+  virtualScrollRenderableTabsInWindow.delete(windowId);
 }
 
 export function getTabsMap(tabsStore, windowId = null) {
@@ -477,6 +480,18 @@ export function updateIndexesForTab(tab) {
     addBundledActiveTab(tab);
   else
     removeBundledActiveTab(tab);
+
+  updateVirtualScrollRenderabilityIndexForTab(tab);
+}
+
+export function updateVirtualScrollRenderabilityIndexForTab(tab) {
+  if (tab.pinned ||
+      tab.hidden ||
+      tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE) ||
+      tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
+    removeVirtualScrollRenderableTab(tab);
+  else
+    addVirtualScrollRenderableTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
@@ -502,6 +517,7 @@ export function removeTabFromIndexes(tab) {
   removeToBeGroupedTab(tab);
   removeLoadingTab(tab);
   removeUnsynchronizedTab(tab);
+  removeVirtualScrollRenderableTab(tab);
 }
 
 function addTabToIndex(tab, indexes) {
@@ -677,6 +693,13 @@ export function addBundledActiveTab(tab) {
 }
 export function removeBundledActiveTab(tab) {
   removeTabFromIndex(tab, bundledActiveTabsInWindow);
+}
+
+export function addVirtualScrollRenderableTab(tab) {
+  addTabToIndex(tab, virtualScrollRenderableTabsInWindow);
+}
+export function removeVirtualScrollRenderableTab(tab) {
+  removeTabFromIndex(tab, virtualScrollRenderableTabsInWindow);
 }
 
 

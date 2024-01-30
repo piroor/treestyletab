@@ -265,6 +265,10 @@ export default class Tab {
     return this.states.has(Constants.kTAB_STATE_COLLAPSED);
   }
 
+  get collapsedCompletely() {
+    return this.states.has(Constants.kTAB_STATE_COLLAPSED_DONE);
+  }
+
   get subtreeCollapsed() {
     return this.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
@@ -2181,6 +2185,15 @@ Tab.getSelectedTabs = (windowId = null, options = {}) => {
     })();
   else
     return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
+};
+
+Tab.getVirtualScrollRenderableTabs = (windowId = null, options = {}) => {
+  return TabsStore.queryAll({
+    windowId,
+    tabs:    TabsStore.getTabsMap(TabsStore.virtualScrollRenderableTabsInWindow, windowId),
+    ordered: true,
+    ...options
+  });
 };
 
 Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
