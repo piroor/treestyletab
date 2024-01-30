@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 3.9.22 (2024.1.31)
+   * Fix failed initialization when an optional permission "Read and modify bookmarks" is not granted. (regression on 3.9.21)
  - 3.9.21 (2024.1.26)
    * Fix [performance regression on 3.9.20 with on-memory cache](https://github.com/piroor/treestyletab/issues/3434).
    * [Prevent unexpected slicing of built-in icons in group tabs.](https://github.com/piroor/treestyletab/pull/3435)
