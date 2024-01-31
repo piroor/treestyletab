@@ -98,6 +98,7 @@ document.documentElement.classList.toggle('platform-mac', isMacOS());
     mTargetWindow = null;
 
   EventUtils.setTargetWindowId(mTargetWindow);
+  mTabBar.dataset.windowId = mTargetWindow;
 
   mReloadMaskImage = url.searchParams.get('reloadMaskImage') == 'true';
 
@@ -160,6 +161,7 @@ export async function init() {
         EventUtils.setTargetWindowId(mTargetWindow);
       }
       TabsStore.setCurrentWindowId(mTargetWindow);
+      mTabBar.dataset.windowId = mTargetWindow;
       mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
