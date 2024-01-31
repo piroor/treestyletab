@@ -20,6 +20,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -291,6 +292,16 @@ export function renderTabBefore(tab, referenceTab) {
   if (created) {
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
+
+    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_RENDERED)) {
+      const treeItem = new TSTAPI.TreeItem(tab);
+      TSTAPI.sendMessage({
+        type:     TSTAPI.kNOTIFY_TAB_RENDERED,
+        tab:      treeItem,
+        window:   tab.windowId,
+        windowId: tab.windowId,
+      }, { tabProperties: ['tab'] }).catch(_error => {});
+    }
   }
 
   return true;
