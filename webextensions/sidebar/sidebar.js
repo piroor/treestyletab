@@ -1081,7 +1081,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW:
       if (message.tabId)
-        await Tab.waitUntilTracked(message.tabId, { element: true });
+        await Tab.waitUntilTracked(message.tabId);
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
         timeout: configs.collapseDuration
@@ -1090,7 +1090,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
         timeout: configs.collapseDuration
@@ -1101,7 +1101,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!lastMessage)
         return;

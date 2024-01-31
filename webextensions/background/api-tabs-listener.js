@@ -147,7 +147,7 @@ async function onActivated(activeInfo) {
     const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
     if (!Tab.isTracked(activeInfo.tabId))
-      await Tab.waitUntilTracked(activeInfo.tabId, { element: !!TabsStore.getCurrentWindowId() });
+      await Tab.waitUntilTracked(activeInfo.tabId);
 
     const newActiveTab = Tab.get(activeInfo.tabId);
     if (!newActiveTab ||
@@ -236,7 +236,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     await mPromisedStarted;
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getCurrentWindowId() });
+    await Tab.waitUntilTracked(tabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -873,7 +873,7 @@ async function onMoved(tabId, moveInfo) {
   const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getCurrentWindowId() });
+    await Tab.waitUntilTracked(tabId);
   if (Tab.needToWaitMoved(moveInfo.windowId))
     await Tab.waitUntilMovedAll(moveInfo.windowId);
 

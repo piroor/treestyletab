@@ -632,7 +632,7 @@ async function onBackgroundMessage(message) {
       await Tab.waitUntilTracked([
         message.tabId,
         message.parentId
-      ], { element: true });
+      ]);
       const tab = Tab.get(message.tabId);
       const parent = Tab.get(message.parentId);
       if (tab && parent && parent.active)
@@ -674,7 +674,7 @@ async function onBackgroundMessage(message) {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       if (message.maybeMoved)
         await SidebarTabs.waitUntilNewTabIsMoved(message.tabId);
       const tab = Tab.get(message.tabId);
@@ -707,7 +707,7 @@ async function onBackgroundMessage(message) {
 
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED:
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       reserveToScrollToTab(Tab.get(message.tabId));
       break;
 
@@ -717,7 +717,7 @@ async function onBackgroundMessage(message) {
           !message.add ||
           !message.add.includes(Constants.kTAB_STATE_BUNDLED_ACTIVE))
         break;
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      await Tab.waitUntilTracked(message.tabIds);
       const tab = Tab.get(message.tabIds[0]);
       if (!tab ||
           tab.active)
@@ -731,7 +731,7 @@ async function onBackgroundMessage(message) {
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED:
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab) // it can be closed while waiting
         break;
@@ -749,7 +749,7 @@ function onMessageExternal(message, _aSender) {
         const params = {};
         const currentWindow = TabsStore.getCurrentWindowId();
         if ('tab' in message) {
-          await Tab.waitUntilTracked(message.tab, { element: true });
+          await Tab.waitUntilTracked(message.tab);
           params.tab = Tab.get(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;

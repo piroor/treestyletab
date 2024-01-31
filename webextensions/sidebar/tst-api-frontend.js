@@ -185,7 +185,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
 
     default:
-      Tab.waitUntilTracked(message.id, { element: true }).then(() => {
+      Tab.waitUntilTracked(message.id).then(() => {
         const tabElement = document.querySelector(`#tab-${message.id}`);
         if (!tabElement)
           return;

@@ -720,8 +720,6 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.$TST ||
-      (tab.$TST.element &&
-       !tab.$TST.element.parentNode) ||
       !tabs.has(tab.id) ||
       tab.$TST.removing ||
       !windows.get(tab.windowId))

@@ -529,7 +529,7 @@ async function activateRealActiveTab(windowId) {
   if (tabs.length <= 0)
     throw new Error(`FATAL ERROR: No active tab in the window ${windowId}`);
   const id = tabs[0].id;
-  await Tab.waitUntilTracked(id, { element: true });
+  await Tab.waitUntilTracked(id);
   const tab = Tab.get(id);
   if (!tab)
     throw new Error(`FATAL ERROR: Active tab ${id} in the window ${windowId} is not tracked`);
@@ -551,7 +551,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
       if (!message.tabIds.length)
         break;
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      await Tab.waitUntilTracked(message.tabIds);
       const add    = message.add || [];
       const remove = message.remove || [];
       log('apply broadcasted tab state ', message.tabIds, {
@@ -631,7 +631,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           windowId: message.windowId
         }, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       }
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab) {
         log(`ignore kCOMMAND_NOTIFY_TAB_CREATED for already closed tab: ${message.tabId}`);
@@ -660,7 +660,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -670,7 +670,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       if (!lastMessage)
         return;
@@ -701,7 +701,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (hasPendingUpdate)
         return;
 
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -717,7 +717,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
       // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
       maybeNewTabIsMoved(message.tabId);
-      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
       const tab     = Tab.get(message.tabId);
       if (!tab ||
           tab.index == message.newIndex)
@@ -760,7 +760,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
       maybeNewTabIsMoved(message.tabId);
-      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
       const tab         = Tab.get(message.tabId);
       if (!tab ||
           tab.index == message.newIndex)
@@ -780,7 +780,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_UPDATE_LOADING_STATE: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (tab &&
@@ -868,7 +868,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -882,7 +882,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -895,7 +895,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -914,7 +914,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
       BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      await Tab.waitUntilTracked(message.tabIds);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       if (!lastMessage ||
           lastMessage.tabIds.join(',') != message.tabIds.join(','))
@@ -930,7 +930,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -953,7 +953,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -975,7 +975,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -988,7 +988,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`) ||
           message.collapsed)
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -1005,7 +1005,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -1030,7 +1030,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -1057,7 +1057,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       // to construct same number of promises for "attached but detached immediately"
       // cases.
       const relatedTabIds = [message.tabId].concat(message.addedChildIds, message.removedChildIds);
-      await Tab.waitUntilTracked(relatedTabIds, { element: true });
+      await Tab.waitUntilTracked(relatedTabIds);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;

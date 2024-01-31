@@ -159,7 +159,7 @@ const BUFFER_KEY_PREFIX = 'pinned-tabs-';
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;

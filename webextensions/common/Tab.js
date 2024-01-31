@@ -146,15 +146,10 @@ export default class Tab {
 
     TabsStore.removeTabFromIndexes(this.tab);
 
-    if (this.element) {
-      if (this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
-      }
-      this.element.$TST = null;
-      this.element.apiTab = null;
-      this.element = null;
-      this.classList = null;
-    }
+    if (this.element &&
+        this.element.parentNode)
+      this.element.parentNode.removeChild(this.element);
+    this.unbindElement();
     // this.tab.$TST = null; // tab.$TST is used by destruction processes.
     this.tab = null;
     this.promisedUniqueId = null;
@@ -688,7 +683,8 @@ export default class Tab {
       tab = tab.$TST.unsafeNextTab;
       if (tab.pinned != pinned)
         return null;
-      if (tab.$TST.element)
+      if (tab.$TST.element &&
+          tab.$TST.element.parentNode)
         return tab;
     }
     return null;
@@ -1607,16 +1603,14 @@ function destroyWaitingTabTask(task) {
     clearTimeout(task.timeout);
 
   const resolve     = task.resolve;
-  const waitElement = task.waitElement;
   const stack       = task.stack;
 
   task.tabId       = undefined;
   task.resolve     = undefined;
   task.timeout     = undefined;
-  task.waitElement = undefined;
   task.stack       = undefined;
 
-  return { resolve, waitElement, stack };
+  return { resolve, stack };
 }
 
 function onWaitingTabTracked(tab) {
@@ -1628,18 +1622,10 @@ function onWaitingTabTracked(tab) {
 
   for (const task of tasks) {
     tasks.delete(task);
-    const { resolve, waitElement } = destroyWaitingTabTask(task);
+    const { resolve } = destroyWaitingTabTask(task);
     if (!resolve)
       continue;
-    if (waitElement) {
-      if (tab.$TST.element)
-        resolve(tab);
-      else
-        tab.$TST.promisedElement.then(() => resolve(tab));
-    }
-    else {
-      resolve(tab);
-    }
+    resolve(tab);
   }
 }
 Tab.onElementBound.addListener(onWaitingTabTracked);
@@ -1697,7 +1683,6 @@ async function waitUntilTracked(tabId, options = {}) {
   const task = {
     tabId,
     stack,
-    waitElement: !!options.element,
   };
   tasks.add(task);
   mWaitingTasks.set(tabId, tasks);
