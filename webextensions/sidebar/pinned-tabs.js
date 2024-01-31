@@ -145,13 +145,6 @@ function reset() {
 function clearStyle(tab) {
   tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
   tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
-  const style = tab.$TST.element.style;
-  style.setProperty('--pinned-position-bottom', '');
-  style.setProperty('--pinned-position-left', '');
-  style.setProperty('--pinned-position-right', '');
-  style.setProperty('--pinned-position-top', '');
-  style.marginTop = '';
-  tab.$TST.element.classList.remove('in-visible-area');
 }
 
 const BUFFER_KEY_PREFIX = 'pinned-tabs-';
