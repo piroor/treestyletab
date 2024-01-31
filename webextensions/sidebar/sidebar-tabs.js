@@ -290,6 +290,11 @@ export function renderTabBefore(tab, referenceTab) {
   containerElement.insertBefore(tabElement, nextElement);
 
   if (created) {
+    if (!tab.active && tab.$TST.states.has(Constants.kTAB_STATE_ACTIVE)) {
+      log('WARNING: Inactive tab has invalid "active" state! ', tab.id)
+      tab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
+    }
+
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
 
