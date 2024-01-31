@@ -182,6 +182,8 @@ export function setCollapsed(tab, info = {}) {
       else
         tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+
       onUpdated.dispatch(tab, {
         collapsed: tab.$TST.collapsed
       });
