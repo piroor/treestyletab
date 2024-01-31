@@ -169,18 +169,16 @@ export function isTabInViewport(tab) {
 }
 
 export function reserveToRenderVirtualScrollTabs() {
-  if (reserveToRenderVirtualScrollTabs.throttled)
-    clearTimeout(reserveToRenderVirtualScrollTabs.throttled);
-  reserveToRenderVirtualScrollTabs.throttled = setTimeout(() => {
+  renderVirtualScrollTabs.reserved = true;
+  nextFrame().then(() => {
+    if (!renderVirtualScrollTabs.reserved)
+      return;
     renderVirtualScrollTabs();
-  }, 0);
+  });
 }
 
 export function renderVirtualScrollTabs() {
-  if (reserveToRenderVirtualScrollTabs.throttled) {
-    clearTimeout(reserveToRenderVirtualScrollTabs.throttled);
-    reserveToRenderVirtualScrollTabs.throttled = null;
-  }
+  renderVirtualScrollTabs.reserved = false;
 
   const windowId = TabsStore.getCurrentWindowId();
   const win      = TabsStore.windows.get(windowId);
