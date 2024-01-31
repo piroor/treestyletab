@@ -251,14 +251,20 @@ export function renderTab(tab) {
   return renderTabBefore(tab);
 }
 
+function getTabElementId(tab) {
+  return `tab-${tab.id}`;
+}
+
 export function renderTabBefore(tab, referenceTab) {
+  let created = false;
   if (!tab.$TST.element ||
       !tab.$TST.element.parentNode) {
     const tabElement = document.createElement(kTAB_ELEMENT_NAME);
     tab.$TST.bindElement(tabElement);
-    tab.$TST.setAttribute('id', `tab-${tab.id}`);
+    tab.$TST.setAttribute('id', getTabElementId(tab));
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+    created = true;
   }
 
   const win = TabsStore.windows.get(tab.windowId);
@@ -281,6 +287,10 @@ export function renderTabBefore(tab, referenceTab) {
     return false;
 
   containerElement.insertBefore(tabElement, nextElement);
+
+  if (created) {
+    tabElement.updateOverflow();
+  }
   return true;
 }
 
@@ -666,12 +676,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       const lastActive = TabsStore.activeTabInWindow.get(lastMessage.windowId);
-      if (lastActive &&
-          lastActive.$TST.element)
+      if (lastActive)
         getTabContainerElement(lastActive).removeAttribute('aria-activedescendant');
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
-      getTabContainerElement(tab).setAttribute('aria-activedescendant', tab.$TST.element.id);
+      getTabContainerElement(tab).setAttribute('aria-activedescendant', getTabElementId(tab));
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
@@ -824,12 +833,13 @@ BackgroundConnection.onMessage.addListener(async message => {
         activateRealActiveTab(message.windowId);
       }
       if (!tab.$TST.collapsed &&
-          shouldApplyAnimation() &&
-          tab.$TST.element) {
+          shouldApplyAnimation()) {
         tab.$TST.element.classList.add(Constants.kTAB_STATE_REMOVING); // addState()'s result may not be notified yet, so we set this state manually here
-        const tabRect = tab.$TST.element.getBoundingClientRect();
-        if (!tab.pinned)
-          tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
+        if (tab.$TST.element) {
+          const tabRect = tab.$TST.element.getBoundingClientRect();
+          if (!tab.pinned)
+            tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
+        }
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
@@ -848,8 +858,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         // https://github.com/piroor/treestyletab/issues/2385
         activateRealActiveTab(message.windowId);
       }
-      if (shouldApplyAnimation() &&
-          tab.$TST.element)
+      if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
       tab.$TST.destroy();
     }; break;
@@ -863,7 +872,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      tab.$TST.label = tab.$TST.element.label = lastMessage.label;
+      tab.$TST.label = lastMessage.label;
+      if (tab.$TST.element)
+        tab.$TST.element.label = lastMessage.label;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
@@ -985,8 +996,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-      tab.$TST.element.updateOverflow();
+      if (tab.$TST.element) {
+        tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
+        tab.$TST.element.updateOverflow();
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
@@ -1008,8 +1021,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addRemovedTab(tab);
       const window = TabsStore.windows.get(message.windowId);
       window.untrackTab(message.tabId);
-      if (tab.$TST.element && tab.$TST.element.parentNode)
-        tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+      unrenderTab(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
       wait(500).then(() => TabsStore.removeRemovedTab(tab));

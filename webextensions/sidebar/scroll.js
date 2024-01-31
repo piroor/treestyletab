@@ -114,7 +114,7 @@ function getScrollBoxFor(tab) {
   return tab.pinned ? mPinnedScrollBox : mNormalScrollBox;
 }
 
-function getTabRect(tab) {
+export function getTabRect(tab) {
   if (tab.pinned)
     return tab.$TST.element.getBoundingClientRect();
 

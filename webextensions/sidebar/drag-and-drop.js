@@ -308,7 +308,7 @@ function getDropAction(event) {
   if (!targetTab) {
     //log('dragging on non-tab element');
     const action = Constants.kACTION_MOVE | Constants.kACTION_DETACH;
-    if (event.clientY < info.firstTargetTab.$TST.element.getBoundingClientRect().top) {
+    if (event.clientY < Scroll.getTabRect(info.firstTargetTab).top) {
       //log('dragging above the first tab');
       info.targetTab    = info.insertBefore = info.firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
@@ -320,7 +320,7 @@ function getDropAction(event) {
         info.dropPosition = kDROP_IMPOSSIBLE;
       }
     }
-    else if (event.clientY > info.lastTargetTab.$TST.element.getBoundingClientRect().bottom) {
+    else if (event.clientY > Scroll.getTabRect(info.lastTargetTab).bottom) {
       //log('dragging below the last tab');
       info.targetTab    = info.insertAfter = info.lastTargetTab;
       info.dropPosition = kDROP_AFTER;
@@ -343,7 +343,7 @@ function getDropAction(event) {
    */
   const onFaviconizedTab    = targetTab.pinned && configs.faviconizePinnedTabs;
   const dropAreasCount      = (info.draggedTab && onFaviconizedTab && !info.substanceTargetTab) ? 2 : 3 ;
-  const targetTabRect       = targetTab.$TST.element.getBoundingClientRect();
+  const targetTabRect       = Scroll.getTabRect(targetTab);
   const targetTabCoordinate = onFaviconizedTab ? targetTabRect.left : targetTabRect.top ;
   const targetTabSize       = onFaviconizedTab ? targetTabRect.width : targetTabRect.height ;
   let beforeOrAfterDropAreaSize;
@@ -834,10 +834,10 @@ function onDragStart(event, options = {}) {
     log('onDragStart: canceled / expired');
     event.stopPropagation();
     event.preventDefault();
-    mLastDragEnteredTarget = tab.$TST.element;
+    mLastDragEnteredTarget = tab.$TST.element || null;
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      mLastDragEnteredTarget = tab.$TST.element.closeBox;
+      mLastDragEnteredTarget = tab.$TST.element && tab.$TST.element.closeBox || null;
     const windowId = TabsStore.getCurrentWindowId();
     const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
