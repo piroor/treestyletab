@@ -193,7 +193,10 @@ export function renderVirtualScrollTabs() {
   const renderablePaddingSize = viewPortSize;
 
   // We need to use min-height instead of height for a flexbox.
-  win.containerElement.parentNode.style.minHeight = `${allRenderableTabsSize}px`;
+  const minHeight              = `${allRenderableTabsSize}px`;
+  const allTabsSizeHolderStyle = win.containerElement.parentNode.style;
+  if (allTabsSizeHolderStyle.minHeight != minHeight)
+    allTabsSizeHolderStyle.minHeight = minHeight;
 
   const minRenderablePosition = Math.max(
     0,
@@ -211,6 +214,7 @@ export function renderVirtualScrollTabs() {
   const startAt = Date.now();
   let firstRendered = false;
   let index = 0;
+  let renderedOffset = 0;
   const renderableTabIds = [];
   for (const tab of renderableTabs) {
     renderableTabIds.push(tab.id);
@@ -223,7 +227,7 @@ export function renderVirtualScrollTabs() {
     }
     else {
       if (!firstRendered)
-        win.containerElement.style.transform = `translateY(${position}px)`;
+        renderedOffset = position;
       if (SidebarTabs.renderTab(tab))
         log(`  + tab ${tab.id} (at ${index}, position = ${position})`);
       firstRendered = true;
@@ -231,6 +235,10 @@ export function renderVirtualScrollTabs() {
 
     index++;
   }
+  const transform      = `translateY(${renderedOffset}px)`;
+  const containerStyle = win.containerElement.style;
+  if (containerStyle.transform != transform)
+    containerStyle.transform = transform;
 
   // clear needless tab elements
   const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"]):not([data-tab-id="')}"])`);
@@ -240,7 +248,7 @@ export function renderVirtualScrollTabs() {
       log(`  - tab ${tab.id}`);
   }
 
-  log(`${Date.now() - startAt}msec`);
+  log(`${Date.now() - startAt}msec, offset = ${renderedOffset}`);
 }
 
 async function smoothScrollTo(params = {}) {
