@@ -486,10 +486,13 @@ function getDropEffectFromDropAction(actionInfo) {
   return 'move';
 }
 
+const mDropPositionHolderTabs = new Set();
+
 export function clearDropPosition() {
-  for (const target of document.querySelectorAll(`[${kDROP_POSITION}]`)) {
-    target.removeAttribute(kDROP_POSITION)
+  for (const tab of mDropPositionHolderTabs) {
+    tab.$TST.removeAttribute(kDROP_POSITION)
   }
+  mDropPositionHolderTabs.clear();
   configs.lastDragOverSidebarOwnerWindowId = null;
 }
 
@@ -920,7 +923,7 @@ function onDragStart(event, options = {}) {
     }
   }
 
-  {
+  if (tab.$TST.element) {
     // We set negative offsets to get more visibility about drop targets.
     // See also: https://github.com/piroor/treestyletab/issues/2826
     const offset = -16;
@@ -1113,10 +1116,13 @@ function onDragOver(event) {
       return;
     }
     clearDropPosition();
-    dropPositionTargetTab.$TST.element.setAttribute(kDROP_POSITION, info.dropPosition);
+    dropPositionTargetTab.$TST.setAttribute(kDROP_POSITION, info.dropPosition);
+    mDropPositionHolderTabs.add(dropPositionTargetTab);
     if (info.substanceTargetTab &&
-        info.dropPosition == kDROP_ON_SELF)
-      info.substanceTargetTab.$TST.element.setAttribute(kDROP_POSITION, info.dropPosition);
+        info.dropPosition == kDROP_ON_SELF) {
+      info.substanceTargetTab.$TST.setAttribute(kDROP_POSITION, info.dropPosition);
+      mDropPositionHolderTabs.add(info.substanceTargetTab);
+    }
     mLastDropPosition = dropPosition;
     log(`onDragOver: set drop position to ${dropPosition}, ${sessionId}`);
   }
@@ -1196,7 +1202,7 @@ function reserveToProcessLongHover(params = {}) {
 
       const dragOverTab = Tab.get(params.dragOverTabId);
       if (!dragOverTab ||
-          dragOverTab.$TST.element.getAttribute(kDROP_POSITION) != 'self')
+          dragOverTab.$TST.getAttribute(kDROP_POSITION) != 'self')
         return;
 
       // auto-switch for staying on tabs
@@ -1494,7 +1500,7 @@ async function onDragEnd(event) {
     const windowY = window.mozInnerScreenY;
     const windowW = window.innerWidth;
     const windowH = window.innerHeight;
-    const offset  = dragData.tab.$TST.element && dragData.tab.$TST.element.getBoundingClientRect().height / 2;
+    const offset  = Scroll.getTabRect(dragData.tab).height / 2;
     const now = Date.now();
     log('dragend at: ', {
       windowX,
@@ -1616,6 +1622,8 @@ function updateLastDragEventCoordinates(event = null) {
 
 /* drag on tabs API */
 
+const mDragExitTimeoutForTarget = new WeakMap();
+
 function onTSTAPIDragEnter(event) {
   Scroll.autoScrollOnMouseEvent(event);
   const tab = EventUtils.getTabFromEvent(event);
@@ -1623,7 +1631,7 @@ function onTSTAPIDragEnter(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = tab.$TST.element.closeBox;
+    target = target && tab.$TST.element.closeBox;
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!mDragTargetIsClosebox ||
@@ -1651,11 +1659,13 @@ function onTSTAPIDragExit(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = tab.$TST.element.closeBox;
+    target = target && tab.$TST.element.closeBox;
   cancelDelayedTSTAPIDragExitOn(target);
-  target.onTSTAPIDragExitTimeout = setTimeout(() => {
+  const timeout = setTimeout(() => {
     if (target)
-      delete target.onTSTAPIDragExitTimeout;
+      mDragExitTimeoutForTarget.delete(target);
+    if (!target || !target.parentNode) // already removed
+      return;
     const treeItem = new TSTAPI.TreeItem(tab);
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_DRAGEXIT,
@@ -1664,13 +1674,16 @@ function onTSTAPIDragExit(event) {
       windowId: tab.windowId
     }, { tabProperties: ['tab'] }).catch(_error => {});
     treeItem.clearCache();
+    target = null;
   }, 10);
+  mDragExitTimeoutForTarget.set(target, timeout);
 }
 
 function cancelDelayedTSTAPIDragExitOn(target) {
-  if (target && target.onTSTAPIDragExitTimeout) {
-    clearTimeout(target.onTSTAPIDragExitTimeout);
-    delete target.onTSTAPIDragExitTimeout;
+  const timeout = target && mDragExitTimeoutForTarget.get(target);
+  if (timeout) {
+    clearTimeout(timeout);
+    mDragExitTimeoutForTarget.delete(target);
   }
 }
 

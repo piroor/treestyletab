@@ -111,7 +111,9 @@ function cancelRunningScroll() {
 }
 
 function getScrollBoxFor(tab) {
-  return tab.pinned ? mPinnedScrollBox : mNormalScrollBox;
+  if (!tab || !tab.pinned)
+    return mNormalScrollBox; // the default
+  return mPinnedScrollBox;
 }
 
 export function getTabRect(tab) {
@@ -127,6 +129,7 @@ export function getTabRect(tab) {
   return {
     top:    tabTop,
     bottom: tabTop + tabSize,
+    height: tabSize,
   };
 }
 

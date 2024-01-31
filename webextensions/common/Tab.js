@@ -1476,6 +1476,22 @@ export default class Tab {
   }
 
 
+  applyStatesToElement() {
+    if (!this.element)
+      return;
+
+    for (const state of this.states) {
+      this.element.classList.add(state);
+      if (state == Constants.kTAB_STATE_HIGHLIGHTED)
+        this.element.setAttribute('aria-selected', 'true');
+    }
+
+    for (const [name, value] of Object.entries(this.attributes)) {
+      this.element.setAttribute(name, value);
+    }
+  }
+
+
   /* element utilities */
 
   invalidateElement(targets) {
