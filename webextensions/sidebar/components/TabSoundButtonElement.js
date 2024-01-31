@@ -47,6 +47,13 @@ export class TabSoundButtonElement extends HTMLElement {
     this.initialized = true;
   }
 
+  disconnectedCallback() {
+    if (this._reservedUpdate) {
+      this.removeEventListener('mouseover', this._reservedUpdate);
+      this._reservedUpdate = null;
+    }
+  }
+
   invalidate() {
     if (this._reservedUpdate)
       return;

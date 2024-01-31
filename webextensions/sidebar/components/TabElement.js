@@ -168,6 +168,10 @@ export class TabElement extends HTMLElement {
   }
 
   disconnectedCallback() {
+    if (this._reservedUpdateTooltip) {
+      this.addEventListener('mouseover', this._reservedUpdateTooltip);
+      this._reservedUpdateTooltip = null;
+    }
     this._endListening();
   }
 
@@ -342,14 +346,15 @@ export class TabElement extends HTMLElement {
       return;
 
     const tab = this.$TST.tab;
-    if (!TabsStore.ensureLivingTab(tab))
+    const tabElement = tab && tab.$TST.element;
+    if (!tabElement)
       return;
 
     if (configs.debug) {
       this.tooltip = `
 ${tab.title}
 #${tab.id}
-(${this.$TST.element.className})
+(${tabElement.className})
 uniqueId = <${this.$TST.uniqueId.id}>
 duplicated = <${!!this.$TST.uniqueId.duplicated}> / <${this.$TST.uniqueId.originalTabId}> / <${this.$TST.uniqueId.originalId}>
 restored = <${!!this.$TST.uniqueId.restored}>
@@ -376,11 +381,17 @@ windowId = ${tab.windowId}
     }
   }
   _getTooltipWithDescendants(tab) {
-    const tooltip = [`* ${tab.$TST.element.tooltip || tab.title}`];
+    const tabElement = tab.$TST.element;
+    if (!tabElement)
+      return '';
+    const tooltip = [`* ${tabElement.tooltip || tab.title}`];
     for (const child of tab.$TST.children) {
-      if (!child.$TST.element.tooltipWithDescendants)
-        child.$TST.element.tooltipWithDescendants = this._getTooltipWithDescendants(child);
-      tooltip.push(child.$TST.element.tooltipWithDescendants.replace(/^/gm, '  '));
+      const childTabElement = child.$TST.element;
+      if (!childTabElement)
+        continue;
+      if (!childTabElement.tooltipWithDescendants)
+        childTabElement.tooltipWithDescendants = this._getTooltipWithDescendants(child);
+      tooltip.push(childTabElement.tooltipWithDescendants.replace(/^/gm, '  '));
     }
     return tooltip.join('\n');
   }
@@ -443,11 +454,14 @@ windowId = ${tab.windowId}
     if (!TabsStore.ensureLivingTab(tab))
       return;
     for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
-      updateTab.$TST.element.invalidateTooltip();
+      const tabElement = updateTab.$TST.element;
+      if (!tabElement)
+        continue;
+      tabElement.invalidateTooltip();
       // on the "fade" mode, overflow style was already updated,
       // so we don' need to update the status here.
       if (configs.labelOverflowStyle != 'fade')
-        updateTab.$TST.element.updateOverflow();
+        tabElement.updateOverflow();
     }
   }
 
