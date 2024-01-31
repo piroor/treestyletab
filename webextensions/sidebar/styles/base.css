@@ -221,6 +221,8 @@ tab-sound-button */ {
 }
 
 #tabbar.overflow #normal-tabs-container-wrapper {
+  /* Scroll anchoring by Firefox itself may break virtual scrolling, so I disable anchoring and control all by myself. */
+  overflow-anchor: none;
   overflow-y: scroll;
 }
 
