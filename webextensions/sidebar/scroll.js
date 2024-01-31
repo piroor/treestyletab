@@ -236,8 +236,8 @@ export function renderVirtualScrollTabs() {
   const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"]):not([data-tab-id="')}"])`);
   for (const tabElement of toBeClearedTabs) {
     const tab = tabElement.apiTab;
-    SidebarTabs.unrenderTab(tab);
-    log(`  - tab ${tab.id}`);
+    if (SidebarTabs.unrenderTab(tab))
+      log(`  - tab ${tab.id}`);
   }
 
   log(`${Date.now() - startAt}msec`);
