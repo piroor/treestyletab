@@ -891,6 +891,11 @@ ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesSelector();
 });
 
+CollapseExpand.onReadyToExpand.addListener(async tab => {
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+  Scroll.reserveToRenderVirtualScrollTabs();
+  await nextFrame();
+});
 
 CollapseExpand.onUpdated.addListener((tab, options) => {
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);

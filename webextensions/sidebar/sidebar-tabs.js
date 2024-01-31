@@ -289,7 +289,7 @@ export function renderTabBefore(tab, referenceTab) {
   containerElement.insertBefore(tabElement, nextElement);
 
   if (created) {
-    tabElement.update(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
+    tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
   }
 

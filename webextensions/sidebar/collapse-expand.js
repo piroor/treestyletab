@@ -49,8 +49,9 @@ function log(...args) {
 
 export const onUpdating = new EventListenerManager();
 export const onUpdated = new EventListenerManager();
+export const onReadyToExpand = new EventListenerManager();
 
-export function setCollapsed(tab, info = {}) {
+export async function setCollapsed(tab, info = {}) {
   log('setCollapsed ', tab.id, info);
   if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
@@ -63,6 +64,10 @@ export function setCollapsed(tab, info = {}) {
     TabsStore.removeExpandedTab(tab);
   }
   else {
+    if (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE)) {
+      tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+      await onReadyToExpand.dispatch(tab);
+    }
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     TabsStore.addVisibleTab(tab);
     TabsStore.addExpandedTab(tab);
@@ -107,8 +112,6 @@ export function setCollapsed(tab, info = {}) {
     //log('=> skip animation');
     if (tab.$TST.collapsed)
       tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
     onUpdated.dispatch(tab, {
       collapsed: tab.$TST.collapsed,
@@ -175,8 +178,6 @@ export function setCollapsed(tab, info = {}) {
       // "expected status" given via arguments.
       if (tab.$TST.collapsed)
         tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
       onUpdated.dispatch(tab, {
         collapsed: tab.$TST.collapsed
