@@ -6,6 +6,7 @@
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
+    "bookmarks",
     "contextualIdentities",
     "cookies",
     "menus",
