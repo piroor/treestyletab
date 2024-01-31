@@ -57,6 +57,10 @@ export function init() {
   mPromisedInitialized = mPromisedInitializedResolver = null;
 }
 
+function getTabContainerElement(tab) {
+  return document.querySelector(`.tabs.${tab.pinned ? 'pinned' : 'unpinned'}`);
+}
+
 export function getTabFromDOMNode(node, options = {}) {
   if (typeof options != 'object')
     options = {};
@@ -284,10 +288,15 @@ export function unrenderTab(tab) {
   if (!tab.$TST.element)
     return false;
 
-  if (tab.$TST.element.parentNode)
+  let removed = false;
+  if (tab.$TST.element.parentNode) {
     tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+    removed = true;
+  }
 
   tab.$TST.unbindElement();
+
+  return removed;
 }
 
 Window.onInitialized.addListener(window => {
@@ -659,10 +668,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       const lastActive = TabsStore.activeTabInWindow.get(lastMessage.windowId);
       if (lastActive &&
           lastActive.$TST.element)
-        lastActive.$TST.element.parentNode.removeAttribute('aria-activedescendant');
+        getTabContainerElement(lastActive).removeAttribute('aria-activedescendant');
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
-      tab.$TST.element.parentNode.setAttribute('aria-activedescendant', tab.$TST.element.id);
+      getTabContainerElement(tab).setAttribute('aria-activedescendant', tab.$TST.element.id);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {

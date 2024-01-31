@@ -96,7 +96,7 @@ function scrollTo(params = {}) {
 
   //cancelPerformingAutoScroll();
   if (params.tab)
-    (params.tab.pinned ? mPinnedScrollBox : mNormalScrollBox).scrollTop += calculateScrollDeltaForTab(params.tab);
+    getScrollBoxFor(params.tab).scrollTop += calculateScrollDeltaForTab(params.tab);
   else if (typeof params.position == 'number')
     mNormalScrollBox.scrollTop = params.position;
   else if (typeof params.delta == 'number')
@@ -110,26 +110,46 @@ function cancelRunningScroll() {
   stopSmoothScroll();
 }
 
+function getScrollBoxFor(tab) {
+  return tab.pinned ? mPinnedScrollBox : mNormalScrollBox;
+}
+
+function getTabRect(tab) {
+  if (tab.pinned)
+    return tab.$TST.element.getBoundingClientRect();
+
+  const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId);
+  const tabSize        = Size.getTabHeight();
+  const index          = renderableTabs.indexOf(tab);
+  const scrollBox      = getScrollBoxFor(tab);
+  const scrollBoxRect  = scrollBox.getBoundingClientRect();
+  const tabTop         = tabSize * index + scrollBoxRect.top - scrollBox.scrollTop;
+  return {
+    top:    tabTop,
+    bottom: tabTop + tabSize,
+  };
+}
+
 function calculateScrollDeltaForTab(tab) {
   tab = Tab.get(tab && tab.id);
-  if (!tab || tab.pinned)
+  if (!tab)
     return 0;
 
-  const tabRect       = tab.$TST.element.getBoundingClientRect();
-  const containerRect = mNormalScrollBox.getBoundingClientRect();
+  const tabRect       = getTabRect(tab);
+  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
   const offset        = getOffsetForAnimatingTab(tab) + smoothScrollTo.currentOffset;
   let delta = 0;
-  if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
-    delta = tabRect.bottom - containerRect.bottom + offset;
+  if (scrollBoxRect.bottom < tabRect.bottom + offset) { // should scroll down
+    delta = tabRect.bottom - scrollBoxRect.bottom + offset;
   }
-  else if (containerRect.top > tabRect.top + offset) { // should scroll up
-    delta = tabRect.top - containerRect.top + offset;
+  else if (scrollBoxRect.top > tabRect.top + offset) { // should scroll up
+    delta = tabRect.top - scrollBoxRect.top + offset;
   }
   log('calculateScrollDeltaForTab ', tab.id, {
     delta, offset,
     tabTop:          tabRect.top,
     tabBottom:       tabRect.bottom,
-    containerBottom: containerRect.bottom
+    scrollBoxBottom: scrollBoxRect.bottom
   });
   return delta;
 }
@@ -191,8 +211,8 @@ function renderVirtualScrollTabs() {
     const position = tabSize * index;
     if (position < minRenderablePosition ||
         position > maxRenderablePosition) {
-      SidebarTabs.unrenderTab(tab);
-      log(`  - tab ${tab.id} (at ${index}, position = ${position})`);
+      if (SidebarTabs.unrenderTab(tab))
+        log(`  - tab ${tab.id} (at ${index}, position = ${position})`);
     }
     else {
       if (!firstRendered)
@@ -222,19 +242,21 @@ async function smoothScrollTo(params = {}) {
 
   smoothScrollTo.stopped = false;
 
+  const scrollBox = getScrollBoxFor(params.tab);
+
   let delta, startPosition, endPosition;
   if (params.tab) {
-    startPosition = (params.tab.pinned ? mPinnedScrollBox : mNormalScrollBox).scrollTop;
+    startPosition = scrollBox.scrollTop;
     delta       = calculateScrollDeltaForTab(params.tab);
     endPosition = startPosition + delta;
   }
   else if (typeof params.position == 'number') {
-    startPosition = mNormalScrollBox.scrollTop;
+    startPosition = scrollBox.scrollTop;
     endPosition = params.position;
     delta       = endPosition - startPosition;
   }
   else if (typeof params.delta == 'number') {
-    startPosition = mNormalScrollBox.scrollTop;
+    startPosition = scrollBox.scrollTop;
     endPosition = startPosition + params.delta;
     delta       = params.delta;
   }
@@ -284,7 +306,7 @@ smoothScrollTo.currentOffset= 0;
 
 async function smoothScrollBy(delta) {
   return smoothScrollTo({
-    position: mNormalScrollBox.scrollTop + delta
+    position: getScrollBoxFor(Tab.getActiveTab(TabsStore.getCurrentWindowId())).scrollTop + delta,
   });
 }
 
@@ -352,16 +374,17 @@ export async function scrollToTab(tab, options = {}) {
   cancelNotifyOutOfViewTab();
   scrollToTab.lastTargetId = tab.id;
 
+  const scrollBox = getScrollBoxFor(tab);
   if (hasAnchor && !anchorTab.pinned) {
-    const targetTabRect = tab.$TST.element.getBoundingClientRect();
-    const anchorTabRect = anchorTab.$TST.element.getBoundingClientRect();
-    const containerRect = (tab.pinned ? mPinnedScrollBox : mNormalScrollBox).getBoundingClientRect();
+    const targetTabRect = getTabRect(tab);
+    const anchorTabRect = getTabRect(anchorTab);
+    const scrollBoxRect = scrollBox.getBoundingClientRect();
     const offset        = getOffsetForAnimatingTab(tab);
     let delta = calculateScrollDeltaForTab(tab);
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
       const boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
-      const overHeight     = boundingHeight - containerRect.height;
+      const overHeight     = boundingHeight - scrollBoxRect.height;
       if (overHeight > 0) {
         delta -= overHeight;
         if (options.notifyOnOutOfView)
@@ -369,23 +392,23 @@ export async function scrollToTab(tab, options = {}) {
       }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
-        container:      containerRect.height
+        container:      scrollBoxRect.height
       });
     }
     else if (targetTabRect.bottom < anchorTabRect.bottom) {
       log('=> will scroll up');
       const boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
-      const overHeight     = boundingHeight - containerRect.height;
+      const overHeight     = boundingHeight - scrollBoxRect.height;
       if (overHeight > 0)
         delta += overHeight;
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
-        container:      containerRect.height
+        container:      scrollBoxRect.height
       });
     }
     await scrollTo({
       ...options,
-      position: (tab.pinned ? mPinnedScrollBox : mNormalScrollBox).scrollTop + delta
+      position: scrollBox.scrollTop + delta,
     });
   }
   else {
@@ -515,7 +538,7 @@ async function onWheel(event) {
   event.preventDefault();
 
   const tab = EventUtils.getTabFromEvent(event);
-  const scrollBox = tab.$TST.element.closest(`#${mPinnedScrollBox.id}, #${mNormalScrollBox.id}`);
+  const scrollBox = getScrollBoxFor(tab);
   TSTAPI.notifyScrolled({
     tab,
     scrollContainer: scrollBox,
@@ -603,7 +626,7 @@ async function onBackgroundMessage(message) {
 
     case Constants.kCOMMAND_SCROLL_TABBAR: {
       const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
-      const scrollBox = activeTab.pinned ? mPinnedScrollBox : mNormalScrollBox;
+      const scrollBox = getScrollBoxFor(activeTab);
       switch (String(message.by).toLowerCase()) {
         case 'lineup':
           smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
@@ -861,7 +884,8 @@ function tryUnlockPosition(event) {
         // while the cursor is still on tabs area.
         const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
         const pinnedTabsAreaSize = parseFloat(document.documentElement.style.getPropertyValue('--pinned-tabs-area-size'));
-        if ((!spacer || event.clientY < spacer.getBoundingClientRect().top) &&
+        const spacerTop = Size.getTabHeight() * (Tab.getVirtualScrollRenderableTabs(TabsStore.getCurrentWindowId()).length + 1)
+        if ((!spacer || event.clientY < spacerTop) &&
             (!pinnedTabsAreaSize || isNaN(pinnedTabsAreaSize) || event.clientY > pinnedTabsAreaSize)) {
           log(' => ignore mousemove on any tab (removing)');
           return;
