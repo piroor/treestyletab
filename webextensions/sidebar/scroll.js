@@ -172,35 +172,39 @@ export function reserveToRenderVirtualScrollTabs() {
   if (reserveToRenderVirtualScrollTabs.throttled)
     clearTimeout(reserveToRenderVirtualScrollTabs.throttled);
   reserveToRenderVirtualScrollTabs.throttled = setTimeout(() => {
-    reserveToRenderVirtualScrollTabs.throttled = null;
     renderVirtualScrollTabs();
   }, 0);
 }
 
-function renderVirtualScrollTabs() {
+export function renderVirtualScrollTabs() {
+  if (reserveToRenderVirtualScrollTabs.throttled) {
+    clearTimeout(reserveToRenderVirtualScrollTabs.throttled);
+    reserveToRenderVirtualScrollTabs.throttled = null;
+  }
+
   const windowId = TabsStore.getCurrentWindowId();
   const win      = TabsStore.windows.get(windowId);
 
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
-  const scrollableSize        = tabSize * renderableTabs.length;
+  const allRenderableTabsSize = tabSize * renderableTabs.length;
   const viewPortSize          = mNormalScrollBox.getBoundingClientRect().height;
-  const scrollPosition        = Math.max(0, Math.min(scrollableSize - tabSize, mNormalScrollBox.scrollTop));
+  const scrollPosition        = Math.max(0, Math.min(allRenderableTabsSize - tabSize, mNormalScrollBox.scrollTop));
   const renderablePaddingSize = viewPortSize;
 
   // We need to use min-height instead of height for a flexbox.
-  win.containerElement.parentNode.style.minHeight = `${scrollableSize}px`;
+  win.containerElement.parentNode.style.minHeight = `${allRenderableTabsSize}px`;
 
   const minRenderablePosition = Math.max(
     0,
     scrollPosition - renderablePaddingSize
   );
   const maxRenderablePosition = Math.min(
-    scrollableSize - tabSize,
+    allRenderableTabsSize - tabSize,
     scrollPosition + viewPortSize + renderablePaddingSize - tabSize
   );
   log('renderVirtualScrollTabs ', {
-    tabSize, scrollableSize, viewPortSize, renderablePaddingSize,
+    tabSize, allRenderableTabsSize, viewPortSize, renderablePaddingSize,
     minRenderablePosition, maxRenderablePosition,
   });
 

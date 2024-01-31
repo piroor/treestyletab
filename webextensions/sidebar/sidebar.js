@@ -732,7 +732,11 @@ export function reserveToUpdateTabbarLayout({ reason, timeout } = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
+let mLastVisibleTabId = null;
+
 function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
+  Scroll.renderVirtualScrollTabs();
+
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
@@ -761,34 +765,16 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
   const lastVisibleTab = Tab.getLastVisibleTab(mTargetWindow);
-  for (const tab of document.querySelectorAll(`.${Constants.kTAB_STATE_LAST_VISIBLE}`)) {
-    if (tab == lastVisibleTab)
-      continue;
-    tab.$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
+  if ((!lastVisibleTab && mLastVisibleTabId) ||
+      (lastVisibleTab && lastVisibleTab.id != mLastVisibleTabId)) {
+    if (mLastVisibleTabId)
+      Tab.get(mLastVisibleTabId).$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
   }
   lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
+  mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
-  let allTabsHeight;
-  const firstTab = Tab.getFirstUnpinnedTab(mTargetWindow);
-  if (firstTab) {
-    const lastTab = Tab.getLastUnpinnedTab(mTargetWindow);
-    if (!firstTab.$TST.element ||
-        !lastTab ||
-        !lastTab.$TST.element) {
-      log('Failed to update layout: missing last visible tab, retrying with delay');
-      reserveToUpdateTabbarLayout({ reasons, timeout });
-      return;
-    }
-    const range = document.createRange();
-    range.selectNodeContents(mTabBar);
-    range.setStartBefore(firstTab.$TST.element);
-    range.setEndAfter(lastTab.$TST.element);
-    allTabsHeight   = range.getBoundingClientRect().height;
-    range.detach();
-  }
-  else {
-    allTabsHeight = 0;
-  }
+  const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
+  const allTabsHeight = virtualScrollContainer.getBoundingClientRect().height;
   const visibleNewTabButtonInTabbar = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box');
   const visibleNewTabButtonAfterTabbar = document.querySelector('#tabbar.overflow ~ .after-tabs .newtab-button-box');
   const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;
@@ -846,16 +832,12 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   }
 
   if (overflow) {
+    Scroll.reserveToRenderVirtualScrollTabs();
     nextFrame().then(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
-      const firstTab        = Tab.getFirstUnpinnedTab(mTargetWindow);
-      const firstTabElement = firstTab && firstTab.$TST.element;
-      const scrollbarOffset = firstTabElement ?
-        mTabBar.getBoundingClientRect().width - firstTabElement.getBoundingClientRect().width :
-        0;
+      const scrollbarOffset = mTabBar.getBoundingClientRect().width - virtualScrollContainer.getBoundingClientRect().width;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
-    });
-    nextFrame().then(() => {
+
       onLayoutUpdated.dispatch()
     });
   }
@@ -910,7 +892,9 @@ ContextualIdentities.onUpdated.addListener(() => {
 });
 
 
-CollapseExpand.onUpdated.addListener((_tab, options) => {
+CollapseExpand.onUpdated.addListener((tab, options) => {
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+  Scroll.reserveToRenderVirtualScrollTabs();
   const reason = options.collapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
   reserveToUpdateTabbarLayout({ reason });
 });
