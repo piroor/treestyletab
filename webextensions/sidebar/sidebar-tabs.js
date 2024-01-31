@@ -291,7 +291,7 @@ export function renderTabBefore(tab, referenceTab) {
 
   if (created) {
     if (!tab.active && tab.$TST.states.has(Constants.kTAB_STATE_ACTIVE)) {
-      log('WARNING: Inactive tab has invalid "active" state! ', tab.id)
+      console.log('WARNING: Inactive tab has invalid "active" state! ', tab.id)
       tab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
     }
 
