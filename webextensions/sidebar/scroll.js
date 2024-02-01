@@ -133,19 +133,22 @@ export function getTabRect(tab) {
   };
 }
 
-function calculateScrollDeltaForTab(tab) {
+function calculateScrollDeltaForTab(tab, { over } = {}) {
   tab = Tab.get(tab && tab.id);
   if (!tab)
     return 0;
 
   const tabRect       = getTabRect(tab);
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  const overScrollOffset = over === false ?
+    0 :
+    Math.ceil(tabRect.height / 2);
   let delta = 0;
   if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
-    delta = tabRect.bottom - scrollBoxRect.bottom;
+    delta = tabRect.bottom - scrollBoxRect.bottom + overScrollOffset;
   }
   else if (scrollBoxRect.top > tabRect.top) { // should scroll up
-    delta = tabRect.top - scrollBoxRect.top;
+    delta = tabRect.top - scrollBoxRect.top - overScrollOffset;
   }
   log('calculateScrollDeltaForTab ', tab.id, {
     delta,
@@ -415,7 +418,7 @@ export async function scrollToTab(tab, options = {}) {
     const targetTabRect = getTabRect(tab);
     const anchorTabRect = getTabRect(anchorTab);
     const scrollBoxRect = scrollBox.getBoundingClientRect();
-    let delta = calculateScrollDeltaForTab(tab);
+    let delta = calculateScrollDeltaForTab(tab, { over: false });
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
       const boundingHeight = targetTabRect.bottom - anchorTabRect.top;
