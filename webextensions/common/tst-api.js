@@ -71,6 +71,7 @@ export const kNOTIFY_SHUTDOWN       = 'shutdown'; // defined but not notified fo
 export const kNOTIFY_SIDEBAR_SHOW   = 'sidebar-show';
 export const kNOTIFY_SIDEBAR_HIDE   = 'sidebar-hide';
 export const kNOTIFY_TABS_RENDERED  = 'tabs-rendered';
+export const kNOTIFY_TABS_UNRENDERED = 'tabs-unrendered';
 export const kNOTIFY_TAB_CLICKED    = 'tab-clicked'; // for backward compatibility
 export const kNOTIFY_TAB_DBLCLICKED = 'tab-dblclicked';
 export const kNOTIFY_TAB_MOUSEDOWN  = 'tab-mousedown';

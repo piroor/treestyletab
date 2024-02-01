@@ -218,6 +218,7 @@ function getTabElementId(tab) {
 }
 
 const mRenderedTabIds = new Set();
+const mUnrenderedTabIds = new Set();
 
 export function renderTabAt(tab, index = -1) {
   if (!tab) {
@@ -276,6 +277,7 @@ export function renderTabAt(tab, index = -1) {
     tab.$TST.applyStatesToElement();
 
     mRenderedTabIds.add(tab.id);
+    mUnrenderedTabIds.delete(tab.id);
     reserveToNotifyTabsRendered();
   }
 
@@ -313,6 +315,7 @@ export function unrenderTab(tab) {
     return false;
 
   mRenderedTabIds.delete(tab.id);
+  mUnrenderedTabIds.add(tab.id);
 
   let removed = false;
   if (tab.$TST.element.parentNode) {
@@ -323,6 +326,28 @@ export function unrenderTab(tab) {
   tab.$TST.unbindElement();
   tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   TabsStore.removeUnsynchronizedTab(tab);
+
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  unrenderTab.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (unrenderTab.lastStartedAt != startAt)
+      return;
+
+    const ids = [...mUnrenderedTabIds];
+    mUnrenderedTabIds.clear();
+    if (!TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED))
+      return;
+
+    let cache = {};
+    TSTAPI.sendMessage({
+      type: TSTAPI.kNOTIFY_TABS_UNRENDERED,
+      tabs: mapAndFilter(ids, id => {
+        const tab = Tab.get(id);
+        return tab && new TSTAPI.TreeItem(tab, { cache }) || undefined;
+      }),
+    }, { tabProperties: ['tabs'] }).catch(_error => {});
+    cache = null;
+  });
 
   return removed;
 }
