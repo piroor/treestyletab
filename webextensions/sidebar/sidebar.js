@@ -223,7 +223,7 @@ export async function init() {
 
       //SidebarTabs.onPinnedTabsChanged.addListener(tab => {
       //});
-      SidebarTabs.onNormalTabsChanged.addListener(tab => {
+      SidebarTabs.onNormalTabsChanged.addListener(_tab => {
         Scroll.reserveToRenderVirtualScrollTabs();
       });
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
