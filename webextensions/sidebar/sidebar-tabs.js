@@ -843,7 +843,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       if (!tab.$TST.collapsed &&
           shouldApplyAnimation()) {
-        tab.$TST.element.classList.add(Constants.kTAB_STATE_REMOVING); // addState()'s result may not be notified yet, so we set this state manually here
+        tab.$TST.addState(Constants.kTAB_STATE_REMOVING); // addState()'s result from the background page may not be notified yet, so we set this state manually here
         if (tab.$TST.element) {
           const tabRect = tab.$TST.element.getBoundingClientRect();
           if (!tab.pinned)
