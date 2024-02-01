@@ -233,6 +233,8 @@ export function renderTabAt(tab, index = -1) {
     tab.$TST.setAttribute('id', getTabElementId(tab));
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+    tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    TabsStore.addUnsynchronizedTab(tab);
     created = true;
   }
 
@@ -296,6 +298,8 @@ export function unrenderTab(tab) {
   }
 
   tab.$TST.unbindElement();
+  tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  TabsStore.removeUnsynchronizedTab(tab);
 
   return removed;
 }
@@ -593,8 +597,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
 
-      tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-      TabsStore.addUnsynchronizedTab(tab);
       TabsStore.addLoadingTab(tab);
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       if (shouldApplyAnimation()) {
