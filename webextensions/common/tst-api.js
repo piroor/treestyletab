@@ -776,6 +776,13 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
 const mWaitingShutdownMessages = new Map();
 
 function onBackendCommand(message, sender) {
+  if (message && message.messages) {
+    for (const oneMessage of message.messages) {
+      onBackendCommand(oneMessage, sender);
+    }
+    return;
+  }
+
   if (!mInitialized ||
       !message ||
       typeof message != 'object' ||

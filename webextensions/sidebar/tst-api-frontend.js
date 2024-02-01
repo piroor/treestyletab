@@ -73,10 +73,17 @@ TSTAPI.onUnregistered.addListener(addon => {
   uninstallStyle(addon.id)
 });
 
-TSTAPI.onMessageExternal.addListener((message, sender) => {
+function onMessageExternal(message, sender) {
   if ((!configs.incognitoAllowedExternalAddons.includes(sender.id) &&
        document.documentElement.classList.contains('incognito')))
     return;
+
+  if (message && message.messages) {
+    for (const oneMessage of message.messages) {
+      onMessageExternal(oneMessage, sender);
+    }
+    return;
+  }
 
   if (!message.window && !message.windowId)
     message.windowId = mTargetWindow;
@@ -202,7 +209,8 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       });
       return;
   }
-});
+}
+TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
 // https://developer.mozilla.org/docs/Web/HTML/Element
 const SAFE_CONTENTS = `
