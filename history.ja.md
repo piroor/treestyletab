@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * 多数のタブがある場合のパフォーマンスを向上（画面に見えている範囲内のタブのみレンダリングするようになった）
+   * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
+   * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送れるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)
  - 3.9.21 (2024.1.26)
    * [3.9.20でのオンメモリーキャッシュ使用時のパフォーマンスの低下](https://github.com/piroor/treestyletab/issues/3434)を解消した
    * [グループ化用のタブ上で組み込みのアイコンが複数列に分割されて表示される問題を解消](https://github.com/piroor/treestyletab/pull/3435)

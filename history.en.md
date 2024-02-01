@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
+   * API: Add new notification type [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
+   * API: Support [bulk messaging (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) for better performance.
  - 3.9.21 (2024.1.26)
    * Fix [performance regression on 3.9.20 with on-memory cache](https://github.com/piroor/treestyletab/issues/3434).
    * [Prevent unexpected slicing of built-in icons in group tabs.](https://github.com/piroor/treestyletab/pull/3435)
