@@ -137,10 +137,13 @@ export function renderVirtualScrollTabs() {
   log('renderVirtualScrollTabs ', {
     firstRenderableIndex,
     lastRenderableIndex,
+    old: mLastRenderedVirtualScrollTabIds,
+    new: toBeRenderedTabIds,
     renderOperations,
   });
 
   let offsetCount = 0;
+  const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
   for (const operation of renderOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     switch (tag) {
@@ -149,16 +152,20 @@ export function renderVirtualScrollTabs() {
 
       case 'delete': {
         const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
-        //log('delete: ', {fromStart, fromEnd, toStart, toEnd}, ids);
+        //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
         for (const id of ids) {
+          // We don't need to remove already rendered tab,
+          // because it is automatically moved by insertBefore().
+          if (toBeRenderedTabIdSet.has(id))
+            continue;
           SidebarTabs.unrenderTab(Tab.get(id));
+          offsetCount--;
         }
-        offsetCount -= ids.length;
       }; break;
 
       case 'insert': {
         const ids = toBeRenderedTabIds.slice(toStart, toEnd);
-        //log('insert: ', {fromStart, fromEnd, toStart, toEnd}, ids);
+        //log('insert: ', { fromStart, fromEnd, toStart, toEnd }, ids);
         for (const id of ids) {
           SidebarTabs.renderTabAt(Tab.get(id), fromStart + offsetCount);
           offsetCount++;
@@ -168,11 +175,15 @@ export function renderVirtualScrollTabs() {
       case 'replace': {
         const deleteIds = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
         const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
-        //log('replace: ', {fromStart, fromEnd, toStart, toEnd}, deleteIds, ' => ', insertIds);
+        //log('replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
         for (const id of deleteIds) {
+          // We don't need to remove already rendered tab,
+          // because it is automatically moved by insertBefore().
+          if (toBeRenderedTabIdSet.has(id))
+            continue;
           SidebarTabs.unrenderTab(Tab.get(id));
+          offsetCount--;
         }
-        offsetCount -= deleteIds.length;
         for (const id of insertIds) {
           SidebarTabs.renderTab(Tab.get(id), fromStart + offsetCount);
           offsetCount++;
