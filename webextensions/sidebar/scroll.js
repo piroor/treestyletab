@@ -196,43 +196,41 @@ export function renderVirtualScrollTabs() {
   if (allTabsSizeHolderStyle.minHeight != minHeight)
     allTabsSizeHolderStyle.minHeight = minHeight;
 
-  const minRenderablePosition = Math.max(
+  const firstRenderableIndex = Math.max(
     0,
-    scrollPosition - renderablePaddingSize
+    Math.floor((scrollPosition - renderablePaddingSize) / tabSize)
   );
-  const maxRenderablePosition = Math.min(
-    allRenderableTabsSize - tabSize,
-    scrollPosition + viewPortSize + renderablePaddingSize - tabSize
+  const lastRenderableIndex = Math.max(
+    0,
+    Math.min(
+      renderableTabs.length - 1,
+      Math.ceil((scrollPosition + viewPortSize + renderablePaddingSize) / tabSize)
+    )
   );
   log('renderVirtualScrollTabs ', {
     tabSize, allRenderableTabsSize, viewPortSize, renderablePaddingSize,
-    minRenderablePosition, maxRenderablePosition,
+    firstRenderableIndex, lastRenderableIndex,
   });
 
   const startAt = Date.now();
-  let firstRendered = false;
   let index = 0;
-  let renderedOffset = 0;
   const renderableTabIds = [];
   for (const tab of renderableTabs) {
     renderableTabIds.push(tab.id);
 
-    const position = tabSize * index;
-    if (position < minRenderablePosition ||
-        position > maxRenderablePosition) {
+    if (index < firstRenderableIndex ||
+        index > lastRenderableIndex) {
       if (SidebarTabs.unrenderTab(tab))
-        log(`  - tab ${tab.id} (at ${index}, position = ${position})`);
+        log(`  - tab ${tab.id} (at ${index})`);
     }
     else {
-      if (!firstRendered)
-        renderedOffset = position;
       if (SidebarTabs.renderTab(tab))
-        log(`  + tab ${tab.id} (at ${index}, position = ${position})`);
-      firstRendered = true;
+        log(`  + tab ${tab.id} (at ${index})`);
     }
 
     index++;
   }
+  const renderedOffset = tabSize * firstRenderableIndex;
   const transform      = `translateY(${renderedOffset}px)`;
   const containerStyle = win.containerElement.style;
   if (containerStyle.transform != transform)
