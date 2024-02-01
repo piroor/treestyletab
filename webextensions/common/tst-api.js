@@ -540,12 +540,15 @@ if (Constants.IS_BACKGROUND) {
     const sender = port.sender;
     mConnections.set(sender.id, port);
     port.onMessage.addListener(message => {
-      onMessageExternal.dispatch(message, sender);
-      SidebarConnection.sendMessage({
-        type: 'external',
-        message,
-        sender
-      });
+      const messages = message.messages || [message];
+      for (const oneMessage of messages) {
+        onMessageExternal.dispatch(oneMessage, sender);
+        SidebarConnection.sendMessage({
+          type: 'external',
+          oneMessage,
+          sender
+        });
+      }
     });
     port.onDisconnect.addListener(_message => {
       mConnections.delete(sender.id);
