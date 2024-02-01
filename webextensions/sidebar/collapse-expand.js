@@ -141,7 +141,7 @@ export async function setCollapsed(tab, info = {}) {
     TabsStore.addExpandingTab(tab);
   }
 
-  onUpdated.dispatch(tab, { collapsed: info.cpllapsed });
+  onUpdated.dispatch(tab, { collapsed: info.collapsed });
 
   const onCanceled = () => {
     manager.removeListener(onCompleted);

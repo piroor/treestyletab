@@ -2017,7 +2017,7 @@ Tab.getTabsBetween = (begin, end) => {
     [begin, end] = [end, begin];
   return TabsStore.queryAll({
     windowId: begin.windowId,
-    tabs:     TabsStore.controllableTabsInWindow.get(begin.windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.controllableTabsInWindow, begin.windowId),
     id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,
     toId:     end.id
@@ -2210,6 +2210,9 @@ Tab.getVirtualScrollRenderableTabs = (windowId = null, options = {}) => {
     windowId,
     tabs:    TabsStore.getTabsMap(TabsStore.virtualScrollRenderableTabsInWindow, windowId),
     ordered: true,
+    living:  false,
+    visible: false,
+    controllable: false,
     ...options
   });
 };
@@ -2226,7 +2229,7 @@ Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
 Tab.hasNeedToBeSynchronizedTab = windowId => {
   return !!TabsStore.query({
     windowId,
-    tabs:     TabsStore.unsynchronizedTabsInWindow.get(windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.unsynchronizedTabsInWindow, windowId),
     visible:  true
   });
 };
@@ -2234,7 +2237,7 @@ Tab.hasNeedToBeSynchronizedTab = windowId => {
 Tab.hasLoadingTab = windowId => {
   return !!TabsStore.query({
     windowId,
-    tabs:     TabsStore.loadingTabsInWindow.get(windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.loadingTabsInWindow, windowId),
     visible:  true
   });
 };
@@ -2242,7 +2245,7 @@ Tab.hasLoadingTab = windowId => {
 Tab.hasMultipleTabs = (windowId, options = {}) => {
   const tabs = TabsStore.queryAll({
     windowId,
-    tabs:   TabsStore.livingTabsInWindow.get(windowId),
+    tabs:   TabsStore.getTabsMap(TabsStore.livingTabsInWindow, windowId),
     living: true,
     ...options,
     iterator: true

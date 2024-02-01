@@ -487,8 +487,7 @@ export function updateIndexesForTab(tab) {
 export function updateVirtualScrollRenderabilityIndexForTab(tab) {
   if (tab.pinned ||
       tab.hidden ||
-      tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE) ||
-      tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
+      tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE))
     removeVirtualScrollRenderableTab(tab);
   else
     addVirtualScrollRenderableTab(tab);
@@ -517,7 +516,7 @@ export function removeTabFromIndexes(tab) {
   removeToBeGroupedTab(tab);
   removeLoadingTab(tab);
   removeUnsynchronizedTab(tab);
-  removeVirtualScrollRenderableTab(tab);
+  //removeVirtualScrollRenderableTab(tab);
 }
 
 function addTabToIndex(tab, indexes) {

@@ -845,7 +845,8 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVED: {
       const tab = Tab.get(message.tabId);
-      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
+      // Don't untrack tab here because we need to keep it rendered for removing animation.
+      //TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       if (!tab) {
         log(`ignore kCOMMAND_NOTIFY_TAB_REMOVED for already closed tab: ${message.tabId}`);
         return;
