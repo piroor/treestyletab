@@ -216,6 +216,15 @@ function getTabElementId(tab) {
 }
 
 export function renderTabAt(tab, index = -1) {
+  if (!tab) {
+    console.log('WARNING: Null tab has requested to be rendered! ', new Error().stack);
+    return false;
+  }
+  if (!tab.$TST) {
+    console.log('WARNING: Alerady destroyed tab has requested to be rendered! ', tab.id, new Error().stack);
+    return false;
+  }
+
   let created = false;
   if (!tab.$TST.element ||
       !tab.$TST.element.parentNode) {
