@@ -87,6 +87,16 @@ export function init(scrollPosition) {
 
 /* virtual scrolling */
 
+export function reserveToRenderVirtualScrollTabs() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  renderVirtualScrollTabs.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (renderVirtualScrollTabs.lastStartedAt != startAt)
+      return;
+    renderVirtualScrollTabs();
+  });
+}
+
 let mLastRenderedVirtualScrollTabIds = [];
 
 export function renderVirtualScrollTabs() {
@@ -266,16 +276,6 @@ export function isTabInViewport(tab) {
     return true;
 
   return calculateScrollDeltaForTab(tab) == 0;
-}
-
-export function reserveToRenderVirtualScrollTabs() {
-  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
-  renderVirtualScrollTabs.lastStartedAt = startAt;
-  nextFrame().then(() => {
-    if (renderVirtualScrollTabs.lastStartedAt != startAt)
-      return;
-    renderVirtualScrollTabs();
-  });
 }
 
 async function smoothScrollTo(params = {}) {

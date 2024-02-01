@@ -11,7 +11,9 @@ import {
   log as internalLogger,
   wait,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  nextFrame,
+  mapAndFilter,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -215,6 +217,8 @@ function getTabElementId(tab) {
   return `tab-${tab.id}`;
 }
 
+const mRenderedTabIds = new Set();
+
 export function renderTabAt(tab, index = -1) {
   if (!tab) {
     console.log('WARNING: Null tab has requested to be rendered! ', new Error().stack);
@@ -271,18 +275,35 @@ export function renderTabAt(tab, index = -1) {
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
 
-    if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_RENDERED)) {
-      const treeItem = new TSTAPI.TreeItem(tab);
-      TSTAPI.sendMessage({
-        type:     TSTAPI.kNOTIFY_TAB_RENDERED,
-        tab:      treeItem,
-        window:   tab.windowId,
-        windowId: tab.windowId,
-      }, { tabProperties: ['tab'] }).catch(_error => {});
-    }
+    mRenderedTabIds.add(tab.id);
+    reserveToNotifyTabsRendered();
   }
 
   return true;
+}
+
+function reserveToNotifyTabsRendered() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToNotifyTabsRendered.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (reserveToNotifyTabsRendered.lastStartedAt != startAt)
+      return;
+
+    const ids = [...mRenderedTabIds];
+    mRenderedTabIds.clear();
+    if (!TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED))
+      return;
+
+    let cache = {};
+    TSTAPI.sendMessage({
+      type: TSTAPI.kNOTIFY_TABS_RENDERED,
+      tabs: mapAndFilter(ids, id => {
+        const tab = Tab.get(id);
+        return tab && new TSTAPI.TreeItem(tab, { cache }) || undefined;
+      }),
+    }, { tabProperties: ['tabs'] }).catch(_error => {});
+    cache = null;
+  });
 }
 
 export function unrenderTab(tab) {
@@ -290,6 +311,8 @@ export function unrenderTab(tab) {
       !tab.$TST ||
       !tab.$TST.element)
     return false;
+
+  mRenderedTabIds.delete(tab.id);
 
   let removed = false;
   if (tab.$TST.element.parentNode) {
