@@ -47,6 +47,8 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
 export const pinnedContainerWrapper = document.querySelector('#pinned-tabs-container-wrapper');
 export const noramlContainerWrapper = document.querySelector('#normal-tabs-container-wrapper');
 
+export const onPinnedTabsChanged = new EventListenerManager();
+export const onNormalTabsChanged = new EventListenerManager();
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
@@ -366,10 +368,6 @@ Window.onInitialized.addListener(window => {
   win.bindContainerElement(container);
 });
 
-Tab.onInitialized.addListener((tab, _info) => {
-  renderTab(tab);
-});
-
 
 let mReservedUpdateActiveTab;
 
@@ -657,6 +655,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
         await waitUntilNewTabIsMoved(message.tabId);
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
       if (shouldApplyAnimation()) {
         await wait(0); // nextFrame() is too fast!
         if (tab.$TST.shouldExpandLater)
@@ -762,7 +767,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
-      renderTab(tab);
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -784,7 +795,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.index = message.newIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
       Tab.track(tab);
-      renderTab(tab);
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger
@@ -879,6 +896,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
       tab.$TST.destroy();
+      unrenderTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
@@ -956,13 +978,17 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.pinned = true;
         TabsStore.removeUnpinnedTab(tab);
         TabsStore.addPinnedTab(tab);
+        renderTab(tab);
       }
       else {
         tab.pinned = false;
         TabsStore.removePinnedTab(tab);
         TabsStore.addUnpinnedTab(tab);
+        unrenderTab(tab);
       }
-      renderTab(tab);
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      onPinnedTabsChanged.dispatch(tab.pinned && tab);
+      onNormalTabsChanged.dispatch(!tab.pinned && tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
@@ -986,6 +1012,11 @@ BackgroundConnection.onMessage.addListener(async message => {
           TabsStore.addVisibleTab(tab);
         TabsStore.addControllableTab(tab);
       }
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
@@ -1040,6 +1071,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       const window = TabsStore.windows.get(message.windowId);
       window.untrackTab(message.tabId);
       unrenderTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
       wait(500).then(() => TabsStore.removeRemovedTab(tab));

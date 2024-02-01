@@ -221,6 +221,11 @@ export async function init() {
       log('Start to process messages including queued ones');
       BackgroundConnection.start();
 
+      //SidebarTabs.onPinnedTabsChanged.addListener(tab => {
+      //});
+      SidebarTabs.onNormalTabsChanged.addListener(tab => {
+        Scroll.reserveToRenderVirtualScrollTabs();
+      });
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
 
       configs.$addObserver(onConfigChange);
@@ -597,6 +602,8 @@ export async function rebuildAll(importedTabs) {
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
+    if (trackedTab.pinned)
+      SidebarTabs.renderTab(trackedTab);
     trackedTab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
