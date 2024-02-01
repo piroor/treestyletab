@@ -594,11 +594,12 @@ export async function rebuildAll(importedTabs) {
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
+  const pinnedTabs = new Set();
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (trackedTab.pinned)
-      SidebarTabs.renderTab(trackedTab);
+      pinnedTabs.add(trackedTab);
     trackedTab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
@@ -610,6 +611,10 @@ export async function rebuildAll(importedTabs) {
   }
   pinnedContainerParent.insertBefore(window.pinnedContainerElement, pinnedContainerNext);
   containerParent.appendChild(window.containerElement);
+  // we need to render them after they are connected to the DOM tree
+  for (const tab of pinnedTabs) {
+    SidebarTabs.renderTab(tab);
+  }
   MetricsData.add('rebuildAll: end (from scratch)');
 
   importedTabs = null; // wipe it out from the RAM.

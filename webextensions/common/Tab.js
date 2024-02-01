@@ -1476,6 +1476,8 @@ export default class Tab {
     if (!this.element)
       return;
 
+    this.applyAttributes();
+
     for (const state of this.states) {
       this.element.classList.add(state);
       if (state == Constants.kTAB_STATE_HIGHLIGHTED)
@@ -1485,6 +1487,13 @@ export default class Tab {
     for (const [name, value] of Object.entries(this.attributes)) {
       this.element.setAttribute(name, value);
     }
+  }
+
+  applyAttributes() {
+    if (!this.element)
+      return;
+
+    this.element.applyAttributes();
   }
 
 

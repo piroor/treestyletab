@@ -79,7 +79,7 @@ export class TabElement extends HTMLElement {
       this.initializeContents();
       this.invalidate(TabInvalidationTarget.All);
       this.update(TabUpdateTarget.TabProperties);
-      this._applyAttributes();
+      this.applyAttributes();
       this._initExtraItemsContainers();
       this._startListening();
       return;
@@ -163,7 +163,7 @@ export class TabElement extends HTMLElement {
     this.invalidate(TabInvalidationTarget.All);
     this.update(TabUpdateTarget.TabProperties);
     this._initExtraItemsContainers();
-    this._applyAttributes();
+    this.applyAttributes();
     this._startListening();
   }
 
@@ -212,7 +212,7 @@ export class TabElement extends HTMLElement {
   // Elements restored from cache are initialized without bundled tabs.
   // Thus we provide abiltiy to get tab and service objects from cached/restored information.
   get tab() {
-    return this._tab || (this._tab = Tab.get(this.getAttribute(Constants.kAPI_TAB_ID)));
+    return this._tab || (this._tab = Tab.get(parseInt(this.getAttribute(Constants.kAPI_TAB_ID))));
   }
   set tab(value) {
     return this._tab = value;
@@ -253,7 +253,7 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
   }
 
-  _applyAttributes() {
+  applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
     this.setAttribute('aria-selected', this.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED) ? 'true' : 'false');
@@ -263,6 +263,11 @@ export class TabElement extends HTMLElement {
     this._substanceElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
     this._labelElement.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._labelElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
+
+    if (this.tab)
+      this.dataset.index =
+        this._substanceElement.dataset.index =
+          this._labelElement.dataset.index =this.tab.index;
   }
 
   invalidate(targets) {
