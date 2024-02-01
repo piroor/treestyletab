@@ -221,11 +221,6 @@ export async function init() {
       log('Start to process messages including queued ones');
       BackgroundConnection.start();
 
-      //SidebarTabs.onPinnedTabsChanged.addListener(tab => {
-      //});
-      SidebarTabs.onNormalTabsChanged.addListener(_tab => {
-        Scroll.reserveToRenderVirtualScrollTabs();
-      });
       SidebarTabs.onSyncFailed.addListener(() => rebuildAll());
 
       configs.$addObserver(onConfigChange);

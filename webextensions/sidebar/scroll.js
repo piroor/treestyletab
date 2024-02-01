@@ -27,6 +27,7 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
+import { SequenceMatcher } from '/extlib/diff.js';
 
 import {
   log as internalLogger,
@@ -50,10 +51,6 @@ import * as RestoringTabCount from './restoring-tab-count.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
-import {
-  kTAB_ELEMENT_NAME,
-} from './components/TabElement.js';
-
 export const onPositionUnlocked = new EventListenerManager();
 
 function log(...args) {
@@ -73,6 +70,9 @@ export function init(scrollPosition) {
   mNormalScrollBox.addEventListener('scroll', onScroll);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
+  SidebarTabs.onNormalTabsChanged.addListener(_tab => {
+    reserveToRenderVirtualScrollTabs();
+  });
 
   renderVirtualScrollTabs();
   if (typeof scrollPosition == 'number') {
@@ -177,8 +177,12 @@ export function reserveToRenderVirtualScrollTabs() {
   });
 }
 
+let mLastRenderedVirtualScrollTabIds = [];
+
 export function renderVirtualScrollTabs() {
   renderVirtualScrollTabs.reserved = false;
+
+  const startAt = Date.now();
 
   const windowId = TabsStore.getCurrentWindowId();
   const win      = TabsStore.windows.get(windowId);
@@ -212,39 +216,58 @@ export function renderVirtualScrollTabs() {
     firstRenderableIndex, lastRenderableIndex,
   });
 
-  const startAt = Date.now();
-  let index = 0;
-  const renderableTabIds = [];
-  for (const tab of renderableTabs) {
-    renderableTabIds.push(tab.id);
+  const toBeRenderedTabIds = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1).map(tab => tab.id);
+  const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
+  let offsetCount = 0;
+  for (const operation of renderOperations) {
+    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+    switch (tag) {
+      case 'equal':
+        break;
 
-    if (index < firstRenderableIndex ||
-        index > lastRenderableIndex) {
-      if (SidebarTabs.unrenderTab(tab))
-        log(`  - tab ${tab.id} (at ${index})`);
-    }
-    else {
-      if (SidebarTabs.renderTab(tab))
-        log(`  + tab ${tab.id} (at ${index})`);
-    }
+      case 'delete': {
+        const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
+        //log('delete: ', {fromStart, fromEnd, toStart, toEnd}, ids);
+        for (const id of ids) {
+          SidebarTabs.unrenderTab(Tab.get(id));
+        }
+        offsetCount -= ids.length;
+      }; break;
 
-    index++;
+      case 'insert': {
+        const ids = toBeRenderedTabIds.slice(toStart, toEnd);
+        //log('insert: ', {fromStart, fromEnd, toStart, toEnd}, ids);
+        for (const id of ids) {
+          SidebarTabs.renderTabAt(Tab.get(id), fromStart + offsetCount);
+          offsetCount++;
+        }
+      }; break;
+
+      case 'replace': {
+        const deleteIds = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
+        const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
+        //log('replace: ', {fromStart, fromEnd, toStart, toEnd}, deleteIds, ' => ', insertIds);
+        for (const id of deleteIds) {
+          SidebarTabs.unrenderTab(Tab.get(id));
+        }
+        offsetCount -= deleteIds.length;
+        for (const id of insertIds) {
+          SidebarTabs.renderTab(Tab.get(id), fromStart + offsetCount);
+          offsetCount++;
+        }
+      }; break;
+    }
   }
+
   const renderedOffset = tabSize * firstRenderableIndex;
   const transform      = `translateY(${renderedOffset}px)`;
   const containerStyle = win.containerElement.style;
   if (containerStyle.transform != transform)
     containerStyle.transform = transform;
 
-  // clear needless tab elements
-  const toBeClearedTabs = mNormalScrollBox.querySelectorAll(`${kTAB_ELEMENT_NAME}:not([data-tab-id="${renderableTabIds.join('"]):not([data-tab-id="')}"])`);
-  for (const tabElement of toBeClearedTabs) {
-    const tab = tabElement.apiTab;
-    if (SidebarTabs.unrenderTab(tab))
-      log(`  - tab ${tab.id}`);
-  }
+  mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 
-  log(`${Date.now() - startAt}msec, offset = ${renderedOffset}`);
+  log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
 }
 
 async function smoothScrollTo(params = {}) {

@@ -6,7 +6,6 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
-import { SequenceMatcher } from '/extlib/diff.js';
 
 import {
   log as internalLogger,
@@ -149,7 +148,6 @@ reserveToSyncTabsOrder.retryCount = 0;
 
 async function syncTabsOrder() {
   log('syncTabsOrder');
-  return;
   const windowId      = TabsStore.getCurrentWindowId();
   const [internalOrder, nativeOrder] = await Promise.all([
     browser.runtime.sendMessage({
@@ -161,17 +159,10 @@ async function syncTabsOrder() {
 
   const trackedWindow = TabsStore.windows.get(windowId);
   const actualOrder   = trackedWindow.order;
-  const container     = trackedWindow.containerElement;
-  const pinnedContainer = trackedWindow.pinnedContainerElement;
-  const elementsOrder = Array.from([
-    ...pinnedContainer.querySelectorAll(kTAB_ELEMENT_NAME),
-    ...container.querySelectorAll(kTAB_ELEMENT_NAME),
-  ], tab => tab.apiTab.id);
 
-  log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder, elementsOrder });
+  log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder });
 
-  if (internalOrder.join('\n') == elementsOrder.join('\n') &&
-      internalOrder.join('\n') == actualOrder.join('\n') &&
+  if (internalOrder.join('\n') == actualOrder.join('\n') &&
       internalOrder.join('\n') == nativeOrder.join('\n')) {
     reserveToSyncTabsOrder.retryCount = 0;
     return; // no need to sync
@@ -195,8 +186,7 @@ async function syncTabsOrder() {
   }
 
   const actualTabs = actualOrder.slice(0).sort().join('\n');
-  if (expectedTabs != actualTabs ||
-      elementsOrder.length != internalOrder.length) {
+  if (expectedTabs != actualTabs) {
     log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the background process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.error(new Error(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`));
@@ -207,58 +197,25 @@ async function syncTabsOrder() {
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
-  reserveToSyncTabsOrder.retryCount = 0;
 
+  reserveToSyncTabsOrder.retryCount = 0;
   trackedWindow.order = internalOrder;
   let count = 0;
   for (const tab of trackedWindow.getOrderedTabs()) {
     tab.index = count++;
     tab.reindexedBy = `syncTabsOrder (${tab.index})`;
   }
-
-  const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
-  log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
-  let modificationsCount = 0;
-  for (const operation of DOMElementsOperations) {
-    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-    log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
-    switch (tag) {
-      case 'equal':
-      case 'delete':
-        break;
-
-      case 'insert':
-      case 'replace':
-        const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? Tab.get(elementsOrder[fromStart]) : null;
-        log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
-        for (const id of moveTabIds) {
-          const tab = Tab.get(id);
-          if (tab)
-            renderTabBefore(tab, referenceTab);
-        }
-        modificationsCount++;
-        break;
-    }
-  }
-  if (modificationsCount == 0 &&
-      reserveToSyncTabsOrder.retryCount == 0)
-    return;
-
-  // Tabs can be moved while processing by other addons like Simple Tab Groups,
-  // so resync until they are completely synchronized.
-  reserveToSyncTabsOrder();
 }
 
 export function renderTab(tab) {
-  return renderTabBefore(tab);
+  return renderTabAt(tab);
 }
 
 function getTabElementId(tab) {
   return `tab-${tab.id}`;
 }
 
-export function renderTabBefore(tab, referenceTab) {
+export function renderTabAt(tab, index = -1) {
   let created = false;
   if (!tab.$TST.element ||
       !tab.$TST.element.parentNode) {
@@ -276,14 +233,19 @@ export function renderTabBefore(tab, referenceTab) {
     win.pinnedContainerElement :
     win.containerElement;
 
-  const nextTab = (referenceTab && referenceTab.pinned == tab.pinned && referenceTab.$TST.element && referenceTab) ||
-    tab.$TST.nearestSameTypeRenderedTab;
-  log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-  const nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
-    nextTab.$TST.element :
-    tab.pinned ?
-      null :
-      win.containerElement.querySelector(`.${Constants.kTABBAR_SPACER}`)
+  let nextElement = null;
+  if (index >= 0 && index < containerElement.childNodes.length) {
+    nextElement = containerElement.childNodes[index];
+  }
+  else {
+    const nextTab = tab.$TST.nearestSameTypeRenderedTab;
+    log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
+    nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
+      nextTab.$TST.element :
+      tab.pinned ?
+        null :
+        containerElement.querySelector(`.${Constants.kTABBAR_SPACER}`);
+  }
 
   if (tabElement.parentNode == containerElement &&
       tabElement.nextSibling == nextElement)
