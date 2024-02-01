@@ -169,9 +169,10 @@ export function isTabInViewport(tab) {
 }
 
 export function reserveToRenderVirtualScrollTabs() {
-  renderVirtualScrollTabs.reserved = true;
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  renderVirtualScrollTabs.lastStartedAt = startAt;
   nextFrame().then(() => {
-    if (!renderVirtualScrollTabs.reserved)
+    if (renderVirtualScrollTabs.lastStartedAt != startAt)
       return;
     renderVirtualScrollTabs();
   });
@@ -180,7 +181,7 @@ export function reserveToRenderVirtualScrollTabs() {
 let mLastRenderedVirtualScrollTabIds = [];
 
 export function renderVirtualScrollTabs() {
-  renderVirtualScrollTabs.reserved = false;
+  renderVirtualScrollTabs.lastStartedAt = null;
 
   const startAt = Date.now();
 
@@ -211,13 +212,15 @@ export function renderVirtualScrollTabs() {
       Math.ceil((scrollPosition + viewPortSize + renderablePaddingSize) / tabSize)
     )
   );
-  log('renderVirtualScrollTabs ', {
-    tabSize, allRenderableTabsSize, viewPortSize, renderablePaddingSize,
-    firstRenderableIndex, lastRenderableIndex,
-  });
 
   const toBeRenderedTabIds = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1).map(tab => tab.id);
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
+  log('renderVirtualScrollTabs ', {
+    firstRenderableIndex,
+    lastRenderableIndex,
+    renderOperations,
+  });
+
   let offsetCount = 0;
   for (const operation of renderOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
