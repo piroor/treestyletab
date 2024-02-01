@@ -251,9 +251,7 @@ export function renderTabAt(tab, index = -1) {
     log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
     nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
       nextTab.$TST.element :
-      tab.pinned ?
-        null :
-        containerElement.querySelector(`.${Constants.kTABBAR_SPACER}`);
+      null;
   }
 
   if (tabElement.parentNode == containerElement &&
@@ -323,13 +321,14 @@ Window.onInitialized.addListener(window => {
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');
-    const spacer = container.appendChild(document.createElement('li'));
-    spacer.classList.add(Constants.kTABBAR_SPACER);
     const wrapper = document.createElement('div');
     wrapper.classList.add('virtual-scroll-container');
     wrapper.classList.add('vbox');
     wrapper.appendChild(container);
     noramlContainerWrapper.appendChild(wrapper);
+    const spacer = noramlContainerWrapper.appendChild(document.createElement('div'));
+    spacer.classList.add('vbox');
+    spacer.classList.add(Constants.kTABBAR_SPACER);
   }
   container.dataset.windowId = windowId;
   container.setAttribute('id', `window-${windowId}`);

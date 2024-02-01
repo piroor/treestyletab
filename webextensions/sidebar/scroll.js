@@ -879,7 +879,7 @@ export function tryLockPosition(tabIds) {
   log('tryLockPosition');
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
   const count = parseInt(spacer.dataset.removedTabsCount || 0) + 1;
-  spacer.style.height = `${Size.getTabHeight() * count}px`;
+  spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
   spacer.dataset.removedTabsCount = count;
 
   if (!tryUnlockPosition.listening) {
@@ -937,7 +937,7 @@ function tryUnlockPosition(event) {
   tryLockPosition.tabIds.clear();
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
   spacer.dataset.removedTabsCount = 0;
-  spacer.style.height = '';
+  spacer.style.minHeight = '';
   onPositionUnlocked.dispatch();
 }
 tryUnlockPosition.contextMenuOpen = false;

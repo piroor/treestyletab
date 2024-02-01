@@ -213,7 +213,12 @@ tab-sound-button */ {
 }
 
 .virtual-scroll-container {
+  min-height: 0px;
   overflow: hidden;
+}
+
+:root.animation .virtual-scroll-container {
+  transition: min-height var(--collapse-animation);
 }
 
 #tabbar.overflow {
@@ -228,13 +233,13 @@ tab-sound-button */ {
 
 .tabs-spacer {
   display: none;
-  height: 0;
+  min-height: 0;
   pointer-events: none;
   visibility: hidden;
 }
 
 :root.animation:not(.minimized) .tabs-spacer {
-  transition: height var(--collapse-animation);
+  transition: min-height var(--collapse-animation);
 }
 
 #tabbar.overflow .tabs-spacer {
