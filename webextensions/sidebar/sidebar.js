@@ -767,11 +767,11 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
   const lastVisibleTab = Tab.getLastVisibleTab(mTargetWindow);
-  if ((!lastVisibleTab && mLastVisibleTabId) ||
-      (lastVisibleTab && lastVisibleTab.id != mLastVisibleTabId)) {
-    if (mLastVisibleTabId)
-      Tab.get(mLastVisibleTabId).$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
-  }
+  const previousLastVisibleTab = mLastVisibleTabId && Tab.get(mLastVisibleTabId);
+  if (previousLastVisibleTab &&
+      (!lastVisibleTab ||
+       lastVisibleTab.id != previousLastVisibleTab.id))
+    previousLastVisibleTab.$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
   lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
   mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
