@@ -85,100 +85,7 @@ export function init(scrollPosition) {
   }
 }
 
-/* basics */
-
-function scrollTo(params = {}) {
-  log('scrollTo ', params);
-  if (!params.justNow &&
-      shouldApplyAnimation(true) &&
-      configs.smoothScrollEnabled)
-    return smoothScrollTo(params);
-
-  //cancelPerformingAutoScroll();
-  if (params.tab)
-    getScrollBoxFor(params.tab).scrollTop += calculateScrollDeltaForTab(params.tab);
-  else if (typeof params.position == 'number')
-    mNormalScrollBox.scrollTop = params.position;
-  else if (typeof params.delta == 'number')
-    mNormalScrollBox.scrollTop += params.delta;
-  else
-    throw new Error('No parameter to indicate scroll position');
-}
-
-function cancelRunningScroll() {
-  scrollToTab.stopped = true;
-  stopSmoothScroll();
-}
-
-function getScrollBoxFor(tab) {
-  if (!tab || !tab.pinned)
-    return mNormalScrollBox; // the default
-  return mPinnedScrollBox;
-}
-
-export function getTabRect(tab) {
-  if (tab.pinned)
-    return tab.$TST.element.getBoundingClientRect();
-
-  const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId);
-  const tabSize        = Size.getTabHeight();
-  const index          = renderableTabs.indexOf(tab);
-  const scrollBox      = getScrollBoxFor(tab);
-  const scrollBoxRect  = scrollBox.getBoundingClientRect();
-  const tabTop         = tabSize * index + scrollBoxRect.top - scrollBox.scrollTop;
-  return {
-    top:    tabTop,
-    bottom: tabTop + tabSize,
-    height: tabSize,
-  };
-}
-
-function calculateScrollDeltaForTab(tab, { over } = {}) {
-  tab = Tab.get(tab && tab.id);
-  if (!tab)
-    return 0;
-
-  const tabRect       = getTabRect(tab);
-  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
-  const overScrollOffset = over === false ?
-    0 :
-    Math.ceil(tabRect.height / 2);
-  let delta = 0;
-  if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
-    delta = tabRect.bottom - scrollBoxRect.bottom + overScrollOffset;
-  }
-  else if (scrollBoxRect.top > tabRect.top) { // should scroll up
-    delta = tabRect.top - scrollBoxRect.top - overScrollOffset;
-  }
-  log('calculateScrollDeltaForTab ', tab.id, {
-    delta,
-    tabTop:          tabRect.top,
-    tabBottom:       tabRect.bottom,
-    scrollBoxBottom: scrollBoxRect.bottom
-  });
-  return delta;
-}
-
-export function isTabInViewport(tab) {
-  tab = Tab.get(tab && tab.id);
-  if (!TabsStore.ensureLivingTab(tab))
-    return false;
-
-  if (tab.pinned)
-    return true;
-
-  return calculateScrollDeltaForTab(tab) == 0;
-}
-
-export function reserveToRenderVirtualScrollTabs() {
-  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
-  renderVirtualScrollTabs.lastStartedAt = startAt;
-  nextFrame().then(() => {
-    if (renderVirtualScrollTabs.lastStartedAt != startAt)
-      return;
-    renderVirtualScrollTabs();
-  });
-}
+/* virtual scrolling */
 
 let mLastRenderedVirtualScrollTabIds = [];
 
@@ -275,6 +182,102 @@ export function renderVirtualScrollTabs() {
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
 }
 
+function getScrollBoxFor(tab) {
+  if (!tab || !tab.pinned)
+    return mNormalScrollBox; // the default
+  return mPinnedScrollBox;
+}
+
+export function getTabRect(tab) {
+  if (tab.pinned)
+    return tab.$TST.element.getBoundingClientRect();
+
+  const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId);
+  const tabSize        = Size.getTabHeight();
+  const index          = renderableTabs.indexOf(tab);
+  const scrollBox      = getScrollBoxFor(tab);
+  const scrollBoxRect  = scrollBox.getBoundingClientRect();
+  const tabTop         = tabSize * index + scrollBoxRect.top - scrollBox.scrollTop;
+  return {
+    top:    tabTop,
+    bottom: tabTop + tabSize,
+    height: tabSize,
+  };
+}
+
+
+/* basic operations */
+
+function scrollTo(params = {}) {
+  log('scrollTo ', params);
+  if (!params.justNow &&
+      shouldApplyAnimation(true) &&
+      configs.smoothScrollEnabled)
+    return smoothScrollTo(params);
+
+  //cancelPerformingAutoScroll();
+  if (params.tab)
+    getScrollBoxFor(params.tab).scrollTop += calculateScrollDeltaForTab(params.tab);
+  else if (typeof params.position == 'number')
+    mNormalScrollBox.scrollTop = params.position;
+  else if (typeof params.delta == 'number')
+    mNormalScrollBox.scrollTop += params.delta;
+  else
+    throw new Error('No parameter to indicate scroll position');
+}
+
+function cancelRunningScroll() {
+  scrollToTab.stopped = true;
+  stopSmoothScroll();
+}
+
+function calculateScrollDeltaForTab(tab, { over } = {}) {
+  tab = Tab.get(tab && tab.id);
+  if (!tab)
+    return 0;
+
+  const tabRect       = getTabRect(tab);
+  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  const overScrollOffset = over === false ?
+    0 :
+    Math.ceil(tabRect.height / 2);
+  let delta = 0;
+  if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
+    delta = tabRect.bottom - scrollBoxRect.bottom + overScrollOffset;
+  }
+  else if (scrollBoxRect.top > tabRect.top) { // should scroll up
+    delta = tabRect.top - scrollBoxRect.top - overScrollOffset;
+  }
+  log('calculateScrollDeltaForTab ', tab.id, {
+    delta,
+    tabTop:          tabRect.top,
+    tabBottom:       tabRect.bottom,
+    scrollBoxBottom: scrollBoxRect.bottom
+  });
+  return delta;
+}
+
+export function isTabInViewport(tab) {
+  tab = Tab.get(tab && tab.id);
+  if (!TabsStore.ensureLivingTab(tab))
+    return false;
+
+  if (tab.pinned)
+    return true;
+
+  return calculateScrollDeltaForTab(tab) == 0;
+}
+
+export function reserveToRenderVirtualScrollTabs() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  renderVirtualScrollTabs.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (renderVirtualScrollTabs.lastStartedAt != startAt)
+      return;
+    renderVirtualScrollTabs();
+  });
+}
+
 async function smoothScrollTo(params = {}) {
   log('smoothScrollTo ', params, new Error().stack);
   //cancelPerformingAutoScroll(true);
@@ -353,7 +356,7 @@ function stopSmoothScroll() {
   smoothScrollTo.stopped = true;
 }
 
-/* applications */
+/* advanced operations */
 
 export function scrollToNewTab(tab, options = {}) {
   if (!canScrollToTab(tab))
@@ -541,6 +544,8 @@ function cancelNotifyOutOfViewTab() {
   mOutOfViewTabNotifier.classList.remove('notifying');
 }
 
+
+/* event handling */
 
 async function onWheel(event) {
   // Ctrl-WheelScroll produces zoom-in/out on all platforms
