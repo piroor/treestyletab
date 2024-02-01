@@ -140,16 +140,15 @@ function calculateScrollDeltaForTab(tab) {
 
   const tabRect       = getTabRect(tab);
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
-  const offset        = getOffsetForAnimatingTab(tab) + smoothScrollTo.currentOffset;
   let delta = 0;
-  if (scrollBoxRect.bottom < tabRect.bottom + offset) { // should scroll down
-    delta = tabRect.bottom - scrollBoxRect.bottom + offset;
+  if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
+    delta = tabRect.bottom - scrollBoxRect.bottom;
   }
-  else if (scrollBoxRect.top > tabRect.top + offset) { // should scroll up
-    delta = tabRect.top - scrollBoxRect.top + offset;
+  else if (scrollBoxRect.top > tabRect.top) { // should scroll up
+    delta = tabRect.top - scrollBoxRect.top;
   }
   log('calculateScrollDeltaForTab ', tab.id, {
-    delta, offset,
+    delta,
     tabTop:          tabRect.top,
     tabBottom:       tabRect.bottom,
     scrollBoxBottom: scrollBoxRect.bottom
@@ -274,7 +273,7 @@ export function renderVirtualScrollTabs() {
 }
 
 async function smoothScrollTo(params = {}) {
-  log('smoothScrollTo ', params);
+  log('smoothScrollTo ', params, new Error().stack);
   //cancelPerformingAutoScroll(true);
 
   smoothScrollTo.stopped = false;
@@ -416,11 +415,10 @@ export async function scrollToTab(tab, options = {}) {
     const targetTabRect = getTabRect(tab);
     const anchorTabRect = getTabRect(anchorTab);
     const scrollBoxRect = scrollBox.getBoundingClientRect();
-    const offset        = getOffsetForAnimatingTab(tab);
     let delta = calculateScrollDeltaForTab(tab);
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
-      const boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
+      const boundingHeight = targetTabRect.bottom - anchorTabRect.top;
       const overHeight     = boundingHeight - scrollBoxRect.height;
       if (overHeight > 0) {
         delta -= overHeight;
@@ -434,7 +432,7 @@ export async function scrollToTab(tab, options = {}) {
     }
     else if (targetTabRect.bottom < anchorTabRect.bottom) {
       log('=> will scroll up');
-      const boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
+      const boundingHeight = anchorTabRect.bottom - targetTabRect.top;
       const overHeight     = boundingHeight - scrollBoxRect.height;
       if (overHeight > 0)
         delta += overHeight;
@@ -477,19 +475,6 @@ export async function scrollToTab(tab, options = {}) {
     scrollToTab.lastTargetId = null;
 }
 scrollToTab.lastTargetId = null;
-
-function getOffsetForAnimatingTab(tab) {
-  const expanding = Tab.getExpandingTabs(tab.windowId, {
-    toId:   tab.id,
-    normal: true
-  });
-  const collapsing = Tab.getCollapsingTabs(tab.windowId, {
-    toId:   tab.id,
-    normal: true
-  });
-  const numExpandingTabs = expanding.length - collapsing.length;
-  return numExpandingTabs * Size.getTabHeight();
-}
 
 /*
 function scrollToTabSubtree(tab) {

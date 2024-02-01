@@ -330,8 +330,6 @@ export const pinnedTabsInWindow      = new Map();
 export const unpinnedTabsInWindow    = new Map();
 export const rootTabsInWindow        = new Map();
 export const groupTabsInWindow       = new Map();
-export const collapsingTabsInWindow  = new Map();
-export const expandingTabsInWindow   = new Map();
 export const toBeExpandedTabsInWindow = new Map();
 export const subtreeCollapsableTabsInWindow = new Map();
 export const draggingTabsInWindow    = new Map();
@@ -362,8 +360,6 @@ export function prepareIndexesForWindow(windowId) {
   unpinnedTabsInWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
   rootTabsInWindow.set(windowId, createMapWithName(`root tabs in window ${windowId}`));
   groupTabsInWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
-  collapsingTabsInWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
-  expandingTabsInWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
   toBeExpandedTabsInWindow.set(windowId, createMapWithName(`to-be-expanded tabs in window ${windowId}`));
   subtreeCollapsableTabsInWindow.set(windowId, createMapWithName(`collapsable parent tabs in window ${windowId}`));
   draggingTabsInWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
@@ -390,8 +386,6 @@ export function unprepareIndexesForWindow(windowId) {
   unpinnedTabsInWindow.delete(windowId);
   rootTabsInWindow.delete(windowId);
   groupTabsInWindow.delete(windowId);
-  collapsingTabsInWindow.delete(windowId);
-  expandingTabsInWindow.delete(windowId);
   toBeExpandedTabsInWindow.delete(windowId);
   subtreeCollapsableTabsInWindow.delete(windowId);
   toBeGroupedTabsInWindow.delete(windowId);
@@ -507,8 +501,6 @@ export function removeTabFromIndexes(tab) {
   removeUnpinnedTab(tab);
   removeRootTab(tab);
   removeGroupTab(tab);
-  removeCollapsingTab(tab);
-  removeExpandingTab(tab);
   removeToBeExpandedTab(tab);
   removeSubtreeCollapsableTab(tab);
   removeDuplicatingTab(tab);
@@ -622,20 +614,6 @@ export function addGroupTab(tab) {
 }
 export function removeGroupTab(tab) {
   removeTabFromIndex(tab, groupTabsInWindow);
-}
-
-export function addCollapsingTab(tab) {
-  addTabToIndex(tab, collapsingTabsInWindow);
-}
-export function removeCollapsingTab(tab) {
-  removeTabFromIndex(tab, collapsingTabsInWindow);
-}
-
-export function addExpandingTab(tab) {
-  addTabToIndex(tab, expandingTabsInWindow);
-}
-export function removeExpandingTab(tab) {
-  removeTabFromIndex(tab, expandingTabsInWindow);
 }
 
 export function addToBeExpandedTab(tab) {

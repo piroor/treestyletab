@@ -2100,22 +2100,6 @@ Tab.getSubtreeCollapsedTabs = (windowId = null, options = {}) => {
   });
 };
 
-Tab.getCollapsingTabs = (windowId = null, options = {}) => {
-  return TabsStore.queryAll({
-    windowId,
-    tabs: TabsStore.getTabsMap(TabsStore.collapsingTabsInWindow, windowId),
-    ...options
-  });
-};
-
-Tab.getExpandingTabs = (windowId = null, options = {}) => {
-  return TabsStore.queryAll({
-    windowId,
-    tabs: TabsStore.getTabsMap(TabsStore.expandingTabsInWindow, windowId),
-    ...options
-  });
-};
-
 Tab.getGroupTabs = (windowId = null, options = {}) => {
   return TabsStore.queryAll({
     windowId,
