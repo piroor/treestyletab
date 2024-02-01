@@ -776,12 +776,10 @@ const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
 const mWaitingShutdownMessages = new Map();
 
 function onBackendCommand(message, sender) {
-  if (message && message.messages) {
-    for (const oneMessage of message.messages) {
-      onBackendCommand(oneMessage, sender);
-    }
-    return;
-  }
+  if (message && message.messages)
+    return Promise.all(
+      message.messages.map(oneMessage => onBackendCommand(oneMessage, sender))
+    );
 
   if (!mInitialized ||
       !message ||
@@ -933,12 +931,10 @@ function onFrontendCommand(message, sender) {
   if (!configs.APIEnabled)
     return;
 
-  if (message && message.messages) {
-    for (const oneMessage of message.messages) {
-      onFrontendCommand(oneMessage, sender);
-    }
-    return;
-  }
+  if (message && message.messages)
+    return Promise.all(
+      message.messages.map(oneMessage => onFrontendCommand(oneMessage, sender))
+    );
 
   if (message &&
       typeof message == 'object' &&
