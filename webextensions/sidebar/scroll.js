@@ -74,7 +74,7 @@ export function init(scrollPosition) {
     reserveToRenderVirtualScrollTabs();
   });
 
-  renderVirtualScrollTabs();
+  reserveToRenderVirtualScrollTabs();
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();

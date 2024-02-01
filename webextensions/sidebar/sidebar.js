@@ -279,7 +279,7 @@ export async function init() {
       SidebarTabs.updateAll();
       updateTabbarLayout({ justNow: true });
       SubPanel.onResized.addListener(() => {
-        updateTabbarLayout();
+        reserveToUpdateTabbarLayout();
       });
       SubPanel.init();
 
@@ -739,8 +739,6 @@ reserveToUpdateTabbarLayout.timeout = 0;
 let mLastVisibleTabId = null;
 
 function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
-  Scroll.renderVirtualScrollTabs();
-
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
@@ -835,8 +833,8 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
     });
   }
 
+  Scroll.reserveToRenderVirtualScrollTabs();
   if (overflow) {
-    Scroll.reserveToRenderVirtualScrollTabs();
     nextFrame().then(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
       const scrollbarOffset = mTabBar.getBoundingClientRect().width - virtualScrollContainer.getBoundingClientRect().width;
