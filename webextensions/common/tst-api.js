@@ -916,22 +916,7 @@ export async function initAsFrontend() {
       break;
     await wait(10);
   }
-  browser.runtime.onMessageExternal.addListener((message, sender) => {
-    if (!configs.APIEnabled)
-      return;
-    if (message &&
-        typeof message == 'object' &&
-        typeof message.type == 'string') {
-      const results = onMessageExternal.dispatch(message, sender);
-      log('onMessageExternal: ', message, ' => ', results, 'sender: ', sender);
-      const firstPromise = results.find(result => result instanceof Promise);
-      if (firstPromise)
-        return firstPromise;
-    }
-    if (configs.incognitoAllowedExternalAddons.includes(sender.id) ||
-        !document.documentElement.classList.contains('incognito'))
-      return onCommonCommand(message, sender);
-  });
+  browser.runtime.onMessageExternal.addListener(onFrontendCommand);
   log('initAsFrontend: response = ', response);
   importAddons(response.addons);
   for (const [, addon] of getAddons()) {
@@ -942,6 +927,31 @@ export async function initAsFrontend() {
 
   onInitialized.dispatch();
   log('initAsFrontend: finish');
+}
+
+function onFrontendCommand(message, sender) {
+  if (!configs.APIEnabled)
+    return;
+
+  if (message && message.messages) {
+    for (const oneMessage of message.messages) {
+      onFrontendCommand(oneMessage, sender);
+    }
+    return;
+  }
+
+  if (message &&
+      typeof message == 'object' &&
+      typeof message.type == 'string') {
+    const results = onMessageExternal.dispatch(message, sender);
+    log('onMessageExternal: ', message, ' => ', results, 'sender: ', sender);
+    const firstPromise = results.find(result => result instanceof Promise);
+    if (firstPromise)
+      return firstPromise;
+  }
+  if (configs.incognitoAllowedExternalAddons.includes(sender.id) ||
+      !document.documentElement.classList.contains('incognito'))
+    return onCommonCommand(message, sender);
 }
 
 if (Constants.IS_SIDEBAR) {
