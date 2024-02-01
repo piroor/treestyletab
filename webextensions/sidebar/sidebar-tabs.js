@@ -277,7 +277,9 @@ export function renderTabAt(tab, index = -1) {
 }
 
 export function unrenderTab(tab) {
-  if (!tab.$TST.element)
+  if (!tab ||
+      !tab.$TST ||
+      !tab.$TST.element)
     return false;
 
   let removed = false;
@@ -858,6 +860,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
+      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       tab.$TST.destroy();
       unrenderTab(tab);
       if (tab.pinned)
