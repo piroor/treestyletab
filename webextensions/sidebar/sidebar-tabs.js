@@ -1044,7 +1044,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const win = TabsStore.windows.get(message.windowId);
       if (!win || !win.containerElement)
         return;
-      win.containerClassList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
+      document.documentElement.classList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:

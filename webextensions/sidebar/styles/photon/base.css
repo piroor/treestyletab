@@ -130,7 +130,7 @@ tab-item tab-closebox::after {
   --multiselected-color: Highlight;
 }
 
-.mutiple-highlighted > tab-item.highlighted tab-item-substance::after {
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance::after {
   background: var(--multiselected-color);
   bottom: 0;
   content: " ";
