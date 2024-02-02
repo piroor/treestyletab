@@ -45,13 +45,12 @@ function log(...args) {
 }
 
 let mTargetWindow;
-let mTabBar;
+const mTabBar = document.querySelector('#tabbar');
 let mAreaHeight     = 0;
 let mMaxVisibleRows = 0;
 
 export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
-  mTabBar       = document.querySelector('#tabbar');
 }
 
 function getTabHeight() {
