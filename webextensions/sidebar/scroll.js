@@ -264,7 +264,7 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   if (!tab)
     return 0;
 
-  tab = tab.$TST.collapsed ? tab.$TST.nearestVisibleAncestorOrSelf : tab;
+  tab = tab.$TST.collapsed && tab.$TST.nearestVisibleAncestorOrSelf || tab;
 
   const tabRect       = getTabRect(tab);
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
