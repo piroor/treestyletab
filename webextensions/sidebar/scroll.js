@@ -178,7 +178,7 @@ function renderVirtualScrollViewport() {
               !tab ||
               !mNormalScrollBox.contains(tab.$TST.element))
             continue;
-          SidebarTabs.unrenderTab(Tab.get(id));
+          SidebarTabs.unrenderTab(tab);
         }
         const referenceTab = fromStart < mLastRenderedVirtualScrollTabIds.length ?
           Tab.get(mLastRenderedVirtualScrollTabIds[fromStart]) :
