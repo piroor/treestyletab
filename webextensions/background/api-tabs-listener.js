@@ -969,7 +969,8 @@ async function onMoved(tabId, moveInfo) {
           type:      Constants.kCOMMAND_NOTIFY_TAB_MOVED,
           windowId:  movedTab.windowId,
           tabId:     movedTab.id,
-          newIndex:  movedTab.index,
+          fromIndex: moveInfo.fromIndex,
+          toIndex:   movedTab.index,
           nextTabId: nextTab && nextTab.id
         });
     }

@@ -1476,7 +1476,7 @@ export default class Tab {
     if (!this.element)
       return;
 
-    this.applyAttributes();
+    this.applyAttributesToElement();
 
     for (const state of this.states) {
       this.element.classList.add(state);
@@ -1489,7 +1489,7 @@ export default class Tab {
     }
   }
 
-  applyAttributes() {
+  applyAttributesToElement() {
     if (!this.element)
       return;
 

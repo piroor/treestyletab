@@ -575,6 +575,26 @@ async function activateRealActiveTab(windowId) {
   TabsInternalOperation.setTabActive(tab);
 }
 
+const mReindexedTabIds = new Set();
+
+function reserveToUpdateTabsIndex() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToUpdateTabsIndex.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (reserveToUpdateTabsIndex.lastStartedAt != startAt)
+      return;
+
+    const ids = [...mReindexedTabIds];
+    mReindexedTabIds.clear();
+    for (const id of ids) {
+      const tab = Tab.get(id);
+      if (!tab)
+        continue;
+      tab.$TST.applyAttributesToElement();
+    }
+  });
+}
+
 
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
@@ -644,6 +664,11 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
+
+      for (const tab of Tab.getAllTabs(message.windowId, { fromId: nativeTab.id })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
 
       TabsStore.addLoadingTab(tab);
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
@@ -763,7 +788,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
       const tab     = Tab.get(message.tabId);
       if (!tab ||
-          tab.index == message.newIndex)
+          tab.index == message.toIndex)
         return;
       if (mPromisedInitialized)
         await mPromisedInitialized;
@@ -785,10 +810,20 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.shouldExpandLater = true;
       }
 
-      tab.index = message.newIndex;
+      tab.index = message.toIndex;
       tab.reindexedBy = `moved (${tab.index})`;
       const window = TabsStore.windows.get(message.windowId);
       window.trackTab(tab);
+
+      for (const tab of Tab.getAllTabs(message.windowId, {
+        fromIndex: Math.min(message.fromIndex, message.toIndex),
+        toIndex:   Math.max(message.fromIndex, message.toIndex),
+        iterator:  true,
+      })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
+
       if (tab.pinned) {
         renderTab(tab);
         onPinnedTabsChanged.dispatch(tab);
@@ -796,6 +831,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       else {
         onNormalTabsChanged.dispatch(tab);
       }
+      tab.$TST.applyAttributesToElement();
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -812,11 +848,21 @@ BackgroundConnection.onMessage.addListener(async message => {
       await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
       const tab         = Tab.get(message.tabId);
       if (!tab ||
-          tab.index == message.newIndex)
+          tab.index == message.toIndex)
         return;
-      tab.index = message.newIndex;
+      tab.index = message.toIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
       Tab.track(tab);
+
+      for (const tab of Tab.getAllTabs(message.windowId, {
+        fromIndex: Math.min(message.fromIndex, message.toIndex),
+        toIndex:   Math.max(message.fromIndex, message.toIndex),
+        iterator:  true,
+      })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
+
       if (tab.pinned) {
         renderTab(tab);
         onPinnedTabsChanged.dispatch(tab);
@@ -824,6 +870,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       else {
         onNormalTabsChanged.dispatch(tab);
       }
+      tab.$TST.applyAttributesToElement();
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger

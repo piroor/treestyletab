@@ -111,6 +111,7 @@ function sourceTabsForQuery(query, window) {
   if (!query.ordered)
     return [query.tabs && query.tabs.values() || window.tabs.values(), offset];
   let fromId;
+  let toId = query.toId;
   if (typeof query.index == 'number') {
     fromId = window.order[query.index];
     offset = query.index;
@@ -119,13 +120,16 @@ function sourceTabsForQuery(query, window) {
     fromId = window.order[query.fromIndex];
     offset = query.fromIndex;
   }
+  if (typeof query.toIndex == 'number') {
+    toId = window.order[query.toIndex];
+  }
   if (typeof fromId != 'number') {
     fromId = query.fromId;
     offset = window.order.indexOf(query.fromId);
   }
   if (query.last || query.reversed)
-    return [window.getReversedOrderedTabs(fromId, query.toId, query.tabs), offset];
-  return [window.getOrderedTabs(fromId, query.toId, query.tabs), offset];
+    return [window.getReversedOrderedTabs(fromId, toId, query.tabs), offset];
+  return [window.getOrderedTabs(fromId, toId, query.tabs), offset];
 }
 
 function extractMatchedTabs(tabs, query, offset) {

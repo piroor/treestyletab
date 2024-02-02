@@ -105,6 +105,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         window.internalMovingTabs.add(tab.id);
         window.alreadyMovedTabs.add(tab.id);
       }
+      const fromIndex = tab.index;
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
@@ -122,7 +123,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
-        newIndex:    tab.index,
+        fromIndex,
+        toIndex:     tab.index,
         nextTabId:   referenceTab && referenceTab.id,
         broadcasted: !!options.broadcasted
       });
@@ -209,6 +211,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         window.internalMovingTabs.add(tab.id);
         window.alreadyMovedTabs.add(tab.id);
       }
+      const fromIndex = tab.index;
       if (nextTab) {
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
@@ -231,7 +234,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
-        newIndex:    tab.index,
+        fromIndex,
+        toIndex:     tab.index,
         nextTabId:   nextTab && nextTab.id,
         broadcasted: !!options.broadcasted
       });
