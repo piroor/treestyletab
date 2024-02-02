@@ -582,7 +582,7 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
-      nextFrame.then(() => {
+      nextFrame().then(() => {
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         window.openingTabs.delete(tab.id);
@@ -1025,7 +1025,7 @@ async function onAttached(tabId, attachInfo) {
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
-          nextFrame.then(() => onAttached(tabId, attachInfo));
+          nextFrame().then(() => onAttached(tabId, attachInfo));
           return;
         }
         console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);
