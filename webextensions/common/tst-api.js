@@ -1245,6 +1245,11 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
     id = id.id;
   let query   = String(id).toLowerCase();
   let baseTab = Tab.getActiveTab(activeWindow.id);
+
+  // this sometimes happen when the active tab was detached from the window
+  if (!baseTab)
+    return null;
+
   const nonActiveTabMatched = query.match(/^([^-]+)-of-(.+)$/i);
   if (nonActiveTabMatched) {
     query = nonActiveTabMatched[1];
@@ -1252,6 +1257,8 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
     if (/^\d+$/.test(id))
       id = parseInt(id);
     baseTab = Tab.get(id) || Tab.getByUniqueId(id);
+    if (!baseTab)
+      return null;
   }
   switch (query) {
     case 'active':
