@@ -492,7 +492,6 @@ export const configs = new Configs({
     'sidebar/mouse-event-listener': false,
     'sidebar/pinned-tabs': false,
     'sidebar/scroll': false,
-    'sidebar/sidebar-cache': false,
     'sidebar/sidebar-tabs': false,
     'sidebar/sidebar': false,
     'sidebar/size': false,
