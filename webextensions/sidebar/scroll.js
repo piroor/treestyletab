@@ -68,6 +68,7 @@ export function init(scrollPosition) {
   document.addEventListener('wheel', onWheel, { capture: true, passive: false });
   mPinnedScrollBox.addEventListener('scroll', onScroll);
   mNormalScrollBox.addEventListener('scroll', onScroll);
+  browser.runtime.onMessage.addListener(onMessage);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
   SidebarTabs.onNormalTabsChanged.addListener(_tab => {
@@ -651,6 +652,23 @@ function reReserveScrollingForTab(tab) {
   return false;
 }
 
+
+function onMessage(message, _sender, _respond) {
+  if (!message ||
+      typeof message.type != 'string' ||
+      message.type.indexOf('treestyletab:') != 0)
+    return;
+
+  if (message.windowId &&
+      message.windowId != TabsStore.getCurrentWindowId())
+    return;
+
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
+    case Constants.kCOMMAND_GET_RENDERED_TAB_IDS:
+      return Promise.resolve(mLastRenderedVirtualScrollTabIds);
+  }
+}
 
 async function onBackgroundMessage(message) {
   switch (message.type) {

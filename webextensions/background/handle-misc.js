@@ -446,13 +446,37 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kGET_TREE:
       return (async () => {
-        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        let tabs = await TSTAPI.getTargetTabs(message, sender);
+        let renderedTabIdsSet = null;
+        if (tabs && message.rendered) {
+          tabs = [...tabs]; // iterator => array for multiple time use
+          const windowIds = new Set(tabs.map(tab => tab.windowId));
+          const renderedTabIds = await Promise.all(
+            Array.from(
+              windowIds,
+              windowId => browser.runtime.sendMessage({
+                type: Constants.kCOMMAND_GET_RENDERED_TAB_IDS,
+                windowId,
+              })
+            )
+          );
+          renderedTabIdsSet = new Set(renderedTabIds.flat());
+        }
         const cache = {};
+        const treeItems = Array.from(
+            tabs,
+            tab => {
+              if (renderedTabIdsSet &&
+                  !renderedTabIdsSet.has(tab.id))
+                return null;
+              return new TSTAPI.TreeItem(tab, {
+                interval: message.interval,
+                cache
+              });
+            }
+          );
         const result = TSTAPI.formatTabResult(
-          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, {
-            interval: message.interval,
-            cache
-          })),
+          treeItems,
           {
             ...message,
             // This must return an array of root tabs if just the window id is specified.

@@ -1355,7 +1355,7 @@ export async function formatTabResult(treeItems, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return Promise.all(treeItems.map(treeItem => treeItem.exportFor(senderId)))
+    return Promise.all(treeItems.map(treeItem => treeItem && treeItem.exportFor(senderId)))
       .then(tabs => tabs.filter(tab => !!tab));
   return treeItems.length > 0 ? treeItems[0].exportFor(senderId) : null ;
 }
