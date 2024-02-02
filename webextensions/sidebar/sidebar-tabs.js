@@ -939,11 +939,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab.$TST.collapsed &&
           shouldApplyAnimation()) {
         tab.$TST.addState(Constants.kTAB_STATE_REMOVING); // addState()'s result from the background page may not be notified yet, so we set this state manually here
-        if (tab.$TST.element) {
-          const tabRect = tab.$TST.element.getBoundingClientRect();
-          if (!tab.pinned)
-            tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
-        }
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
