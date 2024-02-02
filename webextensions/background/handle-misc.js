@@ -466,8 +466,7 @@ function onMessageExternal(message, sender) {
         const treeItems = Array.from(
           tabs,
           tab => {
-            if (!tab.pinned &&
-                renderedTabIdsSet &&
+            if (renderedTabIdsSet &&
                 !renderedTabIdsSet.has(tab.id))
               return null;
             return new TSTAPI.TreeItem(tab, {

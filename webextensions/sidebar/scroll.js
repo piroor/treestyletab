@@ -666,7 +666,10 @@ function onMessage(message, _sender, _respond) {
   //log('onMessage: ', message, sender);
   switch (message.type) {
     case Constants.kCOMMAND_GET_RENDERED_TAB_IDS:
-      return Promise.resolve(mLastRenderedVirtualScrollTabIds);
+      return Promise.resolve([...new Set([
+        ...Tab.getPinnedTabs(message.windowId).map(tab => tab.id),
+        ...mLastRenderedVirtualScrollTabIds,
+      ])]);
   }
 }
 
