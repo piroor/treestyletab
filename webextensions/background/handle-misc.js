@@ -464,17 +464,17 @@ function onMessageExternal(message, sender) {
         }
         const cache = {};
         const treeItems = Array.from(
-            tabs,
-            tab => {
-              if (renderedTabIdsSet &&
-                  !renderedTabIdsSet.has(tab.id))
-                return null;
-              return new TSTAPI.TreeItem(tab, {
-                interval: message.interval,
-                cache
-              });
-            }
-          );
+          tabs,
+          tab => {
+            if (renderedTabIdsSet &&
+                !renderedTabIdsSet.has(tab.id))
+              return null;
+            return new TSTAPI.TreeItem(tab, {
+              interval: message.interval,
+              cache
+            });
+          }
+        );
         const result = TSTAPI.formatTabResult(
           treeItems,
           {
