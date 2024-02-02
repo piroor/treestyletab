@@ -16,7 +16,6 @@ import {
   sanitizeForRegExpSource,
   isNewTabCommandTab,
   configs,
-  nextFrame,
 } from './common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -102,8 +101,8 @@ export default class Tab {
 
     TabsStore.tabs.set(tab.id, tab);
 
-    const window = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
-    window.trackTab(tab);
+    const win = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
+    win.trackTab(tab);
 
     // Don't update indexes here, instead Window.prototype.trackTab()
     // updates indexes because indexes are bound to windows.
@@ -173,7 +172,7 @@ export default class Tab {
     element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
-    nextFrame().then(() => { // wait until initialization processes are completed
+    window.requestAnimationFrame(() => { // wait until initialization processes are completed
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
         this.promisedElement = new Promise((resolve, _reject) => {
@@ -1054,33 +1053,33 @@ export default class Tab {
     if (!this.tab)
       return relatedTab;
     const previousLastRelatedTabId = this.lastRelatedTabId;
-    const window = TabsStore.windows.get(this.tab.windowId);
+    const win = TabsStore.windows.get(this.tab.windowId);
     if (relatedTab) {
-      window.lastRelatedTabs.set(this.id, relatedTab.id);
+      win.lastRelatedTabs.set(this.id, relatedTab.id);
       this.newRelatedTabsCount++;
       successorTabLog(`set lastRelatedTab for ${this.id}: ${previousLastRelatedTabId} => ${relatedTab.id} (${this.newRelatedTabsCount})`);
     }
     else {
-      window.lastRelatedTabs.delete(this.id);
+      win.lastRelatedTabs.delete(this.id);
       this.newRelatedTabsCount = 0;
       successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
-    window.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
+    win.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
     return relatedTab;
   }
 
   get lastRelatedTabId() {
     if (!this.tab)
       return 0;
-    const window = TabsStore.windows.get(this.tab.windowId);
-    return window.lastRelatedTabs.get(this.id) || 0;
+    const win = TabsStore.windows.get(this.tab.windowId);
+    return win.lastRelatedTabs.get(this.id) || 0;
   }
 
   get previousLastRelatedTab() {
     if (!this.tab)
       return null;
-    const window = TabsStore.windows.get(this.tab.windowId);
-    return Tab.get(window.previousLastRelatedTabs.get(this.id)) || null;
+    const win = TabsStore.windows.get(this.tab.windowId);
+    return Tab.get(win.previousLastRelatedTabs.get(this.id)) || null;
   }
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
@@ -1547,8 +1546,8 @@ Tab.track = tab => {
   else {
     if (trackedTab)
       tab = trackedTab;
-    const window = TabsStore.windows.get(tab.windowId);
-    window.trackTab(tab);
+    const win = TabsStore.windows.get(tab.windowId);
+    win.trackTab(tab);
   }
   return trackedTab || tab;
 };
@@ -1557,9 +1556,9 @@ Tab.untrack = tabId => {
   const tab = Tab.get(tabId);
   if (!tab) // already untracked
     return;
-  const window = TabsStore.windows.get(tab.windowId);
-  if (window)
-    window.untrackTab(tabId);
+  const win = TabsStore.windows.get(tab.windowId);
+  if (win)
+    win.untrackTab(tabId);
 };
 
 Tab.isTracked = tabId =>  {

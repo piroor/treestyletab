@@ -12,7 +12,6 @@ import {
   wait,
   configs,
   sanitizeForHTMLText,
-  nextFrame,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -89,11 +88,11 @@ export async function init() {
   // Those promises will be resolved while waiting for waitUntilCompletelyRestored().
   getAllWindows()
     .then(windows => {
-      for (const window of windows) {
-        browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_CACHED_TABS)
+      for (const win of windows) {
+        browser.sessions.getWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
-          .then(cache => mPreloadedCaches.set(`window-${window.id}`, cache));
-        const tab = window.tabs[0];
+          .then(cache => mPreloadedCaches.set(`window-${win.id}`, cache));
+        const tab = win.tabs[0];
         browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
           .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
@@ -177,17 +176,17 @@ export async function init() {
 async function notifyReadyToSidebars() {
   log('notifyReadyToSidebars: start');
   const promisedResults = [];
-  for (const window of TabsStore.windows.values()) {
+  for (const win of TabsStore.windows.values()) {
     // Send PING to all windows whether they are detected as opened or not, because
     // the connection may be established before this background page starts listening
     // of messages from sidebar pages.
     // See also: https://github.com/piroor/treestyletab/issues/2200
-    TabsUpdate.completeLoadingTabs(window.id); // failsafe
-    log(`notifyReadyToSidebars: to ${window.id}`);
+    TabsUpdate.completeLoadingTabs(win.id); // failsafe
+    log(`notifyReadyToSidebars: to ${win.id}`);
     promisedResults.push(browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_BACKGROUND_READY,
-      windowId: window.id,
-      tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
+      windowId: win.id,
+      tabs:     win.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
     }).catch(ApiTabs.createErrorSuppressor()));
   }
   return Promise.all(promisedResults);
@@ -257,38 +256,38 @@ async function rebuildAll(windows) {
   if (!windows)
     windows = await getAllWindows();
   const restoredFromCache = new Map();
-  await Promise.all(windows.map(async (window) => {
-    await MetricsData.addAsync(`rebuildAll: tabs in window ${window.id}`, async () => {
-      let trackedWindow = TabsStore.windows.get(window.id);
+  await Promise.all(windows.map(async win => {
+    await MetricsData.addAsync(`rebuildAll: tabs in window ${win.id}`, async () => {
+      let trackedWindow = TabsStore.windows.get(win.id);
       if (!trackedWindow)
-        trackedWindow = Window.init(window.id);
+        trackedWindow = Window.init(win.id);
 
-      for (const tab of window.tabs) {
+      for (const tab of win.tabs) {
         Tab.track(tab);
         Tab.init(tab, { existing: true });
         tryStartHandleAccelKeyOnTab(tab);
       }
       try {
         if (configs.useCachedTree) {
-          log(`trying to restore window ${window.id} from cache`);
-          const restored = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${window.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
-            owner: window.tabs[window.tabs.length - 1],
-            tabs:  window.tabs,
+          log(`trying to restore window ${win.id} from cache`);
+          const restored = await MetricsData.addAsync(`rebuildAll: restore tabs in window ${win.id} from cache`, BackgroundCache.restoreWindowFromEffectiveWindowCache(win.id, {
+            owner: win.tabs[win.tabs.length - 1],
+            tabs:  win.tabs,
             caches: mPreloadedCaches
           }));
-          restoredFromCache.set(window.id, restored);
-          log(`window ${window.id}: restored from cache?: `, restored);
+          restoredFromCache.set(win.id, restored);
+          log(`window ${win.id}: restored from cache?: `, restored);
           if (restored)
             return;
         }
       }
       catch(e) {
-        log(`failed to restore tabs for ${window.id} from cache `, e);
+        log(`failed to restore tabs for ${win.id} from cache `, e);
       }
       try {
-        log(`build tabs for ${window.id} from scratch`);
-        Window.init(window.id);
-        for (let tab of window.tabs) {
+        log(`build tabs for ${win.id} from scratch`);
+        Window.init(win.id);
+        for (let tab of win.tabs) {
           tab = Tab.get(tab.id);
           tab.$TST.clear(); // clear dirty restored states
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
@@ -296,11 +295,11 @@ async function rebuildAll(windows) {
         }
       }
       catch(e) {
-        log(`failed to build tabs for ${window.id}`, e);
+        log(`failed to build tabs for ${win.id}`, e);
       }
-      restoredFromCache.set(window.id, false);
+      restoredFromCache.set(win.id, false);
     });
-    for (const tab of Tab.getGroupTabs(window.id, { iterator: true })) {
+    for (const tab of Tab.getGroupTabs(win.id, { iterator: true })) {
       if (!tab.discarded)
         tab.$TST.temporaryMetadata.set('shouldReloadOnSelect', true);
     }
@@ -310,8 +309,8 @@ async function rebuildAll(windows) {
 
 export async function reload(options = {}) {
   mPreloadedCaches.clear();
-  for (const window of TabsStore.windows.values()) {
-    window.clear();
+  for (const win of TabsStore.windows.values()) {
+    win.clear();
   }
   TabsStore.clear();
   const windows = await getAllWindows();
@@ -319,8 +318,8 @@ export async function reload(options = {}) {
   await MetricsData.addAsync('reload: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows));
   if (!options.all)
     return;
-  for (const window of TabsStore.windows.values()) {
-    if (!SidebarConnection.isOpen(window.id))
+  for (const win of TabsStore.windows.values()) {
+    if (!SidebarConnection.isOpen(win.id))
       continue;
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_RELOAD
@@ -576,7 +575,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     url:     '/resources/blank.html', // for popup, required on Firefox ESR68
     title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
     onShownInPopup(container) {
-      nextFrame().then(() => {
+      window.requestAnimationFrame(() => {
         // this need to be done on the next tick, to use the height of
         // the box for calculation of dialog size
         const style = container.querySelector('ul').style;
@@ -777,8 +776,8 @@ async function updateIconForBrowserTheme(theme) {
   const sidebarIcons = {};
 
   if (!theme) {
-    const window = await browser.windows.getLastFocused();
-    theme = await browser.theme.getCurrent(window.id);
+    const win = await browser.windows.getLastFocused();
+    theme = await browser.theme.getCurrent(win.id);
   }
 
   log('updateIconForBrowserTheme: ', theme);

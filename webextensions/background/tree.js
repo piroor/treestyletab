@@ -1221,12 +1221,12 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     return;
 
   logCollapseExpand('collapseExpandTreesIntelligentlyFor ', tab);
-  const window = TabsStore.windows.get(tab.windowId);
-  if (window.doingIntelligentlyCollapseExpandCount > 0) {
+  const win = TabsStore.windows.get(tab.windowId);
+  if (win.doingIntelligentlyCollapseExpandCount > 0) {
     logCollapseExpand('=> done by others');
     return;
   }
-  window.doingIntelligentlyCollapseExpandCount++;
+  win.doingIntelligentlyCollapseExpandCount++;
 
   const expandedAncestors = [tab.id]
     .concat(tab.$TST.ancestors.map(ancestor => ancestor.id))
@@ -1277,7 +1277,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     ...options,
     collapsed: false
   });
-  window.doingIntelligentlyCollapseExpandCount--;
+  win.doingIntelligentlyCollapseExpandCount--;
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1322,8 +1322,8 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
   }
 
   log('moveTabSubtreeBefore: ', tab.id, nextTab && nextTab.id);
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyBefore(tab, nextTab, options);
     if (!TabsStore.ensureLivingTab(tab)) // it is removed while waiting
@@ -1334,7 +1334,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
-  window.subTreeMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
@@ -1347,8 +1347,8 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
     return;
   }
 
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyAfter(tab, previousTab, options);
     if (!TabsStore.ensureLivingTab(tab)) // it is removed while waiting
@@ -1359,7 +1359,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
-  window.subTreeMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 async function followDescendantsToMovedRoot(tab, options = {}) {
@@ -1367,12 +1367,12 @@ async function followDescendantsToMovedRoot(tab, options = {}) {
     return;
 
   log('followDescendantsToMovedRoot: ', tab);
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeChildrenMovingCount++;
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeChildrenMovingCount++;
+  win.subTreeMovingCount++;
   await TabsMove.moveTabsAfter(tab.$TST.descendants, tab, options);
-  window.subTreeChildrenMovingCount--;
-  window.subTreeMovingCount--;
+  win.subTreeChildrenMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 // before https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 is fixed (Firefox 67 or older)
@@ -1412,23 +1412,23 @@ export async function moveTabs(tabs, options = {}) {
     if (mSlowDuplication)
       UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
-      let window;
+      let win;
       const prepareWindow = () => {
-        window = Window.init(destinationWindowId);
+        win = Window.init(destinationWindowId);
         if (isAcrossWindows) {
-          window.toBeOpenedTabsWithPositions += tabs.length;
-          window.toBeOpenedOrphanTabs += tabs.length;
+          win.toBeOpenedTabsWithPositions += tabs.length;
+          win.toBeOpenedOrphanTabs += tabs.length;
           for (const tab of tabs) {
-            window.toBeAttachedTabs.add(tab.id);
+            win.toBeAttachedTabs.add(tab.id);
           }
         }
       };
       if (newWindow) {
-        newWindow = newWindow.then(window => {
-          log('moveTabs: destination window is ready, ', window);
-          destinationWindowId = window.id;
+        newWindow = newWindow.then(win => {
+          log('moveTabs: destination window is ready, ', win);
+          destinationWindowId = win.id;
           prepareWindow();
-          return window;
+          return win;
         });
       }
       else {
@@ -1634,10 +1634,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
-    .then(window => {
+    .then(win => {
       const movedTabIds = new Set(movedTabs.map(tab => tab.id));
       log('moved tabs: ', movedTabIds);
-      const removeTabs = mapAndFilter(window.tabs, tab =>
+      const removeTabs = mapAndFilter(win.tabs, tab =>
         !movedTabIds.has(tab.id) && Tab.get(tab.id) || undefined
       );
       log('removing tabs: ', removeTabs);

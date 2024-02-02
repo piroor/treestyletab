@@ -391,8 +391,8 @@ export function updateTab(tab, newState = {}, options = {}) {
 export async function updateTabsHighlighted(highlightInfo) {
   if (Tab.needToWaitTracked(highlightInfo.windowId))
     await Tab.waitUntilTrackedAll(highlightInfo.windowId);
-  const window = TabsStore.windows.get(highlightInfo.windowId);
-  if (!window)
+  const win = TabsStore.windows.get(highlightInfo.windowId);
+  if (!win)
     return;
 
   //const startAt = Date.now();
@@ -404,7 +404,7 @@ export async function updateTabsHighlighted(highlightInfo) {
   });
   const alreadyHighlightedTabs = TabsStore.highlightedTabsInWindow.get(highlightInfo.windowId);
   const toBeHighlightedTabs = mapAndFilter(tabIds, id => {
-    const tab = window.tabs.get(id);
+    const tab = win.tabs.get(id);
     return tab && !alreadyHighlightedTabs.has(tab.id) && tab || undefined;
   });
 
@@ -429,10 +429,10 @@ async function updateTabHighlighted(tab, highlighted) {
   else
     tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
   tab.highlighted = highlighted;
-  const window = TabsStore.windows.get(tab.windowId);
-  const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
+  const win = TabsStore.windows.get(tab.windowId);
+  const inheritHighlighted = !win.tabsToBeHighlightedAlone.has(tab.id);
   if (!inheritHighlighted)
-    window.tabsToBeHighlightedAlone.delete(tab.id);
+    win.tabsToBeHighlightedAlone.delete(tab.id);
   updateTab(tab, { highlighted });
   Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;

@@ -142,20 +142,20 @@ export async function init() {
   UserOperationBlocker.setProgress(0);
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
-      const window = await MetricsData.addAsync(
+      const win = await MetricsData.addAsync(
         'getting window',
         mTargetWindow ?
           browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
-      if (window.focused)
+      if (win.focused)
         document.documentElement.classList.add('active');
-      const trackedWindow = TabsStore.windows.get(window.id) || new Window(window.id);
-      trackedWindow.incognito = window.incognito;
-      if (window.incognito)
+      const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
+      trackedWindow.incognito = win.incognito;
+      if (win.incognito)
         document.documentElement.classList.add('incognito');
 
-      const tabs = window.tabs;
+      const tabs = win.tabs;
       if (!mTargetWindow) {
         mTargetWindow = tabs[0].windowId;
         EventUtils.setTargetWindowId(mTargetWindow);
@@ -373,7 +373,7 @@ async function applyOwnTheme(style) {
   }
   return new Promise((resolve, _reject) => {
     mStyleLoader.addEventListener('load', () => {
-      nextFrame().then(resolve);
+      window.requestAnimationFrame(resolve);
     }, { once: true });
   });
 }
@@ -584,13 +584,13 @@ export async function rebuildAll(importedTabs) {
     }
   });
 
-  const window = Window.init(mTargetWindow);
+  const win = Window.init(mTargetWindow);
   // remove from the document for better pefromance
-  const pinnedContainerParent = window.pinnedContainerElement.parentNode;
-  const pinnedContainerNext   = window.pinnedContainerElement.nextSibling;
-  pinnedContainerParent.removeChild(window.pinnedContainerElement);
-  const containerParent = window.containerElement.parentNode;
-  containerParent.removeChild(window.containerElement);
+  const pinnedContainerParent = win.pinnedContainerElement.parentNode;
+  const pinnedContainerNext   = win.pinnedContainerElement.nextSibling;
+  pinnedContainerParent.removeChild(win.pinnedContainerElement);
+  const containerParent = win.containerElement.parentNode;
+  containerParent.removeChild(win.containerElement);
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
@@ -609,8 +609,8 @@ export async function rebuildAll(importedTabs) {
       lastDraw = Date.now();
     }
   }
-  pinnedContainerParent.insertBefore(window.pinnedContainerElement, pinnedContainerNext);
-  containerParent.appendChild(window.containerElement);
+  pinnedContainerParent.insertBefore(win.pinnedContainerElement, pinnedContainerNext);
+  containerParent.appendChild(win.containerElement);
   // we need to render them after they are connected to the DOM tree
   for (const tab of pinnedTabs) {
     SidebarTabs.renderTab(tab);
@@ -803,7 +803,7 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
       type: TSTAPI.kNOTIFY_TABBAR_OVERFLOW,
       windowId,
     });
-    nextFrame().then(() => {
+    window.requestAnimationFrame(() => {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
@@ -811,6 +811,7 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
       if (activeTab && !Scroll.isTabInViewport(activeTab)) {
         log('scroll to active tab on updateTabbarLayout');
         Scroll.scrollToTab(activeTab);
+        onLayoutUpdated.dispatch()
         return;
       }
       const lastOpenedTab = Tab.getLastOpenedTab(windowId);
@@ -822,7 +823,6 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
           notifyOnOutOfView: true
         });
       }
-    }).then(() => {
       onLayoutUpdated.dispatch()
     });
   }
@@ -833,14 +833,14 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
       type: TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
       windowId,
     });
-    nextFrame().then(() => {
+    window.requestAnimationFrame(() => {
       onLayoutUpdated.dispatch()
     });
   }
 
   Scroll.reserveToRenderVirtualScrollTabs();
   if (overflow) {
-    nextFrame().then(() => {
+    window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
       const scrollbarOffset = mTabBar.getBoundingClientRect().width - virtualScrollContainer.getBoundingClientRect().width;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);

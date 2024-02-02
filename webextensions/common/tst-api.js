@@ -997,16 +997,16 @@ export function isScrollLocked() {
 export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
-  const window  = TabsStore.getCurrentWindowId();
+  const windowId = TabsStore.getCurrentWindowId();
   const cache   = {};
-  const allTreeItems = Tab.getTabs(window).map(tab => new TreeItem(tab, { cache }));
+  const allTreeItems = Tab.getTabs(windowId).map(tab => new TreeItem(tab, { cache }));
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
     tab:  tab && allTreeItems.find(treeItem => treeItem.tab.id == tab.id),
     tabs: allTreeItems,
     overflow: params.overflow,
-    window,
-    windowId: window,
+    window: windowId,
+    windowId,
 
     deltaX:       params.event.deltaX,
     deltaY:       params.event.deltaY,
@@ -1150,8 +1150,8 @@ export function isSafeAtIncognito(addonId, params) {
   if (addonId == browser.runtime.id)
     return true;
   const tab = params.tab;
-  const window = params.windowId && TabsStore.windows.get(params.windowId);
-  const hasIncognitoInfo = (window && window.incognito) || (tab && tab.incognito);
+  const win = params.windowId && TabsStore.windows.get(params.windowId);
+  const hasIncognitoInfo = (win && win.incognito) || (tab && tab.incognito);
   return !hasIncognitoInfo || configs.incognitoAllowedExternalAddons.includes(addonId);
 }
 
@@ -1215,10 +1215,10 @@ export async function getTargetTabs(message, sender) {
       return Tab.getRootTabs(windowId, { iterator: true });
   }
   if (tabQuery == '*') {
-    const window = await browser.windows.getLastFocused({
+    const win = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
-    return Tab.getAllTabs(window.id, { iterator: true });
+    return Tab.getAllTabs(win.id, { iterator: true });
   }
   if (tabQuery)
     return getTabsFromWrongIds([tabQuery], windowId, sender);
@@ -1226,10 +1226,10 @@ export async function getTargetTabs(message, sender) {
 }
 
 async function getTabsFromWrongIds(ids, windowId, sender) {
-  const window = !windowId && await browser.windows.getLastFocused({
+  const win = !windowId && await browser.windows.getLastFocused({
     populate: true
   }).catch(ApiTabs.createErrorHandler());
-  const activeWindow = TabsStore.windows.get(windowId || window.id) || window;
+  const activeWindow = TabsStore.windows.get(windowId || win.id) || win;
   const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, sender }).catch(error => {
     console.error(error);
     return null;

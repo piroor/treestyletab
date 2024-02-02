@@ -504,9 +504,9 @@ export function clearDraggingTabsState() {
 }
 
 export function clearDraggingState() {
-  const window = TabsStore.windows.get(TabsStore.getCurrentWindowId());
-  window.containerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
-  window.pinnedContainerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  const win = TabsStore.windows.get(TabsStore.getCurrentWindowId());
+  win.containerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  win.pinnedContainerClassList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }

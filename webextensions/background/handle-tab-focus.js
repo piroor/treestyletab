@@ -52,16 +52,16 @@ let mMaybeTabSwitchingByShortcut = false;
 
 const mLastTabsCountInWindow = new Map();
 
-Window.onInitialized.addListener(window => {
+Window.onInitialized.addListener(win => {
   browser.tabs.query({
-    windowId: window.id,
+    windowId: win.id,
     active:   true
   })
     .then(activeTabs => {
       // There may be no active tab on a startup...
       if (activeTabs.length > 0 &&
-          !window.lastActiveTab)
-        window.lastActiveTab = activeTabs[0].id;
+          !win.lastActiveTab)
+        win.lastActiveTab = activeTabs[0].id;
     });
 });
 
@@ -88,9 +88,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     tab.$TST.temporaryMetadata.delete('shouldReloadOnSelect');
   }
-  const window = TabsStore.windows.get(tab.windowId);
-  log('  lastActiveTab: ', window.lastActiveTab); // it may be blank on a startup
-  const lastActiveTab = Tab.get(window.lastActiveTab || info.previousTabId);
+  const win = TabsStore.windows.get(tab.windowId);
+  log('  lastActiveTab: ', win.lastActiveTab); // it may be blank on a startup
+  const lastActiveTab = Tab.get(win.lastActiveTab || info.previousTabId);
   cancelDelayedExpand(lastActiveTab);
   let shouldSkipCollapsed = (
     !info.byInternalOperation &&
@@ -159,8 +159,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         return false;
       log('successor = ', successor.id);
       if (shouldSkipCollapsed &&
-          (window.lastActiveTab == successor.id ||
-           successor.$TST.descendants.some(tab => tab.id == window.lastActiveTab)) &&
+          (win.lastActiveTab == successor.id ||
+           successor.$TST.descendants.some(tab => tab.id == win.lastActiveTab)) &&
           focusDirection > 0) {
         log('=> redirect successor (focus moved from the successor itself or its descendants)');
         successor = successor.$TST.nearestVisibleFollowingTab;
@@ -191,7 +191,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       );
       TSTAPI.clearCache(cache);
       if (allowed) {
-        window.lastActiveTab = successor.id;
+        win.lastActiveTab = successor.id;
         if (mMaybeTabSwitchingByShortcut)
           setupDelayedExpand(successor);
         TabsInternalOperation.activateTab(successor, { silently: true });
@@ -209,7 +209,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
-    window.lastActiveTab = tab.id;
+    win.lastActiveTab = tab.id;
     tryHighlightBundledTab(tab, {
       ...info,
       shouldSkipCollapsed
@@ -223,7 +223,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     await handleNewActiveTab(tab, info);
   }
   tab.$TST.temporaryMetadata.delete('discardOnCompletelyLoaded');
-  window.lastActiveTab = tab.id;
+  win.lastActiveTab = tab.id;
 
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
@@ -430,8 +430,8 @@ function onMessage(message, sender) {
       log('kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH ', message.modifier);
       mMaybeTabSwitchingByShortcut = true;
       if (sender.tab && sender.tab.active) {
-        const window = TabsStore.windows.get(sender.tab.windowId);
-        window.lastActiveTab = sender.tab.id;
+        const win = TabsStore.windows.get(sender.tab.windowId);
+        win.lastActiveTab = sender.tab.id;
       }
       if (sender.tab)
         mLastTabsCountInWindow.set(sender.tab.windowId, Tab.getAllTabs(sender.tab.windowId).length);

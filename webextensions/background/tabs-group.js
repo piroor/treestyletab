@@ -161,8 +161,8 @@ export async function tryReplaceTabWithGroup(tab, { windowId, parent, children, 
     title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
     ...temporaryStateParams(configs.groupTabTemporaryStateForOrphanedTabs)
   });
-  const window = TabsStore.windows.get(windowId);
-  window.toBeOpenedTabsWithPositions++;
+  const win = TabsStore.windows.get(windowId);
+  win.toBeOpenedTabsWithPositions++;
   const groupTab = await TabsOpen.openURIInTab(uri, {
     windowId,
     insertBefore,

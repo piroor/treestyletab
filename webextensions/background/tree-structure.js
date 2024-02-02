@@ -13,7 +13,6 @@ import {
   toLines,
   configs,
   wait,
-  nextFrame,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -57,19 +56,19 @@ export function startTracking() {
 }
 
 export function reserveToSaveTreeStructure(windowId) {
-  const window = TabsStore.windows.get(windowId);
-  if (!window)
+  const win = TabsStore.windows.get(windowId);
+  if (!win)
     return;
 
-  if (window.waitingToSaveTreeStructure)
-    clearTimeout(window.waitingToSaveTreeStructure);
-  window.waitingToSaveTreeStructure = setTimeout(() => {
+  if (win.waitingToSaveTreeStructure)
+    clearTimeout(win.waitingToSaveTreeStructure);
+  win.waitingToSaveTreeStructure = setTimeout(() => {
     saveTreeStructure(windowId);
   }, 150);
 }
 async function saveTreeStructure(windowId) {
-  const window = TabsStore.windows.get(windowId);
-  if (!window)
+  const win = TabsStore.windows.get(windowId);
+  if (!win)
     return;
 
   const structure = TreeBehavior.getTreeStructureFromTabs(Tab.getAllTabs(windowId));
@@ -83,16 +82,16 @@ async function saveTreeStructure(windowId) {
 export async function loadTreeStructure(windows, restoredFromCacheResults) {
   log('loadTreeStructure');
   MetricsData.add('loadTreeStructure: start');
-  return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async window => {
+  return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async win => {
     if (restoredFromCacheResults &&
-        restoredFromCacheResults.get(window.id)) {
-      log(`skip tree structure restoration for window ${window.id} (restored from cache)`);
+        restoredFromCacheResults.get(win.id)) {
+      log(`skip tree structure restoration for window ${win.id} (restored from cache)`);
       return;
     }
-    const tabs = Tab.getAllTabs(window.id);
+    const tabs = Tab.getAllTabs(win.id);
     let windowStateCompletelyApplied = false;
     try {
-      const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
+      const structure = await browser.sessions.getWindowValue(win.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
       let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
       MetricsData.add('loadTreeStructure: read stored data');
       if (structure &&
@@ -130,7 +129,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
       MetricsData.add('loadTreeStructure: failed to apply tree structure');
     }
     if (!windowStateCompletelyApplied) {
-      log(`Tree information for the window ${window.id} is not same to actual state. Fallback to restoration from tab relations.`);
+      log(`Tree information for the window ${win.id} is not same to actual state. Fallback to restoration from tab relations.`);
       MetricsData.add('loadTreeStructure: fallback to reserveToAttachTabFromRestoredInfo');
       const unattachedTabs = new Set(tabs);
       for (const tab of tabs) {
@@ -445,7 +444,7 @@ Tab.onRestored.addListener(tab => {
         if (count == 0) {
           mRestoringTabs.delete(tab.windowId);
           mMaxRestoringTabs.delete(tab.windowId);
-          nextFrame().then(() => { // unblock in the next event loop, after other asynchronous operations are finished
+          window.requestAnimationFrame(() => { // unblock in the next event loop, after other asynchronous operations are finished
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
           });
 

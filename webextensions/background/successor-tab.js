@@ -293,11 +293,11 @@ Tab.onRemoving.addListener((tab, removeInfo = {}) => {
 Tab.onRemoved.addListener((tab, info = {}) => {
   updateActiveTab(info.windowId);
 
-  const window = TabsStore.windows.get(info.windowId);
-  if (!window)
+  const win = TabsStore.windows.get(info.windowId);
+  if (!win)
     return;
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
-  window.clearLastRelatedTabs();
+  win.clearLastRelatedTabs();
 });
 
 Tab.onMoved.addListener((tab, info = {}) => {
@@ -316,10 +316,10 @@ Tab.onAttached.addListener((_tab, info = {}) => {
 Tab.onDetached.addListener((_tab, info = {}) => {
   updateActiveTab(info.oldWindowId);
 
-  const window = TabsStore.windows.get(info.oldWindowId);
-  if (window) {
+  const win = TabsStore.windows.get(info.oldWindowId);
+  if (win) {
     log(`clear lastRelatedTabs for ${info.windowId} by tabs.onDetached`);
-    window.clearLastRelatedTabs();
+    win.clearLastRelatedTabs();
   }
 });
 

@@ -273,7 +273,7 @@ export default class Window {
 Window.onInitialized = new EventListenerManager();
 
 Window.init = windowId => {
-  const window = TabsStore.windows.get(windowId) || new Window(windowId);
-  Window.onInitialized.dispatch(window);
-  return window;
+  const win = TabsStore.windows.get(windowId) || new Window(windowId);
+  Window.onInitialized.dispatch(win);
+  return win;
 }

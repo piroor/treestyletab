@@ -678,10 +678,10 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kCREATE:
       return (async () => {
         const windowId = message.params.windowId;
-        const window = TabsStore.windows.get(windowId);
-        if (!window)
+        const win = TabsStore.windows.get(windowId);
+        if (!win)
           throw new Error(`invalid windowId ${windowId}: it must be valid window id`);
-        window.bypassTabControlCount++;
+        win.bypassTabControlCount++;
         const tab = await TabsOpen.openURIInTab(message.params, { windowId });
         const treeItem = new TSTAPI.TreeItem(tab);
         const exported = treeItem.exportFor(sender.id);

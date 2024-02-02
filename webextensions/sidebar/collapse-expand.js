@@ -30,9 +30,8 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   log as internalLogger,
-  nextFrame,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -143,7 +142,7 @@ export async function setCollapsed(tab, info = {}) {
     manager.removeListener(onCompleted);
   };
 
-  nextFrame().then(() => {
+  window.requestAnimationFrame(() => {
     if (cancelled ||
         !TabsStore.ensureLivingTab(tab)) { // it was removed while waiting
       onCanceled();

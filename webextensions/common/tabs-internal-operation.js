@@ -32,18 +32,18 @@ export async function activateTab(tab, { byMouseOperation, keepMultiselection, s
   if (!tab)
     return;
   log('activateTab: ', dumpTab(tab));
-  const window = TabsStore.windows.get(tab.windowId);
-  window.internalFocusCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.internalFocusCount++;
   if (byMouseOperation)
-    window.internalByMouseFocusCount++;
+    win.internalByMouseFocusCount++;
   if (silently)
-    window.internalSilentlyFocusCount++;
+    win.internalSilentlyFocusCount++;
   const onError = (e) => {
-    window.internalFocusCount--;
+    win.internalFocusCount--;
     if (byMouseOperation)
-      window.internalByMouseFocusCount--;
+      win.internalByMouseFocusCount--;
     if (silently)
-      window.internalSilentlyFocusCount--;
+      win.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
   if (configs.supportTabsMultiselect &&
@@ -59,7 +59,7 @@ export async function activateTab(tab, { byMouseOperation, keepMultiselection, s
       }
     }
     if (tabs.length == 1)
-      window.tabsToBeHighlightedAlone.add(tab.id);
+      win.tabsToBeHighlightedAlone.add(tab.id);
     log('setting tab highlighted ', configs.debug && tabs.map(index => Tab.getTabAt(tab.windowId, index)));
     return browser.tabs.highlight({
       windowId: tab.windowId,
@@ -85,12 +85,12 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
   if (tabs.length == 0)
     return;
 
-  const window = TabsStore.windows.get(tabs[0].windowId);
+  const win = TabsStore.windows.get(tabs[0].windowId);
   const tabIds = [];
   let willChangeFocus = false;
   tabs = tabs.filter(tab => {
-    if ((!window ||
-         !window.internalClosingTabs.has(tab.id)) &&
+    if ((!win ||
+         !win.internalClosingTabs.has(tab.id)) &&
         TabsStore.ensureLivingTab(tab)) {
       tabIds.push(tab.id);
       if (tab.active)
@@ -103,22 +103,22 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
   if (!tabs.length)
     return;
 
-  if (window) {
+  if (win) {
     // Flag tabs to be closed at a time. With this flag TST skips some
     // operations on tab close (for example, opening a group tab to replace
     // a closed parent tab to keep the tree structure).
     for (const tab of tabs) {
-      window.internalClosingTabs.add(tab.id);
+      win.internalClosingTabs.add(tab.id);
       tab.$TST.addState(Constants.kTAB_STATE_TO_BE_REMOVED);
       clearCache(tab);
       if (keepDescendants)
-        window.keepDescendantsTabs.add(tab.id);
+        win.keepDescendantsTabs.add(tab.id);
     }
     if (willChangeFocus && byMouseOperation) {
-      window.internalByMouseFocusCount++;
+      win.internalByMouseFocusCount++;
       setTimeout(() => { // the operation can be canceled
-        if (window.internalByMouseFocusCount > 0)
-          window.internalByMouseFocusCount--;
+        if (win.internalByMouseFocusCount > 0)
+          win.internalByMouseFocusCount--;
       }, 250);
     }
   }
@@ -127,7 +127,7 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
   Tab.onMultipleTabsRemoving.dispatch(sortedTabs, { triggerTab, originalStructure });
 
   const promisedRemoved = browser.tabs.remove(tabIds).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
-  if (window) {
+  if (win) {
     promisedRemoved.then(() => {
       // "beforeunload" listeners in tabs blocks the operation and the
       // returned promise is resolved after all "beforeunload" listeners
@@ -145,9 +145,9 @@ export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalSt
       log(`Clearing "to-be-removed" flag for requested ${tabs.length} tabs...`);
       for (const tab of canceledTabs) {
         tab.$TST.removeState(Constants.kTAB_STATE_TO_BE_REMOVED);
-        window.internalClosingTabs.delete(tab.id);
+        win.internalClosingTabs.delete(tab.id);
         if (keepDescendants)
-          window.keepDescendantsTabs.delete(tab.id);
+          win.keepDescendantsTabs.delete(tab.id);
       }
       Tab.onMultipleTabsRemoved.dispatch(sortedTabs.filter(tab => !canceledTabs.has(tab)), { triggerTab, originalStructure });
     });

@@ -8,7 +8,6 @@
 import {
   log as internalLogger,
   configs,
-  nextFrame,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -314,7 +313,7 @@ TabContextMenu.onTopLevelItemAdded.addListener(reserveToRefreshItems);
 function reserveToRefreshItems() {
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   reserveToRefreshItems.lastStartedAt = startAt;
-  nextFrame().then(() => {
+  window.requestAnimationFrame(() => {
     if (reserveToRefreshItems.lastStartedAt != startAt)
       return;
     addTabItems();

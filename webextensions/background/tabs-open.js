@@ -116,15 +116,15 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
     await TabsMove.waitUntilSynchronized(windowId);
     const startIndex = Tab.calculateNewTabIndex({ insertAfter, insertBefore });
     log('startIndex: ', startIndex);
-    const window = TabsStore.windows.get(windowId);
+    const win = TabsStore.windows.get(windowId);
     if (insertBefore ||
         insertAfter ||
         uris.some(uri => uri && typeof uri == 'object' && 'index' in uri))
-      window.toBeOpenedTabsWithPositions += uris.length;
+      win.toBeOpenedTabsWithPositions += uris.length;
     if (cookieStoreId)
-      window.toBeOpenedTabsWithCookieStoreId += uris.length;
+      win.toBeOpenedTabsWithCookieStoreId += uris.length;
     if (isOrphan)
-      window.toBeOpenedOrphanTabs += uris.length;
+      win.toBeOpenedOrphanTabs += uris.length;
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
         windowId: windowId,

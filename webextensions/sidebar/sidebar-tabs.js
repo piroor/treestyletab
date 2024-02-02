@@ -12,7 +12,6 @@ import {
   wait,
   configs,
   shouldApplyAnimation,
-  nextFrame,
   mapAndFilter,
 } from '/common/common.js';
 
@@ -296,7 +295,7 @@ function reserveToNotifyTabsRendered() {
 
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   reserveToNotifyTabsRendered.lastStartedAt = startAt;
-  nextFrame().then(() => {
+  window.requestAnimationFrame(() => {
     if (reserveToNotifyTabsRendered.lastStartedAt != startAt)
       return;
 
@@ -342,7 +341,7 @@ export function unrenderTab(tab) {
   if (hasInternalListener || hasExtternalListener) {
     const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
     unrenderTab.lastStartedAt = startAt;
-    nextFrame().then(() => {
+    window.requestAnimationFrame(() => {
       if (unrenderTab.lastStartedAt != startAt)
         return;
 
@@ -370,9 +369,9 @@ export function unrenderTab(tab) {
   return removed;
 }
 
-Window.onInitialized.addListener(window => {
-  const windowId = window.id;
-  const win = TabsStore.windows.get(windowId);
+Window.onInitialized.addListener(win => {
+  const windowId = win.id;
+  win = TabsStore.windows.get(windowId);
 
   let pinnedContainer = document.getElementById(`window-${windowId}-pinned`);
   if (!pinnedContainer) {
@@ -598,7 +597,7 @@ const mReindexedTabIds = new Set();
 function reserveToUpdateTabsIndex() {
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   reserveToUpdateTabsIndex.lastStartedAt = startAt;
-  nextFrame().then(() => {
+  window.requestAnimationFrame(() => {
     if (reserveToUpdateTabsIndex.lastStartedAt != startAt)
       return;
 
@@ -669,10 +668,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       // then the new tab Z must be treated as index=2 and the result must become
       // [a,b,Z,c,d] instead of [a,b,c,d,Z]. How should we calculate the index with
       // less amount?
-      const window = TabsStore.windows.get(message.windowId);
+      const win = TabsStore.windows.get(message.windowId);
       let index = 0;
       for (const id of message.order) {
-        if (window.tabs.has(id)) {
+        if (win.tabs.has(id)) {
           nativeTab.index = ++index;
           nativeTab.reindexedBy = `creating/fixed (${nativeTab.index})`;
         }
@@ -830,8 +829,8 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       tab.index = message.toIndex;
       tab.reindexedBy = `moved (${tab.index})`;
-      const window = TabsStore.windows.get(message.windowId);
-      window.trackTab(tab);
+      const win = TabsStore.windows.get(message.windowId);
+      win.trackTab(tab);
 
       for (const tab of Tab.getAllTabs(message.windowId, {
         fromIndex: Math.min(message.fromIndex, message.toIndex),
@@ -1042,10 +1041,10 @@ BackgroundConnection.onMessage.addListener(async message => {
           lastMessage.tabIds.join(',') != message.tabIds.join(','))
         return;
       TabsUpdate.updateTabsHighlighted(message);
-      const window = TabsStore.windows.get(message.windowId);
-      if (!window || !window.containerElement)
+      const win = TabsStore.windows.get(message.windowId);
+      if (!win || !win.containerElement)
         return;
-      window.containerClassList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
+      win.containerClassList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
@@ -1152,8 +1151,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
       tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
-      const window = TabsStore.windows.get(message.windowId);
-      window.untrackTab(message.tabId);
+      const win = TabsStore.windows.get(message.windowId);
+      win.untrackTab(message.tabId);
       unrenderTab(tab);
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);

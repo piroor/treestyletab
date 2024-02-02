@@ -91,7 +91,7 @@ export function init(scrollPosition) {
 export function reserveToRenderVirtualScrollTabs() {
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   renderVirtualScrollTabs.lastStartedAt = startAt;
-  nextFrame().then(() => {
+  window.requestAnimationFrame(() => {
     if (renderVirtualScrollTabs.lastStartedAt != startAt)
       return;
     renderVirtualScrollTabs();
@@ -353,9 +353,9 @@ async function smoothScrollTo(params = {}) {
         justNow:  true
       });
       smoothScrollTo.currentOffset = currentDelta;
-      nextFrame().then(scrollStep);
+      window.requestAnimationFrame(scrollStep);
     };
-    nextFrame().then(scrollStep);
+    window.requestAnimationFrame(scrollStep);
   });
 }
 smoothScrollTo.currentOffset= 0;

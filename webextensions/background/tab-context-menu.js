@@ -966,8 +966,8 @@ async function onClick(info, contextTab) {
     return;
 
   contextTab = contextTab && Tab.get(contextTab.id);
-  const window    = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
-  const windowId  = contextTab && contextTab.windowId || window.id;
+  const win       = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
+  const windowId  = contextTab && contextTab.windowId || win.id;
   const activeTab = TabsStore.activeTabInWindow.get(windowId);
 
   let multiselectedTabs = Tab.getSelectedTabs(windowId);

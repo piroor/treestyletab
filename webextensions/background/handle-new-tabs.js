@@ -281,8 +281,8 @@ async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavi
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   // We need to prevent grouping of this original tab and the reopened tab
   // by the "multiple tab opened in XXX msec" feature.
-  const window = TabsStore.windows.get(tab.windowId);
-  window.openedNewTabs.delete(tab.id);
+  const win = TabsStore.windows.get(tab.windowId);
+  win.openedNewTabs.delete(tab.id);
   await TabsOpen.openURIInTab(url || null, {
     windowId: activeTab.windowId,
     parent,
@@ -487,17 +487,17 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       return;
     }
 
-    const window = TabsStore.windows.get(tab.windowId);
-    log('window.openedNewTabs ', window.openedNewTabs);
+    const win = TabsStore.windows.get(tab.windowId);
+    log('win.openedNewTabs ', win.openedNewTabs);
     if (tab.$TST.parent ||
         !possibleOpenerTab ||
-        window.openedNewTabs.has(tab.id) ||
+        win.openedNewTabs.has(tab.id) ||
         tab.$TST.temporaryMetadata.has('openedWithOthers') ||
         tab.$TST.temporaryMetadata.has('positionedBySelf')) {
       log(' => no need to control ', {
         parent: tab.$TST.parent,
         possibleOpenerTab,
-        openedNewTab: window.openedNewTabs.has(tab.id),
+        openedNewTab: win.openedNewTabs.has(tab.id),
         openedWithOthers: tab.$TST.temporaryMetadata.has('openedWithOthers'),
         positionedBySelf: tab.$TST.temporaryMetadata.has('positionedBySelf')
       });
