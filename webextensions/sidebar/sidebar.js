@@ -945,6 +945,7 @@ async function onConfigChange(changedKey) {
 
     case 'faviconizePinnedTabs':
       rootClasses.toggle(Constants.kTABBAR_STATE_FAVICONIZE_PINNED_TABS, configs[changedKey]);
+      PinnedTabs.reserveToReposition();
       break;
 
     case 'style':
