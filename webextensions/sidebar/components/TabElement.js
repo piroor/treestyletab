@@ -263,12 +263,13 @@ export class TabElement extends HTMLElement {
     this._substanceElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
     this._labelElement.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._labelElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
-    this._labelElement.applyAttributes();
 
     if (this.tab)
       this.dataset.index =
         this._substanceElement.dataset.index =
           this._labelElement.dataset.index =this.tab.index;
+
+    this._labelElement.applyAttributes();
   }
 
   invalidate(targets) {

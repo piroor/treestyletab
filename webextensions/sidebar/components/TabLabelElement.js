@@ -120,6 +120,7 @@ export class TabLabelElement extends HTMLElement {
     // for convenience on customization with custom user styles
     this._content.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._content.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
+    this._content.dataset.index = this.dataset.index;
   }
 
   updateTextContent() {
