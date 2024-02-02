@@ -16,6 +16,7 @@ import {
   sanitizeForRegExpSource,
   isNewTabCommandTab,
   configs,
+  nextFrame,
 } from './common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -172,7 +173,7 @@ export default class Tab {
     element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
-    setTimeout(() => { // wait until initialization processes are completed
+    nextFrame().then(() => { // wait until initialization processes are completed
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
         this.promisedElement = new Promise((resolve, _reject) => {
@@ -180,7 +181,7 @@ export default class Tab {
         });
       }
       Tab.onElementBound.dispatch(this.tab);
-    }, 0);
+    });
   }
 
   unbindElement() {

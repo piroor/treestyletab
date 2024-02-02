@@ -11,6 +11,7 @@ import {
   configs,
   sanitizeForHTMLText,
   compareAsNumber,
+  nextFrame,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -229,12 +230,12 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     url:   '/resources/blank.html',  // for popup, required on Firefox ESR68
     title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'), // for popup
     onShownInPopup(container) {
-      setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
+      nextFrame().then(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
         const style = container.querySelector('ul').style;
         style.height = '0px'; // this makes the box shrinkable
         style.maxHeight = 'none';
         style.minHeight = '0px';
-      }, 0);
+      });
     }
   });
 

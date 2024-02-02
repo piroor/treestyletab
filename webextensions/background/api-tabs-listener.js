@@ -30,7 +30,8 @@ import {
   log as internalLogger,
   dumpTab,
   toLines,
-  configs
+  configs,
+  nextFrame,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -581,11 +582,11 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
-      setTimeout(() => {
+      nextFrame.then(() => {
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         window.openingTabs.delete(tab.id);
-      }, 0);
+      });
     }
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
@@ -1024,7 +1025,7 @@ async function onAttached(tabId, attachInfo) {
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
-          setTimeout(onAttached, 100, tabId, attachInfo);
+          nextFrame.then(() => onAttached(tabId, attachInfo));
           return;
         }
         console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);

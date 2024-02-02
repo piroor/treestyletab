@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  nextFrame,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -311,15 +312,15 @@ addBookmarkItems.done = false;
 TabContextMenu.onTopLevelItemAdded.addListener(reserveToRefreshItems);
 
 function reserveToRefreshItems() {
-  if (reserveToRefreshItems.reserved)
-    clearTimeout(reserveToRefreshItems.reserved);
-  reserveToRefreshItems.reserved = setTimeout(() => {
-    reserveToRefreshItems.reserved = null;
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToRefreshItems.lastStartedAt = startAt;
+  nextFrame().then(() => {
+    if (reserveToRefreshItems.lastStartedAt != startAt)
+      return;
     addTabItems();
     addBookmarkItems();
-  }, 100);
+  });
 }
-reserveToRefreshItems.reserved = null;
 
 function updateItem(id, params) {
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());

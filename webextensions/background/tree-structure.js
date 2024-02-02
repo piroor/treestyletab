@@ -12,7 +12,8 @@ import {
   dumpTab,
   toLines,
   configs,
-  wait
+  wait,
+  nextFrame,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -444,9 +445,9 @@ Tab.onRestored.addListener(tab => {
         if (count == 0) {
           mRestoringTabs.delete(tab.windowId);
           mMaxRestoringTabs.delete(tab.windowId);
-          setTimeout(() => { // unblock in the next event loop, after other asynchronous operations are finished
+          nextFrame().then(() => { // unblock in the next event loop, after other asynchronous operations are finished
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
-          }, 0);
+          });
 
           const countToBeRestored = mRecentlyClosedTabs.filter(tab => !mRestoredTabIds.has(tab.uniqueId));
           log('countToBeRestored: ', countToBeRestored);
