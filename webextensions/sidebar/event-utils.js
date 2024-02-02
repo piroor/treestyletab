@@ -155,7 +155,8 @@ function getTabFromCoordinates(event, options = {}) {
     return tab;
 
   const container = getTabbarFromEvent(event);
-  if (!container)
+  if (!container ||
+      container.classList.contains('pinned'))
     return null;
 
   // because tab style can be modified, we try to find tab from
