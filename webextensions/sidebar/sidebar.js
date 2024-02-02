@@ -838,7 +838,7 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
     });
   }
 
-  Scroll.reserveToRenderVirtualScrollTabs();
+  Scroll.reserveToRenderVirtualScrollViewport();
   if (overflow) {
     window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
@@ -900,13 +900,11 @@ ContextualIdentities.onUpdated.addListener(() => {
 
 CollapseExpand.onReadyToExpand.addListener(async tab => {
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-  Scroll.reserveToRenderVirtualScrollTabs();
   await nextFrame();
 });
 
 CollapseExpand.onUpdated.addListener((tab, options) => {
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-  Scroll.reserveToRenderVirtualScrollTabs();
   const reason = options.collapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
   reserveToUpdateTabbarLayout({ reason });
 });

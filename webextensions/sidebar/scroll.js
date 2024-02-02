@@ -72,10 +72,10 @@ export function init(scrollPosition) {
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
   SidebarTabs.onNormalTabsChanged.addListener(_tab => {
-    reserveToRenderVirtualScrollTabs();
+    reserveToRenderVirtualScrollViewport();
   });
 
-  reserveToRenderVirtualScrollTabs();
+  reserveToRenderVirtualScrollViewport();
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
@@ -88,20 +88,20 @@ export function init(scrollPosition) {
 
 /* virtual scrolling */
 
-export function reserveToRenderVirtualScrollTabs() {
+export function reserveToRenderVirtualScrollViewport() {
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
-  renderVirtualScrollTabs.lastStartedAt = startAt;
+  renderVirtualScrollViewport.lastStartedAt = startAt;
   window.requestAnimationFrame(() => {
-    if (renderVirtualScrollTabs.lastStartedAt != startAt)
+    if (renderVirtualScrollViewport.lastStartedAt != startAt)
       return;
-    renderVirtualScrollTabs();
+    renderVirtualScrollViewport();
   });
 }
 
 let mLastRenderedVirtualScrollTabIds = [];
 
-export function renderVirtualScrollTabs() {
-  renderVirtualScrollTabs.lastStartedAt = null;
+function renderVirtualScrollViewport() {
+  renderVirtualScrollViewport.lastStartedAt = null;
 
   const startAt = Date.now();
 
@@ -135,7 +135,7 @@ export function renderVirtualScrollTabs() {
 
   const toBeRenderedTabIds = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1).map(tab => tab.id);
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
-  log('renderVirtualScrollTabs ', {
+  log('renderVirtualScrollViewport ', {
     firstRenderableIndex,
     lastRenderableIndex,
     old: mLastRenderedVirtualScrollTabIds,
@@ -597,7 +597,7 @@ async function onWheel(event) {
 
 function onScroll(event) {
   if (event.currentTarget == mNormalScrollBox)
-    reserveToRenderVirtualScrollTabs();
+    reserveToRenderVirtualScrollViewport();
   reserveToSaveScrollPosition();
 }
 
@@ -856,7 +856,8 @@ function onMessageExternal(message, _aSender) {
 CollapseExpand.onUpdating.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
-  reserveToRenderVirtualScrollTabs();
+  if (!tab.pinned)
+    reserveToRenderVirtualScrollViewport();
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
@@ -867,7 +868,8 @@ CollapseExpand.onUpdating.addListener((tab, options) => {
 CollapseExpand.onUpdated.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
-  reserveToRenderVirtualScrollTabs();
+  if (!tab.pinned)
+    reserveToRenderVirtualScrollViewport();
   if (options.last)
     scrollToTab(tab, {
       anchor:            isTabInViewport(options.anchor) && options.anchor,
