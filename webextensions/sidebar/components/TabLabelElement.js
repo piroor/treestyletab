@@ -60,7 +60,7 @@ export class TabLabelElement extends HTMLElement {
 
     if (this.initialized) {
       this._startListening();
-      this._applyAttributes();
+      this.applyAttributes();
       this.updateTextContent();
       return;
     }
@@ -88,7 +88,7 @@ export class TabLabelElement extends HTMLElement {
     content.classList.add(kCONTENT_CLASS_NAME);
 
     this._startListening();
-    this._applyAttributes();
+    this.applyAttributes();
     this.updateTextContent();
   }
 
@@ -116,7 +116,7 @@ export class TabLabelElement extends HTMLElement {
     }
   }
 
-  _applyAttributes() {
+  applyAttributes() {
     // for convenience on customization with custom user styles
     this._content.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._content.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
