@@ -530,23 +530,6 @@ Tab.onHidden.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
-browser.runtime.onMessage.addListener((message, _sender) => {
-  switch (message && message.type) {
-    case Constants.kCOMMAND_GET_ON_MEMORY_CACHE:
-      return Promise.resolve(mCaches[message.key]);
-
-    case Constants.kCOMMAND_SET_ON_MEMORY_CACHE:
-      if (message.value)
-        mCaches[message.key] = message.value;
-      else
-        delete mCaches[message.key];
-      return;
-
-    default:
-      return;
-  }
-});
-
 browser.windows.onRemoved.addListener(async windowId => {
   try {
     CacheStorage.clearForWindow(windowId);
