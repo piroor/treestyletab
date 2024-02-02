@@ -78,10 +78,10 @@ export function queryAll(query) {
   const startAt = Date.now();
   if (query.windowId || query.ordered) {
     let tabs = [];
-    for (const window of windows.values()) {
-      if (query.windowId && !matched(window.id, query.windowId))
+    for (const win of windows.values()) {
+      if (query.windowId && !matched(win.id, query.windowId))
         continue;
-      const [sourceTabs, offset] = sourceTabsForQuery(query, window);
+      const [sourceTabs, offset] = sourceTabsForQuery(query, win);
       tabs = tabs.concat(query.iterator ? getMatchedTabsIterator(sourceTabs, query, offset) : extractMatchedTabs(sourceTabs, query, offset));
     }
     query.elapsed = Date.now() - startAt;
@@ -106,30 +106,30 @@ export function queryAll(query) {
   }
 }
 
-function sourceTabsForQuery(query, window) {
+function sourceTabsForQuery(query, win) {
   let offset = 0;
   if (!query.ordered)
-    return [query.tabs && query.tabs.values() || window.tabs.values(), offset];
+    return [query.tabs && query.tabs.values() || win.tabs.values(), offset];
   let fromId;
   let toId = query.toId;
   if (typeof query.index == 'number') {
-    fromId = window.order[query.index];
+    fromId = win.order[query.index];
     offset = query.index;
   }
   if (typeof query.fromIndex == 'number') {
-    fromId = window.order[query.fromIndex];
+    fromId = win.order[query.fromIndex];
     offset = query.fromIndex;
   }
   if (typeof query.toIndex == 'number') {
-    toId = window.order[query.toIndex];
+    toId = win.order[query.toIndex];
   }
   if (typeof fromId != 'number') {
     fromId = query.fromId;
-    offset = window.order.indexOf(query.fromId);
+    offset = win.order.indexOf(query.fromId);
   }
   if (query.last || query.reversed)
-    return [window.getReversedOrderedTabs(fromId, toId, query.tabs), offset];
-  return [window.getOrderedTabs(fromId, toId, query.tabs), offset];
+    return [win.getReversedOrderedTabs(fromId, toId, query.tabs), offset];
+  return [win.getOrderedTabs(fromId, toId, query.tabs), offset];
 }
 
 function extractMatchedTabs(tabs, query, offset) {
@@ -283,10 +283,10 @@ export function query(query) {
   const startAt = Date.now();
   let tabs = [];
   if (query.windowId || query.ordered) {
-    for (const window of windows.values()) {
-      if (query.windowId && !matched(window.id, query.windowId))
+    for (const win of windows.values()) {
+      if (query.windowId && !matched(win.id, query.windowId))
         continue;
-      const [sourceTabs, offset] = sourceTabsForQuery(query, window);
+      const [sourceTabs, offset] = sourceTabsForQuery(query, win);
       tabs = tabs.concat(extractMatchedTabs(sourceTabs, query, offset));
       if (tabs.length > 0)
         break;

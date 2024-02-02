@@ -375,7 +375,7 @@ export async function reserveToCacheTree(windowId) {
     return;
 
   const win = TabsStore.windows.get(windowId);
-  if (!window)
+  if (!win)
     return;
 
   // If there is any opening (but not resolved its unique id yet) tab,

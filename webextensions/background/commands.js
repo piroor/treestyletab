@@ -550,11 +550,11 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   }
 
   if (params.import) {
-    const window = TabsStore.windows.get(destinationWindowId);
+    const win = TabsStore.windows.get(destinationWindowId);
     const initialIndex = params.insertBefore ? params.insertBefore.index :
       params.insertAfter ? params.insertAfter.index+1 :
-        window.tabs.size;
-    window.toBeOpenedOrphanTabs += tabs.length;
+        win.tabs.size;
+    win.toBeOpenedOrphanTabs += tabs.length;
     movedTabs = [];
     let index = 0;
     for (const tab of tabs) {
@@ -919,8 +919,8 @@ export async function openTabInWindow(tab, options = {}) {
       tabId:     tab.id,
       ...getWindowParamsFromSource(sourceWindow, options),
     };
-    const window = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
-    return window.id;
+    const win = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
+    return win.id;
   }
 }
 
@@ -1286,9 +1286,9 @@ Sync.onMessage.addListener(async message => {
   });
 
   const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
-  const window = TabsStore.windows.get(windowId);
-  const initialIndex = window.tabs.size;
-  window.toBeOpenedOrphanTabs += data.tabs.length;
+  const win = TabsStore.windows.get(windowId);
+  const initialIndex = win.tabs.size;
+  win.toBeOpenedOrphanTabs += data.tabs.length;
   let index = 0;
   const tabs = [];
   for (const tab of data.tabs) {

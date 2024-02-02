@@ -148,8 +148,8 @@ function updateOffset() {
   }
   mLastWindowDimension = dimension;
   mLastMozInnerScreenY = window.mozInnerScreenY;
-  browser.windows.get(mWindowId).then(window => {
-    mDataset.ownerWindowState = window.state;
+  browser.windows.get(mWindowId).then(win => {
+    mDataset.ownerWindowState = win.state;
   });
 }
 
