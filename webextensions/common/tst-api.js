@@ -64,6 +64,7 @@ export const onMessageExternal = {
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
+export const kGET_VERSION           = 'get-version';
 export const kWAIT_FOR_SHUTDOWN     = 'wait-for-shutdown';
 export const kPING                  = 'ping';
 export const kNOTIFY_READY          = 'ready';

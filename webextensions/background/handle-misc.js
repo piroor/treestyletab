@@ -441,6 +441,9 @@ function onMessageExternal(message, sender) {
     return;
 
   switch (message.type) {
+    case TSTAPI.kGET_VERSION:
+      return Promise.resolve(browser.runtime.getManifest().version);
+
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
