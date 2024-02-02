@@ -2,6 +2,9 @@
 
  - master/HEAD
    * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
+     * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container-wrapper > .tabs.pinned` and `#normal-tabs-container-wrapper > .virtual-scroll-container > .tabs.normal`.
+     * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
+     * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
    * API: Add new notification type [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
    * API: Support [bulk messaging (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) for better performance.
  - 3.9.21 (2024.1.26)
