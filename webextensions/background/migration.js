@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 30;
+const kCONFIGS_VERSION = 31;
 const kFEATURES_VERSION = 9;
 
 export function migrateConfigs() {
@@ -304,6 +304,15 @@ export function migrateConfigs() {
             configs[key] = Constants.kNEWTAB_OPEN_AS_CHILD_TOP;
         }
       }
+
+    case 30:
+      browser.windows.getAll().then(windows => {
+        for (const win of windows) {
+          browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
+          browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+          browser.sessions.removeWindowValue(win.id, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        }
+      });
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
