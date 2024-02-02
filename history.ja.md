@@ -6,6 +6,7 @@
      * 各タブの要素は [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index) に対応する属性 `data-index` を持つようになりました
      * この設計変更により、CSSの`counter`を使用したカスタマイズは期待通りに動作しなくなりました（同等のことをするにはヘルパーアドオンを作成する必要があります）
    * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
+   * API: [`get-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
    * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送れるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)
  - 3.9.21 (2024.1.26)
    * [3.9.20でのオンメモリーキャッシュ使用時のパフォーマンスの低下](https://github.com/piroor/treestyletab/issues/3434)を解消した
