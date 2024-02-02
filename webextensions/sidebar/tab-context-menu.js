@@ -679,7 +679,7 @@ async function onContextMenu(event) {
     return;
   }
 
-  const originalTargetTabElement = originalTarget && originalTarget.closest('[data-tab-id]');
+  const originalTargetTabElement = originalTarget && originalTarget.closest('tab-item[data-tab-id]');
   const tab = originalTargetTabElement ?
     TabsStore.ensureLivingTab(Tab.get(parseInt(originalTargetTabElement.dataset.tabId))) :
     EventUtils.getTabFromEvent(event);
