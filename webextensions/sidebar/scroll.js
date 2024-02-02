@@ -155,11 +155,13 @@ export function renderVirtualScrollTabs() {
         const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
         //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
         for (const id of ids) {
+          const tab = Tab.get(id);
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
-          if (toBeRenderedTabIdSet.has(id))
+          if (toBeRenderedTabIdSet.has(id) ||
+              !mNormalScrollBox.contains(tab.$TST.element))
             continue;
-          SidebarTabs.unrenderTab(Tab.get(id));
+          SidebarTabs.unrenderTab(tab);
           offsetCount--;
         }
       }; break;
@@ -178,9 +180,11 @@ export function renderVirtualScrollTabs() {
         const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
         //log('replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
         for (const id of deleteIds) {
+          const tab = Tab.get(id);
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
-          if (toBeRenderedTabIdSet.has(id))
+          if (toBeRenderedTabIdSet.has(id) ||
+              !mNormalScrollBox.contains(tab.$TST.element))
             continue;
           SidebarTabs.unrenderTab(Tab.get(id));
           offsetCount--;
