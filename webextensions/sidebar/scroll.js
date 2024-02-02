@@ -143,7 +143,6 @@ function renderVirtualScrollViewport() {
     renderOperations,
   });
 
-  let offsetCount = 0;
   const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
   for (const operation of renderOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
@@ -163,23 +162,14 @@ function renderVirtualScrollViewport() {
               !mNormalScrollBox.contains(tab.$TST.element))
             continue;
           SidebarTabs.unrenderTab(tab);
-          offsetCount--;
         }
       }; break;
 
-      case 'insert': {
-        const ids = toBeRenderedTabIds.slice(toStart, toEnd);
-        //log('insert: ', { fromStart, fromEnd, toStart, toEnd }, ids);
-        for (const id of ids) {
-          SidebarTabs.renderTabAt(Tab.get(id), fromStart + offsetCount);
-          offsetCount++;
-        }
-      }; break;
-
+      case 'insert':
       case 'replace': {
         const deleteIds = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
         const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
-        //log('replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
+        //log('insert or replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
         for (const id of deleteIds) {
           const tab = Tab.get(id);
           // We don't need to remove already rendered tab,
@@ -189,11 +179,12 @@ function renderVirtualScrollViewport() {
               !mNormalScrollBox.contains(tab.$TST.element))
             continue;
           SidebarTabs.unrenderTab(Tab.get(id));
-          offsetCount--;
         }
+        const referenceTab = fromStart < mLastRenderedVirtualScrollTabIds.length ?
+          Tab.get(mLastRenderedVirtualScrollTabIds[fromStart]) :
+          null;
         for (const id of insertIds) {
-          SidebarTabs.renderTab(Tab.get(id), fromStart + offsetCount);
-          offsetCount++;
+          SidebarTabs.renderTabBefore(Tab.get(id), referenceTab);
         }
       }; break;
     }

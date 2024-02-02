@@ -211,7 +211,7 @@ async function syncTabsOrder() {
 }
 
 export function renderTab(tab) {
-  return renderTabAt(tab);
+  return renderTabBefore(tab, undefined);
 }
 
 function getTabElementId(tab) {
@@ -221,7 +221,7 @@ function getTabElementId(tab) {
 const mRenderedTabIds = new Set();
 const mUnrenderedTabIds = new Set();
 
-export function renderTabAt(tab, index = -1) {
+export function renderTabBefore(tab, referenceTab = undefined) {
   if (!tab) {
     console.log('WARNING: Null tab has requested to be rendered! ', new Error().stack);
     return false;
@@ -250,11 +250,8 @@ export function renderTabAt(tab, index = -1) {
     win.pinnedContainerElement :
     win.containerElement;
 
-  let nextElement = null;
-  if (index >= 0 && index < containerElement.childNodes.length) {
-    nextElement = containerElement.childNodes[index];
-  }
-  else {
+  let nextElement = referenceTab && referenceTab.$TST.element;
+  if (nextElement === undefined) {
     const nextTab = tab.$TST.nearestSameTypeRenderedTab;
     log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
     nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
