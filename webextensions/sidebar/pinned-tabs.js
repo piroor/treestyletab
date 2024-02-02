@@ -37,6 +37,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as BackgroundConnection from './background-connection.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -83,8 +84,9 @@ export function reposition(options = {}) {
   const visualGap = parseFloat(window.getComputedStyle(mTabBar, null).getPropertyValue('--visual-gap-offset').replace(/px$/));
   const allTabsAreaHeight = mTabBar.parentNode.getBoundingClientRect().height + visualGap;
   mMaxVisibleRows = Math.max(0, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
+  const contentsHeight = height * maxRow + (faviconized ? 0 : Size.getTabYOffset());
   mAreaHeight = Math.min(
-    height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
+    contentsHeight,
     mMaxVisibleRows * height
   );
   document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
@@ -121,6 +123,7 @@ export function reposition(options = {}) {
       //log('=> new row');
     }
   }
+  SidebarTabs.pinnedContainerWrapper.classList.toggle('overflow', contentsHeight > mAreaHeight);
 }
 
 export function reserveToReposition(options = {}) {

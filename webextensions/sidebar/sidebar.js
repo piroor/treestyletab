@@ -41,10 +41,10 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as EventUtils from './event-utils.js';
 import * as GapCanceller from './gap-canceller.js';
 import * as Indent from './indent.js';
-import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as Scroll from './scroll.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 import * as SubPanel from './subpanel.js';
 import * as TabContextMenu from './tab-context-menu.js';
@@ -235,14 +235,6 @@ export async function init() {
       document.addEventListener('blur', onBlur);
       window.addEventListener('resize', onResize);
       mTabBar.addEventListener('transitionend', onTransisionEnd);
-      SidebarTabs.pinnedContainerWrapper.addEventListener('overflow', event => {
-        if (event.target == event.currentTarget)
-          event.currentTarget.classList.add('overflow');
-      });
-      SidebarTabs.pinnedContainerWrapper.addEventListener('underflow', event => {
-        if (event.target == event.currentTarget)
-          event.currentTarget.classList.remove('overflow');
-      });
 
       browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 

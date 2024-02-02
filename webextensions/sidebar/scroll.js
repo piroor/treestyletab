@@ -159,6 +159,7 @@ function renderVirtualScrollViewport() {
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
           if (toBeRenderedTabIdSet.has(id) ||
+              !tab ||
               !mNormalScrollBox.contains(tab.$TST.element))
             continue;
           SidebarTabs.unrenderTab(tab);
@@ -184,6 +185,7 @@ function renderVirtualScrollViewport() {
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
           if (toBeRenderedTabIdSet.has(id) ||
+              !tab ||
               !mNormalScrollBox.contains(tab.$TST.element))
             continue;
           SidebarTabs.unrenderTab(Tab.get(id));
