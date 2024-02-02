@@ -214,9 +214,9 @@ export function getTabRect(tab) {
   if (tab.pinned)
     return tab.$TST.element.getBoundingClientRect();
 
-  const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId);
+  const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId).map(tab => tab.id);
   const tabSize        = Size.getTabHeight();
-  const index          = renderableTabs.indexOf(tab);
+  const index          = renderableTabs.indexOf(tab.id);
   const scrollBox      = getScrollBoxFor(tab);
   const scrollBoxRect  = scrollBox.getBoundingClientRect();
   const tabTop         = tabSize * index + scrollBoxRect.top - scrollBox.scrollTop;
@@ -257,6 +257,8 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   tab = Tab.get(tab && tab.id);
   if (!tab)
     return 0;
+
+  tab = tab.$TST.nearestVisibleAncestorOrSelf;
 
   const tabRect       = getTabRect(tab);
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
