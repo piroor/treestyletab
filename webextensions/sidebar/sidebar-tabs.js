@@ -62,7 +62,7 @@ export function init() {
 }
 
 function getTabContainerElement(tab) {
-  return document.querySelector(`.tabs.${tab.pinned ? 'pinned' : 'unpinned'}`);
+  return document.querySelector(`.tabs.${tab.pinned ? 'pinned' : 'normal'}`);
 }
 
 export function getTabFromDOMNode(node, options = {}) {
@@ -385,7 +385,7 @@ Window.onInitialized.addListener(window => {
   container.dataset.windowId = windowId;
   container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
-  container.classList.add('unpinned');
+  container.classList.add('normal');
   container.setAttribute('role', 'listbox');
   container.setAttribute('aria-multiselectable', 'true');
   container.$TST = win;

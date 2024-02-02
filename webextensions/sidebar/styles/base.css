@@ -266,7 +266,7 @@ tab-sound-button */ {
   direction: rtl;
 }
 :root.left .tabs.pinned,
-:root.left .tabs.unpinned,
+:root.left .tabs.normal,
 :root.left #tabbar .after-tabs {
   direction: ltr;
 }
