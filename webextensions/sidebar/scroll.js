@@ -537,11 +537,12 @@ export function autoScrollOnMouseEvent(event) {
   if (!scrollBox || !scrollBox.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
-  if (autoScrollOnMouseEvent.timer)
-    clearTimeout(autoScrollOnMouseEvent.timer);
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  autoScrollOnMouseEvent.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (autoScrollOnMouseEvent.lastStartedAt != startAt)
+      return;
 
-  autoScrollOnMouseEvent.timer = setTimeout(() => {
-    autoScrollOnMouseEvent.timer = null;
     const tabbarRect = scrollBox.getBoundingClientRect();
     const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
     if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
@@ -552,10 +553,9 @@ export function autoScrollOnMouseEvent(event) {
       if (scrollBox.scrollTop < scrollBox.scrollTopMax)
         scrollBox.scrollTop += scrollPixels;
     }
-  }, 0);
+  });
 }
 autoScrollOnMouseEvent.areaSize = 20;
-autoScrollOnMouseEvent.timer = null;
 
 
 async function notifyOutOfViewTab(tab) {
@@ -630,33 +630,44 @@ function reserveToSaveScrollPosition() {
   }, 150);
 }
 
+const mReservedScrolls = new WeakMap();
+
 function reserveToScrollToTab(tab, options = {}) {
   if (!tab)
     return;
-  if (reserveToScrollToTab.reserved)
-    clearTimeout(reserveToScrollToTab.reserved);
-  reserveToScrollToTab.reservedTabId = tab.id;
-  reserveToScrollToTab.reservedOptions = options;
-  reserveToScrollToTab.reserved = setTimeout(() => {
-    const options = reserveToScrollToTab.reservedOptions;
-    delete reserveToScrollToTab.reservedTabId;
-    delete reserveToScrollToTab.reservedOptions;
-    delete reserveToScrollToTab.reserved;
+
+  const scrollBox = getScrollBoxFor(tab);
+  const reservedScroll = {
+    tabId: tab.id,
+    options,
+  };
+  mReservedScrolls.set(scrollBox, reservedScroll);
+  window.requestAnimationFrame(() => {
+    if (mReservedScrolls.get(scrollBox) != reservedScroll)
+      return;
+    mReservedScrolls.delete(scrollBox);
+    const options = reservedScroll.options;
+    delete reservedScroll.tabId;
+    delete reservedScroll.options;
     scrollToTab(tab, options);
-  }, 100);
+  });
 }
 
 function reserveToScrollToNewTab(tab) {
   if (!tab)
     return;
-  if (reserveToScrollToNewTab.reserved)
-    clearTimeout(reserveToScrollToNewTab.reserved);
-  reserveToScrollToNewTab.reservedTabId = tab.id;
-  reserveToScrollToNewTab.reserved = setTimeout(() => {
-    delete reserveToScrollToNewTab.reservedTabId;
-    delete reserveToScrollToNewTab.reserved;
+  const scrollBox = getScrollBoxFor(tab);
+  const reservedScroll = {
+    tabId: tab.id,
+  };
+  mReservedScrolls.set(scrollBox, reservedScroll);
+  window.requestAnimationFrame(() => {
+    if (mReservedScrolls.get(scrollBox) != reservedScroll)
+      return;
+    mReservedScrolls.delete(scrollBox);
+    delete reservedScroll.tabId;
     scrollToNewTab(tab);
-  }, 100);
+  });
 }
 
 
@@ -791,7 +802,10 @@ async function onBackgroundMessage(message) {
       if (!tab ||
           tab.active)
         break;
-      const activeTab = Tab.getActiveTab(tab.windowId);
+      const bundled = message.add.includes(Constants.kTAB_STATE_BUNDLED_ACTIVE);
+      const activeTab = bundled ?
+        tab.$TST.bundledTab : // bundled-active state may be applied before the bundled tab become active
+        Tab.getActiveTab(tab.windowId);
       reserveToScrollToTab(tab, {
         anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
         notifyOnOutOfView: true
