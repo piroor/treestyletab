@@ -88,7 +88,12 @@ export function init(scrollPosition) {
 
 /* virtual scrolling */
 
+let mScrollingInternallyCount = 0;
+
 export function reserveToRenderVirtualScrollViewport() {
+  if (mScrollingInternallyCount > 0)
+    return;
+
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   renderVirtualScrollViewport.lastStartedAt = startAt;
   window.requestAnimationFrame(() => {
@@ -100,7 +105,7 @@ export function reserveToRenderVirtualScrollViewport() {
 
 let mLastRenderedVirtualScrollTabIds = [];
 
-function renderVirtualScrollViewport() {
+function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
 
   const startAt = Date.now();
@@ -112,8 +117,16 @@ function renderVirtualScrollViewport() {
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const allRenderableTabsSize = tabSize * renderableTabs.length;
   const viewPortSize          = mNormalScrollBox.getBoundingClientRect().height;
-  const scrollPosition        = Math.max(0, Math.min(allRenderableTabsSize - tabSize, mNormalScrollBox.scrollTop));
   const renderablePaddingSize = viewPortSize;
+  scrollPosition = Math.max(
+    0,
+    Math.min(
+      allRenderableTabsSize - tabSize,
+      typeof scrollPosition == 'number' ?
+        scrollPosition :
+        mNormalScrollBox.scrollTop
+    )
+  );
 
   // We need to use min-height instead of height for a flexbox.
   const minHeight              = `${allRenderableTabsSize}px`;
@@ -235,14 +248,24 @@ function scrollTo(params = {}) {
     return smoothScrollTo(params);
 
   //cancelPerformingAutoScroll();
-  if (params.tab)
-    getScrollBoxFor(params.tab).scrollTop += calculateScrollDeltaForTab(params.tab);
-  else if (typeof params.position == 'number')
-    mNormalScrollBox.scrollTop = params.position;
-  else if (typeof params.delta == 'number')
-    mNormalScrollBox.scrollTop += params.delta;
-  else
+  const scrollBox = getScrollBoxFor(params.tab);
+  const scrollTop = params.tab ?
+    scrollBox.scrollTop + calculateScrollDeltaForTab(params.tab) :
+    typeof params.position == 'number' ?
+      params.position :
+      typeof params.delta == 'number' ?
+        mNormalScrollBox.scrollTop + params.delta :
+        undefined;
+  if (scrollTop === undefined)
     throw new Error('No parameter to indicate scroll position');
+
+  // render before scroll, to prevent showing blank area
+  mScrollingInternallyCount++;
+  renderVirtualScrollViewport(scrollTop);
+  scrollBox.scrollTop = scrollTop;
+  window.requestAnimationFrame(() => {
+    mScrollingInternallyCount--;
+  });
 }
 
 function cancelRunningScroll() {
