@@ -256,7 +256,8 @@ export function getEventTargetType(event) {
   const element = event.target.closest ?
     event.target :
     event.target.parentNode;
-  if (element.closest('.rich-confirm, #blocking-screen'))
+  if (element &&
+      element.closest('.rich-confirm, #blocking-screen'))
     return 'outside';
 
   if (getTabFromEvent(event))
