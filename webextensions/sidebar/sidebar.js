@@ -295,7 +295,7 @@ export async function init() {
         if (!resized)
           return;
         reserveToUpdateTabbarLayout({
-          reason: Constants.kTABBAR_UPDATE_REASON_RESIZE,
+          reason: Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE,
         });
       });
     })
@@ -767,6 +767,8 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
       readableReasons.push('tab close');
     if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_MOVE)
       readableReasons.push('tab move');
+    if (reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE)
+      readableReasons.push('virtual scroll viewport update');
   }
   log(`updateTabbarLayout reasons: ${readableReasons.join(',')}`);
 
@@ -837,7 +839,8 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
     });
   }
 
-  Scroll.reserveToRenderVirtualScrollViewport();
+  if (!(reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE))
+    Scroll.reserveToRenderVirtualScrollViewport();
   if (overflow) {
     window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.

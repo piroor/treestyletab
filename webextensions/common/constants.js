@@ -360,6 +360,7 @@ export const kTABBAR_UPDATE_REASON_ANIMATION_END = 1 << 3;
 export const kTABBAR_UPDATE_REASON_TAB_OPEN      = 1 << 4;
 export const kTABBAR_UPDATE_REASON_TAB_CLOSE     = 1 << 5;
 export const kTABBAR_UPDATE_REASON_TAB_MOVE      = 1 << 6;
+export const kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE = 1 << 7;
 
 export const kDEFAULT_MIN_INDENT = 3;
 
