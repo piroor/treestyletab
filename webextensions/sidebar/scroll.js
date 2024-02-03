@@ -52,6 +52,7 @@ import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 export const onPositionUnlocked = new EventListenerManager();
+export const onVirtualScrollViewportUpdated = new EventListenerManager();
 
 function log(...args) {
   internalLogger('sidebar/scroll', ...args);
@@ -131,7 +132,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   // We need to use min-height instead of height for a flexbox.
   const minHeight              = `${allRenderableTabsSize}px`;
   const allTabsSizeHolderStyle = win.containerElement.parentNode.style;
-  if (allTabsSizeHolderStyle.minHeight != minHeight)
+  const resized = allTabsSizeHolderStyle.minHeight != minHeight;
+  if (resized)
     allTabsSizeHolderStyle.minHeight = minHeight;
 
   const firstRenderableIndex = Math.max(
@@ -210,6 +212,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     containerStyle.transform = transform;
 
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
+
+  onVirtualScrollViewportUpdated.dispatch(resized);
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
 }

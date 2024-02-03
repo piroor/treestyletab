@@ -291,6 +291,13 @@ export async function init() {
           timeout: shouldApplyAnimation() ? configs.collapseDuration : 0
         });
       });
+      Scroll.onVirtualScrollViewportUpdated.addListener(resized => {
+        if (!resized)
+          return;
+        reserveToUpdateTabbarLayout({
+          reason: Constants.kTABBAR_UPDATE_REASON_RESIZE,
+        });
+      });
     })
   ]));
 
