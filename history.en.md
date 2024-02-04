@@ -5,7 +5,8 @@
      * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container-wrapper > .tabs.pinned` and `#normal-tabs-container-wrapper > .virtual-scroll-container > .tabs.normal`.
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
      * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
-   * API: Add new notification type [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
+   * API: Add a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
+   * API: Add new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
    * API: [Introduce a new option `rendered:true` for the message type `get-tree`, to get information only about rendered tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
    * API: Support [bulk messaging (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) for better performance.
  - 3.9.21 (2024.1.26)
