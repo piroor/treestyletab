@@ -195,11 +195,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             continue;
           SidebarTabs.unrenderTab(tab);
         }
-        const referenceTab = fromEnd >= mLastRenderedVirtualScrollTabIds.length ?
-          null :
-          fromEnd < mLastRenderedVirtualScrollTabIds.length ?
-            Tab.get(mLastRenderedVirtualScrollTabIds[fromEnd]) :
-            null;
+        const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
+          Tab.get(mLastRenderedVirtualScrollTabIds[fromEnd]) :
+          null;
         for (const id of insertIds) {
           SidebarTabs.renderTabBefore(Tab.get(id), referenceTab);
         }
