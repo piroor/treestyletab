@@ -411,23 +411,17 @@ async function migrateBookmarkUrl(bookmark) {
 }
 
 let mObservingBookmarks = false;
+let mBookmarksListenersRegistered = false;
 
-async function startBookmarksUrlAutoMigration() {
-  if (mObservingBookmarks)
-    return;
-
-  mObservingBookmarks = true;
-}
-
-browser.bookmarks.onCreated.addListener((id, bookmark) => {
+function onBookmarkCreated(id, bookmark) {
   if (!mObservingBookmarks)
     return;
 
   if (bookmark.url)
     migrateBookmarkUrl(bookmark);
-});
+}
 
-browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
+async function onBookmarkChanged(id, changeInfo) {
   if (!mObservingBookmarks)
     return;
 
@@ -439,7 +433,31 @@ browser.bookmarks.onChanged.addListener(async (id, changeInfo) => {
     else
       migrateBookmarkUrl(bookmark);
   }
-});
+}
+
+if (browser.bookmarks &&
+    browser.bookmarks.onCreated) {
+  browser.bookmarks.onCreated.addListener(onBookmarkCreated);
+  browser.bookmarks.onChanged.addListener(onBookmarkChanged);
+  mBookmarksListenersRegistered = true;
+}
+
+async function startBookmarksUrlAutoMigration() {
+  if (mObservingBookmarks)
+    return;
+
+  mObservingBookmarks = true;
+
+  if (mBookmarksListenersRegistered ||
+      !browser.bookmarks ||
+      !browser.bookmarks.onCreated)
+    return;
+
+  browser.bookmarks.onCreated.addListener(onBookmarkCreated);
+  browser.bookmarks.onChanged.addListener(onBookmarkChanged);
+  mBookmarksListenersRegistered = true;
+}
+
 
 configs.$loaded.then(() => {
   configs.$addObserver(async key => {

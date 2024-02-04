@@ -9,6 +9,8 @@
    * API: Add new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
    * API: [Introduce a new option `rendered:true` for the message type `get-tree`, to get information only about rendered tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
    * API: Support [bulk messaging (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) for better performance.
+ - 3.9.22 (2024.1.31)
+   * Fix failed initialization when an optional permission "Read and modify bookmarks" is not granted. (regression on 3.9.21)
  - 3.9.21 (2024.1.26)
    * Fix [performance regression on 3.9.20 with on-memory cache](https://github.com/piroor/treestyletab/issues/3434).
    * [Prevent unexpected slicing of built-in icons in group tabs.](https://github.com/piroor/treestyletab/pull/3435)
@@ -16,7 +18,7 @@
    * Drop support of Firefox older than 115.
    * Restructure options about new tab position control, to reduce overlapped effects of multiple options. Now you can choose "open tab as a first/last child" for each option directly.
    * Expose expert options to control behavior of new tabs opened from links and the "New Tab" command in the simulated tab context menu.
-   * Use on-memory storage for the cache of sidebar contents, to prevent broating of Firefox's session file. This means that inititalization on the browser startup takes more time, and you can take the old behavior back by a new advanced option.
+   * Use on-memory storage for the cache of sidebar contents, to prevent bloating of Firefox's session file. This means that initialization on the browser startup takes more time, and you can take the old behavior back by a new advanced option.
    * Guess tabs opened by the "New Tab" command more certainly.
    * Suppress too much RAM usage problem with some themes with animations. (See also the [bug 1875100](https://bugzilla.mozilla.org/show_bug.cgi?id=1875100).)
    * Store device ID more safely for the simulated Sync feature.
