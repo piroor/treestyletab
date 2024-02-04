@@ -122,7 +122,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   scrollPosition = Math.max(
     0,
     Math.min(
-      allRenderableTabsSize - tabSize,
+      allRenderableTabsSize - viewPortSize,
       typeof scrollPosition == 'number' ?
         scrollPosition :
         mNormalScrollBox.scrollTop
