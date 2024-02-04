@@ -655,7 +655,7 @@ async function tryGroupCreatedBookmarks() {
 
   const bookmarks = mCreatedBookmarks;
   mCreatedBookmarks = [];
-  {
+  if (lastDraggedTabs) {
     // accept only bookmarks from dragged tabs
     const digest = await sha1sum(bookmarks.map(tab => tab.url).join('\n'));
     configs.lastDraggedTabs = null;
