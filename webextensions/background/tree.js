@@ -1056,6 +1056,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
       allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
+        anchor:    tab,
         broadcast: false
       })));
     }
@@ -1134,7 +1135,7 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
         ...params,
         collapsed: params.collapsed,
         justNow:   params.justNow,
-        anchor:    last && params.anchor,
+        anchor:    params.anchor,
         last:      last,
         broadcast: params.broadcast
       });
@@ -1173,7 +1174,7 @@ export async function collapseExpandTab(tab, params = {}) {
   const byAncestor = tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed;
   const collapseExpandInfo = {
     ...params,
-    anchor: last && params.anchor,
+    anchor: params.anchor,
     last
   };
 
