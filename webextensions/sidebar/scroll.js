@@ -316,7 +316,13 @@ export function isTabInViewport(tab) {
   if (tab.pinned)
     return true;
 
-  return calculateScrollDeltaForTab(tab) == 0;
+  const tabRect       = getTabRect(tab);
+  const allowedOffset = (tabRect.height / 2);
+  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  return (
+    tabRect.top + allowedOffset >= scrollBoxRect.top &&
+    tabRect.bottom - allowedOffset <= scrollBoxRect.bottom
+  );
 }
 
 async function smoothScrollTo(params = {}) {
@@ -710,6 +716,9 @@ function onMessage(message, _sender, _respond) {
         ...Tab.getPinnedTabs(message.windowId).map(tab => tab.id),
         ...mLastRenderedVirtualScrollTabIds,
       ])]);
+
+    case Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT:
+      return Promise.resolve(isTabInViewport(Tab.get(message.tabId)));
   }
 }
 
@@ -897,7 +906,7 @@ CollapseExpand.onUpdating.addListener((tab, options) => {
     reserveToRenderVirtualScrollViewport();
   if (options.last)
     scrollToTab(tab, {
-      anchor:            isTabInViewport(options.anchor) && options.anchor,
+      anchor:            options.anchor,
       notifyOnOutOfView: true
     });
 });
@@ -909,7 +918,7 @@ CollapseExpand.onUpdated.addListener((tab, options) => {
     reserveToRenderVirtualScrollViewport();
   if (options.last)
     scrollToTab(tab, {
-      anchor:            isTabInViewport(options.anchor) && options.anchor,
+      anchor:            options.anchor,
       notifyOnOutOfView: true
     });
   else if (tab.active && !options.collapsed)

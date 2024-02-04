@@ -1037,6 +1037,13 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
+  const isInViewport = await browser.runtime.sendMessage({
+    type:     Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+  });
+  const anchor = isInViewport ? tab : null;
+
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
   const allVisibilityChangedTabIds = [];
@@ -1047,7 +1054,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
       allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
-        anchor:    tab,
+        anchor,
         last:      true,
         broadcast: false
       })));
@@ -1056,7 +1063,6 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
       allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
-        anchor:    tab,
         broadcast: false
       })));
     }
@@ -1070,7 +1076,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     tabId:     tab.id,
     collapsed: !!params.collapsed,
     justNow:   params.justNow,
-    anchorId:  tab.id,
+    anchorId:  anchor && anchor.id,
     visibilityChangedTabIds,
     last:      true
   });
@@ -1135,7 +1141,7 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
         ...params,
         collapsed: params.collapsed,
         justNow:   params.justNow,
-        anchor:    params.anchor,
+        anchor:    last && params.anchor,
         last:      last,
         broadcast: params.broadcast
       });
@@ -1174,7 +1180,7 @@ export async function collapseExpandTab(tab, params = {}) {
   const byAncestor = tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed;
   const collapseExpandInfo = {
     ...params,
-    anchor: params.anchor,
+    anchor: last && params.anchor,
     last
   };
 
