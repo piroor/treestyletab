@@ -717,6 +717,9 @@ async function tryGroupCreatedBookmarks() {
     });
   }
 
+  if (!lastDraggedTabs)
+    return;
+
   const tabs = lastDraggedTabs.tabIds.map(id => Tab.get(id));
   let titles = getTitlesWithTreeStructure(tabs);
   if (tabs[0].$TST.isGroupTab &&
