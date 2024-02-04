@@ -782,7 +782,7 @@ function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
   mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
   const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
-  const allTabsHeight = virtualScrollContainer.getBoundingClientRect().height;
+  const allTabsHeight = parseFloat(virtualScrollContainer.dataset.height || 0);
   const visibleNewTabButtonInTabbar = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box');
   const visibleNewTabButtonAfterTabbar = document.querySelector('#tabbar.overflow ~ .after-tabs .newtab-button-box');
   const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;

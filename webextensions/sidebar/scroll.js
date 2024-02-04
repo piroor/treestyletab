@@ -131,10 +131,13 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   // We need to use min-height instead of height for a flexbox.
   const minHeight              = `${allRenderableTabsSize}px`;
-  const allTabsSizeHolderStyle = win.containerElement.parentNode.style;
+  const allTabsSizeHolder      = win.containerElement.parentNode;
+  const allTabsSizeHolderStyle = allTabsSizeHolder.style;
   const resized = allTabsSizeHolderStyle.minHeight != minHeight;
-  if (resized)
+  if (resized) {
     allTabsSizeHolderStyle.minHeight = minHeight;
+    allTabsSizeHolder.dataset.height = allRenderableTabsSize;
+  }
 
   const firstRenderableIndex = Math.max(
     0,
