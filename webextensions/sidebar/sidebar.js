@@ -294,7 +294,7 @@ export async function init() {
       Scroll.onVirtualScrollViewportUpdated.addListener(resized => {
         if (!resized)
           return;
-        reserveToUpdateTabbarLayout({
+        updateTabbarLayout({
           reason: Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE,
         });
       });
@@ -731,10 +731,8 @@ export function reserveToUpdateTabbarLayout({ reason, timeout } = {}) {
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
-    const reasons = reserveToUpdateTabbarLayout.reasons;
-    reserveToUpdateTabbarLayout.reasons = 0;
     reserveToUpdateTabbarLayout.timeout = 0;
-    updateTabbarLayout({ reasons });
+    updateTabbarLayout();
   }, reserveToUpdateTabbarLayout.timeout);
 }
 reserveToUpdateTabbarLayout.reasons = 0;
@@ -743,6 +741,10 @@ reserveToUpdateTabbarLayout.timeout = 0;
 let mLastVisibleTabId = null;
 
 function updateTabbarLayout({ reasons, timeout, justNow } = {}) {
+  if (reserveToUpdateTabbarLayout.reasons) {
+    reasons = (reasons || 0) & reserveToUpdateTabbarLayout.reasons;
+    reserveToUpdateTabbarLayout.reasons = 0;
+  }
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({

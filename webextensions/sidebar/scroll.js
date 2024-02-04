@@ -137,6 +137,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   if (resized) {
     allTabsSizeHolderStyle.minHeight = minHeight;
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
+    onVirtualScrollViewportUpdated.dispatch(resized);
   }
 
   const firstRenderableIndex = Math.max(
@@ -215,8 +216,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     containerStyle.transform = transform;
 
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
-
-  onVirtualScrollViewportUpdated.dispatch(resized);
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
 }
@@ -319,6 +318,13 @@ export function isTabInViewport(tab) {
   const tabRect       = getTabRect(tab);
   const allowedOffset = (tabRect.height / 2);
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  log('isTabInViewport ', tab.id, {
+    allowedOffset,
+    tabTop:         tabRect.top + allowedOffset,
+    tabBottom:      tabRect.bottom - allowedOffset,
+    viewPortTop:    scrollBoxRect.top,
+    viewPortBottom: scrollBoxRect.bottom,
+  });
   return (
     tabRect.top + allowedOffset >= scrollBoxRect.top &&
     tabRect.bottom - allowedOffset <= scrollBoxRect.bottom
