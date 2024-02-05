@@ -114,6 +114,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const windowId = TabsStore.getCurrentWindowId();
   const win      = TabsStore.windows.get(windowId);
+  if (!win.containerElement) // not initialized yet
+    return;
 
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
@@ -123,7 +125,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const minHeight              = `${allRenderableTabsSize}px`;
   const allTabsSizeHolder      = win.containerElement.parentNode;
   const allTabsSizeHolderStyle = allTabsSizeHolder.style;
-  const resized = allTabsSizeHolderStyle.minHeight != minHeight;
+  const resized = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
   if (resized) {
     allTabsSizeHolderStyle.minHeight = minHeight;
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
