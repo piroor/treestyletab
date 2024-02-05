@@ -1166,6 +1166,9 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
 
+    if (Constants.IS_BACKGROUND)
+      console.log('addState ', state, modified);
+
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
         TabsStore.addHighlightedTab(this.tab);
@@ -1292,6 +1295,9 @@ export default class Tab {
       this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
+
+    if (Constants.IS_BACKGROUND)
+      console.log('removeState ', state, modified);
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:

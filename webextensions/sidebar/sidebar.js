@@ -865,13 +865,11 @@ ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesSelector();
 });
 
-CollapseExpand.onReadyToExpand.addListener(async tab => {
-  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+CollapseExpand.onReadyToExpand.addListener(async _tab => {
   await nextFrame();
 });
 
 CollapseExpand.onUpdated.addListener((tab, options) => {
-  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
   const reason = options.collapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
   reserveToUpdateTabbarLayout({ reason });
 });

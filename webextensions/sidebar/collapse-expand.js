@@ -65,6 +65,7 @@ export async function setCollapsed(tab, info = {}) {
   else {
     if (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE)) {
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       await onReadyToExpand.dispatch(tab);
     }
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
@@ -110,6 +111,7 @@ export async function setCollapsed(tab, info = {}) {
     if (tab.$TST.collapsed)
       tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
+    TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
     onUpdated.dispatch(tab, {
       collapsed: tab.$TST.collapsed,
       anchor:    info.anchor,
@@ -136,6 +138,7 @@ export async function setCollapsed(tab, info = {}) {
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
   onUpdated.dispatch(tab, { collapsed: info.collapsed });
 
   const onCanceled = () => {
@@ -172,6 +175,7 @@ export async function setCollapsed(tab, info = {}) {
       if (tab.$TST.collapsed)
         tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
 
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       onUpdated.dispatch(tab, {
         collapsed: tab.$TST.collapsed
       });
