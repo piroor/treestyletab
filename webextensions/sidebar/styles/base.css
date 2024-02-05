@@ -1022,11 +1022,11 @@ tab-item.faviconized .contextual-identity-marker {
 }
 
 #notification_tabs-highlighing-progress {
-  color: HighlightText;
-  text-shadow: 0 0 0.3em Highlight,
-               0 0 0.3em Highlight,
-               0 0 0.3em Highlight;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
   font: message-box;
+  padding-bottom: 0.25em;
   width: 100%;
 }
 

@@ -1156,7 +1156,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           notification.classList.add('hbox');
         },
       });
-      notification.style.background = `
+      notification.style.backgroundImage = `
         linear-gradient(
           90deg,
           Highlight 0%,
