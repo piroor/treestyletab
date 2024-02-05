@@ -981,6 +981,38 @@ tab-item.faviconized .contextual-identity-marker {
   animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
 }
 
+/* notification message */
+
+#notifications {
+  background: var(--tab-surface, var(--bg-color));
+  bottom: 0;
+  color: var(--tab-text);
+  font-size: var(--svg-small-icon-size);
+  height: calc(var(--svg-small-icon-size) * 1.5);
+  left: 0;
+  line-height: 1;
+  opacity: 0;
+  padding: calc(var(--svg-small-icon-size) * 0.25) 0;
+  pointer-events: none;
+  position: fixed;
+  transition: opacity var(--collapse-animation);
+  right: 0;
+  z-index: var(--notification-ui-z-index);
+}
+
+#notifications.shown {
+  opacity: 0.85;
+}
+#notifications.shown:hover {
+  opacity: 1;
+}
+
+#notifications::before {
+  content: "";
+  display: inline-block;
+  white-space: nowrap;
+}
+
 
 /* sub panel */
 

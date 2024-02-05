@@ -49,6 +49,8 @@ import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 
+import * as Notifications from './notifications.js';
+
 function log(...args) {
   internalLogger('sidebar/drag-and-drop', ...args);
 }
@@ -86,7 +88,6 @@ let mLastDragEventCoordinates = null;
 let mDragTargetIsClosebox  = false;
 let mCurrentDragData       = null;
 
-let mDragBehaviorNotification;
 let mInstanceId;
 
 export function init() {
@@ -98,8 +99,6 @@ export function init() {
   document.addEventListener('drop', onDrop);
 
   browser.runtime.onMessage.addListener(onMessage);
-
-  mDragBehaviorNotification = document.getElementById('tab-drag-notification');
 
   browser.runtime.sendMessage({ type: Constants.kCOMMAND_GET_INSTANCE_ID }).then(id => mInstanceId = id);
 }
@@ -943,15 +942,19 @@ function onDragStart(event, options = {}) {
     const invertedResult   = getTabDragBehaviorNotificationMessageType(invertedBehavior, count);
     if (currentResult || invertedResult) {
       const invertSuffix = event.shiftKey ? 'without_shift' : 'with_shift';
-      mDragBehaviorNotification.firstChild.textContent = [
-        currentResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_base`, [
-          browser.i18n.getMessage(`tabDragBehaviorNotification_message_${currentResult}`)]),
-        invertedResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
-          browser.i18n.getMessage(`tabDragBehaviorNotification_message_${invertedResult}`)]),
-      ].join('\n');
-      mDragBehaviorNotification.firstChild.style.animationDuration = !shouldApplyAnimation() ? 0 : browser.i18n.getMessage(`tabDragBehaviorNotification_message_duration_${currentResult && invertedResult ? 'both' : 'single'}`);
-      mDragBehaviorNotification.classList.remove('hiding');
-      mDragBehaviorNotification.classList.add('shown');
+      Notifications.add('tab-drag-behavior-description', {
+        message: [
+          currentResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_base`, [
+            browser.i18n.getMessage(`tabDragBehaviorNotification_message_${currentResult}`)]),
+          invertedResult && browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
+            browser.i18n.getMessage(`tabDragBehaviorNotification_message_${invertedResult}`)]),
+        ].join('\n'),
+        onCreated(notification) {
+          notification.style.animationDuration = !shouldApplyAnimation() ?
+            0 :
+            browser.i18n.getMessage(`tabDragBehaviorNotification_message_duration_${currentResult && invertedResult ? 'both' : 'single'}`)
+        },
+      });
     }
   }
 
@@ -1576,11 +1579,7 @@ onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 function finishDrag(trigger) {
   log(`finishDrag from ${trigger || 'unknown'}`);
 
-  mDragBehaviorNotification.classList.add('hiding');
-  mDragBehaviorNotification.classList.remove('shown');
-  setTimeout(() => {
-    mDragBehaviorNotification.classList.remove('hiding');
-  }, configs.collapseDuration);
+  Notifications.remove('tab-drag-behavior-description');
 
   mDraggingOnSelfWindow = false;
 
