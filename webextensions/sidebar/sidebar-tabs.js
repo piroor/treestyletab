@@ -619,16 +619,20 @@ BackgroundConnection.onMessage.addListener(async message => {
         add:    add.join(','),
         remove: remove.join(',')
       });
-      const modified = add.concat(remove);
+      const modified = new Set([...add, ...remove]);
       for (const id of message.tabIds) {
         const tab = Tab.get(id);
         if (!tab)
           continue;
-        add.forEach(state => tab.$TST.addState(state));
-        remove.forEach(state => tab.$TST.removeState(state));
-        if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
-            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
-            modified.includes(Constants.kTAB_STATE_MUTED)) {
+        for (const state of add) {
+          tab.$TST.addState(state, { toTab: true });
+        }
+        for (const state of remove) {
+          tab.$TST.removeState(state, { toTab: true });
+        }
+        if (modified.has(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.has(Constants.kTAB_STATE_MUTED)) {
           tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
         }
       }

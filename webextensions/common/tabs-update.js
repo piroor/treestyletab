@@ -84,15 +84,29 @@ function sendPendingUpdates() {
       return;
     const messages = [];
     for (const update of mPendingUpdates.values()) {
-      messages.push({
-        type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-        windowId:          update.windowId,
-        tabId:             update.tabId,
-        updatedAttributes: update.attributes.updated,
-        addedAttributes:   update.attributes.added,
-        removedAttributes: [...update.attributes.removed],
-        soundStateChanged: !!update.soundStateChanged,
-      });
+      // no need to notify attributes broadcasted via Tab.broadcastState()
+      delete update.attributes.updated.highlighted;
+      delete update.attributes.updated.hidden;
+      delete update.attributes.updated.pinned;
+      delete update.attributes.updated.audible;
+      delete update.attributes.updated.mutedInfo;
+      delete update.attributes.updated.incognito;
+      delete update.attributes.updated.attention;
+      delete update.attributes.updated.discarded;
+      if (Object.keys(update.attributes.updated).length > 0 ||
+          Object.keys(update.attributes.added).length > 0 ||
+          update.attributes.removed.size > 0 ||
+          update.soundStateChanged)
+        messages.push({
+          type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+          windowId:          update.windowId,
+          tabId:             update.tabId,
+          updatedAttributes: update.attributes.updated,
+          addedAttributes:   update.attributes.added,
+          removedAttributes: [...update.attributes.removed],
+          soundStateChanged: update.soundStateChanged,
+        });
+
       if (update.isGroupTab)
         messages.push({
           type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,

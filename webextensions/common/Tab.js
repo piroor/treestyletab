@@ -1154,7 +1154,7 @@ export default class Tab {
   // State
   //===================================================================
 
-  async addState(state, options = {}) {
+  async addState(state, { broadcast, permanently, toTab } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
@@ -1169,6 +1169,8 @@ export default class Tab {
         TabsStore.addHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'true');
+        if (toTab)
+          this.tab.highlighted = true;
         break;
 
       case Constants.kTAB_STATE_SELECTED:
@@ -1186,11 +1188,15 @@ export default class Tab {
       case Constants.kTAB_STATE_HIDDEN:
         TabsStore.removeVisibleTab(this.tab);
         TabsStore.removeControllableTab(this.tab);
+        if (toTab)
+          this.tab.hidden = true;
         break;
 
       case Constants.kTAB_STATE_PINNED:
         TabsStore.addPinnedTab(this.tab);
         TabsStore.removeUnpinnedTab(this.tab);
+        if (toTab)
+          this.tab.pinned = true;
         break;
 
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
@@ -1209,10 +1215,17 @@ export default class Tab {
           parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUDIBLE:
+        if (toTab)
+          this.tab.audible = true;
+        break;
+
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
           parent.$TST.mutedChildrenIds.add(this.id);
+        if (toTab)
+          this.tab.mutedInfo.muted = true;
       } break;
 
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
@@ -1225,19 +1238,38 @@ export default class Tab {
         TabsStore.addGroupTab(this.tab);
         break;
 
+      case Constants.kTAB_STATE_PRIVATE_BROWSING:
+        if (toTab)
+          this.tab.incognito = true;
+        break;
+
+      case Constants.kTAB_STATE_ATTENTION:
+        if (toTab)
+          this.tab.attention = true;
+        break;
+
+      case Constants.kTAB_STATE_DISCARDED:
+        if (toTab)
+          this.tab.discarded = true;
+        break;
+
       case 'loading':
         TabsStore.addLoadingTab(this.tab);
+        if (toTab)
+          this.tab.status = state;
         break;
       case 'complete':
         TabsStore.removeLoadingTab(this.tab);
+        if (toTab)
+          this.tab.status = state;
         break;
     }
 
-    if (options.broadcast)
+    if (broadcast)
       Tab.broadcastState(this.tab, {
         add: [state],
       });
-    if (options.permanently) {
+    if (permanently) {
       const states = await this.getPermanentStates();
       if (!states.includes(state)) {
         states.push(state);
@@ -1246,7 +1278,7 @@ export default class Tab {
     }
   }
 
-  async removeState(state, options = {}) {
+  async removeState(state, { broadcast, permanently, toTab } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
@@ -1261,6 +1293,8 @@ export default class Tab {
         TabsStore.removeHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'false');
+        if (toTab)
+          this.tab.highlighted = false;
         break;
 
       case Constants.kTAB_STATE_SELECTED:
@@ -1279,11 +1313,15 @@ export default class Tab {
         if (!this.collapsed)
           TabsStore.addVisibleTab(this.tab);
         TabsStore.addControllableTab(this.tab);
+        if (toTab)
+          this.tab.hidden = false;
         break;
 
       case Constants.kTAB_STATE_PINNED:
         TabsStore.removePinnedTab(this.tab);
         TabsStore.addUnpinnedTab(this.tab);
+        if (toTab)
+          this.tab.pinned = false;
         break;
 
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
@@ -1302,10 +1340,17 @@ export default class Tab {
           parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUDIBLE:
+        if (toTab)
+          this.tab.audible = false;
+        break;
+
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
           parent.$TST.mutedChildrenIds.delete(this.id);
+        if (toTab)
+          this.tab.mutedInfo.muted = false;
       } break;
 
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
@@ -1317,13 +1362,28 @@ export default class Tab {
       case Constants.kTAB_STATE_GROUP_TAB:
         TabsStore.removeGroupTab(this.tab);
         break;
+
+      case Constants.kTAB_STATE_PRIVATE_BROWSING:
+        if (toTab)
+          this.tab.incognito = false;
+        break;
+
+      case Constants.kTAB_STATE_ATTENTION:
+        if (toTab)
+          this.tab.attention = false;
+        break;
+
+      case Constants.kTAB_STATE_DISCARDED:
+        if (toTab)
+          this.tab.discarded = false;
+        break;
     }
 
-    if (options.broadcast)
+    if (broadcast)
       Tab.broadcastState(this.tab, {
         remove: [state],
       });
-    if (options.permanently) {
+    if (permanently) {
       const states = await this.getPermanentStates();
       const index = states.indexOf(state);
       if (index > -1) {
@@ -2376,7 +2436,7 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
   for (const tab of tabs) {
     const message = Tab.pendingBroadcastStates.get(tab.id) || {
       windowId: tab.windowId,
-      tabIds:   [tab.id],
+      tabId:    tab.id,
       add:      new Set(),
       remove:   new Set(),
     };
@@ -2402,15 +2462,31 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
     if (Tab.broadcastState.triedAt != triedAt)
       return;
 
-    const messages = Array.from(Tab.pendingBroadcastStates.values(), message => {
-      return {
-        ...message,
+    const messagesForStates = new Map();
+    for (const message of Tab.pendingBroadcastStates.values()) {
+      const key = `${message.windowId}/add:${[...message.add]}/remove:${[...message.remove]}`;
+      const unifiedMessage = messagesForStates.get(key) || {
         type:   Constants.kCOMMAND_BROADCAST_TAB_STATE,
-        add:    [...message.add],
-        remove: [...message.remove],
+        windowId: message.windowId,
+        tabIds:   new Set(),
+        add:      message.add,
+        remove:   message.remove
+      };
+      unifiedMessage.tabIds.add(message.tabId);
+      messagesForStates.set(key, unifiedMessage);
+    }
+    Tab.pendingBroadcastStates.clear();
+
+    const messages = Array.from(messagesForStates.values(), message => {
+      return {
+        type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
+        windowId: message.windowId,
+        tabIds:   [...message.tabIds],
+        add:      [...message.add],
+        remove:   [...message.remove],
       };
     });
-    Tab.pendingBroadcastStates.clear();
+    console.log('unified messages: ', messages);
     SidebarConnection.sendMessage(messages);
   }, 0);
 };
