@@ -877,7 +877,7 @@ async function onMoved(tabId, moveInfo) {
   const win = Window.init(moveInfo.windowId);
 
   // Cancel in-progress highlighting, because tabs.highlight() uses old indices of tabs.
-  win.highlightingTabs.clear();
+  win.tabsMovedWhileHighlighting = true;
 
   // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
   // and TabsMove.syncTabsPositionToApiTabs(). We should treat such a movement

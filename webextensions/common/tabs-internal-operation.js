@@ -200,6 +200,7 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
   const win      = TabsStore.windows.get(windowId);
 
   win.highlightingTabs.clear();
+  win.tabsMovedWhileHighlighting = false;
   const tabIds = tabs.map(tab => {
     win.highlightingTabs.add(tab.id);
     return tab.id;
@@ -235,6 +236,11 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
     }).catch(ApiTabs.createErrorSuppressor());
     log(`highlightTabs: ${Math.ceil(Math.min(indices.length, count) / indices.length * 100)} %`);
     await wait(configs.progressievHighlightingInterval);
+
+    if (win.tabsMovedWhileHighlighting) {
+      log('highlightTabs: tabs are moved while highlighting, retry');
+      return highlightTabs(tabs, { inheritToCollapsedDescendants });
+    }
 
     if (win.highlightingTabs.size < toBeHighlightedTabIds.size) {
       log('highlightTabs: someone cleared multiselection while in-progress ', toBeHighlightedTabIds.size, win.highlightingTabs.size);
