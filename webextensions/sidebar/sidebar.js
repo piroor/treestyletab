@@ -583,6 +583,7 @@ export async function rebuildAll(importedTabs) {
     }
   });
 
+  Window.init(mTargetWindow);
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
@@ -605,10 +606,15 @@ export async function rebuildAll(importedTabs) {
   return false;
 }
 
+let mGiveUpImportTabs = false;
 const mImportedTabs = new Promise((resolve, _reject) => {
   log('preparing mImportedTabs');
   // This must be synchronous , to avoid blocking to other listeners.
   const onBackgroundIsReady = message => {
+    if (mGiveUpImportTabs) {
+      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+      resolve([]);
+    }
     // This handler may be called before mTargetWindow is initialized, so
     // we need to wait until it is resolved.
     // See also: https://github.com/piroor/treestyletab/issues/2200
@@ -634,8 +640,11 @@ async function importTabsFromBackground() {
       type:     Constants.kCOMMAND_PING_TO_BACKGROUND,
       windowId: mTargetWindow
     }).catch(ApiTabs.createErrorHandler()));
-    if (importedTabs)
+    if (importedTabs) {
+      log('importTabsFromBackground: use response of kCOMMAND_PING_TO_BACKGROUND');
+      mGiveUpImportTabs = true;
       return importedTabs;
+    }
   }
   catch(e) {
     log('importTabsFromBackground: error: ', e);
