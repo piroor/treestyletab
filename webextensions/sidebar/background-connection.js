@@ -101,10 +101,8 @@ export function sendMessage(message) {
       }
     };
     // Because sidebar is always visible, we may not need to avoid using
-    // window.requestAnimationFrame. I just use a timer instead just for
-    // a unity with common/sidebar-connection.js.
-    //window.requestAnimationFrame(mOnFrame);
-    setTimeout(mOnFrame, 0);
+    // window.requestAnimationFrame.
+    window.requestAnimationFrame(mOnFrame);
   }
 }
 
