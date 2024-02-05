@@ -1159,12 +1159,12 @@ export default class Tab {
     if (!this.tab || !state)
       return;
 
+    const modified = this.states && this.states.has(state);
+
     if (this.classList)
       this.classList.add(state);
     if (this.states)
       this.states.add(state);
-
-    const modified = this.states.has(state);
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
@@ -1260,6 +1260,7 @@ export default class Tab {
         if (toTab)
           this.tab.status = state;
         break;
+
       case 'complete':
         TabsStore.removeLoadingTab(this.tab);
         if (toTab)
@@ -1285,12 +1286,12 @@ export default class Tab {
     if (!this.tab || !state)
       return;
 
+    const modified = this.states && this.states.has(state);
+
     if (this.classList)
       this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
-
-    const modified = this.states.has(state);
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
