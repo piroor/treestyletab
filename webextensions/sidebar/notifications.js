@@ -13,18 +13,28 @@ const mNotificationsContainer = document.querySelector('#notifications');
 
 export function add(id, { message, contents, onCreated } = {}) {
   const elementId = `notification_${id}`;
-  const existingNotification = document.getElementById(elementId);
-  if (existingNotification)
-    return existingNotification;
-  const notification = document.createElement('span');
-  notification.id = elementId;
+  let notification = document.getElementById(elementId);
+  if (!notification) {
+    notification = document.createElement('span');
+    notification.id = elementId;
+  }
+
   if (contents) {
+    const range = document.createRange();
+    range.selectNodeContents(notification);
+    range.deleteContents();
+    range.detach();
     notification.appendChild(contents);
   }
   else if (message) {
     notification.textContent = message;
   }
+
+  if (notification.parentNode)
+    return notification;
+
   mNotificationsContainer.appendChild(notification);
+
   if (typeof onCreated == 'function')
     onCreated(notification);
 

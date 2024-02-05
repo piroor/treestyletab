@@ -229,12 +229,14 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
   // highlight tabs progressively, because massinve change at once may block updating of highlighted appearance of tabs.
   let count = 1; // 1 is for setActive()
   while (highlightTabs.lastStartedAt == startAt) {
+    count += (configs.provressiveHighlightingStep < 0 ? 100 : configs.provressiveHighlightingStep);
     await browser.tabs.highlight({
       windowId,
       populate: false,
       tabs:     indices.slice(0, count),
     }).catch(ApiTabs.createErrorSuppressor());
-    log(`highlightTabs: ${Math.ceil(Math.min(indices.length, count) / indices.length * 100)} %`);
+    const progress = Math.ceil(Math.min(indices.length, count) / indices.length * 100);
+    log(`highlightTabs: ${progress} %`);
     await wait(configs.progressievHighlightingInterval);
 
     if (win.tabsMovedWhileHighlighting) {
@@ -256,8 +258,17 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
 
     if (count >= indices.length)
       break;
-    count += (configs.provressiveHighlightingStep < 0 ? 100 : configs.provressiveHighlightingStep);
+
+    SidebarConnection.sendMessage({
+      type: Constants.kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_IN_PROGRESS,
+      windowId,
+      progress,
+    });
   }
+  SidebarConnection.sendMessage({
+    type: Constants.kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_COMPLETE,
+    windowId,
+  });
   log('highlightTabs done. ', Date.now() - startAtTimestamp, ' msec');
 }
 

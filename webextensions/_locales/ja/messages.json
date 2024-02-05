@@ -123,6 +123,11 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "ドロップ位置にすべてのタブからリンクまたはブックマークが作成されます" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "ドロップ位置にこのタブからリンクまたはブックマークが作成されます" },
 
+  "tabsHighlightingNotification_message": { "message": "タブを選択中... $PROGRESS$ % ",
+    "placeholders": {
+      "progress": { "content": "$1", "example": "50" }
+    }},
+
   "warnOnCloseTabs_title":     { "message": "タブを閉じますか？" },
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {

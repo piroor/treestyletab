@@ -170,6 +170,14 @@ tab-sound-button */ {
   justify-content: flex-start;
 }
 
+.hbox {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
 
 /* tabbar */
 
@@ -1011,6 +1019,15 @@ tab-item.faviconized .contextual-identity-marker {
   content: "";
   display: inline-block;
   white-space: nowrap;
+}
+
+#notification_tabs-highlighing-progress {
+  color: HighlightText;
+  text-shadow: 0 0 0.3em Highlight,
+               0 0 0.3em Highlight,
+               0 0 0.3em Highlight;
+  font: message-box;
+  width: 100%;
 }
 
 

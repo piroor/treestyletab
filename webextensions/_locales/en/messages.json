@@ -123,6 +123,11 @@
   "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links or bookmarks at the place tabs are dropped to" },
   "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link or a bookmark at the place the tab is dropped to" },
 
+  "tabsHighlightingNotification_message": { "message": "Highlighting tabs... $PROGRESS$ %",
+    "placeholders": {
+      "progress": { "content": "$1", "example": "50" }
+    }},
+
   "warnOnCloseTabs_title":     { "message": "Close tabs?" },
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {

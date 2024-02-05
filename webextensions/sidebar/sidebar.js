@@ -41,6 +41,7 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as EventUtils from './event-utils.js';
 import * as GapCanceller from './gap-canceller.js';
 import * as Indent from './indent.js';
+import * as Notifications from './notifications.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as Scroll from './scroll.js';
@@ -1147,6 +1148,28 @@ BackgroundConnection.onMessage.addListener(async message => {
         showDialog: true
       });
     }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_IN_PROGRESS: {
+      const notification = Notifications.add('tabs-highlighing-progress', {
+        message: browser.i18n.getMessage('tabsHighlightingNotification_message', [message.progress]),
+        onCreated(notification) {
+          notification.classList.add('hbox');
+        },
+      });
+      notification.style.background = `
+        linear-gradient(
+          90deg,
+          Highlight 0%,
+          Highlight ${message.progress}%,
+          transparent ${message.progress}%,
+          transparent 100%
+        )
+      `;
+    }; break;
+
+    case Constants.kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_COMPLETE:
+      Notifications.remove('tabs-highlighing-progress');
+      break;
   }
 });
 
