@@ -575,14 +575,14 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     url:     '/resources/blank.html', // for popup, required on Firefox ESR68
     title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
     onShownInPopup(container) {
-      window.requestAnimationFrame(() => {
+      setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
         // this need to be done on the next tick, to use the height of
         // the box for calculation of dialog size
         const style = container.querySelector('ul').style;
         style.height = '0px'; // this makes the box shrinkable
         style.maxHeight = 'none';
         style.minHeight = '0px';
-      });
+      }, 0);
     }
   });
 

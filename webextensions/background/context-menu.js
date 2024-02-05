@@ -313,12 +313,12 @@ TabContextMenu.onTopLevelItemAdded.addListener(reserveToRefreshItems);
 function reserveToRefreshItems() {
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   reserveToRefreshItems.lastStartedAt = startAt;
-  window.requestAnimationFrame(() => {
+  setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
     if (reserveToRefreshItems.lastStartedAt != startAt)
       return;
     addTabItems();
     addBookmarkItems();
-  });
+  }, 0);
 }
 
 function updateItem(id, params) {

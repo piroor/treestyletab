@@ -172,7 +172,10 @@ export default class Tab {
     element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
-    window.requestAnimationFrame(() => { // wait until initialization processes are completed
+    // wait until initialization processes are completed
+    (Constants.IS_BACKGROUND ?
+      setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+      window.requestAnimationFrame)(() => {
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
         this.promisedElement = new Promise((resolve, _reject) => {
@@ -180,7 +183,7 @@ export default class Tab {
         });
       }
       Tab.onElementBound.dispatch(this.tab);
-    });
+    }, 0);
   }
 
   unbindElement() {

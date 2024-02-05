@@ -444,9 +444,10 @@ Tab.onRestored.addListener(tab => {
         if (count == 0) {
           mRestoringTabs.delete(tab.windowId);
           mMaxRestoringTabs.delete(tab.windowId);
-          window.requestAnimationFrame(() => { // unblock in the next event loop, after other asynchronous operations are finished
+          setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+            // unblock in the next event loop, after other asynchronous operations are finished
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
-          });
+          }, 0);
 
           const countToBeRestored = mRecentlyClosedTabs.filter(tab => !mRestoredTabIds.has(tab.uniqueId));
           log('countToBeRestored: ', countToBeRestored);

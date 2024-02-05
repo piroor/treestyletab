@@ -593,11 +593,11 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       win.openingTabs.add(tab.id);
-      window.requestAnimationFrame(() => {
+      setTimeout(() => {// because window.requestAnimationFrame is decelerate for an invisible document.
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         win.openingTabs.delete(tab.id);
-      });
+      }, 0);
     }
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
@@ -1039,7 +1039,7 @@ async function onAttached(tabId, attachInfo) {
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
-          window.requestAnimationFrame(() => onAttached(tabId, attachInfo));
+          setTimeout(() => onAttached(tabId, attachInfo), 0); // because window.requestAnimationFrame is decelerate for an invisible document.
           return;
         }
         console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);
