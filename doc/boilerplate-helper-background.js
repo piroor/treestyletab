@@ -28,6 +28,7 @@ async function registerToTST() {
         'wait-for-shutdown', // This is required to trigger teardown process for this addon on TST side.
         // ...
       ],
+      allowBulkMessaging: true,
 
       // Extra style rules applied in the sidebar. (optional)
       style: `
@@ -76,8 +77,14 @@ async function waitForTSTShutdown() {
 }
 waitForTSTShutdown().then(uninitFeaturesForTST);
 
-browser.runtime.onMessageExternal.addListener((message, sender) => {
+function onMessageExternal(message, sender) {
   if (sender.id == TST_ID) {
+    if (message && message.messages) {
+      for (const oneMessage of message.messages) {
+        onMessageExternal(oneMessage, sender);
+      }
+      break;
+    }
     switch (message && message.type) {
       // Triggers initialization process when TST is reloaded after this addon.
       // https://github.com/piroor/treestyletab/wiki/API-for-other-addons#auto-re-registering-on-the-startup-of-tst
@@ -93,4 +100,5 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
       // ...
     }
   }
-});
+}
+browser.runtime.onMessageExternal.addListener(onMessageExternal);

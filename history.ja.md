@@ -8,7 +8,7 @@
    * API: TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
    * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
    * API: [`get-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
-   * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送れるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)
+   * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした。
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）
  - 3.9.21 (2024.1.26)
