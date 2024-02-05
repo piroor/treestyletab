@@ -281,13 +281,13 @@ async function tryHighlightBundledTab(tab, { shouldSkipCollapsed, allowed, silen
   for (const tab of oldBundledTabs.values()) {
     if (tab == bundledTab)
       continue;
-    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
   }
 
   if (!bundledTab)
     return;
 
-  bundledTab.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+  bundledTab.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
 
   await wait(100);
   if (!tab.active || // ignore tab already inactivated while waiting
