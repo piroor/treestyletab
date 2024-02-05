@@ -1159,7 +1159,7 @@ export default class Tab {
     if (!this.tab || !state)
       return;
 
-    const modified = this.states && this.states.has(state);
+    const modified = this.states && !this.states.has(state);
 
     if (this.classList)
       this.classList.add(state);
