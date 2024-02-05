@@ -82,7 +82,6 @@ function sendPendingUpdates() {
     window.requestAnimationFrame)(() => {
     if (sendPendingUpdates.triedAt != triedAt)
       return;
-    const messages = [];
     for (const update of mPendingUpdates.values()) {
       // no need to notify attributes broadcasted via Tab.broadcastState()
       delete update.attributes.updated.highlighted;
@@ -97,7 +96,7 @@ function sendPendingUpdates() {
           Object.keys(update.attributes.added).length > 0 ||
           update.attributes.removed.size > 0 ||
           update.soundStateChanged)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
           windowId:          update.windowId,
           tabId:             update.tabId,
@@ -108,13 +107,13 @@ function sendPendingUpdates() {
         });
 
       if (update.isGroupTab)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
           windowId: update.windowId,
           tabId:    update.tabId,
         });
       if (update.updatedTitle !== undefined)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
           windowId: update.windowId,
           tabId:    update.tabId,
@@ -122,14 +121,14 @@ function sendPendingUpdates() {
           label:    update.updatedLabel,
         });
       if (update.favIconUrl !== undefined)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
           windowId:   update.windowId,
           tabId:      update.tabId,
           favIconUrl: update.favIconUrl,
         });
       if (update.loadingState !== undefined)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
           windowId: update.windowId,
           tabId:    update.tabId,
@@ -137,20 +136,19 @@ function sendPendingUpdates() {
           reallyChanged: update.loadingStateReallyChanged,
         });
       if (update.pinned !== undefined)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:     update.pinned ? Constants.kCOMMAND_NOTIFY_TAB_PINNED : Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
           windowId: update.windowId,
           tabId:    update.tabId,
         });
       if (update.hidden !== undefined)
-        messages.push({
+        SidebarConnection.sendMessage({
           type:     update.hidden ? Constants.kCOMMAND_NOTIFY_TAB_HIDDEN : Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
           windowId: update.windowId,
           tabId:    update.tabId,
         });
     }
     mPendingUpdates.clear();
-    SidebarConnection.sendMessage(messages);
   }, 0);
 }
 

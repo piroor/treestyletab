@@ -1166,9 +1166,6 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
 
-    if (Constants.IS_BACKGROUND)
-      console.log('addState ', state, modified);
-
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
         TabsStore.addHighlightedTab(this.tab);
@@ -1295,9 +1292,6 @@ export default class Tab {
       this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
-
-    if (Constants.IS_BACKGROUND)
-      console.log('removeState ', state, modified);
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
@@ -2477,27 +2471,26 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
     for (const message of Tab.pendingBroadcastStates.values()) {
       const key = `${message.windowId}/add:${[...message.add]}/remove:${[...message.remove]}`;
       const unifiedMessage = messagesForStates.get(key) || {
-        type:   Constants.kCOMMAND_BROADCAST_TAB_STATE,
+        type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
         windowId: message.windowId,
         tabIds:   new Set(),
         add:      message.add,
-        remove:   message.remove
+        remove:   message.remove,
       };
       unifiedMessage.tabIds.add(message.tabId);
       messagesForStates.set(key, unifiedMessage);
     }
     Tab.pendingBroadcastStates.clear();
 
-    const messages = Array.from(messagesForStates.values(), message => {
-      return {
+    for (const message of messagesForStates.values()) {
+      SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
         windowId: message.windowId,
         tabIds:   [...message.tabIds],
         add:      [...message.add],
         remove:   [...message.remove],
-      };
-    });
-    SidebarConnection.sendMessage(messages.length == 1 ? messages[0] : messages);
+      });
+    }
   }, 0);
 };
 Tab.broadcastState.enabled = false;
