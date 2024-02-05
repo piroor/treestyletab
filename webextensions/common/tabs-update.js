@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2022
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -35,6 +35,7 @@ import {
 
 import * as Constants from './constants.js';
 import * as ContextualIdentities from './contextual-identities.js';
+import * as SidebarConnection from './sidebar-connection.js';
 import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
@@ -43,8 +44,104 @@ function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
+const mPendingUpdates = new Map();
+
+function getPendingUpdate(tab) {
+  const update = mPendingUpdates.get(tab.id) || {
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    attributes: {
+      updated: {},
+      added:   {},
+      removed: new Set(),
+    },
+    isGroupTab:   false,
+    updatedTitle: undefined,
+    updatedLabel: undefined,
+    favIconUrl:   undefined,
+    loadingState: undefined,
+    loadingStateReallyChanged: undefined,
+    pinned:       undefined,
+    hidden:       undefined,
+    soundStateChanged: false,
+  };
+  mPendingUpdates.set(tab.id, update);
+  return update;
+}
+
+function sendPendingUpdates() {
+  if (!Constants.IS_BACKGROUND) {
+    mPendingUpdates.clear();
+    return;
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  sendPendingUpdates.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (sendPendingUpdates.triedAt != triedAt)
+      return;
+    const messages = [];
+    for (const update of mPendingUpdates.values()) {
+      messages.push({
+        type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+        windowId:          update.windowId,
+        tabId:             update.tabId,
+        updatedAttributes: update.attributes.updated,
+        addedAttributes:   update.attributes.added,
+        removedAttributes: [...update.attributes.removed],
+        soundStateChanged: !!update.soundStateChanged,
+      });
+      if (update.isGroupTab)
+        messages.push({
+          type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.updatedTitle !== undefined)
+        messages.push({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          title:    update.updatedTitle,
+          label:    update.updatedLabel,
+        });
+      if (update.favIconUrl !== undefined)
+        messages.push({
+          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          windowId:   update.windowId,
+          tabId:      update.tabId,
+          favIconUrl: update.favIconUrl,
+        });
+      if (update.loadingState !== undefined)
+        messages.push({
+          type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          status:   update.loadingState,
+          reallyChanged: update.loadingStateReallyChanged,
+        });
+      if (update.pinned !== undefined)
+        messages.push({
+          type:     update.pinned ? Constants.kCOMMAND_NOTIFY_TAB_PINNED : Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.hidden !== undefined)
+        messages.push({
+          type:     update.hidden ? Constants.kCOMMAND_NOTIFY_TAB_HIDDEN : Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+    }
+    mPendingUpdates.clear();
+    SidebarConnection.sendMessage(messages);
+  }, 0);
+}
+
 export function updateTab(tab, newState = {}, options = {}) {
-  const update = Tab.getPendingUpdate(tab);
+  const update = getPendingUpdate(tab);
   const oldState = options.old || {};
 
   if ('url' in newState) {
@@ -253,7 +350,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     ...update.attributes.updated,
     ...(newState && newState.$TST && newState.$TST.sanitized || newState),
   };
-  Tab.sendPendingUpdates();
+  sendPendingUpdates();
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
