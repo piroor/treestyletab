@@ -239,6 +239,7 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
 
     if (win.tabsMovedWhileHighlighting) {
       log('highlightTabs: tabs are moved while highlighting, retry');
+      await wait(250);
       return highlightTabs(tabs, { inheritToCollapsedDescendants });
     }
 
