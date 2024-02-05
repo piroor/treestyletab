@@ -55,7 +55,6 @@ import { TabCounterElement } from './components/TabCounterElement.js';
 import {
   TabElement,
   TabInvalidationTarget,
-  TabUpdateTarget,
 } from './components/TabElement.js';
 import { TabFaviconElement } from './components/TabFaviconElement.js';
 import { TabLabelElement } from './components/TabLabelElement.js';
@@ -584,11 +583,9 @@ export async function rebuildAll(importedTabs) {
     }
   });
 
-  const win = Window.init(mTargetWindow);
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
-  const pinnedTabs = new Set();
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
