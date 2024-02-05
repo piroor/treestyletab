@@ -89,6 +89,9 @@ export function sendMessage(message) {
       Constants.IS_SIDEBAR)
     return false;
 
+  if (Array.isArray(message))
+    log('Sending ', message.length, ' messages');
+
   if (message.windowId) {
     if (configs.loggingConnectionMessages) {
       counts[message.windowId] = counts[message.windowId] || {};

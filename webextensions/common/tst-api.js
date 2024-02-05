@@ -310,11 +310,15 @@ export class TreeItem {
 
   async _exportTab(sourceTab, permissions, commonCacheKey = '') {
     const [effectiveFavIconUrl, children] = await Promise.all([
-      (sourceTab.id in this.cache.effectiveFavIconUrls) ?
-        this.cache.effectiveFavIconUrls[sourceTab.id] :
-        (sourceTab.favIconUrl && sourceTab.favIconUrl.startsWith('data:')) ?
-          sourceTab.favIconUrl :
-          TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab).catch(ApiTabs.handleMissingTabError),
+      (!permissions.has(kPERMISSION_TABS) &&
+       (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
+        !sourceTab.active)) ?
+        null :
+        (sourceTab.id in this.cache.effectiveFavIconUrls) ?
+          this.cache.effectiveFavIconUrls[sourceTab.id] :
+          (sourceTab.favIconUrl && sourceTab.favIconUrl.startsWith('data:')) ?
+            sourceTab.favIconUrl :
+            TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab).catch(ApiTabs.handleMissingTabError),
       doProgressively(
         sourceTab.$TST.children,
         child => this.exportTab(child, permissions, commonCacheKey),

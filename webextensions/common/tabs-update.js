@@ -35,7 +35,6 @@ import {
 
 import * as Constants from './constants.js';
 import * as ContextualIdentities from './contextual-identities.js';
-import * as SidebarConnection from './sidebar-connection.js';
 import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
@@ -45,33 +44,24 @@ function log(...args) {
 }
 
 export function updateTab(tab, newState = {}, options = {}) {
-  const messages          = [];
-  const addedAttributes   = {};
-  const removedAttributes = [];
-  const addedStates       = [];
-  const removedStates     = [];
-  const oldState          = options.old || {};
+  const update = Tab.getPendingUpdate(tab);
+  const oldState = options.old || {};
 
   if ('url' in newState) {
-    tab.$TST.setAttribute(Constants.kCURRENT_URI, addedAttributes[Constants.kCURRENT_URI] = newState.url);
+    tab.$TST.setAttribute(Constants.kCURRENT_URI, update.attributes.added[Constants.kCURRENT_URI] = newState.url);
+    update.attributes.removed.delete(Constants.kCURRENT_URI);
   }
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
-    addedStates.push(Constants.kTAB_STATE_GROUP_TAB);
-    TabsStore.addGroupTab(tab);
+    tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { broadcast: true, permanently: true });
+    update.isGroupTab = true;
     Tab.onGroupTabDetected.dispatch(tab);
-    messages.push({
-      type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
-      windowId: tab.windowId,
-      tabId:    tab.id
-    });
   }
   else if (tab.$TST.states.has(Constants.kTAB_STATE_GROUP_TAB) &&
            !tab.$TST.hasGroupTabURL) {
-    removedStates.push(Constants.kTAB_STATE_GROUP_TAB);
-    TabsStore.removeGroupTab(tab);
+    tab.$TST.removeState(Constants.kTAB_STATE_GROUP_TAB, { broadcast: true, permanently: true });
+    update.isGroupTab = false;
   }
 
   if (options.forceApply ||
@@ -80,98 +70,53 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD) &&
-            !tab.$TST.isGroupTab) {
-          tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          SidebarConnection.sendMessage({
-            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-            windowId: tab.windowId,
-            tabId:    tab.id,
-            addedStates: [Constants.kTAB_STATE_UNREAD]
-          });
-        }
-        else {
-          tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          SidebarConnection.sendMessage({
-            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-            windowId: tab.windowId,
-            tabId:    tab.id,
-            removedStates: [Constants.kTAB_STATE_UNREAD]
-          });
-        }
+            !tab.$TST.isGroupTab)
+          tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { broadcast: true, permanently: true });
+        else
+          tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { broadcast: true, permanently: true });
       });
     }
     else if (tab.$TST.isGroupTab) {
-      tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-      removedStates.push(Constants.kTAB_STATE_UNREAD);
+      tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { broadcast: true, permanently: true });
     }
     else if (!tab.active) {
-      tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-      addedStates.push(Constants.kTAB_STATE_UNREAD);
+      tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { broadcast: true, permanently: true });
     }
     tab.$TST.label = newState.title;
     Tab.onLabelUpdated.dispatch(tab);
-    messages.push({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
-      windowId: tab.windowId,
-      tabId:    tab.id,
-      title:    tab.title,
-      label:    tab.$TST.label
-    });
+    update.updatedTitle = tab.title;
+    update.updatedLabel = tab.$TST.label;
   }
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: openerOfGroupTab.favIconUrl
-    });
+    update.favIconUrl = openerOfGroupTab.favIconUrl;
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    tab.$TST.setAttribute(Constants.kCURRENT_FAVICON_URI, addedAttributes[Constants.kCURRENT_FAVICON_URI] = tab.favIconUrl);
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: tab.favIconUrl
-    });
+    tab.$TST.setAttribute(Constants.kCURRENT_FAVICON_URI, update.attributes.added[Constants.kCURRENT_FAVICON_URI] = tab.favIconUrl);
+    update.attributes.removed.delete(Constants.kCURRENT_FAVICON_URI);
+    update.favIconUrl = tab.favIconUrl;
   }
   else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
-    removedAttributes.push(Constants.kCURRENT_FAVICON_URI)
+    delete update.attributes.added[Constants.kCURRENT_FAVICON_URI];
+    update.attributes.removed.add(Constants.kCURRENT_URI);
     tab.$TST.removeAttribute(Constants.kCURRENT_FAVICON_URI);
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: null
-    });
+    update.favIconUrl = null;
   }
 
   if ('status' in newState) {
     const reallyChanged = !tab.$TST.states.has(newState.status);
     const removed = newState.status == 'loading' ? 'complete' : 'loading';
-    tab.$TST.removeState(removed);
-    removedStates.push(removed);
-    tab.$TST.addState(newState.status);
-    addedStates.push(newState.status);
-    if (newState.status == 'loading')
-      TabsStore.addLoadingTab(tab);
-    else
-      TabsStore.removeLoadingTab(tab);
+    tab.$TST.removeState(removed, { broadcast: true });
+    tab.$TST.addState(newState.status, { broadcast: true });
     if (!options.forceApply) {
-      messages.push({
-        type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
-        windowId: tab.windowId,
-        tabId:    tab.id,
-        status:   tab.status,
-        reallyChanged
-      });
+      update.loadingState = tab.status;
+      update.loadingStateReallyChanged = reallyChanged;
     }
   }
 
@@ -179,43 +124,26 @@ export function updateTab(tab, newState = {}, options = {}) {
        'pinned' in newState) &&
       newState.pinned != tab.$TST.states.has(Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
-      tab.$TST.addState(Constants.kTAB_STATE_PINNED);
-      addedStates.push(Constants.kTAB_STATE_PINNED);
+      tab.$TST.addState(Constants.kTAB_STATE_PINNED, { broadcast: true });
       tab.$TST.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
-      removedAttributes.push(Constants.kLEVEL);
-      TabsStore.removeUnpinnedTab(tab);
-      TabsStore.addPinnedTab(tab);
+      delete update.attributes.added[Constants.kLEVEL];
+      update.attributes.removed.add(Constants.kLEVEL);
       Tab.onPinned.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_PINNED,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.pinned = true;
     }
     else {
-      tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
-      removedStates.push(Constants.kTAB_STATE_PINNED);
-      TabsStore.removePinnedTab(tab);
-      TabsStore.addUnpinnedTab(tab);
+      tab.$TST.removeState(Constants.kTAB_STATE_PINNED, { broadcast: true });
       Tab.onUnpinned.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.pinned = false;
     }
   }
 
   if (options.forceApply ||
       'audible' in newState) {
-    if (newState.audible) {
-      tab.$TST.addState(Constants.kTAB_STATE_AUDIBLE);
-      addedStates.push(Constants.kTAB_STATE_AUDIBLE);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE);
-      removedStates.push(Constants.kTAB_STATE_AUDIBLE);
-    }
+    if (newState.audible)
+      tab.$TST.addState(Constants.kTAB_STATE_AUDIBLE, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE, { broadcast: true });
   }
 
   let soundStateChanged = false;
@@ -224,14 +152,10 @@ export function updateTab(tab, newState = {}, options = {}) {
       'mutedInfo' in newState) {
     soundStateChanged = true;
     const muted = newState.mutedInfo && newState.mutedInfo.muted;
-    if (muted) {
-      tab.$TST.addState(Constants.kTAB_STATE_MUTED);
-      addedStates.push(Constants.kTAB_STATE_MUTED);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
-      removedStates.push(Constants.kTAB_STATE_MUTED);
-    }
+    if (muted)
+      tab.$TST.addState(Constants.kTAB_STATE_MUTED, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_MUTED, { broadcast: true });
     Tab.onMutedStateChanged.dispatch(tab, muted);
   }
 
@@ -240,14 +164,10 @@ export function updateTab(tab, newState = {}, options = {}) {
       'audible' in newState) {
     soundStateChanged = true;
     if (tab.audible &&
-        !tab.mutedInfo.muted) {
-      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
-      addedStates.push(Constants.kTAB_STATE_SOUND_PLAYING);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
-      removedStates.push(Constants.kTAB_STATE_SOUND_PLAYING);
-    }
+        !tab.mutedInfo.muted)
+      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING, { broadcast: true });
   }
 
   if (soundStateChanged) {
@@ -259,15 +179,12 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const state of tab.$TST.states) {
-      if (String(state).startsWith('contextual-identity-')) {
-        tab.$TST.removeState(state);
-        removedStates.push(state);
-      }
+      if (String(state).startsWith('contextual-identity-'))
+        tab.$TST.removeState(state, { broadcast: true });
     }
     if (newState.cookieStoreId) {
       const state = `contextual-identity-${newState.cookieStoreId}`;
-      tab.$TST.addState(state);
-      addedStates.push(state);
+      tab.$TST.addState(state, { broadcast: true });
       const identity = ContextualIdentities.get(newState.cookieStoreId);
       if (identity)
         tab.$TST.setAttribute(Constants.kCONTEXTUAL_IDENTITY_NAME, identity.name);
@@ -281,71 +198,42 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'incognito' in newState) {
-    if (newState.incognito) {
-      tab.$TST.addState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-      addedStates.push(Constants.kTAB_STATE_PRIVATE_BROWSING);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-      removedStates.push(Constants.kTAB_STATE_PRIVATE_BROWSING);
-    }
+    if (newState.incognito)
+      tab.$TST.addState(Constants.kTAB_STATE_PRIVATE_BROWSING, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_PRIVATE_BROWSING, { broadcast: true });
   }
 
   if (options.forceApply ||
       'hidden' in newState) {
     if (newState.hidden) {
       if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
-        tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
-        addedStates.push(Constants.kTAB_STATE_HIDDEN);
-        TabsStore.removeVisibleTab(tab);
-        TabsStore.removeControllableTab(tab);
+        tab.$TST.addState(Constants.kTAB_STATE_HIDDEN, { broadcast: true });
         Tab.onHidden.dispatch(tab);
-        messages.push({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_HIDDEN,
-          windowId: tab.windowId,
-          tabId:    tab.id
-        });
+        update.hidden = true;
       }
     }
     else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
-      tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
-      removedStates.push(Constants.kTAB_STATE_HIDDEN);
-      if (!tab.$TST.collapsed)
-        TabsStore.addVisibleTab(tab);
-      TabsStore.addControllableTab(tab);
+      tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN, { broadcast: true });
       Tab.onShown.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.hidden = false;
     }
   }
 
   if (options.forceApply ||
       'highlighted' in newState) {
-    if (newState.highlighted) {
-      TabsStore.addHighlightedTab(tab);
-      tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
-      addedStates.push(Constants.kTAB_STATE_HIGHLIGHTED);
-    }
-    else {
-      TabsStore.removeHighlightedTab(tab);
-      tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
-      removedStates.push(Constants.kTAB_STATE_HIGHLIGHTED);
-    }
+    if (newState.highlighted)
+      tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED, { broadcast: true });
   }
 
   if (options.forceApply ||
       'attention' in newState) {
-    if (newState.attention) {
-      tab.$TST.addState(Constants.kTAB_STATE_ATTENTION);
-      addedStates.push(Constants.kTAB_STATE_ATTENTION);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_ATTENTION);
-      removedStates.push(Constants.kTAB_STATE_ATTENTION);
-    }
+    if (newState.attention)
+      tab.$TST.addState(Constants.kTAB_STATE_ATTENTION, { broadcast: true });
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_ATTENTION, { broadcast: true });
   }
 
   if (options.forceApply ||
@@ -353,39 +241,19 @@ export function updateTab(tab, newState = {}, options = {}) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
-      if (newState.discarded) {
-        tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
-        SidebarConnection.sendMessage({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-          windowId: tab.windowId,
-          tabId:    tab.id,
-          addedStates: [Constants.kTAB_STATE_DISCARDED]
-        });
-      }
-      else {
-        tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
-        SidebarConnection.sendMessage({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-          windowId: tab.windowId,
-          tabId:    tab.id,
-          removedStates: [Constants.kTAB_STATE_DISCARDED]
-        });
-      }
+      if (newState.discarded)
+        tab.$TST.addState(Constants.kTAB_STATE_DISCARDED, { broadcast: true });
+      else
+        tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED, { broadcast: true });
     });
   }
 
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-    windowId: tab.windowId,
-    tabId:    tab.id,
-    updatedProperties: newState && newState.$TST && newState.$TST.sanitized || newState,
-    addedAttributes,
-    removedAttributes,
-    addedStates,
-    removedStates,
-    soundStateChanged
-  });
-  messages.forEach(SidebarConnection.sendMessage);
+  update.soundStateChanged = update.soundStateChanged || soundStateChanged;
+  update.attributes.updated = {
+    ...update.attributes.updated,
+    ...(newState && newState.$TST && newState.$TST.sanitized || newState),
+  };
+  Tab.sendPendingUpdates();
 }
 
 export async function updateTabsHighlighted(highlightInfo) {

@@ -1166,6 +1166,7 @@ export default class Tab {
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
+        TabsStore.addHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'true');
         break;
@@ -1180,6 +1181,16 @@ export default class Tab {
           TabsStore.addSubtreeCollapsableTab(this.tab);
         else
           TabsStore.removeSubtreeCollapsableTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_HIDDEN:
+        TabsStore.removeVisibleTab(this.tab);
+        TabsStore.removeControllableTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_PINNED:
+        TabsStore.addPinnedTab(this.tab);
+        TabsStore.removeUnpinnedTab(this.tab);
         break;
 
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
@@ -1209,11 +1220,22 @@ export default class Tab {
         if (parent)
           parent.$TST.maybeMutedChildrenIds.add(this.id);
       } break;
+
+      case Constants.kTAB_STATE_GROUP_TAB:
+        TabsStore.addGroupTab(this.tab);
+        break;
+
+      case 'loading':
+        TabsStore.addLoadingTab(this.tab);
+        break;
+      case 'complete':
+        TabsStore.removeLoadingTab(this.tab);
+        break;
     }
 
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
-        add: [state]
+        add: [state],
       });
     if (options.permanently) {
       const states = await this.getPermanentStates();
@@ -1236,6 +1258,7 @@ export default class Tab {
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
+        TabsStore.removeHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'false');
         break;
@@ -1250,6 +1273,17 @@ export default class Tab {
           TabsStore.addSubtreeCollapsableTab(this.tab);
         else
           TabsStore.removeSubtreeCollapsableTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_HIDDEN:
+        if (!this.collapsed)
+          TabsStore.addVisibleTab(this.tab);
+        TabsStore.addControllableTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_PINNED:
+        TabsStore.removePinnedTab(this.tab);
+        TabsStore.addUnpinnedTab(this.tab);
         break;
 
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
@@ -1279,11 +1313,15 @@ export default class Tab {
         if (parent)
           parent.$TST.maybeMutedChildrenIds.delete(this.id);
       } break;
+
+      case Constants.kTAB_STATE_GROUP_TAB:
+        TabsStore.removeGroupTab(this.tab);
+        break;
     }
 
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
-        remove: [state]
+        remove: [state],
       });
     if (options.permanently) {
       const states = await this.getPermanentStates();
@@ -2323,18 +2361,152 @@ Tab.onChangeMultipleTabsRestorability = new EventListenerManager();
 // utilities
 //===================================================================
 
-Tab.broadcastState = (tabs, options = {}) => {
+Tab.pendingUpdates = new Map();
+Tab.getPendingUpdate = (tab) => {
+  const update = Tab.pendingUpdates.get(tab.id) || {
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    attributes: {
+      updated: {},
+      added:   {},
+      removed: new Set(),
+    },
+    isGroupTab:   false,
+    updatedTitle: undefined,
+    updatedLabel: undefined,
+    favIconUrl:   undefined,
+    loadingState: undefined,
+    loadingStateReallyChanged: undefined,
+    pinned:       undefined,
+    hidden:       undefined,
+    soundStateChanged: false,
+  };
+  Tab.pendingUpdates.set(tab.id, update);
+  return update;
+}
+
+Tab.sendPendingUpdates = () => {
+  if (!Constants.IS_BACKGROUND) {
+    Tab.pendingUpdates.clear();
+    return;
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  Tab.sendPendingUpdates.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (Tab.sendPendingUpdates.triedAt != triedAt)
+      return;
+    const messages = [];
+    for (const update of Tab.pendingUpdates.values()) {
+      messages.push({
+        type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+        windowId:          update.windowId,
+        tabId:             update.tabId,
+        updatedAttributes: update.attributes.updated,
+        addedAttributes:   update.attributes.added,
+        removedAttributes: [...update.attributes.removed],
+        soundStateChanged: !!update.soundStateChanged,
+      });
+      if (update.isGroupTab)
+        messages.push({
+          type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.updatedTitle !== undefined)
+        messages.push({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          title:    update.updatedTitle,
+          label:    update.updatedLabel,
+        });
+      if (update.favIconUrl !== undefined)
+        messages.push({
+          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          windowId:   update.windowId,
+          tabId:      update.tabId,
+          favIconUrl: update.favIconUrl,
+        });
+      if (update.loadingState !== undefined)
+        messages.push({
+          type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          status:   update.loadingState,
+          reallyChanged: update.loadingStateReallyChanged,
+        });
+      if (update.pinned !== undefined)
+        messages.push({
+          type:     update.pinned ? Constants.kCOMMAND_NOTIFY_TAB_PINNED : Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.hidden !== undefined)
+        messages.push({
+          type:     update.hidden ? Constants.kCOMMAND_NOTIFY_TAB_HIDDEN : Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+    }
+    Tab.pendingUpdates.clear();
+    SidebarConnection.sendMessage(messages);
+  }, 0);
+}
+
+Tab.pendingBroadcastStates = new Map();
+Tab.broadcastState = (tabs, { add, remove } = {}) => {
+  if (!Constants.IS_BACKGROUND)
+    return;
+
   if (!Array.isArray(tabs))
     tabs = [tabs];
+
   if (tabs.length == 0)
     return;
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabIds:   tabs.map(tab => tab.id),
-    windowId: tabs[0].windowId,
-    add:      options.add || [],
-    remove:   options.remove || []
-  });
+
+  for (const tab of tabs) {
+    const message = Tab.pendingBroadcastStates.get(tab.id) || {
+      windowId: tab.windowId,
+      tabIds:   [tab.id],
+      add:      new Set(),
+      remove:   new Set(),
+    };
+    if (add)
+      for (const state of add) {
+        message.add.add(state);
+        message.remove.delete(state);
+      }
+    if (remove)
+      for (const state of remove) {
+        message.add.delete(state);
+        message.remove.add(state);
+      }
+
+    Tab.pendingBroadcastStates.set(tab.id, message);
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  Tab.broadcastState.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (Tab.broadcastState.triedAt != triedAt)
+      return;
+
+    const messages = Array.from(Tab.pendingBroadcastStates.values(), message => {
+      return {
+        ...message,
+        type:   Constants.kCOMMAND_BROADCAST_TAB_STATE,
+        add:    [...message.add],
+        remove: [...message.remove],
+      };
+    });
+    Tab.pendingBroadcastStates.clear();
+    SidebarConnection.sendMessage(messages);
+  }, 0);
 };
 
 Tab.getOtherTabs = (windowId, ignoreTabs, options = {}) => {

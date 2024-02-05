@@ -585,12 +585,6 @@ export async function rebuildAll(importedTabs) {
   });
 
   const win = Window.init(mTargetWindow);
-  // remove from the document for better pefromance
-  const pinnedContainerParent = win.pinnedContainerElement.parentNode;
-  const pinnedContainerNext   = win.pinnedContainerElement.nextSibling;
-  pinnedContainerParent.removeChild(win.pinnedContainerElement);
-  const containerParent = win.containerElement.parentNode;
-  containerParent.removeChild(win.containerElement);
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
@@ -598,22 +592,15 @@ export async function rebuildAll(importedTabs) {
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
-    if (trackedTab.pinned)
-      pinnedTabs.add(trackedTab);
-    trackedTab.$TST.updateElement(TabUpdateTarget.CollapseExpandState);
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
+    if (trackedTab.pinned)
+      SidebarTabs.renderTab(trackedTab);
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 66); // 3/3: build tab elements
       await nextFrame();
       lastDraw = Date.now();
     }
-  }
-  pinnedContainerParent.insertBefore(win.pinnedContainerElement, pinnedContainerNext);
-  containerParent.appendChild(win.containerElement);
-  // we need to render them after they are connected to the DOM tree
-  for (const tab of pinnedTabs) {
-    SidebarTabs.renderTab(tab);
   }
   MetricsData.add('rebuildAll: end (from scratch)');
 

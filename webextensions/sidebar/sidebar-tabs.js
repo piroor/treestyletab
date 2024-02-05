@@ -542,18 +542,6 @@ function tryApplyUpdate(update) {
     }
   }
 
-  if (update.addedStates) {
-    for (const state of update.addedStates) {
-      tab.$TST.addState(state);
-    }
-  }
-
-  if (update.removedStates) {
-    for (const state of update.removedStates) {
-      tab.$TST.removeState(state);
-    }
-  }
-
   if (update.soundStateChanged) {
     const parent = tab.$TST.parent;
     if (parent)
