@@ -107,8 +107,12 @@ export function sendMessage(message) {
 }
 
 async function onConnectionMessage(message) {
-  if (Array.isArray(message))
-    return message.forEach(onConnectionMessage);
+  if (Array.isArray(message)) {
+    for (const oneMessage of message) {
+      onConnectionMessage(oneMessage);
+    }
+    return;
+  }
 
   switch (message.type) {
     case 'echo': // for testing
