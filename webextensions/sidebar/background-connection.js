@@ -107,7 +107,6 @@ export function sendMessage(message) {
 }
 
 async function onConnectionMessage(message) {
-console.log('onConnectionMessage ', message);
   if (Array.isArray(message)) {
     for (const oneMessage of message) {
       onConnectionMessage(oneMessage);
