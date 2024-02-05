@@ -1164,6 +1164,8 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
 
+    const modified = this.states.has(state);
+
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
         TabsStore.addHighlightedTab(this.tab);
@@ -1265,7 +1267,7 @@ export default class Tab {
         break;
     }
 
-    if (broadcast)
+    if (modified && broadcast)
       Tab.broadcastState(this.tab, {
         add: [state],
       });
@@ -1287,6 +1289,8 @@ export default class Tab {
       this.classList.remove(state);
     if (this.states)
       this.states.delete(state);
+
+    const modified = this.states.has(state);
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
@@ -1379,7 +1383,7 @@ export default class Tab {
         break;
     }
 
-    if (broadcast)
+    if (modified && broadcast)
       Tab.broadcastState(this.tab, {
         remove: [state],
       });
