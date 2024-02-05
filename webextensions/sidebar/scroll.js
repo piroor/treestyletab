@@ -61,6 +61,7 @@ function log(...args) {
 
 const mPinnedScrollBox  = document.querySelector('#pinned-tabs-container-wrapper');
 const mNormalScrollBox  = document.querySelector('#normal-tabs-container-wrapper');
+const mTabBar           = document.querySelector('#tabbar');
 const mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
 export function init(scrollPosition) {
@@ -117,17 +118,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const allRenderableTabsSize = tabSize * renderableTabs.length;
-  const viewPortSize          = mNormalScrollBox.getBoundingClientRect().height;
-  const renderablePaddingSize = viewPortSize;
-  scrollPosition = Math.max(
-    0,
-    Math.min(
-      allRenderableTabsSize - viewPortSize,
-      typeof scrollPosition == 'number' ?
-        scrollPosition :
-        mNormalScrollBox.scrollTop
-    )
-  );
 
   // We need to use min-height instead of height for a flexbox.
   const minHeight              = `${allRenderableTabsSize}px`;
@@ -139,6 +129,29 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
     onVirtualScrollViewportUpdated.dispatch(resized);
   }
+
+  const range = document.createRange();
+  //range.selectNodeContents(mTabBar);
+  //range.setEndBefore(mNormalScrollBox);
+  const precedingAreaSize = mPinnedScrollBox.getBoundingClientRect().height; //range.getBoundingClientRect().height;
+  range.selectNodeContents(mTabBar);
+  range.setStartAfter(mNormalScrollBox);
+  const followingAreaSize = range.getBoundingClientRect().height;
+  range.detach();
+  const maxViewportSize     = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
+  const currentViewPortSize = mNormalScrollBox.getBoundingClientRect().height;
+  // The current box size can be 0 while initialization, so fallback to the max size for safety.
+  const viewPortSize = currentViewPortSize || maxViewportSize;
+  const renderablePaddingSize = viewPortSize;
+  scrollPosition = Math.max(
+    0,
+    Math.min(
+      allRenderableTabsSize - viewPortSize,
+      typeof scrollPosition == 'number' ?
+        scrollPosition :
+        mNormalScrollBox.scrollTop
+    )
+  );
 
   const firstRenderableIndex = Math.max(
     0,
@@ -160,6 +173,13 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     old: mLastRenderedVirtualScrollTabIds,
     new: toBeRenderedTabIds,
     renderOperations,
+    scrollPosition,
+    viewPortSize,
+    allRenderableTabsSize,
+    maxViewportSize,
+    currentViewPortSize,
+    //precedingAreaSize,
+    //followingAreaSize,
   });
 
   const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);

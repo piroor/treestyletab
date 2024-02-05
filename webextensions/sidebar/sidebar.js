@@ -308,10 +308,6 @@ export async function init() {
   // reloaded for complete retry.
   SidebarTabs.reserveToSyncTabsOrder();
 
-  // Update the view now again for safety, because rendering while initialization
-  // may fail if there are huge number tabs...
-  Scroll.reserveToRenderVirtualScrollViewport();
-
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
