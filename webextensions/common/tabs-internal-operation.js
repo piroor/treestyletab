@@ -11,12 +11,14 @@ import {
   log as internalLogger,
   dumpTab,
   mapAndFilter,
-  configs
+  configs,
+  wait,
 } from './common.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
 import * as TabsStore from './tabs-store.js';
+import * as TabsUpdate from './tabs-update.js';
 
 import Tab from '/common/Tab.js';
 
@@ -48,24 +50,19 @@ export async function activateTab(tab, { byMouseOperation, keepMultiselection, s
   };
   if (configs.supportTabsMultiselect &&
       typeof browser.tabs.highlight == 'function') {
-    let tabs = [tab.index];
+    let tabs = [tab];
     if (tab.$TST.hasOtherHighlighted &&
         keepMultiselection) {
       const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
       if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
         // switch active tab with highlighted state
         tabs = tabs.concat(mapAndFilter(highlightedTabs,
-                                        highlightedTab => highlightedTab.id != tab.id && highlightedTab.index || undefined));
+                                        highlightedTab => highlightedTab.id != tab.id && highlightedTab || undefined));
       }
     }
     if (tabs.length == 1)
       win.tabsToBeHighlightedAlone.add(tab.id);
-    log('setting tab highlighted ', configs.debug && tabs.map(index => Tab.getTabAt(tab.windowId, index)));
-    return browser.tabs.highlight({
-      windowId: tab.windowId,
-      tabs,
-      populate: false
-    }).catch(ApiTabs.createErrorHandler(onError));
+    highlightTabs(tabs);
   }
   else {
     log('setting tab active ', tab);
@@ -79,7 +76,7 @@ export function removeTab(tab) {
 
 export function removeTabs(tabs, { keepDescendants, byMouseOperation, originalStructure, triggerTab } = {}) {
   if (!Constants.IS_BACKGROUND)
-    throw new Error('Error: TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
+    throw new Error('TabsInternalOperation.removeTabs is available only on the background page, use a `kCOMMAND_REMOVE_TABS_INTERNALLY` message instead.');
 
   log('TabsInternalOperation.removeTabs: ', () => tabs.map(dumpTab));
   if (tabs.length == 0)
@@ -185,6 +182,78 @@ export function clearCache(tab) {
   }
 }
 
+// Note: this treats the first specified tab as active.
+export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}) {
+  if (!Constants.IS_BACKGROUND)
+    throw new Error('TabsInternalOperation.highlightTabs is available only on the background page, use a `kCOMMAND_HIGHLIGHT_TABS` message instead.');
+
+  if (!tabs || tabs.length == 0)
+    throw new Error('TabsInternalOperation.highlightTabs requires one or more tabs.');
+
+  log('setting tabs highlighted ', tabs, { inheritToCollapsedDescendants });
+
+  const startAtTimestamp = Date.now();
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  highlightTabs.lastStartedAt = startAt;
+
+  const windowId = tabs[0].windowId;
+  const win      = TabsStore.windows.get(windowId);
+
+  win.highlightingTabs.clear();
+  const tabIds = tabs.map(tab => {
+    win.highlightingTabs.add(tab.id);
+    return tab.id;
+  });
+  const toBeHighlightedTabIds = new Set([...win.highlightingTabs]);
+
+  TabsUpdate.updateTabsHighlighted({
+    windowId,
+    tabIds,
+    inheritToCollapsedDescendants,
+  });
+  SidebarConnection.sendMessage({
+    type:     Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED,
+    windowId,
+    tabIds,
+  });
+
+  // for better performance, we should not call browser.tabs.update() for each tab.
+  const highlightedTabIds = new Set(tabIds);
+  const activeTab = Tab.getActiveTab(windowId);
+  const indices = mapAndFilter(highlightedTabIds,
+                               id => id == activeTab.id ? undefined : Tab.get(id).index);
+  if (highlightedTabIds.has(activeTab.id))
+    indices.unshift(activeTab.index);
+
+  // highlight tabs progressively, because massinve change at once may block updating of highlighted appearance of tabs.
+  let count = 1; // 1 is for setActive()
+  while (highlightTabs.lastStartedAt == startAt) {
+    await browser.tabs.highlight({
+      windowId,
+      populate: false,
+      tabs:     indices.slice(0, count),
+    }).catch(ApiTabs.createErrorSuppressor());
+    log(`highlightTabs: ${Math.ceil(Math.min(indices.length, count) / indices.length * 100)} %`);
+    await wait(configs.progressievHighlightingInterval);
+
+    if (win.highlightingTabs.size < toBeHighlightedTabIds.size) {
+      log('highlightTabs: someone cleared multiselection while in-progress ', toBeHighlightedTabIds.size, win.highlightingTabs.size);
+      break;
+    }
+
+    const unifiedHighlightTabIds = new Set([...toBeHighlightedTabIds, ...win.highlightingTabs]);
+    if (unifiedHighlightTabIds.size != toBeHighlightedTabIds.size) {
+      log('highlightTabs: someone tried multiselection again while in-progress ', toBeHighlightedTabIds.size, win.highlightingTabs.size);
+      break;
+    }
+
+    if (count >= indices.length)
+      break;
+    count += (configs.provressiveHighlightingStep < 0 ? 100 : configs.provressiveHighlightingStep);
+  }
+  log('highlightTabs done. ', Date.now() - startAtTimestamp, ' msec');
+}
+
 
 SidebarConnection.onMessage.addListener(async (windowId, message) => {
   switch (message.type) {
@@ -197,6 +266,13 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         byMouseOperation:   message.byMouseOperation,
         keepMultiselection: message.keepMultiselection,
         silently:           message.silently
+      });
+    }; break;
+
+    case Constants.kCOMMAND_HIGHLIGHT_TABS: {
+      await Tab.waitUntilTracked(message.tabIds);
+      highlightTabs(message.tabIds.map(id => Tab.get(id)), {
+        inheritToCollapsedDescendants: message.inheritToCollapsedDescendants,
       });
     }; break;
 

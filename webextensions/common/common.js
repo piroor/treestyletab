@@ -347,6 +347,8 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
+  provressiveHighlightingStep: 100,
+  progressievHighlightingInterval: 100,
   undoMultipleTabsClose: true,
   allowDragNewTabButton: true,
   newTabButtonDragGestureModifiers: 'shift',

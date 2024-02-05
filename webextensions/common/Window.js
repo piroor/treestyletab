@@ -39,6 +39,7 @@ export default class Window {
     this.alreadyMovedTabs    = new Set();
     this.internalClosingTabs = new Set();
     this.keepDescendantsTabs = new Set();
+    this.highlightingTabs    = new Set();
     this.tabsToBeHighlightedAlone = new Set();
 
     this.subTreeMovingCount =

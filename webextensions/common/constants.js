@@ -87,6 +87,7 @@ export const kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY = 'treestyletab:
 export const kCOMMAND_TEST_DUPLICATED_TAB_DETECTION             = 'treestyletab:test-duplicated-tab-detection';
 
 export const kCOMMAND_ACTIVATE_TAB            = 'treestyletab:activate-tab';
+export const kCOMMAND_HIGHLIGHT_TABS          = 'treestyletab:highlight-tabs';
 export const kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON = 'treestyletab:toggle-muted-from-sound-button';
 export const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';

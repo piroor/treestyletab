@@ -32,7 +32,6 @@ import {
   log as internalLogger,
   wait,
   dumpTab,
-  mapAndFilter,
   countMatched,
   configs,
   shouldApplyAnimation,
@@ -810,16 +809,11 @@ function updateMultiselectionByTabClick(tab, event) {
       }
       log(' => highlightedTabIds: ', highlightedTabIds);
 
-      // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = mapAndFilter(highlightedTabIds,
-                                   id => id == activeTab.id ? undefined : Tab.get(id).index);
-      if (highlightedTabIds.has(activeTab.id))
-        indices.unshift(activeTab.index);
-      browser.tabs.highlight({
-        windowId: tab.windowId,
-        populate: false,
-        tabs:     indices
-      }).catch(ApiTabs.createErrorSuppressor());
+      BackgroundConnection.sendMessage({
+        type:   Constants.kCOMMAND_HIGHLIGHT_TABS,
+        tabIds: [...highlightedTabIds],
+        inheritToCollapsedDescendants: false,
+      });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -881,16 +875,11 @@ function updateMultiselectionByTabClick(tab, event) {
         }
       }
 
-      // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = mapAndFilter(highlightedTabIds,
-                                   id => id == activeTab.id ? undefined : Tab.get(id).index);
-      if (highlightedTabIds.has(activeTab.id))
-        indices.unshift(activeTab.index);
-      browser.tabs.highlight({
-        windowId: tab.windowId,
-        populate: false,
-        tabs:     indices
-      }).catch(ApiTabs.createErrorSuppressor());
+      BackgroundConnection.sendMessage({
+        type:   Constants.kCOMMAND_HIGHLIGHT_TABS,
+        tabIds: [...highlightedTabIds],
+        inheritToCollapsedDescendants: false,
+      });
     }
     catch(_e) { // not implemented on old Firefox
       return false;

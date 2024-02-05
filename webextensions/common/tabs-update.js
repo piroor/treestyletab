@@ -410,17 +410,18 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`, { toBeHighlightedTabs, toBeUnhighlightedTabs});
 
+  const inheritToCollapsedDescendants = !!highlightInfo.inheritToCollapsedDescendants;
   //log('updateTabsHighlighted ', { toBeHighlightedTabs, toBeUnhighlightedTabs});
   for (const tab of toBeUnhighlightedTabs) {
     TabsStore.removeHighlightedTab(tab);
-    updateTabHighlighted(tab, false);
+    updateTabHighlighted(tab, false, { inheritToCollapsedDescendants });
   }
   for (const tab of toBeHighlightedTabs) {
     TabsStore.addHighlightedTab(tab);
-    updateTabHighlighted(tab, true);
+    updateTabHighlighted(tab, true, { inheritToCollapsedDescendants });
   }
 }
-async function updateTabHighlighted(tab, highlighted) {
+async function updateTabHighlighted(tab, highlighted, { inheritToCollapsedDescendants } = {}) {
   log(`highlighted status of ${dumpTab(tab)}: `, { old: tab.highlighted, new: highlighted });
   //if (tab.highlighted == highlighted)
   //  return false;
@@ -434,7 +435,9 @@ async function updateTabHighlighted(tab, highlighted) {
   if (!inheritHighlighted)
     win.tabsToBeHighlightedAlone.delete(tab.id);
   updateTab(tab, { highlighted });
-  Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
+  Tab.onUpdated.dispatch(tab, { highlighted }, {
+    inheritHighlighted: inheritToCollapsedDescendants && inheritHighlighted,
+  });
   return true;
 }
 

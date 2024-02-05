@@ -1066,12 +1066,9 @@ async function onClick(info, contextTab) {
       break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
-      browser.tabs.highlight({
-        windowId,
-        populate: false,
-        tabs:     [activeTab.index].concat(mapAndFilter(tabs,
-                                                        tab => !tab.active ? tab.index : undefined))
-      }).catch(ApiTabs.createErrorSuppressor());
+      TabsInternalOperation.highlightTabs(
+        [activeTab].concat(mapAndFilter(tabs, tab => !tab.active ? tab : undefined))
+      ).catch(ApiTabs.createErrorSuppressor());
     }; break;
     case 'context_bookmarkTab':
       Commands.bookmarkTab(contextTab);
