@@ -271,6 +271,7 @@ export function renderTabBefore(tab, referenceTab = undefined) {
       tab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
     }
 
+    tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
 

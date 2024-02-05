@@ -372,8 +372,8 @@ windowId = ${tab.windowId}
       return;
     }
 
-    this.tooltip = this.$TST.cookieStoreName ? `${tab.title} - ${this.$TST.cookieStoreName}` : tab.title;
-    this.tooltipWithDescendants = this._getTooltipWithDescendants(tab);
+    this.tooltip                = this.$TST.generateTooltipText();
+    this.tooltipWithDescendants = this.$TST.generateTooltipTextWithDescendants();
 
     if (configs.showCollapsedDescendantsByTooltip &&
         this.$TST.subtreeCollapsed &&
@@ -386,21 +386,6 @@ windowId = ${tab.windowId}
     else {
       this.$TST.removeAttribute('title');
     }
-  }
-  _getTooltipWithDescendants(tab) {
-    const tabElement = tab.$TST.element;
-    if (!tabElement)
-      return '';
-    const tooltip = [`* ${tabElement.tooltip || tab.title}`];
-    for (const child of tab.$TST.children) {
-      const childTabElement = child.$TST.element;
-      if (!childTabElement)
-        continue;
-      if (!childTabElement.tooltipWithDescendants)
-        childTabElement.tooltipWithDescendants = this._getTooltipWithDescendants(child);
-      tooltip.push(childTabElement.tooltipWithDescendants.replace(/^/gm, '  '));
-    }
-    return tooltip.join('\n');
   }
 
   _initExtraItemsContainers() {

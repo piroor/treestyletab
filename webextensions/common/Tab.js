@@ -469,6 +469,20 @@ export default class Tab {
     return identity ? identity.name : null;
   }
 
+  generateTooltipText() {
+    return this.cookieStoreName ? `${this.tab.title} - ${this.cookieStoreName}` : this.tab.title;
+  }
+
+  generateTooltipTextWithDescendants() {
+    const tooltip = [`* ${this.generateTooltipText()}`];
+    for (const child of this.children) {
+      if (!child)
+        continue;
+      tooltip.push(child.$TST.generateTooltipTextWithDescendants().replace(/^/gm, '  '));
+    }
+    return tooltip.join('\n');
+  }
+
   //===================================================================
   // neighbor tabs
   //===================================================================
