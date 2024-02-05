@@ -177,6 +177,32 @@ export const kSET_EXTRA_CONTENTS_PROPERTIES       = 'set-extra-contents-properti
 export const kFOCUS_TO_EXTRA_CONTENTS             = 'focus-to-extra-contents';
 export const kGET_DRAG_DATA         = 'get-drag-data';
 
+const BULK_MESSAGING_TYPES = new Set([
+  kNOTIFY_SIDEBAR_SHOW,
+  kNOTIFY_SIDEBAR_HIDE,
+  kNOTIFY_TABS_RENDERED,
+  kNOTIFY_TABS_UNRENDERED,
+  kNOTIFY_EXTRA_CONTENTS_FOCUS,
+  kNOTIFY_EXTRA_CONTENTS_BLUR,
+  kNOTIFY_TABBAR_OVERFLOW,
+  kNOTIFY_TABBAR_UNDERFLOW,
+  kNOTIFY_TAB_MOUSEMOVE,
+  kNOTIFY_TAB_MOUSEOVER,
+  kNOTIFY_TAB_MOUSEOUT,
+  kNOTIFY_TAB_DRAGREADY,
+  kNOTIFY_TAB_DRAGCANCEL,
+  kNOTIFY_TAB_DRAGSTART,
+  kNOTIFY_TAB_DRAGENTER,
+  kNOTIFY_TAB_DRAGEXIT,
+  kNOTIFY_TAB_DRAGEND,
+  kNOTIFY_TREE_ATTACHED,
+  kNOTIFY_TREE_DETACHED,
+  kNOTIFY_TREE_COLLAPSED_STATE_CHANGED,
+  kNOTIFY_NATIVE_TAB_DRAGSTART,
+  kNOTIFY_NATIVE_TAB_DRAGEND,
+  kNOTIFY_PERMISSIONS_CHANGED,
+]);
+
 export const kCONTEXT_MENU_OPEN       = 'contextMenu-open';
 export const kCONTEXT_MENU_CREATE     = 'contextMenu-create';
 export const kCONTEXT_MENU_UPDATE     = 'contextMenu-update';
@@ -1055,7 +1081,6 @@ export async function tryOperationAllowed(type, message = {}, { targets, except,
     targets,
     except,
     tabProperties,
-    immediately: true,
   }).catch(_error => {});
   if (results.flat().some(result => result && result.result)) {
     log(`=> ${type}: canceled by some helper addon`);
@@ -1083,7 +1108,7 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
   return Array.from(finalTargets, getAddon);
 }
 
-export async function sendMessage(message, { targets, except, tabProperties, immediately } = {}) {
+export async function sendMessage(message, { targets, except, tabProperties } = {}) {
   if (!configs.APIEnabled)
     return [];
 
@@ -1098,7 +1123,6 @@ export async function sendMessage(message, { targets, except, tabProperties, imm
   const promisedResults = spawnMessages(new Set(listenerAddons.map(addon => addon.id)), {
     message,
     tabProperties,
-    immediately,
   });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
@@ -1106,7 +1130,7 @@ export async function sendMessage(message, { targets, except, tabProperties, imm
   }).catch(ApiTabs.createErrorHandler());
 }
 
-function* spawnMessages(targets, { message, tabProperties, immediately }) {
+function* spawnMessages(targets, { message, tabProperties }) {
   tabProperties = tabProperties || [];
 
   const incognitoParams = { windowId: message.windowId || message.window };
@@ -1129,7 +1153,7 @@ function* spawnMessages(targets, { message, tabProperties, immediately }) {
 
     const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
     const addon = getAddon(id) || {};
-    if (!immediately &&
+    if (BULK_MESSAGING_TYPES.has(message.type) &&
         addon.allowBulkMessaging) {
       const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
       mMessagesPendedAt.set(id, startAt);
