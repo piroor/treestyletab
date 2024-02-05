@@ -162,6 +162,7 @@ export async function init() {
 
   mInitialized = true;
   UniqueId.readyToDetectDuplicatedTab();
+  Tab.broadcastState.enabled = true;
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
@@ -626,6 +627,9 @@ Tab.onCreated.addListener((tab, info = {}) => {
 });
 
 Tab.onUpdated.addListener((tab, changeInfo) => {
+  if (!mInitialized)
+    return;
+
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   const status = changeInfo.status || tab && tab.status;
@@ -651,6 +655,9 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 });
 
 Tab.onShown.addListener(tab => {
+  if (!mInitialized)
+    return;
+
   if (configs.fixupTreeOnTabVisibilityChanged) {
     reserveToUpdateAncestors(tab);
     reserveToUpdateChildren(tab);
@@ -663,6 +670,9 @@ Tab.onShown.addListener(tab => {
 });
 
 Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
+  if (!mInitialized)
+    return;
+
   // Spread muted state of a parent tab to its collapsed descendants
   if (!root.$TST.subtreeCollapsed ||
       // We don't need to spread muted state to descendants of multiselected

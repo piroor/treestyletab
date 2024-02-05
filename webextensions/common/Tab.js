@@ -2458,7 +2458,8 @@ Tab.sendPendingUpdates = () => {
 
 Tab.pendingBroadcastStates = new Map();
 Tab.broadcastState = (tabs, { add, remove } = {}) => {
-  if (!Constants.IS_BACKGROUND)
+  if (!Constants.IS_BACKGROUND ||
+      !Tab.broadcastState.enabled)
     return;
 
   if (!Array.isArray(tabs))
@@ -2508,6 +2509,7 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
     SidebarConnection.sendMessage(messages);
   }, 0);
 };
+Tab.broadcastState.enabled = false;
 
 Tab.getOtherTabs = (windowId, ignoreTabs, options = {}) => {
   const query = {
