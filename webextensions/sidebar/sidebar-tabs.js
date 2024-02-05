@@ -13,6 +13,7 @@ import {
   configs,
   shouldApplyAnimation,
   mapAndFilter,
+  nextFrame,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -602,6 +603,7 @@ function reserveToUpdateTabsIndex() {
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
 const mRemovedTabIdsNotifiedBeforeTracked = new Set();
+const mWaitingTasksOnSameTick = new Map();
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -790,9 +792,17 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
-      // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
+      // Tab move messages are notified as an array at a time,
+      // but Tab.waitUntilTracked() may break their order.
+      // So we do a hack to wait messages as a group received at a time.
       maybeNewTabIsMoved(message.tabId);
-      await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
+      const promises = mWaitingTasksOnSameTick.get(message.type) || [];
+      promises.push(Tab.waitUntilTracked([message.tabId, message.nextTabId]));
+      mWaitingTasksOnSameTick.set(message.type, promises);
+      await nextFrame();
+      mWaitingTasksOnSameTick.delete(message.type);
+      await Promise.all(promises);
+
       const tab     = Tab.get(message.tabId);
       if (!tab ||
           tab.index == message.toIndex)
