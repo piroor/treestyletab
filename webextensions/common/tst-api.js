@@ -230,6 +230,9 @@ const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
 
+const mPendingMessagesFor = new Map();
+const mMessagesPendedAt   = new Map();
+
 // you should use this to reduce memory usage around effective favicons
 export function clearCache(cache) {
   cache.effectiveFavIconUrls = {};
@@ -378,6 +381,8 @@ function registerAddon(id, addon) {
       addon.listeningTypes = oldAddon.listeningTypes;
     if (!('style' in addon) && 'style' in oldAddon)
       addon.style = oldAddon.style;
+    if (!('allowBulkMessaging' in addon) && 'allowBulkMessaging' in oldAddon)
+      addon.allowBulkMessaging = oldAddon.allowBulkMessaging;
   }
 
   if (!addon.listeningTypes) {
@@ -476,6 +481,8 @@ function unregisterAddon(id) {
   log('addon is unregistered: ', id, addon);
   onUnregistered.dispatch(addon);
   mAddons.delete(id);
+  mPendingMessagesFor.delete(id);
+  mMessagesPendedAt.delete(id);
   delete mScrollLockedBy[id];
   delete mGroupingBlockedBy[id];
 }
@@ -576,7 +583,8 @@ export async function initAsBackend() {
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
     listeningTypes: [],
-    bypassPermissionCheck: true
+    bypassPermissionCheck: true,
+    allowBulkMessaging:    true,
   });
 
   const respondedAddons = [];
@@ -1038,12 +1046,17 @@ export async function notifyScrolled(params = {}) {
 // Common utilities to send notification messages to other addons
 // =======================================================================
 
-export async function tryOperationAllowed(type, message = {}, options = {}) {
-  if (!hasListenerForMessageType(type, options)) {
+export async function tryOperationAllowed(type, message = {}, { targets, except, tabProperties } = {}) {
+  if (!hasListenerForMessageType(type, { targets, except })) {
     //log(`=> ${type}: no listener, always allowed`);
     return true;
   }
-  const results = await sendMessage({ ...message, type }, options).catch(_error => {});
+  const results = await sendMessage({ ...message, type }, {
+    targets,
+    except,
+    tabProperties,
+    immediately: true,
+  }).catch(_error => {});
   if (results.flat().some(result => result && result.result)) {
     log(`=> ${type}: canceled by some helper addon`);
     return false;
@@ -1052,8 +1065,8 @@ export async function tryOperationAllowed(type, message = {}, options = {}) {
   return true;
 }
 
-export function hasListenerForMessageType(type, options = {}) {
-  return getListenersForMessageType(type, options).length > 0;
+export function hasListenerForMessageType(type, { targets, except } = {}) {
+  return getListenersForMessageType(type, { targets, except }).length > 0;
 }
 
 export function getListenersForMessageType(type, { targets, except } = {}) {
@@ -1070,12 +1083,12 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
   return Array.from(finalTargets, getAddon);
 }
 
-export async function sendMessage(message, options = {}) {
+export async function sendMessage(message, { targets, except, tabProperties, immediately } = {}) {
   if (!configs.APIEnabled)
     return [];
 
-  const listenerAddons = getListenersForMessageType(message.type, options);
-  const tabProperties = options.tabProperties || [];
+  const listenerAddons = getListenersForMessageType(message.type, { targets, except });
+  tabProperties = tabProperties || [];
   log(`sendMessage: sending message for ${message.type}: `, {
     message,
     listenerAddons,
@@ -1084,7 +1097,8 @@ export async function sendMessage(message, options = {}) {
 
   const promisedResults = spawnMessages(new Set(listenerAddons.map(addon => addon.id)), {
     message,
-    tabProperties
+    tabProperties,
+    immediately,
   });
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
@@ -1092,9 +1106,8 @@ export async function sendMessage(message, options = {}) {
   }).catch(ApiTabs.createErrorHandler());
 }
 
-function* spawnMessages(targets, params) {
-  const message = params.message;
-  const tabProperties = params.tabProperties || [];
+function* spawnMessages(targets, { message, tabProperties, immediately }) {
+  tabProperties = tabProperties || [];
 
   const incognitoParams = { windowId: message.windowId || message.window };
   for (const key of tabProperties) {
@@ -1115,34 +1128,61 @@ function* spawnMessages(targets, params) {
       };
 
     const allowedMessage = await sanitizeMessage(message, { id, tabProperties });
+    const addon = getAddon(id) || {};
+    if (!immediately &&
+        addon.allowBulkMessaging) {
+      const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+      mMessagesPendedAt.set(id, startAt);
+      const messages = mPendingMessagesFor.get(id) || [];
+      messages.push(allowedMessage);
+      mPendingMessagesFor.set(id, messages);
+      (Constants.IS_BACKGROUND ?
+        setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+        window.requestAnimationFrame)(() => {
+        if (mMessagesPendedAt.get(id) != startAt)
+          return;
+        const messages = mPendingMessagesFor.get(id);
+        mPendingMessagesFor.delete(id);
+        if (!messages)
+          return;
+        directSendMessage(id, { messages });
+      }, 0);
+      return {
+        id,
+        result: null,
+      };
+    }
 
-    try {
-      const result = await browser.runtime.sendMessage(id, allowedMessage);
-      return {
-        id,
-        result
-      };
-    }
-    catch(e) {
-      console.log(`Error on sending message to ${id}`, allowedMessage, e);
-      if (e &&
-          e.message == 'Could not establish connection. Receiving end does not exist.') {
-        browser.runtime.sendMessage(id, { type: kNOTIFY_READY }).catch(_error => {
-          console.log(`Unregistering missing helper addon ${id}...`);
-          unregisterAddon(id);
-          if (Constants.IS_SIDEBAR)
-            browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
-        });
-      }
-      return {
-        id,
-        error: e
-      };
-    }
+    return directSendMessage(id, allowedMessage);
   };
 
   for (const id of targets) {
     yield send(id);
+  }
+}
+async function directSendMessage(id, message) {
+  try {
+    const result = await browser.runtime.sendMessage(id, message);
+    return {
+      id,
+      result,
+    };
+  }
+  catch(error) {
+    console.log(`Error on sending message to ${id}`, message, error);
+    if (error &&
+        error.message == 'Could not establish connection. Receiving end does not exist.') {
+      browser.runtime.sendMessage(id, { type: kNOTIFY_READY }).catch(_error => {
+        console.log(`Unregistering missing helper addon ${id}...`);
+        unregisterAddon(id);
+        if (Constants.IS_SIDEBAR)
+          browser.runtime.sendMessage({ type: kCOMMAND_UNREGISTER_ADDON, id });
+      });
+    }
+    return {
+      id,
+      error,
+    };
   }
 }
 

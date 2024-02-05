@@ -593,7 +593,7 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
       win.openingTabs.add(tab.id);
-      setTimeout(() => {// because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         win.openingTabs.delete(tab.id);
