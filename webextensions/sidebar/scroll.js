@@ -307,7 +307,7 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   return delta;
 }
 
-export function isTabInViewport(tab) {
+export function isTabInViewport(tab, { allowPartial } = {}) {
   tab = Tab.get(tab && tab.id);
   if (!TabsStore.ensureLivingTab(tab))
     return false;
@@ -316,7 +316,7 @@ export function isTabInViewport(tab) {
     return true;
 
   const tabRect       = getTabRect(tab);
-  const allowedOffset = (tabRect.height / 2);
+  const allowedOffset = allowPartial ? (tabRect.height / 2) : 0;
   const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
   log('isTabInViewport ', tab.id, {
     allowedOffset,
@@ -724,7 +724,9 @@ function onMessage(message, _sender, _respond) {
       ])]);
 
     case Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT:
-      return Promise.resolve(isTabInViewport(Tab.get(message.tabId)));
+      return Promise.resolve(isTabInViewport(Tab.get(message.tabId), {
+        allowPartial: message.allowPartial,
+      }));
   }
 }
 

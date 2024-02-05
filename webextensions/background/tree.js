@@ -1041,6 +1041,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     type:     Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT,
     windowId: tab.windowId,
     tabId:    tab.id,
+    allowPartial: true,
   }).catch(_error => false);
   const anchor = isInViewport ? tab : null;
 
