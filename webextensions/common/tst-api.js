@@ -1143,9 +1143,9 @@ function* spawnMessages(targets, { message, tabProperties, immediately }) {
           return;
         const messages = mPendingMessagesFor.get(id);
         mPendingMessagesFor.delete(id);
-        if (!messages)
+        if (!messages || messages.length == 0)
           return;
-        directSendMessage(id, { messages });
+        directSendMessage(id, messages.length == 1 ? messages[0] : { messages });
       }, 0);
       return {
         id,
