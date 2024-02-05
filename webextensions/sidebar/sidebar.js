@@ -548,40 +548,7 @@ export async function rebuildAll(importedTabs) {
       Tab.untrack(tab.id);
   }
 
-  let tabs = importedTabs.map(importedTab => Tab.import(importedTab));
-
-  // Re-get tabs before rebuilding tree, because they can be modified while
-  // waiting for initialization
-  await MetricsData.addAsync('rebuildAll: re-import tabs before rebuilding tree', async () => {
-    const [nativeTabs, importedTabs] = await Promise.all([
-      browser.tabs.query({ windowId: mTargetWindow }).catch(ApiTabs.createErrorHandler()),
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_PULL_TABS,
-        windowId: mTargetWindow
-      })
-    ]);
-    let lastDraw = Date.now();
-    let count = 0;
-    const maxCount = nativeTabs.length;
-    tabs = []
-    for (let index = 0; index < maxCount; index++) {
-      let tab = nativeTabs[index];
-      Tab.track(tab);
-      tab = importedTabs[index] && Tab.import(importedTabs[index]) || tab;
-      if (!tab.$TST) {
-        console.log('FATAL ERROR: Imported tab is not untracked yet. Reload the sidebar to retry initialization. See also: https://github.com/piroor/treestyletab/issues/2986');
-        location.reload();
-        return;
-      }
-      tab.$TST.unbindElement(); // The tab object can have old element already detached from the document, so we need to forget it.
-      if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
-        UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 33); // 2/3: re-track all tabs
-        await nextFrame();
-        lastDraw = Date.now();
-      }
-      tabs.push(tab);
-    }
-  });
+  const tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   Window.init(mTargetWindow);
   let lastDraw = Date.now();
