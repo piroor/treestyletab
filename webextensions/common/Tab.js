@@ -2490,8 +2490,7 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
         remove:   [...message.remove],
       };
     });
-    console.log('unified messages: ', messages);
-    SidebarConnection.sendMessage(messages);
+    SidebarConnection.sendMessage(messages.length == 1 ? messages[0] : messages);
   }, 0);
 };
 Tab.broadcastState.enabled = false;
