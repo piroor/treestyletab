@@ -186,10 +186,10 @@ export function collapseTree(rootTabs, { recursively } = {}) {
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_COMMAND,
       {
-        tab: new TSTAPI.TreeItem(tab, { cache }),
+        tab,
         recursivelyCollapsed: !rootTabsSet.has(tab),
       },
-      { tabProperties: ['tab'] }
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -209,8 +209,8 @@ export function collapseAll(windowId) {
       continue;
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_ALL_COMMAND,
-      { tab: new TSTAPI.TreeItem(tab, { cache }) },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -236,10 +236,10 @@ export function expandTree(rootTabs, { recursively } = {}) {
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_COMMAND,
       {
-        tab: new TSTAPI.TreeItem(tab, { cache }),
+        tab,
         recursivelyExpanded: !rootTabsSet.has(tab),
       },
-      { tabProperties: ['tab'] }
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -259,8 +259,8 @@ export function expandAll(windowId) {
       continue;
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_ALL_COMMAND,
-      { tab: new TSTAPI.TreeItem(tab, { cache }) },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;

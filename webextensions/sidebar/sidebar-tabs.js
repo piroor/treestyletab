@@ -307,10 +307,10 @@ function reserveToNotifyTabsRendered() {
 
     if (hasExtternalListener) {
       let cache = {};
-      TSTAPI.sendMessage({
+      TSTAPI.broadcastMessage({
         type: TSTAPI.kNOTIFY_TABS_RENDERED,
-        tabs: tabs.map(tab => new TSTAPI.TreeItem(tab, { cache })),
-      }, { tabProperties: ['tabs'] }).catch(_error => {});
+        tabs,
+      }, { tabProperties: ['tabs'], cache }).catch(_error => {});
       cache = null;
     }
   });
@@ -353,10 +353,10 @@ export function unrenderTab(tab) {
 
       if (hasExtternalListener) {
         let cache = {};
-        TSTAPI.sendMessage({
+        TSTAPI.broadcastMessage({
           type: TSTAPI.kNOTIFY_TABS_UNRENDERED,
-          tabs: tabs.map(tab => new TSTAPI.TreeItem(tab, { cache })),
-        }, { tabProperties: ['tabs'] }).catch(_error => {});
+          tabs,
+        }, { tabProperties: ['tabs'], cache }).catch(_error => {});
         cache = null;
       }
     });

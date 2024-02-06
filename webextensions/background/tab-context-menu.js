@@ -861,7 +861,7 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     }
   }
 
-  const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null;
+  const cache = {};
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -886,22 +886,22 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
       viewType:      'sidebar',
       wasChecked:    false
     },
-    tab: treeItem,
+    tab: contextTab,
     windowId
   }
-  TSTAPI.sendMessage(message, {
+  TSTAPI.broadcastMessage(message, {
     targets: [mOverriddenContext.owner],
-    tabProperties: ['tab']
+    tabProperties: ['tab'],
+    isContextTab: true,
+    cache,
   });
-  TSTAPI.sendMessage({
+  TSTAPI.broadcastMessage({
     ...message,
     type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
   }, {
     targets: [mOverriddenContext.owner],
     tabProperties: ['tab']
   });
-  if (treeItem)
-    treeItem.clearCache();
 
   reserveRefresh();
 }
@@ -946,13 +946,13 @@ function onHidden() {
   if (mLastOverriddenContextOwner &&
       owner == mLastOverriddenContextOwner) {
     mOverriddenContext = null;
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kCONTEXT_MENU_HIDDEN,
       windowId
     }, {
       targets: [owner]
     });
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kFAKE_CONTEXT_MENU_HIDDEN,
       windowId
     }, {
@@ -1200,10 +1200,6 @@ async function onClick(info, contextTab) {
       if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;
         const menuItemId = RegExp.$2;
-        const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true });
-        const tab = treeItem && (await treeItem.exportFor(owner)) || null;
-        if (treeItem)
-          treeItem.clearCache();
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
@@ -1226,17 +1222,26 @@ async function onClick(info, contextTab) {
             viewType:      'sidebar',
             wasChecked:    info.wasChecked
           },
-          tab
+          tab: contextTab,
         };
         if (owner == browser.runtime.id) {
           browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
         }
-        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getCurrentWindowId() })) {
-          browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
-          browser.runtime.sendMessage(owner, {
-            ...message,
-            type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
-          }).catch(ApiTabs.createErrorSuppressor());
+        else {
+          const cache = {};
+          TSTAPI.sendMessage(
+            owner,
+            message,
+            { tabProperties: ['tab'], cache, isContextTab: true }
+          ).catch(ApiTabs.createErrorSuppressor());
+          TSTAPI.sendMessage(
+            owner,
+            {
+              ...message,
+              type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
+            },
+            { tabProperties: ['tab'], cache, isContextTab: true }
+          ).catch(ApiTabs.createErrorSuppressor());
         }
       }
     }; break;

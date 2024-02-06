@@ -109,15 +109,14 @@ export function isCapturingForDragging() {
 }
 
 export function endMultiDrag(tab, coordinates) {
-  const treeItem = tab && new TSTAPI.TreeItem(tab);
   if (mCapturingForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
 
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:    TSTAPI.kNOTIFY_TAB_DRAGEND,
-      tab:     treeItem,
+      tab,
       window:  tab && tab.windowId,
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
@@ -127,9 +126,9 @@ export function endMultiDrag(tab, coordinates) {
     mLastDragEnteredTarget = null;
   }
   else if (mReadyToCaptureMouseEvents) {
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:    TSTAPI.kNOTIFY_TAB_DRAGCANCEL,
-      tab:     treeItem,
+      tab,
       window:  tab && tab.windowId,
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
@@ -138,8 +137,6 @@ export function endMultiDrag(tab, coordinates) {
   }
   mCapturingForDragging = false;
   mReadyToCaptureMouseEvents = false;
-  if (treeItem)
-    treeItem.clearCache();
 }
 
 function setDragData(dragData) {
@@ -841,15 +838,13 @@ function onDragStart(event, options = {}) {
     if (startOnClosebox)
       mLastDragEnteredTarget = tab.$TST.element && tab.$TST.element.closeBox || null;
     const windowId = TabsStore.getCurrentWindowId();
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-      tab:    treeItem,
+      tab,
       window: windowId,
       windowId,
       startOnClosebox
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
@@ -958,13 +953,11 @@ function onDragStart(event, options = {}) {
     }
   }
 
-  const treeItem = new TSTAPI.TreeItem(tab);
-  TSTAPI.sendMessage({
+  TSTAPI.broadcastMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
-    tab:      treeItem,
+    tab,
     windowId: TabsStore.getCurrentWindowId()
   }, { tabProperties: ['tab'] }).catch(_error => {});
-  treeItem.clearCache();
 
   updateLastDragEventCoordinates(event);
   // Don't store raw URLs to save privacy!
@@ -1440,7 +1433,7 @@ async function onDragEnd(event) {
     log(`onDragEnd: finishing drag session ${dragData.sessionId}`);
   }
 
-  TSTAPI.sendMessage({
+  TSTAPI.broadcastMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGEND,
     windowId: TabsStore.getCurrentWindowId()
   }).catch(_error => {});
@@ -1636,14 +1629,12 @@ function onTSTAPIDragEnter(event) {
       (!mDragTargetIsClosebox ||
        EventUtils.isEventFiredOnClosebox(event))) {
     if (target != mLastDragEnteredTarget) {
-      const treeItem = new TSTAPI.TreeItem(tab);
-      TSTAPI.sendMessage({
+      TSTAPI.broadcastMessage({
         type:     TSTAPI.kNOTIFY_TAB_DRAGENTER,
-        tab:      treeItem,
+        tab,
         window:   tab.windowId,
         windowId: tab.windowId
       }, { tabProperties: ['tab'] }).catch(_error => {});
-      treeItem.clearCache();
     }
   }
   mLastDragEnteredTarget = target;
@@ -1665,14 +1656,12 @@ function onTSTAPIDragExit(event) {
       mDragExitTimeoutForTarget.delete(target);
     if (!target || !target.parentNode) // already removed
       return;
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_DRAGEXIT,
-      tab:      treeItem,
+      tab,
       window:   tab.windowId,
       windowId: tab.windowId
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
     target = null;
   }, 10);
   mDragExitTimeoutForTarget.set(target, timeout);

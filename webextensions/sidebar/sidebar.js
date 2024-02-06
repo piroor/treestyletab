@@ -765,7 +765,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('overflow');
     mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kNOTIFY_TABBAR_OVERFLOW,
       windowId,
     });
@@ -795,7 +795,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     log('underflow');
     mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
       windowId,
     });

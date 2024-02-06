@@ -244,7 +244,7 @@ function destroy() {
   // This API doesn't work as expected because it is not notified to
   // other addons actually when browser.runtime.sendMessage() is called
   // on pagehide or something unloading event.
-  TSTAPI.sendMessage({
+  TSTAPI.broadcastMessage({
     type: TSTAPI.kNOTIFY_SHUTDOWN
   }).catch(ApiTabs.createErrorSuppressor());
 

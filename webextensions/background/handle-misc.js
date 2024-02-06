@@ -450,9 +450,9 @@ function onMessageExternal(message, sender) {
           TSTAPI.getTargetRenderedTabs(message, sender) :
           TSTAPI.getTargetTabs(message, sender));
         const cache = {};
-        const treeItems = Array.from(tabs, tab => new TSTAPI.TreeItem(tab, {
+        const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
           interval: message.interval,
-          cache
+          cache,
         }));
         const result = TSTAPI.formatTabResult(
           treeItems,
@@ -465,25 +465,6 @@ function onMessageExternal(message, sender) {
           sender.id
         );
         TSTAPI.clearCache(cache);
-        return result;
-      })();
-
-    case TSTAPI.kGET_LIGHT_TREE:
-      return (async () => {
-        const tabs = await (message.rendered ?
-          TSTAPI.getTargetRenderedTabs(message, sender) :
-          TSTAPI.getTargetTabs(message, sender));
-        const treeItems = Array.from(tabs, TSTAPI.toLightTreeItem);
-        const result = TSTAPI.formatTabResult(
-          treeItems,
-          {
-            ...message,
-            // This must return an array of root tabs if just the window id is specified.
-            // See also: https://github.com/piroor/treestyletab/issues/2763
-            ...((message.window || message.windowId) && !message.tab && !message.tabs ? { tab: '*' } : {})
-          },
-          sender.id
-        );
         return result;
       })();
 
@@ -681,10 +662,7 @@ function onMessageExternal(message, sender) {
           throw new Error(`invalid windowId ${windowId}: it must be valid window id`);
         win.bypassTabControlCount++;
         const tab = await TabsOpen.openURIInTab(message.params, { windowId });
-        const treeItem = new TSTAPI.TreeItem(tab);
-        const exported = treeItem.exportFor(sender.id);
-        treeItem.clearCache();
-        return exported;
+        return TSTAPI.exportTab(tab, { addonId: sender.id });
       })();
 
     case TSTAPI.kDUPLICATE:
@@ -740,10 +718,7 @@ function onMessageExternal(message, sender) {
         });
         if (!tab)
           return null;
-        const treeItem = new TSTAPI.TreeItem(tab);
-        const exported = treeItem.exportFor(sender.id);
-        treeItem.clearCache();
-        return exported;
+        return TSTAPI.exportTab(tab, { addonId: sender.id });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
@@ -763,13 +738,13 @@ function onMessageExternal(message, sender) {
           message.containerId || 'firefox-default'
         );
         const cache = {};
-        const result = TSTAPI.formatTabResult(
-          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, {
+        const result = await TSTAPI.formatTabResult(
+          reopenedTabs.map(tab => TSTAPI.exportTab(tab, {
             interval: message.interval,
-            cache
+            addonId:  sender.id,
+            cache,
           })),
-          message,
-          sender.id
+          message
         );
         TSTAPI.clearCache(cache);
         return result;

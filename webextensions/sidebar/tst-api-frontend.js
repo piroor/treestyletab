@@ -651,8 +651,9 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
     targets: extraContentsInfo.owners,
   };
   if (livingTab) {
-    eventInfo.tab = new TSTAPI.TreeItem(livingTab);
+    eventInfo.tab = livingTab;
     options.tabProperties = ['tab'];
+    options.cache = {};
   }
 
   await TSTAPI.tryOperationAllowed(
@@ -775,6 +776,8 @@ export function getOriginalExtraContentsTarget(event) {
 }
 
 export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEventType, mousedown, extraContentsInfo) {
+  const cache = {};
+
   if (extraContentsInfo &&
       extraContentsInfo.owners &&
       extraContentsInfo.owners.size > 0) {
@@ -787,9 +790,10 @@ export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEv
     const options = {
       targets: extraContentsInfo.owners,
     };
-    if (mousedown.treeItem) {
-      eventInfo.tab = mousedown.treeItem;
+    if (mousedown.tab) {
+      eventInfo.tab = mousedown.tab;
       options.tabProperties = ['tab'];
+      options.cache = cache;
     }
     const allowed = (await TSTAPI.tryOperationAllowed(
       eventType,
@@ -812,9 +816,10 @@ export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEv
     const options = {
       except: extraContentsInfo && extraContentsInfo.owners,
     };
-    if (mousedown.treeItem) {
-      eventInfo.tab = mousedown.treeItem;
+    if (mousedown.tab) {
+      eventInfo.tab = mousedown.tab;
       options.tabProperties = ['tab'];
+      options.cache = cache;
     }
     const allowed = await TSTAPI.tryOperationAllowed(
       rawEventType,

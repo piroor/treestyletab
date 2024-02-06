@@ -197,10 +197,9 @@ function onMouseMove(event) {
 
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) &&
       tab) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -209,7 +208,6 @@ function onMouseMove(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
@@ -237,10 +235,9 @@ function onMouseOver(event) {
   const enterTabFromAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (enterTabFromAncestor) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -249,7 +246,6 @@ function onMouseOver(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
@@ -265,10 +261,9 @@ function onMouseOut(event) {
   const leaveTabToAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (leaveTabToAncestor) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -277,7 +272,6 @@ function onMouseOut(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
@@ -321,10 +315,9 @@ function onMouseDown(event) {
     event.preventDefault();
   }
 
-  const treeItem = new TSTAPI.TreeItem(tab);
   const mousedown = {
     detail: mousedownDetail,
-    treeItem,
+    tab,
     promisedMousedownNotified: Promise.resolve(),
     timestamp: Date.now(),
   };
@@ -353,7 +346,6 @@ function onMouseDown(event) {
         mousedown,
         extraContentsInfo
       );
-      treeItem.clearCache();
       if (!allowed) {
         log(' => canceled');
         return true;
@@ -460,11 +452,10 @@ async function onMouseUp(event) {
   }
 
   if (tab) {
-    const treeItem = new TSTAPI.TreeItem(tab);
     const mouseupInfo = {
       ...lastMousedown,
       detail:   EventUtils.getMouseEventDetail(event, tab),
-      treeItem,
+      tab,
     };
 
     const mouseupAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
@@ -475,7 +466,6 @@ async function onMouseUp(event) {
     );
     if (!mouseupAllowed) {
       log(' => not allowed (mouseup)');
-      treeItem.clearCache();
       return true;
     }
 
@@ -487,15 +477,12 @@ async function onMouseUp(event) {
     );
     if (!clickAllowed) {
       log(' => not allowed (clicked');
-      treeItem.clearCache();
       return true;
     }
-
-    treeItem.clearCache();
   }
 
   let promisedCanceled = null;
-  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
+  if (lastMousedown.tab && lastMousedown.detail.targetType == 'tab')
     promisedCanceled = lastMousedown.promisedMousedownNotified;
 
   if (lastMousedown.expired ||
@@ -540,8 +527,8 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       log('onMouseUp: click on the new tab button');
       const mouseupInfo = {
         ...lastMousedown,
-        detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
+        detail: EventUtils.getMouseEventDetail(event),
+        tab:    null,
       };
 
       const mouseUpAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
@@ -599,7 +586,6 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       {
         ...lastMousedown,
         detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
         tab:      null,
       },
       lastMousedown.detail.$extraContentsInfo
@@ -614,7 +600,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         ...lastMousedown.detail,
         window:             mTargetWindow,
         windowId:           mTargetWindow,
-        tab:                lastMousedown.treeItem,
+        tab:                lastMousedown.tab,
         $extraContentsInfo: null
       },
       { tabProperties: ['tab'] }
@@ -630,7 +616,6 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       {
         ...lastMousedown,
         detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
         tab:      null,
       },
       lastMousedown.detail.$extraContentsInfo
@@ -645,7 +630,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         ...lastMousedown.detail,
         window:             mTargetWindow,
         windowId:           mTargetWindow,
-        tab:                lastMousedown.treeItem,
+        tab:                lastMousedown.tab,
         $extraContentsInfo: null
       },
       { tabProperties: ['tab'] }
@@ -986,15 +971,13 @@ async function onDblClick(event) {
       !EventUtils.isEventFiredOnTwisty(event) &&
       !EventUtils.isEventFiredOnSoundButton(event)) {
     const detail   = EventUtils.getMouseEventDetail(event, livingTab);
-    const treeItem = new TSTAPI.TreeItem(livingTab);
     const extraContentsInfo = TSTAPIFrontend.getOriginalExtraContentsTarget(event);
     const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_DBLCLICKED,
       TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-      { detail, treeItem },
+      { detail, tab: livingTab },
       extraContentsInfo
     );
-    treeItem.clearCache();
     if (!allowed)
       return;
 

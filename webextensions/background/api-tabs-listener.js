@@ -646,14 +646,14 @@ async function onNewTabTracked(tab, info) {
 
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_NEW_TAB_PROCESSED)) {
       const cache = {};
-      TSTAPI.sendMessage({
+      TSTAPI.broadcastMessage({
         type:      TSTAPI.kNOTIFY_NEW_TAB_PROCESSED,
-        tab:       new TSTAPI.TreeItem(tab, { cache }),
-        originalTab: duplicated && new TSTAPI.TreeItem(Tab.get(uniqueId.originalTabId), { cache }),
+        tab,
+        originalTab: duplicated && Tab.get(uniqueId.originalTabId),
         restored,
         duplicated,
         fromExternal,
-      }, { tabProperties: ['tab', 'originalTab'] }).catch(_error => {});
+      }, { tabProperties: ['tab', 'originalTab'], cache }).catch(_error => {});
       TSTAPI.clearCache(cache);
     }
 

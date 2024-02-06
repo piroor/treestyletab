@@ -129,9 +129,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         log('  => apply unfocusableCollapsedTab');
         allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
-          { tab: new TSTAPI.TreeItem(tab, { cache }),
+          { tab,
             focusDirection },
-          { tabProperties: ['tab'] }
+          { tabProperties: ['tab'], cache }
         );
         TSTAPI.clearCache(cache);
         if (allowed) {
@@ -185,9 +185,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       }
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_TAB,
-        { tab: new TSTAPI.TreeItem(tab, { cache }),
+        { tab,
           focusDirection },
-        { tabProperties: ['tab'] }
+        { tabProperties: ['tab'], cache }
       );
       TSTAPI.clearCache(cache);
       if (allowed) {
@@ -243,15 +243,14 @@ async function handleNewActiveTab(tab, { allowed, silently } = {}) {
   const canExpandTree           = shouldCollapseExpandNow && !silently;
   if (canExpandTree &&
       allowed !== false) {
-    const treeItem = new TSTAPI.TreeItem(tab);
+    const cache = {};
     const allowed = await TSTAPI.tryOperationAllowed(
       tab.active ?
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT,
-      { tab: treeItem },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     );
-    treeItem.clearCache();
     if (!allowed)
       return;
     if (canCollapseTree &&
@@ -343,16 +342,15 @@ async function setupDelayedExpand(tab) {
     return;
   cancelDelayedExpand(tab);
   TabsStore.removeToBeExpandedTab(tab);
-  const treeItem = new TSTAPI.TreeItem(tab);
+  const cache = {};
   const [ctrlTabHandlingEnabled, allowedToExpandViaAPI] = await Promise.all([
     Permissions.isGranted(Permissions.ALL_URLS),
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
-      { tab: treeItem },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ),
   ]);
-  treeItem.clearCache();
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed ||
@@ -454,21 +452,20 @@ function onMessage(message, sender) {
             tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
-          const treeItem = new TSTAPI.TreeItem(tab);
+          const cache = {};
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id &&
               (await TSTAPI.tryOperationAllowed(
                 TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH,
-                { tab: treeItem },
-                { tabProperties: ['tab'] }
+                { tab },
+                { tabProperties: ['tab'], cache }
               ))) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
             });
           }
-          treeItem.clearCache();
         }
         mMaybeTabSwitchingByShortcut =
           mTabSwitchedByShortcut = false;

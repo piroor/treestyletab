@@ -210,11 +210,11 @@ async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = 
   const cache = {};
   const result = TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,
-    { tab: new TSTAPI.TreeItem(tab, { cache }),
-      activeTab: activeTab && new TSTAPI.TreeItem(activeTab, { cache }),
-      openerTab: openerTab && new TSTAPI.TreeItem(openerTab, { cache }),
+    { tab,
+      activeTab: activeTab,
+      openerTab: openerTab,
       context },
-    { tabProperties: ['tab', 'activeTab', 'openerTab'] }
+    { tabProperties: ['tab', 'activeTab', 'openerTab'], cache }
   );
   TSTAPI.clearCache(cache);
   return result;
