@@ -123,7 +123,7 @@ export function reposition(options = {}) {
       //log('=> new row');
     }
   }
-  SidebarTabs.pinnedContainerWrapper.classList.toggle('overflow', contentsHeight > mAreaHeight);
+  SidebarTabs.pinnedContainer.classList.toggle('overflow', contentsHeight > mAreaHeight);
 }
 
 export function reserveToReposition(options = {}) {

@@ -524,9 +524,9 @@ function updateContextualIdentitiesSelector() {
 export async function rebuildAll(importedTabs) {
   MetricsData.add('rebuildAll: start');
   const range = document.createRange();
-  range.selectNodeContents(SidebarTabs.pinnedContainerWrapper);
+  range.selectNodeContents(SidebarTabs.pinnedContainer);
   range.deleteContents();
-  range.selectNodeContents(SidebarTabs.noramlContainerWrapper);
+  range.selectNodeContents(SidebarTabs.normalContainer);
   range.deleteContents();
   range.detach();
 
@@ -760,7 +760,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   if (!(reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE))
     Scroll.reserveToRenderVirtualScrollViewport();
 
-  if (SidebarTabs.noramlContainerWrapper.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
+  if (SidebarTabs.normalContainer.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
       const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
@@ -778,7 +778,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
 }
 updateTabbarLayout.lastUpdateReasons = 0;
 
-SidebarTabs.noramlContainerWrapper.addEventListener('overflow', event => {
+SidebarTabs.normalContainer.addEventListener('overflow', event => {
   if (event.target != event.currentTarget)
     return;
 
@@ -814,7 +814,7 @@ SidebarTabs.noramlContainerWrapper.addEventListener('overflow', event => {
   });
 });
 
-SidebarTabs.noramlContainerWrapper.addEventListener('underflow', event => {
+SidebarTabs.normalContainer.addEventListener('underflow', event => {
   if (event.target != event.currentTarget)
     return;
 

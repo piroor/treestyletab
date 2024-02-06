@@ -45,8 +45,8 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
   mPromisedInitializedResolver = resolve;
 });
 
-export const pinnedContainerWrapper = document.querySelector('#pinned-tabs-container');
-export const noramlContainerWrapper = document.querySelector('#normal-tabs-container');
+export const pinnedContainer = document.querySelector('#pinned-tabs-container');
+export const normalContainer = document.querySelector('#normal-tabs-container');
 
 export const onPinnedTabsChanged = new EventListenerManager();
 export const onNormalTabsChanged = new EventListenerManager();
@@ -393,7 +393,7 @@ Window.onInitialized.addListener(win => {
   let pinnedContainer = document.getElementById(`window-${windowId}-pinned`);
   if (!pinnedContainer) {
     pinnedContainer = document.createElement('ul');
-    pinnedContainerWrapper.appendChild(pinnedContainer);
+    pinnedContainer.appendChild(pinnedContainer);
   }
   pinnedContainer.dataset.windowId = windowId;
   pinnedContainer.setAttribute('id', `window-${windowId}-pinned`);
@@ -411,8 +411,8 @@ Window.onInitialized.addListener(win => {
     wrapper.classList.add('virtual-scroll-container');
     wrapper.classList.add('vbox');
     wrapper.appendChild(container);
-    noramlContainerWrapper.appendChild(wrapper);
-    const spacer = noramlContainerWrapper.appendChild(document.createElement('div'));
+    normalContainer.appendChild(wrapper);
+    const spacer = normalContainer.appendChild(document.createElement('div'));
     spacer.classList.add('vbox');
     spacer.classList.add(Constants.kTABBAR_SPACER);
   }
