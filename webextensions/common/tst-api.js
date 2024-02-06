@@ -1317,17 +1317,22 @@ export async function getTargetTabs(message, sender) {
 
   if (Array.isArray(tabQuery))
     return getTabsFromWrongIds(tabQuery, windowId, sender);
+  const isAllVisible = tabQuery && tabQuery.toLowerCase() == 'allvisible';
   if (windowId) {
     if (tabQuery == '*')
       return Tab.getAllTabs(windowId, { iterator: true });
+    else if (isAllVisible)
+      return Tab.getVisibleTabs(windowId, { iterator: true });
     else if (!tabQuery)
       return Tab.getRootTabs(windowId, { iterator: true });
   }
-  if (tabQuery == '*') {
+  if (tabQuery == '*' || isAllVisible) {
     const win = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
-    return Tab.getAllTabs(win.id, { iterator: true });
+    return isAllVisible ?
+      Tab.getVisibleTabs(win.id, { iterator: true }) :
+      Tab.getAllTabs(win.id, { iterator: true });
   }
   if (tabQuery)
     return getTabsFromWrongIds([tabQuery], windowId, sender);
