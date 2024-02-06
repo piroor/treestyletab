@@ -1154,7 +1154,7 @@ export default class Tab {
   // State
   //===================================================================
 
-  async addState(state, { permanently, toTab } = {}) {
+  async addState(state, { permanently, toTab, broadcast } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
@@ -1268,7 +1268,9 @@ export default class Tab {
         break;
     }
 
-    if (modified && Constants.IS_BACKGROUND)
+    if (modified &&
+        Constants.IS_BACKGROUND &&
+        broadcast !== false)
       Tab.broadcastState(this.tab, {
         add: [state],
       });
@@ -1281,7 +1283,7 @@ export default class Tab {
     }
   }
 
-  async removeState(state, { permanently, toTab } = {}) {
+  async removeState(state, { permanently, toTab, broadcast } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
@@ -1384,7 +1386,9 @@ export default class Tab {
         break;
     }
 
-    if (modified && Constants.IS_BACKGROUND)
+    if (modified &&
+        Constants.IS_BACKGROUND &&
+        broadcast !== false)
       Tab.broadcastState(this.tab, {
         remove: [state],
       });

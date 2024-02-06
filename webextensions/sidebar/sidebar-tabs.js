@@ -278,7 +278,8 @@ export function renderTabBefore(tab, referenceTab = undefined) {
 
     // To apply animation effect, we need to set and remove
     // the "collapsed" state again.
-    if (tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) &&
+    if (shouldApplyAnimation() &&
+        tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) &&
         !tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED)) {
       tabElement.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
       tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED);
@@ -300,9 +301,9 @@ export function renderTabBefore(tab, referenceTab = undefined) {
 }
 
 function reserveToNotifyTabsRendered() {
-  const hasInternalListener  = onTabsRendered.hasListener();
-  const hasExtternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED);
-  if (!hasInternalListener && !hasExtternalListener) {
+  const hasInternalListener = onTabsRendered.hasListener();
+  const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED);
+  if (!hasInternalListener && !hasExternalListener) {
     mRenderedTabIds.clear();
     return;
   }
@@ -320,7 +321,7 @@ function reserveToNotifyTabsRendered() {
     if (hasInternalListener)
       onTabsRendered.dispatch(tabs);
 
-    if (hasExtternalListener) {
+    if (hasExternalListener) {
       let cache = {};
       TSTAPI.broadcastMessage({
         type: TSTAPI.kNOTIFY_TABS_RENDERED,
@@ -340,20 +341,14 @@ export function unrenderTab(tab) {
   mRenderedTabIds.delete(tab.id);
   mUnrenderedTabIds.add(tab.id);
 
-  let removed = false;
-  if (tab.$TST.element.parentNode) {
-    tab.$TST.element.parentNode.removeChild(tab.$TST.element);
-    removed = true;
-  }
+  const tabElement = tab.$TST.element;
 
-  tab.$TST.unbindElement();
   tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-  tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
   TabsStore.removeUnsynchronizedTab(tab);
 
-  const hasInternalListener  = onTabsUnrendered.hasListener();
-  const hasExtternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED);
-  if (hasInternalListener || hasExtternalListener) {
+  const hasInternalListener = onTabsUnrendered.hasListener();
+  const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED);
+  if (hasInternalListener || hasExternalListener) {
     const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
     unrenderTab.lastStartedAt = startAt;
     window.requestAnimationFrame(() => {
@@ -367,7 +362,7 @@ export function unrenderTab(tab) {
       if (hasInternalListener)
         onTabsUnrendered.dispatch(tabs);
 
-      if (hasExtternalListener) {
+      if (hasExternalListener) {
         let cache = {};
         TSTAPI.broadcastMessage({
           type: TSTAPI.kNOTIFY_TABS_UNRENDERED,
@@ -381,7 +376,14 @@ export function unrenderTab(tab) {
     mUnrenderedTabIds.clear();
   }
 
-  return removed;
+  if (!tabElement ||
+      !tabElement.parentNode)
+    return false;
+
+  tabElement.parentNode.removeChild(tabElement);
+  tab.$TST.unbindElement();
+
+  return true;
 }
 
 Window.onInitialized.addListener(win => {

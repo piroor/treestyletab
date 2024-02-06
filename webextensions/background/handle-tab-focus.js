@@ -388,9 +388,9 @@ function cancelAllDelayedExpand(windowId) {
 
 Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
   if (info.collapsed)
-    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE, { broadcast: false });
   else
-    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE, { broadcast: false });
 });
 
 
