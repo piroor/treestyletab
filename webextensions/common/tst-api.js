@@ -1317,22 +1317,29 @@ export async function getTargetTabs(message, sender) {
 
   if (Array.isArray(tabQuery))
     return getTabsFromWrongIds(tabQuery, windowId, sender);
-  const isAllVisible = tabQuery && String(tabQuery).toLowerCase() == 'allvisible';
+  const isAllVisibles    = tabQuery && String(tabQuery).toLowerCase() == 'allvisibles';
+  const isNormalVisibles = tabQuery && String(tabQuery).toLowerCase() == 'normalvisibles';
   if (windowId) {
     if (tabQuery == '*')
       return Tab.getAllTabs(windowId, { iterator: true });
-    else if (isAllVisible)
+    else if (isAllVisibles)
       return Tab.getVisibleTabs(windowId, { iterator: true });
+    else if (isNormalVisibles)
+      return Tab.getNormalTabs(windowId, { iterator: true });
     else if (!tabQuery)
       return Tab.getRootTabs(windowId, { iterator: true });
   }
-  if (tabQuery == '*' || isAllVisible) {
+  if (tabQuery == '*' ||
+      isAllVisibles ||
+      isNormalVisibles) {
     const win = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
-    return isAllVisible ?
+    return isAllVisibles ?
       Tab.getVisibleTabs(win.id, { iterator: true }) :
-      Tab.getAllTabs(win.id, { iterator: true });
+      isNormalVisibles ?
+        Tab.getNormalTabs(win.id, { iterator: true }) :
+        Tab.getAllTabs(win.id, { iterator: true });
   }
   if (tabQuery)
     return getTabsFromWrongIds([tabQuery], windowId, sender);
@@ -1491,11 +1498,13 @@ export function formatResult(results, originalMessage) {
   return results;
 }
 
+const TABS_ARRAY_QUERY_MATCHER = /^(\*|allvisibles|normalvisibles)$/i;
+
 export async function formatTabResult(exportedTabs, originalMessage) {
   exportedTabs = await Promise.all(exportedTabs);
   if (Array.isArray(originalMessage.tabs) ||
-      originalMessage.tab == '*' ||
-      originalMessage.tabs == '*')
+      TABS_ARRAY_QUERY_MATCHER.test(originalMessage.tab) ||
+      TABS_ARRAY_QUERY_MATCHER.test(originalMessage.tabs))
     return exportedTabs.filter(tab => !!tab);
   return exportedTabs.length == 0 ?
     null :
