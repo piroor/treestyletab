@@ -2,7 +2,7 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<html class="left initializing sidebar">
+<html class="left initializing sidebar flexible">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/resources/16x16.svg">
@@ -17,13 +17,32 @@
     <style id="active-tree-rules" type="text/css"></style>
     <style id="user-style-rules" type="text/css"></style>
   </head>
-  <body>
+  <body class="flexible">
     <div id="tabbar-top" class="vbox"><div class="extra-items-container"></div></div>
-    <div id="tabbar-container">
-    <div id="tabbar" class="vbox">
-      <div id="pinned-tabs-container" class="vbox"></div>
-      <div id="normal-tabs-container" class="vbox"></div>
+    <div id="tabbar-container" class="vbox">
+      <div id="tabbar" class="vbox">
+        <div id="pinned-tabs-container" class="vbox"></div>
+        <div id="normal-tabs-container" class="vbox"></div>
+        <div class="after-tabs vbox">
+          <div class="newtab-button-box vbox">
+            <button class="newtab-action-selector-anchor"
+                    title="__MSG_tabbar_newTabAction_tooltip__"
+                    data-menu-ui="newtab-action-selector"
+                    tabindex="-1"></button>
+            <button class="contextual-identities-selector-anchor"
+                    title="__MSG_tabbar_newTabWithContexualIdentity_tooltip__"
+                    data-menu-ui="contextual-identities-selector"
+                    tabindex="-1"></button>
+            <div class="newtab-button"
+                 role="button"
+                 title="__MSG_tabbar_newTabButton_tooltip__"
+                 tabindex="-1"
+                 draggable="true"><div class="extra-items-container"></div></div>
+          </div>
+        </div>
+      </div>
       <div class="after-tabs vbox">
+        <div id="out-of-view-tab-notifier"></div>
         <div class="newtab-button-box vbox">
           <button class="newtab-action-selector-anchor"
                   title="__MSG_tabbar_newTabAction_tooltip__"
@@ -40,26 +59,7 @@
                draggable="true"><div class="extra-items-container"></div></div>
         </div>
       </div>
-    </div>
-    <div class="after-tabs vbox">
-      <div id="out-of-view-tab-notifier"></div>
-      <div class="newtab-button-box vbox">
-        <button class="newtab-action-selector-anchor"
-                title="__MSG_tabbar_newTabAction_tooltip__"
-                data-menu-ui="newtab-action-selector"
-                tabindex="-1"></button>
-        <button class="contextual-identities-selector-anchor"
-                title="__MSG_tabbar_newTabWithContexualIdentity_tooltip__"
-                data-menu-ui="contextual-identities-selector"
-                tabindex="-1"></button>
-        <div class="newtab-button"
-             role="button"
-             title="__MSG_tabbar_newTabButton_tooltip__"
-             tabindex="-1"
-             draggable="true"><div class="extra-items-container"></div></div>
-      </div>
-    </div>
-    <div id="tabbar-bottom" class="vbox"><div class="extra-items-container"></div></div>
+      <div id="tabbar-bottom" class="vbox"><div class="extra-items-container"></div></div>
     </div>
     <div id="subpanel-container">
       <div id="subpanel-header">

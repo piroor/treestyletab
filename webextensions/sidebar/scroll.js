@@ -120,6 +120,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const allRenderableTabsSize = tabSize * renderableTabs.length;
+  const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
 
   // We need to use min-height instead of height for a flexbox.
   const minHeight              = `${allRenderableTabsSize}px`;
@@ -127,13 +128,11 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const allTabsSizeHolderStyle = allTabsSizeHolder.style;
   const resized = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
   if (resized) {
-    allTabsSizeHolderStyle.minHeight = minHeight;
+    // For underflow case, we need to unset min-height to put the "new tab"
+    // button next to the last tab immediately.
+    allTabsSizeHolderStyle.minHeight = currentViewPortSize < allRenderableTabsSize ? minHeight : '';
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
     onVirtualScrollViewportUpdated.dispatch(resized);
-    // This is required to put the "new tab" button next to the last tab
-    // immediately after the box is shrunken.
-    if (!mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
-      allTabsSizeHolderStyle.minHeight = '';
   }
 
   const range = document.createRange();
@@ -145,7 +144,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const followingAreaSize = range.getBoundingClientRect().height;
   range.detach();
   const maxViewportSize     = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
-  const currentViewPortSize = mNormalScrollBox.getBoundingClientRect().height;
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
   const viewPortSize = currentViewPortSize || maxViewportSize;
   const renderablePaddingSize = viewPortSize;

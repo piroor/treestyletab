@@ -748,6 +748,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         const lastMessage = BackgroundConnection.fetchBufferedMessage(Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
         if (!lastMessage)
           return;
+        await Tab.waitUntilTracked(lastMessage.tabId);
         const activeTab = Tab.get(lastMessage.tabId);
         TabsStore.activeTabInWindow.set(activeTab.windowId, activeTab);
         TabsInternalOperation.setTabActive(activeTab);

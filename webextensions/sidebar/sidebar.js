@@ -708,6 +708,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
     reasons = (reasons || 0) & reserveToUpdateTabbarLayout.reasons;
     reserveToUpdateTabbarLayout.reasons = 0;
   }
+  updateTabbarLayout.lastUpdateReasons = reasons;
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
@@ -746,69 +747,23 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
   mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
-  const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
-  const allTabsHeight = parseFloat(virtualScrollContainer && virtualScrollContainer.dataset.height || 0);
-  const visibleNewTabButtonInTabbar = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box');
-  const visibleNewTabButtonAfterTabbar = document.querySelector('#tabbar.overflow ~ .after-tabs .newtab-button-box');
-  const newTabButtonSize = (visibleNewTabButtonInTabbar || visibleNewTabButtonAfterTabbar).getBoundingClientRect().height;
-  const extraTabbarTopContainerSize = document.querySelector('#tabbar-top > *').getBoundingClientRect().height;
+  const visibleNewTabButton = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box, #tabbar.overflow ~ .after-tabs .newtab-button-box');
+  const newTabButtonSize    = visibleNewTabButton.getBoundingClientRect().height;
+  const extraTabbarTopContainerSize    = document.querySelector('#tabbar-top > *').getBoundingClientRect().height;
   const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').getBoundingClientRect().height;
-  const containerHeight = mTabBar.getBoundingClientRect().height - SidebarTabs.pinnedContainerWrapper.getBoundingClientRect().height - (visibleNewTabButtonInTabbar ? visibleNewTabButtonInTabbar.getBoundingClientRect().height : 0);
-  log('height: ', { container: containerHeight, allTabsHeight, newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
+  log('height: ', { newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
 
   document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
   document.documentElement.style.setProperty('--tabbar-bottom-area-size', `${extraTabbarBottomContainerSize}px`);
   document.documentElement.style.setProperty('--after-tabs-area-size', `${newTabButtonSize}px`);
 
-  const windowId = TabsStore.getCurrentWindowId();
-  const overflow = containerHeight < allTabsHeight;
-  if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
-    log('overflow');
-    mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
-    TSTAPI.broadcastMessage({
-      type: TSTAPI.kNOTIFY_TABBAR_OVERFLOW,
-      windowId,
-    });
-    window.requestAnimationFrame(() => {
-      // Tab at the end of the tab bar can be hidden completely or
-      // partially (newly opened in small tab bar, or scrolled out when
-      // the window is shrunken), so we need to scroll to it explicitely.
-      const activeTab = Tab.getActiveTab(windowId);
-      if (activeTab && !Scroll.isTabInViewport(activeTab)) {
-        log('scroll to active tab on updateTabbarLayout');
-        Scroll.scrollToTab(activeTab);
-        onLayoutUpdated.dispatch()
-        return;
-      }
-      const lastOpenedTab = Tab.getLastOpenedTab(windowId);
-      if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
-          !Scroll.isTabInViewport(lastOpenedTab)) {
-        log('scroll to last opened tab on updateTabbarLayout ', reasons);
-        Scroll.scrollToTab(lastOpenedTab, {
-          anchor:            activeTab,
-          notifyOnOutOfView: true
-        });
-      }
-      onLayoutUpdated.dispatch()
-    });
-  }
-  else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
-    log('underflow');
-    mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
-    TSTAPI.broadcastMessage({
-      type: TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
-      windowId,
-    });
-    window.requestAnimationFrame(() => {
-      onLayoutUpdated.dispatch()
-    });
-  }
-
   if (!(reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE))
     Scroll.reserveToRenderVirtualScrollViewport();
-  if (overflow) {
+
+  if (SidebarTabs.noramlContainerWrapper.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
+      const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
       const scrollbarOffset = mTabBar.getBoundingClientRect().width - virtualScrollContainer.getBoundingClientRect().width;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
 
@@ -821,6 +776,59 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   else
     PinnedTabs.reserveToReposition({ reasons, timeout, justNow });
 }
+updateTabbarLayout.lastUpdateReasons = 0;
+
+SidebarTabs.noramlContainerWrapper.addEventListener('overflow', event => {
+  if (event.target != event.currentTarget)
+    return;
+
+  log('overflow');
+  const windowId = TabsStore.getCurrentWindowId();
+  event.currentTarget.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
+  mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
+  TSTAPI.broadcastMessage({
+    type: TSTAPI.kNOTIFY_TABBAR_OVERFLOW,
+    windowId,
+  });
+  window.requestAnimationFrame(() => {
+    // Tab at the end of the tab bar can be hidden completely or
+    // partially (newly opened in small tab bar, or scrolled out when
+    // the window is shrunken), so we need to scroll to it explicitely.
+    const activeTab = Tab.getActiveTab(windowId);
+    if (activeTab && !Scroll.isTabInViewport(activeTab)) {
+      log('scroll to active tab on updateTabbarLayout');
+      Scroll.scrollToTab(activeTab);
+      onLayoutUpdated.dispatch()
+      return;
+    }
+    const lastOpenedTab = Tab.getLastOpenedTab(windowId);
+    if (updateTabbarLayout.lastUpdateReasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
+        !Scroll.isTabInViewport(lastOpenedTab)) {
+      log('scroll to last opened tab on updateTabbarLayout ', updateTabbarLayout.lastUpdateReasons);
+      Scroll.scrollToTab(lastOpenedTab, {
+        anchor:            activeTab,
+        notifyOnOutOfView: true
+      });
+    }
+    onLayoutUpdated.dispatch()
+  });
+});
+
+SidebarTabs.noramlContainerWrapper.addEventListener('underflow', event => {
+  if (event.target != event.currentTarget)
+    return;
+
+  log('underflow');
+  event.currentTarget.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
+  mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
+  TSTAPI.broadcastMessage({
+    type:     TSTAPI.kNOTIFY_TABBAR_UNDERFLOW,
+    windowId: TabsStore.getCurrentWindowId(),
+  });
+  window.requestAnimationFrame(() => {
+    onLayoutUpdated.dispatch()
+  });
+});
 
 
 function onFocus(_event) {
