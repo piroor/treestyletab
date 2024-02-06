@@ -276,6 +276,21 @@ export function renderTabBefore(tab, referenceTab = undefined) {
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
     tab.$TST.applyStatesToElement();
 
+    // To apply animation effect, we need to set and remove
+    // the "collapsed" state again.
+    if (tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) &&
+        !tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED)) {
+      tabElement.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
+      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED);
+      window.requestAnimationFrame(() => {
+        tabElement.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+        tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED);
+      });
+    }
+    else {
+      tabElement.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+    }
+
     mRenderedTabIds.add(tab.id);
     mUnrenderedTabIds.delete(tab.id);
     reserveToNotifyTabsRendered();
@@ -333,6 +348,7 @@ export function unrenderTab(tab) {
 
   tab.$TST.unbindElement();
   tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
   TabsStore.removeUnsynchronizedTab(tab);
 
   const hasInternalListener  = onTabsUnrendered.hasListener();
@@ -707,7 +723,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         log(`ignore kCOMMAND_NOTIFY_TAB_CREATED for already closed tab: ${message.tabId}`);
         return;
       }
-      tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+      tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
         await waitUntilNewTabIsMoved(message.tabId);
