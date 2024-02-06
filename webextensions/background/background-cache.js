@@ -135,7 +135,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 
 function getWindowSignature(tabs) {
   const tabIds = tabs.map(tab => tab.id);
-  return tabs.map(tab => `${tab.openerTabId ? tabIds.indexOf(tab.$TST && tab.$TST.parentId || tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+  return tabs.map(tab => `${configs.looseCacheTreeSignature ? -1 : tab.openerTabId ? tabIds.indexOf(tab.$TST && tab.$TST.parentId || tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
 }
 
 function trimSignature(signature, ignoreCount) {
@@ -160,7 +160,7 @@ function matcheSignatures(signatures) {
 
 function signatureFromTabsCache(cachedTabs) {
   const cachedTabIds = cachedTabs.map(tab => tab.id);
-  return cachedTabs.map(tab => `${tab.$TST.parentId ? cachedTabIds.indexOf(tab.$TST.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+  return cachedTabs.map(tab => `${configs.looseCacheTreeSignature ? -1 : tab.$TST.parentId ? cachedTabIds.indexOf(tab.$TST.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
 }
 
 
