@@ -1315,19 +1315,29 @@ export async function getTargetTabs(message, sender) {
   if (windowId)
     await Tab.waitUntilTrackedAll(windowId);
 
+  const queryOptions = {};
+  if (Array.isArray(queryOptions.states)) {
+    queryOptions.states = queryOptions.states || [];
+    queryOptions.states.push(...queryOptions.states.map(state => [state, true]));
+  }
+  if (Array.isArray(queryOptions.statesNot)) {
+    queryOptions.states = queryOptions.statesNot || [];
+    queryOptions.states.push(...queryOptions.statesNot.map(state => [state, false]));
+  }
+
   if (Array.isArray(tabQuery))
-    return getTabsFromWrongIds(tabQuery, windowId, sender);
+    return getTabsFromWrongIds(tabQuery, { windowId, queryOptions, sender });
   const isAllVisibles    = tabQuery && String(tabQuery).toLowerCase() == 'allvisibles';
   const isNormalVisibles = tabQuery && String(tabQuery).toLowerCase() == 'normalvisibles';
   if (windowId) {
     if (tabQuery == '*')
-      return Tab.getAllTabs(windowId, { iterator: true });
+      return Tab.getAllTabs(windowId, { ...queryOptions, iterator: true });
     else if (isAllVisibles)
-      return Tab.getVisibleTabs(windowId, { iterator: true });
+      return Tab.getVisibleTabs(windowId, { ...queryOptions, iterator: true });
     else if (isNormalVisibles)
-      return Tab.getVisibleTabs(windowId, { normal: true, iterator: true });
+      return Tab.getVisibleTabs(windowId, { ...queryOptions, normal: true, iterator: true });
     else if (!tabQuery)
-      return Tab.getRootTabs(windowId, { iterator: true });
+      return Tab.getRootTabs(windowId, { ...queryOptions, iterator: true });
   }
   if (tabQuery == '*' ||
       isAllVisibles ||
@@ -1336,13 +1346,25 @@ export async function getTargetTabs(message, sender) {
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
     return isAllVisibles ?
-      Tab.getVisibleTabs(win.id, { iterator: true }) :
+      Tab.getVisibleTabs(win.id, { ...queryOptions, iterator: true }) :
       isNormalVisibles ?
-        Tab.getVisibleTabs(windowId, { normal: true, iterator: true }) :
-        Tab.getAllTabs(win.id, { iterator: true });
+        Tab.getVisibleTabs(windowId, { ...queryOptions, normal: true, iterator: true }) :
+        Tab.getAllTabs(win.id, { ...queryOptions, iterator: true });
   }
-  if (tabQuery)
-    return getTabsFromWrongIds([tabQuery], windowId, sender);
+  if (tabQuery) {
+    let tabs = await getTabsFromWrongIds([tabQuery], { windowId, queryOptions, sender });
+    if (queryOptions.states)
+      tabs = tabs.filter(tab => {
+        const unified = new Set([...tab.$TST.states, ...queryOptions.states]);
+        return unified.size == tab.$TST.states.size;
+      });
+    if (queryOptions.statesNot)
+      tabs = tabs.filter(tab => {
+        const unified = new Set([...tab.$TST.states, ...queryOptions.statesNot]);
+        return unified.size > tab.$TST.states.size;
+      });
+    return tabs;
+  }
   return [];
 }
 
@@ -1365,12 +1387,12 @@ export async function getTargetRenderedTabs(message, sender) {
   return Array.from(tabs).filter(tab => renderedTabIdsSet.has(tab.id));
 }
 
-async function getTabsFromWrongIds(ids, windowId, sender) {
+async function getTabsFromWrongIds(ids, { windowId, queryOptions, sender }) {
   const win = !windowId && await browser.windows.getLastFocused({
     populate: true
   }).catch(ApiTabs.createErrorHandler());
   const activeWindow = TabsStore.windows.get(windowId || win.id) || win;
-  const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, sender }).catch(error => {
+  const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, queryOptions, sender }).catch(error => {
     console.error(error);
     return null;
   })));
@@ -1379,8 +1401,8 @@ async function getTabsFromWrongIds(ids, windowId, sender) {
   return tabs.flat().filter(tab => !!tab);
 }
 
-async function getTabFromWrongId({ id, activeWindow, sender }) {
-  log('getTabsFromWrongId: ', { id, activeWindow, sender });
+async function getTabFromWrongId({ id, activeWindow, queryOptions, sender }) {
+  log('getTabsFromWrongId: ', { id, activeWindow, queryOptions, sender });
   if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
     id = id.id;
   let query   = String(id).toLowerCase();
@@ -1414,14 +1436,14 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
     case 'next':
       return baseTab.$TST.nextTab;
     case 'nextcyclic':
-      return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id);
+      return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id, queryOptions || {});
 
     case 'previous':
     case 'prev':
       return baseTab.$TST.previousTab;
     case 'previouscyclic':
     case 'prevcyclic':
-      return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id);
+      return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id, queryOptions || {});
 
     case 'nextsibling':
       return baseTab.$TST.nextSiblingTab;
@@ -1432,7 +1454,7 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
       const parent = baseTab.$TST.parent;
       if (parent)
         return parent.$TST.firstChild;
-      return Tab.getFirstTab(activeWindow.id);
+      return Tab.getFirstTab(activeWindow.id, queryOptions || {});
     }
 
     case 'previoussibling':
@@ -1446,20 +1468,20 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
       const parent = baseTab.$TST.parent;
       if (parent)
         return parent.$TST.lastChild;
-      return Tab.getLastRootTab(activeWindow.id);
+      return Tab.getLastRootTab(activeWindow.id, queryOptions || {});
     }
 
     case 'nextvisible':
       return baseTab.$TST.nearestVisibleFollowingTab;
     case 'nextvisiblecyclic':
-      return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id);
+      return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id, queryOptions || {});
 
     case 'previousvisible':
     case 'prevvisible':
       return baseTab.$TST.nearestVisiblePrecedingTab;
     case 'previousvisiblecyclic':
     case 'prevvisiblecyclic':
-      return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id);
+      return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id, queryOptions || {});
 
     case 'lastdescendant':
       return baseTab.$TST.lastDescendant;
@@ -1468,7 +1490,7 @@ async function getTabFromWrongId({ id, activeWindow, sender }) {
       return sender && sender.tab && Tab.get(sender.tab.id) || null;
     case 'highlighted':
     case 'multiselected':
-      return Tab.getHighlightedTabs(activeWindow.id);
+      return Tab.getHighlightedTabs(activeWindow.id, queryOptions || {});
     default:
       return Tab.get(id) || Tab.getByUniqueId(id);
   }
