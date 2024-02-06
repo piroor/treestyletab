@@ -331,7 +331,6 @@ export class TreeItem {
 
     const tabStates = sourceTab.$TST.states;
     const exportedTab = {
-      id:             sourceTab.id,
       states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
       indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
       ancestorTabIds: sourceTab.$TST.ancestorIds,
@@ -349,7 +348,7 @@ export class TreeItem {
       'height',
       'hidden',
       'highlighted',
-      //'id',
+      'id',
       'incognito',
       'index',
       'isArticle',
