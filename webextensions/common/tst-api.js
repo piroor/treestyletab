@@ -376,7 +376,7 @@ export async function exportTabInternal(sourceTab, { addonId, isContextTab, inte
   }
 
   for (const property of allowedProperties) {
-    if (property in exportedTab)
+    if (property in sourceTab)
       exportedTab[property] = sourceTab[property];
   }
   return exportedTab;
