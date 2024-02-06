@@ -468,6 +468,31 @@ function onMessageExternal(message, sender) {
         return result;
       })();
 
+    case TSTAPI.kGET_LIGHT_TREE:
+      return (async () => {
+        const tabs = await (message.rendered ?
+          TSTAPI.getTargetRenderedTabs(message, sender) :
+          TSTAPI.getTargetTabs(message, sender));
+        const cache = {};
+        const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
+          light:    true,
+          interval: message.interval,
+          cache,
+        }));
+        const result = TSTAPI.formatTabResult(
+          treeItems,
+          {
+            ...message,
+            // This must return an array of root tabs if just the window id is specified.
+            // See also: https://github.com/piroor/treestyletab/issues/2763
+            ...((message.window || message.windowId) && !message.tab && !message.tabs ? { tab: '*' } : {})
+          },
+          sender.id
+        );
+        TSTAPI.clearCache(cache);
+        return result;
+      })();
+
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);

@@ -268,7 +268,7 @@ export function clearCache(cache) {
 // This function is complex a little, but we should not make a custom class for this purpose,
 // bacause instances of the class will be very short-life and increases RAM usage on
 // massive tabs case.
-export async function exportTab(sourceTab, { addonId, isContextTab, interval, permissions, cache, cacheKey } = {}) {
+export async function exportTab(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
   if (!interval)
     interval = 0;
   if (!cache)
@@ -298,11 +298,11 @@ export async function exportTab(sourceTab, { addonId, isContextTab, interval, pe
   // The promise is cached here instead of the result,
   // to avoid cache miss caused by concurrent call.
   if (!(cacheKey in cache.tabs)) {
-    cache.tabs[cacheKey] = exportTabInternal(sourceTab, { addonId, isContextTab, interval, permissions, cache, cacheKey });
+    cache.tabs[cacheKey] = exportTabInternal(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey });
   }
   return cache.tabs[cacheKey];
 }
-export async function exportTabInternal(sourceTab, { addonId, isContextTab, interval, permissions, cache, cacheKey } = {}) {
+export async function exportTabInternal(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
   const [effectiveFavIconUrl, children] = await Promise.all([
     (!permissions.has(kPERMISSION_TABS) &&
      (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
@@ -315,7 +315,7 @@ export async function exportTabInternal(sourceTab, { addonId, isContextTab, inte
           TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab).catch(ApiTabs.handleMissingTabError),
     doProgressively(
       sourceTab.$TST.children,
-      child => exportTabInternal(child, { addonId, isContextTab, interval, permissions, cache, cacheKey }),
+      child => exportTabInternal(child, { addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
       interval
     ),
   ]);
@@ -325,12 +325,15 @@ export async function exportTabInternal(sourceTab, { addonId, isContextTab, inte
 
   const tabStates = sourceTab.$TST.states;
   const exportedTab = {
+    id:             sourceTab.id,
     states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
     indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
     children,
     ancestorTabIds: sourceTab.$TST.ancestorIds,
     bundledTabId:   sourceTab.$TST.bundledTabId,
   };
+  if (light)
+    return exportTab;
 
   const allowedProperties = new Set([
     // basic tabs.Tab properties
@@ -342,7 +345,7 @@ export async function exportTabInternal(sourceTab, { addonId, isContextTab, inte
     'height',
     'hidden',
     'highlighted',
-    'id',
+    //'id',
     'incognito',
     'index',
     'isArticle',
@@ -403,6 +406,8 @@ function registerAddon(id, addon) {
       addon.style = oldAddon.style;
     if (!('allowBulkMessaging' in addon) && 'allowBulkMessaging' in oldAddon)
       addon.allowBulkMessaging = oldAddon.allowBulkMessaging;
+    if (!('lightTree' in addon) && 'lightTree' in oldAddon)
+      addon.lightTree = oldAddon.lightTree;
   }
 
   if (!addon.listeningTypes) {
@@ -1265,7 +1270,12 @@ async function sanitizeMessage(message, { addonId, tabProperties, cache, isConte
         continue;
       if (Array.isArray(treeItem))
         tasks.push((async treeItems => {
-          const tabs = await Promise.all(treeItems.map(treeItem => exportTab(treeItem, { addonId: addon.id, cache, isContextTab })))
+          const tabs = await Promise.all(treeItems.map(treeItem => exportTab(treeItem, {
+            addonId: addon.id,
+            light:   !!addon.lightTree,
+            cache,
+            isContextTab,
+          })))
           sanitizedProperties[name] = tabs.filter(tab => !!tab);
         })(treeItem));
       else
