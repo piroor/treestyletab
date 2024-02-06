@@ -390,40 +390,40 @@ Window.onInitialized.addListener(win => {
   const windowId = win.id;
   win = TabsStore.windows.get(windowId);
 
-  let pinnedContainer = document.getElementById(`window-${windowId}-pinned`);
-  if (!pinnedContainer) {
-    pinnedContainer = document.createElement('ul');
-    pinnedContainer.appendChild(pinnedContainer);
+  let innerPinnedContainer = document.getElementById(`window-${windowId}-pinned`);
+  if (!innerPinnedContainer) {
+    innerPinnedContainer = document.createElement('ul');
+    pinnedContainer.appendChild(innerPinnedContainer);
   }
-  pinnedContainer.dataset.windowId = windowId;
-  pinnedContainer.setAttribute('id', `window-${windowId}-pinned`);
-  pinnedContainer.classList.add('tabs');
-  pinnedContainer.classList.add('pinned');
-  pinnedContainer.setAttribute('role', 'listbox');
-  pinnedContainer.setAttribute('aria-multiselectable', 'true');
-  pinnedContainer.$TST = win;
-  win.bindPinnedContainerElement(pinnedContainer);
+  innerPinnedContainer.dataset.windowId = windowId;
+  innerPinnedContainer.setAttribute('id', `window-${windowId}-pinned`);
+  innerPinnedContainer.classList.add('tabs');
+  innerPinnedContainer.classList.add('pinned');
+  innerPinnedContainer.setAttribute('role', 'listbox');
+  innerPinnedContainer.setAttribute('aria-multiselectable', 'true');
+  innerPinnedContainer.$TST = win;
+  win.bindPinnedContainerElement(innerPinnedContainer);
 
-  let container = document.getElementById(`window-${windowId}`);
-  if (!container) {
-    container = document.createElement('ul');
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('virtual-scroll-container');
-    wrapper.classList.add('vbox');
-    wrapper.appendChild(container);
-    normalContainer.appendChild(wrapper);
+  let innerNormalContainer = document.getElementById(`window-${windowId}`);
+  if (!innerNormalContainer) {
+    innerNormalContainer = document.createElement('ul');
+    const virtualScrollContainer = document.createElement('div');
+    virtualScrollContainer.classList.add('virtual-scroll-container');
+    virtualScrollContainer.classList.add('vbox');
+    virtualScrollContainer.appendChild(innerNormalContainer);
+    normalContainer.appendChild(virtualScrollContainer);
     const spacer = normalContainer.appendChild(document.createElement('div'));
     spacer.classList.add('vbox');
     spacer.classList.add(Constants.kTABBAR_SPACER);
   }
-  container.dataset.windowId = windowId;
-  container.setAttribute('id', `window-${windowId}`);
-  container.classList.add('tabs');
-  container.classList.add('normal');
-  container.setAttribute('role', 'listbox');
-  container.setAttribute('aria-multiselectable', 'true');
-  container.$TST = win;
-  win.bindContainerElement(container);
+  innerNormalContainer.dataset.windowId = windowId;
+  innerNormalContainer.setAttribute('id', `window-${windowId}`);
+  innerNormalContainer.classList.add('tabs');
+  innerNormalContainer.classList.add('normal');
+  innerNormalContainer.setAttribute('role', 'listbox');
+  innerNormalContainer.setAttribute('aria-multiselectable', 'true');
+  innerNormalContainer.$TST = win;
+  win.bindContainerElement(innerNormalContainer);
 });
 
 
