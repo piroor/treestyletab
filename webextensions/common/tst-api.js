@@ -131,6 +131,7 @@ export const kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_ALL_COMMAND = 'try-collapse
 export const kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED = 'try-fixup-tree-on-tab-moved';
 export const kNOTIFY_TRY_HANDLE_NEWTAB = 'try-handle-newtab';
 export const kGET_TREE              = 'get-tree';
+export const kGET_LIGHT_TREE        = 'get-light-tree';
 export const kATTACH                = 'attach';
 export const kDETACH                = 'detach';
 export const kINDENT                = 'indent';
@@ -329,52 +330,20 @@ export class TreeItem {
     if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
       this.cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
 
-    const tabStates = sourceTab.$TST.states;
-    const exportedTab = {
-      states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
-      indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
-      ancestorTabIds: sourceTab.$TST.ancestorIds,
-      children,
-      bundledTabId:   sourceTab.$TST.bundledTabId,
-    };
+    const exportedTab = toLightTreeItem(sourceTab, { ignoreChildren: true });
+    exportedTab.children = children;
 
-    let allowedProperties = [
-      // basic tabs.Tab properties
-      'active',
-      'attention',
-      'audible',
-      'autoDiscardable',
-      'discarded',
-      'height',
-      'hidden',
-      'highlighted',
-      'id',
-      'incognito',
-      'index',
-      'isArticle',
-      'isInReaderMode',
-      'lastAccessed',
-      'mutedInfo',
-      'openerTabId',
-      'pinned',
-      'selected',
-      'sessionId',
-      'sharingState',
-      'status',
-      'successorId',
-      'width',
-      'windowId',
-    ];
+    const allowedProperties = [];
     if (permissions.has(kPERMISSION_TABS) ||
         (permissions.has(kPERMISSION_ACTIVE_TAB) &&
          (sourceTab.active ||
           (sourceTab == this.tab && this.isContextTab)))) {
-      allowedProperties = allowedProperties.concat([
+      allowedProperties.push(
         // specially allowed with "tabs" or "activeTab" permission
         'favIconUrl',
         'title',
-        'url',
-      ]);
+        'url'
+      );
       exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
     }
     if (permissions.has(kPERMISSION_COOKIES)) {
@@ -382,10 +351,9 @@ export class TreeItem {
       exportedTab.cookieStoreName = sourceTab.$TST.cookieStoreName;
     }
 
-    allowedProperties = new Set(allowedProperties);
-    for (const key of allowedProperties) {
-      if (key in sourceTab)
-        exportedTab[key] = sourceTab[key];
+    for (const property of allowedProperties) {
+      if (property in sourceTab)
+        exportedTab[property] = sourceTab[property];
     }
 
     return exportedTab;
@@ -1258,6 +1226,50 @@ async function sanitizeMessage(message, params) {
 // Common utilities for request-response type API call
 // =======================================================================
 
+export function toLightTreeItem(tab, { ignoreChildren } = {}) {
+  const tabStates = tab.$TST.states;
+  const treeItem = {
+    states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
+    indent:         parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
+    ancestorTabIds: tab.$TST.ancestorIds,
+    children:       ignoreChildren ? null : tab.$TST.children.map(toLightTreeItem),
+    bundledTabId:   tab.$TST.bundledTabId,
+  };
+
+  const allowedProperties = new Set([
+    // basic tabs.Tab properties
+    'active',
+    'attention',
+    'audible',
+    'autoDiscardable',
+    'discarded',
+    'height',
+    'hidden',
+    'highlighted',
+    'id',
+    'incognito',
+    'index',
+    'isArticle',
+    'isInReaderMode',
+    'lastAccessed',
+    'mutedInfo',
+    'openerTabId',
+    'pinned',
+    'selected',
+    'sessionId',
+    'sharingState',
+    'status',
+    'successorId',
+    'width',
+    'windowId',
+  ]);
+  for (const property of allowedProperties) {
+    if (property in tab)
+      treeItem[property] = tab[property];
+  }
+  return treeItem;
+}
+
 export async function getTargetTabs(message, sender) {
   const tabQuery = message.tabs || message.tabIds || message.tab || message.tabId;
   const windowId = message.window || message.windowId;
@@ -1291,6 +1303,25 @@ export async function getTargetTabs(message, sender) {
   if (tabQuery)
     return getTabsFromWrongIds([tabQuery], windowId, sender);
   return [];
+}
+
+export async function getTargetRenderedTabs(message, sender) {
+  const tabs = await getTargetTabs(message, sender);
+  if (!tabs)
+    return tabs;
+
+  const windowIds = new Set(Array.from(tabs, tab => tab.windowId));
+  const renderedTabIds = await Promise.all(
+    Array.from(
+      windowIds,
+      windowId => browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_GET_RENDERED_TAB_IDS,
+        windowId,
+      })
+    )
+  );
+  const renderedTabIdsSet = new Set(renderedTabIds.flat());
+  return Array.from(tabs).filter(tab => renderedTabIdsSet.has(tab.id));
 }
 
 async function getTabsFromWrongIds(ids, windowId, sender) {
@@ -1430,7 +1461,14 @@ export async function formatTabResult(treeItems, originalMessage, senderId) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||
       originalMessage.tabs == '*')
-    return Promise.all(treeItems.map(treeItem => treeItem && treeItem.exportFor(senderId)))
+    return Promise.all(treeItems.map(treeItem =>
+      treeItem && treeItem instanceof TreeItem ?
+        treeItem.exportFor(senderId) :
+        treeItem))
       .then(tabs => tabs.filter(tab => !!tab));
-  return treeItems.length > 0 ? treeItems[0].exportFor(senderId) : null ;
+  return treeItems.length == 0 ?
+    null :
+    treeItems[0] instanceof TreeItem ?
+      treeItems[0].exportFor(senderId) :
+      treeItems[0];
 }
