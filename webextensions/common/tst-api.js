@@ -323,7 +323,7 @@ export class TreeItem {
         sourceTab.$TST.children,
         child => this.exportTab(child, permissions, commonCacheKey),
         this.interval
-      )
+      ),
     ]);
 
     if (!(sourceTab.id in this.cache.effectiveFavIconUrls))
@@ -331,11 +331,12 @@ export class TreeItem {
 
     const tabStates = sourceTab.$TST.states;
     const exportedTab = {
+      id:             sourceTab.id,
       states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
       indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
       ancestorTabIds: sourceTab.$TST.ancestorIds,
       children,
-      bundledTabId:   sourceTab.$TST.bundledTabId
+      bundledTabId:   sourceTab.$TST.bundledTabId,
     };
 
     let allowedProperties = [
@@ -348,7 +349,7 @@ export class TreeItem {
       'height',
       'hidden',
       'highlighted',
-      'id',
+      //'id',
       'incognito',
       'index',
       'isArticle',
@@ -363,7 +364,7 @@ export class TreeItem {
       'status',
       'successorId',
       'width',
-      'windowId'
+      'windowId',
     ];
     if (permissions.has(kPERMISSION_TABS) ||
         (permissions.has(kPERMISSION_ACTIVE_TAB) &&
@@ -373,7 +374,7 @@ export class TreeItem {
         // specially allowed with "tabs" or "activeTab" permission
         'favIconUrl',
         'title',
-        'url'
+        'url',
       ]);
       exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
     }
