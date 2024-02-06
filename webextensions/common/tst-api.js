@@ -326,6 +326,7 @@ export async function exportTabInternal(sourceTab, { addonId, light, isContextTa
   const tabStates = sourceTab.$TST.states;
   const exportedTab = {
     id:             sourceTab.id,
+    windowId:       sourceTab.windowId,
     states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
     indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
     children,
@@ -333,7 +334,7 @@ export async function exportTabInternal(sourceTab, { addonId, light, isContextTa
     bundledTabId:   sourceTab.$TST.bundledTabId,
   };
   if (light)
-    return exportTab;
+    return exportedTab;
 
   const allowedProperties = new Set([
     // basic tabs.Tab properties
@@ -360,7 +361,7 @@ export async function exportTabInternal(sourceTab, { addonId, light, isContextTa
     'status',
     'successorId',
     'width',
-    'windowId',
+    //'windowId',
   ]);
 
   if (permissions.has(kPERMISSION_TABS) ||
@@ -1275,12 +1276,17 @@ async function sanitizeMessage(message, { addonId, tabProperties, cache, isConte
             light:   !!addon.lightTree,
             cache,
             isContextTab,
-          })))
+          })));
           sanitizedProperties[name] = tabs.filter(tab => !!tab);
         })(treeItem));
       else
         tasks.push((async () => {
-          sanitizedProperties[name] = await exportTab(treeItem, { addonId: addon.id, cache, isContextTab });
+          sanitizedProperties[name] = await exportTab(treeItem, {
+            addonId: addon.id,
+            light:   !!addon.lightTree,
+            cache,
+            isContextTab,
+          });
         })());
     }
   }
