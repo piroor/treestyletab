@@ -118,8 +118,8 @@ tab-item tab-closebox::after {
 
 /* This is required to avoid needless padding in the scrollbox produced by the box-shadow.
    See also: https://github.com/piroor/treestyletab/issues/3364 */
-#tabbar.overflow tab-item:not(.pinned).last-visible,
-#tabbar.overflow tab-item:not(.pinned).last-visible ~ tab-item {
+#normal-tabs-container.overflow tab-item:not(.pinned).last-visible,
+#normal-tabs-container.overflow tab-item:not(.pinned).last-visible ~ tab-item {
   overflow: hidden;
 }
 

@@ -243,7 +243,7 @@ tab-sound-button */ {
   bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size));
 }
 
-#tabbar.overflow #normal-tabs-container {
+#normal-tabs-container.overflow {
   /* Scroll anchoring by Firefox itself may break virtual scrolling, so I disable anchoring and control all by myself. */
   overflow-anchor: none;
   overflow-y: scroll;
@@ -260,7 +260,7 @@ tab-sound-button */ {
   transition: min-height var(--collapse-animation);
 }
 
-#tabbar.overflow .tabs-spacer {
+#normal-tabs-container.overflow .tabs-spacer {
   display: block;
 }
 
@@ -379,8 +379,12 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance,
-:root.left:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover
+  #tabbar.scrollbar-autohide
+  #normal-tabs-container.overflow tab-item:not(.pinned) tab-item-substance,
+:root.left:not(.shift-tabs-for-scrollbar-only-on-hover)
+  #tabbar.scrollbar-autohide
+  #normal-tabs-container.overflow tab-item:not(.pinned) tab-item-substance {
   margin-left: calc(var(--tab-margin-left) + var(--tab-indent) + var(--shift-tabs-for-scrollbar-distance));
 }
 
@@ -389,8 +393,12 @@ tab-item-substance {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance,
-:root.right:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.overflow.scrollbar-autohide tab-item:not(.pinned) tab-item-substance {
+:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover
+  #tabbar.scrollbar-autohide
+  #normal-tabs-container.overflow tab-item:not(.pinned) tab-item-substance,
+:root.right:not(.shift-tabs-for-scrollbar-only-on-hover)
+  #tabbar.scrollbar-autohide
+  #normal-tabs-container.overflow tab-item:not(.pinned) tab-item-substance {
   margin-right: calc(var(--tab-margin-right) + var(--tab-indent) + var(--shift-tabs-for-scrollbar-distance));
 }
 
@@ -507,7 +515,8 @@ tab-item .extra-items-container.indent {
   z-index: var(--tab-indent-z-index);
 }
 /* auto-hidden scrollbar placeholder workaround */
-#tabbar.overflow.scrollbar-autohide tab-item .extra-items-container.indent{
+#tabbar.scrollbar-autohide
+  #normal-tabs-container.overflow tab-item .extra-items-container.indent{
   width: calc(var(--tab-indent) + var(--shift-tabs-for-scrollbar-distance));
 }
 :root.left tab-item .extra-items-container.indent {
@@ -618,12 +627,20 @@ tab-item .extra-items-container.behind {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container.overflow .tabs.pinned,
-:root.left:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned {
+:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover
+  #tabbar.scrollbar-autohide
+  #pinned-tabs-container.overflow .tabs.pinned,
+:root.left:not(.shift-tabs-for-scrollbar-only-on-hover)
+  #tabbar.scrollbar-autohide
+  #pinned-tabs-container.overflow .tabs.pinned {
   padding-left: var(--shift-tabs-for-scrollbar-distance);
 }
-:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned,
-:root.right:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned {
+:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover
+  #tabbar.scrollbar-autohide
+  #pinned-tabs-container.overflow .tabs.pinned,
+:root.right:not(.shift-tabs-for-scrollbar-only-on-hover)
+  #tabbar.scrollbar-autohide
+  #pinned-tabs-container.overflow .tabs.pinned {
   padding-right: var(--shift-tabs-for-scrollbar-distance);
 }
 
