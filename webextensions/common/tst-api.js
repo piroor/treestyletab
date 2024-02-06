@@ -1326,7 +1326,7 @@ export async function getTargetTabs(message, sender) {
   }
 
   if (Array.isArray(tabQuery))
-    return getTabsFromWrongIds(tabQuery, { windowId, queryOptions, sender });
+    return getTabsByQueries(tabQuery, { windowId, queryOptions, sender });
   const isAllVisibles    = tabQuery && String(tabQuery).toLowerCase() == 'allvisibles';
   const isNormalVisibles = tabQuery && String(tabQuery).toLowerCase() == 'normalvisibles';
   if (windowId) {
@@ -1352,7 +1352,7 @@ export async function getTargetTabs(message, sender) {
         Tab.getAllTabs(win.id, { ...queryOptions, iterator: true });
   }
   if (tabQuery) {
-    let tabs = await getTabsFromWrongIds([tabQuery], { windowId, queryOptions, sender });
+    let tabs = await getTabsByQueries([tabQuery], { windowId, queryOptions, sender });
     if (queryOptions.states)
       tabs = tabs.filter(tab => {
         const unified = new Set([...tab.$TST.states, ...queryOptions.states]);
@@ -1387,25 +1387,26 @@ export async function getTargetRenderedTabs(message, sender) {
   return Array.from(tabs).filter(tab => renderedTabIdsSet.has(tab.id));
 }
 
-async function getTabsFromWrongIds(ids, { windowId, queryOptions, sender }) {
+async function getTabsByQueries(queries, { windowId, queryOptions, sender }) {
   const win = !windowId && await browser.windows.getLastFocused({
     populate: true
   }).catch(ApiTabs.createErrorHandler());
   const activeWindow = TabsStore.windows.get(windowId || win.id) || win;
-  const tabs = await Promise.all(ids.map(id => getTabFromWrongId({ id, activeWindow, queryOptions, sender }).catch(error => {
+  const tabs = await Promise.all(queries.map(id => getTabsByQuery({ id, activeWindow, queryOptions, sender }).catch(error => {
     console.error(error);
     return null;
   })));
-  log('getTabsFromWrongIds: ', ids, ' => ', tabs, 'sender: ', sender, windowId);
+  log('getTabsByQueries: ', queries, ' => ', tabs, 'sender: ', sender, windowId);
 
   return tabs.flat().filter(tab => !!tab);
 }
 
-async function getTabFromWrongId({ id, activeWindow, queryOptions, sender }) {
-  log('getTabsFromWrongId: ', { id, activeWindow, queryOptions, sender });
-  if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
-    id = id.id;
-  let query   = String(id).toLowerCase();
+async function getTabsByQuery({ query, activeWindow, queryOptions, sender }) {
+  log('getTabsByQuery: ', { query, activeWindow, queryOptions, sender });
+  if (query && typeof query == 'object' && typeof query.id == 'number') // tabs.Tab
+    query = query.id;
+  query = String(query).toLowerCase();
+  let id      = query;
   let baseTab = Tab.getActiveTab(activeWindow.id);
 
   // this sometimes happen when the active tab was detached from the window
