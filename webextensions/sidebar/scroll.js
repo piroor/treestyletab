@@ -130,6 +130,10 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     allTabsSizeHolderStyle.minHeight = minHeight;
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
     onVirtualScrollViewportUpdated.dispatch(resized);
+    // This is required to put the "new tab" button next to the last tab
+    // immediately after the box is shrunken.
+    if (!mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
+      allTabsSizeHolderStyle.minHeight = '';
   }
 
   const range = document.createRange();
