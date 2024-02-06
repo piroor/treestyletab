@@ -45,8 +45,8 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
   mPromisedInitializedResolver = resolve;
 });
 
-export const pinnedContainerWrapper = document.querySelector('#pinned-tabs-container-wrapper');
-export const noramlContainerWrapper = document.querySelector('#normal-tabs-container-wrapper');
+export const pinnedContainerWrapper = document.querySelector('#pinned-tabs-container');
+export const noramlContainerWrapper = document.querySelector('#normal-tabs-container');
 
 export const onPinnedTabsChanged = new EventListenerManager();
 export const onNormalTabsChanged = new EventListenerManager();

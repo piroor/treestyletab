@@ -2,7 +2,7 @@
 
  - master/HEAD
    * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
-     * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container-wrapper > .tabs.pinned` and `#normal-tabs-container-wrapper > .virtual-scroll-container > .tabs.normal`.
+     * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
      * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
    * API: Add a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.

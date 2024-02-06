@@ -59,8 +59,8 @@ function log(...args) {
 }
 
 
-const mPinnedScrollBox  = document.querySelector('#pinned-tabs-container-wrapper');
-const mNormalScrollBox  = document.querySelector('#normal-tabs-container-wrapper');
+const mPinnedScrollBox  = document.querySelector('#pinned-tabs-container');
+const mNormalScrollBox  = document.querySelector('#normal-tabs-container');
 const mTabBar           = document.querySelector('#tabbar');
 const mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 

@@ -189,7 +189,7 @@ tab-sound-button */ {
 
 #tabbar-container,
 #tabbar,
-#pinned-tabs-container-wrapper,
+#pinned-tabs-container,
 #tabbar-top,
 #tabbar-bottom,
 #background,
@@ -219,7 +219,7 @@ tab-sound-button */ {
   position: absolute;
 }
 
-#normal-tabs-container-wrapper {
+#normal-tabs-container {
   margin-top: var(--pinned-tabs-area-size);
 }
 
@@ -236,7 +236,7 @@ tab-sound-button */ {
   bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size));
 }
 
-#tabbar.overflow #normal-tabs-container-wrapper {
+#tabbar.overflow #normal-tabs-container {
   /* Scroll anchoring by Firefox itself may break virtual scrolling, so I disable anchoring and control all by myself. */
   overflow-anchor: none;
   overflow-y: scroll;
@@ -575,7 +575,7 @@ tab-item .extra-items-container.behind {
 
 /* pinned tabs */
 
-#pinned-tabs-container-wrapper {
+#pinned-tabs-container {
   align-items: stretch;
   display: flex;
   flex-direction: column;
@@ -586,13 +586,13 @@ tab-item .extra-items-container.behind {
               var(--visual-gap-animation);
   z-index: var(--over-tabs-z-index);
 }
-:root.hover-on-top-edge:hover #pinned-tabs-container-wrapper {
+:root.hover-on-top-edge:hover #pinned-tabs-container {
   top: 0 !important;
   transition: max-height var(--collapse-animation),
               var(--visual-gap-hover-animation);
 }
 
-#pinned-tabs-container-wrapper.overflow {
+#pinned-tabs-container.overflow {
   overflow-y: scroll;
 }
 
@@ -611,12 +611,12 @@ tab-item .extra-items-container.behind {
 }
 
 /* auto-hidden scrollbar placeholder workaround */
-:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow .tabs.pinned,
-:root.left:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned {
+:root.left.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container.overflow .tabs.pinned,
+:root.left:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned {
   padding-left: var(--shift-tabs-for-scrollbar-distance);
 }
-:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned,
-:root.right:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container-wrapper.overflow  .tabs.pinned {
+:root.right.shift-tabs-for-scrollbar-only-on-hover.on-scrollbar-area:hover #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned,
+:root.right:not(.shift-tabs-for-scrollbar-only-on-hover) #tabbar.scrollbar-autohide #pinned-tabs-container.overflow  .tabs.pinned {
   padding-right: var(--shift-tabs-for-scrollbar-distance);
 }
 
