@@ -185,7 +185,7 @@ export async function clearForWindow(windowId) {
     }
 
     try {
-      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const transaction = db.transaction([BACKGROUND], 'readwrite');
       const backgroundCacheStore = transaction.objectStore(BACKGROUND);
       const backgroundCacheIndex = backgroundCacheStore.index('windowId');
       const backgroundCacheRequest = backgroundCacheIndex.openCursor(IDBKeyRange.only(windowUniqueId));
@@ -228,7 +228,7 @@ async function expireOldEntries() {
     }
 
     try {
-      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const transaction = db.transaction([BACKGROUND], 'readwrite');
       const backgroundCacheStore = transaction.objectStore(BACKGROUND);
       const backgroundCacheIndex = backgroundCacheStore.index('timestamp');
 
