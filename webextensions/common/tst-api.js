@@ -1325,7 +1325,7 @@ export async function getTargetTabs(message, sender) {
     else if (isAllVisibles)
       return Tab.getVisibleTabs(windowId, { iterator: true });
     else if (isNormalVisibles)
-      return Tab.getNormalTabs(windowId, { iterator: true });
+      return Tab.getVisibleTabs(windowId, { normal: true, iterator: true });
     else if (!tabQuery)
       return Tab.getRootTabs(windowId, { iterator: true });
   }
@@ -1338,7 +1338,7 @@ export async function getTargetTabs(message, sender) {
     return isAllVisibles ?
       Tab.getVisibleTabs(win.id, { iterator: true }) :
       isNormalVisibles ?
-        Tab.getNormalTabs(win.id, { iterator: true }) :
+        Tab.getVisibleTabs(windowId, { normal: true, iterator: true }) :
         Tab.getAllTabs(win.id, { iterator: true });
   }
   if (tabQuery)
