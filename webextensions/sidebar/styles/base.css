@@ -579,8 +579,14 @@ tab-item .extra-items-container.behind {
   flex-direction: column;
   max-height: var(--pinned-tabs-area-size);
   overflow: hidden;
+  top: var(--visual-gap-offset);
   transition: max-height var(--collapse-animation);
   z-index: var(--over-tabs-z-index);
+}
+:root.hover-on-top-edge:hover #pinned-tabs-container-wrapper {
+  transition: max-height var(--collapse-animation),
+              var(--visual-gap-hover-animation);
+  top: 0 !important;
 }
 
 #pinned-tabs-container-wrapper.overflow {
