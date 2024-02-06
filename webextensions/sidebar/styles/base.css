@@ -86,6 +86,7 @@
   --tab-drop-marker-z-index:           10000;
 
   --visual-gap-offset: 0px;
+  --visual-gap-animation: top var(--collapse-animation);
   --visual-gap-hover-animation: top var(--collapse-animation) var(--visual-gap-hover-animation-delay);
 }
 
@@ -207,10 +208,11 @@ tab-sound-button */ {
 #tabbar-container {
   bottom: var(--subpanel-area-size);
   top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset));
+  transition: var(--visual-gap-animation);
 }
 :root.hover-on-top-edge:hover #tabbar-container {
-  transition: var(--visual-gap-hover-animation);
   top: var(--tabbar-top-area-size) !important;
+  transition: var(--visual-gap-hover-animation);
 }
 
 #tabbar {
@@ -580,13 +582,14 @@ tab-item .extra-items-container.behind {
   max-height: var(--pinned-tabs-area-size);
   overflow: hidden;
   top: var(--visual-gap-offset);
-  transition: max-height var(--collapse-animation);
+  transition: max-height var(--collapse-animation),
+              var(--visual-gap-animation);
   z-index: var(--over-tabs-z-index);
 }
 :root.hover-on-top-edge:hover #pinned-tabs-container-wrapper {
+  top: 0 !important;
   transition: max-height var(--collapse-animation),
               var(--visual-gap-hover-animation);
-  top: 0 !important;
 }
 
 #pinned-tabs-container-wrapper.overflow {
