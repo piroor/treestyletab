@@ -1392,7 +1392,7 @@ async function getTabsByQueries(queries, { windowId, queryOptions, sender }) {
     populate: true
   }).catch(ApiTabs.createErrorHandler());
   const activeWindow = TabsStore.windows.get(windowId || win.id) || win;
-  const tabs = await Promise.all(queries.map(id => getTabsByQuery({ id, activeWindow, queryOptions, sender }).catch(error => {
+  const tabs = await Promise.all(queries.map(query => getTabsByQuery(query, { activeWindow, queryOptions, sender }).catch(error => {
     console.error(error);
     return null;
   })));
@@ -1401,12 +1401,12 @@ async function getTabsByQueries(queries, { windowId, queryOptions, sender }) {
   return tabs.flat().filter(tab => !!tab);
 }
 
-async function getTabsByQuery({ query, activeWindow, queryOptions, sender }) {
+async function getTabsByQuery(query, { activeWindow, queryOptions, sender }) {
   log('getTabsByQuery: ', { query, activeWindow, queryOptions, sender });
   if (query && typeof query == 'object' && typeof query.id == 'number') // tabs.Tab
     query = query.id;
+  let id = query;
   query = String(query).toLowerCase();
-  let id      = query;
   let baseTab = Tab.getActiveTab(activeWindow.id);
 
   // this sometimes happen when the active tab was detached from the window
