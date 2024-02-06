@@ -1317,7 +1317,7 @@ export async function getTargetTabs(message, sender) {
 
   if (Array.isArray(tabQuery))
     return getTabsFromWrongIds(tabQuery, windowId, sender);
-  const isAllVisible = tabQuery && tabQuery.toLowerCase() == 'allvisible';
+  const isAllVisible = tabQuery && String(tabQuery).toLowerCase() == 'allvisible';
   if (windowId) {
     if (tabQuery == '*')
       return Tab.getAllTabs(windowId, { iterator: true });
