@@ -207,33 +207,53 @@ async function updatePanelUrl(theme) {
 */
 }
 
-function waitUntilCompletelyRestored() {
+async function waitUntilCompletelyRestored() {
   log('waitUntilCompletelyRestored');
-  return new Promise((resolve, _aReject) => {
-    let timeout;
-    let resolver;
-    let onNewTabRestored = async (tab, _info = {}) => {
-      clearTimeout(timeout);
-      log('new restored tab is detected.');
-      // Read caches from restored tabs while waiting, for better performance.
-      browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_TABS)
-        .catch(ApiTabs.createErrorSuppressor())
-        .then(cache => mPreloadedCaches.set(`window-${tab.windowId}`, cache));
-      browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
-        .catch(ApiTabs.createErrorSuppressor())
-        .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
-      //uniqueId = uniqueId && uniqueId.id || '?'; // not used
-      timeout = setTimeout(resolver, 100);
-    };
-    browser.tabs.onCreated.addListener(onNewTabRestored);
-    resolver = (() => {
-      log('timeout: all tabs are restored.');
-      browser.tabs.onCreated.removeListener(onNewTabRestored);
-      timeout = resolver = onNewTabRestored = undefined;
-      resolve();
-    });
-    timeout = setTimeout(resolver, 500);
-  });
+  const initialTabs = await browser.tabs.query({});
+  await Promise.all([
+    MetricsData.addAsync('waitUntilCompletelyRestored: existing tabs ', Promise.all(
+      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id))
+    )),
+    MetricsData.addAsync('waitUntilCompletelyRestored: opening tabs ', new Promise((resolve, _aReject) => {
+      let promises = [];
+      let timeout;
+      let resolver;
+      let onNewTabRestored = async (tab, _info = {}) => {
+        clearTimeout(timeout);
+        log('new restored tab is detected.');
+        promises.push(waitUntilPersistentIdBecomeAvailable(tab.id));
+        // Read caches from restored tabs while waiting, for better performance.
+        browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_TABS)
+          .catch(ApiTabs.createErrorSuppressor())
+          .then(cache => mPreloadedCaches.set(`window-${tab.windowId}`, cache));
+        browser.sessions.getTabValue(tab.id, Constants.kWINDOW_STATE_CACHED_TABS)
+          .catch(ApiTabs.createErrorSuppressor())
+          .then(cache => mPreloadedCaches.set(`tab-${tab.id}`, cache));
+        //uniqueId = uniqueId && uniqueId.id || '?'; // not used
+        timeout = setTimeout(resolver, 100);
+      };
+      browser.tabs.onCreated.addListener(onNewTabRestored);
+      resolver = (async () => {
+        log('timeout: all tabs are restored.');
+        browser.tabs.onCreated.removeListener(onNewTabRestored);
+        timeout = resolver = onNewTabRestored = undefined;
+        await Promise.all(promises);
+        promises = undefined;
+        resolve();
+      });
+      timeout = setTimeout(resolver, 500);
+    })),
+  ]);
+}
+async function waitUntilPersistentIdBecomeAvailable(tabId, retryCount = 0) {
+  if (retryCount > 10) {
+    console.log(`could not get persistent ID for ${tabId}`);
+    return false;
+  }
+  const uniqueId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
+  if (!uniqueId)
+    return wait(100).then(() => waitUntilPersistentIdBecomeAvailable(tabId, retryCount + 1));
+  return true;
 }
 
 function destroy() {
