@@ -89,13 +89,15 @@ function sendPendingUpdates() {
       delete update.attributes.updated.pinned;
       delete update.attributes.updated.audible;
       delete update.attributes.updated.mutedInfo;
+      delete update.attributes.updated.sharingState;
       delete update.attributes.updated.incognito;
       delete update.attributes.updated.attention;
       delete update.attributes.updated.discarded;
       if (Object.keys(update.attributes.updated).length > 0 ||
           Object.keys(update.attributes.added).length > 0 ||
           update.attributes.removed.size > 0 ||
-          update.soundStateChanged)
+          update.soundStateChanged ||
+          update.sharingStateChanged)
         SidebarConnection.sendMessage({
           type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
           windowId:          update.windowId,
@@ -104,6 +106,7 @@ function sendPendingUpdates() {
           addedAttributes:   update.attributes.added,
           removedAttributes: [...update.attributes.removed],
           soundStateChanged: update.soundStateChanged,
+          sharingStateChanged: update.sharingStateChanged,
         });
 
       if (update.isGroupTab)
@@ -178,11 +181,12 @@ export function updateTab(tab, newState = {}, options = {}) {
        newState.title != oldState.title)) {
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
-        if (states.includes(Constants.kTAB_STATE_UNREAD) &&
-            !tab.$TST.isGroupTab)
-          tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-        else
-          tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
+        tab.$TST.toggleState(
+          Constants.kTAB_STATE_UNREAD,
+          (states.includes(Constants.kTAB_STATE_UNREAD) &&
+           !tab.$TST.isGroupTab),
+          { permanently: true }
+        );
       });
     }
     else if (tab.$TST.isGroupTab) {
@@ -248,12 +252,8 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
-      'audible' in newState) {
-    if (newState.audible)
-      tab.$TST.addState(Constants.kTAB_STATE_AUDIBLE);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE);
-  }
+      'audible' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_AUDIBLE, newState.audible);
 
   let soundStateChanged = false;
 
@@ -261,10 +261,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       'mutedInfo' in newState) {
     soundStateChanged = true;
     const muted = newState.mutedInfo && newState.mutedInfo.muted;
-    if (muted)
-      tab.$TST.addState(Constants.kTAB_STATE_MUTED);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
+    tab.$TST.toggleState(Constants.kTAB_STATE_MUTED, muted, newState.audible);
     Tab.onMutedStateChanged.dispatch(tab, muted);
   }
 
@@ -272,17 +269,37 @@ export function updateTab(tab, newState = {}, options = {}) {
       soundStateChanged ||
       'audible' in newState) {
     soundStateChanged = true;
-    if (tab.audible &&
-        !tab.mutedInfo.muted)
-      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
+    tab.$TST.toggleState(
+      Constants.kTAB_STATE_SOUND_PLAYING,
+      (tab.audible &&
+       !tab.mutedInfo.muted)
+    );
   }
 
   if (soundStateChanged) {
     const parent = tab.$TST.parent;
     if (parent)
       parent.$TST.inheritSoundStateFromChildren();
+  }
+
+  let sharingStateChanged = false;
+  if (options.forceApply ||
+      'sharingState' in newState) {
+    sharingStateChanged = true;
+    const sharingCamera     = newState.sharingState && newState.sharingState.camera;
+    const sharingMicrophone = newState.sharingState && newState.sharingState.microphone;
+    const sharingScreen     = newState.sharingState && !!newState.sharingState.screen;
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_CAMERA,     sharingCamera);
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_MICROPHONE, sharingMicrophone);
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_SCREEN,     sharingScreen);
+    Tab.onSharingStateChanged.dispatch(tab, {
+      camera:     sharingCamera,
+      microphone: sharingMicrophone,
+      screen:     sharingScreen,
+    });
+    const parent = tab.$TST.parent;
+    if (parent)
+      parent.$TST.inheritSharingStateFromChildren();
   }
 
   if (options.forceApply ||
@@ -306,12 +323,8 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
-      'incognito' in newState) {
-    if (newState.incognito)
-      tab.$TST.addState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-  }
+      'incognito' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_PRIVATE_BROWSING, newState.incognito);
 
   if (options.forceApply ||
       'hidden' in newState) {
@@ -330,34 +343,24 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
-      'highlighted' in newState) {
-    if (newState.highlighted)
-      tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
-  }
+      'highlighted' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_HIGHLIGHTED, newState.highlighted);
 
   if (options.forceApply ||
-      'attention' in newState) {
-    if (newState.attention)
-      tab.$TST.addState(Constants.kTAB_STATE_ATTENTION);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_ATTENTION);
-  }
+      'attention' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_ATTENTION, newState.attention);
 
   if (options.forceApply ||
       'discarded' in newState) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
-      if (newState.discarded)
-        tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
+      tab.$TST.toggleState(Constants.kTAB_STATE_DISCARDED, newState.discarded);
     });
   }
 
   update.soundStateChanged = update.soundStateChanged || soundStateChanged;
+  update.sharingStateChanged = update.sharingStateChanged || sharingStateChanged;
   update.attributes.updated = {
     ...update.attributes.updated,
     ...(newState && newState.$TST && newState.$TST.sanitized || newState),

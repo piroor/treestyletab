@@ -74,12 +74,24 @@ export default class Tab {
 
     this.lastSoundStateCounts = {
       soundPlaying: 0,
-      muted:        0
+      muted:        0,
     };
     this.soundPlayingChildrenIds = new Set();
     this.maybeSoundPlayingChildrenIds = new Set();
     this.mutedChildrenIds = new Set();
     this.maybeMutedChildrenIds = new Set();
+
+    this.lastSharingStateCounts = {
+      camera:     0,
+      microphone: 0,
+      screen:     0,
+    };
+    this.sharingCameraChildrenIds = new Set();
+    this.maybeSharingCameraChildrenIds = new Set();
+    this.sharingMicrophoneChildrenIds = new Set();
+    this.maybeSharingMicrophoneChildrenIds = new Set();
+    this.sharingScreenChildrenIds = new Set();
+    this.maybeSharingScreenChildrenIds = new Set();
 
     this.element = null;
     this.classList = null;
@@ -246,13 +258,11 @@ export default class Tab {
   get soundPlaying() {
     return !!(this.tab && this.tab.audible && !this.tab.mutedInfo.muted);
   }
-
   get maybeSoundPlaying() {
     return (this.soundPlaying ||
             (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
              this.hasChild));
   }
-
   get muted() {
     return !!(this.tab && this.tab.mutedInfo && this.tab.mutedInfo.muted);
   }
@@ -260,6 +270,33 @@ export default class Tab {
   get maybeMuted() {
     return (this.muted ||
             (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingCamera() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.camera);
+  }
+  get maybeSharingCamera() {
+    return (this.sharingCamera ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingMicrophone() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.microphone);
+  }
+  get maybeSharingMicrophone() {
+    return (this.sharingMicrophone ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingScreen() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.screen);
+  }
+  get maybeSharingScreen() {
+    return (this.sharingScreen ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER) &&
              this.hasChild));
   }
 
@@ -724,6 +761,7 @@ export default class Tab {
     if (parent) {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
+
       if (this.states.has(Constants.kTAB_STATE_SOUND_PLAYING))
         parent.$TST.soundPlayingChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER))
@@ -733,6 +771,21 @@ export default class Tab {
       if (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER))
         parent.$TST.maybeMutedChildrenIds.add(this.id);
       parent.$TST.inheritSoundStateFromChildren();
+
+      if (this.states.has(Constants.kTAB_STATE_SHARING_CAMERA))
+        parent.$TST.sharingCameraChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER))
+        parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_SHARING_MICROPHONE))
+        parent.$TST.sharingMicrophoneChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER))
+        parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_SHARING_SCREEN))
+        parent.$TST.sharingScreenChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER))
+        parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
+      parent.$TST.inheritSharingStateFromChildren();
+
       TabsStore.removeRootTab(this.tab);
     }
     else {
@@ -745,6 +798,15 @@ export default class Tab {
       oldParent.$TST.mutedChildrenIds.delete(this.id);
       oldParent.$TST.maybeMutedChildrenIds.delete(this.id);
       oldParent.$TST.inheritSoundStateFromChildren();
+
+      oldParent.$TST.sharingCameraChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+      oldParent.$TST.sharingMicrophoneChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+      oldParent.$TST.inheritSharingStateFromChildren();
+
       oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.id);
     }
     return tab;
@@ -1154,6 +1216,13 @@ export default class Tab {
   // State
   //===================================================================
 
+  async toggleState(state, condition, { permanently, toTab, broadcast } = {}) {
+    if (condition)
+      return this.addState(state, { permanently, toTab, broadcast });
+    else
+      return this.removeState(state, { permanently, toTab, broadcast });
+  }
+
   async addState(state, { permanently, toTab, broadcast } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
@@ -1210,7 +1279,6 @@ export default class Tab {
         if (parent)
           parent.$TST.soundPlayingChildrenIds.add(this.id);
       } break;
-
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
@@ -1229,11 +1297,49 @@ export default class Tab {
         if (toTab)
           this.tab.mutedInfo.muted = true;
       } break;
-
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeMutedChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_CAMERA: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingCameraChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.camera = true;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_MICROPHONE: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingMicrophoneChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.microphone = true;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_SCREEN: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingScreenChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.screen = 'Something';
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
       } break;
 
       case Constants.kTAB_STATE_GROUP_TAB:
@@ -1340,7 +1446,6 @@ export default class Tab {
         if (parent)
           parent.$TST.soundPlayingChildrenIds.delete(this.id);
       } break;
-
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
@@ -1359,11 +1464,49 @@ export default class Tab {
         if (toTab)
           this.tab.mutedInfo.muted = false;
       } break;
-
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeMutedChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_CAMERA: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingCameraChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.camera = false;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_MICROPHONE: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingMicrophoneChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.microphone = false;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_SCREEN: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingScreenChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.screen = undefined;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
       } break;
 
       case Constants.kTAB_STATE_GROUP_TAB:
@@ -1428,14 +1571,11 @@ export default class Tab {
       const soundPlayingCount = this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size;
       if (soundPlayingCount != this.lastSoundStateCounts.soundPlaying) {
         this.lastSoundStateCounts.soundPlaying = soundPlayingCount;
-        if (soundPlayingCount > 0) {
-          this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-          if (parent)
+        this.toggleState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER, soundPlayingCount > 0);
+        if (parent) {
+          if (soundPlayingCount > 0)
             parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
-        }
-        else {
-          this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-          if (parent)
+          else
             parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
         }
         modifiedCount++;
@@ -1444,14 +1584,11 @@ export default class Tab {
       const mutedCount = this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size;
       if (mutedCount != this.lastSoundStateCounts.muted) {
         this.lastSoundStateCounts.muted = mutedCount;
-        if (mutedCount > 0) {
-          this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-          if (parent)
+        this.toggleState(Constants.kTAB_STATE_HAS_MUTED_MEMBER, mutedCount > 0);
+        if (parent) {
+          if (mutedCount > 0)
             parent.$TST.maybeMutedChildrenIds.add(this.id);
-        }
-        else {
-          this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-          if (parent)
+          else
             parent.$TST.maybeMutedChildrenIds.delete(this.id);
         }
         modifiedCount++;
@@ -1469,6 +1606,78 @@ export default class Tab {
         tabId:                 this.id,
         hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
         hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+      });
+    }, 100);
+  }
+
+  inheritSharingStateFromChildren() {
+    if (!this.tab)
+      return;
+
+    // this is called too many times on a session restoration, so this should be throttled for better performance
+    if (this.delayedInheritSharingStateFromChildren)
+      clearTimeout(this.delayedInheritSharingStateFromChildren);
+
+    this.delayedInheritSharingStateFromChildren = setTimeout(() => {
+      this.delayedInheritSharingStateFromChildren = null;
+      if (!TabsStore.ensureLivingTab(this.tab))
+        return;
+
+      const parent = this.parent;
+      let modifiedCount = 0;
+
+      const sharingCameraCount = this.sharingCameraChildrenIds.size + this.maybeSharingCameraChildrenIds.size;
+      if (sharingCameraCount != this.lastSharingStateCounts.sharingCamera) {
+        this.lastSharingStateCounts.sharingCamera = sharingCameraCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER, sharingCameraCount > 0);
+        if (parent) {
+          if (sharingCameraCount > 0)
+            parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      const sharingMicrophoneCount = this.sharingMicrophoneChildrenIds.size + this.maybeSharingMicrophoneChildrenIds.size;
+      if (sharingMicrophoneCount != this.lastSharingStateCounts.sharingMicrophone) {
+        this.lastSharingStateCounts.sharingMicrophone = sharingMicrophoneCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER, sharingMicrophoneCount > 0);
+        if (parent) {
+          if (sharingMicrophoneCount > 0)
+            parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      const sharingScreenCount = this.sharingScreenChildrenIds.size + this.maybeSharingScreenChildrenIds.size;
+      if (sharingScreenCount != this.lastSharingStateCounts.sharingScreen) {
+        this.lastSharingStateCounts.sharingScreen = sharingScreenCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER, sharingScreenCount > 0);
+        if (parent) {
+          if (sharingScreenCount > 0)
+            parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      if (modifiedCount == 0)
+        return;
+
+      if (parent)
+        parent.$TST.inheritSharingStateFromChildren();
+
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_SHARING_STATE_UPDATED,
+        windowId: this.tab.windowId,
+        tabId:    this.id,
+        hasSharingCameraMember:     this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER),
+        hasSharingMicrophoneMember: this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER),
+        hasSharingScreenMember:     this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER),
       });
     }, 100);
   }
@@ -2405,6 +2614,7 @@ Tab.onShown            = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 Tab.onMutedStateChanged      = new EventListenerManager();
+Tab.onSharingStateChanged    = new EventListenerManager();
 
 Tab.onBeforeCreate     = new EventListenerManager();
 Tab.onCreating         = new EventListenerManager();

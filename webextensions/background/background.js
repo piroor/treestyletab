@@ -540,10 +540,7 @@ reserveToUpdateSubtreeCollapsed.reserved = new Map();
 async function updateSubtreeCollapsed(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
-  if (tab.$TST.subtreeCollapsed)
-    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
+  tab.$TST.toggleState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, tab.$TST.subtreeCollapsed, { permanently: true });
 }
 
 export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey, minConfirmCount } = {}) {

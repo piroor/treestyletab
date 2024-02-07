@@ -58,6 +58,7 @@ import {
 } from './components/TabElement.js';
 import { TabFaviconElement } from './components/TabFaviconElement.js';
 import { TabLabelElement } from './components/TabLabelElement.js';
+import { TabSharingStateElement } from './components/TabSharingStateElement.js';
 import { TabSoundButtonElement } from './components/TabSoundButtonElement.js';
 import { TabTwistyElement } from './components/TabTwistyElement.js';
 
@@ -135,6 +136,7 @@ export async function init() {
   TabFaviconElement.define();
   TabLabelElement.define();
   TabCounterElement.define();
+  TabSharingStateElement.define();
   TabSoundButtonElement.define();
   TabElement.define();
 

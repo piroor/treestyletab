@@ -567,6 +567,12 @@ function tryApplyUpdate(update) {
       parent.$TST.inheritSoundStateFromChildren();
   }
 
+  if (update.sharingStateChanged) {
+    const parent = tab.$TST.parent;
+    if (parent)
+      parent.$TST.inheritSharingStateFromChildren();
+  }
+
   tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton | TabInvalidationTarget.Tooltip);
 
   if (highlightedChanged) {

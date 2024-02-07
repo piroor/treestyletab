@@ -40,6 +40,9 @@
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
     }},
+  "tab_sharingState_sharingCamera_tooltip": { "message": "You are sharing your camera" },
+  "tab_sharingState_sharingMicrophone_tooltip": { "message": "You are sharing your microphone" },
+  "tab_sharingState_sharingScreen_tooltip": { "message": "You are sharing a window or a screen" },
   "tab_soundButton_muted_tooltip": { "message": "Unmute tab" },
   "tab_soundButton_muted_tooltip_multiselected": { "message": "Unmute tabs" },
   "tab_soundButton_playing_tooltip": { "message": "Mute tab" },

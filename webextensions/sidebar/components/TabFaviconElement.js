@@ -59,6 +59,10 @@ export class TabFaviconElement extends HTMLElement {
     defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
     defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
 
+    /* for faviconized tabs */
+    const sharingStateIcon = this.appendChild(document.createElement('span'));
+    sharingStateIcon.classList.add(Constants.kFAVICON_SHARING_STATE);
+
     const throbber = this.appendChild(document.createElement('span'));
     throbber.classList.add(Constants.kTHROBBER);
 

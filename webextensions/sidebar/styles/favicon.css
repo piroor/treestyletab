@@ -36,7 +36,8 @@ tab-item tab-favicon * {
   max-width: var(--favicon-size);
 }
 
-.favicon-builtin::before {
+.favicon-builtin::before,
+.favicon-sharing-state::before {
   -moz-context-properties: fill;
   background: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
   content: "";
@@ -49,7 +50,8 @@ tab-item tab-favicon * {
   max-width: var(--favicon-size);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill tab-item .favicon-builtin::before {
+:root.simulate-svg-context-fill tab-item .favicon-builtin::before,
+:root.simulate-svg-context-fill tab-item .favicon-sharing-state::before {
   background: var(--tab-text);
   mask: url("/resources/icons/defaultFavicon.svg") no-repeat center / 100%;
 }
@@ -223,4 +225,60 @@ tab-item:not(.group-tab
 tab-item.loading .favicon-image,
 tab-item.loading .favicon-builtin::before {
   display: none !important;
+}
+
+
+/* Sharing status for faviconized tabs.
+   Styles for regular tabs are degined in sharing-state.css. */
+
+tab-item:not(.faviconized) .favicon-sharing-state::before,
+tab-item.loading .favicon-sharing-state::before,
+tab-item.faviconized:not(.sharing-camera):not(.sharing-microphone):not(.sharing-screen) .favicon-sharing-state::before {
+  display: none !important;
+}
+tab-item.faviconized.sharing-camera .favicon-image,
+tab-item.faviconized.sharing-camera .favicon-favicon-builtin::before,
+tab-item.faviconized.sharing-microphone .favicon-image,
+tab-item.faviconized.sharing-microphone .favicon-favicon-builtin::before,
+tab-item.faviconized.sharing-screen .favicon-image,
+tab-item.faviconized.sharing-screen .favicon-favicon-builtin::before {
+  animation: var(--tab-sharing-icon-animation-inverted);
+}
+
+.favicon-sharing-state {
+  bottom: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  left: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  position: absolute;
+  right: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+}
+
+tab-item.faviconized.sharing-camera .favicon-sharing-state::before {
+  background-image: url("./icons/camera.svg")
+}
+:root.simulate-svg-context-fill tab-item.faviconized.sharing-camera .favicon-sharing-state::before {
+  mask-image: url("./icons/camera.svg");
+}
+
+tab-item.faviconized.sharing-microphone .favicon-sharing-state::before {
+  background-image: url("./icons/microphone.svg")
+}
+:root.simulate-svg-context-fill tab-item.faviconized.sharing-microphone .favicon-sharing-state::before {
+  mask-image: url("./icons/microphone.svg");
+}
+
+tab-item.faviconized.sharing-screen .favicon-sharing-state::before {
+  background-image: url("./icons/screen.svg")
+}
+:root.simulate-svg-context-fill tab-item.faviconized.sharing-screen .favicon-sharing-state::before {
+  mask-image: url("./icons/screen.svg");
+}
+
+.favicon-sharing-state::before {
+  fill: var(--sharing-state-color);
+  animation: var(--tab-sharing-icon-animation);
+}
+:root.simulate-svg-context-fill tab-item .favicon-sharing-state::before {
+  /* put this here to override background-image specivied rules above! */
+  background: var(--sharing-state-color);
 }
