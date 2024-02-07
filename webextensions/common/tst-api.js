@@ -304,9 +304,10 @@ export async function exportTab(sourceTab, { addonId, light, isContextTab, inter
 }
 export async function exportTabInternal(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
   const [effectiveFavIconUrl, children] = await Promise.all([
-    (!permissions.has(kPERMISSION_TABS) &&
-     (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
-      !sourceTab.active)) ?
+    (light ||
+     (!permissions.has(kPERMISSION_TABS) &&
+      (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
+       !sourceTab.active))) ?
       null :
       (sourceTab.id in cache.effectiveFavIconUrls) ?
         cache.effectiveFavIconUrls[sourceTab.id] :
@@ -1362,17 +1363,16 @@ export async function getTargetRenderedTabs(message, sender) {
   if (!tabs)
     return tabs;
 
-  const windowIds = new Set(Array.from(tabs, tab => tab.windowId));
-  const renderedTabIds = await Promise.all(
-    Array.from(
-      windowIds,
-      windowId => browser.runtime.sendMessage({
-        type: Constants.kCOMMAND_GET_RENDERED_TAB_IDS,
-        windowId,
-      })
-    )
-  );
-  const renderedTabIdsSet = new Set(renderedTabIds.flat());
+  const windowId = message.window ||
+    message.windowId ||
+    await browser.windows.getLastFocused({
+      windowTypes: ['normal']
+    }).catch(ApiTabs.createErrorHandler()).then(win => win && win.id);
+  const renderedTabIds = await browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_GET_RENDERED_TAB_IDS,
+    windowId,
+  });
+  const renderedTabIdsSet = new Set(renderedTabIds);
   return Array.from(tabs).filter(tab => renderedTabIdsSet.has(tab.id));
 }
 
