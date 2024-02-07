@@ -1327,29 +1327,18 @@ export async function getTargetTabs(message, sender) {
 
   if (Array.isArray(tabQuery))
     return getTabsByQueries(tabQuery, { windowId, queryOptions, sender });
-  const isAllVisibles    = tabQuery && String(tabQuery).toLowerCase() == 'allvisibles';
-  const isNormalVisibles = tabQuery && String(tabQuery).toLowerCase() == 'normalvisibles';
+
   if (windowId) {
     if (tabQuery == '*')
       return Tab.getAllTabs(windowId, { ...queryOptions, iterator: true });
-    else if (isAllVisibles)
-      return Tab.getVisibleTabs(windowId, { ...queryOptions, iterator: true });
-    else if (isNormalVisibles)
-      return Tab.getVisibleTabs(windowId, { ...queryOptions, normal: true, iterator: true });
     else if (!tabQuery)
       return Tab.getRootTabs(windowId, { ...queryOptions, iterator: true });
   }
-  if (tabQuery == '*' ||
-      isAllVisibles ||
-      isNormalVisibles) {
+  if (tabQuery == '*') {
     const win = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
-    return isAllVisibles ?
-      Tab.getVisibleTabs(win.id, { ...queryOptions, iterator: true }) :
-      isNormalVisibles ?
-        Tab.getVisibleTabs(windowId, { ...queryOptions, normal: true, iterator: true }) :
-        Tab.getAllTabs(win.id, { ...queryOptions, iterator: true });
+    return Tab.getAllTabs(win.id, { ...queryOptions, iterator: true });
   }
   if (tabQuery) {
     let tabs = await getTabsByQueries([tabQuery], { windowId, queryOptions, sender });
@@ -1437,14 +1426,14 @@ async function getTabsByQuery(query, { activeWindow, queryOptions, sender }) {
     case 'next':
       return baseTab.$TST.nextTab;
     case 'nextcyclic':
-      return baseTab.$TST.nextTab || Tab.getFirstTab(activeWindow.id, queryOptions || {});
+      return baseTab.$TST.nextTab || Tab.getFirstTab(baseTab.windowId, queryOptions || {});
 
     case 'previous':
     case 'prev':
       return baseTab.$TST.previousTab;
     case 'previouscyclic':
     case 'prevcyclic':
-      return baseTab.$TST.previousTab || Tab.getLastTab(activeWindow.id, queryOptions || {});
+      return baseTab.$TST.previousTab || Tab.getLastTab(baseTab.windowId, queryOptions || {});
 
     case 'nextsibling':
       return baseTab.$TST.nextSiblingTab;
@@ -1455,7 +1444,7 @@ async function getTabsByQuery(query, { activeWindow, queryOptions, sender }) {
       const parent = baseTab.$TST.parent;
       if (parent)
         return parent.$TST.firstChild;
-      return Tab.getFirstTab(activeWindow.id, queryOptions || {});
+      return Tab.getFirstTab(baseTab.windowId, queryOptions || {});
     }
 
     case 'previoussibling':
@@ -1469,29 +1458,39 @@ async function getTabsByQuery(query, { activeWindow, queryOptions, sender }) {
       const parent = baseTab.$TST.parent;
       if (parent)
         return parent.$TST.lastChild;
-      return Tab.getLastRootTab(activeWindow.id, queryOptions || {});
+      return Tab.getLastRootTab(baseTab.windowId, queryOptions || {});
     }
 
     case 'nextvisible':
       return baseTab.$TST.nearestVisibleFollowingTab;
     case 'nextvisiblecyclic':
-      return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(activeWindow.id, queryOptions || {});
+      return baseTab.$TST.nearestVisibleFollowingTab || Tab.getFirstVisibleTab(baseTab.windowId, queryOptions || {});
 
     case 'previousvisible':
     case 'prevvisible':
       return baseTab.$TST.nearestVisiblePrecedingTab;
     case 'previousvisiblecyclic':
     case 'prevvisiblecyclic':
-      return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(activeWindow.id, queryOptions || {});
+      return baseTab.$TST.nearestVisiblePrecedingTab || Tab.getLastVisibleTab(baseTab.windowId, queryOptions || {});
 
     case 'lastdescendant':
       return baseTab.$TST.lastDescendant;
 
     case 'sendertab':
       return sender && sender.tab && Tab.get(sender.tab.id) || null;
+
+
     case 'highlighted':
     case 'multiselected':
-      return Tab.getHighlightedTabs(activeWindow.id, queryOptions || {});
+      return Tab.getHighlightedTabs(baseTab.windowId, queryOptions || {});
+
+    case 'allvisibles':
+      return Tab.getVisibleTabs(baseTab.windowId, queryOptions || {});
+
+    case 'normalvisibles':
+      return Tab.getVisibleTabs(baseTab.windowId, { ...(queryOptions || {}), normal: true });
+
+
     default:
       return Tab.get(id) || Tab.getByUniqueId(id);
   }
