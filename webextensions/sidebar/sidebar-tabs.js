@@ -542,10 +542,10 @@ function tryApplyUpdate(update) {
   const highlightedChanged = update.updatedProperties && 'highlighted' in update.updatedProperties;
 
   if (update.updatedProperties) {
-    for (const key of Object.keys(update.updatedProperties)) {
+    for (const [key, value] of Object.entries(update.updatedProperties)) {
       if (Tab.UNSYNCHRONIZABLE_PROPERTIES.has(key))
         continue;
-      tab[key] = update.updatedProperties[key];
+      tab[key] = value;
     }
   }
 
@@ -1020,6 +1020,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
+      tab.title = lastMessage.title;
       tab.$TST.label = lastMessage.label;
       if (tab.$TST.element)
         tab.$TST.element.label = lastMessage.label;
