@@ -16,6 +16,7 @@ import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+import { kTAB_SHARING_STATE_ELEMENT_NAME } from './components/TabSharingStateElement.js';
 import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './components/TabSoundButtonElement.js';
 import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
 
@@ -86,6 +87,11 @@ export function isEventFiredOnTwisty(event) {
 
   const target = getElementTarget(event);
   return target && target.closest && !!target.closest(kTAB_TWISTY_ELEMENT_NAME);
+}
+
+export function isEventFiredOnSharingStateButton(event) {
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(kTAB_SHARING_STATE_ELEMENT_NAME);
 }
 
 export function isEventFiredOnSoundButton(event) {
@@ -243,6 +249,7 @@ export function getMouseEventDetail(event, tab) {
   return {
     ...getTabEventDetail(event, tab),
     twisty:        isEventFiredOnTwisty(event),
+    sharingStateButton: isEventFiredOnSharingStateButton(event),
     soundButton:   isEventFiredOnSoundButton(event),
     closebox:      isEventFiredOnClosebox(event),
     button:        event.button,
