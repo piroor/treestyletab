@@ -64,6 +64,8 @@ const mNormalScrollBox  = document.querySelector('#normal-tabs-container');
 const mTabBar           = document.querySelector('#tabbar');
 const mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
+let mScrollingInternallyCount = 0;
+
 export function init(scrollPosition) {
   // We need to register the lister as non-passive to cancel the event.
   // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
@@ -78,19 +80,57 @@ export function init(scrollPosition) {
   });
 
   reserveToRenderVirtualScrollViewport();
-  if (typeof scrollPosition == 'number') {
-    log('restore scroll position');
-    cancelRunningScroll();
-    scrollTo({
-      position: scrollPosition,
-      justNow:  true
-    });
-  }
+  if (typeof scrollPosition != 'number')
+    return;
+
+  mNormalScrollBox.scrollTop = scrollPosition;
+  if (scrollPosition <= mNormalScrollBox.scrollTopMax)
+    return;
+
+  mScrollingInternallyCount++;
+  restoreScrollPosition.scrollPosition = scrollPosition;
+  mNormalScrollBox.addEventListener('overflow', onInitialOverflow);
+  onVirtualScrollViewportUpdated.addListener(onInitialUpdate);
+  wait(1000).then(() => {
+    mNormalScrollBox.removeEventListener('overflow', onInitialOverflow);
+    onVirtualScrollViewportUpdated.removeListener(onInitialUpdate);
+    log('timeout: give up to restore scroll position');
+  });
 }
 
-/* virtual scrolling */
+function onInitialOverflow(event) {
+  if (event.target != event.currentTarget)
+    return;
 
-let mScrollingInternallyCount = 0;
+  mNormalScrollBox.removeEventListener('overflow', onInitialOverflow);
+  onInitialOverflow.done = true;
+  if (onInitialUpdate.done)
+    restoreScrollPosition();
+}
+function onInitialUpdate() {
+  onVirtualScrollViewportUpdated.removeListener(onInitialUpdate);
+  onInitialUpdate.done = true;
+  if (onInitialOverflow.done)
+    restoreScrollPosition();
+}
+function restoreScrollPosition() {
+  if (restoreScrollPosition.retryCount < 10 &&
+      restoreScrollPosition.scrollPosition > mNormalScrollBox.scrollTopMax) {
+    restoreScrollPosition.retryCount++;
+    return window.requestAnimationFrame(restoreScrollPosition);
+  }
+
+  mNormalScrollBox.scrollTop = restoreScrollPosition.scrollPosition;
+  restoreScrollPosition.scrollPosition = -1;
+  window.requestAnimationFrame(() => {
+    mScrollingInternallyCount--;
+  });
+}
+restoreScrollPosition.retryCount = 0;
+restoreScrollPosition.scrollPosition = -1;
+
+
+/* virtual scrolling */
 
 export function reserveToRenderVirtualScrollViewport() {
   if (mScrollingInternallyCount > 0)
@@ -153,7 +193,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       allRenderableTabsSize - viewPortSize,
       typeof scrollPosition == 'number' ?
         scrollPosition :
-        mNormalScrollBox.scrollTop
+        restoreScrollPosition.scrollPosition > 0 ?
+          restoreScrollPosition.scrollPosition :
+          mNormalScrollBox.scrollTop
     )
   );
 
