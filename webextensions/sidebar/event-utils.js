@@ -89,7 +89,7 @@ export function isEventFiredOnTwisty(event) {
   return target && target.closest && !!target.closest(kTAB_TWISTY_ELEMENT_NAME);
 }
 
-export function isEventFiredOnSharingStateButton(event) {
+export function isEventFiredOnSharingState(event) {
   const target = getElementTarget(event);
   return target && target.closest && !!target.closest(kTAB_SHARING_STATE_ELEMENT_NAME);
 }
@@ -249,7 +249,7 @@ export function getMouseEventDetail(event, tab) {
   return {
     ...getTabEventDetail(event, tab),
     twisty:        isEventFiredOnTwisty(event),
-    sharingStateButton: isEventFiredOnSharingStateButton(event),
+    sharingState:  isEventFiredOnSharingState(event),
     soundButton:   isEventFiredOnSoundButton(event),
     closebox:      isEventFiredOnClosebox(event),
     button:        event.button,
