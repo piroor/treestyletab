@@ -2640,7 +2640,7 @@ Tab.onChangeMultipleTabsRestorability = new EventListenerManager();
 // utilities
 //===================================================================
 
-Tab.pendingBroadcastStates = new Map();
+Tab.bufferedStatesChanges = new Map();
 Tab.broadcastState = (tabs, { add, remove } = {}) => {
   if (!Constants.IS_BACKGROUND ||
       !Tab.broadcastState.enabled)
@@ -2653,7 +2653,7 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
     return;
 
   for (const tab of tabs) {
-    const message = Tab.pendingBroadcastStates.get(tab.id) || {
+    const message = Tab.bufferedStatesChanges.get(tab.id) || {
       windowId: tab.windowId,
       tabId:    tab.id,
       add:      new Set(),
@@ -2670,7 +2670,7 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
         message.remove.add(state);
       }
 
-    Tab.pendingBroadcastStates.set(tab.id, message);
+    Tab.bufferedStatesChanges.set(tab.id, message);
   }
 
   const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
@@ -2681,10 +2681,22 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
     if (Tab.broadcastState.triedAt != triedAt)
       return;
 
-    const messagesForStates = new Map();
-    for (const message of Tab.pendingBroadcastStates.values()) {
+    // Let's flush buffered changes!
+
+    // Unify buffered changes only if same type changes are consecutive.
+    // Otherwise the order of changes would be mixed and things may become broken.
+    const unifiedMessages = [];
+    let lastKey;
+    let unifiedMessage = null;
+    for (const message of Tab.bufferedStatesChanges.values()) {
       const key = `${message.windowId}/add:${[...message.add]}/remove:${[...message.remove]}`;
-      const unifiedMessage = messagesForStates.get(key) || {
+      if (key != lastKey) {
+        if (unifiedMessage)
+          unifiedMessages.push(unifiedMessage);
+        unifiedMessage = null;
+      }
+      lastKey = key;
+      unifiedMessage = unifiedMessage || {
         type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
         windowId: message.windowId,
         tabIds:   new Set(),
@@ -2692,11 +2704,14 @@ Tab.broadcastState = (tabs, { add, remove } = {}) => {
         remove:   message.remove,
       };
       unifiedMessage.tabIds.add(message.tabId);
-      messagesForStates.set(key, unifiedMessage);
     }
-    Tab.pendingBroadcastStates.clear();
+    if (unifiedMessage)
+      unifiedMessages.push(unifiedMessage);
+    Tab.bufferedStatesChanges.clear();
 
-    for (const message of messagesForStates.values()) {
+    // SidebarConnection.sendMessage() has its own bulk-send mechanism,
+    // so we don't need to bundle them like an array.
+    for (const message of unifiedMessages) {
       SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
         windowId: message.windowId,

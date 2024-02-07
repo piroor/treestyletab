@@ -44,10 +44,11 @@ function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
-const mPendingUpdates = new Map();
 
-function getPendingUpdate(tab) {
-  const update = mPendingUpdates.get(tab.id) || {
+const mBufferedUpdates = new Map();
+
+function getBufferedUpdate(tab) {
+  const update = mBufferedUpdates.get(tab.id) || {
     windowId: tab.windowId,
     tabId:    tab.id,
     attributes: {
@@ -65,24 +66,24 @@ function getPendingUpdate(tab) {
     hidden:       undefined,
     soundStateChanged: false,
   };
-  mPendingUpdates.set(tab.id, update);
+  mBufferedUpdates.set(tab.id, update);
   return update;
 }
 
-function sendPendingUpdates() {
+function flushBufferedUpdates() {
   if (!Constants.IS_BACKGROUND) {
-    mPendingUpdates.clear();
+    mBufferedUpdates.clear();
     return;
   }
 
   const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
-  sendPendingUpdates.triedAt = triedAt;
+  flushBufferedUpdates.triedAt = triedAt;
   (Constants.IS_BACKGROUND ?
     setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
     window.requestAnimationFrame)(() => {
-    if (sendPendingUpdates.triedAt != triedAt)
+    if (flushBufferedUpdates.triedAt != triedAt)
       return;
-    for (const update of mPendingUpdates.values()) {
+    for (const update of mBufferedUpdates.values()) {
       // no need to notify attributes broadcasted via Tab.broadcastState()
       delete update.attributes.updated.highlighted;
       delete update.attributes.updated.hidden;
@@ -109,6 +110,8 @@ function sendPendingUpdates() {
           sharingStateChanged: update.sharingStateChanged,
         });
 
+      // SidebarConnection.sendMessage() has its own bulk-send mechanism,
+      // so we don't need to bundle them like an array.
       if (update.isGroupTab)
         SidebarConnection.sendMessage({
           type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
@@ -151,12 +154,12 @@ function sendPendingUpdates() {
           tabId:    update.tabId,
         });
     }
-    mPendingUpdates.clear();
+    mBufferedUpdates.clear();
   }, 0);
 }
 
 export function updateTab(tab, newState = {}, options = {}) {
-  const update = getPendingUpdate(tab);
+  const update = getBufferedUpdate(tab);
   const oldState = options.old || {};
 
   if ('url' in newState) {
@@ -365,7 +368,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     ...update.attributes.updated,
     ...(newState && newState.$TST && newState.$TST.sanitized || newState),
   };
-  sendPendingUpdates();
+  flushBufferedUpdates();
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
