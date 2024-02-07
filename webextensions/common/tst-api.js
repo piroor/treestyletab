@@ -1359,6 +1359,9 @@ export async function getTargetTabs(message, sender) {
 }
 
 export async function getTargetRenderedTabs(message, sender) {
+  // Don't touch to this "tabs" until they are finally returned.
+  // Populating it to an array while operations will finishes
+  // the iterator and returned tabs will become just blank.
   const tabs = await getTargetTabs(message, sender);
   if (!tabs)
     return tabs;
