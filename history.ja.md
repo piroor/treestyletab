@@ -5,6 +5,7 @@
      * ピン留めされたタブとそうでない（通常の）タブは、それぞれ別々のコンテナー要素（`#pinned-tabs-container > .tabs.pinned` および `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`）の配下に置かれるようになりました
      * 各タブの要素は [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index) に対応する属性 `data-index` を持つようになりました
      * この設計変更により、CSSの`counter`を使用したカスタマイズは期待通りに動作しなくなりました（同等のことをするにはヘルパーアドオンを作成する必要があります）
+   * タブの共有状態（カメラ、マイク、および画面）をアイコンで表示するようにした
    * Firefox起動直後の初期化時に、タブの数・ピン留め状態・コンテナーの状態だけ一致していればキャッシュからツリーを復元するようにした
    * API: TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
    * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした

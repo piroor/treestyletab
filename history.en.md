@@ -5,6 +5,7 @@
      * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
      * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
+   * Indicate sharing state of tabs (camera, microphone and/or screen) with icons.
    * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
    * API: Introduce a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
    * API: Introduce new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
