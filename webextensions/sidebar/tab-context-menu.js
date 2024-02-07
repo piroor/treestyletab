@@ -712,6 +712,14 @@ async function onContextMenu(event) {
     return;
   }
 
+  if (event.target == document.body) { // when the application key is pressed
+    browser.menus.overrideContext({
+      context: 'tab',
+      tabId:   Tab.getActiveTab(TabsStore.getCurrentWindowId()).id,
+    });
+    return;
+  }
+
   if (!configs.emulateDefaultContextMenu)
     return;
 
