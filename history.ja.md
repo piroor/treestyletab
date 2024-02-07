@@ -9,12 +9,12 @@
    * Firefox起動直後の初期化時に、タブの数・ピン留め状態・コンテナーの状態だけ一致していればキャッシュからツリーを復元するようにした
    * API: TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
    * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
-   * API: [`get-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
+   * API: ツリー項目の情報を[必要最小限だけ得る](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)ためのAPI [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) を追加
+   * API: [`get-tree` と `get-light-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
    * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした
-   * API: 通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした
-   * API: ツリー項目の情報を必要最小限だけ得るためのAPI `get-light-tree` を追加
-   * API: `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして`AllVisibles`と`NormalVisibles`を追加
-   * API: `get-tree` や `get-light-tree` であらかじめ`states`の情報に基づいて絞り込んだ結果を得るための`states`および`statesNot`オプションを追加
+   * API: [通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages)
+   * API: `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして [`allVisibles` と `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) を追加
+   * API: `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）
  - 3.9.21 (2024.1.26)

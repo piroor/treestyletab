@@ -9,12 +9,12 @@
    * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
    * API: Introduce a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
    * API: Introduce new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
-   * API: [Introduce a new option `rendered:true` for the message type `get-tree`, to get information only about rendered tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
+   * API: Introduce a new message type [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) to get [minimal tree item information](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format).
+   * API: [Introduce a new option `rendered:true` for the message types `get-tree` and `get-light-tree`, to get information only about rendered tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
    * API: Support [bulk messaging to TST (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) and [bulk messaging from TST (receiving multiple messages at once](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst) for better performance.
-   * API: Add ability to minimize tree item information contained in notification type messages, to reduce messaging cost.
-   * API: Introduce a new message type `get-light-tree` to get minimal tree item information.
-   * API: Introduce new keywords `AllVisibles` and `NormalVisibles` for message types `get-tree` and `get-light-tree`, to get specific state tree items.
-   * API: Introduce new options `states` and `statesNot` for message types `get-tree` and `get-light-tree`, to get specific tree items.
+   * API: Add ability to [minimize tree item information contained in notification type messages](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages), to reduce messaging cost.
+   * API: Introduce new keywords [`allVisibles` and `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific state tree items.
+   * API: Introduce new options [`states` and `statesNot`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific tree items.
  - 3.9.22 (2024.1.31)
    * Fix failed initialization when an optional permission "Read and modify bookmarks" is not granted. (regression on 3.9.21)
  - 3.9.21 (2024.1.26)
