@@ -67,7 +67,9 @@ export function update() {
   mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
+  const favIconRect = dummyTab.querySelector('tab-favicon').getBoundingClientRect();
   const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
+  const closeBoxRect = dummyTab.querySelector('tab-closebox').getBoundingClientRect();
 
   let shiftTabsForScrollbarDistance = configs.shiftTabsForScrollbarDistance.trim() || '0';
   if (!/^[0-9\.]+(cm|mm|Q|in|pc|pt|px|em|ex|ch|rem|lh|vw|vh|vmin|vmax|%)$/.test(shiftTabsForScrollbarDistance))
@@ -81,8 +83,12 @@ export function update() {
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
+    --tab-favicon-start-offset: ${dummyTabRect.left -favIconRect.left}px;
+    --tab-favicon-end-offset: ${dummyTabRect.right -favIconRect.right}px;
     --tab-label-start-offset: ${labelRect.left - dummyTabRect.left}px;
     --tab-label-end-offset: ${dummyTabRect.right - labelRect.right}px;
+    --tab-closebox-start-offset: ${dummyTabRect.left - closeBoxRect.left}px;
+    --tab-closebox-end-offset: ${dummyTabRect.right - closeBoxRect.right}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
