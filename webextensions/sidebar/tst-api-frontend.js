@@ -118,8 +118,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
           TSTAPI.getTargetTabs(message, sender).then(tabs => {
             log(' => setting contents in tabs: ', tabs, message);
             for (const tab of tabs) {
-              if (tab.$TST.element)
-                setExtraTabContents(tab.$TST.element, sender.id, message);
+              setExtraContentsTo(tab, sender.id, message);
             }
           });
           return;
@@ -147,8 +146,7 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
           TSTAPI.getTargetTabs(message, sender).then(tabs => {
             log(' => clearing contents in tabs: ', tabs, message);
             for (const tab of tabs) {
-              if (tab.$TST.element)
-                clearExtraTabContents(tab.$TST.element, sender.id);
+              clearExtraTabContentsIn(tab, sender.id);
             }
           });
           return;
@@ -195,11 +193,11 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
 
         switch (message.type) {
           case TSTAPI.kSET_EXTRA_TAB_CONTENTS: // for backward compatibility
-            setExtraTabContents(tabElement, sender.id, message);
+            setExtraTabContentsToElement(tabElement, sender.id, message);
             break;
 
           case TSTAPI.kCLEAR_EXTRA_TAB_CONTENTS: // for backward compatibility
-            clearExtraTabContents(tabElement, sender.id);
+            clearExtraTabContentsInElement(tabElement, sender.id);
             break;
         }
       });
@@ -351,8 +349,21 @@ xmp
 `.trim().split('\n').filter(selector => !selector.startsWith('//'));
 const DANGEROUS_CONTENTS_SELECTOR = SAFE_CONTENTS.map(selector => `:not(${selector})`).join('');
 
-function setExtraContents(container, id, params = {}) {
+export function setExtraContentsTo(tab, id, params = {}) {
+  if (!tab || !tab.$TST.element)
+    return;
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
+  setExtraTabContentsToElement(tab.$TST.element, id, params);
+}
 
+function setExtraContentsToContainer(container, id, params = {}) {
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
   let item = container.itemById.get(id);
   if (!params.style &&
       item &&
@@ -431,11 +442,17 @@ function setExtraContents(container, id, params = {}) {
 }
 
 function getExtraContentsPartName(id) {
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
   return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
 }
 
 
-function setExtraTabContents(tabElement, id, params = {}) {
+function setExtraTabContentsToElement(tabElement, id, params = {}) {
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
   let container;
   switch (String(params.place).toLowerCase()) {
     case 'indent': // for backward compatibility
@@ -466,27 +483,35 @@ function setExtraTabContents(tabElement, id, params = {}) {
   }
 
   if (container)
-    return setExtraContents(container, id, params);
+    return setExtraContentsToContainer(container, id, params);
 }
 
 function onExtraContentsAboveChanged(id, params) {
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   onExtraContentsAboveChanged.lastStartedAt = startAt;
   window.requestAnimationFrame(() => {
     if (onExtraContentsAboveChanged.lastStartedAt != startAt)
       return;
-    setExtraContents(mDummyTab.extraItemsContainerAboveRoot, id, params);
+    setExtraContentsToContainer(mDummyTab.extraItemsContainerAboveRoot, id, params);
     throttledUpdateSize();
   });
 }
 
 function onExtraContentsBelowChanged(id, params) {
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   onExtraContentsBelowChanged.lastStartedAt = startAt;
   window.requestAnimationFrame(() => {
     if (onExtraContentsAboveChanged.lastStartedAt != startAt)
       return;
-    setExtraContents(mDummyTab.extraItemsContainerBelowRoot, id, params);
+    setExtraContentsToContainer(mDummyTab.extraItemsContainerBelowRoot, id, params);
     throttledUpdateSize();
   });
 }
@@ -501,22 +526,33 @@ function throttledUpdateSize() {
   });
 }
 
-function clearExtraTabContents(tabElement, id) {
-  setExtraTabContents(tabElement, id, { place: 'indent' });
-  setExtraTabContents(tabElement, id, { place: 'front' });
-  setExtraTabContents(tabElement, id, { place: 'behind' });
-  setExtraTabContents(tabElement, id, { place: 'above' });
-  setExtraTabContents(tabElement, id, { place: 'below' });
+export function clearExtraTabContentsIn(tab, id) {
+  if (!tab || !tab.$TST.element)
+    return;
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
+  clearExtraTabContentsInElement(tab.$TST.element, id);
+}
+
+function clearExtraTabContentsInElement(tabElement, id) {
+  setExtraTabContentsToElement(tabElement, id, { place: 'indent' });
+  setExtraTabContentsToElement(tabElement, id, { place: 'front' });
+  setExtraTabContentsToElement(tabElement, id, { place: 'behind' });
+  setExtraTabContentsToElement(tabElement, id, { place: 'above' });
+  setExtraTabContentsToElement(tabElement, id, { place: 'below' });
   onExtraContentsAboveChanged(id);
   onExtraContentsBelowChanged(id);
 }
 
 function clearAllExtraTabContents(id) {
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
+
   if (!mAddonsWithExtraContents.has(id))
     return;
 
   for (const tabElement of document.querySelectorAll(kTAB_ELEMENT_NAME)) {
-    clearExtraTabContents(tabElement, id);
+    clearExtraTabContentsInElement(tabElement, id);
   }
   setExtraNewTabButtonContents(id);
   clearExtraTabbarTopContents(id);
@@ -527,9 +563,13 @@ function clearAllExtraTabContents(id) {
 }
 
 
-function setExtraNewTabButtonContents(id, params = {}) {
+export function setExtraNewTabButtonContents(id, params = {}) {
+  if (typeof id != 'string') { // addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
   for (const container of mNewTabButtonExtraItemsContainerRoots) {
-    setExtraContents(container, id, params);
+    setExtraContentsToContainer(container, id, params);
   }
   Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
@@ -537,33 +577,47 @@ function setExtraNewTabButtonContents(id, params = {}) {
   });
 }
 
-function clearExtraNewTabButtonContents(id) {
+export function clearExtraNewTabButtonContents(id) {
+  if (!id)
+    setExtraNewTabButtonContents({});
   setExtraNewTabButtonContents(id, {});
 }
 
 
-function setExtraTabbarTopContents(id, params = {}) {
-  setExtraContents(mTabbarTopExtraItemsContainerRoot, id, params);
+export function setExtraTabbarTopContents(id, params = {}) {
+  if (typeof id != 'string') { // the addon id is optional
+    params = id;
+    id = browser.runtime.id;
+  }
+  setExtraContentsToContainer(mTabbarTopExtraItemsContainerRoot, id, params);
   Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
     timeout: 100,
   });
 }
 
-function clearExtraTabbarTopContents(id) {
+export function clearExtraTabbarTopContents(id) {
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
   setExtraTabbarTopContents(id, {});
 }
 
 
-function setExtraTabbarBottomContents(id, params = {}) {
-  setExtraContents(mTabbarBottomExtraItemsContainerRoot, id, params);
+export function setExtraTabbarBottomContents(id, params = {}) {
+  if (typeof id != 'string') {
+    params = id;
+    id = browser.runtime.id;
+  }
+  setExtraContentsToContainer(mTabbarBottomExtraItemsContainerRoot, id, params);
   Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_RESIZE,
     timeout: 100,
   });
 }
 
-function clearExtraTabbarBottomContents(id) {
+export function clearExtraTabbarBottomContents(id) {
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
   setExtraTabbarBottomContents(id, {});
 }
 
