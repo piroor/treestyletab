@@ -14,6 +14,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsStore from '/common/tabs-store.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
 
@@ -113,6 +114,7 @@ async function updateInternal(tabId) {
     lastSuccessorTabId: tab.$TST.temporaryMetadata.get('lastSuccessorTabId'),
   });
   if (tab.$TST.temporaryMetadata.has('lastSuccessorTabIdByOwner')) {
+    log('respect last successor by owner');
     const successor = Tab.get(renewedTab.successorTabId);
     if (successor) {
       log(`  ${dumpTab(tab)} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
@@ -144,13 +146,20 @@ async function updateInternal(tabId) {
     return;
   let successor = null;
   if (renewedTab.active) {
+    log('it is active, so reset successor');
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
-      const firstChild = (
-        configs.treatClosedOrMovedTabAsSoloTab_noSidebar &&
-        !SidebarConnection.isOpen(tab.windowId)
-      ) ? tab.$TST.firstChild : tab.$TST.firstVisibleChild;
+      const closeParentBehavior = TreeBehavior.getParentTabOperationBehavior(tab, {
+        context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+        parent: tab.$TST.parent,
+        windowId: tab.windowId,
+      });
+      const collapsedChildSuccessorAllowed = (
+        closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
+        closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB
+      );
+      const firstChild = collapsedChildSuccessorAllowed ? tab.$TST.firstChild : tab.$TST.firstVisibleChild;
       successor = firstChild || tab.$TST.nextVisibleSiblingTab || tab.$TST.nearestVisiblePrecedingTab;
-      log(`  possible successor: ${dumpTab(tab)}`);
+      log(`  possible successor: ${dumpTab(tab)}: `, successor, { closeParentBehavior, collapsedChildSuccessorAllowed, firstChild });
       if (successor &&
           successor.discarded &&
           configs.avoidDiscardedTabToBeActivatedIfPossible) {
