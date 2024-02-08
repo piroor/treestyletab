@@ -687,7 +687,8 @@ export async function detachAllChildren(
 
   if (!dontExpand &&
       ((tab && !tab.$TST.collapsed) ||
-       behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)) {
+       (behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
+        behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB))) {
     if (tab) {
       await collapseExpandSubtree(tab, {
         ...options,
