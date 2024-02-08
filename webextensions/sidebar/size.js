@@ -67,6 +67,8 @@ export function update() {
   mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
+  const substanceRect = dummyTab.querySelector('tab-item-substance').getBoundingClientRect();
+  const uiRect = dummyTab.querySelector('tab-item-substance .ui').getBoundingClientRect();
   const favIconRect = dummyTab.querySelector('tab-favicon').getBoundingClientRect();
   const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
   const closeBoxRect = dummyTab.querySelector('tab-closebox').getBoundingClientRect();
@@ -78,17 +80,20 @@ export function update() {
     shiftTabsForScrollbarDistance += 'px'; // it is used with CSS calc() and it requires any length unit for each value.
 
   log('mTabHeight ', mTabHeight);
+  const baseLeft  = Math.max(substanceRect.left, uiRect.left);
+  const baseRight = Math.min(substanceRect.right, uiRect.right);
   sizeDefinition += `:root {
     --tab-size: ${mTabHeight}px;
+    --tab-ui-size: ${uiRect.height}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
-    --tab-favicon-start-offset: ${favIconRect.left - dummyTabRect.left}px;
-    --tab-favicon-end-offset: ${dummyTabRect.right - favIconRect.right}px;
-    --tab-label-start-offset: ${labelRect.left - dummyTabRect.left}px;
-    --tab-label-end-offset: ${dummyTabRect.right - labelRect.right}px;
-    --tab-closebox-start-offset: ${closeBoxRect.left - dummyTabRect.left}px;
-    --tab-closebox-end-offset: ${dummyTabRect.right - closeBoxRect.right}px;
+    --tab-favicon-start-offset: ${favIconRect.left - baseLeft}px;
+    --tab-favicon-end-offset: ${baseRight - favIconRect.right}px;
+    --tab-label-start-offset: ${labelRect.left - baseLeft}px;
+    --tab-label-end-offset: ${baseRight - labelRect.right}px;
+    --tab-closebox-start-offset: ${closeBoxRect.left - baseLeft}px;
+    --tab-closebox-end-offset: ${baseRight - closeBoxRect.right}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
