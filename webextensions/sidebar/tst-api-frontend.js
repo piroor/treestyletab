@@ -544,7 +544,7 @@ function clearExtraTabContentsInElement(tabElement, id) {
   onExtraContentsBelowChanged(id);
 }
 
-function clearAllExtraTabContents(id) {
+export function clearAllExtraTabContents(id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
 
