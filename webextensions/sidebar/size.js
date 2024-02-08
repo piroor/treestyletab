@@ -50,13 +50,12 @@ export function init() {
 }
 
 export function update() {
-  const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
   mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
   const scale = Math.max(configs.faviconizedTabScale, 1);
   mFavIconizedTabSize = parseInt(mFavIconSize * scale);
   log('mFavIconSize / mFavIconizedTabSize ', mFavIconSize, mFavIconizedTabSize);
-  sizeDefinition.textContent = `:root {
+  let sizeDefinition = `:root {
     --favicon-size:         ${mFavIconSize}px;
     --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
@@ -77,7 +76,7 @@ export function update() {
     shiftTabsForScrollbarDistance += 'px'; // it is used with CSS calc() and it requires any length unit for each value.
 
   log('mTabHeight ', mTabHeight);
-  sizeDefinition.textContent += `:root {
+  sizeDefinition += `:root {
     --tab-size: ${mTabHeight}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
@@ -94,6 +93,11 @@ export function update() {
     --shift-tabs-for-scrollbar-distance: ${shiftTabsForScrollbarDistance};
   }`;
 
+  const sizeDefinitionHolder = document.querySelector('#size-definition');
+  if (sizeDefinitionHolder.textContent == sizeDefinition)
+    return;
+
+  sizeDefinitionHolder.textContent = sizeDefinition
   onUpdated.dispatch();
 }
 
