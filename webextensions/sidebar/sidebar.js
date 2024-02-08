@@ -310,6 +310,12 @@ export async function init() {
   // reloaded for complete retry.
   SidebarTabs.reserveToSyncTabsOrder();
 
+  Size.onUpdated.addListener(() => {
+    updateTabbarLayout({
+      reason: Constants.kTABBAR_UPDATE_REASON_RESIZE,
+    });
+  });
+
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
@@ -342,6 +348,7 @@ async function applyTheme({ style } = {}) {
   applyUserStyleRules();
   if (mReloadMaskImage)
     reloadAllMaskImages();
+
   Size.update();
 }
 
@@ -404,6 +411,8 @@ function applyUserStyleRules() {
       .join(', ');
     log (' => ', rule.selectorText);
   });
+
+  Size.update();
 }
 
 function processAllStyleRulesIn(sheetOrRule, processor) {

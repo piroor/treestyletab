@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   configs
@@ -13,6 +15,8 @@ import {
 function log(...args) {
   internalLogger('sidebar/size', ...args);
 }
+
+export const onUpdated = new EventListenerManager();
 
 let mTabHeight          = 0;
 let mTabXOffset         = 0;
@@ -89,6 +93,8 @@ export function update() {
 
     --shift-tabs-for-scrollbar-distance: ${shiftTabsForScrollbarDistance};
   }`;
+
+  onUpdated.dispatch();
 }
 
 export function calc(expression) {

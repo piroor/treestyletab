@@ -19,6 +19,7 @@ import Tab from '/common/Tab.js';
 
 import * as EventUtils from './event-utils.js';
 import * as Sidebar from './sidebar.js';
+import * as Size from './size.js';
 
 import {
   kTAB_ELEMENT_NAME,
@@ -58,6 +59,8 @@ const mTabbarBottomExtraItemsContainerRoot = (() => {
   root.itemById = new Map();
   return root;
 })();
+
+const mDummyTab = document.getElementById('dummy-tab');
 
 TSTAPI.onRegistered.addListener(addon => {
   // Install stylesheet always, even if the addon is not allowed to access
@@ -453,15 +456,49 @@ function setExtraTabContents(tabElement, id, params = {}) {
 
     case 'tab-above':
       container = tabElement.extraItemsContainerAboveRoot;
+      onExtraContentsAboveChanged(id, params);
       break;
 
     case 'tab-above':
       container = tabElement.extraItemsContainerBelowRoot;
+      onExtraContentsBelowChanged(id, params);
       break;
   }
 
   if (container)
     return setExtraContents(container, id, params);
+}
+
+function onExtraContentsAboveChanged(id, params) {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  onExtraContentsAboveChanged.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (onExtraContentsAboveChanged.lastStartedAt != startAt)
+      return;
+    setExtraContents(mDummyTab.extraItemsContainerAboveRoot, id, params);
+    throttledUpdateSize();
+  });
+}
+
+function onExtraContentsBelowChanged(id, params) {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  onExtraContentsBelowChanged.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (onExtraContentsAboveChanged.lastStartedAt != startAt)
+      return;
+    setExtraContents(mDummyTab.extraItemsContainerBelowRoot, id, params);
+    throttledUpdateSize();
+  });
+}
+
+function throttledUpdateSize() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  throttledUpdateSize.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (throttledUpdateSize.lastStartedAt != startAt)
+      return;
+    Size.update();
+  });
 }
 
 function clearExtraTabContents(tabElement, id) {
@@ -470,6 +507,8 @@ function clearExtraTabContents(tabElement, id) {
   setExtraTabContents(tabElement, id, { place: 'behind' });
   setExtraTabContents(tabElement, id, { place: 'above' });
   setExtraTabContents(tabElement, id, { place: 'below' });
+  onExtraContentsAboveChanged(id);
+  onExtraContentsBelowChanged(id);
 }
 
 function clearAllExtraTabContents(id) {
@@ -482,6 +521,8 @@ function clearAllExtraTabContents(id) {
   setExtraNewTabButtonContents(id);
   clearExtraTabbarTopContents(id);
   clearExtraTabbarBottomContents(id);
+  onExtraContentsAboveChanged(id);
+  onExtraContentsBelowChanged(id);
   mAddonsWithExtraContents.delete(id);
 }
 
@@ -541,10 +582,16 @@ function collectExtraContentsRoots({ tabs, place }) {
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerFrontRoot);
 
     case 'tab-above':
-      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerAboveRoot);
+      return [
+        ...(tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerAboveRoot),
+        mDummyTab.extraItemsContainerAboveRoot,
+      ];
 
     case 'tab-below':
-      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerBelowRoot);
+      return [
+        ...(tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerBelowRoot),
+        mDummyTab.extraItemsContainerBelowRoot,
+      ];
 
     case 'newtabbutton':
     case 'new-tab-button':

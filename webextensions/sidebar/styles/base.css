@@ -422,7 +422,8 @@ tab-item * {
 }
 
 tab-item > *,
-tab-item > * > * {
+tab-item-substance > *,
+tab-item-substance > .ui > * {
   position: relative;
   z-index: var(--tab-base-z-index);
 }
@@ -506,8 +507,6 @@ tab-item .background,
 tab-item .extra-items-container.indent,
 tab-item .extra-items-container.behind,
 tab-item .extra-items-container.front,
-tab-item .extra-items-container.above,
-tab-item .extra-items-container.below,
 .newtab-button .extra-items-container {
   bottom: 0;
   left: 0;
@@ -515,6 +514,16 @@ tab-item .extra-items-container.below,
   position: absolute;
   right: 0;
   top: 0;
+}
+tab-item .extra-items-container.above,
+tab-item .extra-items-container.below {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow: visible;
+  pointer-events: none;
 }
 
 tab-item .extra-items-container,
