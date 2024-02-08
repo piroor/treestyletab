@@ -535,6 +535,8 @@ export function clearExtraTabContentsIn(tab, id) {
 }
 
 function clearExtraTabContentsInElement(tabElement, id) {
+  if (!id) // the addon id is optional
+    id = browser.runtime.id;
   setExtraTabContentsToElement(tabElement, id, { place: 'indent' });
   setExtraTabContentsToElement(tabElement, id, { place: 'front' });
   setExtraTabContentsToElement(tabElement, id, { place: 'behind' });
