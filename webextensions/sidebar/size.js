@@ -83,11 +83,11 @@ export function update() {
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
-    --tab-favicon-start-offset: ${dummyTabRect.left -favIconRect.left}px;
-    --tab-favicon-end-offset: ${dummyTabRect.right -favIconRect.right}px;
+    --tab-favicon-start-offset: ${favIconRect.left - dummyTabRect.left}px;
+    --tab-favicon-end-offset: ${dummyTabRect.right - favIconRect.right}px;
     --tab-label-start-offset: ${labelRect.left - dummyTabRect.left}px;
     --tab-label-end-offset: ${dummyTabRect.right - labelRect.right}px;
-    --tab-closebox-start-offset: ${dummyTabRect.left - closeBoxRect.left}px;
+    --tab-closebox-start-offset: ${closeBoxRect.left - dummyTabRect.left}px;
     --tab-closebox-end-offset: ${dummyTabRect.right - closeBoxRect.right}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
