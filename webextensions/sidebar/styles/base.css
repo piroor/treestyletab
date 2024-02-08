@@ -359,7 +359,7 @@ tab-item {
 }
 
 tab-item-substance {
-  align-items: center;
+  align-items: stretch;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -385,7 +385,7 @@ tab-item-substance .ui {
   width: 100%;
   min-height: 0;
   pointer-events: auto;
-  position: relative;
+  position: static;
 }
 
 :root.left tab-item:not(.pinned) tab-item-substance {
@@ -506,6 +506,8 @@ tab-item .background,
 tab-item .extra-items-container.indent,
 tab-item .extra-items-container.behind,
 tab-item .extra-items-container.front,
+tab-item .extra-items-container.above,
+tab-item .extra-items-container.below,
 .newtab-button .extra-items-container {
   bottom: 0;
   left: 0;

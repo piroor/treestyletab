@@ -160,11 +160,11 @@ export class TabElement extends HTMLElement {
 
     const activeMarker = document.createElement('span');
     activeMarker.classList.add(Constants.kHIGHLIGHTER);
-    ui.appendChild(activeMarker);
+    substance.appendChild(activeMarker);
 
     const identityMarker = document.createElement('span');
     identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-    ui.appendChild(identityMarker);
+    substance.appendChild(identityMarker);
 
     const extraItemsContainerBehind = document.createElement('span');
     extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
