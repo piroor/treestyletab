@@ -450,6 +450,14 @@ function setExtraTabContents(tabElement, id, params = {}) {
     default:
       container = tabElement.extraItemsContainerFrontRoot;
       break;
+
+    case 'tab-above':
+      container = tabElement.extraItemsContainerAboveRoot;
+      break;
+
+    case 'tab-above':
+      container = tabElement.extraItemsContainerBelowRoot;
+      break;
   }
 
   if (container)
@@ -460,6 +468,8 @@ function clearExtraTabContents(tabElement, id) {
   setExtraTabContents(tabElement, id, { place: 'indent' });
   setExtraTabContents(tabElement, id, { place: 'front' });
   setExtraTabContents(tabElement, id, { place: 'behind' });
+  setExtraTabContents(tabElement, id, { place: 'above' });
+  setExtraTabContents(tabElement, id, { place: 'below' });
 }
 
 function clearAllExtraTabContents(id) {
@@ -529,6 +539,12 @@ function collectExtraContentsRoots({ tabs, place }) {
     case 'front': // for backward compatibility
     case 'tab-front':
       return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerFrontRoot);
+
+    case 'tab-above':
+      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerAboveRoot);
+
+    case 'tab-below':
+      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element.extraItemsContainerBelowRoot);
 
     case 'newtabbutton':
     case 'new-tab-button':

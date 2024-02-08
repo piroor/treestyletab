@@ -119,26 +119,40 @@ export class TabElement extends HTMLElement {
     background.classList.add(Constants.kBACKGROUND);
     substance.appendChild(background);
 
+    const extraItemsContainerAbove = document.createElement('span');
+    extraItemsContainerAbove.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerAbove.classList.add('above');
+    substance.appendChild(extraItemsContainerAbove);
+
+    const ui = document.createElement('span');
+    ui.classList.add('ui');
+    substance.appendChild(ui);
+
+    const extraItemsContainerBelow = document.createElement('span');
+    extraItemsContainerBelow.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerBelow.classList.add('below');
+    substance.appendChild(extraItemsContainerBelow);
+
     const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
-    substance.appendChild(label);
+    ui.appendChild(label);
 
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
-    substance.insertBefore(twisty, label);
+    ui.insertBefore(twisty, label);
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-    substance.insertBefore(favicon, label);
+    ui.insertBefore(favicon, label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
-    substance.appendChild(counter);
+    ui.appendChild(counter);
 
     const sharingState = document.createElement(kTAB_SHARING_STATE_ELEMENT_NAME);
-    substance.appendChild(sharingState);
+    ui.appendChild(sharingState);
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-    substance.appendChild(soundButton);
+    ui.appendChild(soundButton);
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
-    substance.appendChild(closebox);
+    ui.appendChild(closebox);
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);
@@ -146,21 +160,21 @@ export class TabElement extends HTMLElement {
 
     const activeMarker = document.createElement('span');
     activeMarker.classList.add(Constants.kHIGHLIGHTER);
-    substance.appendChild(activeMarker);
+    ui.appendChild(activeMarker);
 
     const identityMarker = document.createElement('span');
     identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-    substance.appendChild(identityMarker);
+    ui.appendChild(identityMarker);
 
     const extraItemsContainerBehind = document.createElement('span');
     extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerBehind.classList.add('behind');
-    substance.appendChild(extraItemsContainerBehind);
+    ui.appendChild(extraItemsContainerBehind);
 
     const extraItemsContainerFront = document.createElement('span');
     extraItemsContainerFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerFront.classList.add('front');
-    substance.appendChild(extraItemsContainerFront);
+    ui.appendChild(extraItemsContainerFront);
 
     this.removeAttribute('draggable');
 
@@ -418,6 +432,14 @@ windowId = ${tab.windowId}
       this.extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
       this.extraItemsContainerFrontRoot.itemById = new Map();
     }
+    if (!this.extraItemsContainerAboveRoot) {
+      this.extraItemsContainerAboveRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`).attachShadow({ mode: 'open' });
+      this.extraItemsContainerAboveRoot.itemById = new Map();
+    }
+    if (!this.extraItemsContainerBelowRoot) {
+      this.extraItemsContainerBelowRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`).attachShadow({ mode: 'open' });
+      this.extraItemsContainerBelowRoot.itemById = new Map();
+    }
   }
 
   _startListening() {
@@ -505,10 +527,7 @@ windowId = ${tab.windowId}
     }
     if (someHighlighted) {
       this.$TST.addState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-      if (allHighlighted)
-        this.$TST.addState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-      else
-        this.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      this.$TST.toggleState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED, allHighlighted);
     }
     else {
       this.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
