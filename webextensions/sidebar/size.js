@@ -68,7 +68,8 @@ export function update() {
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
   const substanceRect = dummyTab.querySelector('tab-item-substance').getBoundingClientRect();
-  const uiRect = dummyTab.querySelector('tab-item-substance .ui').getBoundingClientRect();
+  const uiRect = dummyTab.querySelector('tab-item-substance > .ui').getBoundingClientRect();
+  const captionRect = dummyTab.querySelector('tab-item-substance > .ui > .caption').getBoundingClientRect();
   const favIconRect = dummyTab.querySelector('tab-favicon').getBoundingClientRect();
   const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
   const closeBoxRect = dummyTab.querySelector('tab-closebox').getBoundingClientRect();
@@ -80,11 +81,12 @@ export function update() {
     shiftTabsForScrollbarDistance += 'px'; // it is used with CSS calc() and it requires any length unit for each value.
 
   log('mTabHeight ', mTabHeight);
-  const baseLeft  = Math.max(substanceRect.left, uiRect.left);
-  const baseRight = Math.min(substanceRect.right, uiRect.right);
+  const baseLeft  = substanceRect.left;
+  const baseRight = substanceRect.right;
   sizeDefinition += `:root {
     --tab-size: ${mTabHeight}px;
     --tab-ui-size: ${uiRect.height}px;
+    --tab-caption-size: ${captionRect.height}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */

@@ -12,8 +12,8 @@
   --tab-dropshadow-blur: 0.4em;
   --tab-dropshadow-padding: 0.2em;
   --tab-dropshadow-size: var(--tab-dropshadow-padding); /* for backward compatibility */
-  --tab-closebox-offset: calc((var(--tab-ui-size) - 1em) / 2);
-  --tab-closebox-negative-offset: calc((1em - var(--tab-ui-size)) / 2);
+  --tab-closebox-offset: calc((var(--tab-caption-size) - 1em) / 2);
+  --tab-closebox-negative-offset: calc((1em - var(--tab-caption-size)) / 2);
 
   /* Coloring */
 

@@ -119,40 +119,44 @@ export class TabElement extends HTMLElement {
     background.classList.add(Constants.kBACKGROUND);
     substance.appendChild(background);
 
-    const extraItemsContainerAbove = document.createElement('span');
-    extraItemsContainerAbove.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
-    extraItemsContainerAbove.classList.add('above');
-    substance.appendChild(extraItemsContainerAbove);
+    const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
+    substance.appendChild(twisty);
 
     const ui = document.createElement('span');
     ui.classList.add('ui');
     substance.appendChild(ui);
 
+    const extraItemsContainerAbove = document.createElement('span');
+    extraItemsContainerAbove.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerAbove.classList.add('above');
+    ui.appendChild(extraItemsContainerAbove);
+
+    const caption = document.createElement('span');
+    caption.classList.add('caption');
+    ui.appendChild(caption);
+
     const extraItemsContainerBelow = document.createElement('span');
     extraItemsContainerBelow.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerBelow.classList.add('below');
-    substance.appendChild(extraItemsContainerBelow);
-
-    const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
-    ui.appendChild(label);
-
-    const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
-    ui.insertBefore(twisty, label);
+    ui.appendChild(extraItemsContainerBelow);
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-    ui.insertBefore(favicon, label);
+    caption.appendChild(favicon);
+
+    const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
+    caption.appendChild(label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
-    ui.appendChild(counter);
+    caption.appendChild(counter);
 
     const sharingState = document.createElement(kTAB_SHARING_STATE_ELEMENT_NAME);
-    ui.appendChild(sharingState);
+    caption.appendChild(sharingState);
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-    ui.appendChild(soundButton);
+    caption.appendChild(soundButton);
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
-    ui.appendChild(closebox);
+    caption.appendChild(closebox);
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);

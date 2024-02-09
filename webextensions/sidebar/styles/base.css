@@ -359,9 +359,9 @@ tab-item {
 }
 
 tab-item-substance {
-  align-items: stretch;
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
   line-height: 1;
@@ -375,6 +375,16 @@ tab-item-substance {
 }
 
 tab-item-substance .ui {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  max-width: calc(100% - var(--favicon-size));
+}
+
+tab-item-substance .caption {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -422,8 +432,9 @@ tab-item * {
 }
 
 tab-item > *,
-tab-item-substance > *,
-tab-item-substance > .ui > * {
+tab-item-substance tab-twisty,
+tab-item-substance > .ui > .caption,
+tab-item-substance > .ui > .caption > * {
   position: relative;
   z-index: var(--tab-base-z-index);
 }
@@ -524,6 +535,7 @@ tab-item .extra-items-container.below {
   justify-content: flex-start;
   overflow: visible;
   pointer-events: none;
+  position: relative;
 }
 
 tab-item .extra-items-container,
