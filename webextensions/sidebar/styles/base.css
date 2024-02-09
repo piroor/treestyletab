@@ -116,6 +116,13 @@ tab-item.faviconized {
   --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
 }
 
+#normal-tabs-container tab-item {
+  height: var(--tab-size); /* make tab height consistent even if only some tabs have extra contents */
+}
+#normal-tabs-container tab-item-substance {
+  height: 100%; /* tab substance should be expanded if it has no extra contents */
+}
+
 tab-item:focus {
   outline: none;
 }
