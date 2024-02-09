@@ -70,14 +70,14 @@ tab-sharing-state::after {
   mask-size: 100%;
 }
 
-tab-item:not(.collapsed):not(.faviconized).sharing-camera tab-sharing-state,
-tab-item:not(.collapsed):not(.faviconized).sharing-microphone tab-sharing-state,
-tab-item:not(.collapsed):not(.faviconized).sharing-screen tab-sharing-state,
-tab-item:not(.collapsed):not(.faviconized).has-sharing-camera-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed):not(.faviconized):not(.active).sharing-camera tab-sharing-state,
+tab-item:not(.collapsed):not(.faviconized):not(.active).sharing-microphone tab-sharing-state,
+tab-item:not(.collapsed):not(.faviconized):not(.active).sharing-screen tab-sharing-state,
+tab-item:not(.collapsed):not(.faviconized):not(.sharing-camera).has-sharing-camera-member.subtree-collapsed[data-child-ids]
   tab-sharing-state,
-tab-item:not(.collapsed):not(.faviconized).has-sharing-microphone-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed):not(.faviconized):not(.sharing-microphone).has-sharing-microphone-member.subtree-collapsed[data-child-ids]
   tab-sharing-state,
-tab-item:not(.collapsed):not(.faviconized).has-sharing-screen-member.subtree-collapsed[data-child-ids]
+tab-item:not(.collapsed):not(.faviconized):not(.sharing-screen).has-sharing-screen-member.subtree-collapsed[data-child-ids]
   tab-sharing-state {
   animation: var(--tab-sharing-icon-animation);
   display: inline-block;

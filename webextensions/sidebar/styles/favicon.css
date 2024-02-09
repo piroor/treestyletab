@@ -231,17 +231,19 @@ tab-item.loading .favicon-builtin::before {
 /* Sharing status for faviconized tabs.
    Styles for regular tabs are degined in sharing-state.css. */
 
-tab-item:not(.faviconized) .favicon-sharing-state::before,
-tab-item.loading .favicon-sharing-state::before,
-tab-item.faviconized:not(.sharing-camera):not(.sharing-microphone):not(.sharing-screen) .favicon-sharing-state::before {
-  display: none !important;
+tab-item:not(.faviconized) .favicon-sharing-state,
+tab-item.active .favicon-sharing-state,
+tab-item.loading .favicon-sharing-state,
+tab-item.faviconized:not(.sharing-camera):not(.sharing-microphone):not(.sharing-screen) .favicon-sharing-state {
+  display: none;
 }
-tab-item.faviconized.sharing-camera .favicon-image,
-tab-item.faviconized.sharing-camera .favicon-favicon-builtin::before,
-tab-item.faviconized.sharing-microphone .favicon-image,
-tab-item.faviconized.sharing-microphone .favicon-favicon-builtin::before,
-tab-item.faviconized.sharing-screen .favicon-image,
-tab-item.faviconized.sharing-screen .favicon-favicon-builtin::before {
+
+tab-item.faviconized:not(.active):not(.loading).sharing-camera .favicon-image,
+tab-item.faviconized:not(.active):not(.loading).sharing-camera .favicon-builtin::before,
+tab-item.faviconized:not(.active):not(.loading).sharing-microphone .favicon-image,
+tab-item.faviconized:not(.active):not(.loading).sharing-microphone .favicon-builtin::before,
+tab-item.faviconized:not(.active):not(.loading).sharing-screen .favicon-image,
+tab-item.faviconized:not(.active):not(.loading).sharing-screen .favicon-builtin::before {
   animation: var(--tab-sharing-icon-animation-inverted);
 }
 
