@@ -425,9 +425,8 @@ function onMessage(message, sender) {
       return Background.confirmToCloseTabs(message.tabs, message);
 
     default:
-      const API_PREFIX_MATCHER = /^treestyletab:api:/;
-      if (API_PREFIX_MATCHER.test(message.type)) {
-        message.type = message.type.replace(API_PREFIX_MATCHER, '');
+      if (TSTAPI.INTERNAL_CALL_PREFIX_MATCHER.test(message.type)) {
+        message.type = message.type.replace(TSTAPI.INTERNAL_CALL_PREFIX_MATCHER, '');
         return onMessageExternal(message, sender);
       }
       break;

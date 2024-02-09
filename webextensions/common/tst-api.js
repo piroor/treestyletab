@@ -232,6 +232,9 @@ export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permiss
 export const kCOMMAND_NOTIFY_PERMISSION_CHANGED  = 'treestyletab:notify-api-permisssion-changed';
 export const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
 
+export const INTERNAL_CALL_PREFIX = 'treestyletab:api:';
+export const INTERNAL_CALL_PREFIX_MATCHER = new RegExp(`^${INTERNAL_CALL_PREFIX}`);
+
 export const kNEWTAB_CONTEXT_NEWTAB_COMMAND             = 'newtab-command';
 export const kNEWTAB_CONTEXT_WITH_OPENER                = 'with-opener';
 export const kNEWTAB_CONTEXT_DUPLICATED                 = 'duplicated';
@@ -612,6 +615,7 @@ export async function initAsBackend() {
     listeningTypes: [],
     bypassPermissionCheck: true,
     allowBulkMessaging:    true,
+    lightTree:             true,
   });
 
   const respondedAddons = [];
@@ -1105,11 +1109,14 @@ export function hasListenerForMessageType(type, { targets, except } = {}) {
 export function getListenersForMessageType(type, { targets, except } = {}) {
   targets = targets instanceof Set ? targets : new Set(Array.isArray(targets) ? targets : targets ? [targets] : []);
   except  = except instanceof Set ? except : new Set(Array.isArray(except) ? except : except ? [except] : []);
+
   const finalTargets = new Set();
   for (const [id, addon] of getAddons()) {
-    if (addon.listeningTypes.includes(type) &&
-        (targets.size == 0 || targets.has(id)) &&
-        !except.has(id))
+    if ((id == browser.runtime.id && // internal use should be accepted always!
+         targets.has(id)) ||
+        (addon.listeningTypes.includes(type) &&
+         (targets.size == 0 || targets.has(id)) &&
+         !except.has(id)))
       finalTargets.add(id);
   }
   //log('getListenersForMessageType ', { type, targets, except, finalTargets, all: mAddons });
@@ -1221,7 +1228,13 @@ function* spawnMessages(targets, { message, tabProperties, cache, isContextTab }
 }
 async function directSendMessage(id, message) {
   try {
-    const result = await browser.runtime.sendMessage(id, message);
+    const result = await (id == browser.runtime.id ?
+      browser.runtime.sendMessage(
+        Array.isArray(message) ?
+          message.map(message => ({ ...message, type: `${INTERNAL_CALL_PREFIX}${message.type}` })) :
+          ({ ...message, type: `${INTERNAL_CALL_PREFIX}${message.type}` })
+      ) :
+      browser.runtime.sendMessage(id, message));
     return {
       id,
       result,
