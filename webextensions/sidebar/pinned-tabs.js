@@ -94,15 +94,8 @@ export function reposition(options = {}) {
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
 
-    if (faviconized)
-      tab.$TST.addState(Constants.kTAB_STATE_FAVICONIZED);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
-
-    if (row == maxRow - 1)
-      tab.$TST.addState(Constants.kTAB_STATE_LAST_ROW);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
+    tab.$TST.toggleState(Constants.kTAB_STATE_FAVICONIZED, faviconized);
+    tab.$TST.toggleState(Constants.kTAB_STATE_LAST_ROW, row == maxRow - 1);
 
     if (options.justNow)
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);

@@ -1048,14 +1048,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      if (lastMessage.hasSoundPlayingMember)
-        tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      if (lastMessage.hasMutedMember)
-        tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER, lastMessage.hasSoundPlayingMember);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_MUTED_MEMBER, lastMessage.hasMutedMember);
       tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
     }; break;
 

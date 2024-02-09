@@ -408,10 +408,7 @@ async function updateTabHighlighted(tab, highlighted, { inheritToCollapsedDescen
   log(`highlighted status of ${dumpTab(tab)}: `, { old: tab.highlighted, new: highlighted });
   //if (tab.highlighted == highlighted)
   //  return false;
-  if (highlighted)
-    tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
+  tab.$TST.toggleState(Constants.kTAB_STATE_HIGHLIGHTED, highlighted);
   tab.highlighted = highlighted;
   const win = TabsStore.windows.get(tab.windowId);
   const inheritHighlighted = !win.tabsToBeHighlightedAlone.has(tab.id);
