@@ -85,6 +85,7 @@ export function update() {
   const baseRight = substanceRect.right;
   sizeDefinition += `:root {
     --tab-size: ${mTabHeight}px;
+    --tab-substance-size: ${substanceRect.height}px;
     --tab-ui-size: ${uiRect.height}px;
     --tab-caption-size: ${captionRect.height}px;
     --tab-x-offset: ${mTabXOffset}px;
