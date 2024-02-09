@@ -882,7 +882,10 @@ export function getOriginalExtraContentsTarget(event) {
       return {
         owners: new Set([extraContents.dataset.owner]),
         target: target.outerHTML,
-        targetPart: targetPart.getAttribute('part').replace(/\bextra-contents-by-[-a-z0-9_]+\b/gi, '').trim(),
+        targetPart: targetPart.getAttribute('part')
+          .replace(/\bextra-contents-by-[-a-z0-9_]+\b/gi, '')
+          .replace(/\s\s+/g, ' ')
+          .trim(),
         fieldValues: getFieldValues(event),
       };
     }
