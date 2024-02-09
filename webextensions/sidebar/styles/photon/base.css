@@ -60,12 +60,12 @@ tab-item.pinned tab-item-substance {
   border-bottom: 1px solid var(--tab-border);
 }
 :root.have-pinned-tabs #tabbar.overflow.scrolled #pinned-tabs-container {
-  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.7em 0.7em -0.7em rgba(0, 0, 0, 0.2);
 }
 
 #tabbar.overflow:not(.fully-scrolled) ~ .after-tabs .newtab-button-box {
   border-top: 1px solid var(--tab-border);
-  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -0.7em 0.7em -0.7em rgba(0, 0, 0, 0.2);
 }
 
 
