@@ -205,15 +205,27 @@ async function tryInitGroupTab(tab) {
       !tab.$TST.hasGroupTabURL)
     return;
   log('tryInitGroupTab ', tab);
-  const scriptOptions = {
+  const v3Options = {
+    target: { tabId: tab.id },
+  };
+  const v2Options = {
     runAt:           'document_start',
     matchAboutBlank: true
   };
   try {
-    const results = await browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      code:  '[window.prepared, document.documentElement.matches(".initialized")]',
-    }).catch(error => {
+    const getPageState = function getPageState() {
+      return [window.prepared, document.documentElement.matches('.initialized')];
+    };
+    const [prepared, initialized, reloaded] = (browser.scripting ?
+      browser.scripting.executeScript({ // Manifest V3
+        ...v3Options,
+        func: getPageState,
+      }).then(results => results && results[0] && results[0].result || []) :
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        code: `(${getPageState.toString()})()`,
+      }).then(results => results && results[0] || [])
+    ).catch(error => {
       if (ApiTabs.isMissingHostPermissionError(error) &&
           tab.$TST.hasGroupTabURL) {
         log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
@@ -222,7 +234,6 @@ async function tryInitGroupTab(tab) {
       }
       return ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)(error);
     });
-    const [prepared, initialized, reloaded] = results && results[0] || [];
     log('  tryInitGroupTab: groupt tab state ', tab.id, { prepared, initialized, reloaded });
     if (reloaded) {
       log('  => reloaded ', tab.id);
@@ -237,11 +248,20 @@ async function tryInitGroupTab(tab) {
     log('  tryInitGroupTab: error while checking initialized: ', tab.id, error);
   }
   try {
-    const titleElementExists = await browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      code:  '!!document.querySelector("#title")',
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
-    if (titleElementExists && !titleElementExists[0] && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
+    const getTitleExistence = function getState() {
+      return !!document.querySelector('#title');
+    };
+    const titleElementExists = (browser.scripting ?
+      browser.scripting.executeScript({ // Manifest V3
+        ...v3Options,
+        func: getTitleExistence,
+      }).then(results => results && results[0] && results[0].result) :
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        code: `(${getTitleExistence.toString()})()`,
+      }).then(results => results && results[0])
+    ).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+    if (!titleElementExists && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
       log('  => title element exists, load again ', tab.id);
       return browser.tabs.update(tab.id, { url: tab.url }).catch(ApiTabs.createErrorSuppressor());
     }
@@ -249,17 +269,27 @@ async function tryInitGroupTab(tab) {
   catch(error) {
     log('  tryInitGroupTab error while checking title element: ', tab.id, error);
   }
-  Promise.all([
-    browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      //file:  '/common/l10n.js'
-      file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
-    browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      file:  '/resources/group-tab.js'
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError))
-  ]).then(() => {
+
+  (browser.scripting ?
+    browser.scripting.executeScript({ // Manifest V3
+      ...v3Options,
+      files: [
+        '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+        '/resources/group-tab.js',
+      ],
+    }) :
+    Promise.all([
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        //file:  '/common/l10n.js'
+        file: '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        file: '/resources/group-tab.js',
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
+    ])
+  ).then(() => {
     log('tryInitGroupTab completely initialized: ', tab.id);
   });
 

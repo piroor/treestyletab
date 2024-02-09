@@ -357,12 +357,21 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
     return;
   try {
     //log(`tryStartHandleAccelKeyOnTab: initialize tab ${tab.id}`);
-    browser.tabs.executeScript(tab.id, {
-      file:            '/common/handle-accel-key.js',
-      allFrames:       true,
-      matchAboutBlank: true,
-      runAt:           'document_start'
-    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+    if (browser.scripting) // Manifest V3
+      browser.scripting.executeScript({
+        target: {
+          tabId: tab.id,
+          allFrames: true,
+        },
+        files:  ['/common/handle-accel-key.js'],
+      }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+    else
+      browser.tabs.executeScript(tab.id, {
+        file:            '/common/handle-accel-key.js',
+        allFrames:       true,
+        matchAboutBlank: true,
+        runAt:           'document_start'
+      }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
   }
   catch(error) {
     console.log(error);
