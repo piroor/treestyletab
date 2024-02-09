@@ -56,8 +56,11 @@ tab-item.pinned tab-item-substance {
   border-top: none;
 }
 
-:root.have-pinned-tabs #tabbar {
-  border-top: 1px solid var(--tab-border);
+:root.have-pinned-tabs #pinned-tabs-container {
+  border-bottom: 1px solid var(--tab-border);
+}
+:root.have-pinned-tabs #tabbar.overflow.scrolled #pinned-tabs-container {
+  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
 }
 
 

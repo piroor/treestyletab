@@ -90,6 +90,10 @@ body,
   border-left-color: var(--shadow-color-inactive);
 }
 
+:root.have-pinned-tabs #tabbar.overflow.scrolled #pinned-tabs-container {
+  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
+}
+
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 tab-item-substance {
   border-top: 1px solid transparent;

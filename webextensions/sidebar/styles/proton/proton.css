@@ -116,6 +116,11 @@ body,
   background-position: right;
 }
 
+:root.have-pinned-tabs #tabbar.overflow.scrolled #pinned-tabs-container {
+  border-bottom: 0.05em solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.1);
+}
+
 
 /* tab bar */
 

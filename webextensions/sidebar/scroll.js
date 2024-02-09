@@ -697,8 +697,13 @@ async function onWheel(event) {
 }
 
 function onScroll(event) {
-  if (event.currentTarget == mNormalScrollBox)
+  const scrollBox = event.currentTarget;
+  const scrolled = scrollBox.scrollTop > 0;
+  scrollBox.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
+  if (scrollBox == mNormalScrollBox) {
+    mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
     reserveToRenderVirtualScrollViewport();
+  }
   reserveToSaveScrollPosition();
 }
 
