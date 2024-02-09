@@ -217,6 +217,11 @@ function matchedWithQuery(tab, query) {
        tabStates.has(Constants.kTAB_STATE_SHOWING) ||
        tab.pinned))
     return false;
+  if (query.pinned &&
+      (tab.hidden ||
+       tabStates.has(Constants.kTAB_STATE_SHOWING) ||
+       !tab.pinned))
+    return false;
   if (query.visible &&
       ((tabStates.has(Constants.kTAB_STATE_COLLAPSED) &&
         !tabStates.has(Constants.kTAB_STATE_EXPANDING)) ||

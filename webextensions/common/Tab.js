@@ -1006,7 +1006,7 @@ export default class Tab {
       return Tab.get(siblingId);
     }
     else {
-      return TabsStore.query({
+      const nextSibling = TabsStore.query({
         windowId:  this.tab.windowId,
         tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
         fromId:    this.id,
@@ -1015,6 +1015,14 @@ export default class Tab {
         hasParent: false,
         first:     true
       });
+      // We should treat only pinned tab as the next sibling tab of a pinned
+      // tab. For example, if the last pinned tab is closed, Firefox moves
+      // focus to the first normal tab. But the previous pinned tab looks
+      // natural on TST because pinned tabs are visually grouped.
+      if (nextSibling &&
+          nextSibling.pinned != this.tab.pinned)
+        return null;
+      return nextSibling;
     }
   }
 
