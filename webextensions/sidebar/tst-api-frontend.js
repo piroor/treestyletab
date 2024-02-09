@@ -444,7 +444,7 @@ function setExtraContentsToContainer(container, id, params = {}) {
 function getExtraContentsPartName(id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
-  return `extra-contents-by-${id.replace(/[^-a-z0-9_]/g, '_')}`;
+  return `extra-contents-by-${id.replace(/[^-a-z0-9_]/gi, '_')}`;
 }
 
 
@@ -763,6 +763,7 @@ async function notifyExtraContentsEvent(event, eventType, details = {}) {
     ...EventUtils.getTabEventDetail(event, livingTab),
     ...extraContentsInfo.fieldValues,
     originalTarget:     extraContentsInfo.target,
+    originalTargetPart: extraContentsInfo.targetPart,
     $extraContentsInfo: null,
     ...details,
   };
@@ -876,12 +877,15 @@ export function getOriginalExtraContentsTarget(event) {
   try {
     const target        = EventUtils.getElementOriginalTarget(event);
     const extraContents = target && target.closest(`.extra-item`);
-    if (extraContents)
+    if (extraContents) {
+      const targetPart = target.closest(`[part]`)
       return {
         owners: new Set([extraContents.dataset.owner]),
         target: target.outerHTML,
+        targetPart: targetPart.getAttribute('part').replace(/\bextra-contents-by-[-a-z0-9_]+\b/gi, '').trim(),
         fieldValues: getFieldValues(event),
       };
+    }
   }
   catch(_error) {
     // this may happen by mousedown on scrollbar
@@ -890,6 +894,7 @@ export function getOriginalExtraContentsTarget(event) {
   return {
     owners: new Set(),
     target: null,
+    targetPart: null,
     fieldValues: {},
   };
 }
@@ -903,6 +908,7 @@ export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEv
     const eventInfo = {
       ...mousedown.detail,
       originalTarget:     extraContentsInfo.target,
+      originalTargetPart: extraContentsInfo.targetPart,
       ...extraContentsInfo.fieldValues,
       $extraContentsInfo: null,
     };
