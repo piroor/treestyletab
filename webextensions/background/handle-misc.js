@@ -426,8 +426,10 @@ function onMessage(message, sender) {
 
     default:
       if (TSTAPI.INTERNAL_CALL_PREFIX_MATCHER.test(message.type)) {
-        message.type = message.type.replace(TSTAPI.INTERNAL_CALL_PREFIX_MATCHER, '');
-        return onMessageExternal(message, sender);
+        return onMessageExternal({
+          ...message,
+          type: message.type.replace(TSTAPI.INTERNAL_CALL_PREFIX_MATCHER, ''),
+        }, sender);
       }
       break;
   }
