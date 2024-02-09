@@ -896,6 +896,8 @@ async function onBackgroundMessage(message) {
       const activeTab = bundled ?
         tab.$TST.bundledTab : // bundled-active state may be applied before the bundled tab become active
         Tab.getActiveTab(tab.windowId);
+      if (!activeTab)
+        break;
       reserveToScrollToTab(tab, {
         anchor:            !activeTab.pinned && isTabInViewport(activeTab) && activeTab,
         notifyOnOutOfView: true
