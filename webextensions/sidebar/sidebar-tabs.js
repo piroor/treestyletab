@@ -1190,10 +1190,10 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       // When a group tab is restored but pending, TST cannot update title of the tab itself.
       // For failsafe now we update the title based on its URL.
-      const uri = new URL(tab.url);
-      let title = uri.searchParams.get('title');
+      const url = new URL(tab.url);
+      let title = url.searchParams.get('title');
       if (!title) {
-        const parameters = uri.replace(/^[^\?]+/, '');
+        const parameters = tab.url.replace(/^[^\?]+/, '');
         title = parameters.match(/^\?([^&;]*)/);
         title = title && decodeURIComponent(title[1]);
       }
