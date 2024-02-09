@@ -881,11 +881,8 @@ export function getOriginalExtraContentsTarget(event) {
       const targetPart = target.closest(`[part]`)
       return {
         owners: new Set([extraContents.dataset.owner]),
-        target: target.outerHTML,
-        targetPart: targetPart.getAttribute('part')
-          .replace(/\bextra-contents-by-[-a-z0-9_]+\b/gi, '')
-          .replace(/\s\s+/g, ' ')
-          .trim(),
+        target: cleanupExtraContentsPartName(target.outerHTML),
+        targetPart: cleanupExtraContentsPartName(targetPart.getAttribute('part')).trim(),
         fieldValues: getFieldValues(event),
       };
     }
@@ -900,6 +897,11 @@ export function getOriginalExtraContentsTarget(event) {
     targetPart: null,
     fieldValues: {},
   };
+}
+
+function cleanupExtraContentsPartName(string) {
+  return string
+    .replace(/ extra-contents-by-[-a-z0-9_]+\b/gi, '');
 }
 
 export async function tryMouseOperationAllowedWithExtraContents(eventType, rawEventType, mousedown, extraContentsInfo) {
