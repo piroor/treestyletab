@@ -117,6 +117,8 @@ export const obsoleteConfigs = new Set(mapAndFilter(`
   autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
 `.trim().split('\n'), key => {
   key = key.replace(/\/\/.*/, '').trim();
+  if (!key)
+    return undefined;
   return key && key.indexOf('//') != 0 && key;
 }));
 
