@@ -76,7 +76,7 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   return key && key.indexOf('//') != 0 && key;
 }));
 
-export const obsoleteConfigs = mapAndFilter(`
+export const obsoleteConfigs = new Set(mapAndFilter(`
   sidebarScrollbarPosition // migrated to user stylesheet
   scrollbarMode // migrated to user stylesheet
   suppressGapFromShownOrHiddenToolbar // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
@@ -118,7 +118,7 @@ export const obsoleteConfigs = mapAndFilter(`
 `.trim().split('\n'), key => {
   key = key.replace(/\/\/.*/, '').trim();
   return key && key.indexOf('//') != 0 && key;
-});
+}));
 
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
