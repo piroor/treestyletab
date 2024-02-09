@@ -121,6 +121,11 @@ body,
   box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.1);
 }
 
+#tabbar.overflow:not(.fully-scrolled) ~ .after-tabs .newtab-button-box {
+  border-top: 0.05em solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.1);
+}
+
 
 /* tab bar */
 

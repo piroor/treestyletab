@@ -63,6 +63,11 @@ tab-item.pinned tab-item-substance {
   box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
 }
 
+#tabbar.overflow:not(.fully-scrolled) ~ .after-tabs .newtab-button-box {
+  border-top: 1px solid var(--tab-border);
+  box-shadow: 0 0 0.7em rgba(0, 0, 0, 0.2);
+}
+
 
 tab-item tab-label {
   margin-left: 0.25em;

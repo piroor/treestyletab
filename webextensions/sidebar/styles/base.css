@@ -69,8 +69,8 @@
   --dummy-element-z-index:   1; /* dummy tab */
   --background-z-index:      10; /* background screen */
   --accessible-ui-z-index:   100; /* tabbar itself, and others */
-  --over-tabs-z-index:       100; /* buttons after tabs, pinned tabs (required to make pinned tabs clickable) */
-  --over-buttons-z-index:    200; /* buttons on buttons after tabs */
+  --over-tabs-z-index:       200; /* buttons after tabs, pinned tabs (required to make pinned tabs clickable) */
+  --over-buttons-z-index:    300; /* buttons on buttons after tabs */
   --notification-ui-z-index: 9000;
   --blocking-ui-z-index:     10000; /* frontmost of others */
 

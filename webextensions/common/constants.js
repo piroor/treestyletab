@@ -231,6 +231,7 @@ export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
 export const kTABBAR_STATE_SCROLLED               = 'scrolled';
+export const kTABBAR_STATE_FULLY_SCROLLED         = 'fully-scrolled';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';
 export const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 export const kTABBAR_STATE_BLOCKING_WITH_SHADE    = 'blocking-shade';

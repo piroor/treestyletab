@@ -172,6 +172,11 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     // button next to the last tab immediately.
     allTabsSizeHolderStyle.minHeight = currentViewPortSize < allRenderableTabsSize ? minHeight : '';
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
+
+    const fullyScrolled = mNormalScrollBox.scrollTop == mNormalScrollBox.scrollTopMax;
+    mNormalScrollBox.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
+    mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
+
     onVirtualScrollViewportUpdated.dispatch(resized);
   }
 
@@ -699,9 +704,13 @@ async function onWheel(event) {
 function onScroll(event) {
   const scrollBox = event.currentTarget;
   const scrolled = scrollBox.scrollTop > 0;
+  const fullyScrolled = scrollBox.scrollTop == scrollBox.scrollTopMax;
   scrollBox.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
+  scrollBox.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
+
   if (scrollBox == mNormalScrollBox) {
     mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
+    mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
     reserveToRenderVirtualScrollViewport();
   }
   reserveToSaveScrollPosition();
