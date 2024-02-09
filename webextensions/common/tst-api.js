@@ -612,7 +612,21 @@ export async function initAsBackend() {
     id:         browser.runtime.id,
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
-    listeningTypes: [],
+    listeningTypes: [
+      kNOTIFY_EXTRA_CONTENTS_CLICKED,
+      kNOTIFY_EXTRA_CONTENTS_DBLCLICKED,
+      kNOTIFY_EXTRA_CONTENTS_MOUSEDOWN,
+      kNOTIFY_EXTRA_CONTENTS_MOUSEUP,
+      kNOTIFY_EXTRA_CONTENTS_KEYDOWN,
+      kNOTIFY_EXTRA_CONTENTS_KEYUP,
+      kNOTIFY_EXTRA_CONTENTS_INPUT,
+      kNOTIFY_EXTRA_CONTENTS_CHANGE,
+      kNOTIFY_EXTRA_CONTENTS_COMPOSITIONSTART,
+      kNOTIFY_EXTRA_CONTENTS_COMPOSITIONUPDATE,
+      kNOTIFY_EXTRA_CONTENTS_COMPOSITIONEND,
+      kNOTIFY_EXTRA_CONTENTS_FOCUS,
+      kNOTIFY_EXTRA_CONTENTS_BLUR,
+    ],
     bypassPermissionCheck: true,
     allowBulkMessaging:    true,
     lightTree:             true,
@@ -1112,11 +1126,9 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
 
   const finalTargets = new Set();
   for (const [id, addon] of getAddons()) {
-    if ((id == browser.runtime.id && // internal use should be accepted always!
-         targets.has(id)) ||
-        (addon.listeningTypes.includes(type) &&
-         (targets.size == 0 || targets.has(id)) &&
-         !except.has(id)))
+    if (addon.listeningTypes.includes(type) &&
+        (targets.size == 0 || targets.has(id)) &&
+        !except.has(id))
       finalTargets.add(id);
   }
   //log('getListenersForMessageType ', { type, targets, except, finalTargets, all: mAddons });
