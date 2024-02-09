@@ -78,6 +78,7 @@
   --tab-extra-contents-behind-z-index: 20;
   --tab-indent-z-index:                90;
   --tab-base-z-index:                  100;
+  --tab-extra-contents-beside-z-index: 150;
   --tab-favicon-z-index:               200;
   --tab-burster-z-index:               4000;
   --tab-highlighter-z-index:           5000;
@@ -536,6 +537,7 @@ tab-item .extra-items-container.below {
   overflow: visible;
   pointer-events: none;
   position: relative;
+  z-index: var(--tab-extra-contents-beside-z-index);
 }
 
 tab-item .extra-items-container,
