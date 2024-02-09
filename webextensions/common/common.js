@@ -552,7 +552,7 @@ export const configs = new Configs({
   enableWindowsBehaviors: false,
 
 
-  ...(Object.fromEntries(obsoleteConfigs.map(key => [key, null]))),
+  ...(Object.fromEntries(Array.from(obsoleteConfigs, key => [key, null]))),
 
   configsVersion: 0,
 
