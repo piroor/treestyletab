@@ -76,6 +76,50 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   return key && key.indexOf('//') != 0 && key;
 }));
 
+export const obsoleteConfigs = mapAndFilter(`
+  sidebarScrollbarPosition // migrated to user stylesheet
+  scrollbarMode // migrated to user stylesheet
+  suppressGapFromShownOrHiddenToolbar // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  fakeContextMenu // migrated to emulateDefaultContextMenu
+  context_closeTabOptions_closeTree // migrated to context_topLevel_closeTree
+  context_closeTabOptions_closeDescendants // migrated to context_topLevel_closeDescendants
+  context_closeTabOptions_closeOthers // migrated to context_topLevel_closeOthers
+  collapseExpandSubtreeByDblClick // migrated to treeDoubleClickBehavior
+  autoExpandOnCollapsedChildActive // migrate to unfocusableCollapsedTab
+  inheritContextualIdentityToNewChildTab // migrated to inheritContextualIdentityToChildTabMode
+  inheritContextualIdentityToSameSiteOrphan // migrated to inheritContextualIdentityToSameSiteOrphanMode
+  inheritContextualIdentityToTabsFromExternal // migrated to inheritContextualIdentityToTabsFromExternalMode
+  promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
+  closeParentBehaviorMode // migrated to parentTabOperationBehaviorMode
+  closeParentBehavior // migrated to closeParentBehavior_insideSidebar_expanded
+  closeParentBehavior_outsideSidebar// migrated to closeParentBehavior_outsideSidebar_expanded
+  closeParentBehavior_noSidebar // migrated to closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosedWithNoSidebar // migrated to treatTreeAsExpandedOnClosed_noSidebar
+  treatTreeAsExpandedOnClosed_outsideSidebar // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosed_noSidebar // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
+  moveFocusInTreeForClosedActiveTab // migrated to "successorTabControlLevel"
+  startDragTimeout // migrated to longPressDuration
+  simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
+  moveDroppedTabToNewWindowForUnhandledDragEvent // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
+  openAllBookmarksWithGroupAlways // migrated to suppressGroupTabForStructuredTabsFromBookmarks
+  // migrated to chunkedUserStyleRules0-5
+  userStyleRules0
+  userStyleRules1
+  userStyleRules2
+  userStyleRules3
+  userStyleRules4
+  userStyleRules5
+  userStyleRules6
+  userStyleRules7
+  autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
+  autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
+  autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
+`.trim().split('\n'), key => {
+  key = key.replace(/\/\/.*/, '').trim();
+  return key && key.indexOf('//') != 0 && key;
+});
+
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
   optionsExpandedGroups: [],
@@ -507,46 +551,7 @@ export const configs = new Configs({
   enableMacOSBehaviors: false,
   enableWindowsBehaviors: false,
 
-
-  // obsolete configs
-  sidebarScrollbarPosition: null, // migrated to user stylesheet
-  scrollbarMode: null, // migrated to user stylesheet
-  suppressGapFromShownOrHiddenToolbar: null, // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
-  fakeContextMenu: null, // migrated to emulateDefaultContextMenu
-  context_closeTabOptions_closeTree: null, // migrated to context_topLevel_closeTree
-  context_closeTabOptions_closeDescendants: null, // migrated to context_topLevel_closeDescendants
-  context_closeTabOptions_closeOthers: null, // migrated to context_topLevel_closeOthers
-  collapseExpandSubtreeByDblClick: null, // migrated to treeDoubleClickBehavior
-  autoExpandOnCollapsedChildActive: null, // migrate to unfocusableCollapsedTab
-  inheritContextualIdentityToNewChildTab: null, // migrated to inheritContextualIdentityToChildTabMode
-  inheritContextualIdentityToSameSiteOrphan: null, // migrated to inheritContextualIdentityToSameSiteOrphanMode
-  inheritContextualIdentityToTabsFromExternal: null, // migrated to inheritContextualIdentityToTabsFromExternalMode
-  promoteFirstChildForClosedRoot:     null, // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges:        null, // migrated to parentTabOperationBehaviorMode
-  closeParentBehaviorMode: null, // migrated to parentTabOperationBehaviorMode
-  closeParentBehavior:                null, // migrated to closeParentBehavior_insideSidebar_expanded
-  closeParentBehavior_outsideSidebar: null, // migrated to closeParentBehavior_outsideSidebar_expanded
-  closeParentBehavior_noSidebar:      null, // migrated to closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosedWithNoSidebar: null, // migrated to treatTreeAsExpandedOnClosed_noSidebar
-  treatTreeAsExpandedOnClosed_outsideSidebar: null, // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosed_noSidebar: null, // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
-  moveFocusInTreeForClosedActiveTab: null, // migrated to "successorTabControlLevel"
-  startDragTimeout: null, // migrated to longPressDuration
-  simulateCloseTabByDblclick: null, // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
-  moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
-  openAllBookmarksWithGroupAlways: null, // migrated to suppressGroupTabForStructuredTabsFromBookmarks
-  // migrated to chunkedUserStyleRules0-5
-  userStyleRules0: '',
-  userStyleRules1: '',
-  userStyleRules2: '',
-  userStyleRules3: '',
-  userStyleRules4: '',
-  userStyleRules5: '',
-  userStyleRules6: '',
-  userStyleRules7: '',
-  autoGroupNewTabsTimeout: null, // migrated to tabBunchesDetectionTimeout
-  autoGroupNewTabsDelayOnNewWindow: null, // migrated to tabBunchesDetectionDelayOnNewWindow
-  autoHiddenScrollbarPlaceholderSize: null, // migrated to shiftTabsForScrollbarDistance
+  ...(Object.fromEntries(obsoleteConfigs.map(key => [key, null]))),
 
 
   configsVersion: 0,
