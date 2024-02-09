@@ -59,15 +59,15 @@ const mItems = [
         title:    browser.i18n.getMessage('config_style_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_style_photon'),
-            key:   'style',
-            value: 'photon',
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_style_proton'),
             key:   'style',
             value: 'proton',
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_style_photon'),
+            key:   'style',
+            value: 'photon',
             type:  'radio'
           },
           {
