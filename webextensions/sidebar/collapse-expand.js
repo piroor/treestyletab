@@ -207,7 +207,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      tab.$TST.toggledState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, lastMessage.collapsed);
+      tab.$TST.toggleState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, lastMessage.collapsed);
       tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.Tooltip);
     }; break;
 
