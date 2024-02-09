@@ -551,8 +551,8 @@ export const configs = new Configs({
   enableMacOSBehaviors: false,
   enableWindowsBehaviors: false,
 
-  ...(Object.fromEntries(obsoleteConfigs.map(key => [key, null]))),
 
+  ...(Object.fromEntries(obsoleteConfigs.map(key => [key, null]))),
 
   configsVersion: 0,
 
