@@ -984,6 +984,10 @@ BackgroundConnection.onMessage.addListener(async message => {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
+        if (tab.pinned)
+          onPinnedTabsChanged.dispatch(tab);
+        else
+          onNormalTabsChanged.dispatch(tab);
       }
     }; break;
 

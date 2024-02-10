@@ -159,7 +159,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
-  const allRenderableTabsSize = tabSize * renderableTabs.length;
+  const removingTabs          = renderableTabs.filter(tab => tab.$TST.removing);
+  const allRenderableTabsSize = tabSize * (renderableTabs.length - removingTabs.length);
   const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
 
   // We need to use min-height instead of height for a flexbox.
