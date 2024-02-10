@@ -866,7 +866,7 @@ async function onBackgroundMessage(message) {
       if (!tab) // it can be closed while waiting
         break;
       const needToWaitForTreeExpansion = (
-        tab.$TST.shouldExpandLater &&
+        tab.$TST.collapsedOnCreated &&
         !tab.active &&
         !Tab.getActiveTab(tab.windowId).pinned
       );

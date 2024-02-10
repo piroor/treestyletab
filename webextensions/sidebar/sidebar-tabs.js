@@ -710,7 +710,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
-        tab.$TST.shouldExpandLater = true;
+        tab.$TST.collapsedOnCreated = true;
       }
       else {
         reserveToUpdateLoadingState();
@@ -742,7 +742,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       else {
         onNormalTabsChanged.dispatch(tab);
       }
-
+      reserveToUpdateLoadingState();
       const needToWaitForTreeExpansion = (
         tab.$TST.shouldExpandLater &&
         !tab.active &&
@@ -760,10 +760,12 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (tab.active) {
         if (shouldApplyAnimation()) {
           await wait(0); // nextFrame() is too fast!
-          if (tab.$TST.shouldExpandLater)
+          if (tab.$TST.collapsedOnCreated) {
             CollapseExpand.setCollapsed(tab, {
               collapsed: false,
             });
+            reserveToUpdateLoadingState();
+          }
         }
         const lastMessage = BackgroundConnection.fetchBufferedMessage(Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
         if (!lastMessage)
