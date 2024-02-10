@@ -866,6 +866,7 @@ async function onBackgroundMessage(message) {
       if (!tab) // it can be closed while waiting
         break;
       const needToWaitForTreeExpansion = (
+        tab.$TST.shouldExpandLater &&
         !tab.active &&
         !Tab.getActiveTab(tab.windowId).pinned
       );
@@ -876,10 +877,10 @@ async function onBackgroundMessage(message) {
           if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
             return;
           const active = tab.active;
-          CollapseExpand.setCollapsed(tab, { // this is called to scroll to the tab by the "last" parameter
+          CollapseExpand.setCollapsed(tab, { // this is required to scroll to the tab with the "last" parameter
             collapsed: false,
-            anchor:    Tab.getActiveTab(tab.windowId),
-            last:      true
+            anchor:    !active && Tab.getActiveTab(tab.windowId),
+            last:      !active
           });
           if (!active)
             notifyOutOfViewTab(tab);

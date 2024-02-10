@@ -742,18 +742,32 @@ BackgroundConnection.onMessage.addListener(async message => {
       else {
         onNormalTabsChanged.dispatch(tab);
       }
-      if (shouldApplyAnimation()) {
-        await wait(0); // nextFrame() is too fast!
-        if (tab.$TST.shouldExpandLater)
-          CollapseExpand.setCollapsed(tab, {
-            collapsed: false
-          });
-        reserveToUpdateLoadingState();
+
+      const needToWaitForTreeExpansion = (
+        tab.$TST.shouldExpandLater &&
+        !tab.active &&
+        !Tab.getActiveTab(tab.windowId).pinned
+      );
+      if (shouldApplyAnimation(true) ||
+          needToWaitForTreeExpansion) {
+        wait(10).then(() => { // wait until the tab is moved by TST itself
+          // On this case we don't need to expand the tab here, because
+          // it will be expanded by scroll.js's kCOMMAND_NOTIFY_TAB_CREATED handler
+          // for scrolling to a newly opened tab via CollapseExpand.setCollapsed().
+          reserveToUpdateLoadingState();
+        });
       }
       if (tab.active) {
+        if (shouldApplyAnimation()) {
+          await wait(0); // nextFrame() is too fast!
+          if (tab.$TST.shouldExpandLater)
+            CollapseExpand.setCollapsed(tab, {
+              collapsed: false,
+            });
+        }
         const lastMessage = BackgroundConnection.fetchBufferedMessage(Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
         if (!lastMessage)
-          return;
+          break;
         await Tab.waitUntilTracked(lastMessage.tabId);
         const activeTab = Tab.get(lastMessage.tabId);
         TabsStore.activeTabInWindow.set(activeTab.windowId, activeTab);
