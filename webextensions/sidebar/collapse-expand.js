@@ -218,9 +218,13 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
-          !lastMessage ||
-          tab.$TST.collapsedOnCreated) // it is already expanded by others!
+          !lastMessage)
         return;
+      if (tab.$TST.collapsedOnCreated) { // it is already expanded by others!
+        if (!tab.$TST.collapsed) // expanded by someone, so clear the flag.
+          tab.$TST.collapsedOnCreated = false;
+        return;
+      }
       setCollapsed(tab, {
         collapsed: lastMessage.collapsed,
         justNow:   lastMessage.justNow,

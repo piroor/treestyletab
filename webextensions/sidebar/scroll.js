@@ -159,8 +159,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
-  const removingTabs          = renderableTabs.filter(tab => tab.$TST.removing);
-  const allRenderableTabsSize = tabSize * (renderableTabs.length - removingTabs.length);
+  const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
+  const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
   const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
 
   // We need to use min-height instead of height for a flexbox.
@@ -877,6 +877,7 @@ async function onBackgroundMessage(message) {
           if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
             return;
           const active = tab.active;
+          tab.$TST.collapsedOnCreated = false;
           CollapseExpand.setCollapsed(tab, { // this is required to scroll to the tab with the "last" parameter
             collapsed: false,
             anchor:    !active && Tab.getActiveTab(tab.windowId),
