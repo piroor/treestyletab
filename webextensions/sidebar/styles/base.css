@@ -380,6 +380,7 @@ tab-item-substance {
   opacity: 1;
   pointer-events: auto;
   position: relative;
+  z-index: var(--tab-base-z-index);
 }
 
 tab-item-substance .ui {
@@ -437,14 +438,6 @@ tab-item-substance .caption {
 tab-item,
 tab-item * {
   vertical-align: middle;
-}
-
-tab-item > *,
-tab-item-substance tab-twisty,
-tab-item-substance > .ui > .caption,
-tab-item-substance > .ui > .caption > * {
-  position: relative;
-  z-index: var(--tab-base-z-index);
 }
 
 tab-item tab-favicon {
@@ -761,7 +754,9 @@ tab-item.faviconized.active:not([data-drop-position]) tab-item-substance {
 tab-item tab-label {
   flex-grow: 1;
   overflow: hidden;
+  position: relative;
   white-space: nowrap;
+  z-index: var(--tab-base-z-index);
 }
 
 :root:not([data-label-overflow="fade"]) tab-item tab-label {

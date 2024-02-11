@@ -18,6 +18,7 @@ tab-favicon {
   position: relative;
   white-space: pre;
   width: var(--favicon-size);
+  z-index: var(--tab-base-z-index);
 
   --favicon-base-z-index:            20;
   --favicon-preferred-image-z-index: 100;
