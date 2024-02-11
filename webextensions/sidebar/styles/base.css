@@ -636,6 +636,7 @@ tab-item .extra-items-container.behind {
   flex-direction: column;
   max-height: var(--pinned-tabs-area-size);
   overflow: hidden;
+  padding-right: calc(100% - (var(--faviconized-tab-size) * var(--pinned-tabs-max-column)) - (var(--faviconized-tab-size) / 2));
   top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset));
   transition: max-height var(--collapse-animation),
               var(--visual-gap-animation);

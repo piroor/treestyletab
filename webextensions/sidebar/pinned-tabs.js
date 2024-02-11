@@ -90,6 +90,7 @@ export function reposition(options = {}) {
     mMaxVisibleRows * height
   );
   document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
+  document.documentElement.style.setProperty('--pinned-tabs-max-column', configs.maxFaviconizedPinnedTabsInOneRow <= 0 ? 99999 : configs.maxFaviconizedPinnedTabsInOneRow);
   for (const tab of pinnedTabs) {
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
