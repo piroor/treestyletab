@@ -229,7 +229,7 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
   // highlight tabs progressively, because massinve change at once may block updating of highlighted appearance of tabs.
   let count = 1; // 1 is for setActive()
   while (highlightTabs.lastStartedAt == startAt) {
-    count += (configs.provressiveHighlightingStep < 0 ? 100 : configs.provressiveHighlightingStep);
+    count += (configs.provressiveHighlightingStep <= 0 ? Number.MAX_SAFE_INTEGER : configs.provressiveHighlightingStep);
     await browser.tabs.highlight({
       windowId,
       populate: false,
