@@ -72,6 +72,8 @@ export function init(scrollPosition) {
   document.addEventListener('wheel', onWheel, { capture: true, passive: false });
   mPinnedScrollBox.addEventListener('scroll', onScroll);
   mNormalScrollBox.addEventListener('scroll', onScroll);
+  mNormalScrollBox.addEventListener('overflow', onOverflow);
+  mNormalScrollBox.addEventListener('underflow', onUnderflow);
   browser.runtime.onMessage.addListener(onMessage);
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
@@ -706,6 +708,14 @@ function onScroll(event) {
     reserveToRenderVirtualScrollViewport();
   }
   reserveToSaveScrollPosition();
+}
+
+function onOverflow(event) {
+  reserveToUpdateScrolledState(event.currentTarget);
+}
+
+function onUnderflow(event) {
+  reserveToUpdateScrolledState(event.currentTarget);
 }
 
 function reserveToUpdateScrolledState(scrollBox) {
