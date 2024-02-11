@@ -659,6 +659,7 @@ tab-item .extra-items-container.behind {
   flex-wrap: wrap;
   justify-content: flex-start;
   padding-right: max(1px, calc(100% - (var(--pinned-tab-width, 100%) * var(--pinned-tabs-max-column, 99999)) - (var(--pinned-tab-width, 100%) / 2)));
+  transition: padding-right var(--collapse-animation);
 }
 
 :root.faviconize-pinned-tabs .tabs.pinned {
