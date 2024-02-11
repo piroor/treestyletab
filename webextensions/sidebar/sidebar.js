@@ -926,6 +926,8 @@ async function onConfigChange(changedKey) {
       break;
 
     case 'faviconizePinnedTabs':
+    case 'maxFaviconizedPinnedTabsInOneRow':
+    case 'maxPinnedTabsRowsAreaPercentage':
       rootClasses.toggle(Constants.kTABBAR_STATE_FAVICONIZE_PINNED_TABS, configs[changedKey]);
       PinnedTabs.reserveToReposition();
       break;
