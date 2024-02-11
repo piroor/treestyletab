@@ -6,15 +6,19 @@
      * 各タブの要素は [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index) に対応する属性 `data-index` を持つようになりました
      * この設計変更により、CSSの`counter`を使用したカスタマイズは期待通りに動作しなくなりました（同等のことをするにはヘルパーアドオンを作成する必要があります）
    * タブの共有状態（カメラ、マイク、および画面）をアイコンで表示するようにした
+   * タブバーがスクロールされている時にタブバーの上端にドロップシャドウを表示するようにした
+   * タブバーが最大までスクロールされていない時にタブバーの下端にドロップシャドウを表示するようにした
    * Firefox起動直後の初期化時に、タブの数・ピン留め状態・コンテナーの状態だけ一致していればキャッシュからツリーを復元するようにした
-   * API: TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
-   * API: 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
-   * API: ツリー項目の情報を[必要最小限だけ得る](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)ためのAPI [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) を追加
-   * API: [`get-tree` と `get-light-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
-   * API: パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした
-   * API: [通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages)
-   * API: `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして [`allVisibles` と `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) を追加
-   * API: `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
+   * APIの機能強化・改善
+     * TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
+     * 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
+     * ツリー項目の情報を[必要最小限だけ得る](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)ためのAPI [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) を追加
+     * [`get-tree` と `get-light-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
+     * パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした
+     * [通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages)
+     * `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして [`allVisibles` と `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) を追加
+     * `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
+     * タブの追加コンテンツの挿入位置の指定として [`tab-above` と `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) に対応
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）
  - 3.9.21 (2024.1.26)
