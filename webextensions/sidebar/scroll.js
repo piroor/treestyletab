@@ -174,10 +174,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     allTabsSizeHolderStyle.minHeight = currentViewPortSize < allRenderableTabsSize ? minHeight : '';
     allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
-    const fullyScrolled = mNormalScrollBox.scrollTop == mNormalScrollBox.scrollTopMax;
-    mNormalScrollBox.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
-    mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
-
+    reserveToUpdateScrolledState(mNormalScrollBox)
     onVirtualScrollViewportUpdated.dispatch(resized);
   }
 
@@ -704,17 +701,30 @@ async function onWheel(event) {
 
 function onScroll(event) {
   const scrollBox = event.currentTarget;
-  const scrolled = scrollBox.scrollTop > 0;
-  const fullyScrolled = scrollBox.scrollTop == scrollBox.scrollTopMax;
-  scrollBox.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
-  scrollBox.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
-
+  reserveToUpdateScrolledState(scrollBox);
   if (scrollBox == mNormalScrollBox) {
-    mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
-    mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
     reserveToRenderVirtualScrollViewport();
   }
   reserveToSaveScrollPosition();
+}
+
+function reserveToUpdateScrolledState(scrollBox) {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  scrollBox.__reserveToUpdateScrolledState_lastStartedAt = startAt; // eslint-disable-line no-underscore-dangle
+  window.requestAnimationFrame(() => {
+    if (scrollBox.__reserveToUpdateScrolledState_lastStartedAt != startAt) // eslint-disable-line no-underscore-dangle
+      return;
+
+    const scrolled = scrollBox.scrollTop > 0;
+    const fullyScrolled = scrollBox.scrollTop == scrollBox.scrollTopMax;
+    scrollBox.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
+    scrollBox.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
+
+    if (scrollBox == mNormalScrollBox) {
+      mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
+      mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
+    }
+  });
 }
 
 function reserveToSaveScrollPosition() {
