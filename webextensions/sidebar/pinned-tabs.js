@@ -94,8 +94,12 @@ export function reposition(options = {}) {
     contentsHeight,
     mMaxVisibleRows * height
   );
+  document.documentElement.style.setProperty('--pinned-tab-width', `${width}px`);
   document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
-  document.documentElement.style.setProperty('--pinned-tabs-max-column', !configs.faviconizePinnedTabs || configs.maxFaviconizedPinnedTabsInOneRow <= 0 ? 99999 : configs.maxFaviconizedPinnedTabsInOneRow);
+  if (configs.faviconizePinnedTabs && configs.maxFaviconizedPinnedTabsInOneRow > 0)
+    document.documentElement.style.setProperty('--pinned-tabs-max-column', configs.maxFaviconizedPinnedTabsInOneRow);
+  else
+    document.documentElement.style.removeProperty('--pinned-tabs-max-column');
   for (const tab of pinnedTabs) {
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);

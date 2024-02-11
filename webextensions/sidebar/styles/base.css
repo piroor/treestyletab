@@ -636,7 +636,6 @@ tab-item .extra-items-container.behind {
   flex-direction: column;
   max-height: var(--pinned-tabs-area-size);
   overflow: hidden;
-  padding-right: calc(100% - (var(--faviconized-tab-size) * var(--pinned-tabs-max-column)) - (var(--faviconized-tab-size) / 2));
   top: calc(var(--tabbar-top-area-size) + var(--visual-gap-offset));
   transition: max-height var(--collapse-animation),
               var(--visual-gap-animation);
@@ -653,12 +652,13 @@ tab-item .extra-items-container.behind {
 }
 
 .tabs.pinned {
-  align-items: stretch;
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-grow: 0;
   flex-wrap: wrap;
   justify-content: flex-start;
+  padding-right: max(1px, calc(100% - (var(--pinned-tab-width, 100%) * var(--pinned-tabs-max-column, 99999)) - (var(--pinned-tab-width, 100%) / 2)));
 }
 
 :root.faviconize-pinned-tabs .tabs.pinned {
