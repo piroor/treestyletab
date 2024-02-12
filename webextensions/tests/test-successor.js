@@ -347,3 +347,24 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
   is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab must become the successor.');
 }
+
+export async function testSuccessorOfPinnedTabShouldBePinnedTab() {
+  await Utils.setConfigs({
+    successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
+  });
+
+  const tabs = await Utils.createTabs({
+    A: { index: 1, pinned: true },
+    B: { index: 2, pinned: true },
+    C: { index: 3 }
+  }, { windowId: win.id });
+  await browser.tabs.update(tabs.A.id, { active: true });
+  await browser.tabs.update(tabs.C.id, { active: true });
+  await browser.tabs.update(tabs.B.id, { active: true });
+  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
+
+  await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.B.id));
+  const activeTabName = await getActiveTabName(tabs);
+  is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
+     'pinned tab should be a successor of removed pinned tab.');
+}
