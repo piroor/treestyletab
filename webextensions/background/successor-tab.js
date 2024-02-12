@@ -88,10 +88,10 @@ function update(tabId) {
         if (mInProgressUpdates.size > 1)
           return;
         clearInterval(timer);
-        mInProgressUpdates.delete(waitingUpdate);
         resolve();
-      }, 50);
+      }, 100);
     });
+    waitingUpdate.catch(_error => {}).then(() => mInProgressUpdates.delete(waitingUpdate));
     mInProgressUpdates.add(waitingUpdate);
   }
   setTimeout(() => {
@@ -100,9 +100,17 @@ function update(tabId) {
     for (const id of ids) {
       if (!id)
         continue;
-      const promise = updateInternal(id);
-      mInProgressUpdates.add(promise);
-      promise.then(() => mInProgressUpdates.delete(promise));
+      try {
+        const promisedUpdate = updateInternal(id);
+        const promisedUpdateWithTimeout = new Promise((resolve, reject) => {
+          promisedUpdate.then(resolve).catch(reject);
+          setTimeout(resolve, 1000);
+        });
+        mInProgressUpdates.add(promisedUpdateWithTimeout);
+        promisedUpdateWithTimeout.catch(_error => {}).then(() => mInProgressUpdates.delete(promisedUpdateWithTimeout));
+      }
+      catch(_error) {
+      }
     }
   }, 0);
 }
