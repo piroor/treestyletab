@@ -339,7 +339,10 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
 
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
-      const lastRelatedTab = opener.$TST.lastRelatedTab != tab && opener.$TST.lastRelatedTab;
+      // it could be updated already...
+      const lastRelatedTab = opener.$TST.lastRelatedTab != tab ?
+        opener.$TST.lastRelatedTab :
+        opener.$TST.previousLastRelatedTab;
       if (lastRelatedTab) {
         log(`handleTabsFromPinnedOpener: place after last related tab ${dumpTab(lastRelatedTab)}`);
         tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
