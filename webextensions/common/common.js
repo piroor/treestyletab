@@ -284,7 +284,7 @@ export const configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: Constants.kINSERT_NO_CONTROL, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
+  insertNewChildAt: Constants.kINSERT_END, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
   insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
   insertDroppedTabsAt: Constants.kINSERT_END,
 
