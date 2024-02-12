@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import {
+  wait
+} from '/common/common.js';
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
@@ -104,11 +107,13 @@ export async function testMissingSuccessor() {
     simulateSelectOwnerOnClose:         true
   });
 
-  const A = await browser.tabs.create({ windowId: win.id });
-  const B = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
-  const C = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
-  const D = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: false });
-  const E = await browser.tabs.create({ windowId: win.id, active: false });
+  const A = await browser.tabs.create({ windowId: win.id, active: true });
+  const B = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: true });
+  const C = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: true });
+  const D = await browser.tabs.create({ windowId: win.id, openerTabId: A.id, active: true });
+  const E = await browser.tabs.create({ windowId: win.id, active: true });
+  await browser.tabs.update(A.id, { active: true });
+  await wait(50);
   await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
 
   let tabs = await Utils.refreshTabs({ A, B, C, D, E });
@@ -128,6 +133,7 @@ export async function testMissingSuccessor() {
   }
 
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(A.id));
+  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
 
   tabs = await Utils.refreshTabs({ B, C, D, E });
   let activeTabName = await getActiveTabName(tabs);
@@ -153,10 +159,12 @@ export async function testSimulateSelectOwnerOnClose() {
   let tabs = await Utils.createTabs({
     A: { index: 1, active: true }
   });
+  await wait(50);
   const childTabs = await Utils.createTabs({
     B: { index: 2, openerTabId: tabs.A.id },
-    C: { index: 3, openerTabId: tabs.A.id }
+    C: { index: 3, openerTabId: tabs.A.id, active: true }
   }, { windowId: win.id });
+  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   tabs = await Utils.refreshTabs({ A: tabs.A, B: childTabs.B, C: childTabs.C });
   {
     const { A, B, C } = tabs;
@@ -166,15 +174,9 @@ export async function testSimulateSelectOwnerOnClose() {
       `${A.id} => ${C.id}`
     ], Utils.treeStructure(Object.values(tabs)),
        'tabs must be initialized with specified structure');
-    const activeTabName = await getActiveTabName(tabs);
-    is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
-       'the opener tab must be active');
   }
 
-  await browser.tabs.update(tabs.C.id, { active: true });
-  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
-
   const activeTabName = await getActiveTabName(tabs);
   is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'the opener tab must be the successor.');
@@ -265,6 +267,7 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
   is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab in the tree must become the successor.');
 
+  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   await browser.tabs.update(tabs.C.id, { active: true });
   activeTabName = await getActiveTabName(tabs);
   is(`C(${tabs.C.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
@@ -276,6 +279,7 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
   is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab in the tree must become the successor.');
 
+  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.D.id));
   activeTabName = await getActiveTabName(tabs);
   is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
@@ -337,7 +341,6 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
     type:  'treestyletab:api:collapse-tree',
     tabId: tabs.B.id
   });
-  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   activeTabName = await getActiveTabName(tabs);
   is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab must become the successor.');
