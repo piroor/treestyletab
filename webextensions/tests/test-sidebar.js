@@ -25,7 +25,23 @@ export async function setup() {
     width: 600,
     height: 500,
   });
-  await wait(500); // wait until the sidebar is initialized
+
+  const startAt = Date.now();
+  while (true) {
+    try {
+      const pong = await browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
+        windowId: win.id,
+      });
+      if (pong)
+        break;
+    }
+    catch(_error) {
+    }
+    if (Date.now() - startAt > 1000)
+      throw new Error('timeout: failed to initialize sidebar within 1 sec');
+    await wait(100);
+  }
 }
 
 export async function teardown() {
