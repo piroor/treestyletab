@@ -191,7 +191,7 @@ export default class Window {
       const index = order.indexOf(tab.id);
       order.splice(index, 1);
       order.splice(tab.index, 0, tab.id);
-      for (let i = Math.min(index, tab.index), maxi = Math.min(Math.max(index + 1, tab.index + 1), order.length); i < maxi; i++) {
+      for (let i = Math.min(index, tab.index), maxi = Math.min(Math.max(index, tab.index) + 1, order.length); i < maxi; i++) {
         const tab = this.tabs.get(order[i]);
         if (!tab)
           throw new Error(`Unknown tab: ${i}/${order[i]} (${order.join(', ')})`);
