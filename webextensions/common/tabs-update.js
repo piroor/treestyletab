@@ -103,7 +103,7 @@ function flushBufferedUpdates() {
           type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
           windowId:          update.windowId,
           tabId:             update.tabId,
-          updatedAttributes: update.attributes.updated,
+          updatedProperties: update.attributes.updated,
           addedAttributes:   update.attributes.added,
           removedAttributes: [...update.attributes.removed],
           soundStateChanged: update.soundStateChanged,
