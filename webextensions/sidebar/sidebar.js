@@ -1059,8 +1059,18 @@ function onMessage(message, _sender, _respond) {
     // for automated tests
     case Constants.kCOMMAND_GET_BOUNDING_CLIENT_RECT: {
       const range = document.createRange();
-      range.setStartBefore(document.querySelector(message.startBefore));
-      range.setEndAfter(document.querySelector(message.endAfter));
+      if (message.selector) {
+        const node = document.querySelector(message.selector);
+        if (!node) {
+          range.detach();
+          return Promise.resolve(null);
+        }
+        range.selectNode(node);
+      }
+      else {
+        range.setStartBefore(document.querySelector(message.startBefore));
+        range.setEndAfter(document.querySelector(message.endAfter));
+      }
       const rect = range.getBoundingClientRect();
       range.detach();
       return Promise.resolve({
