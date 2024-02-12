@@ -27,7 +27,7 @@ export async function teardown() {
 
 async function getActiveTabName(tabs) {
   const activeTabs = await browser.tabs.query({ windowId: win.id, active: true });
-  return Object.keys(tabs).find(key => tabs[key].id == activeTabs[0].id) || 'missing';
+  return Object.keys(tabs).find(key => tabs[key].id == activeTabs[0].id) || `missing(${activeTabs[0].id})`;
 }
 
 export async function testSuccessorForLastChildWithPreviousSibling() {
@@ -249,25 +249,30 @@ export async function testAvoidDiscardedTabToBeActivatedAsSuccessor() {
       `${G.id}`
     ], Utils.treeStructure(Object.values(tabs)),
        'tabs must be initialized with specified structure');
-    is('F', await getActiveTabName(tabs),
+    const activeTabName = await getActiveTabName(tabs);
+    is(`F(${tabs.F.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
        'the last child tab must be active');
   }
 
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.F.id));
-  is('D', await getActiveTabName(tabs),
+  let activeTabName = await getActiveTabName(tabs);
+  is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab in the tree must become the successor.');
 
   await browser.tabs.update(tabs.C.id, { active: true });
-  is('C', await getActiveTabName(tabs),
+  activeTabName = await getActiveTabName(tabs);
+  is(`C(${tabs.C.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'the last child tab must be active');
 
   await wait(1000);
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.C.id));
-  is('D', await getActiveTabName(tabs),
+  activeTabName = await getActiveTabName(tabs);
+  is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab in the tree must become the successor.');
 
   await Utils.waitUntilAllTabChangesFinished(() => browser.tabs.remove(tabs.D.id));
-  is('A', await getActiveTabName(tabs),
+  activeTabName = await getActiveTabName(tabs);
+  is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab in the tree must become the successor.');
 }
 
