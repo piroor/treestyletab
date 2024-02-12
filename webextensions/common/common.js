@@ -71,6 +71,7 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   testKey
   userStyleRulesFieldHeight
   userStyleRulesFieldTheme
+  runTestsParameters
 `.trim().split('\n'), key => {
   key = key.trim();
   return key && key.indexOf('//') != 0 && key;
@@ -490,6 +491,7 @@ export const configs = new Configs({
 
 
   debug:     false,
+  runTestsParameters: '',
   syncEnabled: true,
   APIEnabled: true,
   logTimestamp: true,
