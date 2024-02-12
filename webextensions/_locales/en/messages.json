@@ -777,6 +777,7 @@
   "config_link_tabbarPage_label":   { "message": "Page for Tab Bar" },
 
   "config_runTests_label": { "message": "Run Automated Tests" },
+  "config_runTestsParameters_label": { "message": " / Tests to run (array of test names or regular expressions, like \"testInheritMutedState,/^testHidden/,...\"):" },
   "config_runBenchmark_label": { "message": "Run Benchmark" },
   "config_enableLinuxBehaviors_label": { "message": "Activate Linux specific behaviors" },
   "config_enableMacOSBehaviors_label": { "message": "Activate macOS specific behaviors" },

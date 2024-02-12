@@ -674,7 +674,19 @@ function initLinks() {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);
-  document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
+  document.getElementById('link-runTests').setAttribute('href', '#');
+  document.getElementById('link-runTests').addEventListener('mousedown', event => {
+    event.currentTarget.setAttribute(
+      'href',
+      `${Constants.kSHORTHAND_URIS.testRunner}?${document.getElementById('runTestsParameters').value || ''}`
+    );
+  }, true);
+  document.getElementById('link-runTests').addEventListener('keydown', event => {
+    event.currentTarget.setAttribute(
+      'href',
+      `${Constants.kSHORTHAND_URIS.testRunner}?${document.getElementById('runTestsParameters').value || ''}`
+    );
+  }, true);
   document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
 }
 

@@ -774,6 +774,7 @@
   "config_link_tabbarPage_label":   { "message": "タブバーのページ" },
 
   "config_runTests_label": { "message": "自動テストを実行" },
+  "config_runTestsParameters_label": { "message": " / 実行するテストの指定（テスト名または正規表現の配列。例：「testInheritMutedState,/^testHidden/,...」）:" },
   "config_runBenchmark_label": { "message": "ベンチマークを実行" },
   "config_enableLinuxBehaviors_label": { "message": "Linux専用の挙動を有効化する" },
   "config_enableMacOSBehaviors_label": { "message": "macOS専用の挙動を有効化する" },

@@ -30,6 +30,7 @@ const NO_RESET_CONFIG_KEYS = new Set([
   'useCachedTree' // prevent reloading of the background page
 ]);
 
+const mTestMatchers = [];
 let mResults;
 let mLogs;
 
@@ -37,6 +38,19 @@ async function run() {
   await configs.$loaded;
   ApiTabsListener.init();
   ApiTabsListener.start();
+
+  // you can run specific tests with URL parameter like:
+  // ...runner.html?testMoveAttachedTabBeforeHiddenTab,/^testMove.+/,...
+  for (const part of (location.search || '').replace(/^\?/, '').split(/,/)) {
+    const trimmedPart = part.trim();
+    if (!trimmedPart.trim())
+      continue;
+    if (/^\/([^\/]+)\/(i)?$/.test(trimmedPart))
+      mTestMatchers.push(new RegExp(RegExp.$1, RegExp.$2 || ''));
+    else
+      mTestMatchers.push(new RegExp(`^${trimmedPart}$`, 'i'));
+  }
+
   mResults = document.getElementById('results');
   mLogs = document.getElementById('logs');
   const configValues = backupConfigs();
@@ -99,6 +113,9 @@ async function runAll() {
       if (!name.startsWith('test'))
         continue;
       if (runOnlyRunnable && !tests[name].runnable)
+        continue;
+      if (mTestMatchers.length > 0 &&
+          mTestMatchers.every(matcher => !matcher.test(name)))
         continue;
       await restoreConfigs(configs.$default);
       let shouldTearDown = true;
