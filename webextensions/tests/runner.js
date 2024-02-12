@@ -120,6 +120,7 @@ async function runAll() {
       await restoreConfigs(configs.$default);
       let shouldTearDown = true;
       const result = mResults.appendChild(document.createElement('span'));
+      console.log('running test: ', name);
       try {
         if (typeof setup == 'function')
           await setup();
