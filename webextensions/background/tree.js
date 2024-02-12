@@ -1857,15 +1857,20 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   let newParent = null;
   let mustToApply = false;
 
-  if (!oldParent) {
-    if (!nextTab) {
+  if (!oldParent &&
+      (!nextTab ||
+       !nextParent)) {
+    if (!nextTab)
       log('=> A root level tab, placed at the end of tabs. We should keep it in the root level.');
-      return new TabActionForNewPosition();
-    }
-    if (!nextParent) {
+    else
       log(' => A root level tab, placed before another root level tab. We should keep it in the root level.');
-      return new TabActionForNewPosition();
-    }
+    return new TabActionForNewPosition('move', {
+      tab,
+      isTabCreating,
+      isMovingByShortcut,
+      insertAfter: prevTab && prevTab.id,
+      mustToApply,
+    });
   }
 
   if (target.mayBeReplacedWithContainer) {
