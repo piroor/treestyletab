@@ -320,7 +320,7 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
     type:  'treestyletab:api:collapse-tree',
     tabId: tabs.B.id
   });
-  await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
+  await wait(100);
   let activeTabName = await getActiveTabName(tabs);
   is(`A(${tabs.A.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab must become the successor.');
@@ -329,6 +329,7 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
     type:  'treestyletab:api:expand-tree',
     tabId: tabs.B.id
   });
+  await wait(100);
   await browser.runtime.sendMessage({ type: Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED });
   await browser.tabs.update(tabs.C.id, { active: true });
   await browser.tabs.discard([tabs.A.id, tabs.B.id]);
@@ -341,6 +342,7 @@ export async function testAvoidDiscardedTabToBeActivatedOnCollapsed() {
     type:  'treestyletab:api:collapse-tree',
     tabId: tabs.B.id
   });
+  await wait(100);
   activeTabName = await getActiveTabName(tabs);
   is(`D(${tabs.D.id})`, `${activeTabName}(${tabs[activeTabName] && tabs[activeTabName].id})`,
      'nearest loaded tab must become the successor.');
