@@ -120,6 +120,7 @@ export async function refreshTabs(tabs) {
     for (const tab of refreshedTabsArray) {
       refreshedTabs[idToName[tab.id]] = Tab.import(tab);
     }
+    console.log('refreshedTabs: ', Object.entries(refreshedTabs).map(([name, tab]) => `${name}(${tab.id})`));
     return refreshedTabs;
   }
 
