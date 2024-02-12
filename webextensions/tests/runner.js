@@ -33,6 +33,7 @@ const NO_RESET_CONFIG_KEYS = new Set([
 const mTestMatchers = [];
 let mResults;
 let mLogs;
+let mStopped = false;
 
 async function run() {
   await configs.$loaded;
@@ -53,6 +54,9 @@ async function run() {
 
   mResults = document.getElementById('results');
   mLogs = document.getElementById('logs');
+  mStopped = false;
+  document.getElementById('stop').addEventListener('click', () => mStopped = true);
+  document.getElementById('stop').addEventListener('keypress', () => mStopped = true);
   const configValues = backupConfigs();
   await runAll();
   ApiTabsListener.destroy();
@@ -107,9 +111,13 @@ async function runAll() {
     }
   }
   for (const tests of testCases) {
+    if (mStopped)
+      break;
     const setup    = tests.setUp || tests.setup;
     const teardown = tests.tearDown || tests.teardown;
     for (const name of Object.keys(tests)) {
+      if (mStopped)
+        break;
       if (!name.startsWith('test'))
         continue;
       if (runOnlyRunnable && !tests[name].runnable)
