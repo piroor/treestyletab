@@ -1055,6 +1055,23 @@ function onMessage(message, _sender, _respond) {
           UserOperationBlocker.unblockIn(mTargetWindow, message.userOperationBlockerParams || {});
         }
       });
+
+    // for automated tests
+    case Constants.kCOMMAND_GET_BOUNDING_CLIENT_RECT: {
+      const range = document.createRange();
+      range.setStartBefore(document.querySelector(message.startBefore));
+      range.setEndAfter(document.querySelector(message.endAfter));
+      const rect = range.getBoundingClientRect();
+      range.detach();
+      return Promise.resolve({
+        bottom: rect.bottom,
+        height: rect.height,
+        left:   rect.left,
+        right:  rect.right,
+        top:    rect.top,
+        width:  rect.width,
+      });
+    }; break;
   }
 }
 

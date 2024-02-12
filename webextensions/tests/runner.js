@@ -21,6 +21,7 @@ import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
 import * as TestCloseParentBehavior from './test-close-parent-behavior.js';
+import * as TestSidebar from './test-sidebar.js';
 
 
 const NO_RESET_CONFIG_KEYS = new Set([
@@ -95,7 +96,8 @@ async function runAll() {
       TestNewTab,
       TestSuccessor,
       TestTree,
-      TestCloseParentBehavior
+      TestCloseParentBehavior,
+      TestSidebar
     );
   }
   let runOnlyRunnable = false;
