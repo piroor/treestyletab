@@ -88,7 +88,7 @@ function update(tabId) {
       if (id)
         updateInternal(id);
     }
-  }, 100);
+  }, 0);
 }
 async function updateInternal(tabId) {
   // tabs.onActivated can be notified before the tab is completely tracked...
