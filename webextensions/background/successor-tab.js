@@ -25,6 +25,7 @@ function log(...args) {
 }
 
 const mTabsToBeUpdated = new Set();
+const mInProgressUpdates = new Set();
 
 const mPromisedUpdatedSuccessorTabId = new Map();
 
@@ -81,12 +82,27 @@ function clearSuccessor(tabId) {
 
 function update(tabId) {
   mTabsToBeUpdated.add(tabId);
+  if (mInProgressUpdates.size == 0) {
+    const waitingUpdate = new Promise((resolve, _reject) => {
+      const timer = setInterval(() => {
+        if (mInProgressUpdates.size > 1)
+          return;
+        clearInterval(timer);
+        mInProgressUpdates.delete(waitingUpdate);
+        resolve();
+      }, 50);
+    });
+    mInProgressUpdates.add(waitingUpdate);
+  }
   setTimeout(() => {
     const ids = Array.from(mTabsToBeUpdated);
     mTabsToBeUpdated.clear();
     for (const id of ids) {
-      if (id)
-        updateInternal(id);
+      if (!id)
+        continue;
+      const promise = updateInternal(id);
+      mInProgressUpdates.add(promise);
+      promise.then(() => mInProgressUpdates.delete(promise));
     }
   }, 0);
 }
@@ -370,4 +386,15 @@ SidebarConnection.onConnected.addListener((windowId, _openCount) => {
 
 SidebarConnection.onDisconnected.addListener((windowId, _openCount) => {
   updateActiveTab(windowId);
+});
+
+// for automated test
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message || !message.type)
+    return;
+
+  switch (message.type) {
+    case Constants.kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED:
+      return Promise.all([...mInProgressUpdates]);
+  }
 });
