@@ -694,6 +694,18 @@ async function tryGroupCreatedBookmarks() {
     }
   }
 
+  const possibleSourceTabs = (await Promise.all(bookmarks.map(async bookmark => {
+    const tabs = await browser.tabs.query({ url: bookmark.url });
+    if (tabs.length == 0)
+      return null;
+    return tabs[0];
+  }))).filter(tab => !!tab);
+  console.log('possibleSourceTabs ', possibleSourceTabs);
+  if (possibleSourceTabs.length != bookmarks.length) {
+    log(' => ignore bookmarks created from non-tab sources');
+    return;
+  }
+
   log('ready to group bookmarks under a folder');
 
   log('create a folder for grouping');
