@@ -674,19 +674,22 @@ function initLinks() {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);
-  document.getElementById('link-runTests').setAttribute('href', '#');
-  document.getElementById('link-runTests').addEventListener('mousedown', event => {
-    event.currentTarget.setAttribute(
-      'href',
-      `${Constants.kSHORTHAND_URIS.testRunner}?${document.getElementById('runTestsParameters').value || ''}`
-    );
+  const runTestLink = document.getElementById('link-runTests');
+  const runTestParameters = document.getElementById('runTestsParameters');
+  runTestLink.setAttribute('href', '#');
+  runTestLink.addEventListener('mousedown', _event => {
+    runTestLink.href = `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`;
   }, true);
-  document.getElementById('link-runTests').addEventListener('keydown', event => {
-    event.currentTarget.setAttribute(
-      'href',
-      `${Constants.kSHORTHAND_URIS.testRunner}?${document.getElementById('runTestsParameters').value || ''}`
-    );
+  runTestLink.addEventListener('keydown', _event => {
+    runTestLink.href = `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`;
   }, true);
+  runTestParameters.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    browser.tabs.create({
+      url: `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`,
+    });
+  });
   document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
 }
 
