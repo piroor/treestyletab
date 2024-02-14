@@ -603,7 +603,8 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-click on a tab" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Collapse/expand tree" },
-  "config_treeDoubleClickBehavior_close":               { "message": "Close tab (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
+  "config_treeDoubleClickBehavior_close":               { "message": "Close tab" },
+  "config_treeDoubleClickBehavior_close_note":          { "message": " (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },
 
   "config_parentTabOperationBehaviorMode_caption":           { "message": "When a parent tab is Closed or Moved" },
