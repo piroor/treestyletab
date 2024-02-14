@@ -755,7 +755,8 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
       (!lastVisibleTab ||
        lastVisibleTab.id != previousLastVisibleTab.id))
     previousLastVisibleTab.$TST.removeState(Constants.kTAB_STATE_LAST_VISIBLE);
-  lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
+  if (lastVisibleTab)
+    lastVisibleTab.$TST.addState(Constants.kTAB_STATE_LAST_VISIBLE);
   mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
   const visibleNewTabButton = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box, #tabbar.overflow ~ .after-tabs .newtab-button-box');
