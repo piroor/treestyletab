@@ -80,6 +80,9 @@ export function init(scrollPosition) {
   SidebarTabs.onNormalTabsChanged.addListener(_tab => {
     reserveToRenderVirtualScrollViewport();
   });
+  Size.onUpdated.addListener(() => {
+    reserveToRenderVirtualScrollViewport();
+  });
 
   reserveToRenderVirtualScrollViewport();
   if (typeof scrollPosition != 'number')
