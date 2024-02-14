@@ -137,7 +137,7 @@ body,
 #normal-tabs-container .virtual-scroll-container::before {
   background-position: 0 -0.3em;
   border-top: 0.05em solid rgba(255, 255, 255, 0.2);
-  top: var(--pinned-tabs-area-size);
+  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
 }
 #normal-tabs-container .virtual-scroll-container::after {
   background-position: 0 0.3em;

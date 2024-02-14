@@ -78,7 +78,7 @@ tab-item.pinned tab-item-substance {
 }
 #normal-tabs-container .virtual-scroll-container::before {
   background-position: 0 -0.3em;
-  top: var(--pinned-tabs-area-size);
+  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
 }
 #normal-tabs-container .virtual-scroll-container::after {
   background-position: 0 0.3em;
