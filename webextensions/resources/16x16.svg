@@ -10,6 +10,10 @@
 	g:target {
 		fill-rule: evenodd;
 	}
+	g.context:target {
+		fill: context-fill;
+		fill-opacity: context-fill-opacity;
+	}
 	g.theme:target {
 		fill: transparent /* TO BE REPLACED WITH THEME COLOR */;
 	}
@@ -41,6 +45,12 @@
 	<circle cx="7.5" cy="8.5" r="0.5"/>
 	<circle cx="10.5" cy="12" r="0.5"/>
 </symbol>
+<g id="toolbar-context" class="context toolbar">
+	<use href="#icon"/>
+</g>
+<g id="default-context" class="context default">
+	<use href="#icon"/>
+</g>
 <g id="toolbar-theme" class="theme toolbar">
 	<use href="#icon"/>
 </g>
