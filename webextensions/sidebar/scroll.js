@@ -159,8 +159,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const windowId = TabsStore.getCurrentWindowId();
   const win      = TabsStore.windows.get(windowId);
-  if (!win.containerElement) // not initialized yet
-    return;
+  if (!win ||
+      !win.containerElement)
+    return; // not initialized yet
 
   const tabSize               = Size.getTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
