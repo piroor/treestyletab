@@ -199,11 +199,13 @@ async function updatePanelUrl(theme) {
   url.searchParams.set('reloadMaskImage', !!configs.enableWorkaroundForBug1763420_reloadMaskImage);
   if (!theme)
     theme = await browser.theme.getCurrent();
-  browser.sidebarAction.setPanel({ panel: url.href });
+  if (browser.sidebarAction)
+    browser.sidebarAction.setPanel({ panel: url.href });
 /*
   const url = new URL(Constants.kSHORTHAND_URIS.tabbar);
   url.searchParams.set('style', configs.style);
-  browser.sidebarAction.setPanel({ panel: url.href });
+  if (browser.sidebarAction)
+    browser.sidebarAction.setPanel({ panel: url.href });
 */
 }
 
@@ -850,7 +852,7 @@ async function updateIconForBrowserTheme(theme) {
     ...ContextMenu.getItemIdsWithIcon().map(id => browser.menus.update(id, { icons: menuIcons })),
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()),
     (browser.action || browser.browserAction).setIcon({ path: toolbarIcons }),
-    browser.sidebarAction.setIcon({ path: sidebarIcons }),
+    browser.sidebarAction && browser.sidebarAction.setIcon({ path: sidebarIcons }),
   ]);
 }
 

@@ -67,7 +67,8 @@ Background.onReady.addListener(() => {
   mInitializationPhase = PHASE_BACKGROUND_READY;
 });
 
-(browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
+if (browser.sidebarAction)
+  (browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
 browser.commands.onCommand.addListener(onShortcutCommand);
 browser.runtime.onMessage.addListener(onMessage);
 TSTAPI.onMessageExternal.addListener(onMessageExternal);
@@ -80,7 +81,8 @@ Background.onReady.addListener(() => {
 Background.onDestroy.addListener(() => {
   browser.runtime.onMessage.removeListener(onMessage);
   TSTAPI.onMessageExternal.removeListener(onMessageExternal);
-  (browser.action || browser.browserAction).onClicked.removeListener(onToolbarButtonClick);
+  if (browser.sidebarAction)
+    (browser.action || browser.browserAction).onClicked.removeListener(onToolbarButtonClick);
 });
 
 
