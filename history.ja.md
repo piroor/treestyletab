@@ -13,6 +13,7 @@
    * Firefoxのタブバー上で単独のタブを移動した先がTSTのにおける最上位の階層だった場合に、子孫のブックマークが追従して移動されずそのまま取り残されてしまっていたのを修正
    * ピン留めされたタブから複数のタブを開くときに、最近開いた子タブの次の位置に開く設定が機能していなかったのを修正
    * Firefox 116以降のバージョンでCtrl-Shift-Tで空のダイアログウィンドウが意図せず復元されてしまわないようにした
+   * まとめて閉じたサブツリーのタブを復元した際に、復元後のタブのツリー構造が壊れる場合があったのを修正
    * APIの機能強化・改善
      * TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
      * 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
