@@ -81,7 +81,7 @@ export function init(scrollPosition) {
     reserveToRenderVirtualScrollViewport();
   });
   Size.onUpdated.addListener(() => {
-    reserveToRenderVirtualScrollViewport();
+    reserveToRenderVirtualScrollViewport({ force: true });
   });
 
   reserveToRenderVirtualScrollViewport();
@@ -137,8 +137,9 @@ restoreScrollPosition.scrollPosition = -1;
 
 /* virtual scrolling */
 
-export function reserveToRenderVirtualScrollViewport() {
-  if (mScrollingInternallyCount > 0)
+export function reserveToRenderVirtualScrollViewport({ force } = {}) {
+  if (!force &&
+      mScrollingInternallyCount > 0)
     return;
 
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
