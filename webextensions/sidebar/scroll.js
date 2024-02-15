@@ -628,6 +628,9 @@ function scrollToTabs(tabs) {
 */
 
 export function autoScrollOnMouseEvent(event) {
+  if (!event.target.closest)
+    return;
+
   const scrollBox = event.target.closest(`#${mPinnedScrollBox.id}, #${mNormalScrollBox.id}`);
   if (!scrollBox || !scrollBox.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
