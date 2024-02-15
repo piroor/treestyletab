@@ -202,8 +202,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       following to this operation, we need to move tabs immediately.
     */
     let nextTab = referenceTab.$TST.unsafeNextTab;
-    if (nextTab && tabs.find(tab => tab.id == nextTab.id))
-      nextTab = null;
+    while (nextTab && tabs.find(tab => tab.id == nextTab.id)) {
+      nextTab = nextTab.$TST.unsafeNextTab;
+    }
     for (const tab of tabs) {
       const oldPreviousTab = tab.$TST.unsafePreviousTab;
       const oldNextTab     = tab.$TST.unsafeNextTab;
