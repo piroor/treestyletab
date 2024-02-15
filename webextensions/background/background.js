@@ -601,7 +601,6 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     checked: true,
     modal:   !configs.debug, // for popup
     type:    'common-dialog', // for popup
-    url:     '/resources/blank.html', // for popup, required on Firefox ESR68
     title:   browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
     onShownInPopup(container) {
       setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.

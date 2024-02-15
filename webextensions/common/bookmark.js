@@ -204,7 +204,6 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
         ...dialogParams,
         modal: true,
         type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
       });
     }
@@ -404,7 +403,6 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
         ...dialogParams,
         modal: true,
         type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple')
       });
     }

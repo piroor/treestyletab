@@ -226,7 +226,6 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     checked: true,
     modal: true, // for popup
     type:  'common-dialog', // for popup
-    url:   '/resources/blank.html',  // for popup, required on Firefox ESR68
     title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'), // for popup
     onShownInPopup(container) {
       setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
