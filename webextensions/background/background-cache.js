@@ -213,6 +213,7 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
   log('fixupTabsRestoredFromCache start ', () => ({ tabs: tabs.map(dumpTab), cachedTabs }));
   const idMap = new Map();
+  let remappedCount = 0;
   // step 1: build a map from old id to new id
   tabs = tabs.map((tab, index) => {
     const cachedTab = cachedTabs[index];
@@ -220,8 +221,12 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
     tab = Tab.get(tab.id);
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     idMap.set(oldId, tab);
+    if (oldId != tab.id)
+      remappedCount++;
     return tab;
   });
+  if (remappedCount && remappedCount < tabs.length)
+    throw new Error(`fixupTabsRestoredFromCache: not a window restoration, only ${remappedCount} tab(s) are restored (maybe restoration of closed tabs)`);
   MetricsData.add('fixupTabsRestoredFromCache: step 1 done.');
   // step 2: restore information of tabs
   // Do this from bottom to top, to reduce post operations for modified trees.
