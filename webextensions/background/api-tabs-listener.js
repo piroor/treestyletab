@@ -520,7 +520,7 @@ async function onNewTabTracked(tab, info) {
       win.restoredCount++;
       if (!win.allTabsRestored) {
         log(`onNewTabTracked(${dumpTab(tab)}): Maybe starting to restore window`);
-        win.allTabsRestored = new Promise((resolve, _aReject) => {
+        win.allTabsRestored = (new Promise((resolve, _aReject) => {
           let lastCount = win.restoredCount;
           const timer = setInterval(() => {
             if (lastCount != win.restoredCount) {
@@ -533,8 +533,13 @@ async function onNewTabTracked(tab, info) {
             log('All tabs are restored');
             resolve(lastCount);
           }, 200);
+        })).then(async lastCount => {
+          await Tab.onWindowRestoring.dispatch({
+            windowId: tab.windowId,
+            restoredCount: lastCount,
+          });
+          return lastCount;
         });
-        win.allTabsRestored = Tab.onWindowRestoring.dispatch(tab.windowId);
       }
       SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,

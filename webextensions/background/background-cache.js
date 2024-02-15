@@ -124,10 +124,18 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 
   const permanentStates = await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: permanentStatus', promisedPermanentStates); // await at here for better performance
   const restored = await MetricsData.addAsync('restoreWindowFromEffectiveWindowCache: restoreTabsFromCache', restoreTabsFromCache(windowId, { cache, tabs, permanentStates }));
-  if (restored)
+  if (restored) {
     MetricsData.add(`restoreWindowFromEffectiveWindowCache: window ${windowId} succeeded`);
-  else
+    // Now we reload the sidebar if it is opened, because it is the easiest way
+    // to synchronize state of tabs completely.
+    browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_RELOAD,
+      windowId,
+    }).catch(ApiTabs.createErrorSuppressor());
+  }
+  else {
     MetricsData.add(`restoreWindowFromEffectiveWindowCache: window ${windowId} failed`);
+  }
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restored = ${restored}`);
   return restored;
@@ -447,13 +455,11 @@ Tab.onCreated.addListener((tab, _info = {}) => {
 });
 
 // Tree restoration for "Restore Previous Session"
-Tab.onWindowRestoring.addListener(async windowId => {
+Tab.onWindowRestoring.addListener(async ({ windowId, restoredCount }) => {
   if (!configs.useCachedTree)
     return;
 
-  log('Tabs.onWindowRestoring ', windowId);
-  const win = TabsStore.windows.get(windowId);
-  const restoredCount = await win.allTabsRestored;
+  log('Tabs.onWindowRestoring ', { windowId, restoredCount });
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
     return;
