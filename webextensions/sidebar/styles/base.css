@@ -866,6 +866,7 @@ tab-item:not(.collapsed) tab-closebox:active {
 .contextual-identity-marker {
   --contextual-identity-marker-width: calc(var(--tab-current-size) / 12);
   position: absolute;
+  z-index: var(--tab-ui-z-index);
 }
 
 tab-item:not(.faviconized) .contextual-identity-marker {
