@@ -47,5 +47,9 @@ if (matched) {
         location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}${hash}`;
       }
       break;
+
+    case 'forbidden':
+      location.href = `about:blank?${new URL(location.href).searchParams.get('url') || ''}`;
+      break;
   }
 }
