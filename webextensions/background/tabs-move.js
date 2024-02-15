@@ -179,7 +179,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
 
   const win = TabsStore.windows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
+  log('moveTabsInternallyAfter: ', tabs, `${referenceTab.id}(index=${referenceTab.index}`, options);
 
   const followingReferenceTab = referenceTab.$TST.nextTab;
   if (followingReferenceTab &&

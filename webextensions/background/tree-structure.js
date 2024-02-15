@@ -212,7 +212,7 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 async function attachTabFromRestoredInfo(tab, options = {}) {
   log('attachTabFromRestoredInfo ', tab, options);
   if (tab.$TST.temporaryMetadata.has('treeStructureAlreadyRestoredFromSessionData')) {
-    log(' => already restored');
+    log(' => already restored ', tab.id);
     return;
   }
 

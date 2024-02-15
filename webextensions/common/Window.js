@@ -188,6 +188,7 @@ export default class Window {
 
     const order = this.order;
     if (this.tabs.has(tab.id)) { // already tracked: update
+      const prevState = tab.reindexedBy;
       const index = order.indexOf(tab.id);
       order.splice(index, 1);
       order.splice(tab.index, 0, tab.id);
@@ -203,7 +204,7 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
-      log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
+      log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, prevState, index, '=>', tab.reindexedBy, order.join(', '));
     }
     else { // not tracked yet: add
       this.tabs.set(tab.id, tab);
