@@ -86,7 +86,7 @@ export async function loadURI(uri, options = {}) {
     }
     else {
       await browser.tabs.update(tabId, {
-        url: uri
+        url: sanitizeURL(uri),
       }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
   }
