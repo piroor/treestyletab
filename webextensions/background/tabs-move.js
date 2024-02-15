@@ -133,9 +133,12 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        () => toLines(Array.from(win.getOrderedTabs()),
-                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
+      log(
+        'Tab nodes rearranged by moveTabsInternallyBefore:\n',
+        (!configs.debug ? '' :
+          () => toLines(Array.from(win.getOrderedTabs()),
+                        tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`))
+      );
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -244,9 +247,12 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        () => toLines(Array.from(win.getOrderedTabs()),
-                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
+      log(
+        'Tab nodes rearranged by moveTabsInternallyAfter:\n',
+        (!configs.debug ? '' :
+          () => toLines(Array.from(win.getOrderedTabs()),
+                        tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`))
+      );
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
