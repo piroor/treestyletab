@@ -1108,6 +1108,10 @@ export async function tryOperationAllowed(type, message = {}, { targets, except,
       console.error(error);
     return [];
   });
+  if (!results) {
+    log(`=> ${type}: allowed because no one responded`);
+    return true;
+  }
   if (results.flat().some(result => result && result.result)) {
     log(`=> ${type}: canceled by some helper addon`);
     return false;
