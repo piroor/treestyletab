@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2022
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -25,6 +25,8 @@
  *
  * ***** END LICENSE BLOCK ******/
 'use strict';
+
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   log as internalLogger,
@@ -39,6 +41,8 @@ import Tab from '/common/Tab.js';
 
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
+
+export const onForbiddenURLRequested = new EventListenerManager();
 
 function log(...args) {
   internalLogger('background/tabs-open', ...args);
@@ -256,8 +260,10 @@ function sanitizeURL(url) {
   if (/^about:reader\?/.test(url))
     return (new URL(url)).searchParams.get('url') || 'about:blank';
 
-  if (FORBIDDEN_URL_MATCHER.test(url))
+  if (FORBIDDEN_URL_MATCHER.test(url)) {
+    onForbiddenURLRequested.dispatch(url);
     return `about:blank?forbidden-url=${url}`;
+  }
 
   return url;
 }
