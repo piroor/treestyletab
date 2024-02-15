@@ -652,9 +652,9 @@ tab-item .extra-items-container.behind {
 }
 
 .tabs.pinned {
-  align-items: center;
+  align-items: stretch;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-grow: 0;
   flex-wrap: wrap;
   justify-content: flex-start;
