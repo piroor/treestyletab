@@ -939,7 +939,7 @@ export async function sha1sum(string) {
 }
 
 export function sanitizeForHTMLText(text) {
-  return text
+  return (text || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
