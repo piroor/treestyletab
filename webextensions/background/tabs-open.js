@@ -257,7 +257,7 @@ function sanitizeURL(url) {
     return (new URL(url)).searchParams.get('url') || 'about:blank';
 
   if (FORBIDDEN_URL_MATCHER.test(url))
-    return `ext+treestyletab:forbidden?url=${url}`;
+    return `about:blank?forbidden-url=${url}`;
 
   return url;
 }
