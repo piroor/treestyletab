@@ -241,8 +241,18 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     !activeTab.$TST.collapsed &&
     activeTabIndex > -1
   );
-  const activeTabIsAboveViewport = activeTabCanBeSticky && activeTabIndex < firstInViewportIndex && mNormalScrollBox.scrollTop > 0;
-  const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex && mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax;
+  const activeTabIsAboveViewport = (
+    activeTabCanBeSticky &&
+    activeTabIndex < firstInViewportIndex &&
+    mNormalScrollBox.scrollTop > 0
+  );
+  const activeTabIsBelowViewport = (
+    activeTabCanBeSticky &&
+    activeTabIndex > lastInViewportIndex &&
+    mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
+    (activeTabIndex - lastInViewportIndex > 1 ||
+     parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount) == 0)
+  );
   let stickyTabCleared = false;
   if (activeTabIsAboveViewport ||
       activeTabIsBelowViewport) {
