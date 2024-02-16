@@ -68,7 +68,7 @@ Background.onReady.addListener(() => {
 });
 
 if (browser.sidebarAction)
-  (browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
+  (browser.action || browser.browserAction)?.onClicked.addListener(onToolbarButtonClick);
 browser.commands.onCommand.addListener(onShortcutCommand);
 browser.runtime.onMessage.addListener(onMessage);
 TSTAPI.onMessageExternal.addListener(onMessageExternal);
@@ -82,7 +82,7 @@ Background.onDestroy.addListener(() => {
   browser.runtime.onMessage.removeListener(onMessage);
   TSTAPI.onMessageExternal.removeListener(onMessageExternal);
   if (browser.sidebarAction)
-    (browser.action || browser.browserAction).onClicked.removeListener(onToolbarButtonClick);
+    (browser.action || browser.browserAction)?.onClicked.removeListener(onToolbarButtonClick);
 });
 
 

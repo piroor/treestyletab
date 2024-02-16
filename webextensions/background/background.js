@@ -850,8 +850,9 @@ async function updateIconForBrowserTheme(theme) {
   await Promise.all([
     ...ContextMenu.getItemIdsWithIcon().map(id => browser.menus.update(id, { icons: menuIcons })),
     browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()),
-    (browser.action || browser.browserAction).setIcon({ path: toolbarIcons }),
-    browser.sidebarAction && browser.sidebarAction.setIcon({ path: sidebarIcons }),
+    browser.action?.setIcon({ path: toolbarIcons }), // Manifest v2
+    browser.browserAction?.setIcon({ path: toolbarIcons }), // Manifest v3
+    browser.sidebarAction?.setIcon({ path: sidebarIcons }),
   ]);
 }
 

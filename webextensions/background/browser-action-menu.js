@@ -2039,6 +2039,7 @@ function createItem(id, item, parent) {
   }
 }
 
+if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
 for (let i = 0, maxi = mItems.length; i < maxi; i++) {
   createItem(`browserActionItem:${i}`, mItems[i]);
 }
@@ -2130,3 +2131,4 @@ configs.$addObserver(key => {
     updateExpertOptionsVisibility();
 });
 configs.$loaded.then(updateExpertOptionsVisibility);
+}
