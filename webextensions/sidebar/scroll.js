@@ -171,20 +171,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
   const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
 
-  // We need to use min-height instead of height for a flexbox.
-  const minHeight              = `${allRenderableTabsSize}px`;
   const allTabsSizeHolder      = win.containerElement.parentNode;
-  const allTabsSizeHolderStyle = allTabsSizeHolder.style;
-  const resized = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
-  if (resized) {
-    // For underflow case, we need to unset min-height to put the "new tab"
-    // button next to the last tab immediately.
-    allTabsSizeHolderStyle.minHeight = currentViewPortSize < allRenderableTabsSize ? minHeight : '';
-    allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
-    reserveToUpdateScrolledState(mNormalScrollBox)
-    onVirtualScrollViewportUpdated.dispatch(resized);
-  }
+  const rootStyle = document.documentElement.style;
+  rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
+  // For underflow case, we need to unset min-height to put the "new tab"
+  // button next to the last tab immediately.
+  rootStyle.setProperty('--virtual-scroll-container-size', currentViewPortSize < allRenderableTabsSize ?
+    `calc(${allRenderableTabsSize}px + var(--virtual-scroll-sticky-tab-shift, 0px))` : '');
+
+  const resized = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
+  allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
   const range = document.createRange();
   //range.selectNodeContents(mTabBar);
@@ -197,6 +194,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const maxViewportSize     = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
   const viewPortSize = currentViewPortSize || maxViewportSize;
+  rootStyle.setProperty('--viewport-size', `${viewPortSize}px`);
+
   const renderablePaddingSize = viewPortSize;
   scrollPosition = Math.max(
     0,
@@ -209,6 +208,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
           mNormalScrollBox.scrollTop
     )
   );
+  rootStyle.setProperty('--scroll-position', `${scrollPosition}px`);
 
   const firstRenderableIndex = Math.max(
     0,
@@ -229,7 +229,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
 
   let activeTab = Tab.getActiveTab(windowId);
-  if (activeTab.pinned &&
+  if (activeTab?.pinned &&
       activeTab.$TST.bundledTab &&
       !activeTab.$TST.bundledTab.pinned)
     activeTab = activeTab.$TST.bundledTab;
@@ -263,13 +263,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     mLastStickyTabId = null;
   }
 
+  const renderedOffset = tabSize * firstRenderableIndex;
+  rootStyle.setProperty('--virtual-scroll-contents-offset', `calc(${renderedOffset}px + var(--virtual-scroll-sticky-tab-shift, 0px))`);
+  // we need to shift contents one more, to cover the reduced height due to the sticky tab.
+  rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', activeTabIsAboveViewport ? `${tabSize}px` : '0px');
 
-  const renderedOffset = tabSize * (firstRenderableIndex + (activeTabIsAboveViewport ? 1 : 0));
+  if (resized) {
+    reserveToUpdateScrolledState(mNormalScrollBox)
+    onVirtualScrollViewportUpdated.dispatch(resized);
+  }
 
-  allTabsSizeHolderStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
-  allTabsSizeHolderStyle.setProperty('--viewport-size',         `${viewPortSize}px`);
-  allTabsSizeHolderStyle.setProperty('--rendered-offset-size',  `${renderedOffset}px`);
-  allTabsSizeHolderStyle.setProperty('--scroll-position',       `${scrollPosition}px`);
+
   document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT, activeTabIsAboveViewport);
   document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT, activeTabIsBelowViewport);
 
@@ -341,11 +345,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       }; break;
     }
   }
-
-  const transform      = `translateY(${renderedOffset}px)`;
-  const containerStyle = win.containerElement.style;
-  if (containerStyle.transform != transform)
-    containerStyle.transform = transform;
 
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 
