@@ -380,13 +380,16 @@ function onMouseDown(event) {
     if (mousedown.detail.button == 0 &&
         onRegularArea &&
         !wasMultiselectionAction &&
-        tab)
+        tab) {
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_ACTIVATE_TAB,
         tabId: tab.id,
         byMouseOperation:   true,
         keepMultiselection: true
       });
+      if (tab.active || tab.$TST.states.has(Constants.kTAB_STATE_BUNDLED_ACTIVE)) // sticky active tab
+        Scroll.scrollToTab(tab);
+    }
   });
 
   EventUtils.setLastMousedown(event.button, mousedown);
