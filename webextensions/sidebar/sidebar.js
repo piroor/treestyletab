@@ -232,6 +232,7 @@ export async function init() {
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
       onConfigChange('shiftTabsForScrollbarOnlyOnHover');
+      onConfigChange('stickyActiveTab');
 
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
@@ -967,6 +968,10 @@ async function onConfigChange(changedKey) {
 
     case 'shiftTabsForScrollbarOnlyOnHover':
       document.documentElement.classList.toggle('shift-tabs-for-scrollbar-only-on-hover', !!configs[changedKey]);
+      break;
+
+    case 'stickyActiveTab':
+      Scroll.reserveToRenderVirtualScrollViewport();
       break;
 
     default:
