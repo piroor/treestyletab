@@ -241,15 +241,14 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     !activeTab.$TST.collapsed &&
     activeTabIndex > -1
   );
-  const activeTabIsAboveViewport = activeTabCanBeSticky && activeTabIndex < firstInViewportIndex;
-  const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex;
+  const activeTabIsAboveViewport = activeTabCanBeSticky && activeTabIndex < firstInViewportIndex && mNormalScrollBox.scrollTop > 0;
+  const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex && mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax;
   let stickyTabCleared = false;
   if (activeTabIsAboveViewport ||
       activeTabIsBelowViewport) {
     if (activeTabIndex >= firstRenderableIndex &&
         activeTabIndex <= lastRenderableIndex)
       toBeRenderedTabs.splice(toBeRenderedTabs.indexOf(activeTab), 1);
-    SidebarTabs.unrenderTab(activeTab);
     SidebarTabs.renderTab(activeTab, { containerElement: mNormalScrollBox });
     mLastStickyTabId = activeTab.id;
   }
