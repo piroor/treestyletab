@@ -220,11 +220,11 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       Math.ceil((scrollPosition + viewPortSize + renderablePaddingSize) / tabSize)
     )
   );
+  const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
 
-  let toBeRenderedTabs       = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
   const activeTab            = Tab.getActiveTab(windowId);
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
-  const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize) / tabSize);
+  const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
   const activeTabIndex       = renderableTabs.indexOf(activeTab);
   const activeTabCanBeSticky = !!(
     configs.stickyActiveTab &&
@@ -236,9 +236,16 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex;
   if (activeTabIsAboveViewport ||
       activeTabIsBelowViewport) {
-    const toBeRenderedTabsSet = new Set(toBeRenderedTabs);
-    toBeRenderedTabsSet.add(activeTab);
-    toBeRenderedTabs = [...toBeRenderedTabsSet].sort(Tab.compare);
+    if (activeTabIndex >= firstRenderableIndex &&
+        activeTabIndex <= lastRenderableIndex)
+      toBeRenderedTabs.splice(toBeRenderedTabs.indexOf(activeTab), 1);
+    SidebarTabs.unrenderTab(activeTab);
+    SidebarTabs.renderTab(activeTab, { containerElement: mNormalScrollBox });
+  }
+  else if (activeTabIndex > -1 &&
+           activeTab.$TST.element &&
+           activeTab.$TST.element.parentNode != win.containerElement) {
+    SidebarTabs.unrenderTab(activeTab);
   }
 
   const renderedOffset = tabSize * (firstRenderableIndex + (activeTabIsAboveViewport ? 1 : 0));
@@ -313,7 +320,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
           Tab.get(mLastRenderedVirtualScrollTabIds[fromEnd]) :
           null;
         for (const id of insertIds) {
-          SidebarTabs.renderTabBefore(Tab.get(id), referenceTab);
+          SidebarTabs.renderTab(Tab.get(id), { insertBefore: referenceTab });
         }
       }; break;
     }

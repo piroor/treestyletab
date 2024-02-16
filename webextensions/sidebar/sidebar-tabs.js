@@ -211,10 +211,6 @@ async function syncTabsOrder() {
   }
 }
 
-export function renderTab(tab) {
-  return renderTabBefore(tab, undefined);
-}
-
 function getTabElementId(tab) {
   return `tab-${tab.id}`;
 }
@@ -222,7 +218,7 @@ function getTabElementId(tab) {
 const mRenderedTabIds = new Set();
 const mUnrenderedTabIds = new Set();
 
-export function renderTabBefore(tab, referenceTab = undefined) {
+export function renderTab(tab, { containerElement, insertBefore } = {}) {
   if (!tab) {
     console.log('WARNING: Null tab has requested to be rendered! ', new Error().stack);
     return false;
@@ -247,12 +243,16 @@ export function renderTabBefore(tab, referenceTab = undefined) {
 
   const win = TabsStore.windows.get(tab.windowId);
   const tabElement = tab.$TST.element;
-  const containerElement = tab.pinned ?
-    win.pinnedContainerElement :
-    win.containerElement;
+  containerElement = containerElement || (
+    tab.pinned ?
+      win.pinnedContainerElement :
+      win.containerElement
+  );
 
-  let nextElement = referenceTab && referenceTab.$TST.element;
-  if (nextElement === undefined) {
+  let nextElement = insertBefore && insertBefore.$TST.element;
+  if (nextElement === undefined &&
+      (containerElement == win.containerElement ||
+       containerElement == win.pinnedContainerElement)) {
     const nextTab = tab.$TST.nearestSameTypeRenderedTab;
     log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
     nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
