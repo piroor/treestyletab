@@ -221,7 +221,31 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     )
   );
 
-  const toBeRenderedTabIds = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1).map(tab => tab.id);
+  let toBeRenderedTabs       = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
+  const activeTab            = Tab.getActiveTab(windowId);
+  const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
+  const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize) / tabSize);
+  const activeTabIndex       = renderableTabs.indexOf(activeTab);
+  const activeTabCanBeSticky = !!(
+    configs.stickyActiveTab &&
+    activeTab &&
+    !activeTab.$TST.collapsed &&
+    activeTabIndex > -1
+  );
+  const activeTabIsAboveViewport = activeTabCanBeSticky && activeTabIndex < firstInViewportIndex;
+  const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex;
+  if (activeTabIsAboveViewport ||
+      activeTabIsBelowViewport) {
+    const toBeRenderedTabsSet = new Set(toBeRenderedTabs);
+    toBeRenderedTabsSet.add(activeTab);
+    toBeRenderedTabs = [...toBeRenderedTabsSet].sort(Tab.compare);
+  }
+  document.documentElement.classList.toggle(
+    Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB,
+    activeTabIsAboveViewport || activeTabIsBelowViewport
+  );
+
+  const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
   log('renderVirtualScrollViewport ', {
     firstRenderableIndex,
@@ -236,6 +260,11 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     currentViewPortSize,
     //precedingAreaSize,
     //followingAreaSize,
+    activeTabIndex,
+    firstInViewportIndex,
+    lastInViewportIndex,
+    activeTabIsAboveViewport,
+    activeTabIsBelowViewport,
   });
 
   const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
@@ -290,6 +319,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const containerStyle = win.containerElement.style;
   if (containerStyle.transform != transform)
     containerStyle.transform = transform;
+  containerStyle.setProperty('--unshift-sticky-active-tab', activeTabIsAboveViewport ? `translateY(${-renderedOffset}px)` : '');
 
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 

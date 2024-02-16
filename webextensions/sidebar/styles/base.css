@@ -239,8 +239,9 @@ tab-sound-button */ {
 }
 
 .virtual-scroll-container {
+  contain: paint; /* alternative of "overflow: hidden" */
   min-height: 0px;
-  overflow: hidden;
+  /* overflow: hidden; *//* this prevents "position:sticky" of contents, so we use "contain:paind" instead. */
 }
 
 :root.animation .virtual-scroll-container {
@@ -364,6 +365,14 @@ tab-item {
   /*overflow: hidden;*/ /* we should not apply overflow:hidden here to allow rendering box-shadow of contents */
   pointer-events: none;
   position: relative;
+}
+
+:root.have-sticky-active-tab .tabs.normal tab-item.active:not(.collapsed) {
+  bottom: 0;
+  position: sticky;
+  top: 0;
+  transform: var(--unshift-sticky-active-tab, none);
+  z-index: calc(var(--tab-ui-z-index) + 10);
 }
 
 tab-item-substance {
