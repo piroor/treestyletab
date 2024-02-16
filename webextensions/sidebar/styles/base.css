@@ -391,7 +391,8 @@ tab-item {
 :root.have-sticky-active-tab-below-viewport #normal-tabs-container > tab-item {
   bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size) + var(--tabbar-bottom-area-size) + var(--subpanel-area-size));
 }
-:root.have-sticky-active-tab-above-viewport #normal-tabs-container > tab-item .extra-items-container.indent {
+:root.have-sticky-active-tab-above-viewport #normal-tabs-container > tab-item .extra-items-container.indent,
+:root.have-sticky-active-tab-below-viewport #normal-tabs-container > tab-item .extra-items-container.indent {
   display: none;
 }
 
