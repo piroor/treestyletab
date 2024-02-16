@@ -2040,95 +2040,95 @@ function createItem(id, item, parent) {
 }
 
 if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
-for (let i = 0, maxi = mItems.length; i < maxi; i++) {
-  createItem(`browserActionItem:${i}`, mItems[i]);
-}
+  for (let i = 0, maxi = mItems.length; i < maxi; i++) {
+    createItem(`browserActionItem:${i}`, mItems[i]);
+  }
 
-browser.menus.onShown.addListener((info, _tab) => {
-  if (!info.contexts.includes(MENU_CONTEXT))
-    return;
+  browser.menus.onShown.addListener((info, _tab) => {
+    if (!info.contexts.includes(MENU_CONTEXT))
+      return;
 
-  let updated = false;
-  for (const item of mUpdatableItemsById.values()) {
-    const params = {};
-    if (item.dynamicTitle) {
-      const title = item.title;
-      if (title != item.lastTitle) {
-        item.lastTitle = title;
-        params.title = title;
+    let updated = false;
+    for (const item of mUpdatableItemsById.values()) {
+      const params = {};
+      if (item.dynamicTitle) {
+        const title = item.title;
+        if (title != item.lastTitle) {
+          item.lastTitle = title;
+          params.title = title;
+        }
+      }
+      if (item.type == 'checkbox' || item.type == 'radio') {
+        params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+        if (item.permissions) {
+          Permissions.isGranted(item.permissions)
+            .then(async granted => {
+              if (item.checked == granted)
+                return;
+              item.checked = granted;
+              await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
+              await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+            });
+          delete params.checked;
+        }
+      }
+      if ('visible' in item)
+        params.visible = item.visible;
+      if ('checked' in params || 'title' in params) {
+        browser.menus.update(item.id, params).catch(ApiTabs.createErrorSuppressor());
+        updated = true;
       }
     }
-    if (item.type == 'checkbox' || item.type == 'radio') {
-      params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
-      if (item.permissions) {
-        Permissions.isGranted(item.permissions)
+    if (updated)
+      browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+  });
+
+  browser.menus.onClicked.addListener((info, _tab) => {
+    const item = mItemsById.get(info.menuItemId);
+    log('onClicked ', { id: info.menuItemId, item });
+    if (!item)
+      return;
+
+    if (item.url) {
+      browser.tabs.create({ url: item.url });
+      return;
+    }
+    if (item.key) {
+      configs[item.key] = 'value' in item ? item.value : !configs[item.key];
+      return;
+    }
+    if (item.permissions) {
+      if (item.checked) {
+        browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
+      }
+      else {
+        browser.permissions.request(item.permissions)
           .then(async granted => {
-            if (item.checked == granted)
-              return;
-            item.checked = granted;
-            await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
-            await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
-          });
-        delete params.checked;
+            if (granted === undefined)
+              granted = await Permissions.isGranted(item.permissions);
+            if (granted) {
+              browser.runtime.sendMessage({
+                type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+                permissions: item.permissions
+              }).catch(_error => {});
+            }
+          })
+          .catch(ApiTabs.createErrorHandler());
       }
+      return;
     }
-    if ('visible' in item)
-      params.visible = item.visible;
-    if ('checked' in params || 'title' in params) {
-      browser.menus.update(item.id, params).catch(ApiTabs.createErrorSuppressor());
-      updated = true;
-    }
-  }
-  if (updated)
-    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
-});
-
-browser.menus.onClicked.addListener((info, _tab) => {
-  const item = mItemsById.get(info.menuItemId);
-  log('onClicked ', { id: info.menuItemId, item });
-  if (!item)
-    return;
-
-  if (item.url) {
-    browser.tabs.create({ url: item.url });
-    return;
-  }
-  if (item.key) {
-    configs[item.key] = 'value' in item ? item.value : !configs[item.key];
-    return;
-  }
-  if (item.permissions) {
-    if (item.checked) {
-      browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
-    }
-    else {
-      browser.permissions.request(item.permissions)
-        .then(async granted => {
-          if (granted === undefined)
-            granted = await Permissions.isGranted(item.permissions);
-          if (granted) {
-            browser.runtime.sendMessage({
-              type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-              permissions: item.permissions
-            }).catch(_error => {});
-          }
-        })
-        .catch(ApiTabs.createErrorHandler());
-    }
-    return;
-  }
-});
+  });
 
 
-function updateExpertOptionsVisibility() {
-  for (const id of mExpertItems) {
-    browser.menus.update(id, { visible: configs.showExpertOptions });
+  function updateExpertOptionsVisibility() {
+    for (const id of mExpertItems) {
+      browser.menus.update(id, { visible: configs.showExpertOptions });
+    }
+    browser.menus.refresh();
   }
-  browser.menus.refresh();
-}
-configs.$addObserver(key => {
-  if (key == 'showExpertOptions')
-    updateExpertOptionsVisibility();
-});
-configs.$loaded.then(updateExpertOptionsVisibility);
+  configs.$addObserver(key => {
+    if (key == 'showExpertOptions')
+      updateExpertOptionsVisibility();
+  });
+  configs.$loaded.then(updateExpertOptionsVisibility);
 }
