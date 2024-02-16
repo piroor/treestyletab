@@ -152,6 +152,7 @@ export function reserveToRenderVirtualScrollViewport({ force } = {}) {
 }
 
 let mLastRenderedVirtualScrollTabIds = [];
+let mLastStickyTabId = null;
 
 function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
@@ -249,11 +250,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       toBeRenderedTabs.splice(toBeRenderedTabs.indexOf(activeTab), 1);
     SidebarTabs.unrenderTab(activeTab);
     SidebarTabs.renderTab(activeTab, { containerElement: mNormalScrollBox });
+    mLastStickyTabId = activeTab.id;
   }
   else if (activeTabIndex > -1 &&
            activeTab.$TST.element &&
            activeTab.$TST.element.parentNode != win.containerElement) {
     SidebarTabs.unrenderTab(activeTab);
+    mLastStickyTabId = null;
+  }
+  else if (mLastStickyTabId) {
+    SidebarTabs.unrenderTab(Tab.get(mLastStickyTabId));
+    mLastStickyTabId = null;
   }
 
 
