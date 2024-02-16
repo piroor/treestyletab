@@ -249,7 +249,7 @@ tab-sound-button */ {
   transform: translateY(var(--virtual-scroll-contents-offset, 0px));
 }
 
-:root.animation .virtual-scroll-container {
+:root.animation:not(.clearing-sticky-tab-shift) .virtual-scroll-container {
   transition: min-height var(--collapse-animation);
 }
 

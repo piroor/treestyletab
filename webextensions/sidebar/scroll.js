@@ -243,6 +243,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   );
   const activeTabIsAboveViewport = activeTabCanBeSticky && activeTabIndex < firstInViewportIndex;
   const activeTabIsBelowViewport = activeTabCanBeSticky && activeTabIndex > lastInViewportIndex;
+  let stickyTabCleared = false;
   if (activeTabIsAboveViewport ||
       activeTabIsBelowViewport) {
     if (activeTabIndex >= firstRenderableIndex &&
@@ -257,16 +258,29 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
            activeTab.$TST.element.parentNode != win.containerElement) {
     SidebarTabs.unrenderTab(activeTab);
     mLastStickyTabId = null;
+    stickyTabCleared = true;
   }
   else if (mLastStickyTabId) {
     SidebarTabs.unrenderTab(Tab.get(mLastStickyTabId));
     mLastStickyTabId = null;
+    stickyTabCleared = true;
   }
 
   const renderedOffset = tabSize * firstRenderableIndex;
   rootStyle.setProperty('--virtual-scroll-contents-offset', `calc(${renderedOffset}px + var(--virtual-scroll-sticky-tab-shift, 0px))`);
   // we need to shift contents one more, to cover the reduced height due to the sticky tab.
-  rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', activeTabIsAboveViewport ? `${tabSize}px` : '0px');
+  if (activeTabIsAboveViewport) {
+    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', `${tabSize}px`);
+  }
+  else {
+    if (stickyTabCleared) { // prevent to apply annoying animation effect
+      document.documentElement.classList.add('clearing-sticky-tab-shift');
+      window.requestAnimationFrame(() => {
+        document.documentElement.classList.remove('clearing-sticky-tab-shift');
+      });
+    }
+    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', '0px');
+  }
 
   if (resized) {
     reserveToUpdateScrolledState(mNormalScrollBox)
