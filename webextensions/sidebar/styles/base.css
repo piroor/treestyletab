@@ -29,19 +29,20 @@
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;
   --collapse-animation: var(--collapse-duration) ease-out;
-  --tab-animation: background    var(--color-animation),
-                   bottom        var(--collapse-animation),
-                   color         var(--color-animation),
-                   left          var(--collapse-animation),
-                   margin-bottom var(--collapse-animation),
-                   margin-top    var(--collapse-animation),
-                   max-height    var(--collapse-animation),
-                   max-width     var(--collapse-animation),
-                   min-height    var(--collapse-animation),
-                   min-width     var(--collapse-animation),
-                   opacity       var(--collapse-animation),
-                   padding       var(--collapse-animation), /* for extra margin on overlay-scrollbar mode */
-                   right         var(--collapse-animation),
+  --tab-basic-animation: background    var(--color-animation),
+                         color         var(--color-animation),
+                         left          var(--collapse-animation),
+                         margin-bottom var(--collapse-animation),
+                         margin-top    var(--collapse-animation),
+                         max-height    var(--collapse-animation),
+                         max-width     var(--collapse-animation),
+                         min-height    var(--collapse-animation),
+                         min-width     var(--collapse-animation),
+                         opacity       var(--collapse-animation),
+                         padding       var(--collapse-animation), /* for extra margin on overlay-scrollbar mode */
+                         right         var(--collapse-animation);
+  --tab-animation: var(--tab-basic-animation),
+                   background    var(--color-animation),
                    top           var(--collapse-animation);
   --tab-indent-animation: margin-left   var(--indent-animation),
                           margin-right  var(--indent-animation);
@@ -374,6 +375,7 @@ tab-item {
      "contain:paint" hides overflow-start-indicator and overflow-end-indicator
      simulated with ::before and ::after pseudo elements. */
   position: fixed;
+  transition: var(--tab-basic-animation);
   z-index: calc(var(--tab-ui-z-index) + 10);
 }
 :root.have-sticky-active-tab-above-viewport .tabs.normal tab-item.active:not(.collapsed) {
