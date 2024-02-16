@@ -222,9 +222,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   );
   const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
 
-  const activeTab            = Tab.getActiveTab(windowId);
+
+  // sticky active tab operations
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
   const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
+
+  let activeTab = Tab.getActiveTab(windowId);
+  if (activeTab.pinned &&
+      activeTab.$TST.bundledTab &&
+      !activeTab.$TST.bundledTab.pinned)
+    activeTab = activeTab.$TST.bundledTab;
+
   const activeTabIndex       = renderableTabs.indexOf(activeTab);
   const activeTabCanBeSticky = !!(
     configs.stickyActiveTab &&
@@ -247,6 +255,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
            activeTab.$TST.element.parentNode != win.containerElement) {
     SidebarTabs.unrenderTab(activeTab);
   }
+
 
   const renderedOffset = tabSize * (firstRenderableIndex + (activeTabIsAboveViewport ? 1 : 0));
 
