@@ -169,6 +169,11 @@ const mItems = [
         expert: true
       },
       {
+        title: browser.i18n.getMessage('config_stickyActiveTab_label'),
+        key:   'stickyActiveTab',
+        type:  'checkbox',
+      },
+      {
         title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
         key:   'showDialogInSidebar',
         type:  'checkbox'

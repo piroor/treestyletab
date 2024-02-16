@@ -383,6 +383,7 @@
   "config_suppressGapFromShownOrHiddenToolbarOnFullScreen_label": { "message": "フルスクリーンモードのウィンドウ" },
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Firefox 85以降での新しい空のタブ" },
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "サイドバーをマウスで操作した場合のみ抑制する" },
+  "config_stickyActiveTab_label": { "message": "画面外にスクロールアウトした現在のタブをタブバーの端に固定表示する" },
   "config_showDialogInSidebar_label": { "message": "可能であればサイドバー内でダイアログを表示する" },
 
 
