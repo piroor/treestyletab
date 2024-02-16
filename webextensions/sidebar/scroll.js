@@ -220,12 +220,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       Math.ceil((scrollPosition + viewPortSize + renderablePaddingSize) / tabSize)
     )
   );
-  const renderedOffset = tabSize * firstRenderableIndex;
-
-  allTabsSizeHolderStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
-  allTabsSizeHolderStyle.setProperty('--viewport-size',         `${viewPortSize}px`);
-  allTabsSizeHolderStyle.setProperty('--rendered-offset-size',  `${renderedOffset}px`);
-  allTabsSizeHolderStyle.setProperty('--scroll-position',       `${scrollPosition}px`);
 
   let toBeRenderedTabs       = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
   const activeTab            = Tab.getActiveTab(windowId);
@@ -246,6 +240,13 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     toBeRenderedTabsSet.add(activeTab);
     toBeRenderedTabs = [...toBeRenderedTabsSet].sort(Tab.compare);
   }
+
+  const renderedOffset = tabSize * (firstRenderableIndex + (activeTabIsAboveViewport ? 1 : 0));
+
+  allTabsSizeHolderStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
+  allTabsSizeHolderStyle.setProperty('--viewport-size',         `${viewPortSize}px`);
+  allTabsSizeHolderStyle.setProperty('--rendered-offset-size',  `${renderedOffset}px`);
+  allTabsSizeHolderStyle.setProperty('--scroll-position',       `${scrollPosition}px`);
   document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT, activeTabIsAboveViewport);
   document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT, activeTabIsBelowViewport);
 
