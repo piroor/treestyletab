@@ -239,9 +239,8 @@ tab-sound-button */ {
 }
 
 .virtual-scroll-container {
-  contain: paint; /* alternative of "overflow: hidden" */
   min-height: 0px;
-  /* overflow: hidden; *//* this prevents "position:sticky" of contents, so we use "contain:paind" instead. */
+  overflow: hidden;
 }
 
 :root.animation .virtual-scroll-container {
@@ -367,12 +366,21 @@ tab-item {
   position: relative;
 }
 
-:root.have-sticky-active-tab .tabs.normal tab-item.active:not(.collapsed) {
-  bottom: 0;
-  position: sticky;
-  top: 0;
-  transform: var(--unshift-sticky-active-tab, none);
+:root.have-sticky-active-tab-above-viewport .tabs.normal tab-item.active:not(.collapsed),
+:root.have-sticky-active-tab-below-viewport .tabs.normal tab-item.active:not(.collapsed) {
+  /* We need to use "position:fixed" and manually calculated positioning
+     instead of "position:sticky", because "contain:paint" is required to apply
+     "position:sticky" (it does not work with "overflow:hidden"!) but
+     "contain:paint" hides overflow-start-indicator and overflow-end-indicator
+     simulated with ::before and ::after pseudo elements. */
+  position: fixed;
   z-index: calc(var(--tab-ui-z-index) + 10);
+}
+:root.have-sticky-active-tab-above-viewport .tabs.normal tab-item.active:not(.collapsed) {
+  top: calc(var(--scroll-position) - var(--rendered-offset-size));
+}
+:root.have-sticky-active-tab-below-viewport .tabs.normal tab-item.active:not(.collapsed) {
+  bottom: calc(var(--all-visible-tabs-size) - var(--scroll-position) + var(--rendered-offset-size) - var(--viewport-size));
 }
 
 tab-item-substance {

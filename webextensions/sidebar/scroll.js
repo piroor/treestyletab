@@ -220,6 +220,12 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       Math.ceil((scrollPosition + viewPortSize + renderablePaddingSize) / tabSize)
     )
   );
+  const renderedOffset = tabSize * firstRenderableIndex;
+
+  allTabsSizeHolderStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
+  allTabsSizeHolderStyle.setProperty('--viewport-size',         `${viewPortSize}px`);
+  allTabsSizeHolderStyle.setProperty('--rendered-offset-size',  `${renderedOffset}px`);
+  allTabsSizeHolderStyle.setProperty('--scroll-position',       `${scrollPosition}px`);
 
   let toBeRenderedTabs       = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
   const activeTab            = Tab.getActiveTab(windowId);
@@ -240,10 +246,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     toBeRenderedTabsSet.add(activeTab);
     toBeRenderedTabs = [...toBeRenderedTabsSet].sort(Tab.compare);
   }
-  document.documentElement.classList.toggle(
-    Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB,
-    activeTabIsAboveViewport || activeTabIsBelowViewport
-  );
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT, activeTabIsAboveViewport);
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT, activeTabIsBelowViewport);
 
   const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
@@ -314,12 +318,10 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     }
   }
 
-  const renderedOffset = tabSize * firstRenderableIndex;
   const transform      = `translateY(${renderedOffset}px)`;
   const containerStyle = win.containerElement.style;
   if (containerStyle.transform != transform)
     containerStyle.transform = transform;
-  containerStyle.setProperty('--unshift-sticky-active-tab', activeTabIsAboveViewport ? `translateY(${-renderedOffset}px)` : '');
 
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 

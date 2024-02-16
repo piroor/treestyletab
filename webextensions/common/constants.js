@@ -247,7 +247,8 @@ export const kTABBAR_STATE_HAS_VISUAL_GAP         = 'has-visual-gap';
 export const kTABBAR_STATE_HOVER_ON_TOP_EDGE      = 'hover-on-top-edge';
 export const kTABBAR_STATE_SCROLLBAR_AUTOHIDE     = 'scrollbar-autohide';
 export const kTABBAR_STATE_FAVICONIZE_PINNED_TABS = 'faviconize-pinned-tabs';
-export const kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB = 'have-sticky-active-tab';
+export const kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT = 'have-sticky-active-tab-above-viewport';
+export const kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT = 'have-sticky-active-tab-below-viewport';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
