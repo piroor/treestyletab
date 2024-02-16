@@ -263,6 +263,31 @@ tab-sound-button */ {
   overflow-y: scroll;
 }
 
+/* overflow-start-indicator and overflow-end-indicator
+   ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
+.overflow-indicator {
+  background-repeat: no-repeat;
+  opacity: 0;
+  position: fixed;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: var(--over-tabs-z-index);
+}
+:root.animation .overflow-indicator {
+  transition: opacity 150ms ease;
+}
+.overflow-indicator.start {
+  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
+}
+.overflow-indicator.end {
+  bottom: calc(var(--subpanel-area-size) + var(--tabbar-bottom-area-size) + var(--after-tabs-area-size));
+}
+#normal-tabs-container.overflow.scrolled .overflow-indicator.start,
+#normal-tabs-container.overflow:not(.fully-scrolled) .overflow-indicator.end {
+  opacity: 1;
+}
+
 .tabs-spacer {
   display: none;
   min-height: 0;

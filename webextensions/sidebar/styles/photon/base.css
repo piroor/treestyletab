@@ -63,45 +63,29 @@ tab-item.pinned tab-item-substance {
 
 /* overflow-start-indicator and overflow-end-indicator
    ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
-#normal-tabs-container .virtual-scroll-container::before,
-#normal-tabs-container .virtual-scroll-container::after {
-  background-repeat: no-repeat;
-  content: " ";
+.overflow-indicator {
   height: 0.6em;
-  opacity: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  transition: opacity 150ms ease;
-  z-index: var(--over-tabs-z-index);
 }
-#normal-tabs-container .virtual-scroll-container::before {
+.overflow-indicator.start {
   background-position: 0 -0.3em;
-  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
 }
-#normal-tabs-container .virtual-scroll-container::after {
+.overflow-indicator.end {
   background-position: 0 0.3em;
   border-bottom: 1px solid var(--tab-border);
-  bottom: calc(var(--subpanel-area-size) + var(--tabbar-bottom-area-size) + var(--after-tabs-area-size));
 }
-:root.left #normal-tabs-container .virtual-scroll-container::before,
-:root.left #normal-tabs-container .virtual-scroll-container::after {
+:root.left .overflow-indicator.start,
+:root.left .overflow-indicator.end {
   background-image: radial-gradient(ellipse at right,
                                     rgba(0,0,0,0.2) 0%,
                                     rgba(0,0,0,0.2) 7.6%,
                                     rgba(0,0,0,0) 87.5%);
 }
-:root.right #normal-tabs-container .virtual-scroll-container::before,
-:root.right #normal-tabs-container .virtual-scroll-container::after {
+:root.right .overflow-indicator.start,
+:root.right .overflow-indicator.end {
   background-image: radial-gradient(ellipse at left,
                                     rgba(0,0,0,0.2) 0%,
                                     rgba(0,0,0,0.2) 7.6%,
                                     rgba(0,0,0,0) 87.5%);
-}
-:root #normal-tabs-container.overflow.scrolled .virtual-scroll-container::before,
-:root #normal-tabs-container.overflow:not(.fully-scrolled) .virtual-scroll-container::after {
-  opacity: 1;
 }
 
 
