@@ -381,6 +381,8 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
         broadcast:   true
       });
     }
+    if (opener.active)
+      parent.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
   }
   return true;
 }
