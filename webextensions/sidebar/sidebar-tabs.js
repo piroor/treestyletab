@@ -406,15 +406,7 @@ Window.onInitialized.addListener(win => {
 
   let innerNormalContainer = document.getElementById(`window-${windowId}`);
   if (!innerNormalContainer) {
-    innerNormalContainer = document.createElement('ul');
-    const virtualScrollContainer = document.createElement('div');
-    virtualScrollContainer.classList.add('virtual-scroll-container');
-    virtualScrollContainer.classList.add('vbox');
-    virtualScrollContainer.appendChild(innerNormalContainer);
-    normalContainer.appendChild(virtualScrollContainer);
-    const spacer = normalContainer.appendChild(document.createElement('div'));
-    spacer.classList.add('vbox');
-    spacer.classList.add(Constants.kTABBAR_SPACER);
+    innerNormalContainer = document.querySelector('#normal-tabs-container .virtual-scroll-container').appendChild(document.createElement('ul'));
   }
   innerNormalContainer.dataset.windowId = windowId;
   innerNormalContainer.setAttribute('id', `window-${windowId}`);

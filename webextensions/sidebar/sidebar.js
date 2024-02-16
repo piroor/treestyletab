@@ -535,13 +535,6 @@ function updateContextualIdentitiesSelector() {
 
 export async function rebuildAll(importedTabs) {
   MetricsData.add('rebuildAll: start');
-  const range = document.createRange();
-  range.selectNodeContents(SidebarTabs.pinnedContainer);
-  range.deleteContents();
-  range.selectNodeContents(SidebarTabs.normalContainer);
-  range.deleteContents();
-  range.detach();
-
   const trackedWindow = TabsStore.windows.get(mTargetWindow);
   if (!trackedWindow)
     Window.init(mTargetWindow);
