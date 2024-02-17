@@ -171,8 +171,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
   const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
 
-  const allTabsSizeHolder      = win.containerElement.parentNode;
-
   const rootStyle = document.documentElement.style;
   rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
   // For underflow case, we need to unset min-height to put the "new tab"
@@ -180,7 +178,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   rootStyle.setProperty('--virtual-scroll-container-size', currentViewPortSize < allRenderableTabsSize ?
     `calc(${allRenderableTabsSize}px + var(--virtual-scroll-sticky-tab-shift, 0px))` : '');
 
-  const resized = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
+  const allTabsSizeHolder = win.containerElement.parentNode;
+  const resized           = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
   allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
   const range = document.createRange();
@@ -223,82 +222,20 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   );
   const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
 
-
-  // sticky active tab operations
-  const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
-  const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
-
-  let activeTab = Tab.getActiveTab(windowId);
-  if (activeTab?.pinned &&
-      activeTab.$TST.bundledTab &&
-      !activeTab.$TST.bundledTab.pinned)
-    activeTab = activeTab.$TST.bundledTab;
-
-  const activeTabIndex       = renderableTabs.indexOf(activeTab);
-  const activeTabCanBeSticky = !!(
-    configs.stickyActiveTab &&
-    activeTab &&
-    !activeTab.$TST.collapsed &&
-    activeTabIndex > -1
-  );
-  const activeTabIsAboveViewport = (
-    activeTabCanBeSticky &&
-    activeTabIndex < firstInViewportIndex &&
-    mNormalScrollBox.scrollTop > 0
-  );
-  const activeTabIsBelowViewport = (
-    activeTabCanBeSticky &&
-    activeTabIndex > lastInViewportIndex &&
-    mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
-    (activeTabIndex - lastInViewportIndex > 1 ||
-     parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0) == 0)
-  );
-  let stickyTabCleared = false;
-  if (activeTabIsAboveViewport ||
-      activeTabIsBelowViewport) {
-    if (activeTabIndex >= firstRenderableIndex &&
-        activeTabIndex <= lastRenderableIndex)
-      toBeRenderedTabs.splice(toBeRenderedTabs.indexOf(activeTab), 1);
-    SidebarTabs.renderTab(activeTab, { containerElement: mNormalScrollBox });
-    mLastStickyTabId = activeTab.id;
-  }
-  else if (activeTabIndex > -1 &&
-           activeTab.$TST.element &&
-           activeTab.$TST.element.parentNode != win.containerElement) {
-    SidebarTabs.unrenderTab(activeTab);
-    mLastStickyTabId = null;
-    stickyTabCleared = true;
-  }
-  else if (mLastStickyTabId) {
-    SidebarTabs.unrenderTab(Tab.get(mLastStickyTabId));
-    mLastStickyTabId = null;
-    stickyTabCleared = true;
-  }
+  const stickyTab = updateStickyTab(renderableTabs);
+  if (stickyTab &&
+      stickyTab.index >= renderableTabs[firstRenderableIndex].index &&
+      stickyTab.index <= renderableTabs[lastRenderableIndex].index)
+    toBeRenderedTabs.splice(toBeRenderedTabs.indexOf(stickyTab), 1);
 
   const renderedOffset = tabSize * firstRenderableIndex;
   rootStyle.setProperty('--virtual-scroll-contents-offset', `calc(${renderedOffset}px + var(--virtual-scroll-sticky-tab-shift, 0px))`);
   // we need to shift contents one more, to cover the reduced height due to the sticky tab.
-  if (activeTabIsAboveViewport) {
-    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', `${tabSize}px`);
-  }
-  else {
-    if (stickyTabCleared) { // prevent to apply annoying animation effect
-      document.documentElement.classList.add('clearing-sticky-tab-shift');
-      window.requestAnimationFrame(() => {
-        document.documentElement.classList.remove('clearing-sticky-tab-shift');
-      });
-    }
-    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', '0px');
-  }
 
   if (resized) {
     reserveToUpdateScrolledState(mNormalScrollBox)
     onVirtualScrollViewportUpdated.dispatch(resized);
   }
-
-
-  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT, activeTabIsAboveViewport);
-  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT, activeTabIsBelowViewport);
 
   const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
@@ -315,11 +252,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     currentViewPortSize,
     //precedingAreaSize,
     //followingAreaSize,
-    activeTabIndex,
-    firstInViewportIndex,
-    lastInViewportIndex,
-    activeTabIsAboveViewport,
-    activeTabIsBelowViewport,
   });
 
   const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
@@ -372,6 +304,87 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
+}
+
+function updateStickyTab(renderableTabs) {
+  const rootStyle      = document.documentElement.style;
+  const tabSize        = Size.getTabHeight();
+  const windowId       = TabsStore.getCurrentWindowId();
+  const scrollPosition = parseFloat(rootStyle.getPropertyValue('--scroll-position'));
+  const viewPortSize   = parseFloat(rootStyle.getPropertyValue('--viewport-size'));
+
+  const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
+  const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
+
+  let activeTab = Tab.getActiveTab(windowId);
+  if (activeTab?.pinned &&
+      activeTab.$TST.bundledTab &&
+      !activeTab.$TST.bundledTab.pinned)
+    activeTab = activeTab.$TST.bundledTab;
+
+  const activeTabIndex = renderableTabs.indexOf(activeTab);
+  const shouldBeSticky = !!(
+    configs.stickyActiveTab &&
+    activeTab &&
+    activeTabIndex > -1 &&
+    !activeTab.$TST.collapsed
+  );
+  const activeTabIsAboveViewport = (
+    shouldBeSticky &&
+    activeTabIndex < firstInViewportIndex &&
+    mNormalScrollBox.scrollTop > 0
+  );
+  const activeTabIsBelowViewport = (
+    shouldBeSticky &&
+    activeTabIndex > lastInViewportIndex &&
+    mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
+    (activeTabIndex - lastInViewportIndex > 1 ||
+     parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0) == 0)
+  );
+  let stickyTabCleared = false;
+  if (activeTabIsAboveViewport ||
+      activeTabIsBelowViewport) {
+    SidebarTabs.renderTab(activeTab, { containerElement: mNormalScrollBox });
+    mLastStickyTabId = activeTab.id;
+  }
+  else if (activeTabIndex > -1 &&
+           activeTab.$TST.element &&
+           activeTab.$TST.element.parentNode != TabsStore.windows.get(windowId).containerElement) {
+    SidebarTabs.unrenderTab(activeTab);
+    mLastStickyTabId = null;
+    stickyTabCleared = true;
+  }
+  else if (mLastStickyTabId) {
+    SidebarTabs.unrenderTab(Tab.get(mLastStickyTabId));
+    mLastStickyTabId = null;
+    stickyTabCleared = true;
+  }
+
+  if (activeTabIsAboveViewport) {
+    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', `${tabSize}px`);
+  }
+  else {
+    if (stickyTabCleared) { // prevent to apply annoying animation effect
+      document.documentElement.classList.add('clearing-sticky-tab-shift');
+      window.requestAnimationFrame(() => {
+        document.documentElement.classList.remove('clearing-sticky-tab-shift');
+      });
+    }
+    rootStyle.setProperty('--virtual-scroll-sticky-tab-shift', '0px');
+  }
+
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT, activeTabIsAboveViewport);
+  document.documentElement.classList.toggle(Constants.kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT, activeTabIsBelowViewport);
+
+  log('updateStickyTab ', {
+    activeTabIndex,
+    firstInViewportIndex,
+    lastInViewportIndex,
+    activeTabIsAboveViewport,
+    activeTabIsBelowViewport,
+  });
+
+  return mLastStickyTabId ? activeTab : null;
 }
 
 function getScrollBoxFor(tab) {
