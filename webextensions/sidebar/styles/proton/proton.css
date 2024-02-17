@@ -312,6 +312,10 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
 }
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky tab-item-substance:hover .background {
+  /* TODO: set mixed color of background and hover-shadow */
+  opacity: 1;
+}
 
 
 

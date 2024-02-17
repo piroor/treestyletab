@@ -67,6 +67,7 @@ export const kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED     = 'treestyletab:not
 export const kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED = 'treestyletab:notify-subtree-collapsed-state-changed';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE                   = 'treestyletab:set-subtree-collapsed-state';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR = 'treestyletab:set-subtree-collapsed-state-intelligently-for';
+export const kCOMMAND_TOGGLE_STICKY                  = 'treestyletab:toggle-sticky';
 export const kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED       = 'treestyletab:notify-tab-level-changed';
 export const kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY = 'treestyletab:notify-tab-attached-completely';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
@@ -335,8 +336,9 @@ export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
 
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_NONE                  = 0;
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED      = 1;
-// 2 is a retired number for a removed feature
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY         = 4;
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE                 = 3;
+// 2 is a retired number for a removed feature
 
 export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_ENTIRE_TREE     = 1 << 0;

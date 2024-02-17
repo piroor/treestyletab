@@ -307,6 +307,14 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
   }
 }
 
+export function toggleStickyState(tabs) {
+  const uniqueTabs = [...new Set(tabs)];
+  const shouldSetSticky = uniqueTabs.some(tab => !tab.$TST.states.has(Constants.kTAB_STATE_STICKY));
+  for (const tab of uniqueTabs) {
+    tab.$TST.toggleState(Constants.kTAB_STATE_STICKY, shouldSetSticky, { permanently: true });
+  }
+}
+
 
 export async function openNewTabAs(options = {}) {
   log('openNewTabAs ', options);
@@ -1090,6 +1098,10 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         }
       }
     }; break;
+
+    case Constants.kCOMMAND_TOGGLE_STICKY:
+      toggleStickyState([Tab.get(message.tabId)]);
+      return;
   }
 });
 

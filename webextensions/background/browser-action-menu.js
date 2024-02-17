@@ -1207,6 +1207,12 @@ const mItems = [
             type:  'radio'
           },
           {
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleSticky'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY,
+            type:  'radio'
+          },
+          {
             title: `${browser.i18n.getMessage('config_treeDoubleClickBehavior_close')}${browser.i18n.getMessage('config_treeDoubleClickBehavior_close_note')}`,
             key:   'treeDoubleClickBehavior',
             value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE,

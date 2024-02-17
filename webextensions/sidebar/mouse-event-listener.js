@@ -999,6 +999,14 @@ async function onDblClick(event) {
           });
           break;
 
+        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY:
+          BackgroundConnection.sendMessage({
+            type:  Constants.kCOMMAND_TOGGLE_STICKY,
+            tabId: livingTab.id,
+            stack: configs.debug && new Error().stack
+          });
+          break;
+
         case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE:
           //event.stopPropagation();
           //event.preventDefault();
