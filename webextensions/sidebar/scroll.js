@@ -336,7 +336,8 @@ function extractIdPart(id) {
   return id;
 }
 
-let mLastStickyTabIds = new Set();
+let mLastStickyTabIdsAbove = new Set();
+let mLastStickyTabIdsBelow = new Set();
 
 function updateStickyTabs(renderableTabs) {
   const rootStyle      = document.documentElement.style;
@@ -348,48 +349,68 @@ function updateStickyTabs(renderableTabs) {
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
   const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
 
-  const stickyTabIds = new Set();
-  const stickyTabs = new Set();
+  const stickyTabIdsAbove = new Set();
+  const stickyTabIdsBelow = new Set();
+  const stickyTabs = [];
 
   const removedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0);
-  for (const tab of renderableTabs.filter(tab => tab.$TST.canBecomeSticky)) {
+  const canBeStickyTabs = renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
+  for (let i = 0; i < lastInViewportIndex; i++) {
+    const tab   = canBeStickyTabs[i];
     const index = renderableTabs.indexOf(tab);
     if (index > -1 &&
-        index < firstInViewportIndex &&
-        mNormalScrollBox.scrollTop > 0) { // above viewport
-      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.above') });
-      stickyTabs.add(tab);
-      stickyTabIds.add(tab.id);
+        index < (firstInViewportIndex + stickyTabIdsAbove.size) &&
+        mNormalScrollBox.scrollTop > 0) {
+      stickyTabIdsAbove.add(tab.id);
       continue;
     }
+    if (stickyTabIdsAbove.size > 0)
+      break;
+  }
+  for (let i = canBeStickyTabs.length - 1; i > firstInViewportIndex; i--) {
+    const tab   = canBeStickyTabs[i];
+    const index = renderableTabs.indexOf(tab);
     if (index > -1 &&
-        index > lastInViewportIndex &&
+        index > (lastInViewportIndex - stickyTabIdsBelow.size) &&
         mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
         (index - lastInViewportIndex > 1 ||
-         removedTabsCount == 0)) { // below viewport
-      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.below') });
-      stickyTabs.add(tab);
-      stickyTabIds.add(tab.id);
+         removedTabsCount == 0)) {
+      stickyTabIdsBelow.add(tab.id);
       continue;
     }
-    if (index > -1 &&
-        tab.$TST.element &&
+    if (stickyTabIdsBelow.size > 0)
+      break;
+  }
+  for (const tab of canBeStickyTabs) {
+    if (stickyTabIdsAbove.has(tab.id)) {
+      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.above') });
+      stickyTabs.push(tab);
+      continue;
+    }
+    if (stickyTabIdsBelow.has(tab.id)) {
+      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.below') });
+      stickyTabs.push(tab);
+      continue;
+    }
+    if (tab.$TST.element &&
         tab.$TST.element.parentNode != TabsStore.windows.get(windowId).containerElement) {
       SidebarTabs.unrenderTab(tab);
       continue;
     }
   }
 
-  for (const id of mLastStickyTabIds) {
-    if (stickyTabIds.has(id))
+  for (const id of [...mLastStickyTabIdsAbove, ...mLastStickyTabIdsBelow]) {
+    if (stickyTabIdsAbove.has(id) ||
+        stickyTabIdsBelow.has(id))
       continue;
     SidebarTabs.unrenderTab(Tab.get(id));
   }
 
   log('updateStickyTab ', stickyTabs);
-  mLastStickyTabIds = stickyTabIds;
+  mLastStickyTabIdsAbove = stickyTabIdsAbove;
+  mLastStickyTabIdsBelow = stickyTabIdsBelow;
 
-  return [...stickyTabs];
+  return stickyTabs;
 }
 
 function getScrollBoxFor(tab) {
