@@ -324,10 +324,9 @@ function updateStickyTab(renderableTabs) {
 
   const activeTabIndex = renderableTabs.indexOf(activeTab);
   const shouldBeSticky = !!(
-    configs.stickyActiveTab &&
     activeTab &&
-    activeTabIndex > -1 &&
-    !activeTab.$TST.collapsed
+    activeTab.$TST.canBecomeSticky &&
+    activeTabIndex > -1
   );
   const activeTabIsAboveViewport = (
     shouldBeSticky &&
@@ -461,6 +460,15 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   let delta = 0;
   if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
     delta = tabRect.bottom - scrollBoxRect.bottom + overScrollOffset;
+    // sticky tab shifts the position of the tab, so we need to fix coordinates.
+    const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
+    const stickyTab = Tab.get(mLastStickyTabId) ||
+      (activeTab?.$TST.canBecomeSticky ? activeTab :
+        activeTab?.$TST.bundledTab?.$TST.canBecomeSticky ? activeTab.$TST.bundledTab :
+          null);
+    if (stickyTab &&
+        stickyTab.index < tab.index)
+      delta += tabRect.height;
   }
   else if (scrollBoxRect.top > tabRect.top) { // should scroll up
     delta = tabRect.top - scrollBoxRect.top - overScrollOffset;
@@ -637,7 +645,9 @@ export async function scrollToTab(tab, options = {}) {
   scrollToTab.lastTargetId = tab.id;
 
   const scrollBox = getScrollBoxFor(tab);
-  if (hasAnchor && !anchorTab.pinned) {
+  if (hasAnchor &&
+      !anchorTab.pinned &&
+      !anchorTab.$TST.canBecomeSticky) {
     const targetTabRect = getTabRect(tab);
     const anchorTabRect = getTabRect(anchorTab);
     const scrollBoxRect = scrollBox.getBoundingClientRect();

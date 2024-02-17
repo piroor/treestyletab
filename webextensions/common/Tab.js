@@ -449,6 +449,15 @@ export default class Tab {
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
+  get canBecomeSticky() {
+    if (!configs.stickyActiveTab ||
+        this.tab.pinned ||
+        this.collapsed)
+      return false;
+
+    return this.tab.active || this.bundledTab?.active;
+  }
+
   get promisedPossibleOpenerBookmarks() {
     if ('possibleOpenerBookmarks' in this)
       return Promise.resolve(this.possibleOpenerBookmarks);

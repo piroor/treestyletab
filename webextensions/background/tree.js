@@ -1042,7 +1042,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     tabId:    tab.id,
     allowPartial: true,
   }).catch(_error => false);
-  const anchor = isInViewport ? tab : null;
+  const anchor = isInViewport && !tab.$TST.canBecomeSticky ? tab : null;
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
