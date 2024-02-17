@@ -362,27 +362,14 @@ function updateStickyTabs(renderableTabs) {
   const stickyTabIdsBelow = new Set();
   const stickyTabs = [];
 
-  const removedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0);
   const canBeStickyTabs = renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
-  for (let i = 0; i < lastInViewportIndex; i++) {
-    const tab   = canBeStickyTabs[i];
-    const index = renderableTabs.indexOf(tab);
-    if (index > -1 &&
-        index < (firstInViewportIndex + stickyTabIdsAbove.size) &&
-        mNormalScrollBox.scrollTop > 0) {
-      stickyTabIdsAbove.add(tab.id);
-      continue;
-    }
-    if (stickyTabIdsAbove.size > 0)
-      break;
-  }
-  for (let i = canBeStickyTabs.length - 1; i > firstInViewportIndex; i--) {
-    const tab   = canBeStickyTabs[i];
+  const removedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0);
+  for (const tab of canBeStickyTabs.slice(0).reverse()) { // first try: find bottom sticky tabs from bottom
     const index = renderableTabs.indexOf(tab);
     if (index > -1 &&
         index > (lastInViewportIndex - stickyTabIdsBelow.size) &&
         mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
-        (index - lastInViewportIndex > 1 ||
+        (index - (lastInViewportIndex - stickyTabIdsBelow.size) > 1 ||
          removedTabsCount == 0)) {
       stickyTabIdsBelow.add(tab.id);
       continue;
@@ -390,10 +377,15 @@ function updateStickyTabs(renderableTabs) {
     if (stickyTabIdsBelow.size > 0)
       break;
   }
-  for (const tab of canBeStickyTabs) {
-    if (stickyTabIdsAbove.has(tab.id)) {
+
+  for (const tab of canBeStickyTabs) { // second try: find top sticky tabs and set bottom sticky tabs
+    const index = renderableTabs.indexOf(tab);
+    if (index > -1 &&
+        index < (firstInViewportIndex + stickyTabIdsAbove.size) &&
+        mNormalScrollBox.scrollTop > 0) {
       SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.above') });
       stickyTabs.push(tab);
+      stickyTabIdsAbove.add(tab.id);
       continue;
     }
     if (stickyTabIdsBelow.has(tab.id)) {
