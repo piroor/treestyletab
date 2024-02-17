@@ -268,7 +268,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
         for (const id of ids) {
           if (STICKY_SPACER_MATCHER.test(id)) {
-            const spacer = document.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
+            const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
             if (spacer)
               spacer.parentNode.removeChild(spacer);
             continue;
@@ -291,7 +291,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         //log('insert or replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
         for (const id of deleteIds) {
           if (STICKY_SPACER_MATCHER.test(id)) {
-            const spacer = document.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
+            const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
             if (spacer)
               spacer.parentNode.removeChild(spacer);
             continue;
@@ -308,6 +308,10 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
           Tab.get(extractIdPart(mLastRenderedVirtualScrollTabIds[fromEnd])) :
           null;
+        const referenceTabHasValidReferenceElement = !!(
+          referenceTab?.$TST.element &&
+          referenceTab.$TST.element.parentNode == win.containerElement
+        );
         for (const id of insertIds) {
           if (STICKY_SPACER_MATCHER.test(id)) {
             const spacer = document.createElement('li');
@@ -315,12 +319,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             spacer.setAttribute('data-tab-id', RegExp.$1);
             win.containerElement.insertBefore(
               spacer,
-              referenceTab?.$TST.element ||
-                referenceTab && document.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab.id}"]`)
+              (referenceTab &&
+               win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab.id}"]`)) ||
+              (referenceTabHasValidReferenceElement &&
+               referenceTab.$TST.element) ||
+              null
             );
             continue;
           }
-          SidebarTabs.renderTab(Tab.get(id), { insertBefore: referenceTab });
+          SidebarTabs.renderTab(Tab.get(id), {
+            insertBefore: referenceTabHasValidReferenceElement ? referenceTab : null,
+          });
         }
       }; break;
     }
