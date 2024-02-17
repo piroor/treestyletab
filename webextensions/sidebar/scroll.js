@@ -251,7 +251,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     activeTabIndex > lastInViewportIndex &&
     mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
     (activeTabIndex - lastInViewportIndex > 1 ||
-     parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount) == 0)
+     parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0) == 0)
   );
   let stickyTabCleared = false;
   if (activeTabIsAboveViewport ||
