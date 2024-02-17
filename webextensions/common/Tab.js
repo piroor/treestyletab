@@ -450,9 +450,14 @@ export default class Tab {
   }
 
   get canBecomeSticky() {
-    if (!configs.stickyActiveTab ||
-        this.tab.pinned ||
+    if (this.tab.pinned ||
         this.collapsed)
+      return false;
+
+    if (this.states.has(Constants.kTAB_STATE_STICKY))
+      return true;
+
+    if (!configs.stickyActiveTab)
       return false;
 
     return this.tab.active || this.bundledTab?.active;

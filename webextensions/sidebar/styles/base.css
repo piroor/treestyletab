@@ -296,6 +296,21 @@ tab-sound-button */ {
   visibility: hidden;
 }
 
+.sticky-tabs-container {
+  left: 0;
+  min-height: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  z-index: var(--tab-ui-z-index);
+}
+.sticky-tabs-container.above {
+  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
+}
+.sticky-tabs-container.below {
+  bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size) + var(--tabbar-bottom-area-size) + var(--subpanel-area-size));
+}
+
 :root.animation:not(.minimized) .tabs-spacer {
   transition: min-height var(--collapse-animation);
 }
@@ -397,30 +412,6 @@ tab-item,
   /*overflow: hidden;*/ /* we should not apply overflow:hidden here to allow rendering box-shadow of contents */
   pointer-events: none;
   position: relative;
-}
-
-:root.have-sticky-active-tab-above-viewport #normal-tabs-container > tab-item,
-:root.have-sticky-active-tab-below-viewport #normal-tabs-container > tab-item {
-  left: 0;
-  /* We need to use "position:fixed" and manually calculated positioning
-     instead of "position:sticky", because "contain:paint" is required to apply
-     "position:sticky" (it does not work with "overflow:hidden"!) but
-     "contain:paint" hides overflow-start-indicator and overflow-end-indicator
-     simulated with ::before and ::after pseudo elements. */
-  position: fixed;
-  right: 0;
-  transition: var(--tab-basic-animation);
-  z-index: calc(var(--tab-ui-z-index) + 10);
-}
-:root.have-sticky-active-tab-above-viewport #normal-tabs-container > tab-item {
-  top: calc(var(--tabbar-top-area-size) + var(--pinned-tabs-area-size));
-}
-:root.have-sticky-active-tab-below-viewport #normal-tabs-container > tab-item {
-  bottom: calc(var(--after-tabs-area-size) + var(--tabbar-bottom-area-size) + var(--tabbar-bottom-area-size) + var(--subpanel-area-size));
-}
-:root.have-sticky-active-tab-above-viewport #normal-tabs-container > tab-item .extra-items-container.indent,
-:root.have-sticky-active-tab-below-viewport #normal-tabs-container > tab-item .extra-items-container.indent {
-  display: none;
 }
 
 tab-item-substance {

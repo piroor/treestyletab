@@ -197,6 +197,7 @@ export const kTAB_STATE_DUPLICATING               = 'duplicating';
 export const kTAB_STATE_RESTORED                  = 'restored';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
 export const kTAB_STATE_GROUP_TAB                 = 'group-tab';
+export const kTAB_STATE_STICKY                    = 'sticky';
 export const kTAB_INTERNAL_STATES = new Set([
   'tab',
   kTAB_STATE_LAST_ROW,
@@ -247,8 +248,6 @@ export const kTABBAR_STATE_HAS_VISUAL_GAP         = 'has-visual-gap';
 export const kTABBAR_STATE_HOVER_ON_TOP_EDGE      = 'hover-on-top-edge';
 export const kTABBAR_STATE_SCROLLBAR_AUTOHIDE     = 'scrollbar-autohide';
 export const kTABBAR_STATE_FAVICONIZE_PINNED_TABS = 'faviconize-pinned-tabs';
-export const kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_ABOVE_VIWPORT = 'have-sticky-active-tab-above-viewport';
-export const kTABBAR_STATE_HAVE_STICKY_ACTIVE_TAB_BELOW_VIWPORT = 'have-sticky-active-tab-below-viewport';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
