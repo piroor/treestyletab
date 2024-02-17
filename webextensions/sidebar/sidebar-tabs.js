@@ -638,6 +638,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         remove: remove.join(',')
       });
       const modified = new Set([...add, ...remove]);
+      let stickyStateChanged = false;
       for (const id of message.tabIds) {
         const tab = Tab.get(id);
         if (!tab)
@@ -653,7 +654,11 @@ BackgroundConnection.onMessage.addListener(async message => {
             modified.has(Constants.kTAB_STATE_MUTED)) {
           tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
         }
+        if (modified.has(Constants.kTAB_STATE_STICKY))
+          stickyStateChanged = true;
       }
+      if (stickyStateChanged)
+        onNormalTabsChanged.dispatch();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {

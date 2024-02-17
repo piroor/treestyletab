@@ -305,6 +305,15 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
 }
 
 
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background {
+  background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+}
+
+
 
 /* in-tab contents */
 
