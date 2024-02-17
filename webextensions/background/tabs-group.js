@@ -17,6 +17,7 @@ import * as Constants from '/common/constants.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
@@ -305,26 +306,50 @@ async function tryInitGroupTab(tab) {
 }
 
 function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
+  const tabMetadata = tab.$TST.temporaryMetadata;
+  const updatingTabs = tabMetadata.get('reserveToUpdateRelatedGroupTabsUpdatingTabs') || new Set();
+  if (!tabMetadata.has('reserveToUpdateRelatedGroupTabsUpdatingTabs'))
+    tabMetadata.set('reserveToUpdateRelatedGroupTabsUpdatingTabs', updatingTabs);
+
   const ancestorGroupTabs = [
     tab,
     tab.$TST.bundledTab,
     ...tab.$TST.ancestors,
     ...tab.$TST.ancestors.map(tab => tab.$TST.bundledTab),
   ].filter(tab => tab && tab.$TST.isGroupTab);
-  for (const tab of ancestorGroupTabs) {
-    if (tab.$TST.temporaryMetadata.has('reservedUpdateRelatedGroupTab'))
-      clearTimeout(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTab'));
-    const reservedUpdateRelatedGroupTabChangedInfo = tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo') || new Set()
+  for (const updatingTab of ancestorGroupTabs) {
+    const updatingMetadata = updatingTab.$TST.temporaryMetadata;
+    const reservedChangedInfo = updatingMetadata.get('reservedUpdateRelatedGroupTabChangedInfo') || new Set();
     for (const info of changedInfo) {
-      reservedUpdateRelatedGroupTabChangedInfo.add(info);
+      reservedChangedInfo.add(info);
     }
-    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTabChangedInfo', reservedUpdateRelatedGroupTabChangedInfo);
-    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTab', setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTab');
-      updateRelatedGroupTab(tab, Array.from(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo')));
-      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTabChangedInfo');
+    if (updatingTabs.has(updatingTab.id))
+      continue;
+    updatingTabs.add(updatingTab.id);
+    const triggeredUpdates = updatingMetadata.get('reservedUpdateRelatedGroupTabTriggeredUpdates') || new Set();
+    triggeredUpdates.add(updatingTabs);
+    updatingMetadata.set('reservedUpdateRelatedGroupTabTriggeredUpdates', triggeredUpdates);
+    if (updatingMetadata.has('reservedUpdateRelatedGroupTab'))
+      clearTimeout(updatingMetadata.get('reservedUpdateRelatedGroupTab'));
+    updatingMetadata.set('reservedUpdateRelatedGroupTabChangedInfo', reservedChangedInfo);
+    updatingMetadata.set('reservedUpdateRelatedGroupTab', setTimeout(() => {
+      updatingMetadata.delete('reservedUpdateRelatedGroupTab');
+      if (updatingTab.$TST) {
+        try {
+          if (reservedChangedInfo.size > 0)
+            updateRelatedGroupTab(updatingTab, [...reservedChangedInfo]);
+        }
+        catch(_error) {
+        }
+        updatingMetadata.delete('reservedUpdateRelatedGroupTabChangedInfo');
+      }
+      setTimeout(() => {
+        const triggerUpdates = updatingMetadata.get('reservedUpdateRelatedGroupTabTriggeredUpdates')
+        updatingMetadata.delete('reservedUpdateRelatedGroupTabTriggeredUpdates');
+        for (const updatingTabs of triggerUpdates) {
+          updatingTabs.delete(updatingTab.id);
+        }
+      }, 100)
     }, 100));
   }
 }
@@ -382,7 +407,15 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       browser.tabs.sendMessage(groupTab.id, {
         type:  'treestyletab:update-title',
         title: newTitle,
-      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+      }).catch(ApiTabs.createErrorHandler(
+        ApiTabs.handleMissingTabError,
+        ApiTabs.handleMissingHostPermissionError,
+        _error => {
+          // failed to update the title by group tab itself, so we try to update it from outside
+          groupTab.title = newTitle;
+          TabsUpdate.updateTab(groupTab, { title: newTitle });
+        }
+      ));
     }
   }
 }

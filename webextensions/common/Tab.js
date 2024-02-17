@@ -1077,10 +1077,13 @@ export default class Tab {
   //===================================================================
 
   get openerTab() {
-    if (!this.tab ||
-        !this.tab.openerTabId ||
-        this.tab.openerTabId == this.id)
+    if (this.tab?.openerTabId == this.id)
       return null;
+
+    if (!this.tab ||
+        !this.tab.openerTabId)
+      return Tab.getOpenerFromGroupTab(this.tab);
+
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.livingTabsInWindow.get(this.tab.windowId),
