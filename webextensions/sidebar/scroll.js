@@ -152,7 +152,7 @@ export function reserveToRenderVirtualScrollViewport({ force } = {}) {
 }
 
 let mLastRenderedVirtualScrollTabIds = [];
-const STICKY_SPACER_ID = 'sticky-tab-spacer';
+const STICKY_SPACER_MATCHER = /^(\d+):sticky$/;
 
 function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
@@ -237,7 +237,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     if (stickyTab &&
         stickyTab.index >= renderableTabs[firstRenderableIndex].index &&
         stickyTab.index <= renderableTabs[lastRenderableIndex].index)
-      toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, STICKY_SPACER_ID);
+      toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, `${stickyTab.id}:sticky`);
   }
 
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
@@ -267,8 +267,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
         //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
         for (const id of ids) {
-          if (id == STICKY_SPACER_ID) {
-            const spacer = document.querySelector('.sticky-tab-spacer');
+          if (STICKY_SPACER_MATCHER.test(id)) {
+            const spacer = document.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
             if (spacer)
               spacer.parentNode.removeChild(spacer);
             continue;
@@ -290,8 +290,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
         //log('insert or replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
         for (const id of deleteIds) {
-          if (id == STICKY_SPACER_ID) {
-            const spacer = document.querySelector('.sticky-tab-spacer');
+          if (STICKY_SPACER_MATCHER.test(id)) {
+            const spacer = document.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
             if (spacer)
               spacer.parentNode.removeChild(spacer);
             continue;
@@ -309,10 +309,15 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
           Tab.get(mLastRenderedVirtualScrollTabIds[fromEnd]) :
           null;
         for (const id of insertIds) {
-          if (id == STICKY_SPACER_ID) {
+          if (STICKY_SPACER_MATCHER.test(id)) {
             const spacer = document.createElement('li');
             spacer.classList.add('sticky-tab-spacer');
-            win.containerElement.insertBefore(spacer, referenceTab?.$TST.element);
+            spacer.setAttribute('data-tab-id', RegExp.$1);
+            win.containerElement.insertBefore(
+              spacer,
+              referenceTab?.$TST.element ||
+                referenceTab && document.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab.id}"]`)
+            );
             continue;
           }
           SidebarTabs.renderTab(Tab.get(id), { insertBefore: referenceTab });
