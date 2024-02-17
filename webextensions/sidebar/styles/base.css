@@ -760,6 +760,7 @@ tab-item.faviconized tab-item-substance {
 tab-item.pinned tab-closebox,
 tab-item.faviconized tab-twisty,
 tab-item.faviconized .extra-items-container.indent,
+.sticky-tabs-container .extra-items-container.indent,
 tab-item.faviconized .extra-items-container.above,
 tab-item.faviconized .extra-items-container.below {
   display: none;
