@@ -244,8 +244,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   log('renderVirtualScrollViewport ', {
     firstRenderableIndex,
     lastRenderableIndex,
-    old: mLastRenderedVirtualScrollTabIds,
-    new: toBeRenderedTabIds,
+    old: mLastRenderedVirtualScrollTabIds.slice(0),
+    new: toBeRenderedTabIds.slice(0),
     renderOperations,
     scrollPosition,
     viewPortSize,
@@ -306,7 +306,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
           SidebarTabs.unrenderTab(tab);
         }
         const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
-          Tab.get(mLastRenderedVirtualScrollTabIds[fromEnd]) :
+          Tab.get(extractIdPart(mLastRenderedVirtualScrollTabIds[fromEnd])) :
           null;
         for (const id of insertIds) {
           if (STICKY_SPACER_MATCHER.test(id)) {
@@ -329,6 +329,11 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
+}
+function extractIdPart(id) {
+  if (STICKY_SPACER_MATCHER.test(id))
+    return parseInt(RegExp.$1);
+  return id;
 }
 
 let mLastStickyTabIds = new Set();
