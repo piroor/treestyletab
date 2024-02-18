@@ -275,6 +275,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             continue;
           }
           const tab = Tab.get(id);
+          if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
+            continue;
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
           if (toBeRenderedTabIdSet.has(id) ||
@@ -298,6 +300,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             continue;
           }
           const tab = Tab.get(id);
+          if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
+            continue;
           // We don't need to remove already rendered tab,
           // because it is automatically moved by insertBefore().
           if (toBeRenderedTabIdSet.has(id) ||
