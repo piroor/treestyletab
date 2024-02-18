@@ -488,9 +488,19 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   let delta = 0;
   if (scrollBoxRect.bottom < tabRect.bottom) { // should scroll down
     delta = tabRect.bottom - scrollBoxRect.bottom + overScrollOffset;
+    if (mLastStickyTabIdsBelow.has(tab.id) &&
+        mLastStickyTabIdsBelow.size > 0)
+      delta += tabRect.height * (mLastStickyTabIdsBelow.size - 1);
+    else
+      delta += tabRect.height * mLastStickyTabIdsBelow.size;
   }
   else if (scrollBoxRect.top > tabRect.top) { // should scroll up
     delta = tabRect.top - scrollBoxRect.top - overScrollOffset;
+    if (mLastStickyTabIdsAbove.has(tab.id) &&
+        mLastStickyTabIdsAbove.size > 0)
+      delta -= tabRect.height * (mLastStickyTabIdsAbove.size - 1);
+    else
+      delta -= tabRect.height * mLastStickyTabIdsAbove.size;
   }
   log('calculateScrollDeltaForTab ', tab.id, {
     delta,
