@@ -821,6 +821,13 @@ async function onWheel(event) {
     return;
   }
 
+  if (EventUtils.getElementTarget(event).closest('.sticky-tabs-container')) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    scrollTo({ delta: event.deltaY });
+    return;
+  }
+
   if (!TSTAPI.isScrollLocked()) {
     cancelRunningScroll();
     return;
