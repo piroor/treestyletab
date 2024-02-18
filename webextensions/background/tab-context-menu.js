@@ -96,6 +96,12 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_unpin_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_unpin_label_multiselected')
   },
+  'context_topLevel_toggleSticky': {
+    titleStick:                browser.i18n.getMessage('context_toggleSticky_label_stick'),
+    titleMultiselectedStick:   browser.i18n.getMessage('context_toggleSticky_label_multiselected_stick'),
+    titleUnstick:              browser.i18n.getMessage('context_toggleSticky_label_unstick'),
+    titleMultiselectedUnstick: browser.i18n.getMessage('context_toggleSticky_label_multiselected_unstick')
+  },
   'context_duplicateTab': {
     title:              browser.i18n.getMessage('tabContextMenu_duplicate_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_duplicate_label_multiselected')
@@ -636,6 +642,15 @@ async function onShown(info, contextTab) {
       visible: emulate && contextTab && contextTab.pinned,
       multiselected
     }) && modifiedItemsCount++;
+    updateItem('context_topLevel_toggleSticky', {
+      visible: emulate && contextTab,
+      enabled: contextTab && !contextTab.pinned,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleSticky, {
+        multiselected,
+        sticky: contextTab?.$TST.states.has(Constants.kTAB_STATE_STICKY),
+      }),
+    }) && modifiedItemsCount++;
     updateItem('context_duplicateTab', {
       visible: emulate && contextTab,
       multiselected
@@ -1041,6 +1056,11 @@ async function onClick(info, contextTab) {
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
+    case 'context_toggleSticky': {
+      const tab    = contextTab || activeTab;
+      const sticky = tab.$TST.states.has(Constants.kTAB_STATE_STICKY);
+      Commands.toggleSticky(multiselectedTabs, !sticky);
+    }; break;
     case 'context_duplicateTab':
       Commands.duplicateTab(contextTab, {
         destinationWindowId: windowId

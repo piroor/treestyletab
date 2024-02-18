@@ -140,6 +140,9 @@ async function onShortcutCommand(command) {
     case 'closeOthers':
       Commands.closeOthers(selectedTabs);
       return;
+    case 'toggleSticky':
+      Commands.toggleSticky(selectedTabs);
+      return;
     case 'collapseTree':
       Commands.collapseTree(selectedTabs);
       return;

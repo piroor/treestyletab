@@ -120,19 +120,22 @@ export function getUnmutedState(rootTabs) {
   return { hasUnmutedTab, hasUnmutedDescendant };
 }
 
-export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant, sticky } = {}) {
   const muteTabSuffix        = unmuted ? 'Mute' : 'Unmute';
   const muteTreeSuffix       = hasUnmutedTab ? 'Mute' : 'Unmute';
   const muteDescendantSuffix = hasUnmutedDescendant ? 'Mute' : 'Unmute';
+  const stickySuffix         = sticky ? 'Unstick' : 'Stick';
   return multiselected && (
     item[`titleMultiselected${muteTabSuffix}`] ||
     item[`titleMultiselected${muteTreeSuffix}Tree`] ||
     item[`titleMultiselected${muteDescendantSuffix}Descendant`] ||
+    item[`titleMultiselected${stickySuffix}`] ||
     item.titleMultiselected
   ) || (
     item[`title${muteTabSuffix}`] ||
     item[`title${muteTreeSuffix}Tree`] ||
     item[`title${muteDescendantSuffix}Descendant`] ||
+    item[`title${stickySuffix}`] ||
     item.title
   );
 }
@@ -307,11 +310,12 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
   }
 }
 
-export function toggleStickyState(tabs) {
+export function toggleSticky(tabs, shouldStick = undefined) {
   const uniqueTabs = [...new Set(tabs)];
-  const shouldSetSticky = uniqueTabs.some(tab => !tab.$TST.states.has(Constants.kTAB_STATE_STICKY));
+  if (typeof shouldStick == 'undefined')
+    shouldStick = uniqueTabs.some(tab => !tab.$TST.states.has(Constants.kTAB_STATE_STICKY));
   for (const tab of uniqueTabs) {
-    tab.$TST.toggleState(Constants.kTAB_STATE_STICKY, shouldSetSticky, { permanently: true });
+    tab.$TST.toggleState(Constants.kTAB_STATE_STICKY, !!shouldStick, { permanently: true });
   }
 }
 
@@ -1100,7 +1104,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
     }; break;
 
     case Constants.kCOMMAND_TOGGLE_STICKY:
-      toggleStickyState([Tab.get(message.tabId)]);
+      toggleSticky([Tab.get(message.tabId)]);
       return;
   }
 });

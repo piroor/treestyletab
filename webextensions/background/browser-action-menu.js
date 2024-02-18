@@ -188,6 +188,11 @@ const mItems = [
         enabled: false
       },
       {
+        title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
+        key:   'context_topLevel_toggleSticky',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),
         key:   'context_topLevel_reloadTree',
         type:  'checkbox'
@@ -272,6 +277,11 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_extraItems_tabs_subMenu'),
         enabled: false
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
+        key:   'context_toggleSticky',
+        type:  'checkbox'
       },
       {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),

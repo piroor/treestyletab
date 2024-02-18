@@ -79,6 +79,9 @@
     "closeOthers": {
       "description": "__MSG_context_closeOthers_command__"
     },
+    "toggleSticky": {
+      "description": "__MSG_context_toggleSticky_command__"
+    },
     "collapseTree": {
       "description": "__MSG_context_collapseTree_command__"
     },

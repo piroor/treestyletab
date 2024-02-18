@@ -12,6 +12,7 @@ import {
 
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
+import * as Constants from '/common/constants.js';
 import * as Sync from '/common/sync.js';
 import * as TSTAPI from '/common/tst-api.js';
 
@@ -97,6 +98,16 @@ const mTabItemsById = {
     titleMultiselected: browser.i18n.getMessage('context_closeOthers_label_multiselected')
   },
   'separatorAfterClose': {
+    type: 'separator'
+  },
+  'toggleSticky': {
+    titleStick:                browser.i18n.getMessage('context_toggleSticky_label_stick'),
+    titleMultiselectedStick:   browser.i18n.getMessage('context_toggleSticky_label_multiselected_stick'),
+    titleUnstick:              browser.i18n.getMessage('context_toggleSticky_label_unstick'),
+    titleMultiselectedUnstick: browser.i18n.getMessage('context_toggleSticky_label_multiselected_unstick'),
+    requireNormal: true,
+  },
+  'separatorAfterToggleSticky': {
     type: 'separator'
   },
   'collapseTree': {
@@ -329,7 +340,7 @@ function updateItem(id, params) {
   }, browser.runtime);
 }
 
-function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false } = {}) {
+function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false, sticky = false } = {}) {
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -346,7 +357,7 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
       lastSeparator = item;
     }
     else {
-      const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
+      const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
       let visible = !(item.configKey in configs) || configs[item.configKey];
       if (forceVisible !== null)
         visible = forceVisible;
@@ -386,10 +397,10 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
   return { updated, visibleItemsCount };
 }
 
-async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky } = {}) {
   let updated = false;
 
-  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
   if (groupedItems.updated)
     updated = true;
 
@@ -407,7 +418,7 @@ async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant 
     updated = true;
   }
 
-  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
   if (topLevelItems.updated)
     updated = true;
 
@@ -486,6 +497,11 @@ function onTabItemClick(info, tab) {
     case 'closeOthers':
       Commands.closeOthers(contextTabs);
       break;
+
+    case 'toggleSticky': {
+      const sticky = contextTab.$TST.states.has(Constants.kTAB_STATE_STICKY);
+      Commands.toggleSticky(contextTabs, !sticky);
+    }; break;
 
     case 'collapseTree':
       Commands.collapseTree(contextTabs, { recursively: inverted });
@@ -580,7 +596,12 @@ async function onTabContextMenuShown(info, tab) {
   const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
   const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
 
-  let updated = await updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  let updated = await updateItems({
+    multiselected,
+    hasUnmutedTab,
+    hasUnmutedDescendant,
+    sticky: tab && tab.$TST.states.has(Constants.kTAB_STATE_STICKY),
+  });
   if (mLastContextTabId != contextTabId)
     return; // Skip further operations if the menu was already reopened on a different context tab.
 
@@ -611,6 +632,9 @@ async function onTabContextMenuShown(info, tab) {
     }
     else if (item.requireGrouped) {
       newEnabled = grouped;
+    }
+    else if (item.requireNormal) {
+      newEnabled = tab?.pinned;
     }
     else {
       continue;
