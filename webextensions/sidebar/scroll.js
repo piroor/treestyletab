@@ -308,10 +308,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
         const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
           Tab.get(extractIdPart(mLastRenderedVirtualScrollTabIds[fromEnd])) :
           null;
-        const referenceTabHasValidReferenceElement = !!(
-          referenceTab?.$TST.element &&
-          referenceTab.$TST.element.parentNode == win.containerElement
-        );
+        const referenceTabHasValidReferenceElement = referenceTab?.$TST.element?.parentNode == win.containerElement;
         for (const id of insertIds) {
           if (STICKY_SPACER_MATCHER.test(id)) {
             const spacer = document.createElement('li');
@@ -319,8 +316,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             spacer.setAttribute('data-tab-id', RegExp.$1);
             win.containerElement.insertBefore(
               spacer,
-              (referenceTab &&
-               win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab.id}"]`)) ||
+              win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
               (referenceTabHasValidReferenceElement &&
                referenceTab.$TST.element) ||
               null
@@ -328,7 +324,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
             continue;
           }
           SidebarTabs.renderTab(Tab.get(id), {
-            insertBefore: referenceTabHasValidReferenceElement ? referenceTab : null,
+            insertBefore: referenceTabHasValidReferenceElement ? referenceTab :
+              win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
+              null,
           });
         }
       }; break;

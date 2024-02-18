@@ -249,7 +249,9 @@ export function renderTab(tab, { containerElement, insertBefore } = {}) {
       win.containerElement
   );
 
-  let nextElement = insertBefore && insertBefore.$TST.element;
+  let nextElement = insertBefore?.nodeType == Node.ELEMENT_NODE ?
+    insertBefore :
+    (insertBefore && insertBefore.$TST.element);
   if (nextElement === undefined &&
       (containerElement == win.containerElement ||
        containerElement == win.pinnedContainerElement)) {
