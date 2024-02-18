@@ -231,19 +231,20 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
   const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
+  const toBeRenderedTabIdsSet = new Set(toBeRenderedTabIds);
 
   const stickyTabs = updateStickyTabs(renderableTabs);
   for (const stickyTab of stickyTabs) {
-    if (stickyTab &&
-        stickyTab.index >= renderableTabs[firstRenderableIndex].index &&
-        stickyTab.index <= renderableTabs[lastRenderableIndex].index)
+    if (toBeRenderedTabIdsSet.has(stickyTab.id))
       toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, `${stickyTab.id}:sticky`);
   }
 
   const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
   log('renderVirtualScrollViewport ', {
     firstRenderableIndex,
+    firstRenderableTabIndex: renderableTabs[firstRenderableIndex].index,
     lastRenderableIndex,
+    lastRenderableTabIndex: renderableTabs[lastRenderableIndex].index,
     old: mLastRenderedVirtualScrollTabIds.slice(0),
     new: toBeRenderedTabIds.slice(0),
     renderOperations,
