@@ -362,6 +362,7 @@ function updateStickyTabs(renderableTabs) {
   const stickyTabs = [];
 
   const canBeStickyTabs = renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
+  log('canBeStickyTabs ', canBeStickyTabs);
   const removedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0);
   for (const tab of canBeStickyTabs.slice(0).reverse()) { // first try: find bottom sticky tabs from bottom
     const index = renderableTabs.indexOf(tab);
@@ -406,7 +407,7 @@ function updateStickyTabs(renderableTabs) {
     SidebarTabs.unrenderTab(Tab.get(id));
   }
 
-  log('updateStickyTab ', stickyTabs);
+  log('updateStickyTab ', stickyTabs, { above: [...stickyTabIdsAbove], below: [...stickyTabIdsBelow] });
   mLastStickyTabIdsAbove = stickyTabIdsAbove;
   mLastStickyTabIdsBelow = stickyTabIdsBelow;
 
