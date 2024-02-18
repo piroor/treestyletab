@@ -63,6 +63,9 @@ export class TabFaviconElement extends HTMLElement {
     const sharingStateIcon = this.appendChild(document.createElement('span'));
     sharingStateIcon.classList.add(Constants.kFAVICON_SHARING_STATE);
 
+    const stickyStateIcon = this.appendChild(document.createElement('span'));
+    stickyStateIcon.classList.add(Constants.kFAVICON_STICKY_STATE);
+
     const throbber = this.appendChild(document.createElement('span'));
     throbber.classList.add(Constants.kTHROBBER);
 

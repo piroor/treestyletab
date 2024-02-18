@@ -141,6 +141,7 @@ export const kFAVICON_IMAGE   = 'favicon-image';
 export const kFAVICON_BUILTIN = 'favicon-builtin';
 export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions
 export const kFAVICON_SHARING_STATE = 'favicon-sharing-state';
+export const kFAVICON_STICKY_STATE = 'favicon-sticky-state';
 export const kBACKGROUND      = 'background';
 export const kTHROBBER        = 'throbber';
 export const kHIGHLIGHTER     = 'highlighter';
