@@ -499,6 +499,44 @@ function onMessageExternal(message, sender) {
         return result;
       })();
 
+    case TSTAPI.kSTICK_TAB:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.toggleSticky(tab, true),
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kUNSTICK_TAB:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.toggleSticky(tab, false),
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kTOGGLE_STICKY_STATE:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        let firstTabIsSticky = undefined;
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => {
+            if (firstTabIsSticky === undefined)
+              firstTabIsSticky = tab.$TST.states.has(Constants.kTAB_STATE_STICKY);
+            Commands.toggleSticky(tab, !firstTabIsSticky);
+          },
+          message.interval
+        );
+        return true;
+      })();
+
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
