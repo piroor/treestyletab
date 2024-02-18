@@ -20,6 +20,7 @@
      * TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
      * 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
      * ツリー項目の情報を[必要最小限だけ得る](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)ためのAPI [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) を追加
+     * タブのタブバー端への貼り付け状態を制御するためのメッセージ型として[`stick-tab`、`unstick-tab`、`toggle-sticky-state`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#control-sticky-state-of-tabs-at-tab-bar-edges)を追加
      * [`get-tree` と `get-light-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
      * パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした
      * [通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages)
