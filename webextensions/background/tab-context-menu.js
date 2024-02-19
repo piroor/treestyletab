@@ -331,6 +331,13 @@ export async function init() {
   });
 }
 
+let mSharingService = null;
+
+export function registerSharingService(service) {
+  mSharingService = service;
+}
+
+
 let mMultipleTabsRestorable = false;
 Tab.onChangeMultipleTabsRestorability.addListener(multipleTabsRestorable => {
   mMultipleTabsRestorable = multipleTabsRestorable;
@@ -683,9 +690,8 @@ async function onShown(info, contextTab) {
       multiselected
     }) && modifiedItemsCount++;
 
-    // Not implemented yet. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
-      visible: emulate && contextTab && false,
+      visible: emulate && contextTab && mSharingService,
     }) && modifiedItemsCount++;
 
     updateItem('context_sendTabsToDevice', {
@@ -1073,6 +1079,10 @@ async function onClick(info, contextTab) {
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
       break;
+    case 'context_shareTabURL':
+      if (mSharingService)
+        mSharingService.shareTabs(multiselectedTabs || [contextTab]);
+      break;
     case 'context_sendTabsToDevice:all':
       Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
       break;
@@ -1198,6 +1208,12 @@ async function onClick(info, contextTab) {
       if (contextTab &&
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
+
+      const shareTabsMatch = info.menuItemId.match(/^context_shareTabURL:(.+)$/);
+      if (mSharingService &&
+          contextTab &&
+          shareTabsMatch)
+        mSharingService.shareTabs(multiselectedTabs || [contextTab], shareTabsMatch[1]);
 
       const sendTabsToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
       if (contextTab &&
