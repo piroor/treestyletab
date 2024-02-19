@@ -12,7 +12,6 @@ import {
 
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
-import * as Constants from '/common/constants.js';
 import * as Sync from '/common/sync.js';
 import * as TSTAPI from '/common/tst-api.js';
 
