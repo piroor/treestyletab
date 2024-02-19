@@ -454,7 +454,7 @@ export default class Tab {
   }
 
   get canBecomeSticky() {
-    if (this.tab.pinned ||
+    if (this.tab?.pinned ||
         this.collapsed)
       return false;
 
@@ -464,7 +464,7 @@ export default class Tab {
     if (!configs.stickyActiveTab)
       return false;
 
-    return this.tab.active || this.bundledTab?.active;
+    return this.tab?.active || this.bundledTab?.active;
   }
 
   get promisedPossibleOpenerBookmarks() {
