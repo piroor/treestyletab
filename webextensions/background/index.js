@@ -23,6 +23,7 @@ import './handle-tab-bunches.js';
 import './handle-tab-focus.js';
 import './handle-tab-multiselect.js';
 import './handle-tree-changes.js';
+import './sync-background.js';
 
 log.context = 'BG';
 

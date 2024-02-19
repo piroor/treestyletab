@@ -17,6 +17,9 @@ import {
   isLinux,
 } from './common.js';
 import * as Constants from '/common/constants.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
+
+import Tab from '/common/Tab.js';
 
 function log(...args) {
   internalLogger('common/sync', ...args);
@@ -28,6 +31,12 @@ export const onUpdatedDevice = new EventListenerManager();
 export const onObsoleteDevice = new EventListenerManager();
 
 const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
+
+let mExternalProvider = null;
+
+export function registerExternalProvider(provider) {
+  mExternalProvider = provider;
+}
 
 let mMyDeviceInfo = null;
 
@@ -360,6 +369,9 @@ function clone(value) {
 }
 
 export function getOtherDevices() {
+  if (mExternalProvider)
+    return mExternalProvider.getOtherDevices();
+
   if (!mMyDeviceInfo)
     throw new Error('Not initialized yet. You need to call this after the device info is initialized.');
   const devices = configs.syncDevices || {};
@@ -389,4 +401,68 @@ export function isSendableTab(tab) {
   if (!isSendableTab.unsendableUrlMatcher)
     isSendableTab.unsendableUrlMatcher = new RegExp(configs.syncUnsendableUrlPattern);
   return !isSendableTab.unsendableUrlMatcher.test(tab.url);
+}
+
+export function sendTabsToDevice(tabs, { to, recursively } = {}) {
+  if (recursively)
+    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
+  tabs = tabs.filter(isSendableTab);
+
+  if (mExternalProvider)
+    return mExternalProvider.sendTabsToDevice(tabs, to);
+
+  sendMessage(to, getTabsDataToSend(tabs));
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title: browser.i18n.getMessage(
+      `sentTabs_notification_title${multiple}`,
+      [getDeviceName(to)]
+    ),
+    message: browser.i18n.getMessage(
+      `sentTabs_notification_message${multiple}`,
+      [getDeviceName(to)]
+    ),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
+}
+
+export async function sendTabsToAllDevices(tabs, { recursively } = {}) {
+  if (recursively)
+    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
+  tabs = tabs.filter(isSendableTab);
+
+  if (mExternalProvider)
+    return mExternalProvider.sendTabsToAllDevices(tabs);
+
+  const data = getTabsDataToSend(tabs);
+  const devices = await getOtherDevices();
+  for (const device of devices) {
+    sendMessage(device.id, data);
+  }
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title:   browser.i18n.getMessage(`sentTabsToAllDevices_notification_title${multiple}`),
+    message: browser.i18n.getMessage(`sentTabsToAllDevices_notification_message${multiple}`),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
+}
+
+function getTabsDataToSend(tabs) {
+  return {
+    type:       Constants.kSYNC_DATA_TYPE_TABS,
+    tabs:       tabs.map(tab => ({ url: tab.url, cookieStoreId: tab.cookieStoreId })),
+    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
+  };
+}
+
+export function manageDevices(windowId) {
+  if (mExternalProvider)
+    return mExternalProvider.manageDevices(windowId);
+
+  browser.tabs.create({
+    windowId,
+    url: `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`
+  });
 }

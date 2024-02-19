@@ -525,7 +525,7 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'sendTreeToDevice:all':
-      Commands.sendTabsToAllDevices(contextTabs, { recursively: true });
+      Sync.sendTabsToAllDevices(contextTabs, { recursively: true });
       break;
 
     case 'collapsed':
@@ -551,7 +551,7 @@ function onTabItemClick(info, tab) {
       const sendToDeviceMatch = info.menuItemId.match(/^sendTreeToDevice:device:(.+)$/);
       if (contextTab &&
           sendToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           contextTabs,
           { to: sendToDeviceMatch[1],
             recursively: true }

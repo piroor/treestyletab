@@ -13,15 +13,12 @@ import {
   wait,
   countMatched,
   configs,
-  notify,
   getWindowParamsFromSource,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as Constants from '/common/constants.js';
-import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as Sync from '/common/sync.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
@@ -1225,120 +1222,3 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
 
   openBookmarksWithStructure(items, { activeIndex, discarded });
 }
-
-
-export function sendTabsToDevice(tabs, { to, recursively } = {}) {
-  if (recursively)
-    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
-  tabs = tabs.filter(Sync.isSendableTab);
-  Sync.sendMessage(to, getTabsDataToSend(tabs));
-
-  const multiple = tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title: browser.i18n.getMessage(
-      `sentTabs_notification_title${multiple}`,
-      [Sync.getDeviceName(to)]
-    ),
-    message: browser.i18n.getMessage(
-      `sentTabs_notification_message${multiple}`,
-      [Sync.getDeviceName(to)]
-    ),
-    timeout: configs.syncSentTabsNotificationTimeout
-  });
-}
-
-export async function sendTabsToAllDevices(tabs, { recursively } = {}) {
-  if (recursively)
-    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
-  tabs = tabs.filter(Sync.isSendableTab);
-  const data = getTabsDataToSend(tabs);
-  const devices = await Sync.getOtherDevices();
-  for (const device of devices) {
-    Sync.sendMessage(device.id, data);
-  }
-
-  const multiple = tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title:   browser.i18n.getMessage(`sentTabsToAllDevices_notification_title${multiple}`),
-    message: browser.i18n.getMessage(`sentTabsToAllDevices_notification_message${multiple}`),
-    timeout: configs.syncSentTabsNotificationTimeout
-  });
-}
-
-function getTabsDataToSend(tabs) {
-  return {
-    type:       Constants.kSYNC_DATA_TYPE_TABS,
-    tabs:       tabs.map(tab => ({ url: tab.url, cookieStoreId: tab.cookieStoreId })),
-    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
-  };
-}
-
-export function manageSyncDevices(windowId) {
-  browser.tabs.create({
-    windowId,
-    url: `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`
-  });
-}
-
-Sync.onMessage.addListener(async message => {
-  const data = message.data;
-  if (data.type != Constants.kSYNC_DATA_TYPE_TABS ||
-      !Array.isArray(data.tabs))
-    return;
-
-  const multiple = data.tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title: browser.i18n.getMessage(
-      `receiveTabs_notification_title${multiple}`,
-      [Sync.getDeviceName(message.from)]
-    ),
-    message: browser.i18n.getMessage(
-      `receiveTabs_notification_message${multiple}`,
-      data.tabs.length > 1 ?
-        [data.tabs[0].url, data.tabs.length, data.tabs.length - 1] :
-        [data.tabs[0].url]
-    ),
-    timeout: configs.syncReceivedTabsNotificationTimeout
-  });
-
-  const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
-  const win = TabsStore.windows.get(windowId);
-  const initialIndex = win.tabs.size;
-  win.toBeOpenedOrphanTabs += data.tabs.length;
-  let index = 0;
-  const tabs = [];
-  for (const tab of data.tabs) {
-    const createParams = {
-      windowId,
-      url:    tab.url,
-      index:  initialIndex + index,
-      active: index == 0
-    };
-    if (tab.cookieStoreId &&
-        tab.cookieStoreId != 'firefox-default' &&
-        ContextualIdentities.get(tab.cookieStoreId))
-      createParams.cookieStoreId = tab.cookieStoreId;
-    let openedTab;
-    try {
-      openedTab = await browser.tabs.create(createParams);
-    }
-    catch(error) {
-      console.log(error);
-    }
-    if (!openedTab)
-      openedTab = await browser.tabs.create({
-        ...createParams,
-        url: `about:blank?${tab.url}`
-      });
-    tabs.push(openedTab);
-    index++;
-  }
-
-  if (!Array.isArray(data.structure))
-    return;
-
-  await wait(100); // wait for all tabs are tracked
-  await Tree.applyTreeStructureToTabs(tabs.map(tab => Tab.get(tab.id)), data.structure, {
-    broadcast: true
-  });
-});

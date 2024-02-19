@@ -1074,13 +1074,13 @@ async function onClick(info, contextTab) {
       Commands.openTabInWindow(contextTab);
       break;
     case 'context_sendTabsToDevice:all':
-      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
+      Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
       break;
     case 'context_sendTabsToDevice:manage':
-      Commands.manageSyncDevices(windowId);
+      Sync.manageDevices(windowId);
       break;
     case 'context_topLevel_sendTreeToDevice:all':
-      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab], { recursively: true });
+      Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab], { recursively: true });
       break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
@@ -1202,14 +1202,14 @@ async function onClick(info, contextTab) {
       const sendTabsToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
       if (contextTab &&
           sendTabsToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           multiselectedTabs || [contextTab],
           { to: sendTabsToDeviceMatch[1] }
         );
       const sendTreeToDeviceMatch = info.menuItemId.match(/^context_topLevel_sendTreeToDevice:device:(.+)$/);
       if (contextTab &&
           sendTreeToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           multiselectedTabs || [contextTab],
           { to: sendTreeToDeviceMatch[1],
             recursively: true }
