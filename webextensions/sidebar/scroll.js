@@ -679,8 +679,7 @@ export async function scrollToTab(tab, options = {}) {
 
   const scrollBox = getScrollBoxFor(tab);
   if (hasAnchor &&
-      !anchorTab.pinned &&
-      !anchorTab.$TST.canBecomeSticky) {
+      !anchorTab.pinned) {
     const targetTabRect = getTabRect(tab);
     const anchorTabRect = getTabRect(anchorTab);
     const scrollBoxRect = scrollBox.getBoundingClientRect();
@@ -1047,9 +1046,10 @@ async function onBackgroundMessage(message) {
             return;
           const active = tab.active;
           tab.$TST.collapsedOnCreated = false;
+          const activeTab = Tab.getActiveTab(tab.windowId);
           CollapseExpand.setCollapsed(tab, { // this is required to scroll to the tab with the "last" parameter
             collapsed: false,
-            anchor:    !active && Tab.getActiveTab(tab.windowId),
+            anchor:    (active || activeTab?.$TST.canBecomeSticky) ? null : activeTab,
             last:      !active
           });
           if (!active)
