@@ -690,6 +690,7 @@ async function onShown(info, contextTab) {
       multiselected
     }) && modifiedItemsCount++;
 
+    // Not implemented yet as a built-in. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
       visible: emulate && contextTab && mSharingService,
     }) && modifiedItemsCount++;
