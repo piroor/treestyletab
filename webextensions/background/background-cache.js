@@ -502,6 +502,11 @@ Tab.onUpdated.addListener((tab, _info) => {
   markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
+Tab.onStateChanged.addListener((tab, state, _has) => {
+  if (state == Constants.kTAB_STATE_STICKY)
+    markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+});
+
 Tree.onSubtreeCollapsedStateChanging.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });

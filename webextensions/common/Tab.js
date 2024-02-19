@@ -1416,6 +1416,8 @@ export default class Tab {
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
+    if (modified)
+      Tab.onStateChanged.dispatch(this.tab, state, true);
   }
 
   async removeState(state, { permanently, toTab, broadcast } = {}) {
@@ -1572,6 +1574,8 @@ export default class Tab {
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
+    if (modified)
+      Tab.onStateChanged.dispatch(this.tab, state, false);
   }
 
   async getPermanentStates() {
@@ -1897,6 +1901,7 @@ Tab.UNSYNCHRONIZABLE_PROPERTIES = new Set([
 Tab.onTracked      = new EventListenerManager();
 Tab.onDestroyed    = new EventListenerManager();
 Tab.onInitialized  = new EventListenerManager();
+Tab.onStateChanged  = new EventListenerManager();
 Tab.onElementBound = new EventListenerManager();
 
 Tab.track = tab => {
