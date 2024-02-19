@@ -684,9 +684,23 @@ export async function scrollToTab(tab, options = {}) {
     const anchorTabRect = getTabRect(anchorTab);
     const scrollBoxRect = scrollBox.getBoundingClientRect();
     let delta = calculateScrollDeltaForTab(tab, { over: false });
+
+    let topStickyTabsAreaSize, bottomStickyTabsAreaSize;
+    if (mLastStickyTabIdsAbove.has(anchorTab.id) &&
+        mLastStickyTabIdsAbove.size > 0)
+      topStickyTabsAreaSize = Size.getTabHeight() * (mLastStickyTabIdsAbove.size - 1);
+    else
+      topStickyTabsAreaSize = Size.getTabHeight() * mLastStickyTabIdsAbove.size;
+
+    if (mLastStickyTabIdsBelow.has(tab.id) &&
+        mLastStickyTabIdsBelow.size > 0)
+      bottomStickyTabsAreaSize = Size.getTabHeight() * (mLastStickyTabIdsBelow.size - 1);
+    else
+      bottomStickyTabsAreaSize = Size.getTabHeight() * mLastStickyTabIdsBelow.size;
+
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
-      const boundingHeight = targetTabRect.bottom - anchorTabRect.top;
+      const boundingHeight = (targetTabRect.bottom + bottomStickyTabsAreaSize) - (anchorTabRect.top - topStickyTabsAreaSize);
       const overHeight     = boundingHeight - scrollBoxRect.height;
       if (overHeight > 0) {
         delta -= overHeight;
