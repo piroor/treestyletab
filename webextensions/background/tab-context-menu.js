@@ -648,7 +648,7 @@ async function onShown(info, contextTab) {
       multiselected,
       title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleSticky, {
         multiselected,
-        sticky: contextTab?.$TST.states.has(Constants.kTAB_STATE_STICKY),
+        sticky: contextTab?.$TST.sticky,
       }),
     }) && modifiedItemsCount++;
     updateItem('context_duplicateTab', {
@@ -1056,11 +1056,9 @@ async function onClick(info, contextTab) {
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
-    case 'context_toggleSticky': {
-      const tab    = contextTab || activeTab;
-      const sticky = tab.$TST.states.has(Constants.kTAB_STATE_STICKY);
-      Commands.toggleSticky(multiselectedTabs, !sticky);
-    }; break;
+    case 'context_toggleSticky':
+      Commands.toggleSticky(multiselectedTabs, !(contextTab || activeTab).$TST.sticky);
+      break;
     case 'context_duplicateTab':
       Commands.duplicateTab(contextTab, {
         destinationWindowId: windowId

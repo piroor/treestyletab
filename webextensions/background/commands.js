@@ -313,7 +313,7 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
 export function toggleSticky(tabs, shouldStick = undefined) {
   const uniqueTabs = [...new Set(tabs)];
   if (shouldStick === undefined)
-    shouldStick = uniqueTabs.some(tab => !tab.$TST.states.has(Constants.kTAB_STATE_STICKY));
+    shouldStick = uniqueTabs.some(tab => !tab.$TST.sticky);
   for (const tab of uniqueTabs) {
     tab.$TST.toggleState(Constants.kTAB_STATE_STICKY, !!shouldStick, { permanently: true });
   }

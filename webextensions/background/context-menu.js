@@ -498,10 +498,9 @@ function onTabItemClick(info, tab) {
       Commands.closeOthers(contextTabs);
       break;
 
-    case 'toggleSticky': {
-      const sticky = contextTab.$TST.states.has(Constants.kTAB_STATE_STICKY);
-      Commands.toggleSticky(contextTabs, !sticky);
-    }; break;
+    case 'toggleSticky':
+      Commands.toggleSticky(contextTabs, !contextTab.$TST.sticky);
+      break;
 
     case 'collapseTree':
       Commands.collapseTree(contextTabs, { recursively: inverted });
@@ -600,7 +599,7 @@ async function onTabContextMenuShown(info, tab) {
     multiselected,
     hasUnmutedTab,
     hasUnmutedDescendant,
-    sticky: tab && tab.$TST.states.has(Constants.kTAB_STATE_STICKY),
+    sticky: tab?.$TST.sticky,
   });
   if (mLastContextTabId != contextTabId)
     return; // Skip further operations if the menu was already reopened on a different context tab.

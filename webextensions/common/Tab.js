@@ -340,6 +340,10 @@ export default class Tab {
     return this.states.has(Constants.kTAB_STATE_REMOVING);
   }
 
+  get sticky() {
+    return this.states.has(Constants.kTAB_STATE_STICKY);
+  }
+
   get isNewTabCommandTab() {
     if (!this.tab ||
         !configs.guessNewOrphanTabAsOpenedByNewTabCommand)
@@ -454,7 +458,7 @@ export default class Tab {
         this.collapsed)
       return false;
 
-    if (this.states.has(Constants.kTAB_STATE_STICKY))
+    if (this.sticky)
       return true;
 
     if (!configs.stickyActiveTab)

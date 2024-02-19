@@ -529,7 +529,7 @@ function onMessageExternal(message, sender) {
           tabs,
           tab => {
             if (firstTabIsSticky === undefined)
-              firstTabIsSticky = tab.$TST.states.has(Constants.kTAB_STATE_STICKY);
+              firstTabIsSticky = tab.$TST.sticky;
             Commands.toggleSticky(tab, !firstTabIsSticky);
           },
           message.interval
