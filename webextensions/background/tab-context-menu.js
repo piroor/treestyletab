@@ -331,6 +331,23 @@ export async function init() {
   });
 }
 
+
+// Workaround for https://github.com/piroor/treestyletab/issues/3423
+// Firefox does not provide any API to access to the sharing service of the platform.
+// We need to provide it as experiments API or something way.
+// This module is designed to work with a service which has features:
+//   * async listServices(tabId)
+//     - Returns an array of sharing services on macOS.
+//     - Retruned array should have 0 or more items like:
+//       { name:  "service name",
+//         title: "title for a menu item",
+//         image: "icon image URL" }
+//     - Returned array may contain a special item with the name "share-more".
+//   * share(tabId, shareName = null)
+//     - Returns nothing.
+//     - Shares the specified tab with the specified service.
+//       The second argument is optional because it is required only on macOS.
+
 let mSharingService = null;
 
 export function registerSharingService(service) {
@@ -416,8 +433,7 @@ function updateContextualIdentities() {
 const mLastDevicesSignature = new Map();
 const mSendToDeviceItems    = new Map();
 export async function updateSendToDeviceItems(parentId, { manage } = {}) {
-  await Sync.waitUntilDeviceInfoInitialized();
-  const devices = Sync.getOtherDevices();
+  const devices = await Sync.getOtherDevices();
   const signature = JSON.stringify(devices.map(device => ({ id: device.id, name: device.name })));
   if (signature == mLastDevicesSignature.get(parentId))
     return false;

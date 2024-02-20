@@ -32,6 +32,29 @@ export const onObsoleteDevice = new EventListenerManager();
 
 const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
 
+// Workaround for https://github.com/piroor/treestyletab/blob/trunk/README.md#user-content-feature-requests-send-tab-tree-to-device-does-not-work
+// and https://bugzilla.mozilla.org/show_bug.cgi?id=1417183 (resolved as WONTFIX)
+// Firefox does not provide any API to access to Sync features directly.
+// We need to provide it as experiments API or something way.
+// This module is designed to work with a service provide which has features:
+//   * async getOtherDevices()
+//     - Returns an array of sync devices.
+//     - Retruned array should have 0 or more items like:
+//       { id:   "identifier of the device",
+//         name: "name of the device",
+//         type: "type of the device (desktop, mobile, and so on)" }
+//   * sendTabsToDevice(tabs, device)
+//     - Returns nothing.
+//     - Sends URLs of given tabs to the specified device.
+//     - The device is one of values returned by getOtherDevices().
+//   * sendTabsToAllDevices(tabs)
+//     - Returns nothing.
+//     - Sends URLs of given tabs to all other devices.
+//   * manageDevices(windowId)
+//     - Returns nothing.
+//     - Opens settings page for Sync devices.
+//       It will appear as a tab in the specified window.
+
 let mExternalProvider = null;
 
 export function registerExternalProvider(provider) {
@@ -368,12 +391,12 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-export function getOtherDevices() {
+export async function getOtherDevices() {
   if (mExternalProvider)
     return mExternalProvider.getOtherDevices();
 
-  if (!mMyDeviceInfo)
-    throw new Error('Not initialized yet. You need to call this after the device info is initialized.');
+  await waitUntilDeviceInfoInitialized();
+
   const devices = configs.syncDevices || {};
   const result = [];
   for (const [id, info] of Object.entries(devices)) {
