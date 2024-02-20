@@ -523,6 +523,62 @@ export async function updateSendToDeviceItems(parentId, { manage } = {}) {
   return true;
 }
 
+const mLastSharingServicesSignature = new Map();
+const mShareItems                   = new Map();
+async function updateSharingServiceItems(parentId, contextTab) {
+  if (!mSharingService)
+    return false;
+
+  const services = await mSharingService.listServices(contextTab);
+  const signature = JSON.stringify(services);
+  if (signature == mLastSharingServicesSignature.get(parentId))
+    return false;
+
+  mLastSharingServicesSignature.set(parentId, signature);
+
+  const items = mShareItems.get(parentId) || new Set();
+  for (const item of items) {
+    const id = item.id;
+    browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_REMOVE,
+      params: id
+    }, browser.runtime);
+  }
+  items.clear();
+
+  const baseParams = {
+    parentId,
+    contexts:            ['tab'],
+    viewTypes:           ['sidebar', 'tab', 'popup'],
+    documentUrlPatterns: SIDEBAR_URL_PATTERN
+  };
+
+  if (services.length > 0) {
+    for (const service of services) {
+      const item = {
+        ...baseParams,
+        type:  'normal',
+        id:    `${parentId}:service:${service.name}`,
+        title: service.title,
+      };
+      if (service.image)
+        item.icons = {
+          '16': service.image,
+        };
+      browser.menus.create(item);
+      onMessageExternal({
+        type: TSTAPI.kCONTEXT_MENU_CREATE,
+        params: item
+      }, browser.runtime);
+      items.add(item);
+    }
+  }
+
+  mShareItems.set(parentId, items);
+  return true;
+}
+
 
 function updateItem(id, state = {}) {
   let modified = false;
@@ -856,6 +912,7 @@ async function onShown(info, contextTab) {
       updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }),
       mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice'),
       modifiedItemsCount > 0 && browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()).then(_ => false),
+      updateSharingServiceItems('context_shareTabURL', contextTab),
     ]).then(results => {
       modifiedItemsCount = 0;
       for (const modified of results) {
@@ -1226,7 +1283,7 @@ async function onClick(info, contextTab) {
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
 
-      const shareTabsMatch = info.menuItemId.match(/^context_shareTabURL:(.+)$/);
+      const shareTabsMatch = info.menuItemId.match(/^context_shareTabURL:service:(.+)$/);
       if (mSharingService &&
           contextTab &&
           shareTabsMatch)
