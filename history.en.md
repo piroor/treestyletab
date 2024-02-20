@@ -5,8 +5,9 @@
      * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
      * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
+   * Introduce new context menu commands and other triggers to stick arbitrary tabs to edges of the tab bar. It is similar to "Pin/Unpin Tab" but sticked tab keeps its tree.
    * Active tab is now sticked to edges of the tab bar when it is scrolled out.
-   * Indicate sharing state of tabs (camera, microphone and/or screen) with icons. It is similar to "Pin/Unpin Tab" but sticked tab keeps its tree.
+   * Indicate sharing state of tabs (camera, microphone and/or screen) with icons.
    * Show dropshadow before normal tabs when the tab bar is scrolled.
    * Show dropshadow after normal tabs when the tab bar is not fully scrolled.
    * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
