@@ -1352,13 +1352,17 @@ export default class Tab {
 
       case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
         const parent = this.parent;
-        if (parent)
+        if (parent) {
           parent.$TST.autoplayBlockedChildrenIds.add(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
       } break;
       case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
         const parent = this.parent;
-        if (parent)
+        if (parent) {
           parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
       } break;
 
       case Constants.kTAB_STATE_SHARING_CAMERA: {
@@ -1532,13 +1536,17 @@ export default class Tab {
 
       case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
         const parent = this.parent;
-        if (parent)
+        if (parent) {
           parent.$TST.autoplayBlockedChildrenIds.delete(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
       } break;
       case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
         const parent = this.parent;
-        if (parent)
+        if (parent) {
           parent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
       } break;
 
       case Constants.kTAB_STATE_SHARING_CAMERA: {
