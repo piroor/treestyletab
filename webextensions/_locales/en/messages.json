@@ -854,6 +854,7 @@
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "Send to All Devices" },
   "tabContextMenu_manageSyncDevices_label": { "message": "Manage Devices…" },
   "tabContextMenu_shareTabURL_label":   { "message": "S&hare" },
+  "tabContextMenu_shareTabURL_more_label":   { "message": "More…" },
 
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "Close &Multiple Tabs" },

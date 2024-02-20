@@ -341,12 +341,14 @@ export async function init() {
 //     - Retruned array should have 0 or more items like:
 //       { name:  "service name",
 //         title: "title for a menu item",
-//         image: "icon image URL" }
-//     - Returned array may contain a special item with the name "share-more".
+//         image: "icon image (maybe data: URI)" }
 //   * share(tab, shareName = null)
 //     - Returns nothing.
 //     - Shares the specified tab with the specified service.
 //       The second argument is optional because it is required only on macOS.
+//   * openPreferences()
+//     - Returns nothing.
+//     - Opens preferences of sharing services on macOS.
 
 let mSharingService = null;
 
@@ -569,10 +571,38 @@ async function updateSharingServiceItems(parentId, contextTab) {
       browser.menus.create(item);
       onMessageExternal({
         type: TSTAPI.kCONTEXT_MENU_CREATE,
-        params: item
+        params: item,
       }, browser.runtime);
       items.add(item);
     }
+
+    const separator = {
+      ...baseParams,
+      type: 'separator',
+      id:   `${parentId}:separator`,
+    };
+    browser.menus.create(separator);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: separator,
+    }, browser.runtime);
+    items.add(separator);
+
+    const moreItem = {
+      ...baseParams,
+      type:  'normal',
+      id:    `${parentId}:more`,
+      title: browser.i18n.getMessage('tabContextMenu_shareTabURL_more_label'),
+      icons: {
+        '16': '/resources/icons/more-horiz-16.svg',
+      },
+    };
+    browser.menus.create(moreItem);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: moreItem,
+    }, browser.runtime);
+    items.add(moreItem);
   }
 
   mShareItems.set(parentId, items);
@@ -1156,6 +1186,10 @@ async function onClick(info, contextTab) {
     case 'context_shareTabURL':
       if (mSharingService)
         mSharingService.share(contextTab);
+      break;
+    case 'context_shareTabURL:more':
+      if (mSharingService)
+        mSharingService.openPreferences();
       break;
     case 'context_sendTabsToDevice:all':
       Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab]);

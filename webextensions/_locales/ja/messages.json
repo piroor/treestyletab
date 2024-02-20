@@ -851,6 +851,7 @@
   "tabContextMenu_sendTabsToAllDevices_label": { "message": "すべての端末に送信" },
   "tabContextMenu_manageSyncDevices_label": { "message": "端末を管理..." },
   "tabContextMenu_shareTabURL_label":   { "message": "共有(&H)" },
+  "tabContextMenu_shareTabURL_more_label":   { "message": "その他…" },
 
   "tabContextMenu_closeMultipleTabs_label":  { "message": "複数のタブを閉じる(&M)" },
   "tabContextMenu_closeTabsToTop_label":  { "message": "上のタブをすべて閉じる(&T)" },
