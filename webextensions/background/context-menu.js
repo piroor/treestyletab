@@ -70,14 +70,14 @@ const mTabItemsById = {
   },
   // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
   'unblockAutoplayTree': {
-    titleTree:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
-    titleMultiselectedTree:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
+    title:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
     requireAutoplayBlockedTab: true,
   },
   // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
   'unblockAutoplayDescendants': {
-    titleDescendant:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
-    titleMultiselectedDescendant:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
+    title:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
     requireAutoplayBlockedDescendant: true,
   },
   'toggleMuteTree': {
