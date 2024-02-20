@@ -47,6 +47,8 @@
   "tab_soundButton_muted_tooltip_multiselected": { "message": "選択されたタブのミュートを解除" },
   "tab_soundButton_playing_tooltip": { "message": "タブをミュート" },
   "tab_soundButton_playing_tooltip_multiselected": { "message": "選択されたタブをミュート" },
+  "tab_soundButton_autoplayBlocked_tooltip": { "message": "タブのメディアを再生" },
+  "tab_soundButton_autoplayBlocked_tooltip_multiselected": { "message": "選択されたタブのメディアを再生" },
   "tab_twisty_aria_label": { "message": "ツリーを開閉 #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }
