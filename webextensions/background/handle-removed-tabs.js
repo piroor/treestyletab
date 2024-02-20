@@ -102,8 +102,8 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     await handleRemovingPostProcess(postProcessParams)
   }
 
-  const window = TabsStore.windows.get(tab.windowId);
-  if (!window.internalClosingTabs.has(tab.$TST.parentId))
+  const win = TabsStore.windows.get(tab.windowId);
+  if (!win.internalClosingTabs.has(tab.$TST.parentId))
     Tree.detachTab(tab, {
       dontUpdateIndent: true,
       dontSyncParentToOpenerTab: true,
@@ -260,10 +260,10 @@ Tab.onRemoved.addListener((tab, info) => {
 });
 
 browser.windows.onRemoved.addListener(windowId  => {
-  const window = TabsStore.windows.get(windowId);
-  if (!window)
+  const win = TabsStore.windows.get(windowId);
+  if (!win)
     return;
-  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => !window.tabs.has(id));
+  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => !win.tabs.has(id));
 });
 
 

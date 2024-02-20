@@ -72,7 +72,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
-  const window = TabsStore.windows.get(tabs[0].windowId);
+  const win = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
 
@@ -102,9 +102,10 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       if (oldNextTab && oldNextTab.id == referenceTab.id) // no move case
         continue;
       if (SidebarConnection.isInitialized()) { // only on the background page
-        window.internalMovingTabs.add(tab.id);
-        window.alreadyMovedTabs.add(tab.id);
+        win.internalMovingTabs.add(tab.id);
+        win.alreadyMovedTabs.add(tab.id);
       }
+      const fromIndex = tab.index;
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
@@ -122,7 +123,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
-        newIndex:    tab.index,
+        fromIndex,
+        toIndex:     tab.index,
         nextTabId:   referenceTab && referenceTab.id,
         broadcasted: !!options.broadcasted
       });
@@ -131,9 +133,12 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        () => toLines(Array.from(window.getOrderedTabs()),
-                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
+      log(
+        'Tab nodes rearranged by moveTabsInternallyBefore:\n',
+        (!configs.debug ? '' :
+          () => toLines(Array.from(win.getOrderedTabs()),
+                        tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`))
+      );
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -172,9 +177,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
-  const window = TabsStore.windows.get(tabs[0].windowId);
+  const win = TabsStore.windows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
+  log('moveTabsInternallyAfter: ', tabs, `${referenceTab.id}(index=${referenceTab.index}`, options);
 
   const followingReferenceTab = referenceTab.$TST.nextTab;
   if (followingReferenceTab &&
@@ -197,8 +202,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       following to this operation, we need to move tabs immediately.
     */
     let nextTab = referenceTab.$TST.unsafeNextTab;
-    if (nextTab && tabs.find(tab => tab.id == nextTab.id))
-      nextTab = null;
+    while (nextTab && tabs.find(tab => tab.id == nextTab.id)) {
+      nextTab = nextTab.$TST.unsafeNextTab;
+    }
     for (const tab of tabs) {
       const oldPreviousTab = tab.$TST.unsafePreviousTab;
       const oldNextTab     = tab.$TST.unsafeNextTab;
@@ -206,9 +212,10 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
       if (SidebarConnection.isInitialized()) { // only on the background page
-        window.internalMovingTabs.add(tab.id);
-        window.alreadyMovedTabs.add(tab.id);
+        win.internalMovingTabs.add(tab.id);
+        win.alreadyMovedTabs.add(tab.id);
       }
+      const fromIndex = tab.index;
       if (nextTab) {
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
@@ -216,7 +223,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           tab.index = nextTab.index;
       }
       else {
-        tab.index = window.tabs.size - 1
+        tab.index = win.tabs.size - 1
       }
       tab.reindexedBy = `moveTabsInternallyAfter (${tab.index})`;
       Tab.track(tab);
@@ -231,7 +238,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         type:        Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED,
         windowId:    tab.windowId,
         tabId:       tab.id,
-        newIndex:    tab.index,
+        fromIndex,
+        toIndex:     tab.index,
         nextTabId:   nextTab && nextTab.id,
         broadcasted: !!options.broadcasted
       });
@@ -240,9 +248,12 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        () => toLines(Array.from(window.getOrderedTabs()),
-                      tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`)));
+      log(
+        'Tab nodes rearranged by moveTabsInternallyAfter:\n',
+        (!configs.debug ? '' :
+          () => toLines(Array.from(win.getOrderedTabs()),
+                        tab => ` - ${tab.index}: ${tab.id}${tabs.includes(tab) ? '[MOVED]' : ''}`))
+      );
     }
     if (SidebarConnection.isInitialized()) { // only on the background page
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -309,8 +320,8 @@ async function syncToNativeTabsInternal(windowId) {
   if (Tab.needToWaitMoved(windowId))
     await Tab.waitUntilMovedAll(windowId);
 
-  const window = TabsStore.windows.get(windowId);
-  if (!window) // already destroyed
+  const win = TabsStore.windows.get(windowId);
+  if (!win) // already destroyed
     return;
 
   // Tabs may be removed while waiting.
@@ -352,8 +363,8 @@ async function syncToNativeTabsInternal(windowId) {
           toIndex--;
         log(`syncToNativeTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (const movedId of moveTabIds) {
-          window.internalMovingTabs.add(movedId);
-          window.alreadyMovedTabs.add(movedId);
+          win.internalMovingTabs.add(movedId);
+          win.alreadyMovedTabs.add(movedId);
           movedTabs.add(movedId);
         }
         logApiTabs(`tabs-move:syncToNativeTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
@@ -378,8 +389,8 @@ async function syncToNativeTabsInternal(windowId) {
           if (reallyMovedTabIds.has(id))
             continue;
           log(`syncToNativeTabs(${windowId}): failed to move tab ${id}: maybe unplacable position (regular tabs in pinned tabs/pinned tabs in regular tabs), or any other reason`);
-          window.internalMovingTabs.delete(id);
-          window.alreadyMovedTabs.delete(id);
+          win.internalMovingTabs.delete(id);
+          win.alreadyMovedTabs.delete(id);
         }
         tabIdsForUpdatedIndices = tabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
         tabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);

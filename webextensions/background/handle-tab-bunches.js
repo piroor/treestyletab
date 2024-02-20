@@ -37,8 +37,8 @@ function log(...args) {
 // ====================================================================
 
 Tab.onBeforeCreate.addListener(async (tab, info) => {
-  const window  = TabsStore.windows.get(tab.windowId);
-  if (!window)
+  const win = TabsStore.windows.get(tab.windowId);
+  if (!win)
     return;
 
   const openerId  = tab.openerTabId;
@@ -48,11 +48,11 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
        openerTab.windowId == tab.windowId) ||
       (!openerTab &&
        !info.maybeOrphan)) {
-    if (window.preventToDetectTabBunchesUntil > Date.now()) {
-      window.preventToDetectTabBunchesUntil += configs.tabBunchesDetectionTimeout;
+    if (win.preventToDetectTabBunchesUntil > Date.now()) {
+      win.preventToDetectTabBunchesUntil += configs.tabBunchesDetectionTimeout;
     }
     else {
-      window.openedNewTabs.set(tab.id, {
+      win.openedNewTabs.set(tab.id, {
         id:       tab.id,
         windowId: tab.windowId,
         indexOnCreated: tab.$indexOnCreated,
@@ -63,28 +63,28 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
       });
     }
   }
-  if (window.delayedTabBunchesDetection)
-    clearTimeout(window.delayedTabBunchesDetection);
-  window.delayedTabBunchesDetection = setTimeout(
+  if (win.delayedTabBunchesDetection)
+    clearTimeout(win.delayedTabBunchesDetection);
+  win.delayedTabBunchesDetection = setTimeout(
     tryDetectTabBunches,
     configs.tabBunchesDetectionTimeout,
-    window
+    win
   );
 });
 
 const mPossibleTabBunchesToBeGrouped = [];
 const mPossibleTabBunchesFromBookmarks = [];
 
-async function tryDetectTabBunches(window) {
-  if (Tab.needToWaitTracked(window.id))
-    await Tab.waitUntilTrackedAll(window.id);
-  if (Tab.needToWaitMoved(window.id))
-    await Tab.waitUntilMovedAll(window.id);
+async function tryDetectTabBunches(win) {
+  if (Tab.needToWaitTracked(win.id))
+    await Tab.waitUntilTrackedAll(win.id);
+  if (Tab.needToWaitMoved(win.id))
+    await Tab.waitUntilMovedAll(win.id);
 
-  let tabReferences = Array.from(window.openedNewTabs.values());
+  let tabReferences = Array.from(win.openedNewTabs.values());
   log('tryDetectTabBunches for ', tabReferences);
 
-  window.openedNewTabs.clear();
+  win.openedNewTabs.clear();
 
   tabReferences = tabReferences.filter(tabReference => {
     if (!tabReference.id)
@@ -226,10 +226,10 @@ async function confirmToAutoGroupNewTabsFromOthers(tabs) {
     checked: true,
     modal: true, // for popup
     type:  'common-dialog', // for popup
-    url:   '/resources/blank.html',  // for popup, required on Firefox ESR68
     title: browser.i18n.getMessage('warnOnAutoGroupNewTabs_title'), // for popup
     onShownInPopup(container) {
-      setTimeout(() => { // this need to be done on the next tick, to use the height of the box for     calculation of dialog size
+      setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+        // this need to be done on the next tick, to use the height of the box for calculation of dialog size
         const style = container.querySelector('ul').style;
         style.height = '0px'; // this makes the box shrinkable
         style.maxHeight = 'none';
@@ -381,6 +381,8 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
         broadcast:   true
       });
     }
+    if (opener.active)
+      parent.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
   }
   return true;
 }

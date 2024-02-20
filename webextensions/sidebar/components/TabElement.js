@@ -18,6 +18,7 @@ import { kTAB_FAVICON_ELEMENT_NAME } from './TabFaviconElement.js';
 import { kTAB_LABEL_ELEMENT_NAME } from './TabLabelElement.js';
 import { kTAB_COUNTER_ELEMENT_NAME } from './TabCounterElement.js';
 import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './TabSoundButtonElement.js';
+import { kTAB_SHARING_STATE_ELEMENT_NAME } from './TabSharingStateElement.js';
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './TabCloseBoxElement.js';
 
 export const kTAB_ELEMENT_NAME = 'tab-item';
@@ -28,7 +29,8 @@ export const TabInvalidationTarget = Object.freeze({
   SoundButton: 1 << 1,
   CloseBox:    1 << 2,
   Tooltip:     1 << 3,
-  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,
+  SharingState: 1 << 4,
+  All:         1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,
 });
 
 export const TabUpdateTarget = Object.freeze({
@@ -79,7 +81,7 @@ export class TabElement extends HTMLElement {
       this.initializeContents();
       this.invalidate(TabInvalidationTarget.All);
       this.update(TabUpdateTarget.TabProperties);
-      this._applyAttributes();
+      this.applyAttributes();
       this._initExtraItemsContainers();
       this._startListening();
       return;
@@ -113,27 +115,53 @@ export class TabElement extends HTMLElement {
     substance.setAttribute('draggable', true);
     this.appendChild(substance);
 
+    const backgroundBase = document.createElement('span');
+    backgroundBase.classList.add(Constants.kBACKGROUND);
+    backgroundBase.classList.add('base');
+    substance.appendChild(backgroundBase);
+
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
     substance.appendChild(background);
 
-    const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
-    substance.appendChild(label);
-
     const twisty = document.createElement(kTAB_TWISTY_ELEMENT_NAME);
-    substance.insertBefore(twisty, label);
+    substance.appendChild(twisty);
+
+    const ui = document.createElement('span');
+    ui.classList.add('ui');
+    substance.appendChild(ui);
+
+    const extraItemsContainerAbove = document.createElement('span');
+    extraItemsContainerAbove.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerAbove.classList.add('above');
+    ui.appendChild(extraItemsContainerAbove);
+
+    const caption = document.createElement('span');
+    caption.classList.add('caption');
+    ui.appendChild(caption);
+
+    const extraItemsContainerBelow = document.createElement('span');
+    extraItemsContainerBelow.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+    extraItemsContainerBelow.classList.add('below');
+    ui.appendChild(extraItemsContainerBelow);
 
     const favicon = document.createElement(kTAB_FAVICON_ELEMENT_NAME);
-    substance.insertBefore(favicon, label);
+    caption.appendChild(favicon);
+
+    const label = document.createElement(kTAB_LABEL_ELEMENT_NAME);
+    caption.appendChild(label);
 
     const counter = document.createElement(kTAB_COUNTER_ELEMENT_NAME);
-    substance.appendChild(counter);
+    caption.appendChild(counter);
+
+    const sharingState = document.createElement(kTAB_SHARING_STATE_ELEMENT_NAME);
+    caption.appendChild(sharingState);
 
     const soundButton = document.createElement(kTAB_SOUND_BUTTON_ELEMENT_NAME);
-    substance.appendChild(soundButton);
+    caption.appendChild(soundButton);
 
     const closebox = document.createElement(kTAB_CLOSE_BOX_ELEMENT_NAME);
-    substance.appendChild(closebox);
+    caption.appendChild(closebox);
 
     const burster = document.createElement('span');
     burster.classList.add(Constants.kBURSTER);
@@ -150,12 +178,12 @@ export class TabElement extends HTMLElement {
     const extraItemsContainerBehind = document.createElement('span');
     extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerBehind.classList.add('behind');
-    substance.appendChild(extraItemsContainerBehind);
+    ui.appendChild(extraItemsContainerBehind);
 
     const extraItemsContainerFront = document.createElement('span');
     extraItemsContainerFront.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
     extraItemsContainerFront.classList.add('front');
-    substance.appendChild(extraItemsContainerFront);
+    ui.appendChild(extraItemsContainerFront);
 
     this.removeAttribute('draggable');
 
@@ -163,11 +191,15 @@ export class TabElement extends HTMLElement {
     this.invalidate(TabInvalidationTarget.All);
     this.update(TabUpdateTarget.TabProperties);
     this._initExtraItemsContainers();
-    this._applyAttributes();
+    this.applyAttributes();
     this._startListening();
   }
 
   disconnectedCallback() {
+    if (this._reservedUpdateTooltip) {
+      this.addEventListener('mouseover', this._reservedUpdateTooltip);
+      this._reservedUpdateTooltip = null;
+    }
     this._endListening();
   }
 
@@ -195,6 +227,8 @@ export class TabElement extends HTMLElement {
     }
     if (this._counterElement)
       this._counterElement.owner = this;
+    if (this._sharingStateElement)
+      this._sharingStateElement.owner = this;
     if (this._soundButtonElement) {
       this._soundButtonElement.owner = this;
       this._soundButtonElement.makeAccessible();
@@ -208,7 +242,7 @@ export class TabElement extends HTMLElement {
   // Elements restored from cache are initialized without bundled tabs.
   // Thus we provide abiltiy to get tab and service objects from cached/restored information.
   get tab() {
-    return this._tab || (this._tab = Tab.get(this.getAttribute(Constants.kAPI_TAB_ID)));
+    return this._tab || (this._tab = Tab.get(parseInt(this.getAttribute(Constants.kAPI_TAB_ID))));
   }
   set tab(value) {
     return this._tab = value;
@@ -237,6 +271,10 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_LABEL_ELEMENT_NAME);
   }
 
+  get _sharingStateElement() {
+    return this.querySelector(kTAB_SHARING_STATE_ELEMENT_NAME);
+  }
+
   get _soundButtonElement() {
     return this.querySelector(kTAB_SOUND_BUTTON_ELEMENT_NAME);
   }
@@ -249,7 +287,7 @@ export class TabElement extends HTMLElement {
     return this.querySelector(kTAB_CLOSE_BOX_ELEMENT_NAME);
   }
 
-  _applyAttributes() {
+  applyAttributes() {
     this._labelElement.value = this.dataset.title;
     this.favIconUrl = this._favIconUrl;
     this.setAttribute('aria-selected', this.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED) ? 'true' : 'false');
@@ -259,6 +297,13 @@ export class TabElement extends HTMLElement {
     this._substanceElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
     this._labelElement.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._labelElement.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
+
+    if (this.tab)
+      this.dataset.index =
+        this._substanceElement.dataset.index =
+          this._labelElement.dataset.index =this.tab.index;
+
+    this._labelElement.applyAttributes();
   }
 
   invalidate(targets) {
@@ -269,6 +314,12 @@ export class TabElement extends HTMLElement {
       const twisty = this.twisty;
       if (twisty)
         twisty.invalidate();
+    }
+
+    if (targets & TabInvalidationTarget.SharingState) {
+      const sharingState = this._sharingStateElement;
+      if (sharingState)
+        sharingState.invalidate();
     }
 
     if (targets & TabInvalidationTarget.SoundButton) {
@@ -342,14 +393,15 @@ export class TabElement extends HTMLElement {
       return;
 
     const tab = this.$TST.tab;
-    if (!TabsStore.ensureLivingTab(tab))
+    const tabElement = tab && tab.$TST.element;
+    if (!tabElement)
       return;
 
     if (configs.debug) {
       this.tooltip = `
 ${tab.title}
 #${tab.id}
-(${this.$TST.element.className})
+(${tabElement.className})
 uniqueId = <${this.$TST.uniqueId.id}>
 duplicated = <${!!this.$TST.uniqueId.duplicated}> / <${this.$TST.uniqueId.originalTabId}> / <${this.$TST.uniqueId.originalId}>
 restored = <${!!this.$TST.uniqueId.restored}>
@@ -360,8 +412,8 @@ windowId = ${tab.windowId}
       return;
     }
 
-    this.tooltip = this.$TST.cookieStoreName ? `${tab.title} - ${this.$TST.cookieStoreName}` : tab.title;
-    this.tooltipWithDescendants = this._getTooltipWithDescendants(tab);
+    this.tooltip                = this.$TST.generateTooltipText();
+    this.tooltipWithDescendants = this.$TST.generateTooltipTextWithDescendants();
 
     if (configs.showCollapsedDescendantsByTooltip &&
         this.$TST.subtreeCollapsed &&
@@ -374,15 +426,6 @@ windowId = ${tab.windowId}
     else {
       this.$TST.removeAttribute('title');
     }
-  }
-  _getTooltipWithDescendants(tab) {
-    const tooltip = [`* ${tab.$TST.element.tooltip || tab.title}`];
-    for (const child of tab.$TST.children) {
-      if (!child.$TST.element.tooltipWithDescendants)
-        child.$TST.element.tooltipWithDescendants = this._getTooltipWithDescendants(child);
-      tooltip.push(child.$TST.element.tooltipWithDescendants.replace(/^/gm, '  '));
-    }
-    return tooltip.join('\n');
   }
 
   _initExtraItemsContainers() {
@@ -397,6 +440,14 @@ windowId = ${tab.windowId}
     if (!this.extraItemsContainerFrontRoot) {
       this.extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
       this.extraItemsContainerFrontRoot.itemById = new Map();
+    }
+    if (!this.extraItemsContainerAboveRoot) {
+      this.extraItemsContainerAboveRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`).attachShadow({ mode: 'open' });
+      this.extraItemsContainerAboveRoot.itemById = new Map();
+    }
+    if (!this.extraItemsContainerBelowRoot) {
+      this.extraItemsContainerBelowRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`).attachShadow({ mode: 'open' });
+      this.extraItemsContainerBelowRoot.itemById = new Map();
     }
   }
 
@@ -443,11 +494,14 @@ windowId = ${tab.windowId}
     if (!TabsStore.ensureLivingTab(tab))
       return;
     for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
-      updateTab.$TST.element.invalidateTooltip();
+      const tabElement = updateTab.$TST.element;
+      if (!tabElement)
+        continue;
+      tabElement.invalidateTooltip();
       // on the "fade" mode, overflow style was already updated,
       // so we don' need to update the status here.
       if (configs.labelOverflowStyle != 'fade')
-        updateTab.$TST.element.updateOverflow();
+        tabElement.updateOverflow();
     }
   }
 
@@ -482,10 +536,7 @@ windowId = ${tab.windowId}
     }
     if (someHighlighted) {
       this.$TST.addState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-      if (allHighlighted)
-        this.$TST.addState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
-      else
-        this.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      this.$TST.toggleState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED, allHighlighted);
     }
     else {
       this.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);

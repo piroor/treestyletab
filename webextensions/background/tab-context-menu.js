@@ -70,6 +70,21 @@ const mItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_unblockAutoplay': {
+    title:              browser.i18n.getMessage('tabContextMenu_unblockAutoplay_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_unblockAutoplay_label_multiselected')
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_topLevel_unblockAutoplayTree': {
+    title:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_topLevel_unblockAutoplayDescendants': {
+    title:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
+  },
   'context_toggleMuteTab': {
     titleMute:                browser.i18n.getMessage('tabContextMenu_mute_label'),
     titleUnmute:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
@@ -95,6 +110,12 @@ const mItemsById = {
   'context_unpinTab': {
     title:              browser.i18n.getMessage('tabContextMenu_unpin_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_unpin_label_multiselected')
+  },
+  'context_topLevel_toggleSticky': {
+    titleStick:                browser.i18n.getMessage('context_toggleSticky_label_stick'),
+    titleMultiselectedStick:   browser.i18n.getMessage('context_toggleSticky_label_multiselected_stick'),
+    titleUnstick:              browser.i18n.getMessage('context_toggleSticky_label_unstick'),
+    titleMultiselectedUnstick: browser.i18n.getMessage('context_toggleSticky_label_multiselected_unstick')
   },
   'context_duplicateTab': {
     title:              browser.i18n.getMessage('tabContextMenu_duplicate_label'),
@@ -325,6 +346,32 @@ export async function init() {
   });
 }
 
+
+// Workaround for https://github.com/piroor/treestyletab/issues/3423
+// Firefox does not provide any API to access to the sharing service of the platform.
+// We need to provide it as experiments API or something way.
+// This module is designed to work with a service which has features:
+//   * async listServices(tab)
+//     - Returns an array of sharing services on macOS.
+//     - Retruned array should have 0 or more items like:
+//       { name:  "service name",
+//         title: "title for a menu item",
+//         image: "icon image (maybe data: URI)" }
+//   * share(tab, shareName = null)
+//     - Returns nothing.
+//     - Shares the specified tab with the specified service.
+//       The second argument is optional because it is required only on macOS.
+//   * openPreferences()
+//     - Returns nothing.
+//     - Opens preferences of sharing services on macOS.
+
+let mSharingService = null;
+
+export function registerSharingService(service) {
+  mSharingService = service;
+}
+
+
 let mMultipleTabsRestorable = false;
 Tab.onChangeMultipleTabsRestorability.addListener(multipleTabsRestorable => {
   mMultipleTabsRestorable = multipleTabsRestorable;
@@ -403,8 +450,7 @@ function updateContextualIdentities() {
 const mLastDevicesSignature = new Map();
 const mSendToDeviceItems    = new Map();
 export async function updateSendToDeviceItems(parentId, { manage } = {}) {
-  await Sync.waitUntilDeviceInfoInitialized();
-  const devices = Sync.getOtherDevices();
+  const devices = await Sync.getOtherDevices();
   const signature = JSON.stringify(devices.map(device => ({ id: device.id, name: device.name })));
   if (signature == mLastDevicesSignature.get(parentId))
     return false;
@@ -494,6 +540,90 @@ export async function updateSendToDeviceItems(parentId, { manage } = {}) {
   return true;
 }
 
+const mLastSharingServicesSignature = new Map();
+const mShareItems                   = new Map();
+async function updateSharingServiceItems(parentId, contextTab) {
+  if (!mSharingService)
+    return false;
+
+  const services = await mSharingService.listServices(contextTab);
+  const signature = JSON.stringify(services);
+  if (signature == mLastSharingServicesSignature.get(parentId))
+    return false;
+
+  mLastSharingServicesSignature.set(parentId, signature);
+
+  const items = mShareItems.get(parentId) || new Set();
+  for (const item of items) {
+    const id = item.id;
+    browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_REMOVE,
+      params: id
+    }, browser.runtime);
+  }
+  items.clear();
+
+  const baseParams = {
+    parentId,
+    contexts:            ['tab'],
+    viewTypes:           ['sidebar', 'tab', 'popup'],
+    documentUrlPatterns: SIDEBAR_URL_PATTERN
+  };
+
+  if (services.length > 0) {
+    for (const service of services) {
+      const item = {
+        ...baseParams,
+        type:  'normal',
+        id:    `${parentId}:service:${service.name}`,
+        title: service.title,
+      };
+      if (service.image)
+        item.icons = {
+          '16': service.image,
+        };
+      browser.menus.create(item);
+      onMessageExternal({
+        type: TSTAPI.kCONTEXT_MENU_CREATE,
+        params: item,
+      }, browser.runtime);
+      items.add(item);
+    }
+
+    const separator = {
+      ...baseParams,
+      type: 'separator',
+      id:   `${parentId}:separator`,
+    };
+    browser.menus.create(separator);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: separator,
+    }, browser.runtime);
+    items.add(separator);
+
+    const moreItem = {
+      ...baseParams,
+      type:  'normal',
+      id:    `${parentId}:more`,
+      title: browser.i18n.getMessage('tabContextMenu_shareTabURL_more_label'),
+      icons: {
+        '16': '/resources/icons/more-horiz-16.svg',
+      },
+    };
+    browser.menus.create(moreItem);
+    onMessageExternal({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: moreItem,
+    }, browser.runtime);
+    items.add(moreItem);
+  }
+
+  mShareItems.set(parentId, items);
+  return true;
+}
+
 
 function updateItem(id, state = {}) {
   let modified = false;
@@ -571,6 +701,7 @@ async function onShown(info, contextTab) {
         [];
     const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
     const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
+    const { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant } = Commands.getAutoplayBlockedState(contextTabs);
 
     if (mOverriddenContext)
       return onOverriddenMenuShown(info, contextTab, windowId);
@@ -604,6 +735,27 @@ async function onShown(info, contextTab) {
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
+    updateItem('context_unblockAutoplay', {
+      visible: emulate && contextTab?.$TST.autoplayBlocked,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_unblockAutoplay, {
+        multiselected,
+      }),
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_unblockAutoplayTree', {
+      visible: emulate && hasChild && hasAutoplayBlockedTab && configs.context_topLevel_unblockAutoplayTree,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_unblockAutoplayTree, {
+        multiselected,
+      }),
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_unblockAutoplayDescendants', {
+      visible: emulate && hasChild && hasAutoplayBlockedDescendant && configs.context_topLevel_unblockAutoplayDescendants,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_unblockAutoplayDescendants, {
+        multiselected,
+      }),
+    }) && modifiedItemsCount++;
     updateItem('context_toggleMuteTab', {
       visible: emulate && contextTab,
       multiselected,
@@ -635,6 +787,15 @@ async function onShown(info, contextTab) {
     updateItem('context_unpinTab', {
       visible: emulate && contextTab && contextTab.pinned,
       multiselected
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_toggleSticky', {
+      visible: emulate && contextTab,
+      enabled: contextTab && !contextTab.pinned,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleSticky, {
+        multiselected,
+        sticky: contextTab?.$TST.sticky,
+      }),
     }) && modifiedItemsCount++;
     updateItem('context_duplicateTab', {
       visible: emulate && contextTab,
@@ -668,20 +829,19 @@ async function onShown(info, contextTab) {
       multiselected
     }) && modifiedItemsCount++;
 
-    // Not implemented yet. See also: https://github.com/piroor/treestyletab/issues/3423
+    // Not implemented yet as a built-in. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
-      visible: emulate && contextTab && false,
+      visible: emulate && contextTab && mSharingService && Sync.isSendableTab(contextTab),
     }) && modifiedItemsCount++;
 
     updateItem('context_sendTabsToDevice', {
-      visible: emulate && contextTab,
-      enabled: contextTabs.filter(Sync.isSendableTab).length > 0,
+      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected,
       count: contextTabs.length
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_sendTreeToDevice', {
-      visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
-      enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
+      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0 && configs.context_topLevel_sendTreeToDevice && hasChild,
+      enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
 
@@ -818,6 +978,7 @@ async function onShown(info, contextTab) {
       updateSendToDeviceItems('context_sendTabsToDevice', { manage: true }),
       mItemsById.context_topLevel_sendTreeToDevice.lastVisible && updateSendToDeviceItems('context_topLevel_sendTreeToDevice'),
       modifiedItemsCount > 0 && browser.menus.refresh().catch(ApiTabs.createErrorSuppressor()).then(_ => false),
+      updateSharingServiceItems('context_shareTabURL', contextTab),
     ]).then(results => {
       modifiedItemsCount = 0;
       for (const modified of results) {
@@ -861,7 +1022,7 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
     }
   }
 
-  const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null;
+  const cache = {};
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -886,22 +1047,22 @@ function onOverriddenMenuShown(info, contextTab, windowId) {
       viewType:      'sidebar',
       wasChecked:    false
     },
-    tab: treeItem,
+    tab: contextTab,
     windowId
   }
-  TSTAPI.sendMessage(message, {
+  TSTAPI.broadcastMessage(message, {
     targets: [mOverriddenContext.owner],
-    tabProperties: ['tab']
+    tabProperties: ['tab'],
+    isContextTab: true,
+    cache,
   });
-  TSTAPI.sendMessage({
+  TSTAPI.broadcastMessage({
     ...message,
     type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
   }, {
     targets: [mOverriddenContext.owner],
     tabProperties: ['tab']
   });
-  if (treeItem)
-    treeItem.clearCache();
 
   reserveRefresh();
 }
@@ -946,13 +1107,13 @@ function onHidden() {
   if (mLastOverriddenContextOwner &&
       owner == mLastOverriddenContextOwner) {
     mOverriddenContext = null;
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kCONTEXT_MENU_HIDDEN,
       windowId
     }, {
       targets: [owner]
     });
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type: TSTAPI.kFAKE_CONTEXT_MENU_HIDDEN,
       windowId
     }, {
@@ -966,8 +1127,8 @@ async function onClick(info, contextTab) {
     return;
 
   contextTab = contextTab && Tab.get(contextTab.id);
-  const window    = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
-  const windowId  = contextTab && contextTab.windowId || window.id;
+  const win       = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
+  const windowId  = contextTab && contextTab.windowId || win.id;
   const activeTab = TabsStore.activeTabInWindow.get(windowId);
 
   let multiselectedTabs = Tab.getSelectedTabs(windowId);
@@ -1041,6 +1202,9 @@ async function onClick(info, contextTab) {
           .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
+    case 'context_toggleSticky':
+      Commands.toggleSticky(multiselectedTabs, !(contextTab || activeTab).$TST.sticky);
+      break;
     case 'context_duplicateTab':
       Commands.duplicateTab(contextTab, {
         destinationWindowId: windowId
@@ -1055,23 +1219,28 @@ async function onClick(info, contextTab) {
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
       break;
+    case 'context_shareTabURL':
+      if (mSharingService)
+        mSharingService.share(contextTab);
+      break;
+    case 'context_shareTabURL:more':
+      if (mSharingService)
+        mSharingService.openPreferences();
+      break;
     case 'context_sendTabsToDevice:all':
-      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
+      Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
       break;
     case 'context_sendTabsToDevice:manage':
-      Commands.manageSyncDevices(windowId);
+      Sync.manageDevices(windowId);
       break;
     case 'context_topLevel_sendTreeToDevice:all':
-      Commands.sendTabsToAllDevices(multiselectedTabs || [contextTab], { recursively: true });
+      Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab], { recursively: true });
       break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
-      browser.tabs.highlight({
-        windowId,
-        populate: false,
-        tabs:     [activeTab.index].concat(mapAndFilter(tabs,
-                                                        tab => !tab.active ? tab.index : undefined))
-      }).catch(ApiTabs.createErrorSuppressor());
+      TabsInternalOperation.highlightTabs(
+        [activeTab].concat(mapAndFilter(tabs, tab => !tab.active ? tab : undefined))
+      ).catch(ApiTabs.createErrorSuppressor());
     }; break;
     case 'context_bookmarkTab':
       Commands.bookmarkTab(contextTab);
@@ -1184,17 +1353,23 @@ async function onClick(info, contextTab) {
           contextualIdentityMatch)
         Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
 
+      const shareTabsMatch = info.menuItemId.match(/^context_shareTabURL:service:(.+)$/);
+      if (mSharingService &&
+          contextTab &&
+          shareTabsMatch)
+        mSharingService.share(contextTab, shareTabsMatch[1]);
+
       const sendTabsToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
       if (contextTab &&
           sendTabsToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           multiselectedTabs || [contextTab],
           { to: sendTabsToDeviceMatch[1] }
         );
       const sendTreeToDeviceMatch = info.menuItemId.match(/^context_topLevel_sendTreeToDevice:device:(.+)$/);
       if (contextTab &&
           sendTreeToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           multiselectedTabs || [contextTab],
           { to: sendTreeToDeviceMatch[1],
             recursively: true }
@@ -1203,10 +1378,6 @@ async function onClick(info, contextTab) {
       if (EXTERNAL_TOP_LEVEL_ITEM_MATCHER.test(info.menuItemId)) {
         const owner      = RegExp.$1;
         const menuItemId = RegExp.$2;
-        const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true });
-        const tab = treeItem && (await treeItem.exportFor(owner)) || null;
-        if (treeItem)
-          treeItem.clearCache();
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
@@ -1229,17 +1400,26 @@ async function onClick(info, contextTab) {
             viewType:      'sidebar',
             wasChecked:    info.wasChecked
           },
-          tab
+          tab: contextTab,
         };
         if (owner == browser.runtime.id) {
           browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
         }
-        else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getCurrentWindowId() })) {
-          browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
-          browser.runtime.sendMessage(owner, {
-            ...message,
-            type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
-          }).catch(ApiTabs.createErrorSuppressor());
+        else {
+          const cache = {};
+          TSTAPI.sendMessage(
+            owner,
+            message,
+            { tabProperties: ['tab'], cache, isContextTab: true }
+          ).catch(ApiTabs.createErrorSuppressor());
+          TSTAPI.sendMessage(
+            owner,
+            {
+              ...message,
+              type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
+            },
+            { tabProperties: ['tab'], cache, isContextTab: true }
+          ).catch(ApiTabs.createErrorSuppressor());
         }
       }
     }; break;

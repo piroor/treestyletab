@@ -5,16 +5,21 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+:root {
+  --tab-twisty-offset: calc((var(--tab-ui-size) - var(--favicon-size)) / 2);
+  --tab-twisty-negative-offset: calc((var(--favicon-size) - var(--tab-ui-size)) / 2);
+}
+
 tab-item tab-twisty {
   display: inline-block;
   font-size: var(--favicon-size);
-  height: var(--favicon-size);
-  margin: 0;
-  max-height: var(--favicon-size);
+  /*height: var(--favicon-size);*/
+  margin: var(--tab-twisty-negative-offset) 0;
+  /*max-height: var(--favicon-size);*/
   max-width: var(--favicon-size);
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
-  padding: 0;
+  padding: var(--tab-twisty-offset) 0;
   position: relative;
   transform-origin: 50% 50%;
   white-space: pre;

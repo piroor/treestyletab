@@ -70,8 +70,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
 
 Tab.onMoving.addListener((tab, moveInfo) => {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
-  const window           = TabsStore.windows.get(tab.windowId);
-  const isNewlyOpenedTab = window.openingTabs.has(tab.id);
+  const win              = TabsStore.windows.get(tab.windowId);
+  const isNewlyOpenedTab = win.openingTabs.has(tab.id);
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (isNewlyOpenedTab &&
       !moveInfo.byInternalOperation &&
@@ -144,15 +144,15 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   const allowed = await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_FIXUP_TREE_ON_TAB_MOVED,
     {
-      tab:          new TSTAPI.TreeItem(tab, { cache }),
+      tab,
       fromIndex:    moveInfo.fromIndex,
       toIndex:      moveInfo.toIndex,
       action:       action.action,
-      parent:       action.parent && new TSTAPI.TreeItem(Tab.get(action.parent), { cache }),
-      insertBefore: action.insertBefore && new TSTAPI.TreeItem(Tab.get(action.insertBefore), { cache }),
-      insertAfter:  action.insertAfter && new TSTAPI.TreeItem(Tab.get(action.insertAfter), { cache })
+      parent:       action.parent,
+      insertBefore: action.insertBefore,
+      insertAfter:  action.insertAfter,
     },
-    { tabProperties: ['tab', 'parent', 'insertBefore', 'insertAfter'] }
+    { tabProperties: ['tab', 'parent', 'insertBefore', 'insertAfter'], cache }
   );
   TSTAPI.clearCache(cache);
   if (!allowed) {
@@ -253,9 +253,9 @@ TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { try
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
-  const id     = tab.id;
-  const window = TabsStore.windows.get(tab.windowId);
-  window.internalMovingTabs.add(id);
+  const id  = tab.id;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.internalMovingTabs.add(id);
   logApiTabs(`handle-moved-tabs:moveBack: browser.tabs.move() `, tab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
@@ -266,8 +266,8 @@ function moveBack(tab, moveInfo) {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
   }).catch(ApiTabs.createErrorHandler(e => {
-    if (window.internalMovingTabs.has(id))
-      window.internalMovingTabs.delete(id);
+    if (win.internalMovingTabs.has(id))
+      win.internalMovingTabs.delete(id);
     ApiTabs.handleMissingTabError(e);
   }));
 }

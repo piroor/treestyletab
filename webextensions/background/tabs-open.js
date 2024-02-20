@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2022
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -25,6 +25,8 @@
  *
  * ***** END LICENSE BLOCK ******/
 'use strict';
+
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   log as internalLogger,
@@ -39,6 +41,8 @@ import Tab from '/common/Tab.js';
 
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
+
+export const onForbiddenURLRequested = new EventListenerManager();
 
 function log(...args) {
   internalLogger('background/tabs-open', ...args);
@@ -82,7 +86,7 @@ export async function loadURI(uri, options = {}) {
     }
     else {
       await browser.tabs.update(tabId, {
-        url: uri
+        url: sanitizeURL(uri),
       }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
   }
@@ -116,15 +120,15 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
     await TabsMove.waitUntilSynchronized(windowId);
     const startIndex = Tab.calculateNewTabIndex({ insertAfter, insertBefore });
     log('startIndex: ', startIndex);
-    const window = TabsStore.windows.get(windowId);
+    const win = TabsStore.windows.get(windowId);
     if (insertBefore ||
         insertAfter ||
         uris.some(uri => uri && typeof uri == 'object' && 'index' in uri))
-      window.toBeOpenedTabsWithPositions += uris.length;
+      win.toBeOpenedTabsWithPositions += uris.length;
     if (cookieStoreId)
-      window.toBeOpenedTabsWithCookieStoreId += uris.length;
+      win.toBeOpenedTabsWithCookieStoreId += uris.length;
     if (isOrphan)
-      window.toBeOpenedOrphanTabs += uris.length;
+      win.toBeOpenedOrphanTabs += uris.length;
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
         windowId: windowId,
@@ -256,8 +260,10 @@ function sanitizeURL(url) {
   if (/^about:reader\?/.test(url))
     return (new URL(url)).searchParams.get('url') || 'about:blank';
 
-  if (FORBIDDEN_URL_MATCHER.test(url))
-    return `about:blank?${url}`;
+  if (FORBIDDEN_URL_MATCHER.test(url)) {
+    onForbiddenURLRequested.dispatch(url);
+    return `about:blank?forbidden-url=${url}`;
+  }
 
   return url;
 }

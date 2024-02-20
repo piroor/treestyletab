@@ -384,12 +384,12 @@ async function updateBookmarksUI(enabled) {
 }
 
 async function initOtherDevices() {
-  await Sync.waitUntilDeviceInfoInitialized();
+  const devices = await Sync.getOtherDevices();
   const container = document.querySelector('#otherDevices');
   const range = document.createRange();
   range.selectNodeContents(container);
   range.deleteContents();
-  for (const device of Sync.getOtherDevices()) {
+  for (const device of devices) {
     const icon = device.icon ? `<img src="/resources/icons/${sanitizeForHTMLText(device.icon)}.svg">` : '';
     const contents = range.createContextualFragment(`
       <li id="otherDevice:${sanitizeForHTMLText(String(device.id))}"
@@ -514,7 +514,6 @@ async function importFilesToUserStyleRulesField(files) {
       result = await RichConfirm.showInPopup({
         modal:   true,
         type:    'common-dialog',
-        url:     '/resources/blank.html', // required on Firefox ESR68
         title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
         message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
         buttons: [
@@ -573,6 +572,7 @@ configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     document.documentElement.classList.toggle('successor-tab-support', typeof browser.tabs.moveInSuccession == 'function');
+    document.documentElement.classList.toggle('expose-unblock-autoplay-features', configs.exposeUnblockAutoplayFeatures);
 
     initAccesskeys();
     initLogsButton();
@@ -674,7 +674,22 @@ function initLinks() {
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);
-  document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
+  const runTestLink = document.getElementById('link-runTests');
+  const runTestParameters = document.getElementById('runTestsParameters');
+  runTestLink.setAttribute('href', '#');
+  runTestLink.addEventListener('mousedown', _event => {
+    runTestLink.href = `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`;
+  }, true);
+  runTestLink.addEventListener('keydown', _event => {
+    runTestLink.href = `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`;
+  }, true);
+  runTestParameters.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    browser.tabs.create({
+      url: `${Constants.kSHORTHAND_URIS.testRunner}?${runTestParameters.value || ''}`,
+    });
+  });
   document.getElementById('link-runBenchmark').setAttribute('href', `${Constants.kSHORTHAND_URIS.testRunner}?benchmark=true`);
 }
 
@@ -932,6 +947,14 @@ async function initExternalAddons() {
 }
 
 function initSync() {
+  const section = document.querySelector('#syncTabsToDeviceOptions');
+  if (Sync.hasExternalProvider()) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  section.classList.remove('hidden');
+
   const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
   deviceInfoNameField.addEventListener('input', () => {
     if (deviceInfoNameField.$throttling)

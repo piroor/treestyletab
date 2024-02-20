@@ -67,7 +67,8 @@ Background.onReady.addListener(() => {
   mInitializationPhase = PHASE_BACKGROUND_READY;
 });
 
-(browser.action || browser.browserAction).onClicked.addListener(onToolbarButtonClick);
+if (browser.sidebarAction)
+  (browser.action || browser.browserAction)?.onClicked.addListener(onToolbarButtonClick);
 browser.commands.onCommand.addListener(onShortcutCommand);
 browser.runtime.onMessage.addListener(onMessage);
 TSTAPI.onMessageExternal.addListener(onMessageExternal);
@@ -80,7 +81,8 @@ Background.onReady.addListener(() => {
 Background.onDestroy.addListener(() => {
   browser.runtime.onMessage.removeListener(onMessage);
   TSTAPI.onMessageExternal.removeListener(onMessageExternal);
-  (browser.action || browser.browserAction).onClicked.removeListener(onToolbarButtonClick);
+  if (browser.sidebarAction)
+    (browser.action || browser.browserAction)?.onClicked.removeListener(onToolbarButtonClick);
 });
 
 
@@ -137,6 +139,9 @@ async function onShortcutCommand(command) {
       return;
     case 'closeOthers':
       Commands.closeOthers(selectedTabs);
+      return;
+    case 'toggleSticky':
+      Commands.toggleSticky(selectedTabs);
       return;
     case 'collapseTree':
       Commands.collapseTree(selectedTabs);
@@ -425,10 +430,11 @@ function onMessage(message, sender) {
       return Background.confirmToCloseTabs(message.tabs, message);
 
     default:
-      const API_PREFIX_MATCHER = /^treestyletab:api:/;
-      if (API_PREFIX_MATCHER.test(message.type)) {
-        message.type = message.type.replace(API_PREFIX_MATCHER, '');
-        return onMessageExternal(message, sender);
+      if (TSTAPI.INTERNAL_CALL_PREFIX_MATCHER.test(message.type)) {
+        return onMessageExternal({
+          ...message,
+          type: message.type.replace(TSTAPI.INTERNAL_CALL_PREFIX_MATCHER, ''),
+        }, sender);
       }
       break;
   }
@@ -441,15 +447,21 @@ function onMessageExternal(message, sender) {
     return;
 
   switch (message.type) {
+    case TSTAPI.kGET_VERSION:
+      return Promise.resolve(browser.runtime.getManifest().version);
+
     case TSTAPI.kGET_TREE:
       return (async () => {
-        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const tabs = await (message.rendered ?
+          TSTAPI.getTargetRenderedTabs(message, sender) :
+          TSTAPI.getTargetTabs(message, sender));
         const cache = {};
+        const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
+          interval: message.interval,
+          cache,
+        }));
         const result = TSTAPI.formatTabResult(
-          Array.from(tabs, tab => new TSTAPI.TreeItem(tab, {
-            interval: message.interval,
-            cache
-          })),
+          treeItems,
           {
             ...message,
             // This must return an array of root tabs if just the window id is specified.
@@ -460,6 +472,69 @@ function onMessageExternal(message, sender) {
         );
         TSTAPI.clearCache(cache);
         return result;
+      })();
+
+    case TSTAPI.kGET_LIGHT_TREE:
+      return (async () => {
+        const tabs = await (message.rendered ?
+          TSTAPI.getTargetRenderedTabs(message, sender) :
+          TSTAPI.getTargetTabs(message, sender));
+        const cache = {};
+        const treeItems = Array.from(tabs, tab => TSTAPI.exportTab(tab, {
+          light:    true,
+          interval: message.interval,
+          cache,
+        }));
+        const result = TSTAPI.formatTabResult(
+          treeItems,
+          {
+            ...message,
+            // This must return an array of root tabs if just the window id is specified.
+            // See also: https://github.com/piroor/treestyletab/issues/2763
+            ...((message.window || message.windowId) && !message.tab && !message.tabs ? { tab: '*' } : {})
+          },
+          sender.id
+        );
+        TSTAPI.clearCache(cache);
+        return result;
+      })();
+
+    case TSTAPI.kSTICK_TAB:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.toggleSticky(tab, true),
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kUNSTICK_TAB:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.toggleSticky(tab, false),
+          message.interval
+        );
+        return true;
+      })();
+
+    case TSTAPI.kTOGGLE_STICKY_STATE:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        let firstTabIsSticky = undefined;
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => {
+            if (firstTabIsSticky === undefined)
+              firstTabIsSticky = tab.$TST.sticky;
+            Commands.toggleSticky(tab, !firstTabIsSticky);
+          },
+          message.interval
+        );
+        return true;
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
@@ -651,15 +726,12 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kCREATE:
       return (async () => {
         const windowId = message.params.windowId;
-        const window = TabsStore.windows.get(windowId);
-        if (!window)
+        const win = TabsStore.windows.get(windowId);
+        if (!win)
           throw new Error(`invalid windowId ${windowId}: it must be valid window id`);
-        window.bypassTabControlCount++;
+        win.bypassTabControlCount++;
         const tab = await TabsOpen.openURIInTab(message.params, { windowId });
-        const treeItem = new TSTAPI.TreeItem(tab);
-        const exported = treeItem.exportFor(sender.id);
-        treeItem.clearCache();
-        return exported;
+        return TSTAPI.exportTab(tab, { addonId: sender.id });
       })();
 
     case TSTAPI.kDUPLICATE:
@@ -715,10 +787,7 @@ function onMessageExternal(message, sender) {
         });
         if (!tab)
           return null;
-        const treeItem = new TSTAPI.TreeItem(tab);
-        const exported = treeItem.exportFor(sender.id);
-        treeItem.clearCache();
-        return exported;
+        return TSTAPI.exportTab(tab, { addonId: sender.id });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
@@ -738,13 +807,13 @@ function onMessageExternal(message, sender) {
           message.containerId || 'firefox-default'
         );
         const cache = {};
-        const result = TSTAPI.formatTabResult(
-          reopenedTabs.map(tab => new TSTAPI.TreeItem(tab, {
+        const result = await TSTAPI.formatTabResult(
+          reopenedTabs.map(tab => TSTAPI.exportTab(tab, {
             interval: message.interval,
-            cache
+            addonId:  sender.id,
+            cache,
           })),
-          message,
-          sender.id
+          message
         );
         TSTAPI.clearCache(cache);
         return result;

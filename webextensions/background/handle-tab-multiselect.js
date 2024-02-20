@@ -21,7 +21,7 @@ Tab.onUpdated.addListener((tab, info, options = {}) => {
       !tab.$TST.subtreeCollapsed ||
       tab.$TST.collapsed ||
       !tab.$TST.multiselected ||
-      options.inheritHighlighted === false)
+      !options.inheritHighlighted)
     return;
 
   const collapsedDescendants = tab.$TST.descendants;

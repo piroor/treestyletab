@@ -6,13 +6,14 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
-import { SequenceMatcher } from '/extlib/diff.js';
 
 import {
   log as internalLogger,
   wait,
   configs,
-  shouldApplyAnimation
+  shouldApplyAnimation,
+  mapAndFilter,
+  nextFrame,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -20,6 +21,7 @@ import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -43,8 +45,13 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
   mPromisedInitializedResolver = resolve;
 });
 
-export const wholeContainer = document.querySelector('#all-tabs');
+export const pinnedContainer = document.querySelector('#pinned-tabs-container');
+export const normalContainer = document.querySelector('#normal-tabs-container');
 
+export const onPinnedTabsChanged = new EventListenerManager();
+export const onNormalTabsChanged = new EventListenerManager();
+export const onTabsRendered   = new EventListenerManager();
+export const onTabsUnrendered = new EventListenerManager();
 export const onSyncFailed = new EventListenerManager();
 
 export function init() {
@@ -54,6 +61,10 @@ export function init() {
 
   mPromisedInitializedResolver();
   mPromisedInitialized = mPromisedInitializedResolver = null;
+}
+
+function getTabContainerElement(tab) {
+  return document.querySelector(`.tabs.${tab.pinned ? 'pinned' : 'normal'}`);
 }
 
 export function getTabFromDOMNode(node, options = {}) {
@@ -152,13 +163,10 @@ async function syncTabsOrder() {
 
   const trackedWindow = TabsStore.windows.get(windowId);
   const actualOrder   = trackedWindow.order;
-  const container     = trackedWindow.element;
-  const elementsOrder = Array.from(container.querySelectorAll(kTAB_ELEMENT_NAME), tab => tab.apiTab.id);
 
-  log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder, elementsOrder });
+  log('syncTabsOrder: ', { internalOrder, nativeOrder, actualOrder });
 
-  if (internalOrder.join('\n') == elementsOrder.join('\n') &&
-      internalOrder.join('\n') == actualOrder.join('\n') &&
+  if (internalOrder.join('\n') == actualOrder.join('\n') &&
       internalOrder.join('\n') == nativeOrder.join('\n')) {
     reserveToSyncTabsOrder.retryCount = 0;
     return; // no need to sync
@@ -182,8 +190,7 @@ async function syncTabsOrder() {
   }
 
   const actualTabs = actualOrder.slice(0).sort().join('\n');
-  if (expectedTabs != actualTabs ||
-      elementsOrder.length != internalOrder.length) {
+  if (expectedTabs != actualTabs) {
     log(`syncTabsOrder: retry / Native tabs are not same to the tabs tracked by the background process, but this can happen on synchronization and tab removing are. Retry count = ${reserveToSyncTabsOrder.retryCount}`);
     if (reserveToSyncTabsOrder.retryCount > 10) {
       console.error(new Error(`Error: tracked tabs are not same to pulled tabs, for the window ${windowId}. Rebuilding...`));
@@ -194,99 +201,223 @@ async function syncTabsOrder() {
     reserveToSyncTabsOrder.retryCount++;
     return reserveToSyncTabsOrder();
   }
-  reserveToSyncTabsOrder.retryCount = 0;
 
+  reserveToSyncTabsOrder.retryCount = 0;
   trackedWindow.order = internalOrder;
   let count = 0;
   for (const tab of trackedWindow.getOrderedTabs()) {
     tab.index = count++;
     tab.reindexedBy = `syncTabsOrder (${tab.index})`;
   }
-
-  const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
-  log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
-  let modificationsCount = 0;
-  for (const operation of DOMElementsOperations) {
-    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-    log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
-    switch (tag) {
-      case 'equal':
-      case 'delete':
-        break;
-
-      case 'insert':
-      case 'replace':
-        const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? Tab.get(elementsOrder[fromStart]) : null;
-        log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
-        for (const id of moveTabIds) {
-          const tab = Tab.get(id);
-          if (tab)
-            trackedWindow.element.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element || trackedWindow.element.lastChild);
-        }
-        modificationsCount++;
-        break;
-    }
-  }
-  if (modificationsCount == 0 &&
-      reserveToSyncTabsOrder.retryCount == 0)
-    return;
-
-  // Tabs can be moved while processing by other addons like Simple Tab Groups,
-  // so resync until they are completely synchronized.
-  reserveToSyncTabsOrder();
 }
 
-Window.onInitialized.addListener(window => {
-  const windowId = window.id;
-  let container = document.getElementById(`window-${windowId}`);
-  if (!container) {
-    container = document.createElement('ul');
-    const spacer = container.appendChild(document.createElement('li'));
-    spacer.classList.add(Constants.kTABBAR_SPACER);
-    wholeContainer.appendChild(container);
+function getTabElementId(tab) {
+  return `tab-${tab.id}`;
+}
+
+const mRenderedTabIds = new Set();
+const mUnrenderedTabIds = new Set();
+
+export function renderTab(tab, { containerElement, insertBefore } = {}) {
+  if (!tab) {
+    console.log('WARNING: Null tab has requested to be rendered! ', new Error().stack);
+    return false;
   }
-  container.dataset.windowId = windowId;
-  container.setAttribute('id', `window-${windowId}`);
-  container.classList.add('tabs');
-  container.setAttribute('role', 'listbox');
-  container.setAttribute('aria-multiselectable', 'true');
-  container.$TST = TabsStore.windows.get(windowId);
-  container.$TST.bindElement(container);
-});
+  if (!tab.$TST) {
+    console.log('WARNING: Alerady destroyed tab has requested to be rendered! ', tab.id, new Error().stack);
+    return false;
+  }
 
-Tab.onInitialized.addListener((tab, _info) => {
-  const window = TabsStore.windows.get(tab.windowId);
-  if (tab.$TST.element && // restored from cache
-      // If this is a rebuilding process for a mis-synchronization,
-      // we need to ignore the existing tab element, because it is
-      // already detached from the document and going to be destroyed.
-      tab.$TST.element.parentNode == window.element)
-    return;
-
-  const id = `tab-${tab.id}`;
-  let tabElement = document.getElementById(id);
-  if (tabElement) {
+  let created = false;
+  if (!tab.$TST.element ||
+      !tab.$TST.element.parentNode) {
+    const tabElement = document.createElement(kTAB_ELEMENT_NAME);
     tab.$TST.bindElement(tabElement);
+    tab.$TST.setAttribute('id', getTabElementId(tab));
+    tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
+    tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+    tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    TabsStore.addUnsynchronizedTab(tab);
+    created = true;
+  }
+
+  const win = TabsStore.windows.get(tab.windowId);
+  const tabElement = tab.$TST.element;
+  containerElement = containerElement || (
+    tab.pinned ?
+      win.pinnedContainerElement :
+      win.containerElement
+  );
+
+  let nextElement = insertBefore?.nodeType == Node.ELEMENT_NODE ?
+    insertBefore :
+    (insertBefore && insertBefore.$TST.element);
+  if (nextElement === undefined &&
+      (containerElement == win.containerElement ||
+       containerElement == win.pinnedContainerElement)) {
+    const nextTab = tab.$TST.nearestSameTypeRenderedTab;
+    log(`render tab element for ${tab.id} (pinned=${tab.pinned}) before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
+    nextElement = nextTab && nextTab.$TST.element.parentNode == containerElement ?
+      nextTab.$TST.element :
+      null;
+  }
+
+  if (tabElement.parentNode == containerElement &&
+      tabElement.nextSibling == nextElement)
+    return false;
+
+  containerElement.insertBefore(tabElement, nextElement);
+
+  if (created) {
+    if (!tab.active && tab.$TST.states.has(Constants.kTAB_STATE_ACTIVE)) {
+      console.log('WARNING: Inactive tab has invalid "active" state! ', tab.id)
+      tab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
+    }
+
+    tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
+    tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.Overflow | TabUpdateTarget.TabProperties);
+    tab.$TST.applyStatesToElement();
+
+    // To apply animation effect, we need to set and remove
+    // the "collapsed" state again.
+    if (shouldApplyAnimation() &&
+        tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) &&
+        !tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED)) {
+      tabElement.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
+      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED);
+      window.requestAnimationFrame(() => {
+        tabElement.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+        tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED);
+      });
+    }
+    else {
+      tabElement.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+    }
+
+    mRenderedTabIds.add(tab.id);
+    mUnrenderedTabIds.delete(tab.id);
+    reserveToNotifyTabsRendered();
+  }
+
+  return true;
+}
+
+function reserveToNotifyTabsRendered() {
+  const hasInternalListener = onTabsRendered.hasListener();
+  const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED);
+  if (!hasInternalListener && !hasExternalListener) {
+    mRenderedTabIds.clear();
     return;
   }
 
-  tabElement = document.createElement(kTAB_ELEMENT_NAME);
-  tab.$TST.bindElement(tabElement);
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToNotifyTabsRendered.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (reserveToNotifyTabsRendered.lastStartedAt != startAt)
+      return;
 
-  tab.$TST.setAttribute('id', id);
-  tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
-  tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+    const ids = [...mRenderedTabIds];
+    mRenderedTabIds.clear();
+    const tabs =  mapAndFilter(ids, id => Tab.get(id));
 
-  const nextTab = tab.$TST.unsafeNextTab;
-  const referenceTabElement = nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`);
-  log(`creating tab element for ${tab.id} before ${nextTab && nextTab.id}, tab, nextTab = `, tab, nextTab);
-  window.element.insertBefore(
-    tabElement,
-    referenceTabElement && referenceTabElement.parentNode == window.element ?
-      referenceTabElement :
-      null
-  );
+    if (hasInternalListener)
+      onTabsRendered.dispatch(tabs);
+
+    if (hasExternalListener) {
+      let cache = {};
+      TSTAPI.broadcastMessage({
+        type: TSTAPI.kNOTIFY_TABS_RENDERED,
+        tabs,
+      }, { tabProperties: ['tabs'], cache }).catch(_error => {});
+      cache = null;
+    }
+  });
+}
+
+export function unrenderTab(tab) {
+  if (!tab ||
+      !tab.$TST ||
+      !tab.$TST.element)
+    return false;
+
+  mRenderedTabIds.delete(tab.id);
+  mUnrenderedTabIds.add(tab.id);
+
+  const tabElement = tab.$TST.element;
+
+  tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  TabsStore.removeUnsynchronizedTab(tab);
+
+  const hasInternalListener = onTabsUnrendered.hasListener();
+  const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED);
+  if (hasInternalListener || hasExternalListener) {
+    const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+    unrenderTab.lastStartedAt = startAt;
+    window.requestAnimationFrame(() => {
+      if (unrenderTab.lastStartedAt != startAt)
+        return;
+
+      const ids = [...mUnrenderedTabIds];
+      mUnrenderedTabIds.clear();
+      const tabs = mapAndFilter(ids, id => Tab.get(id));
+
+      if (hasInternalListener)
+        onTabsUnrendered.dispatch(tabs);
+
+      if (hasExternalListener) {
+        let cache = {};
+        TSTAPI.broadcastMessage({
+          type: TSTAPI.kNOTIFY_TABS_UNRENDERED,
+          tabs,
+        }, { tabProperties: ['tabs'], cache }).catch(_error => {});
+        cache = null;
+      }
+    });
+  }
+  else {
+    mUnrenderedTabIds.clear();
+  }
+
+  if (!tabElement ||
+      !tabElement.parentNode)
+    return false;
+
+  tabElement.parentNode.removeChild(tabElement);
+  tab.$TST.unbindElement();
+
+  return true;
+}
+
+Window.onInitialized.addListener(win => {
+  const windowId = win.id;
+  win = TabsStore.windows.get(windowId);
+
+  let innerPinnedContainer = document.getElementById(`window-${windowId}-pinned`);
+  if (!innerPinnedContainer) {
+    innerPinnedContainer = document.createElement('ul');
+    pinnedContainer.appendChild(innerPinnedContainer);
+  }
+  innerPinnedContainer.dataset.windowId = windowId;
+  innerPinnedContainer.setAttribute('id', `window-${windowId}-pinned`);
+  innerPinnedContainer.classList.add('tabs');
+  innerPinnedContainer.classList.add('pinned');
+  innerPinnedContainer.setAttribute('role', 'listbox');
+  innerPinnedContainer.setAttribute('aria-multiselectable', 'true');
+  innerPinnedContainer.$TST = win;
+  win.bindPinnedContainerElement(innerPinnedContainer);
+
+  let innerNormalContainer = document.getElementById(`window-${windowId}`);
+  if (!innerNormalContainer) {
+    innerNormalContainer = document.querySelector('#normal-tabs-container .virtual-scroll-container').appendChild(document.createElement('ul'));
+  }
+  innerNormalContainer.dataset.windowId = windowId;
+  innerNormalContainer.setAttribute('id', `window-${windowId}`);
+  innerNormalContainer.classList.add('tabs');
+  innerNormalContainer.classList.add('normal');
+  innerNormalContainer.setAttribute('role', 'listbox');
+  innerNormalContainer.setAttribute('aria-multiselectable', 'true');
+  innerNormalContainer.$TST = win;
+  win.bindContainerElement(innerNormalContainer);
 });
 
 
@@ -405,10 +536,10 @@ function tryApplyUpdate(update) {
   const highlightedChanged = update.updatedProperties && 'highlighted' in update.updatedProperties;
 
   if (update.updatedProperties) {
-    for (const key of Object.keys(update.updatedProperties)) {
+    for (const [key, value] of Object.entries(update.updatedProperties)) {
       if (Tab.UNSYNCHRONIZABLE_PROPERTIES.has(key))
         continue;
-      tab[key] = update.updatedProperties[key];
+      tab[key] = value;
     }
   }
 
@@ -424,22 +555,16 @@ function tryApplyUpdate(update) {
     }
   }
 
-  if (update.addedStates) {
-    for (const state of update.addedStates) {
-      tab.$TST.addState(state);
-    }
-  }
-
-  if (update.removedStates) {
-    for (const state of update.removedStates) {
-      tab.$TST.removeState(state);
-    }
-  }
-
   if (update.soundStateChanged) {
     const parent = tab.$TST.parent;
     if (parent)
       parent.$TST.inheritSoundStateFromChildren();
+  }
+
+  if (update.sharingStateChanged) {
+    const parent = tab.$TST.parent;
+    if (parent)
+      parent.$TST.inheritSharingStateFromChildren();
   }
 
   tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton | TabInvalidationTarget.Tooltip);
@@ -464,7 +589,7 @@ async function activateRealActiveTab(windowId) {
   if (tabs.length <= 0)
     throw new Error(`FATAL ERROR: No active tab in the window ${windowId}`);
   const id = tabs[0].id;
-  await Tab.waitUntilTracked(id, { element: true });
+  await Tab.waitUntilTracked(id);
   const tab = Tab.get(id);
   if (!tab)
     throw new Error(`FATAL ERROR: Active tab ${id} in the window ${windowId} is not tracked`);
@@ -472,10 +597,31 @@ async function activateRealActiveTab(windowId) {
   TabsInternalOperation.setTabActive(tab);
 }
 
+const mReindexedTabIds = new Set();
+
+function reserveToUpdateTabsIndex() {
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToUpdateTabsIndex.lastStartedAt = startAt;
+  window.requestAnimationFrame(() => {
+    if (reserveToUpdateTabsIndex.lastStartedAt != startAt)
+      return;
+
+    const ids = [...mReindexedTabIds];
+    mReindexedTabIds.clear();
+    for (const id of ids) {
+      const tab = Tab.get(id);
+      if (!tab)
+        continue;
+      tab.$TST.applyAttributesToElement();
+    }
+  });
+}
+
 
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
 const mRemovedTabIdsNotifiedBeforeTracked = new Set();
+const mWaitingTasksOnSameTick = new Map();
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
@@ -486,26 +632,36 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
       if (!message.tabIds.length)
         break;
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      await Tab.waitUntilTracked(message.tabIds);
       const add    = message.add || [];
       const remove = message.remove || [];
       log('apply broadcasted tab state ', message.tabIds, {
         add:    add.join(','),
         remove: remove.join(',')
       });
-      const modified = add.concat(remove);
+      const modified = new Set([...add, ...remove]);
+      let stickyStateChanged = false;
       for (const id of message.tabIds) {
         const tab = Tab.get(id);
         if (!tab)
           continue;
-        add.forEach(state => tab.$TST.addState(state));
-        remove.forEach(state => tab.$TST.removeState(state));
-        if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
-            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
-            modified.includes(Constants.kTAB_STATE_MUTED)) {
+        for (const state of add) {
+          tab.$TST.addState(state, { toTab: true });
+        }
+        for (const state of remove) {
+          tab.$TST.removeState(state, { toTab: true });
+        }
+        if (modified.has(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.has(Constants.kTAB_STATE_MUTED) ||
+            modified.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED)) {
           tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
         }
+        if (modified.has(Constants.kTAB_STATE_STICKY))
+          stickyStateChanged = true;
       }
+      if (stickyStateChanged)
+        onNormalTabsChanged.dispatch();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
@@ -528,10 +684,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       // then the new tab Z must be treated as index=2 and the result must become
       // [a,b,Z,c,d] instead of [a,b,c,d,Z]. How should we calculate the index with
       // less amount?
-      const window = TabsStore.windows.get(message.windowId);
+      const win = TabsStore.windows.get(message.windowId);
       let index = 0;
       for (const id of message.order) {
-        if (window.tabs.has(id)) {
+        if (win.tabs.has(id)) {
           nativeTab.index = ++index;
           nativeTab.reindexedBy = `creating/fixed (${nativeTab.index})`;
         }
@@ -542,15 +698,19 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.init(nativeTab, { inBackground: true });
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
 
-      tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-      TabsStore.addUnsynchronizedTab(tab);
+      for (const tab of Tab.getAllTabs(message.windowId, { fromId: nativeTab.id })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
+
       TabsStore.addLoadingTab(tab);
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       if (shouldApplyAnimation()) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true,
           justNow:   true
         });
-        tab.$TST.shouldExpandLater = true;
+        tab.$TST.collapsedOnCreated = true;
       }
       else {
         reserveToUpdateLoadingState();
@@ -565,28 +725,52 @@ BackgroundConnection.onMessage.addListener(async message => {
           windowId: message.windowId
         }, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       }
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab) {
         log(`ignore kCOMMAND_NOTIFY_TAB_CREATED for already closed tab: ${message.tabId}`);
         return;
       }
-      tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
+      tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
       tab.$TST.resolveOpened();
       if (message.maybeMoved)
         await waitUntilNewTabIsMoved(message.tabId);
-      if (shouldApplyAnimation()) {
-        await wait(0); // nextFrame() is too fast!
-        if (tab.$TST.shouldExpandLater)
-          CollapseExpand.setCollapsed(tab, {
-            collapsed: false
-          });
-        reserveToUpdateLoadingState();
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
+      reserveToUpdateLoadingState();
+      const needToWaitForTreeExpansion = (
+        tab.$TST.shouldExpandLater &&
+        !tab.active &&
+        !Tab.getActiveTab(tab.windowId).pinned
+      );
+      if (shouldApplyAnimation(true) ||
+          needToWaitForTreeExpansion) {
+        wait(10).then(() => { // wait until the tab is moved by TST itself
+          // On this case we don't need to expand the tab here, because
+          // it will be expanded by scroll.js's kCOMMAND_NOTIFY_TAB_CREATED handler
+          // for scrolling to a newly opened tab via CollapseExpand.setCollapsed().
+          reserveToUpdateLoadingState();
+        });
       }
       if (tab.active) {
+        if (shouldApplyAnimation()) {
+          await wait(0); // nextFrame() is too fast!
+          if (tab.$TST.collapsedOnCreated) {
+            CollapseExpand.setCollapsed(tab, {
+              collapsed: false,
+            });
+            reserveToUpdateLoadingState();
+          }
+        }
         const lastMessage = BackgroundConnection.fetchBufferedMessage(Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
         if (!lastMessage)
-          return;
+          break;
+        await Tab.waitUntilTracked(lastMessage.tabId);
         const activeTab = Tab.get(lastMessage.tabId);
         TabsStore.activeTabInWindow.set(activeTab.windowId, activeTab);
         TabsInternalOperation.setTabActive(activeTab);
@@ -594,7 +778,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -604,7 +788,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       if (!lastMessage)
         return;
@@ -612,12 +796,17 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       const lastActive = TabsStore.activeTabInWindow.get(lastMessage.windowId);
-      if (lastActive &&
-          lastActive.$TST.element)
-        lastActive.$TST.element.parentNode.removeAttribute('aria-activedescendant');
+      if (lastActive)
+        getTabContainerElement(lastActive).removeAttribute('aria-activedescendant');
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
-      tab.$TST.element.parentNode.setAttribute('aria-activedescendant', tab.$TST.element.id);
+      getTabContainerElement(tab).setAttribute('aria-activedescendant', getTabElementId(tab));
+      if ((!tab.pinned ||
+           !lastActive.pinned ||
+           (lastActive.$TST.bundledTab &&
+            !lastActive.$TST.bundledTab.pinned)) &&
+          configs.stickyActiveTab)
+        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
@@ -636,7 +825,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (hasPendingUpdate)
         return;
 
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -650,14 +839,21 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_MOVED: {
-      // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
+      // Tab move messages are notified as an array at a time,
+      // but Tab.waitUntilTracked() may break their order.
+      // So we do a hack to wait messages as a group received at a time.
       maybeNewTabIsMoved(message.tabId);
-      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      const promises = mWaitingTasksOnSameTick.get(message.type) || [];
+      promises.push(Tab.waitUntilTracked([message.tabId, message.nextTabId]));
+      mWaitingTasksOnSameTick.set(message.type, promises);
+      await nextFrame();
+      mWaitingTasksOnSameTick.delete(message.type);
+      await Promise.all(promises);
+
       const tab     = Tab.get(message.tabId);
       if (!tab ||
-          tab.index == message.newIndex)
+          tab.index == message.toIndex)
         return;
-      const nextTab = Tab.get(message.nextTabId);
       if (mPromisedInitialized)
         await mPromisedInitialized;
       if (tab.$TST.parent)
@@ -678,11 +874,28 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.$TST.shouldExpandLater = true;
       }
 
-      tab.index = message.newIndex;
+      tab.index = message.toIndex;
       tab.reindexedBy = `moved (${tab.index})`;
-      const window = TabsStore.windows.get(message.windowId);
-      window.trackTab(tab);
-      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
+      const win = TabsStore.windows.get(message.windowId);
+      win.trackTab(tab);
+
+      for (const tab of Tab.getAllTabs(message.windowId, {
+        fromIndex: Math.min(message.fromIndex, message.toIndex),
+        toIndex:   Math.max(message.fromIndex, message.toIndex),
+        iterator:  true,
+      })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
+
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
+      tab.$TST.applyAttributesToElement();
 
       if (shouldAnimate && tab.$TST.shouldExpandLater) {
         CollapseExpand.setCollapsed(tab, {
@@ -696,20 +909,32 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_INTERNALLY_MOVED: {
       // Tab move also should be stabilized with BackgroundConnection.handleBufferedMessage/BackgroundConnection.fetchBufferedMessage but the buffering mechanism is not designed for messages which need to be applied sequentially...
       maybeNewTabIsMoved(message.tabId);
-      await Tab.waitUntilTracked([message.tabId, message.nextTabId], { element: true });
+      await Tab.waitUntilTracked([message.tabId, message.nextTabId]);
       const tab         = Tab.get(message.tabId);
       if (!tab ||
-          tab.index == message.newIndex)
+          tab.index == message.toIndex)
         return;
-      tab.index = message.newIndex;
+      tab.index = message.toIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
       Tab.track(tab);
-      const tabElement  = tab.$TST.element;
-      const nextTab     = Tab.get(message.nextTabId);
-      const nextElement = nextTab && nextTab.$TST.element;
-      const window      = TabsStore.windows.get(tab.windowId);
-      if (tabElement.nextSibling != nextElement)
-        window.element.insertBefore(tabElement, nextElement || window.element.querySelector(`.${Constants.kTABBAR_SPACER}`));
+
+      for (const tab of Tab.getAllTabs(message.windowId, {
+        fromIndex: Math.min(message.fromIndex, message.toIndex),
+        toIndex:   Math.max(message.fromIndex, message.toIndex),
+        iterator:  true,
+      })) {
+        mReindexedTabIds.add(tab.id);
+      }
+      reserveToUpdateTabsIndex();
+
+      if (tab.pinned) {
+        renderTab(tab);
+        onPinnedTabsChanged.dispatch(tab);
+      }
+      else {
+        onNormalTabsChanged.dispatch(tab);
+      }
+      tab.$TST.applyAttributesToElement();
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
         // tabs synchronized from the background, so for safetyl we trigger
@@ -721,7 +946,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_UPDATE_LOADING_STATE: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (tab &&
@@ -768,17 +993,30 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.removeGroupTab(tab);
       TabsStore.addRemovingTab(tab);
       TabsStore.addRemovedTab(tab); // reserved
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       reserveToUpdateLoadingState();
       if (tab.active) {
         // This should not, but sometimes happens on some edge cases for example:
         // https://github.com/piroor/treestyletab/issues/2385
         activateRealActiveTab(message.windowId);
       }
+      if (!tab.$TST.collapsed &&
+          shouldApplyAnimation()) {
+        tab.$TST.addState(Constants.kTAB_STATE_REMOVING); // addState()'s result from the background page may not be notified yet, so we set this state manually here
+        CollapseExpand.setCollapsed(tab, {
+          collapsed: true
+        });
+        if (tab.pinned)
+          onPinnedTabsChanged.dispatch(tab);
+        else
+          onNormalTabsChanged.dispatch(tab);
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVED: {
       const tab = Tab.get(message.tabId);
-      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
+      // Don't untrack tab here because we need to keep it rendered for removing animation.
+      //TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       if (!tab) {
         log(`ignore kCOMMAND_NOTIFY_TAB_REMOVED for already closed tab: ${message.tabId}`);
         return;
@@ -788,35 +1026,36 @@ BackgroundConnection.onMessage.addListener(async message => {
         // https://github.com/piroor/treestyletab/issues/2385
         activateRealActiveTab(message.windowId);
       }
-      if (!tab.$TST.collapsed &&
-          shouldApplyAnimation() &&
-          tab.$TST.element) {
-        const tabRect = tab.$TST.element.getBoundingClientRect();
-        tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
-        CollapseExpand.setCollapsed(tab, {
-          collapsed: true
-        });
+      if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
-      }
+      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       tab.$TST.destroy();
+      unrenderTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
           !lastMessage)
         return;
-      tab.$TST.label = tab.$TST.element.label = lastMessage.label;
+      tab.title = lastMessage.title;
+      tab.$TST.label = lastMessage.label;
+      if (tab.$TST.element)
+        tab.$TST.element.label = lastMessage.label;
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -829,42 +1068,37 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
           !lastMessage)
         return;
-      if (lastMessage.hasSoundPlayingMember)
-        tab.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-      if (lastMessage.hasMutedMember)
-        tab.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-      else
-        tab.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER, lastMessage.hasSoundPlayingMember);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_MUTED_MEMBER, lastMessage.hasMutedMember);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER, lastMessage.hasAutoplayBlockedMember);
       tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED: {
       BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
-      await Tab.waitUntilTracked(message.tabIds, { element: true });
+      await Tab.waitUntilTracked(message.tabIds);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}window-${message.windowId}`);
       if (!lastMessage ||
           lastMessage.tabIds.join(',') != message.tabIds.join(','))
         return;
       TabsUpdate.updateTabsHighlighted(message);
-      const window = TabsStore.windows.get(message.windowId);
-      if (!window || !window.element)
+      const win = TabsStore.windows.get(message.windowId);
+      if (!win || !win.containerElement)
         return;
-      window.classList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
+      document.documentElement.classList.toggle(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED, message.tabIds.length > 1);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'pinned/unpinned', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('pinned/unpinned', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -874,19 +1108,24 @@ BackgroundConnection.onMessage.addListener(async message => {
         tab.pinned = true;
         TabsStore.removeUnpinnedTab(tab);
         TabsStore.addPinnedTab(tab);
+        renderTab(tab);
       }
       else {
         tab.pinned = false;
         TabsStore.removePinnedTab(tab);
         TabsStore.addUnpinnedTab(tab);
+        unrenderTab(tab);
       }
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      onPinnedTabsChanged.dispatch(tab.pinned && tab);
+      onNormalTabsChanged.dispatch(!tab.pinned && tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN: {
       if (BackgroundConnection.handleBufferedMessage({ type: 'shown/hidden', message }, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage('shown/hidden', `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -903,12 +1142,17 @@ BackgroundConnection.onMessage.addListener(async message => {
           TabsStore.addVisibleTab(tab);
         TabsStore.addControllableTab(tab);
       }
+      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED: {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -921,7 +1165,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`) ||
           message.collapsed)
         return;
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
       if (!tab ||
@@ -931,12 +1175,14 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-      tab.$TST.element.updateOverflow();
+      if (tab.$TST.element) {
+        tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
+        tab.$TST.element.updateOverflow();
+      }
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -952,26 +1198,29 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
       tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
-      const window = TabsStore.windows.get(message.windowId);
-      window.untrackTab(message.tabId);
-      if (tab.$TST.element && tab.$TST.element.parentNode)
-        tab.$TST.element.parentNode.removeChild(tab.$TST.element);
+      const win = TabsStore.windows.get(message.windowId);
+      win.untrackTab(message.tabId);
+      unrenderTab(tab);
+      if (tab.pinned)
+        onPinnedTabsChanged.dispatch(tab);
+      else
+        onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
       wait(500).then(() => TabsStore.removeRemovedTab(tab));
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
       // When a group tab is restored but pending, TST cannot update title of the tab itself.
       // For failsafe now we update the title based on its URL.
-      const uri = new URL(tab.url);
-      let title = uri.searchParams.get('title');
+      const url = new URL(tab.url);
+      let title = url.searchParams.get('title');
       if (!title) {
-        const parameters = uri.replace(/^[^\?]+/, '');
+        const parameters = tab.url.replace(/^[^\?]+/, '');
         title = parameters.match(/^\?([^&;]*)/);
         title = title && decodeURIComponent(title[1]);
       }
@@ -989,7 +1238,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       // to construct same number of promises for "attached but detached immediately"
       // cases.
       const relatedTabIds = [message.tabId].concat(message.addedChildIds, message.removedChildIds);
-      await Tab.waitUntilTracked(relatedTabIds, { element: true });
+      await Tab.waitUntilTracked(relatedTabIds);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;

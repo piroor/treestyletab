@@ -211,11 +211,11 @@ export async function attachTabTo(child, parent, options = {}) {
     });
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED)) {
       const cache = {};
-      TSTAPI.sendMessage({
-        type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
-        tab:    new TSTAPI.TreeItem(child, { cache }),
-        parent: new TSTAPI.TreeItem(parent, { cache })
-      }, { tabProperties: ['tab', 'parent'] }).catch(_error => {});
+      TSTAPI.broadcastMessage({
+        type: TSTAPI.kNOTIFY_TREE_ATTACHED,
+        tab:  child,
+        parent,
+      }, { tabProperties: ['tab', 'parent'], cache }).catch(_error => {});
       TSTAPI.clearCache(cache);
     }
   }
@@ -317,8 +317,8 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   const cache = {};
   const allowed = (options.forceExpand || !!options.dontExpand) && await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-    { tab: new TSTAPI.TreeItem(parent, { cache }) },
-    { tabProperties: ['tab'] }
+    { tab },
+    { tabProperties: ['tab'], cache }
   );
   TSTAPI.clearCache(cache);
   if (!TabsStore.ensureLivingTab(tab))
@@ -362,8 +362,8 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
             return;
           const allowed = await TSTAPI.tryOperationAllowed(
             TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-            { tab: new TSTAPI.TreeItem(ancestor, { cache }) },
-            { tabProperties: ['tab'] }
+            { tab },
+            { tabProperties: ['tab'], cache }
           );
           TSTAPI.clearCache(cache);
           if (!allowed) {
@@ -553,11 +553,11 @@ export function detachTab(child, options = {}) {
     });
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
-      TSTAPI.sendMessage({
+      TSTAPI.broadcastMessage({
         type:      TSTAPI.kNOTIFY_TREE_DETACHED,
-        tab:       new TSTAPI.TreeItem(child, { cache }),
-        oldParent: new TSTAPI.TreeItem(parent, { cache })
-      }, { tabProperties: ['tab', 'oldParent'] }).catch(_error => {});
+        tab:       child,
+        oldParent: parent,
+      }, { tabProperties: ['tab', 'oldParent'], cache }).catch(_error => {});
       TSTAPI.clearCache(cache);
     }
     // We don't need to clear its parent information, because the old parent's
@@ -687,7 +687,8 @@ export async function detachAllChildren(
 
   if (!dontExpand &&
       ((tab && !tab.$TST.collapsed) ||
-       behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN)) {
+       (behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&
+        behavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_REPLACE_WITH_GROUP_TAB))) {
     if (tab) {
       await collapseExpandSubtree(tab, {
         ...options,
@@ -1013,13 +1014,11 @@ export async function collapseExpandSubtree(tab, params = {}) {
   const visibilityChangedTabIds = await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED)) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:      TSTAPI.kNOTIFY_TREE_COLLAPSED_STATE_CHANGED,
-      tab:       treeItem,
+      tab,
       collapsed: !!params.collapsed
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
   return visibilityChangedTabIds;
 }
@@ -1037,6 +1036,14 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
+  const isInViewport = await browser.runtime.sendMessage({
+    type:     Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT,
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    allowPartial: true,
+  }).catch(_error => false);
+  const anchor = isInViewport ? tab : null;
+
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
   const allVisibilityChangedTabIds = [];
@@ -1047,7 +1054,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
       allVisibilityChangedTabIds.push(...(await collapseExpandTabAndSubtree(childTab, {
         collapsed: params.collapsed,
         justNow:   params.justNow,
-        anchor:    tab,
+        anchor,
         last:      true,
         broadcast: false
       })));
@@ -1069,7 +1076,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
     tabId:     tab.id,
     collapsed: !!params.collapsed,
     justNow:   params.justNow,
-    anchorId:  tab.id,
+    anchorId:  anchor && anchor.id,
     visibilityChangedTabIds,
     last:      true
   });
@@ -1107,13 +1114,11 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
       tab.active &&
       configs.unfocusableCollapsedTab) {
     logCollapseExpand('current tree is going to be collapsed');
-    const treeItem = new TSTAPI.TreeItem(tab);
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE,
-      { tab: treeItem },
+      { tab },
       { tabProperties: ['tab'] }
     );
-    treeItem.clearCache();
     if (allowed) {
       let newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
       if (configs.avoidDiscardedTabToBeActivatedIfPossible && newSelection.discarded)
@@ -1221,12 +1226,12 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     return;
 
   logCollapseExpand('collapseExpandTreesIntelligentlyFor ', tab);
-  const window = TabsStore.windows.get(tab.windowId);
-  if (window.doingIntelligentlyCollapseExpandCount > 0) {
+  const win = TabsStore.windows.get(tab.windowId);
+  if (win.doingIntelligentlyCollapseExpandCount > 0) {
     logCollapseExpand('=> done by others');
     return;
   }
-  window.doingIntelligentlyCollapseExpandCount++;
+  win.doingIntelligentlyCollapseExpandCount++;
 
   const expandedAncestors = [tab.id]
     .concat(tab.$TST.ancestors.map(ancestor => ancestor.id))
@@ -1237,13 +1242,11 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
   const allowedToCollapse = new Set();
   await Promise.all(collapseTabs.map(async tab => {
-    const treeItem = new TSTAPI.TreeItem(tab);
     const allowed = await TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_OTHER_EXPANSION,
-      { tab: treeItem },
+      { tab },
       { tabProperties: ['tab'] }
     );
-    treeItem.clearCache();
     if (allowed)
       allowedToCollapse.add(tab);
   }));
@@ -1266,7 +1269,9 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     logCollapseExpand(`${collapseTab.id}: dontCollapse = ${dontCollapse}`);
 
     const manuallyExpanded = collapseTab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
-    if (!dontCollapse && !manuallyExpanded)
+    if (!dontCollapse &&
+        !manuallyExpanded &&
+        collapseTab.$TST.descendants.every(tab => !tab.$TST.sticky))
       collapseExpandSubtree(collapseTab, {
         ...options,
         collapsed: true
@@ -1277,7 +1282,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     ...options,
     collapsed: false
   });
-  window.doingIntelligentlyCollapseExpandCount--;
+  win.doingIntelligentlyCollapseExpandCount--;
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1322,8 +1327,8 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
   }
 
   log('moveTabSubtreeBefore: ', tab.id, nextTab && nextTab.id);
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyBefore(tab, nextTab, options);
     if (!TabsStore.ensureLivingTab(tab)) // it is removed while waiting
@@ -1334,7 +1339,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
-  window.subTreeMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
@@ -1347,8 +1352,8 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
     return;
   }
 
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyAfter(tab, previousTab, options);
     if (!TabsStore.ensureLivingTab(tab)) // it is removed while waiting
@@ -1359,7 +1364,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
-  window.subTreeMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 async function followDescendantsToMovedRoot(tab, options = {}) {
@@ -1367,12 +1372,12 @@ async function followDescendantsToMovedRoot(tab, options = {}) {
     return;
 
   log('followDescendantsToMovedRoot: ', tab);
-  const window = TabsStore.windows.get(tab.windowId);
-  window.subTreeChildrenMovingCount++;
-  window.subTreeMovingCount++;
+  const win = TabsStore.windows.get(tab.windowId);
+  win.subTreeChildrenMovingCount++;
+  win.subTreeMovingCount++;
   await TabsMove.moveTabsAfter(tab.$TST.descendants, tab, options);
-  window.subTreeChildrenMovingCount--;
-  window.subTreeMovingCount--;
+  win.subTreeChildrenMovingCount--;
+  win.subTreeMovingCount--;
 }
 
 // before https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 is fixed (Firefox 67 or older)
@@ -1412,23 +1417,23 @@ export async function moveTabs(tabs, options = {}) {
     if (mSlowDuplication)
       UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
-      let window;
+      let win;
       const prepareWindow = () => {
-        window = Window.init(destinationWindowId);
+        win = Window.init(destinationWindowId);
         if (isAcrossWindows) {
-          window.toBeOpenedTabsWithPositions += tabs.length;
-          window.toBeOpenedOrphanTabs += tabs.length;
+          win.toBeOpenedTabsWithPositions += tabs.length;
+          win.toBeOpenedOrphanTabs += tabs.length;
           for (const tab of tabs) {
-            window.toBeAttachedTabs.add(tab.id);
+            win.toBeAttachedTabs.add(tab.id);
           }
         }
       };
       if (newWindow) {
-        newWindow = newWindow.then(window => {
-          log('moveTabs: destination window is ready, ', window);
-          destinationWindowId = window.id;
+        newWindow = newWindow.then(win => {
+          log('moveTabs: destination window is ready, ', win);
+          destinationWindowId = win.id;
           prepareWindow();
-          return window;
+          return win;
         });
       }
       else {
@@ -1634,10 +1639,10 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
-    .then(window => {
+    .then(win => {
       const movedTabIds = new Set(movedTabs.map(tab => tab.id));
       log('moved tabs: ', movedTabIds);
-      const removeTabs = mapAndFilter(window.tabs, tab =>
+      const removeTabs = mapAndFilter(win.tabs, tab =>
         !movedTabIds.has(tab.id) && Tab.get(tab.id) || undefined
       );
       log('removing tabs: ', removeTabs);
@@ -1854,15 +1859,20 @@ export function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   let newParent = null;
   let mustToApply = false;
 
-  if (!oldParent) {
-    if (!nextTab) {
+  if (!oldParent &&
+      (!nextTab ||
+       !nextParent)) {
+    if (!nextTab)
       log('=> A root level tab, placed at the end of tabs. We should keep it in the root level.');
-      return new TabActionForNewPosition();
-    }
-    if (!nextParent) {
+    else
       log(' => A root level tab, placed before another root level tab. We should keep it in the root level.');
-      return new TabActionForNewPosition();
-    }
+    return new TabActionForNewPosition('move', {
+      tab,
+      isTabCreating,
+      isMovingByShortcut,
+      insertAfter: prevTab && prevTab.id,
+      mustToApply,
+    });
   }
 
   if (target.mayBeReplacedWithContainer) {

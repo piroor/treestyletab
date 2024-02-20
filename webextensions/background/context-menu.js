@@ -7,7 +7,7 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -68,6 +68,18 @@ const mTabItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'unblockAutoplayTree': {
+    title:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
+    requireAutoplayBlockedTab: true,
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'unblockAutoplayDescendants': {
+    title:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
+    titleMultiselected:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
+    requireAutoplayBlockedDescendant: true,
+  },
   'toggleMuteTree': {
     titleMuteTree:                browser.i18n.getMessage('context_toggleMuteTree_label_mute'),
     titleMultiselectedMuteTree:   browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_mute'),
@@ -97,6 +109,16 @@ const mTabItemsById = {
     titleMultiselected: browser.i18n.getMessage('context_closeOthers_label_multiselected')
   },
   'separatorAfterClose': {
+    type: 'separator'
+  },
+  'toggleSticky': {
+    titleStick:                browser.i18n.getMessage('context_toggleSticky_label_stick'),
+    titleMultiselectedStick:   browser.i18n.getMessage('context_toggleSticky_label_multiselected_stick'),
+    titleUnstick:              browser.i18n.getMessage('context_toggleSticky_label_unstick'),
+    titleMultiselectedUnstick: browser.i18n.getMessage('context_toggleSticky_label_multiselected_unstick'),
+    requireNormal: true,
+  },
+  'separatorAfterToggleSticky': {
     type: 'separator'
   },
   'collapseTree': {
@@ -311,15 +333,15 @@ addBookmarkItems.done = false;
 TabContextMenu.onTopLevelItemAdded.addListener(reserveToRefreshItems);
 
 function reserveToRefreshItems() {
-  if (reserveToRefreshItems.reserved)
-    clearTimeout(reserveToRefreshItems.reserved);
-  reserveToRefreshItems.reserved = setTimeout(() => {
-    reserveToRefreshItems.reserved = null;
+  const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  reserveToRefreshItems.lastStartedAt = startAt;
+  setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+    if (reserveToRefreshItems.lastStartedAt != startAt)
+      return;
     addTabItems();
     addBookmarkItems();
-  }, 100);
+  }, 0);
 }
-reserveToRefreshItems.reserved = null;
 
 function updateItem(id, params) {
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
@@ -329,7 +351,7 @@ function updateItem(id, params) {
   }, browser.runtime);
 }
 
-function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false } = {}) {
+function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false, hasAutoplayBlockedTab = false, hasAutoplayBlockedDescendant = false, sticky = false } = {}) {
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -346,11 +368,13 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
       lastSeparator = item;
     }
     else {
-      const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
+      const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
       let visible = !(item.configKey in configs) || configs[item.configKey];
       if (forceVisible !== null)
         visible = forceVisible;
-      if (item.hideOnMultiselected && multiselected)
+      if ((item.hideOnMultiselected && multiselected) ||
+          (item.requireAutoplayBlockedTab && !hasAutoplayBlockedTab) ||
+          (item.requireAutoplayBlockedDescendant && !hasAutoplayBlockedDescendant))
         visible = false;
       if (visible) {
         if (lastSeparator) {
@@ -386,10 +410,10 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
   return { updated, visibleItemsCount };
 }
 
-async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky } = {}) {
   let updated = false;
 
-  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky });
   if (groupedItems.updated)
     updated = true;
 
@@ -407,7 +431,7 @@ async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant 
     updated = true;
   }
 
-  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky });
   if (topLevelItems.updated)
     updated = true;
 
@@ -487,6 +511,10 @@ function onTabItemClick(info, tab) {
       Commands.closeOthers(contextTabs);
       break;
 
+    case 'toggleSticky':
+      Commands.toggleSticky(contextTabs, !contextTab.$TST.sticky);
+      break;
+
     case 'collapseTree':
       Commands.collapseTree(contextTabs, { recursively: inverted });
       break;
@@ -511,7 +539,7 @@ function onTabItemClick(info, tab) {
       break;
 
     case 'sendTreeToDevice:all':
-      Commands.sendTabsToAllDevices(contextTabs, { recursively: true });
+      Sync.sendTabsToAllDevices(contextTabs, { recursively: true });
       break;
 
     case 'collapsed':
@@ -537,7 +565,7 @@ function onTabItemClick(info, tab) {
       const sendToDeviceMatch = info.menuItemId.match(/^sendTreeToDevice:device:(.+)$/);
       if (contextTab &&
           sendToDeviceMatch)
-        Commands.sendTabsToDevice(
+        Sync.sendTabsToDevice(
           contextTabs,
           { to: sendToDeviceMatch[1],
             recursively: true }
@@ -579,18 +607,27 @@ async function onTabContextMenuShown(info, tab) {
   const subtreeCollapsed = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.subtreeCollapsed);
   const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
   const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
+  const { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant } = Commands.getAutoplayBlockedState(contextTabs);
 
-  let updated = await updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant });
+  let updated = await updateItems({
+    multiselected,
+    hasUnmutedTab,
+    hasUnmutedDescendant,
+    hasAutoplayBlockedTab,
+    hasAutoplayBlockedDescendant,
+    sticky: tab?.$TST.sticky,
+  });
   if (mLastContextTabId != contextTabId)
     return; // Skip further operations if the menu was already reopened on a different context tab.
 
   for (const item of mTabItems) {
+    let newVisible;
     let newEnabled;
     if (item.id == 'sendTreeToDevice') {
+      newVisible = contextTabs.filter(Sync.isSendableTab).length > 0;
       newEnabled = (
         hasChild &&
-        Sync.getOtherDevices().length > 0 &&
-        contextTabs.filter(Sync.isSendableTab).length > 0
+        Sync.getOtherDevices().length > 0
       );
     }
     else if (item.requireTree) {
@@ -612,16 +649,22 @@ async function onTabContextMenuShown(info, tab) {
     else if (item.requireGrouped) {
       newEnabled = grouped;
     }
+    else if (item.requireNormal) {
+      newEnabled = tab?.pinned;
+    }
     else {
       continue;
     }
 
-    if (newEnabled == !!item.enabled)
+    if (newVisible == !!item.visible &&
+        newEnabled == !!item.enabled)
       continue;
 
-    const params = {
-      enabled: item.enabled = newEnabled
-    };
+    const params = {};
+    if (newVisible != !!item.visible)
+      params.visible = item.visible = newVisible;
+    if (newEnabled != !!item.enabled)
+      params.enabled = item.enabled = newEnabled;
 
     updateItem(item.id, params);
     updateItem(`grouped:${item.id}`, params);

@@ -164,9 +164,15 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
           url:   `${location.origin}/resources/ui-color.css`,
           index: 2
         });
-        await browser.tabs.executeScript(reopenedTab.id, {
-          code: 'location.href'
-        });
+        if (browser.scripting)
+          await browser.scripting.executeScript({ // Manifest V3
+            target: { tabId: reopenedTab.id },
+            func: function() { return location.href; },
+          });
+        else
+          await browser.tabs.executeScript(reopenedTab.id, {
+            code: 'location.href',
+          });
         browser.tabs.remove(tab.id);
         resolve(reopenedTab);
       }

@@ -1,6 +1,31 @@
 # History
 
  - master/HEAD
+   * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
+     * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
+     * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
+     * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
+   * Active tab is now sticked to edges of the tab bar when it is scrolled out.
+   * Indicate sharing state of tabs (camera, microphone and/or screen) with icons. It is similar to "Pin/Unpin Tab" but sticked tab keeps its tree.
+   * Show dropshadow before normal tabs when the tab bar is scrolled.
+   * Show dropshadow after normal tabs when the tab bar is not fully scrolled.
+   * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
+   * Suppress bookmarks folder auto creation for bookmarks from tabs, when multiple bookmarks are copied via the Library or something way.
+   * Move descendant tabs also correctlyfollowing to their parent, when a parent tab is moved to the top level via Firefox's horizontal tab bar.
+   * Apply the option to place opened tabs next to the last related child correctly, when multiple tabs are opened from a pinned tab.
+   * Avoid unexpected restoration of blank dialog windows by Ctrl-Shift-T on Firefox 116 and later.
+   * Restore tree structure more correctly for reopened tabs which were closed at a time.
+   * Many API improvements.
+     * Introduce a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
+     * Introduce new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
+     * Introduce a new message type [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) to get [minimal tree item information](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format).
+     * Introduce new message types [`stick-tab`, `unstick-tab` and `toggle-sticky-state`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#control-sticky-state-of-tabs-at-tab-bar-edges) to control tabs' sticky state at tab bar edges.
+     * [Introduce a new option `rendered:true` for the message types `get-tree` and `get-light-tree`, to get information only about rendered tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
+     * Support [bulk messaging to TST (sending multiple messages at once)](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract) and [bulk messaging from TST (receiving multiple messages at once](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst) for better performance.
+     * Add ability to [minimize tree item information contained in notification type messages](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages), to reduce messaging cost.
+     * Introduce new keywords [`allVisibles` and `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific state tree items.
+     * Introduce new options [`states` and `statesNot`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific tree items.
+     * New insertion place of extra tab contents: [`tab-above` and `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) are now available.
  - 3.9.22 (2024.1.31)
    * Fix failed initialization when an optional permission "Read and modify bookmarks" is not granted. (regression on 3.9.21)
  - 3.9.21 (2024.1.26)

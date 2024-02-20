@@ -44,15 +44,15 @@
         <li><label class="has-radio"
                   ><input type="radio"
                           name="style"
-                          value="photon">
-              <img src="style-photon.png" alt=""/>
-              <span class="style-name">__MSG_config_style_photon__</span></label></li>
-        <li><label class="has-radio"
-                  ><input type="radio"
-                          name="style"
                           value="proton">
               <img src="style-proton.png" alt=""/>
               <span class="style-name">__MSG_config_style_proton__</span></label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="style"
+                          value="photon">
+              <img src="style-photon.png" alt=""/>
+              <span class="style-name">__MSG_config_style_photon__</span></label></li>
         <li><label class="has-radio"
                   ><input type="radio"
                           name="style"
@@ -147,6 +147,10 @@
     </fieldset>
     </div>
     <p><label class="has-checkbox"
+             ><input id="stickyActiveTab"
+                     type="checkbox">
+             __MSG_config_stickyActiveTab_label__</label></p>
+    <p><label class="has-checkbox"
              ><input id="showDialogInSidebar"
                      type="checkbox">
                      __MSG_config_showDialogInSidebar_label__</label></p>
@@ -168,6 +172,14 @@
       </thead>
       <tbody>
         <tr>
+          <td><label><input id="context_topLevel_toggleSticky"
+                            type="checkbox"></label></td>
+          <td><label><input id="context_toggleSticky"
+                            type="checkbox"></label></td>
+          <th><label for="context_toggleSticky">__MSG_context_toggleSticky_command__</label></th>
+          <td></td>
+        </tr>
+        <tr>
           <td><label><input id="context_topLevel_reloadTree"
                             type="checkbox"></label></td>
           <td><label><input id="context_reloadTree"
@@ -182,6 +194,22 @@
                             type="checkbox"></label></td>
           <th><label for="context_reloadDescendants">__MSG_context_reloadDescendants_label__</label></th>
           <th><label for="context_reloadDescendants">__MSG_context_reloadTree_label__</label></th>
+        </tr>
+        <tr class="unblock-autoplay-features">
+          <td><label><input id="context_topLevel_unblockAutoplayTree"
+                            type="checkbox"></label></td>
+          <td><label><input id="context_unblockAutoplayTree"
+                            type="checkbox"></label></td>
+          <th><label for="context_unblockAutoplayTree">__MSG_context_unblockAutoplayTree_command__</label></th>
+          <th><label for="context_unblockAutoplayTree">__MSG_context_unblockAutoplayDescendants_command__</label></th>
+        </tr>
+        <tr class="unblock-autoplay-features">
+          <td><label><input id="context_topLevel_unblockAutoplayDescendants"
+                            type="checkbox"></label></td>
+          <td><label><input id="context_unblockAutoplayDescendants"
+                            type="checkbox"></label></td>
+          <th><label for="context_unblockAutoplayDescendants">__MSG_context_unblockAutoplayDescendants_command__</label></th>
+          <th><label for="context_unblockAutoplayDescendants">__MSG_context_unblockAutoplayTree_command__</label></th>
         </tr>
         <tr>
           <td><label><input id="context_topLevel_toggleMuteTree"
@@ -757,8 +785,12 @@
               __MSG_config_treeDoubleClickBehavior_toggleCollapsed__</label></li>
         <li><label class="has-radio"
                   ><input type="radio"
+                          name="treeDoubleClickBehavior" value="4">
+              __MSG_config_treeDoubleClickBehavior_toggleSticky__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
                           name="treeDoubleClickBehavior" value="3">
-              __MSG_config_treeDoubleClickBehavior_close__</label></li>
+              __MSG_config_treeDoubleClickBehavior_close__ __MSG_config_treeDoubleClickBehavior_close_note__</label></li>
         <li><label class="has-radio"
                   ><input type="radio"
                           name="treeDoubleClickBehavior" value="0">
@@ -1344,8 +1376,9 @@
       <li><a id="link-optionsPage" target="_blank">__MSG_config_title__</a>
       <li><a id="link-startupPage" target="_blank">__MSG_config_link_startupPage_label__</a></li>
       <li><a id="link-groupPage" target="_blank">__MSG_config_link_groupPage_label__</a></li>
-      <li><a id="link-tabbarPage" target="_blank">__MSG_config_link_tabbarPage_label__</a>
+      <li><a id="link-tabbarPage" target="_blank">__MSG_config_link_tabbarPage_label__</a></li>
       <li><a id="link-runTests" target="_blank">__MSG_config_runTests_label__</a>
+          <label>__MSG_config_runTestsParameters_label__<input id="runTestsParameters" type="text" size="30"></label></li>
       <li><a id="link-runBenchmark" target="_blank">__MSG_config_runBenchmark_label__</a>
         <ul>
           <li><label class="has-checkbox"
@@ -1477,7 +1510,6 @@
           <p><label class="has-checkbox"><input id="logFor-sidebar/mouse-event-listener" type="checkbox">sidebar/mouse-event-listener</label></p>
           <p><label class="has-checkbox"><input id="logFor-sidebar/pinned-tabs" type="checkbox">sidebar/pinned-tabs</label></p>
           <p><label class="has-checkbox"><input id="logFor-sidebar/scroll" type="checkbox">sidebar/scroll</label></p>
-          <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar-cache" type="checkbox">sidebar/sidebar-cache</label></p>
           <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar-tabs" type="checkbox">sidebar/sidebar-tabs</label></p>
           <p><label class="has-checkbox"><input id="logFor-sidebar/sidebar" type="checkbox">sidebar/sidebar</label></p>
           <p><label class="has-checkbox"><input id="logFor-sidebar/size" type="checkbox">sidebar/size</label></p>

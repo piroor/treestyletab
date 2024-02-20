@@ -71,8 +71,55 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   testKey
   userStyleRulesFieldHeight
   userStyleRulesFieldTheme
+  runTestsParameters
 `.trim().split('\n'), key => {
   key = key.trim();
+  return key && key.indexOf('//') != 0 && key;
+}));
+
+export const obsoleteConfigs = new Set(mapAndFilter(`
+  sidebarScrollbarPosition // migrated to user stylesheet
+  scrollbarMode // migrated to user stylesheet
+  suppressGapFromShownOrHiddenToolbar // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  fakeContextMenu // migrated to emulateDefaultContextMenu
+  context_closeTabOptions_closeTree // migrated to context_topLevel_closeTree
+  context_closeTabOptions_closeDescendants // migrated to context_topLevel_closeDescendants
+  context_closeTabOptions_closeOthers // migrated to context_topLevel_closeOthers
+  collapseExpandSubtreeByDblClick // migrated to treeDoubleClickBehavior
+  autoExpandOnCollapsedChildActive // migrate to unfocusableCollapsedTab
+  inheritContextualIdentityToNewChildTab // migrated to inheritContextualIdentityToChildTabMode
+  inheritContextualIdentityToSameSiteOrphan // migrated to inheritContextualIdentityToSameSiteOrphanMode
+  inheritContextualIdentityToTabsFromExternal // migrated to inheritContextualIdentityToTabsFromExternalMode
+  promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
+  closeParentBehaviorMode // migrated to parentTabOperationBehaviorMode
+  closeParentBehavior // migrated to closeParentBehavior_insideSidebar_expanded
+  closeParentBehavior_outsideSidebar// migrated to closeParentBehavior_outsideSidebar_expanded
+  closeParentBehavior_noSidebar // migrated to closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosedWithNoSidebar // migrated to treatTreeAsExpandedOnClosed_noSidebar
+  treatTreeAsExpandedOnClosed_outsideSidebar // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosed_noSidebar // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
+  moveFocusInTreeForClosedActiveTab // migrated to "successorTabControlLevel"
+  startDragTimeout // migrated to longPressDuration
+  simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
+  moveDroppedTabToNewWindowForUnhandledDragEvent // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
+  openAllBookmarksWithGroupAlways // migrated to suppressGroupTabForStructuredTabsFromBookmarks
+  // migrated to chunkedUserStyleRules0-5
+  userStyleRules0
+  userStyleRules1
+  userStyleRules2
+  userStyleRules3
+  userStyleRules4
+  userStyleRules5
+  userStyleRules6
+  userStyleRules7
+  autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
+  autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
+  autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
+`.trim().split('\n'), key => {
+  key = key.replace(/\/\/.*/, '').trim();
+  if (!key)
+    return undefined;
   return key && key.indexOf('//') != 0 && key;
 }));
 
@@ -100,6 +147,7 @@ export const configs = new Configs({
 
   unrepeatableBGImageAspectRatio: 4,
 
+  stickyActiveTab: true,
   faviconizePinnedTabs: true,
   maxFaviconizedPinnedTabsInOneRow: 0, // auto
   faviconizedTabScale: 1.75,
@@ -137,11 +185,14 @@ export const configs = new Configs({
 
   context_reloadTree: true,
   context_reloadDescendants: false,
+  context_unblockAutoplayTree: true,
+  context_unblockAutoplayDescendants: false,
   context_toggleMuteTree: true,
   context_toggleMuteDescendants: false,
   context_closeTree: true,
   context_closeDescendants: false,
   context_closeOthers: false,
+  context_toggleSticky: false,
   context_collapseTree: false,
   context_collapseTreeRecursively: true,
   context_collapseAll: true,
@@ -153,11 +204,14 @@ export const configs = new Configs({
 
   context_topLevel_reloadTree: false,
   context_topLevel_reloadDescendants: false,
+  context_topLevel_unblockAutoplayTree: false,
+  context_topLevel_unblockAutoplayDescendants: false,
   context_topLevel_toggleMuteTree: false,
   context_topLevel_toggleMuteDescendants: false,
   context_topLevel_closeTree: false,
   context_topLevel_closeDescendants: false,
   context_topLevel_closeOthers: false,
+  context_topLevel_toggleSticky: true,
   context_topLevel_collapseTree: false,
   context_topLevel_collapseTreeRecursively: false,
   context_topLevel_collapseAll: false,
@@ -237,7 +291,7 @@ export const configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: Constants.kINSERT_NO_CONTROL, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
+  insertNewChildAt: Constants.kINSERT_END, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
   insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
   insertDroppedTabsAt: Constants.kINSERT_END,
 
@@ -317,6 +371,7 @@ export const configs = new Configs({
 
   // misc.
   showExpertOptions: false,
+  exposeUnblockAutoplayFeatures: false,
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'toolbar_____', // 'unfiled_____' for Firefox 83 and olders,
   incrementalSearchTimeout: 1000, // same to the default value of Firefox's "ui.menu.incremental_search.timeout"
@@ -347,6 +402,8 @@ export const configs = new Configs({
   autoDiscardTabForUnexpectedFocus: true,
   autoDiscardTabForUnexpectedFocusDelay: 500,
   avoidDiscardedTabToBeActivatedIfPossible: false,
+  provressiveHighlightingStep: Number.MAX_SAFE_INTEGER,
+  progressievHighlightingInterval: 100,
   undoMultipleTabsClose: true,
   allowDragNewTabButton: true,
   newTabButtonDragGestureModifiers: 'shift',
@@ -355,7 +412,8 @@ export const configs = new Configs({
   notifiedFeaturesVersion: 0,
 
   useCachedTree: true,
-  persistCachedTree: false,
+  persistCachedTree: true,
+  looseCacheTreeSignature: true,
 
   // This should be removed after https://bugzilla.mozilla.org/show_bug.cgi?id=1388193
   // or https://bugzilla.mozilla.org/show_bug.cgi?id=1421329 become fixed.
@@ -441,6 +499,7 @@ export const configs = new Configs({
 
 
   debug:     false,
+  runTestsParameters: '',
   syncEnabled: true,
   APIEnabled: true,
   logTimestamp: true,
@@ -492,7 +551,6 @@ export const configs = new Configs({
     'sidebar/mouse-event-listener': false,
     'sidebar/pinned-tabs': false,
     'sidebar/scroll': false,
-    'sidebar/sidebar-cache': false,
     'sidebar/sidebar-tabs': false,
     'sidebar/sidebar': false,
     'sidebar/size': false,
@@ -506,46 +564,7 @@ export const configs = new Configs({
   enableWindowsBehaviors: false,
 
 
-  // obsolete configs
-  sidebarScrollbarPosition: null, // migrated to user stylesheet
-  scrollbarMode: null, // migrated to user stylesheet
-  suppressGapFromShownOrHiddenToolbar: null, // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
-  fakeContextMenu: null, // migrated to emulateDefaultContextMenu
-  context_closeTabOptions_closeTree: null, // migrated to context_topLevel_closeTree
-  context_closeTabOptions_closeDescendants: null, // migrated to context_topLevel_closeDescendants
-  context_closeTabOptions_closeOthers: null, // migrated to context_topLevel_closeOthers
-  collapseExpandSubtreeByDblClick: null, // migrated to treeDoubleClickBehavior
-  autoExpandOnCollapsedChildActive: null, // migrate to unfocusableCollapsedTab
-  inheritContextualIdentityToNewChildTab: null, // migrated to inheritContextualIdentityToChildTabMode
-  inheritContextualIdentityToSameSiteOrphan: null, // migrated to inheritContextualIdentityToSameSiteOrphanMode
-  inheritContextualIdentityToTabsFromExternal: null, // migrated to inheritContextualIdentityToTabsFromExternalMode
-  promoteFirstChildForClosedRoot:     null, // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges:        null, // migrated to parentTabOperationBehaviorMode
-  closeParentBehaviorMode: null, // migrated to parentTabOperationBehaviorMode
-  closeParentBehavior:                null, // migrated to closeParentBehavior_insideSidebar_expanded
-  closeParentBehavior_outsideSidebar: null, // migrated to closeParentBehavior_outsideSidebar_expanded
-  closeParentBehavior_noSidebar:      null, // migrated to closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosedWithNoSidebar: null, // migrated to treatTreeAsExpandedOnClosed_noSidebar
-  treatTreeAsExpandedOnClosed_outsideSidebar: null, // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosed_noSidebar: null, // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
-  moveFocusInTreeForClosedActiveTab: null, // migrated to "successorTabControlLevel"
-  startDragTimeout: null, // migrated to longPressDuration
-  simulateCloseTabByDblclick: null, // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
-  moveDroppedTabToNewWindowForUnhandledDragEvent: null, // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
-  openAllBookmarksWithGroupAlways: null, // migrated to suppressGroupTabForStructuredTabsFromBookmarks
-  // migrated to chunkedUserStyleRules0-5
-  userStyleRules0: '',
-  userStyleRules1: '',
-  userStyleRules2: '',
-  userStyleRules3: '',
-  userStyleRules4: '',
-  userStyleRules5: '',
-  userStyleRules6: '',
-  userStyleRules7: '',
-  autoGroupNewTabsTimeout: null, // migrated to tabBunchesDetectionTimeout
-  autoGroupNewTabsDelayOnNewWindow: null, // migrated to tabBunchesDetectionDelayOnNewWindow
-  autoHiddenScrollbarPlaceholderSize: null, // migrated to shiftTabsForScrollbarDistance
-
+  ...(Object.fromEntries(Array.from(obsoleteConfigs, key => [key, null]))),
 
   configsVersion: 0,
 
@@ -928,7 +947,7 @@ export async function sha1sum(string) {
 }
 
 export function sanitizeForHTMLText(text) {
-  return text
+  return (text || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

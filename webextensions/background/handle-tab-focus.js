@@ -52,16 +52,16 @@ let mMaybeTabSwitchingByShortcut = false;
 
 const mLastTabsCountInWindow = new Map();
 
-Window.onInitialized.addListener(window => {
+Window.onInitialized.addListener(win => {
   browser.tabs.query({
-    windowId: window.id,
+    windowId: win.id,
     active:   true
   })
     .then(activeTabs => {
       // There may be no active tab on a startup...
       if (activeTabs.length > 0 &&
-          !window.lastActiveTab)
-        window.lastActiveTab = activeTabs[0].id;
+          !win.lastActiveTab)
+        win.lastActiveTab = activeTabs[0].id;
     });
 });
 
@@ -88,9 +88,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     tab.$TST.temporaryMetadata.delete('shouldReloadOnSelect');
   }
-  const window = TabsStore.windows.get(tab.windowId);
-  log('  lastActiveTab: ', window.lastActiveTab); // it may be blank on a startup
-  const lastActiveTab = Tab.get(window.lastActiveTab || info.previousTabId);
+  const win = TabsStore.windows.get(tab.windowId);
+  log('  lastActiveTab: ', win.lastActiveTab); // it may be blank on a startup
+  const lastActiveTab = Tab.get(win.lastActiveTab || info.previousTabId);
   cancelDelayedExpand(lastActiveTab);
   let shouldSkipCollapsed = (
     !info.byInternalOperation &&
@@ -129,9 +129,9 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         log('  => apply unfocusableCollapsedTab');
         allowed = await TSTAPI.tryOperationAllowed(
           TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_COLLAPSED_TAB,
-          { tab: new TSTAPI.TreeItem(tab, { cache }),
+          { tab,
             focusDirection },
-          { tabProperties: ['tab'] }
+          { tabProperties: ['tab'], cache }
         );
         TSTAPI.clearCache(cache);
         if (allowed) {
@@ -159,8 +159,8 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
         return false;
       log('successor = ', successor.id);
       if (shouldSkipCollapsed &&
-          (window.lastActiveTab == successor.id ||
-           successor.$TST.descendants.some(tab => tab.id == window.lastActiveTab)) &&
+          (win.lastActiveTab == successor.id ||
+           successor.$TST.descendants.some(tab => tab.id == win.lastActiveTab)) &&
           focusDirection > 0) {
         log('=> redirect successor (focus moved from the successor itself or its descendants)');
         successor = successor.$TST.nearestVisibleFollowingTab;
@@ -185,13 +185,13 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
       }
       const allowed = await TSTAPI.tryOperationAllowed(
         TSTAPI.kNOTIFY_TRY_REDIRECT_FOCUS_FROM_COLLAPSED_TAB,
-        { tab: new TSTAPI.TreeItem(tab, { cache }),
+        { tab,
           focusDirection },
-        { tabProperties: ['tab'] }
+        { tabProperties: ['tab'], cache }
       );
       TSTAPI.clearCache(cache);
       if (allowed) {
-        window.lastActiveTab = successor.id;
+        win.lastActiveTab = successor.id;
         if (mMaybeTabSwitchingByShortcut)
           setupDelayedExpand(successor);
         TabsInternalOperation.activateTab(successor, { silently: true });
@@ -209,7 +209,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
-    window.lastActiveTab = tab.id;
+    win.lastActiveTab = tab.id;
     tryHighlightBundledTab(tab, {
       ...info,
       shouldSkipCollapsed
@@ -223,7 +223,7 @@ Tab.onActivating.addListener(async (tab, info = {}) => { // return false if the 
     await handleNewActiveTab(tab, info);
   }
   tab.$TST.temporaryMetadata.delete('discardOnCompletelyLoaded');
-  window.lastActiveTab = tab.id;
+  win.lastActiveTab = tab.id;
 
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
@@ -243,15 +243,14 @@ async function handleNewActiveTab(tab, { allowed, silently } = {}) {
   const canExpandTree           = shouldCollapseExpandNow && !silently;
   if (canExpandTree &&
       allowed !== false) {
-    const treeItem = new TSTAPI.TreeItem(tab);
+    const cache = {};
     const allowed = await TSTAPI.tryOperationAllowed(
       tab.active ?
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_PARENT :
         TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_FOCUSED_BUNDLED_PARENT,
-      { tab: treeItem },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     );
-    treeItem.clearCache();
     if (!allowed)
       return;
     if (canCollapseTree &&
@@ -281,13 +280,13 @@ async function tryHighlightBundledTab(tab, { shouldSkipCollapsed, allowed, silen
   for (const tab of oldBundledTabs.values()) {
     if (tab == bundledTab)
       continue;
-    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+    tab.$TST.removeState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
   }
 
   if (!bundledTab)
     return;
 
-  bundledTab.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE, { broadcast: true });
+  bundledTab.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
 
   await wait(100);
   if (!tab.active || // ignore tab already inactivated while waiting
@@ -343,16 +342,15 @@ async function setupDelayedExpand(tab) {
     return;
   cancelDelayedExpand(tab);
   TabsStore.removeToBeExpandedTab(tab);
-  const treeItem = new TSTAPI.TreeItem(tab);
+  const cache = {};
   const [ctrlTabHandlingEnabled, allowedToExpandViaAPI] = await Promise.all([
     Permissions.isGranted(Permissions.ALL_URLS),
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_LONG_PRESS_CTRL_KEY,
-      { tab: treeItem },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ),
   ]);
-  treeItem.clearCache();
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed ||
@@ -389,10 +387,7 @@ function cancelAllDelayedExpand(windowId) {
 }
 
 Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
-  if (info.collapsed)
-    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+  tab.$TST.toggleState(Constants.kTAB_STATE_COLLAPSED_DONE, info.collapsed, { broadcast: false });
 });
 
 
@@ -430,8 +425,8 @@ function onMessage(message, sender) {
       log('kCOMMAND_NOTIFY_MAY_START_TAB_SWITCH ', message.modifier);
       mMaybeTabSwitchingByShortcut = true;
       if (sender.tab && sender.tab.active) {
-        const window = TabsStore.windows.get(sender.tab.windowId);
-        window.lastActiveTab = sender.tab.id;
+        const win = TabsStore.windows.get(sender.tab.windowId);
+        win.lastActiveTab = sender.tab.id;
       }
       if (sender.tab)
         mLastTabsCountInWindow.set(sender.tab.windowId, Tab.getAllTabs(sender.tab.windowId).length);
@@ -454,21 +449,20 @@ function onMessage(message, sender) {
             tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
-          const treeItem = new TSTAPI.TreeItem(tab);
+          const cache = {};
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id &&
               (await TSTAPI.tryOperationAllowed(
                 TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_END_TAB_SWITCH,
-                { tab: treeItem },
-                { tabProperties: ['tab'] }
+                { tab },
+                { tabProperties: ['tab'], cache }
               ))) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
             });
           }
-          treeItem.clearCache();
         }
         mMaybeTabSwitchingByShortcut =
           mTabSwitchedByShortcut = false;

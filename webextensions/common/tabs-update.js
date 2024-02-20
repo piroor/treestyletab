@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2022
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -44,34 +44,139 @@ function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
+
+const mBufferedUpdates = new Map();
+
+function getBufferedUpdate(tab) {
+  const update = mBufferedUpdates.get(tab.id) || {
+    windowId: tab.windowId,
+    tabId:    tab.id,
+    attributes: {
+      updated: {},
+      added:   {},
+      removed: new Set(),
+    },
+    isGroupTab:   false,
+    updatedTitle: undefined,
+    updatedLabel: undefined,
+    favIconUrl:   undefined,
+    loadingState: undefined,
+    loadingStateReallyChanged: undefined,
+    pinned:       undefined,
+    hidden:       undefined,
+    soundStateChanged: false,
+  };
+  mBufferedUpdates.set(tab.id, update);
+  return update;
+}
+
+function flushBufferedUpdates() {
+  if (!Constants.IS_BACKGROUND) {
+    mBufferedUpdates.clear();
+    return;
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  flushBufferedUpdates.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (flushBufferedUpdates.triedAt != triedAt)
+      return;
+    for (const update of mBufferedUpdates.values()) {
+      // no need to notify attributes broadcasted via Tab.broadcastState()
+      delete update.attributes.updated.highlighted;
+      delete update.attributes.updated.hidden;
+      delete update.attributes.updated.pinned;
+      delete update.attributes.updated.audible;
+      delete update.attributes.updated.mutedInfo;
+      delete update.attributes.updated.sharingState;
+      delete update.attributes.updated.incognito;
+      delete update.attributes.updated.attention;
+      delete update.attributes.updated.discarded;
+      if (Object.keys(update.attributes.updated).length > 0 ||
+          Object.keys(update.attributes.added).length > 0 ||
+          update.attributes.removed.size > 0 ||
+          update.soundStateChanged ||
+          update.sharingStateChanged)
+        SidebarConnection.sendMessage({
+          type:              Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
+          windowId:          update.windowId,
+          tabId:             update.tabId,
+          updatedProperties: update.attributes.updated,
+          addedAttributes:   update.attributes.added,
+          removedAttributes: [...update.attributes.removed],
+          soundStateChanged: update.soundStateChanged,
+          sharingStateChanged: update.sharingStateChanged,
+        });
+
+      // SidebarConnection.sendMessage() has its own bulk-send mechanism,
+      // so we don't need to bundle them like an array.
+      if (update.isGroupTab)
+        SidebarConnection.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.updatedTitle !== undefined)
+        SidebarConnection.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          title:    update.updatedTitle,
+          label:    update.updatedLabel,
+        });
+      if (update.favIconUrl !== undefined)
+        SidebarConnection.sendMessage({
+          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          windowId:   update.windowId,
+          tabId:      update.tabId,
+          favIconUrl: update.favIconUrl,
+        });
+      if (update.loadingState !== undefined)
+        SidebarConnection.sendMessage({
+          type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+          status:   update.loadingState,
+          reallyChanged: update.loadingStateReallyChanged,
+        });
+      if (update.pinned !== undefined)
+        SidebarConnection.sendMessage({
+          type:     update.pinned ? Constants.kCOMMAND_NOTIFY_TAB_PINNED : Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+      if (update.hidden !== undefined)
+        SidebarConnection.sendMessage({
+          type:     update.hidden ? Constants.kCOMMAND_NOTIFY_TAB_HIDDEN : Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
+          windowId: update.windowId,
+          tabId:    update.tabId,
+        });
+    }
+    mBufferedUpdates.clear();
+  }, 0);
+}
+
 export function updateTab(tab, newState = {}, options = {}) {
-  const messages          = [];
-  const addedAttributes   = {};
-  const removedAttributes = [];
-  const addedStates       = [];
-  const removedStates     = [];
-  const oldState          = options.old || {};
+  const update = getBufferedUpdate(tab);
+  const oldState = options.old || {};
 
   if ('url' in newState) {
-    tab.$TST.setAttribute(Constants.kCURRENT_URI, addedAttributes[Constants.kCURRENT_URI] = newState.url);
+    tab.$TST.setAttribute(Constants.kCURRENT_URI, update.attributes.added[Constants.kCURRENT_URI] = newState.url);
+    update.attributes.removed.delete(Constants.kCURRENT_URI);
   }
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
-    addedStates.push(Constants.kTAB_STATE_GROUP_TAB);
-    TabsStore.addGroupTab(tab);
+    update.isGroupTab = true;
     Tab.onGroupTabDetected.dispatch(tab);
-    messages.push({
-      type:     Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED,
-      windowId: tab.windowId,
-      tabId:    tab.id
-    });
   }
   else if (tab.$TST.states.has(Constants.kTAB_STATE_GROUP_TAB) &&
            !tab.$TST.hasGroupTabURL) {
-    removedStates.push(Constants.kTAB_STATE_GROUP_TAB);
-    TabsStore.removeGroupTab(tab);
+    tab.$TST.removeState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+    update.isGroupTab = false;
   }
 
   if (options.forceApply ||
@@ -79,99 +184,55 @@ export function updateTab(tab, newState = {}, options = {}) {
        newState.title != oldState.title)) {
     if (options.forceApply) {
       tab.$TST.getPermanentStates().then(states => {
-        if (states.includes(Constants.kTAB_STATE_UNREAD) &&
-            !tab.$TST.isGroupTab) {
-          tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          SidebarConnection.sendMessage({
-            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-            windowId: tab.windowId,
-            tabId:    tab.id,
-            addedStates: [Constants.kTAB_STATE_UNREAD]
-          });
-        }
-        else {
-          tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-          SidebarConnection.sendMessage({
-            type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-            windowId: tab.windowId,
-            tabId:    tab.id,
-            removedStates: [Constants.kTAB_STATE_UNREAD]
-          });
-        }
+        tab.$TST.toggleState(
+          Constants.kTAB_STATE_UNREAD,
+          (states.includes(Constants.kTAB_STATE_UNREAD) &&
+           !tab.$TST.isGroupTab),
+          { permanently: true }
+        );
       });
     }
     else if (tab.$TST.isGroupTab) {
       tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-      removedStates.push(Constants.kTAB_STATE_UNREAD);
     }
     else if (!tab.active) {
       tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
-      addedStates.push(Constants.kTAB_STATE_UNREAD);
     }
     tab.$TST.label = newState.title;
     Tab.onLabelUpdated.dispatch(tab);
-    messages.push({
-      type:     Constants.kCOMMAND_NOTIFY_TAB_LABEL_UPDATED,
-      windowId: tab.windowId,
-      tabId:    tab.id,
-      title:    tab.title,
-      label:    tab.$TST.label
-    });
+    update.updatedTitle = tab.title;
+    update.updatedLabel = tab.$TST.label;
   }
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: openerOfGroupTab.favIconUrl
-    });
+    update.favIconUrl = openerOfGroupTab.favIconUrl;
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    tab.$TST.setAttribute(Constants.kCURRENT_FAVICON_URI, addedAttributes[Constants.kCURRENT_FAVICON_URI] = tab.favIconUrl);
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: tab.favIconUrl
-    });
+    tab.$TST.setAttribute(Constants.kCURRENT_FAVICON_URI, update.attributes.added[Constants.kCURRENT_FAVICON_URI] = tab.favIconUrl);
+    update.attributes.removed.delete(Constants.kCURRENT_FAVICON_URI);
+    update.favIconUrl = tab.favIconUrl;
   }
   else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
-    removedAttributes.push(Constants.kCURRENT_FAVICON_URI)
+    delete update.attributes.added[Constants.kCURRENT_FAVICON_URI];
+    update.attributes.removed.add(Constants.kCURRENT_URI);
     tab.$TST.removeAttribute(Constants.kCURRENT_FAVICON_URI);
-    messages.push({
-      type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-      windowId:   tab.windowId,
-      tabId:      tab.id,
-      favIconUrl: null
-    });
+    update.favIconUrl = null;
   }
 
   if ('status' in newState) {
     const reallyChanged = !tab.$TST.states.has(newState.status);
     const removed = newState.status == 'loading' ? 'complete' : 'loading';
     tab.$TST.removeState(removed);
-    removedStates.push(removed);
     tab.$TST.addState(newState.status);
-    addedStates.push(newState.status);
-    if (newState.status == 'loading')
-      TabsStore.addLoadingTab(tab);
-    else
-      TabsStore.removeLoadingTab(tab);
     if (!options.forceApply) {
-      messages.push({
-        type:     Constants.kCOMMAND_UPDATE_LOADING_STATE,
-        windowId: tab.windowId,
-        tabId:    tab.id,
-        status:   tab.status,
-        reallyChanged
-      });
+      update.loadingState = tab.status;
+      update.loadingStateReallyChanged = reallyChanged;
     }
   }
 
@@ -180,43 +241,22 @@ export function updateTab(tab, newState = {}, options = {}) {
       newState.pinned != tab.$TST.states.has(Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
       tab.$TST.addState(Constants.kTAB_STATE_PINNED);
-      addedStates.push(Constants.kTAB_STATE_PINNED);
       tab.$TST.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
-      removedAttributes.push(Constants.kLEVEL);
-      TabsStore.removeUnpinnedTab(tab);
-      TabsStore.addPinnedTab(tab);
+      delete update.attributes.added[Constants.kLEVEL];
+      update.attributes.removed.add(Constants.kLEVEL);
       Tab.onPinned.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_PINNED,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.pinned = true;
     }
     else {
       tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
-      removedStates.push(Constants.kTAB_STATE_PINNED);
-      TabsStore.removePinnedTab(tab);
-      TabsStore.addUnpinnedTab(tab);
       Tab.onUnpinned.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_UNPINNED,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.pinned = false;
     }
   }
 
   if (options.forceApply ||
-      'audible' in newState) {
-    if (newState.audible) {
-      tab.$TST.addState(Constants.kTAB_STATE_AUDIBLE);
-      addedStates.push(Constants.kTAB_STATE_AUDIBLE);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE);
-      removedStates.push(Constants.kTAB_STATE_AUDIBLE);
-    }
-  }
+      'audible' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_AUDIBLE, newState.audible);
 
   let soundStateChanged = false;
 
@@ -224,14 +264,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       'mutedInfo' in newState) {
     soundStateChanged = true;
     const muted = newState.mutedInfo && newState.mutedInfo.muted;
-    if (muted) {
-      tab.$TST.addState(Constants.kTAB_STATE_MUTED);
-      addedStates.push(Constants.kTAB_STATE_MUTED);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
-      removedStates.push(Constants.kTAB_STATE_MUTED);
-    }
+    tab.$TST.toggleState(Constants.kTAB_STATE_MUTED, muted, newState.audible);
     Tab.onMutedStateChanged.dispatch(tab, muted);
   }
 
@@ -239,15 +272,11 @@ export function updateTab(tab, newState = {}, options = {}) {
       soundStateChanged ||
       'audible' in newState) {
     soundStateChanged = true;
-    if (tab.audible &&
-        !tab.mutedInfo.muted) {
-      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
-      addedStates.push(Constants.kTAB_STATE_SOUND_PLAYING);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
-      removedStates.push(Constants.kTAB_STATE_SOUND_PLAYING);
-    }
+    tab.$TST.toggleState(
+      Constants.kTAB_STATE_SOUND_PLAYING,
+      (tab.audible &&
+       !tab.mutedInfo.muted)
+    );
   }
 
   if (soundStateChanged) {
@@ -256,18 +285,35 @@ export function updateTab(tab, newState = {}, options = {}) {
       parent.$TST.inheritSoundStateFromChildren();
   }
 
+  let sharingStateChanged = false;
+  if (options.forceApply ||
+      'sharingState' in newState) {
+    sharingStateChanged = true;
+    const sharingCamera     = newState.sharingState && newState.sharingState.camera;
+    const sharingMicrophone = newState.sharingState && newState.sharingState.microphone;
+    const sharingScreen     = newState.sharingState && !!newState.sharingState.screen;
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_CAMERA,     sharingCamera);
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_MICROPHONE, sharingMicrophone);
+    tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_SCREEN,     sharingScreen);
+    Tab.onSharingStateChanged.dispatch(tab, {
+      camera:     sharingCamera,
+      microphone: sharingMicrophone,
+      screen:     sharingScreen,
+    });
+    const parent = tab.$TST.parent;
+    if (parent)
+      parent.$TST.inheritSharingStateFromChildren();
+  }
+
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const state of tab.$TST.states) {
-      if (String(state).startsWith('contextual-identity-')) {
+      if (String(state).startsWith('contextual-identity-'))
         tab.$TST.removeState(state);
-        removedStates.push(state);
-      }
     }
     if (newState.cookieStoreId) {
       const state = `contextual-identity-${newState.cookieStoreId}`;
       tab.$TST.addState(state);
-      addedStates.push(state);
       const identity = ContextualIdentities.get(newState.cookieStoreId);
       if (identity)
         tab.$TST.setAttribute(Constants.kCONTEXTUAL_IDENTITY_NAME, identity.name);
@@ -280,119 +326,56 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
-      'incognito' in newState) {
-    if (newState.incognito) {
-      tab.$TST.addState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-      addedStates.push(Constants.kTAB_STATE_PRIVATE_BROWSING);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_PRIVATE_BROWSING);
-      removedStates.push(Constants.kTAB_STATE_PRIVATE_BROWSING);
-    }
-  }
+      'incognito' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_PRIVATE_BROWSING, newState.incognito);
 
   if (options.forceApply ||
       'hidden' in newState) {
     if (newState.hidden) {
       if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
         tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
-        addedStates.push(Constants.kTAB_STATE_HIDDEN);
-        TabsStore.removeVisibleTab(tab);
-        TabsStore.removeControllableTab(tab);
         Tab.onHidden.dispatch(tab);
-        messages.push({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_HIDDEN,
-          windowId: tab.windowId,
-          tabId:    tab.id
-        });
+        update.hidden = true;
       }
     }
     else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
       tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
-      removedStates.push(Constants.kTAB_STATE_HIDDEN);
-      if (!tab.$TST.collapsed)
-        TabsStore.addVisibleTab(tab);
-      TabsStore.addControllableTab(tab);
       Tab.onShown.dispatch(tab);
-      messages.push({
-        type:     Constants.kCOMMAND_NOTIFY_TAB_SHOWN,
-        windowId: tab.windowId,
-        tabId:    tab.id
-      });
+      update.hidden = false;
     }
   }
 
   if (options.forceApply ||
-      'highlighted' in newState) {
-    if (newState.highlighted) {
-      TabsStore.addHighlightedTab(tab);
-      tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
-      addedStates.push(Constants.kTAB_STATE_HIGHLIGHTED);
-    }
-    else {
-      TabsStore.removeHighlightedTab(tab);
-      tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
-      removedStates.push(Constants.kTAB_STATE_HIGHLIGHTED);
-    }
-  }
+      'highlighted' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_HIGHLIGHTED, newState.highlighted);
 
   if (options.forceApply ||
-      'attention' in newState) {
-    if (newState.attention) {
-      tab.$TST.addState(Constants.kTAB_STATE_ATTENTION);
-      addedStates.push(Constants.kTAB_STATE_ATTENTION);
-    }
-    else {
-      tab.$TST.removeState(Constants.kTAB_STATE_ATTENTION);
-      removedStates.push(Constants.kTAB_STATE_ATTENTION);
-    }
-  }
+      'attention' in newState)
+    tab.$TST.toggleState(Constants.kTAB_STATE_ATTENTION, newState.attention);
 
   if (options.forceApply ||
       'discarded' in newState) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
-      if (newState.discarded) {
-        tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
-        SidebarConnection.sendMessage({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-          windowId: tab.windowId,
-          tabId:    tab.id,
-          addedStates: [Constants.kTAB_STATE_DISCARDED]
-        });
-      }
-      else {
-        tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
-        SidebarConnection.sendMessage({
-          type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-          windowId: tab.windowId,
-          tabId:    tab.id,
-          removedStates: [Constants.kTAB_STATE_DISCARDED]
-        });
-      }
+      tab.$TST.toggleState(Constants.kTAB_STATE_DISCARDED, newState.discarded);
     });
   }
 
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_UPDATED,
-    windowId: tab.windowId,
-    tabId:    tab.id,
-    updatedProperties: newState && newState.$TST && newState.$TST.sanitized || newState,
-    addedAttributes,
-    removedAttributes,
-    addedStates,
-    removedStates,
-    soundStateChanged
-  });
-  messages.forEach(SidebarConnection.sendMessage);
+  update.soundStateChanged = update.soundStateChanged || soundStateChanged;
+  update.sharingStateChanged = update.sharingStateChanged || sharingStateChanged;
+  update.attributes.updated = {
+    ...update.attributes.updated,
+    ...(newState && newState.$TST && newState.$TST.sanitized || newState),
+  };
+  flushBufferedUpdates();
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
   if (Tab.needToWaitTracked(highlightInfo.windowId))
     await Tab.waitUntilTrackedAll(highlightInfo.windowId);
-  const window = TabsStore.windows.get(highlightInfo.windowId);
-  if (!window)
+  const win = TabsStore.windows.get(highlightInfo.windowId);
+  if (!win)
     return;
 
   //const startAt = Date.now();
@@ -404,37 +387,37 @@ export async function updateTabsHighlighted(highlightInfo) {
   });
   const alreadyHighlightedTabs = TabsStore.highlightedTabsInWindow.get(highlightInfo.windowId);
   const toBeHighlightedTabs = mapAndFilter(tabIds, id => {
-    const tab = window.tabs.get(id);
+    const tab = win.tabs.get(id);
     return tab && !alreadyHighlightedTabs.has(tab.id) && tab || undefined;
   });
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`, { toBeHighlightedTabs, toBeUnhighlightedTabs});
 
+  const inheritToCollapsedDescendants = !!highlightInfo.inheritToCollapsedDescendants;
   //log('updateTabsHighlighted ', { toBeHighlightedTabs, toBeUnhighlightedTabs});
   for (const tab of toBeUnhighlightedTabs) {
     TabsStore.removeHighlightedTab(tab);
-    updateTabHighlighted(tab, false);
+    updateTabHighlighted(tab, false, { inheritToCollapsedDescendants });
   }
   for (const tab of toBeHighlightedTabs) {
     TabsStore.addHighlightedTab(tab);
-    updateTabHighlighted(tab, true);
+    updateTabHighlighted(tab, true, { inheritToCollapsedDescendants });
   }
 }
-async function updateTabHighlighted(tab, highlighted) {
+async function updateTabHighlighted(tab, highlighted, { inheritToCollapsedDescendants } = {}) {
   log(`highlighted status of ${dumpTab(tab)}: `, { old: tab.highlighted, new: highlighted });
   //if (tab.highlighted == highlighted)
   //  return false;
-  if (highlighted)
-    tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
+  tab.$TST.toggleState(Constants.kTAB_STATE_HIGHLIGHTED, highlighted);
   tab.highlighted = highlighted;
-  const window = TabsStore.windows.get(tab.windowId);
-  const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
+  const win = TabsStore.windows.get(tab.windowId);
+  const inheritHighlighted = !win.tabsToBeHighlightedAlone.has(tab.id);
   if (!inheritHighlighted)
-    window.tabsToBeHighlightedAlone.delete(tab.id);
+    win.tabsToBeHighlightedAlone.delete(tab.id);
   updateTab(tab, { highlighted });
-  Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
+  Tab.onUpdated.dispatch(tab, { highlighted }, {
+    inheritHighlighted: inheritToCollapsedDescendants && inheritHighlighted,
+  });
   return true;
 }
 

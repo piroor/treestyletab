@@ -16,6 +16,7 @@ import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
+import { kTAB_SHARING_STATE_ELEMENT_NAME } from './components/TabSharingStateElement.js';
 import { kTAB_SOUND_BUTTON_ELEMENT_NAME } from './components/TabSoundButtonElement.js';
 import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
 
@@ -88,6 +89,11 @@ export function isEventFiredOnTwisty(event) {
   return target && target.closest && !!target.closest(kTAB_TWISTY_ELEMENT_NAME);
 }
 
+export function isEventFiredOnSharingState(event) {
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(kTAB_SHARING_STATE_ELEMENT_NAME);
+}
+
 export function isEventFiredOnSoundButton(event) {
   const target = getElementTarget(event);
   return target && target.closest && !!target.closest(kTAB_SOUND_BUTTON_ELEMENT_NAME);
@@ -155,7 +161,8 @@ function getTabFromCoordinates(event, options = {}) {
     return tab;
 
   const container = getTabbarFromEvent(event);
-  if (!container)
+  if (!container ||
+      container.classList.contains('pinned'))
     return null;
 
   // because tab style can be modified, we try to find tab from
@@ -242,6 +249,7 @@ export function getMouseEventDetail(event, tab) {
   return {
     ...getTabEventDetail(event, tab),
     twisty:        isEventFiredOnTwisty(event),
+    sharingState:  isEventFiredOnSharingState(event),
     soundButton:   isEventFiredOnSoundButton(event),
     closebox:      isEventFiredOnClosebox(event),
     button:        event.button,
@@ -255,7 +263,8 @@ export function getEventTargetType(event) {
   const element = event.target.closest ?
     event.target :
     event.target.parentNode;
-  if (element.closest('.rich-confirm, #blocking-screen'))
+  if (element &&
+      element.closest('.rich-confirm, #blocking-screen'))
     return 'outside';
 
   if (getTabFromEvent(event))

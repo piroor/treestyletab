@@ -8,11 +8,11 @@
 import * as UniqueId from '/common/unique-id.js';
 
 const DB_NAME = 'PermanentStorage';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const EXPIRATION_TIME_IN_MSEC = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export const BACKGROUND = 'backgroundCaches';
-export const SIDEBAR    = 'sidebarCaches';
+const SIDEBAR = 'sidebarCaches'; // obsolete, but left here to delete old storage
 
 let mOpenedDB;
 
@@ -46,19 +46,14 @@ async function openDB() {
         }
 
         const backgroundCachesStore = db.createObjectStore(BACKGROUND, { keyPath: 'key', unique: true });
-        const sidebarCachesStore = db.createObjectStore(SIDEBAR, { keyPath: 'key', unique: true });
-
         backgroundCachesStore.createIndex('windowId', 'windowId', { unique: false });
-        sidebarCachesStore.createIndex('windowId', 'windowId', { unique: false });
-
         backgroundCachesStore.createIndex('timestamp', 'timestamp');
-        sidebarCachesStore.createIndex('timestamp', 'timestamp');
       }
     };
   });
 }
 
-export async function setValue({ windowId, key, value, store } = {}) {
+export async function setValue({ windowId, key, value } = {}) {
   const [db, windowUniqueId] = await Promise.all([
     openDB(),
     UniqueId.ensureWindowId(windowId),
@@ -67,6 +62,8 @@ export async function setValue({ windowId, key, value, store } = {}) {
     return;
 
   reserveToExpireOldEntries();
+
+  const store = BACKGROUND;
 
   const cacheKey = `${windowUniqueId}-${key}`;
   const timestamp = Date.now();
@@ -86,7 +83,6 @@ export async function setValue({ windowId, key, value, store } = {}) {
       windowId = undefined;
       key      = undefined;
       value    = undefined;
-      store    = undefined;
     };
   }
   catch(error) {
@@ -94,7 +90,7 @@ export async function setValue({ windowId, key, value, store } = {}) {
   }
 }
 
-export async function deleteValue({ windowId, key, store } = {}) {
+export async function deleteValue({ windowId, key } = {}) {
   const [db, windowUniqueId] = await Promise.all([
     openDB(),
     UniqueId.ensureWindowId(windowId),
@@ -103,6 +99,8 @@ export async function deleteValue({ windowId, key, store } = {}) {
     return;
 
   reserveToExpireOldEntries();
+
+  const store = BACKGROUND;
 
   const cacheKey = `${windowUniqueId}-${key}`;
   try {
@@ -113,7 +111,6 @@ export async function deleteValue({ windowId, key, store } = {}) {
       //db.close();
       windowId = undefined;
       key      = undefined;
-      store    = undefined;
     };
   }
   catch(error) {
@@ -121,7 +118,7 @@ export async function deleteValue({ windowId, key, store } = {}) {
   }
 }
 
-export async function getValue({ windowId, key, store } = {}) {
+export async function getValue({ windowId, key } = {}) {
   return new Promise(async (resolve, _reject) => {
     const [db, windowUniqueId] = await Promise.all([
       openDB(),
@@ -131,6 +128,8 @@ export async function getValue({ windowId, key, store } = {}) {
       resolve(null);
       return;
     }
+
+    const store = BACKGROUND;
 
     const cacheKey = `${windowUniqueId}-${key}`;
     const timestamp = Date.now();
@@ -164,7 +163,6 @@ export async function getValue({ windowId, key, store } = {}) {
         //db.close();
         windowId = undefined;
         key      = undefined;
-        store    = undefined;
       };
     }
     catch(error) {
@@ -187,13 +185,9 @@ export async function clearForWindow(windowId) {
     }
 
     try {
-      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const transaction = db.transaction([BACKGROUND], 'readwrite');
       const backgroundCacheStore = transaction.objectStore(BACKGROUND);
-      const sidebarCacheStore = transaction.objectStore(SIDEBAR);
-
       const backgroundCacheIndex = backgroundCacheStore.index('windowId');
-      const sidebarCacheIndex = sidebarCacheStore.index('windowId');
-
       const backgroundCacheRequest = backgroundCacheIndex.openCursor(IDBKeyRange.only(windowUniqueId));
       backgroundCacheRequest.onsuccess = (event) => {
         const cursor = event.target.result;
@@ -202,16 +196,6 @@ export async function clearForWindow(windowId) {
         const key = cursor.primaryKey;
         cursor.continue();
         backgroundCacheStore.delete(key);
-      };
-
-      const sidebarCacheRequest = sidebarCacheIndex.openCursor(IDBKeyRange.only(windowUniqueId));
-      sidebarCacheRequest.onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (!cursor)
-          return;
-        const key = cursor.primaryKey;
-        cursor.continue();
-        sidebarCacheStore.delete(key);
       };
 
       transaction.oncomplete = () => {
@@ -244,12 +228,9 @@ async function expireOldEntries() {
     }
 
     try {
-      const transaction = db.transaction([BACKGROUND, SIDEBAR], 'readwrite');
+      const transaction = db.transaction([BACKGROUND], 'readwrite');
       const backgroundCacheStore = transaction.objectStore(BACKGROUND);
-      const sidebarCacheStore = transaction.objectStore(SIDEBAR);
-
       const backgroundCacheIndex = backgroundCacheStore.index('timestamp');
-      const sidebarCacheIndex = sidebarCacheStore.index('timestamp');
 
       const expirationTimestamp = Date.now() - EXPIRATION_TIME_IN_MSEC;
 
@@ -261,16 +242,6 @@ async function expireOldEntries() {
         const key = cursor.primaryKey;
         cursor.continue();
         backgroundCacheStore.delete(key);
-      };
-
-      const sidebarCacheRequest = sidebarCacheIndex.openCursor(IDBKeyRange.upperBound(expirationTimestamp));
-      sidebarCacheRequest.onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (!cursor)
-          return;
-        const key = cursor.primaryKey;
-        cursor.continue();
-        sidebarCacheStore.delete(key);
       };
 
       transaction.oncomplete = () => {

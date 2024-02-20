@@ -204,7 +204,6 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
         ...dialogParams,
         modal: true,
         type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_single')
       });
     }
@@ -404,7 +403,6 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
         ...dialogParams,
         modal: true,
         type:  'dialog',
-        url:   '/resources/blank.html', // required on Firefox ESR68
         title: browser.i18n.getMessage('bookmarkDialog_dialogTitle_multiple')
       });
     }
@@ -655,7 +653,7 @@ async function tryGroupCreatedBookmarks() {
 
   const bookmarks = mCreatedBookmarks;
   mCreatedBookmarks = [];
-  {
+  if (lastDraggedTabs) {
     // accept only bookmarks from dragged tabs
     const digest = await sha1sum(bookmarks.map(tab => tab.url).join('\n'));
     configs.lastDraggedTabs = null;
@@ -694,6 +692,18 @@ async function tryGroupCreatedBookmarks() {
     }
   }
 
+  const possibleSourceTabs = (await Promise.all(bookmarks.map(async bookmark => {
+    const tabs = await browser.tabs.query({ url: bookmark.url });
+    if (tabs.length == 0)
+      return null;
+    return tabs[0];
+  }))).filter(tab => !!tab);
+  console.log('possibleSourceTabs ', possibleSourceTabs);
+  if (possibleSourceTabs.length != bookmarks.length) {
+    log(' => ignore bookmarks created from non-tab sources');
+    return;
+  }
+
   log('ready to group bookmarks under a folder');
 
   log('create a folder for grouping');
@@ -716,6 +726,9 @@ async function tryGroupCreatedBookmarks() {
       index:    movedCount++
     });
   }
+
+  if (!lastDraggedTabs)
+    return;
 
   const tabs = lastDraggedTabs.tabIds.map(id => Tab.get(id));
   let titles = getTitlesWithTreeStructure(tabs);

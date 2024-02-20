@@ -53,7 +53,6 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false, shade: true });
       const tempTab = await browser.tabs.create({
         windowId: ownerWindow.id,
-        url:      '/resources/blank.html',
         active:   true
       });
       await Tab.waitUntilTracked(tempTab.id).then(() => {

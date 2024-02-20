@@ -13,15 +13,12 @@ import {
   wait,
   countMatched,
   configs,
-  notify,
   getWindowParamsFromSource,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as Constants from '/common/constants.js';
-import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
-import * as Sync from '/common/sync.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
@@ -42,14 +39,8 @@ export const onTabsClosing = new EventListenerManager();
 export const onMoveUp      = new EventListenerManager();
 export const onMoveDown    = new EventListenerManager();
 
-function uniqTabsAndDescendantsSet(tabs) {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(Tab.compare);
-}
-
 export function reloadTree(tabs) {
-  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(tabs)) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
@@ -57,7 +48,7 @@ export function reloadTree(tabs) {
 
 export function reloadDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (rootTabsSet.has(tab))
       continue;
     browser.tabs.reload(tab.id)
@@ -72,7 +63,7 @@ function isUnmuted(tab) {
 export function toggleMuteTree(tabs) {
   const tabsToUpdate = [];
   let shouldMute = false;
-  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(tabs)) {
     if (!shouldMute && isUnmuted(tab))
       shouldMute = true;
     tabsToUpdate.push(tab);
@@ -89,7 +80,7 @@ export function toggleMuteDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
   const tabsToUpdate = [];
   let shouldMute = false;
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (rootTabsSet.has(tab))
       continue;
     if (!shouldMute && isUnmuted(tab))
@@ -108,7 +99,7 @@ export function getUnmutedState(rootTabs) {
   let hasUnmutedTab        = false;
   let hasUnmutedDescendant = false;
   const rootTabsSet = new Set(rootTabs);
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (!isUnmuted(tab))
       continue;
     hasUnmutedTab = true;
@@ -120,25 +111,44 @@ export function getUnmutedState(rootTabs) {
   return { hasUnmutedTab, hasUnmutedDescendant };
 }
 
-export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant } = {}) {
+export function getAutoplayBlockedState(rootTabs) {
+  let hasAutoplayBlockedTab        = false;
+  let hasAutoplayBlockedDescendant = false;
+  const rootTabsSet = new Set(rootTabs);
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
+    if (!tab.$TST.autoplayBlocked)
+      continue;
+    hasAutoplayBlockedTab = true;
+    if (!rootTabsSet.has(tab))
+      hasAutoplayBlockedDescendant = true;
+    if (hasAutoplayBlockedTab && hasAutoplayBlockedDescendant)
+      break;
+  }
+  return { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant };
+}
+
+export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant, sticky } = {}) {
   const muteTabSuffix        = unmuted ? 'Mute' : 'Unmute';
   const muteTreeSuffix       = hasUnmutedTab ? 'Mute' : 'Unmute';
   const muteDescendantSuffix = hasUnmutedDescendant ? 'Mute' : 'Unmute';
+  const stickySuffix         = sticky ? 'Unstick' : 'Stick';
   return multiselected && (
     item[`titleMultiselected${muteTabSuffix}`] ||
     item[`titleMultiselected${muteTreeSuffix}Tree`] ||
     item[`titleMultiselected${muteDescendantSuffix}Descendant`] ||
+    item[`titleMultiselected${stickySuffix}`] ||
     item.titleMultiselected
   ) || (
     item[`title${muteTabSuffix}`] ||
     item[`title${muteTreeSuffix}Tree`] ||
     item[`title${muteDescendantSuffix}Descendant`] ||
+    item[`title${stickySuffix}`] ||
     item.title
   );
 }
 
 export async function closeTree(tabs) {
-  tabs = uniqTabsAndDescendantsSet(tabs);
+  tabs = Tab.uniqTabsAndDescendantsSet(tabs);
   const windowId = tabs[0].windowId;
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
@@ -149,7 +159,7 @@ export async function closeTree(tabs) {
 
 export async function closeDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
-  const tabs     = uniqTabsAndDescendantsSet(rootTabs).filter(tab => !rootTabsSet.has(tab));
+  const tabs     = Tab.uniqTabsAndDescendantsSet(rootTabs).filter(tab => !rootTabsSet.has(tab));
   const windowId = rootTabs[0].windowId;
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
@@ -159,7 +169,7 @@ export async function closeDescendants(rootTabs) {
 }
 
 export async function closeOthers(exceptionRoots) {
-  const exceptionTabs = uniqTabsAndDescendantsSet(exceptionRoots);
+  const exceptionTabs = Tab.uniqTabsAndDescendantsSet(exceptionRoots);
   const windowId      = exceptionTabs[0].windowId;
   const tabs          = Tab.getNormalTabs(windowId, { iterator: true, reversed: true }); // except pinned or hidden tabs, close bottom to top!
   const closeTabs     = [];
@@ -178,7 +188,7 @@ export function collapseTree(rootTabs, { recursively } = {}) {
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
-      uniqTabsAndDescendantsSet(rootTabs) :
+      Tab.uniqTabsAndDescendantsSet(rootTabs) :
       rootTabs
   ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
   const cache = {};
@@ -186,10 +196,10 @@ export function collapseTree(rootTabs, { recursively } = {}) {
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_COMMAND,
       {
-        tab: new TSTAPI.TreeItem(tab, { cache }),
+        tab,
         recursivelyCollapsed: !rootTabsSet.has(tab),
       },
-      { tabProperties: ['tab'] }
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -209,8 +219,8 @@ export function collapseAll(windowId) {
       continue;
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_COLLAPSE_TREE_FROM_COLLAPSE_ALL_COMMAND,
-      { tab: new TSTAPI.TreeItem(tab, { cache }) },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -228,7 +238,7 @@ export function expandTree(rootTabs, { recursively } = {}) {
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
-      uniqTabsAndDescendantsSet(rootTabs) :
+      Tab.uniqTabsAndDescendantsSet(rootTabs) :
       rootTabs
   ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
   const cache = {};
@@ -236,10 +246,10 @@ export function expandTree(rootTabs, { recursively } = {}) {
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_COMMAND,
       {
-        tab: new TSTAPI.TreeItem(tab, { cache }),
+        tab,
         recursivelyExpanded: !rootTabsSet.has(tab),
       },
-      { tabProperties: ['tab'] }
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -259,8 +269,8 @@ export function expandAll(windowId) {
       continue;
     TSTAPI.tryOperationAllowed(
       TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_EXPAND_ALL_COMMAND,
-      { tab: new TSTAPI.TreeItem(tab, { cache }) },
-      { tabProperties: ['tab'] }
+      { tab },
+      { tabProperties: ['tab'], cache }
     ).then(allowed => {
       if (!allowed)
         return;
@@ -274,7 +284,7 @@ export function expandAll(windowId) {
 }
 
 export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {}) {
-  const tabs = uniqTabsAndDescendantsSet(rootTabs);
+  const tabs = Tab.uniqTabsAndDescendantsSet(rootTabs);
 
   if (tabs.length > 1) {
     const tabsSet = new Set(tabs);
@@ -304,6 +314,15 @@ export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {
       ...options,
       showDialog: true
     });
+  }
+}
+
+export function toggleSticky(tabs, shouldStick = undefined) {
+  const uniqueTabs = [...new Set(tabs)];
+  if (shouldStick === undefined)
+    shouldStick = uniqueTabs.some(tab => !tab.$TST.sticky);
+  for (const tab of uniqueTabs) {
+    tab.$TST.toggleState(Constants.kTAB_STATE_STICKY, !!shouldStick, { permanently: true });
   }
 }
 
@@ -550,11 +569,11 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   }
 
   if (params.import) {
-    const window = TabsStore.windows.get(destinationWindowId);
+    const win = TabsStore.windows.get(destinationWindowId);
     const initialIndex = params.insertBefore ? params.insertBefore.index :
       params.insertAfter ? params.insertAfter.index+1 :
-        window.tabs.size;
-    window.toBeOpenedOrphanTabs += tabs.length;
+        win.tabs.size;
+    win.toBeOpenedOrphanTabs += tabs.length;
     movedTabs = [];
     let index = 0;
     for (const tab of tabs) {
@@ -919,8 +938,8 @@ export async function openTabInWindow(tab, options = {}) {
       tabId:     tab.id,
       ...getWindowParamsFromSource(sourceWindow, options),
     };
-    const window = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
-    return window.id;
+    const win = await browser.windows.create(windowParams).catch(ApiTabs.createErrorHandler());
+    return win.id;
   }
 }
 
@@ -1090,6 +1109,10 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
         }
       }
     }; break;
+
+    case Constants.kCOMMAND_TOGGLE_STICKY:
+      toggleSticky([Tab.get(message.tabId)]);
+      return;
   }
 });
 
@@ -1209,120 +1232,3 @@ export async function openAllBookmarksWithStructure(id, { discarded, recursively
 
   openBookmarksWithStructure(items, { activeIndex, discarded });
 }
-
-
-export function sendTabsToDevice(tabs, { to, recursively } = {}) {
-  if (recursively)
-    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
-  tabs = tabs.filter(Sync.isSendableTab);
-  Sync.sendMessage(to, getTabsDataToSend(tabs));
-
-  const multiple = tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title: browser.i18n.getMessage(
-      `sentTabs_notification_title${multiple}`,
-      [Sync.getDeviceName(to)]
-    ),
-    message: browser.i18n.getMessage(
-      `sentTabs_notification_message${multiple}`,
-      [Sync.getDeviceName(to)]
-    ),
-    timeout: configs.syncSentTabsNotificationTimeout
-  });
-}
-
-export async function sendTabsToAllDevices(tabs, { recursively } = {}) {
-  if (recursively)
-    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
-  tabs = tabs.filter(Sync.isSendableTab);
-  const data = getTabsDataToSend(tabs);
-  const devices = await Sync.getOtherDevices();
-  for (const device of devices) {
-    Sync.sendMessage(device.id, data);
-  }
-
-  const multiple = tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title:   browser.i18n.getMessage(`sentTabsToAllDevices_notification_title${multiple}`),
-    message: browser.i18n.getMessage(`sentTabsToAllDevices_notification_message${multiple}`),
-    timeout: configs.syncSentTabsNotificationTimeout
-  });
-}
-
-function getTabsDataToSend(tabs) {
-  return {
-    type:       Constants.kSYNC_DATA_TYPE_TABS,
-    tabs:       tabs.map(tab => ({ url: tab.url, cookieStoreId: tab.cookieStoreId })),
-    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
-  };
-}
-
-export function manageSyncDevices(windowId) {
-  browser.tabs.create({
-    windowId,
-    url: `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`
-  });
-}
-
-Sync.onMessage.addListener(async message => {
-  const data = message.data;
-  if (data.type != Constants.kSYNC_DATA_TYPE_TABS ||
-      !Array.isArray(data.tabs))
-    return;
-
-  const multiple = data.tabs.length > 1 ? '_multiple' : '';
-  notify({
-    title: browser.i18n.getMessage(
-      `receiveTabs_notification_title${multiple}`,
-      [Sync.getDeviceName(message.from)]
-    ),
-    message: browser.i18n.getMessage(
-      `receiveTabs_notification_message${multiple}`,
-      data.tabs.length > 1 ?
-        [data.tabs[0].url, data.tabs.length, data.tabs.length - 1] :
-        [data.tabs[0].url]
-    ),
-    timeout: configs.syncReceivedTabsNotificationTimeout
-  });
-
-  const windowId = TabsStore.getCurrentWindowId() || (await browser.windows.getCurrent()).id;
-  const window = TabsStore.windows.get(windowId);
-  const initialIndex = window.tabs.size;
-  window.toBeOpenedOrphanTabs += data.tabs.length;
-  let index = 0;
-  const tabs = [];
-  for (const tab of data.tabs) {
-    const createParams = {
-      windowId,
-      url:    tab.url,
-      index:  initialIndex + index,
-      active: index == 0
-    };
-    if (tab.cookieStoreId &&
-        tab.cookieStoreId != 'firefox-default' &&
-        ContextualIdentities.get(tab.cookieStoreId))
-      createParams.cookieStoreId = tab.cookieStoreId;
-    let openedTab;
-    try {
-      openedTab = await browser.tabs.create(createParams);
-    }
-    catch(error) {
-      console.log(error);
-    }
-    if (!openedTab)
-      openedTab = await browser.tabs.create({
-        ...createParams,
-        url: `about:blank?${tab.url}`
-      });
-    tabs.push(openedTab);
-    index++;
-  }
-
-  if (!Array.isArray(data.structure))
-    return;
-
-  await wait(100); // wait for all tabs are tracked
-  await Tree.applyTreeStructureToTabs(tabs.map(tab => Tab.get(tab.id)), data.structure, {
-    broadcast: true
-  });
-});

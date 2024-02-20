@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "3.9.22",
+  "version": "4.0",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
@@ -78,6 +78,9 @@
     },
     "closeOthers": {
       "description": "__MSG_context_closeOthers_command__"
+    },
+    "toggleSticky": {
+      "description": "__MSG_context_toggleSticky_command__"
     },
     "collapseTree": {
       "description": "__MSG_context_collapseTree_command__"

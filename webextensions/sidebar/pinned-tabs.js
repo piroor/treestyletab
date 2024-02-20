@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2021
+ * Portions created by the Initial Developer are Copyright (C) 2011-2024
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -37,6 +37,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as BackgroundConnection from './background-connection.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -45,28 +46,12 @@ function log(...args) {
 }
 
 let mTargetWindow;
-let mTabBar;
+const mTabBar = document.querySelector('#tabbar');
 let mAreaHeight     = 0;
 let mMaxVisibleRows = 0;
-let mScrollRow      = 0;
 
 export function init() {
   mTargetWindow = TabsStore.getCurrentWindowId();
-  mTabBar       = document.querySelector('#tabbar');
-  configs.$addObserver(onConfigChange);
-
-  // We need to register the lister as non-passive to cancel the event.
-  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
-  document.addEventListener('wheel', event => {
-    if (event.clientY > mAreaHeight ||
-        Tab.getPinnedTabs(mTargetWindow).length == 0)
-      return;
-    event.preventDefault();
-    event.stopPropagation();
-    const deltaRows = Math.floor(event.deltaY / Math.max(1, getTabHeight()));
-    mScrollRow = Math.min(mMaxVisibleRows + 1, Math.max(0, mScrollRow + deltaRows));
-    reserveToReposition();
-  }, { capture: true, passive: false });
 }
 
 function getTabHeight() {
@@ -90,7 +75,12 @@ export function reposition(options = {}) {
 
   const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
   const height = getTabHeight();
-  const maxCol = faviconized ? Math.max(1, configs.maxFaviconizedPinnedTabsInOneRow > 0 ? configs.maxFaviconizedPinnedTabsInOneRow : Math.floor(maxWidth / width)) : 1;
+  const maxCol = faviconized ? Math.max(
+    1,
+    configs.maxFaviconizedPinnedTabsInOneRow > 0 ?
+      configs.maxFaviconizedPinnedTabsInOneRow :
+      Math.floor(maxWidth / width)
+  ) : 1;
   const maxRow = Math.ceil(pinnedTabs.length / maxCol);
   let col    = 0;
   let row    = 0;
@@ -98,35 +88,24 @@ export function reposition(options = {}) {
   const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
   const visualGap = parseFloat(window.getComputedStyle(mTabBar, null).getPropertyValue('--visual-gap-offset').replace(/px$/));
   const allTabsAreaHeight = mTabBar.parentNode.getBoundingClientRect().height + visualGap;
-  mMaxVisibleRows = Math.max(0, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
+  mMaxVisibleRows = Math.max(1, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
+  const contentsHeight = height * maxRow + (faviconized ? 0 : Size.getTabYOffset());
   mAreaHeight = Math.min(
-    height * maxRow + (faviconized ? 0 : Size.getTabYOffset()),
+    contentsHeight,
     mMaxVisibleRows * height
   );
+  document.documentElement.style.setProperty('--pinned-tab-width', `${width}px`);
   document.documentElement.style.setProperty('--pinned-tabs-area-size', `${mAreaHeight}px`);
-  const scrollRow = Math.max(0, Math.min(maxRow - mMaxVisibleRows, mScrollRow));
+  if (configs.faviconizePinnedTabs && configs.maxFaviconizedPinnedTabsInOneRow > 0)
+    document.documentElement.style.setProperty('--pinned-tabs-max-column', configs.maxFaviconizedPinnedTabsInOneRow);
+  else
+    document.documentElement.style.removeProperty('--pinned-tabs-max-column');
   for (const tab of pinnedTabs) {
-    const style = tab.$TST.element.style;
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
 
-    if (faviconized)
-      tab.$TST.addState(Constants.kTAB_STATE_FAVICONIZED);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
-
-    if (row == maxRow - 1)
-      tab.$TST.addState(Constants.kTAB_STATE_LAST_ROW);
-    else
-      tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
-
-    style.setProperty('--pinned-position-bottom', 'auto');
-    style.setProperty('--pinned-position-left', `${width * col}px`);
-    style.setProperty('--pinned-position-right', faviconized ? 'auto' : 0 );
-    style.setProperty('--pinned-position-top', `${height * row}px`);
-    style.marginTop = `${height * -scrollRow}px`; // this need to pe separated from "top", because its animation can be delayed by the visual gap canceller.
-    const inVisibleArea = scrollRow <= row && row - scrollRow < mMaxVisibleRows;
-    tab.$TST.element.classList.toggle('in-visible-area', inVisibleArea);
+    tab.$TST.toggleState(Constants.kTAB_STATE_FAVICONIZED, faviconized);
+    tab.$TST.toggleState(Constants.kTAB_STATE_LAST_ROW, row == maxRow - 1);
 
     if (options.justNow)
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -147,6 +126,7 @@ export function reposition(options = {}) {
       //log('=> new row');
     }
   }
+  SidebarTabs.pinnedContainer.classList.toggle('overflow', contentsHeight > mAreaHeight);
 }
 
 export function reserveToReposition(options = {}) {
@@ -165,19 +145,11 @@ function reset() {
   }
   mAreaHeight     = 0;
   mMaxVisibleRows = 0;
-  mScrollRow      = 0;
 }
 
 function clearStyle(tab) {
   tab.$TST.removeState(Constants.kTAB_STATE_FAVICONIZED);
   tab.$TST.removeState(Constants.kTAB_STATE_LAST_ROW);
-  const style = tab.$TST.element.style;
-  style.setProperty('--pinned-position-bottom', '');
-  style.setProperty('--pinned-position-left', '');
-  style.setProperty('--pinned-position-right', '');
-  style.setProperty('--pinned-position-top', '');
-  style.marginTop = '';
-  tab.$TST.element.classList.remove('in-visible-area');
 }
 
 const BUFFER_KEY_PREFIX = 'pinned-tabs-';
@@ -185,7 +157,7 @@ const BUFFER_KEY_PREFIX = 'pinned-tabs-';
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED: {
-      await Tab.waitUntilTracked(message.tabId, { element: true });
+      await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
@@ -228,11 +200,3 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
   }
 });
-
-function onConfigChange(key) {
-  switch (key) {
-    case 'faviconizePinnedTabs':
-      reserveToReposition();
-      break;
-  }
-}

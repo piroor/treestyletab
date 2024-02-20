@@ -1,6 +1,32 @@
 # 更新履歴
 
  - master/HEAD
+   * 多数のタブがある場合のパフォーマンスを向上（画面に見えている範囲内のタブのみレンダリングするようになりました）
+     * ピン留めされたタブとそうでない（通常の）タブは、それぞれ別々のコンテナー要素（`#pinned-tabs-container > .tabs.pinned` および `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`）の配下に置かれるようになりました
+     * 各タブの要素は [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index) に対応する属性 `data-index` を持つようになりました
+     * この設計変更により、CSSの`counter`を使用したカスタマイズは期待通りに動作しなくなりました（同等のことをするにはヘルパーアドオンを作成する必要があります）
+   * スクロールによって現在のタブが画面外に行ってしまった時に、アクティブなタブをタブバーの端に貼り付けるようにした
+   * コンテキストメニューのコマンドなどから、任意のタブをタブバーの端に貼り付けられるようにした（貼り付けたタブの振る舞いはピン留めされたタブに似ていますが、配下のツリーが維持される点が異なります）
+   * タブの共有状態（カメラ、マイク、および画面）をアイコンで表示するようにした
+   * タブバーがスクロールされている時にタブバーの上端にドロップシャドウを表示するようにした
+   * タブバーが最大までスクロールされていない時にタブバーの下端にドロップシャドウを表示するようにした
+   * Firefox起動直後の初期化時に、タブの数・ピン留め状態・コンテナーの状態だけ一致していればキャッシュからツリーを復元するようにした
+   * ライブラリーなどの画面上でブックマークを複数個コピーした場合に、タブからブックマークを作成した時の自動グループ化処理が誤爆しないようにした
+   * Firefoxのタブバー上で単独のタブを移動した先がTSTのにおける最上位の階層だった場合に、子孫のブックマークが追従して移動されずそのまま取り残されてしまっていたのを修正
+   * ピン留めされたタブから複数のタブを開くときに、最近開いた子タブの次の位置に開く設定が機能していなかったのを修正
+   * Firefox 116以降のバージョンでCtrl-Shift-Tで空のダイアログウィンドウが意図せず復元されてしまわないようにした
+   * まとめて閉じたサブツリーのタブを復元した際に、復元後のタブのツリー構造が壊れる場合があったのを修正
+   * APIの機能強化・改善
+     * TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
+     * 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
+     * ツリー項目の情報を[必要最小限だけ得る](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format)ためのAPI [`get-light-tree`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#apis-to-get-tree-information) を追加
+     * タブのタブバー端への貼り付け状態を制御するためのメッセージ型として[`stick-tab`、`unstick-tab`、`toggle-sticky-state`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#control-sticky-state-of-tabs-at-tab-bar-edges)を追加
+     * [`get-tree` と `get-light-tree` の `rendered:true` オプションによってレンダリング済みのタブの情報だけを得られるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered)
+     * パフォーマンス向上のため、[複数のメッセージをまとめてTSTに送ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#abstract)、[TSTからのメッセージをまとめて受け取ったり](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#bulk-messages-from-tst)できるようにした
+     * [通知型メッセージから送られてくるツリー項目の情報を最小限の物にできるようにした](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#listening-of-notification-messages)
+     * `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして [`allVisibles` と `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) を追加
+     * `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
+     * タブの追加コンテンツの挿入位置の指定として [`tab-above` と `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) に対応
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）
  - 3.9.21 (2024.1.26)

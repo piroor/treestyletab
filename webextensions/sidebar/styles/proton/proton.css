@@ -12,8 +12,10 @@
   --tab-dropshadow-blur: 0.4em;
   --tab-dropshadow-padding: 0.2em;
   --tab-dropshadow-size: var(--tab-dropshadow-padding); /* for backward compatibility */
-  --tab-closebox-offset: calc((var(--tab-size) - 1em) / 2);
-  --tab-closebox-negative-offset: calc((1em - var(--tab-size)) / 2);
+  --tab-closebox-offset: calc(((var(--tab-caption-size) - 1em) / 2) + var(--tab-dropshadow-padding));
+  --tab-closebox-negative-offset: calc(((1em - var(--tab-caption-size)) / 2) - var(--tab-dropshadow-padding));
+  --tab-twisty-offset: calc(((var(--tab-ui-size) - var(--favicon-size)) / 2) + var(--tab-dropshadow-padding));
+  --tab-twisty-negative-offset: calc(((var(--favicon-size) - var(--tab-ui-size)) / 2) - var(--tab-dropshadow-padding));
 
   /* Coloring */
 
@@ -114,6 +116,35 @@ body,
 :root.right,
 :root.right #background {
   background-position: right;
+}
+
+
+/* overflow-start-indicator and overflow-end-indicator
+   ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
+.overflow-indicator {
+  height: 0.6em;
+}
+.overflow-indicator.start {
+  background-position: 0 -0.3em;
+  border-top: 0.05em solid rgba(255, 255, 255, 0.2);
+}
+.overflow-indicator.end {
+  background-position: 0 0.3em;
+  border-bottom: 0.05em solid rgba(255, 255, 255, 0.2);
+}
+:root.left .overflow-indicator.start,
+:root.left .overflow-indicator.end {
+  background-image: radial-gradient(ellipse at right,
+                                    rgba(0,0,0,0.1) 0%,
+                                    rgba(0,0,0,0.1) 7.6%,
+                                    rgba(0,0,0,0) 87.5%);
+}
+:root.right .overflow-indicator.start,
+:root.right .overflow-indicator.end {
+  background-image: radial-gradient(ellipse at left,
+                                    rgba(0,0,0,0.1) 0%,
+                                    rgba(0,0,0,0.1) 7.6%,
+                                    rgba(0,0,0,0) 87.5%);
 }
 
 
@@ -243,18 +274,18 @@ tab-item.faviconized .background {
   top: 0;
 }
 
-tab-item.active .background,
-tab-item.active tab-item-substance:hover .background,
-tab-item.bundled-active .background,
-tab-item.bundled-active tab-item-substance:hover .background,
-.mutiple-highlighted > tab-item.highlighted .background,
-.mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
+tab-item.active .background:not(.base),
+tab-item.active tab-item-substance:hover .background:not(.base),
+tab-item.bundled-active .background:not(.base),
+tab-item.bundled-active tab-item-substance:hover .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background:not(.base) {
   box-shadow: 0 0 var(--tab-dropshadow-blur) rgba(0, 0, 0, 0.4);
   outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border, currentcolor));
   outline-offset: -1px;
 }
 
-tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background,
+tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background:not(.base),
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
@@ -262,15 +293,25 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
 }
 
 /* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
-.mutiple-highlighted > tab-item.highlighted .background,
-.mutiple-highlighted > tab-item.highlighted tab-item-substance:hover .background {
+:root.mutiple-highlighted tab-item.highlighted .background,
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background {
   outline: 1px solid var(--focus-outline-color);
   outline-offset: -1px;
 }
-.mutiple-highlighted > tab-item.highlighted.active .background,
-.mutiple-highlighted > tab-item.highlighted.active tab-item-substance:hover .background {
+:root.mutiple-highlighted tab-item.highlighted.active .background,
+:root.mutiple-highlighted tab-item.highlighted.active tab-item-substance:hover .background {
   outline-width: 2px;
   outline-offset: -2px;
+}
+
+
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background.base {
+  background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+  opacity: 1;
 }
 
 

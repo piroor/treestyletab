@@ -210,11 +210,11 @@ async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = 
   const cache = {};
   const result = TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,
-    { tab: new TSTAPI.TreeItem(tab, { cache }),
-      activeTab: activeTab && new TSTAPI.TreeItem(activeTab, { cache }),
-      openerTab: openerTab && new TSTAPI.TreeItem(openerTab, { cache }),
+    { tab,
+      activeTab: activeTab,
+      openerTab: openerTab,
       context },
-    { tabProperties: ['tab', 'activeTab', 'openerTab'] }
+    { tabProperties: ['tab', 'activeTab', 'openerTab'], cache }
   );
   TSTAPI.clearCache(cache);
   return result;
@@ -281,8 +281,8 @@ async function handleNewTabFromActiveTab(tab, { url, activeTab, autoAttachBehavi
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   // We need to prevent grouping of this original tab and the reopened tab
   // by the "multiple tab opened in XXX msec" feature.
-  const window = TabsStore.windows.get(tab.windowId);
-  window.openedNewTabs.delete(tab.id);
+  const win = TabsStore.windows.get(tab.windowId);
+  win.openedNewTabs.delete(tab.id);
   await TabsOpen.openURIInTab(url || null, {
     windowId: activeTab.windowId,
     parent,
@@ -339,7 +339,10 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
 
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
-      const lastRelatedTab = opener.$TST.lastRelatedTab != tab && opener.$TST.lastRelatedTab;
+      // it could be updated already...
+      const lastRelatedTab = opener.$TST.lastRelatedTab != tab ?
+        opener.$TST.lastRelatedTab :
+        opener.$TST.previousLastRelatedTab;
       if (lastRelatedTab) {
         log(`handleTabsFromPinnedOpener: place after last related tab ${dumpTab(lastRelatedTab)}`);
         tab.$TST.temporaryMetadata.set('alreadyMovedAsOpenedFromPinnedOpener', true);
@@ -487,17 +490,17 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       return;
     }
 
-    const window = TabsStore.windows.get(tab.windowId);
-    log('window.openedNewTabs ', window.openedNewTabs);
+    const win = TabsStore.windows.get(tab.windowId);
+    log('win.openedNewTabs ', win.openedNewTabs);
     if (tab.$TST.parent ||
         !possibleOpenerTab ||
-        window.openedNewTabs.has(tab.id) ||
+        win.openedNewTabs.has(tab.id) ||
         tab.$TST.temporaryMetadata.has('openedWithOthers') ||
         tab.$TST.temporaryMetadata.has('positionedBySelf')) {
       log(' => no need to control ', {
         parent: tab.$TST.parent,
         possibleOpenerTab,
-        openedNewTab: window.openedNewTabs.has(tab.id),
+        openedNewTab: win.openedNewTabs.has(tab.id),
         openedWithOthers: tab.$TST.temporaryMetadata.has('openedWithOthers'),
         positionedBySelf: tab.$TST.temporaryMetadata.has('positionedBySelf')
       });

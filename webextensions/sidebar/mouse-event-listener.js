@@ -32,7 +32,6 @@ import {
   log as internalLogger,
   wait,
   dumpTab,
-  mapAndFilter,
   countMatched,
   configs,
   shouldApplyAnimation,
@@ -198,10 +197,9 @@ function onMouseMove(event) {
 
   if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE) &&
       tab) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -210,7 +208,6 @@ function onMouseMove(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
@@ -238,10 +235,9 @@ function onMouseOver(event) {
   const enterTabFromAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (enterTabFromAncestor) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -250,7 +246,6 @@ function onMouseOver(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
@@ -266,10 +261,9 @@ function onMouseOut(event) {
   const leaveTabToAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (leaveTabToAncestor) {
-    const treeItem = new TSTAPI.TreeItem(tab);
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      treeItem,
+      tab,
       window:   mTargetWindow,
       windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
@@ -278,7 +272,6 @@ function onMouseOut(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     }, { tabProperties: ['tab'] }).catch(_error => {});
-    treeItem.clearCache();
   }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
@@ -322,10 +315,9 @@ function onMouseDown(event) {
     event.preventDefault();
   }
 
-  const treeItem = new TSTAPI.TreeItem(tab);
   const mousedown = {
     detail: mousedownDetail,
-    treeItem,
+    tab,
     promisedMousedownNotified: Promise.resolve(),
     timestamp: Date.now(),
   };
@@ -354,7 +346,6 @@ function onMouseDown(event) {
         mousedown,
         extraContentsInfo
       );
-      treeItem.clearCache();
       if (!allowed) {
         log(' => canceled');
         return true;
@@ -389,13 +380,16 @@ function onMouseDown(event) {
     if (mousedown.detail.button == 0 &&
         onRegularArea &&
         !wasMultiselectionAction &&
-        tab)
+        tab) {
       BackgroundConnection.sendMessage({
         type:  Constants.kCOMMAND_ACTIVATE_TAB,
         tabId: tab.id,
         byMouseOperation:   true,
         keepMultiselection: true
       });
+      if (tab.active || tab.$TST.states.has(Constants.kTAB_STATE_BUNDLED_ACTIVE)) // sticky active tab
+        Scroll.scrollToTab(tab);
+    }
   });
 
   EventUtils.setLastMousedown(event.button, mousedown);
@@ -461,11 +455,10 @@ async function onMouseUp(event) {
   }
 
   if (tab) {
-    const treeItem = new TSTAPI.TreeItem(tab);
     const mouseupInfo = {
       ...lastMousedown,
       detail:   EventUtils.getMouseEventDetail(event, tab),
-      treeItem,
+      tab,
     };
 
     const mouseupAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
@@ -476,7 +469,6 @@ async function onMouseUp(event) {
     );
     if (!mouseupAllowed) {
       log(' => not allowed (mouseup)');
-      treeItem.clearCache();
       return true;
     }
 
@@ -488,15 +480,12 @@ async function onMouseUp(event) {
     );
     if (!clickAllowed) {
       log(' => not allowed (clicked');
-      treeItem.clearCache();
       return true;
     }
-
-    treeItem.clearCache();
   }
 
   let promisedCanceled = null;
-  if (lastMousedown.treeItem && lastMousedown.detail.targetType == 'tab')
+  if (lastMousedown.tab && lastMousedown.detail.targetType == 'tab')
     promisedCanceled = lastMousedown.promisedMousedownNotified;
 
   if (lastMousedown.expired ||
@@ -541,8 +530,8 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       log('onMouseUp: click on the new tab button');
       const mouseupInfo = {
         ...lastMousedown,
-        detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
+        detail: EventUtils.getMouseEventDetail(event),
+        tab:    null,
       };
 
       const mouseUpAllowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
@@ -600,7 +589,6 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       {
         ...lastMousedown,
         detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
         tab:      null,
       },
       lastMousedown.detail.$extraContentsInfo
@@ -615,7 +603,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         ...lastMousedown.detail,
         window:             mTargetWindow,
         windowId:           mTargetWindow,
-        tab:                lastMousedown.treeItem,
+        tab:                lastMousedown.tab,
         $extraContentsInfo: null
       },
       { tabProperties: ['tab'] }
@@ -631,7 +619,6 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       {
         ...lastMousedown,
         detail:   EventUtils.getMouseEventDetail(event),
-        treeItem: null,
         tab:      null,
       },
       lastMousedown.detail.$extraContentsInfo
@@ -646,7 +633,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
         ...lastMousedown.detail,
         window:             mTargetWindow,
         windowId:           mTargetWindow,
-        tab:                lastMousedown.treeItem,
+        tab:                lastMousedown.tab,
         $extraContentsInfo: null
       },
       { tabProperties: ['tab'] }
@@ -727,10 +714,22 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
   else if (lastMousedown.detail.soundButton &&
            EventUtils.isEventFiredOnSoundButton(event)) {
     log('clicked on sound button');
-    BackgroundConnection.sendMessage({
-      type:  Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON,
-      tabId: tab.id
-    });
+    if (tab.$TST.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED) ||
+        tab.$TST.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER)) {
+      // Note: there is no built-in handler for this command.
+      // We need to provide something extra module to handle
+      // this command with experiments API.
+      BackgroundConnection.sendMessage({
+        type:  Constants.kCOMMAND_UNBLOCK_AUTOPLAY_FROM_SOUND_BUTTON,
+        tabId: tab.id,
+      });
+    }
+    else {
+      BackgroundConnection.sendMessage({
+        type:  Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON,
+        tabId: tab.id,
+      });
+    }
   }
   else if (lastMousedown.detail.closebox &&
            EventUtils.isEventFiredOnClosebox(event)) {
@@ -810,16 +809,11 @@ function updateMultiselectionByTabClick(tab, event) {
       }
       log(' => highlightedTabIds: ', highlightedTabIds);
 
-      // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = mapAndFilter(highlightedTabIds,
-                                   id => id == activeTab.id ? undefined : Tab.get(id).index);
-      if (highlightedTabIds.has(activeTab.id))
-        indices.unshift(activeTab.index);
-      browser.tabs.highlight({
-        windowId: tab.windowId,
-        populate: false,
-        tabs:     indices
-      }).catch(ApiTabs.createErrorSuppressor());
+      BackgroundConnection.sendMessage({
+        type:   Constants.kCOMMAND_HIGHLIGHT_TABS,
+        tabIds: [...highlightedTabIds],
+        inheritToCollapsedDescendants: false,
+      });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -881,16 +875,11 @@ function updateMultiselectionByTabClick(tab, event) {
         }
       }
 
-      // for better performance, we should not call browser.tabs.update() for each tab.
-      const indices = mapAndFilter(highlightedTabIds,
-                                   id => id == activeTab.id ? undefined : Tab.get(id).index);
-      if (highlightedTabIds.has(activeTab.id))
-        indices.unshift(activeTab.index);
-      browser.tabs.highlight({
-        windowId: tab.windowId,
-        populate: false,
-        tabs:     indices
-      }).catch(ApiTabs.createErrorSuppressor());
+      BackgroundConnection.sendMessage({
+        type:   Constants.kCOMMAND_HIGHLIGHT_TABS,
+        tabIds: [...highlightedTabIds],
+        inheritToCollapsedDescendants: false,
+      });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -997,15 +986,13 @@ async function onDblClick(event) {
       !EventUtils.isEventFiredOnTwisty(event) &&
       !EventUtils.isEventFiredOnSoundButton(event)) {
     const detail   = EventUtils.getMouseEventDetail(event, livingTab);
-    const treeItem = new TSTAPI.TreeItem(livingTab);
     const extraContentsInfo = TSTAPIFrontend.getOriginalExtraContentsTarget(event);
     const allowed = await TSTAPIFrontend.tryMouseOperationAllowedWithExtraContents(
       TSTAPI.kNOTIFY_EXTRA_CONTENTS_DBLCLICKED,
       TSTAPI.kNOTIFY_TAB_DBLCLICKED,
-      { detail, treeItem },
+      { detail, tab: livingTab },
       extraContentsInfo
     );
-    treeItem.clearCache();
     if (!allowed)
       return;
 
@@ -1021,6 +1008,14 @@ async function onDblClick(event) {
             collapsed:       !livingTab.$TST.subtreeCollapsed,
             manualOperation: true,
             stack:           configs.debug && new Error().stack
+          });
+          break;
+
+        case Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY:
+          BackgroundConnection.sendMessage({
+            type:  Constants.kCOMMAND_TOGGLE_STICKY,
+            tabId: livingTab.id,
+            stack: configs.debug && new Error().stack
           });
           break;
 

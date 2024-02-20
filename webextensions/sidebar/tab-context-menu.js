@@ -355,8 +355,6 @@ async function onCommand(item, event) {
   const owner      = item.getAttribute('data-item-owner-id');
   const checked    = item.matches('.radio, .checkbox:not(.checked)');
   const wasChecked = item.matches('.radio.checked, .checkbox.checked');
-  const treeItem   = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true });
-  const tab        = treeItem && (await treeItem.exportFor(owner)) || null
   const message = {
     type: TSTAPI.kCONTEXT_MENU_CLICK,
     info: {
@@ -374,20 +372,27 @@ async function onCommand(item, event) {
       srcUrl:           null,
       wasChecked
     },
-    tab
+    tab: contextTab,
   };
-  if (treeItem)
-    treeItem.clearCache();
   if (owner == browser.runtime.id) {
     await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   }
   else if (TSTAPI.isSafeAtIncognito(owner, { tab: contextTab, windowId: TabsStore.getCurrentWindowId() })) {
+    const cache = {};
     await Promise.all([
-      browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor()),
-      browser.runtime.sendMessage(owner, {
-        ...message,
-        type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
-      }).catch(ApiTabs.createErrorSuppressor())
+      TSTAPI.sendMessage(
+        owner,
+        message,
+        { tabProperties: ['tab'], cache, isContextTab: true }
+      ).catch(ApiTabs.createErrorSuppressor()),
+      TSTAPI.sendMessage(
+        owner,
+        {
+          ...message,
+          type: TSTAPI.kFAKE_CONTEXT_MENU_CLICK
+        },
+        { tabProperties: ['tab'], cache, isContextTab: true }
+      ).catch(ApiTabs.createErrorSuppressor())
     ]);
   }
 
@@ -443,7 +448,6 @@ async function onCommand(item, event) {
 
 async function onShown(contextTab) {
   contextTab = contextTab || mContextTab
-  const treeItem = contextTab && new TSTAPI.TreeItem(contextTab, { isContextTab: true }) || null;
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -459,22 +463,27 @@ async function onShown(contextTab) {
       viewType:         'sidebar',
       bookmarkId:       null
     },
-    tab: treeItem,
+    tab: contextTab,
     windowId: TabsStore.getCurrentWindowId()
   };
+  const cache = {};
   const result = Promise.all([
     browser.runtime.sendMessage({
       ...message,
-      tab: message.tab && await message.tab.exportFor(browser.runtime.id)
+      tab: message.tab && await TSTAPI.exportTab(message.tab, browser.runtime.id, { cache })
     }).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message, { tabProperties: ['tab'] }),
-    TSTAPI.sendMessage({
-      ...message,
-      type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
-    }, { tabProperties: ['tab'] }),
+    TSTAPI.broadcastMessage(
+      message,
+      { tabProperties: ['tab'], cache, isContextTab: true }
+    ),
+    TSTAPI.broadcastMessage(
+      {
+        ...message,
+        type: TSTAPI.kFAKE_CONTEXT_MENU_SHOWN
+      },
+      { tabProperties: ['tab'], cache, isContextTab: true }
+    ),
   ]);
-  if (treeItem)
-    treeItem.clearCache();
   return result;
 }
 
@@ -485,8 +494,8 @@ async function onHidden() {
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
-    TSTAPI.sendMessage(message),
-    TSTAPI.sendMessage({
+    TSTAPI.broadcastMessage(message),
+    TSTAPI.broadcastMessage({
       ...message,
       type: TSTAPI.kFAKE_CONTEXT_MENU_HIDDEN
     })
@@ -699,6 +708,14 @@ async function onContextMenu(event) {
     mNewTabButtonUI.open({
       left: event.clientX,
       top:  event.clientY,
+    });
+    return;
+  }
+
+  if (event.target == document.body) { // when the application key is pressed
+    browser.menus.overrideContext({
+      context: 'tab',
+      tabId:   Tab.getActiveTab(TabsStore.getCurrentWindowId()).id,
     });
     return;
   }

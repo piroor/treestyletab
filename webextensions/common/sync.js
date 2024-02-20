@@ -17,6 +17,9 @@ import {
   isLinux,
 } from './common.js';
 import * as Constants from '/common/constants.js';
+import * as TreeBehavior from '/common/tree-behavior.js';
+
+import Tab from '/common/Tab.js';
 
 function log(...args) {
   internalLogger('common/sync', ...args);
@@ -28,6 +31,39 @@ export const onUpdatedDevice = new EventListenerManager();
 export const onObsoleteDevice = new EventListenerManager();
 
 const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
+
+// Workaround for https://github.com/piroor/treestyletab/blob/trunk/README.md#user-content-feature-requests-send-tab-tree-to-device-does-not-work
+// and https://bugzilla.mozilla.org/show_bug.cgi?id=1417183 (resolved as WONTFIX)
+// Firefox does not provide any API to access to Sync features directly.
+// We need to provide it as experiments API or something way.
+// This module is designed to work with a service provide which has features:
+//   * async getOtherDevices()
+//     - Returns an array of sync devices.
+//     - Retruned array should have 0 or more items like:
+//       { id:   "identifier of the device",
+//         name: "name of the device",
+//         type: "type of the device (desktop, mobile, and so on)" }
+//   * sendTabsToDevice(tabs, deviceId)
+//     - Returns nothing.
+//     - Sends URLs of given tabs to the specified device.
+//     - The device is one of values returned by getOtherDevices().
+//   * sendTabsToAllDevices(tabs)
+//     - Returns nothing.
+//     - Sends URLs of given tabs to all other devices.
+//   * manageDevices(windowId)
+//     - Returns nothing.
+//     - Opens settings page for Sync devices.
+//       It will appear as a tab in the specified window.
+
+let mExternalProvider = null;
+
+export function registerExternalProvider(provider) {
+  mExternalProvider = provider;
+}
+
+export function hasExternalProvider() {
+  return !!mExternalProvider;
+}
 
 let mMyDeviceInfo = null;
 
@@ -359,9 +395,12 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-export function getOtherDevices() {
-  if (!mMyDeviceInfo)
-    throw new Error('Not initialized yet. You need to call this after the device info is initialized.');
+export async function getOtherDevices() {
+  if (mExternalProvider)
+    return mExternalProvider.getOtherDevices();
+
+  await waitUntilDeviceInfoInitialized();
+
   const devices = configs.syncDevices || {};
   const result = [];
   for (const [id, info] of Object.entries(devices)) {
@@ -389,4 +428,68 @@ export function isSendableTab(tab) {
   if (!isSendableTab.unsendableUrlMatcher)
     isSendableTab.unsendableUrlMatcher = new RegExp(configs.syncUnsendableUrlPattern);
   return !isSendableTab.unsendableUrlMatcher.test(tab.url);
+}
+
+export function sendTabsToDevice(tabs, { to, recursively } = {}) {
+  if (recursively)
+    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
+  tabs = tabs.filter(isSendableTab);
+
+  if (mExternalProvider)
+    return mExternalProvider.sendTabsToDevice(tabs, to);
+
+  sendMessage(to, getTabsDataToSend(tabs));
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title: browser.i18n.getMessage(
+      `sentTabs_notification_title${multiple}`,
+      [getDeviceName(to)]
+    ),
+    message: browser.i18n.getMessage(
+      `sentTabs_notification_message${multiple}`,
+      [getDeviceName(to)]
+    ),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
+}
+
+export async function sendTabsToAllDevices(tabs, { recursively } = {}) {
+  if (recursively)
+    tabs = Tab.collectRootTabs(tabs).map(tab => [tab, ...tab.$TST.descendants]).flat();
+  tabs = tabs.filter(isSendableTab);
+
+  if (mExternalProvider)
+    return mExternalProvider.sendTabsToAllDevices(tabs);
+
+  const data = getTabsDataToSend(tabs);
+  const devices = await getOtherDevices();
+  for (const device of devices) {
+    sendMessage(device.id, data);
+  }
+
+  const multiple = tabs.length > 1 ? '_multiple' : '';
+  notify({
+    title:   browser.i18n.getMessage(`sentTabsToAllDevices_notification_title${multiple}`),
+    message: browser.i18n.getMessage(`sentTabsToAllDevices_notification_message${multiple}`),
+    timeout: configs.syncSentTabsNotificationTimeout
+  });
+}
+
+function getTabsDataToSend(tabs) {
+  return {
+    type:       Constants.kSYNC_DATA_TYPE_TABS,
+    tabs:       tabs.map(tab => ({ url: tab.url, cookieStoreId: tab.cookieStoreId })),
+    structure : TreeBehavior.getTreeStructureFromTabs(tabs).map(item => item.parent)
+  };
+}
+
+export function manageDevices(windowId) {
+  if (mExternalProvider)
+    return mExternalProvider.manageDevices(windowId);
+
+  browser.tabs.create({
+    windowId,
+    url: `${Constants.kSHORTHAND_URIS.options}#syncTabsToDeviceOptions`
+  });
 }

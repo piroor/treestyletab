@@ -17,6 +17,7 @@ import * as Constants from '/common/constants.js';
 import * as SidebarConnection from '/common/sidebar-connection.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 
 import Tab from '/common/Tab.js';
@@ -161,8 +162,8 @@ export async function tryReplaceTabWithGroup(tab, { windowId, parent, children, 
     title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
     ...temporaryStateParams(configs.groupTabTemporaryStateForOrphanedTabs)
   });
-  const window = TabsStore.windows.get(windowId);
-  window.toBeOpenedTabsWithPositions++;
+  const win = TabsStore.windows.get(windowId);
+  win.toBeOpenedTabsWithPositions++;
   const groupTab = await TabsOpen.openURIInTab(uri, {
     windowId,
     insertBefore,
@@ -205,15 +206,27 @@ async function tryInitGroupTab(tab) {
       !tab.$TST.hasGroupTabURL)
     return;
   log('tryInitGroupTab ', tab);
-  const scriptOptions = {
+  const v3Options = {
+    target: { tabId: tab.id },
+  };
+  const v2Options = {
     runAt:           'document_start',
     matchAboutBlank: true
   };
   try {
-    const results = await browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      code:  '[window.prepared, document.documentElement.matches(".initialized")]',
-    }).catch(error => {
+    const getPageState = function getPageState() {
+      return [window.prepared, document.documentElement.matches('.initialized')];
+    };
+    const [prepared, initialized, reloaded] = (browser.scripting ?
+      browser.scripting.executeScript({ // Manifest V3
+        ...v3Options,
+        func: getPageState,
+      }).then(results => results && results[0] && results[0].result || []) :
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        code: `(${getPageState.toString()})()`,
+      }).then(results => results && results[0] || [])
+    ).catch(error => {
       if (ApiTabs.isMissingHostPermissionError(error) &&
           tab.$TST.hasGroupTabURL) {
         log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
@@ -222,7 +235,6 @@ async function tryInitGroupTab(tab) {
       }
       return ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)(error);
     });
-    const [prepared, initialized, reloaded] = results && results[0] || [];
     log('  tryInitGroupTab: groupt tab state ', tab.id, { prepared, initialized, reloaded });
     if (reloaded) {
       log('  => reloaded ', tab.id);
@@ -237,11 +249,20 @@ async function tryInitGroupTab(tab) {
     log('  tryInitGroupTab: error while checking initialized: ', tab.id, error);
   }
   try {
-    const titleElementExists = await browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      code:  '!!document.querySelector("#title")',
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
-    if (titleElementExists && !titleElementExists[0] && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
+    const getTitleExistence = function getState() {
+      return !!document.querySelector('#title');
+    };
+    const titleElementExists = (browser.scripting ?
+      browser.scripting.executeScript({ // Manifest V3
+        ...v3Options,
+        func: getTitleExistence,
+      }).then(results => results && results[0] && results[0].result) :
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        code: `(${getTitleExistence.toString()})()`,
+      }).then(results => results && results[0])
+    ).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+    if (!titleElementExists && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
       log('  => title element exists, load again ', tab.id);
       return browser.tabs.update(tab.id, { url: tab.url }).catch(ApiTabs.createErrorSuppressor());
     }
@@ -249,17 +270,27 @@ async function tryInitGroupTab(tab) {
   catch(error) {
     log('  tryInitGroupTab error while checking title element: ', tab.id, error);
   }
-  Promise.all([
-    browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      //file:  '/common/l10n.js'
-      file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
-    browser.tabs.executeScript(tab.id, {
-      ...scriptOptions,
-      file:  '/resources/group-tab.js'
-    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError))
-  ]).then(() => {
+
+  (browser.scripting ?
+    browser.scripting.executeScript({ // Manifest V3
+      ...v3Options,
+      files: [
+        '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+        '/resources/group-tab.js',
+      ],
+    }) :
+    Promise.all([
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        //file:  '/common/l10n.js'
+        file: '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
+      browser.tabs.executeScript(tab.id, {
+        ...v2Options,
+        file: '/resources/group-tab.js',
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
+    ])
+  ).then(() => {
     log('tryInitGroupTab completely initialized: ', tab.id);
   });
 
@@ -275,26 +306,50 @@ async function tryInitGroupTab(tab) {
 }
 
 function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
+  const tabMetadata = tab.$TST.temporaryMetadata;
+  const updatingTabs = tabMetadata.get('reserveToUpdateRelatedGroupTabsUpdatingTabs') || new Set();
+  if (!tabMetadata.has('reserveToUpdateRelatedGroupTabsUpdatingTabs'))
+    tabMetadata.set('reserveToUpdateRelatedGroupTabsUpdatingTabs', updatingTabs);
+
   const ancestorGroupTabs = [
     tab,
     tab.$TST.bundledTab,
     ...tab.$TST.ancestors,
     ...tab.$TST.ancestors.map(tab => tab.$TST.bundledTab),
   ].filter(tab => tab && tab.$TST.isGroupTab);
-  for (const tab of ancestorGroupTabs) {
-    if (tab.$TST.temporaryMetadata.has('reservedUpdateRelatedGroupTab'))
-      clearTimeout(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTab'));
-    const reservedUpdateRelatedGroupTabChangedInfo = tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo') || new Set()
+  for (const updatingTab of ancestorGroupTabs) {
+    const updatingMetadata = updatingTab.$TST.temporaryMetadata;
+    const reservedChangedInfo = updatingMetadata.get('reservedUpdateRelatedGroupTabChangedInfo') || new Set();
     for (const info of changedInfo) {
-      reservedUpdateRelatedGroupTabChangedInfo.add(info);
+      reservedChangedInfo.add(info);
     }
-    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTabChangedInfo', reservedUpdateRelatedGroupTabChangedInfo);
-    tab.$TST.temporaryMetadata.set('reservedUpdateRelatedGroupTab', setTimeout(() => {
-      if (!tab.$TST)
-        return;
-      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTab');
-      updateRelatedGroupTab(tab, Array.from(tab.$TST.temporaryMetadata.get('reservedUpdateRelatedGroupTabChangedInfo')));
-      tab.$TST.temporaryMetadata.delete('reservedUpdateRelatedGroupTabChangedInfo');
+    if (updatingTabs.has(updatingTab.id))
+      continue;
+    updatingTabs.add(updatingTab.id);
+    const triggeredUpdates = updatingMetadata.get('reservedUpdateRelatedGroupTabTriggeredUpdates') || new Set();
+    triggeredUpdates.add(updatingTabs);
+    updatingMetadata.set('reservedUpdateRelatedGroupTabTriggeredUpdates', triggeredUpdates);
+    if (updatingMetadata.has('reservedUpdateRelatedGroupTab'))
+      clearTimeout(updatingMetadata.get('reservedUpdateRelatedGroupTab'));
+    updatingMetadata.set('reservedUpdateRelatedGroupTabChangedInfo', reservedChangedInfo);
+    updatingMetadata.set('reservedUpdateRelatedGroupTab', setTimeout(() => {
+      updatingMetadata.delete('reservedUpdateRelatedGroupTab');
+      if (updatingTab.$TST) {
+        try {
+          if (reservedChangedInfo.size > 0)
+            updateRelatedGroupTab(updatingTab, [...reservedChangedInfo]);
+        }
+        catch(_error) {
+        }
+        updatingMetadata.delete('reservedUpdateRelatedGroupTabChangedInfo');
+      }
+      setTimeout(() => {
+        const triggerUpdates = updatingMetadata.get('reservedUpdateRelatedGroupTabTriggeredUpdates')
+        updatingMetadata.delete('reservedUpdateRelatedGroupTabTriggeredUpdates');
+        for (const updatingTabs of triggerUpdates) {
+          updatingTabs.delete(updatingTab.id);
+        }
+      }, 100)
     }, 100));
   }
 }
@@ -352,7 +407,15 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       browser.tabs.sendMessage(groupTab.id, {
         type:  'treestyletab:update-title',
         title: newTitle,
-      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
+      }).catch(ApiTabs.createErrorHandler(
+        ApiTabs.handleMissingTabError,
+        ApiTabs.handleMissingHostPermissionError,
+        _error => {
+          // failed to update the title by group tab itself, so we try to update it from outside
+          groupTab.title = newTitle;
+          TabsUpdate.updateTab(groupTab, { title: newTitle });
+        }
+      ));
     }
   }
 }

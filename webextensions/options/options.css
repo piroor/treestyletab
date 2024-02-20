@@ -88,6 +88,11 @@ label.has-radio:not(.inline) {
   width: -moz-fit-content;
 }
 
+.hidden,
+:root:not(.expose-unblock-autoplay-features) .unblock-autoplay-features {
+  display: none;
+}
+
 
 #style-radiogroup {
   align-content: flex-start;

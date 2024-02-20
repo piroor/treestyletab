@@ -21,6 +21,7 @@ import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
 import * as TestCloseParentBehavior from './test-close-parent-behavior.js';
+import * as TestSidebar from './test-sidebar.js';
 
 
 const NO_RESET_CONFIG_KEYS = new Set([
@@ -30,15 +31,33 @@ const NO_RESET_CONFIG_KEYS = new Set([
   'useCachedTree' // prevent reloading of the background page
 ]);
 
+const mTestMatchers = [];
 let mResults;
 let mLogs;
+let mStopped = false;
 
 async function run() {
   await configs.$loaded;
   ApiTabsListener.init();
   ApiTabsListener.start();
+
+  // you can run specific tests with URL parameter like:
+  // ...runner.html?testMoveAttachedTabBeforeHiddenTab,/^testMove.+/,...
+  for (const part of (location.search || '').replace(/^\?/, '').split(/,/)) {
+    const trimmedPart = part.trim();
+    if (!trimmedPart.trim())
+      continue;
+    if (/^\/([^\/]+)\/(i)?$/.test(trimmedPart))
+      mTestMatchers.push(new RegExp(RegExp.$1, RegExp.$2 || ''));
+    else
+      mTestMatchers.push(new RegExp(`^${trimmedPart}$`, 'i'));
+  }
+
   mResults = document.getElementById('results');
   mLogs = document.getElementById('logs');
+  mStopped = false;
+  document.getElementById('stop').addEventListener('click', () => mStopped = true);
+  document.getElementById('stop').addEventListener('keypress', () => mStopped = true);
   const configValues = backupConfigs();
   await runAll();
   ApiTabsListener.destroy();
@@ -77,7 +96,8 @@ async function runAll() {
       TestNewTab,
       TestSuccessor,
       TestTree,
-      TestCloseParentBehavior
+      TestCloseParentBehavior,
+      TestSidebar
     );
   }
   let runOnlyRunnable = false;
@@ -93,16 +113,24 @@ async function runAll() {
     }
   }
   for (const tests of testCases) {
+    if (mStopped)
+      break;
     const setup    = tests.setUp || tests.setup;
     const teardown = tests.tearDown || tests.teardown;
     for (const name of Object.keys(tests)) {
+      if (mStopped)
+        break;
       if (!name.startsWith('test'))
         continue;
       if (runOnlyRunnable && !tests[name].runnable)
         continue;
+      if (mTestMatchers.length > 0 &&
+          mTestMatchers.every(matcher => !matcher.test(name)))
+        continue;
       await restoreConfigs(configs.$default);
       let shouldTearDown = true;
       const result = mResults.appendChild(document.createElement('span'));
+      console.log('running test: ', name);
       try {
         if (typeof setup == 'function')
           await setup();

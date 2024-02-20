@@ -31,13 +31,15 @@ export default class Window {
     this.tabs  = new Map();
     this.order = [];
 
-    this.element = null;
-    this.classList = null;
+    this.containerElement = null;
+    this.containerClassList = null;
+    this.pinnedContainerElement = null;
 
     this.internalMovingTabs  = new Set();
     this.alreadyMovedTabs    = new Set();
     this.internalClosingTabs = new Set();
     this.keepDescendantsTabs = new Set();
+    this.highlightingTabs    = new Set();
     this.tabsToBeHighlightedAlone = new Set();
 
     this.subTreeMovingCount =
@@ -81,13 +83,17 @@ export default class Window {
     TabsStore.windows.delete(this.id);
     TabsStore.unprepareIndexesForWindow(this.id);
 
-    if (this.element) {
-      const element = this.element;
-      if (element.parentNode && !element.hasChildNodes()) {
+    if (this.containerElement) {
+      const element = this.containerElement;
+      if (element.parentNode && !element.hasChildNodes())
         element.parentNode.removeChild(element);
-        this.unbindElement();
-      }
     }
+    if (this.pinnedContainerElement) {
+      const element = this.element;
+      if (element.parentNode && !element.hasChildNodes())
+        element.parentNode.removeChild(element);
+    }
+    this.unbindElements();
 
     this.tabs = null;
     this.order = null;
@@ -113,14 +119,21 @@ export default class Window {
     this.previousLastRelatedTabs.clear();
   }
 
-  bindElement(element) {
-    this.element = element;
-    this.classList = element.classList;
+  bindContainerElement(element) {
+    this.containerElement = element;
+    this.containerClassList = element.classList;
   }
 
-  unbindElement() {
-    this.element = null;
-    this.classList = null;
+  bindPinnedContainerElement(element) {
+    this.pinnedContainerElement = element;
+    this.pinnedContainerClassList = element.classList;
+  }
+
+  unbindElements() {
+    this.containerElement = null;
+    this.containerClassList = null;
+    this.pinnedContainerElement = null;
+    this.pinnedContainerClassList = null;
   }
 
   getOrderedTabs(startId, endId, tabs) {
@@ -175,10 +188,11 @@ export default class Window {
 
     const order = this.order;
     if (this.tabs.has(tab.id)) { // already tracked: update
+      const prevState = tab.reindexedBy;
       const index = order.indexOf(tab.id);
       order.splice(index, 1);
       order.splice(tab.index, 0, tab.id);
-      for (let i = Math.min(index, tab.index), maxi = Math.min(Math.max(index + 1, tab.index + 1), order.length); i < maxi; i++) {
+      for (let i = Math.min(index, tab.index), maxi = Math.min(Math.max(index, tab.index) + 1, order.length); i < maxi; i++) {
         const tab = this.tabs.get(order[i]);
         if (!tab)
           throw new Error(`Unknown tab: ${i}/${order[i]} (${order.join(', ')})`);
@@ -190,7 +204,7 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
-      log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
+      log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, prevState, index, '=>', tab.reindexedBy, order.join(', '));
     }
     else { // not tracked yet: add
       this.tabs.set(tab.id, tab);
@@ -261,7 +275,7 @@ export default class Window {
 Window.onInitialized = new EventListenerManager();
 
 Window.init = windowId => {
-  const window = TabsStore.windows.get(windowId) || new Window(windowId);
-  Window.onInitialized.dispatch(window);
-  return window;
+  const win = TabsStore.windows.get(windowId) || new Window(windowId);
+  Window.onInitialized.dispatch(win);
+  return win;
 }

@@ -78,10 +78,10 @@ export function queryAll(query) {
   const startAt = Date.now();
   if (query.windowId || query.ordered) {
     let tabs = [];
-    for (const window of windows.values()) {
-      if (query.windowId && !matched(window.id, query.windowId))
+    for (const win of windows.values()) {
+      if (query.windowId && !matched(win.id, query.windowId))
         continue;
-      const [sourceTabs, offset] = sourceTabsForQuery(query, window);
+      const [sourceTabs, offset] = sourceTabsForQuery(query, win);
       tabs = tabs.concat(query.iterator ? getMatchedTabsIterator(sourceTabs, query, offset) : extractMatchedTabs(sourceTabs, query, offset));
     }
     query.elapsed = Date.now() - startAt;
@@ -106,26 +106,30 @@ export function queryAll(query) {
   }
 }
 
-function sourceTabsForQuery(query, window) {
+function sourceTabsForQuery(query, win) {
   let offset = 0;
   if (!query.ordered)
-    return [query.tabs && query.tabs.values() || window.tabs.values(), offset];
+    return [query.tabs && query.tabs.values() || win.tabs.values(), offset];
   let fromId;
+  let toId = query.toId;
   if (typeof query.index == 'number') {
-    fromId = window.order[query.index];
+    fromId = win.order[query.index];
     offset = query.index;
   }
   if (typeof query.fromIndex == 'number') {
-    fromId = window.order[query.fromIndex];
+    fromId = win.order[query.fromIndex];
     offset = query.fromIndex;
+  }
+  if (typeof query.toIndex == 'number') {
+    toId = win.order[query.toIndex];
   }
   if (typeof fromId != 'number') {
     fromId = query.fromId;
-    offset = window.order.indexOf(query.fromId);
+    offset = win.order.indexOf(query.fromId);
   }
   if (query.last || query.reversed)
-    return [window.getReversedOrderedTabs(fromId, query.toId, query.tabs), offset];
-  return [window.getOrderedTabs(fromId, query.toId, query.tabs), offset];
+    return [win.getReversedOrderedTabs(fromId, toId, query.tabs), offset];
+  return [win.getOrderedTabs(fromId, toId, query.tabs), offset];
 }
 
 function extractMatchedTabs(tabs, query, offset) {
@@ -213,6 +217,11 @@ function matchedWithQuery(tab, query) {
        tabStates.has(Constants.kTAB_STATE_SHOWING) ||
        tab.pinned))
     return false;
+  if (query.pinned &&
+      (tab.hidden ||
+       tabStates.has(Constants.kTAB_STATE_SHOWING) ||
+       !tab.pinned))
+    return false;
   if (query.visible &&
       ((tabStates.has(Constants.kTAB_STATE_COLLAPSED) &&
         !tabStates.has(Constants.kTAB_STATE_EXPANDING)) ||
@@ -279,10 +288,10 @@ export function query(query) {
   const startAt = Date.now();
   let tabs = [];
   if (query.windowId || query.ordered) {
-    for (const window of windows.values()) {
-      if (query.windowId && !matched(window.id, query.windowId))
+    for (const win of windows.values()) {
+      if (query.windowId && !matched(win.id, query.windowId))
         continue;
-      const [sourceTabs, offset] = sourceTabsForQuery(query, window);
+      const [sourceTabs, offset] = sourceTabsForQuery(query, win);
       tabs = tabs.concat(extractMatchedTabs(sourceTabs, query, offset));
       if (tabs.length > 0)
         break;
@@ -330,8 +339,6 @@ export const pinnedTabsInWindow      = new Map();
 export const unpinnedTabsInWindow    = new Map();
 export const rootTabsInWindow        = new Map();
 export const groupTabsInWindow       = new Map();
-export const collapsingTabsInWindow  = new Map();
-export const expandingTabsInWindow   = new Map();
 export const toBeExpandedTabsInWindow = new Map();
 export const subtreeCollapsableTabsInWindow = new Map();
 export const draggingTabsInWindow    = new Map();
@@ -339,6 +346,7 @@ export const duplicatingTabsInWindow = new Map();
 export const toBeGroupedTabsInWindow = new Map();
 export const loadingTabsInWindow     = new Map();
 export const unsynchronizedTabsInWindow = new Map();
+export const virtualScrollRenderableTabsInWindow  = new Map();
 
 function createMapWithName(name) {
   const map = new Map();
@@ -361,8 +369,6 @@ export function prepareIndexesForWindow(windowId) {
   unpinnedTabsInWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
   rootTabsInWindow.set(windowId, createMapWithName(`root tabs in window ${windowId}`));
   groupTabsInWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
-  collapsingTabsInWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
-  expandingTabsInWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
   toBeExpandedTabsInWindow.set(windowId, createMapWithName(`to-be-expanded tabs in window ${windowId}`));
   subtreeCollapsableTabsInWindow.set(windowId, createMapWithName(`collapsable parent tabs in window ${windowId}`));
   draggingTabsInWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
@@ -370,6 +376,7 @@ export function prepareIndexesForWindow(windowId) {
   toBeGroupedTabsInWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
   loadingTabsInWindow.set(windowId, createMapWithName(`loading tabs in window ${windowId}`));
   unsynchronizedTabsInWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
+  virtualScrollRenderableTabsInWindow.set(windowId, createMapWithName(`virtual scroll renderable tabs in window ${windowId}`));
 }
 
 export function unprepareIndexesForWindow(windowId) {
@@ -388,13 +395,12 @@ export function unprepareIndexesForWindow(windowId) {
   unpinnedTabsInWindow.delete(windowId);
   rootTabsInWindow.delete(windowId);
   groupTabsInWindow.delete(windowId);
-  collapsingTabsInWindow.delete(windowId);
-  expandingTabsInWindow.delete(windowId);
   toBeExpandedTabsInWindow.delete(windowId);
   subtreeCollapsableTabsInWindow.delete(windowId);
   toBeGroupedTabsInWindow.delete(windowId);
   loadingTabsInWindow.delete(windowId);
   unsynchronizedTabsInWindow.delete(windowId);
+  virtualScrollRenderableTabsInWindow.delete(windowId);
 }
 
 export function getTabsMap(tabsStore, windowId = null) {
@@ -477,6 +483,17 @@ export function updateIndexesForTab(tab) {
     addBundledActiveTab(tab);
   else
     removeBundledActiveTab(tab);
+
+  updateVirtualScrollRenderabilityIndexForTab(tab);
+}
+
+export function updateVirtualScrollRenderabilityIndexForTab(tab) {
+  if (tab.pinned ||
+      tab.hidden ||
+      tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE))
+    removeVirtualScrollRenderableTab(tab);
+  else
+    addVirtualScrollRenderableTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
@@ -493,8 +510,6 @@ export function removeTabFromIndexes(tab) {
   removeUnpinnedTab(tab);
   removeRootTab(tab);
   removeGroupTab(tab);
-  removeCollapsingTab(tab);
-  removeExpandingTab(tab);
   removeToBeExpandedTab(tab);
   removeSubtreeCollapsableTab(tab);
   removeDuplicatingTab(tab);
@@ -502,6 +517,7 @@ export function removeTabFromIndexes(tab) {
   removeToBeGroupedTab(tab);
   removeLoadingTab(tab);
   removeUnsynchronizedTab(tab);
+  //removeVirtualScrollRenderableTab(tab);
 }
 
 function addTabToIndex(tab, indexes) {
@@ -609,20 +625,6 @@ export function removeGroupTab(tab) {
   removeTabFromIndex(tab, groupTabsInWindow);
 }
 
-export function addCollapsingTab(tab) {
-  addTabToIndex(tab, collapsingTabsInWindow);
-}
-export function removeCollapsingTab(tab) {
-  removeTabFromIndex(tab, collapsingTabsInWindow);
-}
-
-export function addExpandingTab(tab) {
-  addTabToIndex(tab, expandingTabsInWindow);
-}
-export function removeExpandingTab(tab) {
-  removeTabFromIndex(tab, expandingTabsInWindow);
-}
-
 export function addToBeExpandedTab(tab) {
   addTabToIndex(tab, toBeExpandedTabsInWindow);
 }
@@ -679,6 +681,13 @@ export function removeBundledActiveTab(tab) {
   removeTabFromIndex(tab, bundledActiveTabsInWindow);
 }
 
+export function addVirtualScrollRenderableTab(tab) {
+  addTabToIndex(tab, virtualScrollRenderableTabsInWindow);
+}
+export function removeVirtualScrollRenderableTab(tab) {
+  removeTabFromIndex(tab, virtualScrollRenderableTabsInWindow);
+}
+
 
 
 //===================================================================
@@ -697,8 +706,6 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.$TST ||
-      (tab.$TST.element &&
-       !tab.$TST.element.parentNode) ||
       !tabs.has(tab.id) ||
       tab.$TST.removing ||
       !windows.get(tab.windowId))

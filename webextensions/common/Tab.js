@@ -74,12 +74,27 @@ export default class Tab {
 
     this.lastSoundStateCounts = {
       soundPlaying: 0,
-      muted:        0
+      muted:        0,
+      autoPlayBlocked: 0,
     };
     this.soundPlayingChildrenIds = new Set();
     this.maybeSoundPlayingChildrenIds = new Set();
     this.mutedChildrenIds = new Set();
     this.maybeMutedChildrenIds = new Set();
+    this.autoplayBlockedChildrenIds = new Set();
+    this.maybeAutoplayBlockedChildrenIds = new Set();
+
+    this.lastSharingStateCounts = {
+      camera:     0,
+      microphone: 0,
+      screen:     0,
+    };
+    this.sharingCameraChildrenIds = new Set();
+    this.maybeSharingCameraChildrenIds = new Set();
+    this.sharingMicrophoneChildrenIds = new Set();
+    this.maybeSharingMicrophoneChildrenIds = new Set();
+    this.sharingScreenChildrenIds = new Set();
+    this.maybeSharingScreenChildrenIds = new Set();
 
     this.element = null;
     this.classList = null;
@@ -101,8 +116,8 @@ export default class Tab {
 
     TabsStore.tabs.set(tab.id, tab);
 
-    const window = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
-    window.trackTab(tab);
+    const win = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
+    win.trackTab(tab);
 
     // Don't update indexes here, instead Window.prototype.trackTab()
     // updates indexes because indexes are bound to windows.
@@ -146,15 +161,10 @@ export default class Tab {
 
     TabsStore.removeTabFromIndexes(this.tab);
 
-    if (this.element) {
-      if (this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
-      }
-      this.element.$TST = null;
-      this.element.apiTab = null;
-      this.element = null;
-      this.classList = null;
-    }
+    if (this.element &&
+        this.element.parentNode)
+      this.element.parentNode.removeChild(this.element);
+    this.unbindElement();
     // this.tab.$TST = null; // tab.$TST is used by destruction processes.
     this.tab = null;
     this.promisedUniqueId = null;
@@ -177,7 +187,10 @@ export default class Tab {
     element.apiTab = this.tab;
     this.element = element;
     this.classList = element.classList;
-    setTimeout(() => { // wait until initialization processes are completed
+    // wait until initialization processes are completed
+    (Constants.IS_BACKGROUND ?
+      setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+      window.requestAnimationFrame)(() => {
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
         this.promisedElement = new Promise((resolve, _reject) => {
@@ -189,6 +202,10 @@ export default class Tab {
   }
 
   unbindElement() {
+    if (this.element) {
+      this.element.$TST = null;
+      this.element.apiTab = null;
+    }
     this.element = null;
     this.classList = null;
   }
@@ -242,9 +259,8 @@ export default class Tab {
   //===================================================================
 
   get soundPlaying() {
-    return !!(this.tab && this.tab.audible && !this.tab.mutedInfo.muted);
+    return !!(this.tab?.audible && !this.tab.mutedInfo.muted);
   }
-
   get maybeSoundPlaying() {
     return (this.soundPlaying ||
             (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
@@ -252,17 +268,56 @@ export default class Tab {
   }
 
   get muted() {
-    return !!(this.tab && this.tab.mutedInfo && this.tab.mutedInfo.muted);
+    return !!(this.tab?.mutedInfo?.muted);
   }
-
   get maybeMuted() {
     return (this.muted ||
             (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
              this.hasChild));
   }
 
+  get autoplayBlocked() {
+    return this.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED);
+  }
+  get maybeAutoplayBlocked() {
+    return (this.autoplayBlocked ||
+            (this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingCamera() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.camera);
+  }
+  get maybeSharingCamera() {
+    return (this.sharingCamera ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingMicrophone() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.microphone);
+  }
+  get maybeSharingMicrophone() {
+    return (this.sharingMicrophone ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER) &&
+             this.hasChild));
+  }
+
+  get sharingScreen() {
+    return !!(this.tab && this.tab.sharingState && this.tab.sharingState.screen);
+  }
+  get maybeSharingScreen() {
+    return (this.sharingScreen ||
+            (this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER) &&
+             this.hasChild));
+  }
+
   get collapsed() {
     return this.states.has(Constants.kTAB_STATE_COLLAPSED);
+  }
+
+  get collapsedCompletely() {
+    return this.states.has(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
   get subtreeCollapsed() {
@@ -295,6 +350,10 @@ export default class Tab {
 
   get removing() {
     return this.states.has(Constants.kTAB_STATE_REMOVING);
+  }
+
+  get sticky() {
+    return this.states.has(Constants.kTAB_STATE_STICKY);
   }
 
   get isNewTabCommandTab() {
@@ -406,6 +465,20 @@ export default class Tab {
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
+  get canBecomeSticky() {
+    if (this.tab?.pinned ||
+        this.collapsed)
+      return false;
+
+    if (this.sticky)
+      return true;
+
+    if (!configs.stickyActiveTab)
+      return false;
+
+    return this.tab?.active || this.bundledTab?.active;
+  }
+
   get promisedPossibleOpenerBookmarks() {
     if ('possibleOpenerBookmarks' in this)
       return Promise.resolve(this.possibleOpenerBookmarks);
@@ -461,6 +534,20 @@ export default class Tab {
   get cookieStoreName() {
     const identity = this.tab && this.tab.cookieStoreId && ContextualIdentities.get(this.tab.cookieStoreId);
     return identity ? identity.name : null;
+  }
+
+  generateTooltipText() {
+    return this.cookieStoreName ? `${this.tab.title} - ${this.cookieStoreName}` : this.tab.title;
+  }
+
+  generateTooltipTextWithDescendants() {
+    const tooltip = [`* ${this.generateTooltipText()}`];
+    for (const child of this.children) {
+      if (!child)
+        continue;
+      tooltip.push(child.$TST.generateTooltipTextWithDescendants().replace(/^/gm, '  '));
+    }
+    return tooltip.join('\n');
   }
 
   //===================================================================
@@ -673,6 +760,20 @@ export default class Tab {
     );
   }
 
+  get nearestSameTypeRenderedTab() {
+    let tab = this.tab;
+    const pinned = tab.pinned;
+    while (tab.$TST.unsafeNextTab) {
+      tab = tab.$TST.unsafeNextTab;
+      if (tab.pinned != pinned)
+        return null;
+      if (tab.$TST.element &&
+          tab.$TST.element.parentNode)
+        return tab;
+    }
+    return null;
+  }
+
   //===================================================================
   // tree relations
   //===================================================================
@@ -690,6 +791,7 @@ export default class Tab {
     if (parent) {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
+
       if (this.states.has(Constants.kTAB_STATE_SOUND_PLAYING))
         parent.$TST.soundPlayingChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER))
@@ -698,7 +800,26 @@ export default class Tab {
         parent.$TST.mutedChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER))
         parent.$TST.maybeMutedChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED))
+        parent.$TST.autoplayBlockedChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER))
+        parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
       parent.$TST.inheritSoundStateFromChildren();
+
+      if (this.states.has(Constants.kTAB_STATE_SHARING_CAMERA))
+        parent.$TST.sharingCameraChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER))
+        parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_SHARING_MICROPHONE))
+        parent.$TST.sharingMicrophoneChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER))
+        parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_SHARING_SCREEN))
+        parent.$TST.sharingScreenChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER))
+        parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
+      parent.$TST.inheritSharingStateFromChildren();
+
       TabsStore.removeRootTab(this.tab);
     }
     else {
@@ -710,7 +831,18 @@ export default class Tab {
       oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
       oldParent.$TST.mutedChildrenIds.delete(this.id);
       oldParent.$TST.maybeMutedChildrenIds.delete(this.id);
+      oldParent.$TST.autoplayBlockedChildrenIds.delete(this.id);
+      oldParent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
       oldParent.$TST.inheritSoundStateFromChildren();
+
+      oldParent.$TST.sharingCameraChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+      oldParent.$TST.sharingMicrophoneChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+      oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+      oldParent.$TST.inheritSharingStateFromChildren();
+
       oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.id);
     }
     return tab;
@@ -910,7 +1042,7 @@ export default class Tab {
       return Tab.get(siblingId);
     }
     else {
-      return TabsStore.query({
+      const nextSibling = TabsStore.query({
         windowId:  this.tab.windowId,
         tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
         fromId:    this.id,
@@ -919,6 +1051,14 @@ export default class Tab {
         hasParent: false,
         first:     true
       });
+      // We should treat only pinned tab as the next sibling tab of a pinned
+      // tab. For example, if the last pinned tab is closed, Firefox moves
+      // focus to the first normal tab. But the previous pinned tab looks
+      // natural on TST because pinned tabs are visually grouped.
+      if (nextSibling &&
+          nextSibling.pinned != this.tab.pinned)
+        return null;
+      return nextSibling;
     }
   }
 
@@ -973,10 +1113,13 @@ export default class Tab {
   //===================================================================
 
   get openerTab() {
-    if (!this.tab ||
-        !this.tab.openerTabId ||
-        this.tab.openerTabId == this.id)
+    if (this.tab?.openerTabId == this.id)
       return null;
+
+    if (!this.tab ||
+        !this.tab.openerTabId)
+      return Tab.getOpenerFromGroupTab(this.tab);
+
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.livingTabsInWindow.get(this.tab.windowId),
@@ -1036,33 +1179,33 @@ export default class Tab {
     if (!this.tab)
       return relatedTab;
     const previousLastRelatedTabId = this.lastRelatedTabId;
-    const window = TabsStore.windows.get(this.tab.windowId);
+    const win = TabsStore.windows.get(this.tab.windowId);
     if (relatedTab) {
-      window.lastRelatedTabs.set(this.id, relatedTab.id);
+      win.lastRelatedTabs.set(this.id, relatedTab.id);
       this.newRelatedTabsCount++;
       successorTabLog(`set lastRelatedTab for ${this.id}: ${previousLastRelatedTabId} => ${relatedTab.id} (${this.newRelatedTabsCount})`);
     }
     else {
-      window.lastRelatedTabs.delete(this.id);
+      win.lastRelatedTabs.delete(this.id);
       this.newRelatedTabsCount = 0;
       successorTabLog(`clear lastRelatedTab for ${this.id} (${previousLastRelatedTabId})`);
     }
-    window.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
+    win.previousLastRelatedTabs.set(this.id, previousLastRelatedTabId);
     return relatedTab;
   }
 
   get lastRelatedTabId() {
     if (!this.tab)
       return 0;
-    const window = TabsStore.windows.get(this.tab.windowId);
-    return window.lastRelatedTabs.get(this.id) || 0;
+    const win = TabsStore.windows.get(this.tab.windowId);
+    return win.lastRelatedTabs.get(this.id) || 0;
   }
 
   get previousLastRelatedTab() {
     if (!this.tab)
       return null;
-    const window = TabsStore.windows.get(this.tab.windowId);
-    return Tab.get(window.previousLastRelatedTabs.get(this.id)) || null;
+    const win = TabsStore.windows.get(this.tab.windowId);
+    return Tab.get(win.previousLastRelatedTabs.get(this.id)) || null;
   }
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
@@ -1120,10 +1263,19 @@ export default class Tab {
   // State
   //===================================================================
 
-  async addState(state, options = {}) {
+  async toggleState(state, condition, { permanently, toTab, broadcast } = {}) {
+    if (condition)
+      return this.addState(state, { permanently, toTab, broadcast });
+    else
+      return this.removeState(state, { permanently, toTab, broadcast });
+  }
+
+  async addState(state, { permanently, toTab, broadcast } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
+
+    const modified = this.states && !this.states.has(state);
 
     if (this.classList)
       this.classList.add(state);
@@ -1132,8 +1284,11 @@ export default class Tab {
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
+        TabsStore.addHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'true');
+        if (toTab)
+          this.tab.highlighted = true;
         break;
 
       case Constants.kTAB_STATE_SELECTED:
@@ -1148,6 +1303,20 @@ export default class Tab {
           TabsStore.removeSubtreeCollapsableTab(this.tab);
         break;
 
+      case Constants.kTAB_STATE_HIDDEN:
+        TabsStore.removeVisibleTab(this.tab);
+        TabsStore.removeControllableTab(this.tab);
+        if (toTab)
+          this.tab.hidden = true;
+        break;
+
+      case Constants.kTAB_STATE_PINNED:
+        TabsStore.addPinnedTab(this.tab);
+        TabsStore.removeUnpinnedTab(this.tab);
+        if (toTab)
+          this.tab.pinned = true;
+        break;
+
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
         TabsStore.addBundledActiveTab(this.tab);
         break;
@@ -1157,43 +1326,139 @@ export default class Tab {
         if (parent)
           parent.$TST.soundPlayingChildrenIds.add(this.id);
       } break;
-
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUDIBLE:
+        if (toTab)
+          this.tab.audible = true;
+        break;
+
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
           parent.$TST.mutedChildrenIds.add(this.id);
+        if (toTab)
+          this.tab.mutedInfo.muted = true;
       } break;
-
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeMutedChildrenIds.add(this.id);
       } break;
+
+      case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
+        const parent = this.parent;
+        if (parent) {
+          parent.$TST.autoplayBlockedChildrenIds.add(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
+      } break;
+      case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
+        const parent = this.parent;
+        if (parent) {
+          parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_CAMERA: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingCameraChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.camera = true;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_MICROPHONE: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingMicrophoneChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.microphone = true;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_SCREEN: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingScreenChildrenIds.add(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.screen = 'Something';
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_GROUP_TAB:
+        TabsStore.addGroupTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_PRIVATE_BROWSING:
+        if (toTab)
+          this.tab.incognito = true;
+        break;
+
+      case Constants.kTAB_STATE_ATTENTION:
+        if (toTab)
+          this.tab.attention = true;
+        break;
+
+      case Constants.kTAB_STATE_DISCARDED:
+        if (toTab)
+          this.tab.discarded = true;
+        break;
+
+      case 'loading':
+        TabsStore.addLoadingTab(this.tab);
+        if (toTab)
+          this.tab.status = state;
+        break;
+
+      case 'complete':
+        TabsStore.removeLoadingTab(this.tab);
+        if (toTab)
+          this.tab.status = state;
+        break;
     }
 
-    if (options.broadcast)
+    if (modified &&
+        Constants.IS_BACKGROUND &&
+        broadcast !== false)
       Tab.broadcastState(this.tab, {
-        add: [state]
+        add: [state],
       });
-    if (options.permanently) {
+    if (permanently) {
       const states = await this.getPermanentStates();
       if (!states.includes(state)) {
         states.push(state);
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
+    if (modified)
+      Tab.onStateChanged.dispatch(this.tab, state, true);
   }
 
-  async removeState(state, options = {}) {
+  async removeState(state, { permanently, toTab, broadcast } = {}) {
     state = state && String(state) || undefined;
     if (!this.tab || !state)
       return;
+
+    const modified = this.states && this.states.has(state);
 
     if (this.classList)
       this.classList.remove(state);
@@ -1202,8 +1467,11 @@ export default class Tab {
 
     switch (state) {
       case Constants.kTAB_STATE_HIGHLIGHTED:
+        TabsStore.removeHighlightedTab(this.tab);
         if (this.element)
           this.element.setAttribute('aria-selected', 'false');
+        if (toTab)
+          this.tab.highlighted = false;
         break;
 
       case Constants.kTAB_STATE_SELECTED:
@@ -1218,6 +1486,21 @@ export default class Tab {
           TabsStore.removeSubtreeCollapsableTab(this.tab);
         break;
 
+      case Constants.kTAB_STATE_HIDDEN:
+        if (!this.collapsed)
+          TabsStore.addVisibleTab(this.tab);
+        TabsStore.addControllableTab(this.tab);
+        if (toTab)
+          this.tab.hidden = false;
+        break;
+
+      case Constants.kTAB_STATE_PINNED:
+        TabsStore.removePinnedTab(this.tab);
+        TabsStore.addUnpinnedTab(this.tab);
+        if (toTab)
+          this.tab.pinned = false;
+        break;
+
       case Constants.kTAB_STATE_BUNDLED_ACTIVE:
         TabsStore.removeBundledActiveTab(this.tab);
         break;
@@ -1227,31 +1510,111 @@ export default class Tab {
         if (parent)
           parent.$TST.soundPlayingChildrenIds.delete(this.id);
       } break;
-
       case Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUDIBLE:
+        if (toTab)
+          this.tab.audible = false;
+        break;
+
       case Constants.kTAB_STATE_MUTED: {
         const parent = this.parent;
         if (parent)
           parent.$TST.mutedChildrenIds.delete(this.id);
+        if (toTab)
+          this.tab.mutedInfo.muted = false;
       } break;
-
       case Constants.kTAB_STATE_HAS_MUTED_MEMBER: {
         const parent = this.parent;
         if (parent)
           parent.$TST.maybeMutedChildrenIds.delete(this.id);
       } break;
+
+      case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
+        const parent = this.parent;
+        if (parent) {
+          parent.$TST.autoplayBlockedChildrenIds.delete(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
+      } break;
+      case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
+        const parent = this.parent;
+        if (parent) {
+          parent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
+          parent.$TST.inheritSoundStateFromChildren();
+        }
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_CAMERA: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingCameraChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.camera = false;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_MICROPHONE: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingMicrophoneChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.microphone = false;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_SHARING_SCREEN: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.sharingScreenChildrenIds.delete(this.id);
+        if (toTab && this.tab.sharingState)
+          this.tab.sharingState.screen = undefined;
+      } break;
+      case Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+      } break;
+
+      case Constants.kTAB_STATE_GROUP_TAB:
+        TabsStore.removeGroupTab(this.tab);
+        break;
+
+      case Constants.kTAB_STATE_PRIVATE_BROWSING:
+        if (toTab)
+          this.tab.incognito = false;
+        break;
+
+      case Constants.kTAB_STATE_ATTENTION:
+        if (toTab)
+          this.tab.attention = false;
+        break;
+
+      case Constants.kTAB_STATE_DISCARDED:
+        if (toTab)
+          this.tab.discarded = false;
+        break;
     }
 
-    if (options.broadcast)
+    if (modified &&
+        Constants.IS_BACKGROUND &&
+        broadcast !== false)
       Tab.broadcastState(this.tab, {
-        remove: [state]
+        remove: [state],
       });
-    if (options.permanently) {
+    if (permanently) {
       const states = await this.getPermanentStates();
       const index = states.indexOf(state);
       if (index > -1) {
@@ -1259,6 +1622,8 @@ export default class Tab {
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
+    if (modified)
+      Tab.onStateChanged.dispatch(this.tab, state, false);
   }
 
   async getPermanentStates() {
@@ -1287,14 +1652,11 @@ export default class Tab {
       const soundPlayingCount = this.soundPlayingChildrenIds.size + this.maybeSoundPlayingChildrenIds.size;
       if (soundPlayingCount != this.lastSoundStateCounts.soundPlaying) {
         this.lastSoundStateCounts.soundPlaying = soundPlayingCount;
-        if (soundPlayingCount > 0) {
-          this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-          if (parent)
+        this.toggleState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER, soundPlayingCount > 0);
+        if (parent) {
+          if (soundPlayingCount > 0)
             parent.$TST.maybeSoundPlayingChildrenIds.add(this.id);
-        }
-        else {
-          this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-          if (parent)
+          else
             parent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
         }
         modifiedCount++;
@@ -1303,15 +1665,25 @@ export default class Tab {
       const mutedCount = this.mutedChildrenIds.size + this.maybeMutedChildrenIds.size;
       if (mutedCount != this.lastSoundStateCounts.muted) {
         this.lastSoundStateCounts.muted = mutedCount;
-        if (mutedCount > 0) {
-          this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-          if (parent)
+        this.toggleState(Constants.kTAB_STATE_HAS_MUTED_MEMBER, mutedCount > 0);
+        if (parent) {
+          if (mutedCount > 0)
             parent.$TST.maybeMutedChildrenIds.add(this.id);
-        }
-        else {
-          this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-          if (parent)
+          else
             parent.$TST.maybeMutedChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      const autoplayBlockedCount = this.autoplayBlockedChildrenIds.size + this.maybeAutoplayBlockedChildrenIds.size;
+      if (autoplayBlockedCount != this.lastSoundStateCounts.autoplayBlocked) {
+        this.lastSoundStateCounts.autoplayBlocked = autoplayBlockedCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER, autoplayBlockedCount > 0);
+        if (parent) {
+          if (autoplayBlockedCount > 0)
+            parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
         }
         modifiedCount++;
       }
@@ -1327,7 +1699,80 @@ export default class Tab {
         windowId:              this.tab.windowId,
         tabId:                 this.id,
         hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
-        hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+        hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER),
+        hasAutoplayBlockedMember: this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER),
+      });
+    }, 100);
+  }
+
+  inheritSharingStateFromChildren() {
+    if (!this.tab)
+      return;
+
+    // this is called too many times on a session restoration, so this should be throttled for better performance
+    if (this.delayedInheritSharingStateFromChildren)
+      clearTimeout(this.delayedInheritSharingStateFromChildren);
+
+    this.delayedInheritSharingStateFromChildren = setTimeout(() => {
+      this.delayedInheritSharingStateFromChildren = null;
+      if (!TabsStore.ensureLivingTab(this.tab))
+        return;
+
+      const parent = this.parent;
+      let modifiedCount = 0;
+
+      const sharingCameraCount = this.sharingCameraChildrenIds.size + this.maybeSharingCameraChildrenIds.size;
+      if (sharingCameraCount != this.lastSharingStateCounts.sharingCamera) {
+        this.lastSharingStateCounts.sharingCamera = sharingCameraCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER, sharingCameraCount > 0);
+        if (parent) {
+          if (sharingCameraCount > 0)
+            parent.$TST.maybeSharingCameraChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      const sharingMicrophoneCount = this.sharingMicrophoneChildrenIds.size + this.maybeSharingMicrophoneChildrenIds.size;
+      if (sharingMicrophoneCount != this.lastSharingStateCounts.sharingMicrophone) {
+        this.lastSharingStateCounts.sharingMicrophone = sharingMicrophoneCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER, sharingMicrophoneCount > 0);
+        if (parent) {
+          if (sharingMicrophoneCount > 0)
+            parent.$TST.maybeSharingMicrophoneChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      const sharingScreenCount = this.sharingScreenChildrenIds.size + this.maybeSharingScreenChildrenIds.size;
+      if (sharingScreenCount != this.lastSharingStateCounts.sharingScreen) {
+        this.lastSharingStateCounts.sharingScreen = sharingScreenCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER, sharingScreenCount > 0);
+        if (parent) {
+          if (sharingScreenCount > 0)
+            parent.$TST.maybeSharingScreenChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
+      if (modifiedCount == 0)
+        return;
+
+      if (parent)
+        parent.$TST.inheritSharingStateFromChildren();
+
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TAB_SHARING_STATE_UPDATED,
+        windowId: this.tab.windowId,
+        tabId:    this.id,
+        hasSharingCameraMember:     this.states.has(Constants.kTAB_STATE_HAS_SHARING_CAMERA_MEMBER),
+        hasSharingMicrophoneMember: this.states.has(Constants.kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER),
+        hasSharingScreenMember:     this.states.has(Constants.kTAB_STATE_HAS_SHARING_SCREEN_MEMBER),
       });
     }, 100);
   }
@@ -1455,6 +1900,31 @@ export default class Tab {
   }
 
 
+  applyStatesToElement() {
+    if (!this.element)
+      return;
+
+    this.applyAttributesToElement();
+
+    for (const state of this.states) {
+      this.element.classList.add(state);
+      if (state == Constants.kTAB_STATE_HIGHLIGHTED)
+        this.element.setAttribute('aria-selected', 'true');
+    }
+
+    for (const [name, value] of Object.entries(this.attributes)) {
+      this.element.setAttribute(name, value);
+    }
+  }
+
+  applyAttributesToElement() {
+    if (!this.element)
+      return;
+
+    this.element.applyAttributes();
+  }
+
+
   /* element utilities */
 
   invalidateElement(targets) {
@@ -1493,6 +1963,7 @@ Tab.UNSYNCHRONIZABLE_PROPERTIES = new Set([
 Tab.onTracked      = new EventListenerManager();
 Tab.onDestroyed    = new EventListenerManager();
 Tab.onInitialized  = new EventListenerManager();
+Tab.onStateChanged  = new EventListenerManager();
 Tab.onElementBound = new EventListenerManager();
 
 Tab.track = tab => {
@@ -1504,8 +1975,8 @@ Tab.track = tab => {
   else {
     if (trackedTab)
       tab = trackedTab;
-    const window = TabsStore.windows.get(tab.windowId);
-    window.trackTab(tab);
+    const win = TabsStore.windows.get(tab.windowId);
+    win.trackTab(tab);
   }
   return trackedTab || tab;
 };
@@ -1514,9 +1985,9 @@ Tab.untrack = tabId => {
   const tab = Tab.get(tabId);
   if (!tab) // already untracked
     return;
-  const window = TabsStore.windows.get(tab.windowId);
-  if (window)
-    window.untrackTab(tabId);
+  const win = TabsStore.windows.get(tab.windowId);
+  if (win)
+    win.untrackTab(tabId);
 };
 
 Tab.isTracked = tabId =>  {
@@ -1570,16 +2041,14 @@ function destroyWaitingTabTask(task) {
     clearTimeout(task.timeout);
 
   const resolve     = task.resolve;
-  const waitElement = task.waitElement;
   const stack       = task.stack;
 
   task.tabId       = undefined;
   task.resolve     = undefined;
   task.timeout     = undefined;
-  task.waitElement = undefined;
   task.stack       = undefined;
 
-  return { resolve, waitElement, stack };
+  return { resolve, stack };
 }
 
 function onWaitingTabTracked(tab) {
@@ -1591,18 +2060,10 @@ function onWaitingTabTracked(tab) {
 
   for (const task of tasks) {
     tasks.delete(task);
-    const { resolve, waitElement } = destroyWaitingTabTask(task);
+    const { resolve } = destroyWaitingTabTask(task);
     if (!resolve)
       continue;
-    if (waitElement) {
-      if (tab.$TST.element)
-        resolve(tab);
-      else
-        tab.$TST.promisedElement.then(() => resolve(tab));
-    }
-    else {
-      resolve(tab);
-    }
+    resolve(tab);
   }
 }
 Tab.onElementBound.addListener(onWaitingTabTracked);
@@ -1660,7 +2121,6 @@ async function waitUntilTracked(tabId, options = {}) {
   const task = {
     tabId,
     stack,
-    waitElement: !!options.element,
   };
   tasks.add(task);
   mWaitingTasks.set(tabId, tasks);
@@ -1995,7 +2455,7 @@ Tab.getTabsBetween = (begin, end) => {
     [begin, end] = [end, begin];
   return TabsStore.queryAll({
     windowId: begin.windowId,
-    tabs:     TabsStore.controllableTabsInWindow.get(begin.windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.controllableTabsInWindow, begin.windowId),
     id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,
     toId:     end.id
@@ -2074,22 +2534,6 @@ Tab.getSubtreeCollapsedTabs = (windowId = null, options = {}) => {
     living:   true,
     hidden:   false,
     ordered:  true,
-    ...options
-  });
-};
-
-Tab.getCollapsingTabs = (windowId = null, options = {}) => {
-  return TabsStore.queryAll({
-    windowId,
-    tabs: TabsStore.getTabsMap(TabsStore.collapsingTabsInWindow, windowId),
-    ...options
-  });
-};
-
-Tab.getExpandingTabs = (windowId = null, options = {}) => {
-  return TabsStore.queryAll({
-    windowId,
-    tabs: TabsStore.getTabsMap(TabsStore.expandingTabsInWindow, windowId),
     ...options
   });
 };
@@ -2183,6 +2627,18 @@ Tab.getSelectedTabs = (windowId = null, options = {}) => {
     return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
 };
 
+Tab.getVirtualScrollRenderableTabs = (windowId = null, options = {}) => {
+  return TabsStore.queryAll({
+    windowId,
+    tabs:    TabsStore.getTabsMap(TabsStore.virtualScrollRenderableTabsInWindow, windowId),
+    ordered: true,
+    living:  false,
+    visible: false,
+    controllable: false,
+    ...options
+  });
+};
+
 Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
   return TabsStore.queryAll({
     windowId,
@@ -2195,7 +2651,7 @@ Tab.getNeedToBeSynchronizedTabs = (windowId = null, options = {}) => {
 Tab.hasNeedToBeSynchronizedTab = windowId => {
   return !!TabsStore.query({
     windowId,
-    tabs:     TabsStore.unsynchronizedTabsInWindow.get(windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.unsynchronizedTabsInWindow, windowId),
     visible:  true
   });
 };
@@ -2203,7 +2659,7 @@ Tab.hasNeedToBeSynchronizedTab = windowId => {
 Tab.hasLoadingTab = windowId => {
   return !!TabsStore.query({
     windowId,
-    tabs:     TabsStore.loadingTabsInWindow.get(windowId),
+    tabs:     TabsStore.getTabsMap(TabsStore.loadingTabsInWindow, windowId),
     visible:  true
   });
 };
@@ -2211,7 +2667,7 @@ Tab.hasLoadingTab = windowId => {
 Tab.hasMultipleTabs = (windowId, options = {}) => {
   const tabs = TabsStore.queryAll({
     windowId,
-    tabs:   TabsStore.livingTabsInWindow.get(windowId),
+    tabs:   TabsStore.getTabsMap(TabsStore.livingTabsInWindow, windowId),
     living: true,
     ...options,
     iterator: true
@@ -2254,6 +2710,8 @@ Tab.onShown            = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 Tab.onMutedStateChanged      = new EventListenerManager();
+Tab.onAutoplayBlockedStateChanged = new EventListenerManager();
+Tab.onSharingStateChanged    = new EventListenerManager();
 
 Tab.onBeforeCreate     = new EventListenerManager();
 Tab.onCreating         = new EventListenerManager();
@@ -2279,19 +2737,89 @@ Tab.onChangeMultipleTabsRestorability = new EventListenerManager();
 // utilities
 //===================================================================
 
-Tab.broadcastState = (tabs, options = {}) => {
+Tab.bufferedStatesChanges = new Map();
+Tab.broadcastState = (tabs, { add, remove } = {}) => {
+  if (!Constants.IS_BACKGROUND ||
+      !Tab.broadcastState.enabled)
+    return;
+
   if (!Array.isArray(tabs))
     tabs = [tabs];
+
   if (tabs.length == 0)
     return;
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabIds:   tabs.map(tab => tab.id),
-    windowId: tabs[0].windowId,
-    add:      options.add || [],
-    remove:   options.remove || []
-  });
+
+  for (const tab of tabs) {
+    const message = Tab.bufferedStatesChanges.get(tab.id) || {
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      add:      new Set(),
+      remove:   new Set(),
+    };
+    if (add)
+      for (const state of add) {
+        message.add.add(state);
+        message.remove.delete(state);
+      }
+    if (remove)
+      for (const state of remove) {
+        message.add.delete(state);
+        message.remove.add(state);
+      }
+
+    Tab.bufferedStatesChanges.set(tab.id, message);
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  Tab.broadcastState.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (Tab.broadcastState.triedAt != triedAt)
+      return;
+
+    // Let's flush buffered changes!
+
+    // Unify buffered changes only if same type changes are consecutive.
+    // Otherwise the order of changes would be mixed and things may become broken.
+    const unifiedMessages = [];
+    let lastKey;
+    let unifiedMessage = null;
+    for (const message of Tab.bufferedStatesChanges.values()) {
+      const key = `${message.windowId}/add:${[...message.add]}/remove:${[...message.remove]}`;
+      if (key != lastKey) {
+        if (unifiedMessage)
+          unifiedMessages.push(unifiedMessage);
+        unifiedMessage = null;
+      }
+      lastKey = key;
+      unifiedMessage = unifiedMessage || {
+        type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
+        windowId: message.windowId,
+        tabIds:   new Set(),
+        add:      message.add,
+        remove:   message.remove,
+      };
+      unifiedMessage.tabIds.add(message.tabId);
+    }
+    if (unifiedMessage)
+      unifiedMessages.push(unifiedMessage);
+    Tab.bufferedStatesChanges.clear();
+
+    // SidebarConnection.sendMessage() has its own bulk-send mechanism,
+    // so we don't need to bundle them like an array.
+    for (const message of unifiedMessages) {
+      SidebarConnection.sendMessage({
+        type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
+        windowId: message.windowId,
+        tabIds:   [...message.tabIds],
+        add:      [...message.add],
+        remove:   [...message.remove],
+      });
+    }
+  }, 0);
 };
+Tab.broadcastState.enabled = false;
 
 Tab.getOtherTabs = (windowId, ignoreTabs, options = {}) => {
   const query = {
@@ -2342,6 +2870,12 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
 Tab.compare = (a, b) => a.index - b.index;
 
 Tab.sort = tabs => tabs.length == 0 ? tabs : tabs.sort(Tab.compare);
+
+Tab.uniqTabsAndDescendantsSet = tabs => {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(Tab.compare);
+}
 
 Tab.dumpAll = windowId => {
   if (!configs.debug)

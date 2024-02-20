@@ -10,6 +10,10 @@
 	g:target {
 		fill-rule: evenodd;
 	}
+	g.context:target {
+		fill: context-fill;
+		fill-opacity: context-fill-opacity;
+	}
 	g.theme:target {
 		fill: transparent /* TO BE REPLACED WITH THEME COLOR */;
 	}
@@ -41,6 +45,12 @@
 	<path d="M16,16.5c0,0.825-0.675,1.5-1.5,1.5S13,17.325,13,16.5s0.675-1.5,1.5-1.5S16,15.675,16,16.5z"/>
 	<path d="M22,23.5c0,0.825-0.675,1.5-1.5,1.5S19,24.325,19,23.5s0.675-1.5,1.5-1.5S22,22.675,22,23.5z"/>
 </symbol>
+<g id="toolbar-context" class="context toolbar">
+	<use href="#icon"/>
+</g>
+<g id="default-context" class="context default">
+	<use href="#icon"/>
+</g>
 <g id="toolbar-theme" class="theme toolbar">
 	<use href="#icon"/>
 </g>

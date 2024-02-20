@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from '/extlib/EventListenerManager.js';
+
 import {
   log as internalLogger,
   configs
@@ -13,6 +15,8 @@ import {
 function log(...args) {
   internalLogger('sidebar/size', ...args);
 }
+
+export const onUpdated = new EventListenerManager();
 
 let mTabHeight          = 0;
 let mTabXOffset         = 0;
@@ -46,13 +50,12 @@ export function init() {
 }
 
 export function update() {
-  const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
   mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
   const scale = Math.max(configs.faviconizedTabScale, 1);
   mFavIconizedTabSize = parseInt(mFavIconSize * scale);
   log('mFavIconSize / mFavIconizedTabSize ', mFavIconSize, mFavIconizedTabSize);
-  sizeDefinition.textContent = `:root {
+  let sizeDefinition = `:root {
     --favicon-size:         ${mFavIconSize}px;
     --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
@@ -64,7 +67,12 @@ export function update() {
   mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
   mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
 
+  const substanceRect = dummyTab.querySelector('tab-item-substance').getBoundingClientRect();
+  const uiRect = dummyTab.querySelector('tab-item-substance > .ui').getBoundingClientRect();
+  const captionRect = dummyTab.querySelector('tab-item-substance > .ui > .caption').getBoundingClientRect();
+  const favIconRect = dummyTab.querySelector('tab-favicon').getBoundingClientRect();
   const labelRect = dummyTab.querySelector('tab-label').getBoundingClientRect();
+  const closeBoxRect = dummyTab.querySelector('tab-closebox').getBoundingClientRect();
 
   let shiftTabsForScrollbarDistance = configs.shiftTabsForScrollbarDistance.trim() || '0';
   if (!/^[0-9\.]+(cm|mm|Q|in|pc|pt|px|em|ex|ch|rem|lh|vw|vh|vmin|vmax|%)$/.test(shiftTabsForScrollbarDistance))
@@ -73,13 +81,22 @@ export function update() {
     shiftTabsForScrollbarDistance += 'px'; // it is used with CSS calc() and it requires any length unit for each value.
 
   log('mTabHeight ', mTabHeight);
-  sizeDefinition.textContent += `:root {
+  const baseLeft  = substanceRect.left;
+  const baseRight = substanceRect.right;
+  sizeDefinition += `:root {
     --tab-size: ${mTabHeight}px;
+    --tab-substance-size: ${substanceRect.height}px;
+    --tab-ui-size: ${uiRect.height}px;
+    --tab-caption-size: ${captionRect.height}px;
     --tab-x-offset: ${mTabXOffset}px;
     --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
-    --tab-label-start-offset: ${labelRect.left - dummyTabRect.left}px;
-    --tab-label-end-offset: ${dummyTabRect.right - labelRect.right}px;
+    --tab-favicon-start-offset: ${favIconRect.left - baseLeft}px;
+    --tab-favicon-end-offset: ${baseRight - favIconRect.right}px;
+    --tab-label-start-offset: ${labelRect.left - baseLeft}px;
+    --tab-label-end-offset: ${baseRight - labelRect.right}px;
+    --tab-closebox-start-offset: ${closeBoxRect.left - baseLeft}px;
+    --tab-closebox-end-offset: ${baseRight - closeBoxRect.right}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
@@ -89,6 +106,13 @@ export function update() {
 
     --shift-tabs-for-scrollbar-distance: ${shiftTabsForScrollbarDistance};
   }`;
+
+  const sizeDefinitionHolder = document.querySelector('#size-definition');
+  if (sizeDefinitionHolder.textContent == sizeDefinition)
+    return;
+
+  sizeDefinitionHolder.textContent = sizeDefinition
+  onUpdated.dispatch();
 }
 
 export function calc(expression) {

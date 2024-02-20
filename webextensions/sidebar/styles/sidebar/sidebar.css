@@ -14,7 +14,7 @@
  * The Original Code is the SidebarStyleTab.
  * 
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2019
+ * Portions created by the Initial Developer are Copyright (C) 2010-2024
  * the Initial Developer. All Rights Reserved.
  * 
  * Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
@@ -90,10 +90,38 @@ body,
   border-left-color: var(--shadow-color-inactive);
 }
 
+
+/* overflow-start-indicator and overflow-end-indicator
+   ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
+.overflow-indicator {
+  height: 0.6em;
+}
+.overflow-indicator.start {
+  background-position: 0 -0.3em;
+}
+.overflow-indicator.end {
+  background-position: 0 0.3em;
+}
+:root.left .overflow-indicator.start,
+:root.left .overflow-indicator.end {
+  background-image: radial-gradient(ellipse at right,
+                                    rgba(0,0,0,0.2) 0%,
+                                    rgba(0,0,0,0.2) 7.6%,
+                                    rgba(0,0,0,0) 87.5%);
+}
+:root.right .overflow-indicator.start,
+:root.right .overflow-indicator.end {
+  background-image: radial-gradient(ellipse at left,
+                                    rgba(0,0,0,0.2) 0%,
+                                    rgba(0,0,0,0.2) 7.6%,
+                                    rgba(0,0,0,0) 87.5%);
+}
+
+
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 tab-item-substance {
   border-top: 1px solid transparent;
-  height: 2.2em;     /* height including border! */
+  min-height: 2.2em;     /* height including border! */
   padding: 0.075em 3px 0.075em 2px;
   z-index: 0;
 }
@@ -121,6 +149,11 @@ tab-item.bundled-active tab-item-substance {
   background: var(--tab-surface);
   border-top: 1px solid var(--tab-surface-active-color-inactive);
 }
+
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background {
+  background: var(--tabbar-bg, var(--bg-color, ButtonFace));
+}
+
 
 /* Keep the close button at a safe distance from the tab label. */
 tab-closebox::after {
@@ -235,7 +268,7 @@ tab-item:not(.faviconized)[data-drop-position="before"] tab-item-substance::befo
 }
 
 
-.mutiple-highlighted tab-item:not(.highlighted) tab-item-substance {
+:root.mutiple-highlighted tab-item:not(.highlighted) tab-item-substance {
   opacity: 0.5;
 }
 
@@ -274,7 +307,7 @@ tab-item:not(.active)[multipletab-ready-to-close="true"] tab-item-substance:not(
 
 /* multiselection of tabs */
 
-.mutiple-highlighted > tab-item.highlighted tab-item-substance::after {
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance::after {
   background: var(--multiselected-color);
   bottom: 0;
   content: " ";

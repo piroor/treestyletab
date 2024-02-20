@@ -20,6 +20,8 @@ export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
 export const kCOMMAND_SYNC_TABS_ORDER                = 'treestyletab:sync-tabs-order';
 export const kCOMMAND_PULL_TABS_ORDER                = 'treestyletab:pull-tabs-order';
 export const kCOMMAND_PULL_TREE_STRUCTURE            = 'treestyletab:pull-tree-structure';
+export const kCOMMAND_GET_RENDERED_TAB_IDS           = 'treestyletab:get-rendered-tab-ids';
+export const kCOMMAND_ASK_TAB_IS_IN_VIEWPORT         = 'treestyletab:ask-tab-is-in-viewport';
 export const kCOMMAND_LOAD_URI                       = 'treestyletab:load-uri';
 export const kCOMMAND_OPEN_TAB                       = 'treestyletab:open-tab';
 export const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-from-tabs';
@@ -54,14 +56,18 @@ export const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-
 export const kCOMMAND_NOTIFY_TAB_LABEL_UPDATED       = 'treestyletab:notify-tab-label-updated';
 export const kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED     = 'treestyletab:notify-tab-favicon-updated';
 export const kCOMMAND_NOTIFY_TAB_SOUND_STATE_UPDATED = 'treestyletab:notify-tab-sound-state-updated';
+export const kCOMMAND_NOTIFY_TAB_SHARING_STATE_UPDATED = 'treestyletab:notify-tab-sharing-state-updated';
 export const kCOMMAND_NOTIFY_TABS_CLOSING            = 'treestyletab:notify-tabs-closing';
 export const kCOMMAND_NOTIFY_HIGHLIGHTED_TABS_CHANGED = 'treestyletab:notify-highlighted-tabs-changed';
+export const kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_IN_PROGRESS = 'treestyletab:notify-tabs-highlighting-in-progress';
+export const kCOMMAND_NOTIFY_TABS_HIGHLIGHTING_COMPLETE    = 'treestyletab:notify-tabs-highlighting-complete';
 export const kCOMMAND_NOTIFY_GROUP_TAB_DETECTED      = 'treestyletab:notify-group-tab-detected';
 export const kCOMMAND_NOTIFY_CHILDREN_CHANGED        = 'treestyletab:notify-children-changed';
 export const kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED     = 'treestyletab:notify-tab-collapsed-state-changed';
 export const kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED = 'treestyletab:notify-subtree-collapsed-state-changed';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE                   = 'treestyletab:set-subtree-collapsed-state';
 export const kCOMMAND_SET_SUBTREE_COLLAPSED_STATE_INTELLIGENTLY_FOR = 'treestyletab:set-subtree-collapsed-state-intelligently-for';
+export const kCOMMAND_TOGGLE_STICKY                  = 'treestyletab:toggle-sticky';
 export const kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED       = 'treestyletab:notify-tab-level-changed';
 export const kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY = 'treestyletab:notify-tab-attached-completely';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
@@ -83,17 +89,18 @@ export const kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'treestyletab
 export const kCOMMAND_NOTIFY_CONTEXT_OVERRIDDEN      = 'treestyletab:notify-context-overridden';
 export const kCOMMAND_AUTODETECT_DUPLICATED_TAB_DETECTION_DELAY = 'treestyletab:autodetect-duplicated-tab-detection-delay';
 export const kCOMMAND_TEST_DUPLICATED_TAB_DETECTION             = 'treestyletab:test-duplicated-tab-detection';
+export const kCOMMAND_WAIT_UNTIL_SUCCESSORS_UPDATED = 'treestyletab:wait-until-successors-updated';
+export const kCOMMAND_GET_BOUNDING_CLIENT_RECT      = 'treestyletab:get-bounding-client-rect';
 
 export const kCOMMAND_ACTIVATE_TAB            = 'treestyletab:activate-tab';
+export const kCOMMAND_HIGHLIGHT_TABS          = 'treestyletab:highlight-tabs';
 export const kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON = 'treestyletab:toggle-muted-from-sound-button';
+export const kCOMMAND_UNBLOCK_AUTOPLAY_FROM_SOUND_BUTTON = 'treestyletab:unblock-autoplay-from-sound-button';
 export const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';
 export const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 export const kCOMMAND_PROGRESS_USER_OPERATIONS = 'treestyletab:progress-user-operations';
 export const kCOMMAND_BROADCAST_TAB_STATE     = 'treestyletab:broadcast-tab-state';
-
-export const kCOMMAND_SET_ON_MEMORY_CACHE     = 'treestyletab:set-on-memory-cache';
-export const kCOMMAND_GET_ON_MEMORY_CACHE     = 'treestyletab:get-on-memory-cache';
 
 export const kCOMMAND_BOOKMARK_TAB_WITH_DIALOG  = 'treestyletab:bookmark-tab-with-dialog';
 export const kCOMMAND_BOOKMARK_TABS_WITH_DIALOG = 'treestyletab:bookmark-tabs-with-dialog';
@@ -134,6 +141,8 @@ export const kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER = 'data-already-group
 export const kFAVICON_IMAGE   = 'favicon-image';
 export const kFAVICON_BUILTIN = 'favicon-builtin';
 export const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions
+export const kFAVICON_SHARING_STATE = 'favicon-sharing-state';
+export const kFAVICON_STICKY_STATE = 'favicon-sticky-state';
 export const kBACKGROUND      = 'background';
 export const kTHROBBER        = 'throbber';
 export const kHIGHLIGHTER     = 'highlighter';
@@ -155,8 +164,16 @@ export const kTAB_STATE_SOUND_PLAYING             = 'sound-playing';
 export const kTAB_STATE_HAS_SOUND_PLAYING_MEMBER  = 'has-sound-playing-member';
 export const kTAB_STATE_MUTED                     = 'muted';
 export const kTAB_STATE_HAS_MUTED_MEMBER          = 'has-muted-member';
+export const kTAB_STATE_AUTOPLAY_BLOCKED          = 'autoplay-blocked';
+export const kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER = 'has-autoplay-blocked-member';
 export const kTAB_STATE_PRIVATE_BROWSING          = 'private-browsing';
 export const kTAB_STATE_HIDDEN                    = 'hidden';
+export const kTAB_STATE_SHARING_CAMERA            = 'sharing-camera';
+export const kTAB_STATE_SHARING_MICROPHONE        = 'sharing-microphone';
+export const kTAB_STATE_SHARING_SCREEN            = 'sharing-screen';
+export const kTAB_STATE_HAS_SHARING_CAMERA_MEMBER     = 'has-sharing-camera-member';
+export const kTAB_STATE_HAS_SHARING_MICROPHONE_MEMBER = 'has-sharing-microphone-member';
+export const kTAB_STATE_HAS_SHARING_SCREEN_MEMBER     = 'has-sharing-screen-member';
 export const kTAB_STATE_ANIMATION_READY           = 'animation-ready';
 export const kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD  = 'not-activated-since-load';
 export const kTAB_STATE_BURSTING                  = 'bursting';
@@ -185,6 +202,7 @@ export const kTAB_STATE_DUPLICATING               = 'duplicating';
 export const kTAB_STATE_RESTORED                  = 'restored';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
 export const kTAB_STATE_GROUP_TAB                 = 'group-tab';
+export const kTAB_STATE_STICKY                    = 'sticky';
 export const kTAB_INTERNAL_STATES = new Set([
   'tab',
   kTAB_STATE_LAST_ROW,
@@ -220,6 +238,8 @@ export const kTAB_SAFE_STATES = new Set([
 export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
+export const kTABBAR_STATE_SCROLLED               = 'scrolled';
+export const kTABBAR_STATE_FULLY_SCROLLED         = 'fully-scrolled';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';
 export const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 export const kTABBAR_STATE_BLOCKING_WITH_SHADE    = 'blocking-shade';
@@ -232,6 +252,7 @@ export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
 export const kTABBAR_STATE_HAS_VISUAL_GAP         = 'has-visual-gap';
 export const kTABBAR_STATE_HOVER_ON_TOP_EDGE      = 'hover-on-top-edge';
 export const kTABBAR_STATE_SCROLLBAR_AUTOHIDE     = 'scrollbar-autohide';
+export const kTABBAR_STATE_FAVICONIZE_PINNED_TABS = 'faviconize-pinned-tabs';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
@@ -319,8 +340,9 @@ export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
 
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_NONE                  = 0;
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED      = 1;
-// 2 is a retired number for a removed feature
+export const kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY         = 4;
 export const kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE                 = 3;
+// 2 is a retired number for a removed feature
 
 export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_ENTIRE_TREE     = 1 << 0;
@@ -361,6 +383,7 @@ export const kTABBAR_UPDATE_REASON_ANIMATION_END = 1 << 3;
 export const kTABBAR_UPDATE_REASON_TAB_OPEN      = 1 << 4;
 export const kTABBAR_UPDATE_REASON_TAB_CLOSE     = 1 << 5;
 export const kTABBAR_UPDATE_REASON_TAB_MOVE      = 1 << 6;
+export const kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE = 1 << 7;
 
 export const kDEFAULT_MIN_INDENT = 3;
 

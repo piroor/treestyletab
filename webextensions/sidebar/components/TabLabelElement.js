@@ -30,6 +30,8 @@ const rtlChars = [
 const reRTL = new RegExp(`[${rtlChars}]`, 'g');
 
 function isRTL(text) {
+  if (!text)
+    return false;
   if (/^\s*\u200f[^\u200e]/.test(text)) // title starting with right-to-left-mark
     return true;
   const textCount = text.replace(/[0-9\s\\\/.,\-+="']/g, '').length; // remove multilengual characters from count
@@ -60,7 +62,7 @@ export class TabLabelElement extends HTMLElement {
 
     if (this.initialized) {
       this._startListening();
-      this._applyAttributes();
+      this.applyAttributes();
       this.updateTextContent();
       return;
     }
@@ -88,7 +90,7 @@ export class TabLabelElement extends HTMLElement {
     content.classList.add(kCONTENT_CLASS_NAME);
 
     this._startListening();
-    this._applyAttributes();
+    this.applyAttributes();
     this.updateTextContent();
   }
 
@@ -116,10 +118,11 @@ export class TabLabelElement extends HTMLElement {
     }
   }
 
-  _applyAttributes() {
+  applyAttributes() {
     // for convenience on customization with custom user styles
     this._content.setAttribute(Constants.kAPI_TAB_ID, this.getAttribute(Constants.kAPI_TAB_ID));
     this._content.setAttribute(Constants.kAPI_WINDOW_ID, this.getAttribute(Constants.kAPI_WINDOW_ID));
+    this._content.dataset.index = this.dataset.index;
   }
 
   updateTextContent() {

@@ -59,15 +59,15 @@ const mItems = [
         title:    browser.i18n.getMessage('config_style_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_style_photon'),
-            key:   'style',
-            value: 'photon',
-            type:  'radio'
-          },
-          {
             title: browser.i18n.getMessage('config_style_proton'),
             key:   'style',
             value: 'proton',
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_style_photon'),
+            key:   'style',
+            value: 'photon',
             type:  'radio'
           },
           {
@@ -169,6 +169,11 @@ const mItems = [
         expert: true
       },
       {
+        title: browser.i18n.getMessage('config_stickyActiveTab_label'),
+        key:   'stickyActiveTab',
+        type:  'checkbox',
+      },
+      {
         title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
         key:   'showDialogInSidebar',
         type:  'checkbox'
@@ -183,6 +188,11 @@ const mItems = [
         enabled: false
       },
       {
+        title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
+        key:   'context_topLevel_toggleSticky',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),
         key:   'context_topLevel_reloadTree',
         type:  'checkbox'
@@ -191,6 +201,22 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_topLevel_reloadDescendants',
         type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
+        key:   'context_topLevel_unblockAutoplayTree',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
+        key:   'context_topLevel_unblockAutoplayDescendants',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
@@ -269,6 +295,11 @@ const mItems = [
         enabled: false
       },
       {
+        title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
+        key:   'context_toggleSticky',
+        type:  'checkbox'
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),
         key:   'context_reloadTree',
         type:  'checkbox'
@@ -277,6 +308,22 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_reloadDescendants',
         type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
+        key:   'context_unblockAutoplayTree',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
+        key:   'context_unblockAutoplayDescendants',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
@@ -1202,7 +1249,13 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_close'),
+            title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleSticky'),
+            key:   'treeDoubleClickBehavior',
+            value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_STICKY,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_treeDoubleClickBehavior_close')}${browser.i18n.getMessage('config_treeDoubleClickBehavior_close_note')}`,
             key:   'treeDoubleClickBehavior',
             value: Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE,
             type:  'radio'
@@ -2039,94 +2092,96 @@ function createItem(id, item, parent) {
   }
 }
 
-for (let i = 0, maxi = mItems.length; i < maxi; i++) {
-  createItem(`browserActionItem:${i}`, mItems[i]);
-}
+if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
+  for (let i = 0, maxi = mItems.length; i < maxi; i++) {
+    createItem(`browserActionItem:${i}`, mItems[i]);
+  }
 
-browser.menus.onShown.addListener((info, _tab) => {
-  if (!info.contexts.includes(MENU_CONTEXT))
-    return;
+  browser.menus.onShown.addListener((info, _tab) => {
+    if (!info.contexts.includes(MENU_CONTEXT))
+      return;
 
-  let updated = false;
-  for (const item of mUpdatableItemsById.values()) {
-    const params = {};
-    if (item.dynamicTitle) {
-      const title = item.title;
-      if (title != item.lastTitle) {
-        item.lastTitle = title;
-        params.title = title;
+    let updated = false;
+    for (const item of mUpdatableItemsById.values()) {
+      const params = {};
+      if (item.dynamicTitle) {
+        const title = item.title;
+        if (title != item.lastTitle) {
+          item.lastTitle = title;
+          params.title = title;
+        }
+      }
+      if (item.type == 'checkbox' || item.type == 'radio') {
+        params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+        if (item.permissions) {
+          Permissions.isGranted(item.permissions)
+            .then(async granted => {
+              if (item.checked == granted)
+                return;
+              item.checked = granted;
+              await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
+              await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+            });
+          delete params.checked;
+        }
+      }
+      if ('visible' in item)
+        params.visible = item.visible;
+      if ('checked' in params || 'title' in params) {
+        browser.menus.update(item.id, params).catch(ApiTabs.createErrorSuppressor());
+        updated = true;
       }
     }
-    if (item.type == 'checkbox' || item.type == 'radio') {
-      params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
-      if (item.permissions) {
-        Permissions.isGranted(item.permissions)
+    if (updated)
+      browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
+  });
+
+  browser.menus.onClicked.addListener((info, _tab) => {
+    const item = mItemsById.get(info.menuItemId);
+    log('onClicked ', { id: info.menuItemId, item });
+    if (!item)
+      return;
+
+    if (item.url) {
+      browser.tabs.create({ url: item.url });
+      return;
+    }
+    if (item.key) {
+      configs[item.key] = 'value' in item ? item.value : !configs[item.key];
+      return;
+    }
+    if (item.permissions) {
+      if (item.checked) {
+        browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
+      }
+      else {
+        browser.permissions.request(item.permissions)
           .then(async granted => {
-            if (item.checked == granted)
-              return;
-            item.checked = granted;
-            await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
-            await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
-          });
-        delete params.checked;
+            if (granted === undefined)
+              granted = await Permissions.isGranted(item.permissions);
+            if (granted) {
+              browser.runtime.sendMessage({
+                type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+                permissions: item.permissions
+              }).catch(_error => {});
+            }
+          })
+          .catch(ApiTabs.createErrorHandler());
       }
+      return;
     }
-    if ('visible' in item)
-      params.visible = item.visible;
-    if ('checked' in params || 'title' in params) {
-      browser.menus.update(item.id, params).catch(ApiTabs.createErrorSuppressor());
-      updated = true;
-    }
-  }
-  if (updated)
-    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
-});
-
-browser.menus.onClicked.addListener((info, _tab) => {
-  const item = mItemsById.get(info.menuItemId);
-  log('onClicked ', { id: info.menuItemId, item });
-  if (!item)
-    return;
-
-  if (item.url) {
-    browser.tabs.create({ url: item.url });
-    return;
-  }
-  if (item.key) {
-    configs[item.key] = 'value' in item ? item.value : !configs[item.key];
-    return;
-  }
-  if (item.permissions) {
-    if (item.checked) {
-      browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
-    }
-    else {
-      browser.permissions.request(item.permissions)
-        .then(async granted => {
-          if (granted === undefined)
-            granted = await Permissions.isGranted(item.permissions);
-          if (granted) {
-            browser.runtime.sendMessage({
-              type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-              permissions: item.permissions
-            }).catch(_error => {});
-          }
-        })
-        .catch(ApiTabs.createErrorHandler());
-    }
-    return;
-  }
-});
+  });
 
 
-function updateExpertOptionsVisibility() {
-  for (const id of mExpertItems) {
-    browser.menus.update(id, { visible: configs.showExpertOptions });
+  function updateExpertOptionsVisibility() {
+    for (const id of mExpertItems) {
+      browser.menus.update(id, { visible: configs.showExpertOptions });
+    }
+    browser.menus.refresh();
   }
-  browser.menus.refresh();
+  configs.$addObserver(key => {
+    if (key == 'showExpertOptions')
+      updateExpertOptionsVisibility();
+  });
+  configs.$loaded.then(updateExpertOptionsVisibility);
 }
-configs.$addObserver(key => {
-  if (key == 'showExpertOptions')
-    updateExpertOptionsVisibility();
-});
-configs.$loaded.then(updateExpertOptionsVisibility);

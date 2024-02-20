@@ -47,6 +47,13 @@ export class TabSoundButtonElement extends HTMLElement {
     this.initialized = true;
   }
 
+  disconnectedCallback() {
+    if (this._reservedUpdate) {
+      this.removeEventListener('mouseover', this._reservedUpdate);
+      this._reservedUpdate = null;
+    }
+  }
+
   invalidate() {
     if (this._reservedUpdate)
       return;
@@ -65,7 +72,9 @@ export class TabSoundButtonElement extends HTMLElement {
 
     const suffix = tab.$TST.multiselected ? '_multiselected' : '' ;
     let key;
-    if (tab.$TST.maybeMuted)
+    if (tab.$TST.maybeAutoplayBlocked)
+      key = `tab_soundButton_autoplayBlocked_tooltip${suffix}`;
+    else if (tab.$TST.maybeMuted)
       key = `tab_soundButton_muted_tooltip${suffix}`;
     else
       key = `tab_soundButton_playing_tooltip${suffix}`;
