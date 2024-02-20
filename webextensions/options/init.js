@@ -946,6 +946,14 @@ async function initExternalAddons() {
 }
 
 function initSync() {
+  const section = document.querySelector('#syncTabsToDeviceOptions');
+  if (Sync.hasExternalProvider()) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  section.classList.remove('hidden');
+
   const deviceInfoNameField = document.querySelector('#syncDeviceInfoName');
   deviceInfoNameField.addEventListener('input', () => {
     if (deviceInfoNameField.$throttling)

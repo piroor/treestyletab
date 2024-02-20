@@ -61,6 +61,10 @@ export function registerExternalProvider(provider) {
   mExternalProvider = provider;
 }
 
+export function hasExternalProvider() {
+  return !!mExternalProvider;
+}
+
 let mMyDeviceInfo = null;
 
 async function getMyDeviceInfo() {

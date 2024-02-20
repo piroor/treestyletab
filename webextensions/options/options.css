@@ -88,6 +88,10 @@ label.has-radio:not(.inline) {
   width: -moz-fit-content;
 }
 
+.hidden {
+  display: none;
+}
+
 
 #style-radiogroup {
   align-content: flex-start;
