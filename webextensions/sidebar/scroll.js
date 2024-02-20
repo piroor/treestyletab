@@ -101,6 +101,7 @@ export function init(scrollPosition) {
     onVirtualScrollViewportUpdated.removeListener(onInitialUpdate);
     if (restoreScrollPosition.scrollPosition != -1)
       mScrollingInternallyCount--;
+    restoreScrollPosition.scrollPosition = -1;
     log('timeout: give up to restore scroll position');
   });
 }
@@ -204,7 +205,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       allRenderableTabsSize - viewPortSize,
       typeof scrollPosition == 'number' ?
         scrollPosition :
-        restoreScrollPosition.scrollPosition > 0 ?
+        restoreScrollPosition.scrollPosition > -1 ?
           restoreScrollPosition.scrollPosition :
           mNormalScrollBox.scrollTop
     )
