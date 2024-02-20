@@ -653,7 +653,8 @@ BackgroundConnection.onMessage.addListener(async message => {
         }
         if (modified.has(Constants.kTAB_STATE_AUDIBLE) ||
             modified.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
-            modified.has(Constants.kTAB_STATE_MUTED)) {
+            modified.has(Constants.kTAB_STATE_MUTED) ||
+            modified.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED)) {
           tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
         }
         if (modified.has(Constants.kTAB_STATE_STICKY))
@@ -1075,6 +1076,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.$TST.toggleState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER, lastMessage.hasSoundPlayingMember);
       tab.$TST.toggleState(Constants.kTAB_STATE_HAS_MUTED_MEMBER, lastMessage.hasMutedMember);
+      tab.$TST.toggleState(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER, lastMessage.hasAutoplayBlockedMember);
       tab.$TST.invalidateElement(TabInvalidationTarget.SoundButton);
     }; break;
 

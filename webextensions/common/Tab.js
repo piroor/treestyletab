@@ -75,11 +75,14 @@ export default class Tab {
     this.lastSoundStateCounts = {
       soundPlaying: 0,
       muted:        0,
+      autoPlayBlocked: 0,
     };
     this.soundPlayingChildrenIds = new Set();
     this.maybeSoundPlayingChildrenIds = new Set();
     this.mutedChildrenIds = new Set();
     this.maybeMutedChildrenIds = new Set();
+    this.autoplayBlockedChildrenIds = new Set();
+    this.maybeAutoplayBlockedChildrenIds = new Set();
 
     this.lastSharingStateCounts = {
       camera:     0,
@@ -256,20 +259,29 @@ export default class Tab {
   //===================================================================
 
   get soundPlaying() {
-    return !!(this.tab && this.tab.audible && !this.tab.mutedInfo.muted);
+    return !!(this.tab?.audible && !this.tab.mutedInfo.muted);
   }
   get maybeSoundPlaying() {
     return (this.soundPlaying ||
             (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
              this.hasChild));
   }
-  get muted() {
-    return !!(this.tab && this.tab.mutedInfo && this.tab.mutedInfo.muted);
-  }
 
+  get muted() {
+    return !!(this.tab?.mutedInfo?.muted);
+  }
   get maybeMuted() {
     return (this.muted ||
             (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+             this.hasChild));
+  }
+
+  get autoplayBlocked() {
+    return this.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED);
+  }
+  get maybeAutoplayBlocked() {
+    return (this.autoplayBlocked ||
+            (this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER) &&
              this.hasChild));
   }
 
@@ -788,6 +800,10 @@ export default class Tab {
         parent.$TST.mutedChildrenIds.add(this.id);
       if (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER))
         parent.$TST.maybeMutedChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED))
+        parent.$TST.autoplayBlockedChildrenIds.add(this.id);
+      if (this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER))
+        parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
       parent.$TST.inheritSoundStateFromChildren();
 
       if (this.states.has(Constants.kTAB_STATE_SHARING_CAMERA))
@@ -815,6 +831,8 @@ export default class Tab {
       oldParent.$TST.maybeSoundPlayingChildrenIds.delete(this.id);
       oldParent.$TST.mutedChildrenIds.delete(this.id);
       oldParent.$TST.maybeMutedChildrenIds.delete(this.id);
+      oldParent.$TST.autoplayBlockedChildrenIds.delete(this.id);
+      oldParent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
       oldParent.$TST.inheritSoundStateFromChildren();
 
       oldParent.$TST.sharingCameraChildrenIds.delete(this.id);
@@ -1332,6 +1350,17 @@ export default class Tab {
           parent.$TST.maybeMutedChildrenIds.add(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.autoplayBlockedChildrenIds.add(this.id);
+      } break;
+      case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
+      } break;
+
       case Constants.kTAB_STATE_SHARING_CAMERA: {
         const parent = this.parent;
         if (parent)
@@ -1501,6 +1530,17 @@ export default class Tab {
           parent.$TST.maybeMutedChildrenIds.delete(this.id);
       } break;
 
+      case Constants.kTAB_STATE_AUTOPLAY_BLOCKED: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.autoplayBlockedChildrenIds.delete(this.id);
+      } break;
+      case Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER: {
+        const parent = this.parent;
+        if (parent)
+          parent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
+      } break;
+
       case Constants.kTAB_STATE_SHARING_CAMERA: {
         const parent = this.parent;
         if (parent)
@@ -1627,6 +1667,19 @@ export default class Tab {
         modifiedCount++;
       }
 
+      const autoplayBlockedCount = this.autoplayBlockedChildrenIds.size + this.maybeAutoplayBlockedChildrenIds.size;
+      if (autoplayBlockedCount != this.lastSoundStateCounts.autoplayBlocked) {
+        this.lastSoundStateCounts.autoplayBlocked = autoplayBlockedCount;
+        this.toggleState(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER, autoplayBlockedCount > 0);
+        if (parent) {
+          if (autoplayBlockedCount > 0)
+            parent.$TST.maybeAutoplayBlockedChildrenIds.add(this.id);
+          else
+            parent.$TST.maybeAutoplayBlockedChildrenIds.delete(this.id);
+        }
+        modifiedCount++;
+      }
+
       if (modifiedCount == 0)
         return;
 
@@ -1638,7 +1691,8 @@ export default class Tab {
         windowId:              this.tab.windowId,
         tabId:                 this.id,
         hasSoundPlayingMember: this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER),
-        hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER)
+        hasMutedMember:        this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER),
+        hasAutoplayBlockedMember: this.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER),
       });
     }, 100);
   }
@@ -2648,6 +2702,7 @@ Tab.onShown            = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
 Tab.onMutedStateChanged      = new EventListenerManager();
+Tab.onAutoplayBlockedStateChanged = new EventListenerManager();
 Tab.onSharingStateChanged    = new EventListenerManager();
 
 Tab.onBeforeCreate     = new EventListenerManager();

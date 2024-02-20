@@ -47,6 +47,8 @@
   "tab_soundButton_muted_tooltip_multiselected": { "message": "Unmute tabs" },
   "tab_soundButton_playing_tooltip": { "message": "Mute tab" },
   "tab_soundButton_playing_tooltip_multiselected": { "message": "Mute tabs" },
+  "tab_soundButton_autoplayBlocked_tooltip": { "message": "Play tab" },
+  "tab_soundButton_autoplayBlocked_tooltip_multiselected": { "message": "Play tabs" },
   "tab_twisty_aria_label": { "message": "Toggle tree #$ID$",
     "placeholders": {
       "id": { "content": "$1", "example": "1" }

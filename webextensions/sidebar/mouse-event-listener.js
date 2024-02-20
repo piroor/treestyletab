@@ -714,10 +714,22 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
   else if (lastMousedown.detail.soundButton &&
            EventUtils.isEventFiredOnSoundButton(event)) {
     log('clicked on sound button');
-    BackgroundConnection.sendMessage({
-      type:  Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON,
-      tabId: tab.id
-    });
+    if (tab.$TST.states.has(Constants.kTAB_STATE_AUTOPLAY_BLOCKED) ||
+        tab.$TST.states.has(Constants.kTAB_STATE_HAS_AUTOPLAY_BLOCKED_MEMBER)) {
+      // Note: there is no built-in handler for this command.
+      // We need to provide something extra module to handle
+      // this command with experiments API.
+      BackgroundConnection.sendMessage({
+        type:  Constants.kCOMMAND_UNBLOCK_AUTOPLAY_FROM_SOUND_BUTTON,
+        tabId: tab.id,
+      });
+    }
+    else {
+      BackgroundConnection.sendMessage({
+        type:  Constants.kCOMMAND_TOGGLE_MUTED_FROM_SOUND_BUTTON,
+        tabId: tab.id,
+      });
+    }
   }
   else if (lastMousedown.detail.closebox &&
            EventUtils.isEventFiredOnClosebox(event)) {
