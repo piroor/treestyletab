@@ -736,7 +736,7 @@ async function onShown(info, contextTab) {
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_unblockAutoplay', {
-      visible: emulate && contextTab?.$TST.maybeAutoplayBlocked,
+      visible: emulate && contextTab?.$TST.autoplayBlocked,
       multiselected,
       title: contextTab && Commands.getMenuItemTitle(mItemsById.context_unblockAutoplay, {
         multiselected,
