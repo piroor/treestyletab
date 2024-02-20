@@ -15,6 +15,7 @@
    * Apply the option to place opened tabs next to the last related child correctly, when multiple tabs are opened from a pinned tab.
    * Avoid unexpected restoration of blank dialog windows by Ctrl-Shift-T on Firefox 116 and later.
    * Restore tree structure more correctly for reopened tabs which were closed at a time.
+   * Lock scroll position temporary when a tree near the tab bar end is collapsed, just like as the case when tabs are closed.
    * Many API improvements.
      * Introduce a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
      * Introduce new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
