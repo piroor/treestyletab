@@ -70,6 +70,21 @@ const mItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_unblockAutoplay': {
+    title:              browser.i18n.getMessage('tabContextMenu_unblockAutoplay_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_unblockAutoplay_label_multiselected')
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_topLevel_unblockAutoplayTree': {
+    titleTree:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
+    titleMultiselectedTree:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'context_topLevel_unblockAutoplayDescendants': {
+    titleDescendant:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
+    titleMultiselectedDescendant:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
+  },
   'context_toggleMuteTab': {
     titleMute:                browser.i18n.getMessage('tabContextMenu_mute_label'),
     titleUnmute:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
@@ -686,6 +701,7 @@ async function onShown(info, contextTab) {
         [];
     const hasChild              = contextTab && contextTabs.some(tab => tab.$TST.hasChild);
     const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
+    const { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant } = Commands.getAutoplayBlockedState(contextTabs);
 
     if (mOverriddenContext)
       return onOverriddenMenuShown(info, contextTab, windowId);
@@ -718,6 +734,27 @@ async function onShown(info, contextTab) {
       visible: emulate && contextTab && configs.context_topLevel_reloadDescendants,
       enabled: hasChild,
       multiselected
+    }) && modifiedItemsCount++;
+    updateItem('context_unblockAutoplay', {
+      visible: emulate && contextTab?.$TST.maybeAutoplayBlocked,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
+        multiselected,
+      }),
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_unblockAutoplayTree', {
+      visible: emulate && hasChild && hasAutoplayBlockedTab && configs.context_topLevel_unblockAutoplayTree,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_unblockAutoplayTree, {
+        multiselected,
+      }),
+    }) && modifiedItemsCount++;
+    updateItem('context_topLevel_unblockAutoplayDescendants', {
+      visible: emulate && hasChild && hasAutoplayBlockedDescendant && configs.context_topLevel_unblockAutoplayDescendants,
+      multiselected,
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_unblockAutoplayDescendants, {
+        multiselected,
+      }),
     }) && modifiedItemsCount++;
     updateItem('context_toggleMuteTab', {
       visible: emulate && contextTab,

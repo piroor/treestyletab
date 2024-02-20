@@ -185,6 +185,8 @@ export const configs = new Configs({
 
   context_reloadTree: true,
   context_reloadDescendants: false,
+  context_unblockAutoplayTree: true,
+  context_unblockAutoplayDescendants: false,
   context_toggleMuteTree: true,
   context_toggleMuteDescendants: false,
   context_closeTree: true,
@@ -202,6 +204,8 @@ export const configs = new Configs({
 
   context_topLevel_reloadTree: false,
   context_topLevel_reloadDescendants: false,
+  context_topLevel_unblockAutoplayTree: false,
+  context_topLevel_unblockAutoplayDescendants: false,
   context_topLevel_toggleMuteTree: false,
   context_topLevel_toggleMuteDescendants: false,
   context_topLevel_closeTree: false,
@@ -367,6 +371,7 @@ export const configs = new Configs({
 
   // misc.
   showExpertOptions: false,
+  exposeUnblockAutoplayFeatures: false,
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
   defaultBookmarkParentId: 'toolbar_____', // 'unfiled_____' for Firefox 83 and olders,
   incrementalSearchTimeout: 1000, // same to the default value of Firefox's "ui.menu.incremental_search.timeout"

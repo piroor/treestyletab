@@ -203,6 +203,22 @@ const mItems = [
         type:  'checkbox'
       },
       {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
+        key:   'context_topLevel_unblockAutoplayTree',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
+        key:   'context_topLevel_unblockAutoplayDescendants',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
+      },
+      {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
         key:   'context_topLevel_toggleMuteTree',
         type:  'checkbox'
@@ -292,6 +308,22 @@ const mItems = [
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_reloadDescendants',
         type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
+        key:   'context_unblockAutoplayTree',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
+      },
+      {
+        title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
+        key:   'context_unblockAutoplayDescendants',
+        type:  'checkbox',
+        get visible() {
+          return configs.exposeUnblockAutoplayFeatures;
+        },
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),

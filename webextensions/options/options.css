@@ -88,7 +88,8 @@ label.has-radio:not(.inline) {
   width: -moz-fit-content;
 }
 
-.hidden {
+.hidden,
+:root:not(.expose-unblock-autoplay-features) .unblock-autoplay-features {
   display: none;
 }
 

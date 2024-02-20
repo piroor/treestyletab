@@ -572,6 +572,7 @@ configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     document.documentElement.classList.toggle('successor-tab-support', typeof browser.tabs.moveInSuccession == 'function');
+    document.documentElement.classList.toggle('expose-unblock-autoplay-features', configs.exposeUnblockAutoplayFeatures);
 
     initAccesskeys();
     initLogsButton();

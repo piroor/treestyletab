@@ -117,6 +117,22 @@ export function getUnmutedState(rootTabs) {
   return { hasUnmutedTab, hasUnmutedDescendant };
 }
 
+export function getAutoplayBlockedState(rootTabs) {
+  let hasAutoplayBlockedTab        = false;
+  let hasAutoplayBlockedDescendant = false;
+  const rootTabsSet = new Set(rootTabs);
+  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+    if (!tab.$TST.autoplayBlocked)
+      continue;
+    hasAutoplayBlockedTab = true;
+    if (!rootTabsSet.has(tab))
+      hasAutoplayBlockedDescendant = true;
+    if (hasAutoplayBlockedTab && hasAutoplayBlockedDescendant)
+      break;
+  }
+  return { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant };
+}
+
 export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, hasUnmutedDescendant, sticky } = {}) {
   const muteTabSuffix        = unmuted ? 'Mute' : 'Unmute';
   const muteTreeSuffix       = hasUnmutedTab ? 'Mute' : 'Unmute';

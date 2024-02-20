@@ -300,6 +300,12 @@
   "context_toggleMuteDescendants_label_unmute":               { "message": "Unmu&te Descendants" },
   "context_toggleMuteDescendants_label_multiselected_unmute": { "message": "Unmu&te Descendants of Selected tabs" },
   "context_toggleMuteDescendants_command":                    { "message": "Mute/Unmute Descendants" },
+  "context_unblockAutoplayTree_label":                        { "message": "P&lay this Tree" },
+  "context_unblockAutoplayTree_label_multiselected":          { "message": "P&lay Selected Trees" },
+  "context_unblockAutoplayTree_command":                      { "message": "Play this Tree" },
+  "context_unblockAutoplayDescendants_label":                 { "message": "Pl&ay Descendants" },
+  "context_unblockAutoplayDescendants_label_multiselected":   { "message": "Pl&ay Descendants of Selected tabs" },
+  "context_unblockAutoplayDescendants_command":               { "message": "Play Descendants" },
   "context_closeTree_label": { "message": "&Close this Tree" },
   "context_closeTree_label_multiselected": { "message": "&Close Selected Trees" },
   "context_closeTree_command": { "message": "Close this Tree" },
@@ -838,6 +844,7 @@
   "tabContextMenu_newTab_label":      { "message": "Ne&w Tab" },
 
   "tabContextMenu_reload_label":      { "message": "&Reload Tab" },
+  "tabContextMenu_unblockAutoplay_label": { "message": "P&lay Tab" },
   "tabContextMenu_mute_label":        { "message": "&Mute Tab" },
   "tabContextMenu_unmute_label":      { "message": "Un&mute Tab" },
 

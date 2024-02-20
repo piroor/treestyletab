@@ -68,6 +68,18 @@ const mTabItemsById = {
     title:              browser.i18n.getMessage('context_reloadDescendants_label'),
     titleMultiselected: browser.i18n.getMessage('context_reloadDescendants_label_multiselected')
   },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'unblockAutoplayTree': {
+    titleTree:                browser.i18n.getMessage('context_unblockAutoplayTree_label'),
+    titleMultiselectedTree:   browser.i18n.getMessage('context_unblockAutoplayTree_label_multiselected'),
+    requireAutoplayBlockedTab: true,
+  },
+  // This item won't be handled by the onClicked handler, so you may need to handle it with something experiments API.
+  'unblockAutoplayDescendants': {
+    titleDescendant:                browser.i18n.getMessage('context_unblockAutoplayDescendants_label'),
+    titleMultiselectedDescendant:   browser.i18n.getMessage('context_unblockAutoplayDescendants_label_multiselected'),
+    requireAutoplayBlockedDescendant: true,
+  },
   'toggleMuteTree': {
     titleMuteTree:                browser.i18n.getMessage('context_toggleMuteTree_label_mute'),
     titleMultiselectedMuteTree:   browser.i18n.getMessage('context_toggleMuteTree_label_multiselected_mute'),
@@ -339,7 +351,7 @@ function updateItem(id, params) {
   }, browser.runtime);
 }
 
-function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false, sticky = false } = {}) {
+function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false, hasAutoplayBlockedTab = false, hasAutoplayBlockedDescendant = false, sticky = false } = {}) {
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -360,7 +372,9 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
       let visible = !(item.configKey in configs) || configs[item.configKey];
       if (forceVisible !== null)
         visible = forceVisible;
-      if (item.hideOnMultiselected && multiselected)
+      if ((item.hideOnMultiselected && multiselected) ||
+          (item.requireAutoplayBlockedTab && !hasAutoplayBlockedTab) ||
+          (item.requireAutoplayBlockedDescendant && !hasAutoplayBlockedDescendant))
         visible = false;
       if (visible) {
         if (lastSeparator) {
@@ -396,10 +410,10 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
   return { updated, visibleItemsCount };
 }
 
-async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky } = {}) {
+async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky } = {}) {
   let updated = false;
 
-  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
+  const groupedItems = updateItemsVisibility(mGroupedTabItems, { multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky });
   if (groupedItems.updated)
     updated = true;
 
@@ -417,7 +431,7 @@ async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant,
     updated = true;
   }
 
-  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
+  const topLevelItems = updateItemsVisibility(mTabItems, { forceVisible: grouped ? false : null, multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky });
   if (topLevelItems.updated)
     updated = true;
 
@@ -593,11 +607,14 @@ async function onTabContextMenuShown(info, tab) {
   const subtreeCollapsed = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.subtreeCollapsed);
   const grouped          = contextTabs.length > 0 && contextTabs.some(tab => tab.$TST.isGroupTab);
   const { hasUnmutedTab, hasUnmutedDescendant } = Commands.getUnmutedState(contextTabs);
+  const { hasAutoplayBlockedTab, hasAutoplayBlockedDescendant } = Commands.getAutoplayBlockedState(contextTabs);
 
   let updated = await updateItems({
     multiselected,
     hasUnmutedTab,
     hasUnmutedDescendant,
+    hasAutoplayBlockedTab,
+    hasAutoplayBlockedDescendant,
     sticky: tab?.$TST.sticky,
   });
   if (mLastContextTabId != contextTabId)

@@ -295,7 +295,13 @@
   "context_toggleMuteDescendants_label_multiselected_mute":   { "message": "選択したタブの配下のタブをすべてミュート(&T)" },
   "context_toggleMuteDescendants_label_unmute":               { "message": "このタブの配下のタブをすべてミュート解除(&T)" },
   "context_toggleMuteDescendants_label_multiselected_unmute": { "message": "選択したタブの配下のタブをすべてミュート解除(&T)" },
-  "context_toggleMuteDescendants_command":                    { "message": "このタブ派以下のタブをすべてミュート/ミュート解除" },
+  "context_toggleMuteDescendants_command":                    { "message": "このタブ配下のタブをすべてミュート/ミュート解除" },
+  "context_unblockAutoplayTree_label":                        { "message": "このツリーのメディアを再生(&L)" },
+  "context_unblockAutoplayTree_label_multiselected":          { "message": "選択したツリーのメディアを再生(&L)" },
+  "context_unblockAutoplayTree_command":                      { "message": "このツリーのメディアを再生" },
+  "context_unblockAutoplayDescendants_label":                 { "message": "このタブ配下のタブのメディアを再生(&A)" },
+  "context_unblockAutoplayDescendants_label_multiselected":   { "message": "選択したタブの配下のタブのメディアを再生(&A)" },
+  "context_unblockAutoplayDescendants_command":               { "message": "このタブ配下のタブのメディアを再生" },
   "context_reloadTree_command": { "message": "このツリーを再読み込み" },
   "context_reloadDescendants_label": { "message": "このタブの配下のタブをすべて再読み込み(&E)" },
   "context_reloadDescendants_label_multiselected": { "message": "選択したタブの配下のタブをすべて再読み込み(&E)" },
@@ -835,6 +841,7 @@
   "tabContextMenu_newTab_label":      { "message": "新しいタブ(&W)" },
 
   "tabContextMenu_reload_label":      { "message": "タブを再読み込み(&R)" },
+  "tabContextMenu_unblockAutoplay_label": { "message": "タブのメディアを再生(&L)" },
   "tabContextMenu_mute_label":        { "message": "タブをミュート(&M)" },
   "tabContextMenu_unmute_label":      { "message": "タブのミュートを解除(&M)" },
 
