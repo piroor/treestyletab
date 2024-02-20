@@ -99,6 +99,8 @@ export function init(scrollPosition) {
   wait(1000).then(() => {
     mNormalScrollBox.removeEventListener('overflow', onInitialOverflow);
     onVirtualScrollViewportUpdated.removeListener(onInitialUpdate);
+    if (restoreScrollPosition.scrollPosition != -1)
+      mScrollingInternallyCount--;
     log('timeout: give up to restore scroll position');
   });
 }
