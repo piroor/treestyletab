@@ -43,7 +43,7 @@ const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp'
 //       { id:   "identifier of the device",
 //         name: "name of the device",
 //         type: "type of the device (desktop, mobile, and so on)" }
-//   * sendTabsToDevice(tabs, device)
+//   * sendTabsToDevice(tabs, deviceId)
 //     - Returns nothing.
 //     - Sends URLs of given tabs to the specified device.
 //     - The device is one of values returned by getOtherDevices().
