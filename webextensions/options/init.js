@@ -384,12 +384,12 @@ async function updateBookmarksUI(enabled) {
 }
 
 async function initOtherDevices() {
-  await Sync.waitUntilDeviceInfoInitialized();
+  const devices = await Sync.getOtherDevices();
   const container = document.querySelector('#otherDevices');
   const range = document.createRange();
   range.selectNodeContents(container);
   range.deleteContents();
-  for (const device of Sync.getOtherDevices()) {
+  for (const device of devices) {
     const icon = device.icon ? `<img src="/resources/icons/${sanitizeForHTMLText(device.icon)}.svg">` : '';
     const contents = range.createContextualFragment(`
       <li id="otherDevice:${sanitizeForHTMLText(String(device.id))}"
