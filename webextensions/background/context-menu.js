@@ -604,12 +604,13 @@ async function onTabContextMenuShown(info, tab) {
     return; // Skip further operations if the menu was already reopened on a different context tab.
 
   for (const item of mTabItems) {
+    let newVisible;
     let newEnabled;
     if (item.id == 'sendTreeToDevice') {
+      newVisible = contextTabs.filter(Sync.isSendableTab).length > 0;
       newEnabled = (
         hasChild &&
-        Sync.getOtherDevices().length > 0 &&
-        contextTabs.filter(Sync.isSendableTab).length > 0
+        Sync.getOtherDevices().length > 0
       );
     }
     else if (item.requireTree) {
@@ -638,12 +639,15 @@ async function onTabContextMenuShown(info, tab) {
       continue;
     }
 
-    if (newEnabled == !!item.enabled)
+    if (newVisible == !!item.visible &&
+        newEnabled == !!item.enabled)
       continue;
 
-    const params = {
-      enabled: item.enabled = newEnabled
-    };
+    const params = {};
+    if (newVisible != !!item.visible)
+      params.visible = item.visible = newVisible;
+    if (newEnabled != !!item.enabled)
+      params.enabled = item.enabled = newEnabled;
 
     updateItem(item.id, params);
     updateItem(`grouped:${item.id}`, params);

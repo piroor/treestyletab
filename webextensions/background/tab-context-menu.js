@@ -794,18 +794,17 @@ async function onShown(info, contextTab) {
 
     // Not implemented yet as a built-in. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
-      visible: emulate && contextTab && mSharingService,
+      visible: emulate && contextTab && mSharingService && Sync.isSendableTab(contextTab),
     }) && modifiedItemsCount++;
 
     updateItem('context_sendTabsToDevice', {
-      visible: emulate && contextTab,
-      enabled: contextTabs.filter(Sync.isSendableTab).length > 0,
+      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected,
       count: contextTabs.length
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_sendTreeToDevice', {
-      visible: emulate && contextTab && configs.context_topLevel_sendTreeToDevice && hasChild,
-      enabled: hasChild && contextTabs.filter(Sync.isSendableTab).length > 0,
+      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0 && configs.context_topLevel_sendTreeToDevice && hasChild,
+      enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
 
