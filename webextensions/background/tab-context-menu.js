@@ -738,7 +738,7 @@ async function onShown(info, contextTab) {
     updateItem('context_unblockAutoplay', {
       visible: emulate && contextTab?.$TST.maybeAutoplayBlocked,
       multiselected,
-      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
+      title: contextTab && Commands.getMenuItemTitle(mItemsById.context_unblockAutoplay, {
         multiselected,
       }),
     }) && modifiedItemsCount++;
