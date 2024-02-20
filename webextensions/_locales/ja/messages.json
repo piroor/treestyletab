@@ -872,6 +872,7 @@
   "tabContextMenu_close_label":       { "message": "タブを閉じる(&C)" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "タブを再読み込み(&R)" },
+  "tabContextMenu_unblockAutoplay_label_multiselected": { "message": "タブのメディアを再生(&L)" },
   "tabContextMenu_mute_label_multiselected":        { "message": "タブをミュート(&M)" },
   "tabContextMenu_unmute_label_multiselected":      { "message": "タブのミュートを解除(&M)" },
 

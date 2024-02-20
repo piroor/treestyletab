@@ -876,6 +876,7 @@
   "tabContextMenu_close_label":       { "message": "&Close Tab" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Tabs" },
+  "tabContextMenu_unblockAutoplay_label_multiselected": { "message": "P&lay Tab" },
   "tabContextMenu_mute_label_multiselected":        { "message": "&Mute Tabs" },
   "tabContextMenu_unmute_label_multiselected":      { "message": "Un&mute Tabs" },
 
