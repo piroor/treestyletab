@@ -336,14 +336,14 @@ export async function init() {
 // Firefox does not provide any API to access to the sharing service of the platform.
 // We need to provide it as experiments API or something way.
 // This module is designed to work with a service which has features:
-//   * async listServices(tabId)
+//   * async listServices(tab)
 //     - Returns an array of sharing services on macOS.
 //     - Retruned array should have 0 or more items like:
 //       { name:  "service name",
 //         title: "title for a menu item",
 //         image: "icon image URL" }
 //     - Returned array may contain a special item with the name "share-more".
-//   * share(tabId, shareName = null)
+//   * share(tab, shareName = null)
 //     - Returns nothing.
 //     - Shares the specified tab with the specified service.
 //       The second argument is optional because it is required only on macOS.
@@ -1098,7 +1098,7 @@ async function onClick(info, contextTab) {
       break;
     case 'context_shareTabURL':
       if (mSharingService)
-        mSharingService.shareTabs(multiselectedTabs || [contextTab]);
+        mSharingService.share(contextTab);
       break;
     case 'context_sendTabsToDevice:all':
       Sync.sendTabsToAllDevices(multiselectedTabs || [contextTab]);
@@ -1230,7 +1230,7 @@ async function onClick(info, contextTab) {
       if (mSharingService &&
           contextTab &&
           shareTabsMatch)
-        mSharingService.shareTabs(multiselectedTabs || [contextTab], shareTabsMatch[1]);
+        mSharingService.share(contextTab, shareTabsMatch[1]);
 
       const sendTabsToDeviceMatch = info.menuItemId.match(/^context_sendTabsToDevice:device:(.+)$/);
       if (contextTab &&
