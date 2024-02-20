@@ -115,6 +115,11 @@ export class TabElement extends HTMLElement {
     substance.setAttribute('draggable', true);
     this.appendChild(substance);
 
+    const backgroundBase = document.createElement('span');
+    backgroundBase.classList.add(Constants.kBACKGROUND);
+    backgroundBase.classList.add('base');
+    substance.appendChild(backgroundBase);
+
     const background = document.createElement('span');
     background.classList.add(Constants.kBACKGROUND);
     substance.appendChild(background);

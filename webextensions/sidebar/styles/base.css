@@ -649,6 +649,13 @@ tab-item .background {
   z-index: var(--tab-background-z-index);
 }
 
+tab-item .background.base {
+  display: none;
+}
+.sticky-tabs-container tab-item .background.base {
+  display: inline-block;
+}
+
 tab-item .extra-items-container.behind {
   z-index: var(--tab-extra-contents-behind-z-index);
 }

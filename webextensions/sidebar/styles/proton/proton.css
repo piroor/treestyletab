@@ -274,18 +274,18 @@ tab-item.faviconized .background {
   top: 0;
 }
 
-tab-item.active .background,
-tab-item.active tab-item-substance:hover .background,
-tab-item.bundled-active .background,
-tab-item.bundled-active tab-item-substance:hover .background,
-:root.mutiple-highlighted tab-item.highlighted .background,
-:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background {
+tab-item.active .background:not(.base),
+tab-item.active tab-item-substance:hover .background:not(.base),
+tab-item.bundled-active .background:not(.base),
+tab-item.bundled-active tab-item-substance:hover .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background:not(.base) {
   box-shadow: 0 0 var(--tab-dropshadow-blur) rgba(0, 0, 0, 0.4);
   outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border, currentcolor));
   outline-offset: -1px;
 }
 
-tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background,
+tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background:not(.base),
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
@@ -305,15 +305,12 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
 }
 
 
-.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background {
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background.base {
   background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
   background-image: var(--browser-bg-images, none);
   background-position: var(--browser-bg-position, left);
   background-size: var(--browser-bg-size, auto);
   background-repeat: var(--browser-bg-repeat, none);
-}
-.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky tab-item-substance:hover .background {
-  /* TODO: set mixed color of background and hover-shadow */
   opacity: 1;
 }
 
