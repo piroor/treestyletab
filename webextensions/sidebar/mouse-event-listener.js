@@ -686,7 +686,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         if (!confirmed)
           return;
         const tabIds = tabs.map(tab => tab.id);
-        Scroll.tryLockPosition(tabIds);
+        Scroll.tryLockPosition(tabIds, Scroll.LOCK_REASON_REMOVE);
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
           tabIds
@@ -702,7 +702,14 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
   else if (lastMousedown.detail.twisty &&
            EventUtils.isEventFiredOnTwisty(event)) {
     log('clicked on twisty');
-    if (tab.$TST.hasChild)
+    if (tab.$TST.hasChild) {
+      if (!tab.$TST.subtreeCollapsed) // going to collapse
+        Scroll.tryLockPosition(
+          tab.$TST.descendants.filter(tab => !tab.$TST.collapsed).map(tab => tab.id),
+          Scroll.LOCK_REASON_COLLAPSE
+        );
+      else // going to expand
+        Scroll.tryUnlockPosition(tab.$TST.descendants.map(tab => tab.id));
       BackgroundConnection.sendMessage({
         type:            Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
         tabId:           tab.id,
@@ -710,6 +717,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         manualOperation: true,
         stack:           configs.debug && new Error().stack
       });
+    }
   }
   else if (lastMousedown.detail.soundButton &&
            EventUtils.isEventFiredOnSoundButton(event)) {
@@ -752,7 +760,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         if (!confirmed)
           return;
         const tabIds = tabsToBeClosed.map(tab => tab.id);
-        Scroll.tryLockPosition(tabIds);
+        Scroll.tryLockPosition(tabIds, Scroll.LOCK_REASON_REMOVE);
         BackgroundConnection.sendMessage({
           type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
           tabIds
@@ -1023,7 +1031,7 @@ async function onDblClick(event) {
           //event.stopPropagation();
           //event.preventDefault();
           const tabIds = [livingTab.id];
-          Scroll.tryLockPosition(tabIds);
+          Scroll.tryLockPosition(tabIds, Scroll.LOCK_REASON_REMOVE);
           BackgroundConnection.sendMessage({
             type:   Constants.kCOMMAND_REMOVE_TABS_BY_MOUSE_OPERATION,
             tabIds

@@ -59,6 +59,9 @@ function log(...args) {
 }
 
 
+export const LOCK_REASON_REMOVE   = 'remove';
+export const LOCK_REASON_COLLAPSE = 'collapse';
+
 const mPinnedScrollBox  = document.querySelector('#pinned-tabs-container');
 const mNormalScrollBox  = document.querySelector('#normal-tabs-container');
 const mTabBar           = document.querySelector('#tabbar');
@@ -370,14 +373,14 @@ function updateStickyTabs(renderableTabs) {
 
   const canBeStickyTabs = renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
   log('canBeStickyTabs ', canBeStickyTabs);
-  const removedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedTabsCount || 0);
+  const removedOrCollapsedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedOrCollapsedTabsCount || 0);
   for (const tab of canBeStickyTabs.slice(0).reverse()) { // first try: find bottom sticky tabs from bottom
     const index = renderableTabs.indexOf(tab);
     if (index > -1 &&
         index > (lastInViewportIndex - stickyTabIdsBelow.size) &&
         mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax &&
         (index - (lastInViewportIndex - stickyTabIdsBelow.size) > 1 ||
-         removedTabsCount == 0)) {
+         removedOrCollapsedTabsCount == 0)) {
       stickyTabIdsBelow.add(tab.id);
       continue;
     }
@@ -1208,7 +1211,7 @@ CollapseExpand.onUpdated.addListener((tab, options) => {
 // Simulate "lock tab sizing while closing tabs via mouse click" behavior of Firefox itself
 // https://github.com/piroor/treestyletab/issues/2691
 // https://searchfox.org/mozilla-central/rev/27932d4e6ebd2f4b8519865dad864c72176e4e3b/browser/base/content/tabbrowser-tabs.js#1207
-export function tryLockPosition(tabIds) {
+export function tryLockPosition(tabIds, reason) {
   if (!configs.simulateLockTabSizing ||
       tabIds.every(id => {
         const tab = Tab.get(id);
@@ -1218,7 +1221,8 @@ export function tryLockPosition(tabIds) {
 
   // Don't lock scroll position when the last tab is closed.
   const lastTab = Tab.getLastVisibleTab();
-  if (tabIds.includes(lastTab.id)) {
+  if (reason == LOCK_REASON_REMOVE &&
+      tabIds.includes(lastTab.id)) {
     if (tryLockPosition.tabIds.size > 0) {
       // but we need to add tabs to the list of "close with locked scroll position"
       // tabs to prevent unexpected unlocking.
@@ -1239,20 +1243,41 @@ export function tryLockPosition(tabIds) {
 
   log('tryLockPosition');
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
-  const count = parseInt(spacer.dataset.removedTabsCount || 0) + 1;
+  const count = tryLockPosition.tabIds.size;
   spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
-  spacer.dataset.removedTabsCount = count;
+  spacer.dataset.removedOrCollapsedTabsCount = count;
 
-  if (!tryUnlockPosition.listening) {
-    tryUnlockPosition.listening = true;
-    window.addEventListener('mousemove', tryUnlockPosition);
-    window.addEventListener('mouseout', tryUnlockPosition);
+  if (!tryFinishPositionLocking.listening) {
+    tryFinishPositionLocking.listening = true;
+    window.addEventListener('mousemove', tryFinishPositionLocking);
+    window.addEventListener('mouseout', tryFinishPositionLocking);
   }
 }
 tryLockPosition.tabIds = new Set();
 
-function tryUnlockPosition(event) {
-  log('tryUnlockPosition ', event);
+export function tryUnlockPosition(tabIds) {
+  if (!configs.simulateLockTabSizing ||
+      tabIds.every(id => {
+        const tab = Tab.get(id);
+        return !tab || tab.pinned || tab.hidden;
+      }))
+    return;
+
+  for (const id of tabIds) {
+    tryLockPosition.tabIds.delete(id);
+  }
+
+  log('tryUnlockPosition');
+  const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
+  const count = tryLockPosition.tabIds.size;
+  setTimeout(() => {
+    spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
+    spacer.dataset.removedOrCollapsedTabsCount = count;
+  }, shouldApplyAnimation() ? Math.max(0, configs.collapseDuration) : 0);
+}
+
+function tryFinishPositionLocking(event) {
+  log('tryFinishPositionLocking ', event);
   switch (event && event.type) {
     case 'mouseout':
       const relatedTarget = event.relatedTarget;
@@ -1262,7 +1287,7 @@ function tryUnlockPosition(event) {
       }
 
     case 'mousemove':
-      if (tryUnlockPosition.contextMenuOpen ||
+      if (tryFinishPositionLocking.contextMenuOpen ||
           (event.type == 'mousemove' && event.target.closest('#tabContextMenu'))) {
         log(' => ignore events while the context menu is opened');
         return;
@@ -1291,31 +1316,31 @@ function tryUnlockPosition(event) {
       break;
   }
 
-  window.removeEventListener('mousemove', tryUnlockPosition);
-  window.removeEventListener('mouseout', tryUnlockPosition);
-  tryUnlockPosition.listening = false;
+  window.removeEventListener('mousemove', tryFinishPositionLocking);
+  window.removeEventListener('mouseout', tryFinishPositionLocking);
+  tryFinishPositionLocking.listening = false;
 
   tryLockPosition.tabIds.clear();
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
-  spacer.dataset.removedTabsCount = 0;
+  spacer.dataset.removedOrCollapsedTabsCount = 0;
   spacer.style.minHeight = '';
   onPositionUnlocked.dispatch();
 }
-tryUnlockPosition.contextMenuOpen = false;
+tryFinishPositionLocking.contextMenuOpen = false;
 
 browser.menus.onShown.addListener((info, tab) => {
-  tryUnlockPosition.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == TabsStore.getCurrentWindowId());
+  tryFinishPositionLocking.contextMenuOpen = info.contexts.includes('tab') && (tab.windowId == TabsStore.getCurrentWindowId());
 });
 
 browser.menus.onHidden.addListener((_info, _tab) => {
-  tryUnlockPosition.contextMenuOpen = false;
+  tryFinishPositionLocking.contextMenuOpen = false;
 });
 
 browser.tabs.onCreated.addListener(_tab => {
-  tryUnlockPosition();
+  tryFinishPositionLocking();
 });
 
 browser.tabs.onRemoved.addListener(tabId => {
   if (!tryLockPosition.tabIds.has(tabId))
-    tryUnlockPosition();
+    tryFinishPositionLocking();
 });
