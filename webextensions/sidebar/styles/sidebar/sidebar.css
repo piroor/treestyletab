@@ -14,7 +14,7 @@
  * The Original Code is the SidebarStyleTab.
  * 
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2019
+ * Portions created by the Initial Developer are Copyright (C) 2010-2024
  * the Initial Developer. All Rights Reserved.
  * 
  * Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
@@ -121,7 +121,7 @@ body,
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 tab-item-substance {
   border-top: 1px solid transparent;
-  height: 2.2em;     /* height including border! */
+  min-height: 2.2em;     /* height including border! */
   padding: 0.075em 3px 0.075em 2px;
   z-index: 0;
 }
