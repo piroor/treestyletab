@@ -2863,6 +2863,12 @@ Tab.compare = (a, b) => a.index - b.index;
 
 Tab.sort = tabs => tabs.length == 0 ? tabs : tabs.sort(Tab.compare);
 
+Tab.uniqTabsAndDescendantsSet = tabs => {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(Tab.compare);
+}
+
 Tab.dumpAll = windowId => {
   if (!configs.debug)
     return;

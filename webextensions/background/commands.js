@@ -39,14 +39,8 @@ export const onTabsClosing = new EventListenerManager();
 export const onMoveUp      = new EventListenerManager();
 export const onMoveDown    = new EventListenerManager();
 
-function uniqTabsAndDescendantsSet(tabs) {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(Tab.compare);
-}
-
 export function reloadTree(tabs) {
-  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(tabs)) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
@@ -54,7 +48,7 @@ export function reloadTree(tabs) {
 
 export function reloadDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (rootTabsSet.has(tab))
       continue;
     browser.tabs.reload(tab.id)
@@ -69,7 +63,7 @@ function isUnmuted(tab) {
 export function toggleMuteTree(tabs) {
   const tabsToUpdate = [];
   let shouldMute = false;
-  for (const tab of uniqTabsAndDescendantsSet(tabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(tabs)) {
     if (!shouldMute && isUnmuted(tab))
       shouldMute = true;
     tabsToUpdate.push(tab);
@@ -86,7 +80,7 @@ export function toggleMuteDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
   const tabsToUpdate = [];
   let shouldMute = false;
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (rootTabsSet.has(tab))
       continue;
     if (!shouldMute && isUnmuted(tab))
@@ -105,7 +99,7 @@ export function getUnmutedState(rootTabs) {
   let hasUnmutedTab        = false;
   let hasUnmutedDescendant = false;
   const rootTabsSet = new Set(rootTabs);
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (!isUnmuted(tab))
       continue;
     hasUnmutedTab = true;
@@ -121,7 +115,7 @@ export function getAutoplayBlockedState(rootTabs) {
   let hasAutoplayBlockedTab        = false;
   let hasAutoplayBlockedDescendant = false;
   const rootTabsSet = new Set(rootTabs);
-  for (const tab of uniqTabsAndDescendantsSet(rootTabs)) {
+  for (const tab of Tab.uniqTabsAndDescendantsSet(rootTabs)) {
     if (!tab.$TST.autoplayBlocked)
       continue;
     hasAutoplayBlockedTab = true;
@@ -154,7 +148,7 @@ export function getMenuItemTitle(item, { multiselected, unmuted, hasUnmutedTab, 
 }
 
 export async function closeTree(tabs) {
-  tabs = uniqTabsAndDescendantsSet(tabs);
+  tabs = Tab.uniqTabsAndDescendantsSet(tabs);
   const windowId = tabs[0].windowId;
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
@@ -165,7 +159,7 @@ export async function closeTree(tabs) {
 
 export async function closeDescendants(rootTabs) {
   const rootTabsSet = new Set(rootTabs);
-  const tabs     = uniqTabsAndDescendantsSet(rootTabs).filter(tab => !rootTabsSet.has(tab));
+  const tabs     = Tab.uniqTabsAndDescendantsSet(rootTabs).filter(tab => !rootTabsSet.has(tab));
   const windowId = rootTabs[0].windowId;
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId })) === false;
   if (canceled)
@@ -175,7 +169,7 @@ export async function closeDescendants(rootTabs) {
 }
 
 export async function closeOthers(exceptionRoots) {
-  const exceptionTabs = uniqTabsAndDescendantsSet(exceptionRoots);
+  const exceptionTabs = Tab.uniqTabsAndDescendantsSet(exceptionRoots);
   const windowId      = exceptionTabs[0].windowId;
   const tabs          = Tab.getNormalTabs(windowId, { iterator: true, reversed: true }); // except pinned or hidden tabs, close bottom to top!
   const closeTabs     = [];
@@ -194,7 +188,7 @@ export function collapseTree(rootTabs, { recursively } = {}) {
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
-      uniqTabsAndDescendantsSet(rootTabs) :
+      Tab.uniqTabsAndDescendantsSet(rootTabs) :
       rootTabs
   ).filter(tab => tab.$TST.hasChild && !tab.$TST.subtreeCollapsed);
   const cache = {};
@@ -244,7 +238,7 @@ export function expandTree(rootTabs, { recursively } = {}) {
   const rootTabsSet = new Set(rootTabs);
   const tabs = (
     recursively ?
-      uniqTabsAndDescendantsSet(rootTabs) :
+      Tab.uniqTabsAndDescendantsSet(rootTabs) :
       rootTabs
   ).filter(tab => tab.$TST.hasChild && tab.$TST.subtreeCollapsed);
   const cache = {};
@@ -290,7 +284,7 @@ export function expandAll(windowId) {
 }
 
 export async function bookmarkTree(rootTabs, { parentId, index, showDialog } = {}) {
-  const tabs = uniqTabsAndDescendantsSet(rootTabs);
+  const tabs = Tab.uniqTabsAndDescendantsSet(rootTabs);
 
   if (tabs.length > 1) {
     const tabsSet = new Set(tabs);
