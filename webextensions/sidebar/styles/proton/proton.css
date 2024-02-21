@@ -293,13 +293,13 @@ tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:
 }
 
 /* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
-:root.mutiple-highlighted tab-item.highlighted .background,
-:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background {
+:root.mutiple-highlighted tab-item.highlighted .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted tab-item-substance:hover .background:not(.base) {
   outline: 1px solid var(--focus-outline-color);
   outline-offset: -1px;
 }
-:root.mutiple-highlighted tab-item.highlighted.active .background,
-:root.mutiple-highlighted tab-item.highlighted.active tab-item-substance:hover .background {
+:root.mutiple-highlighted tab-item.highlighted.active .background:not(.base),
+:root.mutiple-highlighted tab-item.highlighted.active tab-item-substance:hover .background:not(.base) {
   outline-width: 2px;
   outline-offset: -2px;
 }
