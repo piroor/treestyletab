@@ -166,6 +166,7 @@ export const configs = new Configs({
   showNewTabActionSelector: true,
   longPressOnNewTabButton: Constants.kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
+  showOverflowTitleByTooltip: true,
   showCollapsedDescendantsByTooltip: true,
 
   showDialogInSidebar: false,
