@@ -581,6 +581,12 @@ async function retrieveURIsFromDragEvent(event) {
   log('retrieveURIsFromDragEvent');
   const dt = event.dataTransfer;
   let urls = [];
+  if (dt.files.length > 0) {
+    for (const file of dt.files) {
+      urls.push(URL.createObjectURL(file));
+    }
+  }
+  else {
   for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
     const urlData = dt.getData(type);
     if (urlData)
@@ -611,6 +617,7 @@ async function retrieveURIsFromDragEvent(event) {
     }
     catch(_error) {
     }
+  }
   }
   log(' => retrieved: ', urls);
   urls = urls.filter(uri =>
