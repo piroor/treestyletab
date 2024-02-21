@@ -17,6 +17,7 @@
    * Firefox 116以降のバージョンでCtrl-Shift-Tで空のダイアログウィンドウが意図せず復元されてしまわないようにした
    * まとめて閉じたサブツリーのタブを復元した際に、復元後のタブのツリー構造が壊れる場合があったのを修正
    * タブバー末尾近くのツリーを折りたたんだときに、タブを閉じたときと同様に、一時的にスクロール位置を固定するようにした
+   * タブバーに直接ローカルファイルをドロップした時に、単に無視するのではなく、blob: URLを使用してタブで開くようにした
    * APIの機能強化・改善
      * TST自身のバージョンを問い合わせるためのメッセージ型 [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) を追加した
      * 新しい通知型の [`tabs-rendered` と `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) を追加し、タブのレンダリング状態を監視できるようにした
