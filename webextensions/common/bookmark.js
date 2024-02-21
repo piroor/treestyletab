@@ -750,14 +750,16 @@ async function tryGroupCreatedBookmarks() {
   }
 }
 
-if (browser.bookmarks &&
+if (Constants.IS_BACKGROUND &&
+    browser.bookmarks &&
     browser.bookmarks.onCreated) { // already granted
   browser.bookmarks.onCreated.addListener(onBookmarksCreated);
   mIsTracking = true;
 }
 
 export async function startTracking() {
-  if (!mIsTracking)
+  if (!mIsTracking ||
+      !Constants.IS_BACKGROUND)
     return;
 
   mIsTracking = true;
