@@ -587,37 +587,37 @@ async function retrieveURIsFromDragEvent(event) {
     }
   }
   else {
-  for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
-    const urlData = dt.getData(type);
-    if (urlData)
-      urls = urls.concat(retrieveURIsFromData(urlData, type));
-    if (urls.length)
-      break;
-  }
-  for (const type of dt.types) {
-    if (!/^application\/x-treestyletab-drag-data;(.+)$/.test(type))
-      continue;
-    const params     = RegExp.$1;
-    const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
-    const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
-    try {
-      const dragData = await browser.runtime.sendMessage(providerId, {
-        type: 'get-drag-data',
-        id:   dataId
-      });
-      if (!dragData || typeof dragData != 'object')
+    for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
+      const urlData = dt.getData(type);
+      if (urlData)
+        urls = urls.concat(retrieveURIsFromData(urlData, type));
+      if (urls.length)
         break;
-      for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
-        const urlData = dragData[type];
-        if (urlData)
-          urls = urls.concat(retrieveURIsFromData(urlData, type));
-        if (urls.length)
+    }
+    for (const type of dt.types) {
+      if (!/^application\/x-treestyletab-drag-data;(.+)$/.test(type))
+        continue;
+      const params     = RegExp.$1;
+      const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
+      const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
+      try {
+        const dragData = await browser.runtime.sendMessage(providerId, {
+          type: 'get-drag-data',
+          id:   dataId
+        });
+        if (!dragData || typeof dragData != 'object')
           break;
+        for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
+          const urlData = dragData[type];
+          if (urlData)
+            urls = urls.concat(retrieveURIsFromData(urlData, type));
+          if (urls.length)
+            break;
+        }
+      }
+      catch(_error) {
       }
     }
-    catch(_error) {
-    }
-  }
   }
   log(' => retrieved: ', urls);
   urls = urls.filter(uri =>
