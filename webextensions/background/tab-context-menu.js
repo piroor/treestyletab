@@ -543,7 +543,8 @@ export async function updateSendToDeviceItems(parentId, { manage } = {}) {
 const mLastSharingServicesSignature = new Map();
 const mShareItems                   = new Map();
 async function updateSharingServiceItems(parentId, contextTab) {
-  if (!mSharingService)
+  if (!mSharingService ||
+      !contextTab)
     return false;
 
   const services = await mSharingService.listServices(contextTab);
