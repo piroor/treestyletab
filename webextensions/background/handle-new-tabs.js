@@ -40,11 +40,12 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
   // See also https://github.com/piroor/treestyletab/issues/3296
   const shouldAttachToPinnedOpener = (
     !tab.openerTabId &&
-    activeTab && activeTab.pinned &&
     !tab.pinned &&
     tab.$TST.isNewTabCommandTab &&
-    Constants.kCONTROLLED_NEWTAB_POSITION.has(configs.autoAttachOnNewTabCommand) &&
-    Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromPinnedTabAt)
+    ((activeTab?.pinned &&
+      Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromPinnedTabAt)) ||
+     (isFirefoxViewTab(activeTab) &&
+      Constants.kCONTROLLED_NEWTAB_POSITION.has(configs.autoAttachOnNewTabCommand)))
   );
   if (shouldAttachToPinnedOpener)
     tab.openerTabId = activeTab.id;
@@ -339,7 +340,7 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
     return false;
   }
 
-  switch (configs.insertNewTabFromPinnedTabAt) {
+  switch (isFirefoxViewTab(opener) ? configs.insertNewTabFromFirefoxViewAt : configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB: {
       // it could be updated already...
       const lastRelatedTab = opener.$TST.lastRelatedTab != tab ?

@@ -285,6 +285,7 @@ export const configs = new Configs({
   groupTabTemporaryStateForNewTabsFromBookmarks: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForNewTabsFromOthers: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForChildrenOfPinned: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+  groupTabTemporaryStateForChildrenOfFirefoxView: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForOrphanedTabs: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
   renderTreeInGroupTabs: true,
   warnOnAutoGroupNewTabs: true,
@@ -296,6 +297,7 @@ export const configs = new Configs({
   // behavior around newly opened tabs
   insertNewChildAt: Constants.kINSERT_END, // basically this option affects only very edge cases not controlled with "autoAttach*" options.
   insertNewTabFromPinnedTabAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+  insertNewTabFromFirefoxViewAt: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
   insertDroppedTabsAt: Constants.kINSERT_END,
 
   scrollToNewTabMode: Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE,

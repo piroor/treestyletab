@@ -310,7 +310,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
   log(' => ', () => pinnedOpeners.map(dumpTab));
 
   // Move newly opened tabs to expected position before grouping!
-  // Note that we should refer "insertNewChildAt" instead of "insertNewTabFromPinnedTabAt"
+  // Note that we should refer "insertNewChildAt" instead of "insertNewTabFromPinnedTabAt" / "insertNewTabFromFirefoxViewAt"
   // because these children are going to be controlled in a sub tree.
   for (const tab of rootTabs.slice(0).sort((a, b) => a.id - b.id)/* process them in the order they were opened */) {
     const opener   = openerOf[tab.id];
@@ -369,7 +369,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     const uri = TabsGroup.makeGroupTabURI({
       title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
       openerTabId: opener.$TST.uniqueId.id,
-      ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForChildrenOfPinned)
+      ...TabsGroup.temporaryStateParams(isFirefoxViewTab(opener) ? configs.groupTabTemporaryStateForChildrenOfFirefoxView : configs.groupTabTemporaryStateForChildrenOfPinned)
     });
     parent = await TabsOpen.openURIInTab(uri, {
       windowId:     opener.windowId,
