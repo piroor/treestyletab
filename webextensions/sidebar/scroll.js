@@ -393,13 +393,11 @@ function updateStickyTabs(renderableTabs) {
     if (index > -1 &&
         index < (firstInViewportIndex + stickyTabIdsAbove.size) &&
         mNormalScrollBox.scrollTop > 0) {
-      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.above') });
       stickyTabs.push(tab);
       stickyTabIdsAbove.add(tab.id);
       continue;
     }
     if (stickyTabIdsBelow.has(tab.id)) {
-      SidebarTabs.renderTab(tab, { containerElement: document.querySelector('.sticky-tabs-container.below') });
       stickyTabs.push(tab);
       continue;
     }
@@ -410,11 +408,47 @@ function updateStickyTabs(renderableTabs) {
     }
   }
 
-  for (const id of [...mLastStickyTabIdsAbove, ...mLastStickyTabIdsBelow]) {
-    if (stickyTabIdsAbove.has(id) ||
-        stickyTabIdsBelow.has(id))
-      continue;
-    SidebarTabs.unrenderTab(Tab.get(id));
+  for (const [lastIds, currentIds, place] of [
+    [[...mLastStickyTabIdsAbove], [...stickyTabIdsAbove], 'above'],
+    [[...mLastStickyTabIdsBelow].reverse(), [...stickyTabIdsBelow].reverse(), 'below'],
+  ]) {
+    const renderOperations = (new SequenceMatcher(lastIds, currentIds)).operations();
+    for (const operation of renderOperations) {
+      const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+      switch (tag) {
+        case 'equal':
+          break;
+
+        case 'delete': {
+          const ids = lastIds.slice(fromStart, fromEnd);
+          for (const id of ids) {
+            if (!stickyTabIdsAbove.has(id) &&
+                !stickyTabIdsBelow.has(id))
+              SidebarTabs.unrenderTab(Tab.get(id));
+          }
+        }; break;
+
+        case 'insert':
+        case 'replace': {
+          const deleteIds = lastIds.slice(fromStart, fromEnd);
+          for (const id of deleteIds) {
+            if (!stickyTabIdsAbove.has(id) &&
+                !stickyTabIdsBelow.has(id))
+              SidebarTabs.unrenderTab(Tab.get(id));
+          }
+          const insertIds = currentIds.slice(toStart, toEnd);
+          const referenceTab = (fromEnd < lastIds.length && currentIds.includes(lastIds[fromEnd])) ?
+            Tab.get(lastIds[fromEnd]) :
+            null;
+          for (const id of insertIds) {
+            SidebarTabs.renderTab(Tab.get(id), {
+              containerElement: document.querySelector(`.sticky-tabs-container.${place}`),
+              insertBefore:     referenceTab,
+            });
+          }
+        }; break;
+      }
+    }
   }
 
   log('updateStickyTab ', stickyTabs, { above: [...stickyTabIdsAbove], below: [...stickyTabIdsBelow] });
