@@ -42,10 +42,13 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
     !tab.openerTabId &&
     !tab.pinned &&
     tab.$TST.isNewTabCommandTab &&
-    ((activeTab?.pinned &&
-      Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromPinnedTabAt)) ||
-     (isFirefoxViewTab(activeTab) &&
-      Constants.kCONTROLLED_NEWTAB_POSITION.has(configs.autoAttachOnNewTabCommand)))
+    Constants.kCONTROLLED_NEWTAB_POSITION.has(configs.autoAttachOnNewTabCommand) &&
+    (
+      (activeTab?.pinned &&
+       Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromPinnedTabAt)) ||
+      (isFirefoxViewTab(activeTab) &&
+       Constants.kCONTROLLED_INSERTION_POSITION.has(configs.insertNewTabFromFirefoxViewAt))
+    )
   );
   if (shouldAttachToPinnedOpener)
     tab.openerTabId = activeTab.id;
