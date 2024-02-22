@@ -628,6 +628,7 @@ async function importTabsFromBackground() {
 
 // Workaround for https://github.com/piroor/treestyletab/issues/3413
 // ( https://bugzilla.mozilla.org/show_bug.cgi?id=1875100 )
+// The bug was fixed at Firefox 124, so we should remove this when Firefox 123 and older versions including ESR became outdated.
 async function startWatchingWindowState() {
   if (!configs.enableWorkaroundForBug1875100)
     return;
