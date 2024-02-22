@@ -281,7 +281,7 @@ export const configs = new Configs({
   tabsFromSameFolderMinThresholdPercentage: 50,
   autoGroupNewTabsFromOthers: false,
   autoGroupNewTabsFromPinned: false,
-  autoGroupNewTabsFromFirefoxView: true,
+  autoGroupNewTabsFromFirefoxView: false,
   groupTabTemporaryStateForNewTabsFromBookmarks: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForNewTabsFromOthers: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForChildrenOfPinned: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
