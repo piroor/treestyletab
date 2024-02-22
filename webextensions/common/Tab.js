@@ -15,6 +15,7 @@ import {
   toLines,
   sanitizeForRegExpSource,
   isNewTabCommandTab,
+  isFirefoxViewTab,
   configs,
 } from './common.js';
 
@@ -1129,8 +1130,11 @@ export default class Tab {
   }
 
   get hasPinnedOpener() {
-    const opener = this.openerTab;
-    return opener && opener.pinned;
+    return this.openerTab?.pinned;
+  }
+
+  get hasFirefoxViewOpener() {
+    return isFirefoxViewTab(this.openerTab);
   }
 
   get bundledTab() {

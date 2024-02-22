@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   dumpTab,
-  configs
+  configs,
+  isFirefoxViewTab,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -168,7 +169,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
   if (!info.bypassTabControl &&
       opener &&
-      opener.pinned &&
+      (opener.pinned || isFirefoxViewTab(opener)) &&
       opener.windowId == tab.windowId) {
     return handleTabsFromPinnedOpener(tab, opener, { activeTab }).then(moved => !moved);
   }
@@ -331,7 +332,8 @@ async function handleTabsFromPinnedOpener(tab, opener, { activeTab } = {}) {
     });
   }
 
-  if (configs.autoGroupNewTabsFromPinned &&
+  if ((configs.autoGroupNewTabsFromPinned ||
+       configs.autoGroupNewTabsFromFirefoxView) &&
       tab.$TST.needToBeGroupedSiblings.length > 0) {
     log('handleTabsFromPinnedOpener: controlled by auto-grouping');
     return false;

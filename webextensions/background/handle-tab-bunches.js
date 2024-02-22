@@ -11,6 +11,7 @@ import {
   configs,
   sanitizeForHTMLText,
   compareAsNumber,
+  isFirefoxViewTab,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -44,7 +45,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
   const openerId  = tab.openerTabId;
   const openerTab = openerId && (await browser.tabs.get(openerId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)));
   if ((openerTab &&
-       openerTab.pinned &&
+       (openerTab.pinned || isFirefoxViewTab(openerTab)) &&
        openerTab.windowId == tab.windowId) ||
       (!openerTab &&
        !info.maybeOrphan)) {
@@ -58,6 +59,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
         indexOnCreated: tab.$indexOnCreated,
         openerId: openerTab && openerTab.id,
         openerIsPinned: openerTab && openerTab.pinned,
+        openerIsFirefoxView: isFirefoxViewTab(openerTab),
         maybeFromBookmark: tab.$TST.maybeFromBookmark,
         shouldNotGrouped: TSTAPI.isGroupingBlocked(),
       });
@@ -115,6 +117,7 @@ async function tryDetectTabBunches(win) {
   }
 
   if (configs.autoGroupNewTabsFromPinned ||
+      configs.autoGroupNewTabsFromFirefoxView ||
       configs.autoGroupNewTabsFromOthers) {
     mPossibleTabBunchesToBeGrouped.push(tabReferences);
     tryGroupTabBunches();
@@ -151,12 +154,15 @@ async function tryGroupTabBunches() {
       const uniqueId = tab.$TST.uniqueId;
       if (tab.$TST.isGroupTab || uniqueId.duplicated || uniqueId.restored)
         continue;
-      if (tabReference.openerIsPinned) {
+      if (tabReference.openerIsPinned ||
+          tabReference.openerIsFirefoxView) {
         // We should check the "autoGroupNewTabsFromPinned" config here,
         // because to-be-grouped tabs should be ignored by the handler for
         // "autoAttachSameSiteOrphan" behavior.
-        if (tab.$TST.hasPinnedOpener &&
-            configs.autoGroupNewTabsFromPinned)
+        if ((tab.$TST.hasPinnedOpener &&
+             configs.autoGroupNewTabsFromPinned) ||
+            (tab.$TST.hasFirefoxViewOpener &&
+             configs.autoGroupNewTabsFromFirefoxView))
           fromPinned.push(tab);
       }
       else {
@@ -165,7 +171,9 @@ async function tryGroupTabBunches() {
     }
     log(' => ', { fromPinned, fromOthers });
 
-    if (fromPinned.length > 0 && configs.autoGroupNewTabsFromPinned) {
+    if (fromPinned.length > 0 &&
+        (configs.autoGroupNewTabsFromPinned ||
+         configs.autoGroupNewTabsFromFirefoxView)) {
       const newRootTabs = Tab.collectRootTabs(Tab.sort(fromPinned));
       if (newRootTabs.length > 0) {
         await tryGroupTabBunchesFromPinnedOpener(newRootTabs);
@@ -284,7 +292,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     }
     const opener = Tab.getByUniqueId(tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID));
     if (!opener ||
-        !opener.pinned ||
+        !(opener.pinned || isFirefoxViewTab(opener)) ||
         opener.windowId != tab.windowId)
       continue;
     // existing and not yet grouped tab
