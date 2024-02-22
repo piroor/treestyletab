@@ -447,6 +447,15 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "親のタブと同階層で隣に" },
   "config_autoAttachOnOpenedWithOwner_after": { "message": "開く" },
 
+  "config_insertNewTabFromFirefoxViewAt_caption": { "message": "Firefox Viewから（最上位のタブとして表れる）新しい子タブを開く位置" },
+  "config_insertNewTabFromFirefoxViewAt_noControl": { "message": "制御しない（ブラウザーや他のアドオンの判断に任せる）" },
+  "config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab": { "message": "直近に開いた子タブの隣、もしくは親タブの近く" },
+  "config_insertNewTabFromFirefoxViewAt_top": { "message": "ツリーの先頭（親タブの近く）" },
+  "config_insertNewTabFromFirefoxViewAt_end": { "message": "ツリーの末尾" },
+
+  "config_autoGroupNewTabsFromFirefoxView_label": { "message": "Firefox Viewから開かれたタブを自動的にグループ化する（「～から開いたタブ」というタイトルのグループ化用タブが開かれます）" },
+  "config_groupTabTemporaryStateForChildrenOfFirefoxView_label": { "message": "Firefox Viewから開かれたタブをまとめるグループ化用のタブの初期状態:" },
+
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "ピン留めされたタブから（最上位のタブとして表れる）新しい子タブを開く位置" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "制御しない（ブラウザーや他のアドオンの判断に任せる）" },
   "config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab": { "message": "直近に開いた子タブの隣、もしくは親タブの近く" },

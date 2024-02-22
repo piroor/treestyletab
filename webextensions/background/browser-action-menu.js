@@ -520,6 +520,65 @@ const mItems = [
       },
       { type: 'separator' },
       {
+        title:    browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_caption'),
+        enabled:  false,
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_noControl'),
+        key:   'insertNewTabFromFirefoxViewAt',
+        value: Constants.kINSERT_NO_CONTROL,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
+        key:   'insertNewTabFromFirefoxViewAt',
+        value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_top'),
+        key:   'insertNewTabFromFirefoxViewAt',
+        value: Constants.kINSERT_TOP,
+        type:  'radio'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_end'),
+        key:   'insertNewTabFromFirefoxViewAt',
+        value: Constants.kINSERT_END,
+        type:  'radio'
+      },
+      //{ type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_autoGroupNewTabsFromFirefoxView_label'),
+        key:   'autoGroupNewTabsFromFirefoxView',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfFirefoxView_label'),
+        expert: true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_groupTabTemporaryState_option_default'),
+            key:   'groupTabTemporaryStateForChildrenOfFirefoxView',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_NOTHING,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporary_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfFirefoxView',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
+            type:  'radio'
+          },
+          {
+            title: `${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_before')}${browser.i18n.getMessage('groupTab_temporaryAggressive_label')}${browser.i18n.getMessage('config_groupTabTemporaryState_option_checked_after')}`,
+            key:   'groupTabTemporaryStateForChildrenOfFirefoxView',
+            value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
+            type:  'radio'
+          }
+        ]
+      },
+      { type: 'separator' },
+      {
         title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
         enabled:  false,
       },

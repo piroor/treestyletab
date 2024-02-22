@@ -434,6 +434,43 @@
               __MSG_config_autoAttachOnOpenedWithOwner_after__
               <span class="preview-image"></span></label></p>
     <fieldset>
+      <legend>__MSG_config_insertNewTabFromFirefoxViewAt_caption__</legend>
+      <ul>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromFirefoxViewAt" value="-1">
+              __MSG_config_insertNewTabFromFirefoxViewAt_noControl__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromFirefoxViewAt" value="3">
+              __MSG_config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab__ __MSG_config_firefoxCompatible_choice__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromFirefoxViewAt" value="0">
+              __MSG_config_insertNewTabFromFirefoxViewAt_top__</label></li>
+        <li><label class="has-radio"
+                  ><input type="radio"
+                          name="insertNewTabFromFirefoxViewAt" value="1">
+              __MSG_config_insertNewTabFromFirefoxViewAt_end__</label></li>
+      </ul>
+      <hr>
+      <p><label class="has-checkbox"
+               ><input id="autoGroupNewTabsFromFirefoxView"
+                       type="checkbox">
+                __MSG_config_autoGroupNewTabsFromFirefoxView_label__</p>
+      <p class="expert"
+        ><label>__MSG_config_groupTabTemporaryStateForChildrenOfFirefoxView_label__
+                <select id="groupTabTemporaryStateForChildrenOfFirefoxView">
+                  <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
+                  <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
+                                    __MSG_groupTab_temporary_label__
+                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
+                  <option value="2">__MSG_config_groupTabTemporaryState_option_checked_before__
+                                    __MSG_groupTab_temporaryAggressive_label__
+                                    __MSG_config_groupTabTemporaryState_option_checked_after__</option>
+                </select></label></p>
+    </fieldset>
+    <fieldset>
       <legend>__MSG_config_insertNewTabFromPinnedTabAt_caption__</legend>
       <ul>
         <li><label class="has-radio"
@@ -443,7 +480,7 @@
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="3">
-              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab__</label></li>
+              __MSG_config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab__ __MSG_config_firefoxCompatible_choice__</label></li>
         <li><label class="has-radio"
                   ><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="0">
@@ -458,7 +495,8 @@
                ><input id="autoGroupNewTabsFromPinned"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromPinned_label__</p>
-      <p><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
+      <p class="expert"
+        ><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
                 <select id="groupTabTemporaryStateForChildrenOfPinned">
                   <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
                   <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__

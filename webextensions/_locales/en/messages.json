@@ -450,6 +450,15 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "Next Sibling of the parent tab" },
   "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
 
+  "config_insertNewTabFromFirefoxViewAt_caption": { "message": "Insertion position of new child tabs from Firefox View (will appear as root tabs)" },
+  "config_insertNewTabFromFirefoxViewAt_noControl": { "message": "No control (respect the decision by the browser or other tab addons)" },
+  "config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab": { "message": "Next to the recently opened child, or near the opener" },
+  "config_insertNewTabFromFirefoxViewAt_top": { "message": "The top of the tree (near the opener)" },
+  "config_insertNewTabFromFirefoxViewAt_end": { "message": "The end of the tree" },
+
+  "config_autoGroupNewTabsFromFirefoxView_label": { "message": "Auto-group tabs opened from Firefox View (a new tab for grouping will be opened with a title like \"Tabs from ...\")" },
+  "config_groupTabTemporaryStateForChildrenOfFirefoxView_label": { "message": "Default state of group tabs for tabs opened from Firefox View:" },
+
   "config_insertNewTabFromPinnedTabAt_caption": { "message": "Insertion position of new child tabs from pinned tabs (will appear as root tabs)" },
   "config_insertNewTabFromPinnedTabAt_noControl": { "message": "No control (respect the decision by the browser or other tab addons)" },
   "config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab": { "message": "Next to the recently opened child, or near the opener" },
