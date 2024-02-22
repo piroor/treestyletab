@@ -178,6 +178,7 @@ export const configs = new Configs({
   suppressGapFromShownOrHiddenToolbarTimeout: 500,
   cancelGapSuppresserHoverDelay: 1000, // msec
 
+  enableWorkaroundForBug1875100: true,
   watchWindowStateInterval: 500,
 
 

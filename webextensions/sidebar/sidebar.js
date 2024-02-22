@@ -628,7 +628,14 @@ async function importTabsFromBackground() {
 
 // Workaround for https://github.com/piroor/treestyletab/issues/3413
 // ( https://bugzilla.mozilla.org/show_bug.cgi?id=1875100 )
-function startWatchingWindowState() {
+async function startWatchingWindowState() {
+  if (!configs.enableWorkaroundForBug1875100)
+    return;
+
+  const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
+  if (parseInt(browserInfo.version.split('.')[0]) >= 124)
+    return;
+
   startWatchingWindowState.timer = window.setInterval(async () => {
     const win = await browser.windows.get(mTargetWindow);
     document.documentElement.classList.toggle('minimized', win.state == 'minimized');
