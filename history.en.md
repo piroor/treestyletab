@@ -11,6 +11,7 @@
    * Show dropshadow before normal tabs when the tab bar is scrolled.
    * Show dropshadow after normal tabs when the tab bar is not fully scrolled.
    * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
+   * Add ability to control tabs opened from Firefox View.
    * Suppress bookmarks folder auto creation for bookmarks from tabs, when multiple bookmarks are copied via the Library or something way.
    * Move descendant tabs also correctlyfollowing to their parent, when a parent tab is moved to the top level via Firefox's horizontal tab bar.
    * Apply the option to place opened tabs next to the last related child correctly, when multiple tabs are opened from a pinned tab.
