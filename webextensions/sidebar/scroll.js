@@ -1304,10 +1304,13 @@ export function tryUnlockPosition(tabIds) {
   log('tryUnlockPosition');
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
   const count = tryLockPosition.tabIds.size;
+  const timeout = shouldApplyAnimation() ?
+    Math.max(0, configs.collapseDuration) + 250 /* safety margin to wait finishing of the min-height animation of virtual-scroll-container */ :
+    0;
   setTimeout(() => {
     spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
     spacer.dataset.removedOrCollapsedTabsCount = count;
-  }, shouldApplyAnimation() ? Math.max(0, configs.collapseDuration) : 0);
+  }, timeout);
 }
 
 function tryFinishPositionLocking(event) {
