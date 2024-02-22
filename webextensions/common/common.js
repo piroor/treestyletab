@@ -995,7 +995,14 @@ export function getWindowParamsFromSource(sourceWindow, { left, top, width, heig
 export function isNewTabCommandTab(tab) {
   const newTabTitles = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandTitle.split('|'));
   const newTabUrls   = new Set(configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.split('|'));
-  return newTabTitles.has(tab.title) || newTabUrls.has(tab.url);
+  return newTabTitles.has(tab?.title) || newTabUrls.has(tab?.url);
+}
+
+export function isFirefoxViewTab(tab) {
+  return (
+    tab?.url.startsWith('about:firefoxview') &&
+    tab?.hidden
+  );
 }
 
 

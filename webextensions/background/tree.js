@@ -36,6 +36,7 @@ import {
   configs,
   shouldApplyAnimation,
   getWindowParamsFromSource,
+  isFirefoxViewTab,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -87,6 +88,11 @@ export async function attachTabTo(child, parent, options = {}) {
   child = TabsStore.ensureLivingTab(child);
   if (!parent || !child) {
     log('missing information: ', { parent, child });
+    return false;
+  }
+
+  if (isFirefoxViewTab(parent)) {
+    log('Firefox View tab could not be a parent of other tabs');
     return false;
   }
 
