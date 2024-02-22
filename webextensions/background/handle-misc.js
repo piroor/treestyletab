@@ -918,11 +918,9 @@ Tab.onStateChanged.addListener((tab, state, added) => {
     case Constants.kTAB_STATE_STICKY:
       if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_STICKY_STATE_CHANGED)) {
         TSTAPI.broadcastMessage({
-          type:     TSTAPI.kNOTIFY_TAB_STICKY_STATE_CHANGED,
+          type:   TSTAPI.kNOTIFY_TAB_STICKY_STATE_CHANGED,
           tab,
-          window:   tab.windowId,
-          windowId: tab.windowId,
-          sticky:   !!added,
+          sticky: !!added,
         }, { tabProperties: ['tab'] }).catch(_error => {});
       }
       break;
