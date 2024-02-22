@@ -73,6 +73,7 @@ export const kNOTIFY_SIDEBAR_SHOW   = 'sidebar-show';
 export const kNOTIFY_SIDEBAR_HIDE   = 'sidebar-hide';
 export const kNOTIFY_TABS_RENDERED  = 'tabs-rendered';
 export const kNOTIFY_TABS_UNRENDERED = 'tabs-unrendered';
+export const kNOTIFY_TAB_STICKY_STATE_CHANGED = 'tab-sticky-state-changed';
 export const kNOTIFY_TAB_CLICKED    = 'tab-clicked'; // for backward compatibility
 export const kNOTIFY_TAB_DBLCLICKED = 'tab-dblclicked';
 export const kNOTIFY_TAB_MOUSEDOWN  = 'tab-mousedown';
@@ -186,6 +187,7 @@ const BULK_MESSAGING_TYPES = new Set([
   kNOTIFY_SIDEBAR_HIDE,
   kNOTIFY_TABS_RENDERED,
   kNOTIFY_TABS_UNRENDERED,
+  kNOTIFY_TAB_STICKY_STATE_CHANGED,
   kNOTIFY_EXTRA_CONTENTS_FOCUS,
   kNOTIFY_EXTRA_CONTENTS_BLUR,
   kNOTIFY_TABBAR_OVERFLOW,

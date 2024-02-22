@@ -912,3 +912,19 @@ function onMessageExternal(message, sender) {
       );
   }
 }
+
+Tab.onStateChanged.addListener((tab, state, added) => {
+  switch (state) {
+    case Constants.kTAB_STATE_STICKY:
+      if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TAB_STICKY_STATE_CHANGED)) {
+        TSTAPI.broadcastMessage({
+          type:     TSTAPI.kNOTIFY_TAB_STICKY_STATE_CHANGED,
+          tab,
+          window:   tab.windowId,
+          windowId: tab.windowId,
+          sticky:   !!added,
+        }, { tabProperties: ['tab'] }).catch(_error => {});
+      }
+      break;
+  }
+});
