@@ -30,6 +30,7 @@
      * `get-tree` や `get-light-tree` で特定の状態の複数項目を一度に取得するための特別なキーワードとして [`allVisibles` と `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) を追加
      * `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
      * タブの追加コンテンツの挿入位置の指定として [`tab-above` と `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) に対応
+   * **このバージョンでの改善作業の多くはWaterfoxプロジェクト・BrowserWorks社からの資金的支援に基づいて行われました。Alex Kontosさん、ありがとうございます！**（[Waterfoxプロジェクトによるアナウンス](https://www.waterfox.net/blog/waterfox-x-treestyletab/)）
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）
  - 3.9.21 (2024.1.26)
