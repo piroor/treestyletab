@@ -430,16 +430,15 @@ windowId = ${tab.windowId}
 
     if (this.classList.contains('faviconized') ||
         this.overflow ||
-        this.tooltip != tab.title) {
+        this.tooltip != tab.title)
       this.$TST.setAttribute('title', this.tooltip);
-    }
+    else
+      this.$TST.removeAttribute('title');
 
     const lowPriorityTooltipText = this.$TST.getLowPriorityTooltipText();
     if (typeof lowPriorityTooltipText == 'string' &&
         !this.getAttribute('title'))
       this.$TST.setAttribute('title', lowPriorityTooltipText);
-    else
-      this.$TST.removeAttribute('title');
   }
 
   _initExtraItemsContainers() {
