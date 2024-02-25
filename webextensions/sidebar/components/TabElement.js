@@ -426,10 +426,9 @@ windowId = ${tab.windowId}
         this.$TST.hasChild) {
       this.$TST.setAttribute('title', this.tooltipWithDescendants);
     }
-    else if (configs.showOverflowTitleByTooltip &&
-             (this.classList.contains('faviconized') ||
-              this.overflow ||
-              this.tooltip != tab.title)) {
+    else if (this.classList.contains('faviconized') ||
+             this.overflow ||
+             this.tooltip != tab.title) {
       this.$TST.setAttribute('title', this.tooltip);
     }
     else {
