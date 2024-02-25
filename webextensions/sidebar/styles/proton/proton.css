@@ -284,6 +284,9 @@ tab-item.bundled-active tab-item-substance:hover .background:not(.base),
   outline: 1px solid var(--browser-tab-highlighter, var(--tab-active-border, currentcolor));
   outline-offset: -1px;
 }
+.sticky-tabs-container tab-item:not(.pinned):not(.active):not(.bundled-active).sticky .background.base {
+  box-shadow: 0 0 var(--tab-dropshadow-blur) rgba(0, 0, 0, 0.2);
+}
 
 tab-item:not(.active):not(.bundled-active):not(.highlighted) tab-item-substance:hover .background:not(.base),
 .after-tabs button:hover::before,
