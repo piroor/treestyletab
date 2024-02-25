@@ -152,6 +152,12 @@ tab-item tab-closebox::after {
 }
 
 
+
+.sticky-tabs-container tab-item:not(.pinned).sticky .background:not(.base) {
+  box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.2);
+}
+
+
 /* multiselection of tabs */
 
 :root {
