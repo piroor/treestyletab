@@ -437,8 +437,12 @@ windowId = ${tab.windowId}
 
     const lowPriorityTooltipText = this.$TST.getLowPriorityTooltipText();
     if (typeof lowPriorityTooltipText == 'string' &&
-        !this.getAttribute('title'))
-      this.$TST.setAttribute('title', lowPriorityTooltipText);
+        !this.getAttribute('title')) {
+      if (lowPriorityTooltipText)
+        this.$TST.setAttribute('title', lowPriorityTooltipText);
+      else
+        this.$TST.removeAttribute('title');
+    }
   }
 
   _initExtraItemsContainers() {
