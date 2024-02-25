@@ -32,6 +32,7 @@
      * Introduce new keywords [`allVisibles` and `normalVisibles`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific state tree items.
      * Introduce new options [`states` and `statesNot`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) for message types `get-tree` and `get-light-tree`, to get specific tree items.
      * New insertion place of extra tab contents: [`tab-above` and `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) are now available.
+     * Introduce new message types [`set-tooltip-text` and `clear-tooltip-text`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-custom-tooltip-text-to-tabs) to set arbitrary tooltip text for each tab.
    * **Most of improvements at this version is sponsored by the Waterfox project / BrowserWorks Ltd. Many thanks to Alex Kontos!** ([Announcement blog entry at Waterfox project](https://www.waterfox.net/blog/waterfox-x-treestyletab/))
  - 3.9.22 (2024.1.31)
    * Fix failed initialization when an optional permission "Read and modify bookmarks" is not granted. (regression on 3.9.21)
