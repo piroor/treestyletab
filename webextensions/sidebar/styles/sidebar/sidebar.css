@@ -154,6 +154,9 @@ tab-item.bundled-active tab-item-substance {
   background: var(--tabbar-bg, var(--bg-color, ButtonFace));
   box-shadow: 0 0 0.4em rgba(0, 0, 0, 0.2);
 }
+:root:not(.active) .sticky-tabs-container tab-item:not(.pinned).sticky .background.base {
+  background: var(--tabbar-bg, var(--bg-color-inactive, ButtonFace));
+}
 
 
 /* Keep the close button at a safe distance from the tab label. */
