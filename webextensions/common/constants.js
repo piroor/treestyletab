@@ -101,6 +101,7 @@ export const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operati
 export const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 export const kCOMMAND_PROGRESS_USER_OPERATIONS = 'treestyletab:progress-user-operations';
 export const kCOMMAND_BROADCAST_TAB_STATE     = 'treestyletab:broadcast-tab-state';
+export const kCOMMAND_BROADCAST_TAB_TOOLTIP_TEXT = 'treestyletab:broadcast-tab-tooltip-text';
 
 export const kCOMMAND_BOOKMARK_TAB_WITH_DIALOG  = 'treestyletab:bookmark-tab-with-dialog';
 export const kCOMMAND_BOOKMARK_TABS_WITH_DIALOG = 'treestyletab:bookmark-tabs-with-dialog';

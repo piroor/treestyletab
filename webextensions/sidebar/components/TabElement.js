@@ -412,6 +412,12 @@ windowId = ${tab.windowId}
       return;
     }
 
+    const highPriorityTooltipText = this.$TST.getHighPriorityTooltipText();
+    if (typeof highPriorityTooltipText == 'string') {
+      this.$TST.setAttribute('title', this.tooltip);
+      return;
+    }
+
     this.tooltip                = this.$TST.generateTooltipText();
     this.tooltipWithDescendants = this.$TST.generateTooltipTextWithDescendants();
 
@@ -427,7 +433,11 @@ windowId = ${tab.windowId}
       this.$TST.setAttribute('title', this.tooltip);
     }
     else {
-      this.$TST.removeAttribute('title');
+      const lowPriorityTooltipText = this.$TST.getLowPriorityTooltipText();
+      if (typeof lowPriorityTooltipText == 'string')
+        this.$TST.setAttribute('title', lowPriorityTooltipText);
+      else
+        this.$TST.removeAttribute('title');
     }
   }
 

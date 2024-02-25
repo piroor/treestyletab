@@ -664,6 +664,21 @@ BackgroundConnection.onMessage.addListener(async message => {
         onNormalTabsChanged.dispatch();
     }; break;
 
+    case Constants.kCOMMAND_BROADCAST_TAB_TOOLTIP_TEXT: {
+      if (!message.tabIds.length)
+        break;
+      await Tab.waitUntilTracked(message.tabIds);
+      log('apply broadcasted tab tooltip text ', message.changes);
+      for (const change of message.changes) {
+        const tab = Tab.get(change.tabId);
+        if (!tab)
+          continue;
+        tab.$TST.registerTooltipText(browser.runtime.id, change.high, true);
+        tab.$TST.registerTooltipText(browser.runtime.id, change.low, false);
+        tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
+      }
+    }; break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_CREATING: {
       const nativeTab = message.tab;
       nativeTab.reindexedBy = `creating (${nativeTab.index})`;

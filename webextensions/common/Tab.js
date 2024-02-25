@@ -97,6 +97,9 @@ export default class Tab {
     this.sharingScreenChildrenIds = new Set();
     this.maybeSharingScreenChildrenIds = new Set();
 
+    this.highPriorityTooltipTexts = new Map();
+    this.lowPriorityTooltipTexts  = new Map();
+
     this.element = null;
     this.classList = null;
     this.promisedElement = new Promise((resolve, _reject) => {
@@ -549,6 +552,38 @@ export default class Tab {
       tooltip.push(child.$TST.generateTooltipTextWithDescendants().replace(/^/gm, '  '));
     }
     return tooltip.join('\n');
+  }
+
+  registerTooltipText(ownerId, text, isHighPriority = false) {
+    if (isHighPriority) {
+      this.highPriorityTooltipTexts.set(ownerId, text);
+      this.lowPriorityTooltipTexts.delete(ownerId);
+    }
+    else {
+      this.highPriorityTooltipTexts.delete(ownerId);
+      this.lowPriorityTooltipTexts.set(ownerId, text);
+    }
+    if (Constants.IS_BACKGROUND)
+      Tab.broadcastTooltipText(this.tab);
+  }
+
+  unregisterTooltipText(ownerId) {
+    this.highPriorityTooltipTexts.delete(ownerId);
+    this.lowPriorityTooltipTexts.delete(ownerId);
+    if (Constants.IS_BACKGROUND)
+      Tab.broadcastTooltipText(this.tab);
+  }
+
+  getHighPriorityTooltipText() {
+    if (this.highPriorityTooltipTexts.size == 0)
+      return null;
+    return [...this.highPriorityTooltipTexts.values()][this.highPriorityTooltipTexts.size - 1];
+  }
+
+  getLowPriorityTooltipText() {
+    if (this.lowPriorityTooltipTexts.size == 0)
+      return null;
+    return [...this.lowPriorityTooltipTexts.values()][this.lowPriorityTooltipTexts.size - 1];
   }
 
   //===================================================================
@@ -2740,6 +2775,55 @@ Tab.onChangeMultipleTabsRestorability = new EventListenerManager();
 //===================================================================
 // utilities
 //===================================================================
+
+Tab.bufferedTooltipTextChanges = new Map();
+Tab.broadcastTooltipText = tabs => {
+  if (!Constants.IS_BACKGROUND ||
+      !Tab.broadcastTooltipText.enabled)
+    return;
+
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+
+  if (tabs.length == 0)
+    return;
+
+  for (const tab of tabs) {
+    Tab.bufferedTooltipTextChanges.set(tab.id, {
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      high:     tab.$TST.getHighPriorityTooltipText(),
+      low:      tab.$TST.getLowPriorityTooltipText(),
+    });
+  }
+
+  const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+  Tab.broadcastTooltipText.triedAt = triedAt;
+  (Constants.IS_BACKGROUND ?
+    setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+    window.requestAnimationFrame)(() => {
+    if (Tab.broadcastTooltipText.triedAt != triedAt)
+      return;
+
+    // Let's flush buffered changes!
+    const messageForWindows = new Map();
+    for (const change of Tab.bufferedTooltipTextChanges.values()) {
+      const message = messageForWindows.get(change.windowId) || {
+        type:     Constants.kCOMMAND_BROADCAST_TAB_TOOLTIP_TEXT,
+        windowId: change.windowId,
+        tabIds:   [],
+        changes:  [],
+      };
+      message.tabIds.push(change.tabId);
+      message.changes.push(change);
+    }
+    for (const message of messageForWindows) {
+      SidebarConnection.sendMessage(message);
+    }
+    Tab.bufferedTooltipTextChanges.clear();
+  }, 0);
+};
+Tab.broadcastTooltipText.enabled = false;
 
 Tab.bufferedStatesChanges = new Map();
 Tab.broadcastState = (tabs, { add, remove } = {}) => {

@@ -910,6 +910,24 @@ function onMessageExternal(message, sender) {
         message.id || message.bookmarkId,
         { discarded: message.discarded }
       );
+
+    case TSTAPI.kSET_TOOLTIP_TEXT:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        for (const tab of tabs) {
+          tab.$TST.registerTooltipText(sender.id, message.text || '', !!message.force);
+        }
+        return true;
+      })();
+
+    case TSTAPI.kCLEAR_TOOLTIP_TEXT:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        for (const tab of tabs) {
+          tab.$TST.unregisterTooltipText(sender.id);
+        }
+        return true;
+      })();
   }
 }
 
