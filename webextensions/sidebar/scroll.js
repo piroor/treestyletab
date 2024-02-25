@@ -1325,7 +1325,8 @@ function tryFinishPositionLocking(event) {
 
     case 'mousemove':
       if (tryFinishPositionLocking.contextMenuOpen ||
-          (event.type == 'mousemove' && event.target.closest('#tabContextMenu'))) {
+          (event.type == 'mousemove' &&
+           EventUtils.getElementTarget(event)?.closest('#tabContextMenu'))) {
         log(' => ignore events while the context menu is opened');
         return;
       }
@@ -1348,6 +1349,7 @@ function tryFinishPositionLocking(event) {
           return;
         }
       }
+      break;
 
     default:
       break;
