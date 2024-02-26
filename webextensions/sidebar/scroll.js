@@ -205,14 +205,14 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   scrollPosition = Math.max(
     0,
     Math.min(
-      allRenderableTabsSize - viewPortSize,
+      allRenderableTabsSize + mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height - viewPortSize,
       typeof scrollPosition == 'number' ?
         scrollPosition :
         restoreScrollPosition.scrollPosition > -1 ?
           restoreScrollPosition.scrollPosition :
           mNormalScrollBox.scrollTop
     )
-  ) + mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height;
+  );
   rootStyle.setProperty('--scroll-position', `${scrollPosition}px`);
 
   const firstRenderableIndex = Math.max(
@@ -361,7 +361,7 @@ function updateStickyTabs(renderableTabs) {
   const rootStyle      = document.documentElement.style;
   const tabSize        = Size.getTabHeight();
   const windowId       = TabsStore.getCurrentWindowId();
-  const scrollPosition = parseFloat(rootStyle.getPropertyValue('--scroll-position')) + mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height;
+  const scrollPosition = parseFloat(rootStyle.getPropertyValue('--scroll-position'));
   const viewPortSize   = parseFloat(rootStyle.getPropertyValue('--viewport-size'));
 
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
