@@ -1271,8 +1271,14 @@ export function tryLockPosition(tabIds, reason) {
   }
 
   // Lock scroll position only when the closing affects to the max scroll position.
-  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getTabHeight())
+  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getTabHeight() - mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height) {
+    log('tryLockPosition: scroll position is not affected ', tabIds, {
+      scrollTop: mNormalScrollBox.scrollTop,
+      scrollTopMax: mNormalScrollBox.scrollTopMax,
+      height: Size.getTabHeight(),
+    });
     return;
+  }
 
   for (const id of tabIds) {
     tryLockPosition.tabIds.add(id);
@@ -1379,10 +1385,12 @@ browser.menus.onHidden.addListener((_info, _tab) => {
 });
 
 browser.tabs.onCreated.addListener(_tab => {
-  tryFinishPositionLocking();
+  tryFinishPositionLocking('on tab created');
 });
 
 browser.tabs.onRemoved.addListener(tabId => {
-  if (!tryLockPosition.tabIds.has(tabId))
-    tryFinishPositionLocking();
+  if (tryLockPosition.tabIds.has(tabId) ||
+      Tab.get(tabId)?.$TST.collapsed)
+    return;
+  tryFinishPositionLocking(`on tab removed ${tabId}`);
 });
