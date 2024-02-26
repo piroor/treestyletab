@@ -675,7 +675,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
     });
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-    log('onMouseUp: middle click on a tab');
+    log('onMouseUp: middle click on a tab: ', lastMousedown.detail.targetType);
     if (lastMousedown.detail.targetType != 'tab') // ignore middle click on blank area
       return false;
     const tabs = TreeBehavior.getClosingTabsFromParent(tab, {

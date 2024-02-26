@@ -1250,8 +1250,10 @@ export function tryLockPosition(tabIds, reason) {
       tabIds.every(id => {
         const tab = Tab.get(id);
         return !tab || tab.pinned || tab.hidden;
-      }))
+      })) {
+    log('tryLockPosition: ignore pinned or hidden tabs ', tabIds);
     return;
+  }
 
   // Don't lock scroll position when the last tab is closed.
   const lastTab = Tab.getLastVisibleTab();
@@ -1264,6 +1266,7 @@ export function tryLockPosition(tabIds, reason) {
         tryLockPosition.tabIds.add(id);
       }
     }
+    log('tryLockPosition: ignore last tab remove ', tabIds);
     return;
   }
 
@@ -1275,7 +1278,7 @@ export function tryLockPosition(tabIds, reason) {
     tryLockPosition.tabIds.add(id);
   }
 
-  log('tryLockPosition');
+  log('tryLockPosition ', tabIds);
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
   const count = tryLockPosition.tabIds.size;
   spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
@@ -1314,7 +1317,7 @@ export function tryUnlockPosition(tabIds) {
 }
 
 function tryFinishPositionLocking(event) {
-  log('tryFinishPositionLocking ', event);
+  log('tryFinishPositionLocking ', tryLockPosition.tabIds, event);
   switch (event && event.type) {
     case 'mouseout':
       const relatedTarget = event.relatedTarget;
