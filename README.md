@@ -119,7 +119,7 @@ There are some similar project by someone not me providing similar features:
 All feedback is handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).  
 Please read FAQ below, before you post any new feature request.
 
-### Basic project policy
+### Basic project policies
 
  * *TST is basically designed to be used as a permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
    * To avoid users' confusion, TST respects Firefox's built-in behavior and features regarding the tab bar as possible as it can: tab context menu, gestures, etc., [except features impossible to be implemented with regular WebExtensions API](https://github.com/piroor/treestyletab/discussions/3449#discussioncomment-8391490).
@@ -131,9 +131,16 @@ Please read FAQ below, before you post any new feature request.
    * Instead of adding more features, I hope to make TST *compatible with other tab-related extensions*.
      If it is required for better compatibility, I have added [public APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [there are many implementations using this API](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST).
      *If you need any new APIs, please file API proposals in the issue tracker*.
-   * [Any feature request covered by any existing helper extension](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST) won't become built-in feature.
-   * Any feature request which can be covered by [customizations with user stylesheets](https://github.com/piroor/treestyletab/wiki/Customizing-with-CSS) also may be rejected.
-   * So, in other words, features couldn't be (or hard to be) done with existing methods (public APIs and customization with user stylesheets) possibly become new built-in, even if it looks not related to any of native tab features or tree management.
+   * Here is the basic policy about decision to accept or reject feature requests:
+     * If Firefox has the option, TST also should provide similar option to emulate it. (ex. `browser.tabs.closeTabByDblclick` emulation, `browser.tabs.selectOwnerOnClose` emulation, warnings for closing multiple tabs, style switch for leftside/rightside sidebar)
+     * If TST imitates Firefox's UI and Firefox doesn't provide any options to control them, TST basically don't provide options for them. (ex. visibility options for imitated context menu commands)
+     * If it is essential for accessibility, TST should provide the option. (ex. text direction option, animation effects, "High Contrast" theme, color switch for the toolbar button icon)
+     * If it is impossible to be done via [customizations with user stylesheets](https://github.com/piroor/treestyletab/wiki/Customizing-with-CSS), TST should provide the option. (ex. unfaviconizing of pinned tabs, positioning options for new tabs, drag-and-drop behavior)
+     * If it is already available during combination with other extensions, TST don't provide options for them. (ex. coloring of tabs, suspending of tabs, detailed control of tab focus, and [other features covered by existing helper extensions](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST)](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST))
+     * If it couldn't be (or hard to be) done with any of existing methods listed above, it can become a new built-in, even if it looks not related to any of native tab features or tree management.
+
+Please remind that some existing features or options may violate these policies due to historical reasons.
+
 
 ### FAQ / frequently rejected requests/proposals
 
@@ -251,15 +258,7 @@ Please read FAQ below, before you post any new feature request.
   I want to limit options to those that are truly essential.
   Too many options would kill this project, because they would cloud the main concept of TST and would attract people who don't share my core vision.
   
-  Here is a list of policies about accepting or rejecting new option requests:
-  
-  * If Firefox has the option, TST also should provide similar option to emulate it. (ex. `browser.tabs.closeTabByDblclick` emulation, `browser.tabs.selectOwnerOnClose` emulation, warnings for closing multiple tabs, style switch for leftside/rightside sidebar)
-  * If TST imitates Firefox's UI and Firefox doesn't provide any options to control them, TST basically don't provide options for them. (ex. visibility options for imitated context menu commands)
-  * If it is essential for accessibility, TST should provide the option. (ex. text direction option, animation effects, "High Contrast" theme, color switch for the toolbar button icon)
-  * If it is impossible to be done via simple CSS tricks, TST should provide the option. (ex. unfaviconizing of pinned tabs, positioning options for new tabs, drag-and-drop behavior)
-  * If it is already available during combination with another extension, TST don't provide options for them. (ex. coloring of tabs, suspending of tabs, detailed control of tab focus)
-  
-  Please remind that some existing options may violate these policies due to historical reasons.
+  Please see also the [basic project policies](#basic-project-policies) 
   </details>
 * <details id="feature-requests-controlling-where-new-tabs-are-opened-from-links-or-bookmarks"><summary>Controlling where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
