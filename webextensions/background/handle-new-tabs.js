@@ -216,8 +216,8 @@ async function notifyToTryHandleNewTab(tab, { context, activeTab, openerTab } = 
   const result = TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_HANDLE_NEWTAB,
     { tab,
-      activeTab: activeTab,
-      openerTab: openerTab,
+      activeTab,
+      openerTab,
       context },
     { tabProperties: ['tab', 'activeTab', 'openerTab'], cache }
   );
