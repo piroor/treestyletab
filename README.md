@@ -138,6 +138,10 @@ Please read FAQ below, before you post any new feature request.
      * If it is impossible to be done via [customizations with user stylesheets](https://github.com/piroor/treestyletab/wiki/Customizing-with-CSS), TST should provide the option. (ex. unfaviconizing of pinned tabs, positioning options for new tabs, drag-and-drop behavior)
      * If it is already available during combination with other extensions, TST don't provide options for them. (ex. coloring of tabs, suspending of tabs, detailed control of tab focus, and [other features covered by existing helper extensions](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST)](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST))
      * If it couldn't be (or hard to be) done with any of existing methods listed above, it can become a new built-in, even if it looks not related to any of native tab features or tree management.
+ * TST supports official latest releases of Firefox: both regular and ESR.
+   * We keep codes compatibe with both these reelases.
+     Features depending on new APIs not available on the latest ESR are disabled on ESR, but we may implement that.
+     Changes incompatible to the latest ESR will be left pending until a new ESR is released.
 
 Please remind that some existing features or options may violate this policy due to historical reasons.
 
