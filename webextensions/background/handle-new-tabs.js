@@ -515,6 +515,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
     if (tab.$TST.isNewTabCommandTab) {
       log('behave as a tab opened by new tab command (delayed)');
+      tab.$TST.addState(Constants.kTAB_STATE_NEW_TAB_COMMAND_TAB);
       handleNewTabFromActiveTab(tab, {
         activeTab:                     possibleOpenerTab,
         autoAttachBehavior:            configs.autoAttachOnNewTabCommand,
@@ -529,6 +530,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     const newTabSite    = tab.url.match(siteMatcher);
     if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
       log('behave as a tab opened from same site (delayed)');
+      tab.$TST.addState(Constants.kTAB_STATE_OPENED_FOR_SAME_WEBSITE);
       handleNewTabFromActiveTab(tab, {
         url:                           tab.url,
         activeTab:                     possibleOpenerTab,

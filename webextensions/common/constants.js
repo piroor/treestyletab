@@ -200,11 +200,16 @@ export const kTAB_STATE_DISCARDED                 = 'discarded';
 export const kTAB_STATE_SELECTED                  = 'selected';
 export const kTAB_STATE_DRAGGING                  = 'dragging';
 export const kTAB_STATE_DUPLICATING               = 'duplicating';
+export const kTAB_STATE_DUPLICATED                = 'duplicated';
 export const kTAB_STATE_RESTORED                  = 'restored';
+export const kTAB_STATE_FROM_EXTERNAL             = 'from-external';
+export const kTAB_STATE_FROM_FIREFOX_VIEW         = 'from-firefox-view';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
 export const kTAB_STATE_GROUP_TAB                 = 'group-tab';
+export const kTAB_STATE_NEW_TAB_COMMAND_TAB       = 'newtab-command-tab';
+export const kTAB_STATE_OPENED_FOR_SAME_WEBSITE   = 'opened-for-same-website';
 export const kTAB_STATE_STICKY                    = 'sticky';
-export const kTAB_INTERNAL_STATES = new Set([
+export const kTAB_INTERNAL_STATES = new Set([ // TST specific states
   'tab',
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_LAST_VISIBLE,
@@ -219,8 +224,15 @@ export const kTAB_INTERNAL_STATES = new Set([
   kTAB_STATE_REMOVING,
   kTAB_STATE_SHOWING,
   kTAB_STATE_THROBBER_UNSYNCHRONIZED,
+  kTAB_STATE_NEW_TAB_COMMAND_TAB,
+  kTAB_STATE_DUPLICATED,
+  kTAB_STATE_RESTORED,
+  kTAB_STATE_FROM_EXTERNAL,
+  kTAB_STATE_FROM_FIREFOX_VIEW,
+  kTAB_STATE_OPENED_FOR_SAME_WEBSITE,
+  kTAB_STATE_STICKY,
 ]);
-export const kTAB_TEMPORARY_STATES = new Set([
+export const kTAB_TEMPORARY_STATES = new Set([ // states not trigger updating of cache
   kTAB_STATE_CREATING,
   kTAB_STATE_BURSTING,
   kTAB_STATE_COLLAPSING,
@@ -230,11 +242,23 @@ export const kTAB_TEMPORARY_STATES = new Set([
   kTAB_STATE_TO_BE_REMOVED,
   kTAB_STATE_REMOVING,
   kTAB_STATE_SHOWING,
+  kTAB_STATE_NEW_TAB_COMMAND_TAB,
+  kTAB_STATE_DUPLICATED,
+  kTAB_STATE_RESTORED,
+  kTAB_STATE_FROM_EXTERNAL,
+  kTAB_STATE_FROM_FIREFOX_VIEW,
+  kTAB_STATE_OPENED_FOR_SAME_WEBSITE,
 ]);
-export const kTAB_SAFE_STATES = new Set([
+export const kTAB_SAFE_STATES = new Set([ // exportable via API
   kTAB_STATE_COLLAPSED,
   kTAB_STATE_SUBTREE_COLLAPSED,
   kTAB_STATE_GROUP_TAB,
+  kTAB_STATE_NEW_TAB_COMMAND_TAB,
+  kTAB_STATE_DUPLICATED,
+  kTAB_STATE_RESTORED,
+  kTAB_STATE_FROM_EXTERNAL,
+  kTAB_STATE_FROM_FIREFOX_VIEW,
+  kTAB_STATE_OPENED_FOR_SAME_WEBSITE,
   kTAB_STATE_STICKY,
 ]);
 export const kTAB_SAFE_STATES_ARRAY = Array.from(kTAB_SAFE_STATES);

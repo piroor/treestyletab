@@ -418,6 +418,10 @@ async function onNewTabTracked(tab, info) {
 
   if (info.trigger == 'tabs.onCreated')
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
+  if (fromExternal)
+    tab.$TST.addState(Constants.kTAB_STATE_FROM_EXTERNAL);
+  if (tab.$TST.hasFirefoxViewOpener)
+    tab.$TST.addState(Constants.kTAB_STATE_FROM_FIREFOX_VIEW);
 
   const mayBeReplacedWithContainer = tab.$TST.mayBeReplacedWithContainer;
   log(`onNewTabTracked(${dumpTab(tab)}): `, tab, { win, positionedBySelf, mayBeReplacedWithContainer, duplicatedInternally, maybeOrphan, activeTab });
@@ -491,6 +495,8 @@ async function onNewTabTracked(tab, info) {
     const restored   = uniqueId.restored;
     const skipFixupTree = !nextTab;
     log(`onNewTabTracked(${dumpTab(tab)}): `, { duplicated, restored, skipFixupTree });
+    if (duplicated)
+      tab.$TST.addState(Constants.kTAB_STATE_DUPLICATED);
 
     const maybeNeedToFixupTree = (
       (info.mayBeReplacedWithContainer ||
