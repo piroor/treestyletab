@@ -775,7 +775,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (tab.active) {
         if (shouldApplyAnimation()) {
           await wait(0); // nextFrame() is too fast!
-          if (tab.$TST.collapsedOnCreated) {
+          if (!message.collapsed /* the new tab may be really collapsed not just for animation, and we should not expand */ &&
+              tab.$TST.collapsedOnCreated) {
             CollapseExpand.setCollapsed(tab, {
               collapsed: false,
             });

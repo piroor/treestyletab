@@ -635,6 +635,7 @@ async function onNewTabTracked(tab, info) {
       type:     Constants.kCOMMAND_NOTIFY_TAB_CREATED,
       windowId: tab.windowId,
       tabId:    tab.id,
+      collapsed: tab.$TST.collapsed, // it may be really collapsed by some reason (for example, opened under a collapsed tree), not just for "created" animation!
       active:   tab.active,
       maybeMoved: moved
     });

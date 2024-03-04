@@ -405,6 +405,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     collapseExpandTabAndSubtree(tab, {
       ...options,
       collapsed: true,
+      forceExpand: false,
       broadcast: true
     });
   }
