@@ -119,7 +119,7 @@ There are some similar project by someone not me providing similar features:
 All feedback is handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).  
 Please read FAQ below, before you post any new feature request.
 
-### Basic project policies
+### Basic project policy
 
  * *TST is basically designed to be used as a permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
    * To avoid users' confusion, TST respects Firefox's built-in behavior and features regarding the tab bar as possible as it can: tab context menu, gestures, etc., [except features impossible to be implemented with regular WebExtensions API](https://github.com/piroor/treestyletab/discussions/3449#discussioncomment-8391490).
@@ -139,7 +139,7 @@ Please read FAQ below, before you post any new feature request.
      * If it is already available during combination with other extensions, TST don't provide options for them. (ex. coloring of tabs, suspending of tabs, detailed control of tab focus, and [other features covered by existing helper extensions](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST)](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST))
      * If it couldn't be (or hard to be) done with any of existing methods listed above, it can become a new built-in, even if it looks not related to any of native tab features or tree management.
 
-Please remind that some existing features or options may violate these policies due to historical reasons.
+Please remind that some existing features or options may violate this policy due to historical reasons.
 
 
 ### FAQ / frequently rejected requests/proposals
@@ -258,7 +258,7 @@ Please remind that some existing features or options may violate these policies 
   I want to limit options to those that are truly essential.
   Too many options would kill this project, because they would cloud the main concept of TST and would attract people who don't share my core vision.
   
-  Please see also the [basic project policies](#basic-project-policies) 
+  Please see also the [basic project policy](#basic-project-policy) 
   </details>
 * <details id="feature-requests-controlling-where-new-tabs-are-opened-from-links-or-bookmarks"><summary>Controlling where new tabs are opened from <a href="https://github.com/piroor/treestyletab/issues/1052">links</a> or <a href="https://github.com/piroor/treestyletab/issues/263">bookmarks</a></summary>
   
