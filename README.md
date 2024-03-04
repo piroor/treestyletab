@@ -119,21 +119,21 @@ There are some similar project by someone not me providing similar features:
 All feedback is handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).  
 Please read FAQ below, before you post any new feature request.
 
-### Basics
+### Basic project policy
 
  * *TST is basically designed to be used as a permanently-shown tab management UI, an alternative of Firefox's native tab bar.*
-   * To avoid users' confusion, TST respects Firefox's built-in behavior and features regarding the tab bar: tab context menu, gestures, etc.
+   * To avoid users' confusion, TST respects Firefox's built-in behavior and features regarding the tab bar as possible as it can: tab context menu, gestures, etc., [except features impossible to be implemented with regular WebExtensions API](https://github.com/piroor/treestyletab/discussions/3449#discussioncomment-8391490).
  * *TST is designed to work with "tree of tabs"*.
    * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess the relationship between tabs automatically, from the context.
    * Better usability for ungrouped flat tabs in a vertical tab bar is an added benefit.
-
-Any feature request unrelated to these points may be rejected, even if many people love it.
-For example: [session management](https://addons.mozilla.org/firefox/addon/tab-session-manager/), [search field](https://addons.mozilla.org/firefox/addon/tab_search/), detailed focus control of tabs, and so on.
-
-Instead of adding more features, I hope to make TST *compatible with other tab-related extensions*.
-If it is required for better compatibility, I have added [public APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [there are many implementations using this API](#addons-extend-tst).
-
-If you need any new APIs, please file API proposals in the issue tracker.
+ * Any feature request unrelated to these points may be rejected, even if many people love it.
+   * For example: [session management](https://addons.mozilla.org/firefox/addon/tab-session-manager/), [search field](https://addons.mozilla.org/firefox/addon/tab_search/), detailed focus control of tabs, and so on.
+   * Instead of adding more features, I hope to make TST *compatible with other tab-related extensions*.
+     If it is required for better compatibility, I have added [public APIs for other extensions](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [there are many implementations using this API](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST).
+     *If you need any new APIs, please file API proposals in the issue tracker*.
+   * [Any feature request covered by any existing helper extension](https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST) won't become built-in feature.
+   * Any feature request which can be covered by [customizations with user stylesheets](https://github.com/piroor/treestyletab/wiki/Customizing-with-CSS) also may be rejected.
+   * So, in other words, features couldn't be (or hard to be) done with existing methods (public APIs and customization with user stylesheets) possibly become new built-in, even if it looks not related to any of native tab features or tree management.
 
 ### FAQ / frequently rejected requests/proposals
 
