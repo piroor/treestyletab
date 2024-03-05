@@ -626,7 +626,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "Double-click on a tab" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "Collapse/expand tree" },
-  "config_treeDoubleClickBehavior_toggleSticky":        { "message": "Toggle sticky on tab bar adges" },
+  "config_treeDoubleClickBehavior_toggleSticky":        { "message": "Stick to tab bar adges / Unstick from tab bar edges" },
   "config_treeDoubleClickBehavior_close":               { "message": "Close tab" },
   "config_treeDoubleClickBehavior_close_note":          { "message": " (*simulation of the browser's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
   "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },

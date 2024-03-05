@@ -623,7 +623,7 @@
 
   "config_treeDoubleClickBehavior_caption":             { "message": "タブのダブルクリック" },
   "config_treeDoubleClickBehavior_toggleCollapsed":     { "message": "ツリーを開閉する" },
-  "config_treeDoubleClickBehavior_toggleSticky":        { "message": "タブバー端に貼り付くようにする" },
+  "config_treeDoubleClickBehavior_toggleSticky":        { "message": "タブバー端に貼り付ける/貼り付けを解除" },
   "config_treeDoubleClickBehavior_close":               { "message": "タブを閉じる" },
   "config_treeDoubleClickBehavior_close_note":          { "message": "（※ブラウザー組み込みの機能である\"browser.tabs.closeTabByDblclick\"=\"true\"の再現）" },
   "config_treeDoubleClickBehavior_none":                { "message": "何もしない" },
