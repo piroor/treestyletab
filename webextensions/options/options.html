@@ -150,7 +150,8 @@
              ><input id="stickyActiveTab"
                      type="checkbox">
              __MSG_config_stickyActiveTab_label__</label></p>
-    <p><label class="has-checkbox"
+    <p class="expert"
+      ><label class="has-checkbox"
              ><input id="showDialogInSidebar"
                      type="checkbox">
                      __MSG_config_showDialogInSidebar_label__</label></p>
@@ -159,7 +160,7 @@
 
     <section id="section-contextMenu">
     <h1>__MSG_config_context_caption__</h1>
-    <fieldset class="contextConfigs">
+    <fieldset class="contextConfigs expert">
     <legend>__MSG_config_extraItems_tabs_caption__</legend>
     <table>
       <thead>
@@ -378,7 +379,7 @@
                          size="45"></label></p>
       </div>
     </fieldset>
-    <fieldset class="contextConfigs">
+    <fieldset class="contextConfigs expert">
       <legend>__MSG_config_extraItems_bookmarks_caption__</legend>
       <p class="with-bookmarks-permission"
         ><label class="has-checkbox"
@@ -433,6 +434,7 @@
               </select>
               __MSG_config_autoAttachOnOpenedWithOwner_after__
               <span class="preview-image"></span></label></p>
+    <div class="expert">
     <fieldset>
       <legend>__MSG_config_insertNewTabFromFirefoxViewAt_caption__</legend>
       <ul>
@@ -458,8 +460,7 @@
                ><input id="autoGroupNewTabsFromFirefoxView"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromFirefoxView_label__</p>
-      <p class="expert"
-        ><label>__MSG_config_groupTabTemporaryStateForChildrenOfFirefoxView_label__
+      <p><label>__MSG_config_groupTabTemporaryStateForChildrenOfFirefoxView_label__
                 <select id="groupTabTemporaryStateForChildrenOfFirefoxView">
                   <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
                   <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
@@ -495,8 +496,7 @@
                ><input id="autoGroupNewTabsFromPinned"
                        type="checkbox">
                 __MSG_config_autoGroupNewTabsFromPinned_label__</p>
-      <p class="expert"
-        ><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
+      <p><label>__MSG_config_groupTabTemporaryStateForChildrenOfPinned_label__
                 <select id="groupTabTemporaryStateForChildrenOfPinned">
                   <option value="0">__MSG_config_groupTabTemporaryState_option_default__</option>
                   <option value="1">__MSG_config_groupTabTemporaryState_option_checked_before__
@@ -507,6 +507,7 @@
                                     __MSG_config_groupTabTemporaryState_option_checked_after__</option>
                 </select></label></p>
     </fieldset>
+    </div>
     </section>
 
 
@@ -536,7 +537,7 @@
                           <input id="guessNewOrphanTabAsOpenedByNewTabCommandUrl"
                                  size="40">
                            __MSG_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after__</label></p>
-    <p class="sub"
+    <p class="sub expert"
       ><label>__MSG_config_inheritContextualIdentityToChildTabMode_label__
               <select id="inheritContextualIdentityToChildTabMode">
                 <option value="0">__MSG_config_inheritContextualIdentityToChildTabMode_default__</option>
@@ -544,6 +545,7 @@
                 <option value="2">__MSG_config_inheritContextualIdentityToChildTabMode_lastActive__</option>
               </select></label></p>
     </fieldset>
+    <div class="expert">
     <fieldset>
       <legend>__MSG_config_newTabButton_caption__</legend>
     <p><label>__MSG_config_autoAttachOnNewTabButtonMiddleClick_before__
@@ -558,8 +560,7 @@
               </select>
               __MSG_config_autoAttachOnNewTabButtonMiddleClick_after__
               <span class="preview-image"></span></label></p>
-    <p class="expert"
-      ><label>__MSG_config_autoAttachOnNewTabButtonAccelClick_before__
+    <p><label>__MSG_config_autoAttachOnNewTabButtonAccelClick_before__
               <select id="autoAttachOnNewTabButtonAccelClick">
                 <option value="-1">__MSG_config_autoAttachOnNewTabButtonAccelClick_noControl__</option>
                 <option value="0">__MSG_config_autoAttachOnNewTabButtonAccelClick_independent__</option>
@@ -636,31 +637,29 @@
                   <option value="1">__MSG_config_inheritContextualIdentityToTabsFromExternalMode_parent__</option>
                   <option value="2">__MSG_config_inheritContextualIdentityToTabsFromExternalMode_lastActive__</option>
                 </select></label></p>
-      <div class="expert">
-        <p><label><input id="inheritContextualIdentityToUnopenableURLTabs"
-                         type="checkbox">
-                  __MSG_config_inheritContextualIdentityToUnopenableURLTabs_label__</label></p>
-        <hr>
-        <p><label>__MSG_config_anyOtherTrigger_caption__: __MSG_config_autoAttachOnAnyOtherTrigger_before__
-                  <select id="autoAttachOnAnyOtherTrigger">
-                    <option value="-1">__MSG_config_autoAttachOnAnyOtherTrigger_noControl__ __MSG_config_recommended_choice__</option>
-                    <option value="0">__MSG_config_autoAttachOnAnyOtherTrigger_independent__</option>
-                    <option value="6">__MSG_config_autoAttachOnAnyOtherTrigger_childTop__</option>
-                    <option value="7">__MSG_config_autoAttachOnAnyOtherTrigger_childEnd__</option>
-                    <option value="2">__MSG_config_autoAttachOnAnyOtherTrigger_sibling__</option>
-                    <option value="3">__MSG_config_autoAttachOnAnyOtherTrigger_nextSibling__</option>
-                  </select>
-                  __MSG_config_autoAttachOnAnyOtherTrigger_after__
-                <span class="preview-image"></span></label>
-                <strong>__MSG_config_autoAttachOnAnyOtherTrigger_caution__</strong></p>
-        <p class="sub autoAttachOnAnyOtherTrigger"
-          ><label>__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label__
-                  <select id="inheritContextualIdentityToTabsFromAnyOtherTriggerMode">
-                    <option value="0">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default__</option>
-                    <option value="1">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent__</option>
-                    <option value="2">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive__</option>
-                  </select></label></p>
-      </div>
+      <p><label><input id="inheritContextualIdentityToUnopenableURLTabs"
+                       type="checkbox">
+                __MSG_config_inheritContextualIdentityToUnopenableURLTabs_label__</label></p>
+      <hr>
+      <p><label>__MSG_config_anyOtherTrigger_caption__: __MSG_config_autoAttachOnAnyOtherTrigger_before__
+                <select id="autoAttachOnAnyOtherTrigger">
+                  <option value="-1">__MSG_config_autoAttachOnAnyOtherTrigger_noControl__ __MSG_config_recommended_choice__</option>
+                  <option value="0">__MSG_config_autoAttachOnAnyOtherTrigger_independent__</option>
+                  <option value="6">__MSG_config_autoAttachOnAnyOtherTrigger_childTop__</option>
+                  <option value="7">__MSG_config_autoAttachOnAnyOtherTrigger_childEnd__</option>
+                  <option value="2">__MSG_config_autoAttachOnAnyOtherTrigger_sibling__</option>
+                  <option value="3">__MSG_config_autoAttachOnAnyOtherTrigger_nextSibling__</option>
+                </select>
+                __MSG_config_autoAttachOnAnyOtherTrigger_after__
+              <span class="preview-image"></span></label>
+              <strong>__MSG_config_autoAttachOnAnyOtherTrigger_caution__</strong></p>
+      <p class="sub autoAttachOnAnyOtherTrigger"
+        ><label>__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label__
+                <select id="inheritContextualIdentityToTabsFromAnyOtherTriggerMode">
+                  <option value="0">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default__</option>
+                  <option value="1">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_parent__</option>
+                  <option value="2">__MSG_config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_lastActive__</option>
+                </select></label></p>
     </fieldset>
 
     <fieldset id="autoGroupNewTabsSection">
@@ -688,43 +687,41 @@
                        class="require-bookmarks-permission"
                        data-request-permission-message="__MSG_config_requireBookmarksPermission_tooltiptext__">
                 __MSG_config_restoreTreeForTabsFromBookmarks_label__</label></p>
-      <div class="expert">
-        <p class="sub with-bookmarks-permission"
-          ><label>__MSG_config_tabsFromSameFolderMinThresholdPercentage_before__
-                  <input id="tabsFromSameFolderMinThresholdPercentage"
-                         type="number"
-                         size="3"
-                         max="100"
-                         min="0">
-                  __MSG_config_tabsFromSameFolderMinThresholdPercentage_after__</label></p>
-        <p><label class="has-checkbox"
-                 ><input id="autoGroupNewTabsFromOthers"
-                         type="checkbox">
-                  __MSG_config_autoGroupNewTabsFromOthers_label__</label></p>
-        <p class="sub"><label>__MSG_config_tabBunchesDetectionDelayOnNewWindow_before__
-                              <input id="tabBunchesDetectionDelayOnNewWindow"
-                                     type="number"
-                                     size="4">
-                              __MSG_config_tabBunchesDetectionDelayOnNewWindow_after__</label></p>
+      <p class="sub with-bookmarks-permission"
+        ><label>__MSG_config_tabsFromSameFolderMinThresholdPercentage_before__
+                <input id="tabsFromSameFolderMinThresholdPercentage"
+                       type="number"
+                       size="3"
+                       max="100"
+                       min="0">
+                __MSG_config_tabsFromSameFolderMinThresholdPercentage_after__</label></p>
+      <p><label class="has-checkbox"
+               ><input id="autoGroupNewTabsFromOthers"
+                       type="checkbox">
+                __MSG_config_autoGroupNewTabsFromOthers_label__</label></p>
+      <p class="sub"><label>__MSG_config_tabBunchesDetectionDelayOnNewWindow_before__
+                            <input id="tabBunchesDetectionDelayOnNewWindow"
+                                   type="number"
+                                   size="4">
+                            __MSG_config_tabBunchesDetectionDelayOnNewWindow_after__</label></p>
+      <p class="sub"><label class="has-checkbox"
+                           ><input id="warnOnAutoGroupNewTabs"
+                                   type="checkbox">
+                            __MSG_config_warnOnAutoGroupNewTabs_label__</label></p>
+      <div class="sub">
         <p class="sub"><label class="has-checkbox"
-                             ><input id="warnOnAutoGroupNewTabs"
-                                     type="checkbox">
-                              __MSG_config_warnOnAutoGroupNewTabs_label__</label></p>
-        <div class="sub">
-          <p class="sub"><label class="has-checkbox"
-            ><input id="warnOnAutoGroupNewTabsWithListing"
-                    type="checkbox">
-             __MSG_config_warnOnAutoGroupNewTabsWithListing_label__</label></p>
-        </div>
-        <hr>
-        <p><label class="has-checkbox"
-                 ><input id="renderTreeInGroupTabs"
-                         type="checkbox">
-                  __MSG_config_renderTreeInGroupTabs_label__</p>
+          ><input id="warnOnAutoGroupNewTabsWithListing"
+                  type="checkbox">
+           __MSG_config_warnOnAutoGroupNewTabsWithListing_label__</label></p>
       </div>
+      <hr>
+      <p><label class="has-checkbox"
+               ><input id="renderTreeInGroupTabs"
+                       type="checkbox">
+                __MSG_config_renderTreeInGroupTabs_label__</p>
     </fieldset>
 
-    <fieldset class="expert">
+    <fieldset>
       <legend>__MSG_config_groupTabTemporaryState_caption__</legend>
       <p><label>__MSG_config_groupTabTemporaryStateForNewTabsFromBookmarks_label__
                 <select id="groupTabTemporaryStateForNewTabsFromBookmarks">
@@ -758,12 +755,15 @@
                 </select></label></p>
     </fieldset>
 
+    </div>
+
     </section>
 
 
     <section id="section-treeBehavior">
     <h1>__MSG_config_treeBehavior_caption__</h1>
 
+    <div class="expert">
     <p><label class="has-checkbox"
              ><input id="autoCollapseExpandSubtreeOnAttach"
                      type="checkbox">
@@ -772,7 +772,6 @@
              ><input id="autoCollapseExpandSubtreeOnSelect"
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
-    <div class="expert">
     <p class="sub">
        <label class="has-checkbox"
              ><input
@@ -787,17 +786,17 @@
              ><input id="autoDiscardTabForUnexpectedFocus"
                      type="checkbox">
              __MSG_config_autoDiscardTabForUnexpectedFocus_label__</label></p>
-    </div>
     <p><label class="has-checkbox"
              ><input id="avoidDiscardedTabToBeActivatedIfPossible"
                      type="checkbox">
              __MSG_config_avoidDiscardedTabToBeActivatedIfPossible_label__</label></p>
+    </div>
 
     <p><label class="has-checkbox"
              ><input id="allUrlsPermissionGranted_ctrlTabTracking"
                      type="checkbox">
               __MSG_config_requestPermissions_allUrls_ctrlTabTracking__</label></p>
-    <div class="expert" id="ctrlTabSubItemsContainer">
+    <div id="ctrlTabSubItemsContainer" class="expert">
       <p class="sub"><label class="has-checkbox"
                            ><input id="autoExpandOnTabSwitchingShortcuts"
                                    type="checkbox">
@@ -812,7 +811,6 @@
                               <option value="control">__MSG_config_accelKey_control__</option>
                               <option value="meta">__MSG_config_accelKey_meta__</option>
                             </select></label></p>
-    </div>
 
     <fieldset>
       <legend>__MSG_config_treeDoubleClickBehavior_caption__</legend>
@@ -858,6 +856,7 @@
                       type="checkbox">
                __MSG_config_simulateSelectOwnerOnClose_label__</label></p>
     </fieldset>
+    </div>
     <fieldset id="parentTabOperationBehaviorModeGroup">
       <legend>__MSG_config_parentTabOperationBehaviorMode_caption__</legend>
       <p style="white-space: pre-wrap">__MSG_config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors__</p>
@@ -978,7 +977,8 @@
             <p>__MSG_config_parentTabOperationBehaviorMode_consistent_notes__</p>
           </div>
         </li>
-        <li><label class="has-radio"
+        <li class="expert"
+           ><label class="has-radio"
                   ><input
                     type="radio"
                     name="parentTabOperationBehaviorMode" value="-1">
@@ -1221,13 +1221,15 @@
           </tr>
         </tbody>
       </table>
-      <p><label class="has-checkbox"
+      <p class="expert"
+        ><label class="has-checkbox"
                ><input id="showTabDragBehaviorNotification"
                        type="checkbox">
                <img src="tab-drag-behavior-notification.png" alt=""/>
                __MSG_config_showTabDragBehaviorNotification_label__</label></p>
       <p>__MSG_config_tabDragBehavior_noteForDragstartOutsideSidebar__</p>
     </fieldset>
+    <div class="expert">
     <fieldset>
       <legend>__MSG_config_dropLinksOnTabBehavior_caption__</legend>
       <ul>
@@ -1250,7 +1252,6 @@
                        type="checkbox">
                 __MSG_config_simulateTabsLoadInBackgroundInverted_label__</label></p>
     </fieldset>
-    <div class="expert">
     <fieldset>
       <legend>__MSG_config_insertDroppedTabsAt_caption__</legend>
       <ul>
@@ -1301,7 +1302,8 @@
              ><input id="warnOnCloseTabsByClosebox"
                      type="checkbox">
               __MSG_config_warnOnCloseTabsByClosebox_label__</label></p>
-    <p class="sub expert"><label class="has-checkbox"
+    <div class="expert">
+    <p class="sub"><label class="has-checkbox"
              ><input id="warnOnCloseTabsWithListing"
                      type="checkbox">
               __MSG_config_warnOnCloseTabsWithListing_label__</label></p>
@@ -1317,26 +1319,26 @@
                __MSG_config_persistCachedTree_label__</label></p>
       <p class="sub">__MSG_config_persistCachedTree_description__</p>
     </div>
-    <div class="expert">
     <p><label class="has-checkbox"
              ><input id="supportTabsMultiselect"
                      type="checkbox">
               __MSG_config_supportTabsMultiselect_label__</label></p>
-    </div>
     <p><label class="has-checkbox"
              ><input id="undoMultipleTabsClose"
                      type="checkbox">
               __MSG_config_undoMultipleTabsClose_label__</label></p>
+    </div>
     <p><label class="has-checkbox"
              ><input id="bookmarksPermissionGranted_context"
                      type="checkbox">
                      __MSG_config_requestPermissions_bookmarks_context__</label></p>
-    <p class="expert"
-      ><label>__MSG_config_scrollLines_label_before__
+    <div class="expert">
+    <p><label>__MSG_config_scrollLines_label_before__
               <input id="scrollLines"
                      type="number"
                      size="5">
              __MSG_config_scrollLines_label_after__</label></p>
+    </div>
     <fieldset>
       <legend>__MSG_config_userStyleRules_label__</legend>
       <p>__MSG_config_userStyleRules_description_before__
@@ -1410,7 +1412,7 @@
 
     <section id="section-debug">
     <h1>__MSG_config_debug_caption__</h1>
-    <ul>
+    <ul class="expert">
       <li><a id="link-optionsPage" target="_blank">__MSG_config_title__</a>
       <li><a id="link-startupPage" target="_blank">__MSG_config_link_startupPage_label__</a></li>
       <li><a id="link-groupPage" target="_blank">__MSG_config_link_groupPage_label__</a></li>
@@ -1436,6 +1438,7 @@
                      name="colorScheme" value="system-color">
          __MSG_config_colorScheme_systemColor__</label>
     </p>
+    <div class="expert">
     <p><label class="has-checkbox"
              ><input id="enableLinuxBehaviors"
                      type="checkbox">
@@ -1448,7 +1451,6 @@
              ><input id="enableWindowsBehaviors"
                      type="checkbox">
              __MSG_config_enableWindowsBehaviors_label__</label></p>
-    <div class="expert">
     <p><label class="has-checkbox"
              ><input id="simulateSVGContextFill"
                      type="checkbox">
@@ -1462,7 +1464,6 @@
                      type="number"
                      size="6">
              __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
-    </div>
     <p><label>__MSG_config_delayForDuplicatedTabDetection_label_before__
               <input id="delayForDuplicatedTabDetection"
                      type="number"
@@ -1482,6 +1483,7 @@
                      type="checkbox">
               __MSG_config_loggingConnectionMessages_label__</label>
        <button id="showLogsButton">__MSG_config_showLogsButton_label__</button></p>
+    </div>
     <p><label class="has-checkbox"
              ><input id="debug"
                      type="checkbox">

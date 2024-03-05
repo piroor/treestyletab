@@ -103,6 +103,7 @@ const mItems = [
       },
       {
         title:    browser.i18n.getMessage('config_labelOverflowStyle_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_labelOverflowStyle_fade'),
@@ -117,7 +118,6 @@ const mItems = [
             type:  'radio'
           }
         ],
-        expert: true
       },
       {
         title: browser.i18n.getMessage('config_faviconizePinnedTabs_label'),
@@ -176,7 +176,8 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
         key:   'showDialogInSidebar',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
     ]
   },
@@ -185,22 +186,26 @@ const mItems = [
     children: [
       {
         title: browser.i18n.getMessage('config_extraItems_tabs_topLevel'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
         key:   'context_topLevel_toggleSticky',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),
         key:   'context_topLevel_reloadTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_topLevel_reloadDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
@@ -209,6 +214,7 @@ const mItems = [
         get visible() {
           return configs.exposeUnblockAutoplayFeatures;
         },
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
@@ -217,97 +223,117 @@ const mItems = [
         get visible() {
           return configs.exposeUnblockAutoplayFeatures;
         },
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
         key:   'context_topLevel_toggleMuteTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteDescendants_command'),
         key:   'context_topLevel_toggleMuteDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeTree_command'),
         key:   'context_topLevel_closeTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeDescendants_command'),
         key:   'context_topLevel_closeDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeOthers_command'),
         key:   'context_topLevel_closeOthers',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseTree_command'),
         key:   'context_topLevel_collapseTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseTreeRecursively_command'),
         key:   'context_topLevel_collapseTreeRecursively',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseAll_command'),
         key:   'context_topLevel_collapseAll',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandTree_command'),
         key:   'context_topLevel_expandTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandTreeRecursively_command'),
         key:   'context_topLevel_expandTreeRecursively',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandAll_command'),
         key:   'context_topLevel_expandAll',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_command'),
         key:   'context_topLevel_bookmarkTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_sendTreeToDevice_command'),
         key:   'context_topLevel_sendTreeToDevice',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title:       browser.i18n.getMessage('config_requestPermissions_bookmarks'),
         type:        'checkbox',
         permissions: Permissions.BOOKMARKS
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_extraItems_tabs_subMenu'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleSticky_command'),
         key:   'context_toggleSticky',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_reloadTree_command'),
         key:   'context_reloadTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_reloadDescendants_command'),
         key:   'context_reloadDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_unblockAutoplayTree_command'),
@@ -316,6 +342,7 @@ const mItems = [
         get visible() {
           return configs.exposeUnblockAutoplayFeatures;
         },
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_unblockAutoplayDescendants_command'),
@@ -324,92 +351,112 @@ const mItems = [
         get visible() {
           return configs.exposeUnblockAutoplayFeatures;
         },
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteTree_command'),
         key:   'context_toggleMuteTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_toggleMuteDescendants_command'),
         key:   'context_toggleMuteDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeTree_command'),
         key:   'context_closeTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeDescendants_command'),
         key:   'context_closeDescendants',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_closeOthers_command'),
         key:   'context_closeOthers',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseTree_command'),
         key:   'context_collapseTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseTreeRecursively_command'),
         key:   'context_collapseTreeRecursively',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_collapseAll_command'),
         key:   'context_collapseAll',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandTree_command'),
         key:   'context_expandTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandTreeRecursively_command'),
         key:   'context_expandTreeRecursively',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_expandAll_command'),
         key:   'context_expandAll',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_bookmarkTree_command'),
         key:   'context_bookmarkTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('context_sendTreeToDevice_command'),
         key:   'context_sendTreeToDevice',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_extraItems_bookmarks_caption'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title: indent() + sanitizeAccesskeyMark(browser.i18n.getMessage('context_openAllBookmarksWithStructure_label')),
         key:   'context_openAllBookmarksWithStructure',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + sanitizeAccesskeyMark(browser.i18n.getMessage('context_openAllBookmarksWithStructureRecursively_label')),
         key:   'context_openAllBookmarksWithStructureRecursively',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: indent() + browser.i18n.getMessage('config_openAllBookmarksWithStructureDiscarded_label'),
         key:   'openAllBookmarksWithStructureDiscarded',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_suppressGroupTabForStructuredTabsFromBookmarks_label'),
@@ -474,84 +521,87 @@ const mItems = [
     children: [
       {
         title:   browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_before'),
-        enabled: false,
+        children: [
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+            key:   'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_DO_NOTHING,
+            type:   'radio',
+          },
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_ORPHAN,
+            type:   'radio',
+          },
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childTop') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_CHILD_TOP,
+            type:   'radio',
+          },
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childEnd') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_recommended_choice'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_CHILD_END,
+            type:   'radio',
+          },
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB,
+            type:   'radio',
+          },
+          {
+            title:  browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_SIBLING,
+            type:   'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
+            key:    'autoAttachOnOpenedWithOwner',
+            value:  Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+            type:   'radio',
+          },
+        ],
       },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
-        key:   'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_DO_NOTHING,
-        type:   'radio',
-      },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_ORPHAN,
-        type:   'radio',
-      },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childTop') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_CHILD_TOP,
-        type:   'radio',
-      },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childEnd') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_recommended_choice'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_CHILD_END,
-        type:   'radio',
-      },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_childNextToLastRelatedTab') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_CHILD_NEXT_TO_LAST_RELATED_TAB,
-        type:   'radio',
-      },
-      {
-        title:  indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_SIBLING,
-        type:   'radio',
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedWithOwner_after'),
-        key:    'autoAttachOnOpenedWithOwner',
-        value:  Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
-        type:   'radio',
-      },
-      { type: 'separator' },
       {
         title:    browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_caption'),
-        enabled:  false,
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_noControl'),
-        key:   'insertNewTabFromFirefoxViewAt',
-        value: Constants.kINSERT_NO_CONTROL,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
-        key:   'insertNewTabFromFirefoxViewAt',
-        value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_top'),
-        key:   'insertNewTabFromFirefoxViewAt',
-        value: Constants.kINSERT_TOP,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_end'),
-        key:   'insertNewTabFromFirefoxViewAt',
-        value: Constants.kINSERT_END,
-        type:  'radio'
+        expert:   true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_noControl'),
+            key:   'insertNewTabFromFirefoxViewAt',
+            value: Constants.kINSERT_NO_CONTROL,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
+            key:   'insertNewTabFromFirefoxViewAt',
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_top'),
+            key:   'insertNewTabFromFirefoxViewAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromFirefoxViewAt_end'),
+            key:   'insertNewTabFromFirefoxViewAt',
+            value: Constants.kINSERT_END,
+            type:  'radio',
+          },
+        ],
       },
       //{ type: 'separator' },
       {
         title: browser.i18n.getMessage('config_autoGroupNewTabsFromFirefoxView_label'),
         key:   'autoGroupNewTabsFromFirefoxView',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfFirefoxView_label'),
@@ -575,42 +625,46 @@ const mItems = [
             value: Constants.kGROUP_TAB_TEMPORARY_STATE_AGGRESSIVE,
             type:  'radio'
           }
-        ]
+        ],
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
-        title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
-        enabled:  false,
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
-        key:   'insertNewTabFromPinnedTabAt',
-        value: Constants.kINSERT_NO_CONTROL,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
-        key:   'insertNewTabFromPinnedTabAt',
-        value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
-        key:   'insertNewTabFromPinnedTabAt',
-        value: Constants.kINSERT_TOP,
-        type:  'radio'
-      },
-      {
-        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
-        key:   'insertNewTabFromPinnedTabAt',
-        value: Constants.kINSERT_END,
-        type:  'radio'
+        title:   browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
+        expert:  true,
+        children: [
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_NO_CONTROL,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab') + ' ' + browser.i18n.getMessage('config_firefoxCompatible_choice'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_NEXT_TO_LAST_RELATED_TAB,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_top'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_TOP,
+            type:  'radio',
+          },
+          {
+            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
+            key:   'insertNewTabFromPinnedTabAt',
+            value: Constants.kINSERT_END,
+            type:  'radio',
+          },
+        ],
       },
       //{ type: 'separator' },
       {
         title: browser.i18n.getMessage('config_autoGroupNewTabsFromPinned_label'),
         key:   'autoGroupNewTabsFromPinned',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: browser.i18n.getMessage('config_groupTabTemporaryStateForChildrenOfPinned_label'),
@@ -688,6 +742,7 @@ const mItems = [
       },
       {
         title: indent() + browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_label'),
+        expert: true,
         children: [
           {
             title: browser.i18n.getMessage('config_inheritContextualIdentityToChildTabMode_default'),
@@ -709,13 +764,16 @@ const mItems = [
           }
         ]
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_newTabButton_caption'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_before'),
+        expert: true,
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
@@ -759,7 +817,7 @@ const mItems = [
             value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
             type:  'radio'
           }
-        ]
+        ],
       },
       {
         title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonAccelClick_before'),
@@ -811,6 +869,7 @@ const mItems = [
       },
       {
         title:    indent() + browser.i18n.getMessage('config_longPressOnNewTabButton_before'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_longPressOnNewTabButton_newTabAction') + delimiter + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
@@ -830,25 +889,30 @@ const mItems = [
             value: '',
             type:  'radio'
           }
-        ]
+        ],
       },
       {
         title: browser.i18n.getMessage('config_showNewTabActionSelector_label'),
         key:   'showNewTabActionSelector',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: browser.i18n.getMessage('config_showContextualIdentitiesSelector_label'),
         key:   'showContextualIdentitiesSelector',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_autoAttachWithURL_caption'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title:    indent() + browser.i18n.getMessage('config_autoAttachOnDuplicated_before'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
@@ -890,6 +954,7 @@ const mItems = [
       },
       {
         title:    indent() + browser.i18n.getMessage('config_sameSiteOrphan_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
@@ -955,6 +1020,7 @@ const mItems = [
       },
       {
         title:    indent() + browser.i18n.getMessage('config_fromExternal_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnOpenedFromExternal_after') + ' ' + browser.i18n.getMessage('config_recommended_choice'),
@@ -1018,9 +1084,11 @@ const mItems = [
           }
         ]
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title:    indent() + browser.i18n.getMessage('config_anyOtherTrigger_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_before') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_noControl') + delimiter + browser.i18n.getMessage('config_autoAttachOnAnyOtherTrigger_after') + ' ' + browser.i18n.getMessage('config_recommended_choice'),
@@ -1087,17 +1155,20 @@ const mItems = [
           }
         ]
       },
-      { type: 'separator' },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_groupTab_caption'),
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         dynamicTitle: true,
         get title() {
           return indent() + browser.i18n.getMessage('config_tabBunchesDetectionTimeout_before') + delimiter + configs.tabBunchesDetectionTimeout + delimiter + browser.i18n.getMessage('config_tabBunchesDetectionTimeout_after');
         },
-        enabled: false
+        enabled: false,
+        expert: true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_autoGroupNewTabsFromBookmarks_label'),
@@ -1224,12 +1295,14 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnAttach_label'),
         key:   'autoCollapseExpandSubtreeOnAttach',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelect_label'),
         key:   'autoCollapseExpandSubtreeOnSelect',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label'),
@@ -1252,7 +1325,8 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_avoidDiscardedTabToBeActivatedIfPossible_label'),
         key:   'avoidDiscardedTabToBeActivatedIfPossible',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert: true,
       },
       {
         title:       browser.i18n.getMessage('config_requestPermissions_allUrls_ctrlTabTracking'),
@@ -1277,29 +1351,34 @@ const mItems = [
         title: indent(2) + browser.i18n.getMessage('config_accelKey_auto'),
         key:   'accelKey',
         value: '',
-        type:  'radio'
+        type:  'radio',
+        expert: true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_accelKey_alt'),
         key:   'accelKey',
         value: 'alt',
-        type:  'radio'
+        type:  'radio',
+        expert: true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_accelKey_control'),
         key:   'accelKey',
         value: 'control',
-        type:  'radio'
+        type:  'radio',
+        expert: true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_accelKey_meta'),
         key:   'accelKey',
         value: 'meta',
-        type:  'radio'
+        type:  'radio',
+        expert: true,
       },
       { type: 'separator', expert: true },
       {
         title:    browser.i18n.getMessage('config_treeDoubleClickBehavior_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_treeDoubleClickBehavior_toggleCollapsed'),
@@ -1329,6 +1408,7 @@ const mItems = [
       },
       {
         title:    browser.i18n.getMessage('config_successorTabControlLevel_caption'),
+        expert:   true,
         children: [
           {
             title: browser.i18n.getMessage('config_successorTabControlLevel_inTree'),
@@ -1356,7 +1436,8 @@ const mItems = [
         type:  'checkbox',
         get visible() {
           return typeof browser.tabs.moveInSuccession == 'function';
-        }
+        },
+        expert: true,
       },
       {
         title:    browser.i18n.getMessage('config_parentTabOperationBehaviorMode_caption'),
@@ -1461,15 +1542,18 @@ const mItems = [
               }
             ]
           },
-          { type: 'separator' },
+          { type: 'separator',
+            expert: true, },
           {
             title: browser.i18n.getMessage('config_parentTabOperationBehaviorMode_custom'),
             key:   'parentTabOperationBehaviorMode',
             value: Constants.kPARENT_TAB_OPERATION_BEHAVIOR_MODE_CUSTOM,
-            type:  'radio'
+            type:  'radio',
+            expert: true,
           },
           {
             title: indent() + browser.i18n.getMessage('config_closeParentBehavior_insideSidebar_expanded_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_closeParentBehavior_entireTree'),
@@ -1511,6 +1595,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_closeParentBehavior_outsideSidebar_collapsed_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_closeParentBehavior_entireTree'),
@@ -1552,6 +1637,7 @@ const mItems = [
           },
           {
             title: indent(2) + browser.i18n.getMessage('config_closeParentBehavior_noSidebar_collapsed_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_closeParentBehavior_entireTree'),
@@ -1593,6 +1679,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_closeParentBehavior_outsideSidebar_expanded_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_closeParentBehavior_entireTree'),
@@ -1634,6 +1721,7 @@ const mItems = [
           },
           {
             title: indent(2) + browser.i18n.getMessage('config_closeParentBehavior_noSidebar_expanded_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_closeParentBehavior_entireTree'),
@@ -1675,6 +1763,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_moveParentBehavior_outsideSidebar_collapsed_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_moveParentBehavior_entireTree'),
@@ -1716,6 +1805,7 @@ const mItems = [
           },
           {
             title: indent(2) + browser.i18n.getMessage('config_moveParentBehavior_noSidebar_collapsed_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_moveParentBehavior_entireTree'),
@@ -1757,6 +1847,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_moveParentBehavior_outsideSidebar_expanded_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_moveParentBehavior_entireTree'),
@@ -1798,6 +1889,7 @@ const mItems = [
           },
           {
             title: indent(2) + browser.i18n.getMessage('config_moveParentBehavior_noSidebar_expanded_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_moveParentBehavior_entireTree'),
@@ -1912,35 +2004,41 @@ const mItems = [
       {
         title: indent(2) + browser.i18n.getMessage('config_showTabDragBehaviorNotification_label'),
         key:   'showTabDragBehaviorNotification',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       //{ type: 'separator' },
       {
         title:   indent() + browser.i18n.getMessage('config_dropLinksOnTabBehavior_caption'),
         enabled: false,
+        expert:  true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_ASK,
-        type:  'radio'
+        type:  'radio',
+        expert:  true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_LOAD,
-        type:  'radio'
+        type:  'radio',
+        expert:  true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
         key:   'dropLinksOnTabBehavior',
         value: Constants.kDROPLINK_NEWTAB,
-        type:  'radio'
+        type:  'radio',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_simulateTabsLoadInBackgroundInverted_label'),
         type:  'checkbox',
         key:   'simulateTabsLoadInBackgroundInverted',
+        expert:  true,
       },
       //{ type: 'separator', expert: true },
       {
@@ -1977,25 +2075,25 @@ const mItems = [
         },
         key:    'autoExpandOnLongHover',
         type:   'checkbox',
-        expert: true
+        expert: true,
       },
       {
         title:  indent(2) + browser.i18n.getMessage('config_autoExpandOnLongHoverRestoreIniitalState_label'),
         key:    'autoExpandOnLongHoverRestoreIniitalState',
         type:   'checkbox',
-        expert: true
+        expert: true,
       },
       {
         title:  indent(2) + browser.i18n.getMessage('config_autoExpandIntelligently_label'),
         key:    'autoExpandIntelligently',
         type:   'checkbox',
-        expert: true
+        expert: true,
       },
       {
         title:  indent() + browser.i18n.getMessage('config_ignoreTabDropNearSidebarArea_label'),
         key:    'ignoreTabDropNearSidebarArea',
         type:   'checkbox',
-        expert: true
+        expert: true,
       },
       { type: 'separator' },
       {
@@ -2021,23 +2119,26 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('config_useCachedTree_label'),
         key:   'useCachedTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_persistCachedTree_label'),
         key:   'persistCachedTree',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_supportTabsMultiselect_label'),
         key:   'supportTabsMultiselect',
         type:  'checkbox',
-        expert: true
+        expert: true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_undoMultipleTabsClose_label'),
         key:   'undoMultipleTabsClose',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title:       indent() + browser.i18n.getMessage('config_requestPermissions_bookmarks_context'),
@@ -2069,27 +2170,32 @@ const mItems = [
       {
         title: indent() + browser.i18n.getMessage('config_enableLinuxBehaviors_label'),
         key:   'enableLinuxBehaviors',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_enableMacOSBehaviors_label'),
         key:   'enableMacOSBehaviors',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_enableWindowsBehaviors_label'),
         key:   'enableWindowsBehaviors',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_loggingQueries_label'),
         key:   'loggingQueries',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent(2) + browser.i18n.getMessage('config_loggingConnectionMessages_label'),
         key:   'loggingConnectionMessages',
-        type:  'checkbox'
+        type:  'checkbox',
+        expert:  true,
       },
       {
         title: indent() + browser.i18n.getMessage('config_debug_label'),
