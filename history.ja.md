@@ -34,6 +34,7 @@
      * `get-tree` や `get-light-tree` であらかじめ `states` の情報に基づいて絞り込んだ結果を得るための [`states` および `statesNot` オプション](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を追加
      * タブの追加コンテンツの挿入位置の指定として [`tab-above` と `tab-below`](https://github.com/piroor/treestyletab/wiki/Extra-Tab-Contents-API#how-to-insert-extra-contents) に対応
      * タブのツールチップを明示的に設定するためのAPIとして [`set-tooltip-text` と `clear-tooltip-text`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#set-custom-tooltip-text-to-tabs) を追加
+     * [`try-expand-tree-from-attached-child` の通知](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#suppress-unintentional-expansion-of-collapsed-tree-by-tst)において、新たに追加された子タブの情報を `child` で含めるようにした
    * **このバージョンでの改善作業の多くはWaterfoxプロジェクト・BrowserWorks社からの資金的支援に基づいて行われました。Alex Kontosさん、ありがとうございます！**（[Waterfoxプロジェクトによるアナウンス](https://www.waterfox.net/blog/waterfox-x-treestyletab/)）
  - 3.9.22 (2024.1.31)
    * 追加の権限「ブックマークの読み取りと変更」が許可されていない時に初期化に失敗する問題を修正（3.9.21での後退バグ）

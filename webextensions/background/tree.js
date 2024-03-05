@@ -323,8 +323,9 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   const cache = {};
   const allowed = (options.forceExpand || !!options.dontExpand) && await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-    { tab: parent },
-    { tabProperties: ['tab'], cache }
+    { tab: parent,
+      child: tab },
+    { tabProperties: ['tab', 'child'], cache }
   );
   TSTAPI.clearCache(cache);
   if (!TabsStore.ensureLivingTab(tab))
@@ -368,8 +369,9 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
             return;
           const allowed = await TSTAPI.tryOperationAllowed(
             TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
-            { tab: ancestor },
-            { tabProperties: ['tab'], cache }
+            { tab: ancestor,
+              child: tab },
+            { tabProperties: ['tab', 'child'], cache }
           );
           TSTAPI.clearCache(cache);
           if (!allowed) {
