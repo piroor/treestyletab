@@ -20,6 +20,7 @@
    * Lock scroll position temporary when a tree near the tab bar end is collapsed, just like as the case when tabs are closed.
    * Open local files in tabs with blob: URL when they are dropped to the tab bar, intstead of simply ignored.
    * Never create needless multiple folders for bookmarks created from tabs tree.
+   * Most options are now treated as expert options and hidden by default.
    * Many API improvements.
      * Introduce a new message type [`get-version`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#detecting-version-of-tst-itself) to know the version of TST itself.
      * Introduce new notification types [`tabs-rendered` and `tabs-unrendered`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-one-or-more-tabs-are-renderedun-rendered) to observe tabs' rendered state.
