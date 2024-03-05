@@ -305,7 +305,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   // we need to apply "forceExpand" immediately. Otherwise, when
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
-  log('newly attached tab ', tab.id);
+  log('collapseExpandForAttachedTab: newly attached tab ', { tab, parent, options });
   if (parent.$TST.subtreeCollapsed &&
       !options.forceExpand) {
     log('  the tree is collapsed, but keep collapsed by forceExpand option');
@@ -328,8 +328,10 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
     { tabProperties: ['tab', 'child'], cache }
   );
   TSTAPI.clearCache(cache);
-  if (!TabsStore.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab)) {
+    log('  not living tab, do nothing');
     return;
+  }
 
   if (options.forceExpand && allowed) {
     log(`  expand tab ${tab.id} by forceExpand option`);
@@ -347,6 +349,10 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
       });
     parentTreeCollasped = false;
   }
+  else {
+    log('  not forceExpanded');
+  }
+
   if (!options.dontExpand) {
     if (allowed) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
@@ -401,6 +407,9 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
       collapsed:    true,
       broadcast:    true
     });
+  }
+  else {
+    log('  nothing to do');
   }
   if (parentTreeCollasped || parentCollasped) {
     log('  collapse tab because the parent is collapsed');
@@ -1106,15 +1115,20 @@ export function manualCollapseExpandSubtree(tab, params = {}) {
 
 // returns an array of tab ids which are changed their visibility
 export async function collapseExpandTabAndSubtree(tab, params = {}) {
+  log('collapseExpandTabAndSubtree ', tab, params);
   const visibilityChangedTabIds = [];
 
-  if (!tab)
+  if (!tab) {
+    log('  no target');
     return visibilityChangedTabIds;
+  }
 
   // allow to expand root collapsed tab
   if (!tab.$TST.collapsed &&
-      !tab.$TST.parent)
+      !tab.$TST.parent) {
+    log('  no parent');
     return visibilityChangedTabIds;
+  }
 
   if (collapseExpandTab(tab, params))
     visibilityChangedTabIds.push(tab.id);
