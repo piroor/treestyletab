@@ -321,7 +321,7 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
   let parentCollasped     = parent.$TST.collapsed;
 
   const cache = {};
-  const allowed = (options.forceExpand || !!options.dontExpand) && await TSTAPI.tryOperationAllowed(
+  const allowed = (options.forceExpand || !options.dontExpand) && await TSTAPI.tryOperationAllowed(
     TSTAPI.kNOTIFY_TRY_EXPAND_TREE_FROM_ATTACHED_CHILD,
     { tab: parent,
       child: tab },
@@ -397,6 +397,18 @@ async function collapseExpandForAttachedTab(tab, parent, options = {}) {
         if (!TabsStore.ensureLivingTab(tab))
           return;
       }
+      if (!parent.$TST.subtreeCollapsed &&
+          tab.$TST.collapsed) {
+        log('  moved from collapsed tree to expanded tree');
+        collapseExpandTabAndSubtree(tab, {
+          ...options,
+          collapsed: false,
+          broadcast: true,
+        });
+      }
+    }
+    else {
+      log('  not allowed to expand');
     }
   }
   else if (parent.$TST.isAutoExpandable ||
