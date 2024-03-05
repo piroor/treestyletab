@@ -124,7 +124,16 @@ export const obsoleteConfigs = new Set(mapAndFilter(`
 }));
 
 export const configs = new Configs({
-  optionsExpandedSections: ['section-appearance'],
+  optionsExpandedSections: [
+    'section-appearance',
+    'section-addons',
+    'section-advanced',
+    'section-drag',
+    'section-treeBehavior',
+    'section-newTab',
+    'section-newTabWithOwner',
+    'section-contextMenu',
+  ],
   optionsExpandedGroups: [],
 
   // appearance
