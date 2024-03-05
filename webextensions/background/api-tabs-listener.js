@@ -418,6 +418,8 @@ async function onNewTabTracked(tab, info) {
 
   if (info.trigger == 'tabs.onCreated')
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
+  if (tab.$TST.isNewTabCommandTab)
+    tab.$TST.addState(Constants.kTAB_STATE_NEW_TAB_COMMAND_TAB);
   if (fromExternal)
     tab.$TST.addState(Constants.kTAB_STATE_FROM_EXTERNAL);
   if (tab.$TST.hasFirefoxViewOpener)
