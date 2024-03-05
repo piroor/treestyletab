@@ -220,10 +220,21 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      if (tab.$TST.collapsedOnCreated) { // it is already expanded by others!
+      if (tab.$TST.collapsedOnCreated) { // it may be already expanded by others!
         if (!tab.$TST.collapsed) // expanded by someone, so clear the flag.
           tab.$TST.collapsedOnCreated = false;
-        return;
+
+        // Unexpectedly kept as collapsed case may happen when only "collapsed"
+        // state was applied by broadcasting, so we clear it for now
+        if (tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) ||
+            !tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE))
+          return;
+        if (!tab.$TST.collapsed) {
+          tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
+          tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+          TabsStore.removeVisibleTab(tab);
+          TabsStore.removeExpandedTab(tab);
+        }
       }
       setCollapsed(tab, {
         collapsed: lastMessage.collapsed,
