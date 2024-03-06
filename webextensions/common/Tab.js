@@ -479,8 +479,6 @@ export default class Tab {
 
     if ((configs.stickyActiveTab &&
          this.tab?.active) ||
-        (configs.stickyPreviouslyActiveTab &&
-         this.states.has(Constants.kTAB_STATE_PREVIOUSLY_ACTIVE)) ||
         (configs.stickySoundPlayingTab &&
          this.soundPlaying) ||
         (configs.stickyMediaPlayingTab &&

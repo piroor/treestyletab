@@ -157,7 +157,6 @@ export const configs = new Configs({
   unrepeatableBGImageAspectRatio: 4,
 
   stickyActiveTab: true,
-  stickyPreviouslyActiveTab: false,
   stickySoundPlayingTab: true,
   stickySharingTab: true,
   faviconizePinnedTabs: true,

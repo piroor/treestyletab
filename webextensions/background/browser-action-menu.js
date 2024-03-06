@@ -179,11 +179,6 @@ const mItems = [
         type:  'checkbox',
       },
       {
-        title: indent() + browser.i18n.getMessage('config_stickyPreviouslyActiveTab_label'),
-        key:   'stickyPreviouslyActiveTab',
-        type:  'checkbox',
-      },
-      {
         title: indent() + browser.i18n.getMessage('config_stickySoundPlayingTab_label'),
         key:   'stickySoundPlayingTab',
         type:  'checkbox',

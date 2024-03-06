@@ -661,7 +661,6 @@ BackgroundConnection.onMessage.addListener(async message => {
           stickyStateChanged = true;
       }
       if (stickyStateChanged ||
-          modified.has(Constants.kTAB_STATE_PREVIOUSLY_ACTIVE) ||
           modified.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
           modified.has(Constants.kTAB_STATE_SHARING_CAMERA) ||
           modified.has(Constants.kTAB_STATE_SHARING_MICROPHONE) ||
