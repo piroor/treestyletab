@@ -126,6 +126,10 @@ async function onActivated(activeInfo) {
   if (mPromisedStarted)
     await mPromisedStarted;
 
+  TabsStore.previouslyActiveTabInWindow.get(activeInfo.windowId)?.$TST.removeState(Constants.kTAB_STATE_PREVIOUSLY_ACTIVE);
+  TabsStore.previouslyActiveTabInWindow.set(activeInfo.windowId, Tab.get(activeInfo.previousTabId));
+  TabsStore.previouslyActiveTabInWindow.get(activeInfo.windowId)?.$TST.addState(Constants.kTAB_STATE_PREVIOUSLY_ACTIVE);
+
   TabsStore.activeTabInWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
 
   const [onCompleted, previous] = addTabOperationQueue();

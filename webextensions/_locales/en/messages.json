@@ -401,6 +401,7 @@
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Only when triggered by a mouse operation in the sidebar" },
   "config_autoStickyTab_caption":       { "message": "Tabs sticked to edges of the tab bar when they are scrolled out" },
   "config_stickyActiveTab_label":       { "message": "Active Tab" },
+  "config_stickyPreviouslyActiveTab_label": { "message": "Previously Active Tab" },
   "config_stickySoundPlayingTab_label": { "message": "Sound Playing Tabs" },
   "config_stickySharingTab_label":      { "message": "Tabs Sharing Camera/Microphone/Screen" },
   "config_showDialogInSidebar_label": { "message": "Show dialogs in the sidebar if possible" },

@@ -157,6 +157,7 @@ export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 export const kTABBAR_SPACER   = 'tabs-spacer';
 
 export const kTAB_STATE_ACTIVE                    = 'active';
+export const kTAB_STATE_PREVIOUSLY_ACTIVE         = 'previously-active';
 export const kTAB_STATE_PINNED                    = 'pinned';
 export const kTAB_STATE_LAST_ROW                  = 'last-row';
 export const kTAB_STATE_LAST_VISIBLE              = 'last-visible';
@@ -211,6 +212,7 @@ export const kTAB_STATE_OPENED_FOR_SAME_WEBSITE   = 'opened-for-same-website';
 export const kTAB_STATE_STICKY                    = 'sticky';
 export const kTAB_INTERNAL_STATES = new Set([ // TST specific states
   'tab',
+  kTAB_STATE_PREVIOUSLY_ACTIVE,
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_LAST_VISIBLE,
   kTAB_STATE_ANIMATION_READY,
@@ -233,6 +235,7 @@ export const kTAB_INTERNAL_STATES = new Set([ // TST specific states
   kTAB_STATE_STICKY,
 ]);
 export const kTAB_TEMPORARY_STATES = new Set([ // states not trigger updating of cache
+  kTAB_STATE_PREVIOUSLY_ACTIVE,
   kTAB_STATE_CREATING,
   kTAB_STATE_BURSTING,
   kTAB_STATE_COLLAPSING,

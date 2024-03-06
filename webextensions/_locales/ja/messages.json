@@ -398,6 +398,7 @@
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "サイドバーをマウスで操作した場合のみ抑制する" },
   "config_autoStickyTab_caption":       { "message": "以下のタブが画面外にスクロールアウトしたときにタブバーの端に貼り付ける" },
   "config_stickyActiveTab_label":       { "message": "現在のタブ" },
+  "config_stickyPreviouslyActiveTab_label": { "message": "直前に見ていたタブ" },
   "config_stickySoundPlayingTab_label": { "message": "音声を再生中のタブ" },
   "config_stickySharingTab_label":      { "message": "カメラ/マイク/画面を共有中のタブ" },
   "config_showDialogInSidebar_label": { "message": "可能であればサイドバー内でダイアログを表示する" },
