@@ -168,11 +168,28 @@ const mItems = [
         type:  'checkbox',
         expert: true
       },
+      { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_stickyActiveTab_label'),
+        title: browser.i18n.getMessage('config_autoStickyTab_caption'),
+        enabled: false,
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_stickyActiveTab_label'),
         key:   'stickyActiveTab',
         type:  'checkbox',
       },
+      {
+        title: indent() + browser.i18n.getMessage('config_stickySoundPlayingTab_label'),
+        key:   'stickySoundPlayingTab',
+        type:  'checkbox',
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_stickySharingTab_label'),
+        key:   'stickySharingTab',
+        type:  'checkbox',
+      },
+      { type: 'separator',
+        expert: true, },
       {
         title: browser.i18n.getMessage('config_showDialogInSidebar_label'),
         key:   'showDialogInSidebar',

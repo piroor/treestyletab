@@ -6,7 +6,7 @@
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
      * Due to this design change, customization with CSS `counter` won't be work as expected anymore. You'll need to create something helper addon to do such customizations.
    * Introduce new context menu commands and other triggers to stick arbitrary tabs to edges of the tab bar. It is similar to "Pin/Unpin Tab" but sticked tab keeps its tree.
-   * Active tab is now sticked to edges of the tab bar when it is scrolled out.
+   * Active tab, sound playing tabs, and tabs sharing camera/microphone/screen are stickable to edges of the tab bar when they are scrolled out.
    * Indicate sharing state of tabs (camera, microphone and/or screen) with icons.
    * Show dropshadow before normal tabs when the tab bar is scrolled.
    * Show dropshadow after normal tabs when the tab bar is not fully scrolled.

@@ -477,10 +477,17 @@ export default class Tab {
     if (this.sticky)
       return true;
 
-    if (!configs.stickyActiveTab)
-      return false;
+    if ((configs.stickyActiveTab &&
+         this.tab?.active) ||
+        (configs.stickySoundPlayingTab &&
+         this.soundPlaying) ||
+        (configs.stickyMediaPlayingTab &&
+         (this.sharingCamera ||
+          this.sharingMicrophone ||
+          this.sharingScreen)))
+      return true;
 
-    return this.tab?.active || this.bundledTab?.active;
+    return false;
   }
 
   get promisedPossibleOpenerBookmarks() {

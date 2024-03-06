@@ -660,7 +660,11 @@ BackgroundConnection.onMessage.addListener(async message => {
         if (modified.has(Constants.kTAB_STATE_STICKY))
           stickyStateChanged = true;
       }
-      if (stickyStateChanged)
+      if (stickyStateChanged ||
+          modified.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
+          modified.has(Constants.kTAB_STATE_SHARING_CAMERA) ||
+          modified.has(Constants.kTAB_STATE_SHARING_MICROPHONE) ||
+          modified.has(Constants.kTAB_STATE_SHARING_SCREEN))
         onNormalTabsChanged.dispatch();
     }; break;
 
