@@ -180,6 +180,16 @@ function onConfigChanged(key) {
 
     case 'showExpertOptions':
       document.documentElement.classList.toggle('show-expert-options', configs.showExpertOptions);
+      for (const item of document.querySelectorAll('#parentTabOperationBehaviorModeGroup li li')) {
+        const radio = item.querySelector('input[type="radio"]');
+        if (configs.showExpertOptions || radio.checked) {
+          item.style.display =  '';
+          radio.style.display = configs.showExpertOptions ? '' : 'none';
+        }
+        else {
+          item.style.display =  radio.style.display = 'none';
+        }
+      }
       break;
 
     case 'syncDeviceInfo': {

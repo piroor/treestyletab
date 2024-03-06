@@ -1450,6 +1450,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_closeParentBehavior_insideSidebar'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_parentTabOperationBehavior_replaceWithGroupTab'),
@@ -1479,6 +1480,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_closeParentBehavior_outsideSidebar'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_parentTabOperationBehavior_replaceWithGroupTab'),
@@ -1506,7 +1508,8 @@ const mItems = [
               }
             ]
           },
-          { type: 'separator' },
+          { type: 'separator',
+            expert: true, },
           {
             title: browser.i18n.getMessage('config_parentTabOperationBehaviorMode_consistent'),
             key:   'parentTabOperationBehaviorMode',
@@ -1515,6 +1518,7 @@ const mItems = [
           },
           {
             title: indent() + browser.i18n.getMessage('config_parentTabOperationBehaviorMode_consistent_caption'),
+            expert: true,
             children: [
               {
                 title: browser.i18n.getMessage('config_parentTabOperationBehavior_replaceWithGroupTab'),
