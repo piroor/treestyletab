@@ -661,7 +661,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           stickyStateChanged = true;
       }
       if (stickyStateChanged ||
-          [...Tab.autoStickyStates.values()].some(states => [...states, ...modified].length < states.size + modified.size))
+          [...Tab.autoStickyStates.values()].some(states => (new Set([...states, ...modified])).size < states.size + modified.size))
         onNormalTabsChanged.dispatch();
     }; break;
 
