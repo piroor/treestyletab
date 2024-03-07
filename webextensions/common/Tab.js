@@ -2983,3 +2983,55 @@ Tab.dumpAll = windowId => {
 // key = addon ID
 // value = Set of states
 Tab.autoStickyStates = new Map();
+
+Tab.registerAutoStickyState = (providerId, statesToAdd) => {
+  if (!statesToAdd) {
+    statesToAdd = providerId;
+    providerId = browser.runtime.id;
+  }
+  const states = Tab.autoStickyStates.get(providerId) || new Set();
+  if (!Array.isArray(statesToAdd))
+    statesToAdd = [statesToAdd];
+  for (const state of statesToAdd) {
+    states.add(state)
+  }
+  if (states.size == 0)
+    return;
+
+  Tab.autoStickyStates.set(providerId, states);
+
+  if (Constants.IS_BACKGROUND) {
+    SidebarConnection.sendMessage({
+      type: Constants.kCOMMAND_BROADCAST_TAB_AUTO_STICKY_STATE,
+      providerId,
+      add:  [...statesToAdd],
+    });
+  }
+};
+
+Tab.unregisterAutoStickyState = (providerId, statesToRemove) => {
+  if (!statesToRemove) {
+    statesToRemove = providerId;
+    providerId = browser.runtime.id;
+  }
+  const states = Tab.autoStickyStates.get(providerId);
+  if (!states)
+    return;
+  if (!Array.isArray(statesToRemove))
+    statesToRemove = [statesToRemove];
+  for (const state of statesToRemove) {
+    states.delete(state)
+  }
+  if (states.size > 0)
+    Tab.autoStickyStates.set(providerId, states);
+  else
+    Tab.autoStickyStates.delete(providerId);
+
+  if (Constants.IS_BACKGROUND) {
+    SidebarConnection.sendMessage({
+      type:   Constants.kCOMMAND_BROADCAST_TAB_AUTO_STICKY_STATE,
+      providerId,
+      remove: [...statesToRemove],
+    });
+  }
+};

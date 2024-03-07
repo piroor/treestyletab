@@ -1283,5 +1283,13 @@ BackgroundConnection.onMessage.addListener(async message => {
         }
       }
     }; break;
+
+    case Constants.kCOMMAND_BROADCAST_TAB_AUTO_STICKY_STATE:
+      if (message.add)
+        Tab.registerAutoStickyState(message.providerId, message.add);
+      if (message.remove)
+        Tab.unregisterAutoStickyState(message.providerId, message.remove);
+      onNormalTabsChanged.dispatch();
+      break;
   }
 });

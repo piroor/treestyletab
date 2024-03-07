@@ -928,6 +928,14 @@ function onMessageExternal(message, sender) {
         }
         return true;
       })();
+
+    case TSTAPI.kREGISTER_AUTO_STICKY_STATES:
+      Tab.registerAutoStickyState(sender.id, message.state || message.states);
+      break;
+
+    case TSTAPI.kUNREGISTER_AUTO_STICKY_STATES:
+      Tab.unregisterAutoStickyState(sender.id, message.state || message.states);
+      break;
   }
 }
 

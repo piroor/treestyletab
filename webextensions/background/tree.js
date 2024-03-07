@@ -1306,7 +1306,7 @@ export async function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     const manuallyExpanded = collapseTab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse &&
         !manuallyExpanded &&
-        collapseTab.$TST.descendants.every(tab => !tab.$TST.sticky))
+        collapseTab.$TST.descendants.every(tab => !tab.$TST.canBecomeSticky))
       collapseExpandSubtree(collapseTab, {
         ...options,
         collapsed: true
