@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 4.0 (2024.3.7)
    * 多数のタブがある場合のパフォーマンスを向上（画面に見えている範囲内のタブのみレンダリングするようになりました）
      * ピン留めされたタブとそうでない（通常の）タブは、それぞれ別々のコンテナー要素（`#pinned-tabs-container > .tabs.pinned` および `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`）の配下に置かれるようになりました
      * 各タブの要素は [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index) に対応する属性 `data-index` を持つようになりました

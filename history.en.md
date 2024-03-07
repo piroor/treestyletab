@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 4.0 (2024.3.7)
    * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
      * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
      * Each rendered tab element now has `data-index` attribute corresponding to [`tabs.Tab.index`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab#index).
