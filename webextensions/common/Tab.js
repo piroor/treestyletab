@@ -477,15 +477,10 @@ export default class Tab {
     if (this.sticky)
       return true;
 
-    if ((configs.stickyActiveTab &&
-         this.tab?.active) ||
-        (configs.stickySoundPlayingTab &&
-         this.soundPlaying) ||
-        (configs.stickyMediaPlayingTab &&
-         (this.sharingCamera ||
-          this.sharingMicrophone ||
-          this.sharingScreen)))
-      return true;
+    for (const states of Tab.autoStickyStates.values()) {
+      if ([...this.states, ...states].size < this.states.size + states.size)
+        return true;
+    }
 
     return false;
   }
@@ -2984,3 +2979,7 @@ Tab.dumpAll = windowId => {
   log(output);
 };
 
+
+// key = addon ID
+// value = Set of states
+Tab.autoStickyStates = new Map();

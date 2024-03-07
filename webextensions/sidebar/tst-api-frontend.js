@@ -18,6 +18,7 @@ import * as TSTAPI from '/common/tst-api.js';
 import Tab from '/common/Tab.js';
 
 import * as EventUtils from './event-utils.js';
+import * as Scroll from './scroll.js';
 import * as Sidebar from './sidebar.js';
 import * as Size from './size.js';
 
@@ -85,6 +86,39 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
     message.windowId = mTargetWindow;
 
   switch (message.type) {
+    case TSTAPI.kREGISTER_AUTO_STICKY_STATES: {
+      const states = Tab.autoStickyStates.get(sender.id) || new Set();
+      if (message.state)
+        states.add(message.state);
+      if (message.states) {
+        for (const state of message.states) {
+          states.add(state)
+        }
+      }
+      if (states.size > 0) {
+        Tab.autoStickyStates.set(sender.id, states);
+        Scroll.reserveToRenderVirtualScrollViewport();
+      }
+    }; break;
+
+    case TSTAPI.kUNREGISTER_AUTO_STICKY_STATES: {
+      const states = Tab.autoStickyStates.get(sender.id);
+      if (!states)
+        break;
+      if (message.state)
+        states.delete(message.state);
+      if (message.states) {
+        for (const state of message.states) {
+          states.delete(state)
+        }
+      }
+      if (states.size > 0)
+        Tab.autoStickyStates.set(sender.id, states);
+      else
+        Tab.autoStickyStates.delete(sender.id);
+      Scroll.reserveToRenderVirtualScrollViewport();
+    }; break;
+
     case TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS: // for backward compatibility
       clearAllExtraTabContents(sender.id);
       return;
