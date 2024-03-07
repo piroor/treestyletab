@@ -994,6 +994,7 @@ export async function initAsFrontend() {
 }
 
 function onFrontendCommand(message, sender) {
+  //console.log('onFrontendCommand ', message, sender);
   if (!configs.APIEnabled)
     return;
 
