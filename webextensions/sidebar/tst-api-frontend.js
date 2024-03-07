@@ -86,36 +86,13 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
     message.windowId = mTargetWindow;
 
   switch (message.type) {
-    case TSTAPI.kREGISTER_AUTO_STICKY_STATES: {
-      const states = Tab.autoStickyStates.get(sender.id) || new Set();
-      let statesToAdd = message.states || message.state;
-      if (!Array.isArray(statesToAdd))
-        statesToAdd = [statesToAdd];
-      for (const state of statesToAdd) {
-        states.add(state)
-      }
-      if (states.size > 0) {
-        Tab.autoStickyStates.set(sender.id, states);
-        Scroll.reserveToRenderVirtualScrollViewport();
-      }
-    }; break;
+    case TSTAPI.kREGISTER_AUTO_STICKY_STATES:
+      registerAutoStickyState(sender.id, message.state || message.states);
+      break;
 
-    case TSTAPI.kUNREGISTER_AUTO_STICKY_STATES: {
-      const states = Tab.autoStickyStates.get(sender.id);
-      if (!states)
-        break;
-      let statesToRemove = message.states || message.state;
-      if (!Array.isArray(statesToRemove))
-        statesToRemove = [statesToRemove];
-      for (const state of statesToRemove) {
-        states.delete(state)
-      }
-      if (states.size > 0)
-        Tab.autoStickyStates.set(sender.id, states);
-      else
-        Tab.autoStickyStates.delete(sender.id);
-      Scroll.reserveToRenderVirtualScrollViewport();
-    }; break;
+    case TSTAPI.kUNREGISTER_AUTO_STICKY_STATES:
+      unregisterAutoStickyState(sender.id, message.state || message.states);
+      break;
 
     case TSTAPI.kCLEAR_ALL_EXTRA_TAB_CONTENTS: // for backward compatibility
       clearAllExtraTabContents(sender.id);
@@ -236,6 +213,45 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       return;
   }
 });
+
+
+export function registerAutoStickyState(providerId, statesToAdd) {
+  if (!statesToAdd) {
+    statesToAdd = providerId;
+    providerId = browser.runtime.id;
+  }
+  const states = Tab.autoStickyStates.get(providerId) || new Set();
+  if (!Array.isArray(statesToAdd))
+    statesToAdd = [statesToAdd];
+  for (const state of statesToAdd) {
+    states.add(state)
+  }
+  if (states.size > 0) {
+    Tab.autoStickyStates.set(providerId, states);
+    Scroll.reserveToRenderVirtualScrollViewport();
+  }
+}
+
+export function unregisterAutoStickyState(providerId, statesToRemove) {
+  if (!statesToRemove) {
+    statesToRemove = providerId;
+    providerId = browser.runtime.id;
+  }
+  const states = Tab.autoStickyStates.get(providerId);
+  if (!states)
+    return;
+  if (!Array.isArray(statesToRemove))
+    statesToRemove = [statesToRemove];
+  for (const state of statesToRemove) {
+    states.delete(state)
+  }
+  if (states.size > 0)
+    Tab.autoStickyStates.set(providerId, states);
+  else
+    Tab.autoStickyStates.delete(providerId);
+  Scroll.reserveToRenderVirtualScrollViewport();
+}
+
 
 // https://developer.mozilla.org/docs/Web/HTML/Element
 const SAFE_CONTENTS = `
