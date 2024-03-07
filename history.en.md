@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 4.0.1 (2024.3.8)
+   * Tabs containing sticky tabs are kept expanded when another tree is expanded, even if those tabs are sticked via API.
  - 4.0 (2024.3.7)
    * Improved performance on cases with large number of tabs. Now tabs only in the viewport are rendered.
      * Pinned tabs and unpinned (normal) tabs are now placed under separate container elements: `#pinned-tabs-container > .tabs.pinned` and `#normal-tabs-container > .virtual-scroll-container > .tabs.normal`.
