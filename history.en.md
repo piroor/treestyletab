@@ -12,7 +12,7 @@
    * Indicate sharing state of tabs (camera, microphone and/or screen) with icons.
    * Show dropshadow before normal tabs when the tab bar is scrolled.
    * Show dropshadow after normal tabs when the tab bar is not fully scrolled.
-   * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containres are matched.
+   * Use cached tree structure information more aggressively on Firefox startup, if the number of tabs, pinned status, and containers are matched.
    * Add ability to control tabs opened from Firefox View.
    * Suppress bookmarks folder auto creation for bookmarks from tabs, when multiple bookmarks are copied via the Library or something way.
    * Move descendant tabs also correctlyfollowing to their parent, when a parent tab is moved to the top level via Firefox's horizontal tab bar.
@@ -20,7 +20,7 @@
    * Avoid unexpected restoration of blank dialog windows by Ctrl-Shift-T on Firefox 116 and later.
    * Restore tree structure more correctly for reopened tabs which were closed at a time.
    * Lock scroll position temporary when a tree near the tab bar end is collapsed, just like as the case when tabs are closed.
-   * Open local files in tabs with blob: URL when they are dropped to the tab bar, intstead of simply ignored.
+   * Open local files in tabs with blob: URL when they are dropped to the tab bar, instead of simply ignored.
    * Never create needless multiple folders for bookmarks created from tabs tree.
    * Most options are now treated as expert options and hidden by default.
    * Many API improvements.
