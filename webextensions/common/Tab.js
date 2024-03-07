@@ -478,7 +478,7 @@ export default class Tab {
       return true;
 
     for (const states of Tab.autoStickyStates.values()) {
-      if ([...this.states, ...states].size < this.states.size + states.size)
+      if ([...this.states, ...states].length < this.states.size + states.size)
         return true;
     }
 
