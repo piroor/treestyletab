@@ -18,7 +18,6 @@ import * as TSTAPI from '/common/tst-api.js';
 import Tab from '/common/Tab.js';
 
 import * as EventUtils from './event-utils.js';
-import * as Scroll from './scroll.js';
 import * as Sidebar from './sidebar.js';
 import * as Size from './size.js';
 
