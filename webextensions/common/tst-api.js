@@ -705,11 +705,10 @@ if (Constants.IS_BACKGROUND) {
   });
 
   SidebarConnection.onConnected.addListener((windowId, openCount) => {
-    broadcastMessage({
-      type:   kNOTIFY_SIDEBAR_SHOW,
-      window: windowId,
+    SidebarConnection.sendMessage({
+      type: Constants.kCOMMAND_NOTIFY_CONNECTION_READY,
       windowId,
-      openCount
+      openCount,
     });
   });
 

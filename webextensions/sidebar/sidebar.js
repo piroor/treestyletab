@@ -73,6 +73,7 @@ export const onLayoutUpdated = new EventListenerManager();
 
 
 let mTargetWindow = null;
+let mConnectionOpenCount = 0;
 let mInitialized = false;
 let mReloadMaskImage = false; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
 
@@ -320,6 +321,13 @@ export async function init() {
   document.documentElement.classList.remove('initializing');
   mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
+
+  TSTAPI.broadcastMessage({
+    type:      TSTAPI.kNOTIFY_SIDEBAR_SHOW,
+    window:    mTargetWindow,
+    windowId:  mTargetWindow,
+    openCount: mConnectionOpenCount,
+  });
 
   GapCanceller.init();
 
@@ -1096,6 +1104,10 @@ const BUFFER_KEY_PREFIX = 'sidebar-';
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_CONNECTION_READY:
+      mConnectionOpenCount = message.openCount;
+      break;
+
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
       UserOperationBlocker.blockIn(mTargetWindow, message);
       break;

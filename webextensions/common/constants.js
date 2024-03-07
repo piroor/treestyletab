@@ -33,6 +33,7 @@ export const kCOMMAND_UPDATE_LOADING_STATE           = 'treestyletab:update-load
 export const kCOMMAND_CONFIRM_TO_CLOSE_TABS          = 'treestyletab:confirm-to-close-tabs';
 export const kCOMMAND_SHOW_DIALOG                    = 'treestyletab:show-dialog';
 export const kCOMMAND_NOTIFY_BACKGROUND_READY        = 'treestyletab:notify-background-ready';
+export const kCOMMAND_NOTIFY_CONNECTION_READY        = 'treestyletab:notify-connection-ready';
 export const kCOMMAND_NOTIFY_TAB_CREATING            = 'treestyletab:notify-tab-creating';
 export const kCOMMAND_NOTIFY_TAB_CREATED             = 'treestyletab:notify-tab-created';
 export const kCOMMAND_NOTIFY_TAB_UPDATED             = 'treestyletab:notify-tab-updated';
