@@ -88,12 +88,11 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
   switch (message.type) {
     case TSTAPI.kREGISTER_AUTO_STICKY_STATES: {
       const states = Tab.autoStickyStates.get(sender.id) || new Set();
-      if (message.state)
-        states.add(message.state);
-      if (message.states) {
-        for (const state of message.states) {
-          states.add(state)
-        }
+      let statesToAdd = message.states || message.state;
+      if (!Array.isArray(statesToAdd))
+        statesToAdd = [statesToAdd];
+      for (const state of statesToAdd) {
+        states.add(state)
       }
       if (states.size > 0) {
         Tab.autoStickyStates.set(sender.id, states);
@@ -105,12 +104,11 @@ TSTAPI.onMessageExternal.addListener((message, sender) => {
       const states = Tab.autoStickyStates.get(sender.id);
       if (!states)
         break;
-      if (message.state)
-        states.delete(message.state);
-      if (message.states) {
-        for (const state of message.states) {
-          states.delete(state)
-        }
+      let statesToRemove = message.states || message.state;
+      if (!Array.isArray(statesToRemove))
+        statesToRemove = [statesToRemove];
+      for (const state of statesToRemove) {
+        states.delete(state)
       }
       if (states.size > 0)
         Tab.autoStickyStates.set(sender.id, states);
