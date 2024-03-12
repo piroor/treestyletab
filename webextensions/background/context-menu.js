@@ -623,7 +623,8 @@ async function onTabContextMenuShown(info, tab) {
   for (const item of mTabItems) {
     let newVisible;
     let newEnabled;
-    if (item.id == 'sendTreeToDevice') {
+    if (item.id == 'sendTreeToDevice' &&
+        item.visible) {
       newVisible = contextTabs.filter(Sync.isSendableTab).length > 0;
       newEnabled = (
         hasChild &&
