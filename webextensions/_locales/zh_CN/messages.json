@@ -1091,8 +1091,6 @@
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": {
     "message": "相同身份的右邻同级项"
   },
-  "config_autoAttachOnContextNewTabCommand_after": {
-  },
   "config_newTabWithOwner_caption": {
     "message": "打开自已存在标签页的标签页"
   },
@@ -1119,8 +1117,6 @@
   },
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "父标签页的右邻同级项"
-  },
-  "config_autoAttachOnOpenedWithOwner_after": {
   },
   "config_insertNewTabFromFirefoxViewAt_caption": {
     "message": "Firefox 视图新建子标签页 (将会作为根标签页) 的插入位置"
@@ -2109,8 +2105,6 @@
   "config_all_caption": {
     "message": "所有配置"
   },
-  "config_terms_delimiter": {
-  },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
   },
@@ -2137,8 +2131,6 @@
   },
   "tabContextMenu_selectAllTabs_label": {
     "message": "选中所有标签页(&S)"
-  },
-  "tabContextMenu_bookmark_label": {
   },
   "tabContextMenu_reopenInContainer_label": {
     "message": "在新建身份标签页中打开(&E)"
@@ -2220,16 +2212,6 @@
   },
   "tabContextMenu_sendTabsToDevice_label_multiselected": {
     "message": "发送 %S 个标签页到设备(&N)"
-  },
-  "tabContextMenu_reloadSelected_label": {
-  },
-  "tabContextMenu_reloadSelected_label_multiselected": {
-  },
-  "tabContextMenu_bookmark_label_multiselected": {
-  },
-  "tabContextMenu_bookmarkSelected_label": {
-  },
-  "tabContextMenu_bookmarkSelected_label_multiselected": {
   },
   "tabContextMenu_close_label_multiselected": {
     "message": "关闭所选标签页(&S)"
