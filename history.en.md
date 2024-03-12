@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 4.0.3 (2024.3.13)
+   * Fix miscalculation of drop position on tabs on the "Photon" theme.
+   * Expand height of the container of pinned tabs more correctly on edge cases.
  - 4.0.2 (2024.3.13)
    * Fix performance degression around detection of tab label overflow state.
    * Fix needless blank space below last tab on the "Photon" theme.
