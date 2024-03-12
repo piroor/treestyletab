@@ -524,7 +524,7 @@ async function importFilesToUserStyleRulesField(files) {
       result = await RichConfirm.showInPopup({
         modal:   true,
         type:    'common-dialog',
-        url:     '/resources/blank.html', // required on Firefox ESR68
+        url:     ((await Permissions.isGranted(Permissions.ALL_URLS)) ? null : '/resources/blank.html'), // required on Firefox ESR68
         title:   browser.i18n.getMessage('config_userStyleRules_overwrite_title'),
         message: browser.i18n.getMessage('config_userStyleRules_overwrite_message'),
         buttons: [

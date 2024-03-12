@@ -16,6 +16,7 @@ import {
 
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
+import * as Permissions from './permissions.js';
 import * as SidebarConnection from './sidebar-connection.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 
@@ -53,7 +54,7 @@ export async function show(ownerWindow, dialogParams) {
       UserOperationBlocker.blockIn(ownerWindow.id, { throbber: false, shade: true });
       const tempTab = await browser.tabs.create({
         windowId: ownerWindow.id,
-        url:      '/resources/blank.html',
+        url:      ((await Permissions.isGranted(Permissions.ALL_URLS)) ? null : '/resources/blank.html'),
         active:   true
       });
       await Tab.waitUntilTracked(tempTab.id).then(() => {
