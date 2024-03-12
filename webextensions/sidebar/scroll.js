@@ -171,7 +171,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       !win.containerElement)
     return; // not initialized yet
 
-  const tabSize               = Size.getTabHeight();
+  const tabSize               = Size.getRenderedTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
   const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
@@ -356,7 +356,7 @@ let mLastStickyTabIdsBelow = new Set();
 
 function updateStickyTabs(renderableTabs) {
   const rootStyle      = document.documentElement.style;
-  const tabSize        = Size.getTabHeight();
+  const tabSize        = Size.getRenderedTabHeight();
   const windowId       = TabsStore.getCurrentWindowId();
   const scrollPosition = parseFloat(rootStyle.getPropertyValue('--scroll-position'));
   const viewPortSize   = parseFloat(rootStyle.getPropertyValue('--viewport-size'));
@@ -725,15 +725,15 @@ export async function scrollToTab(tab, options = {}) {
     let topStickyTabsAreaSize, bottomStickyTabsAreaSize;
     if (mLastStickyTabIdsAbove.has(anchorTab.id) &&
         mLastStickyTabIdsAbove.size > 0)
-      topStickyTabsAreaSize = Size.getTabHeight() * (mLastStickyTabIdsAbove.size - 1);
+      topStickyTabsAreaSize = Size.getRenderedTabHeight() * (mLastStickyTabIdsAbove.size - 1);
     else
-      topStickyTabsAreaSize = Size.getTabHeight() * mLastStickyTabIdsAbove.size;
+      topStickyTabsAreaSize = Size.getRenderedTabHeight() * mLastStickyTabIdsAbove.size;
 
     if (mLastStickyTabIdsBelow.has(tab.id) &&
         mLastStickyTabIdsBelow.size > 0)
-      bottomStickyTabsAreaSize = Size.getTabHeight() * (mLastStickyTabIdsBelow.size - 1);
+      bottomStickyTabsAreaSize = Size.getRenderedTabHeight() * (mLastStickyTabIdsBelow.size - 1);
     else
-      bottomStickyTabsAreaSize = Size.getTabHeight() * mLastStickyTabIdsBelow.size;
+      bottomStickyTabsAreaSize = Size.getRenderedTabHeight() * mLastStickyTabIdsBelow.size;
 
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
@@ -826,7 +826,7 @@ export function autoScrollOnMouseEvent(event) {
       return;
 
     const tabbarRect = scrollBox.getBoundingClientRect();
-    const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
+    const scrollPixels = Math.round(Size.getRenderedTabHeight() * 0.5);
     if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
       if (scrollBox.scrollTop > 0)
         scrollBox.scrollTop -= scrollPixels;
@@ -1048,19 +1048,19 @@ async function onBackgroundMessage(message) {
       const scrollBox = getScrollBoxFor(activeTab);
       switch (String(message.by).toLowerCase()) {
         case 'lineup':
-          smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
+          smoothScrollBy(-Size.getRenderedTabHeight() * configs.scrollLines);
           break;
 
         case 'pageup':
-          smoothScrollBy(-scrollBox.getBoundingClientRect().height + Size.getTabHeight());
+          smoothScrollBy(-scrollBox.getBoundingClientRect().height + Size.getRenderedTabHeight());
           break;
 
         case 'linedown':
-          smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
+          smoothScrollBy(Size.getRenderedTabHeight() * configs.scrollLines);
           break;
 
         case 'pagedown':
-          smoothScrollBy(scrollBox.getBoundingClientRect().height - Size.getTabHeight());
+          smoothScrollBy(scrollBox.getBoundingClientRect().height - Size.getRenderedTabHeight());
           break;
 
         default:
@@ -1268,11 +1268,11 @@ export function tryLockPosition(tabIds, reason) {
   }
 
   // Lock scroll position only when the closing affects to the max scroll position.
-  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getTabHeight() - mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height) {
+  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getRenderedTabHeight() - mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height) {
     log('tryLockPosition: scroll position is not affected ', tabIds, {
       scrollTop: mNormalScrollBox.scrollTop,
       scrollTopMax: mNormalScrollBox.scrollTopMax,
-      height: Size.getTabHeight(),
+      height: Size.getRenderedTabHeight(),
     });
     return;
   }
@@ -1284,7 +1284,7 @@ export function tryLockPosition(tabIds, reason) {
   log('tryLockPosition ', tabIds);
   const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
   const count = tryLockPosition.tabIds.size;
-  spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
+  spacer.style.minHeight = `${Size.getRenderedTabHeight() * count}px`;
   spacer.dataset.removedOrCollapsedTabsCount = count;
 
   if (!tryFinishPositionLocking.listening) {
@@ -1314,7 +1314,7 @@ export function tryUnlockPosition(tabIds) {
     Math.max(0, configs.collapseDuration) + 250 /* safety margin to wait finishing of the min-height animation of virtual-scroll-container */ :
     0;
   setTimeout(() => {
-    spacer.style.minHeight = `${Size.getTabHeight() * count}px`;
+    spacer.style.minHeight = `${Size.getRenderedTabHeight() * count}px`;
     spacer.dataset.removedOrCollapsedTabsCount = count;
   }, timeout);
 }
@@ -1348,7 +1348,7 @@ function tryFinishPositionLocking(event) {
         // while the cursor is still on tabs area.
         const spacer = mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`);
         const pinnedTabsAreaSize = parseFloat(document.documentElement.style.getPropertyValue('--pinned-tabs-area-size'));
-        const spacerTop = Size.getTabHeight() * (Tab.getVirtualScrollRenderableTabs(TabsStore.getCurrentWindowId()).length + 1)
+        const spacerTop = Size.getRenderedTabHeight() * (Tab.getVirtualScrollRenderableTabs(TabsStore.getCurrentWindowId()).length + 1)
         if ((!spacer || event.clientY < spacerTop) &&
             (!pinnedTabsAreaSize || isNaN(pinnedTabsAreaSize) || event.clientY > pinnedTabsAreaSize)) {
           log(' => ignore mousemove on any tab (removing)');

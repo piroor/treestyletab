@@ -28,6 +28,11 @@ export function getTabHeight() {
   return mTabHeight;
 }
 
+export function getRenderedTabHeight() {
+  const style = window.getComputedStyle(document.querySelector('#dummy-tab'), null);
+  return getTabHeight() + parseFloat(style.getPropertyValue('margin-top') || 0) + parseFloat(style.getPropertyValue('margin-bottom') || 0);
+}
+
 export function getTabXOffset() {
   return mTabXOffset;
 }
