@@ -421,7 +421,7 @@
   "config_showNewTabActionSelector_label":               { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
 
-  "config_newTabAction_caption": { "message": "Grundsätzliche Steuerung für \"Neuer leerer Tab\"\u200b" },
+  "config_newTabAction_caption": { "message": "Grundsätzliche Steuerung für \"Neuer leerer Tab\"" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
   "config_autoAttachOnNewTabCommand_noControl": { "message": "(keine Steuerung)" },
   "config_autoAttachOnNewTabCommand_independent": { "message": "eigenständigen Tab" },
@@ -521,7 +521,7 @@
 
   "config_groupTabTemporaryState_caption": { "message": "Standardzustand von Gruppen-Tabs für jede Situation" },
   "config_groupTabTemporaryState_option_default": { "message": "Keine Option auswählen" },
-  "config_groupTabTemporaryState_option_checked_before": { "message": "Option \"\u200b" },
+  "config_groupTabTemporaryState_option_checked_before": { "message": "Option \"" },
   "config_groupTabTemporaryState_option_checked_after": { "message": "\" auswählen" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "Für Tabs, die aus Lesezeichen geöffnet wurden:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Für zeitgleich geöffnete Tabs, die nicht aus Lesezeichen geöffnet wurden:" },
