@@ -23,6 +23,8 @@ let mTabXOffset         = 0;
 let mTabYOffset         = 0;
 let mFavIconSize        = 0;
 let mFavIconizedTabSize = 0;
+let mFavIconizedTabWidth = 0;
+let mFavIconizedTabHeight = 0;
 let mFavIconizedTabXOffset = 0;
 let mFavIconizedTabYOffset = 0;
 
@@ -59,11 +61,11 @@ export function getFavIconizedTabYOffset() {
 }
 
 export function getRenderedFavIconizedTabWidth() {
-  return mFavIconizedTabSize + mFavIconizedTabXOffset;
+  return mFavIconizedTabWidth + mFavIconizedTabXOffset;
 }
 
 export function getRenderedFavIconizedTabHeight() {
-  return mFavIconizedTabSize + mFavIconizedTabYOffset;
+  return mFavIconizedTabHeight + mFavIconizedTabYOffset;
 }
 
 export function init() {
@@ -81,7 +83,10 @@ export function update() {
     --favicon-size:         ${mFavIconSize}px;
     --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
-  const faviconizedTabStyle  = window.getComputedStyle(document.querySelector('#dummy-faviconized-tab'));
+  const dummyFaviconizedTab = document.querySelector('#dummy-faviconized-tab');
+  const faviconizedTabStyle = window.getComputedStyle(dummyFaviconizedTab);
+  mFavIconizedTabWidth  = dummyFaviconizedTab.offsetWidth;
+  mFavIconizedTabHeight = dummyFaviconizedTab.offsetHeight;
   mFavIconizedTabXOffset = parseFloat(faviconizedTabStyle.marginLeft.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginRight.replace(/px$/, ''));
   mFavIconizedTabYOffset = parseFloat(faviconizedTabStyle.marginTop.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginBottom.replace(/px$/, ''));
 
