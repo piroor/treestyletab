@@ -107,6 +107,15 @@
       }
     }
   },
+  "tab_sharingState_sharingCamera_tooltip": {
+    "message": "您正在共享您的摄像头"
+  },
+  "tab_sharingState_sharingMicrophone_tooltip": {
+    "message": "您正在共享您的麦克风"
+  },
+  "tab_sharingState_sharingScreen_tooltip": {
+    "message": "您正在共享窗口或屏幕"
+  },
   "tab_soundButton_muted_tooltip": {
     "message": "取消标签页静音"
   },
@@ -118,6 +127,12 @@
   },
   "tab_soundButton_playing_tooltip_multiselected": {
     "message": "将标签页静音"
+  },
+  "tab_soundButton_autoplayBlocked_tooltip": {
+    "message": "播放标签页"
+  },
+  "tab_soundButton_autoplayBlocked_tooltip_multiselected": {
+    "message": "播放标签页"
   },
   "tab_twisty_aria_label": {
     "message": "展开/折叠 标签树 #$ID$",
@@ -306,6 +321,15 @@
   "tabDragBehaviorNotification_message_tab_bookmark": {
     "message": "在该标签页被释放的位置创建链接或书签项"
   },
+  "tabsHighlightingNotification_message": {
+    "message": "高亮标签页... $PROGRESS$ %",
+    "placeholders": {
+      "progress": {
+        "content": "$1",
+        "example": "50"
+      }
+    }
+  },
   "warnOnCloseTabs_title": {
     "message": "是否关闭标签页？"
   },
@@ -446,7 +470,7 @@
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
   "sentTabs_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -458,7 +482,7 @@
     }
   },
   "sentTabs_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -470,13 +494,13 @@
     }
   },
   "sentTabsToAllDevices_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
   },
   "sentTabsToAllDevices_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -713,6 +737,24 @@
   "context_toggleMuteDescendants_command": {
     "message": "静音/取消静音 后代项"
   },
+  "context_unblockAutoplayTree_label": {
+    "message": "播放此标签树(&L)"
+  },
+  "context_unblockAutoplayTree_label_multiselected": {
+    "message": "播放所选标签树(&L)"
+  },
+  "context_unblockAutoplayTree_command": {
+    "message": "播放此标签树"
+  },
+  "context_unblockAutoplayDescendants_label": {
+    "message": "播放后代项(&A)"
+  },
+  "context_unblockAutoplayDescendants_label_multiselected": {
+    "message": "播放所选标签页的后代项(&A)"
+  },
+  "context_unblockAutoplayDescendants_command": {
+    "message": "播放后代项"
+  },
   "context_closeTree_label": {
     "message": "关闭此标签树(&C)"
   },
@@ -739,6 +781,21 @@
   },
   "context_closeOthers_command": {
     "message": "关闭除此标签树以外的其他标签页"
+  },
+  "context_toggleSticky_label_stick": {
+    "message": "将标签页固定到边缘(&K)"
+  },
+  "context_toggleSticky_label_multiselected_stick": {
+    "message": "将所选标签页固定到边缘(&K)"
+  },
+  "context_toggleSticky_label_unstick": {
+    "message": "解除标签页边缘固定(&K)"
+  },
+  "context_toggleSticky_label_multiselected_unstick": {
+    "message": "解除所选标签页边缘固定(&K)"
+  },
+  "context_toggleSticky_command": {
+    "message": "边缘固定/解除边缘固定 标签页"
   },
   "context_collapseTree_label": {
     "message": "折叠此标签树(&S)"
@@ -1034,6 +1091,8 @@
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": {
     "message": "相同身份的右邻同级项"
   },
+  "config_autoAttachOnContextNewTabCommand_after": {
+  },
   "config_newTabWithOwner_caption": {
     "message": "打开自已存在标签页的标签页"
   },
@@ -1061,6 +1120,29 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "父标签页的右邻同级项"
   },
+  "config_autoAttachOnOpenedWithOwner_after": {
+  },
+  "config_insertNewTabFromFirefoxViewAt_caption": {
+    "message": "Firefox 视图新建子标签页 (将会作为根标签页) 的插入位置"
+  },
+  "config_insertNewTabFromFirefoxViewAt_noControl": {
+    "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）"
+  },
+  "config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab": {
+    "message": "紧随最近打开的子项，或者紧随开启页"
+  },
+  "config_insertNewTabFromFirefoxViewAt_top": {
+    "message": "该标签树的顶部（紧随开启页）"
+  },
+  "config_insertNewTabFromFirefoxViewAt_end": {
+    "message": "该标签树的尾部"
+  },
+  "config_autoGroupNewTabsFromFirefoxView_label": {
+    "message": "对打开自 Firefox 视图的多个标签页进行自动分组（将会打开一个标题类似于 \"来自 ... 的标签页\" 的新建标签页用来分组）"
+  },
+  "config_groupTabTemporaryStateForChildrenOfFirefoxView_label": {
+    "message": "由打开自 Firefox 视图的多个标签页组成的标签组的默认状态:"
+  },
   "config_insertNewTabFromPinnedTabAt_caption": {
     "message": "来自固定标签的新建子标签页的插入位置（将会作为根标签页）"
   },
@@ -1080,7 +1162,7 @@
     "message": "对打开自同一个固定标签页的多个标签页进行自动分组（将会打开一个标题类似于 \"来自 ... 的标签页\" 的新建标签页用来分组）"
   },
   "config_groupTabTemporaryStateForChildrenOfPinned_label": {
-    "message": "由打开自同一固定标签页的标签页组成的标签组的默认状态:"
+    "message": "由打开自同一固定标签页的多个标签页组成的标签组的默认状态:"
   },
   "config_newTab_caption": {
     "message": "不来自已存在标签页的新建标签页"
@@ -1101,7 +1183,7 @@
     "message": "(无)"
   },
   "config_longPressOnNewTabButton_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_showNewTabActionSelector_label": {
     "message": "当鼠标指向 “新键标签页” 按钮时，在其上显示选择器按钮，用以指定新标签页打开位置"
@@ -1134,7 +1216,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnNewTabCommand_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": {
     "message": "当一个新打开的标签页的标题为"
@@ -1170,7 +1252,7 @@
     "message": "等同于按住Ctrl后再点击（身份相同的右邻同级项）"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachOnNewTabButtonAccelClick_before": {
     "message": "当按住Ctrl/⌘后再点击时，将新建空白标签页打开为"
@@ -1197,7 +1279,7 @@
     "message": "身份相同的右邻同级项"
   },
   "config_autoAttachOnNewTabButtonAccelClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachWithURL_caption": {
     "message": "非空白新建标签页"
@@ -1227,7 +1309,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnDuplicated_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_fromExternal_caption": {
     "message": "对于打开自 Firefox 之外的新建标签页"
@@ -1254,7 +1336,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnOpenedFromExternal_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": {
     "message": "身份："
@@ -1293,7 +1375,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachSameSiteOrphan_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": {
     "message": "身份："
@@ -1332,7 +1414,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnAnyOtherTrigger_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachOnAnyOtherTrigger_caution": {
     "message": "* 请注意：此选项有破坏其它附加组件行为的风险。"
@@ -1359,7 +1441,7 @@
     "message": "对于在"
   },
   "config_tabBunchesDetectionTimeout_after": {
-    "message": "毫秒内打开自同一书签文件夹的标签页进行自动分组（将会打开一个标题类似于 “... 等多项” 的新建标签页用来分组）"
+    "message": "毫秒内打开自同一书签文件夹的多个标签页进行自动分组（将会打开一个标题类似于 “... 等多项” 的新建标签页用来分组）"
   },
   "config_autoGroupNewTabsFromBookmarks_label": {
     "message": "打开一个带有类似于 \"... 等多项\" 形式标题的标签页，在其中对这些标签页进行分组"
@@ -1383,7 +1465,7 @@
     "message": "% 的新建标签页在同一书签文件夹内有对应书签项，就将所有新建标签页视作打开自同一书签文件夹"
   },
   "config_autoGroupNewTabsFromOthers_label": {
-    "message": "也对在一定时间内不是以书签项方式打开的标签页进行自动分组"
+    "message": "也对在一定时间内不是以书签项方式打开的多个标签页进行自动分组"
   },
   "config_tabBunchesDetectionDelayOnNewWindow_before": {
     "message": "但是对于在新建窗口打开后的"
@@ -1452,7 +1534,7 @@
     "message": "* Firefox 中对应于 \"browser.tabs.selectOwnerOnClose\"=\"true\" 的内置行为会优先于此配置生效。"
   },
   "config_simulateSelectOwnerOnClose_label": {
-    "message": "如果可能的话，在当前标签页被关闭时，将焦点移动回之前打开它的标签页（ * 模拟 Firefox 中对应于 \"browser.tabs.selectOwnerOnClose\"=\"true\" 的内置行为，其优先于上方配置）"
+    "message": "如果可能的话，在当前标签页被关闭时，将焦点移动回之前打开它的标签页（ * 模拟浏览器中对应于 \"browser.tabs.selectOwnerOnClose\"=\"true\" 的内置行为，其优先于上方配置）"
   },
   "config_fixupTreeOnTabVisibilityChanged_caption": {
     "message": "当标签页的可见性被其他附加组件更改时"
@@ -1487,8 +1569,14 @@
   "config_treeDoubleClickBehavior_toggleCollapsed": {
     "message": "折叠/展开 标签树"
   },
+  "config_treeDoubleClickBehavior_toggleSticky": {
+    "message": "固定到标签栏边缘 / 从标签栏边缘解除固定"
+  },
   "config_treeDoubleClickBehavior_close": {
     "message": "关闭标签页（ * 模拟 Firefox 中对应 \"browser.tabs.closeTabByDblclick\"=\"true\" 的内置行为）"
+  },
+  "config_treeDoubleClickBehavior_close_note": {
+    "message": "（ * 模拟浏览器中对应于 \"browser.tabs.closeTabByDblclick\"=\"true\" 的内置行为）"
   },
   "config_treeDoubleClickBehavior_none": {
     "message": "什么都不做"
@@ -1758,7 +1846,7 @@
     "message": "用于 “将此标签树添加到书签” 的文件夹名称："
   },
   "config_bookmarkTreeFolderName_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_bookmarkTreeFolderName_description": {
     "message": "可用占位符：%TITLE%（第一个标签页的标题）、%URL%（第一个标签页的网址）、%YEAR%（年，四位数）、%MONTH%（月，两位数）、%DATE%（日，两位数）、%HOURS% (时，两位数)、%MINUTES% (分，两位数)、%SECONDS% (秒，两位数)、%MILLISECONDS% (毫秒，三位数)、%GROUP% (如果是标签页分组，则为其第一个标签页的标题 - 如果不是，则为空白)、%ANY(值 1, 值 2, ...)% (给定参数列表中的第一个有效值)"
@@ -1901,6 +1989,9 @@
   "config_runTests_label": {
     "message": "运行自动化测试"
   },
+  "config_runTestsParameters_label": {
+    "message": " / 将要运行的测试（由测试名称或正则表达式构成的数组，比如 \"testInheritMutedState,/^testHidden/,...\"）: "
+  },
   "config_runBenchmark_label": {
     "message": "运行Benchmark基准测试"
   },
@@ -2018,11 +2109,16 @@
   "config_all_caption": {
     "message": "所有配置"
   },
+  "config_terms_delimiter": {
+  },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
   },
   "tabContextMenu_reload_label": {
     "message": "重新载入标签页(&R)"
+  },
+  "tabContextMenu_unblockAutoplay_label": {
+    "message": "播放标签页(&L)"
   },
   "tabContextMenu_mute_label": {
     "message": "将标签页静音(&M)"
@@ -2043,7 +2139,6 @@
     "message": "选中所有标签页(&S)"
   },
   "tabContextMenu_bookmark_label": {
-    "message": "将标签页添加到书签(&B)"
   },
   "tabContextMenu_reopenInContainer_label": {
     "message": "在新建身份标签页中打开(&E)"
@@ -2075,6 +2170,9 @@
   "tabContextMenu_shareTabURL_label": {
     "message": "分享(&H)"
   },
+  "tabContextMenu_shareTabURL_more_label": {
+    "message": "更多…"
+  },
   "tabContextMenu_closeMultipleTabs_label": {
     "message": "关闭多个标签页(&M)"
   },
@@ -2099,6 +2197,9 @@
   "tabContextMenu_reload_label_multiselected": {
     "message": "重新载入标签页(&R)"
   },
+  "tabContextMenu_unblockAutoplay_label_multiselected": {
+    "message": "播放标签页(&L)"
+  },
   "tabContextMenu_mute_label_multiselected": {
     "message": "将标签页静音(&M)"
   },
@@ -2120,11 +2221,15 @@
   "tabContextMenu_sendTabsToDevice_label_multiselected": {
     "message": "发送 %S 个标签页到设备(&N)"
   },
+  "tabContextMenu_reloadSelected_label": {
+  },
+  "tabContextMenu_reloadSelected_label_multiselected": {
+  },
   "tabContextMenu_bookmark_label_multiselected": {
-    "message": "将标签页添加到书签...(&B)"
   },
   "tabContextMenu_bookmarkSelected_label": {
-    "message": "将所选标签页添加到书签(&T)"
+  },
+  "tabContextMenu_bookmarkSelected_label_multiselected": {
   },
   "tabContextMenu_close_label_multiselected": {
     "message": "关闭所选标签页(&S)"
