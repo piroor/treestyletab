@@ -404,7 +404,7 @@
     "hash": "0cd09f626c61edcb5e506f2a5d27d0ac"
   },
   "message_startup_requestPermissions_allUrls": {
-    "message": "Ne pas déplier les arbres repliés et ignorer les descendants repliés lorsque vous changez d'onglet courant via des raccourcis claviers",
+    "message": "Ne pas déplier les arbres repliés et ignorer les descendants repliés lorsque vous changez d'onglet courant via des raccourcis claviers / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs.",
     "hash": "6277b31e6f8bad41fbd31bbb26e4bbe7"
   },
   "message_startup_userChromeCss_notify": {

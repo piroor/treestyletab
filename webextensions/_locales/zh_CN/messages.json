@@ -622,7 +622,7 @@
     "message": "标签页上下文菜单中的 “将此标签树添加到书签” ，对从其它环境导入、已被添加到书签的那些内部网址的自动迁移，以及从书签项打开的标签页的检测（需要有访问书签项的权限）"
   },
   "message_startup_requestPermissions_allUrls": {
-    "message": "当通过键盘快捷键切换标签页焦点时，不展开已折叠标签树并跳过已折叠后代"
+    "message": "当通过键盘快捷键切换标签页焦点时，不展开已折叠标签树并跳过已折叠后代 / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs."
   },
   "message_startup_userChromeCss_notify": {
     "message": "如何隐藏顶部的标签栏和侧栏的标题？"

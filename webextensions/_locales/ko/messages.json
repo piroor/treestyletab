@@ -605,7 +605,7 @@
         "hash": "0cd09f626c61edcb5e506f2a5d27d0ac"
     },
     "message_startup_requestPermissions_allUrls": {
-        "message": "키보드 단축키에서 탭 전환 중, 접혀있는 하위 항목을 넘기고, 트리도 펼치지 않음",
+        "message": "키보드 단축키에서 탭 전환 중, 접혀있는 하위 항목을 넘기고, 트리도 펼치지 않음 / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs.",
         "hash": "6277b31e6f8bad41fbd31bbb26e4bbe7"
     },
     "message_startup_userChromeCss_notify": {

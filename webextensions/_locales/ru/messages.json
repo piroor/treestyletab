@@ -241,7 +241,7 @@
 
   "message_startup_requestPermissions_description": { "message": "⚠Есть некоторые функции, требующие дополнительных разрешений. Если вы хотите активировать их, получите разрешения вручную." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Это дерево в закладки…\" в контекстном меню на вкладках (нужен доступ к закладкам.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами." },
+  "message_startup_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкладки при переключении фокуса вкладок горячими клавишами. / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs." },
 
   "message_startup_userChromeCss_notify": { "message": "Как скрыть верхнюю панель вкладок и заголовок боковой панели?" },
   "message_startup_userChromeCss_description_1": { "message": "Из-за ограничений WebExtensions, TST не может контролировать верхнюю панель вкладок и заголовок боковой панели. Если вам нужно настроить их, см. " },
