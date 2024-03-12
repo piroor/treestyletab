@@ -133,6 +133,8 @@
       "progress": { "content": "$1", "example": "50" }
     }},
 
+  "blank_allUrlsPermissionRequiredMessage": { "message": "This message is here due to Firefox tried to restore a dialog which is provided by Tree Style Tab addon. To prevent such a needless restoration, please grant the \"Access your data for all websites\" permission via the \"Permissions\" tab of Tree Style Tab's details page in the Add-on Manager." },
+
   "warnOnCloseTabs_title":     { "message": "Close tabs?" },
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {
