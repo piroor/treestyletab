@@ -29,6 +29,11 @@ jobs:
         cd webextensions && \
           find ./_locales -name messages.json | \
             xargs bash tools/shell/remove-blank-entries.sh
+    - name: keep blank strings cleared by GitLocalize
+      run: |
+        cd webextensions && \
+          find ./_locales -name messages.json | \
+            xargs bash tools/shell/keep-blank-strings.sh
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Fix errors in locales
