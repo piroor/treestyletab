@@ -470,7 +470,7 @@ export function getTabRect(tab) {
   const index          = renderableTabs.indexOf(tab.id);
   const scrollBox      = getScrollBoxFor(tab);
   const scrollBoxRect  = scrollBox.getBoundingClientRect();
-  const tabTop         = tabSize * index + scrollBoxRect.top - scrollBox.scrollTop;
+  const tabTop         = Size.getRenderedTabHeight() * index + scrollBoxRect.top - scrollBox.scrollTop;
   return {
     top:    tabTop,
     bottom: tabTop + tabSize,
