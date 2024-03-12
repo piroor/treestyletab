@@ -55,7 +55,7 @@ export function init() {
 }
 
 function getTabHeight() {
-  return configs.faviconizePinnedTabs ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
+  return configs.faviconizePinnedTabs ? Size.getRenderedFavIconizedTabHeight() : Size.getRenderedTabHeight();
 }
 
 export function reposition(options = {}) {
@@ -69,11 +69,13 @@ export function reposition(options = {}) {
 
   document.documentElement.classList.add('have-pinned-tabs');
 
-  const containerWidth = mTabBar.offsetWidth;
+  const pinnedTabsContainer = document.querySelector('#pinned-tabs-container .tabs');
+  const containerStyle = window.getComputedStyle(pinnedTabsContainer, null);
+  const containerWidth = pinnedTabsContainer.offsetWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.borderLeftWidth) - parseFloat(containerStyle.marginLeft) - parseFloat(containerStyle.paddingRight) - parseFloat(containerStyle.borderRightWidth) - parseFloat(containerStyle.marginRight);
   const maxWidth       = containerWidth;
   const faviconized    = configs.faviconizePinnedTabs;
 
-  const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
+  const width  = faviconized ? Size.getRenderedFavIconizedTabWidth() : maxWidth + Size.getFavIconizedTabXOffset();
   const height = getTabHeight();
   const maxCol = faviconized ? Math.max(
     1,
@@ -89,7 +91,7 @@ export function reposition(options = {}) {
   const visualGap = parseFloat(window.getComputedStyle(mTabBar, null).getPropertyValue('--visual-gap-offset').replace(/px$/));
   const allTabsAreaHeight = mTabBar.parentNode.offsetHeight + visualGap;
   mMaxVisibleRows = Math.max(1, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
-  const contentsHeight = height * maxRow + (faviconized ? 0 : Size.getTabYOffset());
+  const contentsHeight = height * maxRow + (faviconized ? Size.getFavIconizedTabYOffset() : Size.getTabYOffset());
   mAreaHeight = Math.min(
     contentsHeight,
     mMaxVisibleRows * height

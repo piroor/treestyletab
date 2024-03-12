@@ -23,6 +23,8 @@ let mTabXOffset         = 0;
 let mTabYOffset         = 0;
 let mFavIconSize        = 0;
 let mFavIconizedTabSize = 0;
+let mFavIconizedTabXOffset = 0;
+let mFavIconizedTabYOffset = 0;
 
 export function getTabHeight() {
   return mTabHeight;
@@ -48,6 +50,22 @@ export function getFavIconizedTabSize() {
   return mFavIconizedTabSize;
 }
 
+export function getFavIconizedTabXOffset() {
+  return mFavIconizedTabYOffset;
+}
+
+export function getFavIconizedTabYOffset() {
+  return mFavIconizedTabYOffset;
+}
+
+export function getRenderedFavIconizedTabWidth() {
+  return mFavIconizedTabSize + mFavIconizedTabXOffset;
+}
+
+export function getRenderedFavIconizedTabHeight() {
+  return mFavIconizedTabSize + mFavIconizedTabYOffset;
+}
+
 export function init() {
   update();
   matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addListener(update);
@@ -63,13 +81,16 @@ export function update() {
     --favicon-size:         ${mFavIconSize}px;
     --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
+  const faviconizedTabStyle  = window.getComputedStyle(document.querySelector('#dummy-faviconized-tab'));
+  mFavIconizedTabXOffset = parseFloat(faviconizedTabStyle.marginLeft.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginRight.replace(/px$/, ''));
+  mFavIconizedTabYOffset = parseFloat(faviconizedTabStyle.marginTop.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginBottom.replace(/px$/, ''));
 
   const dummyTab = document.querySelector('#dummy-tab');
   const dummyTabRect = dummyTab.getBoundingClientRect();
   mTabHeight = dummyTabRect.height;
-  const style  = window.getComputedStyle(dummyTab);
-  mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
-  mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
+  const tabStyle  = window.getComputedStyle(dummyTab);
+  mTabXOffset = parseFloat(tabStyle.marginLeft.replace(/px$/, '')) + parseFloat(tabStyle.marginRight.replace(/px$/, ''));
+  mTabYOffset = parseFloat(tabStyle.marginTop.replace(/px$/, '')) + parseFloat(tabStyle.marginBottom.replace(/px$/, ''));
 
   const substanceRect = dummyTab.querySelector('tab-item-substance').getBoundingClientRect();
   const uiRect = dummyTab.querySelector('tab-item-substance > .ui').getBoundingClientRect();
