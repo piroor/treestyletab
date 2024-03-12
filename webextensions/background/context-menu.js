@@ -369,8 +369,8 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
     }
     else {
       const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
-      let visible = !(item.configKey in configs) || configs[item.configKey];
-      if (forceVisible !== null)
+      let visible = !(item.configKey in configs) || configs[item.configKey] || false;
+      if (forceVisible !== null && forceVisible !== undefined)
         visible = forceVisible;
       if ((item.hideOnMultiselected && multiselected) ||
           (item.requireAutoplayBlockedTab && !hasAutoplayBlockedTab) ||
@@ -663,9 +663,9 @@ async function onTabContextMenuShown(info, tab) {
 
     const params = {};
     if (newVisible != !!item.visible)
-      params.visible = item.visible = newVisible;
+      params.visible = item.visible = !!newVisible;
     if (newEnabled != !!item.enabled)
-      params.enabled = item.enabled = newEnabled;
+      params.enabled = item.enabled = !!newEnabled;
 
     updateItem(item.id, params);
     updateItem(`grouped:${item.id}`, params);
@@ -728,7 +728,7 @@ async function onBookmarkContextMenuShown(info) {
   }
   for (const item of [...mBookmarkItems, ...mGroupedBookmarkItems]) {
     browser.menus.update(item.id, {
-      visible: item.visible
+      visible: !!item.visible,
     });
   }
 

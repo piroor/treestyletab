@@ -726,15 +726,15 @@ async function onShown(info, contextTab) {
     }) && modifiedItemsCount++;
 
     updateItem('context_reloadTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_reloadTree', {
-      visible: emulate && contextTab && configs.context_topLevel_reloadTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_reloadTree,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_reloadDescendants', {
-      visible: emulate && contextTab && configs.context_topLevel_reloadDescendants,
+      visible: emulate && !!contextTab && configs.context_topLevel_reloadDescendants,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
@@ -760,7 +760,7 @@ async function onShown(info, contextTab) {
       }),
     }) && modifiedItemsCount++;
     updateItem('context_toggleMuteTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected,
       title: contextTab && Commands.getMenuItemTitle(mItemsById.context_toggleMuteTab, {
         multiselected,
@@ -768,7 +768,7 @@ async function onShown(info, contextTab) {
       }),
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_toggleMuteTree', {
-      visible: emulate && contextTab && configs.context_topLevel_toggleMuteTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_toggleMuteTree,
       enabled: hasChild,
       multiselected,
       title: Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleMuteTree, { multiselected, hasUnmutedTab, hasUnmutedDescendant }),
@@ -776,7 +776,7 @@ async function onShown(info, contextTab) {
       hasUnmutedDescendant,
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_toggleMuteDescendants', {
-      visible: emulate && contextTab && configs.context_topLevel_toggleMuteDescendants,
+      visible: emulate && !!contextTab && configs.context_topLevel_toggleMuteDescendants,
       enabled: hasChild,
       multiselected,
       title: Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleMuteDescendants, { multiselected, hasUnmutedTab, hasUnmutedDescendant }),
@@ -784,15 +784,15 @@ async function onShown(info, contextTab) {
       hasUnmutedDescendant,
     }) && modifiedItemsCount++;
     updateItem('context_pinTab', {
-      visible: emulate && contextTab && !contextTab.pinned,
+      visible: emulate && !!contextTab && !contextTab.pinned,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_unpinTab', {
-      visible: emulate && contextTab && contextTab.pinned,
+      visible: emulate && !!contextTab && contextTab.pinned,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_toggleSticky', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: contextTab && !contextTab.pinned,
       multiselected,
       title: contextTab && Commands.getMenuItemTitle(mItemsById.context_topLevel_toggleSticky, {
@@ -801,49 +801,49 @@ async function onShown(info, contextTab) {
       }),
     }) && modifiedItemsCount++;
     updateItem('context_duplicateTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_bookmarkTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected: multiselected || !contextTab
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_bookmarkTree', {
-      visible: emulate && contextTab && configs.context_topLevel_bookmarkTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_bookmarkTree,
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_moveTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: contextTab && hasMultipleTabs,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_moveTabToStart', {
-      enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && ((previousSiblingTab || previousTab).pinned == contextTab.pinned),
+      enabled: emulate && !!contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && ((previousSiblingTab || previousTab).pinned == contextTab.pinned),
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_moveTabToEnd', {
-      enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && ((nextSiblingTab || nextTab).pinned == contextTab.pinned),
+      enabled: emulate && !!contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && ((nextSiblingTab || nextTab).pinned == contextTab.pinned),
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_openTabInWindow', {
-      enabled: emulate && contextTab && hasMultipleTabs,
+      enabled: emulate && !!contextTab && hasMultipleTabs,
       multiselected
     }) && modifiedItemsCount++;
 
     // Not implemented yet as a built-in. See also: https://github.com/piroor/treestyletab/issues/3423
     updateItem('context_shareTabURL', {
-      visible: emulate && contextTab && mSharingService && Sync.isSendableTab(contextTab),
+      visible: emulate && !!contextTab && mSharingService && Sync.isSendableTab(contextTab),
     }) && modifiedItemsCount++;
 
     updateItem('context_sendTabsToDevice', {
-      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0,
+      visible: emulate && !!contextTab && contextTabs.filter(Sync.isSendableTab).length > 0,
       multiselected,
       count: contextTabs.length
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_sendTreeToDevice', {
-      visible: emulate && contextTab && contextTabs.filter(Sync.isSendableTab).length > 0 && configs.context_topLevel_sendTreeToDevice && hasChild,
+      visible: emulate && !!contextTab && contextTabs.filter(Sync.isSendableTab).length > 0 && configs.context_topLevel_sendTreeToDevice && hasChild,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
@@ -856,97 +856,97 @@ async function onShown(info, contextTab) {
         if (!emulate)
           visible = false;
         else if (id == 'context_reopenInContainer_separator')
-          visible = contextTab && contextTab.cookieStoreId != 'firefox-default';
+          visible = !!contextTab && contextTab.cookieStoreId != 'firefox-default';
         else
-          visible = contextTab && id != `context_reopenInContainer:${contextTab.cookieStoreId}`;
+          visible = !!contextTab && id != `context_reopenInContainer:${contextTab.cookieStoreId}`;
         updateItem(id, { visible }) && modifiedItemsCount++;
         if (visible)
           showContextualIdentities = true;
       }
     }
     updateItem('context_reopenInContainer', {
-      visible: emulate && contextTab && showContextualIdentities && !contextTab.incognito,
+      visible: emulate && !!contextTab && showContextualIdentities && !contextTab.incognito,
       enabled: contextTabs.every(tab => TabsOpen.isOpenable(tab.url)),
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_selectAllTabs', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_topLevel_collapseTree', {
-      visible: emulate && contextTab && configs.context_topLevel_collapseTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_collapseTree,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_collapseTreeRecursively', {
-      visible: emulate && contextTab && configs.context_topLevel_collapseTreeRecursively,
+      visible: emulate && !!contextTab && configs.context_topLevel_collapseTreeRecursively,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_collapseAll', {
-      visible: emulate && !multiselected && contextTab && configs.context_topLevel_collapseAll
+      visible: emulate && !multiselected && !!contextTab && configs.context_topLevel_collapseAll
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_expandTree', {
-      visible: emulate && contextTab && configs.context_topLevel_expandTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_expandTree,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_expandTreeRecursively', {
-      visible: emulate && contextTab && configs.context_topLevel_expandTreeRecursively,
+      visible: emulate && !!contextTab && configs.context_topLevel_expandTreeRecursively,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_expandAll', {
-      visible: emulate && !multiselected && contextTab && configs.context_topLevel_expandAll
+      visible: emulate && !multiselected && !!contextTab && configs.context_topLevel_expandAll
     }) && modifiedItemsCount++;
 
     updateItem('context_closeTab', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_closeMultipleTabs', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: hasMultipleNormalTabs,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_closeTabsToTheStart', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: nextTab,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_closeTabsToTheEnd', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: nextTab,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_closeOtherTabs', {
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       enabled: hasMultipleNormalTabs,
       multiselected
     }) && modifiedItemsCount++;
 
     updateItem('context_topLevel_closeTree', {
-      visible: emulate && contextTab && configs.context_topLevel_closeTree,
+      visible: emulate && !!contextTab && configs.context_topLevel_closeTree,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_closeDescendants', {
-      visible: emulate && contextTab && configs.context_topLevel_closeDescendants,
+      visible: emulate && !!contextTab && configs.context_topLevel_closeDescendants,
       enabled: hasChild,
       multiselected
     }) && modifiedItemsCount++;
     updateItem('context_topLevel_closeOthers', {
-      visible: emulate && contextTab && configs.context_topLevel_closeOthers,
+      visible: emulate && !!contextTab && configs.context_topLevel_closeOthers,
       multiselected
     }) && modifiedItemsCount++;
 
     const undoCloseTabLabel = mItemsById.context_undoCloseTab[configs.undoMultipleTabsClose && mMultipleTabsRestorable ? 'titleMultipleTabsRestorable' : 'titleRegular'];
     updateItem('context_undoCloseTab', {
       title:   undoCloseTabLabel,
-      visible: emulate && contextTab,
+      visible: emulate && !!contextTab,
       multiselected
     }) && modifiedItemsCount++;
 
