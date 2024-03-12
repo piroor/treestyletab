@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+ - 4.0.2 (2024.3.13)
+   * Fix performance degression around detection of tab label overflow state.
+   * Fix needless blank space below last tab on the "Photon" theme.
+   * Fix blank dialogs when the "Access your data for all websites" permission is not granted.
+   * Hide unexpectedly shown menu items in the context menu.
+   * More respect labels of menu commands in the context menu on blank area of the tab bar.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 4.0.1 (2024.3.8)
    * Tabs containing sticky tabs are kept expanded when another tree is expanded, even if those tabs are sticked via API.
  - 4.0 (2024.3.7)
