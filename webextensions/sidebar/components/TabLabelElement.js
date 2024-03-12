@@ -134,9 +134,19 @@ export class TabLabelElement extends HTMLElement {
   }
 
   updateOverflow() {
-    const tab = this.owner;
-    const overflow = tab && !tab.pinned && this._content.getBoundingClientRect().width > this.getBoundingClientRect().width;
-    this.classList.toggle('overflow', overflow);
+    // Accessing to the real size of the element triggers layouting and hits the performance,
+    // like https://github.com/piroor/treestyletab/issues/3477 .
+    // So we need to throttle the process for better formance.
+    const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
+    this.updateOverflow.lastStartedAt = startAt;
+    window.requestAnimationFrame(() => {
+      if (!this.closest('body') || // already detached from document!
+          this.updateOverflow.lastStartedAt != startAt) // called again while waiting
+        return;
+      const tab = this.owner;
+      const overflow = tab && !tab.pinned && this._content.offsetWidth > this.offsetWidth;
+      this.classList.toggle('overflow', overflow);
+    });
   }
 
   get _content() {
