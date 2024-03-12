@@ -175,18 +175,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
   const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
-  const currentViewPortSize   = mNormalScrollBox.getBoundingClientRect().height;
-
-  const rootStyle = document.documentElement.style;
-  rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
-  // For underflow case, we need to unset min-height to put the "new tab"
-  // button next to the last tab immediately.
-  rootStyle.setProperty('--virtual-scroll-container-size', currentViewPortSize < allRenderableTabsSize ?
-    `${allRenderableTabsSize}px` : '');
-
-  const allTabsSizeHolder = win.containerElement.parentNode;
-  const resized           = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
-  allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
   const range = document.createRange();
   //range.selectNodeContents(mTabBar);
@@ -196,9 +184,20 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   range.setStartAfter(mNormalScrollBox);
   const followingAreaSize = range.getBoundingClientRect().height;
   range.detach();
-  const maxViewportSize     = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
+  const viewPortSize = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
+
+  const rootStyle = document.documentElement.style;
+  rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
+  // For underflow case, we need to unset min-height to put the "new tab"
+  // button next to the last tab immediately.
+  rootStyle.setProperty('--virtual-scroll-container-size', viewPortSize < allRenderableTabsSize ?
+    `${allRenderableTabsSize}px` : '');
+
+  const allTabsSizeHolder = win.containerElement.parentNode;
+  const resized           = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
+  allTabsSizeHolder.dataset.height = allRenderableTabsSize;
+
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
-  const viewPortSize = currentViewPortSize || maxViewportSize;
   rootStyle.setProperty('--viewport-size', `${viewPortSize}px`);
 
   const renderablePaddingSize = viewPortSize;
@@ -257,8 +256,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     scrollPosition,
     viewPortSize,
     allRenderableTabsSize,
-    maxViewportSize,
-    currentViewPortSize,
     //precedingAreaSize,
     //followingAreaSize,
   });
