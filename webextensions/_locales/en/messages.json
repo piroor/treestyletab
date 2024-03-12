@@ -574,7 +574,7 @@
 
   "config_tabBunchesDetectionTimeout_before": { "message": "Detect tabs opened from a bookmark folder within" },
   "config_tabBunchesDetectionTimeout_after": { "message": "msec, and:" },
-  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Group tabs under a tab with a title like \"... and more\"" },
+  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Group tabs under a tab with a title like \"... and more\"\u200b" },
   "config_restoreTreeForTabsFromBookmarks_label": { "message": "Restore tree structure" },
   "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
@@ -591,8 +591,8 @@
 
   "config_groupTabTemporaryState_caption": { "message": "Default state of group tabs for each context" },
   "config_groupTabTemporaryState_option_default": { "message": "Check to nothing" },
-  "config_groupTabTemporaryState_option_checked_before": { "message": "Check to the \"" },
-  "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
+  "config_groupTabTemporaryState_option_checked_before": { "message": "Check to the \"\u200b" },
+  "config_groupTabTemporaryState_option_checked_after": { "message": "\"\u200b" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "For tabs opened from bookmarks:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "For tabs opened at a time from non-bookmark triggers:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Opened to replace a closed parent tab:" },
@@ -631,7 +631,7 @@
   "config_treeDoubleClickBehavior_none":                { "message": "Do nothing" },
 
   "config_parentTabOperationBehaviorMode_caption":           { "message": "When a parent tab is Closed or Moved" },
-  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Whether you configured this section, there are some permanently consistent behaviors in the sidebar;\n･ Close a parent tab with Collapsed Tree: Close Entire Tree\n･ Move a parent tab with Collapsed Tree: Move Entire Tree\n･ Move a parent tab with Expanded Tree: Behave according to the section \"Drag and Drop\"" },
+  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": { "message": "Whether you configured this section, there are some permanently consistent behaviors in the sidebar;\n･ Close a parent tab with Collapsed Tree: Close Entire Tree\n･ Move a parent tab with Collapsed Tree: Move Entire Tree\n･ Move a parent tab with Expanded Tree: Behave according to the section \"Drag and Drop\"\u200b" },
 
   "config_parentTabOperationBehaviorMode_parallel": { "message": "Recommended preset using the browser's native tab bar as the Solo Tab Operation UI" },
   "config_closeParentBehavior_insideSidebar":       { "message": "When a parent tab with Expanded Tree is Closed via the sidebar," },

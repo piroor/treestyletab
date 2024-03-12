@@ -508,7 +508,7 @@
 
   "config_tabBunchesDetectionTimeout_before": { "message": "Обнаружение вкладок, открытых из закладок в течение" },
   "config_tabBunchesDetectionTimeout_after": { "message": "мс, и:" },
-  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Группировать вкладки с заголовком типа \"... и больше\"" },
+  "config_autoGroupNewTabsFromBookmarks_label": { "message": "Группировать вкладки с заголовком типа \"... и больше\"\u200b" },
   "config_restoreTreeForTabsFromBookmarks_label": { "message": "Восстановить структуру дерева" },
   "config_requireBookmarksPermission_tooltiptext": { "message": "Эта функция требует права доступа к закладкам. Нажмите здесь, чтобы запросить необходимое разрешение." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
@@ -525,8 +525,8 @@
 
   "config_groupTabTemporaryState_caption": { "message": "Состояние (по умолчанию) группы вкладок для разных контекстов" },
   "config_groupTabTemporaryState_option_default": { "message": "Не проверять" },
-  "config_groupTabTemporaryState_option_checked_before": { "message": "Проверять \"" },
-  "config_groupTabTemporaryState_option_checked_after": { "message": "\"" },
+  "config_groupTabTemporaryState_option_checked_before": { "message": "Проверять \"\u200b" },
+  "config_groupTabTemporaryState_option_checked_after": { "message": "\"\u200b" },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": { "message": "Для открытых из закладок:" },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": { "message": "Для открытых одновременно не из закладок:" },
   "config_groupTabTemporaryStateForOrphanedTabs_label": { "message": "Открытую для замены закрытой родительской вкладки::" },
@@ -678,7 +678,7 @@
 
   "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс API выбора нескольких вкладок  ( * зависит от \"browser.tabs.multiselect\"=\"true\")" },
 
-  "config_undoMultipleTabsClose_label": { "message": "Восстановить набор закрытых вкладок, когда одна из них восстанавливается командой \"Восстановить закрытую вкладку\"" },
+  "config_undoMultipleTabsClose_label": { "message": "Восстановить набор закрытых вкладок, когда одна из них восстанавливается командой \"Восстановить закрытую вкладку\"\u200b" },
 
   "config_scrollLines_label_before": { "message": "Прокручивать вверх или вниз на " },
   "config_scrollLines_label_after":  { "message": "строк командами \"Листать вкладки вверх/вниз построчно\" " },
