@@ -892,8 +892,12 @@
   "tabContextMenu_moveTab_label_multiselected": { "message": "選択したタブを移動(&V)" },
   "tabContextMenu_sendTabsToDevice_label_multiselected": { "message": "%S 個のタブを端末へ送信(&N)" },
 
+  "tabContextMenu_reloadSelected_label":               { "message": "選択したタブを再読み込み(&R)" },
+  "tabContextMenu_reloadSelected_label_multiselected": { "message": "選択したタブを再読み込み(&R)" },
+
   "tabContextMenu_bookmark_label_multiselected": { "message": "タブをブックマーク...(&B)" },
   "tabContextMenu_bookmarkSelected_label":       { "message": "選択したタブをブックマーク...(&T)" },
+  "tabContextMenu_bookmarkSelected_label_multiselected": { "message": "選択したタブをブックマーク...(&T)" },
 
   "tabContextMenu_close_label_multiselected":       { "message": "選択したタブを閉じる(&S)" }
 }

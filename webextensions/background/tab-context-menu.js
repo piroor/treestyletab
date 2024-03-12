@@ -234,10 +234,12 @@ const mItemsById = {
   },
 
   'noContextTab:context_reloadTab': {
-    title: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
+    title:              browser.i18n.getMessage('tabContextMenu_reloadSelected_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_reloadSelected_label_multiselected'),
   },
   'noContextTab:context_bookmarkSelected': {
-    title: browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label')
+    title:              browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label_multiselected'),
   },
   'noContextTab:context_selectAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
