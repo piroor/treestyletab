@@ -179,12 +179,12 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const range = document.createRange();
   //range.selectNodeContents(mTabBar);
   //range.setEndBefore(mNormalScrollBox);
-  const precedingAreaSize = mPinnedScrollBox.getBoundingClientRect().height; //range.getBoundingClientRect().height;
+  const precedingAreaSize = mPinnedScrollBox.offsetHeight; //range.getBoundingClientRect().height;
   range.selectNodeContents(mTabBar);
   range.setStartAfter(mNormalScrollBox);
   const followingAreaSize = range.getBoundingClientRect().height;
   range.detach();
-  const viewPortSize = mTabBar.getBoundingClientRect().height - precedingAreaSize - followingAreaSize;
+  const viewPortSize = mTabBar.offsetHeight - precedingAreaSize - followingAreaSize;
 
   const rootStyle = document.documentElement.style;
   rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
@@ -204,7 +204,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   scrollPosition = Math.max(
     0,
     Math.min(
-      allRenderableTabsSize + mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height - viewPortSize,
+      allRenderableTabsSize + mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).offsetHeight - viewPortSize,
       typeof scrollPosition == 'number' ?
         scrollPosition :
         restoreScrollPosition.scrollPosition > -1 ?
@@ -1052,7 +1052,7 @@ async function onBackgroundMessage(message) {
           break;
 
         case 'pageup':
-          smoothScrollBy(-scrollBox.getBoundingClientRect().height + Size.getRenderedTabHeight());
+          smoothScrollBy(-scrollBox.offsetHeight + Size.getRenderedTabHeight());
           break;
 
         case 'linedown':
@@ -1060,7 +1060,7 @@ async function onBackgroundMessage(message) {
           break;
 
         case 'pagedown':
-          smoothScrollBy(scrollBox.getBoundingClientRect().height - Size.getRenderedTabHeight());
+          smoothScrollBy(scrollBox.offsetHeight - Size.getRenderedTabHeight());
           break;
 
         default:
@@ -1268,7 +1268,7 @@ export function tryLockPosition(tabIds, reason) {
   }
 
   // Lock scroll position only when the closing affects to the max scroll position.
-  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getRenderedTabHeight() - mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).getBoundingClientRect().height) {
+  if (mNormalScrollBox.scrollTop < mNormalScrollBox.scrollTopMax - Size.getRenderedTabHeight() - mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).offsetHeight) {
     log('tryLockPosition: scroll position is not affected ', tabIds, {
       scrollTop: mNormalScrollBox.scrollTop,
       scrollTopMax: mNormalScrollBox.scrollTopMax,

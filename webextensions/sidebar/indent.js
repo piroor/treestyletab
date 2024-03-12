@@ -54,7 +54,7 @@ export function updateRestoredTree(cachedIndent) {
 export function update(options = {}) {
   if (!options.cache) {
     const maxLevel  = getMaxTreeLevel(mTargetWindow);
-    const maxIndent = mTabBar.getBoundingClientRect().width * (0.33);
+    const maxIndent = mTabBar.offsetWidth * (0.33);
     if (maxLevel <= mLastMaxLevel &&
         maxIndent == mLastMaxIndent &&
         !options.force)

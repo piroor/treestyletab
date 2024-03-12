@@ -1038,6 +1038,6 @@ import('/extlib/codemirror.js').then(async () => {
   initFileDragAndDropHandlers();
   mUserStyleRulesField.style.height = configs.userStyleRulesFieldHeight;
   (new ResizeObserver(_entries => {
-    configs.userStyleRulesFieldHeight = `${mUserStyleRulesField.getBoundingClientRect().height}px`;
+    configs.userStyleRulesFieldHeight = `${mUserStyleRulesField.offsetHeight}px`;
   })).observe(mUserStyleRulesField);
 });

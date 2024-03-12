@@ -770,9 +770,9 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   mLastVisibleTabId = lastVisibleTab && lastVisibleTab.id;
 
   const visibleNewTabButton = document.querySelector('#tabbar:not(.overflow) .after-tabs .newtab-button-box, #tabbar.overflow ~ .after-tabs .newtab-button-box');
-  const newTabButtonSize    = visibleNewTabButton.getBoundingClientRect().height;
-  const extraTabbarTopContainerSize    = document.querySelector('#tabbar-top > *').getBoundingClientRect().height;
-  const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').getBoundingClientRect().height;
+  const newTabButtonSize    = visibleNewTabButton.offsetHeight;
+  const extraTabbarTopContainerSize    = document.querySelector('#tabbar-top > *').offsetHeight;
+  const extraTabbarBottomContainerSize = document.querySelector('#tabbar-bottom > *').offsetHeight;
   log('height: ', { newTabButtonSize, extraTabbarTopContainerSize, extraTabbarBottomContainerSize });
 
   document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
@@ -786,7 +786,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
     window.requestAnimationFrame(() => {
       // scrollbar is shown only when hover on Windows 11, Linux, and macOS.
       const virtualScrollContainer = document.querySelector('.virtual-scroll-container');
-      const scrollbarOffset = mTabBar.getBoundingClientRect().width - virtualScrollContainer.getBoundingClientRect().width;
+      const scrollbarOffset = mTabBar.offsetWidth - virtualScrollContainer.offsetWidth;
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLBAR_AUTOHIDE, scrollbarOffset == 0);
 
       onLayoutUpdated.dispatch()

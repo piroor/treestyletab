@@ -56,7 +56,7 @@ export function init() {
 
 export function update() {
   // first, calculate actual favicon size.
-  mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
+  mFavIconSize = document.querySelector('#dummy-favicon-size-box').offsetHeight;
   const scale = Math.max(configs.faviconizedTabScale, 1);
   mFavIconizedTabSize = parseInt(mFavIconSize * scale);
   log('mFavIconSize / mFavIconizedTabSize ', mFavIconSize, mFavIconizedTabSize);
@@ -144,7 +144,7 @@ export function calc(expression) {
   innerStyle.zIndex        = 0;
 
   document.body.appendChild(box);
-  const result = innerBox.getBoundingClientRect().top - box.getBoundingClientRect().top;
+  const result = innerBox.offsetTop - box.offsetTop;
   box.parentNode.removeChild(box);
   return result;
 }

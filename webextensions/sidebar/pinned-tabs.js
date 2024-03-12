@@ -69,7 +69,7 @@ export function reposition(options = {}) {
 
   document.documentElement.classList.add('have-pinned-tabs');
 
-  const containerWidth = mTabBar.getBoundingClientRect().width;
+  const containerWidth = mTabBar.offsetWidth;
   const maxWidth       = containerWidth;
   const faviconized    = configs.faviconizePinnedTabs;
 
@@ -87,7 +87,7 @@ export function reposition(options = {}) {
 
   const pinnedTabsAreaRatio = Math.min(Math.max(0, configs.maxPinnedTabsRowsAreaPercentage), 100) / 100;
   const visualGap = parseFloat(window.getComputedStyle(mTabBar, null).getPropertyValue('--visual-gap-offset').replace(/px$/));
-  const allTabsAreaHeight = mTabBar.parentNode.getBoundingClientRect().height + visualGap;
+  const allTabsAreaHeight = mTabBar.parentNode.offsetHeight + visualGap;
   mMaxVisibleRows = Math.max(1, Math.floor((allTabsAreaHeight * pinnedTabsAreaRatio) / height));
   const contentsHeight = height * maxRow + (faviconized ? 0 : Size.getTabYOffset());
   mAreaHeight = Math.min(
