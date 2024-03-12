@@ -860,7 +860,7 @@
   "tabContextMenu_unpin_label":       { "message": "Un&pin Tab" },
   "tabContextMenu_duplicate_label":   { "message": "&Duplicate Tab" },
   "tabContextMenu_selectAllTabs_label": { "message": "&Select All Tabs" },
-  "tabContextMenu_bookmark_label":    { "message": "&Bookmark Tab" },
+  "tabContextMenu_bookmark_label":    { "message": "&Bookmark Tab…" },
   "tabContextMenu_reopenInContainer_label":             { "message": "Op&en in New Container Tab" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "&No Container" },
   "tabContextMenu_moveTab_label":     { "message": "Mo&ve Tab" },
