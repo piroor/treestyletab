@@ -133,7 +133,7 @@
       "progress": { "content": "$1", "example": "50" }
     }},
 
-  "blank_allUrlsPermissionRequiredMessage": { "message": "このメッセージはTree Style Tabが提供するダイアログをFirefoxが開き直そうとしたために表示されています。ダイアログが無駄に復元されないようにするためには、アドオン管理画面のTree Style Tabの詳細ページの「権限」タブで「すべてのウェブサイトの保存されたデータへのアクセス」の権限を許可してください。" },
+  "blank_allUrlsPermissionRequiredMessage": { "message": "このメッセージはTree Style Tabが提供するダイアログをFirefoxが開き直そうとしたために表示されています。このメッセージを表示したくない場合は、アドオン管理画面のTree Style Tabの詳細ページの「権限」タブで「すべてのウェブサイトの保存されたデータへのアクセス」の権限を許可してください。" },
 
   "warnOnCloseTabs_title":     { "message": "タブを閉じますか？" },
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
