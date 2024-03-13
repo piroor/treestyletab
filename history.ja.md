@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 4.0.4 (2024.3.14)
    * タブの上下両方にマージンが追加されているときにスクロール領域のサイズとタブのドロップ位置の計算結果が期待通りでなかったのを修正
    * API: `sidebar-show` の通知をより確実に送出するようにした
    * `zh_CN`ロケール更新（by [NightSharp](https://github.com/NightSharp), thanks!）

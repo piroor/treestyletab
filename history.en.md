@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 4.0.4 (2024.3.14)
    * Fix miscalculation of scrollable area and drop position on tabs with margins added to both top and bottom.
    * API: `sidebar-show` notifications are sent more certainly.
    * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
