@@ -330,6 +330,9 @@
       }
     }
   },
+  "blank_allUrlsPermissionRequiredMessage": {
+    "message": "出现此消息的原因是 Firefox 试图还原一个由附加组件 Tree Style Tab 提供的对话框。如果不想再出现此消息，请在附加组件管理器中进入 Tree Style Tab 的详细信息页面，在 \"权限\" 一栏中授予 \"存取您在所有网站的数据\" 权限。"
+  },
   "warnOnCloseTabs_title": {
     "message": "是否关闭标签页？"
   },
@@ -470,7 +473,7 @@
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
   "sentTabs_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -482,7 +485,7 @@
     }
   },
   "sentTabs_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -494,13 +497,13 @@
     }
   },
   "sentTabsToAllDevices_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
   },
   "sentTabsToAllDevices_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -622,7 +625,7 @@
     "message": "标签页上下文菜单中的 “将此标签树添加到书签” ，对从其它环境导入、已被添加到书签的那些内部网址的自动迁移，以及从书签项打开的标签页的检测（需要有访问书签项的权限）"
   },
   "message_startup_requestPermissions_allUrls": {
-    "message": "当通过键盘快捷键切换标签页焦点时，不展开已折叠标签树并跳过已折叠后代 / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs."
+    "message": "当通过键盘快捷键切换标签页焦点时，不展开已折叠标签树并跳过已折叠后代项 / 在恢复已关闭标签页时，不要恢复那些用于已关闭对话框的空白窗口。"
   },
   "message_startup_userChromeCss_notify": {
     "message": "如何隐藏顶部的标签栏和侧栏的标题？"
@@ -1091,6 +1094,8 @@
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": {
     "message": "相同身份的右邻同级项"
   },
+  "config_autoAttachOnContextNewTabCommand_after": {
+  },
   "config_newTabWithOwner_caption": {
     "message": "打开自已存在标签页的标签页"
   },
@@ -1117,6 +1122,8 @@
   },
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "父标签页的右邻同级项"
+  },
+  "config_autoAttachOnOpenedWithOwner_after": {
   },
   "config_insertNewTabFromFirefoxViewAt_caption": {
     "message": "Firefox 视图新建子标签页 (将会作为根标签页) 的插入位置"
@@ -1179,7 +1186,7 @@
     "message": "(无)"
   },
   "config_longPressOnNewTabButton_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_showNewTabActionSelector_label": {
     "message": "当鼠标指向 “新键标签页” 按钮时，在其上显示选择器按钮，用以指定新标签页打开位置"
@@ -1212,7 +1219,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnNewTabCommand_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": {
     "message": "当一个新打开的标签页的标题为"
@@ -1248,7 +1255,7 @@
     "message": "等同于按住Ctrl后再点击（身份相同的右邻同级项）"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachOnNewTabButtonAccelClick_before": {
     "message": "当按住Ctrl/⌘后再点击时，将新建空白标签页打开为"
@@ -1275,7 +1282,7 @@
     "message": "身份相同的右邻同级项"
   },
   "config_autoAttachOnNewTabButtonAccelClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachWithURL_caption": {
     "message": "非空白新建标签页"
@@ -1305,7 +1312,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnDuplicated_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_fromExternal_caption": {
     "message": "对于打开自 Firefox 之外的新建标签页"
@@ -1332,7 +1339,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnOpenedFromExternal_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": {
     "message": "身份："
@@ -1371,7 +1378,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachSameSiteOrphan_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": {
     "message": "身份："
@@ -1410,7 +1417,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnAnyOtherTrigger_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachOnAnyOtherTrigger_caution": {
     "message": "* 请注意：此选项有破坏其它附加组件行为的风险。"
@@ -1482,13 +1489,13 @@
     "message": "每个上下文中分组标签页的默认状态"
   },
   "config_groupTabTemporaryState_option_default": {
-    "message": "不进行对照"
+    "message": "不采用任何规则"
   },
   "config_groupTabTemporaryState_option_checked_before": {
-    "message": "和 \""
+    "message": "采用 \""
   },
   "config_groupTabTemporaryState_option_checked_after": {
-    "message": "\" 进行对照"
+    "message": "\" 的规则"
   },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": {
     "message": "对于打开自书签项的标签页："
@@ -1842,7 +1849,7 @@
     "message": "用于 “将此标签树添加到书签” 的文件夹名称："
   },
   "config_bookmarkTreeFolderName_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_bookmarkTreeFolderName_description": {
     "message": "可用占位符：%TITLE%（第一个标签页的标题）、%URL%（第一个标签页的网址）、%YEAR%（年，四位数）、%MONTH%（月，两位数）、%DATE%（日，两位数）、%HOURS% (时，两位数)、%MINUTES% (分，两位数)、%SECONDS% (秒，两位数)、%MILLISECONDS% (毫秒，三位数)、%GROUP% (如果是标签页分组，则为其第一个标签页的标题 - 如果不是，则为空白)、%ANY(值 1, 值 2, ...)% (给定参数列表中的第一个有效值)"
@@ -2105,6 +2112,8 @@
   "config_all_caption": {
     "message": "所有配置"
   },
+  "config_terms_delimiter": {
+  },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
   },
@@ -2131,6 +2140,9 @@
   },
   "tabContextMenu_selectAllTabs_label": {
     "message": "选中所有标签页(&S)"
+  },
+  "tabContextMenu_bookmark_label": {
+    "message": "将标签页添加到书签(&B)…"
   },
   "tabContextMenu_reopenInContainer_label": {
     "message": "在新建身份标签页中打开(&E)"
@@ -2212,6 +2224,21 @@
   },
   "tabContextMenu_sendTabsToDevice_label_multiselected": {
     "message": "发送 %S 个标签页到设备(&N)"
+  },
+  "tabContextMenu_reloadSelected_label": {
+    "message": "重新载入所选标签页(&R)"
+  },
+  "tabContextMenu_reloadSelected_label_multiselected": {
+    "message": "重新载入所选标签页(&R)"
+  },
+  "tabContextMenu_bookmark_label_multiselected": {
+    "message": "将所选标签页添加到书签(&B)…"
+  },
+  "tabContextMenu_bookmarkSelected_label": {
+    "message": "将所选标签页添加到书签(&T)…"
+  },
+  "tabContextMenu_bookmarkSelected_label_multiselected": {
+    "message": "将所选标签页添加到书签(&T)…"
   },
   "tabContextMenu_close_label_multiselected": {
     "message": "关闭所选标签页(&S)"
