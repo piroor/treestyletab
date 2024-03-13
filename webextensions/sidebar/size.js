@@ -21,6 +21,8 @@ export const onUpdated = new EventListenerManager();
 let mTabHeight          = 0;
 let mTabXOffset         = 0;
 let mTabYOffset         = 0;
+let mTabMarginTop       = 0;
+let mTabMarginBottom    = 0;
 let mFavIconSize        = 0;
 let mFavIconizedTabSize = 0;
 let mFavIconizedTabWidth = 0;
@@ -42,6 +44,14 @@ export function getTabXOffset() {
 
 export function getTabYOffset() {
   return mTabYOffset;
+}
+
+export function getTabMarginTop() {
+  return mTabMarginTop;
+}
+
+export function getTabMarginBottom() {
+  return mTabMarginBottom;
 }
 
 export function getFavIconSize() {
@@ -87,15 +97,29 @@ export function update() {
   const faviconizedTabStyle = window.getComputedStyle(dummyFaviconizedTab);
   mFavIconizedTabWidth  = dummyFaviconizedTab.offsetWidth;
   mFavIconizedTabHeight = dummyFaviconizedTab.offsetHeight;
-  mFavIconizedTabXOffset = parseFloat(faviconizedTabStyle.marginLeft.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginRight.replace(/px$/, ''));
-  mFavIconizedTabYOffset = parseFloat(faviconizedTabStyle.marginTop.replace(/px$/, '')) + parseFloat(faviconizedTabStyle.marginBottom.replace(/px$/, ''));
+  // simulating margin collapsing
+  const favIconizedMarginLeft  = parseFloat(faviconizedTabStyle.marginLeft);
+  const favIconizedMarginRight = parseFloat(faviconizedTabStyle.marginRight);
+  mFavIconizedTabXOffset = (favIconizedMarginLeft > 0 && favIconizedMarginRight > 0) ?
+    Math.max(favIconizedMarginLeft, favIconizedMarginRight) :
+    favIconizedMarginLeft + favIconizedMarginRight;
+  const favIconizedMarginTop    = parseFloat(faviconizedTabStyle.marginTop);
+  const favIconizedMarginBottom = parseFloat(faviconizedTabStyle.marginBottom);
+  mFavIconizedTabYOffset = (favIconizedMarginTop > 0 && favIconizedMarginBottom > 0) ?
+    Math.max(favIconizedMarginTop, favIconizedMarginBottom) :
+    favIconizedMarginTop + favIconizedMarginBottom;
 
   const dummyTab = document.querySelector('#dummy-tab');
   const dummyTabRect = dummyTab.getBoundingClientRect();
   mTabHeight = dummyTabRect.height;
   const tabStyle  = window.getComputedStyle(dummyTab);
-  mTabXOffset = parseFloat(tabStyle.marginLeft.replace(/px$/, '')) + parseFloat(tabStyle.marginRight.replace(/px$/, ''));
-  mTabYOffset = parseFloat(tabStyle.marginTop.replace(/px$/, '')) + parseFloat(tabStyle.marginBottom.replace(/px$/, ''));
+  mTabXOffset = parseFloat(tabStyle.marginLeft) + parseFloat(tabStyle.marginRight);
+  // simulating margin collapsing
+  mTabMarginTop    = parseFloat(tabStyle.marginTop);
+  mTabMarginBottom = parseFloat(tabStyle.marginBottom);
+  mTabYOffset = (mTabMarginTop > 0 && mTabMarginBottom > 0) ?
+    Math.max(mTabMarginTop, mTabMarginBottom) :
+    mTabMarginTop + mTabMarginBottom;
 
   const substanceRect = dummyTab.querySelector('tab-item-substance').getBoundingClientRect();
   const uiRect = dummyTab.querySelector('tab-item-substance > .ui').getBoundingClientRect();

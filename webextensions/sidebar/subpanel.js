@@ -418,12 +418,12 @@ BackgroundConnection.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_INCREASE_SUBPANEL:
-      mHeight += Size.getTabHeight();
+      mHeight += Size.getRenderedTabHeight();
       updateLayout();
       break;
 
     case Constants.kCOMMAND_DECREASE_SUBPANEL:
-      mHeight -= Size.getTabHeight();
+      mHeight -= Size.getRenderedTabHeight();
       updateLayout();
       break;
   }

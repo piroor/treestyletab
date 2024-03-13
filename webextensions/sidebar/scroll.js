@@ -174,7 +174,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const tabSize               = Size.getRenderedTabHeight();
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
-  const allRenderableTabsSize = tabSize * (renderableTabs.length - disappearingTabs.length);
+  const allRenderableTabsSize = Size.getTabMarginTop() + (tabSize * (renderableTabs.length - disappearingTabs.length)) + Size.getTabMarginBottom();
 
   const range = document.createRange();
   //range.selectNodeContents(mTabBar);
