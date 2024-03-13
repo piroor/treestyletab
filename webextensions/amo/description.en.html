@@ -42,41 +42,17 @@ This extension needs following permissions to work as expected:
 
 <strong>Extensions extend TST:</strong>
 
-TST provides an <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">API for other extensions</a>.
-Some extend the behavior of TST's sidebar panel:
+TST provides <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">APIs for other extensions</a>.
+Some extemsopms extend the behavior of TST's sidebar panel:
 
 <ul>
 <li><a href="https://addons.mozilla.org/firefox/addon/multiple-tab-handler/">Multiple Tab Handler</a> allows you to select multiple tabs with long-press on tabs. It also allows you to close mutiple tabs with long-press on the closebox on tabs.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-more-tree-commands/">TST More Tree Commands</a> provides more context menu and keyboard shortcut commands to manipulate TST's tree.</li>
 <li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-in-collapsed-tr/">TST Active Tab in Collapsed Tree</a> shows <a href="https://github.com/piroor/treestyletab/issues/2192">a small tab on a collapsed tree as an alias for the last active tab under the tree</a>.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-active-tab-on-scroll-bar/">TST Active Tab on Scroll Bar</a> shows a marker to indicate the position of the active tab, on the scrollbar.</li>
 <li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-group-tabs/">TST Auto Group Tabs</a> provides ability to group newly opened tabs automatically in various conditions.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-tab-drag-handle/">TST Tab Drag Handle</a> provides a small tooltip on tab labels to start dragging of tabs for specific operations. (This was a built-in feature on TST 2.6.0-3.3.6, and now separated.)</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-auto-sticky-tabs/">TST Auto Sticky Tabs</a> provides ability to stick some state tabs to tab bar edges automatically.</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-bookmarks-subpanel/">TST Bookmarks Subpanel</a> allows you to show a small "Bookmarks" sidebar panel below tabs in the TST's sidebar.</li>
 <li><a href="https://addons.mozilla.org/firefox/addon/tst-indent-line/">TST Indent Line</a> provides indent lines like Visual Studio Code's one.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-open-bookmarks-as-partial-/">TST Open Bookmarks as Partial Tree</a> allows you to open only some bookmarks in a folder as a partial tree. Moreover, it also provides ability to open tree of container tabs from bookmarks.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-middleclick/">TST-MiddleClick</a> allows you to run "undo close tab" or "close currently active tab" command on middle click on the sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/">Tree Style Tab Mouse Wheel</a> allows you to switch active tab by wheel scrolling.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/">Tab flip for Tree Style Tab</a> allows you to move focus to the tab previously focused, by clicking on the active tab.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-focus-preceding-tab/">Tree Style Tab Focus Preceding Tab on Close</a> focuses the previous tab instead of the next tab when a tab is closed.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tab-unload-for-tree-style-tab/">Tab Unloader for Tree Style Tab</a> allows you to unload tabs by clicking on them in the sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/move-unloaded-tabs-for-tst/">Move unloaded tabs for Tree Style Tab</a> allows you to move tabs in the sidebar without them becoming active.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-in-separate-window/">Tree Style Tab in Separate Window</a> allows you to open the Tree Style Tab sidebar page in a new window.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/auto-tab-discard/">Auto Tab Discard</a> supports the fake context menu in the Tree Style Tab sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/unload-tabs/">UnloadTabs</a> supports the fake context menu in the Tree Style Tab sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/bookmark-tree-for-tst/">Bookmark Tree for Tree Style Tab</a> allows you to bookmark and restore trees. (A similar feature is now built-in in TST since v3.2.0)</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-hoverswitch/">TST Hoverswitch</a> allows you to switch tabs by hovering over them.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-colored-tabs/">TST Colored Tabs</a> gives custom background color for tabs based on their domain.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/add-last-active-class-to-tab/">Add Last Active Class To Tab</a> helps you to give custom appearance for the "previously active tab".</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-change-close-tab-button-be/">TSTのタブを閉じるボタンの挙動を変更 (tst-change-close-tab-button-be)</a> allows you to close the parent and its all descendants with a middle click on the closebox of a parent tab, whether the tree is expanded or collapsed.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-select-random-tab/">TST Select Random Tab</a> adds a context menu option for selecting a random tab in a Tree Style Tab tree.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-search/">TST Tab Search</a> provides a search field (as a subpanel) to filter opened tabs in the sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-fade-old-tabs/">TST Fade Old Tabs</a> sorts all tabs in 3 categories – 'recent', 'older' and 'oldest' by latest visit time, and applies different opacity to them.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-colorize-tabs/">TST Colorize Tabs</a> allows to set individual color for each tab in order to highlight it.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-new-tabs-first/">TST New Tabs First</a> puts a newly opened root level at the top of the sidebar.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-tab-favorites/">TST Tab Favorites</a> marks frequently visited tabs as favorites and quickly navigate between them using hotkeys.</li>
-<li><a href="https://addons.mozilla.org/firefox/addon/tst-folder-expand-collapse/">TST Folder Expand Collapse</a> allows to collapse/expand "group tab"'s subtree by single click, without activating the tab.</li>
+<li><a href="https://addons.mozilla.org/firefox/addon/tst-lock-tree-collapsed/">TST Lock Tree Collapsed</a> allows you to lock arbitrary trees as collapsed. (This was a built-in feature on TST 3.3.0-3.3.6, and now separated.)</li>
 </ul>
 
-Latest information is available at <a href="https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST">the repository</a>.
+And <a href="https://github.com/piroor/treestyletab/wiki/Helper-addons-extending-functionality-of-TST">there are more helper extensions</a>.
