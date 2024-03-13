@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Fix miscalculation of scrollable area and drop position on tabs with margins added to both top and bottom.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 4.0.3 (2024.3.13)
    * Fix miscalculation of drop position on tabs on the "Photon" theme.
    * Expand height of the container of pinned tabs more correctly on edge cases.
