@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Fix miscalculation of scrollable area and drop position on tabs with margins added to both top and bottom.
+   * API: `sidebar-show` notifications are sent more certainly.
    * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 4.0.3 (2024.3.13)
    * Fix miscalculation of drop position on tabs on the "Photon" theme.
