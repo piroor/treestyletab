@@ -578,6 +578,7 @@ function onCommonCommand(message, sender) {
 // =======================================================================
 
 let mInitialized = false;
+let mPromisedInitialized = null;
 
 if (Constants.IS_BACKGROUND) {
   browser.runtime.onMessageExternal.addListener(onBackendCommand);
@@ -972,6 +973,10 @@ export function isGroupingBlocked() {
 // =======================================================================
 
 export async function initAsFrontend() {
+  let resolver;
+  mPromisedInitialized = new Promise((resolve, _reject) => {
+    resolver = resolve;
+  });
   log('initAsFrontend: start');
   let response;
   while (true) {
@@ -991,6 +996,8 @@ export async function initAsFrontend() {
 
   onInitialized.dispatch();
   log('initAsFrontend: finish');
+  resolver();
+  mPromisedInitialized = null;
 }
 
 function onFrontendCommand(message, sender) {
@@ -1102,6 +1109,9 @@ export async function notifyScrolled(params = {}) {
 // =======================================================================
 
 export async function tryOperationAllowed(type, message = {}, { targets, except, tabProperties, cache } = {}) {
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
+
   if (!hasListenerForMessageType(type, { targets, except })) {
     //log(`=> ${type}: no listener, always allowed`);
     return true;
@@ -1149,6 +1159,9 @@ export function getListenersForMessageType(type, { targets, except } = {}) {
 }
 
 export async function sendMessage(addonId, message, { tabProperties, cache, isContextTab } = {}) {
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
+
   cache = cache || {};
 
   const incognitoParams = { windowId: message.windowId || message.window };
@@ -1174,6 +1187,9 @@ export async function sendMessage(addonId, message, { tabProperties, cache, isCo
 export async function broadcastMessage(message, { targets, except, tabProperties, cache, isContextTab } = {}) {
   if (!configs.APIEnabled)
     return [];
+
+  if (mPromisedInitialized)
+    await mPromisedInitialized;
 
   const listenerAddons = getListenersForMessageType(message.type, { targets, except });
   tabProperties = tabProperties || [];
