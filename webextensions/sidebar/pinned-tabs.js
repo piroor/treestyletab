@@ -71,7 +71,7 @@ export function reposition(options = {}) {
 
   const pinnedTabsContainer = document.querySelector('#pinned-tabs-container .tabs');
   const containerStyle = window.getComputedStyle(pinnedTabsContainer, null);
-  const containerWidth = pinnedTabsContainer.offsetWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.borderLeftWidth) - parseFloat(containerStyle.marginLeft) - parseFloat(containerStyle.paddingRight) - parseFloat(containerStyle.borderRightWidth) - parseFloat(containerStyle.marginRight);
+  const containerWidth = pinnedTabsContainer.offsetWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.borderLeftWidth) - parseFloat(containerStyle.paddingRight) - parseFloat(containerStyle.borderRightWidth);
   const maxWidth       = containerWidth;
   const faviconized    = configs.faviconizePinnedTabs;
 
