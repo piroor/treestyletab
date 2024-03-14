@@ -417,6 +417,7 @@ export const configs = new Configs({
   avoidDiscardedTabToBeActivatedIfPossible: false,
   provressiveHighlightingStep: Number.MAX_SAFE_INTEGER,
   progressievHighlightingInterval: 100,
+  outOfSecreenTabsRenderingPages: 1,
   undoMultipleTabsClose: true,
   allowDragNewTabButton: true,
   newTabButtonDragGestureModifiers: 'shift',

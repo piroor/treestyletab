@@ -200,7 +200,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
   rootStyle.setProperty('--viewport-size', `${viewPortSize}px`);
 
-  const renderablePaddingSize = viewPortSize;
+  const renderablePaddingSize = viewPortSize * configs.outOfSecreenTabsRenderingPages;
   scrollPosition = Math.max(
     0,
     Math.min(

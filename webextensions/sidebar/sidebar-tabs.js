@@ -28,6 +28,7 @@ import Window from '/common/Window.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
+import * as Size from './size.js';
 
 import {
   kTAB_ELEMENT_NAME,
@@ -217,6 +218,7 @@ function getTabElementId(tab) {
 
 const mRenderedTabIds = new Set();
 const mUnrenderedTabIds = new Set();
+const mTabElementsPool = [];
 
 export function renderTab(tab, { containerElement, insertBefore } = {}) {
   if (!tab) {
@@ -231,7 +233,9 @@ export function renderTab(tab, { containerElement, insertBefore } = {}) {
   let created = false;
   if (!tab.$TST.element ||
       !tab.$TST.element.parentNode) {
-    const tabElement = document.createElement(kTAB_ELEMENT_NAME);
+    const tabElement = (mTabElementsPool.length > 0) ?
+      mTabElementsPool.pop() :
+      document.createElement(kTAB_ELEMENT_NAME);
     tab.$TST.bindElement(tabElement);
     tab.$TST.setAttribute('id', getTabElementId(tab));
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
@@ -384,6 +388,11 @@ export function unrenderTab(tab) {
 
   tabElement.parentNode.removeChild(tabElement);
   tab.$TST.unbindElement();
+
+  // We reuse already generated elements for better performance.
+  // See also: https://github.com/piroor/treestyletab/issues/3477
+  if (mTabElementsPool.length < (window.innerHeight / Size.getRenderedTabHeight()) * configs.outOfSecreenTabsRenderingPages)
+    mTabElementsPool.push(tabElement);
 
   return true;
 }
