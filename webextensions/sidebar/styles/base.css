@@ -450,7 +450,7 @@ tab-item-substance .caption {
   line-height: 1;
   margin: 0;
   width: 100%;
-  max-height: var(--tab-size); /* see https://github.com/piroor/treestyletab/issues/3478 */
+  max-height: var(--tab-size); /* Limit tab contents height for tabs customized as thinner. See also https://github.com/piroor/treestyletab/issues/3478 */
   min-height: 0;
   pointer-events: auto;
   position: static;
