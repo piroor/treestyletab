@@ -28,7 +28,6 @@ import Window from '/common/Window.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
-import * as Size from './size.js';
 
 import {
   kTAB_ELEMENT_NAME,
@@ -218,7 +217,7 @@ function getTabElementId(tab) {
 
 const mRenderedTabIds = new Set();
 const mUnrenderedTabIds = new Set();
-const mTabElementsPool = [];
+let mTabElementsPool = [];
 
 export function renderTab(tab, { containerElement, insertBefore } = {}) {
   if (!tab) {
@@ -338,6 +337,8 @@ function reserveToNotifyTabsRendered() {
   });
 }
 
+let mClearPoolTimer = null;
+
 export function unrenderTab(tab) {
   if (!tab ||
       !tab.$TST ||
@@ -391,8 +392,12 @@ export function unrenderTab(tab) {
 
   // We reuse already generated elements for better performance.
   // See also: https://github.com/piroor/treestyletab/issues/3477
-  if (mTabElementsPool.length < (window.innerHeight / Size.getRenderedTabHeight()) * configs.outOfSecreenTabsRenderingPages)
-    mTabElementsPool.push(tabElement);
+  mTabElementsPool.push(tabElement);
+  if (mClearPoolTimer)
+    clearTimeout(mClearPoolTimer);
+  mClearPoolTimer = setTimeout(() => {
+    mTabElementsPool = [];
+  }, configs.generatedTabElementsPoolLifetimeMsec);
 
   return true;
 }
