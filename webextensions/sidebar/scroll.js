@@ -159,6 +159,8 @@ export function reserveToRenderVirtualScrollViewport({ force } = {}) {
 
 let mLastRenderedVirtualScrollTabIds = [];
 const STICKY_SPACER_MATCHER = /^(\d+):sticky$/;
+let mScrollPosition = 0;
+let mViewPortSize   = 0;
 
 function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
@@ -186,11 +188,10 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   range.detach();
   const viewPortSize = mTabBar.offsetHeight - precedingAreaSize - followingAreaSize;
 
-  const rootStyle = document.documentElement.style;
-  rootStyle.setProperty('--all-visible-tabs-size', `${allRenderableTabsSize}px`);
+  const scrollBoxStyle = mNormalScrollBox.style;
   // For underflow case, we need to unset min-height to put the "new tab"
   // button next to the last tab immediately.
-  rootStyle.setProperty('--virtual-scroll-container-size', viewPortSize < allRenderableTabsSize ?
+  scrollBoxStyle.setProperty('--virtual-scroll-container-size', viewPortSize < allRenderableTabsSize ?
     `${allRenderableTabsSize}px` : '');
 
   const allTabsSizeHolder = win.containerElement.parentNode;
@@ -198,7 +199,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
-  rootStyle.setProperty('--viewport-size', `${viewPortSize}px`);
+  mViewPortSize = viewPortSize;
 
   const renderablePaddingSize = viewPortSize * configs.outOfScreenTabsRenderingPages;
   scrollPosition = Math.max(
@@ -212,7 +213,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
           mNormalScrollBox.scrollTop
     )
   );
-  rootStyle.setProperty('--scroll-position', `${scrollPosition}px`);
+  mScrollPosition = scrollPosition;
 
   const firstRenderableIndex = Math.max(
     0,
@@ -226,7 +227,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     )
   );
   const renderedOffset = tabSize * firstRenderableIndex;
-  rootStyle.setProperty('--virtual-scroll-contents-offset', `${renderedOffset}px`);
+  scrollBoxStyle.setProperty('--virtual-scroll-contents-offset', `${renderedOffset}px`);
   // we need to shift contents one more, to cover the reduced height due to the sticky tab.
 
   if (resized) {
@@ -355,11 +356,10 @@ let mLastStickyTabIdsAbove = new Set();
 let mLastStickyTabIdsBelow = new Set();
 
 function updateStickyTabs(renderableTabs) {
-  const rootStyle      = document.documentElement.style;
   const tabSize        = Size.getRenderedTabHeight();
   const windowId       = TabsStore.getCurrentWindowId();
-  const scrollPosition = parseFloat(rootStyle.getPropertyValue('--scroll-position'));
-  const viewPortSize   = parseFloat(rootStyle.getPropertyValue('--viewport-size'));
+  const scrollPosition = mScrollPosition;
+  const viewPortSize   = mViewPortSize;
 
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
   const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
