@@ -523,6 +523,7 @@ function throttledUpdateSize() {
     if (throttledUpdateSize.lastStartedAt != startAt)
       return;
     Size.updateTabs();
+    Size.updateContainers();
   });
 }
 
