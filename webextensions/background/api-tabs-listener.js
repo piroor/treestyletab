@@ -385,6 +385,7 @@ async function onCreated(tab) {
 async function onNewTabTracked(tab, info) {
   const win                  = Window.init(tab.windowId);
   const bypassTabControl     = win.bypassTabControlCount > 0;
+  const isNewTabCommandTab   = win.toBeOpenedNewTabCommandTab > 0;
   const positionedBySelf     = win.toBeOpenedTabsWithPositions > 0;
   const openedWithCookieStoreId = win.toBeOpenedTabsWithCookieStoreId > 0;
   const duplicatedInternally = win.duplicatingTabsCount > 0;
@@ -415,6 +416,9 @@ async function onNewTabTracked(tab, info) {
   // operation updates the latest active tab in the window amd it becomes
   // impossible to know which tab was previously active.
   tab = Tab.track(tab);
+
+  if (isNewTabCommandTab)
+    tab.$isNewTabCommandTab = true;
 
   if (info.trigger == 'tabs.onCreated')
     tab.$TST.addState(Constants.kTAB_STATE_CREATING);
@@ -514,6 +518,8 @@ async function onNewTabTracked(tab, info) {
 
     if (bypassTabControl)
       win.bypassTabControlCount--;
+    if (isNewTabCommandTab)
+      win.toBeOpenedNewTabCommandTab--;
     if (positionedBySelf)
       win.toBeOpenedTabsWithPositions--;
     if (openedWithCookieStoreId)

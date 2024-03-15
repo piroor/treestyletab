@@ -365,6 +365,9 @@ export default class Tab {
         !configs.guessNewOrphanTabAsOpenedByNewTabCommand)
       return false;
 
+    if (this.tab.$isNewTabCommandTab)
+      return true;
+
     if (isNewTabCommandTab(this.tab))
       return true;
 

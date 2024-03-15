@@ -96,6 +96,8 @@ export async function loadURI(uri, options = {}) {
 }
 
 export async function openNewTab(options = {}) {
+  const win = TabsStore.windows.get(options.windowId);
+  win.toBeOpenedNewTabCommandTab++;
   return openURIInTab(options.url || options.uri || null, options);
 }
 
@@ -131,8 +133,8 @@ export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter
       win.toBeOpenedOrphanTabs += uris.length;
     return Promise.all(uris.map(async (uri, index) => {
       const params = {
-        windowId: windowId,
-        active:   index == 0 && (active || (inBackground === false))
+        windowId,
+        active: index == 0 && (active || (inBackground === false)),
       };
       if (uri && typeof uri == 'object') { // tabs.create() compatible
         if ('active' in uri)
