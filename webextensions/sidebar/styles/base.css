@@ -242,12 +242,8 @@ tab-sound-button */ {
 
 .virtual-scroll-container {
   /* We need to use min-height instead of height for a flexbox. */
-  min-height: var(--virtual-scroll-container-size, 0px);
+  min-height: 0px; /* this will be updated dynamically by scroll.js */
   overflow: hidden;
-}
-
-#normal-tabs-container.overflow .tabs.normal {
-  transform: translateY(var(--virtual-scroll-contents-offset, 0px));
 }
 
 :root.animation .virtual-scroll-container {
