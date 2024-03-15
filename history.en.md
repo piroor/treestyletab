@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 4.0.6 (2024.3.16)
+   * Optimize operations of virtual scrolling.
+   * Fix mismatched highlighted state of tabs when a tab is activated with an operation in the sidebar and another tab is activated from outside of TST sidebar like keyboard shortcuts or operations in Firefox's tab bar.
  - 4.0.5 (2024.3.15)
    * Introduce a secret option `outOfScreenTabsRenderingPages` to change performance barance of the virtual scrolling. Setting it to a negative value like `-1` will work almost same as TST 3.x: no virtual scrolling.
    * Optimize operations of virtual scrolling.
