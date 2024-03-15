@@ -190,6 +190,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   // For underflow case, we need to unset min-height to put the "new tab"
   // button next to the last tab immediately.
+  // We need to set the style value directly instead of using custom properties, to reduce needless style computation.
   mNormalScrollBox.querySelector('.virtual-scroll-container').style.minHeight = `${viewPortSize < allRenderableTabsSize ? allRenderableTabsSize : 0}px`;
 
   const allTabsSizeHolder = win.containerElement.parentNode;
@@ -225,8 +226,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     )
   );
   const renderedOffset = tabSize * firstRenderableIndex;
+  // We need to set the style value directly instead of using custom properties, to reduce needless style computation.
   mNormalScrollBox.querySelector('.tabs').style.transform = `translateY(${renderedOffset}px)`;
-  // we need to shift contents one more, to cover the reduced height due to the sticky tab.
+  // We need to shift contents one more, to cover the reduced height due to the sticky tab.
 
   if (resized) {
     reserveToUpdateScrolledState(mNormalScrollBox)
