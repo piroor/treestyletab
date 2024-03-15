@@ -96,7 +96,7 @@ export async function loadURI(uri, options = {}) {
 }
 
 export async function openNewTab(options = {}) {
-  return openURIInTab(null, options);
+  return openURIInTab(options.url || options.uri || null, options);
 }
 
 export async function openURIInTab(uri, options = {}) {

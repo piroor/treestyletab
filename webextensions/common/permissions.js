@@ -17,8 +17,9 @@ function log(...args) {
   internalLogger('common/permissions', ...args);
 }
 
-export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const ALL_URLS = { origins: ['<all_urls>'] };
+export const BOOKMARKS = { permissions: ['bookmarks'] };
+export const CLIPBOARD_READ = { permissions: ['clipboardRead'] };
 export const TAB_HIDE = { permissions: ['tabHide'] };
 
 const checkboxesForPermission = new Map();

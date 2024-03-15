@@ -41,6 +41,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as BackgroundConnection from './background-connection.js';
 import * as Constants from '/common/constants.js';
 import * as EventUtils from './event-utils.js';
+import * as RetrieveURL from '/common/retrieve-url.js';
 import * as Scroll from './scroll.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -57,10 +58,6 @@ function log(...args) {
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
-const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
-const kTYPE_URI_LIST    = 'text/uri-list';
-const kTYPE_MOZ_TEXT_INTERNAL = 'text/x-moz-text-internal';
-const kBOOKMARK_FOLDER  = 'x-moz-place:';
 const kTYPE_ADDON_DRAG_DATA = `application/x-treestyletab-drag-data;provider=${browser.runtime.id}&id=`;
 
 const kDROP_BEFORE  = 'before';
@@ -532,7 +529,7 @@ function collapseAutoExpandedTabsWhileDragging() {
 async function handleDroppedNonTabItems(event, dropActionInfo) {
   event.stopPropagation();
 
-  const uris = await retrieveURIsFromDragEvent(event);
+  const uris = await RetrieveURL.fromDragEvent(event);
   // uris.forEach(uRI => {
   //   if (uRI.indexOf(Constants.kURI_BOOKMARK_FOLDER) != 0)
   //     securityCheck(uRI, event);
@@ -568,122 +565,6 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     insertAfterId:  dropActionInfo.insertAfter && dropActionInfo.insertAfter.id,
     active:         configs.simulateTabsLoadInBackgroundInverted,
   });
-}
-
-const ACCEPTABLE_DRAG_DATA_TYPES = [
-  kTYPE_URI_LIST,
-  kTYPE_X_MOZ_URL,
-  kTYPE_MOZ_TEXT_INTERNAL,
-  'text/plain'
-];
-
-async function retrieveURIsFromDragEvent(event) {
-  log('retrieveURIsFromDragEvent');
-  const dt = event.dataTransfer;
-  let urls = [];
-  if (dt.files.length > 0) {
-    for (const file of dt.files) {
-      urls.push(URL.createObjectURL(file));
-    }
-  }
-  else {
-    for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
-      const urlData = dt.getData(type);
-      if (urlData)
-        urls = urls.concat(retrieveURIsFromData(urlData, type));
-      if (urls.length)
-        break;
-    }
-    for (const type of dt.types) {
-      if (!/^application\/x-treestyletab-drag-data;(.+)$/.test(type))
-        continue;
-      const params     = RegExp.$1;
-      const providerId = /provider=([^;&]+)/.test(params) && RegExp.$1;
-      const dataId     = /id=([^;&]+)/.test(params) && RegExp.$1;
-      try {
-        const dragData = await browser.runtime.sendMessage(providerId, {
-          type: 'get-drag-data',
-          id:   dataId
-        });
-        if (!dragData || typeof dragData != 'object')
-          break;
-        for (const type of ACCEPTABLE_DRAG_DATA_TYPES) {
-          const urlData = dragData[type];
-          if (urlData)
-            urls = urls.concat(retrieveURIsFromData(urlData, type));
-          if (urls.length)
-            break;
-        }
-      }
-      catch(_error) {
-      }
-    }
-  }
-  log(' => retrieved: ', urls);
-  urls = urls.filter(uri =>
-    uri &&
-      uri.length &&
-      uri.indexOf(kBOOKMARK_FOLDER) == 0 ||
-      !/^\s*(javascript|data):/.test(uri)
-  );
-  log('  => filtered: ', urls);
-
-  urls = urls.map(fixupURIFromText);
-  log('  => fixed: ', urls);
-
-  return urls;
-}
-
-function retrieveURIsFromData(data, type) {
-  log('retrieveURIsFromData: ', type, data);
-  switch (type) {
-    case kTYPE_URI_LIST:
-      return data
-        .replace(/\r/g, '\n')
-        .replace(/\n\n+/g, '\n')
-        .split('\n')
-        .filter(line => {
-          return line.charAt(0) != '#';
-        });
-
-    case kTYPE_X_MOZ_URL:
-      return data
-        .trim()
-        .replace(/\r/g, '\n')
-        .replace(/\n\n+/g, '\n')
-        .split('\n')
-        .filter((_line, index) => {
-          return index % 2 == 0;
-        });
-
-    case kTYPE_MOZ_TEXT_INTERNAL:
-      return data
-        .replace(/\r/g, '\n')
-        .replace(/\n\n+/g, '\n')
-        .trim()
-        .split('\n');
-
-    case 'text/plain':
-      return data
-        .replace(/\r/g, '\n')
-        .replace(/\n\n+/g, '\n')
-        .trim()
-        .split('\n')
-        .map(line => {
-          return /^\w+:\/\/.+/.test(line) ? line : `ext+treestyletab:search:${line}`;
-        });
-  }
-  return [];
-}
-
-function fixupURIFromText(maybeURI) {
-  if (/^(ext\+)?\w+:/.test(maybeURI))
-    return maybeURI;
-
-  if (/^([^\.\s]+\.)+[^\.\s]{2}/.test(maybeURI))
-    return `http://${maybeURI}`;
-
-  return maybeURI;
 }
 
 async function getDroppedLinksOnTabBehavior() {
@@ -903,13 +784,13 @@ function onDragStart(event, options = {}) {
         urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
       }
     }
-    mCurrentDragDataForExternals[kTYPE_X_MOZ_URL] = mozUrl.join('\n');
-    mCurrentDragDataForExternals[kTYPE_URI_LIST] = urlList.join('\n');
+    mCurrentDragDataForExternals[RetrieveURL.kTYPE_X_MOZ_URL] = mozUrl.join('\n');
+    mCurrentDragDataForExternals[RetrieveURL.kTYPE_URI_LIST] = urlList.join('\n');
     if (allowBookmark) {
       log('set kTYPE_X_MOZ_URL');
-      dt.setData(kTYPE_X_MOZ_URL, mCurrentDragDataForExternals[kTYPE_X_MOZ_URL]);
+      dt.setData(RetrieveURL.kTYPE_X_MOZ_URL, mCurrentDragDataForExternals[RetrieveURL.kTYPE_X_MOZ_URL]);
       log('set kTYPE_URI_LIST');
-      dt.setData(kTYPE_URI_LIST, mCurrentDragDataForExternals[kTYPE_URI_LIST]);
+      dt.setData(RetrieveURL.kTYPE_URI_LIST, mCurrentDragDataForExternals[RetrieveURL.kTYPE_URI_LIST]);
     }
   }
   {
@@ -1365,9 +1246,9 @@ function onDrop(event) {
     return;
   }
 
-  if (dt.types.includes(kTYPE_MOZ_TEXT_INTERNAL) &&
+  if (dt.types.includes(RetrieveURL.kTYPE_MOZ_TEXT_INTERNAL) &&
       configs.guessDraggedNativeTabs) {
-    const url = dt.getData(kTYPE_MOZ_TEXT_INTERNAL);
+    const url = dt.getData(RetrieveURL.kTYPE_MOZ_TEXT_INTERNAL);
     log(`there are dragged native tabs with the URL: ${url}`);
     browser.tabs.query({ url }).then(async tabs => {
       if (!tabs.length) {
@@ -1454,7 +1335,7 @@ async function onDragEnd(event) {
 
   let handledBySomeone = event.dataTransfer.dropEffect != 'none';
 
-  if (event.dataTransfer.getData(kTYPE_URI_LIST)) {
+  if (event.dataTransfer.getData(RetrieveURL.kTYPE_URI_LIST)) {
     log('do nothing by TST for dropping just for bookmarking or linking');
     return;
   }

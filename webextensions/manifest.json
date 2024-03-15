@@ -20,6 +20,7 @@
   "optional_permissions": [
     "<all_urls>",
     "bookmarks",
+    "clipboardRead",
     "tabHide"
   ],
   "icons": {

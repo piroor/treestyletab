@@ -411,7 +411,8 @@ export async function openNewTabAs(options = {}) {
     isOrphan,
     windowId:      activeTab.windowId,
     inBackground:  !!options.inBackground,
-    cookieStoreId: options.cookieStoreId
+    cookieStoreId: options.cookieStoreId,
+    url:           options.url,
   });
 }
 
@@ -1048,7 +1049,8 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
           baseTab,
           as:            message.as,
           cookieStoreId: message.cookieStoreId,
-          inBackground:  message.inBackground
+          inBackground:  message.inBackground,
+          url:           message.url,
         });
     }; break;
 

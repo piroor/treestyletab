@@ -40,6 +40,7 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as RetrieveURL from '/common/retrieve-url.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -560,9 +561,14 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
       else {
         const activeTab = Tab.getActiveTab(mTargetWindow);
         const cookieStoreId = (actionForNewTabCommand == Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER) ? activeTab.cookieStoreId : null
+        const urls = lastMousedown.detail.isMiddleClick && configs.middleClickPasteURLOnNewTabButton ?
+          (await RetrieveURL.fromClipboard()) :
+          [];
+        log('urls: ', urls);
         handleNewTabAction(event, {
           action: actionForNewTabCommand,
-          cookieStoreId
+          cookieStoreId,
+          url: urls.length > 0 ? urls[0] : null,
         });
       }
     }
@@ -978,7 +984,8 @@ function handleNewTabAction(event, options = {}) {
     baseTabId:     Tab.getActiveTab(mTargetWindow).id,
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
-    inBackground:  event.shiftKey
+    inBackground:  event.shiftKey,
+    url:           options.url,
   });
 }
 

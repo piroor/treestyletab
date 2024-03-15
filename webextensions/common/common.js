@@ -316,6 +316,7 @@ export const configs = new Configs({
   autoAttachOnNewTabCommand: Constants.kNEWTAB_DO_NOTHING,
   autoAttachOnContextNewTabCommand: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
   autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD_END,
+  middleClickPasteURLOnNewTabButton: /^Linux/i.test(navigator.platform), // simulates "browser.tabs.searchclipboardfor.middleclick"
   autoAttachOnNewTabButtonAccelClick: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING_WITH_INHERITED_CONTAINER,
   autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
   autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD_END,
@@ -549,6 +550,7 @@ export const configs = new Configs({
     'common/contextual-identities': false,
     'common/dialog': false,
     'common/permissions': false,
+    'common/retrieve-url': false,
     'common/sidebar-connection': false,
     'common/sync': false,
     'common/tabs-internal-operation': false,
