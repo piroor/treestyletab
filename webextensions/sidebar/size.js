@@ -18,6 +18,10 @@ function log(...args) {
 
 export const onUpdated = new EventListenerManager();
 
+const mPinnedScrollBox  = document.querySelector('#pinned-tabs-container');
+const mNormalScrollBox  = document.querySelector('#normal-tabs-container');
+const mTabBar           = document.querySelector('#tabbar');
+
 let mTabHeight          = 0;
 let mTabXOffset         = 0;
 let mTabYOffset         = 0;
@@ -29,6 +33,9 @@ let mFavIconizedTabWidth = 0;
 let mFavIconizedTabHeight = 0;
 let mFavIconizedTabXOffset = 0;
 let mFavIconizedTabYOffset = 0;
+let mPinnedTabsScrollBoxRect;
+let mNormalTabsScrollBoxRect;
+let mNormalTabsViewPortSize = 0;
 
 export function getTabHeight() {
   return mTabHeight;
@@ -78,12 +85,26 @@ export function getRenderedFavIconizedTabHeight() {
   return mFavIconizedTabHeight + mFavIconizedTabYOffset;
 }
 
-export function init() {
-  update();
-  matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addListener(update);
+export function getScrollBoxRect(scrollBox) {
+  return scrollBox == mPinnedScrollBox ?
+    mPinnedTabsScrollBoxRect :
+    mNormalTabsScrollBoxRect;
 }
 
-export function update() {
+export function getNormalTabsViewPortSize() {
+  return mNormalTabsViewPortSize;
+}
+
+export function init() {
+  updateTabs();
+  updateContainers();
+  matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addListener(() => {
+    updateTabs();
+    updateContainers();
+  });
+}
+
+export function updateTabs() {
   // first, calculate actual favicon size.
   mFavIconSize = document.querySelector('#dummy-favicon-size-box').offsetHeight;
   const scale = Math.max(configs.faviconizedTabScale, 1);
@@ -167,6 +188,21 @@ export function update() {
 
   sizeDefinitionHolder.textContent = sizeDefinition
   onUpdated.dispatch();
+}
+
+export function updateContainers() {
+  mPinnedTabsScrollBoxRect = mPinnedScrollBox.getBoundingClientRect();
+  mNormalTabsScrollBoxRect = mNormalScrollBox.getBoundingClientRect();
+
+  const range = document.createRange();
+  //range.selectNodeContents(mTabBar);
+  //range.setEndBefore(mNormalScrollBox);
+  const normalTabsViewPortPrecedingAreaSize = mPinnedScrollBox.offsetHeight; //range.getBoundingClientRect().height;
+  range.selectNodeContents(mTabBar);
+  range.setStartAfter(mNormalScrollBox);
+  const normalTabsViewPortFollowingAreaSize = range.getBoundingClientRect().height;
+  mNormalTabsViewPortSize = mTabBar.offsetHeight - normalTabsViewPortPrecedingAreaSize - normalTabsViewPortFollowingAreaSize;
+  range.detach();
 }
 
 export function calc(expression) {

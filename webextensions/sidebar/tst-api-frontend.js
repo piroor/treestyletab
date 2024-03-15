@@ -522,7 +522,7 @@ function throttledUpdateSize() {
   window.requestAnimationFrame(() => {
     if (throttledUpdateSize.lastStartedAt != startAt)
       return;
-    Size.update();
+    Size.updateTabs();
   });
 }
 

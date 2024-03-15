@@ -358,7 +358,7 @@ async function applyTheme({ style } = {}) {
   if (mReloadMaskImage)
     reloadAllMaskImages();
 
-  Size.update();
+  Size.updateTabs();
 }
 
 async function applyOwnTheme(style) {
@@ -421,7 +421,7 @@ function applyUserStyleRules() {
     log (' => ', rule.selectorText);
   });
 
-  Size.update();
+  Size.updateTabs();
 }
 
 function processAllStyleRulesIn(sheetOrRule, processor) {
@@ -778,6 +778,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   document.documentElement.style.setProperty('--tabbar-top-area-size', `${extraTabbarTopContainerSize}px`);
   document.documentElement.style.setProperty('--tabbar-bottom-area-size', `${extraTabbarBottomContainerSize}px`);
   document.documentElement.style.setProperty('--after-tabs-area-size', `${newTabButtonSize}px`);
+  Size.updateContainers();
 
   if (!(reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE))
     Scroll.reserveToRenderVirtualScrollViewport();
@@ -972,7 +973,7 @@ async function onConfigChange(changedKey) {
       break;
 
     case 'shiftTabsForScrollbarDistance':
-      Size.update();
+      Size.updateTabs();
       break;
 
     case 'shiftTabsForScrollbarOnlyOnHover':

@@ -102,6 +102,9 @@ export function reposition(options = {}) {
     document.documentElement.style.setProperty('--pinned-tabs-max-column', configs.maxFaviconizedPinnedTabsInOneRow);
   else
     document.documentElement.style.removeProperty('--pinned-tabs-max-column');
+
+  Size.updateContainers();
+
   for (const tab of pinnedTabs) {
     if (options.justNow)
       tab.$TST.removeState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -147,6 +150,7 @@ function reset() {
   }
   mAreaHeight     = 0;
   mMaxVisibleRows = 0;
+  Size.updateContainers();
 }
 
 function clearStyle(tab) {

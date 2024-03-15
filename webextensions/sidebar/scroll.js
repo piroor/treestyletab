@@ -160,7 +160,6 @@ export function reserveToRenderVirtualScrollViewport({ force } = {}) {
 let mLastRenderedVirtualScrollTabIds = [];
 const STICKY_SPACER_MATCHER = /^(\d+):sticky$/;
 let mScrollPosition = 0;
-let mViewPortSize   = 0;
 
 function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
@@ -177,16 +176,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
   const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
   const allRenderableTabsSize = Size.getTabMarginTop() + (tabSize * (renderableTabs.length - disappearingTabs.length)) + Size.getTabMarginBottom();
-
-  const range = document.createRange();
-  //range.selectNodeContents(mTabBar);
-  //range.setEndBefore(mNormalScrollBox);
-  const precedingAreaSize = mPinnedScrollBox.offsetHeight; //range.getBoundingClientRect().height;
-  range.selectNodeContents(mTabBar);
-  range.setStartAfter(mNormalScrollBox);
-  const followingAreaSize = range.getBoundingClientRect().height;
-  range.detach();
-  const viewPortSize = mTabBar.offsetHeight - precedingAreaSize - followingAreaSize;
+  const viewPortSize = Size.getNormalTabsViewPortSize();
 
   // For underflow case, we need to unset min-height to put the "new tab"
   // button next to the last tab immediately.
@@ -196,9 +186,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const allTabsSizeHolder = win.containerElement.parentNode;
   const resized           = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
   allTabsSizeHolder.dataset.height = allRenderableTabsSize;
-
-  // The current box size can be 0 while initialization, so fallback to the max size for safety.
-  mViewPortSize = viewPortSize;
 
   const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
   const renderablePaddingSize = outOfScreenPages ?
@@ -262,8 +249,6 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     scrollPosition,
     viewPortSize,
     allRenderableTabsSize,
-    //precedingAreaSize,
-    //followingAreaSize,
   });
 
   const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
@@ -364,7 +349,7 @@ function updateStickyTabs(renderableTabs) {
   const tabSize        = Size.getRenderedTabHeight();
   const windowId       = TabsStore.getCurrentWindowId();
   const scrollPosition = mScrollPosition;
-  const viewPortSize   = mViewPortSize;
+  const viewPortSize   = Size.getNormalTabsViewPortSize();
 
   const firstInViewportIndex = Math.ceil(scrollPosition / tabSize);
   const lastInViewportIndex  = Math.floor((scrollPosition + viewPortSize - tabSize) / tabSize);
@@ -474,7 +459,7 @@ export function getTabRect(tab) {
   const tabSize        = Size.getTabHeight();
   const index          = renderableTabs.indexOf(tab.id);
   const scrollBox      = getScrollBoxFor(tab);
-  const scrollBoxRect  = scrollBox.getBoundingClientRect();
+  const scrollBoxRect  = Size.getScrollBoxRect(scrollBox);
   const tabTop         = Size.getRenderedTabHeight() * index + scrollBoxRect.top - scrollBox.scrollTop;
   return {
     top:    tabTop,
@@ -527,7 +512,7 @@ function calculateScrollDeltaForTab(tab, { over } = {}) {
   tab = tab.$TST.collapsed && tab.$TST.nearestVisibleAncestorOrSelf || tab;
 
   const tabRect       = getTabRect(tab);
-  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  const scrollBoxRect = Size.getScrollBoxRect(getScrollBoxFor(tab));
   const overScrollOffset = over === false ?
     0 :
     Math.ceil(tabRect.height / 2);
@@ -567,7 +552,7 @@ export function isTabInViewport(tab, { allowPartial } = {}) {
 
   const tabRect       = getTabRect(tab);
   const allowedOffset = allowPartial ? (tabRect.height / 2) : 0;
-  const scrollBoxRect = getScrollBoxFor(tab).getBoundingClientRect();
+  const scrollBoxRect = Size.getScrollBoxRect(getScrollBoxFor(tab));
   log('isTabInViewport ', tab.id, {
     allowedOffset,
     tabTop:         tabRect.top + allowedOffset,
@@ -724,7 +709,7 @@ export async function scrollToTab(tab, options = {}) {
       !anchorTab.pinned) {
     const targetTabRect = getTabRect(tab);
     const anchorTabRect = getTabRect(anchorTab);
-    const scrollBoxRect = scrollBox.getBoundingClientRect();
+    const scrollBoxRect = Size.getScrollBoxRect(scrollBox);
     let delta = calculateScrollDeltaForTab(tab, { over: false });
 
     let topStickyTabsAreaSize, bottomStickyTabsAreaSize;
@@ -830,7 +815,7 @@ export function autoScrollOnMouseEvent(event) {
     if (autoScrollOnMouseEvent.lastStartedAt != startAt)
       return;
 
-    const tabbarRect = scrollBox.getBoundingClientRect();
+    const tabbarRect = Size.getScrollBoxRect(scrollBox);
     const scrollPixels = Math.round(Size.getRenderedTabHeight() * 0.5);
     if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
       if (scrollBox.scrollTop > 0)
@@ -938,6 +923,8 @@ function reserveToUpdateScrolledState(scrollBox) {
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_SCROLLED, scrolled);
       mTabBar.classList.toggle(Constants.kTABBAR_STATE_FULLY_SCROLLED, fullyScrolled);
     }
+
+    Size.updateContainers();
   });
 }
 
