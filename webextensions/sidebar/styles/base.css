@@ -343,7 +343,8 @@ tab-sound-button */ {
   direction: ltr;
 }
 
-#tabbar {
+#pinned-tabs-container,
+#normal-tabs-container {
   scrollbar-width: thin;
 }
 
