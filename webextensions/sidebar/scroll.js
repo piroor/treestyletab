@@ -26,6 +26,16 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+/* ***** IMPORTANT NOTE FOR BETTER PERFORMANCE *****
+   Functions in this module will be called very frequently while
+   scrolling. We should not do operations causing style computation
+   like calling getBoundingClientRect() or accessing to
+   offsetWidth/Height/Top/Left. Instead use Size.getXXXXX() methods
+   which return statically calculated sizes. If you need to get
+   something more new size, add a logic to calculate it to
+   Size.updateTabs() or Size.updateContainers().
+   ************************************************* */
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 import { SequenceMatcher } from '/extlib/diff.js';
 
