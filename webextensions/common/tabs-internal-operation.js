@@ -190,6 +190,12 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
   if (!tabs || tabs.length == 0)
     throw new Error('TabsInternalOperation.highlightTabs requires one or more tabs.');
 
+  const highlightedTabs = Tab.getHighlightedTabs(tabs[0].windowId);
+  if (tabs.map(tab => tab.id).join('\n') == highlightedTabs.map(tab => tab.id).join('\n')) {
+    log('highlightTabs: already highlighted');
+    return;
+  }
+
   log('setting tabs highlighted ', tabs, { inheritToCollapsedDescendants });
 
   const startAtTimestamp = Date.now();
