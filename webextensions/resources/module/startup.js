@@ -26,6 +26,11 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.BOOKMARKS,
     document.querySelector('#bookmarksPermissionGranted')
   );
+  Permissions.bindToCheckbox(
+    Permissions.CLIPBOARD_READ,
+    document.querySelector('#clipboardReadPermissionGranted')
+  );
+  document.querySelector('#clipboardReadPermissionGranted').style.display = configs.middleClickPasteURLOnNewTabButton ? 'none' : '';
 
   document.documentElement.classList.add('initialized');
 }, { once: true });
