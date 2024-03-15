@@ -200,7 +200,10 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   // The current box size can be 0 while initialization, so fallback to the max size for safety.
   mViewPortSize = viewPortSize;
 
-  const renderablePaddingSize = viewPortSize * configs.outOfScreenTabsRenderingPages;
+  const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
+  const renderablePaddingSize = outOfScreenPages ?
+    allRenderableTabsSize :
+    viewPortSize * outOfScreenPages;
   scrollPosition = Math.max(
     0,
     Math.min(
@@ -227,7 +230,9 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   );
   const renderedOffset = tabSize * firstRenderableIndex;
   // We need to set the style value directly instead of using custom properties, to reduce needless style computation.
-  mNormalScrollBox.querySelector('.tabs').style.transform = `translateY(${renderedOffset}px)`;
+  mNormalScrollBox.querySelector('.tabs').style.transform = outOfScreenPages < 0 ?
+    '' :
+    `translateY(${renderedOffset}px)`;
   // We need to shift contents one more, to cover the reduced height due to the sticky tab.
 
   if (resized) {
