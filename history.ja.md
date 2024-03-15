@@ -1,6 +1,12 @@
 # 更新履歴
 
  - master/HEAD
+   * 仮想スクロールの性能のバランスを制御する隠し設定 `outOfScreenTabsRenderingPages` を追加（`-1`のような負の値を設定すると、仮想スクロールが行われないTST 3.xの状態とほぼ同等になります）
+   * 仮想スクロールの処理の最適化を進めた
+   * 「新しいタブ」ボタンの中クリックでクリップボード内のURLを開く機能を追加（Linuxで有効になっているFirefoxの隠し設定 `browser.tabs.searchclipboardfor.middleclick` の再現を目的とした物で、事前にクリップボードの読み取り権限を許可し、`dom.events.asyncClipboard.clipboardItem` を `true` に設定しておく必要があります）
+   * Windows 10でのスクロールバーの外観が制御されていなかったのを修正
+   * タブの高さを変更するユーザースタイルシートの指定の互換性を高めた
+   * `zh_CN`ロケール更新（by [NightSharp](https://github.com/NightSharp), thanks!）
  - 4.0.4 (2024.3.14)
    * タブの上下両方にマージンが追加されているときにスクロール領域のサイズとタブのドロップ位置の計算結果が期待通りでなかったのを修正
    * API: `sidebar-show` の通知をより確実に送出するようにした
