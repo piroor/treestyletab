@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 4.0.5 (2024.3.15)
    * 仮想スクロールの性能のバランスを制御する隠し設定 `outOfScreenTabsRenderingPages` を追加（`-1`のような負の値を設定すると、仮想スクロールが行われないTST 3.xの状態とほぼ同等になります）
    * 仮想スクロールの処理の最適化を進めた
    * 「新しいタブ」ボタンの中クリックでクリップボード内のURLを開く機能を追加（Linuxで有効になっているFirefoxの隠し設定 `browser.tabs.searchclipboardfor.middleclick` の再現を目的とした物で、事前にクリップボードの読み取り権限を許可し、`dom.events.asyncClipboard.clipboardItem` を `true` に設定しておく必要があります）

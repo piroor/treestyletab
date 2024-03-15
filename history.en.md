@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 4.0.5 (2024.3.15)
    * Introduce a secret option `outOfScreenTabsRenderingPages` to change performance barance of the virtual scrolling. Setting it to a negative value like `-1` will work almost same as TST 3.x: no virtual scrolling.
    * Optimize operations of virtual scrolling.
    * Add ability to open URL in the clipboard by middle-click on the "New Tab" button: this aims to simulate Firefox's `browser.tabs.searchclipboardfor.middleclick` option enabled by default on Linux, and there are some requirements: grant the clipboard access permission and set `dom.events.asyncClipboard.clipboardItem` to `true`.
