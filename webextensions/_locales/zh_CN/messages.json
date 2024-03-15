@@ -1094,8 +1094,6 @@
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": {
     "message": "相同身份的右邻同级项"
   },
-  "config_autoAttachOnContextNewTabCommand_after": {
-  },
   "config_newTabWithOwner_caption": {
     "message": "打开自已存在标签页的标签页"
   },
@@ -1122,8 +1120,6 @@
   },
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "父标签页的右邻同级项"
-  },
-  "config_autoAttachOnOpenedWithOwner_after": {
   },
   "config_insertNewTabFromFirefoxViewAt_caption": {
     "message": "Firefox 视图新建子标签页 (将会作为根标签页) 的插入位置"
@@ -2111,8 +2107,6 @@
   },
   "config_all_caption": {
     "message": "所有配置"
-  },
-  "config_terms_delimiter": {
   },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
