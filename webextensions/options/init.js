@@ -795,6 +795,16 @@ function initPermissionOptions() {
   }
 
   Permissions.bindToCheckbox(
+    Permissions.CLIPBOARD_READ,
+    document.querySelector('#clipboardReadPermissionGranted_middleClickPasteURLOnNewTabButton'),
+    {
+      onChanged: (granted) => {
+        configs.middleClickPasteURLOnNewTabButton = granted;
+      }
+    }
+  );
+
+  Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
     document.querySelector('#tabHidePermissionGranted'),
     { onChanged: async (granted) => {

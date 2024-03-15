@@ -817,6 +817,13 @@ const mItems = [
         ],
       },
       {
+        title:       indent() + browser.i18n.getMessage('config_middleClickPasteURLOnNewTabButton_label'),
+        expert:      true,
+        key:         'middleClickPasteURLOnNewTabButton',
+        type:        'checkbox',
+        permissions: Permissions.CLIPBOARD_READ,
+      },
+      {
         title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonAccelClick_before'),
         expert: true,
         children: [
@@ -2278,13 +2285,14 @@ if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
         }
       }
       if (item.type == 'checkbox' || item.type == 'radio') {
-        params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+        const checkedFromConfigs = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+        params.checked = checkedFromConfigs;
         if (item.permissions) {
           Permissions.isGranted(item.permissions)
             .then(async granted => {
               if (item.checked == granted)
                 return;
-              item.checked = granted;
+              item.checked = granted && (!('key' in item) || checkedFromConfigs);
               await browser.menus.update(item.id, { checked: granted }).catch(ApiTabs.createErrorSuppressor());
               await browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
             });
@@ -2312,13 +2320,11 @@ if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
       browser.tabs.create({ url: item.url });
       return;
     }
-    if (item.key) {
-      configs[item.key] = 'value' in item ? item.value : !configs[item.key];
-      return;
-    }
     if (item.permissions) {
       if (item.checked) {
         browser.permissions.remove(item.permissions).catch(ApiTabs.createErrorSuppressor());
+        if (item.key && !('value' in item))
+          configs[item.key] = false;
       }
       else {
         browser.permissions.request(item.permissions)
@@ -2330,10 +2336,20 @@ if (browser.action/* Manifest V2 */ || browser.browserAction/* Manifest V3 */) {
                 type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
                 permissions: item.permissions
               }).catch(_error => {});
+              if (item.key)
+                configs[item.key] = 'value' in item ? item.value : granted;
+            }
+            else {
+              if (item.key && !('value' in item))
+                configs[item.key] = false;
             }
           })
           .catch(ApiTabs.createErrorHandler());
       }
+      return;
+    }
+    if (item.key) {
+      configs[item.key] = 'value' in item ? item.value : !configs[item.key];
       return;
     }
   });

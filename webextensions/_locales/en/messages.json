@@ -256,7 +256,7 @@
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs, auto migration of bookmarked internal URLs imported from other environments, and detection of tabs opened from bookmarks (requires access to bookmarks)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts / Don't restore blank window which was for a closed dialog, by actions to restore closed tabs" },
-  "message_startup_requestPermissions_clipboardRead": { "message": "Allow to open a new tab with the URL in the clipboard, by middle click on the \"New Tab\" button" },
+  "message_startup_requestPermissions_clipboardRead": { "message": "Allow to open a new tab with the URL in the clipboard, by middle click on the \"New Tab\" button (*you may need to activate \"dom.events.asyncClipboard.clipboardItem\")" },
 
   "message_startup_userChromeCss_notify": { "message": "How to hide top tab bar and sidebar header?" },
   "message_startup_userChromeCss_description_1": { "message": "Due to restrictions of WebExtensions, Tree Style Tab cannot control the browser's top tab bar and the sidebar header. If you need to control them, see " },
@@ -504,6 +504,8 @@
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "Next Sibling of the current tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "Same to Ctrl-click (next sibling, same container)" },
   "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
+
+  "config_middleClickPasteURLOnNewTabButton_label": { "message": "Open new tab with URL in the clipboard (*simulation of the browser's built-in behavior for \"browser.tabs.searchclipboardfor.middleclick\"=\"true\", and you may need to activate \"dom.events.asyncClipboard.clipboardItem\")" },
 
   "config_autoAttachOnNewTabButtonAccelClick_before": { "message": "For Ctrl/⌘-click, open new blank tab as" },
   "config_autoAttachOnNewTabButtonAccelClick_noControl": { "message": "(no control)" },
