@@ -288,7 +288,7 @@ export const configs = new Configs({
   restoreTreeForTabsFromBookmarks: true,
   tabsFromSameFolderMinThresholdPercentage: 50,
   autoGroupNewTabsFromOthers: false,
-  autoGroupNewTabsFromPinned: false,
+  autoGroupNewTabsFromPinned: true,
   autoGroupNewTabsFromFirefoxView: false,
   groupTabTemporaryStateForNewTabsFromBookmarks: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
   groupTabTemporaryStateForNewTabsFromOthers: Constants.kGROUP_TAB_TEMPORARY_STATE_PASSIVE,
