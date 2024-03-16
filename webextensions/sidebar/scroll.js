@@ -198,7 +198,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
   const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
-  const renderablePaddingSize = outOfScreenPages ?
+  const renderablePaddingSize = outOfScreenPages < 0 ?
     allRenderableTabsSize :
     viewPortSize * outOfScreenPages;
   scrollPosition = Math.max(
