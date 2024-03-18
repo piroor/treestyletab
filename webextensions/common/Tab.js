@@ -212,7 +212,7 @@ export default class Tab {
         if (state == Constants.kTAB_STATE_HIGHLIGHTED)
           this.element.removeAttribute('aria-selected');
       }
-      for (const key of Object.keys(this.attributes)) {
+      for (const name of Object.keys(this.attributes)) {
         this.element.removeAttribute(name);
       }
       this.element.$TST = null;
