@@ -832,12 +832,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.activeTabInWindow.set(lastMessage.windowId, tab);
       TabsInternalOperation.setTabActive(tab);
       getTabContainerElement(tab).setAttribute('aria-activedescendant', getTabElementId(tab));
-      if ((!tab.pinned ||
-           !lastActive.pinned ||
-           (lastActive.$TST.bundledTab &&
-            !lastActive.$TST.bundledTab.pinned)) &&
-          configs.stickyActiveTab)
-        onNormalTabsChanged.dispatch(tab);
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UPDATED: {
