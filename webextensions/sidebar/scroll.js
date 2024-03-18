@@ -244,7 +244,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   );
   const renderedOffset = tabSize * firstRenderableIndex;
   // We need to set the style value directly instead of using custom properties, to reduce needless style computation.
-  mNormalScrollBox.querySelector('.tabs').style.transform = outOfScreenPages < 0 ?
+  mNormalScrollBox.querySelector('.tabs').style.transform = staticRendering ?
     '' :
     `translateY(${renderedOffset}px)`;
   // We need to shift contents one more, to cover the reduced height due to the sticky tab.
