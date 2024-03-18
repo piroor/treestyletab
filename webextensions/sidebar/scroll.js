@@ -262,109 +262,109 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       mLastRenderedVirtualScrollTabIds = renderableTabs.map(tab => tab.id);
   }
   else {
-  const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
-  const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
-  const toBeRenderedTabIdsSet = new Set(toBeRenderedTabIds);
-  for (const stickyTab of stickyTabs) {
-    if (toBeRenderedTabIdsSet.has(stickyTab.id))
-      toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, `${stickyTab.id}:sticky`);
-  }
-
-  const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
-  log('renderVirtualScrollViewport ', {
-    firstRenderableIndex,
-    firstRenderableTabIndex: renderableTabs[firstRenderableIndex].index,
-    lastRenderableIndex,
-    lastRenderableTabIndex: renderableTabs[lastRenderableIndex].index,
-    old: mLastRenderedVirtualScrollTabIds.slice(0),
-    new: toBeRenderedTabIds.slice(0),
-    renderOperations,
-    scrollPosition,
-    viewPortSize,
-    allRenderableTabsSize,
-  });
-
-  const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
-  for (const operation of renderOperations) {
-    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-    switch (tag) {
-      case 'equal':
-        break;
-
-      case 'delete': {
-        const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
-        //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
-        for (const id of ids) {
-          if (STICKY_SPACER_MATCHER.test(id)) {
-            const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
-            if (spacer)
-              spacer.parentNode.removeChild(spacer);
-            continue;
-          }
-          const tab = Tab.get(id);
-          if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
-            continue;
-          // We don't need to remove already rendered tab,
-          // because it is automatically moved by insertBefore().
-          if (toBeRenderedTabIdSet.has(id) ||
-              !tab ||
-              !mNormalScrollBox.contains(tab.$TST.element))
-            continue;
-          SidebarTabs.unrenderTab(tab);
-        }
-      }; break;
-
-      case 'insert':
-      case 'replace': {
-        const deleteIds = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
-        const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
-        //log('insert or replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
-        for (const id of deleteIds) {
-          if (STICKY_SPACER_MATCHER.test(id)) {
-            const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
-            if (spacer)
-              spacer.parentNode.removeChild(spacer);
-            continue;
-          }
-          const tab = Tab.get(id);
-          if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
-            continue;
-          // We don't need to remove already rendered tab,
-          // because it is automatically moved by insertBefore().
-          if (toBeRenderedTabIdSet.has(id) ||
-              !tab ||
-              !mNormalScrollBox.contains(tab.$TST.element))
-            continue;
-          SidebarTabs.unrenderTab(tab);
-        }
-        const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
-          Tab.get(extractIdPart(mLastRenderedVirtualScrollTabIds[fromEnd])) :
-          null;
-        const referenceTabHasValidReferenceElement = referenceTab?.$TST.element?.parentNode == win.containerElement;
-        for (const id of insertIds) {
-          if (STICKY_SPACER_MATCHER.test(id)) {
-            const spacer = document.createElement('li');
-            spacer.classList.add('sticky-tab-spacer');
-            spacer.setAttribute('data-tab-id', RegExp.$1);
-            win.containerElement.insertBefore(
-              spacer,
-              win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
-              (referenceTabHasValidReferenceElement &&
-               referenceTab.$TST.element) ||
-              null
-            );
-            continue;
-          }
-          SidebarTabs.renderTab(Tab.get(id), {
-            insertBefore: referenceTabHasValidReferenceElement ? referenceTab :
-              win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
-              null,
-          });
-        }
-      }; break;
+    const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
+    const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
+    const toBeRenderedTabIdsSet = new Set(toBeRenderedTabIds);
+    for (const stickyTab of stickyTabs) {
+      if (toBeRenderedTabIdsSet.has(stickyTab.id))
+        toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, `${stickyTab.id}:sticky`);
     }
-  }
-  mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
+
+    const renderOperations = (new SequenceMatcher(mLastRenderedVirtualScrollTabIds, toBeRenderedTabIds)).operations();
+    log('renderVirtualScrollViewport ', {
+      firstRenderableIndex,
+      firstRenderableTabIndex: renderableTabs[firstRenderableIndex].index,
+      lastRenderableIndex,
+      lastRenderableTabIndex: renderableTabs[lastRenderableIndex].index,
+      old: mLastRenderedVirtualScrollTabIds.slice(0),
+      new: toBeRenderedTabIds.slice(0),
+      renderOperations,
+      scrollPosition,
+      viewPortSize,
+      allRenderableTabsSize,
+    });
+
+    const toBeRenderedTabIdSet = new Set(toBeRenderedTabIds);
+    for (const operation of renderOperations) {
+      const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+      switch (tag) {
+        case 'equal':
+          break;
+
+        case 'delete': {
+          const ids = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
+          //log('delete: ', { fromStart, fromEnd, toStart, toEnd }, ids);
+          for (const id of ids) {
+            if (STICKY_SPACER_MATCHER.test(id)) {
+              const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
+              if (spacer)
+                spacer.parentNode.removeChild(spacer);
+              continue;
+            }
+            const tab = Tab.get(id);
+            if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
+              continue;
+            // We don't need to remove already rendered tab,
+            // because it is automatically moved by insertBefore().
+            if (toBeRenderedTabIdSet.has(id) ||
+                !tab ||
+                !mNormalScrollBox.contains(tab.$TST.element))
+              continue;
+            SidebarTabs.unrenderTab(tab);
+          }
+        }; break;
+
+        case 'insert':
+        case 'replace': {
+          const deleteIds = mLastRenderedVirtualScrollTabIds.slice(fromStart, fromEnd);
+          const insertIds = toBeRenderedTabIds.slice(toStart, toEnd);
+          //log('insert or replace: ', { fromStart, fromEnd, toStart, toEnd }, deleteIds, ' => ', insertIds);
+          for (const id of deleteIds) {
+            if (STICKY_SPACER_MATCHER.test(id)) {
+              const spacer = win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${RegExp.$1}"]`);
+              if (spacer)
+                spacer.parentNode.removeChild(spacer);
+              continue;
+            }
+            const tab = Tab.get(id);
+            if (tab?.$TST.element?.parentNode != win.containerElement) // already sticky
+              continue;
+            // We don't need to remove already rendered tab,
+            // because it is automatically moved by insertBefore().
+            if (toBeRenderedTabIdSet.has(id) ||
+                !tab ||
+                !mNormalScrollBox.contains(tab.$TST.element))
+              continue;
+            SidebarTabs.unrenderTab(tab);
+          }
+          const referenceTab = fromEnd < mLastRenderedVirtualScrollTabIds.length ?
+            Tab.get(extractIdPart(mLastRenderedVirtualScrollTabIds[fromEnd])) :
+            null;
+          const referenceTabHasValidReferenceElement = referenceTab?.$TST.element?.parentNode == win.containerElement;
+          for (const id of insertIds) {
+            if (STICKY_SPACER_MATCHER.test(id)) {
+              const spacer = document.createElement('li');
+              spacer.classList.add('sticky-tab-spacer');
+              spacer.setAttribute('data-tab-id', RegExp.$1);
+              win.containerElement.insertBefore(
+                spacer,
+                win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
+                (referenceTabHasValidReferenceElement &&
+                 referenceTab.$TST.element) ||
+                null
+              );
+              continue;
+            }
+            SidebarTabs.renderTab(Tab.get(id), {
+              insertBefore: referenceTabHasValidReferenceElement ? referenceTab :
+                win.containerElement.querySelector(`.sticky-tab-spacer[data-tab-id="${referenceTab?.id}"]`) ||
+                null,
+            });
+          }
+        }; break;
+      }
+    }
+    mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
   }
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
