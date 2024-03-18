@@ -467,10 +467,27 @@ export function getTabRect(tab) {
 
   const renderableTabs = Tab.getVirtualScrollRenderableTabs(tab.windowId).map(tab => tab.id);
   const tabSize        = Size.getTabHeight();
-  const index          = renderableTabs.indexOf(tab.id);
   const scrollBox      = getScrollBoxFor(tab);
   const scrollBoxRect  = Size.getScrollBoxRect(scrollBox);
-  const tabTop         = Size.getRenderedTabHeight() * index + scrollBoxRect.top - scrollBox.scrollTop;
+
+  let index = renderableTabs.indexOf(tab.id);
+  if (index < 0) { // the tab is not renderable yet, so we calculate the index based on other tabs.
+    const following = tab.$TST.nearestVisibleFollowingTab;
+    if (following) {
+      index = renderableTabs.indexOf(following.id);
+    }
+    else {
+      const preceding = tab.$TST.nearestVisiblePrecedingTab;
+      if (preceding) {
+        index = renderableTabs.indexOf(preceding.id);
+        if (index > -1)
+          index++;
+      }
+    }
+    if (index < -1) // no nearest visible tab: treat as a last tab
+      index = renderableTabs.length;
+  }
+  const tabTop = Size.getRenderedTabHeight() * index + scrollBoxRect.top - scrollBox.scrollTop;
   return {
     top:    tabTop,
     bottom: tabTop + tabSize,
