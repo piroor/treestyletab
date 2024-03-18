@@ -257,7 +257,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const stickyTabs = updateStickyTabs(renderableTabs, { staticRendering, skipRefreshTabs });
 
   if (skipRefreshTabs) {
-    log('renderVirtualScrollViewport: skip re-rendering of tabs');
+    log('renderVirtualScrollViewport: skip re-rendering of tabs, rendered = ', renderableTabs);
     if (mLastRenderedVirtualScrollTabIds.length != renderableTabs.length)
       mLastRenderedVirtualScrollTabIds = renderableTabs.map(tab => tab.id);
   }
