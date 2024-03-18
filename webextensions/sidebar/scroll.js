@@ -91,13 +91,13 @@ export function init(scrollPosition) {
   BackgroundConnection.onMessage.addListener(onBackgroundMessage);
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
   SidebarTabs.onNormalTabsChanged.addListener(_tab => {
-    reserveToRenderVirtualScrollViewport();
+    reserveToRenderVirtualScrollViewport({ trigger: 'tabsChanged' });
   });
   Size.onUpdated.addListener(() => {
-    reserveToRenderVirtualScrollViewport({ force: true });
+    reserveToRenderVirtualScrollViewport({ trigger: 'resized', force: true });
   });
 
-  reserveToRenderVirtualScrollViewport();
+  reserveToRenderVirtualScrollViewport({ trigger: 'initialize' });
   if (typeof scrollPosition != 'number')
     return;
 
@@ -153,13 +153,15 @@ restoreScrollPosition.scrollPosition = -1;
 
 /* virtual scrolling */
 
-export function reserveToRenderVirtualScrollViewport({ force } = {}) {
+export function reserveToRenderVirtualScrollViewport({ trigger, force } = {}) {
   if (!force &&
       mScrollingInternallyCount > 0)
     return;
 
   const startAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
   renderVirtualScrollViewport.lastStartedAt = startAt;
+  if (trigger)
+    renderVirtualScrollViewport.triggers.add(trigger);
   window.requestAnimationFrame(() => {
     if (renderVirtualScrollViewport.lastStartedAt != startAt)
       return;
@@ -167,12 +169,18 @@ export function reserveToRenderVirtualScrollViewport({ force } = {}) {
   });
 }
 
+let mLastRenderableTabs;
+let mLastDisappearingTabs;
 let mLastRenderedVirtualScrollTabIds = [];
 const STICKY_SPACER_MATCHER = /^(\d+):sticky$/;
 let mScrollPosition = 0;
 
+renderVirtualScrollViewport.triggers = new Set();
+
 function renderVirtualScrollViewport(scrollPosition = undefined) {
   renderVirtualScrollViewport.lastStartedAt = null;
+  const triggers = new Set([...renderVirtualScrollViewport.triggers]);
+  renderVirtualScrollViewport.triggers.clear();
 
   const startAt = Date.now();
 
@@ -182,11 +190,21 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       !win.containerElement)
     return; // not initialized yet
 
+
+  const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
+  const staticRendering  = outOfScreenPages < 0;
+  const skipRefreshTabs  = staticRendering && triggers.size == 1 && triggers.has('scroll');
+
   const tabSize               = Size.getRenderedTabHeight();
-  const renderableTabs        = Tab.getVirtualScrollRenderableTabs(windowId);
-  const disappearingTabs      = renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
+  const renderableTabs        = skipRefreshTabs && mLastRenderableTabs || Tab.getVirtualScrollRenderableTabs(windowId);
+  const disappearingTabs      = skipRefreshTabs && mLastDisappearingTabs || renderableTabs.filter(tab => tab.$TST.removing || tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
   const allRenderableTabsSize = Size.getTabMarginTop() + (tabSize * (renderableTabs.length - disappearingTabs.length)) + Size.getTabMarginBottom();
   const viewPortSize = Size.getNormalTabsViewPortSize();
+
+  if (staticRendering) {
+    mLastRenderableTabs = renderableTabs;
+    mLastDisappearingTabs = disappearingTabs;
+  }
 
   // For underflow case, we need to unset min-height to put the "new tab"
   // button next to the last tab immediately.
@@ -197,8 +215,7 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
   const resized           = allTabsSizeHolder.dataset.height != allRenderableTabsSize;
   allTabsSizeHolder.dataset.height = allRenderableTabsSize;
 
-  const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
-  const renderablePaddingSize = outOfScreenPages < 0 ?
+  const renderablePaddingSize = staticRendering ?
     allRenderableTabsSize :
     viewPortSize * outOfScreenPages;
   scrollPosition = Math.max(
@@ -237,11 +254,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
     onVirtualScrollViewportUpdated.dispatch(resized);
   }
 
+  const stickyTabs = updateStickyTabs(renderableTabs, { staticRendering, skipRefreshTabs });
+
+  if (skipRefreshTabs) {
+    log('renderVirtualScrollViewport: skip re-rendering of tabs');
+    if (mLastRenderedVirtualScrollTabIds.length != renderableTabs.length)
+      mLastRenderedVirtualScrollTabIds = renderableTabs.map(tab => tab.id);
+  }
+  else {
   const toBeRenderedTabs = renderableTabs.slice(firstRenderableIndex, lastRenderableIndex + 1);
   const toBeRenderedTabIds = toBeRenderedTabs.map(tab => tab.id);
   const toBeRenderedTabIdsSet = new Set(toBeRenderedTabIds);
-
-  const stickyTabs = updateStickyTabs(renderableTabs);
   for (const stickyTab of stickyTabs) {
     if (toBeRenderedTabIdsSet.has(stickyTab.id))
       toBeRenderedTabIds.splice(toBeRenderedTabIds.indexOf(stickyTab.id), 1, `${stickyTab.id}:sticky`);
@@ -341,8 +364,8 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
       }; break;
     }
   }
-
   mLastRenderedVirtualScrollTabIds = toBeRenderedTabIds;
+  }
 
   log(`${Date.now() - startAt} msec, offset = ${renderedOffset}`);
 }
@@ -354,8 +377,9 @@ function extractIdPart(id) {
 
 let mLastStickyTabIdsAbove = new Set();
 let mLastStickyTabIdsBelow = new Set();
+let mLastCanBeStickyTabs;
 
-function updateStickyTabs(renderableTabs) {
+function updateStickyTabs(renderableTabs, { staticRendering, skipRefreshTabs } = {}) {
   const tabSize        = Size.getRenderedTabHeight();
   const windowId       = TabsStore.getCurrentWindowId();
   const scrollPosition = mScrollPosition;
@@ -368,8 +392,11 @@ function updateStickyTabs(renderableTabs) {
   const stickyTabIdsBelow = new Set();
   const stickyTabs = [];
 
-  const canBeStickyTabs = renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
+  const canBeStickyTabs = skipRefreshTabs && mLastCanBeStickyTabs || renderableTabs.filter(tab => tab.$TST.canBecomeSticky);
   log('canBeStickyTabs ', canBeStickyTabs);
+  if (staticRendering)
+    mLastCanBeStickyTabs = canBeStickyTabs;
+
   const removedOrCollapsedTabsCount = parseInt(mNormalScrollBox.querySelector(`.${Constants.kTABBAR_SPACER}`).dataset.removedOrCollapsedTabsCount || 0);
   for (const tab of canBeStickyTabs.slice(0).reverse()) { // first try: find bottom sticky tabs from bottom
     const index = renderableTabs.indexOf(tab);
@@ -494,6 +521,16 @@ export function getTabRect(tab) {
     height: tabSize,
   };
 }
+
+configs.$addObserver(key => {
+  switch (key) {
+    case 'outOfScreenTabsRenderingPages':
+      mLastRenderableTabs   = null;
+      mLastDisappearingTabs = null;
+      mLastCanBeStickyTabs  = null;
+      break;
+  }
+});
 
 
 /* basic operations */
@@ -921,7 +958,7 @@ function onScroll(event) {
   const scrollBox = event.currentTarget;
   reserveToUpdateScrolledState(scrollBox);
   if (scrollBox == mNormalScrollBox) {
-    reserveToRenderVirtualScrollViewport();
+    reserveToRenderVirtualScrollViewport({ trigger: 'scroll' });
   }
   reserveToSaveScrollPosition();
 }
@@ -1235,7 +1272,7 @@ CollapseExpand.onUpdating.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
   if (!tab.pinned)
-    reserveToRenderVirtualScrollViewport();
+    reserveToRenderVirtualScrollViewport({ trigger: 'collapseExpand' });
   if (options.last)
     scrollToTab(tab, {
       anchor:            options.anchor,
@@ -1247,7 +1284,7 @@ CollapseExpand.onUpdated.addListener((tab, options) => {
   if (!configs.scrollToExpandedTree)
     return;
   if (!tab.pinned)
-    reserveToRenderVirtualScrollViewport();
+    reserveToRenderVirtualScrollViewport({ trigger: 'collapseExpand' });
   if (options.last)
     scrollToTab(tab, {
       anchor:            options.anchor,

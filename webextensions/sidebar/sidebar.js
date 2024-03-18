@@ -780,7 +780,7 @@ function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   Size.updateContainers();
 
   if (!(reasons & Constants.kTABBAR_UPDATE_REASON_VIRTUAL_SCROLL_VIEWPORT_UPDATE))
-    Scroll.reserveToRenderVirtualScrollViewport();
+    Scroll.reserveToRenderVirtualScrollViewport({ trigger: 'resized' });
 
   if (SidebarTabs.normalContainer.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     window.requestAnimationFrame(() => {
