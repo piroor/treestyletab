@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 4.0.8 (2024.3.18)
+   * Fix unexpected "scrolled to top" behavior on new tabs are opened.
+   * Completely clear old states and attributes of tabs reused on the virtual scrolling mode.
+   * Optimize scrolling on the static rendering (physical scrolling with `outOfScreenTabsRenderingPages`=`-1`) mode  more.
+   * Tabs opened from pinned parent are grouped automatically by default. (regression on recent versions)
  - 4.0.7 (2024.3.16)
    * Apply `outOfScreenTabsRenderingPages` correctly.
  - 4.0.6 (2024.3.16)
