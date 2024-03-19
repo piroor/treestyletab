@@ -427,7 +427,7 @@ function processAllStyleRulesIn(sheetOrRule, processor) {
   for (const rule of sheetOrRule.cssRules) {
     if (rule.styleSheet)
       processAllStyleRulesIn(rule.styleSheet, processor);
-    else if (rule.cssRules) // @media and so son
+    else if (rule.cssRules && rule.cssRules.length > 0) // @media and so son
       processAllStyleRulesIn(rule, processor);
     else
       processor(rule);
