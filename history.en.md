@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+ - 4.0.9 (2024.3.20)
+   * Middle-click on the "New Tab" button opens a blank new tab if the clipboard is not accessible due to some reasons.
+   * Fix incompatibility with other addons closing initial tabs while TST is initializing (ex. Tab Session Manager and Firefox Multi-Account Containers).
+   * Apply user style sheets prior to built-in style rules correctly.
+   * Introduce new expert option to expose hidden tabs by other addons, and add expert options UI for the number of pre-rendered pages and visibility of hidden tabs.
+   * Suppress some non-critical errors while initializations.
+   * Update `zh_CN` locale by [NightSharp](https://github.com/NightSharp). Thanks!
  - 4.0.8 (2024.3.18)
    * Fix unexpected "scrolled to top" behavior on new tabs are opened.
    * Completely clear old states and attributes of tabs reused on the virtual scrolling mode.
