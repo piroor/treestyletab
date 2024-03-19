@@ -214,16 +214,16 @@ async function waitUntilCompletelyRestored() {
   const initialTabs = await browser.tabs.query({});
   await Promise.all([
     MetricsData.addAsync('waitUntilCompletelyRestored: existing tabs ', Promise.all(
-      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id))
+      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id).catch(_error => {}))
     )),
-    MetricsData.addAsync('waitUntilCompletelyRestored: opening tabs ', new Promise((resolve, _aReject) => {
+    MetricsData.addAsync('waitUntilCompletelyRestored: opening tabs ', new Promise((resolve, _reject) => {
       let promises = [];
       let timeout;
       let resolver;
       let onNewTabRestored = async (tab, _info = {}) => {
         clearTimeout(timeout);
         log('new restored tab is detected.');
-        promises.push(waitUntilPersistentIdBecomeAvailable(tab.id));
+        promises.push(waitUntilPersistentIdBecomeAvailable(tab.id).catch(_error => {}));
         // Read caches from restored tabs while waiting, for better performance.
         browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
@@ -236,7 +236,7 @@ async function waitUntilCompletelyRestored() {
       };
       browser.tabs.onCreated.addListener(onNewTabRestored);
       resolver = (async () => {
-        log('timeout: all tabs are restored.');
+        log(`timeout: all ${promises.length} tabs are restored. `, promises);
         browser.tabs.onCreated.removeListener(onNewTabRestored);
         timeout = resolver = onNewTabRestored = undefined;
         await Promise.all(promises);
