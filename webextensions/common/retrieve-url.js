@@ -73,7 +73,8 @@ export async function fromDragEvent(event) {
 }
 
 export async function fromClipboard() {
-  if (!(await Permissions.isGranted(Permissions.CLIPBOARD_READ)))
+  if (!(await Permissions.isGranted(Permissions.CLIPBOARD_READ)) ||
+      typeof navigator.clipboard.read != 'function')
     return null;
 
   const clipboardContents = await navigator.clipboard.read();
