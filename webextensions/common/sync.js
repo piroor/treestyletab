@@ -213,7 +213,7 @@ async function updateSelf() {
   updateSelf.updating = true;
 
   const [devices] = await Promise.all([
-    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' }),
+    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' }).catch(_error => null),
     ensureDeviceInfoInitialized(),
   ]);
   if (devices) {
