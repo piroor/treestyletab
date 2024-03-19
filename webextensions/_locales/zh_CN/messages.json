@@ -1008,7 +1008,10 @@
     "message": "在侧栏中显示对话框（如果可能的话）"
   },
   "config_outOfScreenTabsRenderingPages_label": {
-    "message": "预渲染标签页的页面数量 （-1 代表预渲染所有标签页，可以获得更佳的滚动性能，代价是您可能需要在初始化时等待较长时间）: "
+    "message": "预渲染标签页的页面数量 : "
+  },
+  "config_outOfScreenTabsRenderingPages_description": {
+    "message": "\"-1\" 代表预渲染所有标签页，可以获得更佳的滚动性能，代价是您可能需要在初始化时等待较长时间，"
   },
   "config_renderHiddenTabs_label": {
     "message": "显示被其它附加组件隐藏的隐藏标签页"
