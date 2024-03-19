@@ -141,7 +141,11 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
 
   switch (message.type) {
     case 'ready':
-      browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' });
+      try {
+        browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' }).catch(_error => {});
+      }
+      catch(_error) {
+      }
     case 'device-added':
     case 'device-updated':
     case 'device-removed':
@@ -165,7 +169,11 @@ export async function init() {
   }
   preChanges = [];
 
-  browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' });
+  try {
+    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'register-self' }).catch(_error => {});
+  }
+  catch(_error) {
+  }
 }
 
 export async function generateDeviceInfo({ name, icon } = {}) {
@@ -213,7 +221,13 @@ async function updateSelf() {
   updateSelf.updating = true;
 
   const [devices] = await Promise.all([
-    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' }).catch(_error => null),
+    (async () => {
+      try {
+        return await browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' });
+      }
+      catch(_error) {
+      }
+    })(),
     ensureDeviceInfoInitialized(),
   ]);
   if (devices) {
@@ -239,7 +253,13 @@ async function updateDevices() {
     return;
   updateDevices.updating = true;
   const [devicesFromSimulator] = await Promise.all([
-    browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' }),
+    (async () => {
+      try {
+        return await browser.runtime.sendMessage(SEND_TABS_SIMULATOR_ID, { type: 'list-devices' });
+      }
+      catch(_error) {
+      }
+    })(),
     waitUntilDeviceInfoInitialized(),
   ]);
 
