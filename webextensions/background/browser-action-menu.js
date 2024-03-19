@@ -176,6 +176,12 @@ const mItems = [
         type:  'checkbox',
         expert: true,
       },
+      {
+        title: browser.i18n.getMessage('config_renderHiddenTabs_label'),
+        key:   'renderHiddenTabs',
+        type:  'checkbox',
+        expert: true,
+      },
     ]
   },
   {
