@@ -617,6 +617,11 @@ export async function initAsBackend() {
   //     https://github.com/piroor/treestyletab/issues/2300#issuecomment-498947370 )
   mInitialized = true;
 
+  let resolver;
+  mPromisedInitialized = new Promise((resolve, _reject) => {
+    resolver = resolve;
+  });
+
   const manifest = browser.runtime.getManifest();
   registerAddon(browser.runtime.id, {
     id:         browser.runtime.id,
@@ -675,6 +680,7 @@ export async function initAsBackend() {
   configs.cachedExternalAddons = respondedAddons;
 
   onInitialized.dispatch();
+  resolver();
 }
 
 if (Constants.IS_BACKGROUND) {
@@ -806,7 +812,8 @@ if (Constants.IS_BACKGROUND) {
           groupingLocked: mGroupingBlockedBy
         });
 
-      case kCOMMAND_GET_ADDONS: {
+      case kCOMMAND_GET_ADDONS:
+        return mPromisedInitialized.then(() => {
         const addons = [];
         for (const [id, addon] of mAddons.entries()) {
           addons.push({
@@ -816,8 +823,8 @@ if (Constants.IS_BACKGROUND) {
             permissionsGranted: Array.from(addon.requestedPermissions).join(',') == Array.from(addon.grantedPermissions).join(',')
           });
         }
-        return Promise.resolve(addons);
-      }; break;
+          return addons;
+        });
 
       case kCOMMAND_SET_API_PERMISSION:
         setPermissions(getAddon(message.id), new Set(message.permissions));

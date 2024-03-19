@@ -896,9 +896,16 @@ function initPreviews() {
 }
 
 async function initExternalAddons() {
-  const addons = await browser.runtime.sendMessage({
-    type: TSTAPI.kCOMMAND_GET_ADDONS
-  });
+  let addons;
+  while (true) {
+    // This API call will fail if the background page is not initialized yet, so we need to retry it a while.
+    addons = await browser.runtime.sendMessage({
+      type: TSTAPI.kCOMMAND_GET_ADDONS,
+    });
+    if (addons)
+      break;
+    await wait(250);
+  }
 
   const description = document.getElementById('externalAddonPermissionsGroupDescription');
   const range = document.createRange();
