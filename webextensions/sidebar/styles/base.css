@@ -491,9 +491,7 @@ tab-item tab-favicon {
 }
 
 tab-item.hidden {
-  pointer-events: none;
-  position: fixed;
-  visibility: collapse;
+  opacity: 0.6;
 }
 
 :root.animation:not(.minimized) tab-item.animation-ready,

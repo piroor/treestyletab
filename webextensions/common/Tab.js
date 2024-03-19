@@ -2534,6 +2534,17 @@ Tab.getVisibleTabs = (windowId = null, options = {}) => { // visible, not-collap
   });
 };
 
+Tab.getHiddenTabs = (windowId = null, options = {}) => {
+  return TabsStore.queryAll({
+    windowId,
+    tabs:    TabsStore.getTabsMap(TabsStore.livingTabsInWindow, windowId),
+    living:  true,
+    ordered: true,
+    hidden:  true,
+    ...options
+  });
+};
+
 Tab.getPinnedTabs = (windowId = null, options = {}) => { // visible, pinned
   return TabsStore.queryAll({
     windowId,

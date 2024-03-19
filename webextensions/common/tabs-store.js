@@ -228,6 +228,9 @@ function matchedWithQuery(tab, query) {
        tab.hidden ||
        tabStates.has(Constants.kTAB_STATE_SHOWING)))
     return false;
+  if (query.hidden &&
+      !tab.hidden)
+    return false;
   if (query.controllable &&
       (tab.hidden ||
        tabStates.has(Constants.kTAB_STATE_SHOWING)))
@@ -489,7 +492,7 @@ export function updateIndexesForTab(tab) {
 
 export function updateVirtualScrollRenderabilityIndexForTab(tab) {
   if (tab.pinned ||
-      tab.hidden ||
+      (tab.hidden && !configs.renderHiddenTabs) ||
       tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE))
     removeVirtualScrollRenderableTab(tab);
   else

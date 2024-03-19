@@ -442,6 +442,17 @@ configs.$addObserver(async changedKey => {
     case 'labelOverflowStyle':
       document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
       break;
+
+    case 'renderHiddenTabs': {
+      let hasNormalTab = false;
+      for (const tab of Tab.getHiddenTabs(TabsStore.getCurrentWindowId(), { iterator: true })) {
+        TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+        if (!tab.pinned)
+          hasNormalTab = true;
+      }
+      if (hasNormalTab)
+        onNormalTabsChanged.dispatch();
+    }; break;
   }
 });
 

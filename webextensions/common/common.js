@@ -419,6 +419,7 @@ export const configs = new Configs({
   provressiveHighlightingStep: Number.MAX_SAFE_INTEGER,
   progressievHighlightingInterval: 100,
   outOfScreenTabsRenderingPages: 1,
+  renderHiddenTabs: false,
   generatedTabElementsPoolLifetimeMsec: 5 * 1000,
   undoMultipleTabsClose: true,
   allowDragNewTabButton: true,
