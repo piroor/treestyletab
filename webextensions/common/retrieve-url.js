@@ -73,14 +73,14 @@ export async function fromDragEvent(event) {
 }
 
 export async function fromClipboard() {
+  const urls = [];
   if (!(await Permissions.isGranted(Permissions.CLIPBOARD_READ)) ||
       typeof navigator.clipboard.read != 'function')
-    return null;
+    return urls;
 
   const clipboardContents = await navigator.clipboard.read();
   log('fromClipboard ', clipboardContents);
 
-  const urls = [];
   for (const item of clipboardContents) {
     for (const type of item.types) {
       const maybeUrlBlob   = await item.getType(type);
