@@ -814,15 +814,15 @@ if (Constants.IS_BACKGROUND) {
 
       case kCOMMAND_GET_ADDONS:
         return mPromisedInitialized.then(() => {
-        const addons = [];
-        for (const [id, addon] of mAddons.entries()) {
-          addons.push({
-            id,
-            label:              addon.name || addon.title || addon.id,
-            permissions:        Array.from(addon.requestedPermissions),
-            permissionsGranted: Array.from(addon.requestedPermissions).join(',') == Array.from(addon.grantedPermissions).join(',')
-          });
-        }
+          const addons = [];
+          for (const [id, addon] of mAddons.entries()) {
+            addons.push({
+              id,
+              label:              addon.name || addon.title || addon.id,
+              permissions:        Array.from(addon.requestedPermissions),
+              permissionsGranted: Array.from(addon.requestedPermissions).join(',') == Array.from(addon.grantedPermissions).join(',')
+            });
+          }
           return addons;
         });
 
