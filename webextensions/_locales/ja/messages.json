@@ -400,6 +400,8 @@
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Firefox 85以降での新しい空のタブ" },
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "サイドバーをマウスで操作した場合のみ抑制する" },
   "config_showDialogInSidebar_label": { "message": "可能であればサイドバー内でダイアログを表示する" },
+  "config_outOfScreenTabsRenderingPages_label": { "message": "タブを事前にレンダリングしておくページ数（-1を指定するとすべてのタブを事前にレンダリングするようになり、スクロールの応答性が向上しますが、引き替えとして、初期化処理に長い時間を要するようになります）：" },
+  "config_renderHiddenTabs_label": { "message": "他のアドオンが隠したタブを表示する" },
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },

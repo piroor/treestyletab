@@ -403,6 +403,8 @@
   "config_suppressGapFromShownOrHiddenToolbarOnNewTab_label": { "message": "Blank new tabs on Firefox 85 and later" },
   "config_suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation_label": { "message": "Only when triggered by a mouse operation in the sidebar" },
   "config_showDialogInSidebar_label": { "message": "Show dialogs in the sidebar if possible" },
+  "config_outOfScreenTabsRenderingPages_label": { "message": "Number of pages to pre-render tabs (-1 will pre-render all tabs for better scrolling performance, and as a trade off you may need to wait long time on initialization):" },
+  "config_renderHiddenTabs_label": { "message": "Show hidden tabs which are hidden by other addons" },
 
 
   "config_context_caption": { "message": "Context Menu" },

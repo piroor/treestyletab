@@ -179,6 +179,9 @@ export const configs = new Configs({
 
   showDialogInSidebar: false,
 
+  outOfScreenTabsRenderingPages: 1,
+  renderHiddenTabs: false,
+
   suppressGapFromShownOrHiddenToolbarOnlyOnMouseOperation: true,
   suppressGapFromShownOrHiddenToolbarOnFullScreen: false,
   suppressGapFromShownOrHiddenToolbarOnNewTab: true,
@@ -418,8 +421,6 @@ export const configs = new Configs({
   avoidDiscardedTabToBeActivatedIfPossible: false,
   provressiveHighlightingStep: Number.MAX_SAFE_INTEGER,
   progressievHighlightingInterval: 100,
-  outOfScreenTabsRenderingPages: 1,
-  renderHiddenTabs: false,
   generatedTabElementsPoolLifetimeMsec: 5 * 1000,
   undoMultipleTabsClose: true,
   allowDragNewTabButton: true,
