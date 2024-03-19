@@ -473,7 +473,7 @@
     "message": "标签页可以在您的设备间传输。请点击此按钮为此设备设置一个可识别的名称。"
   },
   "sentTabs_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -485,7 +485,7 @@
     }
   },
   "sentTabs_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabs_notification_message_multiple": {
     "message": "标签页已被发送到 $DEVICE$",
@@ -497,13 +497,13 @@
     }
   },
   "sentTabsToAllDevices_notification_title": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message": {
     "message": "标签页已被发送到所有设备"
   },
   "sentTabsToAllDevices_notification_title_multiple": {
-    "message": "\u200b"
+    "message": "​"
   },
   "sentTabsToAllDevices_notification_message_multiple": {
     "message": "标签页已被发送到所有设备"
@@ -1007,6 +1007,12 @@
   "config_showDialogInSidebar_label": {
     "message": "在侧栏中显示对话框（如果可能的话）"
   },
+  "config_outOfScreenTabsRenderingPages_label": {
+    "message": "预渲染标签页的页面数量 （-1 代表预渲染所有标签页，可以获得更佳的滚动性能，代价是您可能需要在初始化时等待较长时间）: "
+  },
+  "config_renderHiddenTabs_label": {
+    "message": "显示被其它附加组件隐藏的隐藏标签页"
+  },
   "config_context_caption": {
     "message": "上下文菜单"
   },
@@ -1097,11 +1103,13 @@
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": {
     "message": "相同身份的右邻同级项"
   },
+  "config_autoAttachOnContextNewTabCommand_after": {
+  },
   "config_newTabWithOwner_caption": {
-    "message": "打开自已存在标签页的标签页"
+    "message": "标签页（打开自现有标签页）"
   },
   "config_autoAttachOnOpenedWithOwner_before": {
-    "message": "当一个标签页打开自已存在的标签页时，将其打开为"
+    "message": "当从现有标签页打开标签页时，将其打开为"
   },
   "config_autoAttachOnOpenedWithOwner_noControl": {
     "message": "(不进行控制)"
@@ -1124,50 +1132,52 @@
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
     "message": "父标签页的右邻同级项"
   },
+  "config_autoAttachOnOpenedWithOwner_after": {
+  },
   "config_insertNewTabFromFirefoxViewAt_caption": {
-    "message": "Firefox 视图新建子标签页 (将会作为根标签页) 的插入位置"
+    "message": "来自 Firefox View 的新建子标签页（将会作为根标签页）的插入位置"
   },
   "config_insertNewTabFromFirefoxViewAt_noControl": {
     "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）"
   },
   "config_insertNewTabFromFirefoxViewAt_nextToLastRelatedTab": {
-    "message": "紧随最近打开的子项，或者紧随开启页"
+    "message": "紧随最近打开的子项，或者靠近开启页"
   },
   "config_insertNewTabFromFirefoxViewAt_top": {
-    "message": "该标签树的顶部（紧随开启页）"
+    "message": "标签树的顶部（靠近开启页）"
   },
   "config_insertNewTabFromFirefoxViewAt_end": {
-    "message": "该标签树的尾部"
+    "message": "标签树的尾部"
   },
   "config_autoGroupNewTabsFromFirefoxView_label": {
-    "message": "对打开自 Firefox 视图的多个标签页进行自动分组（将会打开一个标题类似于 \"来自 ... 的标签页\" 的新建标签页用来分组）"
+    "message": "对打开自 Firefox View 的多个标签页进行自动分组（将会打开一个标题类似于 \"来自 ... 的标签页\" 的新建标签页用来分组）"
   },
   "config_groupTabTemporaryStateForChildrenOfFirefoxView_label": {
-    "message": "由打开自 Firefox 视图的多个标签页组成的标签组的默认状态:"
+    "message": "这些标签页所对应的分组标签页的默认状态："
   },
   "config_insertNewTabFromPinnedTabAt_caption": {
-    "message": "来自固定标签的新建子标签页的插入位置（将会作为根标签页）"
+    "message": "来自固定标签页的新建子标签页（将会作为根标签页）的插入位置"
   },
   "config_insertNewTabFromPinnedTabAt_noControl": {
     "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）"
   },
   "config_insertNewTabFromPinnedTabAt_nextToLastRelatedTab": {
-    "message": "紧随最近打开的子项，或者紧随开启页"
+    "message": "紧随最近打开的子项，或者靠近开启页"
   },
   "config_insertNewTabFromPinnedTabAt_top": {
-    "message": "该标签树的顶部（紧随开启页）"
+    "message": "标签树的顶部（靠近开启页）"
   },
   "config_insertNewTabFromPinnedTabAt_end": {
-    "message": "该标签树的尾部"
+    "message": "标签树的尾部"
   },
   "config_autoGroupNewTabsFromPinned_label": {
     "message": "对打开自同一个固定标签页的多个标签页进行自动分组（将会打开一个标题类似于 \"来自 ... 的标签页\" 的新建标签页用来分组）"
   },
   "config_groupTabTemporaryStateForChildrenOfPinned_label": {
-    "message": "由打开自同一固定标签页的多个标签页组成的标签组的默认状态:"
+    "message": "这些标签页所对应的分组标签页的默认状态："
   },
   "config_newTab_caption": {
-    "message": "不来自已存在标签页的新建标签页"
+    "message": "新建标签页（不来自现有标签页）"
   },
   "config_newTabButton_caption": {
     "message": "“新建标签页” 按钮的特殊操作"
@@ -1185,7 +1195,7 @@
     "message": "(无)"
   },
   "config_longPressOnNewTabButton_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_showNewTabActionSelector_label": {
     "message": "当鼠标指向 “新键标签页” 按钮时，在其上显示选择器按钮，用以指定新标签页打开位置"
@@ -1218,7 +1228,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnNewTabCommand_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": {
     "message": "当一个新打开的标签页的标题为"
@@ -1227,7 +1237,7 @@
     "message": "或者网址为"
   },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
-    "message": "时，将其当作通过 \"新建空白标签页\" 操作打开（* 您可以通过分隔符 \"|\" 来列出多个值）"
+    "message": "时，将其当作通过 \"新建空白标签页\" 操作打开（ * 您可以通过分隔符 \"|\" 来列出多个值）"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
     "message": "当用中键点击时，将新建空白标签页打开为"
@@ -1251,16 +1261,16 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": {
-    "message": "等同于按住Ctrl后再点击（身份相同的右邻同级项）"
+    "message": "等同于按住 Ctrl 后再点击（身份相同的右邻同级项）"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_middleClickPasteURLOnNewTabButton_label": {
     "message": "用新标签页打开剪贴板中的地址（ * 模拟浏览器中对应于 \"browser.tabs.searchclipboardfor.middleclick\"=\"true\" 的内置行为，您可能需要开启 \"dom.events.asyncClipboard.clipboardItem\"）"
   },
   "config_autoAttachOnNewTabButtonAccelClick_before": {
-    "message": "当按住Ctrl/⌘后再点击时，将新建空白标签页打开为"
+    "message": "当按住 Ctrl/⌘ 后再点击时，将新建空白标签页打开为"
   },
   "config_autoAttachOnNewTabButtonAccelClick_noControl": {
     "message": "（不进行控制）"
@@ -1284,7 +1294,7 @@
     "message": "身份相同的右邻同级项"
   },
   "config_autoAttachOnNewTabButtonAccelClick_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachWithURL_caption": {
     "message": "非空白新建标签页"
@@ -1314,10 +1324,10 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnDuplicated_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_fromExternal_caption": {
-    "message": "对于打开自 Firefox 之外的新建标签页"
+    "message": "对于打开自其它应用的新建标签页"
   },
   "config_autoAttachOnOpenedFromExternal_before": {
     "message": "将其打开为"
@@ -1341,7 +1351,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnOpenedFromExternal_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": {
     "message": "身份："
@@ -1380,7 +1390,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachSameSiteOrphan_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": {
     "message": "身份："
@@ -1395,7 +1405,7 @@
     "message": "继承当前标签页"
   },
   "config_anyOtherTrigger_caption": {
-    "message": "来自其它任意打开方式的标签页"
+    "message": "来自其余任意打开方式的标签页"
   },
   "config_autoAttachOnAnyOtherTrigger_before": {
     "message": "将其打开为"
@@ -1419,7 +1429,7 @@
     "message": "当前标签页的右邻同级项"
   },
   "config_autoAttachOnAnyOtherTrigger_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_autoAttachOnAnyOtherTrigger_caution": {
     "message": "* 请注意：此选项有破坏其它附加组件行为的风险。"
@@ -1443,13 +1453,13 @@
     "message": "标签页自动分组"
   },
   "config_tabBunchesDetectionTimeout_before": {
-    "message": "对于在"
+    "message": "检测在"
   },
   "config_tabBunchesDetectionTimeout_after": {
-    "message": "毫秒内打开自同一书签文件夹的多个标签页进行自动分组（将会打开一个标题类似于 “... 等多项” 的新建标签页用来分组）"
+    "message": "毫秒内打开自同一书签文件夹的多个标签页，然后："
   },
   "config_autoGroupNewTabsFromBookmarks_label": {
-    "message": "打开一个带有类似于 \"... 等多项\" 形式标题的标签页，在其中对这些标签页进行分组"
+    "message": "将它们划分到一个标题类似于 \"... 等多项\" 的分组标签页之下"
   },
   "config_restoreTreeForTabsFromBookmarks_label": {
     "message": "还原标签树的结构"
@@ -1470,7 +1480,7 @@
     "message": "% 的新建标签页在同一书签文件夹内有对应书签项，就将所有新建标签页视作打开自同一书签文件夹"
   },
   "config_autoGroupNewTabsFromOthers_label": {
-    "message": "也对在一定时间内不是以书签项方式打开的多个标签页进行自动分组"
+    "message": "对于在一定时间内不是以书签项方式打开的多个标签页，也进行自动分组"
   },
   "config_tabBunchesDetectionDelayOnNewWindow_before": {
     "message": "但是对于在新建窗口打开后的"
@@ -1488,7 +1498,7 @@
     "message": "在分组标签页内生成标签树结构"
   },
   "config_groupTabTemporaryState_caption": {
-    "message": "每个上下文中分组标签页的默认状态"
+    "message": "下列每种上下文中分组标签页的默认状态"
   },
   "config_groupTabTemporaryState_option_default": {
     "message": "不勾选任何条目"
@@ -1500,13 +1510,13 @@
     "message": "\" 条目"
   },
   "config_groupTabTemporaryStateForNewTabsFromBookmarks_label": {
-    "message": "对于打开自书签项的标签页："
+    "message": "用于对 打开自书签项的标签页 进行分组时："
   },
   "config_groupTabTemporaryStateForNewTabsFromOthers_label": {
-    "message": "对于在一定时间内不是以书签项方式打开的标签页："
+    "message": "用于对 在一定时间内不是以书签项方式打开的标签页 进行分组时："
   },
   "config_groupTabTemporaryStateForOrphanedTabs_label": {
-    "message": "用于替代被关闭的父标签页的打开项："
+    "message": "父标签页被关闭时替代其位置的打开项："
   },
   "config_inheritContextualIdentityToChildTabMode_label": {
     "message": "身份："
@@ -1707,7 +1717,7 @@
     "message": "在确认对话框中列出将要被关闭的标签页"
   },
   "config_insertNewChildAt_caption": {
-    "message": "在不进行控制的情况下，新建子标签页的默认插入位置"
+    "message": "非受控情况下新建子标签页的默认插入位置"
   },
   "config_insertNewChildAt_noControl": {
     "message": "不进行控制（遵循 Firefox 或其它标签页附加组件的决定）"
@@ -1788,7 +1798,7 @@
     "message": "被拖放至父项上的子项的插入位置"
   },
   "config_insertDroppedTabsAt_inherit": {
-    "message": "视作打开自父项的子项"
+    "message": "视作打开自父项的新建子项"
   },
   "config_insertDroppedTabsAt_first": {
     "message": "该标签树的顶部（紧随父项）"
@@ -1851,7 +1861,7 @@
     "message": "用于 “将此标签树添加到书签” 的文件夹名称："
   },
   "config_bookmarkTreeFolderName_after": {
-    "message": "\u200b"
+    "message": "​"
   },
   "config_bookmarkTreeFolderName_description": {
     "message": "可用占位符：%TITLE%（第一个标签页的标题）、%URL%（第一个标签页的网址）、%YEAR%（年，四位数）、%MONTH%（月，两位数）、%DATE%（日，两位数）、%HOURS% (时，两位数)、%MINUTES% (分，两位数)、%SECONDS% (秒，两位数)、%MILLISECONDS% (毫秒，三位数)、%GROUP% (如果是标签页分组，则为其第一个标签页的标题 - 如果不是，则为空白)、%ANY(值 1, 值 2, ...)% (给定参数列表中的第一个有效值)"
@@ -2106,13 +2116,15 @@
     "message": "允许 显示/隐藏 单个标签页（ * 您必须在运行测试前取消勾选此项然后再重新勾选，以确保权限被正确授予。）"
   },
   "config_requestPermissions_fallbackToToolbarButton_title": {
-    "message": "点击 “树状标签页” 的工具栏按钮"
+    "message": "点击 \"Tree Style Tab\" 的工具栏按钮"
   },
   "config_requestPermissions_fallbackToToolbarButton_message": {
     "message": "由于 Firefox 的 bug ，您无法在该画面内请求权限。请点击 “树状标签页” 的工具栏按钮以授予权限。"
   },
   "config_all_caption": {
     "message": "所有配置"
+  },
+  "config_terms_delimiter": {
   },
   "tabContextMenu_newTab_label": {
     "message": "新建标签页(&W)"
