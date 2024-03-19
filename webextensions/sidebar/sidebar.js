@@ -409,7 +409,7 @@ function applyUserStyleRules() {
     if (!rule.selectorText)
       return;
 
-    log ('updating selector: ', rule.selectorText);
+    log('updating selector: ', rule.selectorText);
     rule.selectorText = CssSelectorParser.splitSelectors(rule.selectorText)
       .map(selector => {
         const parts = CssSelectorParser.splitSelectorParts(selector);
@@ -417,7 +417,7 @@ function applyUserStyleRules() {
         return parts.join(' ');
       })
       .join(', ');
-    log (' => ', rule.selectorText);
+    log(' => ', rule.selectorText);
   });
 
   Size.updateTabs();
