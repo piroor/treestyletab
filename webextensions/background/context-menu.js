@@ -344,6 +344,7 @@ function reserveToRefreshItems() {
 }
 
 function updateItem(id, params) {
+  log('updateItem ', id, params);
   browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
   TabContextMenu.onMessageExternal({
     type:   TSTAPI.kCONTEXT_MENU_UPDATE,
@@ -352,6 +353,7 @@ function updateItem(id, params) {
 }
 
 function updateItemsVisibility(items, { forceVisible = null, multiselected = false, hasUnmutedTab = false, hasUnmutedDescendant = false, hasAutoplayBlockedTab = false, hasAutoplayBlockedDescendant = false, sticky = false } = {}) {
+  log('updateItemsVisibility ', items, { forceVisible, multiselected, hasUnmutedTab, hasUnmutedDescendant, hasAutoplayBlockedTab, hasAutoplayBlockedDescendant, sticky });
   let updated = false;
   let visibleItemsCount = 0;
   let visibleNormalItemsCount = 0;
@@ -370,6 +372,12 @@ function updateItemsVisibility(items, { forceVisible = null, multiselected = fal
     else {
       const title = Commands.getMenuItemTitle(item, { multiselected, hasUnmutedTab, hasUnmutedDescendant, sticky });
       let visible = !(item.configKey in configs) || configs[item.configKey] || false;
+      log('checking ', item.id, {
+        config: visible,
+        multiselected: item.hideOnMultiselected && multiselected,
+        lastVisible: item.lastVisible,
+        forceVisible,
+      });
       if (forceVisible !== null && forceVisible !== undefined)
         visible = forceVisible;
       if ((item.hideOnMultiselected && multiselected) ||
