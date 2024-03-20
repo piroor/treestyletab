@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import { SequenceMatcher } from '/extlib/diff.js';
+
 import {
   log as internalLogger,
   dumpTab,
@@ -78,7 +80,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
     owner, cachedSignature, cache
   });
-  const signatureGeneratedFromCache = signatureFromTabsCache(cache.tabs).join('\n');
+  const signatureGeneratedFromCache = getWindowSignature(cache.tabs).join('\n');
   if (cache &&
       cache.tabs &&
       cachedSignature &&
@@ -102,23 +104,24 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: matching actual signature of got cache');
-  const signatureMatched = matcheSignatures({
+  const signatureMatchResult = matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: verify cache`, {
-    cache, actualSignature, cachedSignature, signatureMatched
+    cache, actualSignature, cachedSignature,
+    ...signatureMatchResult,
   });
   if (!cache ||
       cache.version != kCONTENTS_VERSION ||
-      !signatureMatched) {
+      !signatureMatchResult.matched) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
     TabsInternalOperation.clearCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: actual signature failed.');
     return false;
   }
   MetricsData.add('restoreWindowFromEffectiveWindowCache: validity check: actual signature passed.');
-  cache.offset = actualSignature.length - cachedSignature.length;
+  cache.offset = signatureMatchResult.offset;
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
@@ -142,8 +145,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 }
 
 function getWindowSignature(tabs) {
-  const tabIds = tabs.map(tab => tab.id);
-  return tabs.map(tab => `${configs.looseCacheTreeSignature ? -1 : tab.openerTabId ? tabIds.indexOf(tab.$TST && tab.$TST.parentId || tab.openerTabId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+  return tabs.map(tab => `${tab.cookieStoreId},${tab.incognito},${tab.pinned},${tab.url}`);
 }
 
 function trimSignature(signature, ignoreCount) {
@@ -159,16 +161,21 @@ function trimTabsCache(cache, ignoreCount) {
 }
 
 function matcheSignatures(signatures) {
-  return (
-    signatures.actual &&
-    signatures.cached &&
-    signatures.actual.slice(-signatures.cached.length).join('\n') == signatures.cached.join('\n')
-  );
-}
-
-function signatureFromTabsCache(cachedTabs) {
-  const cachedTabIds = cachedTabs.map(tab => tab.id);
-  return cachedTabs.map(tab => `${configs.looseCacheTreeSignature ? -1 : tab.$TST.parentId ? cachedTabIds.indexOf(tab.$TST.parentId) : -1 },${tab.cookieStoreId},${tab.incognito},${tab.pinned}`);
+  const operations = (new SequenceMatcher(signatures.cached, signatures.actual)).operations();
+  log('matcheSignatures: operations ', operations);
+  let matched = false;
+  let offset  = 0;
+  for (const operation of operations) {
+    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+    if (tag == 'equal' &&
+        fromEnd - fromStart == signatures.cached.length) {
+      matched = true;
+      break;
+    }
+    offset += toEnd - toStart;
+  }
+  log('matcheSignatures: ', { matched, offset });
+  return { matched, offset };
 }
 
 
