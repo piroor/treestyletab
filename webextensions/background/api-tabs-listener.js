@@ -532,9 +532,9 @@ async function onNewTabTracked(tab, info) {
     if (restored) {
       win.restoredCount = win.restoredCount || 0;
       win.restoredCount++;
-      if (!win.allTabsRestored) {
+      if (!win.promisedAllTabsRestored) {
         log(`onNewTabTracked(${dumpTab(tab)}): Maybe starting to restore window`);
-        win.allTabsRestored = (new Promise((resolve, _aReject) => {
+        win.promisedAllTabsRestored = (new Promise((resolve, _aReject) => {
           let lastCount = win.restoredCount;
           const timer = setInterval(() => {
             if (lastCount != win.restoredCount) {
@@ -542,7 +542,7 @@ async function onNewTabTracked(tab, info) {
               return;
             }
             clearTimeout(timer);
-            win.allTabsRestored = null;
+            win.promisedAllTabsRestored = null;
             win.restoredCount   = 0;
             log('All tabs are restored');
             resolve(lastCount);
@@ -560,7 +560,7 @@ async function onNewTabTracked(tab, info) {
         tabId:    tab.id,
         windowId: tab.windowId
       });
-      await win.allTabsRestored;
+      await win.promisedAllTabsRestored;
       log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
     }
     if (!TabsStore.ensureLivingTab(tab)) {

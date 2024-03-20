@@ -398,7 +398,7 @@ export async function reserveToCacheTree(windowId) {
   if (Tab.needToWaitTracked(windowId))
     await Tab.waitUntilTrackedAll(windowId);
 
-  if (win.allTabsRestored)
+  if (win.promisedAllTabsRestored) // not restored yet
     return;
 
   log('reserveToCacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
@@ -427,7 +427,7 @@ async function cacheTree(windowId) {
       !configs.useCachedTree)
     return;
   const signature = getWindowSignature(Tab.getAllTabs(windowId));
-  if (win.allTabsRestored)
+  if (win.promisedAllTabsRestored) // not restored yet
     return;
   //log('save cache for ', windowId);
   win.lastWindowCacheOwner = getWindowCacheOwner(windowId);
