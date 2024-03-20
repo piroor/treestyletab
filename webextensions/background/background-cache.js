@@ -408,15 +408,24 @@ export async function reserveToCacheTree(windowId, trigger) {
   if (win.promisedAllTabsRestored) // not restored yet
     return;
 
-  log('reserveToCacheTree for window ', windowId, trigger/*{ stack: configs.debug && new Error().stack }*/);
+  if (!trigger && configs.debug)
+    trigger = new Error().stack;
+
+  log('reserveToCacheTree for window ', windowId, trigger);
   TabsInternalOperation.clearCache(win.lastWindowCacheOwner);
+
+  if (trigger)
+    reserveToCacheTree.triggers.add(trigger);
 
   if (win.waitingToCacheTree)
     clearTimeout(win.waitingToCacheTree);
   win.waitingToCacheTree = setTimeout(() => {
-    cacheTree(windowId);
+    const triggers = [...reserveToCacheTree.triggers];
+    reserveToCacheTree.triggers.clear();
+    cacheTree(windowId, triggers);
   }, 500);
 }
+reserveToCacheTree.triggers = new Set();
 
 function cancelReservedCacheTree(windowId) {
   const win = TabsStore.windows.get(windowId);
@@ -426,7 +435,7 @@ function cancelReservedCacheTree(windowId) {
   }
 }
 
-async function cacheTree(windowId) {
+async function cacheTree(windowId, triggers) {
   if (Tab.needToWaitTracked(windowId))
     await Tab.waitUntilTrackedAll(windowId);
   const win = TabsStore.windows.get(windowId);
@@ -440,7 +449,7 @@ async function cacheTree(windowId) {
   win.lastWindowCacheOwner = getWindowCacheOwner(windowId);
   if (!win.lastWindowCacheOwner)
     return;
-  log('cacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
+  log('cacheTree for window ', windowId, triggers/*{ stack: configs.debug && new Error().stack }*/);
   updateWindowCache(win.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         kCONTENTS_VERSION,
     tabs:            TabsStore.windows.get(windowId).export(true),
