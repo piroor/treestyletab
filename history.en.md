@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 4.0.10 (2024.3.21)
+   * Don't shift tree structure after a restart for a major update of Firefox (See also: [how to restore correct tree from shifted tree](https://github.com/piroor/treestyletab/issues/3504#issuecomment-2010003298))
+   * Show context menu items enabled by the option correctly.
  - 4.0.9 (2024.3.20)
    * Middle-click on the "New Tab" button opens a blank new tab if the clipboard is not accessible due to some reasons.
    * Fix incompatibility with other addons closing initial tabs while TST is initializing (ex. Tab Session Manager and Firefox Multi-Account Containers).
