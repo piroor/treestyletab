@@ -409,7 +409,7 @@ export async function reserveToCacheTree(windowId) {
     return;
 
   log('reserveToCacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
-  TabsInternalOperation.clearCache(windowId.lastWindowCacheOwner);
+  TabsInternalOperation.clearCache(win.lastWindowCacheOwner);
 
   if (win.waitingToCacheTree)
     clearTimeout(win.waitingToCacheTree);
