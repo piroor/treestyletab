@@ -665,14 +665,18 @@ async function onTabContextMenuShown(info, tab) {
       continue;
     }
 
-    if (newVisible == !!item.visible &&
-        newEnabled == !!item.enabled)
+    if ((newVisible === undefined ||
+         newVisible == !!item.visible) &&
+        (newEnabled === undefined ||
+         newEnabled == !!item.enabled))
       continue;
 
     const params = {};
-    if (newVisible != !!item.visible)
+    if (newVisible !== undefined &&
+        newVisible != !!item.visible)
       params.visible = item.visible = !!newVisible;
-    if (newEnabled != !!item.enabled)
+    if (newEnabled !== undefined &&
+        newEnabled != !!item.enabled)
       params.enabled = item.enabled = !!newEnabled;
 
     updateItem(item.id, params);
