@@ -141,7 +141,7 @@ export async function init() {
 
   for (const windowId of restoredFromCache.keys()) {
     if (!restoredFromCache[windowId])
-      BackgroundCache.reserveToCacheTree(windowId);
+      BackgroundCache.reserveToCacheTree(windowId, 'initialize');
     TabsUpdate.completeLoadingTabs(windowId);
   }
 

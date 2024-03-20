@@ -389,7 +389,7 @@ function getWindowCacheOwner(windowId) {
   };
 }
 
-export async function reserveToCacheTree(windowId) {
+export async function reserveToCacheTree(windowId, trigger) {
   if (!mActivated ||
       !configs.useCachedTree)
     return;
@@ -408,7 +408,7 @@ export async function reserveToCacheTree(windowId) {
   if (win.promisedAllTabsRestored) // not restored yet
     return;
 
-  log('reserveToCacheTree for window ', windowId, { stack: configs.debug && new Error().stack });
+  log('reserveToCacheTree for window ', windowId, trigger/*{ stack: configs.debug && new Error().stack }*/);
   TabsInternalOperation.clearCache(win.lastWindowCacheOwner);
 
   if (win.waitingToCacheTree)
@@ -458,7 +458,7 @@ Tab.onCreated.addListener((tab, _info = {}) => {
     if (win.lastWindowCacheOwner)
       TabsInternalOperation.clearCache(win.lastWindowCacheOwner);
   }
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'tab created');
 });
 
 // Tree restoration for "Restore Previous Session"
@@ -495,18 +495,20 @@ Tab.onRemoved.addListener((tab, info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToCacheTree(info.windowId);
+    reserveToCacheTree(info.windowId, 'tab removed');
   });
 });
 
 Tab.onMoved.addListener((tab, info) => {
   if (info.fromIndex == 0) // the tab is not the cache owner anymore
     TabsInternalOperation.clearCache(tab);
-  reserveToCacheTree(info.windowId);
+  reserveToCacheTree(info.windowId, 'tab moved');
 });
 
-Tab.onUpdated.addListener((tab, _info) => {
+Tab.onUpdated.addListener((tab, info) => {
   markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  if ('url' in info)
+    reserveToCacheTree(tab.windowId, 'tab updated');
 });
 
 Tab.onStateChanged.addListener((tab, state, _has) => {
@@ -515,14 +517,14 @@ Tab.onStateChanged.addListener((tab, state, _has) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(tab => {
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'subtree collapsed/expanded');
 });
 
 Tree.onAttached.addListener((tab, _info) => {
   wait(0).then(() => {
     // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
     // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToCacheTree(tab.windowId);
+    reserveToCacheTree(tab.windowId, 'tab attached to tree');
   });
 });
 
@@ -531,26 +533,26 @@ Tree.onDetached.addListener((tab, _info) => {
   wait(0).then(() => {
     // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
     // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToCacheTree(tab.windowId);
+    reserveToCacheTree(tab.windowId, 'tab detached from tree');
   });
 });
 
 Tab.onPinned.addListener(tab => {
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'tab pinned');
 });
 
 Tab.onUnpinned.addListener(tab => {
   if (tab.$TST.previousTab) // the tab was the cache owner
     TabsInternalOperation.clearCache(tab);
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'tab unpinned');
 });
 
 Tab.onShown.addListener(tab => {
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'tab shown');
 });
 
 Tab.onHidden.addListener(tab => {
-  reserveToCacheTree(tab.windowId);
+  reserveToCacheTree(tab.windowId, 'tab hidden');
 });
 
 browser.windows.onRemoved.addListener(async windowId => {
@@ -578,7 +580,7 @@ function onConfigChange(key) {
         for (const win of windows) {
           const owner = win.tabs[win.tabs.length - 1];
           if (configs[key]) {
-            reserveToCacheTree(win.id);
+            reserveToCacheTree(win.id, 'config change');
           }
           else {
             TabsInternalOperation.clearCache(owner);
