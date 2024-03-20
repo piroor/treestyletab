@@ -346,6 +346,8 @@ function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
       setTimeout(() => {
         const triggerUpdates = updatingMetadata.get('reservedUpdateRelatedGroupTabTriggeredUpdates')
         updatingMetadata.delete('reservedUpdateRelatedGroupTabTriggeredUpdates');
+        if (!triggerUpdates)
+          return;
         for (const updatingTabs of triggerUpdates) {
           updatingTabs.delete(updatingTab.id);
         }
