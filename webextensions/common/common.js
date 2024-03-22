@@ -61,6 +61,7 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   notifiedFeaturesVersion
   optionsExpandedGroups
   optionsExpandedSections
+  outOfScreenTabsRenderingPages
   sidebarPosition
   sidebarVirtuallyClosedWindows
   sidebarVirtuallyOpenedWindows
