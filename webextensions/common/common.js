@@ -520,6 +520,7 @@ export const configs = new Configs({
   runTestsParameters: '',
   syncEnabled: true,
   APIEnabled: true,
+  cacheAPITreeItems: false,
   logTimestamp: true,
   loggingQueries: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': false,/"

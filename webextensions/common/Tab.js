@@ -1987,10 +1987,11 @@ export default class Tab {
   async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
     const permissionsKey = [...permissions].sort().join(',');
     if (!light &&
+        configs.cacheAPITreeItems &&
         this.$exportedForAPIWithPermissions.has(permissionsKey))
       return this.$exportedForAPIWithPermissions.get(permissionsKey);
 
-    let exportedTab = this.$exportedForAPI;
+    let exportedTab = configs.cacheAPITreeItems ? this.$exportedForAPI : null;
     let favIconUrl;
     if (!exportedTab) {
       const [effectiveFavIconUrl, children] = await Promise.all([
@@ -2017,7 +2018,7 @@ export default class Tab {
         cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
 
       const tabStates = this.tab.$TST.states;
-      exportedTab = this.$exportedForAPI = {
+      exportedTab = {
         id:             this.tab.id,
         windowId:       this.tab.windowId,
         states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
@@ -2026,6 +2027,8 @@ export default class Tab {
         ancestorTabIds: this.tab.$TST.ancestorIds,
         bundledTabId:   this.tab.$TST.bundledTabId,
       };
+      if (configs.cacheAPITreeItems)
+        this.$exportedForAPI = exportedTab;
     }
 
     if (light)
@@ -2081,7 +2084,8 @@ export default class Tab {
         fullExportedTab[property] = this.tab[property];
     }
 
-    this.$exportedForAPIWithPermissions.set(permissionsKey, fullExportedTab)
+    if (configs.cacheAPITreeItems)
+      this.$exportedForAPIWithPermissions.set(permissionsKey, fullExportedTab)
     return fullExportedTab;
   }
 
