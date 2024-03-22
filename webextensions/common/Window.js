@@ -222,6 +222,7 @@ export default class Window {
       log(`tab ${dumpTab(tab)} is newly tracked under the window ${this.id}: `, order);
     }
     TabsStore.updateIndexesForTab(tab);
+    tab.$TST.invalidateCache();
     return tab;
   }
 

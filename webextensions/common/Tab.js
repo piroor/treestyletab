@@ -2132,18 +2132,19 @@ export default class Tab {
   /* element utilities */
 
   invalidateElement(targets) {
-    if (this.element && this.element.invalidate)
+    if (this.element?.invalidate)
       this.element.invalidate(targets);
   }
 
   updateElement(targets) {
-    if (this.element && this.element.update)
+    if (this.element?.update)
       this.element.update(targets);
   }
 
   set favIconUrl(url) {
     if (this.element && 'favIconUrl' in this.element)
       this.element.favIconUrl = url;
+    this.invalidateCache();
   }
 }
 

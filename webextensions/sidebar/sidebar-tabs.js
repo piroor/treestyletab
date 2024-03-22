@@ -128,9 +128,8 @@ export function updateAll() {
   for (const tab of Tab.getAllTabs(TabsStore.getCurrentWindowId(), { iterator: true, reverse: true })) {
     tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
     tab.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
-    if (!tab.$TST.collapsed &&
-        tab.$TST.element)
-      tab.$TST.element.updateOverflow();
+    if (!tab.$TST.collapsed)
+      tab.$TST.element?.updateOverflow();
   }
 }
 
@@ -208,6 +207,7 @@ async function syncTabsOrder() {
   for (const tab of trackedWindow.getOrderedTabs()) {
     tab.index = count++;
     tab.reindexedBy = `syncTabsOrder (${tab.index})`;
+    tab.$TST.invalidateCache();
   }
 }
 
@@ -1086,6 +1086,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.label = lastMessage.label;
       if (tab.$TST.element)
         tab.$TST.element.label = lastMessage.label;
+      tab.$TST.invalidateCache();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
@@ -1140,6 +1141,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
+      tab.$TST.invalidateCache();
       if (lastMessage.message.type == Constants.kCOMMAND_NOTIFY_TAB_PINNED) {
         tab.pinned = true;
         TabsStore.removeUnpinnedTab(tab);
@@ -1167,6 +1169,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
+      tab.$TST.invalidateCache();
       if (lastMessage.message.type == Constants.kCOMMAND_NOTIFY_TAB_HIDDEN) {
         tab.hidden = true;
         TabsStore.removeVisibleTab(tab);
@@ -1194,6 +1197,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
+      tab.$TST.invalidateCache();
       tab.$TST.invalidateElement(TabInvalidationTarget.CloseBox);
     }; break;
 
@@ -1211,10 +1215,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.addVisibleTab(tab);
       TabsStore.addExpandedTab(tab);
       reserveToUpdateLoadingState();
-      if (tab.$TST.element) {
-        tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-        tab.$TST.element.updateOverflow();
-      }
+      tab.$TST.invalidateCache();
+      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
+      tab.$TST.element?.updateOverflow();
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_TO_WINDOW: {
@@ -1222,6 +1225,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       const tab = Tab.get(message.tabId);
       if (!tab)
         return;
+      tab.$TST.invalidateCache();
       if (tab.active)
         TabsInternalOperation.setTabActive(tab); // to clear "active" state of other tabs
     }; break;
