@@ -203,7 +203,7 @@ export default class Window {
       }
       const parent = tab.$TST.parent;
       if (parent) {
-        parent.$TST.sortChildren();
+        parent.$TST.sortAndInvalidateChildren();
         parent.$TST.invalidateCachedAncestors();
       }
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, prevState, index, '=>', tab.reindexedBy, order.join(', '));

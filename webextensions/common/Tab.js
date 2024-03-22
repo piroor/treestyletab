@@ -956,6 +956,7 @@ export default class Tab {
     for (const child of this.children) {
       child.$TST.invalidateCachedAncestors();
     }
+    this.invalidateCache();
   }
 
   get rootTab() {
@@ -1016,7 +1017,7 @@ export default class Tab {
 
     const oldChildren = this.children;
     this.childIds = newChildIds;
-    this.sortChildren();
+    this.sortAndInvalidateChildren();
     if (this.childIds.length > 0) {
       this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
       if (this.isSubtreeCollapsable)
@@ -1054,7 +1055,7 @@ export default class Tab {
     return children.length > 0 ? children[children.length - 1] : null ;
   }
 
-  sortChildren() {
+  sortAndInvalidateChildren() {
     // Tab.get(tabId) calls into TabsStore.tabs.get(tabId), which is just a
     // Map. This is acceptable to repeat in order to avoid two array copies,
     // especially on larger tab sets.
@@ -1090,6 +1091,7 @@ export default class Tab {
     const parent = this.parent;
     if (parent)
       parent.$TST.invalidateCachedDescendants();
+    this.invalidateCache();
   }
 
   get lastDescendant() {
@@ -2100,7 +2102,6 @@ export default class Tab {
   invalidateCache() {
     this.$exportedForAPI = null;
     this.$exportedForAPIWithPermissions.clear();
-    //this.parent?.$TST.invalidateCache();
   }
 
   applyStatesToElement() {
