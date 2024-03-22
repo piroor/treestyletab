@@ -161,6 +161,8 @@ export default class Tab {
 
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.delayedInheritSoundStateFromChildren = null;
+
+    this.invalidateCache();
   }
 
   destroy() {
@@ -1517,8 +1519,10 @@ export default class Tab {
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
-    if (modified)
+    if (modified) {
+      this.invalidateCache();
       Tab.onStateChanged.dispatch(this.tab, state, true);
+    }
   }
 
   async removeState(state, { permanently, toTab, broadcast } = {}) {
@@ -1690,8 +1694,10 @@ export default class Tab {
         await browser.sessions.setTabValue(this.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
-    if (modified)
+    if (modified) {
+      this.invalidateCache();
       Tab.onStateChanged.dispatch(this.tab, state, false);
+    }
   }
 
   async getPermanentStates() {
@@ -1850,6 +1856,7 @@ export default class Tab {
     if (this.element)
       this.element.setAttribute(attribute, value);
     this.attributes[attribute] = value;
+    this.invalidateCache();
   }
 
   getAttribute(attribute) {
@@ -1860,6 +1867,7 @@ export default class Tab {
     if (this.element)
       this.element.removeAttribute(attribute);
     delete this.attributes[attribute];
+    this.invalidateCache();
   }
 
 
@@ -1917,7 +1925,8 @@ export default class Tab {
     const sanitized = {
       ...this.tab,
       '$possibleInitialUrl': null,
-      '$TST': null
+      '$TST': null,
+      '$exportedForAPI': null,
     };
     delete sanitized.$TST;
     return sanitized;
@@ -1972,11 +1981,15 @@ export default class Tab {
   // bacause instances of the class will be very short-life and increases RAM usage on
   // massive tabs case.
   async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
+    let exportedTab = this.$exportedForAPI;
+    let favIconUrl;
+    if (!exportedTab) {
     const [effectiveFavIconUrl, children] = await Promise.all([
       (light ||
-       (!permissions.has(kPERMISSION_TABS) &&
-        (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
-         !this.tab.active))) ?
+       (!permissions ||
+        (!permissions.has(kPERMISSION_TABS) &&
+         (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
+          !this.tab.active)))) ?
         null :
         (this.tab.id in cache.effectiveFavIconUrls) ?
           cache.effectiveFavIconUrls[this.tab.id] :
@@ -1989,12 +2002,13 @@ export default class Tab {
         interval
       ),
     ]);
+    favIconUrl = effectiveFavIconUrl;
 
     if (!(this.tab.id in cache.effectiveFavIconUrls))
       cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
 
     const tabStates = this.tab.$TST.states;
-    const exportedTab = {
+    exportedTab = this.$exportedForAPI = {
       id:             this.tab.id,
       windowId:       this.tab.windowId,
       states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
@@ -2003,8 +2017,12 @@ export default class Tab {
       ancestorTabIds: this.tab.$TST.ancestorIds,
       bundledTabId:   this.tab.$TST.bundledTabId,
     };
+    }
+
     if (light)
       return exportedTab;
+
+    const fullExportedTab = { ...exportedTab };
 
     const allowedProperties = new Set([
       // basic tabs.Tab properties
@@ -2042,18 +2060,18 @@ export default class Tab {
       allowedProperties.add('favIconUrl');
       allowedProperties.add('title');
       allowedProperties.add('url');
-      exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
+      fullExportedTab.effectiveFavIconUrl = favIconUrl;
     }
     if (permissions.has(kPERMISSION_COOKIES)) {
       allowedProperties.add('cookieStoreId');
-      exportedTab.cookieStoreName = this.tab.$TST.cookieStoreName;
+      fullExportedTab.cookieStoreName = this.tab.$TST.cookieStoreName;
     }
 
     for (const property of allowedProperties) {
       if (property in this.tab)
-        exportedTab[property] = this.tab[property];
+        fullExportedTab[property] = this.tab[property];
     }
-    return exportedTab;
+    return fullExportedTab;
   }
   async doProgressively(tabs, task, interval) {
     interval = Math.max(0, interval);
@@ -2067,6 +2085,9 @@ export default class Tab {
       }
     }
     return Promise.all(results);
+  }
+  invalidateCache() {
+    this.$exportedForAPI = null;
   }
 
   applyStatesToElement() {

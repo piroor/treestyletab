@@ -369,6 +369,8 @@ export function updateTab(tab, newState = {}, options = {}) {
     ...(newState && newState.$TST && newState.$TST.sanitized || newState),
   };
   flushBufferedUpdates();
+
+  tab.$TST.invalidateCache();
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
