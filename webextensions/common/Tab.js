@@ -1985,7 +1985,7 @@ export default class Tab {
             TabFavIconHelper.getLastEffectiveFavIconURL(this.tab).catch(ApiTabs.handleMissingTabError),
       this.doProgressively(
         this.tab.$TST.children,
-        child => this.exportForAPIInternal(child, { addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
+        child => child.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
         interval
       ),
     ]);

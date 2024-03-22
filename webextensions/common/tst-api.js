@@ -301,7 +301,7 @@ export async function exportTab(sourceTab, { addonId, light, isContextTab, inter
   // The promise is cached here instead of the result,
   // to avoid cache miss caused by concurrent call.
   if (!(cacheKey in cache.tabs)) {
-    cache.tabs[cacheKey] = sourceTab.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey });
+    cache.tabs[cacheKey] = await sourceTab.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey });
   }
   return cache.tabs[cacheKey];
 }
