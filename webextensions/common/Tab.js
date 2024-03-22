@@ -1984,39 +1984,39 @@ export default class Tab {
     let exportedTab = this.$exportedForAPI;
     let favIconUrl;
     if (!exportedTab) {
-    const [effectiveFavIconUrl, children] = await Promise.all([
-      (light ||
-       (!permissions ||
-        (!permissions.has(kPERMISSION_TABS) &&
-         (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
-          !this.tab.active)))) ?
-        null :
-        (this.tab.id in cache.effectiveFavIconUrls) ?
-          cache.effectiveFavIconUrls[this.tab.id] :
-          (this.tab.favIconUrl && this.tab.favIconUrl.startsWith('data:')) ?
-            this.tab.favIconUrl :
-            TabFavIconHelper.getLastEffectiveFavIconURL(this.tab).catch(ApiTabs.handleMissingTabError),
-      this.doProgressively(
-        this.tab.$TST.children,
-        child => child.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
-        interval
-      ),
-    ]);
-    favIconUrl = effectiveFavIconUrl;
+      const [effectiveFavIconUrl, children] = await Promise.all([
+        (light ||
+         (!permissions ||
+          (!permissions.has(kPERMISSION_TABS) &&
+           (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
+            !this.tab.active)))) ?
+          null :
+          (this.tab.id in cache.effectiveFavIconUrls) ?
+            cache.effectiveFavIconUrls[this.tab.id] :
+            (this.tab.favIconUrl && this.tab.favIconUrl.startsWith('data:')) ?
+              this.tab.favIconUrl :
+              TabFavIconHelper.getLastEffectiveFavIconURL(this.tab).catch(ApiTabs.handleMissingTabError),
+        this.doProgressively(
+          this.tab.$TST.children,
+          child => child.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
+          interval
+        ),
+      ]);
+      favIconUrl = effectiveFavIconUrl;
 
-    if (!(this.tab.id in cache.effectiveFavIconUrls))
-      cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
+      if (!(this.tab.id in cache.effectiveFavIconUrls))
+        cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
 
-    const tabStates = this.tab.$TST.states;
-    exportedTab = this.$exportedForAPI = {
-      id:             this.tab.id,
-      windowId:       this.tab.windowId,
-      states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
-      indent:         parseInt(this.tab.$TST.getAttribute(Constants.kLEVEL) || 0),
-      children,
-      ancestorTabIds: this.tab.$TST.ancestorIds,
-      bundledTabId:   this.tab.$TST.bundledTabId,
-    };
+      const tabStates = this.tab.$TST.states;
+      exportedTab = this.$exportedForAPI = {
+        id:             this.tab.id,
+        windowId:       this.tab.windowId,
+        states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
+        indent:         parseInt(this.tab.$TST.getAttribute(Constants.kLEVEL) || 0),
+        children,
+        ancestorTabIds: this.tab.$TST.ancestorIds,
+        bundledTabId:   this.tab.$TST.bundledTabId,
+      };
     }
 
     if (light)
