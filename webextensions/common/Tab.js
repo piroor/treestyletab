@@ -6,6 +6,7 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,
@@ -17,6 +18,7 @@ import {
   isNewTabCommandTab,
   isFirefoxViewTab,
   configs,
+  wait,
 } from './common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -35,6 +37,20 @@ function log(...args) {
 function successorTabLog(...args) {
   internalLogger('background/successor-tab', ...args);
 }
+
+
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+export const kPERMISSION_ACTIVE_TAB = 'activeTab';
+export const kPERMISSION_TABS       = 'tabs';
+export const kPERMISSION_COOKIES    = 'cookies';
+export const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
+export const kPERMISSIONS_ALL = new Set([
+  kPERMISSION_TABS,
+  kPERMISSION_COOKIES,
+  kPERMISSION_INCOGNITO
+]);
+
 
 const mOpenedResolvers            = new Map();
 
@@ -1951,6 +1967,107 @@ export default class Tab {
     TabsStore.updateIndexesForTab(this.tab);
   }
 
+
+  // This function is complex a little, but we should not make a custom class for this purpose,
+  // bacause instances of the class will be very short-life and increases RAM usage on
+  // massive tabs case.
+  async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
+    const [effectiveFavIconUrl, children] = await Promise.all([
+      (light ||
+       (!permissions.has(kPERMISSION_TABS) &&
+        (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
+         !this.tab.active))) ?
+        null :
+        (this.tab.id in cache.effectiveFavIconUrls) ?
+          cache.effectiveFavIconUrls[this.tab.id] :
+          (this.tab.favIconUrl && this.tab.favIconUrl.startsWith('data:')) ?
+            this.tab.favIconUrl :
+            TabFavIconHelper.getLastEffectiveFavIconURL(this.tab).catch(ApiTabs.handleMissingTabError),
+      this.doProgressively(
+        this.tab.$TST.children,
+        child => this.exportForAPIInternal(child, { addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
+        interval
+      ),
+    ]);
+
+    if (!(this.tab.id in cache.effectiveFavIconUrls))
+      cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
+
+    const tabStates = this.tab.$TST.states;
+    const exportedTab = {
+      id:             this.tab.id,
+      windowId:       this.tab.windowId,
+      states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
+      indent:         parseInt(this.tab.$TST.getAttribute(Constants.kLEVEL) || 0),
+      children,
+      ancestorTabIds: this.tab.$TST.ancestorIds,
+      bundledTabId:   this.tab.$TST.bundledTabId,
+    };
+    if (light)
+      return exportedTab;
+
+    const allowedProperties = new Set([
+      // basic tabs.Tab properties
+      'active',
+      'attention',
+      'audible',
+      'autoDiscardable',
+      'discarded',
+      'height',
+      'hidden',
+      'highlighted',
+      //'id',
+      'incognito',
+      'index',
+      'isArticle',
+      'isInReaderMode',
+      'lastAccessed',
+      'mutedInfo',
+      'openerTabId',
+      'pinned',
+      'selected',
+      'sessionId',
+      'sharingState',
+      'status',
+      'successorId',
+      'width',
+      //'windowId',
+    ]);
+
+    if (permissions.has(kPERMISSION_TABS) ||
+        (permissions.has(kPERMISSION_ACTIVE_TAB) &&
+         (this.tab.active ||
+          (this.tab == this.tab && this.isContextTab)))) {
+      // specially allowed with "tabs" or "activeTab" permission
+      allowedProperties.add('favIconUrl');
+      allowedProperties.add('title');
+      allowedProperties.add('url');
+      exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
+    }
+    if (permissions.has(kPERMISSION_COOKIES)) {
+      allowedProperties.add('cookieStoreId');
+      exportedTab.cookieStoreName = this.tab.$TST.cookieStoreName;
+    }
+
+    for (const property of allowedProperties) {
+      if (property in this.tab)
+        exportedTab[property] = this.tab[property];
+    }
+    return exportedTab;
+  }
+  async doProgressively(tabs, task, interval) {
+    interval = Math.max(0, interval);
+    let lastStartAt = Date.now();
+    const results = [];
+    for (const tab of tabs) {
+      results.push(task(tab));
+      if (interval && (Date.now() - lastStartAt >= interval)) {
+        await wait(50);
+        lastStartAt = Date.now();
+      }
+    }
+    return Promise.all(results);
+  }
 
   applyStatesToElement() {
     if (!this.element)

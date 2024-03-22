@@ -27,7 +27,6 @@
 'use strict';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
-import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,
@@ -40,7 +39,11 @@ import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
 import * as TabsStore from './tabs-store.js';
 
-import Tab from './Tab.js';
+import {
+  default as Tab,
+  kPERMISSION_INCOGNITO,
+  kPERMISSIONS_ALL,
+} from './Tab.js';
 
 function log(...args) {
   internalLogger('common/tst-api', ...args);
@@ -253,18 +256,6 @@ export const kNEWTAB_CONTEXT_WEBSITE_SAME_TO_ACTIVE_TAB = 'website-same-to-activ
 export const kNEWTAB_CONTEXT_FROM_ABOUT_ADDONS          = 'from-about-addons';
 export const kNEWTAB_CONTEXT_UNKNOWN                    = 'unknown';
 
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
-// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-const kPERMISSION_ACTIVE_TAB = 'activeTab';
-const kPERMISSION_TABS       = 'tabs';
-const kPERMISSION_COOKIES    = 'cookies';
-const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
-const kPERMISSIONS_ALL = new Set([
-  kPERMISSION_TABS,
-  kPERMISSION_COOKIES,
-  kPERMISSION_INCOGNITO
-]);
-
 const mAddons = new Map();
 let mScrollLockedBy    = {};
 let mGroupingBlockedBy = {};
@@ -310,93 +301,9 @@ export async function exportTab(sourceTab, { addonId, light, isContextTab, inter
   // The promise is cached here instead of the result,
   // to avoid cache miss caused by concurrent call.
   if (!(cacheKey in cache.tabs)) {
-    cache.tabs[cacheKey] = exportTabInternal(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey });
+    cache.tabs[cacheKey] = sourceTab.$TST.exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey });
   }
   return cache.tabs[cacheKey];
-}
-export async function exportTabInternal(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
-  const [effectiveFavIconUrl, children] = await Promise.all([
-    (light ||
-     (!permissions.has(kPERMISSION_TABS) &&
-      (!permissions.has(kPERMISSION_ACTIVE_TAB) ||
-       !sourceTab.active))) ?
-      null :
-      (sourceTab.id in cache.effectiveFavIconUrls) ?
-        cache.effectiveFavIconUrls[sourceTab.id] :
-        (sourceTab.favIconUrl && sourceTab.favIconUrl.startsWith('data:')) ?
-          sourceTab.favIconUrl :
-          TabFavIconHelper.getLastEffectiveFavIconURL(sourceTab).catch(ApiTabs.handleMissingTabError),
-    doProgressively(
-      sourceTab.$TST.children,
-      child => exportTabInternal(child, { addonId, light, isContextTab, interval, permissions, cache, cacheKey }),
-      interval
-    ),
-  ]);
-
-  if (!(sourceTab.id in cache.effectiveFavIconUrls))
-    cache.effectiveFavIconUrls[sourceTab.id] = effectiveFavIconUrl;
-
-  const tabStates = sourceTab.$TST.states;
-  const exportedTab = {
-    id:             sourceTab.id,
-    windowId:       sourceTab.windowId,
-    states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
-    indent:         parseInt(sourceTab.$TST.getAttribute(Constants.kLEVEL) || 0),
-    children,
-    ancestorTabIds: sourceTab.$TST.ancestorIds,
-    bundledTabId:   sourceTab.$TST.bundledTabId,
-  };
-  if (light)
-    return exportedTab;
-
-  const allowedProperties = new Set([
-    // basic tabs.Tab properties
-    'active',
-    'attention',
-    'audible',
-    'autoDiscardable',
-    'discarded',
-    'height',
-    'hidden',
-    'highlighted',
-    //'id',
-    'incognito',
-    'index',
-    'isArticle',
-    'isInReaderMode',
-    'lastAccessed',
-    'mutedInfo',
-    'openerTabId',
-    'pinned',
-    'selected',
-    'sessionId',
-    'sharingState',
-    'status',
-    'successorId',
-    'width',
-    //'windowId',
-  ]);
-
-  if (permissions.has(kPERMISSION_TABS) ||
-      (permissions.has(kPERMISSION_ACTIVE_TAB) &&
-       (sourceTab.active ||
-        (sourceTab == this.tab && this.isContextTab)))) {
-    // specially allowed with "tabs" or "activeTab" permission
-    allowedProperties.add('favIconUrl');
-    allowedProperties.add('title');
-    allowedProperties.add('url');
-    exportedTab.effectiveFavIconUrl = effectiveFavIconUrl;
-  }
-  if (permissions.has(kPERMISSION_COOKIES)) {
-    allowedProperties.add('cookieStoreId');
-    exportedTab.cookieStoreName = sourceTab.$TST.cookieStoreName;
-  }
-
-  for (const property of allowedProperties) {
-    if (property in sourceTab)
-      exportedTab[property] = sourceTab[property];
-  }
-  return exportedTab;
 }
 
 export function getAddon(id) {
