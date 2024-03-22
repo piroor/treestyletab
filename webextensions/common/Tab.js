@@ -116,6 +116,9 @@ export default class Tab {
     this.highPriorityTooltipTexts = new Map();
     this.lowPriorityTooltipTexts  = new Map();
 
+    this.$exportedForAPI = null;
+    this.$exportedForAPIWithPermissions = new Map();
+
     this.element = null;
     this.classList = null;
     this.promisedElement = new Promise((resolve, _reject) => {
@@ -161,9 +164,6 @@ export default class Tab {
 
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.delayedInheritSoundStateFromChildren = null;
-
-    this.$exportedForAPI = null;
-    this.$exportedForAPIWithPermissions = new Map();
   }
 
   destroy() {
