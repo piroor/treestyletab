@@ -162,7 +162,8 @@ export default class Tab {
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.delayedInheritSoundStateFromChildren = null;
 
-    this.invalidateCache();
+    this.$exportedForAPI = null;
+    this.$exportedForAPIWithPermissions = new Map();
   }
 
   destroy() {
@@ -1927,6 +1928,7 @@ export default class Tab {
       '$possibleInitialUrl': null,
       '$TST': null,
       '$exportedForAPI': null,
+      '$exportedForAPIWithPermissions': null,
     };
     delete sanitized.$TST;
     return sanitized;
@@ -1981,6 +1983,11 @@ export default class Tab {
   // bacause instances of the class will be very short-life and increases RAM usage on
   // massive tabs case.
   async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
+    const permissionsKey = [...permissions].sort().join(',');
+    if (!light &&
+        this.$exportedForAPIWithPermissions.has(permissionsKey))
+      return this.$exportedForAPIWithPermissions.get(permissionsKey);
+
     let exportedTab = this.$exportedForAPI;
     let favIconUrl;
     if (!exportedTab) {
@@ -2071,6 +2078,8 @@ export default class Tab {
       if (property in this.tab)
         fullExportedTab[property] = this.tab[property];
     }
+
+    this.$exportedForAPIWithPermissions.set(permissionsKey, fullExportedTab)
     return fullExportedTab;
   }
   async doProgressively(tabs, task, interval) {
@@ -2088,6 +2097,7 @@ export default class Tab {
   }
   invalidateCache() {
     this.$exportedForAPI = null;
+    this.$exportedForAPIWithPermissions.clear();
   }
 
   applyStatesToElement() {
