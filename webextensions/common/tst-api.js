@@ -1467,20 +1467,6 @@ async function getTabsByQuery(query, { activeWindow, queryOptions, sender }) {
   }
 }
 
-export async function doProgressively(tabs, task, interval) {
-  interval = Math.max(0, interval);
-  let lastStartAt = Date.now();
-  const results = [];
-  for (const tab of tabs) {
-    results.push(task(tab));
-    if (interval && (Date.now() - lastStartAt >= interval)) {
-      await wait(50);
-      lastStartAt = Date.now();
-    }
-  }
-  return Promise.all(results);
-}
-
 export function formatResult(results, originalMessage) {
   if (Array.isArray(originalMessage.tabs) ||
       originalMessage.tab == '*' ||

@@ -10,7 +10,8 @@ import {
   wait,
   mapAndFilterUniq,
   configs,
-  loadUserStyleRules
+  loadUserStyleRules,
+  doProgressively,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -502,7 +503,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kSTICK_TAB:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => Commands.toggleSticky(tab, true),
           message.interval
@@ -513,7 +514,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kUNSTICK_TAB:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => Commands.toggleSticky(tab, false),
           message.interval
@@ -525,7 +526,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         let firstTabIsSticky = undefined;
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => {
             if (firstTabIsSticky === undefined)
@@ -540,7 +541,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => Commands.collapseTree(tab, {
             recursively: !!message.recursively
@@ -553,7 +554,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kEXPAND_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => Commands.expandTree(tab, {
             recursively: !!message.recursively
@@ -566,7 +567,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kTOGGLE_TREE_COLLAPSED:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await TSTAPI.doProgressively(
+        await doProgressively(
           tabs,
           tab => Tree.collapseExpandSubtree(tab, {
             collapsed: !tab.$TST.subtreeCollapsed,
@@ -629,7 +630,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDEMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.indent(tab, message),
           message.interval
@@ -641,7 +642,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kPROMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.outdent(tab, message),
           message.interval
@@ -652,7 +653,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_UP:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.moveUp(tab, message),
           message.interval
@@ -670,7 +671,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.moveDown(tab, message),
           message.interval
@@ -688,7 +689,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_BEFORE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.moveBefore(tab, message),
           message.interval
@@ -699,7 +700,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_AFTER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await TSTAPI.doProgressively(
+        const results = await doProgressively(
           tabs,
           tab => Commands.moveAfter(tab, message),
           message.interval
@@ -710,7 +711,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kFOCUS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const tabsArray = await TSTAPI.doProgressively(
+        const tabsArray = await doProgressively(
           tabs,
           tab => {
             TabsInternalOperation.activateTab(tab, {
@@ -764,7 +765,7 @@ function onMessageExternal(message, sender) {
           default:
             break;
         }
-        const tabsArray = await TSTAPI.doProgressively(
+        const tabsArray = await doProgressively(
           tabs,
           async tab => {
             return Commands.duplicateTab(tab, {
@@ -845,7 +846,7 @@ function onMessageExternal(message, sender) {
         states = mapAndFilterUniq(states, state => state && String(state) || undefined);
         if (states.length == 0)
           return true;
-        const tabsArray = await TSTAPI.doProgressively(
+        const tabsArray = await doProgressively(
           tabs,
           tab => {
             for (const state of states) {
@@ -870,7 +871,7 @@ function onMessageExternal(message, sender) {
         states = mapAndFilterUniq(states, state => state && String(state) || undefined);
         if (states.length == 0)
           return true;
-        const tabsArray = await TSTAPI.doProgressively(
+        const tabsArray = await doProgressively(
           tabs,
           tab => {
             for (const state of states) {
