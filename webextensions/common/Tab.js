@@ -1985,12 +1985,10 @@ export default class Tab {
   // bacause instances of the class will be very short-life and increases RAM usage on
   // massive tabs case.
   async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
-    /*
     const permissionsKey = [...permissions].sort().join(',');
     if (!light &&
         this.$exportedForAPIWithPermissions.has(permissionsKey))
       return this.$exportedForAPIWithPermissions.get(permissionsKey);
-    */
 
     let exportedTab = this.$exportedForAPI;
     let favIconUrl;
@@ -2019,7 +2017,7 @@ export default class Tab {
         cache.effectiveFavIconUrls[this.tab.id] = effectiveFavIconUrl;
 
       const tabStates = this.tab.$TST.states;
-      exportedTab = /*this.$exportedForAPI =*/ {
+      exportedTab = this.$exportedForAPI = {
         id:             this.tab.id,
         windowId:       this.tab.windowId,
         states:         Constants.kTAB_SAFE_STATES_ARRAY.filter(state => tabStates.has(state)),
@@ -2083,7 +2081,7 @@ export default class Tab {
         fullExportedTab[property] = this.tab[property];
     }
 
-    //this.$exportedForAPIWithPermissions.set(permissionsKey, fullExportedTab)
+    this.$exportedForAPIWithPermissions.set(permissionsKey, fullExportedTab)
     return fullExportedTab;
   }
   async doProgressively(tabs, task, interval) {
