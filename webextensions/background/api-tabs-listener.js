@@ -407,6 +407,7 @@ async function onNewTabTracked(tab, info) {
   //   https://bugzilla.mozilla.org/show_bug.cgi?id=1541748
   tab.index = Math.max(0, Math.min(tab.index, win.tabs.size));
   tab.reindexedBy = `onNewTabTracked (${tab.index})`;
+  tab.$TST.invalidateCache();
 
   // New tab from a bookmark or external apps always have its URL as the title
   // (but the scheme part is missing.)
@@ -989,6 +990,7 @@ async function onMoved(tabId, moveInfo) {
           movedTab.index = win.tabs.size - 1
         }
         movedTab.reindexedBy = `tabs.onMoved (${movedTab.index})`;
+        movedTab.$TST.invalidateCache();
         win.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           toLines(Array.from(win.getOrderedTabs()),
@@ -1085,6 +1087,7 @@ async function onAttached(tabId, attachInfo) {
     tab.windowId = attachInfo.newWindowId
     tab.index    = attachedTab.index;
     tab.reindexedBy = `tabs.onAttached (${tab.index})`;
+    tab.$TST.invalidateCache();
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
     const info = {

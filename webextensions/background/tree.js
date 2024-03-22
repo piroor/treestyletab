@@ -171,6 +171,9 @@ export async function attachTabTo(child, parent, options = {}) {
     return false;
   }
 
+  parent.$TST.invalidateCache();
+  child.$TST.invalidateCache();
+
   const newIndex = Tab.calculateNewTabIndex({
     insertBefore: options.insertBefore,
     insertAfter:  options.insertAfter,
@@ -571,6 +574,7 @@ export function detachTab(child, options = {}) {
   if (parent) {
     // we need to set children and parent via setters, to invalidate cached information.
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
+    parent.$TST.invalidateCache();
     log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
@@ -612,6 +616,7 @@ export function detachTab(child, options = {}) {
     browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
+  child.$TST.invalidateCache();
 
   onDetached.dispatch(child, {
     oldParentTab: parent,

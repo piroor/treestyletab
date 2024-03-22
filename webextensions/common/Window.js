@@ -199,6 +199,7 @@ export default class Window {
           throw new Error(`Unknown tab: ${i}/${order[i]} (${order.join(', ')})`);
         tab.index = i;
         tab.reindexedBy = `Window.property.trackTab/update (${tab.index})`;
+        tab.$TST.invalidateCache();
       }
       const parent = tab.$TST.parent;
       if (parent) {
@@ -216,6 +217,7 @@ export default class Window {
           throw new Error(`Unknown tab: ${i}/${order[i]} (${order.join(', ')})`);
         tab.index = i;
         tab.reindexedBy = `Window.property.trackTab/new (${tab.index})`;
+        tab.$TST.invalidateCache();
       }
       log(`tab ${dumpTab(tab)} is newly tracked under the window ${this.id}: `, order);
     }
