@@ -1157,11 +1157,11 @@ async function collectBookmarkItems(root, { recursively,  grouped } = {}) {
     items.unshift({
       title: '',
       url:   TabsGroup.makeGroupTabURI({
-        title:               root.title,
-        temporaryAggressive: true
+        title: root.title,
+        ...TabsGroup.temporaryStateParams(configs.groupTabTemporaryStateForNewTabsFromBookmarks),
       }),
       group: true,
-      discarded: false
+      discarded: false,
     });
   }
   return items;
