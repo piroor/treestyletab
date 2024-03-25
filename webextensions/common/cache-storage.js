@@ -37,14 +37,18 @@ async function openDB() {
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      if (event.oldVersion < DB_VERSION) {
-        try {
-          db.deleteObjectStore(BACKGROUND);
-          db.deleteObjectStore(SIDEBAR);
-        }
-        catch(_error) {
-        }
+      const objectStores = db.objectStoreNames;
 
+      const needToUpgrade = event.oldVersion < DB_VERSION;
+      if (needToUpgrade) {
+        if (objectStores.contains(BACKGROUND))
+          db.deleteObjectStore(BACKGROUND);
+        if (objectStores.contains(SIDEBAR))
+          db.deleteObjectStore(SIDEBAR);
+      }
+
+      if (needToUpgrade ||
+          !objectStores.contains(BACKGROUND)) {
         const backgroundCachesStore = db.createObjectStore(BACKGROUND, { keyPath: 'key', unique: true });
         backgroundCachesStore.createIndex('windowId', 'windowId', { unique: false });
         backgroundCachesStore.createIndex('timestamp', 'timestamp');
