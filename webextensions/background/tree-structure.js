@@ -216,12 +216,14 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     return;
   }
 
-  let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
+  let uniqueId, insertBefore, insertAfter, insertAfterLegacy, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
-  [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
+  [uniqueId, insertBefore, insertAfter, insertAfterLegacy, ancestors, children, states, collapsed] = await Promise.all([
     options.uniqueId || tab.$TST.uniqueId || tab.$TST.promisedUniqueId,
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_BEFORE).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_AFTER).catch(ApiTabs.createErrorHandler()),
+    // This legacy should be removed after legacy data are cleared enough, maybe after Firefox 128 is released.
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_AFTER_LEGACY).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ANCESTORS).catch(ApiTabs.createErrorHandler()),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_CHILDREN).catch(ApiTabs.createErrorHandler()),
     tab.$TST.getPermanentStates(),
@@ -231,6 +233,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   children  = children  || [];
   log(`persistent references for ${dumpTab(tab)} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
+    insertAfterLegacy,
     ancestors: ancestors.join(', '),
     children:  children.join(', '),
     states,
@@ -242,7 +245,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     browser.sessions.removeTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED).catch(ApiTabs.createErrorSuppressor());
   }
   insertBefore = Tab.getByUniqueId(insertBefore);
-  insertAfter  = Tab.getByUniqueId(insertAfter);
+  insertAfter  = Tab.getByUniqueId(insertAfter || insertAfterLegacy);
   ancestors    = ancestors.map(Tab.getByUniqueId);
   children     = children.map(Tab.getByUniqueId);
   log(' => references: ', tab.id, () => ({

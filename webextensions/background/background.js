@@ -426,6 +426,14 @@ async function updateInsertionPosition(tab) {
       ApiTabs.handleMissingTabError // The tab can be closed while waiting.
     ));
 
+  // This code should be removed after legacy data are cleared enough, maybe after Firefox 128 is released.
+  browser.sessions.removeTabValue(
+    tab.id,
+    Constants.kPERSISTENT_INSERT_AFTER_LEGACY
+  ).catch(ApiTabs.createErrorSuppressor(
+    ApiTabs.handleMissingTabError // The tab can be closed while waiting.
+  ));
+
   const next = tab.hidden ? tab.$TST.unsafeNextTab : tab.$TST.nextTab;
   if (next)
     browser.sessions.setTabValue(
