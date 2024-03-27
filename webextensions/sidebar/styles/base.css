@@ -616,6 +616,10 @@ tab-item .extra-items-container.front {
   right: var(--tab-label-end-offset);
   z-index: var(--tab-extra-contents-front-z-index);
 }
+tab-item.faviconized .extra-items-container.front {
+  left: var(--faviconized-tab-padding);
+  right: var(--faviconized-tab-padding);
+}
 
 tab-item:not(.bursting) .burster {
   display: none;
@@ -746,6 +750,7 @@ tab-item .extra-items-container.behind {
 
 
 tab-item.faviconized {
+  --faviconized-tab-padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
   --tab-current-size: var(--faviconized-tab-size);
   height: var(--tab-current-size);
   margin: 0;
@@ -757,7 +762,7 @@ tab-item.faviconized tab-item-substance {
   border-top: none;
   border-left: none;
   margin: 0;
-  padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
+  padding: var(--faviconized-tab-padding);
 }
 
 tab-item.pinned tab-closebox,
