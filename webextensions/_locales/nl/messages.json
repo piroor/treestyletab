@@ -494,7 +494,7 @@
     "hash": "09e664f9f430af59dcb48c23949ebde0"
   },
   "bookmarkDialog_title": {
-    "message": "Naam:",
+    "message": "Naam",
     "hash": "bcc9f177b0a20c395aac47bd88204419"
   },
   "bookmarkDialog_title_accessKey": {
@@ -502,7 +502,7 @@
     "hash": "b45c6754f808b40779ef29b3c6160e8b"
   },
   "bookmarkDialog_url": {
-    "message": "URL:",
+    "message": "URL",
     "hash": "d3304a6af52921ec7fbf6469ba358327"
   },
   "bookmarkDialog_url_accessKey": {
@@ -510,7 +510,7 @@
     "hash": "f539fdab7bdf9f622c08ef48c391feb9"
   },
   "bookmarkDialog_parentId": {
-    "message": "Locatie:",
+    "message": "Locatie",
     "hash": "d3304a6af52921ec7fbf6469ba358327"
   },
   "bookmarkDialog_parentId_accessKey": {

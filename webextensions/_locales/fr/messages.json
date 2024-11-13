@@ -348,15 +348,15 @@
     "hash": "c304183c3a6fde7c2ae13d76974ea17a"
   },
   "bookmarkDialog_title": {
-    "message": "Titre :",
+    "message": "Titre",
     "hash": "bcc9f177b0a20c395aac47bd88204419"
   },
   "bookmarkDialog_url": {
-    "message": "URL :",
+    "message": "URL",
     "hash": "d3304a6af52921ec7fbf6469ba358327"
   },
   "bookmarkDialog_parentId": {
-    "message": "Adresse :",
+    "message": "Adresse",
     "hash": "5f43a7c36ca597f9151fdc6df9e1b8a5"
   },
   "bookmarkDialog_accept": {

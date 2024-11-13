@@ -418,19 +418,19 @@
     "message": "新建书签项"
   },
   "bookmarkDialog_title": {
-    "message": "名称："
+    "message": "名称"
   },
   "bookmarkDialog_title_accessKey": {
     "message": "n"
   },
   "bookmarkDialog_url": {
-    "message": "URL："
+    "message": "URL"
   },
   "bookmarkDialog_url_accessKey": {
     "message": "u"
   },
   "bookmarkDialog_parentId": {
-    "message": "位置："
+    "message": "位置"
   },
   "bookmarkDialog_parentId_accessKey": {
     "message": "l"
