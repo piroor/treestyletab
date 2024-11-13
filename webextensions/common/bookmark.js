@@ -53,7 +53,7 @@ function getAnimationDuration() {
 }
 
 if (Constants.IS_BACKGROUND) {
-  browser.runtime.onMessage.addListener((message, _sender) => {
+  browser.runtime.onMessage.addListener((message, sender) => {
     if (!message ||
         typeof message != 'object')
       return;
@@ -78,9 +78,170 @@ if (Constants.IS_BACKGROUND) {
           } while (lastId != 'root________');
           return ancestorIds;
         })();
+
+      case 'treestyletab:resize-bookmark-dialog-by':
+        return (async () => {
+          const win = await browser.windows.get(sender.tab.windowId);
+          console.log(win, message);
+          return browser.windows.update(win.id, {
+            width: win.width + (message.width || 0),
+            height: win.height + (message.height || 0),
+          });
+        })();
     }
   });
 }
+
+const DIALOG_STYLE = `
+  .itemContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  .itemContainer.last {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-bottom: 3em;
+  }
+
+  .itemContainer > label {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: start;
+  }
+
+  .labelText {
+    white-space: nowrap;
+    display: flex;
+    margin: 0.25em 0;
+  }
+
+  input[type="text"] {
+    display: flex;
+  }
+  .itemContainer.outOfSidebar input[type="text"] {
+    min-width: 30em;
+  }
+
+  .parentIdChooserMiniContainer {
+    display: flex;
+    flex-direction: row;
+  }
+  [name="parentIdMini"] {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  [name="showAllFolders"] {
+    display: flex;
+    flex-grow: 0;
+  }
+
+  [name="showAllFolders"]::before {
+    -moz-context-properties: fill;
+    background: currentColor;
+    content: "";
+    display: inline-block;
+    fill: currentColor;
+    height: 1em;
+    line-height: 1;
+    mask: url("/sidebar/styles/icons/ArrowheadDown.svg") no-repeat center / 60%;
+    max-height: 1em;
+    max-width: 1em;
+    transform-origin: 50% 50%;
+    width: 1em;;
+  }
+  [name="showAllFolders"].expanded::before {
+    transform: rotatez(180deg);
+  }
+
+  .itemContainer[name="parentIdChooserFullContainer"] {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+  .itemContainer[name="parentIdChooserFullContainer"]:not(.expanded) {
+    display: none;
+  }
+
+  .itemContainer[name="parentIdChooserFullContainer"] ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .itemContainer[name="parentIdChooserFullContainer"] ul[name="parentIdChooserFull"] {
+    max-height: 0;
+    overflow: visible;
+  }
+
+  .itemContainer[name="parentIdChooserFullContainer"] li:not(.expanded) > ul {
+    display: none;
+  }
+
+  .parentIdChooserFullTreeWrapper {
+    border: 1px solid;
+    margin: 0.5em 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-y: auto;
+  }
+
+  [name="parentIdChooserFull"] li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  [name="parentIdChooserFull"] li > .label {
+    padding: 0.25em;
+    white-space: nowrap;
+    display: flex;
+    user-select: none;
+  }
+
+  [name="parentIdChooserFull"] .twisty {
+    height: 1em;
+    width: 1em;
+  }
+  [name="parentIdChooserFull"] li.noChild .twisty {
+    visibility: hidden;
+  }
+  [name="parentIdChooserFull"] .twisty::before {
+    -moz-context-properties: fill;
+    background: currentColor;
+    content: "";
+    display: inline-block;
+    height: 1em;
+    line-height: 1;
+    mask: url("/sidebar/styles/icons/ArrowheadDown.svg") no-repeat center / 60%;
+    max-height: 1em;
+    max-width: 1em;
+    transform-origin: 50% 50%;
+    transform: rotatez(-90deg);
+    width: 1em;;
+  }
+  [name="parentIdChooserFull"] li.expanded > .label > .twisty::before {
+    transform: rotatez(0deg);
+  }
+
+  [name="parentIdChooserFull"] li.chosen > .label {
+    color: highlightText;
+    background: highlight;
+  }
+  [name="parentIdChooserFull"] li > .label:focus {
+    outline: 1px dotted;
+  }
+  [name="parentIdChooserFull"] li.chosen > .label > .twisty::before {
+    background: highlightText;
+  }
+
+  [name="parentIdChooserFull"] li > .label div {
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+`;
 
 export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
   try {
@@ -107,58 +268,45 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
   if (showDialog) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
-    const divStyle = `
-      display: flex;
-      flex-direction: column;
-    `;
-    const labelStyle = `
-      display: flex;
-      flex-direction: ${inSidebar ? 'column' : 'row'};
-      ${inSidebar ? 'align-items: stretch;' : ''}
-      ${inSidebar ? 'text-align: start;' : ''}
-    `;
-    const labelTextStyle = `
-      white-space: nowrap;
-    `;
-    const inputFieldStyle = `
-      display: flex;
-      ${inSidebar ? '' : 'margin-left: 0.25em;'}
-      ${inSidebar ? '' : 'flex-grow: 1;'}
-      ${inSidebar ? '' : 'flex-shrink: 1;'}
-      ${inSidebar ? '' : 'min-width: 30em;'}
-    `;
-    const buttonContainerStyle = `
-      ${inSidebar ? '' : 'margin-left: 0.25em;'}
-    `;
+    const inSidebarClass = inSidebar ? 'inSidebar' : 'outOfSidebar';
     const dialogParams = {
       content: `
-        <div style="${divStyle}"
+        <style type="text/css">${DIALOG_STYLE}</style>
+        <div class="itemContainer ${inSidebarClass}"
             ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
-                    style="${labelStyle}"
-                   ><span style="${labelTextStyle}"
+                   ><span class="labelText"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
                    ><input type="text"
                            name="title"
-                           style="${inputFieldStyle}"
                            value=${JSON.stringify(sanitizeForHTMLText(title))}></label></div
-       ><div style="${divStyle}"
+       ><div class="itemContainer ${inSidebarClass}"
             ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url_accessKey')))}
-                    style="${labelStyle}"
-                   ><span style="${labelTextStyle}"
+                   ><span class="labelText"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
                    ><input type="text"
                            name="url"
-                           style="${inputFieldStyle}"
                            value=${JSON.stringify(sanitizeForHTMLText(url))}></label></div
-       ><div style="${divStyle}; margin-bottom: 3em;"
-            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
-                    style="${labelStyle}"
-                   ><span style="${labelTextStyle}"
-                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                   ><span style="${buttonContainerStyle}"
-                         ><button name="parentId">-</button></span></label></div>
+       ><div class="itemContainer last ${inSidebarClass}"
+            ><div class="itemContainer"
+                 ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
+                        ><span class="labelText"
+                              >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
+                        ><span class="parentIdChooserMiniContainer"
+                              ><select name="parentIdMini"></select
+                              ><button name="showAllFolders"
+                                       title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
+                              ></span></label></div
+            ><div class="itemContainer"
+                  name="parentIdChooserFullContainer"
+                 ><div class="parentIdChooserFullTreeWrapper"
+                      ><ul name="parentIdChooserFull"></ul></div
+                 ><span><button name="newFolder"
+                                accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder_accessKey')))}
+                               >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder'))}</button
+                               ></span></div
+       ></div>
       `.trim(),
-      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout }) {
+      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout, inSidebar }) {
         if (container.classList.contains('simulation'))
           return;
         MenuUI.init();
@@ -167,12 +315,14 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
         ]);
-        initFolderChooser(container.querySelector('button'), {
+        initFolderChooser({
           MenuUI,
           animationDuration,
           defaultItem,
           rootItems,
           incrementalSearchTimeout,
+          container,
+          inSidebar,
         });
         container.querySelector('[name="title"]').select();
       },
@@ -182,6 +332,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
         animationDuration: getAnimationDuration(),
         parentId,
         incrementalSearchTimeout: configs.incrementalSearchTimeout,
+        inSidebar,
       },
       buttons: [
         browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -323,7 +474,7 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
     `;
     const labelStyle = `
       display: flex;
-      flex-direction: ${inSidebar ? 'column' : 'row'};
+      flex-direction: column;
       ${inSidebar ? 'align-items: stretch;' : ''}
       ${inSidebar ? 'text-align: start;' : ''}
     `;
@@ -337,8 +488,18 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
       ${inSidebar ? '' : 'flex-shrink: 1;'}
       ${inSidebar ? '' : 'min-width: 30em;'}
     `;
-    const buttonContainerStyle = `
+    const parentIdChooserMiniContainerStyle = `
+      display: flex;
+      flex-direction: row;
       ${inSidebar ? '' : 'margin-left: 0.25em;'}
+    `;
+    const parentIdChooserLightStyle = `
+      display: flex;
+      flex-grow: 1;
+    `;
+    const parentIdExpanderStyle = `
+      display: flex;
+      flex-grow: 0;
     `;
     const dialogParams = {
       content: `
@@ -355,8 +516,14 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
             ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))} style="${labelStyle}"
                    ><span style="${labelTextStyle}"
                          >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                   ><span style="${buttonContainerStyle}"
-                         ><button name="parentId">-</button></span></label></div>
+                   ><span style="${parentIdChooserMiniContainerStyle}"
+                         ><select name="parentIdMini"
+                                  style="${parentIdChooserLightStyle}"></select
+                         ><button name="showAllFolders"
+                                  style="${parentIdExpanderStyle}"
+                                  title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}
+                                 ></button
+                         ></span></label></div>
       `.trim(),
       async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout }) {
         if (container.classList.contains('simulation'))
@@ -367,12 +534,13 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
         ]);
-        initFolderChooser(container.querySelector('button'), {
+        initFolderChooser({
           MenuUI,
           animationDuration,
           defaultItem,
           rootItems,
           incrementalSearchTimeout,
+          container,
         });
         container.querySelector('[name="title"]').select();
       },
@@ -456,39 +624,129 @@ function getTitlesWithTreeStructure(tabs) {
   return titles;
 }
 
-export async function initFolderChooser(anchor, params = {}) {
-  let chooserTree = window.$bookmarkFolderChooserTree;
-  if (!chooserTree) {
-    chooserTree = window.$bookmarkFolderChooserTree = document.documentElement.appendChild(document.createElement('ul'));
+export async function initFolderChooser({ container, ...params } = {}) {
+  const miniList = container.querySelector('select[name="parentIdMini"]');
+  const fullList = container.querySelector('ul[name="parentIdChooserFull"]');
+  const fullContainer = container.querySelector('[name="parentIdChooserFullContainer"]');
+  const expander = container.querySelector('button[name="showAllFolders"]');
+
+  // Initialize mini chooser
+  for (const rootItem of params.rootItems) {
+    const item = miniList.appendChild(document.createElement('option'));
+    item.textContent = rootItem.title;
+    item.value = rootItem.id;
+  }
+
+  miniList.appendChild(document.createElement('hr'));
+  const expanderOption = miniList.appendChild(document.createElement('option'));
+  expanderOption.textContent = browser.i18n.getMessage('bookmarkDialog_showAllFolders_label');
+  expanderOption.setAttribute('name', 'expandChooser');
+
+  miniList.appendChild(document.createElement('hr'));
+  const lastChosenOption = miniList.appendChild(document.createElement('option'));
+  lastChosenOption.setAttribute('name', 'lastChosen');
+
+  let lastChosenItem = params.defaultItem ||
+    params.defaultValue && await getItemById(params.defaultValue) ||
+    null;
+  if (lastChosenItem &&
+      !miniList.querySelector(`option[value="${lastChosenItem.id}"]`)) {
+    lastChosenOption.value       = lastChosenItem.id;
+    lastChosenOption.textContent = lastChosenItem.title;
   }
   else {
-    const range = document.createRange();
-    range.selectNodeContents(chooserTree);
-    range.deleteContents();
-    range.detach();
+    lastChosenOption.style.display = 'none';
   }
 
-  delete anchor.dataset.value;
-  anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
-
-  anchor.style.overflow     = 'hidden';
-  anchor.style.textOverflow = 'ellipsis';
-  anchor.style.whiteSpace   = 'pre';
-
-  let lastChosenId = null;
-  if (params.defaultItem || params.defaultValue) {
-    const item = params.defaultItem || await getItemById(params.defaultValue);
-    if (item) {
-      lastChosenId         = item.id;
-      anchor.dataset.value = lastChosenId;
-      anchor.dataset.title = item.title;
-      anchor.textContent   = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
-      anchor.setAttribute('title', anchor.textContent);
+  let expanded = false;
+  let fullChooserHeight = 0;
+  const toggleFullChooser = () => {
+    expanded = !expanded;
+    fullContainer.classList.toggle('expanded', expanded);
+    expander.classList.toggle('expanded', expanded);
+    if (!params.inSidebar) {
+      fullChooserHeight = Math.max(fullChooserHeight, 150);
+      browser.runtime.sendMessage({
+        type: 'treestyletab:resize-bookmark-dialog-by',
+        width: 0,
+        height: expanded ? fullChooserHeight : -fullChooserHeight,
+      });
     }
-  }
+  };
 
-  // eslint-disable-next-line prefer-const
+  // Initialize expander
+  expander.addEventListener('click', () => {
+    toggleFullChooser();
+  });
+  expander.addEventListener('keydown', event => {
+    if (event.key == 'Enter')
+      toggleFullChooser();
+  });
+
+  // Initialize full chooser
+  fullList.level = 0;
+
+  const getElementTarget = event => {
+    return event.target.nodeType == Node.ELEMENT_NODE ?
+      event.target :
+      event.target.parentNode;;
+  };
+
+  const getTargetItem = event => {
+    const elementTarget = getElementTarget(event);
+    return elementTarget?.closest('li');
+  };
+
+  const onItemClicked = item => {
+    item.classList.toggle('expanded');
+    if (item.classList.contains('expanded'))
+      item.$completeFolderItem();
+    for (const oldChosen of fullContainer.querySelectorAll('.chosen')) {
+      if (oldChosen == item)
+        continue;
+      oldChosen.classList.remove('chosen');
+    }
+    item.classList.add('chosen');
+    lastChosenItem = item.$item;
+  };
+
+  const onCommand = event => {
+    const item = getTargetItem(event);
+    if (getElementTarget(event)?.closest('.twisty')) {
+      item.classList.toggle('expanded');
+      if (item.classList.contains('expanded'))
+        item.$completeFolderItem();
+    }
+    if (item)
+      onItemClicked(item);
+  };
+
+  fullContainer.addEventListener('click', event => {
+    onCommand(event);
+  });
+  fullContainer.addEventListener('keydown', event => {
+    switch (event.key) {
+      case 'Enter':
+        onCommand(event);
+        break;
+
+      case 'UpArrow': {
+        //const item = getTargetItem(event);
+      }; break;
+
+      case 'DownArrow': {
+        //const item = getTargetItem(event);
+      }; break;
+    }
+  });
+  fullContainer.addEventListener('focus', event => {
+    const item = getTargetItem(event);
+    if (item && !item.classList.contains('chosen'))
+      onItemClicked(item);
+  }, { capture: true });
+
   let topLevelItems;
+  /*
   anchor.ui = new (params.MenuUI || MenuUI)({
     root:       chooserTree,
     appearance: 'menu',
@@ -508,8 +766,8 @@ export async function initFolderChooser(anchor, params = {}) {
       for (const item of chooserTree.querySelectorAll('.checked')) {
         item.classList.remove('checked');
       }
-      if (lastChosenId) {
-        const item = chooserTree.querySelector(`.radio[data-id="${lastChosenId}"]`);
+      if (lastChosenItem) {
+        const item = chooserTree.querySelector(`.radio[data-id="${lastChosenItem.id}"]`);
         if (item)
           item.classList.add('checked');
       }
@@ -542,20 +800,22 @@ export async function initFolderChooser(anchor, params = {}) {
         anchor
       });
   });
+  */
 
-  const generateFolderItem = (folder) => {
+
+  const generateFolderItem = (folder, level) => {
     const item = document.createElement('li');
-    item.appendChild(document.createTextNode(folder.title));
-    item.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
-    item.dataset.id    = folder.id;
-    item.dataset.title = folder.title;
-    item.classList.add('folder');
-    item.classList.add('radio');
-    const container = item.appendChild(document.createElement('ul'));
-    const useThisItem = container.appendChild(document.createElement('li'));
-    useThisItem.textContent   = browser.i18n.getMessage('bookmarkFolderChooser_useThisFolder');
-    useThisItem.dataset.id    = folder.id;
-    useThisItem.dataset.title = folder.title;
+    item.$item = folder;
+    const label = item.appendChild(document.createElement('span'));
+    label.setAttribute('class', 'label');
+    label.setAttribute('style', `padding-left: calc(1.25em * ${level} + 0.25em);`);
+    label.setAttribute('tabindex', '0');
+    label.setAttribute('id', `bookmarkFolderItem:${folder.id}`);
+    label.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
+    const twisty = label.appendChild(document.createElement('span'));
+    twisty.setAttribute('class', 'twisty');
+    const text = label.appendChild(document.createElement('div'));
+    text.textContent = folder.title;
     return item;
   };
 
@@ -574,39 +834,34 @@ export async function initFolderChooser(anchor, params = {}) {
       }
       if (item.type != 'folder')
         continue;
-      const folderItem = generateFolderItem(item);
+      const folderItem = generateFolderItem(item, container.level);
       container.appendChild(folderItem);
       createdItems.push(folderItem);
       folderItem.$completeFolderItem = async () => {
         if (!item.$fetched &&
             !('children' in item)) {
           item.$fetched = true;
-          item.children = await browser.runtime.sendMessage({
+          item.children = (await browser.runtime.sendMessage({
             type: 'treestyletab:get-bookmark-child-items',
             id:   item.id
-          });
+          })).filter(item => item.type == 'folder');
         }
+        folderItem.classList.toggle('noChild', !item.children || item.children.length == 0);
         if (item.children &&
             item.children.length > 0 &&
             !folderItem.classList.contains('has-built-children')) {
           folderItem.classList.add('has-built-children');
-          await buildItems(item.children, folderItem.lastChild);
-          anchor.ui.updateMenuItem(folderItem);
+          const subFolderContainer = folderItem.appendChild(document.createElement('ul'));
+          subFolderContainer.level = container.level + 1;
+          await buildItems(item.children, subFolderContainer);
         }
         return folderItem;
       };
-      folderItem.addEventListener('focus', folderItem.$completeFolderItem);
-      folderItem.addEventListener('mouseover', folderItem.$completeFolderItem);
-    }
-    const firstFolderItem = container.querySelector('.folder');
-    if (firstFolderItem && firstFolderItem.previousSibling) {
-      const separator = container.insertBefore(document.createElement('li'), firstFolderItem);
-      separator.classList.add('separator');
     }
     return createdItems;
   };
 
-  topLevelItems = await buildItems(params.rootItems, chooserTree);
+  topLevelItems = await buildItems(params.rootItems, fullList);
 }
 
 let mCreatedBookmarks = [];
