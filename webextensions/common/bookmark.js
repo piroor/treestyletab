@@ -94,8 +94,11 @@ if (Constants.IS_BACKGROUND) {
 
 const DIALOG_STYLE = `
   .itemContainer {
+    align-items: stretch;
     display: flex;
     flex-direction: column;
+    margin: 0.2em 0;
+    text-align: start;
   }
   .itemContainer.last {
     flex-grow: 1;
@@ -105,21 +108,14 @@ const DIALOG_STYLE = `
 
   .itemContainer > label {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    text-align: start;
-  }
-
-  .labelText {
+    margin-bottom: 0.2em;
     white-space: nowrap;
-    display: flex;
-    margin: 0.25em 0;
   }
 
-  input[type="text"] {
+  .itemContainer > input[type="text"] {
     display: flex;
   }
-  .itemContainer.outOfSidebar input[type="text"] {
+  .itemContainer.outOfSidebar > input[type="text"] {
     min-width: 30em;
   }
 
@@ -269,33 +265,37 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
     const windowId = tab.windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
     const inSidebarClass = inSidebar ? 'inSidebar' : 'outOfSidebar';
+    const BASE_ID = `dialog-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
     const dialogParams = {
       content: `
         <style type="text/css">${DIALOG_STYLE}</style>
         <div class="itemContainer ${inSidebarClass}"
-            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
-                   ><span class="labelText"
-                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
-                   ><input type="text"
-                           name="title"
-                           value=${JSON.stringify(sanitizeForHTMLText(title))}></label></div
+            ><label for="${BASE_ID}:title"
+                    accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</label
+            ><input id="${BASE_ID}:title"
+                    type="text"
+                    name="title"
+                    value=${JSON.stringify(sanitizeForHTMLText(title))}></div
        ><div class="itemContainer ${inSidebarClass}"
-            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url_accessKey')))}
-                   ><span class="labelText"
-                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</span
-                   ><input type="text"
-                           name="url"
-                           value=${JSON.stringify(sanitizeForHTMLText(url))}></label></div
+            ><label for="${BASE_ID}:url"
+                    accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url_accessKey')))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</label
+            ><input id="${BASE_ID}:url"
+                    type="text"
+                    name="url"
+                    value=${JSON.stringify(sanitizeForHTMLText(url))}></div
        ><div class="itemContainer last ${inSidebarClass}"
             ><div class="itemContainer"
-                 ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
-                        ><span class="labelText"
-                              >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                        ><span class="parentIdChooserMiniContainer"
-                              ><select name="parentIdMini"></select
-                              ><button name="showAllFolders"
-                                       title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
-                              ></span></label></div
+                 ><label for="${BASE_ID}:parentIdMini"
+                         accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
+                        >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</label
+                 ><span class="parentIdChooserMiniContainer"
+                       ><select id="${BASE_ID}:parentIdMini"
+                                name="parentIdMini"></select
+                       ><button name="showAllFolders"
+                                title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
+                       ></span></div
             ><div class="itemContainer"
                   name="parentIdChooserFullContainer"
                  ><div class="parentIdChooserFullTreeWrapper"
