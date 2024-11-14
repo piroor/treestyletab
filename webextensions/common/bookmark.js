@@ -795,14 +795,19 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   fullListFocusibleContainer.addEventListener('click', event => {
     if (event.button != 0)
       return;
-    if (getElementTarget(event)?.closest('.twisty')) {
+    const target = getElementTarget(event);
+    if (target?.closest('.twisty')) {
       onCommand(event);
     }
-    else {
+    else if (!target?.closest('input[type="text"]')) {
       onItemClicked(getTargetItem(event));
     }
   });
   fullListFocusibleContainer.addEventListener('keydown', event => {
+    if (getElementTarget(event)?.closest('input[type="text"]') &&
+        event.key != 'Enter')
+      return;
+
     const focusibleItems = [...fullList.querySelectorAll('li:not(li:not(.expanded) li)')];
     const focusedItem = fullList.querySelector('li.focused');
     const index = focusedItem ? focusibleItems.indexOf(focusedItem) : -1;
@@ -878,12 +883,12 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   }, { capture: true });
 
   container.addEventListener('focus', event => {
-    if (!getTargetItem(event)?.closest('input[type="text"], .parentIdChooserFullTreeContainer'))
+    if (!getElementTarget(event)?.closest('input[type="text"], .parentIdChooserFullTreeContainer'))
       exitAllEditings();
   }, { capture: true });
 
   container.addEventListener('blur', event => {
-    if (getTargetItem(event)?.closest('input[type="text"]')) {
+    if (getElementTarget(event)?.closest('input[type="text"]')) {
       const editingItem = fullList.querySelector('li.editing');
       if (editingItem)
         editingItem.$exitTitleEdit();
