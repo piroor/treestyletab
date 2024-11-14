@@ -100,6 +100,10 @@ const DIALOG_STYLE = `
     margin: 0.2em 0;
     text-align: start;
   }
+  .itemContainer.last {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
 
   .itemContainer > label {
     display: flex;
@@ -280,7 +284,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
                     type="text"
                     name="url"
                     value=${JSON.stringify(sanitizeForHTMLText(url))}></div
-       ><div class="itemContainer ${inSidebarClass}"
+       ><div class="itemContainer last ${inSidebarClass}"
             ><div class="itemContainer"
                  ><label for="${BASE_ID}:parentIdMini"
                          accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
@@ -477,7 +481,7 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
                     type="text"
                     name="title"
                     value=${JSON.stringify(sanitizeForHTMLText(title))}></div
-       ><div class="itemContainer ${inSidebarClass}"
+       ><div class="itemContainer last ${inSidebarClass}"
             ><div class="itemContainer"
                  ><label for="${BASE_ID}:parentIdMini"
                          accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
