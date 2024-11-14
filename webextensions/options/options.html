@@ -343,9 +343,27 @@
                           __MSG_config_bookmarkTreeFolderName_after__</label></p>
     <p class="with-bookmarks-permission"><label for="bookmarkTreeFolderName">__MSG_config_bookmarkTreeFolderName_description__</label></p>
     </div>
-    <p class="with-bookmarks-permission"><label>__MSG_config_defaultBookmarkParentId_label_before__
-                          <button id="defaultBookmarkParentChooser"></button>
-                          __MSG_config_defaultBookmarkParentId_label_after__</label></p>
+    <div class="with-bookmarks-permission"
+         id="defaultBookmarkParentGroup">
+      <style type="text/css" id="defaultBookmarkParentChooserStyle"></style>
+      <p><label for="defaultBookmarkParentChooser">__MSG_config_defaultBookmarkParentId_label__</label>
+         <span class="parentIdChooserMiniContainer">
+           <select id="defaultBookmarkParentId"
+                   name="parentId"></select>
+           <button name="showAllFolders"
+                   title="__MSG_bookmarkDialog_showAllFolders_tooltip__"></button>
+         </span></p>
+      <div name="parentIdChooserFullContainer">
+        <div class="parentIdChooserFullTreeContainer"
+             tabindex="0"
+             data-no-accept-by-enter="true">
+          <ul name="parentIdChooserFull"></ul>
+        </div>
+        <span><button name="newFolder"
+                      accesskey="__MSG_bookmarkDialog_newFolder_accessKey__"
+                      data-no-accept-by-enter="true">__MSG_bookmarkDialog_newFolder__</button></span>
+      </div>
+    </div>
     </fieldset>
     <fieldset id="syncTabsToDeviceOptions">
       <legend>__MSG_config_sendTabsToDevice_caption__</legend>

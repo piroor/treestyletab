@@ -365,8 +365,8 @@ async function updateBookmarksUI(enabled) {
       (await Bookmark.getItemById(configs.defaultBookmarkParentId)) ||
       (await Bookmark.getItemById(configs.$default.defaultBookmarkParentId))
     );
-    const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
-    Bookmark.initFolderChooser(defaultBookmarkParentChooser, {
+    document.querySelector('#defaultBookmarkParentChooserStyle').textContent = Bookmark.FOLDER_CHOOSER_STYLE;
+    Bookmark.initFolderChooser({
       defaultValue: defaultParentFolder.id,
       onCommand:    (item, _event) => {
         if (item.dataset.id)
@@ -374,6 +374,8 @@ async function updateBookmarksUI(enabled) {
       },
       rootItems: (await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler()))[0].children,
       incrementalSearchTimeout: configs.incrementalSearchTimeout,
+      container: document.querySelector('#defaultBookmarkParentGroup'),
+      inline: true,
     });
   }
   else {
