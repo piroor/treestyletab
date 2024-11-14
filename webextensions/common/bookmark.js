@@ -125,11 +125,13 @@ const DIALOG_STYLE = `
   [name="parentIdMini"] {
     display: flex;
     flex-grow: 1;
+    max-width: calc(100% - 2em /* width of the showAllFolders button */);
   }
 
   [name="showAllFolders"] {
     display: flex;
     flex-grow: 0;
+    width: 2em;
   }
 
   [name="showAllFolders"]::before {
