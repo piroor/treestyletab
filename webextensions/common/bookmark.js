@@ -100,11 +100,6 @@ const DIALOG_STYLE = `
     margin: 0.2em 0;
     text-align: start;
   }
-  .itemContainer.last {
-    flex-grow: 1;
-    flex-shrink: 1;
-    margin-bottom: 3em;
-  }
 
   .itemContainer > label {
     display: flex;
@@ -174,7 +169,7 @@ const DIALOG_STYLE = `
     display: none;
   }
 
-  .parentIdChooserFullTreeWrapper {
+  .parentIdChooserFullTreeContainer {
     border: 1px solid;
     margin: 0.5em 0;
     display: flex;
@@ -190,7 +185,7 @@ const DIALOG_STYLE = `
     padding: 0;
   }
 
-  [name="parentIdChooserFull"] li > .label {
+  [name="parentIdChooserFull"] li > label {
     padding: 0.25em;
     white-space: nowrap;
     display: flex;
@@ -218,22 +213,22 @@ const DIALOG_STYLE = `
     transform: rotatez(-90deg);
     width: 1em;;
   }
-  [name="parentIdChooserFull"] li.expanded > .label > .twisty::before {
+  [name="parentIdChooserFull"] li.expanded > label > .twisty::before {
     transform: rotatez(0deg);
   }
 
-  [name="parentIdChooserFull"] li.chosen > .label {
+  [name="parentIdChooserFull"] li.focused > label {
+    outline: 1px dotted;
+  }
+  .parentIdChooserFullTreeContainer:focus [name="parentIdChooserFull"] li.focused > label {
     color: highlightText;
     background: highlight;
   }
-  [name="parentIdChooserFull"] li > .label:focus {
-    outline: 1px dotted;
-  }
-  [name="parentIdChooserFull"] li.chosen > .label > .twisty::before {
+  .parentIdChooserFullTreeContainer:focus [name="parentIdChooserFull"] li.chosen > label > .twisty::before {
     background: highlightText;
   }
 
-  [name="parentIdChooserFull"] li > .label div {
+  [name="parentIdChooserFull"] li > label div {
     overflow: hidden;
     text-overflow: ellipsis
   }
@@ -285,7 +280,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
                     type="text"
                     name="url"
                     value=${JSON.stringify(sanitizeForHTMLText(url))}></div
-       ><div class="itemContainer last ${inSidebarClass}"
+       ><div class="itemContainer ${inSidebarClass}"
             ><div class="itemContainer"
                  ><label for="${BASE_ID}:parentIdMini"
                          accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
@@ -294,29 +289,31 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
                        ><select id="${BASE_ID}:parentIdMini"
                                 name="parentIdMini"></select
                        ><button name="showAllFolders"
+                                data-no-accept-by-enter="true"
                                 title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
                        ></span></div
             ><div class="itemContainer"
                   name="parentIdChooserFullContainer"
-                 ><div class="parentIdChooserFullTreeWrapper"
+                 ><div class="parentIdChooserFullTreeContainer"
+                       tabindex="0"
+                       data-no-accept-by-enter="true"
                       ><ul name="parentIdChooserFull"></ul></div
                  ><span><button name="newFolder"
                                 accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder_accessKey')))}
+                                data-no-accept-by-enter="true"
                                >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder'))}</button
                                ></span></div
        ></div>
       `.trim(),
-      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout, inSidebar }) {
+      async onShown(container, { initFolderChooserDialogUIs, animationDuration, parentId, incrementalSearchTimeout, inSidebar }) {
         if (container.classList.contains('simulation'))
           return;
-        MenuUI.init();
         container.classList.add('bookmark-dialog');
         const [defaultItem, rootItems] = await Promise.all([
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
         ]);
-        initFolderChooser({
-          MenuUI,
+        initFolderChooserDialogUIs({
           animationDuration,
           defaultItem,
           rootItems,
@@ -327,8 +324,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
         container.querySelector('[name="title"]').select();
       },
       inject: {
-        MenuUI,
-        initFolderChooser,
+        initFolderChooserDialogUIs,
         animationDuration: getAnimationDuration(),
         parentId,
         incrementalSearchTimeout: configs.incrementalSearchTimeout,
@@ -468,88 +464,68 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
   if (showDialog) {
     const windowId = tabs[0].windowId;
     const inSidebar = location.pathname.startsWith('/sidebar/');
-    const divStyle = `
-      display: flex;
-      flex-direction: column;
-    `;
-    const labelStyle = `
-      display: flex;
-      flex-direction: column;
-      ${inSidebar ? 'align-items: stretch;' : ''}
-      ${inSidebar ? 'text-align: start;' : ''}
-    `;
-    const labelTextStyle = `
-      white-space: nowrap;
-    `;
-    const inputFieldStyle = `
-      display: flex;
-      ${inSidebar ? '' : 'margin-left: 0.25em;'}
-      ${inSidebar ? '' : 'flex-grow: 1;'}
-      ${inSidebar ? '' : 'flex-shrink: 1;'}
-      ${inSidebar ? '' : 'min-width: 30em;'}
-    `;
-    const parentIdChooserMiniContainerStyle = `
-      display: flex;
-      flex-direction: row;
-      ${inSidebar ? '' : 'margin-left: 0.25em;'}
-    `;
-    const parentIdChooserLightStyle = `
-      display: flex;
-      flex-grow: 1;
-    `;
-    const parentIdExpanderStyle = `
-      display: flex;
-      flex-grow: 0;
-    `;
+    const inSidebarClass = inSidebar ? 'inSidebar' : 'outOfSidebar';
+    const BASE_ID = `dialog-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
     const dialogParams = {
       content: `
-        <div style="${divStyle}"
-            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
-                    style="${labelStyle}"
-                   ><span style="${labelTextStyle}"
-                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</span
-                   ><input type="text"
-                           name="title"
-                           style="${inputFieldStyle}"
-                           value=${JSON.stringify(sanitizeForHTMLText(folderParams.title))}></label></div
-       ><div style="${divStyle}; margin-bottom: 3em;"
-            ><label accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))} style="${labelStyle}"
-                   ><span style="${labelTextStyle}"
-                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</span
-                   ><span style="${parentIdChooserMiniContainerStyle}"
-                         ><select name="parentIdMini"
-                                  style="${parentIdChooserLightStyle}"></select
-                         ><button name="showAllFolders"
-                                  style="${parentIdExpanderStyle}"
-                                  title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}
-                                 ></button
-                         ></span></label></div>
+        <style type="text/css">${DIALOG_STYLE}</style>
+        <div class="itemContainer ${inSidebarClass}"
+            ><label for="${BASE_ID}:title"
+                    accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
+                   >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</label
+            ><input id="${BASE_ID}:title"
+                    type="text"
+                    name="title"
+                    value=${JSON.stringify(sanitizeForHTMLText(title))}></div
+       ><div class="itemContainer ${inSidebarClass}"
+            ><div class="itemContainer"
+                 ><label for="${BASE_ID}:parentIdMini"
+                         accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
+                        >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</label
+                 ><span class="parentIdChooserMiniContainer"
+                       ><select id="${BASE_ID}:parentIdMini"
+                                name="parentIdMini"></select
+                       ><button name="showAllFolders"
+                                data-no-accept-by-enter="true"
+                                title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
+                       ></span></div
+            ><div class="itemContainer"
+                  name="parentIdChooserFullContainer"
+                 ><div class="parentIdChooserFullTreeContainer"
+                       tabindex="0"
+                       data-no-accept-by-enter="true"
+                      ><ul name="parentIdChooserFull"></ul></div
+                 ><span><button name="newFolder"
+                                accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder_accessKey')))}
+                                data-no-accept-by-enter="true"
+                               >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_newFolder'))}</button
+                               ></span></div
+       ></div>
       `.trim(),
-      async onShown(container, { MenuUI, initFolderChooser, animationDuration, parentId, incrementalSearchTimeout }) {
+      async onShown(container, { initFolderChooserDialogUIs, animationDuration, parentId, incrementalSearchTimeout }) {
         if (container.classList.contains('simulation'))
           return;
-        MenuUI.init();
         container.classList.add('bookmark-dialog');
         const [defaultItem, rootItems] = await Promise.all([
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-item-by-id', id: parentId }),
           browser.runtime.sendMessage({ type: 'treestyletab:get-bookmark-child-items' })
         ]);
-        initFolderChooser({
-          MenuUI,
+        initFolderChooserDialogUIs({
           animationDuration,
           defaultItem,
           rootItems,
           incrementalSearchTimeout,
           container,
+          inSidebar,
         });
         container.querySelector('[name="title"]').select();
       },
       inject: {
-        MenuUI,
-        initFolderChooser,
+        initFolderChooserDialogUIs,
         animationDuration: getAnimationDuration(),
         parentId: folderParams.parentId,
         incrementalSearchTimeout: configs.incrementalSearchTimeout,
+        inSidebar,
       },
       buttons: [
         browser.i18n.getMessage('bookmarkDialog_accept'),
@@ -624,9 +600,10 @@ function getTitlesWithTreeStructure(tabs) {
   return titles;
 }
 
-export async function initFolderChooser({ container, ...params } = {}) {
+async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   const miniList = container.querySelector('select[name="parentIdMini"]');
   const fullList = container.querySelector('ul[name="parentIdChooserFull"]');
+  const fullListFocusibleContainer = container.querySelector('.parentIdChooserFullTreeContainer');
   const fullContainer = container.querySelector('[name="parentIdChooserFullContainer"]');
   const expander = container.querySelector('button[name="showAllFolders"]');
 
@@ -649,14 +626,19 @@ export async function initFolderChooser({ container, ...params } = {}) {
   let lastChosenItem = params.defaultItem ||
     params.defaultValue && await getItemById(params.defaultValue) ||
     null;
-  if (lastChosenItem &&
-      !miniList.querySelector(`option[value="${lastChosenItem.id}"]`)) {
-    lastChosenOption.value       = lastChosenItem.id;
-    lastChosenOption.textContent = lastChosenItem.title;
-  }
-  else {
-    lastChosenOption.style.display = 'none';
-  }
+  const updateLastChosenOption = () => {
+    if (lastChosenItem &&
+        !miniList.querySelector(`option[value="${lastChosenItem.id}"]`)) {
+      lastChosenOption.value       = lastChosenItem.id;
+      lastChosenOption.textContent = lastChosenItem.title;
+      lastChosenOption.style.display = '';
+    }
+    else {
+      lastChosenOption.style.display = 'none';
+    }
+    miniList.value = lastChosenItem.id;
+  };
+  updateLastChosenOption();
 
   let expanded = false;
   let fullChooserHeight = 0;
@@ -675,22 +657,35 @@ export async function initFolderChooser({ container, ...params } = {}) {
   };
 
   // Initialize expander
-  expander.addEventListener('click', () => {
-    toggleFullChooser();
-  });
-  expander.addEventListener('keydown', event => {
-    if (event.key == 'Enter')
-      toggleFullChooser();
-  });
-
-  // Initialize full chooser
-  fullList.level = 0;
-
   const getElementTarget = event => {
     return event.target.nodeType == Node.ELEMENT_NODE ?
       event.target :
       event.target.parentNode;;
   };
+
+  expander.addEventListener('click', () => {
+    toggleFullChooser();
+  });
+  expander.addEventListener('keydown', event => {
+    const elementTarget = getElementTarget(event);
+    if (elementTarget != expander)
+      return;
+
+    switch (event.key) {
+      case 'Enter':
+        event.stopImmediatePropagation();
+        event.preventDefault();
+      case 'Space':
+        toggleFullChooser();
+        break;
+
+      default:
+        break;
+    }
+  }, { capture: true });
+
+  // Initialize full chooser
+  fullList.level = 0;
 
   const getTargetItem = event => {
     const elementTarget = getElementTarget(event);
@@ -698,35 +693,49 @@ export async function initFolderChooser({ container, ...params } = {}) {
   };
 
   const onItemClicked = item => {
-    item.classList.toggle('expanded');
-    if (item.classList.contains('expanded'))
-      item.$completeFolderItem();
-    for (const oldChosen of fullContainer.querySelectorAll('.chosen')) {
-      if (oldChosen == item)
+    if (!item)
+      return;
+
+    for (const oldFocused of fullListFocusibleContainer.querySelectorAll('.focused')) {
+      if (oldFocused == item)
         continue;
-      oldChosen.classList.remove('chosen');
+      oldFocused.classList.remove('focused');
     }
-    item.classList.add('chosen');
+    item.classList.add('focused');
     lastChosenItem = item.$item;
+
+    updateLastChosenOption();
   };
 
   const onCommand = event => {
     const item = getTargetItem(event);
-    if (getElementTarget(event)?.closest('.twisty')) {
-      item.classList.toggle('expanded');
-      if (item.classList.contains('expanded'))
-        item.$completeFolderItem();
-    }
-    if (item)
-      onItemClicked(item);
+    if (!item)
+      return;
+
+    item.classList.toggle('expanded');
+    if (item.classList.contains('expanded'))
+      item.$completeFolderItem();
+
+    onItemClicked(item);
   };
 
-  fullContainer.addEventListener('click', event => {
-    onCommand(event);
+  fullListFocusibleContainer.addEventListener('dblclick', event => {
+    if (!getElementTarget(event)?.closest('.twisty'))
+      onCommand(event);
   });
-  fullContainer.addEventListener('keydown', event => {
+  fullListFocusibleContainer.addEventListener('click', event => {
+    if (getElementTarget(event)?.closest('.twisty')) {
+      onCommand(event);
+    }
+    else {
+      onItemClicked(getTargetItem(event));
+    }
+  });
+  fullListFocusibleContainer.addEventListener('keydown', event => {
     switch (event.key) {
       case 'Enter':
+        event.stopImmediatePropagation();
+        event.preventDefault();
         onCommand(event);
         break;
 
@@ -737,85 +746,35 @@ export async function initFolderChooser({ container, ...params } = {}) {
       case 'DownArrow': {
         //const item = getTargetItem(event);
       }; break;
+
+      case 'RightArrow': {
+        //const item = getTargetItem(event);
+      }; break;
+
+      case 'LeftArrow': {
+        //const item = getTargetItem(event);
+      }; break;
     }
-  });
-  fullContainer.addEventListener('focus', event => {
-    const item = getTargetItem(event);
-    if (item && !item.classList.contains('chosen'))
-      onItemClicked(item);
   }, { capture: true });
 
-  let topLevelItems;
-  /*
-  anchor.ui = new (params.MenuUI || MenuUI)({
-    root:       chooserTree,
-    appearance: 'menu',
-    onCommand(item, event) {
-      if (item.dataset.id) {
-        lastChosenId         = item.dataset.id;
-        anchor.dataset.value = lastChosenId;
-        anchor.dataset.title = item.dataset.title;
-        anchor.textContent   = item.dataset.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
-        anchor.setAttribute('title', anchor.textContent);
-      }
-      if (typeof params.onCommand == 'function')
-        params.onCommand(item, event);
-      anchor.ui.close();
-    },
-    onShown() {
-      for (const item of chooserTree.querySelectorAll('.checked')) {
-        item.classList.remove('checked');
-      }
-      if (lastChosenItem) {
-        const item = chooserTree.querySelector(`.radio[data-id="${lastChosenItem.id}"]`);
-        if (item)
-          item.classList.add('checked');
-      }
-    },
-    onHidden() {
-      const range = document.createRange();
-      for (const folderItem of topLevelItems) {
-        const separator = folderItem.lastChild.querySelector('.separator');
-        if (!separator)
-          continue;
-        range.selectNodeContents(folderItem.lastChild);
-        range.setStartBefore(separator);
-        range.deleteContents();
-        folderItem.classList.remove('has-built-children');
-      }
-      range.detach();
-    },
-    animationDuration: params.animationDuration || getAnimationDuration(),
-    incrementalSearch: true,
-    incrementalSearchTimeout: params.incrementalSearchTimeout,
+  miniList.addEventListener('change', () => {
+    const fullListItem = fullList.querySelector(`li[data-id="${miniList.value}"]`);
+    if (fullListItem)
+      onItemClicked(fullListItem);
   });
-  anchor.addEventListener('click', () => {
-    anchor.ui.open({
-      anchor
-    });
-  });
-  anchor.addEventListener('keydown', event => {
-    if (event.key == 'Enter')
-      anchor.ui.open({
-        anchor
-      });
-  });
-  */
-
 
   const generateFolderItem = (folder, level) => {
     const item = document.createElement('li');
     item.$item = folder;
-    const label = item.appendChild(document.createElement('span'));
-    label.setAttribute('class', 'label');
+    item.setAttribute('data-id', folder.id);
+    const title = folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+    const label = item.appendChild(document.createElement('label'));
     label.setAttribute('style', `padding-left: calc(1.25em * ${level} + 0.25em);`);
-    label.setAttribute('tabindex', '0');
-    label.setAttribute('id', `bookmarkFolderItem:${folder.id}`);
-    label.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
+    label.setAttribute('title', title);
     const twisty = label.appendChild(document.createElement('span'));
     twisty.setAttribute('class', 'twisty');
     const text = label.appendChild(document.createElement('div'));
-    text.textContent = folder.title;
+    text.textContent = title;
     return item;
   };
 
@@ -861,7 +820,184 @@ export async function initFolderChooser({ container, ...params } = {}) {
     return createdItems;
   };
 
-  topLevelItems = await buildItems(params.rootItems, fullList);
+  const topLevelItems = await buildItems(params.rootItems, fullList);
+  if (lastChosenItem) {
+    const ancestorIds = await browser.runtime.sendMessage({
+      type: 'treestyletab:get-bookmark-ancestor-ids',
+      id:   lastChosenItem.id,
+    });
+    let itemToBeFocused;
+    for (const id of [...ancestorIds.reverse(), lastChosenItem.id]) {
+      if (id == 'root________')
+        continue;
+
+      const item = fullList.querySelector(`li[data-id="${id}"]`);
+      if (!item)
+        break;
+
+      itemToBeFocused = item;
+      item.classList.add('expanded');
+      await item.$completeFolderItem();
+    }
+    if (itemToBeFocused)
+      itemToBeFocused.classList.add('focused');
+  }
+  else if (topLevelItems.length > 0) {
+    topLevelItems[0].classList.add('focused');
+  }
+}
+
+export async function initFolderChooser(anchor, params = {}) {
+  let chooserTree = window.$bookmarkFolderChooserTree;
+  if (!chooserTree) {
+    chooserTree = window.$bookmarkFolderChooserTree = document.documentElement.appendChild(document.createElement('ul'));
+  }
+  else {
+    const range = document.createRange();
+    range.selectNodeContents(chooserTree);
+    range.deleteContents();
+    range.detach();
+  }
+
+  delete anchor.dataset.value;
+  anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
+
+  anchor.style.overflow     = 'hidden';
+  anchor.style.textOverflow = 'ellipsis';
+  anchor.style.whiteSpace   = 'pre';
+
+  let lastChosenId = null;
+  if (params.defaultItem || params.defaultValue) {
+    const item = params.defaultItem || await getItemById(params.defaultValue);
+    if (item) {
+      lastChosenId         = item.id;
+      anchor.dataset.value = lastChosenId;
+      anchor.dataset.title = item.title;
+      anchor.textContent   = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+      anchor.setAttribute('title', anchor.textContent);
+    }
+  }
+
+  // eslint-disable-next-line prefer-const
+  let topLevelItems;
+  anchor.ui = new (params.MenuUI || MenuUI)({
+    root:       chooserTree,
+    appearance: 'menu',
+    onCommand(item, event) {
+      if (item.dataset.id) {
+        lastChosenId         = item.dataset.id;
+        anchor.dataset.value = lastChosenId;
+        anchor.dataset.title = item.dataset.title;
+        anchor.textContent   = item.dataset.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+        anchor.setAttribute('title', anchor.textContent);
+      }
+      if (typeof params.onCommand == 'function')
+        params.onCommand(item, event);
+      anchor.ui.close();
+    },
+    onShown() {
+      for (const item of chooserTree.querySelectorAll('.checked')) {
+        item.classList.remove('checked');
+      }
+      if (lastChosenId) {
+        const item = chooserTree.querySelector(`.radio[data-id="${lastChosenId}"]`);
+        if (item)
+          item.classList.add('checked');
+      }
+    },
+    onHidden() {
+      const range = document.createRange();
+      for (const folderItem of topLevelItems) {
+        const separator = folderItem.lastChild.querySelector('.separator');
+        if (!separator)
+          continue;
+        range.selectNodeContents(folderItem.lastChild);
+        range.setStartBefore(separator);
+        range.deleteContents();
+        folderItem.classList.remove('has-built-children');
+      }
+      range.detach();
+    },
+    animationDuration: params.animationDuration || getAnimationDuration(),
+    incrementalSearch: true,
+    incrementalSearchTimeout: params.incrementalSearchTimeout,
+  });
+  anchor.addEventListener('click', () => {
+    anchor.ui.open({
+      anchor
+    });
+  });
+  anchor.addEventListener('keydown', event => {
+    if (event.key == 'Enter')
+      anchor.ui.open({
+        anchor
+      });
+  });
+
+  const generateFolderItem = (folder) => {
+    const item = document.createElement('li');
+    item.appendChild(document.createTextNode(folder.title));
+    item.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
+    item.dataset.id    = folder.id;
+    item.dataset.title = folder.title;
+    item.classList.add('folder');
+    item.classList.add('radio');
+    const container = item.appendChild(document.createElement('ul'));
+    const useThisItem = container.appendChild(document.createElement('li'));
+    useThisItem.textContent   = browser.i18n.getMessage('bookmarkFolderChooser_useThisFolder');
+    useThisItem.dataset.id    = folder.id;
+    useThisItem.dataset.title = folder.title;
+    return item;
+  };
+
+  const buildItems = async (items, container) => {
+    const createdItems = [];
+    for (const item of items) {
+      if (item.type == 'bookmark' &&
+          /^place:parent=([^&]+)$/.test(item.url)) { // alias for special folders
+        const realItem = await browser.runtime.sendMessage({
+          type: 'treestyletab:get-bookmark-item-by-id',
+          id:   RegExp.$1
+        });
+        item.id    = realItem.id;
+        item.type  = realItem.type;
+        item.title = realItem.title;
+      }
+      if (item.type != 'folder')
+        continue;
+      const folderItem = generateFolderItem(item);
+      container.appendChild(folderItem);
+      createdItems.push(folderItem);
+      folderItem.$completeFolderItem = async () => {
+        if (!item.$fetched &&
+            !('children' in item)) {
+          item.$fetched = true;
+          item.children = await browser.runtime.sendMessage({
+            type: 'treestyletab:get-bookmark-child-items',
+            id:   item.id
+          });
+        }
+        if (item.children &&
+            item.children.length > 0 &&
+            !folderItem.classList.contains('has-built-children')) {
+          folderItem.classList.add('has-built-children');
+          await buildItems(item.children, folderItem.lastChild);
+          anchor.ui.updateMenuItem(folderItem);
+        }
+        return folderItem;
+      };
+      folderItem.addEventListener('focus', folderItem.$completeFolderItem);
+      folderItem.addEventListener('mouseover', folderItem.$completeFolderItem);
+    }
+    const firstFolderItem = container.querySelector('.folder');
+    if (firstFolderItem && firstFolderItem.previousSibling) {
+      const separator = container.insertBefore(document.createElement('li'), firstFolderItem);
+      separator.classList.add('separator');
+    }
+    return createdItems;
+  };
+
+  topLevelItems = await buildItems(params.rootItems, chooserTree);
 }
 
 let mCreatedBookmarks = [];
