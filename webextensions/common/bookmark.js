@@ -224,13 +224,11 @@ const DIALOG_STYLE = `
   }
 
   [name="parentIdChooserFull"] li.focused > label {
-    outline: 1px dotted;
-  }
-  .parentIdChooserFullTreeContainer:focus [name="parentIdChooserFull"] li.focused > label {
     color: highlightText;
     background: highlight;
+    outline: 1px dotted;
   }
-  .parentIdChooserFullTreeContainer:focus [name="parentIdChooserFull"] li.chosen > label > .twisty::before {
+  [name="parentIdChooserFull"] li.chosen > label > .twisty::before {
     background: highlightText;
   }
 
@@ -613,6 +611,8 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   const fullContainer = container.querySelector('[name="parentIdChooserFullContainer"]');
   const expander = container.querySelector('button[name="showAllFolders"]');
 
+  const BASE_ID = `folderChooser-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
+
   const ensureItemVisible = item => {
     const itemRect = item.querySelector('label').getBoundingClientRect();
     const containerRect = fullListFocusibleContainer.getBoundingClientRect();
@@ -639,11 +639,10 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   miniList.appendChild(document.createElement('hr'));
   const expanderOption = miniList.appendChild(document.createElement('option'));
   expanderOption.textContent = browser.i18n.getMessage('bookmarkDialog_showAllFolders_label');
-  expanderOption.setAttribute('name', 'expandChooser');
+  expanderOption.setAttribute('value', `${BASE_ID}expandChooser`);
 
   miniList.appendChild(document.createElement('hr'));
   const lastChosenOption = miniList.appendChild(document.createElement('option'));
-  lastChosenOption.setAttribute('name', 'lastChosen');
 
   let lastChosenItem = params.defaultItem ||
     params.defaultValue && await getItemById(params.defaultValue) ||
@@ -832,6 +831,13 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   }, { capture: true });
 
   miniList.addEventListener('change', () => {
+    if (miniList.value == `${BASE_ID}expandChooser`) {
+      if (!fullContainer.classList.contains('expanded'))
+        toggleFullChooser();
+      miniList.value = lastChosenItem ? lastChosenItem.id : miniList.firstChild.value;
+      return;
+    }
+
     const fullListItem = fullList.querySelector(`li[data-id="${miniList.value}"]`);
     if (fullListItem)
       onItemClicked(fullListItem);
