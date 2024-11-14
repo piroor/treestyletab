@@ -188,6 +188,7 @@
   "bookmarkDialog_showAllFolders_tooltip":      { "message": "Show all the bookmarks folders" },
   "bookmarkDialog_newFolder":      { "message": "New Folder" },
   "bookmarkDialog_newFolder_accessKey": { "message": "o" },
+  "bookmarkDialog_newFolder_defaultTitle":   { "message": "New Folder" },
   "bookmarkDialog_saveContainerRedirectKey": { "message": "Save container information for Container Bookmarks" },
   "bookmarkDialog_accept":   { "message": "Save" },
   "bookmarkDialog_cancel":   { "message": "Cancel" },

@@ -79,10 +79,25 @@ if (Constants.IS_BACKGROUND) {
           return ancestorIds;
         })();
 
+      case 'treestyletab:create-new-bookmark-folder':
+        return (async () => {
+          const folder = await browser.bookmarks.create({
+            type: 'folder',
+            title: browser.i18n.getMessage('bookmarkDialog_newFolder_defaultTitle'),
+            parentId: message.parentId,
+            ...(typeof message.index == 'number' ? { index: message.index } : {}),
+          }).catch(ApiTabs.createErrorHandler());
+          return folder;
+        })();
+
+      case 'treestyletab:update-bookmark-folder':
+        return browser.bookmarks.update(message.id, {
+          title: message.title,
+        }).catch(ApiTabs.createErrorHandler());
+
       case 'treestyletab:resize-bookmark-dialog-by':
         return (async () => {
           const win = await browser.windows.get(sender.tab.windowId);
-          console.log(win, message);
           return browser.windows.update(win.id, {
             width: win.width + (message.width || 0),
             height: win.height + (message.height || 0),
@@ -232,9 +247,18 @@ const DIALOG_STYLE = `
     background: highlightText;
   }
 
-  [name="parentIdChooserFull"] li > label div {
+  [name="parentIdChooserFull"] li > label > .label-text {
     overflow: hidden;
     text-overflow: ellipsis
+  }
+
+  li.editing > label > .label-text {
+    display: none;
+  }
+
+  li.editing > label > input[type="text"] {
+    display: flex;
+    flex-grow: 1;
   }
 `;
 
@@ -609,7 +633,8 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   const fullList = container.querySelector('ul[name="parentIdChooserFull"]');
   const fullListFocusibleContainer = container.querySelector('.parentIdChooserFullTreeContainer');
   const fullContainer = container.querySelector('[name="parentIdChooserFullContainer"]');
-  const expander = container.querySelector('button[name="showAllFolders"]');
+  const expandeFullListButton = container.querySelector('button[name="showAllFolders"]');
+  const newFolderButton = container.querySelector('button[name="newFolder"]');
 
   const BASE_ID = `folderChooser-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
 
@@ -647,9 +672,12 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   let lastChosenItem = params.defaultItem ||
     params.defaultValue && await getItemById(params.defaultValue) ||
     null;
+  const getLastChosenItem = () => {
+    return lastChosenItem || miniList.firstChild.$item || null;
+  };
+
   const updateLastChosenOption = () => {
-    if (lastChosenItem &&
-        !miniList.querySelector(`option[value="${lastChosenItem.id}"]`)) {
+    if (lastChosenItem) {
       lastChosenOption.value       = lastChosenItem.id;
       lastChosenOption.textContent = lastChosenItem.title;
       lastChosenOption.style.display = '';
@@ -657,7 +685,7 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
     else {
       lastChosenOption.style.display = 'none';
     }
-    miniList.value = lastChosenItem.id;
+    miniList.value = getLastChosenItem().id;
   };
   updateLastChosenOption();
 
@@ -666,7 +694,7 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   const toggleFullChooser = async () => {
     expanded = !expanded;
     fullContainer.classList.toggle('expanded', expanded);
-    expander.classList.toggle('expanded', expanded);
+    expandeFullListButton.classList.toggle('expanded', expanded);
     if (!params.inSidebar) {
       fullChooserHeight = Math.max(fullChooserHeight, 150);
       await browser.runtime.sendMessage({
@@ -689,12 +717,14 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
       event.target.parentNode;;
   };
 
-  expander.addEventListener('click', () => {
+  expandeFullListButton.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
     toggleFullChooser();
   });
-  expander.addEventListener('keydown', event => {
+  expandeFullListButton.addEventListener('keydown', event => {
     const elementTarget = getElementTarget(event);
-    if (elementTarget != expander)
+    if (elementTarget != expandeFullListButton)
       return;
 
     switch (event.key) {
@@ -712,6 +742,12 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   // Initialize full chooser
   fullList.level = 0;
 
+  const exitAllEditings = () => {
+    for (const item of fullList.querySelectorAll('li.editing')) {
+      item.$exitTitleEdit();
+    }
+  };
+
   const getTargetItem = event => {
     const elementTarget = getElementTarget(event);
     return elementTarget?.closest('li');
@@ -720,6 +756,8 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   const onItemClicked = item => {
     if (!item)
       return;
+
+    exitAllEditings();
 
     for (const oldFocused of fullListFocusibleContainer.querySelectorAll('.focused')) {
       if (oldFocused == item)
@@ -746,10 +784,17 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   };
 
   fullListFocusibleContainer.addEventListener('dblclick', event => {
-    if (!getElementTarget(event)?.closest('.twisty'))
-      onCommand(event);
+    if (event.button != 0)
+      return;
+    if (getElementTarget(event)?.closest('.twisty'))
+      return;
+    const item = getTargetItem(event);
+    if (item)
+      item.$enterTitleEdit();
   });
   fullListFocusibleContainer.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
     if (getElementTarget(event)?.closest('.twisty')) {
       onCommand(event);
     }
@@ -764,6 +809,8 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
     switch (event.key) {
       case 'Enter':
         cancelEvent(event);
+        if (focusedItem && focusedItem.matches('.editing'))
+          focusedItem.$exitTitleEdit();
         onCommand(event);
         break;
 
@@ -830,11 +877,24 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
     }
   }, { capture: true });
 
+  container.addEventListener('focus', event => {
+    if (!getTargetItem(event)?.closest('input[type="text"], .parentIdChooserFullTreeContainer'))
+      exitAllEditings();
+  }, { capture: true });
+
+  container.addEventListener('blur', event => {
+    if (getTargetItem(event)?.closest('input[type="text"]')) {
+      const editingItem = fullList.querySelector('li.editing');
+      if (editingItem)
+        editingItem.$exitTitleEdit();
+    }
+  }, { capture: true });
+
   miniList.addEventListener('change', () => {
     if (miniList.value == `${BASE_ID}expandChooser`) {
       if (!fullContainer.classList.contains('expanded'))
         toggleFullChooser();
-      miniList.value = lastChosenItem ? lastChosenItem.id : miniList.firstChild.value;
+      miniList.value = getLastChosenItem().id;
       return;
     }
 
@@ -842,6 +902,47 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
     if (fullListItem)
       onItemClicked(fullListItem);
   });
+
+  const createNewSubFolder = async () => {
+    const folder = await browser.runtime.sendMessage({
+      type:     'treestyletab:create-new-bookmark-folder',
+      parentId: getLastChosenItem().id,
+    });
+    const parentItem = fullList.querySelector(`li[data-id="${folder.parentId}"]`);
+    if (!parentItem)
+      return;
+    parentItem.$invalidate();
+    parentItem.classList.add('expanded');
+    await parentItem.$completeFolderItem();
+    const folderItem = parentItem.querySelector(`li[data-id="${folder.id}"]`);
+    if (!folderItem)
+      return;
+
+    onItemClicked(folderItem);
+    folderItem.$enterTitleEdit();
+  };
+
+  newFolderButton.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    createNewSubFolder();
+  });
+  newFolderButton.addEventListener('keydown', event => {
+    const elementTarget = getElementTarget(event);
+    if (elementTarget != newFolderButton)
+      return;
+
+    switch (event.key) {
+      case 'Enter':
+        cancelEvent(event);
+      case 'Space':
+        createNewSubFolder();
+        break;
+
+      default:
+        break;
+    }
+  }, { capture: true });
 
   const generateFolderItem = (folder, level) => {
     const item = document.createElement('li');
@@ -854,6 +955,7 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
     const twisty = label.appendChild(document.createElement('span'));
     twisty.setAttribute('class', 'twisty');
     const text = label.appendChild(document.createElement('div'));
+    text.setAttribute('class', 'label-text');
     text.textContent = title;
     return item;
   };
@@ -873,12 +975,15 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
       }
       if (item.type != 'folder')
         continue;
+
+      if (container.querySelector(`li[data-id="${item.id}"]`))
+        continue;
+
       const folderItem = generateFolderItem(item, container.level);
-      container.appendChild(folderItem);
+      container.insertBefore(folderItem, 'index' in item ? container.childNodes[item.index] : null);
       createdItems.push(folderItem);
       folderItem.$completeFolderItem = async () => {
-        if (!item.$fetched &&
-            !('children' in item)) {
+        if (!item.$fetched) {
           item.$fetched = true;
           item.children = (await browser.runtime.sendMessage({
             type: 'treestyletab:get-bookmark-child-items',
@@ -887,14 +992,50 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
         }
         folderItem.classList.toggle('noChild', !item.children || item.children.length == 0);
         if (item.children &&
-            item.children.length > 0 &&
-            !folderItem.classList.contains('has-built-children')) {
-          folderItem.classList.add('has-built-children');
-          const subFolderContainer = folderItem.appendChild(document.createElement('ul'));
-          subFolderContainer.level = container.level + 1;
+            item.children.length > 0) {
+          let subFolderContainer = folderItem.querySelector('ul');;
+          if (!subFolderContainer) {
+            subFolderContainer = folderItem.appendChild(document.createElement('ul'));
+            subFolderContainer.level = container.level + 1;
+          }
           await buildItems(item.children, subFolderContainer);
         }
         return folderItem;
+      };
+      folderItem.$invalidate = () => {
+        item.$fetched = false;
+      };
+      let titleField;
+      folderItem.$enterTitleEdit = async () => {
+        exitAllEditings();
+        if (!titleField) {
+          const label = folderItem.querySelector('label');
+          folderItem.classList.add('editing');
+          titleField = label.appendChild(document.createElement('input'));
+          titleField.setAttribute('type', 'text');
+          label.appendChild(titleField);
+          titleField.value = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+        }
+        titleField.focus();
+        titleField.select();
+      };
+      folderItem.$exitTitleEdit = async () => {
+        if (!titleField)
+          return;
+        browser.runtime.sendMessage({
+          type:  'treestyletab:update-bookmark-folder',
+          id:    item.id,
+          title: titleField.value,
+        });
+        item.title =
+           folderItem.querySelector('.label-text').textContent = titleField.value;
+        folderItem.querySelector('label').setAttribute('title', titleField.value);
+        if (lastChosenItem?.id == item.id)
+          lastChosenItem.title = item.title;
+        titleField.parentNode.removeChild(titleField);
+        titleField = null;
+        folderItem.classList.remove('editing');
+        updateLastChosenOption();
       };
     }
     return createdItems;
@@ -1063,8 +1204,6 @@ export async function initFolderChooser(anchor, params = {}) {
         }
         return folderItem;
       };
-      folderItem.addEventListener('focus', folderItem.$completeFolderItem);
-      folderItem.addEventListener('mouseover', folderItem.$completeFolderItem);
     }
     const firstFolderItem = container.querySelector('.folder');
     if (firstFolderItem && firstFolderItem.previousSibling) {

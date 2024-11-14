@@ -188,6 +188,7 @@
   "bookmarkDialog_showAllFolders_tooltip":      { "message": "すべてのブックマークフォルダーを表示します" },
   "bookmarkDialog_newFolder":      { "message": "新しいフォルダー(O)" },
   "bookmarkDialog_newFolder_accessKey": { "message": "o" },
+  "bookmarkDialog_newFolder_defaultTitle":   { "message": "新しいフォルダー" },
   "bookmarkDialog_saveContainerRedirectKey": { "message": "コンテナーの情報をContainer Bookmarks形式で保存する" },
   "bookmarkDialog_accept":   { "message": "保存" },
   "bookmarkDialog_cancel":   { "message": "キャンセル" },
