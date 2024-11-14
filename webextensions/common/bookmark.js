@@ -122,7 +122,7 @@ const DIALOG_STYLE = `
     display: flex;
     flex-direction: row;
   }
-  [name="parentIdMini"] {
+  [name="parentId"] {
     display: flex;
     flex-grow: 1;
     max-width: calc(100% - 2em /* width of the showAllFolders button */);
@@ -271,29 +271,29 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
       content: `
         <style type="text/css">${DIALOG_STYLE}</style>
         <div class="itemContainer ${inSidebarClass}"
-            ><label for="${BASE_ID}:title"
+            ><label for="${BASE_ID}title"
                     accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
                    >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</label
-            ><input id="${BASE_ID}:title"
+            ><input id="${BASE_ID}title"
                     type="text"
                     name="title"
                     value=${JSON.stringify(sanitizeForHTMLText(title))}></div
        ><div class="itemContainer ${inSidebarClass}"
-            ><label for="${BASE_ID}:url"
+            ><label for="${BASE_ID}url"
                     accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url_accessKey')))}
                    >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_url'))}</label
-            ><input id="${BASE_ID}:url"
+            ><input id="${BASE_ID}url"
                     type="text"
                     name="url"
                     value=${JSON.stringify(sanitizeForHTMLText(url))}></div
        ><div class="itemContainer last ${inSidebarClass}"
             ><div class="itemContainer"
-                 ><label for="${BASE_ID}:parentIdMini"
+                 ><label for="${BASE_ID}parentId"
                          accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</label
                  ><span class="parentIdChooserMiniContainer"
-                       ><select id="${BASE_ID}:parentIdMini"
-                                name="parentIdMini"></select
+                       ><select id="${BASE_ID}parentId"
+                                name="parentId"></select
                        ><button name="showAllFolders"
                                 data-no-accept-by-enter="true"
                                 title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
@@ -365,9 +365,9 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
     }
     if (result.buttonIndex != 0)
       return null;
-    title    = result.values.title;
-    url      = result.values.url;
-    parentId = result.values.parentId;
+    title    = result.values[`${BASE_ID}title`];
+    url      = result.values[`${BASE_ID}url`];
+    parentId = result.values[`${BASE_ID}parentId`];
   }
 
   mCreatingCount++;
@@ -476,21 +476,21 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
       content: `
         <style type="text/css">${DIALOG_STYLE}</style>
         <div class="itemContainer ${inSidebarClass}"
-            ><label for="${BASE_ID}:title"
+            ><label for="${BASE_ID}title"
                     accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title_accessKey')))}
                    >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_title'))}</label
-            ><input id="${BASE_ID}:title"
+            ><input id="${BASE_ID}title"
                     type="text"
                     name="title"
                     value=${JSON.stringify(sanitizeForHTMLText(title))}></div
        ><div class="itemContainer last ${inSidebarClass}"
             ><div class="itemContainer"
-                 ><label for="${BASE_ID}:parentIdMini"
+                 ><label for="${BASE_ID}parentId"
                          accesskey=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId_accessKey')))}
                         >${sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_parentId'))}</label
                  ><span class="parentIdChooserMiniContainer"
-                       ><select id="${BASE_ID}:parentIdMini"
-                                name="parentIdMini"></select
+                       ><select id="${BASE_ID}parentId"
+                                name="parentId"></select
                        ><button name="showAllFolders"
                                 data-no-accept-by-enter="true"
                                 title=${JSON.stringify(sanitizeForHTMLText(browser.i18n.getMessage('bookmarkDialog_showAllFolders_tooltip')))}></button
@@ -562,8 +562,8 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
     }
     if (result.buttonIndex != 0)
       return null;
-    folderParams.title    = result.values.title;
-    folderParams.parentId = result.values.parentId;
+    folderParams.title    = result.values[`${BASE_ID}title`];
+    folderParams.parentId = result.values[`${BASE_ID}parentId`];
   }
 
   const toBeCreatedCount = tabs.length + 1;
@@ -607,7 +607,7 @@ function getTitlesWithTreeStructure(tabs) {
 }
 
 async function initFolderChooserDialogUIs({ container, ...params } = {}) {
-  const miniList = container.querySelector('select[name="parentIdMini"]');
+  const miniList = container.querySelector('select[name="parentId"]');
   const fullList = container.querySelector('ul[name="parentIdChooserFull"]');
   const fullListFocusibleContainer = container.querySelector('.parentIdChooserFullTreeContainer');
   const fullContainer = container.querySelector('[name="parentIdChooserFullContainer"]');
