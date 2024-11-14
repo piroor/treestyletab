@@ -648,17 +648,22 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
 
   let expanded = false;
   let fullChooserHeight = 0;
-  const toggleFullChooser = () => {
+  const toggleFullChooser = async () => {
     expanded = !expanded;
     fullContainer.classList.toggle('expanded', expanded);
     expander.classList.toggle('expanded', expanded);
     if (!params.inSidebar) {
       fullChooserHeight = Math.max(fullChooserHeight, 150);
-      browser.runtime.sendMessage({
+      await browser.runtime.sendMessage({
         type: 'treestyletab:resize-bookmark-dialog-by',
         width: 0,
         height: expanded ? fullChooserHeight : -fullChooserHeight,
       });
+    }
+    if (lastChosenItem) {
+      const item = fullList.querySelector(`li[data-id="${lastChosenItem.id}"]`);
+      if (item)
+        item.scrollIntoView();
     }
   };
 
@@ -827,12 +832,12 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
   };
 
   const topLevelItems = await buildItems(params.rootItems, fullList);
+  let itemToBeFocused = topLevelItems.length > 0 && topLevelItems[0];
   if (lastChosenItem) {
     const ancestorIds = await browser.runtime.sendMessage({
       type: 'treestyletab:get-bookmark-ancestor-ids',
       id:   lastChosenItem.id,
     });
-    let itemToBeFocused;
     for (const id of [...ancestorIds.reverse(), lastChosenItem.id]) {
       if (id == 'root________')
         continue;
@@ -845,12 +850,9 @@ async function initFolderChooserDialogUIs({ container, ...params } = {}) {
       item.classList.add('expanded');
       await item.$completeFolderItem();
     }
-    if (itemToBeFocused)
-      itemToBeFocused.classList.add('focused');
   }
-  else if (topLevelItems.length > 0) {
-    topLevelItems[0].classList.add('focused');
-  }
+  if (itemToBeFocused)
+    itemToBeFocused.classList.add('focused');
 }
 
 export async function initFolderChooser(anchor, params = {}) {
