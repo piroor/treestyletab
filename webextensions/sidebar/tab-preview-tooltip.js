@@ -5,6 +5,65 @@
 */
 'use strict';
 
+// Overview of the tab preview tooltip:
+//
+// Tab preview tooltips are processed by the combination of this script
+// and content scripts. Players are:
+//
+// * This script (CONTROLLER)
+// * The content script of the active tab to load tab preview frames
+//   (LOADER): injected by prepareFrame()
+// * The content script of the tab preview frame (FRAME): loaded as
+//   "/resources/tab-preview-frame.js"
+// * The tab A: a tab to be shown in the preview tooltip.
+// * The tab B: the active tab which is used to show the preview tooltip.
+//
+// When we need to show a tab preview:
+//
+// 1. The CONTROLLER detects "mouseover" event on a tab.
+// 2. The CONTROLLER sends a message to the LOADER of the active tab,
+//    like "do you know the 'frameId' in your paeg?"
+//    1. If no response, the CONTROLLER loads a content script LOADER
+//       into the active tab.
+//       1. The LOADER generates a transparent iframe with the URL of
+//          "/resources/tab-preview-frame.html".
+//       2. The FRAME is loaded and it sends a message to the CONTROLLER
+//          like "now I'm ready!"
+//       3. The CONTROLLER receives the message and gets the `sender.frameId`
+//          information corresponding to the message.
+//       4. The CONTROLLER sends the `frameId` information to the LOADER
+//          of the active tab, like "hey, your iframe is loaded  with the
+//          frameId XXX!`
+//       5. The LOADER of the active tab tracks the notified `frameId`.
+//    2. The LOADER of the active tab responds to the CONTROLLER, like
+//       "OK, I'm ready and the frameId of my iframe is XXX!"
+//    3. If these operation is not finished until some seconds, the
+//       CONTROLLER gives up to show the preview.
+// 3. The CONTROLLER receives the "I'm ready" response with `frameId` from
+//    the LOADER of the active tab.
+// 4. The CONTROLLER generates a thumbnail image for the tab A, and sends
+//    a message with `frameId` to the FRAME in the active  tab, like "show
+//    a preview with a thumbnail image 'data:image/png,...' at the position
+//    (x,y)"
+// 5. The FRAME with the specified `frameId` shows the preview.
+//
+// When we need to hide a tab preview:
+//
+// 1. The CONTROLLER detects `mouseleave` event on a tab.
+// 2. The CONTROLLER sends a message to the LOADER of the active tab, like
+//    "do you know the 'frameId' in your paeg?"
+//    1. If no response, the CONTROLLER gives up to hide the preview.
+//       We have nothing to do.
+// 3. The CONTROLLER receives the "I'm ready" response with `frameId` from
+//    the LOADER of the active tab.
+// 4. The CONTROLLER sends a message with `frameId` to the FRAME in the
+//    active tab, like "hide a preview"
+// 5. The FRAME with the specified `frameId` hides the preview.
+//
+// I think the CONTROLLER should not track `frameId` for each tab.
+// Contents of tabs are frequently destroyed, so `frameId` information
+// stored (cached) by the CONTROLLER will become obsolete too easily.
+
 import * as TabsStore from '/common/tabs-store.js';
 //import Tab from '/common/Tab.js';
 
@@ -25,6 +84,7 @@ const TAB_PREVIEW_FRAME_STYLE = `
 
 async function prepareFrame(tabId) {
   await browser.tabs.executeScript(tabId, {
+    matchAboutBlank: true,
     code: `
       const frame = document.createElement('iframe');
       frame.setAttribute('src', '${browser.runtime.getURL('/resources/tab-preview-frame.html')}');

@@ -5,6 +5,9 @@
 */
 'use strict';
 
+// This is a sub part to show tab preview tooltip.
+// See also: /siedbar/tab-preview-tooltip.js
+
 try{
   browser.runtime.onMessage.addListener((message, _sender) => {
     console.log('ON MESSAGE IN IFRAME ', message);
