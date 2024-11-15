@@ -261,6 +261,7 @@
     "browser_style": false
   },
   "web_accessible_resources": [
+    "/resources/blank.html",
     "/resources/group-tab.html*",
     "/resources/icons/*",
     "/sidebar/styles/icons/*"
