@@ -88,6 +88,8 @@ const TAB_PREVIEW_FRAME_STYLE = `
   z-index: 65000;
 `;
 
+const CAPTURABLE_URLS_MATCHER = /^(https?|data):/;
+
 document.addEventListener(kEVENT_TAB_SUBSTANCE_ENTER, onTabSubstanceEnter);
 document.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
 
@@ -151,7 +153,17 @@ async function onTabSubstanceEnter(event) {
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
   const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
   const active = event.target.tab.id == activeTab.id;
-  const previewURL = !active && await browser.tabs.captureTab(event.target.tab.id);
+
+  let previewURL;
+  try {
+    if (!active &&
+        CAPTURABLE_URLS_MATCHER.test(event.target.tab.url)) {
+      previewURL = await browser.tabs.captureTab(event.target.tab.id);
+    }
+  }
+  catch (_error) {
+  }
+
   //console.log(event.type, event, event.target.tab, event.target, activeTab);
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
