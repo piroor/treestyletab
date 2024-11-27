@@ -72,6 +72,7 @@ export class TabElement extends HTMLElement {
     super();
 
     // We should initialize private properties with blank value for better performance with a fixed shape.
+    this._tab = null;
     this._reservedUpdateTooltip = null;
     this.__onMouseOver = null;
     this.__onMouseEnter = null;
@@ -207,6 +208,7 @@ export class TabElement extends HTMLElement {
       this._reservedUpdateTooltip = null;
     }
     this._endListening();
+    this._tab = null;
   }
 
   get initialized() {
