@@ -56,7 +56,7 @@ try{
     switch (message?.type) {
       case 'treestyletab:show-tab-preview':
         if (!container) {
-          container = createPreview(message);
+          container = createPreview();
         }
         updatePreview(message, container);
         document.documentElement.appendChild(container);
@@ -82,7 +82,7 @@ catch (error) {
   console.log('TST Tab Preview Frame fatal error: ', error);
 }
 
-function createPreview(params) {
+function createPreview() {
   const container = document.createElement('div');
   container.setAttribute('class', 'tab-preview-container');
   const title = container.appendChild(document.createElement('div'));
