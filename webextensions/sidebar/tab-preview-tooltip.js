@@ -98,9 +98,17 @@ document.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
 async function prepareFrame(tabId) {
   await browser.tabs.executeScript(tabId, {
     matchAboutBlank: true,
-    code: `
+    code: `(() => {
+      const url = '${browser.runtime.getURL('/resources/tab-preview-frame.html')}';
+
+      // cleanup!
+      const oldFrames = document.querySelectorAll('iframe[src="' + url + '"]');
+      for (const oldFrame of oldFrames) {
+        oldFrame.parentNode.removeChild(oldFrame);
+      }
+
       const frame = document.createElement('iframe');
-      frame.setAttribute('src', '${browser.runtime.getURL('/resources/tab-preview-frame.html')}');
+      frame.setAttribute('src', url);
       frame.setAttribute('style', ${JSON.stringify(TAB_PREVIEW_FRAME_STYLE)});
       document.documentElement.appendChild(frame);
 
@@ -119,7 +127,7 @@ async function prepareFrame(tabId) {
             break;
         }
       });
-    `,
+    })()`,
   });
 }
 
