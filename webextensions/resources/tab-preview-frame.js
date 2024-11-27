@@ -99,6 +99,7 @@ try{
       padding: var(--panel-border-radius) 0 0;
       position: fixed;
       transition: var(--show-hide-animation);
+      width: var(--panel-width);
     }
 
     .tab-preview-title {
