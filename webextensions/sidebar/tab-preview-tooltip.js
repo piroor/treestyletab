@@ -157,7 +157,7 @@ async function onTabSubstanceEnter(event) {
   const active = event.target.tab.id == activeTab.id;
   const url = PREVIEW_WITH_HOST_URLS_MATCHER.test(event.target.tab.url) ? new URL(event.target.tab.url).host :
     PREVIEW_WITH_TITLE_URLS_MATCHER.test(event.target.tab.url) ? null :
-    event.target.tab.url;
+      event.target.tab.url;
 
   let previewURL;
   try {
