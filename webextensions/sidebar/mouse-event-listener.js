@@ -58,6 +58,7 @@ import * as TSTAPIFrontend from './tst-api-frontend.js';
 import { kTAB_CLOSE_BOX_ELEMENT_NAME } from './components/TabCloseBoxElement.js';
 import { kTAB_FAVICON_ELEMENT_NAME } from './components/TabFaviconElement.js';
 import { kTAB_TWISTY_ELEMENT_NAME } from './components/TabTwistyElement.js';
+import { kEVENT_TAB_SUBSTANCE_ENTER, kEVENT_TAB_SUBSTANCE_LEAVE } from './components/TabElement.js';
 
 function log(...args) {
   internalLogger('sidebar/mouse-event-listener', ...args);
@@ -84,6 +85,8 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('dragstart', onDragStart);
   mTabBar.addEventListener('dblclick', onDblClick);
   mTabBar.addEventListener('mouseover', onMouseOver);
+  mTabBar.addEventListener(kEVENT_TAB_SUBSTANCE_ENTER, onTabSubstanceEnter);
+  mTabBar.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
 
   MetricsData.add('mouse-event-listener: Sidebar.onBuilt: apply configs');
 
@@ -1094,6 +1097,16 @@ async function onDblClick(event) {
     action: configs.autoAttachOnNewTabCommand
   });
 }
+
+function onTabSubstanceEnter(event) {
+  console.log(event.type, event.target);
+}
+onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
+
+function onTabSubstanceLeave(event) {
+  console.log(event.type, event.target);
+}
+onTabSubstanceLeave = EventUtils.wrapWithErrorHandler(onTabSubstanceLeave);
 
 
 function onNewTabActionSelect(item, event) {
