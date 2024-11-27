@@ -170,6 +170,7 @@ async function onTabSubstanceEnter(event) {
   let previewURL;
   try {
     if (!active &&
+        !event.target.tab.discarded &&
         CAPTURABLE_URLS_MATCHER.test(event.target.tab.url)) {
       previewURL = await browser.tabs.captureTab(event.target.tab.id);
     }
