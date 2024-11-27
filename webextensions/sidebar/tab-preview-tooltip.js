@@ -219,6 +219,19 @@ function onTabSubstanceLeave(event) {
 onTabSubstanceLeave = EventUtils.wrapWithErrorHandler(onTabSubstanceLeave);
 
 
+browser.tabs.onActivated.addListener(activeInfo => {
+  if (activeInfo.windowId != TabsStore.getCurrentWindowId())
+    return;
+
+  sendTabPreviewMessage(activeInfo.tabId, {
+    type: 'treestyletab:hide-tab-preview',
+  });
+  sendTabPreviewMessage(activeInfo.previousTabId, {
+    type: 'treestyletab:hide-tab-preview',
+  });
+});
+
+
 browser.runtime.onMessage.addListener((message, sender) => {
   const windowId = TabsStore.getCurrentWindowId();
   if (!windowId ||

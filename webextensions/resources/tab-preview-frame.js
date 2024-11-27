@@ -161,7 +161,8 @@ try{
 
       case 'treestyletab:hide-tab-preview':
         if (panel &&
-            panel.dataset.tabId == message.tabId) {
+            (!message.tabId ||
+             panel.dataset.tabId == message.tabId)) {
           panel.classList.add('hidden');
         }
         break;
