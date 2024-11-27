@@ -8,7 +8,7 @@
 // This is a sub part to show tab preview tooltip.
 // See also: /siedbar/tab-preview-tooltip.js
 
-let container = null;
+let panel = null;
 
 try{
   const style = document.createElement('style');
@@ -24,7 +24,7 @@ try{
       opacity: 0;
     }
 
-    .tab-preview-container {
+    .tab-preview-panel {
       /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/toolkit/themes/shared/popup.css#11-63 */
       color-scheme: light dark;
 
@@ -151,18 +151,18 @@ try{
 
     switch (message?.type) {
       case 'treestyletab:show-tab-preview':
-        if (!container) {
-          container = createPreview();
+        if (!panel) {
+          panel = createPanel();
         }
-        updatePreview(message, container);
-        document.documentElement.appendChild(container);
-        container.classList.remove('hidden');
+        updatePanel(message);
+        document.documentElement.appendChild(panel);
+        panel.classList.remove('hidden');
         break;
 
       case 'treestyletab:hide-tab-preview':
-        if (container &&
-            container.dataset.tabId == message.tabId) {
-          container.classList.add('hidden');
+        if (panel &&
+            panel.dataset.tabId == message.tabId) {
+          panel.classList.add('hidden');
         }
         break;
     }
@@ -178,48 +178,51 @@ catch (error) {
   console.log('TST Tab Preview Frame fatal error: ', error);
 }
 
-function createPreview() {
-  const container = document.createElement('div');
-  container.setAttribute('class', 'tab-preview-container');
-  const title = container.appendChild(document.createElement('div'));
+function createPanel() {
+  const panel = document.createElement('div');
+  panel.setAttribute('class', 'tab-preview-panel');
+  const title = panel.appendChild(document.createElement('div'));
   title.setAttribute('class', 'tab-preview-title');
-  const url = container.appendChild(document.createElement('div'));
+  const url = panel.appendChild(document.createElement('div'));
   url.setAttribute('class', 'tab-preview-url');
-  const previewWrapper = container.appendChild(document.createElement('div'));
+  const previewWrapper = panel.appendChild(document.createElement('div'));
   previewWrapper.setAttribute('class', 'tab-preview-image-wrapper');
   const preview = previewWrapper.appendChild(document.createElement('img'));
   preview.setAttribute('class', 'tab-preview-image');
-  return container;
+  return panel;
 }
 
-function updatePreview(params, container) {
-  container.classList.add('updating');
+function updatePanel({ tabId, title, url, previewURL, tabRect } = {}) {
+  if (!panel)
+    return;
 
-  container.dataset.tabId = params.tabId;
+  panel.classList.add('updating');
 
-  container.querySelector('.tab-preview-title').textContent = params.title;
+  panel.dataset.tabId = tabId;
 
-  const url = container.querySelector('.tab-preview-url');
-  url.textContent = params.url;
-  url.classList.toggle('blank', !params.url);
+  panel.querySelector('.tab-preview-title').textContent = title;
 
-  const preview = container.querySelector('.tab-preview-image');
-  preview.src = params.previewURL;
-  preview.classList.toggle('blank', !params.previewURL);
+  const urlElement = panel.querySelector('.tab-preview-url');
+  urlElement.textContent = url;
+  urlElement.classList.toggle('blank', !url);
+
+  const previewImage = panel.querySelector('.tab-preview-image');
+  previewImage.src = previewURL;
+  previewImage.classList.toggle('blank', !previewURL);
 
   window.requestAnimationFrame(() => {
-    if (container.dataset.tabId != params.tabId)
+    if (panel.dataset.tabId != tabId)
       return;
 
     const maxY = window.innerHeight;
-    const containerHeight = container.getBoundingClientRect().height;
-    if (params.tabRect.top + containerHeight >= maxY) {
-      container.style.top = `${Math.min(maxY, params.tabRect.bottom) - containerHeight}px`;
+    const panelHeight = panel.getBoundingClientRect().height;
+    if (tabRect.top + panelHeight >= maxY) {
+      panel.style.top = `${Math.min(maxY, tabRect.bottom) - panelHeight}px`;
     }
     else {
-      container.style.top = `${Math.max(0, params.tabRect.top)}px`;
+      panel.style.top = `${Math.max(0, tabRect.top)}px`;
     }
-    container.classList.remove('updating');
+    panel.classList.remove('updating');
   });
 }
 
