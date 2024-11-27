@@ -88,6 +88,7 @@ const TAB_PREVIEW_FRAME_STYLE = `
   z-index: 65000;
 `;
 
+const PREVIEW_AVAILABLE_URLS_MATCHER  = /^(https?|moz-extension|data):/;
 const CAPTURABLE_URLS_MATCHER         = /^(https?|data):/;
 const PREVIEW_WITH_HOST_URLS_MATCHER  = /^(https?|moz-extension):/;
 const PREVIEW_WITH_TITLE_URLS_MATCHER = /^file:/;
@@ -161,6 +162,9 @@ async function onTabSubstanceEnter(event) {
     return;
 
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
+  if (!PREVIEW_AVAILABLE_URLS_MATCHER.test(activeTab.url))
+    return;
+
   const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
   const active = event.target.tab.id == activeTab.id;
   const url = PREVIEW_WITH_HOST_URLS_MATCHER.test(event.target.tab.url) ? new URL(event.target.tab.url).host :
@@ -203,6 +207,9 @@ function onTabSubstanceLeave(event) {
     return;
 
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
+  if (!PREVIEW_AVAILABLE_URLS_MATCHER.test(activeTab.url))
+    return;
+
   //console.log(event.type, event.target.tab, event.target, activeTab);
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:hide-tab-preview',
