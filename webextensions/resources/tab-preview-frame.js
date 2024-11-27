@@ -14,16 +14,41 @@ try{
   const style = document.createElement('style');
   style.setAttribute('type', 'text/css');
   style.textContent = `
+    :root {
+      --show-hide-animation: opacity 0.1s ease-out;
+      --preview-panel-border-radius: 0.5em;
+
+      opacity: 1;
+      transition: var(--show-hide-animation);
+    }
+
+    :root:hover {
+      opacity: 0;
+    }
+
     .tab-preview-container {
       background: Canvas;
-      border-radius: 0.5em;
+      border-radius: var(--preview-panel-border-radius);
       box-shadow: rgba(0, 0, 0, 0.25) 0.05em 0.05em 0.5em;
       color: CanvasText;
       font: Message-Box;
-      left: 0.5em;
+      left: calc(0.5em - 0.05em);
       max-width: 20em;
-      padding: 0.5em;
+      opacity: 1;
+      overflow: hidden; /* clip the preview with the rounded edges */
+      padding: var(--preview-panel-border-radius) 0 0;
       position: fixed;
+      transition: var(--show-hide-animation);
+    }
+
+    .tab-preview-title {
+      font-weight: bold;
+      margin: 0 var(--preview-panel-border-radius) 0.25em;
+    }
+
+    .tab-preview-url {
+      margin: 0 var(--preview-panel-border-radius) 0.25em;
+      opacity: 0.75;
     }
 
     .tab-preview-image-wrapper {
@@ -35,12 +60,13 @@ try{
       max-width: 100%;
     }
 
-    .hidden {
+    .blank {
       display: none;
     }
 
-    .positioning {
-      visibility: hidden;
+    .updating,
+    .hidden {
+      opacity: 0;
     }
   `;
   document.head.appendChild(style);
@@ -60,13 +86,13 @@ try{
         }
         updatePreview(message, container);
         document.documentElement.appendChild(container);
+        container.classList.remove('hidden');
         break;
 
       case 'treestyletab:hide-tab-preview':
         if (container &&
             container.dataset.tabId == message.tabId) {
-          container.parentNode.removeChild(container);
-          container = null;
+          container.classList.add('hidden');
         }
         break;
     }
@@ -97,15 +123,19 @@ function createPreview() {
 }
 
 function updatePreview(params, container) {
+  container.classList.add('updating');
+
   container.dataset.tabId = params.tabId;
 
   container.querySelector('.tab-preview-title').textContent = params.title;
-  container.querySelector('.tab-preview-url').textContent = params.url;
+
+  const url = container.querySelector('.tab-preview-url');
+  url.textContent = params.url;
+  url.classList.toggle('blank', !params.url);
 
   const preview = container.querySelector('.tab-preview-image');
   preview.src = params.previewURL;
-  preview.classList.add('positioning');
-  preview.classList.toggle('hidden', !params.previewURL);
+  preview.classList.toggle('blank', !params.previewURL);
 
   window.requestAnimationFrame(() => {
     if (container.dataset.tabId != params.tabId)
@@ -119,7 +149,7 @@ function updatePreview(params, container) {
     else {
       container.style.top = `${Math.max(0, params.tabRect.top)}px`;
     }
-    preview.classList.remove('positioning');
+    container.classList.remove('updating');
   });
 }
 

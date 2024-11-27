@@ -88,7 +88,9 @@ const TAB_PREVIEW_FRAME_STYLE = `
   z-index: 65000;
 `;
 
-const CAPTURABLE_URLS_MATCHER = /^(https?|data):/;
+const CAPTURABLE_URLS_MATCHER         = /^(https?|data):/;
+const PREVIEW_WITH_HOST_URLS_MATCHER  = /^(https?|moz-extension):/;
+const PREVIEW_WITH_TITLE_URLS_MATCHER = /^file:/;
 
 document.addEventListener(kEVENT_TAB_SUBSTANCE_ENTER, onTabSubstanceEnter);
 document.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
@@ -153,6 +155,9 @@ async function onTabSubstanceEnter(event) {
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
   const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
   const active = event.target.tab.id == activeTab.id;
+  const url = PREVIEW_WITH_HOST_URLS_MATCHER.test(event.target.tab.url) ? new URL(event.target.tab.url).host :
+    PREVIEW_WITH_TITLE_URLS_MATCHER.test(event.target.tab.url) ? null :
+    event.target.tab.url;
 
   let previewURL;
   try {
@@ -178,7 +183,7 @@ async function onTabSubstanceEnter(event) {
     },
     active,
     title: event.target.tab.title,
-    url: event.target.tab.url,
+    url,
     previewURL,
   });
 }
