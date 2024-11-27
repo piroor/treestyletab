@@ -11,9 +11,11 @@
 try{
   browser.runtime.onMessage.addListener((message, _sender) => {
     console.log('ON MESSAGE IN IFRAME ', message);
+    /*
     const pre = document.createElement('pre');
     pre.textContent = JSON.stringify(message);
     document.body.appendChild(pre);
+    */
 
     switch (message?.type) {
       case 'treestyletab:show-tab-preview':

@@ -22,6 +22,7 @@ import * as Sidebar from './sidebar.js';
 import './collapse-expand.js';
 import './mouse-event-listener.js';
 import './tab-context-menu.js';
+import './tab-preview-tooltip.js';
 import './tst-api-frontend.js';
 
 log.context = 'Sidebar-?';

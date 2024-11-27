@@ -14,19 +14,20 @@
 // * The content script of the active tab to load tab preview frames
 //   (LOADER): injected by prepareFrame()
 // * The content script of the tab preview frame (FRAME): loaded as
-//   "/resources/tab-preview-frame.js"
+//   `/resources/tab-preview-frame.js`
 // * The tab A: a tab to be shown in the preview tooltip.
 // * The tab B: the active tab which is used to show the preview tooltip.
 //
 // When we need to show a tab preview:
 //
-// 1. The CONTROLLER detects "mouseover" event on a tab.
+// 1. The CONTROLLER detects `tab-item-substance-enter` (`mouseenter`) event
+//    on a tab substance.
 // 2. The CONTROLLER sends a message to the LOADER of the active tab,
 //    like "do you know the 'frameId' in your paeg?"
 //    1. If no response, the CONTROLLER loads a content script LOADER
 //       into the active tab.
 //       1. The LOADER generates a transparent iframe with the URL of
-//          "/resources/tab-preview-frame.html".
+//          `/resources/tab-preview-frame.html`.
 //       2. The FRAME is loaded and it sends a message to the CONTROLLER
 //          like "now I'm ready!"
 //       3. The CONTROLLER receives the message and gets the `sender.frameId`
@@ -49,7 +50,8 @@
 //
 // When we need to hide a tab preview:
 //
-// 1. The CONTROLLER detects `mouseleave` event on a tab.
+// 1. The CONTROLLER detects `tab-item-substance-leave` (`mouseleave`) event
+//    on a tab substance.
 // 2. The CONTROLLER sends a message to the LOADER of the active tab, like
 //    "do you know the 'frameId' in your paeg?"
 //    1. If no response, the CONTROLLER gives up to hide the preview.
@@ -65,7 +67,11 @@
 // stored (cached) by the CONTROLLER will become obsolete too easily.
 
 import * as TabsStore from '/common/tabs-store.js';
-//import Tab from '/common/Tab.js';
+import Tab from '/common/Tab.js';
+
+import * as EventUtils from './event-utils.js';
+
+import { kEVENT_TAB_SUBSTANCE_ENTER, kEVENT_TAB_SUBSTANCE_LEAVE } from './components/TabElement.js';
 
 const TAB_PREVIEW_FRAME_STYLE = `
   background: transparent;
@@ -81,6 +87,9 @@ const TAB_PREVIEW_FRAME_STYLE = `
   width: 100%;
   z-index: 65000;
 `;
+
+document.addEventListener(kEVENT_TAB_SUBSTANCE_ENTER, onTabSubstanceEnter);
+document.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
 
 async function prepareFrame(tabId) {
   await browser.tabs.executeScript(tabId, {
@@ -110,7 +119,7 @@ async function prepareFrame(tabId) {
   });
 }
 
-export async function sendTabPreviewMessage(tabId, message, retrying) {
+async function sendTabPreviewMessage(tabId, message, retrying) {
   let frameId;
   try {
     frameId = await browser.tabs.sendMessage(tabId, {
@@ -133,6 +142,29 @@ export async function sendTabPreviewMessage(tabId, message, retrying) {
 
   browser.tabs.sendMessage(tabId, message, { frameId });
 }
+
+
+function onTabSubstanceEnter(event) {
+  const activeTab = Tab.getActiveTab(event.target.tab.windowId);
+  //console.log(event.type, event.target.tab, event.target, activeTab);
+  sendTabPreviewMessage(activeTab.id, {
+    type: 'treestyletab:show-tab-preview',
+    tabId: event.target.tab.id,
+    active: event.target.tab.id == activeTab.id,
+  });
+}
+onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
+
+function onTabSubstanceLeave(event) {
+  const activeTab = Tab.getActiveTab(event.target.tab.windowId);
+  //console.log(event.type, event.target.tab, event.target, activeTab);
+  sendTabPreviewMessage(activeTab.id, {
+    type: 'treestyletab:hide-tab-preview',
+    tabId: event.target.tab.id,
+  });
+}
+onTabSubstanceLeave = EventUtils.wrapWithErrorHandler(onTabSubstanceLeave);
+
 
 browser.runtime.onMessage.addListener((message, sender) => {
   const windowId = TabsStore.getCurrentWindowId();
