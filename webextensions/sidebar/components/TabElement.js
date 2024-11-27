@@ -501,7 +501,7 @@ windowId = ${tab.windowId}
     this.dispatchEvent(tabSubstanceEnterEvent);
   }
 
-  _onMouseLeave(_event) {
+  _onMouseLeave(event) {
     const tabSubstanceLeaveEvent = new UIEvent(kEVENT_TAB_SUBSTANCE_LEAVE, {
       ...event,
       bubbles: true,

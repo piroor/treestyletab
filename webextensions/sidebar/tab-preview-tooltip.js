@@ -144,18 +144,38 @@ async function sendTabPreviewMessage(tabId, message, retrying) {
 }
 
 
-function onTabSubstanceEnter(event) {
+async function onTabSubstanceEnter(event) {
+  if (!event.target.tab)
+    return;
+
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
-  //console.log(event.type, event.target.tab, event.target, activeTab);
+  const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
+  const active = event.target.tab.id == activeTab.id;
+  const previewURL = !active && await browser.tabs.captureTab(event.target.tab.id);
+  //console.log(event.type, event, event.target.tab, event.target, activeTab);
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
     tabId: event.target.tab.id,
-    active: event.target.tab.id == activeTab.id,
+    tabRect: {
+      bottom: tabRect.bottom,
+      height: tabRect.height,
+      left:   tabRect.left,
+      right:  tabRect.right,
+      top:    tabRect.top,
+      width:  tabRect.width,
+    },
+    active,
+    title: event.target.tab.title,
+    url: event.target.tab.url,
+    previewURL,
   });
 }
 onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
 
 function onTabSubstanceLeave(event) {
+  if (!event.target.tab)
+    return;
+
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
   //console.log(event.type, event.target.tab, event.target, activeTab);
   sendTabPreviewMessage(activeTab.id, {
