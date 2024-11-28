@@ -239,6 +239,15 @@ async function onTabSubstanceEnter(event) {
   catch (_error) {
   }
 
+  // This calculation logic is buggy for a window in a screen placed at
+  // left of the primary display and scaled. As the result, a sidebar
+  // placed at left can be mis-detected as placed at right. For safety
+  // I ignore such cases and always treat such cases as "left side placed".
+  // See also: https://github.com/piroor/treestyletab/issues/2984#issuecomment-901907503
+  const mayBeRight = window.screenX < 0 && window.devicePixelRatio > 1 ?
+    false :
+    window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
+
   //console.log(event.type, event, event.target.tab, event.target, activeTab);
   const success = await sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
@@ -254,6 +263,7 @@ async function onTabSubstanceEnter(event) {
     /* These information is used to calculate offset of the sidebar header */
     offsetTop: event.screenY - event.clientY,
     offsetLeft: event.screenX - event.clientX,
+    align: mayBeRight ? 'right' : 'left',
     active,
     title: event.target.tab.title,
     url,

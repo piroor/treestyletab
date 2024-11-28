@@ -97,12 +97,13 @@ try{
       box-shadow: var(--panel-shadow);
       color: var(--panel-color);
       font: Message-Box;
-      left: var(--panel-shadow-margin);
+      left: auto;
       max-width: var(--panel-width);
       opacity: 1;
       overflow: hidden; /* clip the preview with the rounded edges */
       padding: var(--panel-border-radius) 0 0;
       position: fixed;
+      right: auto;
       transition: var(--show-hide-animation);
       width: var(--panel-width);
     }
@@ -221,7 +222,7 @@ function createPanel() {
   return panel;
 }
 
-function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop } = {}) {
+function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop, align } = {}) {
   if (!panel)
     return;
 
@@ -258,6 +259,16 @@ function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop } = {})
     else {
       panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio) + sidebarContentsOffset}px`;
     }
+
+    if (align == 'left') {
+      panel.style.left  = 'var(--panel-shadow-margin)';
+      panel.style.right = '';
+    }
+    else {
+      panel.style.left  = '';
+      panel.style.right = 'var(--panel-shadow-margin)';
+    }
+
     panel.classList.remove('updating');
   });
 }
