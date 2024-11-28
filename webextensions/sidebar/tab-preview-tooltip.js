@@ -185,11 +185,18 @@ async function sendTabPreviewMessage(tabId, message, deferredReturnedValueResolv
       return promisedReturnedValue;
     }
   }
-  catch (error) {
-    console.log('Could not send tab preview message: ', tabId, message, error);
+  catch (_error) {
+    // We cannot show tab preview tooltip in a tab with privileged contents.
+    // Let's fall back to the in-sidebar tab preview tooltip.
+    browser.runtime.sendMessage({
+      ...message,
+      timestamp: Date.now(),
+      windowId: TabsStore.getCurrentWindowId(),
+    });
+    //console.log('Could not send tab preview message: ', tabId, message, error);
     if (deferredReturnedValueResolver)
-      deferredReturnedValueResolver(false);
-    return false;
+      deferredReturnedValueResolver(true);
+    return true;
   }
 
   let returnValue;
