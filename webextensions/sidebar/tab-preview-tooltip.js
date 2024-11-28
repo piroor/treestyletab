@@ -93,7 +93,7 @@ const TAB_PREVIEW_FRAME_STYLE = `
   z-index: 65000;
 `;
 
-const CUSTOM_PANEL_AVAILABLE_URLS_MATCHER = /^(https?|moz-extension|data):/;
+const CUSTOM_PANEL_AVAILABLE_URLS_MATCHER = new RegExp(`^((https?|data):|moz-extension://${location.host}\/)`);
 const CAPTURABLE_URLS_MATCHER         = /^(https?|data):/;
 const PREVIEW_WITH_HOST_URLS_MATCHER  = /^(https?|moz-extension):/;
 const PREVIEW_WITH_TITLE_URLS_MATCHER = /^file:/;
