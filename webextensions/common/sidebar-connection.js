@@ -10,7 +10,8 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 import {
   log as internalLogger,
   mapAndFilterUniq,
-  configs
+  configs,
+  wait,
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
@@ -223,6 +224,32 @@ if (Constants.IS_BACKGROUND) {
       mReceivers.delete(windowId);
       mFocusState.delete(windowId);
       onDisconnected.dispatch(windowId, connections.size);
+
+      // We need to notify this to some conetnt scripts, to destroy themselves.
+      /*
+      browser.runtime.sendMessage({
+        type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
+        windowId,
+      });
+      */
+      browser.windows.get(windowId, { populate: true }).then(async win => {
+        let count = 0;
+        for (const tab of win.tabs) {
+          count++;
+          if (count >= 20) {
+            // We should not block too long seconds on too much tabs case.
+            await wait(10);
+            count = 0;
+          }
+          try {
+            browser.tabs.sendMessage(tab.id, {
+              type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
+            });
+          }
+          catch (_error) {
+          }
+        }
+      });
     };
     const receiver = message => {
       if (Array.isArray(message))

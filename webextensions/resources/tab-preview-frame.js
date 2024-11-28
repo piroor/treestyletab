@@ -166,6 +166,12 @@ try{
           panel.classList.add('hidden');
         }
         break;
+
+      case 'treestyletab:notify-sidebar-closed':
+        if (panel) {
+          panel.classList.add('hidden');
+        }
+        break;
     }
   });
 
