@@ -104,6 +104,7 @@ document.addEventListener(kEVENT_TAB_SUBSTANCE_LEAVE, onTabSubstanceLeave);
 async function prepareFrame(tabId) {
   await browser.tabs.executeScript(tabId, {
     matchAboutBlank: true,
+    runAt: 'document_start',
     code: `(() => {
       const url = '${browser.runtime.getURL('/resources/tab-preview-frame.html')}';
 
