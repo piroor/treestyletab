@@ -232,7 +232,8 @@ async function onTabSubstanceEnter(event) {
     title: event.target.tab.title,
     url,
     previewURL,
-  });
+    timestamp: Date.now(),
+  }).catch(_error => {});
 }
 onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
 
@@ -248,6 +249,7 @@ function onTabSubstanceLeave(event) {
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:hide-tab-preview',
     tabId: event.target.tab.id,
+    timestamp: Date.now(),
   });
 }
 onTabSubstanceLeave = EventUtils.wrapWithErrorHandler(onTabSubstanceLeave);

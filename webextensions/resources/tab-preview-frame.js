@@ -152,8 +152,9 @@ try{
   `;
   document.head.appendChild(style);
 
+  let lastTimestamp = 0;
   const onMessage = (message, _sender) => {
-    //console.log('ON MESSAGE IN IFRAME ', message);
+    //console.log('ON MESSAGE IN IFRAME ', lastTimestamp, message);
     /*
     const pre = document.createElement('pre');
     pre.textContent = JSON.stringify(message);
@@ -162,15 +163,21 @@ try{
 
     switch (message?.type) {
       case 'treestyletab:show-tab-preview':
+        if (message.timestamp < lastTimestamp)
+          return Promise.resolve(false);
+        lastTimestamp = message.timestamp;
         if (!panel) {
           panel = createPanel();
         }
         updatePanel(message);
         document.documentElement.appendChild(panel);
         panel.classList.remove('hidden');
-        break;
+        return Promise.resolve(true);
 
       case 'treestyletab:hide-tab-preview':
+        if (message.timestamp < lastTimestamp)
+          return;
+        lastTimestamp = message.timestamp;
         if (panel &&
             (!message.tabId ||
              panel.dataset.tabId == message.tabId)) {
