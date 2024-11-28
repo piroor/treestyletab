@@ -231,9 +231,10 @@ function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop, align 
   if (!panel)
     return;
 
-  document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
-
   panel.classList.add('updating');
+
+  document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
+  panel.style.setProperty('--panel-width', `calc(min(${window.innerWidth}px, 280px) / var(--device-pixel-ratio))`);
 
   panel.dataset.tabId = tabId;
 

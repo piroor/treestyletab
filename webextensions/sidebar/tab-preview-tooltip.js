@@ -280,8 +280,8 @@ async function onTabSubstanceEnter(event) {
       width:  tabRect?.width || 0,
     },
     /* These information is used to calculate offset of the sidebar header */
-    offsetTop: event.screenY - event.clientY,
-    offsetLeft: event.screenX - event.clientX,
+    offsetTop: window.mozInnerScreenY - window.screenY,
+    offsetLeft: window.mozInnerScreenX - window.screenX,
     align: mayBeRight ? 'right' : 'left',
     active,
     title: event.target.tab.title,
