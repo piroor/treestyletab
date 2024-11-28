@@ -66,6 +66,9 @@
 // Contents of tabs are frequently destroyed, so `frameId` information
 // stored (cached) by the CONTROLLER will become obsolete too easily.
 
+import {
+  configs,
+} from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
@@ -183,7 +186,10 @@ async function sendTabPreviewMessage(tabId, message, deferredReturnedValueResolv
   let returnValue;
   try {
     //console.log('Sending message to the frame ', frameId);
-    returnValue = await browser.tabs.sendMessage(tabId, message, { frameId });
+    returnValue = await browser.tabs.sendMessage(tabId, {
+      ...message,
+      timestamp: Date.now(),
+    }, { frameId });
     if (deferredReturnedValueResolver)
       deferredReturnedValueResolver(returnValue);
   }
@@ -212,10 +218,17 @@ async function sendTabPreviewMessage(tabId, message, deferredReturnedValueResolv
 
 
 async function onTabSubstanceEnter(event) {
+  const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
+  if (!configs.tabPreviewTooltip) {;
+    sendTabPreviewMessage(activeTab.id, {
+      type: 'treestyletab:hide-tab-preview',
+    });
+    return;
+  }
+
   if (!event.target.tab)
     return;
 
-  const activeTab = Tab.getActiveTab(event.target.tab.windowId);
   if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url)) {
     if (event.target.tab.$TST.element)
       event.target.tab.$TST.element.tooltipSuppressed = false;
@@ -249,7 +262,7 @@ async function onTabSubstanceEnter(event) {
     window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
 
   //console.log(event.type, event, event.target.tab, event.target, activeTab);
-  const success = await sendTabPreviewMessage(activeTab.id, {
+  const succeeded = await sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
     tabId: event.target.tab.id,
     tabRect: {
@@ -268,11 +281,11 @@ async function onTabSubstanceEnter(event) {
     title: event.target.tab.title,
     url,
     previewURL,
-    timestamp: Date.now(),
   }).catch(_error => {});
   //console.log('tab preview for ', event.target.tab?.id, ' : success? : ', success);
-  if (event.target.tab.$TST.element)
-    event.target.tab.$TST.element.tooltipSuppressed = !!success;
+  if (event.target.tab.$TST.element &&
+      succeeded)
+    event.target.tab.$TST.element.invalidateTooltip();
 }
 onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
 
@@ -280,7 +293,7 @@ function onTabSubstanceLeave(event) {
   if (!event.target.tab)
     return;
 
-  const activeTab = Tab.getActiveTab(event.target.tab.windowId);
+  const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
   if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url))
     return;
 
@@ -288,7 +301,6 @@ function onTabSubstanceLeave(event) {
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:hide-tab-preview',
     tabId: event.target.tab.id,
-    timestamp: Date.now(),
   });
 }
 onTabSubstanceLeave = EventUtils.wrapWithErrorHandler(onTabSubstanceLeave);

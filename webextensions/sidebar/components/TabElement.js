@@ -74,7 +74,6 @@ export class TabElement extends HTMLElement {
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this._tab = null;
     this._reservedUpdateTooltip = null;
-    this._tooltipSuppressed = false;
     this.__onMouseOver = null;
     this.__onMouseEnter = null;
     this.__onMouseLeave = null;
@@ -264,15 +263,6 @@ export class TabElement extends HTMLElement {
     return this._$TST = value;
   }
 
-  get tooltipSuppressed() {
-    return this._tooltipSuppressed;
-  }
-  set tooltipSuppressed(value) {
-    this._tooltipSuppressed = value;
-    this.invalidateTooltip();
-    return value;
-  }
-
   get _substanceElement() {
     return this.querySelector(kTAB_SUBSTANCE_ELEMENT_NAME);
   }
@@ -417,10 +407,11 @@ windowId = ${tab.windowId}
     }
 
 
-    this.tooltip                = this._tooltipSuppressed ? '' : this.$TST.generateTooltipText();
-    this.tooltipWithDescendants = this._tooltipSuppressed ? '' : this.$TST.generateTooltipTextWithDescendants();
+    this.tooltip                = this.$TST.generateTooltipText();
+    this.tooltipWithDescendants = this.$TST.generateTooltipTextWithDescendants();
 
     if (configs.showCollapsedDescendantsByTooltip &&
+        !configs.tabPreviewTooltip &&
         this.$TST.subtreeCollapsed &&
         this.$TST.hasChild) {
       this.$TST.setAttribute('title', this.tooltipWithDescendants);
@@ -436,9 +427,10 @@ windowId = ${tab.windowId}
       return;
     }
 
-    if (this.classList.contains('faviconized') ||
-        this.overflow ||
-        this.tooltip != tab.title)
+    if (!configs.tabPreviewTooltip &&
+        (this.classList.contains('faviconized') ||
+         this.overflow ||
+         this.tooltip != tab.title))
       this.$TST.setAttribute('title', this.tooltip);
     else
       this.$TST.removeAttribute('title');
@@ -446,7 +438,8 @@ windowId = ${tab.windowId}
     const lowPriorityTooltipText = this.$TST.getLowPriorityTooltipText();
     if (typeof lowPriorityTooltipText == 'string' &&
         !this.getAttribute('title')) {
-      if (lowPriorityTooltipText)
+      if (!configs.tabPreviewTooltip &&
+          lowPriorityTooltipText)
         this.$TST.setAttribute('title', lowPriorityTooltipText);
       else
         this.$TST.removeAttribute('title');
