@@ -141,7 +141,7 @@ try{
   `;
   document.head.appendChild(style);
 
-  browser.runtime.onMessage.addListener((message, _sender) => {
+  const onMessage = (message, _sender) => {
     //console.log('ON MESSAGE IN IFRAME ', message);
     /*
     const pre = document.createElement('pre');
@@ -173,7 +173,11 @@ try{
         }
         break;
     }
-  });
+  };
+  browser.runtime.onMessage.addListener(onMessage);
+  window.addEventListener('unload', () => {
+    browser.runtime.onMessage.removeListener(onMessage);
+  }, { once: true });
 
   document.documentElement.style.pointerEvents = 'none';
 

@@ -114,19 +114,18 @@ async function prepareFrame(tabId) {
       frame.setAttribute('style', ${JSON.stringify(TAB_PREVIEW_FRAME_STYLE)});
       document.documentElement.appendChild(frame);
 
-      let frameIdResolver;
-      let promisedFrameId = new Promise((resolve, _reject) => {
-        frameIdResolver = resolve;
-      });
-
+      let lastFrameId;
 
       const onMessage = (message, _sender) => {
         switch (message?.type) {
           case 'treestyletab:ask-tab-preview-frame-id':
-            return promisedFrameId;
+            if (lastFrameId)
+              return Promise.resolve(lastFrameId);
+            break;
 
           case 'treestyletab:notify-tab-preview-frame-id':
-            frameIdResolver(message.frameId);
+            lastFrameId = message.frameId;
+            //frame.dataset.frameId = message.frameId; // Just for debugging. Do not expose this on released version!
             break;
 
           case '${Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW}':
@@ -137,6 +136,7 @@ async function prepareFrame(tabId) {
       browser.runtime.onMessage.addListener(onMessage);
 
       const destroy = () => {
+        lastFrameId = null;
         frame.parentNode.removeChild(frame);
         browser.runtime.onMessage.removeListener(onMessage);
       };
@@ -159,6 +159,7 @@ async function sendTabPreviewMessage(tabId, message, retrying) {
       setTimeout(() => {
         sendTabPreviewMessage(tabId, message, true);
       }, 100);
+      return;
     }
   }
   catch (error) {
@@ -167,6 +168,7 @@ async function sendTabPreviewMessage(tabId, message, retrying) {
   }
 
   try {
+    //console.log('Sending message to the frame ', frameId);
     await browser.tabs.sendMessage(tabId, message, { frameId });
   }
   catch (error) {
@@ -174,6 +176,7 @@ async function sendTabPreviewMessage(tabId, message, retrying) {
       console.log(`Could not send tab preview message to the frame ${frameId}: `, tabId, message, error);
       return;
     }
+    //console.log('Failed to send message to the frame ', frameId, ' : retry');
 
     // the frame was destroyed unexpectedly, so we re-prepare it.
     await prepareFrame(tabId);
