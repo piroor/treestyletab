@@ -80,7 +80,7 @@ const TAB_PREVIEW_FRAME_STYLE = `
   height: 100%;
   left: 0;
   overflow: hidden;
-  pointer-events: none;
+  /*pointer-events: none;*//* We should not keep iframe element there with unclickable state, instead we remove it on hover for safety. */
   position: fixed;
   right: 0;
   top: 0;
@@ -118,7 +118,8 @@ async function prepareFrame(tabId) {
         frameIdResolver = resolve;
       });
 
-      browser.runtime.onMessage.addListener((message, _sender) => {
+
+      const onMessage = (message, _sender) => {
         switch (message?.type) {
           case 'treestyletab:ask-tab-preview-frame-id':
             return promisedFrameId;
@@ -127,7 +128,14 @@ async function prepareFrame(tabId) {
             frameIdResolver(message.frameId);
             break;
         }
-      });
+      };
+      browser.runtime.onMessage.addListener(onMessage);
+
+      const destroy = () => {
+        frame.parentNode.removeChild(frame);
+        browser.runtime.onMessage.removeListener(onMessage);
+      };
+      frame.addEventListener('mouseenter', destroy, { once: true });
     })()`,
   });
 }
