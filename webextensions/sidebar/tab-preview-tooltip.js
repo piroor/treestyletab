@@ -153,7 +153,22 @@ async function sendTabPreviewMessage(tabId, message, retrying) {
     return;
   }
 
-  browser.tabs.sendMessage(tabId, message, { frameId });
+  try {
+    await browser.tabs.sendMessage(tabId, message, { frameId });
+  }
+  catch (error) {
+    if (retrying) {
+      console.log(`Could not send tab preview message to the frame ${frameId}: `, tabId, message, error);
+      return;
+    }
+
+    // the frame was destroyed unexpectedly, so we re-prepare it.
+    await prepareFrame(tabId);
+    setTimeout(() => {
+      sendTabPreviewMessage(tabId, message, true);
+    }, 100);
+    return;
+  }
 }
 
 
