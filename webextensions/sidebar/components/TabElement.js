@@ -495,8 +495,12 @@ windowId = ${tab.windowId}
   }
 
   _onMouseEnter(event) {
-    const tabSubstanceEnterEvent = new UIEvent(kEVENT_TAB_SUBSTANCE_ENTER, {
+    const tabSubstanceEnterEvent = new MouseEvent(kEVENT_TAB_SUBSTANCE_ENTER, {
       ...event,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      screenX: event.screenX,
+      screenY: event.screenY,
       bubbles: true,
       composed: true,
     });

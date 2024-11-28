@@ -213,7 +213,7 @@ async function onTabSubstanceEnter(event) {
   catch (_error) {
   }
 
-  //console.log(event.type, event, event.target.tab, event.target, activeTab);
+  console.log(event.type, event, event.target.tab, event.target, activeTab);
   sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
     tabId: event.target.tab.id,
@@ -225,6 +225,9 @@ async function onTabSubstanceEnter(event) {
       top:    tabRect?.top || 0,
       width:  tabRect?.width || 0,
     },
+    /* These information is used to calculate offset of the sidebar header */
+    offsetTop: event.screenY - event.clientY,
+    offsetLeft: event.screenX - event.clientX,
     active,
     title: event.target.tab.title,
     url,

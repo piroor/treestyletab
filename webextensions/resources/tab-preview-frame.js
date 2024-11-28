@@ -214,7 +214,7 @@ function createPanel() {
   return panel;
 }
 
-function updatePanel({ tabId, title, url, previewURL, tabRect } = {}) {
+function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop } = {}) {
   if (!panel)
     return;
 
@@ -240,11 +240,16 @@ function updatePanel({ tabId, title, url, previewURL, tabRect } = {}) {
 
     const maxY = window.innerHeight;
     const panelHeight = panel.getBoundingClientRect().height;
+
+    // We need to shift the position with the height of the sidebar header.
+    const guessedBrowserUIHeight = window.outerHeight - window.visualViewport.height; // This calculation will fail if these values are quite different due to shown Web Developer Tools, but we don't know anything else better way...
+    const offsetFromSidebarEdge = offsetTop - guessedBrowserUIHeight;
+
     if (tabRect.top + panelHeight >= maxY) {
-      panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight}px`;
+      panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight + offsetFromSidebarEdge}px`;
     }
     else {
-      panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio)}px`;
+      panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio) + offsetFromSidebarEdge}px`;
     }
     panel.classList.remove('updating');
   });
