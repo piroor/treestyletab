@@ -66,6 +66,7 @@
 // Contents of tabs are frequently destroyed, so `frameId` information
 // stored (cached) by the CONTROLLER will become obsolete too easily.
 
+import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
@@ -126,6 +127,10 @@ async function prepareFrame(tabId) {
 
           case 'treestyletab:notify-tab-preview-frame-id':
             frameIdResolver(message.frameId);
+            break;
+
+          case '${Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW}':
+            destroy();
             break;
         }
       };
