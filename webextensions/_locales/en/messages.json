@@ -409,6 +409,7 @@
   "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "% of the sidebar" },
   "config_animation_label": { "message": "Enable animation effects" },
   "config_animationForce_label": { "message": "Enable animations regardless \"reduce animations\" platform settings" },
+  "config_tabPreviewTooltip_label": { "message": "Show tab preview image instead of tooltip" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
   "config_shiftTabsForScrollbarDistance_label_before": { "message": "Shift tabs aside " },
   "config_shiftTabsForScrollbarDistance_label_after": { "message": " to keep in-tab buttons touchable avoiding covered with the auto-shown scrollbar" },

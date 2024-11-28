@@ -126,6 +126,12 @@ const mItems = [
         expert: true
       },
       {
+        title: browser.i18n.getMessage('config_tabPreviewTooltip_label'),
+        key:   'tabPreviewTooltip',
+        type:  'checkbox',
+        permissions: Permissions.ALL_URLS
+      },
+      {
         title: browser.i18n.getMessage('config_showCollapsedDescendantsByTooltip_label'),
         key:   'showCollapsedDescendantsByTooltip',
         type:  'checkbox',
@@ -1372,6 +1378,7 @@ const mItems = [
       },
       {
         title:       browser.i18n.getMessage('config_requestPermissions_allUrls_ctrlTabTracking'),
+        key:         'skipCollapsedTabsForTabSwitchingShortcuts',
         type:        'checkbox',
         permissions: Permissions.ALL_URLS
       },

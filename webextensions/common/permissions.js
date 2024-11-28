@@ -117,7 +117,9 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
     .then(granted => {
       const checked = options.onInitialized ?
         options.onInitialized(granted) :
-        undefined;
+        checkbox.dataset.relatedConfigKey ?
+          configs[checkbox.dataset.relatedConfigKey] :
+          undefined;
       checkbox.checked = checked !== undefined ? !!checked : granted;
     })
     .catch(_error => {

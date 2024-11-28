@@ -406,6 +406,7 @@
   "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "%まで" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_animationForce_label": { "message": "アニメーションを抑制するプラットフォームの設定を無視して有効にする" },
+  "config_tabPreviewTooltip_label": { "message": "ツールチップの代わりにタブのプレビュー画像を表示する" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折りたたまれた子孫タブの情報を含める" },
   "config_shiftTabsForScrollbarDistance_label_before": { "message": "自動的に表示されるスクロールバーに覆われてタブ内のボタンに触れなくならないよう、" },
   "config_shiftTabsForScrollbarDistance_label_after": { "message": "ぶんだけタブをずらして表示する" },

@@ -783,6 +783,15 @@ function initPermissionOptions() {
 
   Permissions.bindToCheckbox(
     Permissions.ALL_URLS,
+    document.querySelector('#allUrlsPermissionGranted_tabPreviewTooltip'),
+    {
+      onChanged: (granted) => {
+        configs.tabPreviewTooltip = granted;
+      }
+    }
+  );
+  Permissions.bindToCheckbox(
+    Permissions.ALL_URLS,
     document.querySelector('#allUrlsPermissionGranted_ctrlTabTracking'),
     {
       onChanged: (granted) => {
