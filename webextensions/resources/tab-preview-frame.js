@@ -142,9 +142,12 @@ try{
       display: none;
     }
 
-    .updating,
     .hidden {
       opacity: 0;
+    }
+
+    .updating {
+      visibility: hidden;
     }
   `;
   document.head.appendChild(style);
