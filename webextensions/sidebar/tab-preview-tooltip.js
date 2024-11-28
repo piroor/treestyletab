@@ -74,6 +74,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 
 import * as EventUtils from './event-utils.js';
+import * as Sidebar from './sidebar.js';
 
 import { kEVENT_TAB_SUBSTANCE_ENTER, kEVENT_TAB_SUBSTANCE_LEAVE } from './components/TabElement.js';
 
@@ -118,6 +119,7 @@ async function prepareFrame(tabId) {
       document.documentElement.appendChild(frame);
 
       let lastFrameId;
+      let windowId;
 
       const onMessage = (message, _sender) => {
         switch (message?.type) {
@@ -126,8 +128,9 @@ async function prepareFrame(tabId) {
               return Promise.resolve(lastFrameId);
             break;
 
-          case 'treestyletab:notify-tab-preview-frame-id':
+          case 'treestyletab:notify-tab-preview-owner-info':
             lastFrameId = message.frameId;
+            windowId = message.windowId;
             //frame.dataset.frameId = message.frameId; // Just for debugging. Do not expose this on released version!
             break;
 
@@ -140,6 +143,7 @@ async function prepareFrame(tabId) {
 
       const destroy = () => {
         lastFrameId = null;
+        windowId = null;
         frame.parentNode.removeChild(frame);
         browser.runtime.onMessage.removeListener(onMessage);
       };
@@ -150,7 +154,11 @@ async function prepareFrame(tabId) {
 
 async function sendTabPreviewMessage(tabId, message, deferredReturnedValueResolver) {
   if (!tabId)
-    return false;
+    return browser.runtime.sendMessage({
+      ...message,
+      timestamp: Date.now(),
+      windowId: TabsStore.getCurrentWindowId(),
+    });
 
   const retrying = !!deferredReturnedValueResolver;
 
@@ -229,11 +237,9 @@ async function onTabSubstanceEnter(event) {
   if (!event.target.tab)
     return;
 
-  if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url)) {
-    if (event.target.tab.$TST.element)
-      event.target.tab.$TST.element.tooltipSuppressed = false;
-    return;
-  }
+  const targetTabId = CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url) ?
+    activeTab.id :
+    null;
 
   const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
   const active = event.target.tab.id == activeTab.id;
@@ -262,7 +268,7 @@ async function onTabSubstanceEnter(event) {
     window.mozInnerScreenX - window.screenX > (window.outerWidth - window.innerWidth) / 2;
 
   //console.log(event.type, event, event.target.tab, event.target, activeTab);
-  const succeeded = await sendTabPreviewMessage(activeTab.id, {
+  const succeeded = await sendTabPreviewMessage(targetTabId, {
     type: 'treestyletab:show-tab-preview',
     tabId: event.target.tab.id,
     tabRect: {
@@ -294,11 +300,12 @@ function onTabSubstanceLeave(event) {
     return;
 
   const activeTab = Tab.getActiveTab(TabsStore.getCurrentWindowId());
-  if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url))
-    return;
+  const targetTabId = CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url) ?
+    activeTab.id :
+    null;
 
   //console.log(event.type, event.target.tab, event.target, activeTab);
-  sendTabPreviewMessage(activeTab.id, {
+  sendTabPreviewMessage(targetTabId, {
     type: 'treestyletab:hide-tab-preview',
     tabId: event.target.tab.id,
   });
@@ -310,6 +317,9 @@ browser.tabs.onActivated.addListener(activeInfo => {
   if (activeInfo.windowId != TabsStore.getCurrentWindowId())
     return;
 
+  sendTabPreviewMessage(null, {
+    type: 'treestyletab:hide-tab-preview',
+  });
   sendTabPreviewMessage(activeInfo.tabId, {
     type: 'treestyletab:hide-tab-preview',
   });
@@ -320,17 +330,28 @@ browser.tabs.onActivated.addListener(activeInfo => {
 
 
 browser.runtime.onMessage.addListener((message, sender) => {
-  const windowId = TabsStore.getCurrentWindowId();
-  if (!windowId ||
-      sender.tab?.windowId != windowId)
+  if (message?.type != 'treestyletab:tab-preview-frame-loaded')
     return;
 
-  switch (message?.type) {
-    case 'treestyletab:tab-preview-frame-loaded':
-      browser.tabs.sendMessage(sender.tab.id, {
-        type: 'treestyletab:notify-tab-preview-frame-id',
-        frameId: sender.frameId,
-      });
-      break;
+  // in-sidebar preview
+  if (sender.envType == 'addon_child') {
+    return;
   }
+
+  // in-tab previews
+  const windowId = TabsStore.getCurrentWindowId();
+  if (windowId &&
+      sender.tab?.windowId == windowId) {
+    browser.tabs.sendMessage(sender.tab.id, {
+      type: 'treestyletab:notify-tab-preview-owner-info',
+      frameId: sender.frameId,
+      windowId,
+    });
+    return;
+  }
+});
+
+Sidebar.onReady.addListener(() => {
+  const windowId = TabsStore.getCurrentWindowId();
+  document.querySelector('#tab-preview-tooltip-frame').src = `/resources/tab-preview-frame.html?windowId=${windowId}`;
 });

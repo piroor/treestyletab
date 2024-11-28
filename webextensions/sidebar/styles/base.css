@@ -73,7 +73,8 @@
   --over-tabs-z-index:       200; /* buttons after tabs, pinned tabs (required to make pinned tabs clickable) */
   --over-buttons-z-index:    300; /* buttons on buttons after tabs */
   --notification-ui-z-index: 9000;
-  --blocking-ui-z-index:     10000; /* frontmost of others */
+  --tooltip-ui-z-index:      10000;
+  --blocking-ui-z-index:     20000; /* frontmost of others */
 
   --tab-background-z-index:            10;
   --tab-extra-contents-behind-z-index: 20;
@@ -1280,6 +1281,23 @@ iframe#subpanel {
 .rich-confirm .bookmark-dialog input[type="text"],
 .rich-confirm .bookmark-dialog button {
   max-width: 100%;
+}
+
+
+/* tab preview tooltip */
+#tab-preview-tooltip-frame {
+  background: transparent;
+  border: 0 none;
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: var(--tooltip-ui-z-index);
 }
 
 

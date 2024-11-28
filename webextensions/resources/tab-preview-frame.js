@@ -9,6 +9,7 @@
 // See also: /siedbar/tab-preview-tooltip.js
 
 let panel = null;
+const windowId = new URL(location.href).searchParams.get('windowId') || null;
 
 try{
   // -moz-platform @media rules looks unavailable on Web contents...
@@ -87,7 +88,7 @@ try{
       /*}*/
 
       /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#5 */
-      --panel-width: calc(280px / var(--device-pixel-ratio));
+      --panel-width: min(100%, calc(280px / var(--device-pixel-ratio)));
       --panel-padding: 0;
 
 
@@ -131,7 +132,7 @@ try{
     .tab-preview-image-wrapper {
       border-top: calc(1px / var(--device-pixel-ratio)) solid var(--panel-border-color);
       margin-top: 0.25em;
-      max-height: calc(140px / var(--device-pixel-ratio));
+      max-height: calc(var(--panel-width) / 2); /* use relative value instead of 140px */
       overflow: hidden;
     }
 
@@ -155,6 +156,10 @@ try{
 
   let lastTimestamp = 0;
   const onMessage = (message, _sender) => {
+    if (windowId &&
+        message?.windowId != windowId)
+      return;
+
     //console.log('ON MESSAGE IN IFRAME ', lastTimestamp, message);
     /*
     const pre = document.createElement('pre');
@@ -249,24 +254,37 @@ function updatePanel({ tabId, title, url, previewURL, tabRect, offsetTop, align 
     const maxY = window.innerHeight / window.devicePixelRatio;
     const panelHeight = panel.getBoundingClientRect().height;
 
-    // We need to shift the position with the height of the sidebar header.
-    const offsetFromWindowEdge = (window.mozInnerScreenY - window.screenY) * window.devicePixelRatio;
-    const sidebarContentsOffset = (offsetTop - offsetFromWindowEdge) / window.devicePixelRatio;
+    if (windowId) { // in-sidebar
+      if (tabRect.top > (window.innerHeight / 2)) {
+        panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight - tabRect.height}px`;
+      }
+      else {
+        panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio) + tabRect.height}px`;
+      }
 
-    if (tabRect.top / window.devicePixelRatio + panelHeight >= maxY) {
-      panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight + sidebarContentsOffset}px`;
-    }
-    else {
-      panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio) + sidebarContentsOffset}px`;
-    }
-
-    if (align == 'left') {
       panel.style.left  = 'var(--panel-shadow-margin)';
-      panel.style.right = '';
-    }
-    else {
-      panel.style.left  = '';
       panel.style.right = 'var(--panel-shadow-margin)';
+    }
+    else { // in-content
+      // We need to shift the position with the height of the sidebar header.
+      const offsetFromWindowEdge = (window.mozInnerScreenY - window.screenY) * window.devicePixelRatio;
+      const sidebarContentsOffset = (offsetTop - offsetFromWindowEdge) / window.devicePixelRatio;
+
+      if (tabRect.top / window.devicePixelRatio + panelHeight >= maxY) {
+        panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight + sidebarContentsOffset}px`;
+      }
+      else {
+        panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio) + sidebarContentsOffset}px`;
+      }
+
+      if (align == 'left') {
+        panel.style.left  = 'var(--panel-shadow-margin)';
+        panel.style.right = '';
+      }
+      else {
+        panel.style.left  = '';
+        panel.style.right = 'var(--panel-shadow-margin)';
+      }
     }
 
     panel.classList.remove('updating');
