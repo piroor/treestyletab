@@ -16,6 +16,7 @@ try{
   style.textContent = `
     :root {
       --show-hide-animation: opacity 0.1s ease-out;
+      --device-pixel-ratio: 1;
       opacity: 1;
       transition: var(--show-hide-animation);
     }
@@ -30,9 +31,9 @@ try{
 
       --panel-background: Menu;
       --panel-color: MenuText;
-      --panel-padding-block: 4px;
+      --panel-padding-block: calc(4px / var(--device-pixel-ratio));
       --panel-padding: var(--panel-padding-block) 0;
-      --panel-border-radius: 4px;
+      --panel-border-radius: calc(4px / var(--device-pixel-ratio));
       --panel-border-color: ThreeDShadow;
       --panel-width: initial;
 
@@ -45,8 +46,8 @@ try{
       --background-color-canvas: var(--panel-background);
 
       @media (-moz-platform: linux) {
-        --panel-border-radius: 8px;
-        --panel-padding-block: 3px;
+        --panel-border-radius: calc(8px / var(--device-pixel-ratio));
+        --panel-padding-block: calc(3px / var(--device-pixel-ratio));
 
         @media (prefers-contrast) {
           --panel-border-color: color-mix(in srgb, currentColor 60%, transparent);
@@ -54,7 +55,7 @@ try{
       }
 
       @media (-moz-platform: linux) or (-moz-platform: windows) {
-        --panel-shadow-margin: 4px;
+        --panel-shadow-margin: calc(4px / var(--device-pixel-ratio));
       }
 
       /* On some linux WMs we need to draw square menus because alpha is not available */
@@ -69,16 +70,16 @@ try{
         background-color: Menu;
         --panel-background: none;
         --panel-border-color: transparent;
-        --panel-border-radius: 6px;
+        --panel-border-radius: calc(6px / var(--device-pixel-ratio));
       }
 
       /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#5 */
-      --panel-width: 280px;
+      --panel-width: calc(280px / var(--device-pixel-ratio));
       --panel-padding: 0;
 
       /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/toolkit/themes/shared/design-system/tokens-shared.css#174 */
       --space-xxsmall: calc(0.5 * var(--space-xsmall));
-      --space-xsmall: 0.267rem;
+      --space-xsmall: calc(0.267rem / var(--device-pixel-ratio));
       --space-small: calc(2 * var(--space-xsmall));
       --space-medium: calc(3 * var(--space-xsmall));
       --space-large: calc(4 * var(--space-xsmall));
@@ -87,7 +88,7 @@ try{
 
 
       background: var(--panel-background);
-      border: var(--panel-border-color) solid 1px;
+      border: var(--panel-border-color) solid calc(1px / var(--device-pixel-ratio));
       border-radius: var(--panel-border-radius);
       box-shadow: var(--panel-shadow);
       color: var(--panel-color);
@@ -103,16 +104,18 @@ try{
     }
 
     .tab-preview-title {
+      font-size: calc(1em / var(--device-pixel-ratio));
       font-weight: bold;
       line-height: 1.5; /* -webkit-line-clamp looks unavailable, so this is a workaround */
       margin: 0 var(--panel-border-radius) 0.25em;
-      max-height: 3em; /* -webkit-line-clamp looks unavailable, so this is a workaround */
+      max-height: calc(3em / var(--device-pixel-ratio)); /* -webkit-line-clamp looks unavailable, so this is a workaround */
       overflow: hidden;
       /* text-overflow: ellipsis; */
       -webkit-line-clamp: 2; /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#15-18 */
     }
 
     .tab-preview-url {
+      font-size: calc(1em / var(--device-pixel-ratio));
       margin: 0 var(--panel-border-radius) 0.25em;
       opacity: 0.69; /* https://searchfox.org/mozilla-central/rev/234f91a9d3ebef0d514868701cfb022d5f199cb5/toolkit/themes/shared/design-system/tokens-shared.css#182 */
       overflow: hidden;
@@ -121,8 +124,8 @@ try{
     }
 
     .tab-preview-image-wrapper {
-      border-top: 1px solid var(--panel-border-color);
-      max-height: 140px;
+      border-top: calc(1px / var(--device-pixel-ratio)) solid var(--panel-border-color);
+      max-height: calc(140px / var(--device-pixel-ratio));
       overflow: hidden;
     }
 
@@ -207,6 +210,8 @@ function updatePanel({ tabId, title, url, previewURL, tabRect } = {}) {
   if (!panel)
     return;
 
+  document.documentElement.style.setProperty('--device-pixel-ratio', window.devicePixelRatio);
+
   panel.classList.add('updating');
 
   panel.dataset.tabId = tabId;
@@ -228,10 +233,10 @@ function updatePanel({ tabId, title, url, previewURL, tabRect } = {}) {
     const maxY = window.innerHeight;
     const panelHeight = panel.getBoundingClientRect().height;
     if (tabRect.top + panelHeight >= maxY) {
-      panel.style.top = `${Math.min(maxY, tabRect.bottom) - panelHeight}px`;
+      panel.style.top = `${Math.min(maxY, tabRect.bottom / window.devicePixelRatio) - panelHeight}px`;
     }
     else {
-      panel.style.top = `${Math.max(0, tabRect.top)}px`;
+      panel.style.top = `${Math.max(0, tabRect.top / window.devicePixelRatio)}px`;
     }
     panel.classList.remove('updating');
   });
