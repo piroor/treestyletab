@@ -74,6 +74,7 @@ export class TabElement extends HTMLElement {
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this._tab = null;
     this._reservedUpdateTooltip = null;
+    this._tooltipSuppressed = false;
     this.__onMouseOver = null;
     this.__onMouseEnter = null;
     this.__onMouseLeave = null;
@@ -263,6 +264,15 @@ export class TabElement extends HTMLElement {
     return this._$TST = value;
   }
 
+  get tooltipSuppressed() {
+    return this._tooltipSuppressed;
+  }
+  set tooltipSuppressed(value) {
+    this._tooltipSuppressed = value;
+    this.invalidateTooltip();
+    return value;
+  }
+
   get _substanceElement() {
     return this.querySelector(kTAB_SUBSTANCE_ELEMENT_NAME);
   }
@@ -406,8 +416,9 @@ windowId = ${tab.windowId}
       return;
     }
 
-    this.tooltip                = this.$TST.generateTooltipText();
-    this.tooltipWithDescendants = this.$TST.generateTooltipTextWithDescendants();
+
+    this.tooltip                = this._tooltipSuppressed ? '' : this.$TST.generateTooltipText();
+    this.tooltipWithDescendants = this._tooltipSuppressed ? '' : this.$TST.generateTooltipTextWithDescendants();
 
     if (configs.showCollapsedDescendantsByTooltip &&
         this.$TST.subtreeCollapsed &&

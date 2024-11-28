@@ -89,7 +89,7 @@ const TAB_PREVIEW_FRAME_STYLE = `
   z-index: 65000;
 `;
 
-const PREVIEW_AVAILABLE_URLS_MATCHER  = /^(https?|moz-extension|data):/;
+const CUSTOM_PANEL_AVAILABLE_URLS_MATCHER = /^(https?|moz-extension|data):/;
 const CAPTURABLE_URLS_MATCHER         = /^(https?|data):/;
 const PREVIEW_WITH_HOST_URLS_MATCHER  = /^(https?|moz-extension):/;
 const PREVIEW_WITH_TITLE_URLS_MATCHER = /^file:/;
@@ -145,46 +145,69 @@ async function prepareFrame(tabId) {
   });
 }
 
-async function sendTabPreviewMessage(tabId, message, retrying) {
+async function sendTabPreviewMessage(tabId, message, deferredReturnedValueResolver) {
+  if (!tabId)
+    return false;
+
+  const retrying = !!deferredReturnedValueResolver;
+
   let frameId;
   try {
     frameId = await browser.tabs.sendMessage(tabId, {
       type: 'treestyletab:ask-tab-preview-frame-id',
     }).catch(_error => {});
     if (!frameId) {
-      if (retrying)
-        return;
+      if (retrying) {
+        deferredReturnedValueResolver(false);
+        return false;
+      }
 
       await prepareFrame(tabId);
+      let returnedValueResolver;
+      const promisedReturnedValue = new Promise((resolve, _reject) => {
+        returnedValueResolver = resolve;
+      });
       setTimeout(() => {
-        sendTabPreviewMessage(tabId, message, true);
+        sendTabPreviewMessage(tabId, message, returnedValueResolver);
       }, 100);
-      return;
+      return promisedReturnedValue;
     }
   }
   catch (error) {
     console.log('Could not send tab preview message: ', tabId, message, error);
-    return;
+    if (deferredReturnedValueResolver)
+      deferredReturnedValueResolver(false);
+    return false;
   }
 
+  let returnValue;
   try {
     //console.log('Sending message to the frame ', frameId);
-    await browser.tabs.sendMessage(tabId, message, { frameId });
+    returnValue = await browser.tabs.sendMessage(tabId, message, { frameId });
+    if (deferredReturnedValueResolver)
+      deferredReturnedValueResolver(returnValue);
   }
   catch (error) {
     if (retrying) {
       console.log(`Could not send tab preview message to the frame ${frameId}: `, tabId, message, error);
-      return;
+      deferredReturnedValueResolver(false);
+      return false;
     }
     //console.log('Failed to send message to the frame ', frameId, ' : retry');
 
     // the frame was destroyed unexpectedly, so we re-prepare it.
     await prepareFrame(tabId);
+    let returnedValueResolver;
+    const promisedReturnedValue = new Promise((resolve, _reject) => {
+      returnedValueResolver = resolve;
+    });
     setTimeout(() => {
-      sendTabPreviewMessage(tabId, message, true);
+      sendTabPreviewMessage(tabId, message, returnedValueResolver);
     }, 100);
-    return;
+    return promisedReturnedValue;
   }
+
+  return returnValue;
 }
 
 
@@ -193,8 +216,11 @@ async function onTabSubstanceEnter(event) {
     return;
 
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
-  if (!PREVIEW_AVAILABLE_URLS_MATCHER.test(activeTab.url))
+  if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url)) {
+    if (event.target.tab.$TST.element)
+      event.target.tab.$TST.element.tooltipSuppressed = false;
     return;
+  }
 
   const tabRect = event.target.tab.$TST.element?.getBoundingClientRect();
   const active = event.target.tab.id == activeTab.id;
@@ -213,8 +239,8 @@ async function onTabSubstanceEnter(event) {
   catch (_error) {
   }
 
-  console.log(event.type, event, event.target.tab, event.target, activeTab);
-  sendTabPreviewMessage(activeTab.id, {
+  //console.log(event.type, event, event.target.tab, event.target, activeTab);
+  const success = await sendTabPreviewMessage(activeTab.id, {
     type: 'treestyletab:show-tab-preview',
     tabId: event.target.tab.id,
     tabRect: {
@@ -234,6 +260,9 @@ async function onTabSubstanceEnter(event) {
     previewURL,
     timestamp: Date.now(),
   }).catch(_error => {});
+  //console.log('tab preview for ', event.target.tab?.id, ' : success? : ', success);
+  if (event.target.tab.$TST.element)
+    event.target.tab.$TST.element.tooltipSuppressed = !!success;
 }
 onTabSubstanceEnter = EventUtils.wrapWithErrorHandler(onTabSubstanceEnter);
 
@@ -242,7 +271,7 @@ function onTabSubstanceLeave(event) {
     return;
 
   const activeTab = Tab.getActiveTab(event.target.tab.windowId);
-  if (!PREVIEW_AVAILABLE_URLS_MATCHER.test(activeTab.url))
+  if (!CUSTOM_PANEL_AVAILABLE_URLS_MATCHER.test(activeTab.url))
     return;
 
   //console.log(event.type, event.target.tab, event.target, activeTab);
