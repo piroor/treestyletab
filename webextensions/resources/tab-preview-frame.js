@@ -11,6 +11,11 @@
 let panel = null;
 
 try{
+  // -moz-platform @media rules looks unavailable on Web contents...
+  const isWindows = /^Win/i.test(navigator.platform);
+  const isLinux = /Linux/i.test(navigator.platform);
+  const isMac = /^Mac/i.test(navigator.platform);
+
   const style = document.createElement('style');
   style.setAttribute('type', 'text/css');
   style.textContent = `
@@ -38,53 +43,52 @@ try{
       --panel-width: initial;
 
       --panel-shadow-margin: 0px;
-      --panel-shadow: 0 0 var(--panel-shadow-margin) hsla(0,0%,0%,.2);
+      --panel-shadow: 0px 0px var(--panel-shadow-margin) hsla(0,0%,0%,.2);
       -moz-window-input-region-margin: var(--panel-shadow-margin);
       margin: calc(-1 * var(--panel-shadow-margin));
 
       /* Panel design token theming */
       --background-color-canvas: var(--panel-background);
 
-      @media (-moz-platform: linux) {
+      /*@media (-moz-platform: linux) {*/
+      ${isLinux ? '' : '/*'}
         --panel-border-radius: calc(8px / var(--device-pixel-ratio));
         --panel-padding-block: calc(3px / var(--device-pixel-ratio));
 
         @media (prefers-contrast) {
           --panel-border-color: color-mix(in srgb, currentColor 60%, transparent);
         }
-      }
+      ${isLinux ? '' : '*/'}
+      /*}*/
 
-      @media (-moz-platform: linux) or (-moz-platform: windows) {
+      /*@media (-moz-platform: linux) or (-moz-platform: windows) {*/
+      ${isLinux || isWindows ? '' : '/*'}
         --panel-shadow-margin: calc(4px / var(--device-pixel-ratio));
-      }
+      ${isLinux || isWindows ? '' : '*/'}
+      /*}*/
 
       /* On some linux WMs we need to draw square menus because alpha is not available */
-      @media (-moz-platform: linux) and (not (-moz-gtk-csd-transparency-available)) {
+      @media /*(-moz-platform: linux) and*/ (not (-moz-gtk-csd-transparency-available)) {
+        ${isLinux ? '' : '/*'}
         --panel-shadow-margin: 0px !important;
         --panel-border-radius: 0px !important;
+        ${isLinux ? '' : '*/'}
       }
 
-      @media (-moz-platform: macos) {
+      /*@media (-moz-platform: macos) {*/
+      ${isMac ? '' : '/*'}
         appearance: auto;
         -moz-default-appearance: menupopup;
         background-color: Menu;
         --panel-background: none;
         --panel-border-color: transparent;
         --panel-border-radius: calc(6px / var(--device-pixel-ratio));
-      }
+      ${isMac ? '' : '*/'}
+      /*}*/
 
       /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#5 */
       --panel-width: calc(280px / var(--device-pixel-ratio));
       --panel-padding: 0;
-
-      /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/toolkit/themes/shared/design-system/tokens-shared.css#174 */
-      --space-xxsmall: calc(0.5 * var(--space-xsmall));
-      --space-xsmall: calc(0.267rem / var(--device-pixel-ratio));
-      --space-small: calc(2 * var(--space-xsmall));
-      --space-medium: calc(3 * var(--space-xsmall));
-      --space-large: calc(4 * var(--space-xsmall));
-      --space-xlarge: calc(6 * var(--space-xsmall));
-      --space-xxlarge: calc(8 * var(--space-xsmall));
 
 
       background: var(--panel-background);
@@ -107,8 +111,8 @@ try{
       font-size: calc(1em / var(--device-pixel-ratio));
       font-weight: bold;
       line-height: 1.5; /* -webkit-line-clamp looks unavailable, so this is a workaround */
-      margin: 0 var(--panel-border-radius) 0.25em;
-      max-height: calc(3em / var(--device-pixel-ratio)); /* -webkit-line-clamp looks unavailable, so this is a workaround */
+      margin: 0 var(--panel-border-radius);
+      max-height: 3em; /* -webkit-line-clamp looks unavailable, so this is a workaround */
       overflow: hidden;
       /* text-overflow: ellipsis; */
       -webkit-line-clamp: 2; /* https://searchfox.org/mozilla-central/rev/dfaf02d68a7cb018b6cad7e189f450352e2cde04/browser/themes/shared/tabbrowser/tab-hover-preview.css#15-18 */
@@ -116,7 +120,7 @@ try{
 
     .tab-preview-url {
       font-size: calc(1em / var(--device-pixel-ratio));
-      margin: 0 var(--panel-border-radius) 0.25em;
+      margin: 0 var(--panel-border-radius);
       opacity: 0.69; /* https://searchfox.org/mozilla-central/rev/234f91a9d3ebef0d514868701cfb022d5f199cb5/toolkit/themes/shared/design-system/tokens-shared.css#182 */
       overflow: hidden;
       text-overflow: ellipsis;
@@ -125,6 +129,7 @@ try{
 
     .tab-preview-image-wrapper {
       border-top: calc(1px / var(--device-pixel-ratio)) solid var(--panel-border-color);
+      margin-top: 0.25em;
       max-height: calc(140px / var(--device-pixel-ratio));
       overflow: hidden;
     }
