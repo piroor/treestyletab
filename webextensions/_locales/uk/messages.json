@@ -224,7 +224,7 @@
     "hash": "e3c228fe083b75f07a680e0f2b8cdcfb"
   },
   "warnOnCloseTabs_warnAgain": {
-    "message": "Попереджати коли я закриваю декілька вкладок",
+    "message": "Попереджати, коли я закриваю декілька вкладок",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
   },
   "warnOnCloseTabs_close": {
@@ -498,6 +498,10 @@
     "message": "Відв'язати вибрані вкладки від країв",
     "hash": "8c3871e104cb4465d07a5b8c7861a1e9"
   },
+  "context_toggleSticky_command": {
+    "message": "Прив'язати/Відв'язати вкладку до/від країв",
+    "hash": "fbb39a572d258eccc7b32a45ded98746"
+  },
   "context_collapseTree_label": {
     "message": "Згорнути це дерево",
     "hash": "ec430e447b0faaf9c19f29c5a4aeca0d"
@@ -594,6 +598,10 @@
     "message": "(симулювати стандартну поведінку оглядача)",
     "hash": "e29929cd421b7c5918d50103e7916c67"
   },
+  "config_showExpertOptions_label": {
+    "message": "Розблокувати експертні налаштування",
+    "hash": "b19e02c05e20c20be54ce37e54fb9ca2"
+  },
   "config_appearance_caption": {
     "message": "Вигляд",
     "hash": "4e916e83dfa642d4d35d88b3910ef1ab"
@@ -674,6 +682,10 @@
     "message": "Ввімкнути ефекти анімації",
     "hash": "67af584b4338ca4351cee724f8b9f0a3"
   },
+  "config_tabPreviewTooltip_label": {
+    "message": "Показувати зображення сторінки під час наведення курсору на вкладку замість підказки (*Вам необхідно надати дозвіл на виконання скриптів на веб сторінках)",
+    "hash": "6a5ff1dd20d3da41d4e804217a5261df"
+  },
   "config_showCollapsedDescendantsByTooltip_label": {
     "message": "Показувати згорнуті дочірні елементи у підказці на вкладці",
     "hash": "29c86feb66b1696cd3c5b55e989c93ee"
@@ -689,6 +701,34 @@
   "config_extraItems_tabs_caption": {
     "message": "Додаткові пункти контекстного меню",
     "hash": "b7f86123cd85643d03aa0dd59fc69e3a"
+  },
+  "config_sendTabsToDevice_caption": {
+    "message": "Надсилання вкладок на інші пристрої, використовуючи контекстне меню, через Firefox Sync",
+    "hash": "5c21cf6a96e55c8c5a629141a814a731"
+  },
+  "config_syncRequirements_description": {
+    "message": "Ця функція залежить від Firefox Sync, і вкладки можна надіслати тільки на пристрої з встановленим TST. Будь ласка, спочатку активуйте Firefox Sync в налаштуваннях оглядача, а також встановіть TST на інших пристроях.",
+    "hash": "2a190e4b8d21b2abfaf91f22a7f4a600"
+  },
+  "config_syncDeviceInfo_name_label": {
+    "message": "Назва та іконка цього пристрою:",
+    "hash": "2e05a75397b8ffcd49e781d45bf5ac0a"
+  },
+  "config_syncDeviceInfo_name_description_before": {
+    "message": "TST не може визначити назву цього пристрою з налаштувань Firefox Sync через обмеження у API для веб-розширень. Будь ласка, встановіть упізнавану назву цього пристрою вручну. (Рекомендовано скопіювати",
+    "hash": "28327892996b9927b37b5a51243e6015"
+  },
+  "config_syncDeviceInfo_name_description_link": {
+    "message": "назву цього пристрою з Firefox Sync",
+    "hash": "18b67aade4b4ff98b4523073fab4f775"
+  },
+  "config_syncDeviceInfo_name_description_href": {
+    "message": "https://accounts.firefox.com/settings/clients",
+    "hash": "b97aa4c6f62b551a6b74e7768370513c"
+  },
+  "config_syncDeviceInfo_name_description_after": {
+    "message": ")",
+    "hash": "13b5f38218d1ebdd99cd929f5092c99b"
   },
   "config_newTabWithOwner_caption": {
     "message": "Вклади відкрити з існуючих вкладок ",
@@ -711,19 +751,19 @@
     "hash": "a9a494923e5629703d285ec50435bcf3"
   },
   "config_autoAttachOnOpenedWithOwner_childTop": {
-    "message": "Перша дочірня вкладка",
+    "message": "Першу дочірню вкладка",
     "hash": "cda3be1d4b6cd7e1ddd4eae61c558f7f"
   },
   "config_autoAttachOnOpenedWithOwner_childEnd": {
-    "message": "Остання дочірня вкладка",
+    "message": "Останню дочірню вкладка",
     "hash": "90475ac52b37da61b9f91c5ddaa9838f"
   },
   "config_autoAttachOnOpenedWithOwner_sibling": {
-    "message": "однорівневий елемент поточної вкладки",
+    "message": "На рівні з поточною вкладкою",
     "hash": "2e20d6cf6d062de0b63660050460cc8c"
   },
   "config_autoAttachOnOpenedWithOwner_nextSibling": {
-    "message": "наступний однорівневий елемент поточної вкладки",
+    "message": "На тому ж рівні, після поточної вкладки",
     "hash": "35f4e4e8064fb9b94728e16546db66e4"
   },
   "config_insertNewTabFromPinnedTabAt_caption": {
@@ -778,6 +818,10 @@
     "message": "Показувати кнопку вибору контейнера на кнопці \"Нова вкладка\" ",
     "hash": "f06ed1760ca0ebb143e6371eb1b6f641"
   },
+  "config_newTabAction_caption": {
+    "message": "Базовий контроль над новими порожнімивкладками",
+    "hash": "477c2a150aecc3473f267d37fd706f59"
+  },
   "config_autoAttachOnNewTabCommand_before": {
     "message": "Відкрити нову порожню вкладку як",
     "hash": "747c61c39b6f945e432226f6d4ab246d"
@@ -810,20 +854,44 @@
     "message": "\u200b",
     "hash": "aa7906338dbdd2af4993295aa9112e97"
   },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": {
+    "message": "Припускати, що нова вкладка відкрита за допомогою дії \"Нова порожня вкладка\", коли вона відкрита з таким заголовком(-ами)",
+    "hash": "a068ccfbf1e3c9b805a562d4f0822e6e"
+  },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
+    "message": "або URL-адресою(-ми)",
+    "hash": "e661136a72df2bddf4ac52fa4f475cca"
+  },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
+    "message": "(*Ви можете ввести декілька значень через роздільник \"|\")",
+    "hash": "d79065091d5c7b7e2e712dc021cb4ad1"
+  },
   "config_autoAttachOnNewTabButtonMiddleClick_before": {
     "message": "Кліком коліщатка миші відкрити нову порожню вкладку як ",
     "hash": "e30d945a6f78f16c27b7b6fe9a2cba74"
   },
+  "config_autoAttachOnNewTabButtonMiddleClick_noControl": {
+    "message": "(не контролювати)",
+    "hash": "5cfecc8eb3eb2ea13fbaa6068cdecd01"
+  },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": {
-    "message": "окрему вкладку",
+    "message": "Окрему вкладку",
     "hash": "6506c7b1fb551e12982be2d1b3413d2d"
   },
+  "config_autoAttachOnNewTabButtonMiddleClick_childTop": {
+    "message": "Перша дочірня вкладка поточної вкладки",
+    "hash": "8bd1c22bd4eacc6135c3397a3e6b96f2"
+  },
+  "config_autoAttachOnNewTabButtonMiddleClick_childEnd": {
+    "message": "Остання дочірня вкладка поточної вкладки",
+    "hash": "62c5d38a710be95a3ba14ae1bbd5e3e3"
+  },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": {
-    "message": "однорівневий елемент поточної вкладки",
+    "message": "Однорівневий елемент поточної вкладки",
     "hash": "9a0c55bd90b435172d1445e7bb86ff48"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": {
-    "message": "наступний однорівневий елемент поточної вкладки",
+    "message": "Наступний однорівневий елемент поточної вкладки",
     "hash": "cceaa50512a93c462dfe0e6e2361b6d8"
   },
   "config_autoAttachOnNewTabButtonMiddleClick_after": {
@@ -930,9 +998,17 @@
     "message": "Завжди повертатися на наступну вкладку (за замовч. Firefox)",
     "hash": "2019183a3e988f743e1d81da29a59ab6"
   },
+  "config_successorTabControlLevel_never": {
+    "message": "Ніколи не контролювати вибрану вкладку (поважати поведінку оглядача або інших розширень)",
+    "hash": "db88b9f4952b17c7131b04c0c3dd1bc7"
+  },
   "config_successorTabControlLevel_legacyDescription": {
     "message": "*Поведінка Firefox's за замовч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" спрацює раніше цієї конфігурації.",
     "hash": "365d3b75c057f8e844b7e519c70e020d"
+  },
+  "config_simulateSelectOwnerOnClose_label": {
+    "message": "Коли поточна вкладка закрита, перенести, якщо можливо, фокус на вкладку, з якої вона була відкрита (*симулює вбудовану поведінку оглядача при \"browser.tabs.selectOwnerOnClose\"=\"true\", виконується раніше за налаштування зверху)",
+    "hash": "ec5b2bf779ca99a4ae3e507063b7280e"
   },
   "config_autoCollapseExpandSubtreeOnAttach_label": {
     "message": "Коли з'явиться нове дерево, згорнути інші автоматично",
@@ -954,9 +1030,41 @@
     "message": "Згорнути/розгорнути дерево",
     "hash": "a6f448837c94b54069a5f7b82589dfa3"
   },
+  "config_treeDoubleClickBehavior_toggleSticky": {
+    "message": "Прив'язати вкладку до країв / Відв'язати вкладку від країв",
+    "hash": "20b54ed82e1f86f43895dcb35bf1c057"
+  },
+  "config_treeDoubleClickBehavior_close": {
+    "message": "Закрити вкладку",
+    "hash": "d1f1cd1622da31c005a894c0637d041f"
+  },
+  "config_treeDoubleClickBehavior_close_note": {
+    "message": " (*симулює вбудовану у оглядач поведінку при \"browser.tabs.closeTabByDblclick\"=\"true\")",
+    "hash": "d8b64880b17c20688559a94ed2ff9d3e"
+  },
   "config_treeDoubleClickBehavior_none": {
     "message": "Нічого",
     "hash": "a0a28b9a09a44d3e69599b6500e47a0e"
+  },
+  "config_parentTabOperationBehaviorMode_caption": {
+    "message": "Коли батьківська вкладка закрита або переміщена",
+    "hash": "1a6f755c90104a8eeb83df575a4dfa4d"
+  },
+  "config_parentTabOperationBehaviorMode_noteForPermanentlyConsistentBehaviors": {
+    "message": "Як би ви не налаштували цю секцію, є кілька постійних і послідовних поведінок на бічній панелі;\n･ Закриваєте батьківську вкладку коли дерево згорнуто: закривається все дерево\n･ Переносите батьківську вкладку зі згорнутим деревом: переноситься все дерево\n･ Переносите батьківську вкладку з розгорнутим деревом: система веде себе згідно налаштувань в секції \"Перетягування\"\n",
+    "hash": "99173f59170df6284c68d50889212058"
+  },
+  "config_parentTabOperationBehaviorMode_parallel": {
+    "message": "Рек. набір налаштувань, використовуючи рідну панель вкладок оглядача як \"Solo Tab Operation UI\"",
+    "hash": "9d3fcaa8d4577bb988ccf74eddc08d8d"
+  },
+  "config_closeParentBehavior_insideSidebar": {
+    "message": "Коли батьківська вкладка з розгорнутим деревом закрита з бічної панелі",
+    "hash": "dbbb202b7f8f9c5507dc380683b39979"
+  },
+  "config_parentTabOperationBehaviorMode_consistent": {
+    "message": "Рек. набір налаштувань, з використанням Узгоджених Поведінок Вкладок, контрольованих TST.",
+    "hash": "df4df688560663ae563026750f91d228"
   },
   "config_parentTabOperationBehavior_entireTree": {
     "message": "Також закрити дочірні вкладки",
@@ -979,8 +1087,12 @@
     "hash": "aca2455af4600f6f16dcbd352c3fcb12"
   },
   "config_warnOnCloseTabs_label": {
-    "message": "Попереджати коли я закриваю декілька вкладок",
+    "message": "Попереджати, коли я закриваю декілька вкладок",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
+  },
+  "config_warnOnCloseTabsByClosebox_label": {
+    "message": "Попереджати, коли я закриваю декілька вкладок звичним кліком по кнопці закриття",
+    "hash": "63cc3d8cd52b7fb540c6e928a131fcc2"
   },
   "config_insertNewChildAt_caption": {
     "message": "Місце появи нових дочірніх вкладок",
@@ -998,6 +1110,22 @@
     "message": "Додати в кінець дерева",
     "hash": "fb8149b1acff1a3722270b8ba8d4f816"
   },
+  "config_drag_caption": {
+    "message": "Перетягування",
+    "hash": "b2c8578361430cf0cdd6ef3978051b33"
+  },
+  "config_tabDragBehavior_caption": {
+    "message": "Коли вкладка витягається з бічної панелі",
+    "hash": "14259d7efe02613e2f194ef13a7f3eff"
+  },
+  "config_tabDragBehavior_label": {
+    "message": "Витягається",
+    "hash": "691dea276ee74670a1d99f7b008d80ea"
+  },
+  "config_tabDragBehaviorShift_label": {
+    "message": "Витягається, утримуючи Shift",
+    "hash": "bbe432a46b307bcc31ee7a4f0f667c46"
+  },
   "config_dropLinksOnTabBehavior_caption": {
     "message": "При перетягуванні посилання чи URL-у на вкладку",
     "hash": "1c973ccd4b2729ed3e7e0d8097c0c0e2"
@@ -1014,6 +1142,10 @@
     "message": "Відкрити нову дочірню вкладку",
     "hash": "ef65d6f472c7fb18957f70ccba02e044"
   },
+  "config_more_caption": {
+    "message": "Ще…",
+    "hash": "30516b9efbf5fbc17236e4478aba8379"
+  },
   "config_shortcuts_caption": {
     "message": "Гарячі клавіші",
     "hash": "3e4c94412820831fbea1494aa4d5ecf4"
@@ -1025,6 +1157,10 @@
   "config_advanced_caption": {
     "message": "Розширені налашт.",
     "hash": "61e6f7ef10c721f08bc36bee2b3f9bc0"
+  },
+  "config_defaultBookmarkParentId_label": {
+    "message": "Розташування нової закладки за замовчуванням",
+    "hash": "35b1d41b979660bc99afeac6b7d2280c"
   },
   "config_userStyleRules_label": {
     "message": "User Style Sheet (Додаткові правила стилю бічної панелі)",
@@ -1085,6 +1221,10 @@
   "config_requestPermissions_bookmarks": {
     "message": "Дозволити читання та створення закладок",
     "hash": "7478a48fc3307a59c38920d562baf3b2"
+  },
+  "config_requestPermissions_bookmarks_context": {
+    "message": "Дозволити відкривати контекстне меню на закладках",
+    "hash": "d4a816c21da05576f381fe5709fe4b70"
   },
   "config_requestPermissions_fallbackToToolbarButton_title": {
     "message": "Натисніть \"Tree Style Tab\" кнопку панелі інструментів",
