@@ -534,7 +534,7 @@ function setExtraTabContentsToElement(tabElement, id, params = {}) {
       container = tabElement.extraItemsContainerAboveRoot;
       break;
 
-    case 'tab-above':
+    case 'tab-below':
       container = tabElement.extraItemsContainerBelowRoot;
       break;
   }
