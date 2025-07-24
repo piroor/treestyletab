@@ -412,7 +412,7 @@
   "config_maxPinnedTabsRowsAreaPercentage_label_before": { "message": "ピン留めされたタブを表示する領域の最大の高さ：サイドバーの" },
   "config_maxPinnedTabsRowsAreaPercentage_label_after":  { "message": "%まで" },
   "config_fadeOutPendingTabs_label": { "message": "読み込みを保留中のタブのアイコンを灰色で表示（※ブラウザー組み込みの機能である\"browser.tabs.fadeOutUnloadedTabs\"=\"true\"の再現）" },
-  "config_fadeOutDiscardedTabs_label": { "message": "意図的に解放した田夫のアイコンを灰色で表示（※ブラウザー組み込みの機能である\"browser.tabs.fadeOutExplicitlyUnloadedTabs\"=\"true\"の再現）" },
+  "config_fadeOutDiscardedTabs_label": { "message": "意図的に解放したタブのアイコンを灰色で表示（※ブラウザー組み込みの機能である\"browser.tabs.fadeOutExplicitlyUnloadedTabs\"=\"true\"の再現）" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_animationForce_label": { "message": "アニメーションを抑制するプラットフォームの設定を無視して有効にする" },
   "config_tabPreviewTooltip_label": { "message": "タブの上にカーソルを乗せたとき、ツールチップの代わりにタブのプレビュー画像を表示する（※Webページ内でのスクリプトの実行を許可する必要があります）" },
