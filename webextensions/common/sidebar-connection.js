@@ -225,7 +225,7 @@ if (Constants.IS_BACKGROUND) {
       mFocusState.delete(windowId);
       onDisconnected.dispatch(windowId, connections.size);
 
-      // We need to notify this to some conetnt scripts, to destroy themselves.
+      // We need to notify this to some content scripts, to destroy themselves.
       /*
       browser.runtime.sendMessage({
         type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,

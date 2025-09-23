@@ -1237,7 +1237,7 @@ async function onDetached(tabId, detachInfo) {
       tabId,
       wasPinned: oldTab.pinned
     });
-    // We need to notify this to some conetnt scripts, to destroy themselves.
+    // We need to notify this to some content scripts, to destroy themselves.
     try {
       browser.tabs.sendMessage(tabId, {
         type: Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW,

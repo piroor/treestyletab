@@ -421,9 +421,9 @@
   "config_animationForce_label": { "message": "Enable animations regardless \"reduce animations\" platform settings" },
   "config_tabPreviewTooltip_label": { "message": "Show tab preview image on tab hover, instead of legacy tooltip (*You need to allow executing scripts on webpages)" },
   "config_tabPreviewTooltipRenderIn_label_before": { "message": "\u200b" },
-  "config_tabPreviewTooltipRenderIn_content": { "message": "in the conetnt area (and show nothing if impossible)" },
+  "config_tabPreviewTooltipRenderIn_content": { "message": "in the content area (and show nothing if impossible)" },
   "config_tabPreviewTooltipRenderIn_sidebar": { "message": "in the sidebar always" },
-  "config_tabPreviewTooltipRenderIn_anywhere": { "message": "in the conetnt area if possible, otherwise in the sidebar" },
+  "config_tabPreviewTooltipRenderIn_anywhere": { "message": "in the content area if possible, otherwise in the sidebar" },
   "config_tabPreviewTooltipRenderIn_label_after": { "message": "\u200b" },
   "config_inContentUIOffsetTop_label_before": { "message": "Shift tab preview " },
   "config_inContentUIOffsetTop_label_after": { "message": "px vertically when the height of the sidebar header cannot be detected due to privacy protection (ex. \"privacy.resistFingerprinting\"=\"true\")" },
@@ -791,9 +791,9 @@
 
   "config_tabGroupsEnabled_label": { "message": "Activate native tab groups management (*corresponding to a built-in preference \"browser.tabs.groups.enabled\"=\"true\" of the browser itself)" },
   "config_tabGroupMenuPanelRenderIn_label_before": { "message": "Show the context menu for tab groups" },
-  "config_tabGroupMenuPanelRenderIn_content": { "message": "in the conetnt area (and show nothing if impossible)" },
+  "config_tabGroupMenuPanelRenderIn_content": { "message": "in the content area (and show nothing if impossible)" },
   "config_tabGroupMenuPanelRenderIn_sidebar": { "message": "in the sidebar always" },
-  "config_tabGroupMenuPanelRenderIn_anywhere": { "message": "in the conetnt area if possible, otherwise in the sidebar" },
+  "config_tabGroupMenuPanelRenderIn_anywhere": { "message": "in the content area if possible, otherwise in the sidebar" },
   "config_tabGroupMenuPanelRenderIn_label_after": { "message": "\u200b" },
 
   "config_undoMultipleTabsClose_label": { "message": "Restore the set of tabs most recently closed, when one of them is restored via the \"Reopen Closed Tab\" command" },
