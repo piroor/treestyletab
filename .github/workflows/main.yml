@@ -19,7 +19,7 @@ jobs:
         cat manifest.json | jq ".version |= \"$version\"" > webextensions/manifest.json
     - name: build xpi
       run: make
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: treestyletab-we.xpi
         path: treestyletab-we.xpi
