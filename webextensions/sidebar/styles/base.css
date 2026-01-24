@@ -798,11 +798,14 @@ tab-item .native-tab-group-line {
     &,
   :root:not(.newtab-action-selectable).contextual-identity-selectable:not(.incognito)
     .newtab-button
-    &,
+    & {
+    inset-inline-end: var(--new-tab-button-anchor-size);
+  }
+
   :root.newtab-action-selectable.contextual-identity-selectable:not(.incognito)
     .newtab-button
     & {
-    inset-inline-end: var(--new-tab-button-anchor-size);
+    inset-inline-start: var(--new-tab-button-anchor-size);
   }
 }
 
@@ -1384,7 +1387,13 @@ tab-item[type="group-collapsed-members-counter"] {
 
 :root.contextual-identity-selectable
   .after-tabs
-  .newtab-action-selector-anchor,
+  .newtab-action-selector-anchor {
+  border-width: 0;
+  border-inline-end-width: 1px;
+  display: flex;
+  inset-inline-start: 0;
+}
+
 :root:not(.contextual-identity-selectable)
   .after-tabs
   .newtab-action-selector-anchor,
@@ -1392,9 +1401,9 @@ tab-item[type="group-collapsed-members-counter"] {
   .after-tabs
   .contextual-identities-selector-anchor {
   border-width: 0;
-  border-inline-end-width: 1px;
+  border-inline-start-width: 1px;
   display: flex;
-  inset-inline-start: 0;
+  inset-inline-end: 0;
 }
 
 .newtab-action-selector-anchor::-moz-focus-inner,
