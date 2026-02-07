@@ -251,8 +251,13 @@ export class TreeItem {
     if (this.sticky)
       return true;
 
-    if ((new Set([...this.states, ...TreeItem.allAutoStickyStates])).size < this.states.size + TreeItem.allAutoStickyStates.size) {
-      return true;
+    // Returns true if the two arrays share at least one element
+    const [smaller, larger] = this.states.size <= TreeItem.allAutoStickyStates.size
+      ? [this.states, TreeItem.allAutoStickyStates]
+      : [TreeItem.allAutoStickyStates, this.states];
+    for (const state of smaller) {
+      if (larger.has(state))
+        return true;
     }
 
     return false;
