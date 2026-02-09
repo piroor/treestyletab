@@ -118,9 +118,11 @@ export async function init() {
     });
 
   let promisedWindows;
+  let restoredPersistentIdMap;
   log('init: Getting existing windows and tabs');
   await MetricsData.addAsync('init: waiting for waitUntilCompletelyRestored, ContextualIdentities.init and configs.$loaded', Promise.all([
-    promisedRestored.then(() => {
+    promisedRestored.then(result => {
+      restoredPersistentIdMap = result;
       // don't wait at here for better performance
       promisedWindows = getAllWindows();
     }),
@@ -138,8 +140,11 @@ export async function init() {
   updatePanelUrl();
 
   const windows = await MetricsData.addAsync('init: getting all tabs across windows', promisedWindows); // wait at here for better performance
+  if (restoredPersistentIdMap && restoredPersistentIdMap.size > 0)
+    UniqueId.setRestoredPersistentIdMap(restoredPersistentIdMap);
   const restoredFromCache = await MetricsData.addAsync('init: rebuildAll', rebuildAll(windows));
   mPreloadedCaches.clear();
+  UniqueId.clearRestoredPersistentIdMap();
   await MetricsData.addAsync('init: TreeStructure.loadTreeStructure', TreeStructure.loadTreeStructure(windows, restoredFromCache));
 
   log('init: Start to process messages including queued ones');
@@ -232,9 +237,12 @@ async function updatePanelUrl(theme) {
 async function waitUntilCompletelyRestored() {
   log('waitUntilCompletelyRestored');
   const initialTabs = await browser.tabs.query({});
+  const restoredPersistentIdMap = new Map();
   await Promise.all([
     MetricsData.addAsync('waitUntilCompletelyRestored: existing tabs ', Promise.all(
-      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id).catch(_error => {}))
+      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id)
+        .then(uniqueId => { if (uniqueId) restoredPersistentIdMap.set(tab.id, uniqueId); })
+        .catch(_error => {}))
     )),
     MetricsData.addAsync('waitUntilCompletelyRestored: opening tabs ', new Promise((resolve, _reject) => {
       let promises = [];
@@ -243,7 +251,11 @@ async function waitUntilCompletelyRestored() {
       let onNewTabRestored = async (tab, _info = {}) => {
         clearTimeout(timeout);
         log('new restored tab is detected.');
-        promises.push(waitUntilPersistentIdBecomeAvailable(tab.id).catch(_error => {}));
+        promises.push(
+          waitUntilPersistentIdBecomeAvailable(tab.id)
+            .then(uniqueId => { if (uniqueId) restoredPersistentIdMap.set(tab.id, uniqueId); })
+            .catch(_error => {})
+        );
         // Read caches from restored tabs while waiting, for better performance.
         browser.sessions.getWindowValue(tab.windowId, Constants.kWINDOW_STATE_CACHED_TABS)
           .catch(ApiTabs.createErrorSuppressor())
@@ -266,16 +278,17 @@ async function waitUntilCompletelyRestored() {
       timeout = setTimeout(resolver, 500);
     })),
   ]);
+  return restoredPersistentIdMap;
 }
 async function waitUntilPersistentIdBecomeAvailable(tabId, retryCount = 0) {
   if (retryCount > 10) {
     console.log(`could not get persistent ID for ${tabId}`);
-    return false;
+    return null;
   }
   const uniqueId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
   if (!uniqueId)
     return wait(100).then(() => waitUntilPersistentIdBecomeAvailable(tabId, retryCount + 1));
-  return true;
+  return uniqueId;
 }
 
 function destroy() {

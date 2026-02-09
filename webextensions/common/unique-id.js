@@ -83,6 +83,18 @@ Zapus
 
 let mReadyToDetectDuplicatedTab = false;
 
+const mRestoredPersistentIdMap = new Map();
+
+export function setRestoredPersistentIdMap(map) {
+  for (const [tabId, value] of map) {
+    mRestoredPersistentIdMap.set(tabId, value);
+  }
+}
+
+export function clearRestoredPersistentIdMap() {
+  mRestoredPersistentIdMap.clear();
+}
+
 export function readyToDetectDuplicatedTab() {
   mReadyToDetectDuplicatedTab = true;
 }
@@ -115,7 +127,14 @@ export async function request(tabOrId, options = {}) {
         configs.delayForDuplicatedTabDetection > 0)
       await wait(configs.delayForDuplicatedTabDetection);
 
-    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
+    let oldId;
+    if (mRestoredPersistentIdMap.has(tab.id)) {
+      oldId = mRestoredPersistentIdMap.get(tab.id);
+      mRestoredPersistentIdMap.delete(tab.id);
+    }
+    else {
+      oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
+    }
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
