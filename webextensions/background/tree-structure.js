@@ -452,7 +452,7 @@ Tab.onRestored.addListener(tab => {
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
           }, 0);
 
-          const countToBeRestored = mRecentlyClosedTabs.filter(tab => !mRestoredTabIds.has(tab.uniqueId));
+          const countToBeRestored = mRecentlyClosedTabs.filter(tab => !mRestoredTabIds.has(tab.uniqueId)).length;
           log('countToBeRestored: ', countToBeRestored);
           if (countToBeRestored > 0)
             tryRestoreClosedSetFor(tab, countToBeRestored);
@@ -461,7 +461,7 @@ Tab.onRestored.addListener(tab => {
         else {
           mRestoringTabs.set(tab.windowId, count);
           const maxCount = mMaxRestoringTabs.get(tab.windowId);
-          UserOperationBlocker.setProgress(Math.round(maxCount - count / maxCount * 100), tab.windowId);
+          UserOperationBlocker.setProgress(Math.round((maxCount - count) / maxCount * 100), tab.windowId);
         }
       });
     }
@@ -495,9 +495,8 @@ Tab.onRemoved.addListener((_tab, _info) => {
   mRecentlyClosedTabs = [];
   mRecentlyClosedTabsTreeStructure = [];
 
-  const newlyRestorable = mRecentlyClosedTabs.length > 1;
-  if (currentlyRestorable != newlyRestorable)
-    Tab.onChangeMultipleTabsRestorability.dispatch(newlyRestorable);
+  if (currentlyRestorable)
+    Tab.onChangeMultipleTabsRestorability.dispatch(false);
 });
 
 Tab.onMultipleTabsRemoving.addListener((tabs, { triggerTab, originalStructure } = {}) => {
