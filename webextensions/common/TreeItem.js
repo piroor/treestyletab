@@ -548,7 +548,7 @@ export class TreeItem {
     const previousTab = this.unsafePreviousTab;
     if (this.lastPreviousTabId &&
         this.lastPreviousTabId != previousTab?.id) {
-      log(`not bulkMoved lastPreviousTabId=${this.lastNextTabId}, previousTab=${previousTab?.id}`);
+      log(`not bulkMoved lastPreviousTabId=${this.lastPreviousTabId}, previousTab=${previousTab?.id}`);
       return false;
     }
 
@@ -1526,7 +1526,7 @@ export class Tab extends TreeItem {
         resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
       }
       catch(error) {
-        log(`promisedPossibleOpenerBookmarks for the tab {this.id} (${url}): `, error);
+        log(`promisedPossibleOpenerBookmarks for the tab ${this.id} (${url}): `, error);
         // If it is detected as "not a valid URL", then
         // it cannot be a tab opened from a bookmark.
         resolve(this.possibleOpenerBookmarks = []);
