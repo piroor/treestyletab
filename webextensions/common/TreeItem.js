@@ -1903,8 +1903,8 @@ export class Tab extends TreeItem {
       oldParent.$TST.sharingCameraChildrenIds.delete(this.id);
       oldParent.$TST.maybeSharingCameraChildrenIds.delete(this.id);
       oldParent.$TST.sharingMicrophoneChildrenIds.delete(this.id);
-      oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
       oldParent.$TST.maybeSharingMicrophoneChildrenIds.delete(this.id);
+      oldParent.$TST.sharingScreenChildrenIds.delete(this.id);
       oldParent.$TST.maybeSharingScreenChildrenIds.delete(this.id);
       oldParent.$TST.inheritSharingStateFromChildren();
 
