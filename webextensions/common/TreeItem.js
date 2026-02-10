@@ -1160,7 +1160,7 @@ export class Tab extends TreeItem {
     this.lastSoundStateCounts = {
       soundPlaying:    0,
       muted:           0,
-      autoPlayBlocked: 0,
+      autoplayBlocked: 0,
     };
     this.soundPlayingChildrenIds = new Set();
     this.maybeSoundPlayingChildrenIds = new Set();
@@ -1170,9 +1170,9 @@ export class Tab extends TreeItem {
     this.maybeAutoplayBlockedChildrenIds = new Set();
 
     this.lastSharingStateCounts = {
-      camera:     0,
-      microphone: 0,
-      screen:     0,
+      sharingCamera:     0,
+      sharingMicrophone: 0,
+      sharingScreen:     0,
     };
     this.sharingCameraChildrenIds = new Set();
     this.maybeSharingCameraChildrenIds = new Set();
