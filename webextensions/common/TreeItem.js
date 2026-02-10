@@ -1134,7 +1134,6 @@ export class Tab extends TreeItem {
   static onMultipleTabsRemoving = new EventListenerManager();
   static onMultipleTabsRemoved  = new EventListenerManager();
   static onChangeMultipleTabsRestorability = new EventListenerManager();
-  static onStateChanged  = new EventListenerManager();
   static onNativeGroupModified = new EventListenerManager();
 
 
