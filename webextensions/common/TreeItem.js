@@ -1225,6 +1225,7 @@ export class Tab extends TreeItem {
 
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.delayedInheritSoundStateFromChildren = null;
+    this.delayedInheritSharingStateFromChildren = null;
   }
 
   destroy() {
