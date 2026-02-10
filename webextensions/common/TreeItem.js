@@ -3721,8 +3721,9 @@ export class Tab extends TreeItem {
         };
         message.tabIds.push(change.tabId);
         message.changes.push(change);
+        messageForWindows.set(change.windowId, message);
       }
-      for (const message of messageForWindows) {
+      for (const message of messageForWindows.values()) {
         SidebarConnection.sendMessage(message);
       }
       Tab.bufferedTooltipTextChanges.clear();
