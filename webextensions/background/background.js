@@ -158,7 +158,7 @@ export async function init() {
   Permissions.clearRequest();
 
   for (const windowId of restoredFromCache.keys()) {
-    if (!restoredFromCache[windowId])
+    if (!restoredFromCache.get(windowId))
       BackgroundCache.reserveToCacheTree(windowId, 'initialize');
     TabsUpdate.completeLoadingTabs(windowId);
   }
