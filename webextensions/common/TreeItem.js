@@ -740,9 +740,12 @@ export class TreeItem {
     else
       TreeItem.autoStickyStates.delete(providerId);
 
-    TreeItem.allAutoStickyStates = new Set([
-      ...TreeItem.autoStickyStates.values(),
-    ].flat());
+    TreeItem.allAutoStickyStates = new Set();
+    for (const states of TreeItem.autoStickyStates.values()) {
+      for (const state of states) {
+        TreeItem.allAutoStickyStates.add(state);
+      }
+    }
 
     TreeItem.updateCanBecomeStickyTabsIndex(TabsStore.getCurrentWindowId());
 
