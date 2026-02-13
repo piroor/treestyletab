@@ -122,7 +122,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         win.alreadyMovedTabs.set(tab.id, tab.index);
       }
       tab.reindexedBy = `moveTabsInternallyBefore (${tab.index})`;
-      Tab.track(tab);
+      Tab.reindex(tab);
       movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab:     referenceTab,
@@ -264,7 +264,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         win.alreadyMovedTabs.set(tab.id, tab.index);
       }
       tab.reindexedBy = `moveTabsInternallyAfter (${tab.index})`;
-      Tab.track(tab);
+      Tab.reindex(tab);
       movedTabs.push(tab);
       Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab,

@@ -3039,19 +3039,13 @@ export class Tab extends TreeItem {
   // class methods
   //===================================================================
 
-  static track(tab) {
+  static reindex(tab) {
     const trackedTab = Tab.get(tab.id);
-    if (!trackedTab ||
-        !(tab.$TST instanceof Tab)) {
-      new Tab(tab);
-    }
-    else {
-      if (trackedTab)
-        tab = trackedTab;
-      const win = TabsStore.windows.get(tab.windowId);
-      win.trackTab(tab);
-    }
-    return trackedTab || tab;
+    if (trackedTab)
+      tab = trackedTab;
+    const win = TabsStore.windows.get(tab.windowId);
+    win.trackTab(tab);
+    return tab;
   }
 
   static untrack(tabId) {

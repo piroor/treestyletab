@@ -266,7 +266,6 @@ async function rebuildAll(windows) {
         trackedWindow = Window.init(win.id, win.tabGroups.map(TabGroup.init));
 
       for (const tab of win.tabs) {
-        Tab.track(tab);
         Tab.init(tab, { existing: true });
         tryStartHandleAccelKeyOnTab(tab);
       }

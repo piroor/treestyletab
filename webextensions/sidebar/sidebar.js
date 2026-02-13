@@ -171,14 +171,14 @@ export async function init() {
 
       // Track only the first tab for now, because it is required to initialize
       // the container.
-      Tab.track(tabs[0]);
+      Tab.init(tabs[0], { existing: true, inBackground: true });
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
         let lastDraw = Date.now();
         let count = 0;
         const maxCount = tabs.length - 1;
         for (const tab of tabs.slice(1)) {
-          Tab.track(tab);
+          Tab.init(tab, { existing: true, inBackground: true });
           if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
             UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs
             await nextFrame();
@@ -577,18 +577,17 @@ async function rebuildAll(importedWindow) {
   let count = 0;
   const maxCount = tabs.length;
   for (const tab of tabs) {
-    const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
-    const group = trackedTab.$TST.nativeTabGroup;
+    const group = tab.$TST.nativeTabGroup;
     if (group?.collapsed) {
       CollapseExpand.setCollapsed(tab, {
         collapsed: true,
       });
     }
-    TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
+    TabsUpdate.updateTab(tab, tab, { forceApply: true });
     if (tab.active)
-      TabsInternalOperation.setTabActive(trackedTab);
-    if (trackedTab.pinned)
-      SidebarItems.renderItem(trackedTab);
+      TabsInternalOperation.setTabActive(tab);
+    if (tab.pinned)
+      SidebarItems.renderItem(tab);
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 66); // 3/3: build tab elements
       await nextFrame();

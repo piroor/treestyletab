@@ -1043,7 +1043,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.index = message.toIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
-      Tab.track(tab);
+      Tab.reindex(tab);
 
       for (const tab of Tab.getAllTabs(
         message.windowId,
