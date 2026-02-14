@@ -532,6 +532,8 @@ function maybeNewTabIsMoved(tabId) {
 }
 
 
+const mDelayedBurstEnd = new Map();
+
 const mPendingUpdates = new Map();
 
 function setupPendingUpdate(update) {
@@ -834,7 +836,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
-        tab.$TST.collapsedOnCreated = true;
+        CollapseExpand.setCollapsedOnCreated(tab.id, true);
       }
       else {
         reserveToUpdateLoadingState();
@@ -868,7 +870,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       reserveToUpdateLoadingState();
       const needToWaitForTreeExpansion = (
-        tab.$TST.shouldExpandLater &&
+        CollapseExpand.getShouldExpandLater(tab.id) &&
         !tab.active &&
         !Tab.getActiveTab(tab.windowId).pinned
       );
@@ -885,7 +887,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         if (shouldApplyAnimation()) {
           await wait(0); // nextFrame() is too fast!
           if (!message.collapsed /* the new tab may be really collapsed not just for animation, and we should not expand */ &&
-              tab.$TST.collapsedOnCreated) {
+              CollapseExpand.getCollapsedOnCreated(tab.id)) {
             CollapseExpand.setCollapsed(tab, {
               collapsed: false,
             });
@@ -984,7 +986,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
-        tab.$TST.shouldExpandLater = true;
+        CollapseExpand.setShouldExpandLater(tab.id, true);
       }
 
       tab.index = message.toIndex;
@@ -1013,7 +1015,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       tab.$TST.applyAttributesToElement();
 
-      if (shouldAnimate && tab.$TST.shouldExpandLater) {
+      if (shouldAnimate && CollapseExpand.getShouldExpandLater(tab.id)) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });
@@ -1079,14 +1081,15 @@ BackgroundConnection.onMessage.addListener(async message => {
         else {
           if (lastMessage.reallyChanged) {
             tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
-            if (tab.$TST.delayedBurstEnd)
-              clearTimeout(tab.$TST.delayedBurstEnd);
-            tab.$TST.delayedBurstEnd = setTimeout(() => {
-              delete tab.$TST.delayedBurstEnd;
+            const prevBurstEnd = mDelayedBurstEnd.get(tab.id);
+            if (prevBurstEnd)
+              clearTimeout(prevBurstEnd);
+            mDelayedBurstEnd.set(tab.id, setTimeout(() => {
+              mDelayedBurstEnd.delete(tab.id);
               tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
               if (!tab.active)
                 tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-            }, configs.burstDuration);
+            }, configs.burstDuration));
           }
           tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
           TabsStore.removeUnsynchronizedTab(tab);
@@ -1107,6 +1110,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       }
       tab.$TST.parent = null;
+      // Clean up sidebar-local state maps for the removed tab.
+      const burstEnd = mDelayedBurstEnd.get(message.tabId);
+      if (burstEnd)
+        clearTimeout(burstEnd);
+      mDelayedBurstEnd.delete(message.tabId);
+      CollapseExpand.clearCollapseExpandStateForTab(message.tabId);
       // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
       TabsStore.removeHighlightedTab(tab);
       TabsStore.removeGroupTab(tab);

@@ -46,6 +46,44 @@ function log(...args) {
   internalLogger('sidebar/collapse-expand', ...args);
 }
 
+// Module-level maps for per-tab sidebar collapse/expand state.
+// These should not be stored on TreeItem instances to preserve object shape stability.
+const mShouldExpandLater = new Map();
+const mCollapsedOnCreated = new Map();
+const mUpdatingCollapsedStateCanceller = new Map();
+const mCollapseExpandAnimationCallback = new Map();
+const mCollapseExpandAnimationTimeout = new Map();
+
+export function getShouldExpandLater(tabId) {
+  return mShouldExpandLater.get(tabId) || false;
+}
+export function setShouldExpandLater(tabId, value) {
+  if (value)
+    mShouldExpandLater.set(tabId, true);
+  else
+    mShouldExpandLater.delete(tabId);
+}
+export function getCollapsedOnCreated(tabId) {
+  return mCollapsedOnCreated.get(tabId) || false;
+}
+export function setCollapsedOnCreated(tabId, value) {
+  if (value)
+    mCollapsedOnCreated.set(tabId, true);
+  else
+    mCollapsedOnCreated.delete(tabId);
+}
+
+export function clearCollapseExpandStateForTab(tabId) {
+  mShouldExpandLater.delete(tabId);
+  mCollapsedOnCreated.delete(tabId);
+  mUpdatingCollapsedStateCanceller.delete(tabId);
+  const timeout = mCollapseExpandAnimationTimeout.get(tabId);
+  if (timeout)
+    clearTimeout(timeout);
+  mCollapseExpandAnimationCallback.delete(tabId);
+  mCollapseExpandAnimationTimeout.delete(tabId);
+}
+
 export const onUpdating = new EventListenerManager();
 export const onUpdated = new EventListenerManager();
 export const onReadyToExpand = new EventListenerManager();
@@ -60,7 +98,7 @@ export async function setCollapsed(tab, info = {}) {
     info.collapsed != tab.$TST.collapsedCompletely
   );
 
-  tab.$TST.shouldExpandLater = false; // clear flag
+  mShouldExpandLater.delete(tab.id); // clear flag
 
   if (info.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
@@ -78,9 +116,10 @@ export async function setCollapsed(tab, info = {}) {
     TabsStore.addExpandedTab(tab);
   }
 
-  if (tab.$TST.onEndCollapseExpandAnimation) {
-    clearTimeout(tab.$TST.onEndCollapseExpandAnimation.timeout);
-    delete tab.$TST.onEndCollapseExpandAnimation;
+  if (mCollapseExpandAnimationCallback.has(tab.id)) {
+    clearTimeout(mCollapseExpandAnimationTimeout.get(tab.id));
+    mCollapseExpandAnimationCallback.delete(tab.id);
+    mCollapseExpandAnimationTimeout.delete(tab.id);
   }
 
   if (tab.status == 'loading')
@@ -88,9 +127,10 @@ export async function setCollapsed(tab, info = {}) {
 
   const manager = tab.$TST.collapsedStateChangedManager || new EventListenerManager();
 
-  if (tab.$TST.updatingCollapsedStateCanceller) {
-    tab.$TST.updatingCollapsedStateCanceller(tab.$TST.collapsed);
-    delete tab.$TST.updatingCollapsedStateCanceller;
+  const prevCanceller = mUpdatingCollapsedStateCanceller.get(tab.id);
+  if (prevCanceller) {
+    prevCanceller(tab.$TST.collapsed);
+    mUpdatingCollapsedStateCanceller.delete(tab.id);
   }
 
   let cancelled = false;
@@ -140,7 +180,7 @@ export async function setCollapsed(tab, info = {}) {
     return;
   }
 
-  tab.$TST.updatingCollapsedStateCanceller = canceller;
+  mUpdatingCollapsedStateCanceller.set(tab.id, canceller);
 
   if (tab.$TST.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSING);
@@ -171,7 +211,7 @@ export async function setCollapsed(tab, info = {}) {
       last:      info.last
     });
 
-    tab.$TST.onEndCollapseExpandAnimation = (() => {
+    const collapseExpandCallback = () => {
       if (cancelled) {
         onCanceled();
         return;
@@ -191,18 +231,21 @@ export async function setCollapsed(tab, info = {}) {
       onUpdated.dispatch(tab, {
         collapsed: tab.$TST.collapsed
       });
-    });
-    tab.$TST.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
+    };
+    mCollapseExpandAnimationCallback.set(tab.id, collapseExpandCallback);
+    mCollapseExpandAnimationTimeout.set(tab.id, setTimeout(() => {
       if (cancelled ||
           !TabsStore.ensureLivingItem(tab) ||
-          !tab.$TST.onEndCollapseExpandAnimation) {
+          !mCollapseExpandAnimationCallback.has(tab.id)) {
         onCanceled();
         return;
       }
-      delete tab.$TST.onEndCollapseExpandAnimation.timeout;
-      tab.$TST.onEndCollapseExpandAnimation();
-      delete tab.$TST.onEndCollapseExpandAnimation;
-    }, configs.collapseDuration);
+      mCollapseExpandAnimationTimeout.delete(tab.id);
+      const callback = mCollapseExpandAnimationCallback.get(tab.id);
+      if (callback)
+        callback();
+      mCollapseExpandAnimationCallback.delete(tab.id);
+    }, configs.collapseDuration));
   });
 }
 
@@ -232,9 +275,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      if (tab.$TST.collapsedOnCreated) { // it may be already expanded by others!
+      if (mCollapsedOnCreated.get(tab.id)) { // it may be already expanded by others!
         if (!tab.$TST.collapsed) // expanded by someone, so clear the flag.
-          tab.$TST.collapsedOnCreated = false;
+          mCollapsedOnCreated.delete(tab.id);
 
         // Unexpectedly kept as collapsed case may happen when only "collapsed"
         // state was applied by broadcasting, so we clear it for now

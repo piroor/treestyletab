@@ -58,6 +58,7 @@ import { Tab, TabGroup, TreeItem } from '/common/TreeItem.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
+import { getCollapsedOnCreated, setCollapsedOnCreated } from './collapse-expand.js';
 import * as EventUtils from './event-utils.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as SidebarItems from './sidebar-items.js';
@@ -1336,7 +1337,7 @@ async function onBackgroundMessage(message) {
       if (!item) // it can be closed while waiting
         break;
       const needToWaitForTreeExpansion = (
-        item.$TST.collapsedOnCreated &&
+        getCollapsedOnCreated(item.id) &&
         !item.active &&
         !Tab.getActiveTab(item.windowId).pinned
       );
@@ -1347,7 +1348,7 @@ async function onBackgroundMessage(message) {
           if (parent?.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
             return;
           const active = item.active;
-          item.$TST.collapsedOnCreated = false;
+          setCollapsedOnCreated(item.id, false);
           const activeTab = Tab.getActiveTab(item.windowId);
           CollapseExpand.setCollapsed(item, { // this is required to scroll to the tab with the "last" parameter
             collapsed: false,
