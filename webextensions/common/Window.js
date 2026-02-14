@@ -79,6 +79,12 @@ export default class Window {
 
     // We should initialize private properties with blank value for better performance with a fixed shape.
     this.delayedDestroy = null;
+    this.lastActiveTab  = null;
+    this.restoredCount  = 0;
+    this.promisedAllTabsRestored              = null;
+    this.markWindowCacheDirtyFromTabTimeout   = null;
+    this.waitingToCacheTree                   = null;
+    this.waitingToSaveTreeStructure           = null;
   }
   initTabGroups(tabGroups) {
     log(`initializing tabGroups of window ${this.id}: `, tabGroups);

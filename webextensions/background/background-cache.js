@@ -435,7 +435,7 @@ function cancelReservedCacheTree(windowId) {
   const win = TabsStore.windows.get(windowId);
   if (win?.waitingToCacheTree) {
     clearTimeout(win.waitingToCacheTree);
-    delete win.waitingToCacheTree;
+    win.waitingToCacheTree = null;
   }
 }
 
