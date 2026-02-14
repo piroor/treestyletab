@@ -116,6 +116,10 @@ function getChildrenIdsSize(map, tabId) {
   return map.get(tabId)?.size ?? 0;
 }
 
+// Dynamic properties that should not change the shape of TreeItem instances.
+// Using a module-level Map preserves SpiderMonkey's Shape (hidden class) optimization.
+const mPossibleOpenerBookmarks = new Map();
+
 
 browser.windows.onRemoved.addListener(windowId => {
   mIncompletelyTrackedTabs.delete(windowId);
@@ -171,8 +175,14 @@ export class TreeItem {
       this._promisedElementResolver = resolve;
     });
 
+    this.lastPreviousTabId = null;
+    this.lastNextTabId     = null;
+    this.label             = null;
+
     this.states = new Set();
     this.clear();
+
+    this.destroyed = false;
 
     this.uniqueId = {
       id:            null,
@@ -192,12 +202,16 @@ export class TreeItem {
     this.promisedUniqueId = null;
     this.uniqueId = null;
     this.destroyed = true;
+    mPossibleOpenerBookmarks.delete(this.id);
   }
 
   clear() {
     this.states.clear();
     this.attributes = {};
   }
+
+  get possibleOpenerBookmarks() { return mPossibleOpenerBookmarks.get(this.id); }
+  set possibleOpenerBookmarks(value) { mPossibleOpenerBookmarks.set(this.id, value); }
 
   bindElement(element) {
     element.$TST   = this;
@@ -924,6 +938,8 @@ export class TabGroup extends TreeItem {
   constructor(raw) {
     super(raw);
 
+    this._collapsedMembersCounterItem = null;
+
     TabsStore.tabGroups.set(raw.id, raw);
     TabsStore.windows.get(raw.windowId)?.tabGroups.set(raw.id, raw);
 
@@ -1560,11 +1576,13 @@ export class Tab extends TreeItem {
   }
 
   get promisedPossibleOpenerBookmarks() {
-    if ('possibleOpenerBookmarks' in this)
-      return Promise.resolve(this.possibleOpenerBookmarks);
+    if (mPossibleOpenerBookmarks.has(this.id))
+      return Promise.resolve(mPossibleOpenerBookmarks.get(this.id));
     return new Promise(async (resolve, _reject) => {
-      if (!browser.bookmarks || !this.raw)
-        return resolve(this.possibleOpenerBookmarks = []);
+      if (!browser.bookmarks || !this.raw) {
+        mPossibleOpenerBookmarks.set(this.id, []);
+        return resolve([]);
+      }
       // A new tab from bookmark is opened with a title: its URL without the scheme part.
       const url = this.raw.$possibleInitialUrl;
       try {
@@ -1578,13 +1596,16 @@ export class Tab extends TreeItem {
           this._safeSearchBookmstksWithUrl(url), // about:* and so on
         ]);
         log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
-        resolve(this.possibleOpenerBookmarks = possibleBookmarks.flat());
+        const result = possibleBookmarks.flat();
+        mPossibleOpenerBookmarks.set(this.id, result);
+        resolve(result);
       }
       catch(error) {
         log(`promisedPossibleOpenerBookmarks for the tab ${this.id} (${url}): `, error);
         // If it is detected as "not a valid URL", then
         // it cannot be a tab opened from a bookmark.
-        resolve(this.possibleOpenerBookmarks = []);
+        mPossibleOpenerBookmarks.set(this.id, []);
+        resolve([]);
       }
     });
   }
