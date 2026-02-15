@@ -870,7 +870,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       reserveToUpdateLoadingState();
       const needToWaitForTreeExpansion = (
-        CollapseExpand.getShouldExpandLater(tab.id) &&
+        CollapseExpand.getCollapsedOnCreated(tab.id) &&
         !tab.active &&
         !Tab.getActiveTab(tab.windowId).pinned
       );
@@ -986,7 +986,6 @@ BackgroundConnection.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
-        CollapseExpand.setShouldExpandLater(tab.id, true);
       }
 
       tab.index = message.toIndex;
@@ -1015,7 +1014,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       tab.$TST.applyAttributesToElement();
 
-      if (shouldAnimate && CollapseExpand.getShouldExpandLater(tab.id)) {
+      if (shouldAnimate) {
         CollapseExpand.setCollapsed(tab, {
           collapsed: false
         });

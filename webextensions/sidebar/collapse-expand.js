@@ -48,21 +48,11 @@ function log(...args) {
 
 // Module-level maps for per-tab sidebar collapse/expand state.
 // These should not be stored on TreeItem instances to preserve object shape stability.
-const mShouldExpandLater = new Map();
 const mCollapsedOnCreated = new Map();
 const mUpdatingCollapsedStateCanceller = new Map();
 const mCollapseExpandAnimationCallback = new Map();
 const mCollapseExpandAnimationTimeout = new Map();
 
-export function getShouldExpandLater(tabId) {
-  return mShouldExpandLater.get(tabId) || false;
-}
-export function setShouldExpandLater(tabId, value) {
-  if (value)
-    mShouldExpandLater.set(tabId, true);
-  else
-    mShouldExpandLater.delete(tabId);
-}
 export function getCollapsedOnCreated(tabId) {
   return mCollapsedOnCreated.get(tabId) || false;
 }
@@ -74,7 +64,6 @@ export function setCollapsedOnCreated(tabId, value) {
 }
 
 export function clearCollapseExpandStateForTab(tabId) {
-  mShouldExpandLater.delete(tabId);
   mCollapsedOnCreated.delete(tabId);
   mUpdatingCollapsedStateCanceller.delete(tabId);
   const timeout = mCollapseExpandAnimationTimeout.get(tabId);
@@ -97,8 +86,6 @@ export async function setCollapsed(tab, info = {}) {
     info.collapsed != tab.$TST.collapsed ||
     info.collapsed != tab.$TST.collapsedCompletely
   );
-
-  mShouldExpandLater.delete(tab.id); // clear flag
 
   if (info.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
