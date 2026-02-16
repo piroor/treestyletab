@@ -2112,13 +2112,17 @@ export class Tab extends TreeItem {
   }
 
   updateDescendants() {
-    let descendants = [];
+    const descendants = [];
     this.cachedDescendantIds = [];
     for (const child of this.children) {
       descendants.push(child);
-      descendants = descendants.concat(child.$TST.descendants);
+      for (const descendant of child.$TST.descendants) {
+        descendants.push(descendant);
+      }
       this.cachedDescendantIds.push(child.id);
-      this.cachedDescendantIds = this.cachedDescendantIds.concat(child.$TST.cachedDescendantIds);
+      for (const id of child.$TST.cachedDescendantIds) {
+        this.cachedDescendantIds.push(id);
+      }
     }
     return descendants;
   }
