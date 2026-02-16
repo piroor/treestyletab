@@ -517,7 +517,7 @@ function expandOrFocusToFirstChild(activeTab) {
     });
 }
 
-// This must be synchronous and return Promise on demando, to avoid
+// This must be synchronous and return Promise on demand, to avoid
 // blocking to other listeners.
 function onMessage(message, sender) {
   if (mInitializationPhase < PHASE_BACKGROUND_BUILT ||
@@ -629,7 +629,7 @@ function onMessage(message, sender) {
   }
 }
 
-// This must be synchronous and return Promise on demando, to avoid
+// This must be synchronous and return Promise on demand, to avoid
 // blocking to other listeners.
 function onMessageExternal(message, sender) {
   if (mInitializationPhase < PHASE_BACKGROUND_INITIALIZED)
