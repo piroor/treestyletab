@@ -58,7 +58,6 @@ import { Tab, TabGroup, TreeItem } from '/common/TreeItem.js';
 
 import * as BackgroundConnection from './background-connection.js';
 import * as CollapseExpand from './collapse-expand.js';
-import { getCollapsedOnCreated, setCollapsedOnCreated } from './collapse-expand.js';
 import * as EventUtils from './event-utils.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as SidebarItems from './sidebar-items.js';
@@ -1336,30 +1335,7 @@ async function onBackgroundMessage(message) {
       const item = Tab.get(message.tabId);
       if (!item) // it can be closed while waiting
         break;
-      const needToWaitForTreeExpansion = (
-        getCollapsedOnCreated(item.id) &&
-        !item.active &&
-        !Tab.getActiveTab(item.windowId).pinned
-      );
-      if (shouldApplyAnimation(true) ||
-          needToWaitForTreeExpansion) {
-        wait(10).then(() => { // wait until the tab is moved by TST itself
-          const parent = item.$TST.parent;
-          if (parent?.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
-            return;
-          const active = item.active;
-          setCollapsedOnCreated(item.id, false);
-          const activeTab = Tab.getActiveTab(item.windowId);
-          CollapseExpand.setCollapsed(item, { // this is required to scroll to the tab with the "last" parameter
-            collapsed: false,
-            anchor:    (active || activeTab?.$TST.canBecomeSticky) ? null : activeTab,
-            last:      !active
-          });
-          if (!active)
-            notifyOutOfViewItem(item);
-        });
-      }
-      else {
+      if (!shouldApplyAnimation(true)) {
         reserveToScrollToNewTab(item);
       }
     }; break;

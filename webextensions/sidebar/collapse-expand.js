@@ -48,23 +48,12 @@ function log(...args) {
 
 // Module-level maps for per-tab sidebar collapse/expand state.
 // These should not be stored on TreeItem instances to preserve object shape stability.
-const mCollapsedOnCreated = new Map();
 const mUpdatingCollapsedStateCanceller = new Map();
 const mCollapseExpandAnimationCallback = new Map();
 const mCollapseExpandAnimationTimeout = new Map();
 
-export function getCollapsedOnCreated(tabId) {
-  return mCollapsedOnCreated.get(tabId) || false;
-}
-export function setCollapsedOnCreated(tabId, value) {
-  if (value)
-    mCollapsedOnCreated.set(tabId, true);
-  else
-    mCollapsedOnCreated.delete(tabId);
-}
 
 export function clearState(tabId) {
-  mCollapsedOnCreated.delete(tabId);
   mUpdatingCollapsedStateCanceller.delete(tabId);
   const timeout = mCollapseExpandAnimationTimeout.get(tabId);
   if (timeout)
@@ -262,22 +251,6 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab ||
           !lastMessage)
         return;
-      if (mCollapsedOnCreated.get(tab.id)) { // it may be already expanded by others!
-        if (!tab.$TST.collapsed) // expanded by someone, so clear the flag.
-          mCollapsedOnCreated.delete(tab.id);
-
-        // Unexpectedly kept as collapsed case may happen when only "collapsed"
-        // state was applied by broadcasting, so we clear it for now
-        if (tab.$TST.states.has(Constants.kTAB_STATE_EXPANDING) ||
-            !tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED_DONE))
-          return;
-        if (!tab.$TST.collapsed) {
-          tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
-          tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
-          TabsStore.removeVisibleTab(tab);
-          TabsStore.removeExpandedTab(tab);
-        }
-      }
       setCollapsed(tab, {
         collapsed: lastMessage.collapsed,
         justNow:   lastMessage.justNow,

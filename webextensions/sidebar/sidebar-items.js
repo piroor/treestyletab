@@ -836,7 +836,6 @@ BackgroundConnection.onMessage.addListener(async message => {
           collapsed: true,
           justNow:   true
         });
-        CollapseExpand.setCollapsedOnCreated(tab.id, true);
       }
       else {
         reserveToUpdateLoadingState();
@@ -869,25 +868,10 @@ BackgroundConnection.onMessage.addListener(async message => {
         onNormalTabsChanged.dispatch(tab);
       }
       reserveToUpdateLoadingState();
-      const needToWaitForTreeExpansion = (
-        CollapseExpand.getCollapsedOnCreated(tab.id) &&
-        !tab.active &&
-        !Tab.getActiveTab(tab.windowId).pinned
-      );
-      if (shouldApplyAnimation(true) ||
-          needToWaitForTreeExpansion) {
-        wait(10).then(() => { // wait until the tab is moved by TST itself
-          // On this case we don't need to expand the tab here, because
-          // it will be expanded by scroll.js's kCOMMAND_NOTIFY_TAB_CREATED handler
-          // for scrolling to a newly opened tab via CollapseExpand.setCollapsed().
-          reserveToUpdateLoadingState();
-        });
-      }
       if (tab.active) {
         if (shouldApplyAnimation()) {
           await wait(0); // nextFrame() is too fast!
-          if (!message.collapsed /* the new tab may be really collapsed not just for animation, and we should not expand */ &&
-              CollapseExpand.getCollapsedOnCreated(tab.id)) {
+          if (!message.collapsed && tab.$TST.collapsed) {
             CollapseExpand.setCollapsed(tab, {
               collapsed: false,
             });
@@ -900,6 +884,30 @@ BackgroundConnection.onMessage.addListener(async message => {
         await Tab.waitUntilTracked(lastMessage.tabId);
         const activeTab = Tab.get(lastMessage.tabId);
         TabsInternalOperation.setTabActive(activeTab);
+      }
+      else {
+        const needToWaitForTreeExpansion = (
+          !message.collapsed &&
+          tab.$TST.collapsed &&
+          !Tab.getActiveTab(tab.windowId).pinned
+        );
+        if (shouldApplyAnimation(true) ||
+            needToWaitForTreeExpansion) {
+          wait(10).then(() => { // wait until the tab is moved by TST itself
+            const parent = tab.$TST.parent;
+            if (parent?.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
+              return;
+            if (!message.collapsed && tab.$TST.collapsed) {
+              const activeTab = Tab.getActiveTab(tab.windowId);
+              CollapseExpand.setCollapsed(tab, {
+                collapsed: false,
+                anchor:    activeTab?.$TST.canBecomeSticky ? null : activeTab,
+                last:      true
+              });
+            }
+            reserveToUpdateLoadingState();
+          });
+        }
       }
     }; break;
 
