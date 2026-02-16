@@ -63,7 +63,7 @@ export function setCollapsedOnCreated(tabId, value) {
     mCollapsedOnCreated.delete(tabId);
 }
 
-export function clearCollapseExpandStateForTab(tabId) {
+export function clearState(tabId) {
   mCollapsedOnCreated.delete(tabId);
   mUpdatingCollapsedStateCanceller.delete(tabId);
   const timeout = mCollapseExpandAnimationTimeout.get(tabId);

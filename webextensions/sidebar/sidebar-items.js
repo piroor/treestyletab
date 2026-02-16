@@ -1114,7 +1114,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (burstEnd)
         clearTimeout(burstEnd);
       mDelayedBurstEnd.delete(message.tabId);
-      CollapseExpand.clearCollapseExpandStateForTab(message.tabId);
+      CollapseExpand.clearState(message.tabId);
       // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
       TabsStore.removeHighlightedTab(tab);
       TabsStore.removeGroupTab(tab);
