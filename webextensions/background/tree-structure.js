@@ -231,6 +231,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
+  const hasSessionTreeInfo = ancestors.length > 0 || children.length > 0;
   log(`persistent references for ${dumpTab(tab)} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     insertAfterLegacy,
@@ -375,7 +376,13 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   };
 
-  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
+  // We should not mark the tab as "already restored" when there is
+  // no tree info in the session data, because the tab may be a
+  // recycled active tab which doesn't have session data yet at this
+  // point. Setting the flag with empty data would block the later
+  // restoration when the actual session data becomes available.
+  if (hasSessionTreeInfo)
+    tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 
   if (options.bulk)
     await Promise.all(promises).then(updateCollapsedState);
