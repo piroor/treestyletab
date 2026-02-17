@@ -221,7 +221,7 @@ function getTabPosition(tab) {
   throw new Error(`no pinned tab with id ${tab.id}`);
 }
 
-// This must be synchronous and return Promise on demando, to avoid
+// This must be synchronous and return Promise on demand, to avoid
 // blocking to other listeners.
 function onMessage(message, _sender, _respond) {
   if (!message ||
