@@ -69,7 +69,7 @@ export const onUpdated = new EventListenerManager();
 export const onReadyToExpand = new EventListenerManager();
 
 export async function setCollapsed(tab, info = {}) {
-  log('setCollapsed ', tab.id, info);
+  log('setCollapsed ', tab.id, { ...info, stack: stack() });
   if (!TabsStore.ensureLivingItem(tab)) // do nothing for closed tab!
     return;
 
