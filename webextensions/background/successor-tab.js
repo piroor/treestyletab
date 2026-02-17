@@ -330,7 +330,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     configs.simulateSelectOwnerOnClose
   );
 
-  log(`Tab.onCreating: should control succesor of ${tab.id}: `, shouldControlSuccesor);
+  log(`Tab.onCreating: should control successor of ${tab.id}: `, shouldControlSuccesor);
   if (shouldControlSuccesor) {
     // don't use await here, to prevent that other onCreating handlers are treated async.
     tryClearOwnerSuccessor(info.activeTab).then(() => {

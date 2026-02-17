@@ -667,7 +667,7 @@ async function onContextMenu(event) {
   log('onContextMenu: ', { target, originalTarget, onInputField, context });
 
   if (!onInputField && context?.context) {
-    log('onContextMenu: override context aso something given: ', context);
+    log('onContextMenu: override context as something given: ', context);
     try {
       browser.menus.overrideContext(context);
     }
@@ -698,7 +698,7 @@ async function onContextMenu(event) {
   });
 
   if (onInputField) {
-    console.log('ignroe request on a input field');
+    console.log('ignore request on an input field');
     return;
   }
 

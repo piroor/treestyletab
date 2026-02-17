@@ -347,8 +347,8 @@ function saveLogForConfig() {
   configs.logFor = config;
 }
 
-function isAllChildrenChecked(aMasger) {
-  const container = aMasger.closest('fieldset');
+function isAllChildrenChecked(aMaster) {
+  const container = aMaster.closest('fieldset');
   const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
   return Array.from(checkboxes).every(checkbox => checkbox.checked);
 }
@@ -913,7 +913,7 @@ function initPreviews() {
 async function initExternalAddons() {
   let addons;
   while (true) {
-    // This API call will fail if the background page is not initialized yet, so we need to retry it a while.
+    // This API call will fail if the background page is not initialized yet, so we need to retry it for a while.
     addons = await browser.runtime.sendMessage({
       type: TSTAPI.kCOMMAND_GET_ADDONS,
     });

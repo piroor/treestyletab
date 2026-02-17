@@ -44,7 +44,7 @@ function log(...args) {
 
 // We cannot start listening of messages of browser.runtime.onMessage(External)
 // at here and wait processing until promises are resolved like ApiTabsListener
-// and BackgroundConnection, because making listeners asynchornous (async
+// and BackgroundConnection, because making listeners asynchronous (async
 // functions) will break things - those listeners must not return Promise for
 // unneeded cases.
 // So we simply ignore messages delivered before completely initialized, for now.
@@ -564,8 +564,8 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_GET_USER_STYLE_RULES:
       return Promise.resolve(loadUserStyleRules());
 
-    case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimizie further initialization tasks in the sidebar
-      TabsUpdate.completeLoadingTabs(message.windowId); // don't wait here for better perfomance
+    case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimize further initialization tasks in the sidebar
+      TabsUpdate.completeLoadingTabs(message.windowId); // don't wait here for better performance
       return Promise.resolve(TabsStore.windows.get(message.windowId).export(true));
 
     case Constants.kCOMMAND_PULL_TABS:

@@ -28,7 +28,7 @@ export class TabSoundButtonElement extends HTMLElement {
       return;
     }
 
-    // I make ensure to call these operation only once conservatively because:
+    // I ensure to call these operations only once conservatively because:
     //  * If we do these operations in a constructor of this class, Gecko throws `NotSupportedError: Operation is not supported`.
     //    * I'm not familiar with details of the spec, but this is not Gecko's bug.
     //      See https://dom.spec.whatwg.org/#concept-create-element

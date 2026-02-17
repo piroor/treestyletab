@@ -789,7 +789,7 @@ export const DOMUpdater = {
    * @param before {Node}   - the node to be updated, e.g. Element
    * @param after  {Node}   - the node describing updated state,
    *                          e.g. DocumentFragment
-   * @return count {number} - the count of appied changes
+   * @return count {number} - the count of applied changes
    */
   update(before, after, counter = { count: 0 }) {
     if (before.nodeValue !== null ||

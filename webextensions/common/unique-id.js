@@ -36,7 +36,7 @@ Intrepid
 Jaunty
 Karmic
 Lucid
-Marveric
+Maverick
 Natty
 Oneiric
 Precise
@@ -75,7 +75,7 @@ Salamander
 Tahr
 Unicorn
 Vervet
-Werwolf
+Werewolf
 Xerus
 Yak
 Zapus
@@ -97,7 +97,7 @@ export async function request(tabOrId, options = {}) {
     tab = TabsStore.tabs.get(tabOrId);
 
   if (TabsStore.getCurrentWindowId()) {
-    log(' => redirect to the backgound page');
+    log(' => redirect to the background page');
     return browser.runtime.sendMessage({
       type:  Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       tabId: tab.id
@@ -157,7 +157,7 @@ export async function request(tabOrId, options = {}) {
 
   const id = `tab-${generate()}`;
   log(' => new id: ', id, tab.id);
-  // tabId is for detecttion of duplicated tabs
+  // tabId is for detection of duplicated tabs
   await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id }).catch(ApiTabs.createErrorSuppressor());
   return { id, originalId, originalTabId, duplicated };
 }

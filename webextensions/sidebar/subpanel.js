@@ -292,7 +292,7 @@ async function toggle() {
   updateLayout();
 }
 
-// We should save the last height only when it is changed by the user intentonally.
+// We should save the last height only when it is changed by the user intentionally.
 function saveLastHeight() {
   configs.lastSubPanelHeight = mContainer.classList.contains('collapsed') ? 0 : mHeight;
 }

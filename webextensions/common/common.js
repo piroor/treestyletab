@@ -743,7 +743,7 @@ configs.$addObserver(key => {
 });
 
 // Some animation effects like smooth scrolling are still active even if it matches to "prefers-reduced-motion: reduce".
-// So this function provides ability to ignore the media query result.
+// So this function provides the ability to ignore the media query result.
 export function shouldApplyAnimation(configOnly = false) {
   if (!configs.animation)
     return false;

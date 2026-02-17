@@ -674,7 +674,7 @@ function getTitlesWithTreeStructure(tabs) {
   return titles;
 }
 
-// This large method have to contain everything required to simulate the folder
+// This large method has to contain everything required to simulate the folder
 // chooser of the bookmark creation dialog.
 // Bookmark creation dialog is loaded into a popup window and we use this large
 // method to inject the behavior of the folder chooser.

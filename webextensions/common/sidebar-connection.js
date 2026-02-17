@@ -134,9 +134,9 @@ export function sendMessage(message) {
 
 const mReservedTasks = new WeakMap();
 
-// Se should not send messages immediately, instead we should throttle
+// We should not send messages immediately, instead we should throttle
 // it and bulk-send multiple messages, for better user experience.
-// Sending too much messages in one event loop may block everything
+// Sending too many messages in one event loop may block everything
 // and makes Firefox like frozen.
 function sendMessageToPort(port, message) {
   const task = mReservedTasks.get(port) || { messages: [] };

@@ -222,7 +222,7 @@ function getTabPosition(tab) {
 }
 
 // This must be synchronous and return Promise on demand, to avoid
-// blocking to other listeners.
+// blocking other listeners.
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||

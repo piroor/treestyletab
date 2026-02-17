@@ -269,8 +269,8 @@ export function clearCache(cache) {
   cache.effectiveFavIconUrls = {};
 }
 
-// This function is complex a little, but we should not make a custom class for this purpose,
-// bacause instances of the class will be very short-life and increases RAM usage on
+// This function is a little complex, but we should not make a custom class for this purpose,
+// because instances of the class will be very short-lived and increase RAM usage on
 // massive tabs case.
 export async function exportTab(sourceTab, { addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
   const normalizedSourceTab = Tab.get(sourceTab);
@@ -528,7 +528,7 @@ if (Constants.IS_BACKGROUND) {
 }
 
 export async function initAsBackend() {
-  // We must listen API messages from other addons here beacause:
+  // We must listen API messages from other addons here because:
   //  * Before notification messages are sent to other addons.
   //  * After configs are loaded and TST's background page is almost completely initialized.
   //    (to prevent troubles like breakage of `configs.cachedExternalAddons`, see also:
@@ -647,7 +647,7 @@ if (Constants.IS_BACKGROUND) {
   });
 
   /*
-  // This mechanism doesn't work actually.
+  // This mechanism doesn't actually work.
   // See also: https://github.com/piroor/treestyletab/issues/2128#issuecomment-454650407
 
   const mConnectionsForAddons = new Map();

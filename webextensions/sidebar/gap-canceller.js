@@ -169,7 +169,7 @@ function stopWatching() {
 
 function onResize() {
   cancelUpdateOffset();
-  // We need to try checking updateed mozInnerScreenY, because the
+  // We need to try checking updated mozInnerScreenY, because the
   // mozInnerScreenY is sometimes not updated yet when a resize event
   // is dispatched.
   // (ResizeObserver has same problem.)

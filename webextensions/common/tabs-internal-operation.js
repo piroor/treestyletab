@@ -5,7 +5,7 @@
 */
 'use strict';
 
-// internal operations means operations bypassing WebExtensions' tabs APIs.
+// internal operations mean operations bypassing WebExtensions' tabs APIs.
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -284,7 +284,7 @@ export async function highlightTabs(tabs, { inheritToCollapsedDescendants } = {}
   if (highlightedTabIds.has(activeTab.id))
     indices.unshift(activeTab.index);
 
-  // highlight tabs progressively, because massinve change at once may block updating of highlighted appearance of tabs.
+  // highlight tabs progressively, because massive change at once may block updating of highlighted appearance of tabs.
   let count = 1; // 1 is for setActive()
   while (highlightTabs.lastStartedAt == startAt) {
     count += (configs.provressiveHighlightingStep <= 0 ? Number.MAX_SAFE_INTEGER : configs.provressiveHighlightingStep);

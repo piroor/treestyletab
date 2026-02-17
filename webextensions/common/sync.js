@@ -39,7 +39,7 @@ const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp'
 // This module is designed to work with a service provide which has features:
 //   * async getOtherDevices()
 //     - Returns an array of sync devices.
-//     - Retruned array should have 0 or more items like:
+//     - Returned array should have 0 or more items like:
 //       { id:   "identifier of the device",
 //         name: "name of the device",
 //         type: "type of the device (desktop, mobile, and so on)" }

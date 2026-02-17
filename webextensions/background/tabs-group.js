@@ -138,7 +138,7 @@ function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
 function cleanupNeedlssGroupTab(tabs) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', () => tabs.map(dumpTab));
+  log('trying to clean up needless temporary group tabs from ', () => tabs.map(dumpTab));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
     if (tab.$TST.temporaryMetadata.has('movingAcrossWindows'))
@@ -300,7 +300,7 @@ async function tryInitGroupTab(tab) {
     browser.scripting.executeScript({ // Manifest V3
       ...v3Options,
       files: [
-        '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+        '/extlib/l10n-classic.js', // ES module is not supported as a content script...
         '/resources/group-tab.js',
       ],
     }) :
@@ -308,7 +308,7 @@ async function tryInitGroupTab(tab) {
       browser.tabs.executeScript(tab.id, {
         ...v2Options,
         //file:  '/common/l10n.js'
-        file: '/extlib/l10n-classic.js', // ES module does not supported as a content script...
+        file: '/extlib/l10n-classic.js', // ES module is not supported as a content script...
       }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
       browser.tabs.executeScript(tab.id, {
         ...v2Options,

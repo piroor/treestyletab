@@ -202,7 +202,7 @@ async function onTabSubstanceEnter(event) {
     },
   });
 
-  if (!event.target.tab) // the tab may be destroyied while we capturing tab preview
+  if (!event.target.tab) // the tab may be destroyed while capturing tab preview
     return;
 
   if (event.target.tab.$TST.element &&
