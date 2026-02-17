@@ -350,7 +350,7 @@ export function tryNotifyNewFeatures() {
 
   if (isInitialInstall &&
       !configs.syncOtherDevicesDetected &&
-      Object.keys(configs.syncDevices).length > 1) {
+      Object.keys(configs.syncDevices || {}).length > 1) {
     configs.syncAvailableNotified = true;
     configs.syncOtherDevicesDetected = true;
   }

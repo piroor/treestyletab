@@ -263,8 +263,8 @@ async function updateDevices() {
     waitUntilDeviceInfoInitialized(),
   ]);
 
-  const remote = clone(configs.syncDevices);
-  const local  = clone(configs.syncDevicesLocalCache);
+  const remote = clone(configs.syncDevices) || {};
+  const local  = clone(configs.syncDevicesLocalCache) || {};
   log('devices updated: ', local, remote);
   for (const [id, info] of Object.entries(remote)) {
     if (id == mMyDeviceInfo.id)
