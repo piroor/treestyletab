@@ -605,7 +605,8 @@ function tryApplyUpdate(update) {
       tab[key] = value;
     }
 
-    if ('groupId' in update.updatedProperties) {
+    if ('groupId' in update.updatedProperties &&
+        update.updatedProperties.groupId != oldGroupId) {
       tab.$TST.onNativeGroupModified(oldGroupId);
       tab.$TST.updateElement(TabUpdateTarget.TabProperties);
     }
