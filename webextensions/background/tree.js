@@ -1261,7 +1261,7 @@ export async function collapseExpandTab(tab, params = {}) {
       justNow:   params.justNow,
       collapsed: params.collapsed,
       last,
-      stack,
+      stack:     unifiedStack,
       byAncestor
     });
   }, shouldApplyAnimation() ? 100 : 0);
