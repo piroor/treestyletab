@@ -48,6 +48,7 @@ import {
   shouldApplyAnimation,
   watchOverflowStateChange,
   mapAndFilter,
+  stack,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -806,7 +807,7 @@ export function isItemInViewport(item, { allowPartial } = {}) {
 }
 
 async function smoothScrollTo(params = {}) {
-  log('smoothScrollTo ', params, new Error().stack);
+  log('smoothScrollTo ', params, stack());
   //cancelPerformingAutoScroll(true);
 
   smoothScrollTo.stopped = false;
@@ -918,7 +919,7 @@ export async function scrollToItem(item, options = {}) {
   scrollToItem.lastTargetId = null;
 
   log('scrollToItem to ', item?.id, ' anchor = ', options.anchor?.id, options,
-      { stack: configs.debug && new Error().stack });
+      { stack: stack() });
   cancelRunningScroll();
   if (!canScrollToItem(item)) {
     log('=> unscrollable');

@@ -20,6 +20,7 @@ import {
   isFirefoxViewTab,
   configs,
   doProgressively,
+  stack,
 } from './common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -2060,7 +2061,7 @@ export class Tab extends TreeItem {
         ancestorsOfSelf: this.ancestors,
         tabs,
         tab,
-        stack:           new Error().stack
+        stack:           stack(),
       });
       return undefined;
     });
@@ -3169,7 +3170,7 @@ export class Tab extends TreeItem {
     log('initalize tab ', tab);
     if (!tab) {
       const error = new Error('Fatal error: invalid tab is given to Tab.init()');
-      console.log(error, error.stack);
+      console.log(error, stack(error.stack));
       throw error;
     }
     const trackedTab = Tab.get(tab.id);
@@ -3882,14 +3883,14 @@ function destroyWaitingTabTask(task) {
     clearTimeout(task.timeout);
 
   const resolve     = task.resolve;
-  const stack       = task.stack;
+  const formattedStack = stack(task.stack);
 
   task.tabId       = undefined;
   task.resolve     = undefined;
   task.timeout     = undefined;
   task.stack       = undefined;
 
-  return { resolve, stack };
+  return { resolve, stack: formattedStack };
 }
 
 function onWaitingTabTracked(tab) {
@@ -3960,7 +3961,7 @@ async function waitUntilTracked(tabId, options = {}) {
   if (!tabId) {
     return null;
   }
-  const stack = configs.debug && new Error().stack;
+  const stackTrace = stack();
   const tab = Tab.get(tabId);
   if (tab) {
     onWaitingTabTracked(tab);
@@ -3971,7 +3972,7 @@ async function waitUntilTracked(tabId, options = {}) {
   const tasks = mWaitingTasks.get(tabId) || new Set();
   const task = {
     tabId,
-    stack,
+    stack: stackTrace,
   };
   tasks.add(task);
   mWaitingTasks.set(tabId, tasks);
@@ -3980,7 +3981,7 @@ async function waitUntilTracked(tabId, options = {}) {
     task.timeout = setTimeout(() => {
       const { resolve } = destroyWaitingTabTask(task);
       if (resolve) {
-        log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stack}`);
+        log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stackTrace}`);
         resolve(null);
       }
     }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time

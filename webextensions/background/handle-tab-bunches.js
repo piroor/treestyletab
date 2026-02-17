@@ -12,6 +12,7 @@ import {
   sanitizeForHTMLText,
   compareAsNumber,
   isFirefoxViewTab,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Bookmark from '/common/bookmark.js';
@@ -204,7 +205,7 @@ async function tryGroupTabBunches() {
     }
   }
   catch(error) {
-    log('Error on tryGroupTabBunches: ', String(error), error.stack);
+    log('Error on tryGroupTabBunches: ', String(error), stack(error.stack));
   }
   finally {
     tryGroupTabBunches.running = false;
@@ -455,7 +456,7 @@ async function tryHandlTabBunchesFromBookmarks() {
     }
   }
   catch(error) {
-    log('Error on tryHandlTabBunchesFromBookmarks: ', String(error), error.stack);
+    log('Error on tryHandlTabBunchesFromBookmarks: ', String(error), stack(error.stack));
   }
   finally {
     tryHandlTabBunchesFromBookmarks.running = false;

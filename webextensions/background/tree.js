@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2025
+ * Portions created by the Initial Developer are Copyright (C) 2011-2026
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -37,6 +37,7 @@ import {
   shouldApplyAnimation,
   getWindowParamsFromSource,
   isFirefoxViewTab,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -112,7 +113,7 @@ export async function attachTabTo(child, parent, options = {}) {
     dontSyncParentToOpenerTab: options.dontSyncParentToOpenerTab,
     broadcast:                 options.broadcast,
     broadcasted:               options.broadcasted,
-    stack:                     `${configs.debug && new Error().stack}\n${options.stack || ''}`
+    stack:                     `${stack()}\n${options.stack && stack(options.stack) || ''}`
   });
 
   if (isTabIdUnattachable(child.id)) {
@@ -232,7 +233,7 @@ export async function attachTabTo(child, parent, options = {}) {
   if (child.openerTabId != parent.id &&
       !options.dontSyncParentToOpenerTab &&
       configs.syncParentTabAndOpenerTab) {
-    log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${parent.id} (changed by TST)`, new Error().stack);
+    log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${parent.id} (changed by TST)`, stack());
     child.openerTabId = parent.id;
     child.$TST.updatingOpenerTabIds.push(parent.id);
     browser.tabs.update(child.id, { openerTabId: parent.id })
@@ -556,7 +557,7 @@ export function getReferenceTabsForNewNextSibling(base) {
 
 export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
-      { stack: `${configs.debug && new Error().stack}\n${options.stack || ''}` });
+      { stack: `${stack()}\n${options.stack && stack(options.stack) || ''}` });
   // the "parent" option is used for removing child.
   const parent = TabsStore.ensureLivingItem(options.parent) || child.$TST.parent;
 
@@ -599,7 +600,7 @@ export function detachTab(child, options = {}) {
   if (child.openerTabId &&
       !options.dontSyncParentToOpenerTab &&
       configs.syncParentTabAndOpenerTab) {
-    log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, configs.debug && new Error().stack);
+    log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, stack());
     child.openerTabId = child.id;
     browser.tabs.update(child.id, { openerTabId: child.id }) // set self id instead of null, because it requires any valid tab id...
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
@@ -1046,7 +1047,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     return [];
   if (!TabsStore.ensureLivingItem(tab)) // it was removed while waiting
     return [];
-  params.stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
+  params.stack = `${stack()}\n${params.stack && stack(params.stack) || ''}`;
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   const visibilityChangedTabIds = await collapseExpandSubtreeInternal(tab, params);
   onSubtreeCollapsedStateChanged.dispatch(tab, { collapsed: !!params.collapsed });
@@ -1203,7 +1204,7 @@ export async function collapseExpandTabAndSubtree(tab, params = {}) {
 export async function collapseExpandTab(tab, params = {}) {
   if (tab.pinned && params.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
-        dumpTab(tab), { stack: configs.debug && new Error().stack });
+        dumpTab(tab), { stack: stack() });
     params.collapsed = false;
   }
 
@@ -1220,8 +1221,8 @@ export async function collapseExpandTab(tab, params = {}) {
 
   const visibilityChanged = tab.$TST.collapsed != params.collapsed;
 
-  const stack = `${configs.debug && new Error().stack}\n${params.stack || ''}`;
-  logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
+  const unifiedStack = `${stack()}\n${params.stack && stack(params.stack) || ''}`;
+  logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack: unifiedStack })
   const last = params.last &&
                  (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed);
   const byAncestor = tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed;
@@ -1662,7 +1663,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
     }
     catch(e) {
       if (configs.debug)
-        console.log('failed to move/duplicate tabs ', e, new Error().stack);
+        console.log('failed to move/duplicate tabs ', e, stack());
       throw e;
     }
     finally {

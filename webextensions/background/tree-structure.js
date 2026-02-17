@@ -13,6 +13,7 @@ import {
   toLines,
   configs,
   wait,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -125,7 +126,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
       }
     }
     catch(error) {
-      console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, error.stack);
+      console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, stack(error.stack));
       MetricsData.add('loadTreeStructure: failed to apply tree structure');
     }
     if (!windowStateCompletelyApplied) {
@@ -192,7 +193,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
         uniqueId,
         bulk
       }).catch(error => {
-        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, error.stack);
+        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, stack(error.stack));
         return false;
       });
     }));

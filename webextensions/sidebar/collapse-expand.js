@@ -33,6 +33,7 @@ import {
   log as internalLogger,
   configs,
   shouldApplyAnimation,
+  stack,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';

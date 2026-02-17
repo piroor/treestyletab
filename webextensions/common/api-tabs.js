@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  stack,
 } from './common.js';
 
 function log(...args) {
@@ -41,7 +42,7 @@ export function handleMissingTabError(error) {
     throw error;
   // otherwise, this error is caused from a tab already closed.
   // we just ignore it.
-  //console.log('Invalid Tab ID error on: ' + error.stack);
+  //console.log('Invalid Tab ID error on: ' + stack(error.stack));
 }
 
 export function isUnloadedError(error) {
@@ -69,7 +70,7 @@ export function handleMissingHostPermissionError(error) {
 }
 
 export function createErrorHandler(...handlers) {
-  const stack = configs.debug && new Error().stack;
+  const stackTrace = stack();
   return (error) => {
     try {
       if (handlers.length > 0) {
@@ -93,15 +94,15 @@ export function createErrorHandler(...handlers) {
       if (!configs.debug)
         throw newError;
       if (error == newError)
-        console.log('Unhandled Error: ', error, stack);
+        console.log('Unhandled Error: ', error, stackTrace);
       else
-        console.log('Unhandled Error: ', error, newError, stack);
+        console.log('Unhandled Error: ', error, newError, stackTrace);
     }
   };
 }
 
 export function createErrorSuppressor(...handlers) {
-  const stack = configs.debug && new Error().stack;
+  const stackTrace = stack();
   return (error) => {
     try {
       if (handlers.length > 0) {
@@ -129,9 +130,9 @@ export function createErrorSuppressor(...handlers) {
       if (!configs.debug)
         return;
       if (error == newError)
-        console.log('Unhandled Error: ', error, stack);
+        console.log('Unhandled Error: ', error, stackTrace);
       else
-        console.log('Unhandled Error: ', error, newError, stack);
+        console.log('Unhandled Error: ', error, newError, stackTrace);
     }
   };
 }

@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  stack,
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
@@ -24,7 +25,7 @@ const mProgressbar = document.querySelector('#blocking-screen progress');
 export function block({ throbber, shade } = {}) {
   mBlockingCount++;
   document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
-  log('block ', mBlockingCount, () => new Error().stack);
+  log('block ', mBlockingCount, stack());
   if (throbber) {
     mBlockingThrobberCount++;
     mProgressbar.delayedShow = setTimeout(() => {
@@ -55,7 +56,7 @@ export function blockIn(windowId, { throbber, shade } = {}) {
   if (targetWindow && targetWindow != windowId)
     return;
 
-  log(`blockIn(${windowId}) `, () => new Error().stack);
+  log(`blockIn(${windowId}) `, stack());
   if (!targetWindow) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
@@ -70,7 +71,7 @@ export function blockIn(windowId, { throbber, shade } = {}) {
 
 export function unblock() {
   mBlockingThrobberCount--;
-  log('unblock ', mBlockingCount, () => new Error().stack);
+  log('unblock ', mBlockingCount, stack());
   if (mBlockingThrobberCount < 0)
     mBlockingThrobberCount = 0;
   if (mBlockingThrobberCount == 0) {
@@ -94,7 +95,7 @@ export function unblockIn(windowId, { throbber, shade } = {}) {
   if (targetWindow && targetWindow != windowId)
     return;
 
-  log(`unblockIn(${windowId}) `, () => new Error().stack);
+  log(`unblockIn(${windowId}) `, stack());
   if (!targetWindow) {
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,

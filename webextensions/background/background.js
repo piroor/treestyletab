@@ -13,6 +13,7 @@ import {
   configs,
   sanitizeForHTMLText,
   waitUntilStartupOperationsUnblocked,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -376,7 +377,7 @@ export async function reload(options = {}) {
   for (const win of TabsStore.windows.values()) {
     if (!SidebarConnection.isOpen(win.id))
       continue;
-    log('reload all sidebars: ', new Error().stack);
+    log('reload all sidebars: ', stack());
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_RELOAD
     }).catch(ApiTabs.createErrorSuppressor());

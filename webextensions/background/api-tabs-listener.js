@@ -31,6 +31,7 @@ import {
   dumpTab,
   toLines,
   configs,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -129,7 +130,7 @@ function addTabOperationQueue(metric = null) {
 
 function warnTabDestroyedWhileWaiting(tabId, tab) {
   if (configs.debug)
-    console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, tab, new Error().stack);
+    console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, tab, stack());
 }
 
 
@@ -747,7 +748,7 @@ async function onNewTabTracked(tab, info) {
     // the tab again, to keep the tree structure managed by TST.
     // See also: https://github.com/piroor/treestyletab/issues/2388
     if ('openerTabId' in changedProps) {
-      log(`openerTabId of ${tab.id} is changed while creating: ${tab.openerTabId} (changed by someone) => ${changedProps.openerTabId} (original) `, configs.debug && new Error().stack);
+      log(`openerTabId of ${tab.id} is changed while creating: ${tab.openerTabId} (changed by someone) => ${changedProps.openerTabId} (original) `, stack());
       if (duplicated &&
           tab.active &&
           changedProps.openerTabId == initialOpenerTabId &&
@@ -786,7 +787,7 @@ async function onNewTabTracked(tab, info) {
     return tab;
   }
   catch(error) {
-    console.log(error, error.stack);
+    console.log(error, stack(error.stack));
     onCompleted();
     tab.$TST.removeState(Constants.kTAB_STATE_CREATING);
     Tree.onAttached.removeListener(onTreeModified);

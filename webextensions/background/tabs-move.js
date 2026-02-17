@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2025
+ * Portions created by the Initial Developer are Copyright (C) 2011-2026
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -30,7 +30,8 @@ import {
   log as internalLogger,
   wait,
   toLines,
-  configs
+  configs,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -427,7 +428,7 @@ async function syncToNativeTabsInternal(windowId) {
             windowId,
             index: toIndex
           }).catch(ApiTabs.createErrorHandler(e => {
-            log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
+            log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), stack(e.stack));
             throw e;
           }));
           reallyMovedTabIds = new Set(reallyMovedTabs.map(tab => tab.id));
