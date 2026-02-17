@@ -79,6 +79,11 @@ export class TreeItemElement extends HTMLElement {
     this.__onMouseLeave = null;
     this.__onWindowResize = null;
     this.__onConfigChange = null;
+    this._extraItemsContainerIndentRoot = null;
+    this._extraItemsContainerBehindRoot = null;
+    this._extraItemsContainerFrontRoot = null;
+    this._extraItemsContainerAboveRoot = null;
+    this._extraItemsContainerBelowRoot = null;
   }
 
   connectedCallback() {
@@ -89,7 +94,6 @@ export class TreeItemElement extends HTMLElement {
       this.invalidate(TabInvalidationTarget.All);
       this.update(TabUpdateTarget.TabProperties);
       this.applyAttributes();
-      this._initExtraItemsContainers();
       this._startListening();
       return;
     }
@@ -145,7 +149,6 @@ export class TreeItemElement extends HTMLElement {
     this.initializeContents();
     this.invalidate(TabInvalidationTarget.All);
     this.update(TabUpdateTarget.TabProperties);
-    this._initExtraItemsContainers();
     this.applyAttributes();
     this._startListening();
   }
@@ -523,27 +526,44 @@ index = ${raw.index}
     return tooltip;
   }
 
-  _initExtraItemsContainers() {
-    if (!this.extraItemsContainerIndentRoot) {
-      this.extraItemsContainerIndentRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`).attachShadow({ mode: 'open' });
-      this.extraItemsContainerIndentRoot.itemById = new Map();
+  get extraItemsContainerIndentRoot() {
+    if (!this._extraItemsContainerIndentRoot) {
+      this._extraItemsContainerIndentRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`).attachShadow({ mode: 'open' });
+      this._extraItemsContainerIndentRoot.itemById = new Map();
     }
-    if (!this.extraItemsContainerBehindRoot) {
-      this.extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
-      this.extraItemsContainerBehindRoot.itemById = new Map();
+    return this._extraItemsContainerIndentRoot;
+  }
+
+  get extraItemsContainerBehindRoot() {
+    if (!this._extraItemsContainerBehindRoot) {
+      this._extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
+      this._extraItemsContainerBehindRoot.itemById = new Map();
     }
-    if (!this.extraItemsContainerFrontRoot) {
-      this.extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
-      this.extraItemsContainerFrontRoot.itemById = new Map();
+    return this._extraItemsContainerBehindRoot;
+  }
+
+  get extraItemsContainerFrontRoot() {
+    if (!this._extraItemsContainerFrontRoot) {
+      this._extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
+      this._extraItemsContainerFrontRoot.itemById = new Map();
     }
-    if (!this.extraItemsContainerAboveRoot) {
-      this.extraItemsContainerAboveRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`).attachShadow({ mode: 'open' });
-      this.extraItemsContainerAboveRoot.itemById = new Map();
+    return this._extraItemsContainerFrontRoot;
+  }
+
+  get extraItemsContainerAboveRoot() {
+    if (!this._extraItemsContainerAboveRoot) {
+      this._extraItemsContainerAboveRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`).attachShadow({ mode: 'open' });
+      this._extraItemsContainerAboveRoot.itemById = new Map();
     }
-    if (!this.extraItemsContainerBelowRoot) {
-      this.extraItemsContainerBelowRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`).attachShadow({ mode: 'open' });
-      this.extraItemsContainerBelowRoot.itemById = new Map();
+    return this._extraItemsContainerAboveRoot;
+  }
+
+  get extraItemsContainerBelowRoot() {
+    if (!this._extraItemsContainerBelowRoot) {
+      this._extraItemsContainerBelowRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`).attachShadow({ mode: 'open' });
+      this._extraItemsContainerBelowRoot.itemById = new Map();
     }
+    return this._extraItemsContainerBelowRoot;
   }
 
   _startListening() {
