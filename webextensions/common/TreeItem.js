@@ -846,7 +846,7 @@ export class TreeItem {
   static uniqTabsAndDescendantsSet(tabs) {
     if (!Array.isArray(tabs))
       tabs = [tabs];
-    return Array.from(new Set(tabs.map(tab => [tab].concat(tab.$TST.descendants)).flat())).sort(TreeItem.compare);
+    return Array.from(new Set(tabs.map(tab => [tab, ...tab.$TST.descendants]).flat())).sort(TreeItem.compare);
   }
 
   static compare(a, b) {
@@ -2115,14 +2115,8 @@ export class Tab extends TreeItem {
     const descendants = [];
     this.cachedDescendantIds = [];
     for (const child of this.children) {
-      descendants.push(child);
-      for (const descendant of child.$TST.descendants) {
-        descendants.push(descendant);
-      }
-      this.cachedDescendantIds.push(child.id);
-      for (const id of child.$TST.cachedDescendantIds) {
-        this.cachedDescendantIds.push(id);
-      }
+      descendants.push(child, ...child.$TST.descendants);
+      this.cachedDescendantIds.push(child.id, ...child.$TST.cachedDescendantIds);
     }
     return descendants;
   }
