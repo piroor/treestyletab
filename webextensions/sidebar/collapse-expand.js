@@ -223,6 +223,7 @@ export async function setCollapsed(tab, info = {}) {
       if (callback)
         callback();
       mCollapseExpandAnimationCallback.delete(tab.id);
+      mUpdatingCollapsedStateCanceller.delete(tab.id);
     }, configs.collapseDuration));
   });
 }
