@@ -244,7 +244,7 @@ if (Constants.IS_BACKGROUND) {
           try {
             browser.tabs.sendMessage(tab.id, {
               type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
-            });
+            }).catch(_error => {});
           }
           catch(_error) {
           }
