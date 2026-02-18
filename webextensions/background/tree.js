@@ -462,15 +462,17 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
         log(`  insert ${child?.id} before firstChild ${insertBefore?.id} (insertAt=kINSERT_TOP)`);
         break;
       case Constants.kINSERT_NEAREST: {
-        const allTabs = Tab.getOtherTabs((child || parent).windowId, ignoreTabs);
-        const index = child ? allTabs.indexOf(child) : -1;
-        log('  insertAt=kINSERT_NEAREST ', { allTabs, index });
-        if (index < allTabs.indexOf(firstChild)) {
+        // Compare tab positions to find the nearest insertion point.
+        // If the child itself is being ignored, treat its position as
+        // unknown (-1) so it falls back to inserting at the top.
+        const index = child ? (ignoreTabs?.includes(child) ? -1 : child.index) : -1;
+        log('  insertAt=kINSERT_NEAREST ', { index });
+        if (index < firstChild.index) {
           insertBefore = firstChild;
           insertAfter  = parent;
           log(`  insert ${child?.id} between parent ${insertAfter?.id} and firstChild ${insertBefore?.id} (insertAt=kINSERT_NEAREST)`);
         }
-        else if (index > allTabs.indexOf(lastDescendant)) {
+        else if (index > lastDescendant.index) {
           insertAfter  = lastDescendant;
           log(`  insert ${child?.id} after lastDescendant ${insertAfter?.id} (insertAt=kINSERT_NEAREST)`);
         }
@@ -479,11 +481,11 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
             children = parent.$TST.children;
           if (ignoreTabs)
             children = children.filter(tab => !ignoreTabs.includes(tab));
-          for (const child of children) {
-            if (index > allTabs.indexOf(child))
+          for (const sibling of children) {
+            if (index > sibling.index)
               continue;
-            insertBefore = child;
-            log(`  insert ${child?.id} before nearest following child ${insertBefore?.id} (insertAt=kINSERT_NEAREST)`);
+            insertBefore = sibling;
+            log(`  insert ${child?.id} before nearest following sibling ${insertBefore?.id} (insertAt=kINSERT_NEAREST)`);
             break;
           }
           if (!insertBefore) {
