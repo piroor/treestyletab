@@ -221,7 +221,7 @@ export class TreeItem {
     this.classList = element.classList;
     // wait until initialization processes are completed
     (Constants.IS_BACKGROUND ?
-      setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout : // because window.requestAnimationFrame is decelerated for an invisible document.
       window.requestAnimationFrame)(() => {
       this._promisedElementResolver(element);
       if (!element) { // reset for the next binding
@@ -494,7 +494,7 @@ export class TreeItem {
     return null;
   }
 
-  // if all items are aldeardy placed at there, we don't need to move them.
+  // if all items are already placed there, we don't need to move them.
   isAllPlacedBeforeSelf(items) {
     if (!this.raw ||
         items.length == 0)
@@ -672,8 +672,8 @@ export class TreeItem {
     this.raw.title = exported.title;
   }
 
-  // This function is complex a little, but we should not make a custom class for this purpose,
-  // bacause instances of the class will be very short-life and increases RAM usage on
+  // This function is a little complex, but we should not make a custom class for this purpose,
+  // because instances of the class will be very short-lived and increase RAM usage on
   // massive tabs case.
   async exportForAPI({ addonId, light, isContextTab, interval, permissions, cache, cacheKey } = {}) {
     const permissionsKey = [...permissions].sort().join(',');
@@ -1618,7 +1618,7 @@ export class Tab extends TreeItem {
       log(`_searchBookmstksWithUrl failed: tab ${this.id} (${url}): `, error);
       try {
         // bookmarks.search() does not accept "moz-extension:" URL
-        // via a queyr with "url" on Firefox 105 and later - it raises an error as
+        // via a query with "url" on Firefox 105 and later - it raises an error as
         // "Uncaught Error: Type error for parameter query (Value must either:
         // be a string value, or .url must match the format "url") for bookmarks.search."
         // Thus we use a query with "query" to avoid the error.
@@ -3130,7 +3130,7 @@ export class Tab extends TreeItem {
     const promisedTracked = waitUntilTracked(tabId, options);
     mPromisedTrackedTabs.set(key, promisedTracked);
     return promisedTracked.then(tab => {
-      // Don't claer the last promise, because it is required to process following "waitUntilTracked" callbacks sequentically.
+      // Don't clear the last promise, because it is required to process following "waitUntilTracked" callbacks sequentially.
       //if (mPromisedTrackedTabs.get(key) == promisedTracked)
       //  mPromisedTrackedTabs.delete(key);
       return tab;
@@ -3167,7 +3167,7 @@ export class Tab extends TreeItem {
   }
 
   static init(tab, options = {}) {
-    log('initalize tab ', tab);
+    log('initialize tab ', tab);
     if (!tab) {
       const error = new Error('Fatal error: invalid tab is given to Tab.init()');
       console.log(error, stack(error.stack));
@@ -3366,7 +3366,7 @@ export class Tab extends TreeItem {
   }
 
   //===================================================================
-  // grap tabs
+  // grab tabs
   //===================================================================
 
   static getActiveTabs() {
@@ -3704,7 +3704,7 @@ export class Tab extends TreeItem {
     const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
     Tab.broadcastTooltipText.triedAt = triedAt;
     (Constants.IS_BACKGROUND ?
-      setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout : // because window.requestAnimationFrame is decelerated for an invisible document.
       window.requestAnimationFrame)(() => {
       if (Tab.broadcastTooltipText.triedAt != triedAt)
         return;
@@ -3765,7 +3765,7 @@ export class Tab extends TreeItem {
     const triedAt = `${Date.now()}-${parseInt(Math.random() * 65000)}`;
     Tab.broadcastState.triedAt = triedAt;
     (Constants.IS_BACKGROUND ?
-      setTimeout : // because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout : // because window.requestAnimationFrame is decelerated for an invisible document.
       window.requestAnimationFrame)(() => {
       if (Tab.broadcastState.triedAt != triedAt)
         return;
@@ -3993,7 +3993,7 @@ async function waitUntilTracked(tabId, options = {}) {
       }
       const { resolve } = destroyWaitingTabTask(task);
       if (resolve) {
-        log('waitUntilTracked was called for unexisting tab');
+        log('waitUntilTracked was called for nonexistent tab');
         resolve(null);
       }
     });

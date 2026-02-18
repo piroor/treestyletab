@@ -336,7 +336,7 @@ function reserveToRefreshItems() {
   if (reserveToRefreshItems.invoked)
     return;
   reserveToRefreshItems.invoked = true;
-  setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+  setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
     reserveToRefreshItems.invoked = false;
     addTabItems();
     addBookmarkItems();

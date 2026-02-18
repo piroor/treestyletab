@@ -31,7 +31,7 @@ export class TabFaviconElement extends HTMLElement {
       return;
     }
 
-    // I make ensure to call these operation only once conservatively because:
+    // I ensure to call these operations only once conservatively because:
     //  * If we do these operations in a constructor of this class, Gecko throws `NotSupportedError: Operation is not supported`.
     //    * I'm not familiar with details of the spec, but this is not Gecko's bug.
     //      See https://dom.spec.whatwg.org/#concept-create-element
@@ -39,13 +39,13 @@ export class TabFaviconElement extends HTMLElement {
     //  * `connectedCallback()` may be called multiple times by append/remove operations.
     //
     // FIXME:
-    //  Ideally, these descendants should be in shadow tree. Thus I don't change these element to custom elements.
-    //  However, I hesitate to do it at this moment by these reasons.
+    //  Ideally, these descendants should be in a shadow tree. Thus I don't change these elements to custom elements.
+    //  However, I hesitate to do it at this moment for these reasons.
     //  If we move these to shadow tree,
-    //    * We need some rewrite our style.
-    //      * This includes that we need to move almost CSS code into this file as a string.
-    //    * I'm not sure about that whether we should require [CSS Shadow Parts](https://bugzilla.mozilla.org/show_bug.cgi?id=1559074).
-    //      * I suspect we can resolve almost problems by using CSS Custom Properties.
+    //    * We need to rewrite some of our styles.
+    //      * This means we would need to move almost all CSS code into this file as a string.
+    //    * I'm not sure whether we should require [CSS Shadow Parts](https://bugzilla.mozilla.org/show_bug.cgi?id=1559074).
+    //      * I suspect we can resolve almost all problems by using CSS Custom Properties.
 
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(KFAVICON_CLASS_NAME);
@@ -96,7 +96,7 @@ export class TabFaviconElement extends HTMLElement {
     return this.firstElementChild;
   }
 
-  // These setter/getter is required by webextensions-lib-tab-favicon-helper
+  // This setter/getter is required by webextensions-lib-tab-favicon-helper
   get src() {
     return this.getAttribute(kATTR_NAME_SRC);
   }

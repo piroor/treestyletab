@@ -667,8 +667,8 @@ async function performTabsDragDrop(tabs, params) {
     return movedTabs;
 
   if (windowId != destinationWindowId) {
-    // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
-    // TST respects Firefox's the behavior.
+    // Firefox always focuses to the dropped (moved) tab if it is dragged from another window.
+    // TST respects Firefox's behavior.
     await browser.tabs.update(movedTabs[0].id, { active: true })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
@@ -890,7 +890,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
         windowId;
 
   // Basically tabs should not be moved between regular window and private browsing window,
-  // so there are some codes to prevent shch operations. This is for failsafe.
+  // so there are some codes to prevent such operations. This is for failsafe.
   if (movedTabs[0].incognito != Tab.getFirstTab(destinationWindowId).incognito)
     return [];
 
@@ -1197,7 +1197,7 @@ export async function moveAfter(tab, options = {}) {
 }
 
 
-/* commands to simulate Firefox's native tab cocntext menu */
+/* commands to simulate Firefox's native tab context menu */
 
 export async function unloadTabs(tabs) {
   tabs = filterUnloadableTabs(tabs);

@@ -108,7 +108,7 @@ async function tryDetectTabBunches(win) {
     await Promise.all(tabReferences.map(tabReference => {
       const tab = Tab.get(tabReference.id);
       tab.$TST.temporaryMetadata.set('openedWithOthers', true);
-      // We need to wait until all tabs are handlede completely.
+      // We need to wait until all tabs are handled completely.
       // Otherwise `tab.$TST.needToBeGroupedSiblings` may contain unrelated tabs
       // (tabs opened from any other parent tab) unexpectedly.
       return tab.$TST.opened;
@@ -311,7 +311,7 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     childrenOfPinnedTabs[opener.id] = tabs.concat([tab]);
   }
 
-  // Ignore pinned openeres which has no child tab to be grouped.
+  // Ignore pinned openers which has no child tab to be grouped.
   pinnedOpeners = pinnedOpeners.filter(opener => {
     return childrenOfPinnedTabs[opener.id].length > 1 || Tab.getGroupTabForOpener(opener);
   });

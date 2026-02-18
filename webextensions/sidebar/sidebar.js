@@ -89,7 +89,7 @@ const mBrowserThemeDefinition     = document.querySelector('#browser-theme-defin
 const mUserStyleRules             = document.querySelector('#user-style-rules');
 const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
-// allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
+// allow customization for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
 document.documentElement.dataset.userAgent = navigator.userAgent;
 document.documentElement.classList.toggle('platform-mac', isMacOS());
 document.documentElement.classList.toggle('rtl', isRTL());
@@ -437,7 +437,7 @@ function processAllStyleRulesIn(sheetOrRule, processor) {
   for (const rule of sheetOrRule.cssRules) {
     if (rule.styleSheet)
       processAllStyleRulesIn(rule.styleSheet, processor);
-    else if (rule.cssRules && rule.cssRules.length > 0) // @media and so son
+    else if (rule.cssRules && rule.cssRules.length > 0) // @media and so on
       processAllStyleRulesIn(rule, processor);
     else
       processor(rule);
@@ -486,11 +486,11 @@ function updateContextualIdentitiesStyle() {
 
 // Workaround for https://github.com/piroor/treestyletab/issues/3142
 // Firefox 101 and later versions may have something edge case bug around CSS
-// mask-iamge, it sometimes fails to apply masks on the initial loading.
+// mask-image, it sometimes fails to apply masks on the initial loading.
 // After I disable and re-enable a CSS rule for a mask image by the DOM inspector
 // the problem looks solved. These codes simulates the operation by scanning all
 // CSS rules via CSSOM automatically.
-// Related bug on Fierfox side: https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
+// Related bug on Firefox side: https://bugzilla.mozilla.org/show_bug.cgi?id=1763420
 
 const URL_PATTERN = /^(?:url\()?(?:'(.+)'|"(.+)")(?:\))?$/;
 function reloadAllMaskImages() {
@@ -607,7 +607,7 @@ async function rebuildAll(importedWindow) {
 let mGiveUpImportWindow = false;
 const mImportedWindow = new Promise((resolve, _reject) => {
   log('preparing mImportedWindow');
-  // This must be synchronous , to avoid blocking to other listeners.
+  // This must be synchronous, to avoid blocking other listeners.
   const onBackgroundIsReady = message => {
     if (mGiveUpImportWindow) {
       log('mImportedWindow (${windowId}): give up to import, unregister onBackgroundIsReady listener');
@@ -1080,7 +1080,7 @@ async function isSidebarRightSide() {
 
 
 // This must be synchronous and return Promise on demand, to avoid
-// blocking to other listeners.
+// blocking other listeners.
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||

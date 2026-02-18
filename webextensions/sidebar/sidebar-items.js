@@ -231,7 +231,7 @@ export function renderItem(item, { containerElement, insertBefore } = {}) {
     return false;
   }
   if (!item.$TST) {
-    console.log('WARNING: Alerady destroyed item has requested to be rendered! ', item.id, stack());
+    console.log('WARNING: Already destroyed item has requested to be rendered! ', item.id, stack());
     return false;
   }
 
@@ -1067,7 +1067,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.applyAttributesToElement();
       if (!message.broadcasted) {
         // Tab element movement triggered by sidebar itself can break order of
-        // tabs synchronized from the background, so for safetyl we trigger
+        // tabs synchronized from the background, so for safety we trigger
         // synchronization.
         reserveToSyncTabsOrder();
       }

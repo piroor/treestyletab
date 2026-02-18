@@ -222,7 +222,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
   else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
-    // reloading doesn't cloear that, so we need to clear favIconUrl manually.
+    // reloading doesn't clear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
     delete update.attributes.added[Constants.kCURRENT_FAVICON_URI];
     update.attributes.removed.add(Constants.kCURRENT_URI);

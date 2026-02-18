@@ -73,7 +73,7 @@ export function getElementOriginalTarget(eventOrTarget) {
           return event.originalTarget;
       }
       catch(_error) {
-        // Access to the origianlTarget can be restricted on some cases,
+        // Access to the originalTarget can be restricted in some cases,
         // ex. mousedown in extra contents of the new tab button. Why?
       }
       return event.explicitOriginalTarget || eventOrTarget.target;

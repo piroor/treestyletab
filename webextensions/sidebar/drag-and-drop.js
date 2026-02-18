@@ -470,7 +470,7 @@ function getDropAction(event) {
   if (dropAreasCount == 2) {
     beforeOrAfterDropAreaSize = Math.round(targetItemSize / dropAreasCount);
   }
-  else { // enlarge the area to dop something on the tab itself
+  else { // enlarge the area to drop something on the tab itself
     beforeOrAfterDropAreaSize = Math.round(targetItemSize / 4);
   }
   const eventCoordinate = onFaviconizedTab ? event.clientX : event.clientY;
@@ -1669,7 +1669,7 @@ async function onDragEnd(event) {
     // The only one exception is the case: tabs have been dropped to a TST
     // sidebar on any other Firefox instance. In this case tabs dropped to the
     // foreign Firefox will become duplicated: imported to the foreign Firefox
-    // and teared off from the source window. This is clearly undesider
+    // and teared off from the source window. This is clearly undesired
     // behavior from misdetection, but I decide to ignore it because it looks
     // quite rare case.
     await wait(250); // wait until "workaroundForBug1548949DroppedItems" is synchronized
@@ -1752,7 +1752,7 @@ async function onDragEnd(event) {
 
   if (dragData.tab) {
     if (isDraggingAllActiveTabs(dragData.tab)) {
-      log('all tabs are dragged, so it is nonsence to tear off them from the window');
+      log('all tabs are dragged, so it is nonsense to tear off them from the window');
       return;
     }
 
@@ -1768,7 +1768,7 @@ async function onDragEnd(event) {
 
   if (dragData.item?.$TST.group) {
     if (dragData.item?.$TST.members.length == TabsStore.windows.get(dragData.item.windowId).tabs.size) {
-      log('the last one group containing all tabs is dragged, so it is nonsence to tear off it from the window');
+      log('the last one group containing all tabs is dragged, so it is nonsense to tear off it from the window');
       return;
     }
 

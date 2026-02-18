@@ -39,7 +39,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   let newParent;
   const successor = tab.$TST.possibleSuccessorWithDifferentContainer;
   if (successor) {
-    log('override closeParentBehaior with kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD for different container successor ', successor);
+    log('override closeParentBehavior with kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD for different container successor ', successor);
     closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
     // When a new tab is created with a different container and this tab
     // is removed immediately before the new tab is completely handled,
@@ -54,7 +54,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
       ...removeInfo,
     });
-    log('detected closeParentBehaior: ', closeParentBehavior);
+    log('detected closeParentBehavior: ', closeParentBehavior);
   }
 
   if (closeParentBehavior != Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE &&

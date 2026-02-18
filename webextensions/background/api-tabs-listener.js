@@ -266,7 +266,7 @@ async function onUpdated(tabId, changeInfo, tab) {
       changeInfo.previousUrl = updatedTab.url;
       // On Linux (and possibly on some other environments) the initial page load
       // sometimes produces "onUpdated" event with unchanged URL unexpectedly,
-      // so we should ignure such invalid (uneffective) URL changes.
+      // so we should ignore such invalid (ineffective) URL changes.
       // See also: https://github.com/piroor/treestyletab/issues/3078
       if (changeInfo.url == 'about:blank' &&
           changeInfo.previousUrl == changeInfo.url &&
@@ -372,7 +372,7 @@ async function onCreated(tab) {
   // Cache the initial index for areTabsFromOtherDeviceWithInsertAfterCurrent()@handle-tab-bunches.js
   // See also: https://github.com/piroor/treestyletab/issues/2419
   tab.$indexOnCreated = tab.index;
-  // Cache the initial windowId for Tab.onUpdated listner@handle-new-tabs.js
+  // Cache the initial windowId for Tab.onUpdated listener@handle-new-tabs.js
   tab.$windowIdOnCreated = tab.windowId;
 
   return onNewTabTracked(tab, { trigger: 'tabs.onCreated', metric });
@@ -397,7 +397,7 @@ async function onNewTabTracked(tab, info) {
   // (By the way, any pinned tab won't be opened after the first unpinned tab,
   // and any unpinned tab won't be opened before the last pinned tab. On such
   // cases Firefox automatically fixup the index regardless they are newly
-  // opened ore restored, so we don't need to care such cases.)
+  // opened or restored, so we don't need to care such cases.)
   // See also:
   //   https://github.com/piroor/treestyletab/issues/2131
   //   https://github.com/piroor/treestyletab/issues/2216
@@ -466,8 +466,8 @@ async function onNewTabTracked(tab, info) {
     treeForActionDetection = Tree.snapshotForActionDetection(tab);
     log('Tree modification is detected while waiting. Cached tree for action detection is updated: ', treeForActionDetection);
   };
-  // We should refresh ceched information only when tabs are creaetd and
-  // attached, because the cacheed information was originally introduced for
+  // We should refresh cached information only when tabs are created and
+  // attached, because the cached information was originally introduced for
   // failsafe around problems from tabs closed while waiting.
   Tree.onAttached.addListener(onTreeModified);
   metric.add('Tree.onAttached proceeded');
@@ -634,7 +634,7 @@ async function onNewTabTracked(tab, info) {
 
     if (TabsStore.ensureLivingItem(tab)) { // it can be removed while waiting
       win.openingTabs.add(tab.id);
-      setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
         if (!TabsStore.windows.get(tab.windowId)) // it can be removed while waiting
           return;
         win.openingTabs.delete(tab.id);
@@ -1102,7 +1102,7 @@ async function onAttached(tabId, attachInfo) {
           attachInfo.$TST_retryCount = 0;
         if (attachInfo.$TST_retryCount < 10) {
           attachInfo.$TST_retryCount++;
-          setTimeout(() => onAttached(tabId, attachInfo), 0); // because window.requestAnimationFrame is decelerate for an invisible document.
+          setTimeout(() => onAttached(tabId, attachInfo), 0); // because window.requestAnimationFrame is decelerated for an invisible document.
           return;
         }
         console.log(`tabs.onAttached: the tab ${tabId} or the window ${attachInfo.newWindowId} is already closed. `);

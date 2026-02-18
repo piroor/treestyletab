@@ -216,7 +216,7 @@ async function notifyReadyToSidebars() {
     promisedResults.push(browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_BACKGROUND_READY,
       windowId: win.id,
-      exported: win.export(true), // send tabs together to optimizie further initialization tasks in the sidebar
+      exported: win.export(true), // send tabs together to optimize further initialization tasks in the sidebar
     }).catch(ApiTabs.createErrorSuppressor()));
   }
   return Promise.all(promisedResults);
@@ -605,7 +605,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     url:          ((await Permissions.isGranted(Permissions.ALL_URLS)) ? null : '/resources/blank.html'), // for popup
     title:        browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
     onShownInPopup(container) {
-      setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+      setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
         // this need to be done on the next tick, to use the height of
         // the box for calculation of dialog size
         const style = container.querySelector('ul').style;
@@ -749,7 +749,7 @@ Tab.onMutedStateChanged.addListener((root, toBeMuted) => {
     }
 
     // tabs.onUpdated is too slow, so users will be confused
-    // from still-not-updated tabs (in other words, they tabs
+    // from still-not-updated tabs (in other words, those tabs
     // are unresponsive for quick-clicks).
     Tab.broadcastState(tab, { add, remove });
   }

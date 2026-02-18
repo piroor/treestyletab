@@ -81,7 +81,7 @@ const mDummyTab = document.getElementById('dummy-tab');
 
 TSTAPI.onRegistered.addListener(addon => {
   // Install stylesheet always, even if the addon is not allowed to access
-  // private windows, because the client addon can be alloed on private
+  // private windows, because the client addon can be allowed on private
   // windows by Firefox itself and extra context menu commands may be called
   // via Firefox's native context menu (or shortcuts).
   if (addon.style)
@@ -329,7 +329,7 @@ rb
 rp
 rt
 rtc
-duby
+ruby
 s
 samp
 //script

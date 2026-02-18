@@ -377,7 +377,7 @@ function onMouseDown(event) {
   ]).then(results => results[1]);
 
   // Firefox switches tab focus on mousedown, and keeps
-  // tab multiselection for draging of them together.
+  // tab multiselection for dragging of them together.
   // We simulate the behavior here.
   mousedown.promisedMousedownNotified.then(canceled => {
     if (canceled)
@@ -552,7 +552,7 @@ async function handleDefaultMouseUp({ lastMousedown, tab, event }) {
     mLastMouseUpOnTab = Date.now();
   }
 
-  // following codes are for handlig of click event on the tab bar itself.
+  // following codes are for handling of click event on the tab bar itself.
   const actionForNewTabCommand = lastMousedown.detail.isMiddleClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     lastMousedown.detail.isAccelClick ?

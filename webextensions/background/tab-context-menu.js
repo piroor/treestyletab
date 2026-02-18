@@ -384,7 +384,7 @@ export async function init() {
 // This module is designed to work with a service which has features:
 //   * async listServices(tab)
 //     - Returns an array of sharing services on macOS.
-//     - Retruned array should have 0 or more items like:
+//     - Returned array should have 0 or more items like:
 //       { name:  "service name",
 //         title: "title for a menu item",
 //         image: "icon image (maybe data: URI)" }

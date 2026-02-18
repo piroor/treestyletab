@@ -322,7 +322,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   }
   if (!options.keepCurrentTree &&
-      // the restored tab is a roo tab
+      // the restored tab is a root tab
       ancestors.length == 0 &&
       // but attached to any parent based on its restored position
       tab.$TST.parent &&
@@ -455,7 +455,7 @@ Tab.onRestored.addListener(tab => {
         if (count == 0) {
           mRestoringTabs.delete(tab.windowId);
           mMaxRestoringTabs.delete(tab.windowId);
-          setTimeout(() => { // because window.requestAnimationFrame is decelerate for an invisible document.
+          setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
             // unblock in the next event loop, after other asynchronous operations are finished
             UserOperationBlocker.unblockIn(tab.windowId, { throbber: true });
           }, 0);

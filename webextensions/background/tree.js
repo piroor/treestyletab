@@ -519,11 +519,11 @@ export function getReferenceTabsForNewChild(child, parent, { insertAt, ignoreTab
     // Return unsafe tab, to avoid placing the child after hidden tabs
     // (too far from the place it should be.)
     insertBefore = insertBefore?.$TST.unsafeNextTab;
-    log(`  => insert ${child?.id} before next tab ${insertBefore?.id} of the child tab itelf`);
+    log(`  => insert ${child?.id} before next tab ${insertBefore?.id} of the child tab itself`);
   }
   if (insertAfter == child) {
     insertAfter = insertAfter?.$TST.previousTab;
-    log(`  => insert ${child?.id} after previous tab ${insertAfter?.id} of the child tab itelf`);
+    log(`  => insert ${child?.id} after previous tab ${insertAfter?.id} of the child tab itself`);
   }
   // disallow to place tab in invalid position
   if (insertBefore) {
@@ -585,7 +585,7 @@ export function detachTab(child, options = {}) {
       TSTAPI.clearCache(cache);
     }
     // We don't need to clear its parent information, because the old parent's
-    // "children" setter removes the parent ifself from the detached child
+    // "children" setter removes the parent itself from the detached child
     // automatically.
   }
   else {
@@ -1593,12 +1593,12 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
         let temporaryFocusHolderTab = null;
         if (hasActive) {
           // Blur to-be-moved tab, otherwise tabs.move() will activate them for each
-          // while the moving process and all dicarded tabs are unexpectedly restored.
+          // while the moving process and all discarded tabs are unexpectedly restored.
           const nextActiveTab = await TabsInternalOperation.blurTab(movedTabs, {
             silently: true,
           });
           if (!nextActiveTab) {
-            // There is no focusible left tab, so we move focus to a tmeporary tab.
+            // There is no focusable left tab, so we move focus to a temporary tab.
             // It will be removed automatically after tabs are moved.
             temporaryFocusHolderTab = await browser.tabs.create({
               url:    'about:blank',
@@ -1719,7 +1719,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     url: 'about:blank',
     ...sourceParams,
   };
-  // positions are not provided for a maximized or fullscren window!
+  // positions are not provided for a maximized or fullscreen window!
   if (typeof sourceParams.left == 'number')
     sourceParams.left += 20;
   if (typeof sourceParams.top == 'number')

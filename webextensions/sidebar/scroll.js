@@ -100,7 +100,7 @@ export function clearRenderableTreeItemsCache() {
 let mScrollingInternallyCount = 0;
 
 export function init(scrollPosition) {
-  // We should cached scroll positions, because accessing to those properties is slow.
+  // We should cache scroll positions, because accessing those properties is slow.
   mPinnedScrollBox.$scrollTop    = 0;
   mPinnedScrollBox.$scrollTopMax = mPinnedScrollBox.scrollTopMax;
   mPinnedScrollBox.$offsetHeight = mPinnedScrollBox.offsetHeight;
@@ -108,7 +108,7 @@ export function init(scrollPosition) {
   mNormalScrollBox.$scrollTopMax = mNormalScrollBox.scrollTopMax;
   mNormalScrollBox.$offsetHeight = mNormalScrollBox.offsetHeight;
 
-  // We need to register the lister as non-passive to cancel the event.
+  // We need to register the listener as non-passive to cancel the event.
   // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
   document.addEventListener('wheel', onWheel, { capture: true, passive: false });
   mPinnedScrollBox.addEventListener('scroll', onScroll);
