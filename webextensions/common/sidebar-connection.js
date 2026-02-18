@@ -241,13 +241,9 @@ if (Constants.IS_BACKGROUND) {
             await wait(10);
             count = 0;
           }
-          try {
-            browser.tabs.sendMessage(tab.id, {
-              type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
-            });
-          }
-          catch(_error) {
-          }
+          browser.tabs.sendMessage(tab.id, {
+            type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
+          }).catch(_error => {});
         }
       });
     };
