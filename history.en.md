@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 4.2.10 (2026.2.18)
    * Show new tab action selectors on both side of the new tab button correctly, when both container selector and relation selector are active. ([by bb010g](https://github.com/piroor/treestyletab/pull/3826), thanks!)
    * Restore tree of tabs certainly on crash recovery and/or manual restoration of the previous session. ([by tkng](https://github.com/piroor/treestyletab/pull/3846), thanks!)
    * Fix handling of closed tree restoration: multiple tabs of a closed tree are now restored with single action correctly. ([by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!)

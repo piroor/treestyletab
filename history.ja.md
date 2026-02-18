@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 4.2.10 (2026.2.18)
    * コンテナー選択機能と新規タブの開き方の選択機能を両方とも有効にしたときに、新規タブの開き方を選択するためのドロップダウンメニューを「新しいタブ」ボタンの両サイドに正しく表示するように修正（[by bb010g](https://github.com/piroor/treestyletab/pull/3826), thanks!）
    * クラッシュからの復帰時や手動操作での前回セッションの復元時に、ツリー構造をより確実に復元するようにした（[by tkng](https://github.com/piroor/treestyletab/pull/3846), thanks!）
    * 閉じたツリーの復元処理（ツリーを閉じた後の「タブを開き直す」操作でツリーを構成する複数のタブをまとめて開き直す処理）が正しく動作していなかったのを修正（[by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!）
