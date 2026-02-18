@@ -295,7 +295,14 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
     tab.$TST.addState(Constants.kTAB_STATE_PENDING);
   }
 
-  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
+  // On a crash recovery or a manual session restoration, we may handle restored tabs
+  // but failed to restore tree structure from the cache. Setting
+  // `treeStructureAlreadyRestoredFromSessionData` flag here will block failsafe of
+  // tree restoration implemented in tree-structure.js, then we'll get flatten tree
+  // accidentally. Thus we need to keep the tab unflagged if no tree information were
+  // restored from the cache.
+  if (parentTab || childIds.length > 0)
+    tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 }
 
 function fixupTabRestoredFromCachePostProcess(tab) {

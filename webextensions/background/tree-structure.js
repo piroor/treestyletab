@@ -377,11 +377,11 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   };
 
-  // We should not mark the tab as "already restored" when there is
-  // no tree info in the session data, because the tab may be a
-  // recycled active tab which doesn't have session data yet at this
-  // point. Setting the flag with empty data would block the later
-  // restoration when the actual session data becomes available.
+  // On a crash recovery or a manual session restoration, the active tab will be
+  // recycled as a part of the restored tree. Setting the flag
+  // `treeStructureAlreadyRestoredFromSessionData` will block the later tree
+  // restoration for the recycled tab, as the result we may get broken tree
+  // accidentally. Thus we need to keep such a "to-be-recycled" tab unflagged.
   if (!maybeRecycledTab)
     tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 
