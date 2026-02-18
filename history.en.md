@@ -2,13 +2,14 @@
 
  - master/HEAD
    * Show new tab action selectors on both side of the new tab button correctly, when both container selector and relation selector are active. ([by bb010g](https://github.com/piroor/treestyletab/pull/3826), thanks!)
+   * Restore tree of tabs certainly on crash recovery and/or manual restoration of the previous session. ([by tkng](https://github.com/piroor/treestyletab/pull/3846), thanks!)
    * Fix handling of closed tree restoration: multiple tabs of a closed tree are now restored with single action correctly. ([by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!)
-   * Calculate progress of closed tree restoration correctly. ([by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!)
-   * Optimize with less calculation to detect a tab should be sticky or not. ([by tkng](https://github.com/piroor/treestyletab/pull/3831), thanks!)
-   * Optimize with less needless reflowing.
-   * Optimize with less reparsing of JSON strings while dragging of tabs.
+   * Many performance improvements with optimizations ([#3831](https://github.com/piroor/treestyletab/pull/3831), [#3836](https://github.com/piroor/treestyletab/pull/3836), [#3837](https://github.com/piroor/treestyletab/pull/3837), [#3838](https://github.com/piroor/treestyletab/pull/3838), [#3839](https://github.com/piroor/treestyletab/pull/3839), [#3843](https://github.com/piroor/treestyletab/pull/3843), [#3847](https://github.com/piroor/treestyletab/pull/3847) and [#3848](https://github.com/piroor/treestyletab/pull/3848) by [tkng](https://github.com/tkng). Thanks!)
+   * Some performance improvements with optimizations around reduced reparsing of JSON strings while dragging and reduced reflowing.
+   * Apply and update auto-sticky state of tabs correctly, even if they are specified by other addons. ([by tkng](https://github.com/piroor/treestyletab/pull/3840), thanks!)
+   * Update custom tooltip text more correctly. ([by tkng](https://github.com/piroor/treestyletab/pull/3850), thanks!)
+   * Many cleanup of codes for future maintainability. ([#3832](https://github.com/piroor/treestyletab/pull/3832), [#3833](https://github.com/piroor/treestyletab/pull/3833), [#3835](https://github.com/piroor/treestyletab/pull/3835), [#3844](https://github.com/piroor/treestyletab/pull/3844), [#3849](https://github.com/piroor/treestyletab/pull/3849), [#3851](https://github.com/piroor/treestyletab/pull/3851) and [#3852](https://github.com/piroor/treestyletab/pull/3852) by [tkng](https://github.com/tkng). Thanks!)
    * Suppress errors from handling of successor tabs when a tab is closed before the successor information is updated.
-   * Cleanup dead conditioned codes. ([by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!)
  - 4.2.9 (2026.1.20)
    * Fix some possible memory leaks around closed windows, tabs, and removed elements.
  - 4.2.8 (2026.1.9)

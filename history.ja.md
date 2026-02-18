@@ -2,13 +2,14 @@
 
  - master/HEAD
    * コンテナー選択機能と新規タブの開き方の選択機能を両方とも有効にしたときに、新規タブの開き方を選択するためのドロップダウンメニューを「新しいタブ」ボタンの両サイドに正しく表示するように修正（[by bb010g](https://github.com/piroor/treestyletab/pull/3826), thanks!）
+   * クラッシュからの復帰時や手動操作での前回セッションの復元時に、ツリー構造をより確実に復元するようにした（[by tkng](https://github.com/piroor/treestyletab/pull/3846), thanks!）
    * 閉じたツリーの復元処理（ツリーを閉じた後の「タブを開き直す」操作でツリーを構成する複数のタブをまとめて開き直す処理）が正しく動作していなかったのを修正（[by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!）
-   * 閉じたツリーの復元処理の進度を正しく計算するように修正（[by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!）
-   * タブをタブバー端に貼り付けるかどうかの判定処理を、計算量が最小化されるように最適化した（[by tkng](https://github.com/piroor/treestyletab/pull/3831), thanks!）
-   * 不要なリフロー処理を減らすように最適化した
-   * ドラッグ操作中に、同じJSON文字列を無駄に何度もパースし直さないように最適化した
+   * 様々な最適化によりパフォーマンスを改善（[#3831](https://github.com/piroor/treestyletab/pull/3831), [#3836](https://github.com/piroor/treestyletab/pull/3836), [#3837](https://github.com/piroor/treestyletab/pull/3837), [#3838](https://github.com/piroor/treestyletab/pull/3838), [#3839](https://github.com/piroor/treestyletab/pull/3839), [#3843](https://github.com/piroor/treestyletab/pull/3843), [#3847](https://github.com/piroor/treestyletab/pull/3847) and [#3848](https://github.com/piroor/treestyletab/pull/3848) by [tkng](https://github.com/tkng). Thanks!）
+   * 不要なリフロー処理の削減、ドラッグ操作中の同じJSON文字列の再評価の削減によりパフォーマンスを改善
+   * 他のアドオンによるタブの自動貼り付け条件の制御が期待通りに行われない不具合を修正（[by tkng](https://github.com/piroor/treestyletab/pull/3840), thanks!）
+   * 折りたたまれたツリーのツールチップの更新処理が期待通りに動作していなかったのを修正（[by tkng](https://github.com/piroor/treestyletab/pull/3850), thanks!）
+   * 無駄なコードの削減や誤記の修正などにより保守性を向上 ([#3832](https://github.com/piroor/treestyletab/pull/3832), [#3833](https://github.com/piroor/treestyletab/pull/3833), [#3835](https://github.com/piroor/treestyletab/pull/3835), [#3844](https://github.com/piroor/treestyletab/pull/3844), [#3849](https://github.com/piroor/treestyletab/pull/3849), [#3851](https://github.com/piroor/treestyletab/pull/3851) and [#3852](https://github.com/piroor/treestyletab/pull/3852) by [tkng](https://github.com/tkng). Thanks!)
    * タブを閉じた後のフォーカス制御の処理において、フォーカス候補の情報の更新中にタブが閉じられたときのエラーがコンソールに現れないようにした
-   * 理論上無意味な判定を行っていたコードを整理（[by tkng](https://github.com/piroor/treestyletab/pull/3832), thanks!）
  - 4.2.9 (2026.1.20)
    * 閉じられたウィンドウやタブ、削除された要素の周辺でメモリーの回収漏れが発生する可能性があった部分を修正
  - 4.2.8 (2026.1.9)
