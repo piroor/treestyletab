@@ -13,6 +13,7 @@ import {
   toLines,
   configs,
   wait,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -125,7 +126,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
       }
     }
     catch(error) {
-      console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, error.stack);
+      console.log(`TreeStructure.loadTreeStructure: Fatal error, ${error}`, stack(error.stack));
       MetricsData.add('loadTreeStructure: failed to apply tree structure');
     }
     if (!windowStateCompletelyApplied) {
@@ -192,7 +193,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
         uniqueId,
         bulk
       }).catch(error => {
-        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, error.stack);
+        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, stack(error.stack));
         return false;
       });
     }));
@@ -231,6 +232,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
+  const maybeRecycledTab = tab.active && ancestors.length == 0 && children.length == 0;
   log(`persistent references for ${dumpTab(tab)} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     insertAfterLegacy,
@@ -375,7 +377,13 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   };
 
-  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
+  // On a crash recovery or a manual session restoration, the active tab will be
+  // recycled as a part of the restored tree. Setting the flag
+  // `treeStructureAlreadyRestoredFromSessionData` will block the later tree
+  // restoration for the recycled tab, as the result we may get broken tree
+  // accidentally. Thus we need to keep such a "to-be-recycled" tab unflagged.
+  if (!maybeRecycledTab)
+    tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 
   if (options.bulk)
     await Promise.all(promises).then(updateCollapsedState);

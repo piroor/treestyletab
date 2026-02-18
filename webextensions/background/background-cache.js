@@ -12,7 +12,8 @@ import {
   dumpTab,
   wait,
   mapAndFilter,
-  configs
+  configs,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as CacheStorage from '/common/cache-storage.js';
@@ -214,7 +215,7 @@ async function restoreTabsFromCacheInternal(params) {
     await MetricsData.addAsync('rebuildAll: fixupTabsRestoredFromCache', fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache));
   }
   catch(e) {
-    log(String(e), e.stack);
+    log(String(e), stack(e.stack));
     throw e;
   }
   log('restoreTabsFromCacheInternal: done');
@@ -294,7 +295,14 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, idMap) {
     tab.$TST.addState(Constants.kTAB_STATE_PENDING);
   }
 
-  tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
+  // On a crash recovery or a manual session restoration, we may handle restored tabs
+  // but failed to restore tree structure from the cache. Setting
+  // `treeStructureAlreadyRestoredFromSessionData` flag here will block failsafe of
+  // tree restoration implemented in tree-structure.js, then we'll get flatten tree
+  // accidentally. Thus we need to keep the tab unflagged if no tree information were
+  // restored from the cache.
+  if (parentTab || childIds.length > 0)
+    tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 }
 
 function fixupTabRestoredFromCachePostProcess(tab) {
@@ -341,7 +349,7 @@ async function updateWindowCache(owner, key, value) {
       return;
     }
     catch(error) {
-      console.log(`BackgroundCache.updateWindowCache for ${owner.windowId}/${key} failed: `, error.message, error.stack, error);
+      console.log(`BackgroundCache.updateWindowCache for ${owner.windowId}/${key} failed: `, error.message, stack(error.stack), error);
     }
   }
 
@@ -375,7 +383,7 @@ async function getWindowCache(owner, key) {
       return value;
     }
     catch(error) {
-      console.log(`BackgroundCache.getWindowCache for ${owner.windowId}/${key} failed: `, error.message, error.stack, error);
+      console.log(`BackgroundCache.getWindowCache for ${owner.windowId}/${key} failed: `, error.message, stack(error.stack), error);
     }
   }
 
@@ -415,7 +423,7 @@ export async function reserveToCacheTree(windowId, trigger) {
   if (!trigger && configs.debug)
     trigger = new Error().stack;
 
-  log('reserveToCacheTree for window ', windowId, trigger);
+  log('reserveToCacheTree for window ', windowId, stack(trigger));
   TabsInternalOperation.clearCache(win.lastWindowCacheOwner);
 
   if (trigger)
@@ -458,7 +466,7 @@ async function cacheTree(windowId, triggers) {
     updateWindowCache(win.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, null);
     return;
   }
-  log('cacheTree for window ', windowId, triggers/*{ stack: configs.debug && new Error().stack }*/);
+  log('cacheTree for window ', windowId, triggers, { stack: stack() });
   updateWindowCache(win.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         kCONTENTS_VERSION,
     tabs:            TabsStore.windows.get(windowId).export(true).tabs,
@@ -505,7 +513,7 @@ Tab.onWindowRestoring.addListener(async ({ windowId, restoredCount }) => {
     MetricsData.add('Tabs.onWindowRestoring restore end');
   }
   catch(e) {
-    log('Tabs.onWindowRestoring: FATAL ERROR while restoring tree from cache', String(e), e.stack);
+    log('Tabs.onWindowRestoring: FATAL ERROR while restoring tree from cache', String(e), stack(e.stack));
   }
   if (!restoredFromCache) {
     // We need to treat tabs for a restored window as pending even if we failed to restore tabs from cache.

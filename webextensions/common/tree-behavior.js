@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  stack,
 } from './common.js';
 import * as Constants from './constants.js';
 import * as SidebarConnection from './sidebar-connection.js';
@@ -20,7 +21,7 @@ function log(...args) {
 
 export function getParentTabOperationBehavior(tab, { context, byInternalOperation, preventEntireTreeBehavior, parent, windowId } = {}) {
   const sidebarVisible = SidebarConnection.isInitialized() ? ((windowId || tab) && SidebarConnection.isOpen(windowId || tab.windowId)) : true;
-  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible /*, stack: configs.debug && new Error().stack */ });
+  log('getParentTabOperationBehavior ', tab, { byInternalOperation, preventEntireTreeBehavior, parent, sidebarVisible, stack: stack() });
 
   // strategy: https://github.com/piroor/treestyletab/issues/2860#issuecomment-820622273
   let behavior;

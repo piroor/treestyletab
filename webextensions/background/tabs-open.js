@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2024
+ * Portions created by the Initial Developer are Copyright (C) 2011-2026
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -32,6 +32,7 @@ import {
   log as internalLogger,
   configs,
   tryRevokeObjectURL,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -113,7 +114,7 @@ const ALLOWED_URL_MATCHER = /^about:blank(\?|$)/;
 export async function openURIsInTabs(uris, { windowId, insertBefore, insertAfter, cookieStoreId, isOrphan, active, inBackground, discarded, opener, parent, fixPositions } = {}) {
   log('openURIsInTabs: ', { uris, windowId, insertBefore, insertAfter, cookieStoreId, isOrphan, active, inBackground, discarded, opener, parent, fixPositions });
   if (!windowId)
-    throw new Error('missing loading target window\n' + new Error().stack);
+    throw new Error('missing loading target window\n' + stack());
 
   const tabs = [];
   // Don't return the result of Tab.doAndGetNewTabs because their order can

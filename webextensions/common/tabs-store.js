@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  configs
+  configs,
+  stack,
 } from './common.js';
 import * as Constants from './constants.js';
 
@@ -565,7 +566,7 @@ export function removeTabFromIndexes(tab) {
 
 function addTabToIndex(tab, indexes, windowId = null) {
   if (!tab)
-    throw new Error(`TabsStore.addTabToIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${new Error().stack}`);
+    throw new Error(`TabsStore.addTabToIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${stack()}`);
   const tabs = indexes.get(windowId || tab.windowId);
   if (tabs)
     tabs.set(tab.id, tab);
@@ -573,7 +574,7 @@ function addTabToIndex(tab, indexes, windowId = null) {
 
 function removeTabFromIndex(tab, indexes, windowId = null) {
   if (!tab)
-    throw new Error(`TabsStore.removeTabFromIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${new Error().stack}`);
+    throw new Error(`TabsStore.removeTabFromIndex gets non-tab parameter!: ${JSON.stringify(tab)} : ${stack()}`);
   const tabs = indexes.get(windowId || tab.windowId);
   if (tabs)
     tabs.delete(tab.id);
@@ -762,7 +763,7 @@ export function assertValidTab(tab) {
   if (tab?.$TST)
     return;
   const error = new Error('FATAL ERROR: invalid tab is given');
-  console.log(error.message, tab, error.stack);
+  console.log(error.message, tab, stack(error.stack));
   throw error;
 }
 

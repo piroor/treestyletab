@@ -38,6 +38,7 @@ import {
   isLinux,
   isRTL,
   dumpTab,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -734,7 +735,7 @@ function collapseAutoExpandedItemsWhileDragging() {
         tabId:     tab.id,
         collapsed: false,
         justNow:   true,
-        stack:     configs.debug && new Error().stack
+        stack:     stack(),
       });
     }
   }
@@ -1381,7 +1382,7 @@ function reserveToProcessLongHover({ dragOverItemId, draggedItemId, dropEffect }
           type:      Constants.kCOMMAND_SET_SUBTREE_COLLAPSED_STATE,
           tabId:     dragOverItem.id,
           collapsed: false,
-          stack:     configs.debug && new Error().stack
+          stack:     stack(),
         });
       }
     }, configs.autoExpandOnLongHoverDelay);

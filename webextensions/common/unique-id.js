@@ -13,6 +13,7 @@ import {
 import * as ApiTabs from './api-tabs.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
+import MetricsData from './MetricsData.js';
 
 function log(...args) {
   internalLogger('common/unique-id', ...args);
@@ -83,7 +84,83 @@ Zapus
 
 let mReadyToDetectDuplicatedTab = false;
 
-export function readyToDetectDuplicatedTab() {
+const mRestoredPersistentIdMap = new Map();
+
+/**
+ * Monitor session restoration and pre-fetch persistent IDs for all tabs.
+ * Must be called synchronously at startup (to register tabs.onCreated
+ * listener before any await).
+ * Background page only.
+ *
+ * @param {function(tab: browser.tabs.Tab): void} [onTabRestored]
+ *   Called for each tab detected via tabs.onCreated during restoration.
+ *   Called immediately (without waiting for persistent ID polling) so
+ *   callers can start parallel work like cache preloading.
+ * @returns {Promise<void>}
+ */
+export function ensurePersistentIdRestored(onTabRestored) {
+  log('ensurePersistentIdRestored');
+
+  const promisedInitialTabs = browser.tabs.query({});
+
+  return promisedInitialTabs.then(initialTabs => Promise.all([
+    MetricsData.addAsync('ensurePersistentIdRestored: existing tabs ', Promise.all(
+      initialTabs.map(tab => waitUntilPersistentIdBecomeAvailable(tab.id)
+        .then(uniqueId => { if (uniqueId) mRestoredPersistentIdMap.set(tab.id, uniqueId); })
+        .catch(_error => {}))
+    )),
+    MetricsData.addAsync('ensurePersistentIdRestored: opening tabs ', new Promise((resolve, _reject) => {
+      let promises = [];
+      let timeout;
+      let resolver;
+      let onNewTabRestored = async (tab, _info = {}) => {
+        clearTimeout(timeout);
+        log('new restored tab is detected.');
+        promises.push(
+          waitUntilPersistentIdBecomeAvailable(tab.id)
+            .then(uniqueId => { if (uniqueId) mRestoredPersistentIdMap.set(tab.id, uniqueId); })
+            .catch(_error => {})
+        );
+        if (onTabRestored) {
+          try { onTabRestored(tab); }
+          catch(e) { console.error('Error in onTabRestored callback:', e); }
+        }
+        timeout = setTimeout(resolver, 100);
+      };
+      browser.tabs.onCreated.addListener(onNewTabRestored);
+      resolver = (async () => {
+        log(`timeout: all ${promises.length} tabs are restored. `, promises);
+        browser.tabs.onCreated.removeListener(onNewTabRestored);
+        timeout = resolver = onNewTabRestored = undefined;
+        await Promise.all(promises);
+        promises = undefined;
+        resolve();
+      });
+      timeout = setTimeout(resolver, 500);
+    })),
+  ]));
+}
+
+async function waitUntilPersistentIdBecomeAvailable(tabId, retryCount = 0) {
+  if (retryCount > 10) {
+    console.log(`could not get persistent ID for ${tabId}`);
+    return null;
+  }
+  const uniqueId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
+  if (!uniqueId)
+    return wait(100).then(() => waitUntilPersistentIdBecomeAvailable(tabId, retryCount + 1));
+  return uniqueId;
+}
+
+/**
+ * Complete the restoration phase.
+ * - Clears remaining entries in the internal persistent ID map (safety net)
+ * - Enables delayed duplicate tab detection
+ *
+ * Call after rebuildAll() and loadTreeStructure() have finished.
+ */
+export function completeRestoration() {
+  mRestoredPersistentIdMap.clear();
   mReadyToDetectDuplicatedTab = true;
 }
 
@@ -115,7 +192,14 @@ export async function request(tabOrId, options = {}) {
         configs.delayForDuplicatedTabDetection > 0)
       await wait(configs.delayForDuplicatedTabDetection);
 
-    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
+    let oldId;
+    if (mRestoredPersistentIdMap.has(tab.id)) {
+      oldId = mRestoredPersistentIdMap.get(tab.id);
+      mRestoredPersistentIdMap.delete(tab.id);
+    }
+    else {
+      oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
+    }
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
@@ -167,12 +251,6 @@ function generate() {
   const noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   const randomValue = Math.floor(Math.random() * 1000);
   return `${adjective}-${noun}-${Date.now()}-${randomValue}`;
-}
-
-export async function getFromTabs(tabs) {
-  return Promise.all(tabs.map(tab =>
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
-  ));
 }
 
 export async function ensureWindowId(windowId) {

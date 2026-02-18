@@ -37,6 +37,7 @@ import {
   shouldApplyAnimation,
   mapAndFilter,
   isMacOS,
+  stack,
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
@@ -795,7 +796,7 @@ async function handleDefaultMouseUpOnTab({ lastMousedown, tab, event } = {}) {
         tabId:           tab.id,
         collapsed:       !tab.$TST.subtreeCollapsed,
         manualOperation: true,
-        stack:           configs.debug && new Error().stack
+        stack:           stack(),
       });
     }
   }
@@ -1099,7 +1100,7 @@ async function onDblClick(event) {
             tabId:           livingTab.id,
             collapsed:       !livingTab.$TST.subtreeCollapsed,
             manualOperation: true,
-            stack:           configs.debug && new Error().stack
+            stack:           stack(),
           });
           break;
 
@@ -1107,7 +1108,7 @@ async function onDblClick(event) {
           BackgroundConnection.sendMessage({
             type:  Constants.kCOMMAND_TOGGLE_STICKY,
             tabId: livingTab.id,
-            stack: configs.debug && new Error().stack
+            stack: stack(),
           });
           break;
 

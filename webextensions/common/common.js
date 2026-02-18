@@ -787,6 +787,17 @@ log.max  = 2000;
 log.logs = [];
 log.forceStore = true;
 
+export function stack(givenStack) {
+  if (!configs.debug)
+    return '';
+
+  return (
+    givenStack ||
+    configs.debug && (new Error()).stack.replace(/^.+\n/, '') ||
+    ''
+  ).replace(new RegExp(browser.runtime.getURL(''), 'g'), '/').replace(/\n/g, '\n ');
+}
+
 // uneval() is no more available after https://bugzilla.mozilla.org/show_bug.cgi?id=1565170
 function uneval(value) {
   switch (typeof value) {

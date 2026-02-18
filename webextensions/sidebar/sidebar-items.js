@@ -14,6 +14,7 @@ import {
   shouldApplyAnimation,
   mapAndFilter,
   nextFrame,
+  stack,
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -226,11 +227,11 @@ let mItemElementsPool = [];
 
 export function renderItem(item, { containerElement, insertBefore } = {}) {
   if (!item) {
-    console.log('WARNING: Null item has requested to be rendered! ', new Error().stack);
+    console.log('WARNING: Null item has requested to be rendered! ', stack());
     return false;
   }
   if (!item.$TST) {
-    console.log('WARNING: Already destroyed item has requested to be rendered! ', item.id, new Error().stack);
+    console.log('WARNING: Already destroyed item has requested to be rendered! ', item.id, stack());
     return false;
   }
 
@@ -605,7 +606,8 @@ function tryApplyUpdate(update) {
       tab[key] = value;
     }
 
-    if ('groupId' in update.updatedProperties) {
+    if ('groupId' in update.updatedProperties &&
+        update.updatedProperties.groupId != oldGroupId) {
       tab.$TST.onNativeGroupModified(oldGroupId);
       tab.$TST.updateElement(TabUpdateTarget.TabProperties);
     }
