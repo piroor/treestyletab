@@ -3872,8 +3872,12 @@ export class Tab extends TreeItem {
 }
 
 
-function waitForTabEvent(tabId, stack, signal) {
+function waitForTabTracking(tabId, stackTrace, signal) {
   return new Promise(resolve => {
+    const timeout = setTimeout(() => {
+      log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stackTrace}`);
+      resolve(null);
+    }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
     function onTracked(tab) {
       if (tab?.id === tabId)
         resolve(tab);
@@ -3882,53 +3886,46 @@ function waitForTabEvent(tabId, stack, signal) {
       if (tab?.id !== tabId)
         return;
       const scope = TabsStore.getCurrentWindowId() || 'bg';
-      log(`Tab.waitUntilTracked: ${tabId} is destroyed while waiting (in ${scope})\n${stack}`);
+      log(`Tab.waitUntilTracked: ${tabId} is destroyed while waiting (in ${scope})\n${stackTrace}`);
       resolve(null);
     }
     function onRemoved(removedTabId, _removeInfo) {
       if (removedTabId !== tabId)
         return;
       const scope = TabsStore.getCurrentWindowId() || 'bg';
-      log(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${scope})\n${stack}`);
+      log(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${scope})\n${stackTrace}`);
       resolve(null);
-    }
-    function removeListeners() {
-      Tab.onTracked.removeListener(onTracked);
-      TreeItem.onElementBound.removeListener(onTracked);
-      Tab.onDestroyed.removeListener(onDestroyed);
-      browser.tabs.onRemoved.removeListener(onRemoved);
     }
     Tab.onTracked.addListener(onTracked);
     TreeItem.onElementBound.addListener(onTracked);
     Tab.onDestroyed.addListener(onDestroyed);
     browser.tabs.onRemoved.addListener(onRemoved);
-    signal.addEventListener('abort', removeListeners, { once: true });
+    signal.addEventListener('abort', () => {
+      clearTimeout(timeout);
+      Tab.onTracked.removeListener(onTracked);
+      TreeItem.onElementBound.removeListener(onTracked);
+      Tab.onDestroyed.removeListener(onDestroyed);
+      browser.tabs.onRemoved.removeListener(onRemoved);
+    }, { once: true });
   });
 }
 
-function waitForTimeout(tabId, stack, signal) {
-  return new Promise(resolve => {
-    const timeout = setTimeout(() => {
-      log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stack}`);
-      resolve(null);
-    }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
-    signal.addEventListener('abort', clearTimeout.bind(null, timeout), { once: true });
-  });
-}
-
+// Returns null to make waitUntilTracked fail immediately if the Firefox
+// tab no longer exists (e.g. already closed before tracking completes).
+// If the tab still exists, returns a never-resolving promise to drop out
+// of the race and let waitForTabTracking handle it.
 async function checkTabExistence(tabId, signal) {
   const tab = await browser.tabs.get(tabId).catch(_error => null);
-  if (signal.aborted)
+  if (signal.aborted || tab)
     return new Promise(() => {});
-  if (!tab) {
-    log('waitUntilTracked was called for unexisting tab');
-    return null;
-  }
-  if (Tab.get(tabId))
-    return tab;
-  return new Promise(() => {});
+  log('waitUntilTracked was called for unexisting tab');
+  return null;
 }
 
+// Waits until the tab with the given ID is internally tracked by TST.
+// Returns null without the tab being tracked if:
+//   - the Firefox tab no longer exists (already closed or never created)
+//   - the waiting time exceeds configs.maximumDelayUntilTabIsTracked
 async function waitUntilTracked(tabId, options = {}) {
   if (!tabId)
     return null;
@@ -3943,8 +3940,7 @@ async function waitUntilTracked(tabId, options = {}) {
   const signal = controller.signal;
   try {
     return await Promise.race([
-      waitForTabEvent(tabId, stackTrace, signal),
-      waitForTimeout(tabId, stackTrace, signal),
+      waitForTabTracking(tabId, stackTrace, signal),
       checkTabExistence(tabId, signal),
     ]);
   }
