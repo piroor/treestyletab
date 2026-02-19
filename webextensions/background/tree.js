@@ -191,35 +191,35 @@ export async function attachTabTo(child, parent, options = {}) {
     log('=> already attached');
 
   if (newlyAttached) {
-    detachTab(child, {
-      ...options,
-      // Don't broadcast this detach operation, because this "attachTabTo" can be
-      // broadcasted. If we broadcast this detach operation, the tab is detached
-      // twice in the sidebar!
-      broadcast: false
-    });
+    const oldParent = child.$TST.parent;
 
-    log('attachTabTo: setting child information to ', parent.id);
-    // we need to set its children via the "children" setter, to invalidate cached information.
-    parent.$TST.children = parent.$TST.childIds.concat([child.id]);
+    // Build combined tree change (detach + attach in one call)
+    const tabMap = new Map([[child.id, child], [parent.id, parent]]);
+    const childrenMap = {};
 
-    // We don't need to update its parent information, because the parent's
-    // "children" setter updates the child itself automatically.
+    if (oldParent && oldParent.id !== parent.id) {
+      tabMap.set(oldParent.id, oldParent);
+      childrenMap[oldParent.id] = oldParent.$TST.childIds.filter(id => id !== child.id);
+    }
+    childrenMap[parent.id] = parent.$TST.childIds.concat([child.id]);
 
-    const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
-    console.log(`attachTabTo: parent ${parent.id} level=${parentLevel}, child ${child.id} currentLevel=${child.$TST.getAttribute(Constants.kLEVEL)}, dontUpdateIndent=${options.dontUpdateIndent}, synchronously=${options.synchronously}`);
-    if (!options.dontUpdateIndent)
-      updateTabsIndent(child, parentLevel + 1, { justNow: options.synchronously });
+    applyTreeStructure(tabMap, { children: childrenMap }, { justNow: options.synchronously });
 
-    SidebarConnection.sendMessage({
-      type:            Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
-      windowId:        parent.windowId,
-      tabId:           parent.id,
-      childIds:        parent.$TST.childIds,
-      addedChildIds:   [child.id],
-      removedChildIds: [],
-      newlyAttached
-    });
+    // Side effects for old parent (replaces detachTab call)
+    if (oldParent && oldParent.id !== parent.id) {
+      if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
+        const cache = {};
+        TSTAPI.broadcastMessage({
+          type:      TSTAPI.kNOTIFY_TREE_DETACHED,
+          tab:       child,
+          oldParent,
+        }, { tabProperties: ['tab', 'oldParent'], cache }).catch(_error => {});
+        TSTAPI.clearCache(cache);
+      }
+      onDetached.dispatch(child, { oldParentTab: oldParent });
+    }
+
+    // TSTAPI broadcast for attach
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED)) {
       const cache = {};
       TSTAPI.broadcastMessage({
@@ -567,19 +567,10 @@ export function detachTab(child, options = {}) {
   const parent = TabsStore.ensureLivingItem(options.parent) || child.$TST.parent;
 
   if (parent) {
-    // we need to set children and parent via setters, to invalidate cached information.
-    parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
-    parent.$TST.invalidateCache();
-    log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
-    SidebarConnection.sendMessage({
-      type:            Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED,
-      windowId:        parent.windowId,
-      tabId:           parent.id,
-      childIds:        parent.$TST.childIds,
-      addedChildIds:   [],
-      removedChildIds: [child.id],
-      detached:        true
-    });
+    const filteredChildIds = parent.$TST.childIds.filter(id => id != child.id);
+    const tabMap = new Map([[child.id, child], [parent.id, parent]]);
+    applyTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously });
+
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
       TSTAPI.broadcastMessage({
@@ -589,18 +580,10 @@ export function detachTab(child, options = {}) {
       }, { tabProperties: ['tab', 'oldParent'], cache }).catch(_error => {});
       TSTAPI.clearCache(cache);
     }
-    // We don't need to clear its parent information, because the old parent's
-    // "children" setter removes the parent itself from the detached child
-    // automatically.
   }
   else {
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
-    // This can happen when the parent tab was detached via the native tab bar
-    // or Firefox's built-in command to detach tab from window.
   }
-
-  if (!options.toBeRemoved && !options.toBeDetached)
-    updateTabsIndent(child);
 
   if (child.openerTabId &&
       !options.dontSyncParentToOpenerTab &&
@@ -995,58 +978,6 @@ export async function behaveAutoAttachedTabs(tabs, options = {}) {
     };
   }
 }
-
-function updateTabsIndent(tabs, level = undefined, options = {}) {
-  if (!tabs)
-    return;
-
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-
-  if (!tabs.length)
-    return;
-
-  if (level === undefined)
-    level = tabs[0].$TST.ancestors.length;
-
-  for (const item of tabs) {
-    if (!item || item.pinned)
-      continue;
-
-    updateTabIndent(item, level, options);
-  }
-}
-
-// this is called multiple times on a session restoration, so this should be throttled for better performance
-function updateTabIndent(tab, level = undefined, options = {}) {
-  let timer = updateTabIndent.delayed.get(tab.id);
-  if (timer)
-    clearTimeout(timer);
-  if (options.justNow || !shouldApplyAnimation()) {
-    return updateTabIndentNow(tab, level, options);
-  }
-  timer = setTimeout(() => {
-    updateTabIndent.delayed.delete(tab.id);
-    updateTabIndentNow(tab, level);
-  }, 100);
-  updateTabIndent.delayed.set(tab.id, timer);
-}
-updateTabIndent.delayed = new Map();
-
-function updateTabIndentNow(tab, level = undefined, options = {}) {
-  if (!TabsStore.ensureLivingItem(tab))
-    return;
-  console.log(`updateTabIndentNow: tab ${tab.id}, level ${tab.$TST.getAttribute(Constants.kLEVEL)} → ${level}, children=[${tab.$TST.childIds}]`);
-  tab.$TST.setAttribute(Constants.kLEVEL, level);
-  updateTabsIndent(tab.$TST.children, level + 1, options);
-  SidebarConnection.sendMessage({
-    type:     Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED,
-    windowId: tab.windowId,
-    tabId:    tab.id,
-    level
-  });
-}
-
 
 // collapse/expand tabs
 
@@ -1711,7 +1642,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
       if (tab.$TST.parent ||
           parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0) == 0)
         continue;
-      updateTabIndent(tab, 0);
+      tab.$TST.setAttribute(Constants.kLEVEL, 0);
     }
   }
 
@@ -1821,7 +1752,7 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
       const newChildIdSet = new Set(childIds);
       for (const oldChildId of parent.$TST.childIds) {
         if (!newChildIdSet.has(oldChildId)) {
-          const oldChild = tabs.get(oldChildId);
+          const oldChild = tabs.get(oldChildId) || TabsStore.ensureLivingItem(Tab.get(oldChildId));
           if (oldChild && oldChild.$TST.parentId === parentId)
             oldChild.$TST.parent = null;
         }
@@ -1830,7 +1761,7 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
       // Set new childIds with validation
       const validChildIds = [];
       for (const childId of childIds) {
-        const child = tabs.get(childId);
+        const child = tabs.get(childId) || TabsStore.ensureLivingItem(Tab.get(childId));
         if (!child) continue;
         if (childId === parentId) continue; // self-reference prevention
 
@@ -1858,10 +1789,16 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
 
   // 3. Update levels (derived from tree depth after children are set)
   if (hasChildren || hasDetached) {
+    const visited = new Set();
     for (const [, tab] of tabs) {
-      const level = tab.$TST.ancestors.length;
-      console.log(`applyTreeStructure: level for tab ${tab.id} = ${level} (ancestors: [${tab.$TST.ancestorIds}])`);
-      tab.$TST.setAttribute(Constants.kLEVEL, level);
+      if (visited.has(tab.id)) continue;
+      tab.$TST.setAttribute(Constants.kLEVEL, tab.$TST.ancestors.length);
+      visited.add(tab.id);
+      for (const desc of tab.$TST.descendants) {
+        if (visited.has(desc.id)) continue;
+        desc.$TST.setAttribute(Constants.kLEVEL, desc.$TST.ancestors.length);
+        visited.add(desc.id);
+      }
     }
   }
 
@@ -1874,8 +1811,8 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
   // AFTER a later user-triggered expand has already cleared it.
 
   // 5. Send batch message to sidebar
-  // Note: levels and collapsed state are NOT included here.
-  // - Levels are set by attachTabTo → updateTabIndentNow → kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED
+  // Note: collapsed state is NOT included here.
+  // - Levels are derived from tree depth in both background and sidebar handlers.
   // - Collapsed state is set by collapseExpandSubtree → kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
   if (tabs.size > 0) {
     const windowId = tabs.values().next().value.windowId;

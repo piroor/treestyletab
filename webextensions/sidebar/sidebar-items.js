@@ -1458,58 +1458,22 @@ BackgroundConnection.onMessage.addListener(async message => {
         if (tab) tab.$TST.parent = null;
       }
 
-      // Deferred check
-      setTimeout(() => {
-        console.log('sidebar-items: [deferred check 1s later]');
+      // Derive levels from tree depth
+      {
+        const visited = new Set();
         for (const tabId of message.tabIds) {
           const tab = Tab.get(tabId);
-          console.log(`  tab ${tabId}: parentId=${tab?.$TST.parentId}, childIds=[${tab?.$TST.childIds}], level=${tab?.$TST.getAttribute(Constants.kLEVEL)}`);
+          if (!tab || visited.has(tabId)) continue;
+          tab.$TST.setAttribute(Constants.kLEVEL, tab.$TST.ancestors.length);
+          visited.add(tabId);
+          for (const desc of tab.$TST.descendants) {
+            if (visited.has(desc.id)) continue;
+            desc.$TST.setAttribute(Constants.kLEVEL, desc.$TST.ancestors.length);
+            visited.add(desc.id);
+          }
         }
-      }, 1000);
+      }
     } break;
-
-    case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
-      console.log('sidebar-items: kCOMMAND_NOTIFY_CHILDREN_CHANGED', {
-        tabId: message.tabId,
-        childIds: message.childIds,
-        addedChildIds: message.addedChildIds,
-        removedChildIds: message.removedChildIds,
-        detached: message.detached,
-      });
-      if (mPromisedInitialized)
-        return;
-      // We need to wait not only for added children but removed children also,
-      // to construct same number of promises for "attached but detached immediately"
-      // cases.
-      const relatedTabIds = [message.tabId].concat(message.addedChildIds, message.removedChildIds);
-      await Tab.waitUntilTracked(relatedTabIds);
-      const tab = Tab.get(message.tabId);
-      if (!tab)
-        return;
-
-      if (message.addedChildIds.length > 0) {
-        // set initial level for newly opened child, to avoid annoying jumping of new tab
-        const childLevel = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0) + 1;
-        for (const childId of message.addedChildIds) {
-          const child = Tab.get(childId);
-          if (!child || child.$TST.hasChild)
-            continue;
-          const currentLevel = child.$TST.getAttribute(Constants.kLEVEL) || 0;
-          if (currentLevel == 0)
-            child.$TST.setAttribute(Constants.kLEVEL, childLevel);
-        }
-      }
-
-      tab.$TST.children = message.childIds;
-
-      tab.$TST.invalidateElement(TabInvalidationTarget.Twisty | TabInvalidationTarget.CloseBox | TabInvalidationTarget.Tooltip);
-      if (message.newlyAttached || message.detached) {
-        const ancestors = [tab].concat(tab.$TST.ancestors);
-        for (const ancestor of ancestors) {
-          ancestor.$TST.updateElement(TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted);
-        }
-      }
-    }; break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_AUTO_STICKY_STATE:
       if (message.add)
