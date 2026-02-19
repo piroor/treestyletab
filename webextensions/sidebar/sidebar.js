@@ -1177,6 +1177,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
     case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW: {
+      BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${message.tabId}`);
       await Tab.waitUntilTracked(message.tabId);
       reserveToUpdateTabbarLayout({
         reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,

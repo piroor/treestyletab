@@ -280,5 +280,10 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!restVisibilityChangedTabIds.has(message.tabId))
         tryUpdateVisualMaxTreeLevel();
       break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+      BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${message.tabId}`);
+      break;
   }
 });

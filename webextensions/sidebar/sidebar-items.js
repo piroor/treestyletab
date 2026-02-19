@@ -732,6 +732,24 @@ Tab.onNativeGroupModified.addListener(async tab => {
 
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
+// Clean up sidebar-local state maps for the removed tab.
+function cleanupForRemovedTab(tab) {
+  tab.$TST.parent = null;
+  const burstEnd = mDelayedBurstEnd.get(tab.id);
+  if (burstEnd)
+    clearTimeout(burstEnd);
+  mDelayedBurstEnd.delete(tab.id);
+  CollapseExpand.clearState(tab.id);
+  BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${tab.id}`);
+  // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
+  TabsStore.removeHighlightedTab(tab);
+  TabsStore.removeGroupTab(tab);
+  TabsStore.addRemovedTab(tab);
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+  reserveToUpdateLoadingState();
+}
+
+
 const mRemovedTabIdsNotifiedBeforeTracked = new Set();
 const mWaitingTasksOnSameTick = new Map();
 
@@ -1118,21 +1136,8 @@ BackgroundConnection.onMessage.addListener(async message => {
         });
         return;
       }
-      tab.$TST.parent = null;
-      // Clean up sidebar-local state maps for the removed tab.
-      const burstEnd = mDelayedBurstEnd.get(message.tabId);
-      if (burstEnd)
-        clearTimeout(burstEnd);
-      mDelayedBurstEnd.delete(message.tabId);
-      CollapseExpand.clearState(message.tabId);
-      BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${message.tabId}`);
-      // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
-      TabsStore.removeHighlightedTab(tab);
-      TabsStore.removeGroupTab(tab);
       TabsStore.addRemovingTab(tab);
-      TabsStore.addRemovedTab(tab); // reserved
-      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-      reserveToUpdateLoadingState();
+      cleanupForRemovedTab(tab);
       if (tab.active) {
         // This should not, but sometimes happens on some edge cases for example:
         // https://github.com/piroor/treestyletab/issues/2385
@@ -1363,8 +1368,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
-      tab.$TST.parent = null;
-      TabsStore.addRemovedTab(tab);
+      cleanupForRemovedTab(tab);
       const win = TabsStore.windows.get(message.windowId);
       win.untrackTab(message.tabId);
       unrenderItem(tab);
