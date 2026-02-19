@@ -1022,13 +1022,19 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
-  const isInViewport = await browser.runtime.sendMessage({
-    type:         Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT,
-    windowId:     tab.windowId,
-    tabId:        tab.id,
-    allowPartial: true,
-  }).catch(_error => false);
-  const anchor = isInViewport ? tab : null;
+  // The anchor is only used when expanding (passed to the last child tab
+  // for scroll position anchoring). When collapsing, the anchor is never
+  // passed to child operations and the sidebar handler ignores anchorId
+  // in kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED, so we can skip
+  // the expensive cross-process round-trip entirely.
+  const anchor = params.collapsed ? null : (
+    await browser.runtime.sendMessage({
+      type:         Constants.kCOMMAND_ASK_TAB_IS_IN_VIEWPORT,
+      windowId:     tab.windowId,
+      tabId:        tab.id,
+      allowPartial: true,
+    }).catch(_error => false)
+  ) ? tab : null;
 
   const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
