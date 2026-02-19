@@ -231,6 +231,15 @@ const BUFFER_KEY_PREFIX = 'indent-';
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
+    case Constants.kCOMMAND_APPLY_TREE_STRUCTURE: {
+      // Levels are NOT set here. They are handled by individual
+      // kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED messages from attachTabTo,
+      // which compute correct absolute levels after final parent attachment.
+      console.log('indent: kCOMMAND_APPLY_TREE_STRUCTURE received (levels handled by individual messages)');
+      reserveToUpdateIndent();
+      tryUpdateVisualMaxTreeLevel();
+    } break;
+
     case Constants.kCOMMAND_NOTIFY_TAB_CREATED:
     case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
       log('listen: ', message.type);
@@ -246,16 +255,20 @@ BackgroundConnection.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED: {
-      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
+      console.log('indent: kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED received', { tabId: message.tabId, level: message.level });
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`)) {
+        console.log('indent: kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED buffered for', message.tabId);
         return;
+      }
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
-      log('listen: ', message.type, tab, lastMessage);
+      console.log('indent: kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED processing', { tabId: message.tabId, tab: !!tab, lastMessage, currentLevel: tab?.$TST.getAttribute(Constants.kLEVEL) });
       if (!tab ||
           !lastMessage)
         return;
       if (tab.$TST.getAttribute(Constants.kLEVEL) != lastMessage.level) {
+        console.log(`indent: updating level for ${message.tabId}: ${tab.$TST.getAttribute(Constants.kLEVEL)} → ${lastMessage.level}`);
         tab.$TST.setAttribute(Constants.kLEVEL, lastMessage.level);
         tryUpdateVisualMaxTreeLevel();
       }

@@ -1419,7 +1419,63 @@ BackgroundConnection.onMessage.addListener(async message => {
       });
     }; break;
 
+    case Constants.kCOMMAND_APPLY_TREE_STRUCTURE: {
+      console.log('sidebar-items: kCOMMAND_APPLY_TREE_STRUCTURE received', {
+        tabIds: message.tabIds,
+        children: message.children,
+        detached: message.detached,
+        levels: message.levels,
+      });
+      if (mPromisedInitialized)
+        return;
+      await Tab.waitUntilTracked(message.tabIds);
+
+      // Set parent-child relationships
+      for (const [parentIdStr, childIds] of Object.entries(message.children)) {
+        const parent = Tab.get(Number(parentIdStr));
+        if (!parent) {
+          console.log(`sidebar-items: parent ${parentIdStr} not found`);
+          continue;
+        }
+        console.log(`sidebar-items: setting parent ${parentIdStr} children = [${childIds}]`);
+        parent.$TST.children = childIds;  // setter auto-updates parent/child relationships
+        console.log(`sidebar-items: after setter, parent ${parentIdStr} actual childIds = [${parent.$TST.childIds}]`);
+        parent.$TST.invalidateElement(
+          TabInvalidationTarget.Twisty |
+          TabInvalidationTarget.CloseBox |
+          TabInvalidationTarget.Tooltip
+        );
+        for (const ancestor of [parent].concat(parent.$TST.ancestors)) {
+          ancestor.$TST.updateElement(
+            TabUpdateTarget.Counter | TabUpdateTarget.DescendantsHighlighted
+          );
+        }
+      }
+
+      // Handle detached tabs
+      for (const tabId of (message.detached || [])) {
+        const tab = Tab.get(tabId);
+        if (tab) tab.$TST.parent = null;
+      }
+
+      // Deferred check
+      setTimeout(() => {
+        console.log('sidebar-items: [deferred check 1s later]');
+        for (const tabId of message.tabIds) {
+          const tab = Tab.get(tabId);
+          console.log(`  tab ${tabId}: parentId=${tab?.$TST.parentId}, childIds=[${tab?.$TST.childIds}], level=${tab?.$TST.getAttribute(Constants.kLEVEL)}`);
+        }
+      }, 1000);
+    } break;
+
     case Constants.kCOMMAND_NOTIFY_CHILDREN_CHANGED: {
+      console.log('sidebar-items: kCOMMAND_NOTIFY_CHILDREN_CHANGED', {
+        tabId: message.tabId,
+        childIds: message.childIds,
+        addedChildIds: message.addedChildIds,
+        removedChildIds: message.removedChildIds,
+        detached: message.detached,
+      });
       if (mPromisedInitialized)
         return;
       // We need to wait not only for added children but removed children also,

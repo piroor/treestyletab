@@ -207,6 +207,7 @@ export async function attachTabTo(child, parent, options = {}) {
     // "children" setter updates the child itself automatically.
 
     const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
+    console.log(`attachTabTo: parent ${parent.id} level=${parentLevel}, child ${child.id} currentLevel=${child.$TST.getAttribute(Constants.kLEVEL)}, dontUpdateIndent=${options.dontUpdateIndent}, synchronously=${options.synchronously}`);
     if (!options.dontUpdateIndent)
       updateTabsIndent(child, parentLevel + 1, { justNow: options.synchronously });
 
@@ -756,6 +757,8 @@ export async function detachAllChildren(
   for (const child of notIgnoredChildren) {
     if (!child)
       continue;
+    if (ignoreTabsSet.has(child))
+      continue;
     const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
@@ -1033,6 +1036,7 @@ updateTabIndent.delayed = new Map();
 function updateTabIndentNow(tab, level = undefined, options = {}) {
   if (!TabsStore.ensureLivingItem(tab))
     return;
+  console.log(`updateTabIndentNow: tab ${tab.id}, level ${tab.$TST.getAttribute(Constants.kLEVEL)} → ${level}, children=[${tab.$TST.childIds}]`);
   tab.$TST.setAttribute(Constants.kLEVEL, level);
   updateTabsIndent(tab.$TST.children, level + 1, options);
   SidebarConnection.sendMessage({
@@ -1476,6 +1480,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
 
   let movedTabs = tabs;
   const structure = TreeBehavior.getTreeStructureFromTabs(tabs);
+  console.log('moveTabs: saved structure =', JSON.stringify(structure), 'tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
   log('original tree structure: ', structure);
 
   let hasActive = false;
@@ -1767,6 +1772,126 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
+// snapshot format:
+// {
+//   children:  { [parentTabId]: [childId, ...] },
+//   detached:  [tabId, ...],
+//   collapsed: { [tabId]: boolean },
+// }
+export function applyTreeStructure(tabs, snapshot, options = {}) {
+  const { children, detached, collapsed } = snapshot;
+
+  const hasChildren  = children && Object.keys(children).length > 0;
+  const hasDetached  = detached && detached.length > 0;
+  const hasCollapsed = collapsed && Object.keys(collapsed).length > 0;
+
+  console.log('applyTreeStructure: hasChildren =', hasChildren, 'hasDetached =', hasDetached, 'hasCollapsed =', hasCollapsed);
+  console.log('applyTreeStructure: children =', JSON.stringify(children));
+  console.log('applyTreeStructure: tabs =', [...tabs.entries()].map(([id, t]) => `${id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
+
+  // Nothing to apply — skip entirely
+  if (!hasChildren && !hasDetached && !hasCollapsed) {
+    console.log('applyTreeStructure: nothing to apply, skipping');
+    return;
+  }
+
+  // 1. detach: make specified tabs root (auto-remove from old parent's childIds)
+  if (hasDetached) {
+    for (const tabId of detached) {
+      const tab = tabs.get(tabId);
+      if (!tab) continue;
+      const parent = tab.$TST.parent;
+      if (parent) {
+        parent.$TST.children = parent.$TST.childIds.filter(id => id !== tabId);
+        parent.$TST.invalidateCache();
+      }
+      tab.$TST.parent = null;
+    }
+  }
+
+  // 2. children: set parent-child relationships (with auto-removal from old parent, cycle prevention)
+  if (hasChildren) {
+    for (const [parentIdStr, childIds] of Object.entries(children)) {
+      const parentId = Number(parentIdStr);
+      const parent = tabs.get(parentId);
+      if (!parent)
+        continue;
+
+      // Clear parentId for old children not in the new list
+      const newChildIdSet = new Set(childIds);
+      for (const oldChildId of parent.$TST.childIds) {
+        if (!newChildIdSet.has(oldChildId)) {
+          const oldChild = tabs.get(oldChildId);
+          if (oldChild && oldChild.$TST.parentId === parentId)
+            oldChild.$TST.parent = null;
+        }
+      }
+
+      // Set new childIds with validation
+      const validChildIds = [];
+      for (const childId of childIds) {
+        const child = tabs.get(childId);
+        if (!child) continue;
+        if (childId === parentId) continue; // self-reference prevention
+
+        // Cycle detection
+        if (parent.$TST.ancestorIds.includes(childId))
+          continue;
+
+        // Auto-remove from old parent's childIds
+        const oldParent = child.$TST.parent;
+        if (oldParent && oldParent.id !== parentId) {
+          oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id !== childId);
+          oldParent.$TST.invalidateCache();
+        }
+
+        validChildIds.push(childId);
+      }
+
+      // Use TreeItem.children setter (auto-sets parent + sorts by index)
+      console.log(`applyTreeStructure: setting parent ${parentId} children = [${validChildIds}]`);
+      parent.$TST.children = validChildIds;
+      console.log(`applyTreeStructure: after setter, parent ${parentId} childIds = [${parent.$TST.childIds}], children parentIds = [${parent.$TST.childIds.map(id => { const c = tabs.get(id); return c ? `${id}→${c.$TST.parentId}` : `${id}→notInMap`; })}]`);
+      parent.$TST.invalidateCache();
+    }
+  }
+
+  // 3. Update levels (derived from tree depth after children are set)
+  if (hasChildren || hasDetached) {
+    for (const [, tab] of tabs) {
+      const level = tab.$TST.ancestors.length;
+      console.log(`applyTreeStructure: level for tab ${tab.id} = ${level} (ancestors: [${tab.$TST.ancestorIds}])`);
+      tab.$TST.setAttribute(Constants.kLEVEL, level);
+    }
+  }
+
+  // 4. Collapsed state is NOT set here. It is handled by
+  // collapseExpandSubtree() calls in applyTreeStructureToTabs(),
+  // which send proper individual kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
+  // messages through the existing path. Setting collapsed in the batch
+  // message would cause a timing bug: the batch handler (delayed by
+  // await Tab.waitUntilTracked) could re-set subtreeCollapsed=true
+  // AFTER a later user-triggered expand has already cleared it.
+
+  // 5. Send batch message to sidebar
+  // Note: levels and collapsed state are NOT included here.
+  // - Levels are set by attachTabTo → updateTabIndentNow → kCOMMAND_NOTIFY_TAB_LEVEL_CHANGED
+  // - Collapsed state is set by collapseExpandSubtree → kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
+  if (tabs.size > 0) {
+    const windowId = tabs.values().next().value.windowId;
+    const tabIds = [...tabs.keys()];
+
+    SidebarConnection.sendMessage({
+      type:      Constants.kCOMMAND_APPLY_TREE_STRUCTURE,
+      windowId,
+      tabIds,
+      children:  children || {},
+      detached:  detached || [],
+      justNow:   !!options.justNow,
+    });
+  }
+}
+
 /* "treeStructure" is an array of integers, meaning:
   [A]     => TreeBehavior.STRUCTURE_NO_PARENT (parent is not in this tree)
     [B]   => 0 (parent is 1st item in this tree)
@@ -1786,75 +1911,99 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   tabs = tabs.slice(0, treeStructure.length);
   treeStructure = treeStructure.slice(0, tabs.length);
 
-  let expandStates = tabs.map(tab => !!tab);
-  expandStates = expandStates.slice(0, tabs.length);
-  while (expandStates.length < tabs.length)
-    expandStates.push(TreeBehavior.STRUCTURE_NO_PARENT);
-
-  MetricsData.add('applyTreeStructureToTabs: preparation');
-
-  let parent = null;
+  // 1. Convert treeStructure array to snapshot format
+  const childrenMap = {};  // { parentId: [childId, ...] }
+  const collapsedMap = {}; // { tabId: boolean }
   let tabsInTree = [];
-  const promises   = [];
-  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
+
+  for (let i = 0; i < tabs.length; i++) {
     const tab = tabs[i];
-    /*
-    if (tab.$TST.collapsed)
-      collapseExpandTabAndSubtree(tab, {
-        ...options,
-        collapsed: false,
-        justNow: true
-      });
-    */
     const structureInfo = treeStructure[i];
     let parentIndexInTree = TreeBehavior.STRUCTURE_NO_PARENT;
+    let expanded;
+
     if (typeof structureInfo == 'number') { // legacy format
       parentIndexInTree = structureInfo;
     }
     else {
       parentIndexInTree = structureInfo.parent;
-      expandStates[i]   = !structureInfo.collapsed;
+      expanded = !structureInfo.collapsed;
     }
-    log(`  applyTreeStructureToTabs: parent for ${tab.id} => ${parentIndexInTree}`);
+
     if (parentIndexInTree == TreeBehavior.STRUCTURE_NO_PARENT ||
         parentIndexInTree == TreeBehavior.STRUCTURE_KEEP_PARENT) {
-      // there is no parent, so this is a new parent!
-      parent = null;
       tabsInTree = [tab];
     }
     else {
       tabsInTree.push(tab);
-      parent = parentIndexInTree < tabsInTree.length ? tabsInTree[parentIndexInTree] : null;
+      const parent = parentIndexInTree < tabsInTree.length
+        ? tabsInTree[parentIndexInTree] : null;
+      if (parent && tab != parent) {
+        const parentId = parent.id;
+        if (!childrenMap[parentId]) childrenMap[parentId] = [];
+        childrenMap[parentId].push(tab.id);
+      }
     }
-    log('   => parent = ', parent);
-    if (parentIndexInTree != TreeBehavior.STRUCTURE_KEEP_PARENT)
-      detachTab(tab, { justNow: true });
-    if (parent && tab != parent) {
-      parent.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
-      promises.push(attachTabTo(tab, parent, {
-        ...options,
-        dontExpand: true,
-        dontMove:   true,
-        justNow:    true
-      }));
-    }
-  }
-  if (promises.length > 0)
-    await Promise.all(promises);
-  MetricsData.add('applyTreeStructureToTabs: attach/detach');
 
-  log('expandStates: ', expandStates);
-  for (let i = tabs.length - 1; i > -1; i--) {
-    const tab = tabs[i];
-    const expanded = expandStates[i];
-    collapseExpandSubtree(tab, {
-      ...options,
-      collapsed: expanded === undefined ? !tab.$TST.hasChild : !expanded,
-      justNow:   true,
-      force:     true
-    });
+    // collapsed: if not explicitly specified, default to not collapsed
+    collapsedMap[tab.id] = expanded === undefined ? false : !expanded;
   }
-  MetricsData.add('applyTreeStructureToTabs: collapse/expand');
+
+  console.log('applyTreeStructureToTabs: treeStructure =', JSON.stringify(treeStructure));
+  console.log('applyTreeStructureToTabs: childrenMap =', JSON.stringify(childrenMap));
+  console.log('applyTreeStructureToTabs: collapsedMap =', JSON.stringify(collapsedMap));
+  console.log('applyTreeStructureToTabs: tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
+
+  MetricsData.add('applyTreeStructureToTabs: preparation');
+
+  // 2. Convert tabs to Map
+  const tabMap = new Map(tabs.map(tab => [tab.id, tab]));
+
+  // 3. Apply tree structure in batch
+  applyTreeStructure(tabMap, {
+    children:  childrenMap,
+    collapsed: collapsedMap,
+  }, { justNow: true });
+
+  console.log('applyTreeStructureToTabs: after apply, tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}], level=${t.$TST.getAttribute(Constants.kLEVEL)})`));
+
+  MetricsData.add('applyTreeStructureToTabs: apply');
+
+  // 4. TSTAPI broadcast (maintain existing behavior)
+  for (const tab of tabs) {
+    if (tab.$TST.parent) {
+      if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED)) {
+        TSTAPI.broadcastMessage({
+          type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
+          tab,
+          parent: tab.$TST.parent,
+        }, { tabProperties: ['tab', 'parent'] });
+      }
+      onAttached.dispatch(tab, {
+        parent: tab.$TST.parent,
+        ...options,
+      });
+    }
+  }
+
+  // 5. Set collapsed state through the existing individual message path.
+  // This ensures proper kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
+  // messages are sent to sidebar, avoiding the timing bug where a batch
+  // message could overwrite a later user-triggered state change.
+  // collapseExpandSubtree also handles TSTAPI broadcasting internally.
+  for (const tab of tabs) {
+    const isCollapsed = collapsedMap[tab.id];
+    if (isCollapsed && tab.$TST.hasChild) {
+      console.log(`applyTreeStructureToTabs: collapseExpandSubtree(${tab.id}, collapsed=${isCollapsed})`);
+      await collapseExpandSubtree(tab, {
+        collapsed: isCollapsed,
+        justNow:   true,
+        broadcast: true,
+      });
+    }
+  }
+
+  MetricsData.add('applyTreeStructureToTabs: broadcast');
 }
 
 
