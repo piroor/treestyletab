@@ -151,6 +151,13 @@ export function fetchBufferedMessage(type, key) {
   return message;
 }
 
+export function clearBufferedMessagesForKey(key) {
+  for (const bufferKey of mBufferedMessages.keys()) {
+    if (bufferKey.endsWith(`:${key}`))
+      mBufferedMessages.delete(bufferKey);
+  }
+}
+
 
 //===================================================================
 // Logging

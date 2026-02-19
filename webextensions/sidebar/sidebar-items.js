@@ -1125,6 +1125,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         clearTimeout(burstEnd);
       mDelayedBurstEnd.delete(message.tabId);
       CollapseExpand.clearState(message.tabId);
+      BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${message.tabId}`);
       // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
       TabsStore.removeHighlightedTab(tab);
       TabsStore.removeGroupTab(tab);
@@ -1325,9 +1326,12 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
-      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`) ||
-          message.collapsed)
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
+      if (message.collapsed) {
+        BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
+        return;
+      }
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
