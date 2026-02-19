@@ -3040,12 +3040,22 @@ export class Tab extends TreeItem {
   //===================================================================
 
   static reindex(tab) {
-    const trackedTab = Tab.get(tab.id);
-    if (trackedTab)
-      tab = trackedTab;
+    tab = Tab.ensureInit(tab);
+    if (!tab)
+      return null;
     const win = TabsStore.windows.get(tab.windowId);
     win.trackTab(tab);
     return tab;
+  }
+
+  static ensureInit(tab, options = {}) {
+    if (!tab)
+      return null;
+    const trackedTab = Tab.get(tab.id);
+    if (trackedTab && trackedTab.$TST instanceof Tab)
+      return trackedTab;
+    log('Tab.ensureInit: tab was not yet initialized, initializing now: ', tab.id);
+    return Tab.init(tab, { existing: true, ...options });
   }
 
   static untrack(tabId) {
