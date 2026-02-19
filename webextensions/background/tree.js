@@ -1417,7 +1417,6 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
 
   let movedTabs = tabs;
   const structure = TreeBehavior.getTreeStructureFromTabs(tabs);
-  console.log('moveTabs: saved structure =', JSON.stringify(structure), 'tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
   log('original tree structure: ', structure);
 
   let hasActive = false;
@@ -1722,13 +1721,9 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
   const hasDetached  = detached && detached.length > 0;
   const hasCollapsed = collapsed && Object.keys(collapsed).length > 0;
 
-  console.log('applyTreeStructure: hasChildren =', hasChildren, 'hasDetached =', hasDetached, 'hasCollapsed =', hasCollapsed);
-  console.log('applyTreeStructure: children =', JSON.stringify(children));
-  console.log('applyTreeStructure: tabs =', [...tabs.entries()].map(([id, t]) => `${id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
 
   // Nothing to apply — skip entirely
   if (!hasChildren && !hasDetached && !hasCollapsed) {
-    console.log('applyTreeStructure: nothing to apply, skipping');
     return;
   }
 
@@ -1786,9 +1781,7 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
       }
 
       // Use TreeItem.children setter (auto-sets parent + sorts by index)
-      console.log(`applyTreeStructure: setting parent ${parentId} children = [${validChildIds}]`);
       parent.$TST.children = validChildIds;
-      console.log(`applyTreeStructure: after setter, parent ${parentId} childIds = [${parent.$TST.childIds}], children parentIds = [${parent.$TST.childIds.map(id => { const c = tabs.get(id); return c ? `${id}→${c.$TST.parentId}` : `${id}→notInMap`; })}]`);
       parent.$TST.invalidateCache();
     }
   }
@@ -1892,10 +1885,6 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     collapsedMap[tab.id] = expanded === undefined ? false : !expanded;
   }
 
-  console.log('applyTreeStructureToTabs: treeStructure =', JSON.stringify(treeStructure));
-  console.log('applyTreeStructureToTabs: childrenMap =', JSON.stringify(childrenMap));
-  console.log('applyTreeStructureToTabs: collapsedMap =', JSON.stringify(collapsedMap));
-  console.log('applyTreeStructureToTabs: tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
 
   MetricsData.add('applyTreeStructureToTabs: preparation');
 
@@ -1908,7 +1897,6 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     collapsed: collapsedMap,
   }, { justNow: true });
 
-  console.log('applyTreeStructureToTabs: after apply, tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}], level=${t.$TST.getAttribute(Constants.kLEVEL)})`));
 
   MetricsData.add('applyTreeStructureToTabs: apply');
 
@@ -1937,7 +1925,6 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   for (const tab of tabs) {
     const isCollapsed = collapsedMap[tab.id];
     if (isCollapsed && tab.$TST.hasChild) {
-      console.log(`applyTreeStructureToTabs: collapseExpandSubtree(${tab.id}, collapsed=${isCollapsed})`);
       await collapseExpandSubtree(tab, {
         collapsed: isCollapsed,
         justNow:   true,

@@ -874,9 +874,6 @@ async function moveTabsWithStructure(tabs, params = {}) {
 
   const movedWholeTree = Tree.getWholeTree(movedRoots);
   log('=> movedTabs: ', () => ['moved', movedTabs.map(dumpTab).join(' / '), 'whole', movedWholeTree.map(dumpTab).join(' / ')]);
-  console.log('moveTabsWithStructure: movedTabs =', movedTabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
-  console.log('moveTabsWithStructure: movedRoots =', movedRoots.map(t => t.id), 'movedWholeTree =', movedWholeTree.map(t => t.id));
-  console.log('moveTabsWithStructure: params.attachTo =', params.attachTo?.id, 'partial =', movedWholeTree.length != movedTabs.length);
 
   const movedTabsSet = new Set(movedTabs);
   while (movedTabsSet.has(params.insertBefore)) {
@@ -962,12 +959,9 @@ async function moveTabsWithStructure(tabs, params = {}) {
   }
 
   log('try attach/detach');
-  console.log('moveTabsWithStructure: after moveTabs, movedTabs =', movedTabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`));
-  console.log('moveTabsWithStructure: movedRoots =', movedRoots.map(t => `${t.id}(parent=${t.$TST.parentId})`), 'attachTo =', params.attachTo?.id);
   let shouldExpand = false;
   if (!params.attachTo) {
     log('=> detach');
-    console.log('moveTabsWithStructure: path=detach (no attachTo)');
     detachTabsWithStructure(movedRoots, {
       broadcast: params.broadcast
     });
@@ -975,7 +969,6 @@ async function moveTabsWithStructure(tabs, params = {}) {
   }
   else {
     log('=> attach');
-    console.log('moveTabsWithStructure: path=attach, attachTo =', params.attachTo.id, 'movedRoots =', movedRoots.map(t => t.id));
     await attachTabsWithStructure(movedRoots, params.attachTo, {
       insertBefore: params.insertBefore,
       insertAfter:  params.insertAfter,
@@ -1053,7 +1046,6 @@ async function moveTabsWithStructure(tabs, params = {}) {
 
 async function attachTabsWithStructure(tabs, parent, options = {}) {
   log('attachTabsWithStructure: start ', () => ['tabs', ...tabs.map(dumpTab), 'parent', dumpTab(parent), 'insertBefore', dumpTab(options.insertBefore), 'insertAfter', dumpTab(options.insertAfter)]);
-  console.log('attachTabsWithStructure: tabs =', tabs.map(t => `${t.id}(parent=${t.$TST.parentId}, children=[${t.$TST.childIds}])`), 'parent =', parent?.id);
   if (parent &&
       !options.insertBefore &&
       !options.insertAfter) {
@@ -1086,20 +1078,15 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
     dontMove:     true,
     forceExpand:  options.draggedTabs.some(tab => tab.active)
   };
-  console.log('attachTabsWithStructure: forceExpand =', memberOptions.forceExpand, 'draggedTabs =', options.draggedTabs?.map(t => `${t.id}(active=${t.active})`));
   return Promise.all(tabs.map(async tab => {
     if (parent) {
-      console.log(`attachTabsWithStructure: attachTabTo(${tab.id}, ${parent.id})`);
       await Tree.attachTabTo(tab, parent, memberOptions);
-      console.log(`attachTabsWithStructure: after attachTabTo(${tab.id}), parent=${tab.$TST.parentId}, children=[${tab.$TST.childIds}]`);
     }
     else {
-      console.log(`attachTabsWithStructure: detachTab(${tab.id})`);
       await Tree.detachTab(tab, memberOptions);
     }
     // The tree can remain being collapsed by other addons like TST Lock Tree Collapsed.
     const collapsed = parent?.$TST.subtreeCollapsed;
-    console.log(`attachTabsWithStructure: collapseExpandTabAndSubtree(${tab.id}, collapsed=${collapsed})`);
     return Tree.collapseExpandTabAndSubtree(tab, {
       ...memberOptions,
       collapsed,

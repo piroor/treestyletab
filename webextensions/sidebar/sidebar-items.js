@@ -1420,12 +1420,6 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_APPLY_TREE_STRUCTURE: {
-      console.log('sidebar-items: kCOMMAND_APPLY_TREE_STRUCTURE received', {
-        tabIds: message.tabIds,
-        children: message.children,
-        detached: message.detached,
-        levels: message.levels,
-      });
       if (mPromisedInitialized)
         return;
       await Tab.waitUntilTracked(message.tabIds);
@@ -1433,13 +1427,9 @@ BackgroundConnection.onMessage.addListener(async message => {
       // Set parent-child relationships
       for (const [parentIdStr, childIds] of Object.entries(message.children)) {
         const parent = Tab.get(Number(parentIdStr));
-        if (!parent) {
-          console.log(`sidebar-items: parent ${parentIdStr} not found`);
+        if (!parent)
           continue;
-        }
-        console.log(`sidebar-items: setting parent ${parentIdStr} children = [${childIds}]`);
         parent.$TST.children = childIds;  // setter auto-updates parent/child relationships
-        console.log(`sidebar-items: after setter, parent ${parentIdStr} actual childIds = [${parent.$TST.childIds}]`);
         parent.$TST.invalidateElement(
           TabInvalidationTarget.Twisty |
           TabInvalidationTarget.CloseBox |
