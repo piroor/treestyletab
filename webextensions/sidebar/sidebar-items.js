@@ -500,14 +500,14 @@ configs.$addObserver(async changedKey => {
 // Mechanism to override "index" of newly opened tabs by TST's detection logic
 
 const mMovedNewTabResolvers = new Map();
-const mPromsiedMovedNewTabs = new Map();
+const mPromisedMovedNewTabs = new Map();
 const mAlreadyMovedNewTabs = new Set();
 
 export async function waitUntilNewTabIsMoved(tabId) {
   if (mAlreadyMovedNewTabs.has(tabId))
     return true;
-  if (mPromsiedMovedNewTabs.has(tabId))
-    return mPromsiedMovedNewTabs.get(tabId);
+  if (mPromisedMovedNewTabs.has(tabId))
+    return mPromisedMovedNewTabs.get(tabId);
   const timer = setTimeout(() => {
     if (mMovedNewTabResolvers.has(tabId))
       mMovedNewTabResolvers.get(tabId)();
@@ -516,11 +516,11 @@ export async function waitUntilNewTabIsMoved(tabId) {
     mMovedNewTabResolvers.set(tabId, resolve);
   }).then(newIndex => {
     mMovedNewTabResolvers.delete(tabId);
-    mPromsiedMovedNewTabs.delete(tabId);
+    mPromisedMovedNewTabs.delete(tabId);
     clearTimeout(timer);
     return newIndex;
   });
-  mPromsiedMovedNewTabs.set(tabId, promise);
+  mPromisedMovedNewTabs.set(tabId, promise);
   return promise;
 }
 
