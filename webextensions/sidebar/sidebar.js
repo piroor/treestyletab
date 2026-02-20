@@ -577,17 +577,18 @@ async function rebuildAll(importedWindow) {
   let count = 0;
   const maxCount = tabs.length;
   for (const tab of tabs) {
-    const group = tab.$TST.nativeTabGroup;
+    const trackedTab = Tab.init(tab, { existing: true });
+    const group = trackedTab.$TST.nativeTabGroup;
     if (group?.collapsed) {
       CollapseExpand.setCollapsed(tab, {
         collapsed: true,
       });
     }
-    TabsUpdate.updateTab(tab, tab, { forceApply: true });
+    TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (tab.active)
-      TabsInternalOperation.setTabActive(tab);
-    if (tab.pinned)
-      SidebarItems.renderItem(tab);
+      TabsInternalOperation.setTabActive(trackedTab);
+    if (trackedTab.pinned)
+      SidebarItems.renderItem(trackedTab);
     if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
       UserOperationBlocker.setProgress(Math.round(++count / maxCount * 33) + 66); // 3/3: build tab elements
       await nextFrame();
