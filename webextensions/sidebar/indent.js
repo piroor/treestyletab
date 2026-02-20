@@ -23,6 +23,8 @@ function log(...args) {
   internalLogger('sidebar/indent', ...args);
 }
 
+const BUFFER_KEY_PREFIX = 'indent-';
+
 let mPromisedInitializedResolver;
 let mPromisedInitialized = new Promise((resolve, _reject) => {
   mPromisedInitializedResolver = resolve;
