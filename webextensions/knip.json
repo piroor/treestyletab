@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "background/index.js",
+    "sidebar/index.js",
+    "common/handle-accel-key.js",
+    "options/init.js",
+    "tests/runner.js"
+  ],
+  "project": [
+    "background/**/*.js",
+    "sidebar/**/*.js",
+    "common/**/*.js",
+    "options/**/*.js",
+    "tests/**/*.js"
+  ]
+}
