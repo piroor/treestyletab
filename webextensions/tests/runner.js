@@ -11,7 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabsListener from '/background/api-tabs-listener.js';
-import { Diff } from '/common/diff.js';
+import { Diff } from '/extlib/diff.js';
 import * as Utils from './utils.js';
 
 import * as TestDOMUpdater from './test-dom-updater.js';
