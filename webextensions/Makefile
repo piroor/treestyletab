@@ -9,7 +9,7 @@ TOOLS_DIR := $(CURDIR)/tools
 all: xpi
 
 install_dependency:
-	[ -e "$(NPM_BIN_DIR)/eslint" -a -e "$(NPM_BIN_DIR)/jsonlint" ] || npm install --save-dev
+	[ -e "$(NPM_BIN_DIR)/eslint" -a -e "$(NPM_BIN_DIR)/jsonlint"  -a -e "$(NPM_BIN_DIR)/knip" ] || npm install --save-dev
 
 lint: install_dependency
 	"$(NPM_BIN_DIR)/eslint" . --report-unused-disable-directives
