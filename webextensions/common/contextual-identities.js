@@ -178,7 +178,7 @@ function onContextualIdentityRemoved(removedInfo) {
     return;
 
   const identity = removedInfo.contextualIdentity;
-  delete mContextualIdentities.delete(identity.cookieStoreId);
+  mContextualIdentities.delete(identity.cookieStoreId);
   onUpdated.dispatch();
 }
 
