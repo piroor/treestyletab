@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "/common/*": ["./common/*"],
+      "/background/*": ["./background/*"],
+      "/sidebar/*": ["./sidebar/*"],
+      "/options/*": ["./options/*"],
+      "/extlib/*": ["./extlib/*"],
+      "/resources/*": ["./resources/*"],
+      "/tests/*": ["./tests/*"]
+    }
+  }
+}
