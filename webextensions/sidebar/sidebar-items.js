@@ -49,10 +49,10 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
 export const pinnedContainer = document.querySelector('#pinned-tabs-container');
 export const normalContainer = document.querySelector('#normal-tabs-container');
 
-export const onPinnedTabsChanged = new EventListenerManager();
+//export const onPinnedTabsChanged = new EventListenerManager();
 export const onNormalTabsChanged = new EventListenerManager();
-export const onTabsRendered   = new EventListenerManager();
-export const onTabsUnrendered = new EventListenerManager();
+//export const onTabsRendered   = new EventListenerManager();
+//export const onTabsUnrendered = new EventListenerManager();
 export const onSyncFailed = new EventListenerManager();
 export const onReuseTreeItemElement = new EventListenerManager();
 
@@ -339,9 +339,9 @@ export function renderItem(item, { containerElement, insertBefore } = {}) {
 }
 
 function reserveToNotifyItemsRendered() {
-  const hasInternalListener = onTabsRendered.hasListener();
+  //const hasInternalListener = onTabsRendered.hasListener();
   const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED);
-  if (!hasInternalListener && !hasExternalListener) {
+  if (/*!hasInternalListener && */!hasExternalListener) {
     mRenderedItemIds.clear();
     return;
   }
@@ -359,8 +359,10 @@ function reserveToNotifyItemsRendered() {
       return;
     }
 
+    /*
     if (hasInternalListener)
       onTabsRendered.dispatch(tabs);
+    */
 
     if (hasExternalListener) {
       let cache = {};
@@ -389,9 +391,9 @@ export function unrenderItem(item) {
     TabsStore.removeUnsynchronizedTab(item);
   }
 
-  const hasInternalListener = onTabsUnrendered.hasListener();
+  //const hasInternalListener = onTabsUnrendered.hasListener();
   const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED);
-  if (hasInternalListener || hasExternalListener) {
+  if (/*hasInternalListener || */hasExternalListener) {
     if (!unrenderItem.invoked) {
       unrenderItem.invoked = true;
       window.requestAnimationFrame(() => {
@@ -401,8 +403,10 @@ export function unrenderItem(item) {
         mUnrenderedItemIds.clear();
         const tabs = mapAndFilter(ids, id => Tab.get(id));
 
+        /*
         if (hasInternalListener)
           onTabsUnrendered.dispatch(tabs);
+        */
 
         if (hasExternalListener) {
           let cache = {};
@@ -882,7 +886,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         await waitUntilNewTabIsMoved(message.tabId);
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1035,7 +1039,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1077,7 +1081,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1149,9 +1153,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
+        /*
         if (tab.pinned)
           onPinnedTabsChanged.dispatch(tab);
         else
+        */
+        if (!tab.pinned)
           onNormalTabsChanged.dispatch(tab);
       }
     }; break;
@@ -1174,9 +1181,12 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.windows.get(message.windowId).detachTab(message.tabId);
       tab.$TST.destroy();
       unrenderItem(tab);
+      /*
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
     }; break;
 
@@ -1262,7 +1272,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         unrenderItem(tab);
       }
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-      onPinnedTabsChanged.dispatch(tab.pinned && tab);
+      //onPinnedTabsChanged.dispatch(tab.pinned && tab);
       onNormalTabsChanged.dispatch(!tab.pinned && tab);
     }; break;
 
@@ -1289,9 +1299,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         TabsStore.addControllableTab(tab);
       }
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      /*
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
     }; break;
 
@@ -1372,9 +1385,11 @@ BackgroundConnection.onMessage.addListener(async message => {
       const win = TabsStore.windows.get(message.windowId);
       win.untrackTab(message.tabId);
       unrenderItem(tab);
+      /*
       if (tab.pinned)
-        onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316

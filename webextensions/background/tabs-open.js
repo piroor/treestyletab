@@ -26,7 +26,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import EventListenerManager from '/extlib/EventListenerManager.js';
+//import EventListenerManager from '/extlib/EventListenerManager.js';
 
 import {
   log as internalLogger,
@@ -44,7 +44,7 @@ import { Tab } from '/common/TreeItem.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
-export const onForbiddenURLRequested = new EventListenerManager();
+//export const onForbiddenURLRequested = new EventListenerManager();
 
 function log(...args) {
   internalLogger('background/tabs-open', ...args);
@@ -266,7 +266,7 @@ function sanitizeURL(url) {
     return (new URL(url)).searchParams.get('url') || 'about:blank';
 
   if (FORBIDDEN_URL_MATCHER.test(url)) {
-    onForbiddenURLRequested.dispatch(url);
+    //onForbiddenURLRequested.dispatch(url);
     return `about:blank?forbidden-url=${url}`;
   }
 

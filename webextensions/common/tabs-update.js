@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2025
+ * Portions created by the Initial Developer are Copyright (C) 2011-2026
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -300,11 +300,13 @@ export function updateTab(tab, newState = {}, options = {}) {
     tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_CAMERA,     sharingCamera);
     tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_MICROPHONE, sharingMicrophone);
     tab.$TST.toggleState(Constants.kTAB_STATE_SHARING_SCREEN,     sharingScreen);
+    /*
     Tab.onSharingStateChanged.dispatch(tab, {
       camera:     sharingCamera,
       microphone: sharingMicrophone,
       screen:     sharingScreen,
     });
+    */
     const parent = tab.$TST.parent;
     if (parent)
       parent.$TST.inheritSharingStateFromChildren();

@@ -26,9 +26,9 @@ function log(...args) {
 }
 
 export const onMessage = new EventListenerManager();
-export const onNewDevice = new EventListenerManager();
-export const onUpdatedDevice = new EventListenerManager();
-export const onObsoleteDevice = new EventListenerManager();
+//export const onNewDevice = new EventListenerManager();
+//export const onUpdatedDevice = new EventListenerManager();
+//export const onObsoleteDevice = new EventListenerManager();
 
 const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp';
 
@@ -272,11 +272,11 @@ async function updateDevices() {
     local[id] = info;
     if (id in local) {
       log('updated device: ', info);
-      onUpdatedDevice.dispatch(info);
+      //onUpdatedDevice.dispatch(info);
     }
     else {
       log('new device: ', info);
-      onNewDevice.dispatch(info);
+      //onNewDevice.dispatch(info);
     }
   }
 
@@ -299,7 +299,7 @@ async function updateDevices() {
       continue;
     log('obsolete device: ', info);
     delete local[id];
-    onObsoleteDevice.dispatch(info);
+    //onObsoleteDevice.dispatch(info);
   }
 
   if (configs.syncDeviceExpirationDays > 0) {
@@ -309,7 +309,7 @@ async function updateDevices() {
           info.timestamp < expireDateInSeconds) {
         delete local[id];
         log('expired device: ', info);
-        onObsoleteDevice.dispatch(info);
+        //onObsoleteDevice.dispatch(info);
       }
     }
   }

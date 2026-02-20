@@ -1189,8 +1189,8 @@ export class Tab extends TreeItem {
   static onTabInternallyMoved     = new EventListenerManager();
   static onCollapsedStateChanged  = new EventListenerManager();
   static onMutedStateChanged      = new EventListenerManager();
-  static onAutoplayBlockedStateChanged = new EventListenerManager();
-  static onSharingStateChanged    = new EventListenerManager();
+  //static onAutoplayBlockedStateChanged = new EventListenerManager();
+  //static onSharingStateChanged    = new EventListenerManager();
 
   static onBeforeCreate     = new EventListenerManager();
   static onCreating         = new EventListenerManager();

@@ -103,8 +103,6 @@ export async function setCollapsed(tab, info = {}) {
   if (tab.status == 'loading')
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  const manager = tab.$TST.collapsedStateChangedManager || new EventListenerManager();
-
   const prevCanceller = mUpdatingCollapsedStateCanceller.get(tab.id);
   if (prevCanceller) {
     prevCanceller(tab.$TST.collapsed);
@@ -120,7 +118,6 @@ export async function setCollapsed(tab, info = {}) {
     }
   };
   const onCompleted = (tab, info = {}) => {
-    manager.removeListener(onCompleted);
     if (cancelled ||
         !TabsStore.ensureLivingItem(tab)) // do nothing for closed tab!
       return;
@@ -147,7 +144,6 @@ export async function setCollapsed(tab, info = {}) {
       last:      info.last
     });
   };
-  manager.addListener(onCompleted);
 
   if (!shouldApplyAnimation() ||
       info.justNow ||
@@ -171,14 +167,9 @@ export async function setCollapsed(tab, info = {}) {
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
   onUpdated.dispatch(tab, { collapsed: info.collapsed });
 
-  const onCanceled = () => {
-    manager.removeListener(onCompleted);
-  };
-
   window.requestAnimationFrame(() => {
     if (cancelled ||
         !TabsStore.ensureLivingItem(tab)) { // it was removed while waiting
-      onCanceled();
       return;
     }
 
@@ -191,7 +182,6 @@ export async function setCollapsed(tab, info = {}) {
 
     const collapseExpandCallback = () => {
       if (cancelled) {
-        onCanceled();
         return;
       }
 
@@ -215,7 +205,6 @@ export async function setCollapsed(tab, info = {}) {
       if (cancelled ||
           !TabsStore.ensureLivingItem(tab) ||
           !mCollapseExpandAnimationCallback.has(tab.id)) {
-        onCanceled();
         return;
       }
       mCollapseExpandAnimationTimeout.delete(tab.id);
