@@ -43,7 +43,7 @@ async function run() {
 
   // you can run specific tests with URL parameter like:
   // ...runner.html?testMoveAttachedTabBeforeHiddenTab,/^testMove.+/,...
-  for (const part of (location.search || '').replace(/^\?/, '').split(/,/)) {
+  for (const part of (window.location.search || '').replace(/^\?/, '').split(/,/)) {
     const trimmedPart = part.trim();
     if (!trimmedPart.trim())
       continue;
@@ -86,7 +86,7 @@ async function restoreConfigs(values) {
 
 async function runAll() {
   const testCases = [];
-  if (/benchmark=true/.test(location.search)) {
+  if (/benchmark=true/.test(window.location.search)) {
     testCases.push(TestDOMUpdater);
   }
   else {

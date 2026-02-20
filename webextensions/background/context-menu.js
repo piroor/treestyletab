@@ -210,7 +210,7 @@ const mTabSeparator = {
   type:                'separator',
   contexts:            ['tab'],
   viewTypes:           ['sidebar'],
-  documentUrlPatterns: [`moz-extension://${location.host}/*`],
+  documentUrlPatterns: [`moz-extension://${window.location.host}/*`],
   visible:             false,
   lastVisible:         false
 };
@@ -291,7 +291,7 @@ const mBookmarkSeparator = {
   type:                'separator',
   contexts:            ['bookmark'],
   viewTypes:           ['sidebar'],
-  documentUrlPatterns: [`moz-extension://${location.host}/*`],
+  documentUrlPatterns: [`moz-extension://${window.location.host}/*`],
   visible:             false,
   lastVisible:         false
 };

@@ -161,13 +161,13 @@ export async function testReopenedWithPositionByAnotherAddonImmediatelyWhileCrea
           // This must be an already loaded URL, othwrwise tabs.executeScript()
           // is called for about:blank page and this test fails with "missing
           // host permission" error.
-          url:   `${location.origin}/resources/ui-color.css`,
+          url:   `${window.location.origin}/resources/ui-color.css`,
           index: 2
         });
         if (browser.scripting)
           await browser.scripting.executeScript({ // Manifest V3
             target: { tabId: reopenedTab.id },
-            func:   function() { return location.href; },
+            func:   function() { return window.location.href; },
           });
         else
           await browser.tabs.executeScript(reopenedTab.id, {

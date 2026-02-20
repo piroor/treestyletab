@@ -28,14 +28,14 @@ let mHeartbeatTimer = null;
 export function connect() {
   if (mConnectionPort)
     return;
-  const type = /windowId=([1-9][0-9]*)/i.test(location.search) ? 'unknown' : 'sidebar';
+  const type = /windowId=([1-9][0-9]*)/i.test(window.location.search) ? 'unknown' : 'sidebar';
   mConnectionPort = browser.runtime.connect({
     name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${TabsStore.getCurrentWindowId()}:${type}`
   });
   mConnectionPort.onMessage.addListener(onConnectionMessage);
   mConnectionPort.onDisconnect.addListener(() => {
     log(`Disconnected accidentally: try to reconnect.`);
-    location.reload();
+    window.location.reload();
   });
   if (mHeartbeatTimer)
     clearInterval(mHeartbeatTimer);

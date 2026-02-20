@@ -1,6 +1,7 @@
 import _import from 'eslint-plugin-import';
 import { fixupPluginRules } from '@eslint/compat';
 import babelParser from '@babel/eslint-parser';
+import confusingBrowserGlobals from 'confusing-browser-globals';
 import globals from 'globals';
 import indentInParens from 'eslint-plugin-indent-in-parens';
 import noDeadEventListener from 'webextensions-lib-event-listener-manager';
@@ -23,6 +24,8 @@ const languageOptions = {
 };
 
 const rules = {
+  'no-restricted-globals': ['error', ...confusingBrowserGlobals],
+
   'no-const-assign': 'error',
 
   'prefer-const': ['warn', {

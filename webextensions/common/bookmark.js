@@ -316,7 +316,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
     notify({
       title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
       message: browser.i18n.getMessage(`bookmark_notification_notPermitted_message${isLinux() ? '_linux' : ''}`),
-      url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionSection`
+      url:     `moz-extension://${window.location.host}/options/options.html#bookmarksPermissionSection`
     });
     return null;
   }
@@ -331,7 +331,7 @@ export async function bookmarkTab(tab, { parentId, showDialog } = {}) {
     parentId = parent?.id;
   if (showDialog) {
     const windowId = tab.windowId;
-    const inline = location.pathname.startsWith('/sidebar/');
+    const inline = window.location.pathname.startsWith('/sidebar/');
     const inlineClass = inline ? 'inline' : 'dialog';
     const BASE_ID = `dialog-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
     const dialogParams = {
@@ -457,7 +457,7 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
     notify({
       title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
       message: browser.i18n.getMessage('bookmark_notification_notPermitted_message'),
-      url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionSection`
+      url:     `moz-extension://${window.location.host}/options/options.html#bookmarksPermissionSection`
     });
     return null;
   }
@@ -537,7 +537,7 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
 
   if (showDialog) {
     const windowId = tabs[0].windowId;
-    const inline = location.pathname.startsWith('/sidebar/');
+    const inline = window.location.pathname.startsWith('/sidebar/');
     const inlineClass = inline ? 'inline' : 'dialog';
     const BASE_ID = `dialog-${Date.now()}-${parseInt(Math.random() * 65000)}:`;
     const dialogParams = {

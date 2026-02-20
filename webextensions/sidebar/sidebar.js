@@ -95,7 +95,7 @@ document.documentElement.classList.toggle('platform-mac', isMacOS());
 document.documentElement.classList.toggle('rtl', isRTL());
 
 {
-  const url = new URL(location.href);
+  const url = new URL(window.location.href);
 
   mTargetWindow = parseInt(url.searchParams.get('windowId') || 0);
   if (isNaN(mTargetWindow) || mTargetWindow < 1)
@@ -992,7 +992,7 @@ async function onConfigChange(changedKey) {
 
     case 'style':
       log('reload for changed style');
-      location.reload();
+      window.location.reload();
       break;
 
     case 'colorScheme':
@@ -1057,7 +1057,7 @@ async function isSidebarRightSide() {
     const notificationParams = {
       title:   browser.i18n.getMessage('sidebarPositionOptionNotification_title'),
       message: browser.i18n.getMessage('sidebarPositionOptionNotification_message'),
-      url:     `moz-extension://${location.host}/options/options.html#section-appearance`,
+      url:     `moz-extension://${window.location.host}/options/options.html#section-appearance`,
       timeout: configs.sidebarPositionOptionNotificationTimeout,
     };
     configs.sidebarPositionRighsideNotificationShown = true;
@@ -1099,7 +1099,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_RELOAD:
       log('reload triggered by the reload command');
-      location.reload();
+      window.location.reload();
       return;
 
     case Constants.kCOMMAND_SHOW_DIALOG:
