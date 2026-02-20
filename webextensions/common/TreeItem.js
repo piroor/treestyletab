@@ -866,7 +866,7 @@ export class TreeItem {
 }
 
 
-export class TabGroupCollapsedMembersCounter extends TreeItem {
+class TabGroupCollapsedMembersCounter extends TreeItem {
   constructor(raw) {
     super(raw);
 

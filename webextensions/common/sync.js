@@ -57,6 +57,7 @@ const SEND_TABS_SIMULATOR_ID = 'send-tabs-to-device-simulator@piro.sakura.ne.jp'
 
 let mExternalProvider = null;
 
+// This need to be exported for experiments modules to provide sharing features
 export function registerExternalProvider(provider) {
   mExternalProvider = provider;
 }
@@ -80,7 +81,7 @@ async function ensureDeviceInfoInitialized() {
   await getMyDeviceInfo();
 }
 
-export async function waitUntilDeviceInfoInitialized() {
+async function waitUntilDeviceInfoInitialized() {
   while (!configs.syncDeviceInfo) {
     await wait(100);
   }
@@ -362,7 +363,7 @@ async function receiveMessage() {
   }
 }
 
-export async function sendMessage(to, data) {
+async function sendMessage(to, data) {
   const myDeviceInfo = await getMyDeviceInfo();
   try {
     const messages = readMessages();

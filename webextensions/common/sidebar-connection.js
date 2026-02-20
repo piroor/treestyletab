@@ -81,17 +81,15 @@ export function isOpen(windowId) {
   return connections && connections.size > 0;
 }
 
+/*
 export function hasFocus(windowId) {
   return mFocusState.has(windowId)
 }
+*/
 
-export const counts = {
+const counts = {
   broadcast: {}
 };
-
-export function getOpenWindowIds() {
-  return mIsListening ? Array.from(mConnections.keys()) : [];
-}
 
 export function sendMessage(message) {
   if (!mIsListening ||

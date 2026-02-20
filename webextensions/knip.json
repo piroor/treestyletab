@@ -12,6 +12,8 @@
     "sidebar/**/*.js",
     "common/**/*.js",
     "options/**/*.js",
-    "tests/**/*.js"
+    "tests/**/*.js",
+    "resources/**/*.js",
+    "extlib/**/*.js"
   ]
 }
