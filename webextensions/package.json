@@ -25,7 +25,8 @@
     "node-fetch": ">=3.2.10",
     "trim-newlines": ">=3.0.1",
     "tunnel-agent": ">=0.6.0",
-    "underscore": ">=1.12.1"
+    "underscore": ">=1.12.1",
+    "webextensions-lib-event-listener-manager": "github:piroor/webextensions-lib-event-listener-manager"
   },
   "dependencies": {
     "codemirror": "^5.57.0",
