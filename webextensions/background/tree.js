@@ -751,6 +751,8 @@ export async function detachAllChildren(
   for (const child of children) {
     if (!child)
       continue;
+    if (ignoreTabsSet.has(child))
+      continue;
     const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
