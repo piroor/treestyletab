@@ -10,14 +10,6 @@ import * as Constants from '/common/constants.js';
 
 let mCount = 0;
 
-export function increment() {
-  mCount++;
-}
-
-export function decrement() {
-  mCount--;
-}
-
 export function hasMultipleRestoringTabs() {
   return mCount > 1;
 }
@@ -25,11 +17,11 @@ export function hasMultipleRestoringTabs() {
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
-      increment();
+      mCount++;
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
-      decrement();
+      mCount--;
       break;
   }
 });

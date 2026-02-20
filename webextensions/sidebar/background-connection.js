@@ -59,7 +59,7 @@ export function start() {
   mPromisedStarted = undefined;
 }
 
-export const counts = {};
+const counts = {};
 
 let mReservedMessages = [];
 let mOnFrame;

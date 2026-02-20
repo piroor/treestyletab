@@ -128,14 +128,6 @@ function calculateIndentUnit(maxLevel) {
   return Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / maxLevel), minIndent));
 }
 
-export function getCacheInfo() {
-  return {
-    lastMaxLevel:  mLastMaxLevel,
-    lastMaxIndent: mLastMaxIndent,
-    definition:    mIndentDefinition.textContent
-  };
-}
-
 
 export function tryUpdateVisualMaxTreeLevel() {
   log('tryUpdateVisualMaxTreeLevel');

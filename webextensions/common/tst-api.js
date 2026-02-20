@@ -65,15 +65,15 @@ export const onMessageExternal = {
   }
 };
 
-export const kREGISTER_SELF         = 'register-self';
+const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
 export const kGET_VERSION           = 'get-version';
-export const kWAIT_FOR_SHUTDOWN     = 'wait-for-shutdown';
-export const kPING                  = 'ping';
-export const kNOTIFY_READY          = 'ready';
+const kWAIT_FOR_SHUTDOWN     = 'wait-for-shutdown';
+const kPING                  = 'ping';
+const kNOTIFY_READY          = 'ready';
 export const kNOTIFY_SHUTDOWN       = 'shutdown'; // defined but not notified for now.
 export const kNOTIFY_SIDEBAR_SHOW   = 'sidebar-show';
-export const kNOTIFY_SIDEBAR_HIDE   = 'sidebar-hide';
+const kNOTIFY_SIDEBAR_HIDE   = 'sidebar-hide';
 export const kNOTIFY_TABS_RENDERED  = 'tabs-rendered';
 export const kNOTIFY_TABS_UNRENDERED = 'tabs-unrendered';
 export const kNOTIFY_TAB_STICKY_STATE_CHANGED = 'tab-sticky-state-changed';
@@ -116,7 +116,7 @@ export const kNOTIFY_TREE_DETACHED  = 'tree-detached';
 export const kNOTIFY_TREE_COLLAPSED_STATE_CHANGED = 'tree-collapsed-state-changed';
 export const kNOTIFY_NATIVE_TAB_DRAGSTART = 'native-tab-dragstart';
 export const kNOTIFY_NATIVE_TAB_DRAGEND   = 'native-tab-dragend';
-export const kNOTIFY_PERMISSIONS_CHANGED = 'permissions-changed';
+const kNOTIFY_PERMISSIONS_CHANGED = 'permissions-changed';
 export const kNOTIFY_NEW_TAB_PROCESSED = 'new-tab-processed';
 export const kSTART_CUSTOM_DRAG     = 'start-custom-drag';
 export const kNOTIFY_TRY_MOVE_FOCUS_FROM_COLLAPSING_TREE = 'try-move-focus-from-collapsing-tree';
@@ -169,11 +169,11 @@ export const kADD_TAB_STATE         = 'add-tab-state';
 export const kREMOVE_TAB_STATE      = 'remove-tab-state';
 export const kSCROLL                = 'scroll';
 export const kSTOP_SCROLL           = 'stop-scroll';
-export const kSCROLL_LOCK           = 'scroll-lock';
-export const kSCROLL_UNLOCK         = 'scroll-unlock';
-export const kNOTIFY_SCROLLED       = 'scrolled';
-export const kBLOCK_GROUPING        = 'block-grouping';
-export const kUNBLOCK_GROUPING      = 'unblock-grouping';
+const kSCROLL_LOCK           = 'scroll-lock';
+const kSCROLL_UNLOCK         = 'scroll-unlock';
+const kNOTIFY_SCROLLED       = 'scrolled';
+const kBLOCK_GROUPING        = 'block-grouping';
+const kUNBLOCK_GROUPING      = 'unblock-grouping';
 export const kSET_TOOLTIP_TEXT      = 'set-tooltip-text';
 export const kCLEAR_TOOLTIP_TEXT    = 'clear-tooltip-text';
 export const kGRANT_TO_REMOVE_TABS  = 'grant-to-remove-tabs';
@@ -237,15 +237,15 @@ export const kOVERRIDE_CONTEXT        = 'override-context';
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
-export const kCOMMAND_BROADCAST_API_PERMISSION_CHANGED = 'treestyletab:permission-changed';
-export const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
-export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
+const kCOMMAND_BROADCAST_API_PERMISSION_CHANGED = 'treestyletab:permission-changed';
+const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
+const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
 export const kCOMMAND_GET_ADDONS                 = 'treestyletab:get-addons';
 export const kCOMMAND_SET_API_PERMISSION         = 'treestyletab:set-api-permisssion';
 export const kCOMMAND_NOTIFY_PERMISSION_CHANGED  = 'treestyletab:notify-api-permisssion-changed';
-export const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
+const kCOMMAND_UNREGISTER_ADDON           = 'treestyletab:unregister-addon';
 
-export const INTERNAL_CALL_PREFIX = 'treestyletab:api:';
+const INTERNAL_CALL_PREFIX = 'treestyletab:api:';
 export const INTERNAL_CALL_PREFIX_MATCHER = new RegExp(`^${INTERNAL_CALL_PREFIX}`);
 
 export const kNEWTAB_CONTEXT_NEWTAB_COMMAND             = 'newtab-command';
@@ -316,7 +316,7 @@ export function getAddon(id) {
   return mAddons.get(id);
 }
 
-export function getGrantedPermissionsForAddon(id) {
+function getGrantedPermissionsForAddon(id) {
   const addon = getAddon(id);
   return addon?.grantedPermissions || new Set();
 }

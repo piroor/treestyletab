@@ -893,7 +893,7 @@ function stopSmoothScroll() {
 
 /* advanced operations */
 
-export function scrollToNewTab(item, options = {}) {
+function scrollToNewTab(item, options = {}) {
   if (!canScrollToItem(item))
     return;
 

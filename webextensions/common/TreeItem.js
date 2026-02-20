@@ -43,9 +43,9 @@ function successorTabLog(...args) {
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-export const kPERMISSION_ACTIVE_TAB = 'activeTab';
-export const kPERMISSION_TABS       = 'tabs';
-export const kPERMISSION_COOKIES    = 'cookies';
+const kPERMISSION_ACTIVE_TAB = 'activeTab';
+const kPERMISSION_TABS       = 'tabs';
+const kPERMISSION_COOKIES    = 'cookies';
 export const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
 export const kPERMISSIONS_ALL = new Set([
   kPERMISSION_TABS,
