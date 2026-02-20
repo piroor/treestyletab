@@ -699,6 +699,7 @@ export async function detachAllChildren(
   while (ignoreTabsSet.has(parent)) {
     parent = parent.$TST.parent;
   }
+  log(' => parent: ', () => dumpTab(parent));
   if (tab?.$TST.isGroupTab &&
       Tab.getRemovingTabs(tab.windowId).length == children.length) {
     behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN;
@@ -747,11 +748,11 @@ export async function detachAllChildren(
     }
   }
 
+  const notIgnoredChildren = children.filter(child => !ignoreTabsSet.has(child))
+
   let count = 0;
-  for (const child of children) {
+  for (const child of notIgnoredChildren) {
     if (!child)
-      continue;
-    if (ignoreTabsSet.has(child))
       continue;
     const promises = [];
     if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
@@ -789,7 +790,7 @@ export async function detachAllChildren(
         //deleteTabValue(child, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
-        promises.push(attachTabTo(child, children[0], {
+        promises.push(attachTabTo(child, notIgnoredChildren[0], {
           ...options,
           dontSyncParentToOpenerTab,
           dontExpand: true,
