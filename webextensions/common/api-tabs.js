@@ -6,31 +6,18 @@
 'use strict';
 
 import {
-  log as internalLogger,
+  //log as internalLogger,
   configs,
   stack,
 } from './common.js';
 
+/*
 function log(...args) {
   internalLogger('common/api-tabs', ...args);
 }
+*/
 
-export async function getIndexes(...queriedTabIds) {
-  log('getIndexes ', queriedTabIds);
-  if (queriedTabIds.length == 0)
-    return [];
-
-  const indexes = await Promise.all(queriedTabIds.map((tabId) => {
-    return browser.tabs.get(tabId)
-      .catch(e => {
-        handleMissingTabError(e);
-        return null;
-      });
-  }));
-  return indexes.map(tab => tab ? tab.index : -1);
-}
-
-export function isMissingTabError(error) {
+function isMissingTabError(error) {
   return (
     error &&
     error.message &&
@@ -45,7 +32,7 @@ export function handleMissingTabError(error) {
   //console.log('Invalid Tab ID error on: ' + stack(error.stack));
 }
 
-export function isUnloadedError(error) {
+function isUnloadedError(error) {
   return (
     error &&
     error.message &&

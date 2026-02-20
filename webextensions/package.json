@@ -19,6 +19,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-indent-in-parens": "^1.1.0",
     "globals": "^15.14.0",
+    "knip": "^5.84.1",
     "lodash": ">=4.17.23",
     "minimist": ">=1.2.6",
     "morphdom": "^2.5.12",

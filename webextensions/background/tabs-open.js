@@ -52,7 +52,7 @@ function log(...args) {
 
 const SEARCH_PREFIX_MATCHER = /^(ext\+treestyletab:search:|about:treestyletab-search\?)/;
 
-export async function loadURI(uri, options = {}) {
+async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
     throw new Error('missing loading target window or tab');
   try {

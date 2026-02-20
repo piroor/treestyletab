@@ -29,6 +29,8 @@ const ACCEPTABLE_DATA_TYPES = [
 
 let mFileURLResolver = null;
 
+/* This need to be exported for experiments modules to provide file access features.
+   Provider must be a function resolving file pathes. */
 export async function registerFileURLResolver(resolver) {
   mFileURLResolver = resolver;
 }
@@ -88,7 +90,8 @@ export async function fromDragEvent(event) {
 
 let mSelectionClipboardProvider = null;
 
-/* provider should have two methods:
+/* This need to be exported for experiments modules to provide clipboard access features.
+   Provider should have two methods:
     isAvailable(): returns boolean which indicates the selection clipboard is available or not.
     getTextData(): returns a string from the selection clipboard.
 */

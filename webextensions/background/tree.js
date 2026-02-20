@@ -1134,7 +1134,7 @@ async function collapseExpandSubtreeInternal(tab, params = {}) {
 }
 
 // returns an array of tab ids which are changed their visibility
-export function manualCollapseExpandSubtree(tab, params = {}) {
+function manualCollapseExpandSubtree(tab, params = {}) {
   params.manualOperation = true;
   const visibilityChangedTabIds = collapseExpandSubtree(tab, params);
   if (!params.collapsed) {

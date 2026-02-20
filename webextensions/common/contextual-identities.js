@@ -26,14 +26,6 @@ export function get(id) {
   return mContextualIdentities.get(id);
 }
 
-export function getIdFromName(name) {
-  for (const identity of mContextualIdentities.values()) {
-    if (identity.name.toLowerCase() == name.toLowerCase())
-      return identity.cookieStoreId;
-  }
-  return null;
-}
-
 // Respect container type stored by Container Bookmarks
 // https://addons.mozilla.org/firefox/addon/container-bookmarks/
 export function getIdFromBookmark(bookmark) {

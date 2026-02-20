@@ -128,8 +128,6 @@ export const kNOTIFY_TAB_MOUSEDOWN_EXPIRED  = 'treestyletab:tab-mousedown-expire
 export const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
 export const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';
 
-export const kNOTIFY_CONFIRMATION_DIALOG_READY  = 'treestyletab:confirmation-dialog-ready';
-
 export const kCONNECTION_HEARTBEAT = 'treestyletab:connection-heartbeat';
 
 export const kAPI_TAB_ID       = 'data-tab-id';
@@ -140,7 +138,6 @@ export const kGROUP_ID      = 'data-group-id';
 export const kPARENT        = 'data-parent-id';
 export const kCHILDREN      = 'data-child-ids';
 export const kLEVEL         = 'data-level';
-export const kCLOSED_SET_ID = 'data-closed-set-id';
 export const kCURRENT_URI   = 'data-current-uri';
 export const kCURRENT_FAVICON_URI = 'data-current-favicon-uri';
 export const kCONTEXTUAL_IDENTITY_NAME = 'data-contextual-identity-name';
@@ -171,7 +168,6 @@ export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 export const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
-export const kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU = 'contextual-identities-selector-context';
 export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 export const kTABBAR_SPACER   = 'tabs-spacer';
 
@@ -230,31 +226,6 @@ export const kTAB_STATE_NEW_TAB_COMMAND_TAB       = 'newtab-command-tab';
 export const kTAB_STATE_OPENED_FOR_SAME_WEBSITE   = 'opened-for-same-website';
 export const kTAB_STATE_STICKY                    = 'sticky';
 export const kTAB_STATE_STUCK                   = 'stuck'; // virtual state
-export const kTAB_INTERNAL_STATES = new Set([ // TST specific states
-  'tab',
-  kTAB_STATE_LAST_ROW,
-  kTAB_STATE_LAST_VISIBLE,
-  kTAB_STATE_ANIMATION_READY,
-  kTAB_STATE_COLLAPSED_DONE,
-  kTAB_STATE_CREATING,
-  kTAB_STATE_DUPLICATING,
-  kTAB_STATE_COLLAPSING,
-  kTAB_STATE_EXPANDING,
-  kTAB_STATE_MOVING,
-  kTAB_STATE_TO_BE_REMOVED,
-  kTAB_STATE_REMOVING,
-  kTAB_STATE_SHOWING,
-  kTAB_STATE_THROBBER_UNSYNCHRONIZED,
-  kTAB_STATE_NEW_TAB_COMMAND_TAB,
-  kTAB_STATE_DUPLICATED,
-  kTAB_STATE_RESTORED,
-  kTAB_STATE_FROM_EXTERNAL,
-  kTAB_STATE_FROM_FIREFOX_VIEW,
-  kTAB_STATE_OPENED_FOR_SAME_WEBSITE,
-  kTAB_STATE_STICKY,
-  kTAB_STATE_STUCK,
-  kTAB_STATE_PENDING,
-]);
 export const kTAB_TEMPORARY_STATES = new Set([ // states not trigger updating of cache
   kTAB_STATE_CREATING,
   kTAB_STATE_BURSTING,
@@ -273,7 +244,7 @@ export const kTAB_TEMPORARY_STATES = new Set([ // states not trigger updating of
   kTAB_STATE_OPENED_FOR_SAME_WEBSITE,
   kTAB_STATE_PENDING,
 ]);
-export const kTAB_SAFE_STATES = new Set([ // exportable via API
+const kTAB_SAFE_STATES = new Set([ // exportable via API
   kTAB_STATE_COLLAPSED,
   kTAB_STATE_SUBTREE_COLLAPSED,
   kTAB_STATE_GROUP_TAB,
@@ -316,7 +287,7 @@ export const kWINDOW_STATE_SUBPANEL_HEIGHT = 'subpanel-height';
 export const kWINDOW_STATE_SUBPANEL_EFFECTIVE_HEIGHT = 'subpanel-effective-height';
 export const kWINDOW_STATE_CACHED_TABS     = 'cached-tabs';
 export const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
-export const kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS  = 'cached-sidebar-contents:contents';
+const kWINDOW_STATE_CACHED_SIDEBAR_CONTENTS  = 'cached-sidebar-contents:contents';
 export const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';
 export const kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY = 'cached-sidebar-contents:collapsed-dirty';
 
@@ -342,16 +313,6 @@ export const kACTION_DETACH = 1 << 11;
 export const kDROPLINK_ASK    = 0;
 export const kDROPLINK_LOAD   = 1 << 0;
 export const kDROPLINK_NEWTAB = 1 << 1;
-
-export const kGROUP_BOOKMARK_ASK                         = 0;
-export const kGROUP_BOOKMARK_SUBTREE                     = 1 << 0;
-export const kGROUP_BOOKMARK_SEPARATE                    = 1 << 1;
-export const kGROUP_BOOKMARK_FIXED                       = kGROUP_BOOKMARK_SUBTREE | kGROUP_BOOKMARK_SEPARATE;
-export const kGROUP_BOOKMARK_USE_DUMMY                   = 1 << 8;
-export const kGROUP_BOOKMARK_USE_DUMMY_FORCE             = 1 << 10;
-export const kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE = 1 << 9;
-export const kGROUP_BOOKMARK_EXPAND_ALL_TREE             = 1 << 11;
-export const kGROUP_BOOKMARK_CANCEL                      = -1;
 
 export const kGROUP_TAB_TEMPORARY_STATE_NOTHING = 0;
 export const kGROUP_TAB_TEMPORARY_STATE_PASSIVE = 1;
@@ -460,7 +421,7 @@ export const kINSERTION_CONTEXT_MOVED = 1;
 export const kINSERTION_CONTEXT_SHOWN = 2;
 export const kINSERTION_CONTEXT_CREATED = 3;
 
-export const kIN_CONTENT_PANEL_RENDER_NOWHERE    = 0;
+//export const kIN_CONTENT_PANEL_RENDER_NOWHERE    = 0;
 export const kIN_CONTENT_PANEL_RENDER_IN_SIDEBAR = 1 << 0;
 export const kIN_CONTENT_PANEL_RENDER_IN_CONTENT = 1 << 1;
 export const kIN_CONTENT_PANEL_RENDER_IN_ANYWHERE = kIN_CONTENT_PANEL_RENDER_IN_SIDEBAR | kIN_CONTENT_PANEL_RENDER_IN_CONTENT;

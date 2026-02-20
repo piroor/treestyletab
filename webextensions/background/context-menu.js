@@ -452,7 +452,7 @@ async function updateItems({ multiselected, hasUnmutedTab, hasUnmutedDescendant,
   return updated;
 }
 
-export function onClick(info, tab) {
+function onClick(info, tab) {
   if (info.bookmarkId)
     return onBookmarkItemClick(info);
   else

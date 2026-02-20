@@ -372,7 +372,7 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
   }
 }
 
-export function reserveToUpdateInsertionPosition(tabOrTabs) {
+function reserveToUpdateInsertionPosition(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingItem(tab))
@@ -445,7 +445,7 @@ async function updateInsertionPosition(tab) {
 }
 
 
-export function reserveToUpdateAncestors(tabOrTabs) {
+function reserveToUpdateAncestors(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingItem(tab))
@@ -485,7 +485,7 @@ async function updateAncestors(tab) {
   ));
 }
 
-export function reserveToUpdateChildren(tabOrTabs) {
+function reserveToUpdateChildren(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {
     if (!TabsStore.ensureLivingItem(tab))
