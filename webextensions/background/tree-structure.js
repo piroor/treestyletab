@@ -359,13 +359,17 @@ async function applyRestoredTabInfo(info) {
     for (const child of children) {
       if (!child)
         continue;
-      await Tree.attachTabTo(child, tab, {
+      const promisedDone = Tree.attachTabTo(child, tab, {
         dontExpand:  !child.active,
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
         dontMove:    child.index >= firstInTree.index && child.index <= lastInTree.index + 1,
         broadcast:   true
       });
+      if (options.bulk)
+        promises.push(promisedDone);
+      else
+        await promisedDone;
       if (child.index < firstInTree.index)
         firstInTree = child;
       else if (child.index > lastInTree.index)
