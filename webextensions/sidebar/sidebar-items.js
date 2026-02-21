@@ -1361,7 +1361,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.parent = null;
       TabsStore.addRemovedTab(tab);
       const win = TabsStore.windows.get(message.windowId);
-      win.untrackTab(message.tabId);
+      win.detachTab(message.tabId);
+      Tab.untrack(message.tabId);
       unrenderItem(tab);
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);

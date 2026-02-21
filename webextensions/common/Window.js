@@ -283,12 +283,6 @@ export default class Window {
     return tab;
   }
 
-  untrackTab(tabId) {
-    const tab = this.detachTab(tabId);
-    if (tab)
-      tab.$TST.destroy();
-  }
-
   export(full) {
     const tabs = [];
     for (const tab of this.getOrderedTabs()) {

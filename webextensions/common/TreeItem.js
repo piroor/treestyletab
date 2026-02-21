@@ -3070,10 +3070,11 @@ export class Tab extends TreeItem {
     if (!tab) // already untracked
       return;
     const win = TabsStore.windows.get(tab.windowId);
-    if (win)
-      win.untrackTab(tabId);
-    if (Tab.get(tabId)) // detachTab was already done separately, destroy was skipped
-      tab.$TST.destroy();
+    if (win) {
+      win.detachTab(tabId);
+    }
+    tab.$TST.destroy();
+    tab.$TST = null;
   }
 
   static isTracked(tabId) {
