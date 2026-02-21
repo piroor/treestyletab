@@ -611,7 +611,7 @@ if (Constants.IS_BACKGROUND) {
         continue;
       mPermissionNotificationForAddon.delete(addonId);
       browser.tabs.create({
-        url: `moz-extension://${location.host}/options/options.html#externalAddonPermissionsGroup`
+        url: `moz-extension://${window.location.host}/options/options.html#externalAddonPermissionsGroup`
       });
       break;
     }

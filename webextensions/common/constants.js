@@ -440,5 +440,5 @@ export const kSYNC_STORAGE_SAFE_QUOTA = 6 * 1024;
 
 export const kSYNC_DATA_TYPE_TABS = 'tabs';
 
-export const IS_BACKGROUND = location.href.startsWith(browser.runtime.getURL('background/background.html'));
-export const IS_SIDEBAR    = location.href.startsWith(browser.runtime.getURL('sidebar/sidebar.html'));
+export const IS_BACKGROUND = window.location.href.startsWith(browser.runtime.getURL('background/background.html'));
+export const IS_SIDEBAR    = window.location.href.startsWith(browser.runtime.getURL('sidebar/sidebar.html'));

@@ -53,9 +53,9 @@ const options = new Options(configs, {
 });
 
 document.title = browser.i18n.getMessage('config_title');
-if ((location.hash &&
-     /^#!?$/.test(location.hash)) ||
-    /independent=true/.test(location.search))
+if ((window.location.hash &&
+     /^#!?$/.test(window.location.hash)) ||
+    /independent=true/.test(window.location.search))
   document.body.classList.add('independent');
 
 document.documentElement.classList.toggle('rtl', isRTL());
@@ -615,9 +615,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   mShowExpertOptionsTemporarily = !!(
-    location.hash &&
-    !/^#!?$/.test(location.hash) &&
-    document.querySelector(`.expert #${location.hash.replace(/^#!?/, '')}, .expert#${location.hash.replace(/^#!?/, '')}`)
+    window.location.hash &&
+    !/^#!?$/.test(window.location.hash) &&
+    document.querySelector(`.expert #${window.location.hash.replace(/^#!?/, '')}, .expert#${window.location.hash.replace(/^#!?/, '')}`)
   );
 
   try {
@@ -689,8 +689,8 @@ function initDuplicatedTabDetection() {
 }
 
 function initLinks() {
-  document.getElementById('link-optionsPage-top').setAttribute('href', `${location.href.split('#')[0]}#!`);
-  document.getElementById('link-optionsPage').setAttribute('href', `${location.href.split('#')[0]}#!`);
+  document.getElementById('link-optionsPage-top').setAttribute('href', `${window.location.href.split('#')[0]}#!`);
+  document.getElementById('link-optionsPage').setAttribute('href', `${window.location.href.split('#')[0]}#!`);
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
   document.getElementById('link-tabbarPage').setAttribute('href', Constants.kSHORTHAND_URIS.tabbar);

@@ -367,7 +367,7 @@ export function getTreeStructureFromTabs(tabs, { full, keepParentOfRootTabs } = 
   return cleanUpTreeStructureArray(
     tabs.map((tab, index) => {
       const parentId = tab.$TST.parentId;
-      const indexInGivenTabs = parent ? tabIds.indexOf(parentId) : STRUCTURE_NO_PARENT ;
+      const indexInGivenTabs = parentId ? tabIds.indexOf(parentId) : STRUCTURE_NO_PARENT ;
       return indexInGivenTabs >= index ? STRUCTURE_NO_PARENT : indexInGivenTabs ;
     }),
     STRUCTURE_NO_PARENT
