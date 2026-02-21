@@ -658,14 +658,10 @@ export async function bookmarkTabs(tabs, { parentId, index, showDialog, title } 
 function getTitlesWithTreeStructure(tabs) {
   const minLevel = Math.min(...tabs.map(tab => parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0')));
   const titles = [];
-  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
-    const tab = tabs[i];
+  for (const tab of tabs) {
     const title = tab.title;
     const level = parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || '0') - minLevel;
-    let prefix = '';
-    for (let j = 0; j < level; j++) {
-      prefix += '>';
-    }
+    const prefix = '>'.repeat(level);
     if (prefix)
       titles.push(`${prefix} ${title}`);
     else

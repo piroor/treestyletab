@@ -463,12 +463,12 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
       status == 'complete' && tab ? tab.url : '';
     if (tab &&
         status == 'complete') {
-      if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+      if (url.startsWith(Constants.kGROUP_TAB_URI)) {
         tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
       }
       else if (!Constants.kSHORTHAND_ABOUT_URI.test(url)) {
         tab.$TST.getPermanentStates().then(async (states) => {
-          if (url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+          if (url.startsWith(Constants.kGROUP_TAB_URI))
             return;
           // Detect group tab from different session - which can have different UUID for the URL.
           const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
@@ -494,7 +494,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     // restored tab can be replaced with blank tab. we need to restore it manually.
     else if (changeInfo.url == 'about:blank' &&
              changeInfo.previousUrl &&
-             changeInfo.previousUrl.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+             changeInfo.previousUrl.startsWith(Constants.kGROUP_TAB_URI)) {
       const oldUrl = tab.url;
       wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
         if (tab.url != oldUrl)
@@ -508,7 +508,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
     if (changeInfo.status ||
         changeInfo.url ||
-        url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+        url.startsWith(Constants.kGROUP_TAB_URI))
       tryInitGroupTab(tab);
   }
 

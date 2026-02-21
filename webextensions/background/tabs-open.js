@@ -336,7 +336,7 @@ SidebarConnection.onMessage.addListener((windowId, message) => {
 browser.runtime.onMessage.addListener((message, sender) => {
   if (!message ||
       typeof message.type != 'string' ||
-      message.type.indexOf('treestyletab:') != 0)
+      !message.type.startsWith('treestyletab:'))
     return;
 
   onMessage(message, sender.tab);

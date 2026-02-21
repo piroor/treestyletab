@@ -37,7 +37,7 @@ export const DEVICE_SPECIFIC_CONFIG_KEYS = mapAndFilter(`
   syncOtherDevicesDetected
 `.trim().split('\n'), key => {
   key = key.trim();
-  return key && key.indexOf('//') != 0 && key;
+  return key && !key.startsWith('//') && key;
 });
 
 const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
@@ -78,7 +78,7 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
   runTestsParameters
 `.trim().split('\n'), key => {
   key = key.trim();
-  return key && key.indexOf('//') != 0 && key;
+  return key && !key.startsWith('//') && key;
 }));
 
 const obsoleteConfigs = new Set(mapAndFilter(`
@@ -124,7 +124,7 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   key = key.replace(/\/\/.*/, '').trim();
   if (!key)
     return undefined;
-  return key && key.indexOf('//') != 0 && key;
+  return key && !key.startsWith('//') && key;
 }));
 
 
@@ -762,10 +762,7 @@ export function log(module, ...args) {
   args = args.map(arg => typeof arg == 'function' ? arg() : arg);
 
   const nest = (new Error()).stack.split('\n').length;
-  let indent = '';
-  for (let i = 0; i < nest; i++) {
-    indent += ' ';
-  }
+  const indent = ' '.repeat(nest);
   if (isModuleLog)
     module = `${module}: `
   else

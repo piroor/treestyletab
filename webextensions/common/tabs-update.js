@@ -169,7 +169,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if ('url' in newState &&
-      newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+      newState.url.startsWith(Constants.kGROUP_TAB_URI)) {
     tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
     update.isGroupTab = true;
     Tab.onGroupTabDetected.dispatch(tab);

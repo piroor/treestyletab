@@ -1483,7 +1483,7 @@ export class Tab extends TreeItem {
   }
 
   get hasGroupTabURL() {
-    return !!(this.raw?.url?.indexOf(Constants.kGROUP_TAB_URI) == 0);
+    return !!this.raw?.url?.startsWith(Constants.kGROUP_TAB_URI);
   }
 
   get isTemporaryGroupTab() {
@@ -2019,11 +2019,7 @@ export class Tab extends TreeItem {
   }
 
   get topmostSubtreeCollapsedAncestor() {
-    for (const ancestor of [...this.ancestors].reverse()) {
-      if (ancestor.$TST.subtreeCollapsed)
-        return ancestor;
-    }
-    return null;
+    return this.ancestors.findLast(ancestor => ancestor.$TST.subtreeCollapsed) ?? null;
   }
 
   get nearestVisibleAncestorOrSelf() {
