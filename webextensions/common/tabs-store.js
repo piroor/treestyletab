@@ -736,7 +736,7 @@ export function removeBundledActiveTab(tab) {
 function addVirtualScrollRenderableTab(tab) {
   addTabToIndex(tab, virtualScrollRenderableTabsInWindow);
 }
-function removeVirtualScrollRenderableTab(tab) {
+export function removeVirtualScrollRenderableTab(tab) {
   removeTabFromIndex(tab, virtualScrollRenderableTabsInWindow);
 }
 

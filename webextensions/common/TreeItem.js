@@ -1309,6 +1309,7 @@ export class Tab extends TreeItem {
       TabsStore.tabsByUniqueId.delete(this.uniqueId.id);
 
     TabsStore.removeTabFromIndexes(this.raw);
+    TabsStore.removeVirtualScrollRenderableTab(this.raw);
 
     super.destroy();
   }
@@ -3129,16 +3130,11 @@ export class Tab extends TreeItem {
 
     const promisedTracked = waitUntilTracked(tabId, options);
     mPromisedTrackedTabs.set(key, promisedTracked);
-    return promisedTracked.then(tab => {
-      // Don't clear the last promise, because it is required to process following "waitUntilTracked" callbacks sequentially.
-      //if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      //  mPromisedTrackedTabs.delete(key);
-      return tab;
-    }).catch(_error => {
-      //if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      //  mPromisedTrackedTabs.delete(key);
-      return null;
-    });
+    return promisedTracked
+      .catch(_error => null)
+      .finally(() => {
+        mPromisedTrackedTabs.delete(key);
+      });
   }
 
   static needToWaitMoved(windowId) {
