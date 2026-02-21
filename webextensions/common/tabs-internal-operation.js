@@ -217,7 +217,7 @@ export function clearOldActiveStateInWindow(windowId, exception) {
   for (const oldTab of oldTabs) {
     if (oldTab.id == exception?.id)
       continue;
-    oldTab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
+    oldTab.$TST?.removeState(Constants.kTAB_STATE_ACTIVE);
     oldTab.active = false;
     oldTabs.delete(oldTab);
     Tab.onUnactivated.dispatch(oldTab);
