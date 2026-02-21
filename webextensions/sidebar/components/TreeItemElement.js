@@ -77,7 +77,6 @@ export class TreeItemElement extends HTMLElement {
     this.__onMouseOver = null;
     this.__onMouseEnter = null;
     this.__onMouseLeave = null;
-    this.__onConfigChange = null;
     this._extraItemsContainerIndentRoot = null;
     this._extraItemsContainerBehindRoot = null;
     this._extraItemsContainerFrontRoot = null;
@@ -573,7 +572,6 @@ index = ${raw.index}
     this.substanceElement?.addEventListener('mouseenter', this.__onMouseEnter);
     this.addEventListener('mouseleave', this.__onMouseLeave = this._onMouseLeave.bind(this));
     this.substanceElement?.addEventListener('mouseleave', this.__onMouseLeave);
-    configs.$addObserver(this.__onConfigChange = this._onConfigChange.bind(this));
   }
 
   _endListening() {
@@ -587,8 +585,6 @@ index = ${raw.index}
     this.removeEventListener('mouseleave', this.__onMouseLeave);
     this.substanceElement?.removeEventListener('mouseleave', this.__onMouseLeave);
     this.__onMouseLeave = null;
-    configs.$removeObserver(this.__onConfigChange);
-    this.__onConfigChange = null;
   }
 
   _onMouseOver(_event) {
@@ -631,14 +627,18 @@ index = ${raw.index}
     }
   }
 
-  _onConfigChange(changedKey) {
+  static onConfigChange(changedKey) {
     switch (changedKey) {
       case 'showCollapsedDescendantsByTooltip':
-        this.invalidateTooltip();
+        for (const element of document.querySelectorAll(kTREE_ITEM_ELEMENT_NAME)) {
+          element.invalidateTooltip();
+        }
         break;
 
       case 'labelOverflowStyle':
-        this.updateOverflow();
+        for (const element of document.querySelectorAll(kTREE_ITEM_ELEMENT_NAME)) {
+          element.updateOverflow();
+        }
         break;
     }
   }
@@ -863,3 +863,4 @@ index = ${raw.index}
 }
 
 window.addEventListener('resize', TreeItemElement.onWindowResize);
+configs.$addObserver(TreeItemElement.onConfigChange);
