@@ -283,8 +283,7 @@ async function updateInternal(tabId, excludeTabIds = []) {
 }
 
 async function tryClearOwnerSuccessor(tab) {
-  if (!tab ||
-      !tab.$TST.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
+  if (!tab?.$TST?.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
     return;
   tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
   const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
