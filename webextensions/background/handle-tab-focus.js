@@ -52,7 +52,7 @@ let mMaybeTabSwitchingByShortcut = false;
 
 const mLastTabsCountInWindow = new Map();
 
-Window.onInitialized.addListener(win => {
+Window.onTracked.addListener(win => {
   browser.tabs.query({
     windowId: win.id,
     active:   true

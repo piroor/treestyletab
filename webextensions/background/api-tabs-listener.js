@@ -145,7 +145,7 @@ async function onActivated(activeInfo) {
     await previous;
 
   try {
-    const win = Window.init(activeInfo.windowId);
+    const win = Window.track(activeInfo.windowId);
 
     const byInternalOperation = win.internallyFocusingTabs.has(activeInfo.tabId);
     win.internallyFocusingTabs.delete(activeInfo.tabId);
@@ -379,7 +379,7 @@ async function onCreated(tab) {
 }
 
 async function onNewTabTracked(tab, info) {
-  const win                  = Window.init(tab.windowId);
+  const win                  = Window.track(tab.windowId);
   const bypassTabControl     = win.bypassTabControlCount > 0;
   const isNewTabCommandTab   = win.toBeOpenedNewTabCommandTab > 0;
   const positionedBySelf     = win.toBeOpenedTabsWithPositions > 0;
@@ -823,7 +823,7 @@ async function onRemoved(tabId, removeInfo) {
     await mPromisedStarted;
 
   log('tabs.onRemoved: ', tabId, removeInfo);
-  const win                 = Window.init(removeInfo.windowId);
+  const win                 = Window.track(removeInfo.windowId);
   const byInternalOperation = win.internalClosingTabs.has(tabId);
   const preventEntireTreeBehavior = win.keepDescendantsTabs.has(tabId);
 
@@ -917,7 +917,7 @@ async function onRemoved(tabId, removeInfo) {
       byInternalOperation,
       preventEntireTreeBehavior,
     });
-    oldTab.$TST.destroy();
+    Tab.untrack(oldTab.id);
 
     for (const tab of nearestTabs) {
       tab?.$TST?.memorizeNeighbors('neighbor of closed tab');
@@ -938,7 +938,7 @@ async function onMoved(tabId, moveInfo) {
   if (mPromisedStarted)
     await mPromisedStarted;
 
-  const win = Window.init(moveInfo.windowId);
+  const win = Window.track(moveInfo.windowId);
 
   // Cancel in-progress highlighting, because tabs.highlight() uses old indices of tabs.
   win.tabsMovedWhileHighlighting = true;
@@ -1260,7 +1260,7 @@ async function onDetached(tabId, detachInfo) {
         // so we should not destroy the window immediately.
         if (oldWindow.tabs &&
             oldWindow.tabs.size == 0)
-          oldWindow.destroy();
+          Window.untrack(oldWindow.id);
       }, (configs.collapseDuration, 1000) * 5);
     }
 
@@ -1293,7 +1293,7 @@ async function onWindowRemoved(windowId) {
     const win = TabsStore.windows.get(windowId);
     if (win &&
         !TabsStore.getCurrentWindowId()) // skip destructor on sidebar
-      win.destroy();
+      Window.untrack(windowId);
 
     onCompleted();
   }
@@ -1312,7 +1312,7 @@ browser.windows.onFocusChanged.addListener(windowId => {
 async function onGroupCreated(group) {
   log('onGroupCreated ', group);
 
-  const trackedGroup = TabGroup.init(group);
+  const trackedGroup = TabGroup.track(group);
   TabsStore.windows.get(trackedGroup.windowId).tabGroups.set(group.id, trackedGroup);
 
   SidebarConnection.sendMessage({
@@ -1346,7 +1346,7 @@ async function onGroupRemoved(group) {
 
   const trackedGroup = TabGroup.get(group.id);
   if (trackedGroup.windowId == group.windowId) {
-    trackedGroup.$TST.destroy();
+    TabGroup.untrack(group.id);
   }
   else {
     log('onGroupRemoved: => moved to another window, no need to destroy');

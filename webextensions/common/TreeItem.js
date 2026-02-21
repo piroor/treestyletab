@@ -1083,7 +1083,7 @@ export class TabGroup extends TreeItem {
     return TabsStore.tabGroups.get(groupId);
   }
 
-  static init(group) {
+  static track(group) {
     if (group.$TST instanceof TabGroup) {
       return group;
     }
@@ -1095,6 +1095,13 @@ export class TabGroup extends TreeItem {
     }
     group.$TST = new TabGroup(group);
     return group;
+  }
+
+  static untrack(groupId) {
+    const group = TabGroup.get(groupId);
+    if (!group)
+      return;
+    group.$TST.destroy();
   }
 
   static getMembers(groupId, options = {}) {
@@ -1173,7 +1180,7 @@ export class Tab extends TreeItem {
 
   static onTracked      = new EventListenerManager();
   static onDestroyed    = new EventListenerManager();
-  static onInitialized  = new EventListenerManager();
+  static onTracking     = new EventListenerManager();
 
   //===================================================================
   // general tab events
@@ -3040,7 +3047,7 @@ export class Tab extends TreeItem {
   //===================================================================
 
   static reindex(tab) {
-    tab = Tab.ensureInit(tab);
+    tab = Tab.ensureTracked(tab);
     if (!tab)
       return null;
     const win = TabsStore.windows.get(tab.windowId);
@@ -3048,14 +3055,14 @@ export class Tab extends TreeItem {
     return tab;
   }
 
-  static ensureInit(tab, options = {}) {
+  static ensureTracked(tab, options = {}) {
     if (!tab)
       return null;
     const trackedTab = Tab.get(tab.id);
     if (trackedTab && trackedTab.$TST instanceof Tab)
       return trackedTab;
-    log('Tab.ensureInit: tab was not yet initialized, initializing now: ', tab.id);
-    return Tab.init(tab, { existing: true, ...options });
+    log('Tab.ensureTracked: tab was not yet tracked, tracking now: ', tab.id);
+    return Tab.track(tab, { existing: true, ...options });
   }
 
   static untrack(tabId) {
@@ -3065,6 +3072,8 @@ export class Tab extends TreeItem {
     const win = TabsStore.windows.get(tab.windowId);
     if (win)
       win.untrackTab(tabId);
+    if (Tab.get(tabId)) // detachTab was already done separately, destroy was skipped
+      tab.$TST.destroy();
   }
 
   static isTracked(tabId) {
@@ -3170,10 +3179,10 @@ export class Tab extends TreeItem {
     return Promise.all(tabSets.map(tabs => tabs && Promise.all(tabs)));
   }
 
-  static init(tab, options = {}) {
-    log('initialize tab ', tab);
+  static track(tab, options = {}) {
+    log('track tab ', tab);
     if (!tab) {
-      const error = new Error('Fatal error: invalid tab is given to Tab.init()');
+      const error = new Error('Fatal error: invalid tab is given to Tab.track()');
       console.log(error, stack(error.stack));
       throw error;
     }
@@ -3199,7 +3208,7 @@ export class Tab extends TreeItem {
     // See also: https://github.com/piroor/treestyletab/issues/2162
     // tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
-    Tab.onInitialized.dispatch(tab, options);
+    Tab.onTracking.dispatch(tab, options);
 
     if (options.existing) {
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
@@ -3228,7 +3237,7 @@ export class Tab extends TreeItem {
   static import(tab) {
     const existingTab = Tab.get(tab.id);
     if (!existingTab) {
-      return Tab.init(tab);
+      return Tab.track(tab);
     }
     existingTab.$TST.apply(tab);
     return existingTab;

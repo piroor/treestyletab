@@ -171,14 +171,14 @@ export async function init() {
 
       // Track only the first tab for now, because it is required to initialize
       // the container.
-      Tab.init(tabs[0], { existing: true });
+      Tab.track(tabs[0], { existing: true });
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
         let lastDraw = Date.now();
         let count = 0;
         const maxCount = tabs.length - 1;
         for (const tab of tabs.slice(1)) {
-          Tab.init(tab, { existing: true });
+          Tab.track(tab, { existing: true });
           if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
             UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs
             await nextFrame();
@@ -554,7 +554,7 @@ async function rebuildAll(importedWindow) {
   MetricsData.add('rebuildAll: start');
   const trackedWindow = TabsStore.windows.get(mTargetWindow);
   if (!trackedWindow)
-    Window.init(mTargetWindow);
+    Window.track(mTargetWindow);
 
   if (!importedWindow)
     importedWindow = await MetricsData.addAsync('rebuildAll: import tabs and groups', browser.runtime.sendMessage({
@@ -572,12 +572,12 @@ async function rebuildAll(importedWindow) {
 
   const tabs = importedWindow.tabs.map(importedTab => Tab.import(importedTab));
 
-  Window.init(mTargetWindow, importedWindow.tabGroups.map(TabGroup.init));
+  Window.track(mTargetWindow, importedWindow.tabGroups.map(TabGroup.track));
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
   for (const tab of tabs) {
-    const trackedTab = Tab.init(tab, { existing: true });
+    const trackedTab = Tab.track(tab, { existing: true });
     const group = trackedTab.$TST.nativeTabGroup;
     if (group?.collapsed) {
       CollapseExpand.setCollapsed(tab, {

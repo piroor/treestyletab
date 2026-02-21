@@ -1490,7 +1490,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
     try {
       let win;
       const prepareWindow = () => {
-        win = Window.init(destinationWindowId);
+        win = Window.track(destinationWindowId);
         if (isAcrossWindows) {
           win.toBeOpenedTabsWithPositions += tabs.length;
           win.toBeOpenedOrphanTabs += tabs.length;

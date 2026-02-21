@@ -263,10 +263,10 @@ async function rebuildAll(windows) {
     await MetricsData.addAsync(`rebuildAll: tabs in window ${win.id}`, async () => {
       let trackedWindow = TabsStore.windows.get(win.id);
       if (!trackedWindow)
-        trackedWindow = Window.init(win.id, win.tabGroups.map(TabGroup.init));
+        trackedWindow = Window.track(win.id, win.tabGroups.map(TabGroup.track));
 
       for (const tab of win.tabs) {
-        Tab.init(tab, { existing: true });
+        Tab.track(tab, { existing: true });
         tryStartHandleAccelKeyOnTab(tab);
       }
       try {
@@ -288,7 +288,7 @@ async function rebuildAll(windows) {
       }
       try {
         log(`build tabs for ${win.id} from scratch`);
-        Window.init(win.id, win.tabGroups.map(TabGroup.init));
+        Window.track(win.id, win.tabGroups.map(TabGroup.track));
         const promises = [];
         for (let tab of win.tabs) {
           tab = Tab.get(tab.id);

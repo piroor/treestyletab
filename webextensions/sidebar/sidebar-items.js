@@ -438,7 +438,7 @@ export function unrenderItem(item) {
   return true;
 }
 
-Window.onInitialized.addListener(win => {
+Window.onTracked.addListener(win => {
   const windowId = win.id;
   win = TabsStore.windows.get(windowId);
 
@@ -823,7 +823,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           break;
       }
 
-      const tab = Tab.init(nativeTab, { inBackground: true });
+      const tab = Tab.track(nativeTab);
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
 
       for (const tab of Tab.getAllTabs(message.windowId, { fromId: nativeTab.id })) {
@@ -1165,8 +1165,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
-      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
-      tab.$TST.destroy();
+      Tab.untrack(message.tabId);
       unrenderItem(tab);
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);
@@ -1439,7 +1438,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_CREATED:
-      TabGroup.init(message.group)
+      TabGroup.track(message.group)
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_UPDATED: {
@@ -1452,7 +1451,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_REMOVED:
-      TabGroup.get(message.group.id)?.$TST.destroy();
+      TabGroup.untrack(message.group.id);
       break;
   }
 });

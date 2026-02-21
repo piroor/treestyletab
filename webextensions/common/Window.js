@@ -301,13 +301,19 @@ export default class Window {
   }
 }
 
-Window.onInitialized = new EventListenerManager();
+Window.onTracked = new EventListenerManager();
 
-Window.init = (windowId, tabGroups) => {
+Window.track = (windowId, tabGroups) => {
   const win = TabsStore.windows.get(windowId) || new Window(windowId, tabGroups);
   if (tabGroups && tabGroups.size != win.tabGroups.size) {
     win.initTabGroups(tabGroups);
   }
-  Window.onInitialized.dispatch(win);
+  Window.onTracked.dispatch(win);
   return win;
-}
+};
+
+Window.untrack = (windowId) => {
+  const win = TabsStore.windows.get(windowId);
+  if (win)
+    win.destroy();
+};
