@@ -409,8 +409,8 @@ async function notifyPermissionRequest(addon, requestedPermissions) {
   mPermissionNotificationForAddon.set(addon.id, id);
 }
 
-function setPermissions(addon, permisssions) {
-  addon.grantedPermissions = permisssions;
+function setPermissions(addon, permissions) {
+  addon.grantedPermissions = permissions;
   const cachedPermissions = JSON.parse(JSON.stringify(configs.grantedExternalAddonPermissions));
   cachedPermissions[addon.id] = Array.from(addon.grantedPermissions);
   configs.grantedExternalAddonPermissions = cachedPermissions;

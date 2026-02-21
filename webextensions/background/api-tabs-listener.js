@@ -209,7 +209,7 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    const onActivatedReuslt = Tab.onActivated.dispatch(newActiveTab, {
+    const onActivatedResult = Tab.onActivated.dispatch(newActiveTab, {
       ...activeInfo,
       oldActiveTabs,
       byActiveTabRemove,
@@ -219,8 +219,8 @@ async function onActivated(activeInfo) {
       silently
     });
     // don't do await if not needed, to process things synchronously
-    if (onActivatedReuslt instanceof Promise)
-      await onActivatedReuslt;
+    if (onActivatedResult instanceof Promise)
+      await onActivatedResult;
 
     SidebarConnection.sendMessage({
       type:     Constants.kCOMMAND_NOTIFY_TAB_ACTIVATED,
@@ -410,7 +410,7 @@ async function onNewTabTracked(tab, info) {
   tab.$possibleInitialUrl = tab.title;
 
   // We need to track new tab after getting old active tab. Otherwise, this
-  // operation updates the latest active tab in the window amd it becomes
+  // operation updates the latest active tab in the window and it becomes
   // impossible to know which tab was previously active.
   tab = Tab.track(tab);
   metric.add('tracked');
@@ -907,10 +907,10 @@ async function onRemoved(tabId, removeInfo) {
       toBeRemoved: true
     });
 
-    const onRemovedReuslt = Tab.onRemoved.dispatch(oldTab, removeInfo);
+    const onRemovedResult = Tab.onRemoved.dispatch(oldTab, removeInfo);
     // don't do await if not needed, to process things synchronously
-    if (onRemovedReuslt instanceof Promise)
-      await onRemovedReuslt;
+    if (onRemovedResult instanceof Promise)
+      await onRemovedResult;
 
     SidebarConnection.sendMessage({
       type:            Constants.kCOMMAND_NOTIFY_TAB_REMOVED,

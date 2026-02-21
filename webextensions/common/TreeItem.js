@@ -1588,13 +1588,13 @@ export class Tab extends TreeItem {
       const url = this.raw.$possibleInitialUrl;
       try {
         const possibleBookmarks = await Promise.all([
-          this._safeSearchBookmstksWithUrl(`http://${url}`),
-          this._safeSearchBookmstksWithUrl(`http://www.${url}`),
-          this._safeSearchBookmstksWithUrl(`https://${url}`),
-          this._safeSearchBookmstksWithUrl(`https://www.${url}`),
-          this._safeSearchBookmstksWithUrl(`ftp://${url}`),
-          this._safeSearchBookmstksWithUrl(`moz-extension://${url}`),
-          this._safeSearchBookmstksWithUrl(url), // about:* and so on
+          this._safeSearchBookmarksWithUrl(`http://${url}`),
+          this._safeSearchBookmarksWithUrl(`http://www.${url}`),
+          this._safeSearchBookmarksWithUrl(`https://${url}`),
+          this._safeSearchBookmarksWithUrl(`https://www.${url}`),
+          this._safeSearchBookmarksWithUrl(`ftp://${url}`),
+          this._safeSearchBookmarksWithUrl(`moz-extension://${url}`),
+          this._safeSearchBookmarksWithUrl(url), // about:* and so on
         ]);
         log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
         const result = possibleBookmarks.flat();
@@ -1610,12 +1610,12 @@ export class Tab extends TreeItem {
       }
     });
   }
-  async _safeSearchBookmstksWithUrl(url) {
+  async _safeSearchBookmarksWithUrl(url) {
     try {
       return await browser.bookmarks.search({ url });
     }
     catch(error) {
-      log(`_searchBookmstksWithUrl failed: tab ${this.id} (${url}): `, error);
+      log(`_searchBookmarksWithUrl failed: tab ${this.id} (${url}): `, error);
       try {
         // bookmarks.search() does not accept "moz-extension:" URL
         // via a query with "url" on Firefox 105 and later - it raises an error as
