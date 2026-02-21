@@ -36,10 +36,10 @@
   }, { once: true });
 
   function getTitle() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     let title = url.searchParams.get('title');
     if (!title) {
-      const matched = location.search.match(/^\?([^&;]*)/);
+      const matched = window.location.search.match(/^\?([^&;]*)/);
       if (matched)
         title = decodeURIComponent(matched[1]);
     }
@@ -54,27 +54,27 @@
   }
 
   function isTemporary() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     return url.searchParams.get('temporary') == 'true';
   }
 
   function isTemporaryAggressive() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     return url.searchParams.get('temporaryAggressive') == 'true';
   }
 
   function getOpenerTabId() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     return url.searchParams.get('openerTabId');
   }
 
   function getAliasTabId() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     return url.searchParams.get('aliasTabId');
   }
 
   function getReplacedParentCount() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     const count = parseInt(url.searchParams.get('replacedParentCount'));
     return isNaN(count) ? 0 : count;
   }
@@ -107,7 +107,7 @@
   }
 
   function updateParameters({ title } = {}) {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     url.searchParams.set('title', title || getTitle() || '');
 
     if (gTemporaryCheck.checked)
@@ -138,7 +138,7 @@
     else
       url.searchParams.delete('replacedParentCount');
 
-    history.replaceState({}, document.title, url.href);
+    window.history.replaceState({}, document.title, url.href);
   }
 
   async function init(retryCount = 0) {
@@ -320,7 +320,7 @@
     hint.style.display = show ? 'block' : 'none';
 
     if (show) {
-      const uri = `moz-extension://${location.host}/options/options.html#${optionPageSection}`;
+      const uri = `moz-extension://${window.location.host}/options/options.html#${optionPageSection}`;
       hint.firstChild.addEventListener('click', event => {
         if (event.button != 0)
           return;
@@ -373,7 +373,7 @@
           return Promise.resolve(true);
 
         case 'treestyletab:replace-state-url':
-          history.replaceState({}, document.title, message.url);
+          window.history.replaceState({}, document.title, message.url);
           return Promise.resolve(true);
 
         case 'treestyletab:update-tree':
@@ -440,7 +440,7 @@
 
     /*
     console.log('updateTree ', {
-      ur: location.href,
+      ur: window.location.href,
       openerTabId: getOpenerTabId(),
       openerTab,
       aliasTabId: getAliasTabId(),
