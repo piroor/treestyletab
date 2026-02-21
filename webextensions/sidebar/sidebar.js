@@ -171,14 +171,14 @@ export async function init() {
 
       // Track only the first tab for now, because it is required to initialize
       // the container.
-      Tab.track(tabs[0], { existing: true });
+      Tab.track(tabs[0]);
 
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
         let lastDraw = Date.now();
         let count = 0;
         const maxCount = tabs.length - 1;
         for (const tab of tabs.slice(1)) {
-          Tab.track(tab, { existing: true });
+          Tab.track(tab);
           if (Date.now() - lastDraw > configs.intervalToUpdateProgressForBlockedUserOperation) {
             UserOperationBlocker.setProgress(Math.round(++count / maxCount * 16) + 16); // 2/6: track all tabs
             await nextFrame();
