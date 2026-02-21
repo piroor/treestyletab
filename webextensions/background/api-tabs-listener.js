@@ -412,7 +412,7 @@ async function onNewTabTracked(tab, info) {
   // We need to track new tab after getting old active tab. Otherwise, this
   // operation updates the latest active tab in the window amd it becomes
   // impossible to know which tab was previously active.
-  tab = Tab.reindex(tab)
+  tab = Tab.reindex(tab);
   metric.add('reindex');
 
   if (isNewTabCommandTab)
