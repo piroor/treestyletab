@@ -1859,7 +1859,7 @@ export function onMessageExternal(message, sender) {
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kFAKE_CONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
-      delete mExtraItems.delete(sender.id);
+      mExtraItems.delete(sender.id);
       return reserveNotifyUpdated();
     }; break;
   }
