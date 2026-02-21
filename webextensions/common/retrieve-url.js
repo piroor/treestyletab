@@ -136,7 +136,7 @@ function sanitizeURLs(urls) {
   const filteredUrls = urls.filter(url =>
     url &&
       url.length &&
-      url.indexOf(kBOOKMARK_FOLDER) == 0 ||
+      url.startsWith(kBOOKMARK_FOLDER) ||
       !/^\s*(javascript|data):/.test(url)
   );
   log('sanitizeURLs filtered: ', filteredUrls);

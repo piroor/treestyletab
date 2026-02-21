@@ -523,7 +523,7 @@ function onMessage(message, sender) {
   if (mInitializationPhase < PHASE_BACKGROUND_BUILT ||
       !message ||
       typeof message.type != 'string' ||
-      message.type.indexOf('treestyletab:') != 0)
+      !message.type.startsWith('treestyletab:'))
     return;
 
   //log('onMessage: ', message, sender);

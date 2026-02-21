@@ -226,7 +226,7 @@ function getTabPosition(tab) {
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
-      message.type.indexOf('treestyletab:') != 0)
+      !message.type.startsWith('treestyletab:'))
     return;
 
   if (message.windowId &&

@@ -1004,8 +1004,7 @@ function updateTabsIndent(tabs, level = undefined, options = {}) {
   if (level === undefined)
     level = tabs[0].$TST.ancestors.length;
 
-  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
-    const item = tabs[i];
+  for (const item of tabs) {
     if (!item || item.pinned)
       continue;
 

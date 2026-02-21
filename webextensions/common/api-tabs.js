@@ -112,7 +112,7 @@ export function createErrorSuppressor(...handlers) {
     catch(newError) {
       if (error &&
           error.message &&
-          error.message.indexOf('Could not establish connection. Receiving end does not exist.') == 0)
+          error.message.startsWith('Could not establish connection. Receiving end does not exist.'))
         return;
       if (!configs.debug)
         return;

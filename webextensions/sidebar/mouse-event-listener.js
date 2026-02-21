@@ -1203,7 +1203,7 @@ function onContextualIdentitySelect(item, event) {
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
-      message.type.indexOf('treestyletab:') != 0)
+      !message.type.startsWith('treestyletab:'))
     return;
 
   //log('onMessage: ', message, sender);
