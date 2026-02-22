@@ -131,6 +131,8 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
     // Pinned tab is moved at first, so Tab.onPinned handler cannot know tree information
     // before the pinned tab was moved. Thus we cache tree information for the handler.
     wait(100).then(() => {
+      if (!tab.$TST)
+        return;
       tab.$TST.temporaryMetadata.delete('childIdsBeforeMoved');
       tab.$TST.temporaryMetadata.delete('parentIdBeforeMoved');
     });

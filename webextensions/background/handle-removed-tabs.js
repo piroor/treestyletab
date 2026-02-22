@@ -176,7 +176,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
         allClosingTabs.add(tab);
       return id;
     });
-    allClosingTabs = Array.from(allClosingTabs);
+    allClosingTabs = Array.from(allClosingTabs).filter(tab => tab.$TST);
     shouldRestoreCount = self.closingTabIds.length;
     const restorableClosingTabsCount = countMatched(
       allClosingTabs,

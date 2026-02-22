@@ -239,6 +239,8 @@ export async function attachTabTo(child, parent, options = {}) {
     browser.tabs.update(child.id, { openerTabId: parent.id })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     wait(200).then(() => {
+      if (!child.$TST)
+        return;
       const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
       child.$TST.updatingOpenerTabIds.splice(index, 1);
     });
