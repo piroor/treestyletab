@@ -1129,7 +1129,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       TabsStore.removeHighlightedTab(tab);
       TabsStore.removeGroupTab(tab);
       TabsStore.addRemovingTab(tab);
-      TabsStore.addRemovedTab(tab); // reserved
+      TabsStore.rememberRemovedTabId(tab.id); // reserved
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
       reserveToUpdateLoadingState();
       if (tab.active) {
@@ -1359,7 +1359,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
       tab.$TST.parent = null;
-      TabsStore.addRemovedTab(tab);
+      TabsStore.rememberRemovedTabId(tab.id);
       const win = TabsStore.windows.get(message.windowId);
       win.detachTab(message.tabId);
       Tab.untrack(message.tabId);
@@ -1370,7 +1370,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
-      wait(500).then(TabsStore.removeRemovedTab.bind(TabsStore, tab));
+      wait(500).then(TabsStore.expireRemovedTabId.bind(null, tab.id));
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {

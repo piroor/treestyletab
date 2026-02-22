@@ -3130,12 +3130,8 @@ export class Tab extends TreeItem {
     if (Array.isArray(tabId))
       return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
 
-    const windowId = TabsStore.getCurrentWindowId();
-    if (windowId) {
-      const tabs = TabsStore.removedTabsInWindow.get(windowId);
-      if (tabs?.has(tabId))
-        return null; // already removed tab
-    }
+    if (TabsStore.removedTabIds.has(tabId))
+      return null; // already removed tab
 
     const key = `${tabId}:${!!options.element}`;
     if (mPromisedTrackedTabs.has(key))

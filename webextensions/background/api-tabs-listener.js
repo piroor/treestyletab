@@ -862,7 +862,7 @@ async function onRemoved(tabId, removeInfo) {
     TabsStore.removeHighlightedTab(oldTab);
     TabsStore.removeGroupTab(oldTab);
 
-    TabsStore.addRemovedTab(oldTab);
+    TabsStore.rememberRemovedTabId(oldTab.id);
 
     removeInfo = {
       ...removeInfo,
@@ -1246,7 +1246,7 @@ async function onDetached(tabId, detachInfo) {
     catch(_error) {
     }
 
-    TabsStore.addRemovedTab(oldTab);
+    TabsStore.rememberRemovedTabId(oldTab.id);
     oldWindow.detachTab(oldTab.id, {
       toBeDetached: true
     });
