@@ -184,19 +184,30 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     reserveToAttachTabFromRestoredInfo.waiting = null;
     const tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
     reserveToAttachTabFromRestoredInfo.tasks = [];
-    const uniqueIds = tasks.map(task => task.tab.$TST.uniqueId);
     const bulk = tasks.length > 1;
-    const attachedResults = await Promise.all(uniqueIds.map((uniqueId, index) => {
-      const task = tasks[index];
-      return attachTabFromRestoredInfo(task.tab, {
+    // Phase 0: resolve all unique IDs before collecting info
+    await Tab.waitUntilTracked(tasks.map(task => task.tab.id));
+    // Phase 1: collect restored info for all tabs in parallel
+    const restoredInfos = await Promise.all(tasks.map((task, index) =>
+      collectRestoredTabInfo(task.tab, {
         ...task.options,
-        uniqueId,
-        bulk
+        canCollapse: task.options.canCollapse || bulk,
       }).catch(error => {
         console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error on processing task ${index}, ${error}`, stack(error.stack));
         return false;
-      });
-    }));
+      })
+    ));
+    // Phase 2: apply tree structure sequentially
+    const attachedResults = [];
+    for (const info of restoredInfos) {
+      try {
+        attachedResults.push(info ? await applyRestoredTabInfo(info) : false);
+      }
+      catch(error) {
+        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error applying info, ${error}`, stack(error.stack));
+        attachedResults.push(false);
+      }
+    }
     if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
       reserveToAttachTabFromRestoredInfo.onDone(attachedResults.every(attached => !!attached));
     delete reserveToAttachTabFromRestoredInfo.onDone;
@@ -210,11 +221,11 @@ reserveToAttachTabFromRestoredInfo.tasks   = [];
 reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 
-async function attachTabFromRestoredInfo(tab, options = {}) {
-  log('attachTabFromRestoredInfo ', tab, options);
+async function collectRestoredTabInfo(tab, options = {}) {
+  log('collectRestoredTabInfo ', tab, options);
   if (tab.$TST.temporaryMetadata.has('treeStructureAlreadyRestoredFromSessionData')) {
     log(' => already restored ', tab.id);
-    return;
+    return null;
   }
 
   let uniqueId, insertBefore, insertAfter, insertAfterLegacy, ancestors, children, states, collapsed /* for backward compatibility */;
@@ -274,24 +285,35 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       nextOfInsertAfter.pinned)
     insertAfter = null;
 
+  return {
+    tab, insertBefore, insertAfter,
+    ancestors, children,
+    active:           tab.active,
+    maybeRecycledTab,
+    subtreeCollapsed: states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED),
+    keepCurrentTree:  options.keepCurrentTree,
+    canCollapse:      options.canCollapse,
+    processChildren:  options.children,
+  };
+}
+
+async function applyRestoredTabInfo(info) {
+  const { tab, insertBefore, insertAfter, ancestors, children,
+    active, maybeRecycledTab, subtreeCollapsed,
+    keepCurrentTree, canCollapse, processChildren } = info;
+
   let attached = false;
-  const active = tab.active;
-  const promises = [];
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
     log(' attach to old ancestor: ', tab.id, { child: tab, parent: ancestor });
-    const promisedDone = Tree.attachTabTo(tab, ancestor, {
+    await Tree.attachTabTo(tab, ancestor, {
       insertBefore,
       insertAfter,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
     });
-    if (options.bulk)
-      promises.push(promisedDone);
-    else
-      await promisedDone;
     attached = true;
     break;
   }
@@ -300,20 +322,15 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', tab.id, { child: tab, parent: opener });
-      const promisedDone = Tree.attachTabTo(tab, opener, {
+      await Tree.attachTabTo(tab, opener, {
         dontExpand:  !active,
         forceExpand: active,
         broadcast:   true,
         insertAt:    Constants.kINSERT_NEAREST
       });
-      if (options.bulk)
-        promises.push(promisedDone);
-      else
-        await promisedDone;
     }
-    else if (!options.bulk &&
-             (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
-              tab.$TST.nearestCompletelyOpenedNormalPrecedingTab)) {
+    else if (tab.$TST.nearestCompletelyOpenedNormalFollowingTab ||
+             tab.$TST.nearestCompletelyOpenedNormalPrecedingTab) {
       log(' attach from position: ', tab.id);
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
@@ -321,7 +338,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       });
     }
   }
-  if (!options.keepCurrentTree &&
+  if (!keepCurrentTree &&
       // the restored tab is a root tab
       ancestors.length == 0 &&
       // but attached to any parent based on its restored position
@@ -332,7 +349,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       broadcast: true
     });
   }
-  if (options.children && !options.bulk) {
+  if (processChildren) {
     let firstInTree = tab.$TST.firstChild || tab;
     let lastInTree  = tab.$TST.lastDescendant || tab;
     for (const child of children) {
@@ -352,22 +369,20 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     }
   }
 
-  const subtreeCollapsed = states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  log('restore subtree collapsed state: ', tab.id, { current: tab.$TST.subtreeCollapsed, expected: subtreeCollapsed, ...options });
-  if ((options.canCollapse || options.bulk) &&
+  log('restore subtree collapsed state: ', tab.id, { current: tab.$TST.subtreeCollapsed, expected: subtreeCollapsed, canCollapse });
+  if (canCollapse &&
       tab.$TST.subtreeCollapsed != subtreeCollapsed) {
-    const promisedDone = Tree.collapseExpandSubtree(tab, {
+    await Tree.collapseExpandSubtree(tab, {
       broadcast: true,
       collapsed: subtreeCollapsed,
       justNow:   true
     });
-    promises.push(promisedDone);
   }
 
   const updateCollapsedState = () => {
     const shouldBeCollapsed = tab.$TST.ancestors.some(ancestor => ancestor.$TST.collapsed || ancestor.$TST.subtreeCollapsed);
     log('update collapsed state: ', tab.id, { current: tab.$TST.collapsed, expected: shouldBeCollapsed });
-    if ((options.canCollapse || options.bulk) &&
+    if (canCollapse &&
         tab.$TST.collapsed != shouldBeCollapsed) {
       Tree.collapseExpandTabAndSubtree(tab, {
         broadcast: true,
@@ -385,10 +400,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   if (!maybeRecycledTab)
     tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
 
-  if (options.bulk)
-    await Promise.all(promises).then(updateCollapsedState);
-  else
-    updateCollapsedState();
+  updateCollapsedState();
 
   return attached;
 }
