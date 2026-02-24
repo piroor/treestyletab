@@ -48,10 +48,6 @@ export function getRenderedTabHeight() {
   return mTabHeight + mTabYOffset;
 }
 
-export function getTabXOffset() {
-  return mTabXOffset;
-}
-
 export function getTabYOffset() {
   return mTabYOffset;
 }
@@ -66,10 +62,6 @@ export function getTabMarginBlockEnd() {
 
 export function getFavIconSize() {
   return mFavIconSize;
-}
-
-export function getFavIconizedTabSize() {
-  return mFavIconizedTabSize;
 }
 
 export function getFavIconizedTabXOffset() {

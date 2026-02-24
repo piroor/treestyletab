@@ -369,7 +369,7 @@ xmp
 `.trim().split('\n').filter(selector => !selector.startsWith('//'));
 const DANGEROUS_CONTENTS_SELECTOR = SAFE_CONTENTS.map(selector => `:not(${selector})`).join('');
 
-export function setExtraContentsTo(tab, id, params = {}) {
+function setExtraContentsTo(tab, id, params = {}) {
   if (!tab || !tab.$TST.element)
     return;
   if (typeof id != 'string') { // the addon id is optional
@@ -594,7 +594,7 @@ function throttledUpdateSize() {
   });
 }
 
-export function clearExtraTabContentsIn(tab, id) {
+function clearExtraTabContentsIn(tab, id) {
   if (!tab || !tab.$TST.element)
     return;
   if (!id) // the addon id is optional
@@ -614,7 +614,7 @@ function clearExtraTabContentsInElement(tabElement, id) {
   onExtraContentsBelowChanged(id);
 }
 
-export function clearAllExtraTabContents(id) {
+function clearAllExtraTabContents(id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
 
@@ -633,7 +633,7 @@ export function clearAllExtraTabContents(id) {
 }
 
 
-export function setExtraNewTabButtonContents(id, params = {}) {
+function setExtraNewTabButtonContents(id, params = {}) {
   if (typeof id != 'string') { // addon id is optional
     params = id;
     id = browser.runtime.id;
@@ -647,14 +647,14 @@ export function setExtraNewTabButtonContents(id, params = {}) {
   });
 }
 
-export function clearExtraNewTabButtonContents(id) {
+function clearExtraNewTabButtonContents(id) {
   if (!id)
     setExtraNewTabButtonContents({});
   setExtraNewTabButtonContents(id, {});
 }
 
 
-export function setExtraTabbarTopContents(id, params = {}) {
+function setExtraTabbarTopContents(id, params = {}) {
   if (typeof id != 'string') { // the addon id is optional
     params = id;
     id = browser.runtime.id;
@@ -666,14 +666,14 @@ export function setExtraTabbarTopContents(id, params = {}) {
   });
 }
 
-export function clearExtraTabbarTopContents(id) {
+function clearExtraTabbarTopContents(id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
   setExtraTabbarTopContents(id, {});
 }
 
 
-export function setExtraTabbarBottomContents(id, params = {}) {
+function setExtraTabbarBottomContents(id, params = {}) {
   if (typeof id != 'string') {
     params = id;
     id = browser.runtime.id;
@@ -685,7 +685,7 @@ export function setExtraTabbarBottomContents(id, params = {}) {
   });
 }
 
-export function clearExtraTabbarBottomContents(id) {
+function clearExtraTabbarBottomContents(id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
   setExtraTabbarBottomContents(id, {});

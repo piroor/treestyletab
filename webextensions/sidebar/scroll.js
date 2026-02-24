@@ -893,7 +893,7 @@ function stopSmoothScroll() {
 
 /* advanced operations */
 
-export function scrollToNewTab(item, options = {}) {
+function scrollToNewTab(item, options = {}) {
   if (!canScrollToItem(item))
     return;
 
@@ -1255,7 +1255,7 @@ function reReserveScrollingForItem(item) {
 function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
-      message.type.indexOf('treestyletab:') != 0)
+      !message.type.startsWith('treestyletab:'))
     return;
 
   if (message.windowId &&

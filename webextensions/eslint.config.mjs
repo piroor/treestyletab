@@ -1,8 +1,10 @@
 import _import from 'eslint-plugin-import';
 import { fixupPluginRules } from '@eslint/compat';
 import babelParser from '@babel/eslint-parser';
+import confusingBrowserGlobals from 'confusing-browser-globals';
 import globals from 'globals';
 import indentInParens from 'eslint-plugin-indent-in-parens';
+import noDeadEventListener from 'webextensions-lib-event-listener-manager';
 
 const languageOptions = {
   globals: {
@@ -22,6 +24,8 @@ const languageOptions = {
 };
 
 const rules = {
+  'no-restricted-globals': ['error', ...confusingBrowserGlobals],
+
   'no-const-assign': 'error',
 
   'prefer-const': ['warn', {
@@ -89,13 +93,14 @@ const rules = {
     asyncArrow: 'always',
   }],
 
-  'space-before-blocks':               ['warn', 'always'],
-  'func-call-spacing':                 ['warn', 'never'],
-  'space-in-parens':                   ['warn', 'never'],
-  'comma-spacing':                     ['warn', { before: false, after: true }],
-  'key-spacing':                       ['warn', { beforeColon: false, afterColon: true, align: 'value' }],
-  'space-infix-ops':                   'warn',
-  'indent-in-parens/indent-in-parens': ['warn', 2],
+  'space-before-blocks':                           ['warn', 'always'],
+  'func-call-spacing':                             ['warn', 'never'],
+  'space-in-parens':                               ['warn', 'never'],
+  'comma-spacing':                                 ['warn', { before: false, after: true }],
+  'key-spacing':                                   ['warn', { beforeColon: false, afterColon: true, align: 'value' }],
+  'space-infix-ops':                               'warn',
+  'indent-in-parens/indent-in-parens':             ['warn', 2],
+  'no-dead-event-listener/no-dead-event-listener': 'warn',
 };
 
 const ESModuleFiles = [
@@ -115,7 +120,8 @@ export default [{ // global
   ignores: [...ESModuleFiles],
   languageOptions,
   plugins: {
-    'indent-in-parens': indentInParens,
+    'indent-in-parens':       indentInParens,
+    'no-dead-event-listener': noDeadEventListener,
   },
   rules,
 }, { // ES modules
@@ -124,8 +130,9 @@ export default [{ // global
   languageOptions,
 
   plugins: {
-    import:             fixupPluginRules(_import),
-    'indent-in-parens': indentInParens,
+    import:                   fixupPluginRules(_import),
+    'indent-in-parens':       indentInParens,
+    'no-dead-event-listener': noDeadEventListener,
   },
 
   settings: {

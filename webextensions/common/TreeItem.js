@@ -43,9 +43,9 @@ function successorTabLog(...args) {
 
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-export const kPERMISSION_ACTIVE_TAB = 'activeTab';
-export const kPERMISSION_TABS       = 'tabs';
-export const kPERMISSION_COOKIES    = 'cookies';
+const kPERMISSION_ACTIVE_TAB = 'activeTab';
+const kPERMISSION_TABS       = 'tabs';
+const kPERMISSION_COOKIES    = 'cookies';
 export const kPERMISSION_INCOGNITO  = 'incognito'; // only for internal use
 export const kPERMISSIONS_ALL = new Set([
   kPERMISSION_TABS,
@@ -866,7 +866,7 @@ export class TreeItem {
 }
 
 
-export class TabGroupCollapsedMembersCounter extends TreeItem {
+class TabGroupCollapsedMembersCounter extends TreeItem {
   constructor(raw) {
     super(raw);
 
@@ -1196,8 +1196,8 @@ export class Tab extends TreeItem {
   static onTabInternallyMoved     = new EventListenerManager();
   static onCollapsedStateChanged  = new EventListenerManager();
   static onMutedStateChanged      = new EventListenerManager();
-  static onAutoplayBlockedStateChanged = new EventListenerManager();
-  static onSharingStateChanged    = new EventListenerManager();
+  //static onAutoplayBlockedStateChanged = new EventListenerManager();
+  //static onSharingStateChanged    = new EventListenerManager();
 
   static onBeforeCreate     = new EventListenerManager();
   static onCreating         = new EventListenerManager();
@@ -1316,6 +1316,7 @@ export class Tab extends TreeItem {
       TabsStore.tabsByUniqueId.delete(this.uniqueId.id);
 
     TabsStore.removeTabFromIndexes(this.raw);
+    TabsStore.removeVirtualScrollRenderableTab(this.raw);
 
     super.destroy();
   }
@@ -1490,7 +1491,7 @@ export class Tab extends TreeItem {
   }
 
   get hasGroupTabURL() {
-    return !!(this.raw?.url?.indexOf(Constants.kGROUP_TAB_URI) == 0);
+    return !!this.raw?.url?.startsWith(Constants.kGROUP_TAB_URI);
   }
 
   get isTemporaryGroupTab() {
@@ -1595,13 +1596,13 @@ export class Tab extends TreeItem {
       const url = this.raw.$possibleInitialUrl;
       try {
         const possibleBookmarks = await Promise.all([
-          this._safeSearchBookmstksWithUrl(`http://${url}`),
-          this._safeSearchBookmstksWithUrl(`http://www.${url}`),
-          this._safeSearchBookmstksWithUrl(`https://${url}`),
-          this._safeSearchBookmstksWithUrl(`https://www.${url}`),
-          this._safeSearchBookmstksWithUrl(`ftp://${url}`),
-          this._safeSearchBookmstksWithUrl(`moz-extension://${url}`),
-          this._safeSearchBookmstksWithUrl(url), // about:* and so on
+          this._safeSearchBookmarksWithUrl(`http://${url}`),
+          this._safeSearchBookmarksWithUrl(`http://www.${url}`),
+          this._safeSearchBookmarksWithUrl(`https://${url}`),
+          this._safeSearchBookmarksWithUrl(`https://www.${url}`),
+          this._safeSearchBookmarksWithUrl(`ftp://${url}`),
+          this._safeSearchBookmarksWithUrl(`moz-extension://${url}`),
+          this._safeSearchBookmarksWithUrl(url), // about:* and so on
         ]);
         log(`promisedPossibleOpenerBookmarks for tab ${this.id} (${url}): `, possibleBookmarks);
         const result = possibleBookmarks.flat();
@@ -1617,12 +1618,12 @@ export class Tab extends TreeItem {
       }
     });
   }
-  async _safeSearchBookmstksWithUrl(url) {
+  async _safeSearchBookmarksWithUrl(url) {
     try {
       return await browser.bookmarks.search({ url });
     }
     catch(error) {
-      log(`_searchBookmstksWithUrl failed: tab ${this.id} (${url}): `, error);
+      log(`_searchBookmarksWithUrl failed: tab ${this.id} (${url}): `, error);
       try {
         // bookmarks.search() does not accept "moz-extension:" URL
         // via a query with "url" on Firefox 105 and later - it raises an error as
@@ -2026,11 +2027,7 @@ export class Tab extends TreeItem {
   }
 
   get topmostSubtreeCollapsedAncestor() {
-    for (const ancestor of [...this.ancestors].reverse()) {
-      if (ancestor.$TST.subtreeCollapsed)
-        return ancestor;
-    }
-    return null;
+    return this.ancestors.findLast(ancestor => ancestor.$TST.subtreeCollapsed) ?? null;
   }
 
   get nearestVisibleAncestorOrSelf() {
@@ -3139,16 +3136,11 @@ export class Tab extends TreeItem {
 
     const promisedTracked = waitUntilTracked(tabId, options);
     mPromisedTrackedTabs.set(key, promisedTracked);
-    return promisedTracked.then(tab => {
-      // Don't clear the last promise, because it is required to process following "waitUntilTracked" callbacks sequentially.
-      //if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      //  mPromisedTrackedTabs.delete(key);
-      return tab;
-    }).catch(_error => {
-      //if (mPromisedTrackedTabs.get(key) == promisedTracked)
-      //  mPromisedTrackedTabs.delete(key);
-      return null;
-    });
+    return promisedTracked
+      .catch(_error => null)
+      .finally(() => {
+        mPromisedTrackedTabs.delete(key);
+      });
   }
 
   static needToWaitMoved(windowId) {
@@ -3882,132 +3874,81 @@ export class Tab extends TreeItem {
 }
 
 
-const mWaitingTasks = new Map();
-
-function destroyWaitingTabTask(task) {
-  const tasks = mWaitingTasks.get(task.tabId);
-  if (tasks)
-    tasks.delete(task);
-
-  if (task.timeout)
-    clearTimeout(task.timeout);
-
-  const resolve     = task.resolve;
-  const formattedStack = stack(task.stack);
-
-  task.tabId       = undefined;
-  task.resolve     = undefined;
-  task.timeout     = undefined;
-  task.stack       = undefined;
-
-  return { resolve, stack: formattedStack };
+function waitForTabTracking(tabId, stackTrace, signal) {
+  return new Promise(resolve => {
+    const timeout = setTimeout(() => {
+      log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\n${stackTrace}`);
+      resolve(null);
+    }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
+    function onTracked(tab) {
+      if (tab?.id === tabId)
+        resolve(tab);
+    }
+    function onDestroyed(tab) {
+      if (tab?.id !== tabId)
+        return;
+      const scope = TabsStore.getCurrentWindowId() || 'bg';
+      log(`Tab.waitUntilTracked: ${tabId} is destroyed while waiting (in ${scope})\n${stackTrace}`);
+      resolve(null);
+    }
+    function onRemoved(removedTabId, _removeInfo) {
+      if (removedTabId !== tabId)
+        return;
+      const scope = TabsStore.getCurrentWindowId() || 'bg';
+      log(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${scope})\n${stackTrace}`);
+      resolve(null);
+    }
+    Tab.onTracked.addListener(onTracked);
+    TreeItem.onElementBound.addListener(onTracked);
+    Tab.onDestroyed.addListener(onDestroyed);
+    browser.tabs.onRemoved.addListener(onRemoved);
+    signal.addEventListener('abort', () => {
+      clearTimeout(timeout);
+      Tab.onTracked.removeListener(onTracked);
+      TreeItem.onElementBound.removeListener(onTracked);
+      Tab.onDestroyed.removeListener(onDestroyed);
+      browser.tabs.onRemoved.removeListener(onRemoved);
+    }, { once: true });
+  });
 }
 
-function onWaitingTabTracked(tab) {
-  if (!tab)
-    return;
-
-  const tasks = mWaitingTasks.get(tab.id);
-  if (!tasks)
-    return;
-
-  mWaitingTasks.delete(tab.id);
-
-  for (const task of tasks) {
-    tasks.delete(task);
-    const { resolve } = destroyWaitingTabTask(task);
-    if (!resolve)
-      continue;
-    resolve(tab);
-  }
+// Returns null to make waitUntilTracked fail immediately if the Firefox
+// tab no longer exists (e.g. already closed before tracking completes).
+// If the tab still exists, returns a never-resolving promise to drop out
+// of the race and let waitForTabTracking handle it.
+async function checkTabExistence(tabId, signal) {
+  const tab = await browser.tabs.get(tabId).catch(_error => null);
+  if (signal.aborted || tab)
+    return new Promise(() => {});
+  log('waitUntilTracked was called for unexisting tab');
+  return null;
 }
-TreeItem.onElementBound.addListener(onWaitingTabTracked);
-Tab.onTracked.addListener(onWaitingTabTracked);
 
-function onWaitingTabDestroyed(tab) {
-  if (!tab)
-    return;
-
-  const tasks = mWaitingTasks.get(tab.id);
-  if (!tasks)
-    return;
-
-  mWaitingTasks.delete(tab.id);
-
-  const scope = TabsStore.getCurrentWindowId() || 'bg';
-  for (const task of tasks) {
-    tasks.delete(task);
-    const { resolve, stack } = destroyWaitingTabTask(task);
-    if (!resolve)
-      continue;
-
-    log(`Tab.waitUntilTracked: ${tab.id} is destroyed while waiting (in ${scope})\n${stack}`);
-    resolve(null);
-  }
-}
-Tab.onDestroyed.addListener(onWaitingTabDestroyed);
-
-function onWaitingTabRemoved(removedTabId, _removeInfo) {
-  const tasks = mWaitingTasks.get(removedTabId);
-  if (!tasks)
-    return;
-
-  mWaitingTasks.delete(removedTabId);
-
-  const scope = TabsStore.getCurrentWindowId() || 'bg';
-  for (const task of tasks) {
-    tasks.delete(task);
-    const { resolve, stack } = destroyWaitingTabTask(task);
-    if (!resolve)
-      continue;
-
-    log(`Tab.waitUntilTracked: ${removedTabId} is removed while waiting (in ${scope})\n${stack}`);
-    resolve(null);
-  }
-}
-browser.tabs.onRemoved.addListener(onWaitingTabRemoved);
-
+// Waits until the tab with the given ID is internally tracked by TST.
+// Returns null without the tab being tracked if:
+//   - the Firefox tab no longer exists (already closed or never created)
+//   - the waiting time exceeds configs.maximumDelayUntilTabIsTracked
 async function waitUntilTracked(tabId, options = {}) {
-  if (!tabId) {
+  if (!tabId)
     return null;
-  }
   const stackTrace = stack();
   const tab = Tab.get(tabId);
   if (tab) {
-    onWaitingTabTracked(tab);
     if (options.element)
       return tab.$TST.promisedElement;
     return tab;
   }
-  const tasks = mWaitingTasks.get(tabId) || new Set();
-  const task = {
-    tabId,
-    stack: stackTrace,
-  };
-  tasks.add(task);
-  mWaitingTasks.set(tabId, tasks);
-  return new Promise((resolve, _reject) => {
-    task.resolve = resolve;
-    task.timeout = setTimeout(() => {
-      const { resolve } = destroyWaitingTabTask(task);
-      if (resolve) {
-        log(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getCurrentWindowId() || 'bg'})\b${stackTrace}`);
-        resolve(null);
-      }
-    }, configs.maximumDelayUntilTabIsTracked); // Tabs.moveTabs() between windows may take much time
-    browser.tabs.get(tabId).catch(_error => null).then(tab => {
-      if (tab) {
-        if (Tab.get(tabId))
-          onWaitingTabTracked(tab);
-        return;
-      }
-      const { resolve } = destroyWaitingTabTask(task);
-      if (resolve) {
-        log('waitUntilTracked was called for nonexistent tab');
-        resolve(null);
-      }
-    });
-  }).then(destroyWaitingTabTask.bind(null, task));
+  const controller = new AbortController();
+  const signal = controller.signal;
+  try {
+    return await Promise.race([
+      waitForTabTracking(tabId, stackTrace, signal),
+      checkTabExistence(tabId, signal),
+    ]);
+  }
+  finally {
+    controller.abort();
+  }
 }
 
 Tab.broadcastTooltipText.enabled = false;

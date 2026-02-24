@@ -132,7 +132,7 @@ async function rebuild() {
           (!item.viewTypes ||
            !item.viewTypes.includes('sidebar') ||
            item.documentUrlPatterns.some(pattern => !/^moz-extension:/.test(pattern)) ||
-           !matchesToPattern(location.href, item.documentUrlPatterns)) &&
+           !matchesToPattern(window.location.href, item.documentUrlPatterns)) &&
           mContextTab &&
           !matchesToPattern(mContextTab.url, item.documentUrlPatterns))
         continue;
@@ -284,7 +284,7 @@ function matchPatternToRegExp(pattern) {
                     + ')$');
 }
 
-export async function open(options = {}) {
+async function open(options = {}) {
   await close();
   mLastOpenOptions = options;
   mContextTab      = Tab.get(options.tab?.id);
@@ -679,7 +679,7 @@ async function onContextMenu(event) {
           notify({
             title:   browser.i18n.getMessage('bookmarkContext_notification_notPermitted_title'),
             message: browser.i18n.getMessage(`bookmarkContext_notification_notPermitted_message${isLinux() ? '_linux' : ''}`),
-            url:     `moz-extension://${location.host}/options/options.html#bookmarksPermissionGranted_context`
+            url:     `moz-extension://${window.location.host}/options/options.html#bookmarksPermissionGranted_context`
           });
         else
           console.error(error);

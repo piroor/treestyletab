@@ -35,7 +35,7 @@ function log(...args) {
 
 export const onTSTItemClick = new EventListenerManager();
 export const onTSTTabContextMenuShown = new EventListenerManager();
-export const onTSTTabContextMenuHidden = new EventListenerManager();
+//export const onTSTTabContextMenuHidden = new EventListenerManager();
 export const onTopLevelItemAdded = new EventListenerManager();
 
 const EXTERNAL_TOP_LEVEL_ITEM_MATCHER = /^external-top-level-item:([^:]+):(.+)$/;
@@ -398,6 +398,7 @@ export async function init() {
 
 let mSharingService = null;
 
+// This need to be exported for experiments modules to provide sharing features
 export function registerSharingService(service) {
   mSharingService = service;
 }
@@ -1682,9 +1683,11 @@ function onMessage(message, _sender) {
       onTSTTabContextMenuShown.dispatch(message.info, message.tab);
       return;
 
+      /*
     case TSTAPI.kCONTEXT_MENU_HIDDEN:
       onTSTTabContextMenuHidden.dispatch();
       return;
+      */
 
     case Constants.kCOMMAND_NOTIFY_CONTEXT_ITEM_CHECKED_STATUS_CHANGED:
       for (const itemData of mExtraItems.get(message.ownerId)) {
@@ -1856,7 +1859,7 @@ export function onMessageExternal(message, sender) {
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kFAKE_CONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
-      delete mExtraItems.delete(sender.id);
+      mExtraItems.delete(sender.id);
       return reserveNotifyUpdated();
     }; break;
   }

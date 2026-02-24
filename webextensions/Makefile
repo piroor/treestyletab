@@ -4,12 +4,12 @@ NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 EXTERNAL_LIB_DIR := $(CURDIR)/extlib
 TOOLS_DIR := $(CURDIR)/tools
 
-.PHONY: xpi install_dependency lint format init_extlib update_extlib install_extlib fix_locale_errors
+.PHONY: xpi install_dependency lint format knip init_extlib update_extlib install_extlib fix_locale_errors
 
 all: xpi
 
 install_dependency:
-	[ -e "$(NPM_BIN_DIR)/eslint" -a -e "$(NPM_BIN_DIR)/jsonlint" ] || npm install --save-dev
+	[ -e "$(NPM_BIN_DIR)/eslint" -a -e "$(NPM_BIN_DIR)/jsonlint"  -a -e "$(NPM_BIN_DIR)/knip" ] || npm install --save-dev
 
 lint: install_dependency
 	"$(NPM_BIN_DIR)/eslint" . --report-unused-disable-directives
@@ -17,6 +17,10 @@ lint: install_dependency
 
 format: install_dependency
 	"$(NPM_BIN_DIR)/eslint" . --report-unused-disable-directives --fix
+
+# Find unused exports and dependencies across the project (https://knip.dev/)
+knip: install_dependency
+	"$(NPM_BIN_DIR)/knip"
 
 xpi: init_extlib install_extlib lint
 	rm -f ./*.xpi

@@ -100,9 +100,9 @@ function setSuccessor(tabId, successorTabId = -1) {
     // ignore error for already closed tab
     if (!error ||
         !error.message ||
-        (error.message.indexOf('Invalid successorTabId') != 0 &&
+        (!error.message.startsWith('Invalid successorTabId') &&
          // This error may happen at the time just after a tab is detached from its original window.
-         error.message.indexOf('Successor tab must be in the same window as the tab being updated') != 0))
+         !error.message.startsWith('Successor tab must be in the same window as the tab being updated')))
       throw error;
   }));
 }
@@ -283,16 +283,17 @@ async function updateInternal(tabId, excludeTabIds = []) {
 }
 
 async function tryClearOwnerSuccessor(tab) {
-  if (!tab ||
-      !tab.$TST.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
+  if (!tab?.$TST?.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
     return;
   tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
+  const lastSuccessorTabId = tab.$TST.temporaryMetadata.get('lastSuccessorTabId');
   const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
-      renewedTab.successorTabId != tab.$TST.temporaryMetadata.get('lastSuccessorTabId'))
+      renewedTab.successorTabId != lastSuccessorTabId)
     return;
   log(`${dumpTab(tab)} is unprepared for "selectOwnerOnClose" behavior`);
-  tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
+  if (tab.$TST)
+    tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
   clearSuccessor(tab.id);
 }
 

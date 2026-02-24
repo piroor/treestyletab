@@ -863,7 +863,7 @@ async function performNativeTabGroupItemDragDrop(group, { droppedOn, droppedBefo
 }
 
 // useful utility for general purpose
-export async function moveTabsWithStructure(tabs, params = {}) {
+async function moveTabsWithStructure(tabs, params = {}) {
   log('moveTabsWithStructure ', () => tabs.map(dumpTab));
 
   let movedTabs = tabs.filter(tab => !!tab);
@@ -1368,7 +1368,7 @@ export async function bookmarkTab(tab, options = {}) {
   }
 }
 
-export async function bookmarkTabs(tabs) {
+async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
   if (configs.showDialogInSidebar &&
@@ -1598,7 +1598,7 @@ async function collectBookmarkItems(root, { recursively,  grouped } = {}) {
   return items;
 }
 
-export async function openBookmarksWithStructure(items, { activeIndex = 0, discarded } = {}) {
+async function openBookmarksWithStructure(items, { activeIndex = 0, discarded } = {}) {
   if (typeof discarded == 'undefined')
     discarded = configs.openAllBookmarksWithStructureDiscarded;
 

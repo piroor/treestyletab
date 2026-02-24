@@ -43,6 +43,7 @@ export function clear() {
   tabsByUniqueId.clear();
 }
 
+// need to be exported for debugging
 export const queryLogs = [];
 const MAX_LOGS = 100000;
 
@@ -578,10 +579,10 @@ function removeTabFromIndex(tab, indexes, windowId = null) {
     tabs.delete(tab.id);
 }
 
-export function addLivingTab(tab) {
+function addLivingTab(tab) {
   addTabToIndex(tab, livingTabsInWindow);
 }
-export function removeLivingTab(tab) {
+function removeLivingTab(tab) {
   removeTabFromIndex(tab, livingTabsInWindow);
 }
 
@@ -596,7 +597,7 @@ export function addRemovingTab(tab) {
   addTabToIndex(tab, removingTabsInWindow);
   removeTabFromIndexes(tab);
 }
-export function removeRemovingTab(tab) {
+function removeRemovingTab(tab) {
   removeTabFromIndex(tab, removingTabsInWindow);
 }
 
@@ -727,7 +728,7 @@ export function removeBundledActiveTab(tab) {
   removeTabFromIndex(tab, bundledActiveTabsInWindow);
 }
 
-export function addVirtualScrollRenderableTab(tab) {
+function addVirtualScrollRenderableTab(tab) {
   addTabToIndex(tab, virtualScrollRenderableTabsInWindow);
 }
 export function removeVirtualScrollRenderableTab(tab) {

@@ -623,7 +623,7 @@ function onConfigChange(key) {
           }
           else {
             TabsInternalOperation.clearCache(owner);
-            location.reload();
+            window.location.reload();
           }
         }
       }).catch(ApiTabs.createErrorSuppressor());

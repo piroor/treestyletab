@@ -49,10 +49,10 @@ let mPromisedInitialized = new Promise((resolve, _reject) => {
 export const pinnedContainer = document.querySelector('#pinned-tabs-container');
 export const normalContainer = document.querySelector('#normal-tabs-container');
 
-export const onPinnedTabsChanged = new EventListenerManager();
+//export const onPinnedTabsChanged = new EventListenerManager();
 export const onNormalTabsChanged = new EventListenerManager();
-export const onTabsRendered   = new EventListenerManager();
-export const onTabsUnrendered = new EventListenerManager();
+//export const onTabsRendered   = new EventListenerManager();
+//export const onTabsUnrendered = new EventListenerManager();
 export const onSyncFailed = new EventListenerManager();
 export const onReuseTreeItemElement = new EventListenerManager();
 
@@ -339,9 +339,9 @@ export function renderItem(item, { containerElement, insertBefore } = {}) {
 }
 
 function reserveToNotifyItemsRendered() {
-  const hasInternalListener = onTabsRendered.hasListener();
+  //const hasInternalListener = onTabsRendered.hasListener();
   const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_RENDERED);
-  if (!hasInternalListener && !hasExternalListener) {
+  if (/*!hasInternalListener && */!hasExternalListener) {
     mRenderedItemIds.clear();
     return;
   }
@@ -359,8 +359,10 @@ function reserveToNotifyItemsRendered() {
       return;
     }
 
+    /*
     if (hasInternalListener)
       onTabsRendered.dispatch(tabs);
+    */
 
     if (hasExternalListener) {
       let cache = {};
@@ -389,9 +391,9 @@ export function unrenderItem(item) {
     TabsStore.removeUnsynchronizedTab(item);
   }
 
-  const hasInternalListener = onTabsUnrendered.hasListener();
+  //const hasInternalListener = onTabsUnrendered.hasListener();
   const hasExternalListener = TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TABS_UNRENDERED);
-  if (hasInternalListener || hasExternalListener) {
+  if (/*hasInternalListener || */hasExternalListener) {
     if (!unrenderItem.invoked) {
       unrenderItem.invoked = true;
       window.requestAnimationFrame(() => {
@@ -401,8 +403,10 @@ export function unrenderItem(item) {
         mUnrenderedItemIds.clear();
         const tabs = mapAndFilter(ids, id => Tab.get(id));
 
+        /*
         if (hasInternalListener)
           onTabsUnrendered.dispatch(tabs);
+        */
 
         if (hasExternalListener) {
           let cache = {};
@@ -496,14 +500,14 @@ configs.$addObserver(async changedKey => {
 // Mechanism to override "index" of newly opened tabs by TST's detection logic
 
 const mMovedNewTabResolvers = new Map();
-const mPromsiedMovedNewTabs = new Map();
+const mPromisedMovedNewTabs = new Map();
 const mAlreadyMovedNewTabs = new Set();
 
 export async function waitUntilNewTabIsMoved(tabId) {
   if (mAlreadyMovedNewTabs.has(tabId))
     return true;
-  if (mPromsiedMovedNewTabs.has(tabId))
-    return mPromsiedMovedNewTabs.get(tabId);
+  if (mPromisedMovedNewTabs.has(tabId))
+    return mPromisedMovedNewTabs.get(tabId);
   const timer = setTimeout(() => {
     if (mMovedNewTabResolvers.has(tabId))
       mMovedNewTabResolvers.get(tabId)();
@@ -512,11 +516,11 @@ export async function waitUntilNewTabIsMoved(tabId) {
     mMovedNewTabResolvers.set(tabId, resolve);
   }).then(newIndex => {
     mMovedNewTabResolvers.delete(tabId);
-    mPromsiedMovedNewTabs.delete(tabId);
+    mPromisedMovedNewTabs.delete(tabId);
     clearTimeout(timer);
     return newIndex;
   });
-  mPromsiedMovedNewTabs.set(tabId, promise);
+  mPromisedMovedNewTabs.set(tabId, promise);
   return promise;
 }
 
@@ -732,6 +736,25 @@ Tab.onNativeGroupModified.addListener(async tab => {
 
 const BUFFER_KEY_PREFIX = 'sidebar-tab-';
 
+// Clean up sidebar-local state maps for the removed tab.
+function cleanupForRemovedTab(tab) {
+  tab.$TST.parent = null;
+  const burstEnd = mDelayedBurstEnd.get(tab.id);
+  if (burstEnd)
+    clearTimeout(burstEnd);
+  mDelayedBurstEnd.delete(tab.id);
+  CollapseExpand.clearState(tab.id);
+  BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${tab.id}`);
+  // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
+  TabsStore.removeHighlightedTab(tab);
+  TabsStore.removeGroupTab(tab);
+  TabsStore.addRemovedTab(tab);
+  TabsStore.rememberRemovedTabId(tab.id); // reserved
+  TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+  reserveToUpdateLoadingState();
+}
+
+
 const mRemovedTabIdsNotifiedBeforeTracked = new Set();
 const mWaitingTasksOnSameTick = new Map();
 
@@ -864,7 +887,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         await waitUntilNewTabIsMoved(message.tabId);
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1017,7 +1040,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1059,7 +1082,7 @@ BackgroundConnection.onMessage.addListener(async message => {
 
       if (tab.pinned) {
         renderItem(tab);
-        onPinnedTabsChanged.dispatch(tab);
+        //onPinnedTabsChanged.dispatch(tab);
       }
       else {
         onNormalTabsChanged.dispatch(tab);
@@ -1118,20 +1141,8 @@ BackgroundConnection.onMessage.addListener(async message => {
         });
         return;
       }
-      tab.$TST.parent = null;
-      // Clean up sidebar-local state maps for the removed tab.
-      const burstEnd = mDelayedBurstEnd.get(message.tabId);
-      if (burstEnd)
-        clearTimeout(burstEnd);
-      mDelayedBurstEnd.delete(message.tabId);
-      CollapseExpand.clearState(message.tabId);
-      // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
-      TabsStore.removeHighlightedTab(tab);
-      TabsStore.removeGroupTab(tab);
       TabsStore.addRemovingTab(tab);
-      TabsStore.rememberRemovedTabId(tab.id); // reserved
-      TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-      reserveToUpdateLoadingState();
+      cleanupForRemovedTab(tab);
       if (tab.active) {
         // This should not, but sometimes happens on some edge cases for example:
         // https://github.com/piroor/treestyletab/issues/2385
@@ -1143,9 +1154,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         CollapseExpand.setCollapsed(tab, {
           collapsed: true
         });
+        /*
         if (tab.pinned)
           onPinnedTabsChanged.dispatch(tab);
         else
+        */
+        if (!tab.pinned)
           onNormalTabsChanged.dispatch(tab);
       }
     }; break;
@@ -1167,9 +1181,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         await wait(configs.collapseDuration);
       Tab.untrack(message.tabId);
       unrenderItem(tab);
+      /*
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
     }; break;
 
@@ -1255,7 +1272,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         unrenderItem(tab);
       }
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
-      onPinnedTabsChanged.dispatch(tab.pinned && tab);
+      //onPinnedTabsChanged.dispatch(tab.pinned && tab);
       onNormalTabsChanged.dispatch(!tab.pinned && tab);
     }; break;
 
@@ -1282,9 +1299,12 @@ BackgroundConnection.onMessage.addListener(async message => {
         TabsStore.addControllableTab(tab);
       }
       TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
+      /*
       if (tab.pinned)
         onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
     }; break;
 
@@ -1324,9 +1344,12 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED: {
-      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`) ||
-          message.collapsed)
+      if (BackgroundConnection.handleBufferedMessage(message, `${BUFFER_KEY_PREFIX}${message.tabId}`))
         return;
+      if (message.collapsed) {
+        BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
+        return;
+      }
       await Tab.waitUntilTracked(message.tabId);
       const tab = Tab.get(message.tabId);
       const lastMessage = BackgroundConnection.fetchBufferedMessage(message.type, `${BUFFER_KEY_PREFIX}${message.tabId}`);
@@ -1358,15 +1381,16 @@ BackgroundConnection.onMessage.addListener(async message => {
       if (!tab)
         return;
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
-      tab.$TST.parent = null;
-      TabsStore.rememberRemovedTabId(tab.id);
+      cleanupForRemovedTab(tab);
       const win = TabsStore.windows.get(message.windowId);
       win.detachTab(message.tabId);
       Tab.untrack(message.tabId);
       unrenderItem(tab);
+      /*
       if (tab.pinned)
-        onPinnedTabsChanged.dispatch(tab);
       else
+      */
+      if (!tab.pinned)
         onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316

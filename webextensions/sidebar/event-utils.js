@@ -35,7 +35,7 @@ export function setTargetWindowId(windowId) {
 }
 
 
-export function isMiddleClick(event) {
+function isMiddleClick(event) {
   return event.button == 1;
 }
 
@@ -92,7 +92,7 @@ export function isEventFiredOnTwisty(event) {
   return target?.closest && !!target.closest(kTAB_TWISTY_ELEMENT_NAME);
 }
 
-export function isEventFiredOnSharingState(event) {
+function isEventFiredOnSharingState(event) {
   const target = getElementTarget(event);
   if (!target?.closest(kTAB_FAVICON_ELEMENT_NAME)) {
     return false;
@@ -233,7 +233,7 @@ export function cancelHandleMousedown(button = null) {
 }
 
 
-export function getEventDetail(event) {
+function getEventDetail(event) {
   return {
     targetType: getEventTargetType(event),
     window:     mTargetWindow,

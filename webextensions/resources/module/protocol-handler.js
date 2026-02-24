@@ -7,7 +7,7 @@
 
 import * as Constants from '/common/constants.js';
 
-const uri = decodeURIComponent(location.search.replace(/^\?/, ''));
+const uri = decodeURIComponent(window.location.search.replace(/^\?/, ''));
 const matched = uri?.match(Constants.kSHORTHAND_CUSTOM_URI);
 if (matched) {
   const name = matched[1];
@@ -16,20 +16,20 @@ if (matched) {
   const delimiter = params.toString() ? '?' : '';
   switch (name.toLowerCase()) {
     case 'group':
-      location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params.toString()}${hash}`;
+      window.location.href = `${Constants.kSHORTHAND_URIS.group}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'startup':
-      location.href = `${Constants.kSHORTHAND_URIS.startup}${hash}`;
+      window.location.href = `${Constants.kSHORTHAND_URIS.startup}${hash}`;
       break;
 
     case 'test-runner':
     case 'testrunner':
-      location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params.toString()}${hash}`;
+      window.location.href = `${Constants.kSHORTHAND_URIS.testRunner}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'options':
-      location.href = `${Constants.kSHORTHAND_URIS.options}${delimiter}${params.toString()}${hash}`;
+      window.location.href = `${Constants.kSHORTHAND_URIS.options}${delimiter}${params.toString()}${hash}`;
       break;
 
     case 'tabbar':
@@ -40,16 +40,16 @@ if (matched) {
           keys: ['style']
         }).then(configs => {
           params.set('style', configs.style);
-          location.href = `${Constants.kSHORTHAND_URIS.tabbar}?${params.toString()}${hash}`;
+          window.location.href = `${Constants.kSHORTHAND_URIS.tabbar}?${params.toString()}${hash}`;
         });
       }
       else {
-        location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}${hash}`;
+        window.location.href = `${Constants.kSHORTHAND_URIS.tabbar}${delimiter}${params.toString()}${hash}`;
       }
       break;
 
     case 'forbidden':
-      location.href = `about:blank?${new URL(location.href).searchParams.get('url') || ''}`;
+      window.location.href = `about:blank?${new URL(window.location.href).searchParams.get('url') || ''}`;
       break;
   }
 }

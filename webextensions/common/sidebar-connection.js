@@ -81,17 +81,15 @@ export function isOpen(windowId) {
   return connections && connections.size > 0;
 }
 
+/*
 export function hasFocus(windowId) {
   return mFocusState.has(windowId)
 }
+*/
 
-export const counts = {
+const counts = {
   broadcast: {}
 };
-
-export function getOpenWindowIds() {
-  return mIsListening ? Array.from(mConnections.keys()) : [];
-}
 
 export function sendMessage(message) {
   if (!mIsListening ||
@@ -244,7 +242,7 @@ if (Constants.IS_BACKGROUND) {
           try {
             browser.tabs.sendMessage(tab.id, {
               type: Constants.kCOMMAND_NOTIFY_SIDEBAR_CLOSED,
-            });
+            }).catch(_error => {});
           }
           catch(_error) {
           }

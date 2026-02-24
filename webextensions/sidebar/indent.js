@@ -128,14 +128,6 @@ function calculateIndentUnit(maxLevel) {
   return Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / maxLevel), minIndent));
 }
 
-export function getCacheInfo() {
-  return {
-    lastMaxLevel:  mLastMaxLevel,
-    lastMaxIndent: mLastMaxIndent,
-    definition:    mIndentDefinition.textContent
-  };
-}
-
 
 export function tryUpdateVisualMaxTreeLevel() {
   log('tryUpdateVisualMaxTreeLevel');
@@ -279,6 +271,11 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_COLLAPSED_STATE_CHANGED:
       if (!restVisibilityChangedTabIds.has(message.tabId))
         tryUpdateVisualMaxTreeLevel();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_REMOVING:
+    case Constants.kCOMMAND_NOTIFY_TAB_DETACHED_FROM_WINDOW:
+      BackgroundConnection.clearBufferedMessagesForKey(`${BUFFER_KEY_PREFIX}${message.tabId}`);
       break;
   }
 });
