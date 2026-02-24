@@ -286,12 +286,14 @@ async function tryClearOwnerSuccessor(tab) {
   if (!tab?.$TST?.temporaryMetadata.get('lastSuccessorTabIdByOwner'))
     return;
   tab.$TST.temporaryMetadata.delete('lastSuccessorTabIdByOwner');
+  const lastSuccessorTabId = tab.$TST.temporaryMetadata.get('lastSuccessorTabId');
   const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
-      renewedTab.successorTabId != tab.$TST.temporaryMetadata.get('lastSuccessorTabId'))
+      renewedTab.successorTabId != lastSuccessorTabId)
     return;
   log(`${dumpTab(tab)} is unprepared for "selectOwnerOnClose" behavior`);
-  tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
+  if (tab.$TST)
+    tab.$TST.temporaryMetadata.delete('lastSuccessorTabId');
   clearSuccessor(tab.id);
 }
 
