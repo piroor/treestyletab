@@ -748,7 +748,6 @@ function cleanupForRemovedTab(tab) {
   // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
   TabsStore.removeHighlightedTab(tab);
   TabsStore.removeGroupTab(tab);
-  TabsStore.addRemovedTab(tab);
   TabsStore.rememberRemovedTabId(tab.id); // reserved
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
   reserveToUpdateLoadingState();
