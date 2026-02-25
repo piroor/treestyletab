@@ -553,13 +553,14 @@ async function updateSubtreeCollapsed(tab) {
   tab.$TST.toggleState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, tab.$TST.subtreeCollapsed, { permanently: true });
 }
 
-export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey, minConfirmCount } = {}) {
+export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey } = {}) {
   if (!windowId)
     windowId = tabs[0].windowId;
 
   const grantedIds = new Set(configs.grantedRemovingTabIds);
   let count = 0;
   const tabIds = [];
+
   tabs = tabs.map(tab => Tab.get(tab?.id)).filter(tab => {
     if (tab && !grantedIds.has(tab.id)) {
       count++;
@@ -568,15 +569,32 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     }
     return false;
   });
+
   if (!configKey)
     configKey = 'warnOnCloseTabs';
   const shouldConfirm = configs[configKey];
   const deltaFromLastConfirmation = Date.now() - configs.lastConfirmedToCloseTabs;
-  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, grantedIds, shouldConfirm, deltaFromLastConfirmation, minConfirmCount });
-  if (count <= (typeof minConfirmCount == 'number' ? minConfirmCount : 1) ||
-      !shouldConfirm ||
+  console.log('confirmToCloseTabs ENTRY: tabs=', tabs.map(t => ({ id: t?.id, '$TST': !!t?.$TST, destroyed: t?.$TST?.destroyed, raw: !!t?.$TST?.raw })));
+  log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, shouldConfirm, deltaFromLastConfirmation });
+  if (!shouldConfirm ||
       deltaFromLastConfirmation < 500) {
     log('confirmToCloseTabs: skip confirmation and treated as granted');
+    return true;
+  }
+
+  const closingNonEmptyTabs = tabs.filter(tab =>
+    tab.url != 'about:blank' && !tab.$TST?.isNewTabCommandTab
+  );
+  if (closingNonEmptyTabs.length == 0) {
+    log('confirmToCloseTabs: skip confirmation because all tabs are new tabs');
+    return true;
+  }
+
+  const totalTabCount = Tab.getAllTabsCount(windowId);
+  const closingAllTabs = count >= totalTabCount;
+
+  if (!closingAllTabs && closingNonEmptyTabs.length < configs.warnOnCloseTabsThreshold) {
+    log('confirmToCloseTabs: skip confirmation because count is below threshold');
     return true;
   }
 
