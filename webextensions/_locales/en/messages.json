@@ -149,6 +149,11 @@
       "NUMBER": { "content": "$1", "example": "10" }
     }},
   "warnOnCloseTabs_warnAgain": { "message": "Warn me when I attempt to close multiple tabs" },
+  "warnOnCloseTabs_message_short": { "message": "Close $NUMBER$ tabs?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_warnAgain_short": { "message": "Confirm before closing multiple tabs" },
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 

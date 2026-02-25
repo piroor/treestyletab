@@ -143,6 +143,11 @@
       "NUMBER": { "content": "$1", "example": "10" }
     }},
   "warnOnCloseTabs_warnAgain": { "message": "Предупреждать при закрытии нескольких вкладок" },
+  "warnOnCloseTabs_message_short": { "message": "Закрыть $NUMBER$ вкладок?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_warnAgain_short": { "message": "Подтверждать перед закрытием нескольких вкладок" },
   "warnOnCloseTabs_close":     { "message": "Закрыть вкладки" },
   "warnOnCloseTabs_cancel":    { "message": "Отмена" },
 

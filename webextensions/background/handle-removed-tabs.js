@@ -176,9 +176,10 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     });
     shouldRestoreCount = self.closingTabIds.length;
     return Background.confirmToCloseTabs(descendantTabs, {
-      windowId:   tab.windowId,
-      messageKey: 'warnOnCloseTabs_fromOutside_message',
-      titleKey:   'warnOnCloseTabs_fromOutside_title',
+      windowId:     tab.windowId,
+      closingCount: self.closingTabIds.length,
+      messageKey:   'warnOnCloseTabs_fromOutside_message',
+      titleKey:     'warnOnCloseTabs_fromOutside_title',
     });
   })
     .then(async (granted) => {

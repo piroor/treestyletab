@@ -432,6 +432,15 @@
     "message": "Waarschuwen als ik meerdere tabbladen probeer te sluiten",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
   },
+  "warnOnCloseTabs_message_short": {
+    "message": "$NUMBER$ tabbladen sluiten?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }
+  },
+  "warnOnCloseTabs_warnAgain_short": {
+    "message": "Bevestigen voor het sluiten van meerdere tabbladen"
+  },
   "warnOnCloseTabs_close": {
     "message": "Tabbladen sluiten",
     "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"

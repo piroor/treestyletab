@@ -553,7 +553,10 @@ async function updateSubtreeCollapsed(tab) {
   tab.$TST.toggleState(Constants.kTAB_STATE_SUBTREE_COLLAPSED, tab.$TST.subtreeCollapsed, { permanently: true });
 }
 
-export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey, titleKey } = {}) {
+export async function confirmToCloseTabs(tabs, {
+  windowId, configKey, messageKey, titleKey,
+  closingCount = 0,
+} = {}) {
   if (!windowId)
     windowId = tabs[0].windowId;
 
@@ -585,7 +588,7 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   const closingNonEmptyTabs = tabs.filter(tab =>
     tab.url != 'about:blank' && !tab.$TST?.isNewTabCommandTab
   );
-  if (closingNonEmptyTabs.length == 0) {
+  if (closingNonEmptyTabs.length == 0 && closingCount == 0) {
     log('confirmToCloseTabs: skip confirmation because all tabs are new tabs');
     return true;
   }
@@ -593,10 +596,12 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
   const totalTabCount = Tab.getAllTabsCount(windowId);
   const closingAllTabs = count >= totalTabCount;
 
-  if (!closingAllTabs && closingNonEmptyTabs.length < configs.warnOnCloseTabsThreshold) {
+  if (!closingAllTabs && (closingNonEmptyTabs.length + closingCount) < configs.warnOnCloseTabsThreshold) {
     log('confirmToCloseTabs: skip confirmation because count is below threshold');
     return true;
   }
+
+  const displayCount = configs.warnOnCloseTabsWithListing ? count : count + closingCount;
 
   const win = await browser.windows.get(windowId);
   const listing = configs.warnOnCloseTabsWithListing ?
@@ -606,25 +611,38 @@ export async function confirmToCloseTabs(tabs, { windowId, configKey, messageKey
     }) :
     '';
 
+  const effectiveMessageKey = configs.warnOnCloseTabsWithListing ?
+    (messageKey || 'warnOnCloseTabs_message') :
+    'warnOnCloseTabs_message_short';
+  const effectiveTitleKey = configs.warnOnCloseTabsWithListing ?
+    (titleKey || 'warnOnCloseTabs_title') :
+    'warnOnCloseTabs_title';
+  const effectiveCheckMessage = configs.warnOnCloseTabsWithListing ?
+    'warnOnCloseTabs_warnAgain' :
+    'warnOnCloseTabs_warnAgain_short';
+
   const result = await Dialog.show(win, {
     content: `
-      <div>${sanitizeForHTMLText(browser.i18n.getMessage(messageKey || 'warnOnCloseTabs_message', [count]))}</div>${listing}
+      <div>${sanitizeForHTMLText(browser.i18n.getMessage(effectiveMessageKey, [displayCount]))}</div>${listing}
     `.trim(),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
       browser.i18n.getMessage('warnOnCloseTabs_cancel')
     ],
-    checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
+    checkMessage: browser.i18n.getMessage(effectiveCheckMessage),
     checked:      true,
     modal:        !configs.debug, // for popup
     type:         'common-dialog', // for popup
     url:          ((await Permissions.isGranted(Permissions.ALL_URLS)) ? null : '/resources/blank.html'), // for popup
-    title:        browser.i18n.getMessage(titleKey || 'warnOnCloseTabs_title'), // for popup
+    title:        browser.i18n.getMessage(effectiveTitleKey), // for popup
     onShownInPopup(container) {
       setTimeout(() => { // because window.requestAnimationFrame is decelerated for an invisible document.
         // this need to be done on the next tick, to use the height of
         // the box for calculation of dialog size
-        const style = container.querySelector('ul').style;
+        const ul = container.querySelector('ul');
+        if (!ul)
+          return;
+        const style = ul.style;
         style.height = '0px'; // this makes the box shrinkable
         style.maxHeight = 'none';
         style.minHeight = '0px';
