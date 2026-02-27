@@ -10,7 +10,6 @@ import {
   dumpTab,
   wait,
   mapAndFilterUniq,
-  countMatched,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
@@ -148,6 +147,8 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   const self = tryGrantCloseTab;
 
   self.closingTabIds.push(tab.id);
+  if (tab.url != 'about:blank' && !tab.$TST?.isNewTabCommandTab)
+    self.closingNonEmptyTabCount++;
   if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(TreeBehavior.getClosingTabsFromParent(tab).map(tab => tab.id));
@@ -165,35 +166,23 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   self.promisedGrantedToCloseTabs = wait(250).then(async () => {
     log(' => confirmation with delay');
     const closingTabIds = new Set(self.closingTabIds);
-    let allClosingTabs = new Set();
-    allClosingTabs.add(tab);
     self.closingTabIds = Array.from(closingTabIds);
+    const descendantTabs = [];
     self.closingDescendantTabIds = mapAndFilterUniq(self.closingDescendantTabIds, id => {
       if (closingTabIds.has(id))
         return undefined;
-      const tab = Tab.get(id);
-      if (tab) // ignore already closed tabs
-        allClosingTabs.add(tab);
+      const descendant = Tab.get(id);
+      if (descendant) // ignore already closed tabs
+        descendantTabs.push(descendant);
       return id;
     });
-    allClosingTabs = Array.from(allClosingTabs);
-    shouldRestoreCount = self.closingTabIds.length;
-    const restorableClosingTabsCount = countMatched(
-      allClosingTabs,
-      tab => tab.url != 'about:blank' &&
-             !tab.$TST.isNewTabCommandTab
-    );
-    log(' => restorableClosingTabsCount: ', restorableClosingTabsCount);
-    if (restorableClosingTabsCount > 0) {
-      log('tryGrantClose: show confirmation for ', allClosingTabs);
-      return Background.confirmToCloseTabs(allClosingTabs.slice(1).map(tab => tab.$TST.sanitized), {
-        windowId:        tab.windowId,
-        messageKey:      'warnOnCloseTabs_fromOutside_message',
-        titleKey:        'warnOnCloseTabs_fromOutside_title',
-        minConfirmCount: 0
-      });
-    }
-    return true;
+    shouldRestoreCount = self.closingNonEmptyTabCount;
+    return Background.confirmToCloseTabs(descendantTabs, {
+      windowId:     tab.windowId,
+      closingCount: self.closingTabIds.length,
+      messageKey:   'warnOnCloseTabs_fromOutside_message',
+      titleKey:     'warnOnCloseTabs_fromOutside_title',
+    });
   })
     .then(async (granted) => {
       log(' => granted: ', granted);
@@ -214,12 +203,14 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   self.closingTabIds              = [];
   self.closingDescendantTabIds    = [];
   self.closingTabWasActive        = false;
+  self.closingNonEmptyTabCount    = 0;
   self.promisedGrantedToCloseTabs = null;
   return granted;
 }
 tryGrantCloseTab.closingTabIds              = [];
 tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
+tryGrantCloseTab.closingNonEmptyTabCount    = 0;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(tabs, { triggerTab, originalStructure } = {}) {

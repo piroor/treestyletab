@@ -127,6 +127,11 @@
         "NUMBER": { "content": "$1", "example": "10" }
       }},
     "warnOnCloseTabs_warnAgain": { "message": "關閉多個分頁時警告" },
+    "warnOnCloseTabs_message_short": { "message": "關閉 $NUMBER$ 個分頁？",
+      "placeholders": {
+        "NUMBER": { "content": "$1", "example": "10" }
+      }},
+    "warnOnCloseTabs_warnAgain_short": { "message": "關閉多個分頁前確認" },
     "warnOnCloseTabs_close":     { "message": "關閉分頁" },
     "warnOnCloseTabs_cancel":    { "message": "取消" },
   

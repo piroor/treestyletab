@@ -320,6 +320,15 @@
     "message": "Me prévenir quand j'essaie de fermer de multiples onglets",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
   },
+  "warnOnCloseTabs_message_short": {
+    "message": "Fermer $NUMBER$ onglets ?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }
+  },
+  "warnOnCloseTabs_warnAgain_short": {
+    "message": "Confirmer avant de fermer plusieurs onglets"
+  },
   "warnOnCloseTabs_close": {
     "message": "Fermer les onglets",
     "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"

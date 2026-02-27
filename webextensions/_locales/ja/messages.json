@@ -149,6 +149,11 @@
       "NUMBER": { "content": "$1", "example": "10" }
     }},
   "warnOnCloseTabs_warnAgain": { "message": "同時に複数のタブを閉じるときは確認する" },
+  "warnOnCloseTabs_message_short": { "message": "$NUMBER$ 個のタブを閉じますか？",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_warnAgain_short": { "message": "同時に複数のタブを閉じる前に確認する" },
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
@@ -472,7 +477,7 @@
   "config_autoAttachOnContextNewTabCommand_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": { "message": "Ctrl-クリックと同様に（同階層で隣に、同じコンテナーで）" },
   "config_autoAttachOnContextNewTabCommand_after": { "message": "開く" },
-                                          
+
 
   "config_newTabWithOwner_caption": { "message": "既存のタブから開かれたタブ" },
 
@@ -713,6 +718,8 @@
   "config_moveParentBehavior_detach":                       { "message": "子孫のタブをツリーから解放する" },
 
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
+  "config_warnOnCloseTabsThreshold_before": { "message": "閉じるタブの数が " },
+  "config_warnOnCloseTabsThreshold_after": { "message": " 以下の場合は確認しない" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "クローズボックスの通常のクリック操作で同時に複数のタブを閉じるときは確認する" },
   "config_warnOnCloseTabsWithListing_label": { "message": "閉じようとしているタブの一覧を確認のダイアログに表示する" },
 

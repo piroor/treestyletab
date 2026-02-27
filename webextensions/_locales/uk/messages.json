@@ -227,6 +227,15 @@
     "message": "Попереджати, коли я закриваю декілька вкладок",
     "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
   },
+  "warnOnCloseTabs_message_short": {
+    "message": "Закрити $NUMBER$ вкладок?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }
+  },
+  "warnOnCloseTabs_warnAgain_short": {
+    "message": "Підтвердити перед закриттям кількох вкладок"
+  },
   "warnOnCloseTabs_close": {
     "message": "Закрити вкладки",
     "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"

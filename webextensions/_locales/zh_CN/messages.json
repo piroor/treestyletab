@@ -354,6 +354,15 @@
   "warnOnCloseTabs_warnAgain": {
     "message": "当我尝试关闭多个标签页时警告我"
   },
+  "warnOnCloseTabs_message_short": {
+    "message": "关闭 $NUMBER$ 个标签页？",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }
+  },
+  "warnOnCloseTabs_warnAgain_short": {
+    "message": "关闭多个标签页前确认"
+  },
   "warnOnCloseTabs_close": {
     "message": "关闭标签页"
   },

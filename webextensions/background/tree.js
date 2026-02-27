@@ -239,6 +239,8 @@ export async function attachTabTo(child, parent, options = {}) {
     browser.tabs.update(child.id, { openerTabId: parent.id })
       .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     wait(200).then(() => {
+      if (!child.$TST)
+        return;
       const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == parent.id);
       child.$TST.updatingOpenerTabIds.splice(index, 1);
     });
@@ -1494,7 +1496,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
     try {
       let win;
       const prepareWindow = () => {
-        win = Window.init(destinationWindowId);
+        win = Window.track(destinationWindowId);
         if (isAcrossWindows) {
           win.toBeOpenedTabsWithPositions += tabs.length;
           win.toBeOpenedOrphanTabs += tabs.length;

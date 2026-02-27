@@ -442,7 +442,7 @@ export function unrenderItem(item) {
   return true;
 }
 
-Window.onInitialized.addListener(win => {
+Window.onTracked.addListener(win => {
   const windowId = win.id;
   win = TabsStore.windows.get(windowId);
 
@@ -748,7 +748,7 @@ function cleanupForRemovedTab(tab) {
   // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
   TabsStore.removeHighlightedTab(tab);
   TabsStore.removeGroupTab(tab);
-  TabsStore.addRemovedTab(tab);
+  TabsStore.rememberRemovedTabId(tab.id); // reserved
   TabsStore.updateVirtualScrollRenderabilityIndexForTab(tab);
   reserveToUpdateLoadingState();
 }
@@ -845,7 +845,7 @@ BackgroundConnection.onMessage.addListener(async message => {
           break;
       }
 
-      const tab = Tab.init(nativeTab, { inBackground: true });
+      const tab = Tab.track(nativeTab);
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
 
       for (const tab of Tab.getAllTabs(message.windowId, { fromId: nativeTab.id })) {
@@ -1065,7 +1065,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         return;
       tab.index = message.toIndex;
       tab.reindexedBy = `internally moved (${tab.index})`;
-      Tab.track(tab);
+      Tab.reindex(tab);
 
       for (const tab of Tab.getAllTabs(
         message.windowId,
@@ -1178,8 +1178,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       }
       if (shouldApplyAnimation())
         await wait(configs.collapseDuration);
-      TabsStore.windows.get(message.windowId).detachTab(message.tabId);
-      tab.$TST.destroy();
+      Tab.untrack(message.tabId);
       unrenderItem(tab);
       /*
       if (tab.pinned)
@@ -1383,7 +1382,8 @@ BackgroundConnection.onMessage.addListener(async message => {
       tab.$TST.invalidateElement(TabInvalidationTarget.Tooltip);
       cleanupForRemovedTab(tab);
       const win = TabsStore.windows.get(message.windowId);
-      win.untrackTab(message.tabId);
+      win.detachTab(message.tabId);
+      Tab.untrack(message.tabId);
       unrenderItem(tab);
       /*
       if (tab.pinned)
@@ -1393,7 +1393,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         onNormalTabsChanged.dispatch(tab);
       // Allow to move tabs to this window again, after a timeout.
       // https://github.com/piroor/treestyletab/issues/2316
-      wait(500).then(TabsStore.removeRemovedTab.bind(TabsStore, tab));
+      wait(500).then(TabsStore.expireRemovedTabId.bind(null, tab.id));
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_GROUP_TAB_DETECTED: {
@@ -1462,7 +1462,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_CREATED:
-      TabGroup.init(message.group)
+      TabGroup.track(message.group)
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_UPDATED: {
@@ -1475,7 +1475,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_GROUP_REMOVED:
-      TabGroup.get(message.group.id)?.$TST.destroy();
+      TabGroup.untrack(message.group.id);
       break;
   }
 });

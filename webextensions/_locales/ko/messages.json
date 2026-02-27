@@ -340,6 +340,15 @@
         "message": "동시에 여러 탭을 닫을 때 확인",
         "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
     },
+    "warnOnCloseTabs_message_short": {
+        "message": "$NUMBER$개의 탭을 닫으시겠습니까?",
+        "placeholders": {
+            "NUMBER": { "content": "$1", "example": "10" }
+        }
+    },
+    "warnOnCloseTabs_warnAgain_short": {
+        "message": "여러 탭을 닫기 전에 확인"
+    },
     "warnOnCloseTabs_close": {
         "message": "탭 닫기",
         "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"

@@ -343,7 +343,7 @@ export const bundledActiveTabsInWindow = new Map();
 export const livingTabsInWindow      = new Map();
 export const controllableTabsInWindow = new Map();
 export const removingTabsInWindow    = new Map();
-export const removedTabsInWindow     = new Map();
+export const removedTabIds = new Set();
 export const visibleTabsInWindow     = new Map();
 export const expandedTabsInWindow    = new Map();
 export const selectedTabsInWindow    = new Map();
@@ -376,7 +376,6 @@ export function prepareIndexesForWindow(windowId) {
   livingTabsInWindow.set(windowId, createMapWithName(`living tabs in window ${windowId}`));
   controllableTabsInWindow.set(windowId, createMapWithName(`controllable tabs in window ${windowId}`));
   removingTabsInWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
-  removedTabsInWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
   visibleTabsInWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
   expandedTabsInWindow.set(windowId, createMapWithName(`expanded tabs in window ${windowId}`));
   selectedTabsInWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
@@ -405,7 +404,6 @@ export function unprepareIndexesForWindow(windowId) {
   livingTabsInWindow.delete(windowId);
   controllableTabsInWindow.delete(windowId);
   removingTabsInWindow.delete(windowId);
-  removedTabsInWindow.delete(windowId);
   visibleTabsInWindow.delete(windowId);
   expandedTabsInWindow.delete(windowId);
   selectedTabsInWindow.delete(windowId);
@@ -543,7 +541,7 @@ export function removeTabFromIndexes(tab) {
   removeLivingTab(tab);
   removeControllableTab(tab);
   removeRemovingTab(tab);
-  //removeRemovedTab(tab);
+  //expireRemovedTabId(tab.id);
   removeVisibleTab(tab);
   removeExpandedTab(tab);
   removeSelectedTab(tab);
@@ -603,15 +601,12 @@ function removeRemovingTab(tab) {
   removeTabFromIndex(tab, removingTabsInWindow);
 }
 
-export function addRemovedTab(tab) {
-  addTabToIndex(tab, removedTabsInWindow);
-  setTimeout(removeRemovedTab, 100000, {
-    id:       tab.id,
-    windowId: tab.windowId
-  });
+export function rememberRemovedTabId(tabId) {
+  removedTabIds.add(tabId);
+  setTimeout(expireRemovedTabId, 100000, tabId);
 }
-export function removeRemovedTab(tab) {
-  removeTabFromIndex(tab, removedTabsInWindow);
+export function expireRemovedTabId(tabId) {
+  removedTabIds.delete(tabId);
 }
 
 export function addVisibleTab(tab) {

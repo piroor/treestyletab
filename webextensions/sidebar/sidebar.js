@@ -554,7 +554,7 @@ async function rebuildAll(importedWindow) {
   MetricsData.add('rebuildAll: start');
   const trackedWindow = TabsStore.windows.get(mTargetWindow);
   if (!trackedWindow)
-    Window.init(mTargetWindow);
+    Window.track(mTargetWindow);
 
   if (!importedWindow)
     importedWindow = await MetricsData.addAsync('rebuildAll: import tabs and groups', browser.runtime.sendMessage({
@@ -572,12 +572,12 @@ async function rebuildAll(importedWindow) {
 
   const tabs = importedWindow.tabs.map(importedTab => Tab.import(importedTab));
 
-  Window.init(mTargetWindow, importedWindow.tabGroups.map(TabGroup.init));
+  Window.track(mTargetWindow, importedWindow.tabGroups.map(TabGroup.track));
   let lastDraw = Date.now();
   let count = 0;
   const maxCount = tabs.length;
   for (const tab of tabs) {
-    const trackedTab = Tab.init(tab, { existing: true, inBackground: true });
+    const trackedTab = Tab.track(tab, { existing: true });
     const group = trackedTab.$TST.nativeTabGroup;
     if (group?.collapsed) {
       CollapseExpand.setCollapsed(tab, {

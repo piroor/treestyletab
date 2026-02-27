@@ -149,6 +149,11 @@
       "NUMBER": { "content": "$1", "example": "10" }
     }},
   "warnOnCloseTabs_warnAgain": { "message": "Warn me when I attempt to close multiple tabs" },
+  "warnOnCloseTabs_message_short": { "message": "Close $NUMBER$ tabs?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs_warnAgain_short": { "message": "Confirm before closing multiple tabs" },
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
@@ -717,6 +722,8 @@
   "config_moveParentBehavior_detach":                       { "message": "Liberate All Children from the tree" },
 
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
+  "config_warnOnCloseTabsThreshold_before": { "message": "Don't warn if the number of closing tabs is at most " },
+  "config_warnOnCloseTabsThreshold_after": { "message": "\u200b" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Warn me when I attempt to close multiple tabs by a normal click on a closebox" },
   "config_warnOnCloseTabsWithListing_label": { "message": "List closing tabs in the confirmation dialog" },
 
