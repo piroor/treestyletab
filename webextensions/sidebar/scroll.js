@@ -490,7 +490,7 @@ function getRenderableItemById(id) {
       return TabGroup.get(parseInt(rawId));
 
     case TreeItem.TYPE_GROUP_COLLAPSED_MEMBERS_COUNTER:
-      return TabGroup.get(parseInt(rawId)).$TST.collapsedMembersCounterItem;
+      return TabGroup.get(parseInt(rawId))?.$TST?.collapsedMembersCounterItem;
 
     case TreeItem.TYPE_TAB:
     default:
