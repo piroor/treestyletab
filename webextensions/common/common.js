@@ -403,7 +403,7 @@ export const configs = new Configs({
   warnOnCloseTabs:                                         false,
   warnOnCloseTabsThreshold:                                25,
   warnOnCloseTabsByClosebox:                               true,
-  warnOnCloseTabsWithListing:                              false,
+  warnOnCloseTabsWithListing:                              true,
   lastConfirmedToCloseTabs:                                0,
   grantedRemovingTabIds:                                   [],
   sidebarVirtuallyOpenedWindows:                           [], // for automated tests
