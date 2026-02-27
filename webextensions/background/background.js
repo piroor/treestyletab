@@ -592,7 +592,7 @@ export async function confirmToCloseTabs(tabs, {
     return true;
   }
 
-  const totalTabCount = Tab.getAllTabsCount(windowId);
+  const totalTabCount = Tab.getAllTabs(windowId).length;
   const closingAllTabs = count >= totalTabCount;
 
   if (!closingAllTabs && (closingNonEmptyTabs.length + closingCount) < configs.warnOnCloseTabsThreshold) {
