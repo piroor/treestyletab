@@ -876,9 +876,9 @@ class TabGroupCollapsedMembersCounter extends TreeItem {
   }
 
   destroy() {
-    super.destroy();
-
     this.raw.group = null;
+
+    super.destroy();
   }
 
   get type() {
@@ -956,7 +956,7 @@ export class TabGroup extends TreeItem {
     TabsStore.tabGroups.delete(this.id);
 
     if (this._collapsedMembersCounterItem) {
-      this._collapsedMembersCounterItem.destroy();
+      this._collapsedMembersCounterItem.$TST.destroy();
       this._collapsedMembersCounterItem = null;
     }
 
