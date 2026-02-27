@@ -577,7 +577,6 @@ export async function confirmToCloseTabs(tabs, {
     configKey = 'warnOnCloseTabs';
   const shouldConfirm = configs[configKey];
   const deltaFromLastConfirmation = Date.now() - configs.lastConfirmedToCloseTabs;
-  console.log('confirmToCloseTabs ENTRY: tabs=', tabs.map(t => ({ id: t?.id, '$TST': !!t?.$TST, destroyed: t?.$TST?.destroyed, raw: !!t?.$TST?.raw })));
   log('confirmToCloseTabs ', { tabIds, count, windowId, configKey, shouldConfirm, deltaFromLastConfirmation });
   if (!shouldConfirm ||
       deltaFromLastConfirmation < 500) {
