@@ -147,6 +147,8 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   const self = tryGrantCloseTab;
 
   self.closingTabIds.push(tab.id);
+  if (tab.url != 'about:blank' && !tab.$TST?.isNewTabCommandTab)
+    self.closingNonEmptyTabCount++;
   if (closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(TreeBehavior.getClosingTabsFromParent(tab).map(tab => tab.id));
@@ -174,7 +176,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
         descendantTabs.push(descendant);
       return id;
     });
-    shouldRestoreCount = self.closingTabIds.length;
+    shouldRestoreCount = self.closingNonEmptyTabCount;
     return Background.confirmToCloseTabs(descendantTabs, {
       windowId:     tab.windowId,
       closingCount: self.closingTabIds.length,
@@ -201,12 +203,14 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   self.closingTabIds              = [];
   self.closingDescendantTabIds    = [];
   self.closingTabWasActive        = false;
+  self.closingNonEmptyTabCount    = 0;
   self.promisedGrantedToCloseTabs = null;
   return granted;
 }
 tryGrantCloseTab.closingTabIds              = [];
 tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
+tryGrantCloseTab.closingNonEmptyTabCount    = 0;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(tabs, { triggerTab, originalStructure } = {}) {
