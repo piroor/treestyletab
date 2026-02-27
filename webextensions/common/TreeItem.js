@@ -1180,7 +1180,7 @@ export class Tab extends TreeItem {
 
   static onTracked      = new EventListenerManager();
   static onDestroyed    = new EventListenerManager();
-  static onTracking     = new EventListenerManager();
+  //static onTracking     = new EventListenerManager();
 
   //===================================================================
   // general tab events
@@ -3197,7 +3197,7 @@ export class Tab extends TreeItem {
     // See also: https://github.com/piroor/treestyletab/issues/2162
     // tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
-    Tab.onTracking.dispatch(tab, options);
+    //Tab.onTracking.dispatch(tab, options);
 
     if (options.existing) {
       tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
