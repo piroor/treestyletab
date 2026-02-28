@@ -1111,6 +1111,7 @@ BackgroundConnection.onMessage.addListener(async message => {
         }
         else {
           if (lastMessage.reallyChanged) {
+            tab.$TST.element?.ensureBurster();
             tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
             const prevBurstEnd = mDelayedBurstEnd.get(tab.id);
             if (prevBurstEnd)
