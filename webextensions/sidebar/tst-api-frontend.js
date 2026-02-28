@@ -519,14 +519,14 @@ function setExtraTabContentsToElement(tabElement, id, params = {}) {
     case 'indent': // for backward compatibility
     case 'tab-indent':
       container = useBackingField ?
-        tabElement._extraItemsContainerIndentRoot :
+        tabElement.$extraItemsContainerIndentRoot :
         tabElement.extraItemsContainerIndentRoot;
       break;
 
     case 'behind': // for backward compatibility
     case 'tab-behind':
       container = useBackingField ?
-        tabElement._extraItemsContainerBehindRoot :
+        tabElement.$extraItemsContainerBehindRoot :
         tabElement.extraItemsContainerBehindRoot;
       break;
 
@@ -534,19 +534,19 @@ function setExtraTabContentsToElement(tabElement, id, params = {}) {
     case 'tab-front':
     default:
       container = useBackingField ?
-        tabElement._extraItemsContainerFrontRoot :
+        tabElement.$extraItemsContainerFrontRoot :
         tabElement.extraItemsContainerFrontRoot;
       break;
 
     case 'tab-above':
       container = useBackingField ?
-        tabElement._extraItemsContainerAboveRoot :
+        tabElement.$extraItemsContainerAboveRoot :
         tabElement.extraItemsContainerAboveRoot;
       break;
 
     case 'tab-below':
       container = useBackingField ?
-        tabElement._extraItemsContainerBelowRoot :
+        tabElement.$extraItemsContainerBelowRoot :
         tabElement.extraItemsContainerBelowRoot;
       break;
   }
@@ -617,15 +617,15 @@ function clearExtraTabContentsIn(tab, id) {
 function clearExtraTabContentsInElement(tabElement, id) {
   if (!id) // the addon id is optional
     id = browser.runtime.id;
-  if (tabElement._extraItemsContainerIndentRoot)
+  if (tabElement.$extraItemsContainerIndentRoot)
     setExtraTabContentsToElement(tabElement, id, { place: 'tab-indent' });
-  if (tabElement._extraItemsContainerFrontRoot)
+  if (tabElement.$extraItemsContainerFrontRoot)
     setExtraTabContentsToElement(tabElement, id, { place: 'tab-front' });
-  if (tabElement._extraItemsContainerBehindRoot)
+  if (tabElement.$extraItemsContainerBehindRoot)
     setExtraTabContentsToElement(tabElement, id, { place: 'tab-behind' });
-  if (tabElement._extraItemsContainerAboveRoot)
+  if (tabElement.$extraItemsContainerAboveRoot)
     setExtraTabContentsToElement(tabElement, id, { place: 'tab-above' });
-  if (tabElement._extraItemsContainerBelowRoot)
+  if (tabElement.$extraItemsContainerBelowRoot)
     setExtraTabContentsToElement(tabElement, id, { place: 'tab-below' });
   onExtraContentsAboveChanged(id);
   onExtraContentsBelowChanged(id);
@@ -712,25 +712,25 @@ function collectExtraContentsRoots({ tabs, place }) {
   switch (String(place).toLowerCase()) {
     case 'indent': // for backward compatibility
     case 'tab-indent':
-      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerIndentRoot || undefined);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?.$extraItemsContainerIndentRoot || undefined);
 
     case 'behind': // for backward compatibility
     case 'tab-behind':
-      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerBehindRoot || undefined);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?.$extraItemsContainerBehindRoot || undefined);
 
     case 'front': // for backward compatibility
     case 'tab-front':
-      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerFrontRoot || undefined);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?.$extraItemsContainerFrontRoot || undefined);
 
     case 'tab-above':
       return [
-        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerAboveRoot || undefined),
+        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?.$extraItemsContainerAboveRoot || undefined),
         mDummyTab.extraItemsContainerAboveRoot,
       ];
 
     case 'tab-below':
       return [
-        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerBelowRoot || undefined),
+        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?.$extraItemsContainerBelowRoot || undefined),
         mDummyTab.extraItemsContainerBelowRoot,
       ];
 
