@@ -37,3 +37,6 @@
 [submodule "submodules/webextensions-lib-placeholder-parser"]
 	path = submodules/webextensions-lib-placeholder-parser
 	url = https://github.com/piroor/webextensions-lib-placeholder-parser.git
+[submodule "submodules/webextensions-lib-hash-messaging"]
+	path = submodules/webextensions-lib-hash-messaging
+	url = https://github.com/piroor/webextensions-lib-hash-messaging.git

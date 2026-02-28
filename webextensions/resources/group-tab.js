@@ -14,6 +14,16 @@
     return false;
   }
 
+  const [ HashMessaging, l10n ] = await Promise.all([
+    import('/extlib/hash-messaging-contents.js').then(namespace => namespace.default),
+    import('/extlib/l10n.js').then(namespace => namespace.default),
+  ]);
+  if (!HashMessaging.initialized) {
+    HashMessaging.requestInit();
+    setTimeout(prepare, 500, retryCount + 1);
+    return false;
+  }
+
   if (window.prepared ||
       document.documentElement.classList.contains('initialized'))
     return false;
@@ -204,7 +214,7 @@
       const closebox = event.target.closest('li span.closebox');
       if (closebox) {
         const tabId = closebox.dataset.tabId;
-        browser.runtime.sendMessage({
+        HashMessaging.sendMessage({
           type:             'treestyletab:remove-tabs-internally',
           tabIds:           [parseInt(tabId)],
           byMouseOperation: true,
@@ -220,7 +230,7 @@
         event.preventDefault();
         if ((event.button == 0 && isAcceled(event)) ||
             (event.button == 1 && !hasModifier(event))) {
-          browser.runtime.sendMessage({
+          HashMessaging.sendMessage({
             type:             'treestyletab:remove-tabs-internally',
             tabIds:           [parseInt(tabId)],
             byMouseOperation: true,
@@ -228,7 +238,7 @@
           });
         }
         else {
-          browser.runtime.sendMessage({
+          HashMessaging.sendMessage({
             type: 'treestyletab:api:focus',
             tab:  parseInt(tabId),
           });
@@ -271,16 +281,15 @@
     window.setTitle    = window.setTitle || setTitle;
     window.updateTree  = window.updateTree || updateTree;
 
-    window.l10n.updateDocument();
-
-    const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules] = await Promise.all([
-      browser.runtime.sendMessage({
+    const messageKeys = l10n.collectUsedKeys(document.documentElement);
+    const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules, messages] = await Promise.all([
+      HashMessaging.sendMessage({
         type: 'treestyletab:get-theme-declarations'
       }),
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         type: 'treestyletab:get-contextual-identities-color-info'
       }),
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         type: 'treestyletab:get-config-value',
         keys: [
           'renderTreeInGroupTabs',
@@ -289,10 +298,16 @@
           'rtl',
         ]
       }),
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         type: 'treestyletab:get-user-style-rules'
-      })
+      }),
+      HashMessaging.sendMessage({
+        type: 'get-localized-messages',
+        keys: messageKeys,
+      }),
     ]);
+
+    l10n.updateDocument(messages);
 
     const contextualIdentitiesMarkerDeclarations = Object.keys(contextualIdentitiesColorInfo.colors).map(id =>
       `#tabs a[data-cookie-store-id="${id}"] .contextual-identity-marker {
@@ -324,7 +339,7 @@
       hint.firstChild.addEventListener('click', event => {
         if (event.button != 0)
           return;
-        browser.runtime.sendMessage({
+        HashMessaging.sendMessage({
           type:   'treestyletab:open-tab',
           uri,
           active: true,
@@ -334,7 +349,7 @@
         if (event.key != 'Enter' &&
             event.key != 'Space')
           return;
-        browser.runtime.sendMessage({
+        HashMessaging.sendMessage({
           type:   'treestyletab:open-tab',
           uri,
           active: true,
@@ -346,7 +361,7 @@
         if (event.button != 0)
           return;
         hint.style.display = 'none';
-        browser.runtime.sendMessage({
+        HashMessaging.sendMessage({
           type:  'treestyletab:set-config-value',
           key:   optionKey,
           value: false
@@ -357,7 +372,7 @@
             event.key != 'Space')
           return;
         hint.style.display = 'none';
-        browser.runtime.sendMessage({
+        HashMessaging.sendMessage({
           type:  'treestyletab:set-config-value',
           key:   optionKey,
           value: false
@@ -365,7 +380,7 @@
       });
     }
 
-    browser.runtime.onMessage.addListener((message, _sender) => {
+    HashMessaging.onMessage((message, _sender) => {
       switch (message?.type) {
         case 'treestyletab:clear-temporary-state':
           gTemporaryCheck.checked = gTemporaryAggressiveCheck.checked = false;
@@ -424,15 +439,15 @@
     const [thisTab, openerTab, aliasTab] = await Promise.all([
       // We need to request them separately because
       // get-tree always compact the returned array (null tab will be removved).
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         ...baseRequest,
         tab: 'senderTab',
       }),
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         ...baseRequest,
         tab: getOpenerTabId(),
       }),
-      browser.runtime.sendMessage({
+      HashMessaging.sendMessage({
         ...baseRequest,
         tab: getAliasTabId(),
       }),

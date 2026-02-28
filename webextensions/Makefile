@@ -48,6 +48,7 @@ install_extlib: install_dependency
 	cp ../submodules/webextensions-lib-dom-updater/src/diff.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-dom-updater/src/dom-updater.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-placeholder-parser/src/placeholder-parser.js $(EXTERNAL_LIB_DIR)/
+	cp ../submodules/webextensions-lib-hash-messaging/hash-messaging-*.js $(EXTERNAL_LIB_DIR)/
 	echo "/* CodeMirror version $$(cat node_modules/codemirror/package.json | jq -r .version) */" > $(EXTERNAL_LIB_DIR)/codemirror.js
 	cp $(EXTERNAL_LIB_DIR)/codemirror.js $(EXTERNAL_LIB_DIR)/codemirror.css
 	cp $(EXTERNAL_LIB_DIR)/codemirror.js $(EXTERNAL_LIB_DIR)/codemirror-mode-css.js

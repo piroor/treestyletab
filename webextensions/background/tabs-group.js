@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import HashMessaging from '/extlib/hash-messaging-bg.js';
+
 import {
   log as internalLogger,
   configs,
@@ -230,94 +232,9 @@ async function tryInitGroupTab(tab) {
   if (!tab.$TST.isGroupTab &&
       !tab.$TST.hasGroupTabURL)
     return;
-  log('tryInitGroupTab ', tab);
-  const v3Options = {
-    target: { tabId: tab.id },
-  };
-  const v2Options = {
-    runAt:           'document_start',
-    matchAboutBlank: true
-  };
-  try {
-    const getPageState = function getPageState() {
-      return [window.prepared, document.documentElement.matches('.initialized')];
-    };
-    const [prepared, initialized, reloaded] = (browser.scripting ?
-      browser.scripting.executeScript({ // Manifest V3
-        ...v3Options,
-        func: getPageState,
-      }).then(results => results && results[0] && results[0].result || []) :
-      browser.tabs.executeScript(tab.id, {
-        ...v2Options,
-        code: `(${getPageState.toString()})()`,
-      }).then(results => results && results[0] || [])
-    ).catch(error => {
-      if (ApiTabs.isMissingHostPermissionError(error) &&
-          tab.$TST.hasGroupTabURL) {
-        log('  tryInitGroupTab: failed to run script for restored/discarded tab, reload the tab for safety ', tab.id);
-        browser.tabs.reload(tab.id);
-        return [[false, false, true]];
-      }
-      return ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError)(error);
-    });
-    log('  tryInitGroupTab: groupt tab state ', tab.id, { prepared, initialized, reloaded });
-    if (reloaded) {
-      log('  => reloaded ', tab.id);
-      return;
-    }
-    if (prepared && initialized) {
-      log('  => already initialized ', tab.id);
-      return;
-    }
-  }
-  catch(error) {
-    log('  tryInitGroupTab: error while checking initialized: ', tab.id, error);
-  }
-  try {
-    const getTitleExistence = function getState() {
-      return !!document.querySelector('#title');
-    };
-    const titleElementExists = (browser.scripting ?
-      browser.scripting.executeScript({ // Manifest V3
-        ...v3Options,
-        func: getTitleExistence,
-      }).then(results => results && results[0] && results[0].result) :
-      browser.tabs.executeScript(tab.id, {
-        ...v2Options,
-        code: `(${getTitleExistence.toString()})()`,
-      }).then(results => results && results[0])
-    ).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError));
-    if (!titleElementExists && tab.status == 'complete') { // we need to load resources/group-tab.html at first.
-      log('  => title element exists, load again ', tab.id);
-      return browser.tabs.update(tab.id, { url: tab.url }).catch(ApiTabs.createErrorSuppressor());
-    }
-  }
-  catch(error) {
-    log('  tryInitGroupTab error while checking title element: ', tab.id, error);
-  }
 
-  (browser.scripting ?
-    browser.scripting.executeScript({ // Manifest V3
-      ...v3Options,
-      files: [
-        '/extlib/l10n-classic.js', // ES module is not supported as a content script...
-        '/resources/group-tab.js',
-      ],
-    }) :
-    Promise.all([
-      browser.tabs.executeScript(tab.id, {
-        ...v2Options,
-        //file:  '/common/l10n.js'
-        file: '/extlib/l10n-classic.js', // ES module is not supported as a content script...
-      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
-      browser.tabs.executeScript(tab.id, {
-        ...v2Options,
-        file: '/resources/group-tab.js',
-      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, ApiTabs.handleMissingHostPermissionError)),
-    ])
-  ).then(() => {
-    log('tryInitGroupTab completely initialized: ', tab.id);
-  });
+  log('tryInitGroupTab ', tab);
+  HashMessaging.init(tab.id);
 
   if (tab.$TST.states.has(Constants.kTAB_STATE_UNREAD)) {
     tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
@@ -388,7 +305,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   await tryInitGroupTab(groupTab);
   if (changedInfo.includes('tree')) {
     try {
-      await browser.tabs.sendMessage(groupTab.id, {
+      await HashMessaging.sendMessage(groupTab.id, {
         type: 'treestyletab:update-tree',
       }).catch(error => {
         if (ApiTabs.isMissingHostPermissionError(error))
@@ -431,7 +348,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
     }
 
     if (newTitle && groupTab.title != newTitle) {
-      browser.tabs.sendMessage(groupTab.id, {
+      HashMessaging.sendMessage(groupTab.id, {
         type:  'treestyletab:update-title',
         title: newTitle,
       }).catch(ApiTabs.createErrorHandler(
@@ -541,7 +458,7 @@ export async function clearTemporaryState(tab) {
   url.searchParams.delete('temporary');
   url.searchParams.delete('temporaryAggressive');
   await Promise.all([
-    browser.tabs.sendMessage(tab.id, {
+    HashMessaging.sendMessage(tab.id, {
       type: 'treestyletab:clear-temporary-state',
     }).catch(ApiTabs.createErrorHandler()),
     browser.tabs.executeScript(tab.id, { // failsafe
@@ -626,7 +543,7 @@ Tab.onPinned.addListener(async tab => {
     const url = new URL(tab.url);
     url.searchParams.set('aliasTabId', openedGroupTab.$TST.uniqueId.id);
     await Promise.all([
-      browser.tabs.sendMessage(tab.id, {
+      HashMessaging.sendMessage(tab.id, {
         type: 'treestyletab:replace-state-url',
         url:  url.href,
       }).catch(ApiTabs.createErrorHandler()),
@@ -635,7 +552,7 @@ Tab.onPinned.addListener(async tab => {
         code:  `history.replaceState({}, document.title, ${JSON.stringify(url.href)});`,
       }).catch(ApiTabs.createErrorHandler()),
     ]);
-    await browser.tabs.sendMessage(tab.id, {
+    await HashMessaging.sendMessage(tab.id, {
       type: 'treestyletab:update-tree',
       url:  url.href,
     }).catch(ApiTabs.createErrorHandler());
@@ -660,3 +577,18 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
   reserveToUpdateRelatedGroupTabs(tab);
 });
 */
+
+HashMessaging.onMessage((message, _sender) => {
+  switch (message?.type) {
+    case 'get-localized-messages': {
+      const response = {};
+      for (const key of message.keys) {
+        response[key] = browser.i18n.getMessage(key);
+      }
+      return response;
+    }; break;
+
+    default:
+      break;
+  }
+});

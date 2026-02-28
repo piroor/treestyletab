@@ -371,7 +371,7 @@ SidebarConnection.onMessage.addListener(async (windowId, message) => {
 });
 
 if (Constants.IS_BACKGROUND) {
-  browser.runtime.onMessage.addListener((message, _sender) => {
+  const onMessage = (message, _sender) => {
     switch (message.type) {
       // for operations from group-tab.html
       case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
@@ -392,5 +392,12 @@ if (Constants.IS_BACKGROUND) {
         });
         break;
     }
+  };
+  browser.runtime.onMessage.addListener(onMessage);
+
+  import('/extlib/hash-messaging-bg.js').then(({ default: HashMessaging }) => {
+    HashMessaging.onMessage((message, sender) => {
+      return onMessage(message, sender);
+    });
   });
 }

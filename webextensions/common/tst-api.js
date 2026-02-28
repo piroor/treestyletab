@@ -710,7 +710,7 @@ if (Constants.IS_BACKGROUND) {
   });
   */
 
-  browser.runtime.onMessage.addListener((message, _sender) => {
+  const onInternalMessage = (message, _sender) => {
     if (!mInitialized ||
         !message ||
         typeof message.type != 'string')
@@ -756,6 +756,13 @@ if (Constants.IS_BACKGROUND) {
         unregisterAddon(message.id);
         break;
     }
+  }
+  browser.runtime.onMessage.addListener(onInternalMessage);
+
+  import('/extlib/hash-messaging-bg.js').then(({ default: HashMessaging }) => {
+    HashMessaging.onMessage((message, sender) => {
+      return onInternalMessage(message, sender);
+    });
   });
 }
 

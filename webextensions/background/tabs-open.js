@@ -27,6 +27,7 @@
 'use strict';
 
 //import EventListenerManager from '/extlib/EventListenerManager.js';
+import HashMessaging from '/extlib/hash-messaging-bg.js';
 
 import {
   log as internalLogger,
@@ -340,4 +341,8 @@ browser.runtime.onMessage.addListener((message, sender) => {
     return;
 
   onMessage(message, sender.tab);
+});
+
+HashMessaging.onMessage((message, sender) => {
+  return onMessage(message, sender);
 });
