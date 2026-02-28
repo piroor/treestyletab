@@ -245,6 +245,16 @@ async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs) {
   if (remappedCount && remappedCount < tabs.length)
     throw new Error(`fixupTabsRestoredFromCache: not a window restoration, only ${remappedCount} tab(s) are restored (maybe restoration of closed tabs)`);
   MetricsData.add('fixupTabsRestoredFromCache: step 1 done.');
+  // validate parent/child reference integrity in cache
+  for (const cachedTab of cachedTabs) {
+    if (cachedTab.$TST.parentId && !idMap.has(cachedTab.$TST.parentId))
+      throw new Error(`fixupTabsRestoredFromCache: inconsistent cache - unresolvable parent ID: ${cachedTab.$TST.parentId} for tab ${cachedTab.id}`);
+    for (const childId of (cachedTab.$TST.childIds || [])) {
+      if (!idMap.has(childId))
+        throw new Error(`fixupTabsRestoredFromCache: inconsistent cache - unresolvable child ID: ${childId} for tab ${cachedTab.id}`);
+    }
+  }
+  MetricsData.add('fixupTabsRestoredFromCache: step 1.5 done.');
   // step 2: restore information of tabs
   // Do this from bottom to top, to reduce post operations for modified trees.
   // (Attaching a tab to an existing tree will trigger "update" task for
