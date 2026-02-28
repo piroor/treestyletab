@@ -555,7 +555,7 @@ function setExtraTabContentsToElement(tabElement, id, params = {}) {
     return setExtraContentsToContainer(container, id, params);
 }
 
-function onExtraContentsAboveChanged(id, params) {
+function onExtraContentsAboveChanged(id, params = {}) {
   if (typeof id != 'string') { // the addon id is optional
     params = id;
     id = browser.runtime.id;
@@ -575,7 +575,7 @@ function onExtraContentsAboveChanged(id, params) {
   });
 }
 
-function onExtraContentsBelowChanged(id, params) {
+function onExtraContentsBelowChanged(id, params = {}) {
   if (typeof id != 'string') { // the addon id is optional
     params = id;
     id = browser.runtime.id;
