@@ -10,6 +10,7 @@ import { DOMUpdater } from '/extlib/dom-updater.js';
 import {
   configs,
   log as internalLogger,
+  mapAndFilter,
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as TabsStore from '/common/tabs-store.js';
@@ -711,25 +712,25 @@ function collectExtraContentsRoots({ tabs, place }) {
   switch (String(place).toLowerCase()) {
     case 'indent': // for backward compatibility
     case 'tab-indent':
-      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element?._extraItemsContainerIndentRoot).filter(root => root);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerIndentRoot || undefined);
 
     case 'behind': // for backward compatibility
     case 'tab-behind':
-      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element?._extraItemsContainerBehindRoot).filter(root => root);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerBehindRoot || undefined);
 
     case 'front': // for backward compatibility
     case 'tab-front':
-      return (tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element?._extraItemsContainerFrontRoot).filter(root => root);
+      return mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerFrontRoot || undefined);
 
     case 'tab-above':
       return [
-        ...(tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element?._extraItemsContainerAboveRoot).filter(root => root),
+        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerAboveRoot || undefined),
         mDummyTab.extraItemsContainerAboveRoot,
       ];
 
     case 'tab-below':
       return [
-        ...(tabs || Tab.getAllTabs(mTargetWindow)).map(tab => tab.$TST.element?._extraItemsContainerBelowRoot).filter(root => root),
+        ...mapAndFilter(tabs || Tab.getAllTabs(mTargetWindow), tab => tab.$TST.element?._extraItemsContainerBelowRoot || undefined),
         mDummyTab.extraItemsContainerBelowRoot,
       ];
 
