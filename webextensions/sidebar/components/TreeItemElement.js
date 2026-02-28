@@ -556,7 +556,7 @@ index = ${raw.index}
         container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} indent`;
         this.insertBefore(container, this.substanceElement);
       }
-      this.extraItemsContainerIndentRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerIndentRoot = container.shadowRoot || container.attachShadow({ mode: 'open' });
       this.extraItemsContainerIndentRoot.itemById = new Map();
     }
     return this.extraItemsContainerIndentRoot;
@@ -572,7 +572,7 @@ index = ${raw.index}
         const below = ui.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`);
         ui.insertBefore(container, below ? below.nextSibling : ui.querySelector('.caption').nextSibling);
       }
-      this.extraItemsContainerBehindRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerBehindRoot = container.shadowRoot || container.attachShadow({ mode: 'open' });
       this.extraItemsContainerBehindRoot.itemById = new Map();
     }
     return this.extraItemsContainerBehindRoot;
@@ -586,7 +586,7 @@ index = ${raw.index}
         container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} front`;
         this.querySelector('.ui').appendChild(container);
       }
-      this.extraItemsContainerFrontRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerFrontRoot = container.shadowRoot || container.attachShadow({ mode: 'open' });
       this.extraItemsContainerFrontRoot.itemById = new Map();
     }
     return this.extraItemsContainerFrontRoot;
@@ -601,7 +601,7 @@ index = ${raw.index}
         const ui = this.querySelector('.ui');
         ui.insertBefore(container, ui.querySelector('.caption'));
       }
-      this.extraItemsContainerAboveRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerAboveRoot = container.shadowRoot || container.attachShadow({ mode: 'open' });
       this.extraItemsContainerAboveRoot.itemById = new Map();
     }
     return this.extraItemsContainerAboveRoot;
@@ -616,7 +616,7 @@ index = ${raw.index}
         const ui = this.querySelector('.ui');
         ui.insertBefore(container, ui.querySelector('.caption').nextSibling);
       }
-      this.extraItemsContainerBelowRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerBelowRoot = container.shadowRoot || container.attachShadow({ mode: 'open' });
       this.extraItemsContainerBelowRoot.itemById = new Map();
     }
     return this.extraItemsContainerBelowRoot;
