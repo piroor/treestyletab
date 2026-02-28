@@ -117,6 +117,34 @@ export class TreeItemElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
 
+    /* The DOM structure will be fulfilled as following with delayed creations of elements:
+
+      <span class="native-tab-group-line"></span>
+      <span class="${Constants.kEXTRA_ITEMS_CONTAINER} indent"></span>
+      <${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME} draggable="true">
+        <span class="${Constants.kBACKGROUND} base"></span>
+        <span class="${Constants.kBACKGROUND}">
+          <span class="${Constants.kBURSTER}"></span>
+        </span>
+        <${kTAB_TWISTY_ELEMENT_NAME}></${kTAB_TWISTY_ELEMENT_NAME}>
+        <span class="ui">
+          <span class="${Constants.kEXTRA_ITEMS_CONTAINER} above"></span>
+          <span class="caption">
+            <${kTAB_FAVICON_ELEMENT_NAME}></${kTAB_FAVICON_ELEMENT_NAME}>
+            <${kTAB_SOUND_BUTTON_ELEMENT_NAME}></${kTAB_SOUND_BUTTON_ELEMENT_NAME}>
+            <${kTREE_ITEM_LABEL_ELEMENT_NAME}></${kTREE_ITEM_LABEL_ELEMENT_NAME}>
+            <${kTAB_COUNTER_ELEMENT_NAME}></${kTAB_COUNTER_ELEMENT_NAME}>
+            <${kTAB_CLOSE_BOX_ELEMENT_NAME}></${kTAB_CLOSE_BOX_ELEMENT_NAME}>
+          </span>
+          <span class="${Constants.kEXTRA_ITEMS_CONTAINER} below"></span>
+          <span class="${Constants.kEXTRA_ITEMS_CONTAINER} behind"></span>
+          <span class="${Constants.kEXTRA_ITEMS_CONTAINER} front"></span>
+        </span>
+        <span class="${Constants.kHIGHLIGHTER}"></span>
+        <span class="${Constants.kCONTEXTUAL_IDENTITY_MARKER}"></span>
+      </${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME}>
+    */
+
     this.insertAdjacentHTML('beforeend', `
       <${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME} draggable="true">
         <span class="${Constants.kBACKGROUND} base"></span>
