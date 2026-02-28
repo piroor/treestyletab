@@ -77,11 +77,11 @@ export class TreeItemElement extends HTMLElement {
     this.__onMouseOver = null;
     this.__onMouseEnter = null;
     this.__onMouseLeave = null;
-    this._extraItemsContainerIndentRoot = null;
-    this._extraItemsContainerBehindRoot = null;
-    this._extraItemsContainerFrontRoot = null;
-    this._extraItemsContainerAboveRoot = null;
-    this._extraItemsContainerBelowRoot = null;
+    this.extraItemsContainerIndentRoot = null;
+    this.extraItemsContainerBehindRoot = null;
+    this.extraItemsContainerFrontRoot = null;
+    this.extraItemsContainerAboveRoot = null;
+    this.extraItemsContainerBelowRoot = null;
   }
 
   connectedCallback() {
@@ -178,11 +178,11 @@ export class TreeItemElement extends HTMLElement {
     this._endListening();
     this._raw = null;
     this._$TST = null;
-    this._extraItemsContainerIndentRoot = null;
-    this._extraItemsContainerBehindRoot = null;
-    this._extraItemsContainerFrontRoot = null;
-    this._extraItemsContainerAboveRoot = null;
-    this._extraItemsContainerBelowRoot = null;
+    this.extraItemsContainerIndentRoot = null;
+    this.extraItemsContainerBehindRoot = null;
+    this.extraItemsContainerFrontRoot = null;
+    this.extraItemsContainerAboveRoot = null;
+    this.extraItemsContainerBelowRoot = null;
   }
 
   get initialized() {
@@ -548,22 +548,22 @@ index = ${raw.index}
     return tooltip;
   }
 
-  get extraItemsContainerIndentRoot() {
-    if (!this._extraItemsContainerIndentRoot) {
+  get safeExtraItemsContainerIndentRoot() {
+    if (!this.extraItemsContainerIndentRoot) {
       let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`);
       if (!container) {
         container = document.createElement('span');
         container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} indent`;
         this.insertBefore(container, this.substanceElement);
       }
-      this._extraItemsContainerIndentRoot = container.attachShadow({ mode: 'open' });
-      this._extraItemsContainerIndentRoot.itemById = new Map();
+      this.extraItemsContainerIndentRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerIndentRoot.itemById = new Map();
     }
-    return this._extraItemsContainerIndentRoot;
+    return this.extraItemsContainerIndentRoot;
   }
 
-  get extraItemsContainerBehindRoot() {
-    if (!this._extraItemsContainerBehindRoot) {
+  get safeExtraItemsContainerBehindRoot() {
+    if (!this.extraItemsContainerBehindRoot) {
       let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`);
       if (!container) {
         container = document.createElement('span');
@@ -572,28 +572,28 @@ index = ${raw.index}
         const below = ui.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`);
         ui.insertBefore(container, below ? below.nextSibling : ui.querySelector('.caption').nextSibling);
       }
-      this._extraItemsContainerBehindRoot = container.attachShadow({ mode: 'open' });
-      this._extraItemsContainerBehindRoot.itemById = new Map();
+      this.extraItemsContainerBehindRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerBehindRoot.itemById = new Map();
     }
-    return this._extraItemsContainerBehindRoot;
+    return this.extraItemsContainerBehindRoot;
   }
 
-  get extraItemsContainerFrontRoot() {
-    if (!this._extraItemsContainerFrontRoot) {
+  get safeExtraItemsContainerFrontRoot() {
+    if (!this.extraItemsContainerFrontRoot) {
       let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`);
       if (!container) {
         container = document.createElement('span');
         container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} front`;
         this.querySelector('.ui').appendChild(container);
       }
-      this._extraItemsContainerFrontRoot = container.attachShadow({ mode: 'open' });
-      this._extraItemsContainerFrontRoot.itemById = new Map();
+      this.extraItemsContainerFrontRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerFrontRoot.itemById = new Map();
     }
-    return this._extraItemsContainerFrontRoot;
+    return this.extraItemsContainerFrontRoot;
   }
 
-  get extraItemsContainerAboveRoot() {
-    if (!this._extraItemsContainerAboveRoot) {
+  get safeExtraItemsContainerAboveRoot() {
+    if (!this.extraItemsContainerAboveRoot) {
       let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`);
       if (!container) {
         container = document.createElement('span');
@@ -601,14 +601,14 @@ index = ${raw.index}
         const ui = this.querySelector('.ui');
         ui.insertBefore(container, ui.querySelector('.caption'));
       }
-      this._extraItemsContainerAboveRoot = container.attachShadow({ mode: 'open' });
-      this._extraItemsContainerAboveRoot.itemById = new Map();
+      this.extraItemsContainerAboveRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerAboveRoot.itemById = new Map();
     }
-    return this._extraItemsContainerAboveRoot;
+    return this.extraItemsContainerAboveRoot;
   }
 
-  get extraItemsContainerBelowRoot() {
-    if (!this._extraItemsContainerBelowRoot) {
+  get safeExtraItemsContainerBelowRoot() {
+    if (!this.extraItemsContainerBelowRoot) {
       let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`);
       if (!container) {
         container = document.createElement('span');
@@ -616,10 +616,10 @@ index = ${raw.index}
         const ui = this.querySelector('.ui');
         ui.insertBefore(container, ui.querySelector('.caption').nextSibling);
       }
-      this._extraItemsContainerBelowRoot = container.attachShadow({ mode: 'open' });
-      this._extraItemsContainerBelowRoot.itemById = new Map();
+      this.extraItemsContainerBelowRoot = container.attachShadow({ mode: 'open' });
+      this.extraItemsContainerBelowRoot.itemById = new Map();
     }
-    return this._extraItemsContainerBelowRoot;
+    return this.extraItemsContainerBelowRoot;
   }
 
   ensureBurster() {
