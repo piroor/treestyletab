@@ -115,7 +115,8 @@ export class TreeItemElement extends HTMLElement {
     // We preserve this class for backward compatibility with other addons.
     this.classList.add(kTAB_CLASS_NAME);
 
-    this.insertAdjacentHTML('beforeend', `
+    /* The DOM structure will be fulfilled as following with delayed creations of elements:
+
       <span class="native-tab-group-line"></span>
       <span class="${Constants.kEXTRA_ITEMS_CONTAINER} indent"></span>
       <${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME} draggable="true">
@@ -140,6 +141,24 @@ export class TreeItemElement extends HTMLElement {
         <span class="${Constants.kHIGHLIGHTER}"></span>
         <span class="${Constants.kCONTEXTUAL_IDENTITY_MARKER}"></span>
       </${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME}>
+    */
+
+    this.insertAdjacentHTML('beforeend', `
+      <${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME} draggable="true">
+        <span class="${Constants.kBACKGROUND} base"></span>
+        <span class="${Constants.kBACKGROUND}"></span>
+        <${kTAB_TWISTY_ELEMENT_NAME}></${kTAB_TWISTY_ELEMENT_NAME}>
+        <span class="ui">
+          <span class="caption">
+            <${kTAB_FAVICON_ELEMENT_NAME}></${kTAB_FAVICON_ELEMENT_NAME}>
+            <${kTAB_SOUND_BUTTON_ELEMENT_NAME}></${kTAB_SOUND_BUTTON_ELEMENT_NAME}>
+            <${kTREE_ITEM_LABEL_ELEMENT_NAME}></${kTREE_ITEM_LABEL_ELEMENT_NAME}>
+            <${kTAB_COUNTER_ELEMENT_NAME}></${kTAB_COUNTER_ELEMENT_NAME}>
+            <${kTAB_CLOSE_BOX_ELEMENT_NAME}></${kTAB_CLOSE_BOX_ELEMENT_NAME}>
+          </span>
+        </span>
+        <span class="${Constants.kHIGHLIGHTER}"></span>
+      </${kTREE_ITEM_SUBSTANCE_ELEMENT_NAME}>
     `.trim().replace(/>\s+</g, '><'));
 
     this.removeAttribute('draggable');
@@ -159,6 +178,11 @@ export class TreeItemElement extends HTMLElement {
     this._endListening();
     this._raw = null;
     this._$TST = null;
+    this._extraItemsContainerIndentRoot = null;
+    this._extraItemsContainerBehindRoot = null;
+    this._extraItemsContainerFrontRoot = null;
+    this._extraItemsContainerAboveRoot = null;
+    this._extraItemsContainerBelowRoot = null;
   }
 
   get initialized() {
@@ -526,7 +550,13 @@ index = ${raw.index}
 
   get extraItemsContainerIndentRoot() {
     if (!this._extraItemsContainerIndentRoot) {
-      this._extraItemsContainerIndentRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`).attachShadow({ mode: 'open' });
+      let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.indent`);
+      if (!container) {
+        container = document.createElement('span');
+        container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} indent`;
+        this.insertBefore(container, this.substanceElement);
+      }
+      this._extraItemsContainerIndentRoot = container.attachShadow({ mode: 'open' });
       this._extraItemsContainerIndentRoot.itemById = new Map();
     }
     return this._extraItemsContainerIndentRoot;
@@ -534,7 +564,15 @@ index = ${raw.index}
 
   get extraItemsContainerBehindRoot() {
     if (!this._extraItemsContainerBehindRoot) {
-      this._extraItemsContainerBehindRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`).attachShadow({ mode: 'open' });
+      let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.behind`);
+      if (!container) {
+        container = document.createElement('span');
+        container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} behind`;
+        const ui = this.querySelector('.ui');
+        const below = ui.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`);
+        ui.insertBefore(container, below ? below.nextSibling : ui.querySelector('.caption').nextSibling);
+      }
+      this._extraItemsContainerBehindRoot = container.attachShadow({ mode: 'open' });
       this._extraItemsContainerBehindRoot.itemById = new Map();
     }
     return this._extraItemsContainerBehindRoot;
@@ -542,7 +580,13 @@ index = ${raw.index}
 
   get extraItemsContainerFrontRoot() {
     if (!this._extraItemsContainerFrontRoot) {
-      this._extraItemsContainerFrontRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`).attachShadow({ mode: 'open' });
+      let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.front`);
+      if (!container) {
+        container = document.createElement('span');
+        container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} front`;
+        this.querySelector('.ui').appendChild(container);
+      }
+      this._extraItemsContainerFrontRoot = container.attachShadow({ mode: 'open' });
       this._extraItemsContainerFrontRoot.itemById = new Map();
     }
     return this._extraItemsContainerFrontRoot;
@@ -550,7 +594,14 @@ index = ${raw.index}
 
   get extraItemsContainerAboveRoot() {
     if (!this._extraItemsContainerAboveRoot) {
-      this._extraItemsContainerAboveRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`).attachShadow({ mode: 'open' });
+      let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.above`);
+      if (!container) {
+        container = document.createElement('span');
+        container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} above`;
+        const ui = this.querySelector('.ui');
+        ui.insertBefore(container, ui.querySelector('.caption'));
+      }
+      this._extraItemsContainerAboveRoot = container.attachShadow({ mode: 'open' });
       this._extraItemsContainerAboveRoot.itemById = new Map();
     }
     return this._extraItemsContainerAboveRoot;
@@ -558,10 +609,42 @@ index = ${raw.index}
 
   get extraItemsContainerBelowRoot() {
     if (!this._extraItemsContainerBelowRoot) {
-      this._extraItemsContainerBelowRoot = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`).attachShadow({ mode: 'open' });
+      let container = this.querySelector(`.${Constants.kEXTRA_ITEMS_CONTAINER}.below`);
+      if (!container) {
+        container = document.createElement('span');
+        container.className = `${Constants.kEXTRA_ITEMS_CONTAINER} below`;
+        const ui = this.querySelector('.ui');
+        ui.insertBefore(container, ui.querySelector('.caption').nextSibling);
+      }
+      this._extraItemsContainerBelowRoot = container.attachShadow({ mode: 'open' });
       this._extraItemsContainerBelowRoot.itemById = new Map();
     }
     return this._extraItemsContainerBelowRoot;
+  }
+
+  ensureBurster() {
+    const background = this.querySelector(`.${Constants.kBACKGROUND}:not(.base)`);
+    if (background && !background.querySelector(`.${Constants.kBURSTER}`)) {
+      const burster = document.createElement('span');
+      burster.className = Constants.kBURSTER;
+      background.appendChild(burster);
+    }
+  }
+
+  ensureContextualIdentityMarker() {
+    if (!this.substanceElement?.querySelector(`.${Constants.kCONTEXTUAL_IDENTITY_MARKER}`)) {
+      const marker = document.createElement('span');
+      marker.className = Constants.kCONTEXTUAL_IDENTITY_MARKER;
+      this.substanceElement.appendChild(marker);
+    }
+  }
+
+  ensureNativeTabGroupLine() {
+    if (!this.querySelector('.native-tab-group-line')) {
+      const line = document.createElement('span');
+      line.className = 'native-tab-group-line';
+      this.insertBefore(line, this.firstChild);
+    }
   }
 
   _startListening() {
@@ -746,6 +829,8 @@ index = ${raw.index}
           continue;
         if (!classList.contains(state))
           classList.add(state);
+        if (state.startsWith('contextual-identity-'))
+          this.ensureContextualIdentityMarker();
       }
 
       for (const state of NATIVE_PROPERTIES) {
@@ -800,6 +885,7 @@ index = ${raw.index}
 
     const group = this.$TST.nativeTabGroup || this.$TST.group;
     if (group) {
+      this.ensureNativeTabGroupLine();
       this.style.setProperty('--tab-group-color', `var(--tab-group-color-${group.color})`);
       this.style.setProperty('--tab-group-color-pale', `var(--tab-group-color-${group.color}-pale)`);
       this.style.setProperty('--tab-group-color-invert', `var(--tab-group-color-${group.color}-invert)`);
