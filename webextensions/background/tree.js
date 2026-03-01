@@ -734,72 +734,172 @@ export async function detachAllChildren(
     }
   }
 
-  const notIgnoredChildren = children.filter(child => !ignoreTabsSet.has(child))
+  const notIgnoredChildren = children.filter(child => child && !ignoreTabsSet.has(child))
 
-  let count = 0;
+  // === Phase 1: Compute final tree state ===
+  // Record each child's old parent BEFORE tree mutation, for correct side effects.
+  // Most children have `tab` as their old parent, but newParent (unshifted into
+  // children at line 668) may have a different actual parent.
+  const oldParentMap = new Map(notIgnoredChildren.map(c => [c.id, c.$TST.parent || tab]));
+
+  const tabMap = new Map();
+  const childrenMap = {};
+  const detachedIds = [];
+
+  // Remove notIgnoredChildren from tab's children list
+  if (tab) {
+    tabMap.set(tab.id, tab);
+    const notIgnoredChildIds = new Set(notIgnoredChildren.map(c => c.id));
+    childrenMap[tab.id] = tab.$TST.childIds.filter(id => !notIgnoredChildIds.has(id));
+  }
+
   for (const child of notIgnoredChildren) {
-    if (!child)
-      continue;
-    if (ignoreTabsSet.has(child))
-      continue;
-    const promises = [];
-    if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
-      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
+    tabMap.set(child.id, child);
+    const oldParent = oldParentMap.get(child.id);
+    if (oldParent && oldParent !== tab)
+      tabMap.set(oldParent.id, oldParent);
+  }
 
-      // reference tabs can be closed while waiting...
+  if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
+    tabMap.set(parent.id, parent);
+    // Deduplicate: children may already be in parent's childIds
+    // (e.g. handle-removed-tabs.js calls detachAllChildren twice — first with
+    // PROMOTE_ALL_CHILDREN on the live tab, then again with tab=null).
+    // In the original code, attachTabTo's newlyAttached check made this a no-op.
+    const existingChildIds = new Set(parent.$TST.childIds);
+    const newChildIds = notIgnoredChildren.filter(c => !existingChildIds.has(c.id)).map(c => c.id);
+    childrenMap[parent.id] = [...parent.$TST.childIds, ...newChildIds];
+  }
+  else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+           notIgnoredChildren.length > 0) {
+    const firstChild = notIgnoredChildren[0];
+    const rest = notIgnoredChildren.slice(1);
+    if (parent) {
+      tabMap.set(parent.id, parent);
+      // Build parent's new child list:
+      // 1. Remove rest from parent's childIds (they move to firstChild, and may
+      //    already be in parent's childIds from a prior promote call).
+      // 2. Add firstChild if not already present (it may be newParent, already
+      //    a child of parent).
+      // Explicit removal of rest prevents order-dependent conflicts in
+      // applyTreeStructure between childrenMap[parent.id] and childrenMap[firstChild.id].
+      const restIds = new Set(rest.map(c => c.id));
+      const parentChildIds = parent.$TST.childIds.filter(id => !restIds.has(id));
+      if (!parentChildIds.includes(firstChild.id))
+        parentChildIds.push(firstChild.id);
+      childrenMap[parent.id] = parentChildIds;
+    }
+    else {
+      detachedIds.push(firstChild.id);
+    }
+    if (rest.length > 0) {
+      childrenMap[firstChild.id] = [...firstChild.$TST.childIds, ...rest.map(c => c.id)];
+    }
+  }
+  else {
+    // All other cases (DETACH_ALL, SIMPLY_DETACH_ALL, PROMOTE_ALL without parent) → detach all
+    detachedIds.push(...notIgnoredChildren.map(c => c.id));
+  }
+
+  // === Phase 2: Batch apply tree structure ===
+  applyTreeStructure(tabMap, { children: childrenMap, detached: detachedIds },
+                     { justNow: options.synchronously });
+
+  // === Phase 3: Side effects and post-processing ===
+  for (const child of notIgnoredChildren) {
+    const oldParent = oldParentMap.get(child.id);
+
+    // TSTAPI detach broadcast
+    if (oldParent && TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
+      const cache = {};
+      TSTAPI.broadcastMessage({
+        type:      TSTAPI.kNOTIFY_TREE_DETACHED,
+        tab:       child,
+        oldParent,
+      }, { tabProperties: ['tab', 'oldParent'], cache }).catch(_error => {});
+      TSTAPI.clearCache(cache);
+    }
+    if (oldParent)
+      onDetached.dispatch(child, { oldParentTab: oldParent, ...options });
+
+    // TSTAPI attach broadcast, collapse, and notify (only for re-attached children)
+    if (child.$TST.parent) {
+      if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_ATTACHED)) {
+        const cache = {};
+        TSTAPI.broadcastMessage({
+          type:   TSTAPI.kNOTIFY_TREE_ATTACHED,
+          tab:    child,
+          parent: child.$TST.parent,
+        }, { tabProperties: ['tab', 'parent'], cache }).catch(_error => {});
+        TSTAPI.clearCache(cache);
+      }
+      onAttached.dispatch(child, { parent: child.$TST.parent, dontMove: true, newlyAttached: true, ...options });
+
+      // collapseExpandForAttachedTab equivalent: when the new parent's subtree
+      // is collapsed, collapse the re-attached child too.
+      if (child.$TST.parent.$TST.subtreeCollapsed) {
+        collapseExpandTabAndSubtree(child, {
+          collapsed: true,
+          justNow:   true,
+          broadcast: true
+        });
+      }
+
+      const attachedParent = child.$TST.parent;
+      child.$TST.opened.then(() => {
+        if (!TabsStore.ensureLivingItem(child) ||
+            child.$TST.parent != attachedParent)
+          return;
+        SidebarConnection.sendMessage({
+          type:     Constants.kCOMMAND_NOTIFY_TAB_ATTACHED_COMPLETELY,
+          windowId: child.windowId,
+          childId:  child.id,
+          parentId: attachedParent.id,
+          newlyAttached: true
+        });
+      });
+    }
+
+    // openerTabId sync
+    if (!dontSyncParentToOpenerTab && configs.syncParentTabAndOpenerTab) {
+      if (child.$TST.parent) {
+        const newParentId = child.$TST.parent.id;
+        log(`openerTabId of ${child.id} is changed by TST!: ${child.openerTabId} (original) => ${newParentId} (changed by TST)`, stack());
+        child.openerTabId = newParentId;
+        child.$TST.updatingOpenerTabIds.push(newParentId);
+        browser.tabs.update(child.id, { openerTabId: newParentId })
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+        wait(200).then(() => {
+          const index = child.$TST.updatingOpenerTabIds.findIndex(id => id == newParentId);
+          child.$TST.updatingOpenerTabIds.splice(index, 1);
+        });
+      }
+      else if (child.openerTabId) {
+        log(`openerTabId of ${child.id} is cleared by TST!: ${child.openerTabId} (original)`, stack());
+        child.openerTabId = child.id;
+        browser.tabs.update(child.id, { openerTabId: child.id })
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+      }
+    }
+
+    // Behavior-specific post-processing
+    if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+        child === notIgnoredChildren[0]) {
+      await collapseExpandSubtree(child, { ...options, collapsed: false });
+    }
+    if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_DETACH_ALL_CHILDREN) {
       if (nextTab?.$TST.removing)
         nextTab = null;
       if (previousTab?.$TST.removing)
         previousTab = null;
-
       if (nextTab) {
-        promises.push(moveTabSubtreeBefore(child, nextTab, options));
+        await moveTabSubtreeBefore(child, nextTab, options);
       }
       else {
-        promises.push(moveTabSubtreeAfter(child, previousTab, options));
+        await moveTabSubtreeAfter(child, previousTab, options);
         previousTab = child.$TST.lastDescendant || child;
       }
     }
-    else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD) {
-      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
-      if (count == 0) {
-        if (parent) {
-          promises.push(attachTabTo(child, parent, {
-            ...options,
-            dontSyncParentToOpenerTab,
-            dontExpand: true,
-            dontMove:   true
-          }));
-        }
-        promises.push(collapseExpandSubtree(child, {
-          ...options,
-          collapsed: false
-        }));
-        //deleteTabValue(child, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-      }
-      else {
-        promises.push(attachTabTo(child, notIgnoredChildren[0], {
-          ...options,
-          dontSyncParentToOpenerTab,
-          dontExpand: true,
-          dontMove:   true
-        }));
-      }
-    }
-    else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
-             parent) {
-      promises.push(attachTabTo(child, parent, {
-        ...options,
-        dontSyncParentToOpenerTab,
-        dontExpand: true,
-        dontMove:   true
-      }));
-    }
-    else { // behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
-      promises.push(detachTab(child, { ...options, dontSyncParentToOpenerTab }));
-    }
-    count++;
-    await Promise.all(promises);
   }
 }
 
