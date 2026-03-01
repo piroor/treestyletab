@@ -759,8 +759,8 @@ if (Constants.IS_BACKGROUND) {
   }
   browser.runtime.onMessage.addListener(onInternalMessage);
 
-  import('/extlib/hash-messaging-bg.js').then(({ default: HashMessaging }) => {
-    HashMessaging.onMessage((message, sender) => {
+  import('/extlib/cross-context-messaging-bg.js').then(({ default: CrossContextMessaging }) => {
+    CrossContextMessaging.onMessage((message, sender) => {
       return onInternalMessage(message, sender);
     });
   });

@@ -14,15 +14,10 @@
     return false;
   }
 
-  const [ HashMessaging, l10n ] = await Promise.all([
-    import('/extlib/hash-messaging-contents.js').then(namespace => namespace.default),
+  const [ CrossContextMessaging, l10n ] = await Promise.all([
+    import('/extlib/cross-context-messaging-contents.js').then(namespace => namespace.default),
     import('/extlib/l10n.js').then(namespace => namespace.default),
   ]);
-  if (!HashMessaging.initialized) {
-    HashMessaging.requestInit();
-    setTimeout(prepare, 500, retryCount + 1);
-    return false;
-  }
 
   if (window.prepared ||
       document.documentElement.classList.contains('initialized'))
@@ -214,7 +209,7 @@
       const closebox = event.target.closest('li span.closebox');
       if (closebox) {
         const tabId = closebox.dataset.tabId;
-        HashMessaging.sendMessage({
+        CrossContextMessaging.sendMessage({
           type:             'treestyletab:remove-tabs-internally',
           tabIds:           [parseInt(tabId)],
           byMouseOperation: true,
@@ -230,7 +225,7 @@
         event.preventDefault();
         if ((event.button == 0 && isAcceled(event)) ||
             (event.button == 1 && !hasModifier(event))) {
-          HashMessaging.sendMessage({
+          CrossContextMessaging.sendMessage({
             type:             'treestyletab:remove-tabs-internally',
             tabIds:           [parseInt(tabId)],
             byMouseOperation: true,
@@ -238,7 +233,7 @@
           });
         }
         else {
-          HashMessaging.sendMessage({
+          CrossContextMessaging.sendMessage({
             type: 'treestyletab:api:focus',
             tab:  parseInt(tabId),
           });
@@ -283,13 +278,13 @@
 
     const messageKeys = l10n.collectUsedKeys(document.documentElement);
     const [themeDeclarations, contextualIdentitiesColorInfo, configs, userStyleRules, messages] = await Promise.all([
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         type: 'treestyletab:get-theme-declarations'
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         type: 'treestyletab:get-contextual-identities-color-info'
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         type: 'treestyletab:get-config-value',
         keys: [
           'renderTreeInGroupTabs',
@@ -298,10 +293,10 @@
           'rtl',
         ]
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         type: 'treestyletab:get-user-style-rules'
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         type: 'get-localized-messages',
         keys: messageKeys,
       }),
@@ -339,7 +334,7 @@
       hint.firstChild.addEventListener('click', event => {
         if (event.button != 0)
           return;
-        HashMessaging.sendMessage({
+        CrossContextMessaging.sendMessage({
           type:   'treestyletab:open-tab',
           uri,
           active: true,
@@ -349,7 +344,7 @@
         if (event.key != 'Enter' &&
             event.key != 'Space')
           return;
-        HashMessaging.sendMessage({
+        CrossContextMessaging.sendMessage({
           type:   'treestyletab:open-tab',
           uri,
           active: true,
@@ -361,7 +356,7 @@
         if (event.button != 0)
           return;
         hint.style.display = 'none';
-        HashMessaging.sendMessage({
+        CrossContextMessaging.sendMessage({
           type:  'treestyletab:set-config-value',
           key:   optionKey,
           value: false
@@ -372,7 +367,7 @@
             event.key != 'Space')
           return;
         hint.style.display = 'none';
-        HashMessaging.sendMessage({
+        CrossContextMessaging.sendMessage({
           type:  'treestyletab:set-config-value',
           key:   optionKey,
           value: false
@@ -380,7 +375,7 @@
       });
     }
 
-    HashMessaging.onMessage((message, _sender) => {
+    CrossContextMessaging.onMessage((message, _sender) => {
       switch (message?.type) {
         case 'treestyletab:clear-temporary-state':
           gTemporaryCheck.checked = gTemporaryAggressiveCheck.checked = false;
@@ -439,15 +434,15 @@
     const [thisTab, openerTab, aliasTab] = await Promise.all([
       // We need to request them separately because
       // get-tree always compact the returned array (null tab will be removved).
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         ...baseRequest,
         tab: 'senderTab',
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         ...baseRequest,
         tab: getOpenerTabId(),
       }),
-      HashMessaging.sendMessage({
+      CrossContextMessaging.sendMessage({
         ...baseRequest,
         tab: getAliasTabId(),
       }),

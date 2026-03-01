@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import HashMessaging from '/extlib/hash-messaging-bg.js';
+import CrossContextMessaging from '/extlib/cross-context-messaging-bg.js';
 
 import {
   log as internalLogger,
@@ -224,17 +224,10 @@ export async function tryReplaceTabWithGroup(tab, { windowId, parent, children, 
 // init/update group tabs
 // ====================================================================
 
-/*
-  To prevent the tab is closed by Firefox, we need to inject scripts dynamically.
-  See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
-*/
 async function tryInitGroupTab(tab) {
   if (!tab.$TST.isGroupTab &&
       !tab.$TST.hasGroupTabURL)
     return;
-
-  log('tryInitGroupTab ', tab);
-  HashMessaging.init(tab.id);
 
   if (tab.$TST.states.has(Constants.kTAB_STATE_UNREAD)) {
     tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
@@ -305,7 +298,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   await tryInitGroupTab(groupTab);
   if (changedInfo.includes('tree')) {
     try {
-      await HashMessaging.sendMessage(groupTab.id, {
+      await CrossContextMessaging.sendMessage(groupTab.id, {
         type: 'treestyletab:update-tree',
       }).catch(error => {
         if (ApiTabs.isMissingHostPermissionError(error))
@@ -348,7 +341,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
     }
 
     if (newTitle && groupTab.title != newTitle) {
-      HashMessaging.sendMessage(groupTab.id, {
+      CrossContextMessaging.sendMessage(groupTab.id, {
         type:  'treestyletab:update-title',
         title: newTitle,
       }).catch(ApiTabs.createErrorHandler(
@@ -458,7 +451,7 @@ export async function clearTemporaryState(tab) {
   url.searchParams.delete('temporary');
   url.searchParams.delete('temporaryAggressive');
   await Promise.all([
-    HashMessaging.sendMessage(tab.id, {
+    CrossContextMessaging.sendMessage(tab.id, {
       type: 'treestyletab:clear-temporary-state',
     }).catch(ApiTabs.createErrorHandler()),
     browser.tabs.executeScript(tab.id, { // failsafe
@@ -543,7 +536,7 @@ Tab.onPinned.addListener(async tab => {
     const url = new URL(tab.url);
     url.searchParams.set('aliasTabId', openedGroupTab.$TST.uniqueId.id);
     await Promise.all([
-      HashMessaging.sendMessage(tab.id, {
+      CrossContextMessaging.sendMessage(tab.id, {
         type: 'treestyletab:replace-state-url',
         url:  url.href,
       }).catch(ApiTabs.createErrorHandler()),
@@ -552,7 +545,7 @@ Tab.onPinned.addListener(async tab => {
         code:  `history.replaceState({}, document.title, ${JSON.stringify(url.href)});`,
       }).catch(ApiTabs.createErrorHandler()),
     ]);
-    await HashMessaging.sendMessage(tab.id, {
+    await CrossContextMessaging.sendMessage(tab.id, {
       type: 'treestyletab:update-tree',
       url:  url.href,
     }).catch(ApiTabs.createErrorHandler());
@@ -578,7 +571,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 });
 */
 
-HashMessaging.onMessage((message, _sender) => {
+CrossContextMessaging.onMessage((message, _sender) => {
   switch (message?.type) {
     case 'get-localized-messages': {
       const response = {};

@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import HashMessaging from '/extlib/hash-messaging-bg.js';
+import CrossContextMessaging from '/extlib/cross-context-messaging-bg.js';
 
 import {
   log as internalLogger,
@@ -76,7 +76,7 @@ browser.commands.onCommand.addListener(onShortcutCommand);
 browser.runtime.onMessage.addListener(onMessage);
 TSTAPI.onMessageExternal.addListener(onMessageExternal);
 
-HashMessaging.onMessage((message, sender) => {
+CrossContextMessaging.onMessage((message, sender) => {
   return onMessage(message, sender);
 });
 
