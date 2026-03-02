@@ -1939,7 +1939,7 @@ export class Tab extends TreeItem {
     const parent = this.parent;
     if (parent) {
       this.setAttribute(Constants.kPARENT, parent.id);
-      parent.$TST.invalidateCachedDescendants();
+      parent.$TST.invalidateCacheUpward();
 
       for (const [state, map] of mSoundChildrenIdsMaps) {
         if (this.states.has(state))
@@ -2101,7 +2101,7 @@ export class Tab extends TreeItem {
     // Map. This is acceptable to repeat in order to avoid two array copies,
     // especially on larger tab sets.
     this.childIds.sort((a, b) => TreeItem.compare(Tab.get(a), Tab.get(b)));
-    this.invalidateCachedDescendants();
+    this.invalidateCacheUpward();
   }
 
   get hasChild() {
@@ -2124,10 +2124,10 @@ export class Tab extends TreeItem {
     }
   }
 
-  invalidateCachedDescendants() {
+  invalidateCacheUpward() {
     const parent = this.parent;
     if (parent)
-      parent.$TST.invalidateCachedDescendants();
+      parent.$TST.invalidateCacheUpward();
     this.invalidateCache();
   }
 
