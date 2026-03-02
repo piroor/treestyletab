@@ -203,7 +203,10 @@ export async function attachTabTo(child, parent, options = {}) {
     }
     childrenMap[parent.id] = parent.$TST.childIds.concat([child.id]);
 
-    applyTreeStructure(tabMap, { children: childrenMap }, { justNow: options.synchronously });
+    applyTreeStructure(tabMap, { children: childrenMap }, {
+      justNow:               options.synchronously,
+      suppressSidebarMessage: options.suppressSidebarMessage,
+    });
 
     // Side effects for old parent (replaces detachTab call)
     if (oldParent && oldParent.id !== parent.id) {
@@ -1822,7 +1825,6 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
   const hasDetached  = detached && detached.length > 0;
   const hasCollapsed = collapsed && Object.keys(collapsed).length > 0;
 
-
   // Nothing to apply — skip entirely
   if (!hasChildren && !hasDetached && !hasCollapsed) {
     return;
@@ -1914,7 +1916,7 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
   // Note: collapsed state is NOT included here.
   // - Levels are derived from tree depth in both background and sidebar handlers.
   // - Collapsed state is set by collapseExpandSubtree → kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
-  if (tabs.size > 0) {
+  if (!options.suppressSidebarMessage && tabs.size > 0) {
     const windowId = tabs.values().next().value.windowId;
     const tabIds = [...tabs.keys()];
 

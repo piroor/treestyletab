@@ -1073,12 +1073,13 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 
   const memberOptions = {
     ...options,
-    insertBefore: null,
-    insertAfter:  null,
-    dontMove:     true,
-    forceExpand:  options.draggedTabs.some(tab => tab.active)
+    insertBefore:          null,
+    insertAfter:           null,
+    dontMove:              true,
+    forceExpand:           options.draggedTabs.some(tab => tab.active),
+    suppressSidebarMessage: !!parent,
   };
-  return Promise.all(tabs.map(async tab => {
+  await Promise.all(tabs.map(async tab => {
     if (parent) {
       await Tree.attachTabTo(tab, parent, memberOptions);
     }
@@ -1092,6 +1093,16 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       collapsed,
     });
   }));
+
+  // Send one batch message covering all root-tab attachments
+  if (parent && tabs.length > 0) {
+    const tabMap = new Map([[parent.id, parent], ...tabs.map(t => [t.id, t])]);
+    Tree.applyTreeStructure(
+      tabMap,
+      { children: { [parent.id]: parent.$TST.childIds } },
+      { justNow: true }
+    );
+  }
 }
 
 function detachTabsWithStructure(tabs, options = {}) {
