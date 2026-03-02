@@ -1334,7 +1334,6 @@ export class Tab extends TreeItem {
     this.parentId = null;
     this.childIds = [];
     this.cachedAncestorIds   = null;
-    this.cachedDescendantIds = null;
   }
 
   startMoving() {
@@ -2110,24 +2109,22 @@ export class Tab extends TreeItem {
   }
 
   get descendants() {
-    if (!this.cachedDescendantIds)
-      return this.updateDescendants();
-    return mapAndFilter(this.cachedDescendantIds,
-                        id => TabsStore.ensureLivingItem(Tab.get(id)) || undefined);
+    const result = [];
+    this._collectDescendants(result);
+    return result;
   }
 
-  updateDescendants() {
-    const descendants = [];
-    this.cachedDescendantIds = [];
-    for (const child of this.children) {
-      descendants.push(child, ...child.$TST.descendants);
-      this.cachedDescendantIds.push(child.id, ...child.$TST.cachedDescendantIds);
+  _collectDescendants(result) {
+    for (const id of this.childIds) {
+      const child = TabsStore.ensureLivingItem(Tab.get(id));
+      if (!child)
+        continue;
+      result.push(child);
+      child.$TST._collectDescendants(result);
     }
-    return descendants;
   }
 
   invalidateCachedDescendants() {
-    this.cachedDescendantIds = null;
     const parent = this.parent;
     if (parent)
       parent.$TST.invalidateCachedDescendants();
