@@ -1670,6 +1670,7 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
         for (const tab of movedTabs) {
           tab.$TST.temporaryMetadata.delete('movingAcrossWindows');
           tab.windowId = destinationWindowId;
+          tab.$TST.resetOpened();
         }
         log('moved across windows: ', movedTabIds);
       }

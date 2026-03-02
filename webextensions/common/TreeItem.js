@@ -2916,6 +2916,14 @@ export class Tab extends TreeItem {
   }
 
 
+  resetOpened() {
+    this.opened = new Promise((resolve, reject) => {
+      const resolvers = mOpenedResolvers.get(this.id) || new Set();
+      resolvers.add({ resolve, reject });
+      mOpenedResolvers.set(this.id, resolvers);
+    });
+  }
+
   resolveOpened() {
     if (!mOpenedResolvers.has(this.id))
       return;

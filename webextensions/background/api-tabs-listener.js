@@ -538,7 +538,7 @@ async function onNewTabTracked(tab, info) {
     if (duplicatedInternally)
       win.duplicatingTabsCount--;
 
-    if (restored) {
+    if (restored && info.trigger !== 'tabs.onAttached') {
       win.restoredCount = win.restoredCount || 0;
       win.restoredCount++;
       if (!win.promisedAllTabsRestored) {
@@ -678,7 +678,8 @@ async function onNewTabTracked(tab, info) {
     metric.add('kCOMMAND_NOTIFY_TAB_CREATED notified');
 
     if (!duplicated &&
-        restored) {
+        restored &&
+        info.trigger !== 'tabs.onAttached') {
       tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
       Tab.onRestored.dispatch(tab);
       checkRecycledTab(win.id);
