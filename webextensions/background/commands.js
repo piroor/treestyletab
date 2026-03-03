@@ -1107,13 +1107,29 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 
 function detachTabsWithStructure(tabs, options = {}) {
   log('detachTabsWithStructure: start ', () => tabs.map(dumpTab));
+
+  // Collect tabs with parents before detachTab clears them
+  const tabMap = new Map();
+  const detachedIds = [];
   for (const tab of tabs) {
-    Tree.detachTab(tab, options);
+    if (tab.$TST.parent) {
+      tabMap.set(tab.id, tab);
+      detachedIds.push(tab.id);
+    }
+  }
+
+  // Run detachTab per tab (all side effects) but suppress individual sidebar messages
+  for (const tab of tabs) {
+    Tree.detachTab(tab, { ...options, suppressSidebarMessage: true });
     Tree.collapseExpandTabAndSubtree(tab, {
       ...options,
       collapsed: false
     });
   }
+
+  // Send one batched sidebar message for all detachments
+  if (detachedIds.length > 0)
+    Tree.applyTreeStructure(tabMap, { detached: detachedIds }, { justNow: options.synchronously });
 }
 
 export async function moveUp(tab, options = {}) {

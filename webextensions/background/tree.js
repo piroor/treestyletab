@@ -572,7 +572,7 @@ export function detachTab(child, options = {}) {
   if (parent) {
     const filteredChildIds = parent.$TST.childIds.filter(id => id != child.id);
     const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    applyTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously });
+    applyTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously, suppressSidebarMessage: options.suppressSidebarMessage });
 
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
