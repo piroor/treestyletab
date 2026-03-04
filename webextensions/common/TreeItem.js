@@ -2100,7 +2100,7 @@ export class Tab extends TreeItem {
     for (const child of Array.from(new Set(this.children.concat(oldChildren)))) {
       if (this.childIds.includes(child.id))
         child.$TST.parent = this.id;
-      else
+      else if (child.$TST.parentId === this.id)
         child.$TST.parent = null;
     }
     return tabs;

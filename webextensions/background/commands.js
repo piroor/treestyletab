@@ -1079,6 +1079,16 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
     forceExpand:           options.draggedTabs.some(tab => tab.active),
     suppressSidebarMessage: !!parent,
   };
+  // Collect old parents before attachTabTo clears them
+  const oldParents = new Map();
+  if (parent) {
+    for (const tab of tabs) {
+      const oldParent = tab.$TST.parent;
+      if (oldParent && oldParent.id !== parent.id)
+        oldParents.set(oldParent.id, oldParent);
+    }
+  }
+
   await Promise.all(tabs.map(async tab => {
     if (parent) {
       await Tree.attachTabTo(tab, parent, memberOptions);
@@ -1096,10 +1106,15 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 
   // Send one batch message covering all root-tab attachments
   if (parent && tabs.length > 0) {
+    const childrenMap = { [parent.id]: parent.$TST.childIds };
     const tabMap = new Map([[parent.id, parent], ...tabs.map(t => [t.id, t])]);
+    for (const [oldParentId, oldParent] of oldParents) {
+      childrenMap[oldParentId] = oldParent.$TST.childIds;
+      tabMap.set(oldParentId, oldParent);
+    }
     Tree.applyTreeStructure(
       tabMap,
-      { children: { [parent.id]: parent.$TST.childIds } },
+      { children: childrenMap },
       { justNow: true }
     );
   }
