@@ -34,6 +34,7 @@ import * as TabsGroup from './tabs-group.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 
 function log(...args) {
   internalLogger('background/commands', ...args);
@@ -1073,78 +1074,47 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 
   const memberOptions = {
     ...options,
-    insertBefore:          null,
-    insertAfter:           null,
-    dontMove:              true,
-    forceExpand:           options.draggedTabs.some(tab => tab.active),
-    suppressSidebarMessage: !!parent,
+    insertBefore: null,
+    insertAfter:  null,
+    dontMove:     true,
+    forceExpand:  options.draggedTabs.some(tab => tab.active),
   };
-  // Collect old parents before attachTabTo clears them
-  const oldParents = new Map();
-  if (parent) {
+
+  const body = async () => {
     for (const tab of tabs) {
-      const oldParent = tab.$TST.parent;
-      if (oldParent && oldParent.id !== parent.id)
-        oldParents.set(oldParent.id, oldParent);
+      if (parent) {
+        await Tree.attachTabTo(tab, parent, memberOptions);
+      }
+      else {
+        Tree.detachTab(tab, memberOptions);
+      }
+      // The tree can remain being collapsed by other addons like TST Lock Tree Collapsed.
+      const collapsed = parent?.$TST.subtreeCollapsed;
+      await Tree.collapseExpandTabAndSubtree(tab, {
+        ...memberOptions,
+        collapsed,
+      });
     }
-  }
+  };
 
-  await Promise.all(tabs.map(async tab => {
-    if (parent) {
-      await Tree.attachTabTo(tab, parent, memberOptions);
-    }
-    else {
-      await Tree.detachTab(tab, memberOptions);
-    }
-    // The tree can remain being collapsed by other addons like TST Lock Tree Collapsed.
-    const collapsed = parent?.$TST.subtreeCollapsed;
-    return Tree.collapseExpandTabAndSubtree(tab, {
-      ...memberOptions,
-      collapsed,
-    });
-  }));
-
-  // Send one batch message covering all root-tab attachments
-  if (parent && tabs.length > 0) {
-    const childrenMap = { [parent.id]: parent.$TST.childIds };
-    const tabMap = new Map([[parent.id, parent], ...tabs.map(t => [t.id, t])]);
-    for (const [oldParentId, oldParent] of oldParents) {
-      childrenMap[oldParentId] = oldParent.$TST.childIds;
-      tabMap.set(oldParentId, oldParent);
-    }
-    Tree.updateTreeStructure(
-      tabMap,
-      { children: childrenMap },
-      { justNow: true }
-    );
-  }
+  if (parent)
+    await TreeTransaction.run(body, { justNow: true });
+  else
+    await body();
 }
 
-function detachTabsWithStructure(tabs, options = {}) {
+async function detachTabsWithStructure(tabs, options = {}) {
   log('detachTabsWithStructure: start ', () => tabs.map(dumpTab));
 
-  // Collect tabs with parents before detachTab clears them
-  const tabMap = new Map();
-  const detachedIds = [];
-  for (const tab of tabs) {
-    if (tab.$TST.parent) {
-      tabMap.set(tab.id, tab);
-      detachedIds.push(tab.id);
+  await TreeTransaction.run(async () => {
+    for (const tab of tabs) {
+      Tree.detachTab(tab, options);
+      await Tree.collapseExpandTabAndSubtree(tab, {
+        ...options,
+        collapsed: false,
+      });
     }
-  }
-
-  // Run detachTab per tab (all side effects) but suppress individual sidebar messages
-  for (const tab of tabs) {
-    Tree.detachTab(tab, { ...options, suppressSidebarMessage: true });
-    Tree.collapseExpandTabAndSubtree(tab, {
-      ...options,
-      collapsed: false
-    });
-  }
-
-  // Send one batched sidebar message for all detachments
-  if (detachedIds.length > 0)
-    Tree.updateTreeStructure(tabMap, { detached: detachedIds }, { justNow: options.synchronously });
+  }, { justNow: options.synchronously });
 }
 
 export async function moveUp(tab, options = {}) {

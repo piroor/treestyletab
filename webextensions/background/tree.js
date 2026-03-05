@@ -53,6 +53,22 @@ import { Tab, TreeItem } from '/common/TreeItem.js';
 import Window from '/common/Window.js';
 
 import * as TabsMove from './tabs-move.js';
+import * as TreeOps from './tree-ops.js';
+import * as TreeTransaction from './tree-transaction.js';
+
+TreeTransaction.setSendFunction((tabMap, snapshot, options) => {
+  if (tabMap.size === 0)
+    return;
+  const windowId = tabMap.values().next().value.windowId;
+  SidebarConnection.sendMessage({
+    type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
+    windowId,
+    tabIds:    [...tabMap.keys()],
+    children:  snapshot.children || {},
+    detached:  snapshot.detached || [],
+    justNow:   !!options.justNow,
+  });
+});
 
 function log(...args) {
   internalLogger('background/tree', ...args);
@@ -193,19 +209,14 @@ export async function attachTabTo(child, parent, options = {}) {
   if (newlyAttached) {
     const oldParent = child.$TST.parent;
 
-    // Build combined tree change (detach + attach in one call)
+    // Build snapshot via TreeOps and apply
     const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    const childrenMap = {};
-
-    if (oldParent && oldParent.id !== parent.id) {
+    if (oldParent && oldParent.id !== parent.id)
       tabMap.set(oldParent.id, oldParent);
-      childrenMap[oldParent.id] = oldParent.$TST.childIds.filter(id => id !== child.id);
-    }
-    childrenMap[parent.id] = parent.$TST.childIds.concat([child.id]);
+    const snapshot = TreeOps.computeAttach(tabMap, child.id, parent.id);
 
-    updateTreeStructure(tabMap, { children: childrenMap }, {
-      justNow:               options.synchronously,
-      suppressSidebarMessage: options.suppressSidebarMessage,
+    updateTreeStructure(tabMap, snapshot, {
+      justNow: options.synchronously,
     });
 
     // Side effects for old parent (replaces detachTab call)
@@ -570,9 +581,9 @@ export function detachTab(child, options = {}) {
   const parent = TabsStore.ensureLivingItem(options.parent) || child.$TST.parent;
 
   if (parent) {
-    const filteredChildIds = parent.$TST.childIds.filter(id => id != child.id);
     const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    updateTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously, suppressSidebarMessage: options.suppressSidebarMessage });
+    const snapshot = TreeOps.computeDetach(tabMap, child.id);
+    updateTreeStructure(tabMap, snapshot, { justNow: options.synchronously });
 
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
@@ -623,28 +634,28 @@ export async function detachTabsFromTree(tabs, options = {}) {
   const partial = 'partial' in options ?
     options.partial :
     getWholeTree(tabs).length != tabs.length;
-  const promisedAttach = [];
   const tabsSet = new Set(tabs);
-  for (const tab of tabs) {
-    let behavior = partial ?
-      TreeBehavior.getParentTabOperationBehavior(tab, {
-        context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
-      }) :
-      Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
-    if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
-      behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
-    promisedAttach.push(detachAllChildren(tab, {
-      ...options,
-      behavior,
-      ignoreTabs: tabs,
-    }));
-    if (options.fromParent &&
-        !tabsSet.has(tab.$TST.parent)) {
-      promisedAttach.push(detachTab(tab, options));
+
+  await TreeTransaction.run(async () => {
+    for (const tab of tabs) {
+      let behavior = partial ?
+        TreeBehavior.getParentTabOperationBehavior(tab, {
+          context: Constants.kPARENT_TAB_OPERATION_CONTEXT_CLOSE,
+        }) :
+        Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
+      if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_ENTIRE_TREE)
+        behavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
+      await detachAllChildren(tab, {
+        ...options,
+        behavior,
+        ignoreTabs: tabs,
+      });
+      if (options.fromParent &&
+          !tabsSet.has(tab.$TST.parent)) {
+        detachTab(tab, options);
+      }
     }
-  }
-  if (promisedAttach.length > 0)
-    await Promise.all(promisedAttach);
+  }, { justNow: options.synchronously });
 }
 
 export async function detachAllChildren(
@@ -1916,18 +1927,22 @@ export function updateTreeStructure(tabs, snapshot, options = {}) {
   // Note: collapsed state is NOT included here.
   // - Levels are derived from tree depth in both background and sidebar handlers.
   // - Collapsed state is set by collapseExpandSubtree → kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
-  if (!options.suppressSidebarMessage && tabs.size > 0) {
-    const windowId = tabs.values().next().value.windowId;
-    const tabIds = [...tabs.keys()];
-
-    SidebarConnection.sendMessage({
-      type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
-      windowId,
-      tabIds,
-      children:  children || {},
-      detached:  detached || [],
-      justNow:   !!options.justNow,
-    });
+  if (tabs.size > 0) {
+    const snapshot = {
+      children: children || {},
+      detached: detached || [],
+    };
+    if (!TreeTransaction.accumulate(tabs, snapshot)) {
+      const windowId = tabs.values().next().value.windowId;
+      SidebarConnection.sendMessage({
+        type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
+        windowId,
+        tabIds:    [...tabs.keys()],
+        children:  snapshot.children,
+        detached:  snapshot.detached,
+        justNow:   !!options.justNow,
+      });
+    }
   }
 }
 
