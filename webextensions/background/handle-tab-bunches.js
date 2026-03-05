@@ -27,6 +27,7 @@ import { Tab, TreeItem } from '/common/TreeItem.js';
 import * as TabsGroup from './tabs-group.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 
 function log(...args) {
   internalLogger('background/handle-tab-bunches', ...args);
@@ -387,16 +388,18 @@ async function tryGroupTabBunchesFromPinnedOpener(rootTabs) {
     });
     log('opened group tab: ', dumpTab(parent));
     newGroupTabs.set(opener, true);
-    for (const child of children) {
-      // Prevent the tab to be grouped again after it is ungrouped manually.
-      child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
-      TabsStore.removeToBeGroupedTab(child);
-      await Tree.attachTabTo(child, parent, {
-        forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-        dontMove:    true,
-        broadcast:   true
-      });
-    }
+    await TreeTransaction.run(async () => {
+      for (const child of children) {
+        // Prevent the tab to be grouped again after it is ungrouped manually.
+        child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
+        TabsStore.removeToBeGroupedTab(child);
+        await Tree.attachTabTo(child, parent, {
+          forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
+          dontMove:    true,
+          broadcast:   true
+        });
+      }
+    });
     if (opener.active)
       parent.$TST.addState(Constants.kTAB_STATE_BUNDLED_ACTIVE);
   }

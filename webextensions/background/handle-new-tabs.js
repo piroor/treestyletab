@@ -22,6 +22,7 @@ import { Tab } from '/common/TreeItem.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 
 function log(...args) {
   internalLogger('background/handle-new-tabs', ...args);
@@ -588,11 +589,13 @@ Tab.onAttached.addListener(async (tab, attachInfo = {}) => {
     );
   }
   else {
-    for (const movedTab of movedTabs) {
-      Tree.attachTabTo(movedTab, tab, {
-        broadcast: true,
-        dontMove:  true
-      });
-    }
+    await TreeTransaction.run(async () => {
+      for (const movedTab of movedTabs) {
+        await Tree.attachTabTo(movedTab, tab, {
+          broadcast: true,
+          dontMove:  true
+        });
+      }
+    });
   }
 });

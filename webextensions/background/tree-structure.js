@@ -30,6 +30,7 @@ import * as Commands from './commands.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 
 function log(...args) {
   internalLogger('background/tree-structure', ...args);
@@ -354,23 +355,25 @@ async function applyRestoredTabInfo(info) {
     });
   }
   if (processChildren) {
-    let firstInTree = tab.$TST.firstChild || tab;
-    let lastInTree  = tab.$TST.lastDescendant || tab;
-    for (const child of children) {
-      if (!child)
-        continue;
-      await Tree.attachTabTo(child, tab, {
-        dontExpand:  !child.active,
-        forceExpand: active,
-        insertAt:    Constants.kINSERT_NEAREST,
-        dontMove:    child.index >= firstInTree.index && child.index <= lastInTree.index + 1,
-        broadcast:   true
-      });
-      if (child.index < firstInTree.index)
-        firstInTree = child;
-      else if (child.index > lastInTree.index)
-        lastInTree = child;
-    }
+    await TreeTransaction.run(async () => {
+      let firstInTree = tab.$TST.firstChild || tab;
+      let lastInTree  = tab.$TST.lastDescendant || tab;
+      for (const child of children) {
+        if (!child)
+          continue;
+        await Tree.attachTabTo(child, tab, {
+          dontExpand:  !child.active,
+          forceExpand: active,
+          insertAt:    Constants.kINSERT_NEAREST,
+          dontMove:    child.index >= firstInTree.index && child.index <= lastInTree.index + 1,
+          broadcast:   true
+        });
+        if (child.index < firstInTree.index)
+          firstInTree = child;
+        else if (child.index > lastInTree.index)
+          lastInTree = child;
+      }
+    });
   }
 
   log('restore subtree collapsed state: ', tab.id, { current: tab.$TST.subtreeCollapsed, expected: subtreeCollapsed, canCollapse });

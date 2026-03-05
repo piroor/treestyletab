@@ -27,6 +27,7 @@ import { Tab } from '/common/TreeItem.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 
 function log(...args) {
   internalLogger('background/tabs-group', ...args);
@@ -111,13 +112,15 @@ export async function groupTabs(tabs, { broadcast, parent, withDescendants, ...g
   await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
     broadcast: !!broadcast
   });
-  for (const tab of rootTabs) {
-    await Tree.attachTabTo(tab, groupTab, {
-      forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-      dontMove:    true,
-      broadcast:   !!broadcast,
-    });
-  }
+  await TreeTransaction.run(async () => {
+    for (const tab of rootTabs) {
+      await Tree.attachTabTo(tab, groupTab, {
+        forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
+        dontMove:    true,
+        broadcast:   !!broadcast,
+      });
+    }
+  });
   return groupTab;
 }
 
@@ -199,17 +202,19 @@ export async function tryReplaceTabWithGroup(tab, { windowId, parent, children, 
   log('group tab: ', dumpTab(groupTab));
   if (!groupTab) // the window is closed!
     return;
-  if (newParent || parent)
-    await Tree.attachTabTo(groupTab, newParent || parent, {
-      dontMove:  true,
-      broadcast: true
-    });
-  for (const child of children) {
-    await Tree.attachTabTo(child, groupTab, {
-      dontMove:  true,
-      broadcast: true
-    });
-  }
+  await TreeTransaction.run(async () => {
+    if (newParent || parent)
+      await Tree.attachTabTo(groupTab, newParent || parent, {
+        dontMove:  true,
+        broadcast: true
+      });
+    for (const child of children) {
+      await Tree.attachTabTo(child, groupTab, {
+        dontMove:  true,
+        broadcast: true
+      });
+    }
+  });
 
   // This can be triggered on closing of multiple tabs,
   // so we should cleanup it on such cases for safety.
@@ -510,15 +515,17 @@ Tab.onPinned.addListener(async tab => {
     const modifiedChildren = children.filter(child => children.includes(child.$TST.parent));
     log(' modifiedChildren: ', modifiedChildren);
     if (modifiedChildren.length > 0) {
-      for (const child of modifiedChildren) {
-        await Tree.detachTab(child, {
-          broadcast: true,
-        });
-        await Tree.attachTabTo(child, openedGroupTab, {
-          dontMove:  true,
-          broadcast: true,
-        });
-      }
+      await TreeTransaction.run(async () => {
+        for (const child of modifiedChildren) {
+          Tree.detachTab(child, {
+            broadcast: true,
+          });
+          await Tree.attachTabTo(child, openedGroupTab, {
+            dontMove:  true,
+            broadcast: true,
+          });
+        }
+      });
     }
   }
   else {
