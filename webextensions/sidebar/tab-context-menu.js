@@ -788,7 +788,7 @@ BackgroundConnection.onMessage.addListener(async message => {
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
     case Constants.kCOMMAND_NOTIFY_TAB_SHOWN:
     case Constants.kCOMMAND_NOTIFY_TAB_HIDDEN:
-    case Constants.kCOMMAND_APPLY_TREE_STRUCTURE:
+    case Constants.kCOMMAND_UPDATE_TREE_STRUCTURE:
       close();
       mNewTabButtonUI.close();
       break;

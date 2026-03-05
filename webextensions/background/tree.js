@@ -203,7 +203,7 @@ export async function attachTabTo(child, parent, options = {}) {
     }
     childrenMap[parent.id] = parent.$TST.childIds.concat([child.id]);
 
-    applyTreeStructure(tabMap, { children: childrenMap }, {
+    updateTreeStructure(tabMap, { children: childrenMap }, {
       justNow:               options.synchronously,
       suppressSidebarMessage: options.suppressSidebarMessage,
     });
@@ -572,7 +572,7 @@ export function detachTab(child, options = {}) {
   if (parent) {
     const filteredChildIds = parent.$TST.childIds.filter(id => id != child.id);
     const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    applyTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously, suppressSidebarMessage: options.suppressSidebarMessage });
+    updateTreeStructure(tabMap, { children: { [parent.id]: filteredChildIds } }, { justNow: options.synchronously, suppressSidebarMessage: options.suppressSidebarMessage });
 
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
@@ -785,7 +785,7 @@ export async function detachAllChildren(
       // 2. Add firstChild if not already present (it may be newParent, already
       //    a child of parent).
       // Explicit removal of rest prevents order-dependent conflicts in
-      // applyTreeStructure between childrenMap[parent.id] and childrenMap[firstChild.id].
+      // updateTreeStructure between childrenMap[parent.id] and childrenMap[firstChild.id].
       const restIds = new Set(rest.map(c => c.id));
       const parentChildIds = parent.$TST.childIds.filter(id => !restIds.has(id));
       if (!parentChildIds.includes(firstChild.id))
@@ -805,7 +805,7 @@ export async function detachAllChildren(
   }
 
   // === Phase 2: Batch apply tree structure ===
-  applyTreeStructure(tabMap, { children: childrenMap, detached: detachedIds },
+  updateTreeStructure(tabMap, { children: childrenMap, detached: detachedIds },
                      { justNow: options.synchronously });
 
   // === Phase 3: Side effects and post-processing ===
@@ -1818,7 +1818,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 //   detached:  [tabId, ...],
 //   collapsed: { [tabId]: boolean },
 // }
-export function applyTreeStructure(tabs, snapshot, options = {}) {
+export function updateTreeStructure(tabs, snapshot, options = {}) {
   const { children, detached, collapsed } = snapshot;
 
   const hasChildren  = children && Object.keys(children).length > 0;
@@ -1921,7 +1921,7 @@ export function applyTreeStructure(tabs, snapshot, options = {}) {
     const tabIds = [...tabs.keys()];
 
     SidebarConnection.sendMessage({
-      type:      Constants.kCOMMAND_APPLY_TREE_STRUCTURE,
+      type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
       windowId,
       tabIds,
       children:  children || {},
@@ -1995,7 +1995,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   const tabMap = new Map(tabs.map(tab => [tab.id, tab]));
 
   // 3. Apply tree structure in batch
-  applyTreeStructure(tabMap, {
+  updateTreeStructure(tabMap, {
     children:  childrenMap,
     collapsed: collapsedMap,
   }, { justNow: true });

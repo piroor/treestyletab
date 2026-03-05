@@ -1112,7 +1112,7 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       childrenMap[oldParentId] = oldParent.$TST.childIds;
       tabMap.set(oldParentId, oldParent);
     }
-    Tree.applyTreeStructure(
+    Tree.updateTreeStructure(
       tabMap,
       { children: childrenMap },
       { justNow: true }
@@ -1144,7 +1144,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 
   // Send one batched sidebar message for all detachments
   if (detachedIds.length > 0)
-    Tree.applyTreeStructure(tabMap, { detached: detachedIds }, { justNow: options.synchronously });
+    Tree.updateTreeStructure(tabMap, { detached: detachedIds }, { justNow: options.synchronously });
 }
 
 export async function moveUp(tab, options = {}) {
