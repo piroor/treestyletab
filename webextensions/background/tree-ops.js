@@ -2,9 +2,9 @@
 // No side effects — operates on a tab map via accessors.
 
 // Tab accessors — absorb the difference between TestTab and real TreeItem
-function getParentId(tab) { return tab.$TST ? tab.$TST.parentId : tab.parentId; }
-function getChildIds(tab) { return tab.$TST ? tab.$TST.childIds : tab.childIds; }
-function getAncestorIds(tab) { return tab.$TST ? tab.$TST.ancestorIds : tab.ancestorIds; }
+function getParentId(tab) { return (tab.$TST ?? tab).parentId; }
+function getChildIds(tab) { return (tab.$TST ?? tab).childIds; }
+function getAncestorIds(tab) { return (tab.$TST ?? tab).ancestorIds; }
 
 // Compute the snapshot diff for attaching a child to a parent.
 // Returns { children: { [parentId]: [...childIds] } } or {} if no-op.
@@ -19,7 +19,7 @@ export function computeAttach(tabs, childId, targetParentId) {
 
   // Remove from old parent
   const oldParentId = getParentId(child);
-  if (oldParentId !== null && oldParentId !== undefined && oldParentId !== targetParentId) {
+  if (oldParentId != null && oldParentId !== targetParentId) {
     const oldParent = tabs.get(oldParentId);
     if (oldParent)
       children[oldParentId] = getChildIds(oldParent).filter(id => id !== childId);
@@ -37,7 +37,7 @@ export function computeDetach(tabs, childId) {
   const child = tabs.get(childId);
   if (!child) return {};
   const pid = getParentId(child);
-  if (pid === null || pid === undefined) return {};
+  if (pid == null) return {};
   const parent = tabs.get(pid);
   if (!parent)
     return { detached: [childId] };
