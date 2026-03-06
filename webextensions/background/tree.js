@@ -53,22 +53,7 @@ import { Tab, TreeItem } from '/common/TreeItem.js';
 import Window from '/common/Window.js';
 
 import * as TabsMove from './tabs-move.js';
-import * as TreeOps from './tree-ops.js';
 import * as TreeTransaction from './tree-transaction.js';
-
-TreeTransaction.setSendFunction((tabMap, snapshot, options) => {
-  if (tabMap.size === 0)
-    return;
-  const windowId = tabMap.values().next().value.windowId;
-  SidebarConnection.sendMessage({
-    type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
-    windowId,
-    tabIds:    [...tabMap.keys()],
-    children:  snapshot.children || {},
-    detached:  snapshot.detached || [],
-    justNow:   !!options.justNow,
-  });
-});
 
 function log(...args) {
   internalLogger('background/tree', ...args);
@@ -209,15 +194,7 @@ export async function attachTabTo(child, parent, options = {}) {
   if (newlyAttached) {
     const oldParent = child.$TST.parent;
 
-    // Build snapshot via TreeOps and apply
-    const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    if (oldParent && oldParent.id !== parent.id)
-      tabMap.set(oldParent.id, oldParent);
-    const snapshot = TreeOps.computeAttach(tabMap, child.id, parent.id);
-
-    updateTreeStructure(tabMap, snapshot, {
-      justNow: options.synchronously,
-    });
+    TreeTransaction.attach(child, parent, { justNow: options.synchronously });
 
     // Side effects for old parent (replaces detachTab call)
     if (oldParent && oldParent.id !== parent.id) {
@@ -581,9 +558,7 @@ export function detachTab(child, options = {}) {
   const parent = TabsStore.ensureLivingItem(options.parent) || child.$TST.parent;
 
   if (parent) {
-    const tabMap = new Map([[child.id, child], [parent.id, parent]]);
-    const snapshot = TreeOps.computeDetach(tabMap, child.id);
-    updateTreeStructure(tabMap, snapshot, { justNow: options.synchronously });
+    TreeTransaction.detach(child, { justNow: options.synchronously });
 
     if (TSTAPI.hasListenerForMessageType(TSTAPI.kNOTIFY_TREE_DETACHED)) {
       const cache = {};
@@ -750,74 +725,35 @@ export async function detachAllChildren(
 
   const notIgnoredChildren = children.filter(child => child && !ignoreTabsSet.has(child))
 
-  // === Phase 1: Compute final tree state ===
   // Record each child's old parent BEFORE tree mutation, for correct side effects.
   // Most children have `tab` as their old parent, but newParent (unshifted into
   // children at line 668) may have a different actual parent.
   const oldParentMap = new Map(notIgnoredChildren.map(c => [c.id, c.$TST.parent || tab]));
 
-  const tabMap = new Map();
-  const childrenMap = {};
-  const detachedIds = [];
-
-  // Remove notIgnoredChildren from tab's children list
-  if (tab) {
-    tabMap.set(tab.id, tab);
-    const notIgnoredChildIds = new Set(notIgnoredChildren.map(c => c.id));
-    childrenMap[tab.id] = tab.$TST.childIds.filter(id => !notIgnoredChildIds.has(id));
-  }
-
-  for (const child of notIgnoredChildren) {
-    tabMap.set(child.id, child);
-    const oldParent = oldParentMap.get(child.id);
-    if (oldParent && oldParent !== tab)
-      tabMap.set(oldParent.id, oldParent);
-  }
-
-  if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
-    tabMap.set(parent.id, parent);
-    // Deduplicate: children may already be in parent's childIds
-    // (e.g. handle-removed-tabs.js calls detachAllChildren twice — first with
-    // PROMOTE_ALL_CHILDREN on the live tab, then again with tab=null).
-    // In the original code, attachTabTo's newlyAttached check made this a no-op.
-    const existingChildIds = new Set(parent.$TST.childIds);
-    const newChildIds = notIgnoredChildren.filter(c => !existingChildIds.has(c.id)).map(c => c.id);
-    childrenMap[parent.id] = [...parent.$TST.childIds, ...newChildIds];
-  }
-  else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD &&
-           notIgnoredChildren.length > 0) {
-    const firstChild = notIgnoredChildren[0];
-    const rest = notIgnoredChildren.slice(1);
-    if (parent) {
-      tabMap.set(parent.id, parent);
-      // Build parent's new child list:
-      // 1. Remove rest from parent's childIds (they move to firstChild, and may
-      //    already be in parent's childIds from a prior promote call).
-      // 2. Add firstChild if not already present (it may be newParent, already
-      //    a child of parent).
-      // Explicit removal of rest prevents order-dependent conflicts in
-      // updateTreeStructure between childrenMap[parent.id] and childrenMap[firstChild.id].
-      const restIds = new Set(rest.map(c => c.id));
-      const parentChildIds = parent.$TST.childIds.filter(id => !restIds.has(id));
-      if (!parentChildIds.includes(firstChild.id))
-        parentChildIds.push(firstChild.id);
-      childrenMap[parent.id] = parentChildIds;
+  // Apply tree changes via attach/detach, batched into one sidebar message.
+  // Reentrant: if already inside a transaction (e.g. detachTabsInternally),
+  // the inner run() just executes and accumulates into the outer transaction.
+  await TreeTransaction.run(() => {
+    if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
+      for (const child of notIgnoredChildren)
+        TreeTransaction.attach(child, parent);
+    }
+    else if (behavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+             notIgnoredChildren.length > 0) {
+      const [firstChild, ...rest] = notIgnoredChildren;
+      if (parent)
+        TreeTransaction.attach(firstChild, parent);
+      else
+        TreeTransaction.detach(firstChild);
+      for (const child of rest)
+        TreeTransaction.attach(child, firstChild);
     }
     else {
-      detachedIds.push(firstChild.id);
+      // DETACH_ALL, SIMPLY_DETACH_ALL, PROMOTE_ALL without parent
+      for (const child of notIgnoredChildren)
+        TreeTransaction.detach(child);
     }
-    if (rest.length > 0) {
-      childrenMap[firstChild.id] = [...firstChild.$TST.childIds, ...rest.map(c => c.id)];
-    }
-  }
-  else {
-    // All other cases (DETACH_ALL, SIMPLY_DETACH_ALL, PROMOTE_ALL without parent) → detach all
-    detachedIds.push(...notIgnoredChildren.map(c => c.id));
-  }
-
-  // === Phase 2: Batch apply tree structure ===
-  updateTreeStructure(tabMap, { children: childrenMap, detached: detachedIds },
-                     { justNow: options.synchronously });
+  }, { justNow: options.synchronously });
 
   // === Phase 3: Side effects and post-processing ===
   for (const child of notIgnoredChildren) {
@@ -1823,128 +1759,6 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
-// snapshot format:
-// {
-//   children:  { [parentTabId]: [childId, ...] },
-//   detached:  [tabId, ...],
-//   collapsed: { [tabId]: boolean },
-// }
-export function updateTreeStructure(tabs, snapshot, options = {}) {
-  const { children, detached, collapsed } = snapshot;
-
-  const hasChildren  = children && Object.keys(children).length > 0;
-  const hasDetached  = detached && detached.length > 0;
-  const hasCollapsed = collapsed && Object.keys(collapsed).length > 0;
-
-  // Nothing to apply — skip entirely
-  if (!hasChildren && !hasDetached && !hasCollapsed) {
-    return;
-  }
-
-  // 1. detach: make specified tabs root (auto-remove from old parent's childIds)
-  if (hasDetached) {
-    for (const tabId of detached) {
-      const tab = tabs.get(tabId);
-      if (!tab) continue;
-      const parent = tab.$TST.parent;
-      if (parent) {
-        parent.$TST.children = parent.$TST.childIds.filter(id => id !== tabId);
-        parent.$TST.invalidateCache();
-      }
-      tab.$TST.parent = null;
-    }
-  }
-
-  // 2. children: set parent-child relationships (with auto-removal from old parent, cycle prevention)
-  if (hasChildren) {
-    for (const [parentIdStr, childIds] of Object.entries(children)) {
-      const parentId = Number(parentIdStr);
-      const parent = tabs.get(parentId);
-      if (!parent)
-        continue;
-
-      // Clear parentId for old children not in the new list
-      const newChildIdSet = new Set(childIds);
-      for (const oldChildId of parent.$TST.childIds) {
-        if (!newChildIdSet.has(oldChildId)) {
-          const oldChild = tabs.get(oldChildId) || TabsStore.ensureLivingItem(Tab.get(oldChildId));
-          if (oldChild && oldChild.$TST.parentId === parentId)
-            oldChild.$TST.parent = null;
-        }
-      }
-
-      // Set new childIds with validation
-      const validChildIds = [];
-      for (const childId of childIds) {
-        const child = tabs.get(childId) || TabsStore.ensureLivingItem(Tab.get(childId));
-        if (!child) continue;
-        if (childId === parentId) continue; // self-reference prevention
-
-        // Cycle detection
-        if (parent.$TST.ancestorIds.includes(childId))
-          continue;
-
-        // Auto-remove from old parent's childIds
-        const oldParent = child.$TST.parent;
-        if (oldParent && oldParent.id !== parentId) {
-          oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id !== childId);
-          oldParent.$TST.invalidateCache();
-        }
-
-        validChildIds.push(childId);
-      }
-
-      // Use TreeItem.children setter (auto-sets parent + sorts by index)
-      parent.$TST.children = validChildIds;
-      parent.$TST.invalidateCache();
-    }
-  }
-
-  // 3. Update levels (derived from tree depth after children are set)
-  if (hasChildren || hasDetached) {
-    const visited = new Set();
-    for (const [, tab] of tabs) {
-      if (visited.has(tab.id)) continue;
-      tab.$TST.setAttribute(Constants.kLEVEL, tab.$TST.ancestors.length);
-      visited.add(tab.id);
-      for (const desc of tab.$TST.descendants) {
-        if (visited.has(desc.id)) continue;
-        desc.$TST.setAttribute(Constants.kLEVEL, desc.$TST.ancestors.length);
-        visited.add(desc.id);
-      }
-    }
-  }
-
-  // 4. Collapsed state is NOT set here. It is handled by
-  // collapseExpandSubtree() calls in applyTreeStructureToTabs(),
-  // which send proper individual kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
-  // messages through the existing path. Setting collapsed in the batch
-  // message would cause a timing bug: the batch handler (delayed by
-  // await Tab.waitUntilTracked) could re-set subtreeCollapsed=true
-  // AFTER a later user-triggered expand has already cleared it.
-
-  // 5. Send batch message to sidebar
-  // Note: collapsed state is NOT included here.
-  // - Levels are derived from tree depth in both background and sidebar handlers.
-  // - Collapsed state is set by collapseExpandSubtree → kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
-  if (tabs.size > 0) {
-    const snapshot = {
-      children: children || {},
-      detached: detached || [],
-    };
-    if (!TreeTransaction.accumulate(tabs, snapshot)) {
-      const windowId = tabs.values().next().value.windowId;
-      SidebarConnection.sendMessage({
-        type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
-        windowId,
-        tabIds:    [...tabs.keys()],
-        children:  snapshot.children,
-        detached:  snapshot.detached,
-        justNow:   !!options.justNow,
-      });
-    }
-  }
-}
 
 /* "treeStructure" is an array of integers, meaning:
   [A]     => TreeBehavior.STRUCTURE_NO_PARENT (parent is not in this tree)
@@ -1965,54 +1779,41 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   tabs = tabs.slice(0, treeStructure.length);
   treeStructure = treeStructure.slice(0, tabs.length);
 
-  // 1. Convert treeStructure array to snapshot format
-  const childrenMap = {};  // { parentId: [childId, ...] }
+  // 1. Parse treeStructure and apply via attach/detach
   const collapsedMap = {}; // { tabId: boolean }
   let tabsInTree = [];
 
-  for (let i = 0; i < tabs.length; i++) {
-    const tab = tabs[i];
-    const structureInfo = treeStructure[i];
-    let parentIndexInTree = TreeBehavior.STRUCTURE_NO_PARENT;
-    let expanded;
+  await TreeTransaction.run(() => {
+    for (let i = 0; i < tabs.length; i++) {
+      const tab = tabs[i];
+      const structureInfo = treeStructure[i];
+      let parentIndexInTree = TreeBehavior.STRUCTURE_NO_PARENT;
+      let expanded;
 
-    if (typeof structureInfo == 'number') { // legacy format
-      parentIndexInTree = structureInfo;
-    }
-    else {
-      parentIndexInTree = structureInfo.parent;
-      expanded = !structureInfo.collapsed;
-    }
-
-    if (parentIndexInTree == TreeBehavior.STRUCTURE_NO_PARENT ||
-        parentIndexInTree == TreeBehavior.STRUCTURE_KEEP_PARENT) {
-      tabsInTree = [tab];
-    }
-    else {
-      tabsInTree.push(tab);
-      const parent = parentIndexInTree < tabsInTree.length
-        ? tabsInTree[parentIndexInTree] : null;
-      if (parent && tab != parent) {
-        const parentId = parent.id;
-        if (!childrenMap[parentId]) childrenMap[parentId] = [];
-        childrenMap[parentId].push(tab.id);
+      if (typeof structureInfo == 'number') { // legacy format
+        parentIndexInTree = structureInfo;
       }
+      else {
+        parentIndexInTree = structureInfo.parent;
+        expanded = !structureInfo.collapsed;
+      }
+
+      if (parentIndexInTree == TreeBehavior.STRUCTURE_NO_PARENT ||
+          parentIndexInTree == TreeBehavior.STRUCTURE_KEEP_PARENT) {
+        tabsInTree = [tab];
+        if (parentIndexInTree == TreeBehavior.STRUCTURE_NO_PARENT && tab.$TST.parent)
+          TreeTransaction.detach(tab);
+      }
+      else {
+        tabsInTree.push(tab);
+        const parent = parentIndexInTree < tabsInTree.length
+          ? tabsInTree[parentIndexInTree] : null;
+        if (parent && tab != parent)
+          TreeTransaction.attach(tab, parent);
+      }
+
+      collapsedMap[tab.id] = expanded === undefined ? false : !expanded;
     }
-
-    // collapsed: if not explicitly specified, default to not collapsed
-    collapsedMap[tab.id] = expanded === undefined ? false : !expanded;
-  }
-
-
-  MetricsData.add('applyTreeStructureToTabs: preparation');
-
-  // 2. Convert tabs to Map
-  const tabMap = new Map(tabs.map(tab => [tab.id, tab]));
-
-  // 3. Apply tree structure in batch
-  updateTreeStructure(tabMap, {
-    children:  childrenMap,
-    collapsed: collapsedMap,
   }, { justNow: true });
 
 
