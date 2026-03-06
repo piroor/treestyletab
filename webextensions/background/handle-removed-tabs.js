@@ -22,6 +22,7 @@ import { Tab } from '/common/TreeItem.js';
 import * as Background from './background.js';
 import * as TabsGroup from './tabs-group.js';
 import * as Tree from './tree.js';
+import * as TreeTransaction from './tree-transaction.js';
 import * as Commands from './commands.js';
 
 function log(...args) {
@@ -80,34 +81,36 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
     closeParentBehavior
   };
 
-  if (tab.$TST.subtreeCollapsed) {
-    tryGrantCloseTab(tab, closeParentBehavior).then(async granted => {
-      if (!granted)
-        return;
-      log('Tabs.onRemoving: granted to close ', dumpTab(tab));
-      handleRemovingPostProcess(postProcessParams)
-    });
-    // First we always need to detach children from the closing parent.
-    // They will be processed again after confirmation.
-    Tree.detachAllChildren(tab, {
-      newParent,
-      behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
-      dontExpand:       true,
-      dontUpdateIndent: true,
-      broadcast:        true
-    });
-  }
-  else {
-    await handleRemovingPostProcess(postProcessParams)
-  }
+  await TreeTransaction.run(async () => {
+    if (tab.$TST.subtreeCollapsed) {
+      tryGrantCloseTab(tab, closeParentBehavior).then(async granted => {
+        if (!granted)
+          return;
+        log('Tabs.onRemoving: granted to close ', dumpTab(tab));
+        handleRemovingPostProcess(postProcessParams)
+      });
+      // First we always need to detach children from the closing parent.
+      // They will be processed again after confirmation.
+      Tree.detachAllChildren(tab, {
+        newParent,
+        behavior:         Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN,
+        dontExpand:       true,
+        dontUpdateIndent: true,
+        broadcast:        true
+      });
+    }
+    else {
+      await handleRemovingPostProcess(postProcessParams)
+    }
 
-  const win = TabsStore.windows.get(tab.windowId);
-  if (!win.internalClosingTabs.has(tab.$TST.parentId))
-    Tree.detachTab(tab, {
-      dontUpdateIndent:          true,
-      dontSyncParentToOpenerTab: true,
-      broadcast:                 true
-    });
+    const win = TabsStore.windows.get(tab.windowId);
+    if (!win.internalClosingTabs.has(tab.$TST.parentId))
+      Tree.detachTab(tab, {
+        dontUpdateIndent:          true,
+        dontSyncParentToOpenerTab: true,
+        broadcast:                 true
+      });
+  });
 });
 async function handleRemovingPostProcess({ closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure } = {}) {
   log('handleRemovingPostProcess ', { closeParentBehavior, windowId, parent, newParent, insertBefore, nearestFollowingRootTab, children, descendants, removedTab, structure });
@@ -233,21 +236,23 @@ Tab.onRemoved.addListener((tab, info) => {
   // The removing tab may be attached to another tab or
   // other tabs may be attached to the removing tab.
   // We need to detach such relations always on this timing.
-  if (info.oldChildren.length > 0) {
-    Tree.detachAllChildren(tab, {
-      children:  info.oldChildren,
-      parent:    info.oldParent,
-      behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
-      broadcast: true
-    });
-  }
-  if (info.oldParent) {
-    Tree.detachTab(tab, {
-      dontSyncParentToOpenerTab: true,
-      parent:                    info.oldParent,
-      broadcast:                 true
-    });
-  }
+  TreeTransaction.run(() => {
+    if (info.oldChildren.length > 0) {
+      Tree.detachAllChildren(tab, {
+        children:  info.oldChildren,
+        parent:    info.oldParent,
+        behavior:  Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD,
+        broadcast: true
+      });
+    }
+    if (info.oldParent) {
+      Tree.detachTab(tab, {
+        dontSyncParentToOpenerTab: true,
+        parent:                    info.oldParent,
+        broadcast:                 true
+      });
+    }
+  });
 });
 
 browser.windows.onRemoved.addListener(windowId  => {
@@ -268,16 +273,18 @@ Tab.onDetached.addListener((tab, info = {}) => {
     closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   const dontSyncParentToOpenerTab = info.trigger == 'tabs.onDetached';
-  Tree.detachAllChildren(tab, {
-    dontSyncParentToOpenerTab,
-    behavior:  closeParentBehavior,
-    broadcast: true
-  });
-  //reserveCloseRelatedTabs(toBeClosedTabs);
-  Tree.detachTab(tab, {
-    dontSyncParentToOpenerTab,
-    dontUpdateIndent: true,
-    broadcast:        true
+  TreeTransaction.run(() => {
+    Tree.detachAllChildren(tab, {
+      dontSyncParentToOpenerTab,
+      behavior:  closeParentBehavior,
+      broadcast: true
+    });
+    //reserveCloseRelatedTabs(toBeClosedTabs);
+    Tree.detachTab(tab, {
+      dontSyncParentToOpenerTab,
+      dontUpdateIndent: true,
+      broadcast:        true
+    });
   });
   //restoreTabAttributes(tab, backupAttributes);
 });
