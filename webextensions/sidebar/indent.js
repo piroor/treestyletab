@@ -231,7 +231,7 @@ CollapseExpand.onUpdated.addListener((tab, _options) => {
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
-    case Constants.kCOMMAND_UPDATE_TREE_STRUCTURE: {
+    case Constants.kCOMMAND_NOTIFY_TREE_MODIFIED: {
       reserveToUpdateIndent();
       tryUpdateVisualMaxTreeLevel();
     } break;

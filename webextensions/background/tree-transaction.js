@@ -187,7 +187,7 @@ function sendSidebarMessage(tabMap, snapshot, options) {
     return;
   const windowId = tabMap.values().next().value.windowId;
   SidebarConnection.sendMessage({
-    type:      Constants.kCOMMAND_UPDATE_TREE_STRUCTURE,
+    type:      Constants.kCOMMAND_NOTIFY_TREE_MODIFIED,
     windowId,
     tabIds:    [...tabMap.keys()],
     children:  snapshot.children ?? {},
