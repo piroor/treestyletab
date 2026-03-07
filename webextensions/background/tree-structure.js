@@ -203,16 +203,20 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
       })
     ));
     // Phase 2: apply tree structure sequentially
+    // Wrap in TreeTransaction to batch all kCOMMAND_UPDATE_TREE_STRUCTURE
+    // messages into a single sidebar message.
     const attachedResults = [];
-    for (const info of restoredInfos) {
-      try {
-        attachedResults.push(info ? await applyRestoredTabInfo(info) : false);
+    await TreeTransaction.run(async () => {
+      for (const info of restoredInfos) {
+        try {
+          attachedResults.push(info ? await applyRestoredTabInfo(info) : false);
+        }
+        catch(error) {
+          console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error applying info, ${error}`, stack(error.stack));
+          attachedResults.push(false);
+        }
       }
-      catch(error) {
-        console.log(`TreeStructure.reserveToAttachTabFromRestoredInfo: Fatal error applying info, ${error}`, stack(error.stack));
-        attachedResults.push(false);
-      }
-    }
+    });
     if (typeof reserveToAttachTabFromRestoredInfo.onDone == 'function')
       reserveToAttachTabFromRestoredInfo.onDone(attachedResults.every(attached => !!attached));
     delete reserveToAttachTabFromRestoredInfo.onDone;
