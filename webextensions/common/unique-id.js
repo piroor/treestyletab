@@ -164,6 +164,10 @@ export function completeRestoration() {
   mReadyToDetectDuplicatedTab = true;
 }
 
+export function isRestorationComplete() {
+  return mReadyToDetectDuplicatedTab;
+}
+
 export async function request(tabOrId, options = {}) {
   log('requested for ', tabOrId?.id || tabOrId);
   if (typeof options != 'object')

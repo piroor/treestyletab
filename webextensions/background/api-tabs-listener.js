@@ -41,6 +41,7 @@ import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TreeBehavior from '/common/tree-behavior.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as UniqueId from '/common/unique-id.js';
 
 import MetricsData from '/common/MetricsData.js';
 import { Tab, TabGroup } from '/common/TreeItem.js';
@@ -539,40 +540,49 @@ async function onNewTabTracked(tab, info) {
       win.duplicatingTabsCount--;
 
     if (restored && info.trigger !== 'tabs.onAttached') {
-      win.restoredCount = win.restoredCount || 0;
-      win.restoredCount++;
-      if (!win.promisedAllTabsRestored) {
-        log(`onNewTabTracked(${dumpTab(tab)}): Maybe starting to restore window`);
-        win.promisedAllTabsRestored = (new Promise((resolve, _aReject) => {
-          let lastCount = win.restoredCount;
-          const timer = setInterval(() => {
-            if (lastCount != win.restoredCount) {
-              lastCount = win.restoredCount;
-              return;
-            }
-            clearTimeout(timer);
-            win.promisedAllTabsRestored = null;
-            win.restoredCount   = 0;
-            log('All tabs are restored');
-            resolve(lastCount);
-          }, 200);
-        })).then(async lastCount => {
-          await Tab.onWindowRestoring.dispatch({
-            windowId:      tab.windowId,
-            restoredCount: lastCount,
-          });
-          metric.add('Tab.onWindowRestoring proceeded');
-          return lastCount;
-        });
-      }
       SidebarConnection.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
         tabId:    tab.id,
         windowId: tab.windowId
       });
-      await win.promisedAllTabsRestored;
-      log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
-      metric.add('win.promisedAllTabsRestored resolved');
+
+      if (UniqueId.isRestorationComplete()) {
+        // Ctrl-Shift-T: skip the gate and proceed immediately
+        log(`onNewTabTracked(${dumpTab(tab)}): post-startup restored tab, skipping gate`);
+        metric.add('post-startup restore (no gate)');
+      }
+      else {
+        // Session restoration at startup: wait for all tabs
+        win.restoredCount = win.restoredCount || 0;
+        win.restoredCount++;
+        if (!win.promisedAllTabsRestored) {
+          log(`onNewTabTracked(${dumpTab(tab)}): Maybe starting to restore window`);
+          win.promisedAllTabsRestored = (new Promise((resolve, _aReject) => {
+            let lastCount = win.restoredCount;
+            const timer = setInterval(() => {
+              if (lastCount != win.restoredCount) {
+                lastCount = win.restoredCount;
+                return;
+              }
+              clearTimeout(timer);
+              win.promisedAllTabsRestored = null;
+              win.restoredCount   = 0;
+              log('All tabs are restored');
+              resolve(lastCount);
+            }, 200);
+          })).then(async lastCount => {
+            await Tab.onWindowRestoring.dispatch({
+              windowId:      tab.windowId,
+              restoredCount: lastCount,
+            });
+            metric.add('Tab.onWindowRestoring proceeded');
+            return lastCount;
+          });
+        }
+        await win.promisedAllTabsRestored;
+        log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
+        metric.add('win.promisedAllTabsRestored resolved');
+      }
     }
     if (!TabsStore.ensureLivingItem(tab)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
@@ -682,7 +692,9 @@ async function onNewTabTracked(tab, info) {
         info.trigger !== 'tabs.onAttached') {
       tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
       Tab.onRestored.dispatch(tab);
-      checkRecycledTab(win.id);
+      if (!UniqueId.isRestorationComplete()) {
+        checkRecycledTab(win.id);
+      }
     }
 
     onCompleted(uniqueId);
