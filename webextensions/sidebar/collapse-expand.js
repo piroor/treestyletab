@@ -221,7 +221,7 @@ const BUFFER_KEY_PREFIX = 'collapse-expand-';
 
 BackgroundConnection.onMessage.addListener(async message => {
   switch (message.type) {
-    // kCOMMAND_NOTIFY_TREE_MODIFIED: collapsed state is NOT handled here.
+    // kCOMMAND_APPLY_TREE_TRANSACTION: collapsed state is NOT handled here.
     // It is handled by individual kCOMMAND_NOTIFY_SUBTREE_COLLAPSED_STATE_CHANGED
     // messages from collapseExpandSubtree(), which go through the buffered
     // message mechanism and avoid the timing bug where a batch handler

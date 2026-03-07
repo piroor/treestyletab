@@ -1419,7 +1419,7 @@ BackgroundConnection.onMessage.addListener(async message => {
       });
     }; break;
 
-    case Constants.kCOMMAND_NOTIFY_TREE_MODIFIED: {
+    case Constants.kCOMMAND_APPLY_TREE_TRANSACTION: {
       if (mPromisedInitialized)
         return;
       await Tab.waitUntilTracked(message.tabIds);

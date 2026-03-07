@@ -203,7 +203,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
       })
     ));
     // Phase 2: apply tree structure sequentially
-    // Wrap in TreeTransaction to batch all kCOMMAND_NOTIFY_TREE_MODIFIED
+    // Wrap in TreeTransaction to batch all kCOMMAND_APPLY_TREE_TRANSACTION
     // messages into a single sidebar message.
     const attachedResults = [];
     await TreeTransaction.run(async () => {
