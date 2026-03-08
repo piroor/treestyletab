@@ -1604,6 +1604,9 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
             });
           }
         }
+        for (const tab of tabs) {
+          tab.$TST.resetOpened();
+        }
         movedTabs = await browser.tabs.move(movedTabIds, {
           windowId: destinationWindowId,
           index:    toIndex
@@ -1620,7 +1623,6 @@ export async function moveTabs(tabs, { duplicate, ...options } = {}) {
         for (const tab of movedTabs) {
           tab.$TST.temporaryMetadata.delete('movingAcrossWindows');
           tab.windowId = destinationWindowId;
-          tab.$TST.resetOpened();
         }
         log('moved across windows: ', movedTabIds);
       }
