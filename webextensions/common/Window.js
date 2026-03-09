@@ -39,8 +39,8 @@ export default class Window {
     this.containerClassList = null;
     this.pinnedContainerElement = null;
 
-    this.internalMovingTabs  = new Map();
-    this.alreadyMovedTabs    = new Map();
+    this.internalMovingTabs  = new Map(); // Map<tabId, refCount>
+    this.alreadyMovedTabs    = new Map(); // Map<tabId, refCount>
     this.internalClosingTabs = new Set();
     this.keepDescendantsTabs = new Set();
     this.highlightingTabs    = new Set();
@@ -282,6 +282,34 @@ export default class Window {
     }
     return tab;
   }
+
+  // increment: register a new internal move operation
+  trackInternalMoving(tabId) {
+    this.internalMovingTabs.set(tabId, (this.internalMovingTabs.get(tabId) || 0) + 1);
+  }
+  trackAlreadyMoved(tabId) {
+    this.alreadyMovedTabs.set(tabId, (this.alreadyMovedTabs.get(tabId) || 0) + 1);
+  }
+
+  // decrement: consume one onMoved event
+  consumeInternalMoving(tabId) {
+    const count = this.internalMovingTabs.get(tabId);
+    if (count > 1)
+      this.internalMovingTabs.set(tabId, count - 1);
+    else if (count === 1)
+      this.internalMovingTabs.delete(tabId);
+  }
+  consumeAlreadyMoved(tabId) {
+    const count = this.alreadyMovedTabs.get(tabId);
+    if (count > 1)
+      this.alreadyMovedTabs.set(tabId, count - 1);
+    else if (count === 1)
+      this.alreadyMovedTabs.delete(tabId);
+  }
+
+  // force-delete: tab removal or pair cleanup
+  clearInternalMoving(tabId) { this.internalMovingTabs.delete(tabId); }
+  clearAlreadyMoved(tabId)   { this.alreadyMovedTabs.delete(tabId); }
 
   export(full) {
     const tabs = [];

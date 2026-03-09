@@ -828,8 +828,8 @@ async function onRemoved(tabId, removeInfo) {
   const byInternalOperation = win.internalClosingTabs.has(tabId);
   const preventEntireTreeBehavior = win.keepDescendantsTabs.has(tabId);
 
-  win.internalMovingTabs.delete(tabId);
-  win.alreadyMovedTabs.delete(tabId);
+  win.clearInternalMoving(tabId);
+  win.clearAlreadyMoved(tabId);
   win.internalClosingTabs.delete(tabId);
   win.keepDescendantsTabs.delete(tabId);
   win.highlightingTabs.delete(tabId);
@@ -950,8 +950,7 @@ async function onMoved(tabId, moveInfo) {
   // and other fixup operations around tabs moved by foreign triggers, on such
   // cases. Don't mind, the tab will be rearranged again by delayed
   // TabsMove.syncTabsPositionToApiTabs() anyway!
-  const internalExpectedIndex = win.internalMovingTabs.get(tabId);
-  const maybeInternalOperation = internalExpectedIndex < 0 || internalExpectedIndex == moveInfo.toIndex;
+  const maybeInternalOperation = win.internalMovingTabs.has(tabId);
   if (maybeInternalOperation)
     log(`tabs.onMoved: ${tabId} is detected as moved internally`);
 
@@ -976,8 +975,7 @@ async function onMoved(tabId, moveInfo) {
        do following processes after the tab is completely pinned. */
     const movedTab = Tab.get(tabId);
     if (!movedTab) {
-      if (win.internalMovingTabs.has(tabId))
-        win.internalMovingTabs.delete(tabId);
+      win.clearInternalMoving(tabId);
       completelyMoved();
       warnTabDestroyedWhileWaiting(tabId, movedTab);
       return;
@@ -997,10 +995,8 @@ async function onMoved(tabId, moveInfo) {
         oldNextTab = Tab.getTabAt(moveInfo.windowId, moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1);
     }
 
-    const expectedIndex = win.alreadyMovedTabs.get(tabId);
-    const alreadyMoved = expectedIndex < 0 || expectedIndex == moveInfo.toIndex;
-    if (win.alreadyMovedTabs.has(tabId))
-      win.alreadyMovedTabs.delete(tabId);
+    const alreadyMoved = win.alreadyMovedTabs.has(tabId);
+    win.consumeAlreadyMoved(tabId);
 
     const extendedMoveInfo = {
       ...moveInfo,
@@ -1059,8 +1055,7 @@ async function onMoved(tabId, moveInfo) {
           nextTabId: nextTab?.id,
         });
     }
-    if (win.internalMovingTabs.has(tabId))
-      win.internalMovingTabs.delete(tabId);
+    win.consumeInternalMoving(tabId);
     completelyMoved();
 
     movedTab.$TST.memorizeNeighbors('moved');
