@@ -2,9 +2,19 @@
 
  - master/HEAD
    * Allow to create new native group by dropping tabs onto any areas of another tab simply, with pressing Shift key. (Without shift key, you need to drop tabs onto the head area of another tab to create new group.)
+   * Reconstruct option to set UI direction of the sidebar as Regular/Inverted instead of Left/Right. "Regular" always works similar to Firefox's native vertical tabs.
+   * Show confirmation dialog correctly for closing multiple tabs in a fullscreen browser window on macOS.
    * Show tab previews in tab-hover tooltip again. (regression on 4.2.8)
-   * Fix wrong positioning of native group labels on right-side (in LTR, or left-side in RTL) mode.
-   * Suppress uncaught errors around successor tabs of already closed tabs.
+   * Fix misdetection of drop position of tabs after tabs are rearranged. (regression on 4.2.7)
+   * Fix too narrow width of group labels in the Photon theme.
+   * Don't show nonsense "+0" label for collapsed tab groups with no other member.
+   * Expand tab group automatically when a collapsed tree in the group is expanded. You can deactivate this new behavior with a new expert option under the "Tree Behavior" section.
+   * Don't mistreat dropped URL as a native tab drop.
+   * Hide UI elements internally used and should not be exposed to users, even if the background screen of the sidebar has transparent color.
+   * Detect "head" area of the drop target tab correctly on RLT environment, to create new group by drag and drop.
+   * Fix wrong alignment of tab group labels on inverted mode.
+   * Fix wrong text direction of tab labels with LTR title on RTL environment.
+   * Suppress uncaught errors caused by already closed tabs or windows, around mouse operations, successor tab operations and caching of tree information.
    * Fix links to MDN documents from changelogs. ([by theluckystrike](github.com/piroor/treestyletab/pull/3879), thanks!)
  - 4.2.11 (2026.3.3)
    * Custom tabs for grouping (`ext+treestyletab:group`) are available again on Firefox 150+ which never supports injecting of scripts to addon-hosted contents due to the [bug 2011234](https://bugzilla.mozilla.org/show_bug.cgi?id=2011234). See [#2356 in Sidebery](https://github.com/mbnuqw/sidebery/issues/2356) for more details of affections of the bug.

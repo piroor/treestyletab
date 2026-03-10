@@ -128,14 +128,6 @@ export async function removeTabs(tabs, { keepDescendants, byMouseOperation, orig
   if (tabs.length == 0)
     return;
 
-  try {
-    await onBeforeTabsRemove.dispatch(tabs);
-    log(' => onBeforeTabsRemove finished');
-  }
-  catch(error) {
-    console.error(error);
-  }
-
   const win = TabsStore.windows.get(tabs[0].windowId);
   const tabIds = [];
   let willChangeFocus = false;
@@ -173,6 +165,14 @@ export async function removeTabs(tabs, { keepDescendants, byMouseOperation, orig
     }
   }
 
+  try {
+    await onBeforeTabsRemove.dispatch(tabs);
+    log(' => onBeforeTabsRemove finished');
+  }
+  catch(error) {
+    console.error(error);
+  }
+
   const sortedTabs = TreeItem.sort(Array.from(tabs));
   Tab.onMultipleTabsRemoving.dispatch(sortedTabs, { triggerTab, originalStructure });
 
@@ -206,6 +206,8 @@ export async function removeTabs(tabs, { keepDescendants, byMouseOperation, orig
 }
 
 export function setTabActive(tab) {
+  if (tab.$TST.states.has(Constants.kTAB_STATE_TO_BE_REMOVED))
+    return null;
   const oldActiveTabs = clearOldActiveStateInWindow(tab.windowId, tab);
   tab.active = true;
   tab.$TST.addState(Constants.kTAB_STATE_ACTIVE);

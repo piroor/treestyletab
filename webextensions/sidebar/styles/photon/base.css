@@ -35,7 +35,8 @@ tab-item[type="group"] {
   .caption {
     height: 100%;
     max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size) / 2)) +
-                    0.25em /* margin-inline of tab-label */);
+                    0.25em /* margin-inline of tab-label */ +
+                    2px /* border */);
   }
 }
 

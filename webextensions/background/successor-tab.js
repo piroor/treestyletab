@@ -60,7 +60,12 @@ function setSuccessor(tabId, successorTabId = -1) {
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
       !tab ||
       !successorTab ||
-      tab.windowId != successorTab.windowId)
+      tab.windowId != successorTab.windowId ||
+      // We need to prevent setting successor to tabs if they are to be removed
+      // immediately, to avoid failing to remove them.
+      // https://github.com/piroor/treestyletab/pull/3880#issuecomment-4022542132
+      tab.$TST?.states.has(Constants.kTAB_STATE_TO_BE_REMOVED) ||
+      successorTab.$TST?.states.has(Constants.kTAB_STATE_TO_BE_REMOVED))
     return;
 
   const promisedUpdate = {};
@@ -207,7 +212,8 @@ async function updateInternal(tabId, excludeTabIds = []) {
     const findSuccessor = (...candidates) => {
       for (const candidate of candidates) {
         if (!excludeTabIdsSet.has(candidate?.id) &&
-            candidate)
+            candidate &&
+            !candidate.$TST?.states.has(Constants.kTAB_STATE_TO_BE_REMOVED))
           return candidate;
       }
       return null;
