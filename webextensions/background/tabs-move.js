@@ -140,9 +140,14 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
       if (options.doNotOptimize) {
-        await browser.tabs.move(tab.id, { index: tab.index });
-        win.consumeInternalMoving(tab.id);
-        win.consumeAlreadyMoved(tab.id);
+        try {
+          await browser.tabs.move(tab.id, { index: tab.index });
+        }
+        catch(error) {
+          win.clearInternalMoving(tab.id);
+          win.clearAlreadyMoved(tab.id);
+          throw error;
+        }
       }
     }
     for (const group of tabGroups) {
@@ -280,9 +285,14 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
       if (options.doNotOptimize) {
-        await browser.tabs.move(tab.id, { index: tab.index });
-        win.consumeInternalMoving(tab.id);
-        win.consumeAlreadyMoved(tab.id);
+        try {
+          await browser.tabs.move(tab.id, { index: tab.index });
+        }
+        catch(error) {
+          win.clearInternalMoving(tab.id);
+          win.clearAlreadyMoved(tab.id);
+          throw error;
+        }
       }
     }
     for (const group of tabGroups) {
@@ -411,10 +421,8 @@ async function syncToNativeTabsInternal(windowId) {
         log(`syncToNativeTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (let i = 0; i < moveTabIds.length; i++) {
           const movedId = moveTabIds[i];
-          if (!win.internalMovingTabs.has(movedId))
-            win.trackInternalMoving(movedId);
-          if (!win.alreadyMovedTabs.has(movedId))
-            win.trackAlreadyMoved(movedId);
+          win.trackInternalMoving(movedId);
+          win.trackAlreadyMoved(movedId);
           movedTabs.add(movedId);
         }
         logApiTabs(`tabs-move:syncToNativeTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
