@@ -950,7 +950,7 @@ async function onMoved(tabId, moveInfo) {
   // and other fixup operations around tabs moved by foreign triggers, on such
   // cases. Don't mind, the tab will be rearranged again by delayed
   // TabsMove.syncTabsPositionToApiTabs() anyway!
-  const maybeInternalOperation = win.internalMovingTabs.has(tabId);
+  const maybeInternalOperation = win.consumeInternalMoving(tabId, moveInfo.toIndex);
   if (maybeInternalOperation)
     log(`tabs.onMoved: ${tabId} is detected as moved internally`);
 
@@ -995,8 +995,7 @@ async function onMoved(tabId, moveInfo) {
         oldNextTab = Tab.getTabAt(moveInfo.windowId, moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1);
     }
 
-    const alreadyMoved = win.alreadyMovedTabs.has(tabId);
-    win.consumeAlreadyMoved(tabId);
+    const alreadyMoved = win.consumeAlreadyMoved(tabId, moveInfo.toIndex);
 
     const extendedMoveInfo = {
       ...moveInfo,
@@ -1055,7 +1054,6 @@ async function onMoved(tabId, moveInfo) {
           nextTabId: nextTab?.id,
         });
     }
-    win.consumeInternalMoving(tabId);
     completelyMoved();
 
     movedTab.$TST.memorizeNeighbors('moved');

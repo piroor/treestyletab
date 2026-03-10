@@ -156,7 +156,7 @@ function waitUntilGrouped(tabs, { groupId, windowId } = {}) {
 
   for (const tab of tabs) {
     win.internallyMovingTabsForUpdatedNativeTabGroups.add(tab.id);
-    win.trackInternalMoving(tab.id);
+    win.trackInternalMoving(tab.id, -1);
   }
 
   let onUpdated = null;
@@ -217,7 +217,7 @@ export async function removeTabsFromGroup(tabs) {
   const win = TabsStore.windows.get(tabs[0].windowId);
   for (const tab of tabs) {
     win.internallyMovingTabsForUpdatedNativeTabGroups.add(tab.id);
-    win.trackInternalMoving(tab.id);
+    win.trackInternalMoving(tab.id, -1);
   }
   const toBeUngroupedIds = tabsToBeUngrouped.map(tab => tab.id);
   let onUpdated = null;
@@ -357,7 +357,7 @@ export function waitUntilMoved(groupOrMembers, destinationWindowId) {
   const toBeMovedTabs = new Set();
   for (const tab of members) {
     toBeMovedTabs.add(tab.id);
-    win.trackInternalMoving(tab.id);
+    win.trackInternalMoving(tab.id, -1);
   }
   let onTabMoved;
   const promisedMoved = new Promise((resolve, _reject) => {

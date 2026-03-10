@@ -118,8 +118,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.index = referenceTab.index;
       tabGroups.add(tab.$TST.nativeTabGroup);
       if (SidebarConnection.isInitialized()) { // only on the background page
-        win.trackInternalMoving(tab.id);
-        win.trackAlreadyMoved(tab.id);
+        win.trackInternalMoving(tab.id, tab.index);
+        win.trackAlreadyMoved(tab.id, tab.index);
       }
       tab.reindexedBy = `moveTabsInternallyBefore (${tab.index})`;
       Tab.reindex(tab);
@@ -263,8 +263,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       }
       tabGroups.add(tab.$TST.nativeTabGroup);
       if (SidebarConnection.isInitialized()) { // only on the background page
-        win.trackInternalMoving(tab.id);
-        win.trackAlreadyMoved(tab.id);
+        win.trackInternalMoving(tab.id, tab.index);
+        win.trackAlreadyMoved(tab.id, tab.index);
       }
       tab.reindexedBy = `moveTabsInternallyAfter (${tab.index})`;
       Tab.reindex(tab);
@@ -421,8 +421,8 @@ async function syncToNativeTabsInternal(windowId) {
         log(`syncToNativeTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (let i = 0; i < moveTabIds.length; i++) {
           const movedId = moveTabIds[i];
-          win.trackInternalMoving(movedId);
-          win.trackAlreadyMoved(movedId);
+          win.trackInternalMoving(movedId, toIndex + i);
+          win.trackAlreadyMoved(movedId, toIndex + i);
           movedTabs.add(movedId);
         }
         logApiTabs(`tabs-move:syncToNativeTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
