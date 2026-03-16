@@ -55,6 +55,12 @@ tab-item:not(.faviconized) {
     transform: scaleY(0);
     width: var(--tab-highlighter-size);
   }
+
+  :root.inverted & .highlighter::before,
+  :root.inverted & .highlighter::after {
+    inset-inline-start: unset;
+    inset-inline-end: 0;
+  }
 }
 tab-item:not(.faviconized) tab-item-substance:hover,
 tab-item.active:not(.faviconized),
