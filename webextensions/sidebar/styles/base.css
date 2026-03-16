@@ -1276,7 +1276,12 @@ tab-item[type="group-collapsed-members-counter"] {
     --tab-text: light-dark(var(--tab-group-color), var(--tab-group-color-pale)) !important;
   }
 
+  :root.inverted & tab-item-substance {
+    flex-direction: row-reverse;
+  }
+
   :root.inverted & tab-label {
+    margin-inline: 0 0.25em;
     text-align: end;
   }
 }
