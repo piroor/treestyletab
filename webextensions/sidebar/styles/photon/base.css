@@ -76,7 +76,8 @@ tab-item.pinned tab-item-substance {
 :root.regular .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-inline-end: 0.35em;
 }
-:root.regular tab-item:not(.pinned)[data-parent-id] tab-item-substance {
+:root.regular tab-item:not(.pinned)[data-parent-id] tab-item-substance,
+:root.regular tab-item:not(.pinned)[data-group-id]:not([data-group-id="-1"]) tab-item-substance {
   border-inline-start-width: 1px;
 }
 
@@ -85,7 +86,8 @@ tab-item.pinned tab-item-substance {
 :root.inverted .after-tabs [role="button"]:not([data-menu-ui]) {
   padding-inline-start: 0.35em;
 }
-:root.inverted tab-item:not(.pinned)[data-parent-id] tab-item-substance {
+:root.inverted tab-item:not(.pinned)[data-parent-id] tab-item-substance,
+:root.inverted tab-item:not(.pinned)[data-group-id]:not([data-group-id="-1"]) tab-item-substance {
   border-inline-end-width: 1px;
 }
 
