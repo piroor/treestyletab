@@ -79,6 +79,18 @@ tab-item:not(.active) {
   --throbber-color: Highlight;
 }
 
+tab-item[type="group"] {
+  .caption {
+    border: 1px solid Highlight;
+    background-color: var(--tab-surface-active);
+  }
+  
+  &.subtree-collapsed .caption {
+    border: 1px solid GrayText;
+    background-color: var(--tab-surface-regular);
+  }
+}
+
 .newtab-button-box {
   border-color: var(--tab-border);
   border-style: solid;
