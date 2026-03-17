@@ -11,7 +11,7 @@
 }
 
 tab-item tab-twisty {
-  display: inline-block;
+  display: inline-flex;
   font-size: var(--favicon-size);
   /*height: var(--favicon-size);*/
   margin-block: var(--tab-twisty-negative-offset);
