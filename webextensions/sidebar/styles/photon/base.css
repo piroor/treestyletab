@@ -32,6 +32,10 @@ tab-item[type="group"] {
     padding: 0 !important;
   }
 
+  tab-item-substance {
+    z-index: calc(var(--tab-base-z-index) + 10);
+  }
+
   .caption {
     height: 100%;
     max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size) / 2)) +
