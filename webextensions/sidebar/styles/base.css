@@ -1205,7 +1205,7 @@ tab-item[type="group"] {
   }
 
   tab-label {
-    font-weight: bold;
+    font-weight: 600;
   }
 
   .caption,
