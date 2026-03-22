@@ -91,11 +91,6 @@ export function clearItemRectCache() {
   mCachedItemRects.clear();
 }
 
-let mCachedRenderableTreeItems = null;
-
-export function clearRenderableTreeItemsCache() {
-  mCachedRenderableTreeItems = null;
-}
 
 let mScrollingInternallyCount = 0;
 
@@ -119,17 +114,14 @@ export function init(scrollPosition) {
   TSTAPI.onMessageExternal.addListener(onMessageExternal);
   SidebarItems.onNormalTabsChanged.addListener(_tab => {
     clearItemRectCache();
-    clearRenderableTreeItemsCache();
     reserveToRenderVirtualScrollViewport({ trigger: 'tabsChanged' });
   });
   Tab.onNativeGroupModified.addListener(_tab => {
     clearItemRectCache();
-    clearRenderableTreeItemsCache();
     reserveToRenderVirtualScrollViewport({ trigger: 'tabsChanged' });
   });
   Tab.onSplitViewModified.addListener(_tab => {
     clearItemRectCache();
-    clearRenderableTreeItemsCache();
     reserveToRenderVirtualScrollViewport({ trigger: 'tabsChanged' });
   });
   Size.onUpdated.addListener(() => {
@@ -250,20 +242,15 @@ export function getRenderableTreeItems(windowId = null) {
   if (!windowId) {
     windowId = TabsStore.getCurrentWindowId();
   }
-  if (mCachedRenderableTreeItems) {
-    return mapAndFilter(mCachedRenderableTreeItems, item => TreeItem.get(item) || undefined);
-  }
 
   if (TabsStore.nativelyGroupedTabsInWindow.get(windowId).size == 0) {
     log('getRenderableTreeItems: no native tab group');
-    const items = TabsStore.queryAll({
+    return TabsStore.queryAll({
       windowId,
       tabs:         TabsStore.getTabsMap(TabsStore.virtualScrollRenderableTabsInWindow, windowId),
       skipMatching: true,
       ordered:      true,
     }).filter(splitViewHiddenTabFilter);
-    mCachedRenderableTreeItems = items.map(item => ({ id: item.id, type: item.type }));
-    return items;
   }
 
   const mixedItems = TreeItem.sort([
@@ -289,10 +276,8 @@ export function getRenderableTreeItems(windowId = null) {
     ).flat(),
   ]);
   log('getRenderableTreeItems: mixedItems = ', mixedItems);
-
-  mCachedRenderableTreeItems = mixedItems.map(item => ({ id: item.id, type: item.type }));
   return mixedItems;
-};
+}
 
 renderVirtualScrollViewport.triggers = new Set();
 
@@ -312,18 +297,17 @@ function renderVirtualScrollViewport(scrollPosition = undefined) {
 
   const outOfScreenPages = configs.outOfScreenTabsRenderingPages;
   const staticRendering  = outOfScreenPages < 0;
-  const skipRefreshItems = staticRendering && triggers.size == 1 && triggers.has('scroll');
+  const scrollOnly       = triggers.size == 1 && triggers.has('scroll');
+  const skipRefreshItems = staticRendering && scrollOnly;
 
   const itemSize           = Size.getRenderedTabHeight();
-  const renderableItems   = skipRefreshItems && mLastRenderableItems || getRenderableTreeItems(windowId);
-  const disappearingItems = skipRefreshItems && mLastDisappearingItems || renderableItems.filter(item => item.$TST.removing || item.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
+  const renderableItems   = scrollOnly && mLastRenderableItems || getRenderableTreeItems(windowId);
+  const disappearingItems = scrollOnly && mLastDisappearingItems || renderableItems.filter(item => item.$TST.removing || item.$TST.states.has(Constants.kTAB_STATE_COLLAPSING));
   const totalRenderableItemsSize = Size.getTabMarginBlockStart() + (itemSize * (renderableItems.length - disappearingItems.length)) + Size.getTabMarginBlockEnd();
   const viewPortSize = Size.getNormalTabsViewPortSize();
 
-  if (staticRendering) {
-    mLastRenderableItems = renderableItems;
-    mLastDisappearingItems = disappearingItems;
-  }
+  mLastRenderableItems = renderableItems;
+  mLastDisappearingItems = disappearingItems;
 
   // For underflow case, we need to unset min-height to put the "new tab"
   // button next to the last tab immediately.
@@ -1350,7 +1334,7 @@ async function onBackgroundMessage(message) {
       await Tab.waitUntilTracked(message.tabId);
       if (message.maybeMoved)
         await SidebarItems.waitUntilNewTabIsMoved(message.tabId);
-      clearRenderableTreeItemsCache();
+
       const item = Tab.get(message.tabId);
       if (!item) // it can be closed while waiting
         break;
@@ -1388,12 +1372,12 @@ async function onBackgroundMessage(message) {
     }; break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_PINNED:
-      clearRenderableTreeItemsCache();
+
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_UNPINNED:
       await Tab.waitUntilTracked(message.tabId);
-      clearRenderableTreeItemsCache();
+
       reserveToScrollToItem(Tab.get(message.tabId));
       break;
 
@@ -1430,11 +1414,14 @@ async function onBackgroundMessage(message) {
       const item = Tab.get(message.tabId);
       if (!item) // it can be closed while waiting
         break;
-      clearRenderableTreeItemsCache();
+
       if (!reReserveScrollingForItem(item) &&
           item.active)
         reserveToScrollToItem(item);
     }; break;
+
+    case Constants.kCOMMAND_SYNC_TABS_ORDER:
+      break;
   }
 }
 
@@ -1505,7 +1492,6 @@ CollapseExpand.onUpdating.addListener((item, options) => {
   if (!configs.scrollToExpandedTree)
     return;
   if (!item.pinned) {
-    clearRenderableTreeItemsCache();
     reserveToRenderVirtualScrollViewport({ trigger: 'collapseExpand' });
   }
   if (options.last)
@@ -1519,7 +1505,6 @@ CollapseExpand.onUpdated.addListener((item, options) => {
   if (!configs.scrollToExpandedTree)
     return;
   if (!item.pinned) {
-    clearRenderableTreeItemsCache();
     reserveToRenderVirtualScrollViewport({ trigger: 'collapseExpand' });
   }
   if (options.last)

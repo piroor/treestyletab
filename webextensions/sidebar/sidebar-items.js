@@ -213,6 +213,8 @@ async function syncTabsOrder() {
     tab.reindexedBy = `syncTabsOrder (${tab.index})`;
     tab.$TST.invalidateCache();
   }
+
+  onNormalTabsChanged.dispatch();
 }
 
 function getItemElementId(item) {

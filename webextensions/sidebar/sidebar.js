@@ -732,7 +732,6 @@ updateTabbarLayout.lastSizes = {};
 
 function updateTabbarLayout({ reason, reasons, timeout, justNow } = {}) {
   Scroll.clearItemRectCache();
-  Scroll.clearRenderableTreeItemsCache();
   if (reason && !reasons)
     reasons = reason;
   if (reserveToUpdateTabbarLayout.reasons) {
