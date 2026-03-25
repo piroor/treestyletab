@@ -147,21 +147,27 @@ export async function init() {
 
   let promisedAllTabsTracked;
   UserOperationBlocker.setProgress(0);
+  console.log('Initialization start.');
   await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
+      try {
+      console.log('Step 0');
       const win = await MetricsData.addAsync(
         'getting window',
         mTargetWindow ?
           browser.windows.get(mTargetWindow, { populate: true }) :
           browser.windows.getCurrent({ populate: true })
       ).catch(ApiTabs.createErrorHandler());
+      console.log('Step 1');
       if (win.focused)
         document.documentElement.classList.add('active');
+      console.log('Step 2');
       const trackedWindow = TabsStore.windows.get(win.id) || new Window(win.id);
       trackedWindow.incognito = win.incognito;
       if (win.incognito)
         document.documentElement.classList.add('incognito');
 
+      console.log('Step 3');
       const tabs = win.tabs;
       if (!mTargetWindow) {
         mTargetWindow = tabs[0].windowId;
@@ -172,10 +178,12 @@ export async function init() {
       mPromisedTargetWindowResolver(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
+      console.log('Step 4');
       // Track only the first tab for now, because it is required to initialize
       // the container.
       Tab.track(tabs[0]);
 
+      console.log('Step 5');
       promisedAllTabsTracked = MetricsData.addAsync('tracking all native tabs', async () => {
         let lastDraw = Date.now();
         let count = 0;
@@ -189,13 +197,23 @@ export async function init() {
           }
         }
       });
+      console.log('Step 6');
 
       PinnedTabs.init();
       Indent.init();
 
+      console.log('Step 7');
       return tabs;
+      }
+      catch(error) {
+        console.log('Error while getting native tabs: ', error);
+        throw error;
+      }
     }),
-    configs.$loaded.then(waitUntilStartupOperationsUnblocked),
+    configs.$loaded.then(waitUntilStartupOperationsUnblocked).catch(error => {
+      console.log('Error while loading configs: ', error);
+      throw error;
+    }),
   ]);
   MetricsData.add('browser.tabs.query finish, configs are loaded.');
   EventListenerManager.debug = configs.debug;
