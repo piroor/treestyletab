@@ -10,7 +10,6 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 import {
   log as internalLogger,
   dumpTab,
-  toLines,
   configs,
   wait,
   stack,
@@ -85,6 +84,25 @@ async function saveTreeStructure(windowId) {
   ).catch(ApiTabs.createErrorSuppressor());
 }
 
+function findStructureOffset(uniqueIds, structure) {
+  if (!structure.length)
+    return 0;
+  if (structure.length > uniqueIds.length)
+    return -1;
+
+  const offset = uniqueIds.indexOf(structure[0].id);
+  if (offset < 0 ||
+      offset + structure.length > uniqueIds.length)
+    return -1;
+
+  for (let index = 1; index < structure.length; index++) {
+    if (uniqueIds[offset + index] != structure[index].id)
+      return -1;
+  }
+
+  return offset;
+}
+
 export async function loadTreeStructure(windows, restoredFromCacheResults) {
   log('loadTreeStructure ', restoredFromCacheResults);
   MetricsData.add('loadTreeStructure: start');
@@ -106,8 +124,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
         uniqueIds = uniqueIds.map(id => id.id);
         let tabsOffset;
         if (structure[0].id) {
-          const structureSignature = toLines(structure, item => item.id);
-          tabsOffset = uniqueIds.join('\n').indexOf(structureSignature);
+          tabsOffset = findStructureOffset(uniqueIds, structure);
           windowStateCompletelyApplied = tabsOffset > -1;
         }
         else {
@@ -115,7 +132,7 @@ export async function loadTreeStructure(windows, restoredFromCacheResults) {
           windowStateCompletelyApplied = structure.length == tabs.length;
         }
         if (tabsOffset > -1) {
-          const structureRestoreTabs = tabs.slice(tabsOffset);
+          const structureRestoreTabs = tabs.slice(tabsOffset, tabsOffset + structure.length);
           await Tree.applyTreeStructureToTabs(structureRestoreTabs, structure);
           for (const tab of structureRestoreTabs) {
             tab.$TST.temporaryMetadata.set('treeStructureAlreadyRestoredFromSessionData', true);
