@@ -1109,6 +1109,27 @@ function onMessageExternal(message, sender) {
         return true;
       })();
 
+    case TSTAPI.kREMOVE_TAB_KEEPING_CHILDREN:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        for (const tab of tabs) {
+          if (!TabsStore.ensureLivingItem(tab))
+            continue;
+          // Re-parent children via native openerTabId BEFORE removing, so treeStructure() sees correct state.
+          // TST uses openerTabId == tab.id as a self-reference to signal "no opener", treat that as null.
+          const allWindowTabs = await browser.tabs.query({ windowId: tab.windowId });
+          const children = allWindowTabs.filter(t => t.openerTabId === tab.id);
+          const newParentId = (tab.openerTabId && tab.openerTabId !== tab.id) ? tab.openerTabId : null;
+          await Promise.all(children.map(child =>
+            browser.tabs.update(child.id, {
+              openerTabId: newParentId || child.id
+            }).catch(() => {})
+          ));
+          await browser.tabs.remove(tab.id);
+        }
+        return true;
+      })();
+
     case TSTAPI.kSTART_CUSTOM_DRAG:
       return (async () => {
         SidebarConnection.sendMessage({

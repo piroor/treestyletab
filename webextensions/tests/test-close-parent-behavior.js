@@ -1038,3 +1038,94 @@ export async function testKeepChildrenForTemporaryAggressiveGroupWithCloseParent
      'other children of the group parent tab must be kept');
 }
 
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithCollapsedSubtree() {
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await collapseAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() =>
+    browser.runtime.sendMessage({
+      type: 'treestyletab:api:remove-tab-keeping-children',
+      tabs: [tabs.B.id, tabs.E.id],
+    })
+  );
+  await wait(500);
+
+  delete tabs.B;
+  delete tabs.E;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${F.id}`,
+      `${G.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted even when subtree was collapsed');
+  }
+}
+
+// https://github.com/piroor/treestyletab/issues/3933
+export async function testRemoveTabKeepingChildrenWithExpandedSubtree() {
+  await cleanupTabs();
+  let tabs = await Utils.prepareTabsInWindow(
+    { A: { index: 1 },
+      B: { index: 2, openerTabId: 'A' },
+      C: { index: 3, openerTabId: 'B' },
+      D: { index: 4, openerTabId: 'B' },
+      E: { index: 5 },
+      F: { index: 6, openerTabId: 'E' },
+      G: { index: 7, openerTabId: 'E' } },
+    win.id,
+    [ 'A',
+      'A => B',
+      'A => B => C',
+      'A => B => D',
+      'E',
+      'E => F',
+      'E => G' ]
+  );
+  await expandAll(win.id);
+
+  await Utils.waitUntilAllTabChangesFinished(() =>
+    browser.runtime.sendMessage({
+      type: 'treestyletab:api:remove-tab-keeping-children',
+      tabs: [tabs.B.id, tabs.E.id],
+    })
+  );
+  await wait(500);
+
+  delete tabs.B;
+  delete tabs.E;
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, C, D, F, G } = tabs;
+    is([
+      `${A.id}`,
+      `${A.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${F.id}`,
+      `${G.id}`,
+    ], Utils.treeStructure([A, C, D, F, G]),
+       'all children must be promoted when subtree was already expanded');
+  }
+}
