@@ -25,7 +25,12 @@ function log(...args) {
 const kCONFIGS_VERSION = 34;
 const kFEATURES_VERSION = 9;
 
+let migrating = false;
 export function migrateConfigs() {
+  if (migrating)
+    return;
+
+  migrating = true;
   switch (configs.configsVersion) {
     case 0:
     case 1:
@@ -56,10 +61,11 @@ export function migrateConfigs() {
         configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
 
     case 5:
+      let migratedUserStyleRules = '';
       if (configs.scrollbarMode !== null) {
         switch (configs.scrollbarMode < 0 ? (isMacOS() ? 3 : 1) : configs.scrollbarMode) {
           case 0: // default, refular width
-            configs.userStyleRules += `
+            migratedUserStyleRules += `
 
 /* regular width scrollbar */
 #tabbar { scrollbar-width: auto; }`;
@@ -67,7 +73,7 @@ export function migrateConfigs() {
           case 1: // narrow width
             break;
           case 2: // hide
-            configs.userStyleRules += `
+            migratedUserStyleRules += `
 
 /* hide scrollbar */
 #tabbar { scrollbar-width: none; }
@@ -92,12 +98,18 @@ export function migrateConfigs() {
             break;
             break;
           case 2: // right
-            configs.userStyleRules += `
+            migratedUserStyleRules += `
 
 /* put scrollbar rightside */
 :root.left #tabbar { direction: ltr; }`;
             break;
         }
+      }
+      try {
+        saveUserStyleRules(migratedUserStyleRules);
+      }
+      catch(error) {
+        console.error(error);
       }
 
     case 6:
@@ -142,17 +154,18 @@ export function migrateConfigs() {
 
     case 11:
       if (configs.userStyleRules) {
-        configs.userStyleRules0 = configs.userStyleRules;
-        configs.userStyleRules = '';
+        saveUserStyleRules(configs.userStyleRules);
+        configs.userStyleRules = null;
       }
 
     case 12:
+      if (configs.userStyleRules0) {
       try {
         saveUserStyleRules(Array.from(new Uint8Array(8), (_, index) => {
           const key = `userStyleRules${index}`;
           if (key in configs) {
             const chunk = configs[key];
-            configs[key] = '';
+            configs[key] = null;
             return chunk || '';
           }
           else {
@@ -162,6 +175,7 @@ export function migrateConfigs() {
       }
       catch(error) {
         console.error(error);
+      }
       }
 
     case 13:
@@ -329,6 +343,11 @@ export function migrateConfigs() {
         configs.sidebarPositionInvertedNotificationShown = configs.sidebarPositionRighsideNotificationShown;
   }
   configs.configsVersion = kCONFIGS_VERSION;
+
+  // prevent storage.onChange storm from infinit migrations while testing.
+  setTimeout(() => {
+    migrating = false;
+  }, 5000);
 }
 
 let mShouldShowInitialStartupPage = false;
