@@ -457,11 +457,11 @@ tab-item:not(.faviconized).subtree-collapsed tab-item-substance.all-descendants-
 
 tab-item .contextual-identity-marker {
   :root.regular & {
-    inset-inline-end: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
+    inset-inline-end: var(--tab-highlighter-size);
   }
 
   :root.inverted & {
-    inset-inline-start: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
+    inset-inline-start: var(--tab-highlighter-size);
   }
 }
 
