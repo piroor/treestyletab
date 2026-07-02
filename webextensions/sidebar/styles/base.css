@@ -1225,26 +1225,15 @@ tab-closebox {
 
 /* contextual identity (aka Container Tab) */
 
-.contextual-identity-marker {
-  --contextual-identity-marker-width: calc(var(--favicon-size) / 5.5);
+tab-item .contextual-identity-marker {
+  --contextual-identity-marker-width: calc(var(--favicon-size) / 8);
+  --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.15));
+  bottom: var(--contextual-identity-marker-margin);
+  inset-inline-end: 0;
   position: absolute;
+  top: var(--contextual-identity-marker-margin);
+  width: var(--contextual-identity-marker-width);
   z-index: var(--tab-ui-z-index);
-
-  tab-item:not(.faviconized) & {
-    --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.15));
-    bottom: var(--contextual-identity-marker-margin);
-    inset-inline-end: 0;
-    top: var(--contextual-identity-marker-margin);
-    width: var(--contextual-identity-marker-width);
-  }
-
-  tab-item.faviconized & {
-    --contextual-identity-marker-margin: min(calc((var(--tab-current-size) - var(--favicon-size)) / 2), calc(var(--tab-current-size) * 0.33));
-    bottom: 0;
-    height: var(--contextual-identity-marker-width);
-    inset-inline-start: var(--contextual-identity-marker-margin);
-    inset-inline-end: var(--contextual-identity-marker-margin);
-  }
 }
 
 

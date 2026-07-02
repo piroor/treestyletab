@@ -450,7 +450,7 @@ tab-item:not(.faviconized).subtree-collapsed tab-item-substance.all-descendants-
 
 /* contextual identity marker in tabs */
 
-tab-item:not(.faviconized) .contextual-identity-marker {
+tab-item .contextual-identity-marker {
   :root.regular & {
     inset-inline-end: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
   }
@@ -458,11 +458,6 @@ tab-item:not(.faviconized) .contextual-identity-marker {
   :root.inverted & {
     inset-inline-start: calc(var(--tab-dropshadow-blur) - var(--tab-highlighter-size));
   }
-}
-
-tab-item.faviconized .contextual-identity-marker {
-  bottom: auto;
-  top: 0;
 }
 
 .after-tabs {
