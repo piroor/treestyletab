@@ -714,7 +714,7 @@ tab-item tab-closebox {
 
 tab-item .highlighter,
 tab-item .burster,
-tab-item-substance.unread tab-favicon::before,
+tab-item.faviconized tab-item-substance.unread tab-favicon::before,
 tab-item-substance.attention tab-favicon::before,
 tab-item .background,
 tab-item .native-tab-group-line {
@@ -846,7 +846,7 @@ tab-item-substance .highlighter {
 }
 
 
-tab-item-substance.unread tab-favicon::before,
+tab-item.faviconized tab-item-substance.unread tab-favicon::before,
 tab-item-substance.attention tab-favicon::before {
   bottom: auto;
   content: '';
@@ -1051,14 +1051,12 @@ tab-item.faviconized tab-label * {
 
 tab-item.faviconized tab-item-substance.unread:not(.active):not(:hover) tab-favicon::before,
 tab-item.faviconized tab-item-substance.attention:not(.active):not(:hover) tab-favicon::before,
-tab-item:not(.faviconized) tab-item-substance.unread:not(:hover) tab-favicon::before,
 tab-item:not(.faviconized) tab-item-substance.attention:not(:hover) tab-favicon::before {
   background-image: var(--attention-marker-gradient);
 }
 
 tab-item.faviconized tab-item-substance.unread:not(.active):hover tab-favicon::before,
 tab-item.faviconized tab-item-substance.attention:not(.active):hover tab-favicon::before,
-tab-item:not(.faviconized) tab-item-substance.unread:hover tab-favicon::before,
 tab-item:not(.faviconized) tab-item-substance.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
