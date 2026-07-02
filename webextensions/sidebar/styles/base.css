@@ -152,29 +152,14 @@ body {
 
 tab-item {
   --tab-current-size: var(--tab-size);
-  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2));
-  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2));
-  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 14% + 1px),
+  --attention-marker-x-offset: -35%;
+  --attention-marker-y-offset: -35%;
+  --attention-marker-gradient: radial-gradient(circle farthest-corner at calc(100% - 25%) 25%,
                                                var(--tab-highlighted-glow) 0,
-                                               var(--tab-highlighted-glow) 7%,
-                                               rgba(255, 255, 255, 0) 7%);
+                                               var(--tab-highlighted-glow) 12.5%,
+                                               rgba(255, 255, 255, 0) 12.5%);
   --attention-marker-gradient-hover: var(--attention-marker-gradient);
-  /* old style
-  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                               var(--tab-highlighted-highlight) 3%,
-                                               var(--tab-highlighted-glow) 10%,
-                                               rgba(255, 255, 255, 0) 20%);
-  --attention-marker-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                     var(--tab-highlighted-highlight) 3%,
-                                                     var(--tab-highlighted-glow) 10%,
-                                                     rgba(255, 255, 255, 0) 23%);
-  */
   --tab-label-width: 100%;
-
-  &.faviconized {
-    --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
-    --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
-  }
 
   &:not(.faviconized):not(.dummy) {
     height: var(--tab-size); /* make tab height consistent even if only some tabs have extra contents */
@@ -729,7 +714,7 @@ tab-item tab-closebox {
 
 tab-item .highlighter,
 tab-item .burster,
-tab-item.faviconized tab-item-substance.unread tab-favicon::before,
+tab-item-substance.unread tab-favicon::before,
 tab-item-substance.attention tab-favicon::before,
 tab-item .background,
 tab-item .native-tab-group-line {
@@ -861,15 +846,15 @@ tab-item-substance .highlighter {
 }
 
 
-tab-item.faviconized tab-item-substance.unread tab-favicon::before,
+tab-item-substance.unread tab-favicon::before,
 tab-item-substance.attention tab-favicon::before {
   bottom: auto;
   content: '';
-  height: var(--tab-current-size);
-  inset-inline-start: var(--attention-marker-x-offset);
-  inset-inline-end: auto;
+  height: var(--favicon-size);
+  inset-inline-start: auto;
+  inset-inline-end: var(--attention-marker-x-offset);
   top: var(--attention-marker-y-offset);
-  width: var(--tab-current-size);
+  width: var(--favicon-size);
 }
 
 .background {
@@ -1065,12 +1050,16 @@ tab-item.faviconized tab-label * {
 }
 
 tab-item.faviconized tab-item-substance.unread:not(.active):not(:hover) tab-favicon::before,
-tab-item-substance.attention:not(:hover) tab-favicon::before {
+tab-item.faviconized tab-item-substance.attention:not(.active):not(:hover) tab-favicon::before,
+tab-item:not(.faviconized) tab-item-substance.unread:not(:hover) tab-favicon::before,
+tab-item:not(.faviconized) tab-item-substance.attention:not(:hover) tab-favicon::before {
   background-image: var(--attention-marker-gradient);
 }
 
 tab-item.faviconized tab-item-substance.unread:not(.active):hover tab-favicon::before,
-tab-item-substance.attention:hover tab-favicon::before {
+tab-item.faviconized tab-item-substance.attention:not(.active):hover tab-favicon::before,
+tab-item:not(.faviconized) tab-item-substance.unread:hover tab-favicon::before,
+tab-item:not(.faviconized) tab-item-substance.attention:hover tab-favicon::before {
   background-image: var(--attention-marker-gradient-hover);
 }
 

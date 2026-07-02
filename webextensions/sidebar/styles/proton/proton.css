@@ -225,6 +225,7 @@ tab-item.split-view:hover tab-item-substance.split-substances-container {
 }
 
 tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):hover,
+tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized,
 tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
 tab-item.split-view:hover tab-item-substance.split-substances-container,
 .after-tabs button:hover,
@@ -344,7 +345,11 @@ tab-item.split-view:hover tab-item-substance.split-substances-container .backgro
 #subpanel-selector-anchor:hover::before {
   opacity: 0.11;
 }
+tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized:not(:hover) .background:not(.base) {
+  opacity: 0.07;
+}
 tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted)[type="group"]:not(.subtree-collapsed):hover .background:not(.base),
+tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted)[type="group"]:not(.subtree-collapsed).faviconized .background:not(.base),
 tab-item.split-view.has-active-substance tab-item-substance:not(.active):not(.bundled-active):not(.highlighted)[type="group"]:not(.subtree-collapsed):hover .background:not(.base),
 tab-item.split-view:hover tab-item-substance:not(.active):not(.highlighted):not(.split-substances-container) .background:not(.base) {
   opacity: 0;
