@@ -1463,7 +1463,7 @@ async function onClick(info, contextTab) {
       Commands.copyLinks(sendableMultiselectedTabs || [contextTab]);
       break;
     case 'context_generateQRCode':
-      Commands.generateQRCode(sendableMultiselectedTabs[0]);
+      Commands.generateQRCode(Sync.isSendableTab(contextTab) ? contextTab : (sendableMultiselectedTabs.length > 0 && sendableMultiselectedTabs[0] || contextTab));
       break;
     case 'context_sendTabsToDevice:all':
       Sync.sendTabsToAllDevices(sendableMultiselectedTabs || [contextTab]);
