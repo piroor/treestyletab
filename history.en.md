@@ -1,6 +1,18 @@
 # History
 
  - trunk/HEAD
+   * Style tabs with the "Proton" theme more similar to Firefox's native vertical tabs. The default size of faviconized pinned tabs has been enlarged, and you can get back old size with a user stylesheet: `:root { --faviconized-tab-size: 28px; }`.
+   * Reconstruct "Share" context menu item like Firefox's one.
+   * Add ability to generate a QR code to share a tab, like Firefox does.
+   * Add "Move Tab/Tree to Start/End" keyboard shortcut slots. You need to assign keyboard shortcuts for them manually if you use.
+   * Limit maximum count of reloading tabs in parallel. It is 3 by default and you can customize with a new expert option.
+   * Restore/reload discarded tabs sequentially if possible.
+   * Set title same to the closed parent tab to the successor group tab, if configured to replace closed parent tabs with group tabs.
+   * Restore tree structure more correctly around tabs moved across windows.
+   * Restore tree structure more robustly. ([by tkng](https://github.com/piroor/treestyletab/pull/3926), thanks!)
+   * Works more robustly even if the user profile has broken sessions or tab groups information.
+   * Reduce unexpected data loss while editing user stylesheets.
+   * Prevent possible message storm on editing/synchronizing/resetting configs.
  - 4.3.4 (2026.4.27)
    * Render split view correctly even if it is created by "Open Link in Split View".
    * Create bookmarks folder with given name correctly. (regression on 4.3.3)
