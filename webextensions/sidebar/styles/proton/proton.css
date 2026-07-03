@@ -7,6 +7,8 @@
 @import url("/resources/ui-color.css");
 
 :root {
+  --faviconized-tab-size: 34px;
+
   --color-animation: 0s ease-out;
   --tab-vertical-padding: 0.45em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
   --tab-border-radius-size: 0.5em;
