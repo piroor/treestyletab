@@ -1,6 +1,8 @@
 # History
 
  - trunk/HEAD
+ - 4.3.6 (2026.7.15)
+   * Fix mis-scaled dialog in a high-DPR display.
  - 4.3.5 (2026.7.3)
    * Style tabs with the "Proton" theme more similar to Firefox's native vertical tabs. The default size of faviconized pinned tabs has been enlarged, and you can get back old size with a user stylesheet: `:root { --faviconized-tab-size: 28px; }`.
    * Reconstruct "Share" context menu item like Firefox's one.
