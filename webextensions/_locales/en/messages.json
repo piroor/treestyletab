@@ -224,7 +224,7 @@
   "syncAvailable_notification_message": { "message": "Tabs can be transferred between your devices. Please click here to set an identifiable name to this device." },
   "syncAvailable_notification_message_linux": { "message": "Tabs can be transferred between your devices. Please click the button to set an identifiable name to this device." },
   "sentTabs_notification_title":            { "message": "\u200b" },
-  "sentTabs_notification_message":          { "message": "Tabs is sent to $DEVICE$",
+  "sentTabs_notification_message":          { "message": "Tab is sent to $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
@@ -482,7 +482,7 @@
   "config_suppressGroupTabForStructuredTabsFromBookmarks_label": { "message": "Suppress top-level group tab when opened tabs are already organized as a tree" },
 
   "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices with the context menu via Firefox Sync" },
-  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with ther browser's options at first, and install TST to other devices also." },
+  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with the browser's options at first, and install TST to other devices also." },
   "config_syncDeviceInfo_name_label": { "message": "Name and icon of this device:" },
   "config_syncDeviceInfo_name_description_before": { "message": "TST cannot detect the name of this device you configured for Firefox Sync, due to restrictions of WebExtensions API. Please set an identifiable name for this device manually. (It is recommended to copy " },
   "config_syncDeviceInfo_name_description_link": { "message": "the device name for Firefox Sync" },
@@ -647,7 +647,7 @@
   "config_tabBunchesDetectionTimeout_after": { "message": "msec, and:" },
   "config_autoGroupNewTabsFromBookmarks_label": { "message": "Group tabs under a tab with a title like \"... and more\"" },
   "config_restoreTreeForTabsFromBookmarks_label": { "message": "Restore tree structure" },
-  "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request an required permission." },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request a required permission." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Allow to detect bookmarks corresponding to tabs)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },
@@ -693,7 +693,7 @@
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
   "config_unfocusableCollapsedTab_label": { "message": "When a tab under a collapsed tree gets focus, expand its tree automatically" },
   "config_expandNativeTabGroupByMemberTreeExpansion_label": { "message": "When a tree under a collapsed native tab group is expanded, expand the group also" },
-  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentaly focused and the focus is redirected immediately" },
+  "config_autoDiscardTabForUnexpectedFocus_label": { "message": "Keep tabs pending (unloaded) when tabs are accidentally focused and the focus is redirected immediately" },
   "config_avoidDiscardedTabToBeActivatedIfPossible_label": { "message": "Avoid pending (unloaded) tabs to be activated accidentally on current tab closes or tree collapsing" },
   "config_avoidDiscardedTabToBeActivatedExceptGroupTabs_label": { "message": "Except group tabs" },
 
@@ -774,7 +774,7 @@
   "config_tabDragBehavior_detachSoloTabIfExpanded":      { "message": "Detach Solo Tab if expanded or Entire Tree if collapsed, from the window (but impossible to create bookmark)" },
   "config_tabDragBehavior_bookmarkSoloTabIfExpanded":    { "message": "Create link or bookmark from Solo Tab if expanded or Entire Tree if collapsed (but impossible to detach from the window)" },
   "config_tabDragBehavior_doNothing":                    { "message": "Do nothing" },
-  "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "When a parent tabs is dragged from the browser's native tab bar, it will behave according to the section \"Tree Behavior\" => \"When a parent tab is Closed or Moved\"." },
+  "config_tabDragBehavior_noteForDragstartOutsideSidebar": { "message": "When a parent tab is dragged from the browser's native tab bar, it will behave according to the section \"Tree Behavior\" => \"When a parent tab is Closed or Moved\"." },
   "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
   "config_enlargeDropAreaToCreateNewGroupWithShiftKey_label":       { "message": "Create New Tab Group instead of attaching, by Shift-dragging/dropping tabs onto another tab" },
   "config_enlargeDropAreaToCreateNewGroupWithShiftKey_description": { "message": "(*You still can create New Tab Group by dragging with disabled this option, with dropping tabs onto horizontal head area of another tab.)" },
@@ -870,7 +870,7 @@
   "helper_theme_list_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#restore-old-built-in-themes" },
 
   "config_externaladdonpermissions_label": { "message": "Permissions for API Call from Other Extensions" },
-  "config_externaladdonpermissions_description": { "message": "Extensions allowed here may access detailed tab data or tabs in private windows, <em>through Tree Style Tab's permissions</em>, even if the extension ifself is forbidden by the browser to access them. <em>Please don't give permission for extensions if you cannot trust them.</em>" },
+  "config_externaladdonpermissions_description": { "message": "Extensions allowed here may access detailed tab data or tabs in private windows, <em>through Tree Style Tab's permissions</em>, even if the extension itself is forbidden by the browser to access them. <em>Please don't give permission for extensions if you cannot trust them.</em>" },
   "config_externalAddonPermissions_header_name": { "message": "Extension Name" },
   "config_externalAddonPermissions_header_permissions": { "message": "Allowed Special Operations" },
   "config_externalAddonPermissions_header_incognito": { "message": "Notify Messages from Private Windows" },
