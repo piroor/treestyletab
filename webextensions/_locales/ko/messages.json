@@ -191,11 +191,11 @@
         "message": "같은 단계의 다음 탭",
         "hash": "a38ae42397e1a9efb03988cb7a2b3304"
     },
-    "tabbar_newTabWithContexualIdentity_tooltip": {
+    "tabbar_newTabWithContextualIdentity_tooltip": {
         "message": "새 컨테이너 탭",
         "hash": "939c6fb543496a7a8485c982ad5530ce"
     },
-    "tabbar_newTabWithContexualIdentity_default": {
+    "tabbar_newTabWithContextualIdentity_default": {
         "message": "컨테이너 없음(&N)",
         "hash": "229c53203d001a81c6535deec232da82"
     },

@@ -272,11 +272,11 @@
     "message": "Volgend naastgelegen tabblad",
     "hash": "a38ae42397e1a9efb03988cb7a2b3304"
   },
-  "tabbar_newTabWithContexualIdentity_tooltip": {
+  "tabbar_newTabWithContextualIdentity_tooltip": {
     "message": "Nieuw containertabblad",
     "hash": "939c6fb543496a7a8485c982ad5530ce"
   },
-  "tabbar_newTabWithContexualIdentity_default": {
+  "tabbar_newTabWithContextualIdentity_default": {
     "message": "Gee&n container",
     "hash": "62484898877c1c17dc4d60b12e127d45"
   },

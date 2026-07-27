@@ -204,10 +204,10 @@
   "tabbar_newTabAction_nextSibling_command": {
     "message": "右邻同级标签页"
   },
-  "tabbar_newTabWithContexualIdentity_tooltip": {
+  "tabbar_newTabWithContextualIdentity_tooltip": {
     "message": "新建身份标签页"
   },
-  "tabbar_newTabWithContexualIdentity_default": {
+  "tabbar_newTabWithContextualIdentity_default": {
     "message": "无身份(&N)"
   },
   "groupTab_label": {

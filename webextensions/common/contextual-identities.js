@@ -190,7 +190,7 @@ export function generateMenuItems({ hasDefault } = {}) {
   if (hasDefault) {
     const defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
-    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
+    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContextualIdentity_default');
     fragment.appendChild(defaultCotnainerItem);
 
     const separator = document.createElement('li');

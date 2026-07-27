@@ -191,11 +191,11 @@
     "message": "Onglet au même niveau, juste après",
     "hash": "a38ae42397e1a9efb03988cb7a2b3304"
   },
-  "tabbar_newTabWithContexualIdentity_tooltip": {
+  "tabbar_newTabWithContextualIdentity_tooltip": {
     "message": "Nouvel onglet dans un conteneur",
     "hash": "939c6fb543496a7a8485c982ad5530ce"
   },
-  "tabbar_newTabWithContexualIdentity_default": {
+  "tabbar_newTabWithContextualIdentity_default": {
     "message": "Aucun conteneur",
     "hash": "229c53203d001a81c6535deec232da82"
   },
