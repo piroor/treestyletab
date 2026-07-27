@@ -34,10 +34,10 @@ export function migrateConfigs() {
   switch (configs.configsVersion) {
     case 0:
     case 1:
-      if (configs.startDragTimeout !== null)
+      if (configs.startDragTimeout !== null) {
         configs.longPressDuration = configs.startDragTimeout;
-      if (configs.emulateDefaultContextMenu !== null)
-        configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
+        configs.startDragTimeout = null;
+      }
 
     case 2:
       if (configs.simulateSelectOwnerOnClose !== null &&
@@ -51,14 +51,22 @@ export function migrateConfigs() {
         configs.tabDragBehaviorShift |= Constants.kDRAG_BEHAVIOR_TEAR_OFF;
 
     case 4:
-      if (configs.fakeContextMenu !== null)
+      if (configs.fakeContextMenu !== null) {
         configs.emulateDefaultContextMenu = configs.fakeContextMenu;
-      if (configs.context_closeTabOptions_closeTree !== null)
+        configs.fakeContextMenu = null;
+      }
+      if (configs.context_closeTabOptions_closeTree !== null) {
         configs.context_topLevel_closeTree        = configs.context_closeTabOptions_closeTree;
-      if (configs.context_closeTabOptions_closeDescendants !== null)
+        configs.context_closeTabOptions_closeTree = null;
+      }
+      if (configs.context_closeTabOptions_closeDescendants !== null) {
         configs.context_topLevel_closeDescendants = configs.context_closeTabOptions_closeDescendants;
-      if (configs.context_closeTabOptions_closeOthers !== null)
+        configs.context_closeTabOptions_closeDescendants = null;
+      }
+      if (configs.context_closeTabOptions_closeOthers !== null) {
         configs.context_topLevel_closeOthers      = configs.context_closeTabOptions_closeOthers;
+        configs.context_closeTabOptions_closeOthers = null;
+      }
 
     case 5:
       let migratedUserStyleRules = '';
@@ -89,6 +97,7 @@ export function migrateConfigs() {
           case 3: // overlay (macOS)
             break;
         }
+        configs.scrollbarMode = null;
       }
       if (configs.sidebarScrollbarPosition !== null) {
         switch (configs.sidebarScrollbarPosition) {
@@ -104,6 +113,7 @@ export function migrateConfigs() {
 :root.left #tabbar { direction: ltr; }`;
             break;
         }
+        configs.sidebarScrollbarPosition = null;
       }
       try {
         saveUserStyleRules(migratedUserStyleRules);
@@ -115,8 +125,10 @@ export function migrateConfigs() {
     case 6:
       if (configs.promoteFirstChildForClosedRoot != null &&
           configs.promoteFirstChildForClosedRoot &&
-          configs.closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+          configs.closeParentBehavior == Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_ALL_CHILDREN) {
         configs.closeParentBehavior = Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY;
+        configs.promoteFirstChildForClosedRoot = null;
+      }
       if (configs.parentTabBehaviorForChanges !== null) {
         switch (configs.parentTabBehaviorForChanges) {
           case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
@@ -131,21 +143,28 @@ export function migrateConfigs() {
             configs.closeParentBehavior_outsideSidebar_expanded = configs.closeParentBehavior_noSidebar_expanded = configs.  closeParentBehavior;
             break;
         }
+        configs.parentTabBehaviorForChanges = null;
       }
 
     case 7:
       if (configs.collapseExpandSubtreeByDblClick !== null &&
-          configs.collapseExpandSubtreeByDblClick)
+          configs.collapseExpandSubtreeByDblClick) {
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_TOGGLE_COLLAPSED;
+        configs.collapseExpandSubtreeByDblClick = null;
+      }
 
     case 8:
-      if (configs.autoExpandOnCollapsedChildActive !== null)
+      if (configs.autoExpandOnCollapsedChildActive !== null) {
         configs.unfocusableCollapsedTab = configs.autoExpandOnCollapsedChildActive;
+        configs.autoExpandOnCollapsedChildActive = null;
+      }
 
     case 9:
       if (configs.simulateCloseTabByDblclick !== null &&
-          configs.simulateCloseTabByDblclick)
+          configs.simulateCloseTabByDblclick) {
         configs.treeDoubleClickBehavior = Constants.kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE;
+        configs.simulateCloseTabByDblclick = null;
+      }
 
     case 10:
       if (configs.style == 'plain-dark' ||
@@ -184,12 +203,18 @@ export function migrateConfigs() {
         configs.style = 'photon';
 
     case 14:
-      if (configs.inheritContextualIdentityToNewChildTab !== null)
+      if (configs.inheritContextualIdentityToNewChildTab !== null) {
         configs.inheritContextualIdentityToChildTabMode = configs.inheritContextualIdentityToNewChildTab ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
-      if (configs.inheritContextualIdentityToSameSiteOrphan !== null)
+        configs.inheritContextualIdentityToNewChildTab = null;
+      }
+      if (configs.inheritContextualIdentityToSameSiteOrphan !== null) {
         configs.inheritContextualIdentityToSameSiteOrphanMode = configs.inheritContextualIdentityToSameSiteOrphan ? Constants.kCONTEXTUAL_IDENTITY_FROM_LAST_ACTIVE : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
-      if (configs.inheritContextualIdentityToTabsFromExternal !== null)
+        configs.inheritContextualIdentityToSameSiteOrphan = null;
+      }
+      if (configs.inheritContextualIdentityToTabsFromExternal !== null) {
         configs.inheritContextualIdentityToTabsFromExternalMode = configs.inheritContextualIdentityToTabsFromExternal ? Constants.kCONTEXTUAL_IDENTITY_FROM_PARENT : Constants.kCONTEXTUAL_IDENTITY_DEFAULT;
+        configs.inheritContextualIdentityToTabsFromExternal = null;
+      }
 
     case 15:
       if (configs.moveDroppedTabToNewWindowForUnhandledDragEvent !== null &&
@@ -203,6 +228,8 @@ export function migrateConfigs() {
           configs.tabDragBehaviorShift = configs.tabDragBehaviorShift ^ Constants.kDRAG_BEHAVIOR_TEAR_OFF;
         else if (configs.tabDragBehaviorShift & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
           configs.tabDragBehaviorShift = configs.tabDragBehaviorShift ^ Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+
+        configs.moveDroppedTabToNewWindowForUnhandledDragEvent = null;
       }
 
     case 16:
@@ -220,11 +247,13 @@ export function migrateConfigs() {
       if (configs.suppressGapFromShownOrHiddenToolbar !== null) {
         configs.suppressGapFromShownOrHiddenToolbarOnNewTab =
           configs.suppressGapFromShownOrHiddenToolbarOnFullScreen = configs.suppressGapFromShownOrHiddenToolbar;
+        configs.suppressGapFromShownOrHiddenToolbar = null;
       }
 
     case 20:
       if (configs.treatTreeAsExpandedOnClosedWithNoSidebar !== null) {
         configs.treatTreeAsExpandedOnClosed_noSidebar = configs.treatTreeAsExpandedOnClosedWithNoSidebar;
+        configs.treatTreeAsExpandedOnClosedWithNoSidebar = null;
       }
 
     case 21:
@@ -235,20 +264,24 @@ export function migrateConfigs() {
     case 23:
       if (configs.closeParentBehaviorMode !== null) {
         configs.parentTabOperationBehaviorMode = configs.closeParentBehaviorMode;
+        configs.closeParentBehaviorMode = null;
       }
       if (configs.closeParentBehavior !== null) {
         configs.closeParentBehavior_insideSidebar_expanded =
           configs.closeParentBehavior;
+        configs.closeParentBehavior = null;
       }
       if (configs.closeParentBehavior_outsideSidebar !== null) {
         configs.closeParentBehavior_outsideSidebar_expanded =
           configs.moveParentBehavior_outsideSidebar_expanded =
           configs.closeParentBehavior_outsideSidebar;
+        configs.closeParentBehavior_outsideSidebar = null;
       }
       if (configs.closeParentBehavior_noSidebar !== null) {
         configs.closeParentBehavior_noSidebar_expanded =
           configs.closeParentBehavior_noSidebar_expanded =
           configs.closeParentBehavior_noSidebar;
+        configs.closeParentBehavior_noSidebar = null;
       }
       if (configs.treatTreeAsExpandedOnClosed_outsideSidebar === true) {
         configs.closeParentBehavior_outsideSidebar_collapsed =
@@ -266,22 +299,30 @@ export function migrateConfigs() {
       }
 
     case 24:
-      if (configs.autoGroupNewTabsTimeout !== null)
+      if (configs.autoGroupNewTabsTimeout !== null) {
         configs.tabBunchesDetectionTimeout = configs.autoGroupNewTabsTimeout;
-      if (configs.autoGroupNewTabsDelayOnNewWindow !== null)
+        configs.autoGroupNewTabsTimeout = null;
+      }
+      if (configs.autoGroupNewTabsDelayOnNewWindow !== null) {
         configs.tabBunchesDetectionDelayOnNewWindow = configs.autoGroupNewTabsDelayOnNewWindow;
+        configs.autoGroupNewTabsDelayOnNewWindow = null;
+      }
 
     case 25:
-      if (configs.autoHiddenScrollbarPlaceholderSize !== null)
+      if (configs.autoHiddenScrollbarPlaceholderSize !== null) {
         configs.shiftTabsForScrollbarDistance = configs.autoHiddenScrollbarPlaceholderSize;
+        configs.autoHiddenScrollbarPlaceholderSize = null;
+      }
 
     case 26:
       if (!configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.includes('about:privatebrowsing'))
         configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl = `${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl.trim().replace(/\|$/, '')}|about:privatebrowsing`;
 
     case 27:
-      if (configs.openAllBookmarksWithGroupAlways !== null)
+      if (configs.openAllBookmarksWithGroupAlways !== null) {
         configs.suppressGroupTabForStructuredTabsFromBookmarks = !configs.openAllBookmarksWithGroupAlways;
+        configs.openAllBookmarksWithGroupAlways = null;
+      }
 
     case 28:
       if (configs.heartbeatInterval == 1000)
@@ -329,18 +370,24 @@ export function migrateConfigs() {
       });
 
     case 31:
-      if (configs.tabPreviewTooltipInSidebar !== null)
+      if (configs.tabPreviewTooltipInSidebar !== null) {
         configs.tabPreviewTooltipRenderIn = configs.tabPreviewTooltipInSidebar ?
           Constants.kIN_CONTENT_PANEL_RENDER_IN_ANYWHERE :
           Constants.kIN_CONTENT_PANEL_RENDER_IN_CONTENT;
+        configs.tabPreviewTooltipInSidebar = null;
+      }
 
     case 32:
-      if (configs.tabPreviewTooltipOffsetTop !== null)
+      if (configs.tabPreviewTooltipOffsetTop !== null) {
         configs.inContentUIOffsetTop = configs.tabPreviewTooltipOffsetTop;
+        configs.tabPreviewTooltipOffsetTop = null;
+      }
 
     case 33:
-      if (configs.sidebarPositionRighsideNotificationShown !== null)
+      if (configs.sidebarPositionRighsideNotificationShown !== null) {
         configs.sidebarPositionInvertedNotificationShown = configs.sidebarPositionRighsideNotificationShown;
+        configs.sidebarPositionRighsideNotificationShown = null;
+      }
   }
   configs.configsVersion = kCONFIGS_VERSION;
 
