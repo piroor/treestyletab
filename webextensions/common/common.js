@@ -122,6 +122,9 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
   autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
   autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
+  sidebarPositionRighsideNotificationShown // migrated to sidebarPositionInvertedNotificationShown
+  tabPreviewTooltipInSidebar // migrated to tabPreviewTooltipMode
+  tabPreviewTooltipOffsetTop // migrated to inContentUIOffsetTop
   autoExpandOnLongHoverRestoreIniitalState // migrated to autoExpandOnLongHoverRestoreInitialState
 `.trim().split('\n'), key => {
   key = key.replace(/\/\/.*/, '').trim();
@@ -175,7 +178,6 @@ export const configs = new Configs({
   // appearance
   sidebarPosition:                          Constants.kTABBAR_POSITION_AUTO,
   sidebarPositionInvertedNotificationShown: false,
-  sidebarPositionRighsideNotificationShown: null, // migrated to sidebarPositionInvertedNotificationShown
   sidebarPositionOptionNotificationTimeout: 20 * 1000,
   rtl:                                      isRTL(),
 
@@ -213,9 +215,7 @@ export const configs = new Configs({
   inContentUIOffsetTop:                             0, // See also https://github.com/piroor/treestyletab/issues/3698
   tabPreviewTooltip:                                false,
   tabPreviewTooltipRenderIn:                        Constants.kIN_CONTENT_PANEL_RENDER_IN_ANYWHERE,
-  tabPreviewTooltipInSidebar:                       null, // migrated to tabPreviewTooltipMode
   tabPreviewTooltipDelayMsec:                       500, // same as "ui.tooltip.delay_ms"
-  tabPreviewTooltipOffsetTop:                       null, // migrated to inContentUIOffsetTop
   showOverflowTitleByTooltip:                       true,
   showCollapsedDescendantsByTooltip:                true,
   showCollapsedDescendantsByLegacyTooltipOnSidebar: false,
