@@ -256,7 +256,7 @@
       "REST": { "content": "$3", "example": "3" }
     }},
 
-  "sidebarPositionInvertedNotification_message":   { "message": "TST detected the sidebar position as \"Inverted Side\". Do you want the appearance to be switched to the one matching to the current position?" },
+  "sidebarPositionInvertedNotification_message":   { "message": "TST detected the sidebar position as \"Inverted Side\". Do you want the appearance to be switched to the one matching the current position?" },
   "sidebarPositionInvertedNotification_inverted": { "message": "Apply appearance for Inverted Side" },
   "sidebarPositionInvertedNotification_regular":  { "message": "Keep appearance for Regular Side" },
 
@@ -274,7 +274,7 @@
   "message_startup_description_key": { "message": "\"F1\" key" },
   "message_startup_description_2": { "message": " or click the " },
   "message_startup_description_3": { "message": " button in the toolbar, to activate the sidebar panel." },
-  "message_startup_description_sync_before": { "message": "Tabs can be sent via Firefox Sync only to devices with TST installed. Please activate Firefox Sync with Firefox's options at first, and install TST to other devices also. Moreover," },
+  "message_startup_description_sync_before": { "message": "Tabs can be sent via Firefox Sync only to devices with TST installed. Please activate Firefox Sync in Firefox's options first, and install TST on your other devices as well. Moreover," },
   "message_startup_description_sync_link":   { "message": "the device name should be configured manually" },
   "message_startup_description_sync_after":  { "message": "." },
 
@@ -482,7 +482,7 @@
   "config_suppressGroupTabForStructuredTabsFromBookmarks_label": { "message": "Suppress top-level group tab when opened tabs are already organized as a tree" },
 
   "config_sendTabsToDevice_caption": { "message": "Send Tabs to Other Devices with the context menu via Firefox Sync" },
-  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync with the browser's options at first, and install TST to other devices also." },
+  "config_syncRequirements_description": { "message": "This feature depends on Firefox Sync, and tabs can be sent only to devices with TST installed. Please activate Firefox Sync in the browser's options first, and install TST on your other devices as well." },
   "config_syncDeviceInfo_name_label": { "message": "Name and icon of this device:" },
   "config_syncDeviceInfo_name_description_before": { "message": "TST cannot detect the name of this device you configured for Firefox Sync, due to restrictions of WebExtensions API. Please set an identifiable name for this device manually. (It is recommended to copy " },
   "config_syncDeviceInfo_name_description_link": { "message": "the device name for Firefox Sync" },
@@ -647,7 +647,7 @@
   "config_tabBunchesDetectionTimeout_after": { "message": "msec, and:" },
   "config_autoGroupNewTabsFromBookmarks_label": { "message": "Group tabs under a tab with a title like \"... and more\"" },
   "config_restoreTreeForTabsFromBookmarks_label": { "message": "Restore tree structure" },
-  "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs a right to access bookmarks. Click here to request a required permission." },
+  "config_requireBookmarksPermission_tooltiptext": { "message": "This feature needs permission to access bookmarks. Click here to request the required permission." },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_before": { "message": "(" },
   "config_requestPermissions_bookmarks_autoGroupNewTabs_after": { "message": "Allow to detect bookmarks corresponding to tabs)" },
   "config_tabsFromSameFolderMinThresholdPercentage_before": { "message": "Treat all new tabs as opened from one bookmark folder, if over " },
