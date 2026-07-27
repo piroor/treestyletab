@@ -84,32 +84,39 @@ const localKeys = DEVICE_SPECIFIC_CONFIG_KEYS.concat(mapAndFilter(`
 }));
 
 const obsoleteConfigs = new Set(mapAndFilter(`
-  sidebarScrollbarPosition // migrated to user stylesheet
-  scrollbarMode // migrated to user stylesheet
-  suppressGapFromShownOrHiddenToolbar // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
-  fakeContextMenu // migrated to emulateDefaultContextMenu
-  context_closeTabOptions_closeTree // migrated to context_topLevel_closeTree
+  autoExpandOnCollapsedChildActive // migrate to unfocusableCollapsedTab
+  autoExpandOnLongHoverRestoreIniitalState // migrated to autoExpandOnLongHoverRestoreInitialState
+  autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
+  autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
+  autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
+  closeParentBehavior // migrated to closeParentBehavior_insideSidebar_expanded
+  closeParentBehavior_noSidebar // migrated to closeParentBehavior_noSidebar_expanded
+  closeParentBehavior_outsideSidebar// migrated to closeParentBehavior_outsideSidebar_expanded
+  closeParentBehaviorMode // migrated to parentTabOperationBehaviorMode
+  collapseExpandSubtreeByDblClick // migrated to treeDoubleClickBehavior
   context_closeTabOptions_closeDescendants // migrated to context_topLevel_closeDescendants
   context_closeTabOptions_closeOthers // migrated to context_topLevel_closeOthers
-  collapseExpandSubtreeByDblClick // migrated to treeDoubleClickBehavior
-  autoExpandOnCollapsedChildActive // migrate to unfocusableCollapsedTab
+  context_closeTabOptions_closeTree // migrated to context_topLevel_closeTree
+  fakeContextMenu // migrated to emulateDefaultContextMenu
   inheritContextualIdentityToNewChildTab // migrated to inheritContextualIdentityToChildTabMode
   inheritContextualIdentityToSameSiteOrphan // migrated to inheritContextualIdentityToSameSiteOrphanMode
   inheritContextualIdentityToTabsFromExternal // migrated to inheritContextualIdentityToTabsFromExternalMode
-  promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
-  parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
-  closeParentBehaviorMode // migrated to parentTabOperationBehaviorMode
-  closeParentBehavior // migrated to closeParentBehavior_insideSidebar_expanded
-  closeParentBehavior_outsideSidebar// migrated to closeParentBehavior_outsideSidebar_expanded
-  closeParentBehavior_noSidebar // migrated to closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosedWithNoSidebar // migrated to treatTreeAsExpandedOnClosed_noSidebar
-  treatTreeAsExpandedOnClosed_outsideSidebar // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
-  treatTreeAsExpandedOnClosed_noSidebar // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
-  moveFocusInTreeForClosedActiveTab // migrated to "successorTabControlLevel"
-  startDragTimeout // migrated to longPressDuration
-  simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
   moveDroppedTabToNewWindowForUnhandledDragEvent // see also: https://github.com/piroor/treestyletab/issues/1646 , migrated to tabDragBehavior
+  moveFocusInTreeForClosedActiveTab // migrated to "successorTabControlLevel"
   openAllBookmarksWithGroupAlways // migrated to suppressGroupTabForStructuredTabsFromBookmarks
+  parentTabBehaviorForChanges // migrated to parentTabOperationBehaviorMode
+  promoteFirstChildForClosedRoot // migrated to Constants.kPARENT_TAB_OPERATION_BEHAVIOR_PROMOTE_INTELLIGENTLY of closeParentBehavior
+  scrollbarMode // migrated to user stylesheet
+  sidebarPositionRighsideNotificationShown // migrated to sidebarPositionInvertedNotificationShown
+  sidebarScrollbarPosition // migrated to user stylesheet
+  simulateCloseTabByDblclick // migrated to "treeDoubleClickBehavior=kTREE_DOUBLE_CLICK_BEHAVIOR_CLOSE"
+  startDragTimeout // migrated to longPressDuration
+  suppressGapFromShownOrHiddenToolbar // migrated to suppressGapFromShownOrHiddenToolbarOnFullScreen/NewTab
+  tabPreviewTooltipInSidebar // migrated to tabPreviewTooltipMode
+  tabPreviewTooltipOffsetTop // migrated to inContentUIOffsetTop
+  treatTreeAsExpandedOnClosed_noSidebar // migrated to closeParentBehavior_noSidebar_collapsed and moveParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosed_outsideSidebar // migrated to closeParentBehavior_noSidebar_expanded and closeParentBehavior_noSidebar_expanded
+  treatTreeAsExpandedOnClosedWithNoSidebar // migrated to treatTreeAsExpandedOnClosed_noSidebar
   // migrated to chunkedUserStyleRules0-5
   userStyleRules0
   userStyleRules1
@@ -119,13 +126,6 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   userStyleRules5
   userStyleRules6
   userStyleRules7
-  autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
-  autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
-  autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
-  sidebarPositionRighsideNotificationShown // migrated to sidebarPositionInvertedNotificationShown
-  tabPreviewTooltipInSidebar // migrated to tabPreviewTooltipMode
-  tabPreviewTooltipOffsetTop // migrated to inContentUIOffsetTop
-  autoExpandOnLongHoverRestoreIniitalState // migrated to autoExpandOnLongHoverRestoreInitialState
 `.trim().split('\n'), key => {
   key = key.replace(/\/\/.*/, '').trim();
   if (!key)
