@@ -122,6 +122,7 @@ const obsoleteConfigs = new Set(mapAndFilter(`
   autoGroupNewTabsTimeout // migrated to tabBunchesDetectionTimeout
   autoGroupNewTabsDelayOnNewWindow // migrated to tabBunchesDetectionDelayOnNewWindow
   autoHiddenScrollbarPlaceholderSize // migrated to shiftTabsForScrollbarDistance
+  autoExpandOnLongHoverRestoreIniitalState // migrated to autoExpandOnLongHoverRestoreInitialState
 `.trim().split('\n'), key => {
   key = key.replace(/\/\/.*/, '').trim();
   if (!key)
@@ -310,7 +311,7 @@ export const configs = new Configs({
   autoExpandOnTabSwitchingShortcutsDelay:   800,
   autoExpandOnLongHover:                    true,
   autoExpandOnLongHoverDelay:               500,
-  autoExpandOnLongHoverRestoreIniitalState: true,
+  autoExpandOnLongHoverRestoreInitialState: true,
 
   autoCreateFolderForBookmarksFromTree: true,
 

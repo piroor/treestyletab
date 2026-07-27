@@ -22,7 +22,7 @@ function log(...args) {
   internalLogger('background/migration', ...args);
 }
 
-const kCONFIGS_VERSION = 34;
+const kCONFIGS_VERSION = 35;
 const kFEATURES_VERSION = 9;
 
 let migrating = false;
@@ -387,6 +387,12 @@ export function migrateConfigs() {
       if (configs.sidebarPositionRighsideNotificationShown !== null) {
         configs.sidebarPositionInvertedNotificationShown = configs.sidebarPositionRighsideNotificationShown;
         configs.sidebarPositionRighsideNotificationShown = null;
+      }
+
+    case 34:
+      if (configs.autoExpandOnLongHoverRestoreIniitalState !== null) {
+        configs.autoExpandOnLongHoverRestoreInitialState = configs.autoExpandOnLongHoverRestoreIniitalState;
+        configs.autoExpandOnLongHoverRestoreIniitalState = null;
       }
   }
   configs.configsVersion = kCONFIGS_VERSION;
