@@ -139,16 +139,19 @@ mDarkModeMedia.addListener(async _event => {
 function safeColor(color) {
   switch (color) {
     case 'blue':
-    case 'turquoise':
+    case 'cyan':
     case 'green':
-    case 'yellow':
     case 'orange':
     case 'red':
     case 'pink':
     case 'purple':
+    case 'turquoise': // old name, migrated to cyan at Firefox 153
+    case 'violet':
+    case 'yellow':
       return color;
 
-    case 'toolbar':
+    case 'gray':
+    case 'toolbar': // old name, migrated to gray at Firefox 153
     default:
       return !isWindows() && mDarkModeMedia.matches ? 'toolbar-dark' : 'toolbar-light';
   }
