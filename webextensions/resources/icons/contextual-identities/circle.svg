@@ -1,14 +1,17 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16">
 <style>
   g:not(:target) {
     display: none;
   }
 </style>
-<symbol id="icon">
-  <circle  cx="16" cy="16" r="16"/>
+<symbol id="icon-nova">
+<g class="proton">  <circle  cx="8" cy="8" r="8"/>
 </symbol>
-<g id="blue" fill="#37adff"><use href="#icon"/></g><g id="turquoise" fill="#00c79a"><use href="#icon"/></g><g id="green" fill="#51cd00"><use href="#icon"/></g><g id="yellow" fill="#ffcb00"><use href="#icon"/></g><g id="orange" fill="#ff9f00"><use href="#icon"/></g><g id="red" fill="#ff613d"><use href="#icon"/></g><g id="pink" fill="#ff4bda"><use href="#icon"/></g><g id="purple" fill="#af51f5"><use href="#icon"/></g><g id="toolbar-dark" fill="#F9F9FA"><use href="#icon"/></g><g id="toolbar-light" fill="#0C0C0D"><use href="#icon"/></g>
+<symbol id="icon-proton">
+  <circle  cx="8" cy="8" r="8"/>
+</symbol>
+<g id="blue-nova" fill="#37adff"><use href="#icon-nova"/></g><g id="blue-proton" fill="#37adff"><use href="#icon-proton"/></g><g id="cyan-nova" fill="#00c79a"><use href="#icon-nova"/></g><g id="cyan-proton" fill="#00c79a"><use href="#icon-proton"/></g><g id="gray-dark-nova" fill="#F9F9FA"><use href="#icon-nova"/></g><g id="gray-dark-proton" fill="#F9F9FA"><use href="#icon-proton"/></g><g id="gray-light-nova" fill="#0C0C0D"><use href="#icon-nova"/></g><g id="gray-light-proton" fill="#0C0C0D"><use href="#icon-proton"/></g><g id="green-nova" fill="#51cd00"><use href="#icon-nova"/></g><g id="green-proton" fill="#51cd00"><use href="#icon-proton"/></g><g id="orange-nova" fill="#ff9f00"><use href="#icon-nova"/></g><g id="orange-proton" fill="#ff9f00"><use href="#icon-proton"/></g><g id="pink-nova" fill="#ff4bda"><use href="#icon-nova"/></g><g id="pink-proton" fill="#ff4bda"><use href="#icon-proton"/></g><g id="purple-nova" fill="#af51f5"><use href="#icon-nova"/></g><g id="purple-proton" fill="#af51f5"><use href="#icon-proton"/></g><g id="red-nova" fill="#ff613d"><use href="#icon-nova"/></g><g id="red-proton" fill="#ff613d"><use href="#icon-proton"/></g><g id="yellow-nova" fill="#ffcb00"><use href="#icon-nova"/></g><g id="yellow-proton" fill="#ffcb00"><use href="#icon-proton"/></g>
 </svg>

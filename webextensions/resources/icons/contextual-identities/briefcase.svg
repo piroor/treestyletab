@@ -1,14 +1,17 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16">
 <style>
   g:not(:target) {
     display: none;
   }
 </style>
-<symbol id="icon">
-  <path  fill-rule="evenodd"        d="M22,9.99887085 L21.635468,10 L29.0034652,10 C29.5538362,10 30,10.4449463 30,10.9933977 L30,27.0066023 C30,27.5552407 29.5601869,28 29.0034652,28 L2.99653482,28 C2.44616384,28 2,27.5550537 2,27.0066023 L2,10.9933977 C2,10.4447593 2.43981314,10 2.99653482,10 L8,10 L8,7.99922997 C8,5.79051625 10.0426627,4 12.5635454,4 L19.4364546,4 C21.9568311,4 24,5.79246765 24,7.99922997 L24,9.99267578 L22,9.99887085 L22,10 L10,10 L10,7.99922997 C10,6.89421235 11.0713286,6 12.3917227,6 L19.6082773,6 C20.9273761,6 22,6.89552665 22,7.99922997 L22,9.99887085 Z"/>
+<symbol id="icon-nova">
+  <path fill-rule="evenodd" d="M8 0c.624 0 1.205.037 1.735.095 1.026.111 1.765.989 1.765 1.988v1.03q.627.042 1.277.1l.746.072.258.04A2.76 2.76 0 0 1 16 6.024v5.95c0 1.4-1.049 2.59-2.454 2.737a53.6 53.6 0 0 1-11.068.003A2.76 2.76 0 0 1 0 11.975v-5.95c0-1.4 1.049-2.59 2.454-2.737q.986-.102 2.046-.173v-1.03A2.01 2.01 0 0 1 6.292.091 16 16 0 0 1 8 0m0 4.5a52 52 0 0 0-3 .087v8.825q1.588.09 3 .088c1.041 0 2.043-.033 3-.088V4.587A52 52 0 0 0 8 4.5m-4.5.196q-.453.039-.89.084A1.246 1.246 0 0 0 1.5 6.025v5.95c0 .639.49 1.18 1.133 1.248q.438.045.867.082zm9 8.607q.453-.04.89-.083a1.246 1.246 0 0 0 1.11-1.245v-5.95c0-.638-.49-1.18-1.133-1.248q-.438-.045-.867-.083zM8 1.5c-.46 0-.98.022-1.548.083A.51.51 0 0 0 6 2.085v.953a53 53 0 0 1 4 .001v-.956c0-.233-.15-.42-.342-.48l-.085-.017A15 15 0 0 0 8 1.5" clip-rule="evenodd" />
 </symbol>
-<g id="blue" fill="#37adff"><use href="#icon"/></g><g id="turquoise" fill="#00c79a"><use href="#icon"/></g><g id="green" fill="#51cd00"><use href="#icon"/></g><g id="yellow" fill="#ffcb00"><use href="#icon"/></g><g id="orange" fill="#ff9f00"><use href="#icon"/></g><g id="red" fill="#ff613d"><use href="#icon"/></g><g id="pink" fill="#ff4bda"><use href="#icon"/></g><g id="purple" fill="#af51f5"><use href="#icon"/></g><g id="toolbar-dark" fill="#F9F9FA"><use href="#icon"/></g><g id="toolbar-light" fill="#0C0C0D"><use href="#icon"/></g>
+<symbol id="icon-proton">
+  <path  fill-rule="evenodd"        d="M11.55,2.65c0-0.7-0.6-1.35-1.4-1.35h-4.35c-0.7,0-1.35,0.6-1.35,1.35v2.2H3.55v9.8h8.9V4.9h-0.9V2.65z M10.4,4.9H5.5  V2.65c0-0.2,0.1-0.25,0.25-0.25h4.35c0.2,0,0.25,0.1,0.25,0.25V4.9z M0.9,4.9h1.35v9.8H0.9c-0.45,0-0.9-0.45-0.9-0.9v-8  C0,5.25,0.45,4.9,0.9,4.9z M16,5.8v8c0,0.45-0.35,0.9-0.9,0.9h-1.35V4.9h1.35C15.65,4.9,16,5.25,16,5.8z"/>
+</symbol>
+<g id="blue-nova" fill="#37adff"><use href="#icon-nova"/></g><g id="blue-proton" fill="#37adff"><use href="#icon-proton"/></g><g id="cyan-nova" fill="#00c79a"><use href="#icon-nova"/></g><g id="cyan-proton" fill="#00c79a"><use href="#icon-proton"/></g><g id="gray-dark-nova" fill="#F9F9FA"><use href="#icon-nova"/></g><g id="gray-dark-proton" fill="#F9F9FA"><use href="#icon-proton"/></g><g id="gray-light-nova" fill="#0C0C0D"><use href="#icon-nova"/></g><g id="gray-light-proton" fill="#0C0C0D"><use href="#icon-proton"/></g><g id="green-nova" fill="#51cd00"><use href="#icon-nova"/></g><g id="green-proton" fill="#51cd00"><use href="#icon-proton"/></g><g id="orange-nova" fill="#ff9f00"><use href="#icon-nova"/></g><g id="orange-proton" fill="#ff9f00"><use href="#icon-proton"/></g><g id="pink-nova" fill="#ff4bda"><use href="#icon-nova"/></g><g id="pink-proton" fill="#ff4bda"><use href="#icon-proton"/></g><g id="purple-nova" fill="#af51f5"><use href="#icon-nova"/></g><g id="purple-proton" fill="#af51f5"><use href="#icon-proton"/></g><g id="red-nova" fill="#ff613d"><use href="#icon-nova"/></g><g id="red-proton" fill="#ff613d"><use href="#icon-proton"/></g><g id="yellow-nova" fill="#ffcb00"><use href="#icon-nova"/></g><g id="yellow-proton" fill="#ffcb00"><use href="#icon-proton"/></g>
 </svg>

@@ -14,7 +14,6 @@ import {
 } from './common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/contextual-identities', ...args);
 }
@@ -125,8 +124,11 @@ export async function init() {
 }
 
 function fixupIcon(identity) {
-  if (identity.icon && identity.color)
-    identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${safeColor(identity.color)}`;
+  if (identity.icon && identity.color) {
+    const iconType = configs.style == 'nova' ? 'nova' : 'proton';
+    identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${safeColor(identity.color)}-${iconType}`;
+    log('fixupIcon: ', identity);
+  }
   return identity;
 }
 
@@ -145,15 +147,17 @@ function safeColor(color) {
     case 'red':
     case 'pink':
     case 'purple':
-    case 'turquoise': // old name, migrated to cyan at Firefox 153
     case 'violet':
     case 'yellow':
       return color;
 
+    case 'turquoise':
+      return 'cyan'; // migrated at Firefox 153
+
     case 'gray':
     case 'toolbar': // old name, migrated to gray at Firefox 153
     default:
-      return !isWindows() && mDarkModeMedia.matches ? 'toolbar-dark' : 'toolbar-light';
+      return !isWindows() && mDarkModeMedia.matches ? 'gray-dark' : 'gray-light';
   }
 }
 
