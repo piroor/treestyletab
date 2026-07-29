@@ -54,6 +54,16 @@ const SAFE_MENU_PROPERTIES = [
   'visible'
 ];
 
+function generateIcons(url) {
+  //if (!/^[^:]+:\/\//.test(url))
+  //  url = browser.runtime.getURL(url);
+  const icons = {};
+  for (const size of [16, 32]) {
+    icons[size] = url;
+  }
+  return icons;
+}
+
 const mItemsById = {
   'context_newTab': {
     title: browser.i18n.getMessage('tabContextMenu_newTab_label'),
@@ -193,24 +203,24 @@ const mItemsById = {
     parentId:           'context_shareTabURL',
     title:              browser.i18n.getMessage('tabContextMenu_copyLinks_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_copyLinks_label_multiselected'),
-    icons:              { 16: '/resources/icons/link.svg#default' },
+    icons:              generateIcons('/resources/icons/link.svg#default'),
   },
   'context_topLevel_copyTreeLinks': {
     parentId:           'context_shareTabURL',
     title:              browser.i18n.getMessage('context_copyTreeLinks_label'),
     titleMultiselected: browser.i18n.getMessage('context_copyTreeLinks_label_multiselected'),
-    icons:              { 16: '/resources/icons/link.svg#default' },
+    icons:              generateIcons('/resources/icons/link.svg#default'),
   },
   'context_topLevel_copyDescendantsLinks': {
     parentId:           'context_shareTabURL',
     title:              browser.i18n.getMessage('context_copyDescendantsLinks_label'),
     titleMultiselected: browser.i18n.getMessage('context_copyDescendantsLinks_label_multiselected'),
-    icons:              { 16: '/resources/icons/link.svg#default' },
+    icons:              generateIcons('/resources/icons/link.svg#default'),
   },
   'context_generateQRCode': {
     parentId: 'context_shareTabURL',
     title:    browser.i18n.getMessage('tabContextMenu_generateQRCode_label'),
-    icons:    { 16: '/resources/icons/qrcode.svg#default' },
+    icons:    generateIcons('/resources/icons/qrcode.svg#default'),
   },
   'context_reopenInContainer': {
     title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
@@ -487,7 +497,7 @@ function updateNativeTabGroups(contextTab) {
       id,
       parentId:            'context_addToGroup',
       title:               group.title || defaultTitle,
-      icons:               { 16: `/resources/icons/tab-group-chicklet.svg#${group.color}${darkSuffix}` },
+      icons:               generateIcons(`/resources/icons/tab-group-chicklet.svg#${group.color}${darkSuffix}`),
       contexts:            ['tab'],
       viewTypes:           ['sidebar', 'tab', 'popup'],
       documentUrlPatterns: SIDEBAR_URL_PATTERN,
@@ -566,7 +576,7 @@ function updateContextualIdentities() {
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (identity.iconUrl)
-      item.icons = { 16: identity.iconUrl };
+      item.icons = generateIcons(identity.iconUrl);
     browser.menus.create(item);
     onMessageExternal({
       type:   TSTAPI.kCONTEXT_MENU_CREATE,
@@ -616,9 +626,7 @@ export async function updateSendToDeviceItems(parentId, { manage } = {}) {
         title: device.name
       };
       if (device.icon)
-        item.icons = {
-          '16': `/resources/icons/${sanitizeForHTMLText(device.icon)}.svg`
-        };
+        item.icons = generateIcons(`/resources/icons/${sanitizeForHTMLText(device.icon)}.svg`);
       browser.menus.create(item);
       onMessageExternal({
         type:   TSTAPI.kCONTEXT_MENU_CREATE,
@@ -716,9 +724,7 @@ async function updateSharingServiceItems(parentId, contextTab) {
         title: service.title,
       };
       if (service.image)
-        item.icons = {
-          '16': service.image,
-        };
+        item.icons = generateIcons(service.image);
       browser.menus.create(item);
       onMessageExternal({
         type:   TSTAPI.kCONTEXT_MENU_CREATE,
