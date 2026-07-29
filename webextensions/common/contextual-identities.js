@@ -132,32 +132,14 @@ function fixupIcon(identity) {
   return identity;
 }
 
-const mDarkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
-mDarkModeMedia.addListener(async _event => {
-  await init();
-  forEach(identity => onContextualIdentityUpdated({ contextualIdentity: identity }));
-});
-
 function safeColor(color) {
   switch (color) {
-    case 'blue':
-    case 'cyan':
-    case 'green':
-    case 'orange':
-    case 'red':
-    case 'pink':
-    case 'purple':
-    case 'violet':
-    case 'yellow':
-      return color;
-
     case 'turquoise':
       return 'cyan'; // migrated at Firefox 153
-
-    case 'gray':
-    case 'toolbar': // old name, migrated to gray at Firefox 153
+    case 'toolbar':
+      return 'gray'; // migrated at Firefox 153
     default:
-      return !isWindows() && mDarkModeMedia.matches ? 'gray-dark' : 'gray-light';
+      return color;
   }
 }
 

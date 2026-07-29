@@ -6,12 +6,40 @@
   g:not(:target) {
     display: none;
   }
+  *[id$="-nova"] {
+    fill: var(--identity-fill-color);
+    /* https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css#118 */
+    --background-fill-tint: color-mix(in srgb, var(--identity-fill-color) 15%, transparent);
+  }
+  /* colros are: nova-fill(60%,20%), nova-stroke(40%)
+     See https://searchfox.org/firefox-main/rev/d5c0bb96ad84524b445ee72323a4c91176d20b4c/browser/components/contextualidentity/content/usercontext.css */
+  #blue-nova     { --identity-fill-color: light-dark(#3246B0,#A2D3FF); --identity-stroke-color: #5A87FD; }
+  #blue-proton   { fill: #37adff; }
+  #cyan-nova     { --identity-fill-color: light-dark(#066077,#8FDDF0); --identity-stroke-color: #10A4CA; }
+  #cyan-proton   { fill: #00c79a; }
+  #gray-nova     { --identity-fill-color: light-dark(#3F3E42,#D6D5DA); --identity-stroke-color: #949297; }
+  #gray-proton   { fill: light-dark(#0C0C0D,#F9F9FA); }
+  #green-nova    { --identity-fill-color: light-dark(#06674B,#90E3C6); --identity-stroke-color: #11AE84; }
+  #green-proton  { fill: #51cd00; }
+  #orange-nova   { --identity-fill-color: light-dark(#9C2C05,#FEBD99); --identity-stroke-color: #F4682C; }
+  #orange-proton { fill: #ff9f00; }
+  #pink-nova     { --identity-fill-color: light-dark(#882078,#FFB0E2); --identity-stroke-color: #DB54BF; }
+  #pink-proton   { fill: #ff4bda; }
+  #purple-nova   { --identity-fill-color: light-dark(#702E98,#E8B7FF); --identity-stroke-color: #B864EE; }
+  #purple-proton { fill: #af51f5; }
+  #red-nova      { --identity-fill-color: light-dark(#961E3D,#FFB6BF); --identity-stroke-color: #ED566E; }
+  #red-proton    { fill: #ff613d; }
+  #violet-nova   { --identity-fill-color: light-dark(#5939A8,#D4C1FF); --identity-stroke-color: #9871FF; }
+  #violet-proton { fill: #764edd; }
+  #yellow-nova   { --identity-fill-color: light-dark(#854800,#FBCC77); --identity-stroke-color: #DB820E; }
+  #yellow-proton { fill: #ffcb00; }
 </style>
 <symbol id="icon-nova">
+  <circle fill="var(--background-fill-tint)" cx="8" cy="8" r="10"/>
   <path d="M8 1a.75.75 0 0 1 .75.75v4.125a3.375 3.375 0 0 1-2.625 3.29v5.085a.75.75 0 0 1-1.5 0V9.165A3.375 3.375 0 0 1 2 5.875V1.75a.75.75 0 0 1 1.5 0v4.125a1.875 1.875 0 1 0 3.75 0V1.75A.75.75 0 0 1 8 1" />  <path fill-rule="evenodd" d="M14.249 1a.75.75 0 0 1 .75.75v7.441a1 1 0 0 1 0 .117V14a.75.75 0 0 1-1.5 0v-4H12.25A2.25 2.25 0 0 1 10 7.75V5.249A4.25 4.25 0 0 1 14.249 1m-.75 1.606A2.75 2.75 0 0 0 11.5 5.25v2.5c0 .415.335.75.75.75h1.249z" clip-rule="evenodd" />  <path d="M5.375 1C5.72 1 6 1.28 6 1.625V5.75a.625.625 0 1 1-1.25 0V1.625c0-.345.28-.625.625-.625" />
 </symbol>
 <symbol id="icon-proton">
   <path  d="M7.05,0.45v2.65h-0.7V0.45c0-0.55-0.7-0.55-0.7,0v2.65h-0.6V0.45c0-0.55-0.7-0.55-0.7,0v2.65H3.6V0.45c0-0.6-0.8-0.55-0.8,0  v5.2c0,0.9,0.6,1.5,1.4,1.5v7.6c0,0.8,0.55,1.25,1.05,1.25s1.05-0.45,1.05-1.25V7.15c0.8,0,1.4-0.7,1.4-1.4V0.45C7.8-0.2,7.05-0.1,7.05,0.45z   M9.9,1.85v12.9c0,1.6,2.1,1.6,2.1,0V8.55h1.15V1.85C13.25-0.6,9.9-0.6,9.9,1.85z"/>
 </symbol>
-<g id="blue-nova" fill="#37adff"><use href="#icon-nova"/></g><g id="blue-proton" fill="#37adff"><use href="#icon-proton"/></g><g id="cyan-nova" fill="#00c79a"><use href="#icon-nova"/></g><g id="cyan-proton" fill="#00c79a"><use href="#icon-proton"/></g><g id="gray-dark-nova" fill="#F9F9FA"><use href="#icon-nova"/></g><g id="gray-dark-proton" fill="#F9F9FA"><use href="#icon-proton"/></g><g id="gray-light-nova" fill="#0C0C0D"><use href="#icon-nova"/></g><g id="gray-light-proton" fill="#0C0C0D"><use href="#icon-proton"/></g><g id="green-nova" fill="#51cd00"><use href="#icon-nova"/></g><g id="green-proton" fill="#51cd00"><use href="#icon-proton"/></g><g id="orange-nova" fill="#ff9f00"><use href="#icon-nova"/></g><g id="orange-proton" fill="#ff9f00"><use href="#icon-proton"/></g><g id="pink-nova" fill="#ff4bda"><use href="#icon-nova"/></g><g id="pink-proton" fill="#ff4bda"><use href="#icon-proton"/></g><g id="purple-nova" fill="#af51f5"><use href="#icon-nova"/></g><g id="purple-proton" fill="#af51f5"><use href="#icon-proton"/></g><g id="red-nova" fill="#ff613d"><use href="#icon-nova"/></g><g id="red-proton" fill="#ff613d"><use href="#icon-proton"/></g><g id="yellow-nova" fill="#ffcb00"><use href="#icon-nova"/></g><g id="yellow-proton" fill="#ffcb00"><use href="#icon-proton"/></g>
+<g id="blue-nova"><use href="#icon-nova"/></g><g id="blue-proton"><use href="#icon-proton"/></g><g id="cyan-nova"><use href="#icon-nova"/></g><g id="cyan-proton"><use href="#icon-proton"/></g><g id="gray-nova"><use href="#icon-nova"/></g><g id="gray-proton"><use href="#icon-proton"/></g><g id="green-nova"><use href="#icon-nova"/></g><g id="green-proton"><use href="#icon-proton"/></g><g id="orange-nova"><use href="#icon-nova"/></g><g id="orange-proton"><use href="#icon-proton"/></g><g id="pink-nova"><use href="#icon-nova"/></g><g id="pink-proton"><use href="#icon-proton"/></g><g id="purple-nova"><use href="#icon-nova"/></g><g id="purple-proton"><use href="#icon-proton"/></g><g id="red-nova"><use href="#icon-nova"/></g><g id="red-proton"><use href="#icon-proton"/></g><g id="violet-nova"><use href="#icon-nova"/></g><g id="violet-proton"><use href="#icon-proton"/></g><g id="yellow-nova"><use href="#icon-nova"/></g><g id="yellow-proton"><use href="#icon-proton"/></g>
 </svg>
