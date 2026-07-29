@@ -10,7 +10,6 @@ import EventListenerManager from '/extlib/EventListenerManager.js';
 import {
   configs,
   log as internalLogger,
-  isWindows,
 } from './common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 
