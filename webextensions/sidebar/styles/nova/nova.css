@@ -91,7 +91,7 @@ tab-item-substance {
   --tab-text: var(--toolbox-text-color);
   --tab-text-inverted: var(--text-color-inverted);
 }
-tab-item-substance.split-view:hover,
+tab-item:hover tab-item-substance.split-substances-container .background:not(.base),
 .after-tabs button,
 .after-tabs [role="button"],
 #subpanel-container,
@@ -114,8 +114,11 @@ tab-item.split-view:hover tab-item-substance.split-substances-container {
   --tab-surface: var(--tab-background-color-selected);
 }
 
-tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):hover,
-tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized,
+tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized {
+  --tab-surface: color-mix(in srgb, currentColor 7%, transparent); /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tabs.css#2561 */
+}
+
+tab-item:not([type="group"]) tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):not(.split-view):hover,
 tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
 tab-item.split-view:hover tab-item-substance.split-substances-container,
 .after-tabs button:hover,
@@ -171,12 +174,18 @@ tab-item[type="group"] .caption {
   position: absolute;
 }
 
-tab-item-substance .background,
+tab-item-substance.active .background,
+tab-item-substance:not(.split-view-sub) .background,
 .after-tabs button:hover::before,
 .after-tabs [role="button"]:hover::before,
 #subpanel-selector-anchor:hover::before {
+  --tab-visual-padding: 0px;
   background: var(--tab-surface);
   border-radius: var(--tab-border-radius);
+  bottom: var(--tab-visual-padding);
+  inset-inline-start: var(--tab-visual-padding);
+  inset-inline-end: var(--tab-visual-padding);
+  top: var(--tab-visual-padding);
 }
 
 tab-item-substance.active .background:not(.base) {
@@ -197,13 +206,13 @@ tab-item-substance.active .background:not(.base)::before {
   top: var(--tab-border-width);
 }
 
+tab-item-substance.split-view-sub.active .background {
+  --tab-visual-padding: 2px;
+}
+
 tab-item-substance.faviconized .background {
-  --faviconized-tab-visual-padding: 1px;
+  --tab-visual-padding: 1px;
   --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.6);
-  bottom: var(--faviconized-tab-visual-padding);
-  inset-inline-start: var(--faviconized-tab-visual-padding);
-  inset-inline-end: var(--faviconized-tab-visual-padding);
-  top: var(--faviconized-tab-visual-padding);
 }
 
 tab-item[data-next-group-color] {
