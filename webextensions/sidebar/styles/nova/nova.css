@@ -14,6 +14,31 @@
   --faviconized-tab-size: 34px;
   --tab-vertical-padding: 0.25em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
   --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
+
+  --tab-group-color-blue: var(--tab-group-blue);
+  --tab-group-color-blue-hover: var(--tab-group-blue-hover);
+  --tab-group-color-blue-text: var(--tab-group-blue-text);
+  --tab-group-color-cyan: var(--tab-group-cyan);
+  --tab-group-color-cyan-hover: var(--tab-group-cyan-hover);
+  --tab-group-color-cyan-text: var(--tab-group-cyan-text);
+  --tab-group-color-green: var(--tab-group-green);
+  --tab-group-color-green-hover: var(--tab-group-green-hover);
+  --tab-group-color-green-text: var(--tab-group-green-text);
+  --tab-group-color-orange: var(--tab-group-orange);
+  --tab-group-color-orange-hover: var(--tab-group-orange-hover);
+  --tab-group-color-orange-text: var(--tab-group-orange-text);
+  --tab-group-color-pink: var(--tab-group-pink);
+  --tab-group-color-pink-hover: var(--tab-group-pink-hover);
+  --tab-group-color-pink-text: var(--tab-group-pink-text);
+  --tab-group-color-purple: var(--tab-group-purple);
+  --tab-group-color-purple-hover: var(--tab-group-purple-hover);
+  --tab-group-color-purple-text: var(--tab-group-purple-text);
+  --tab-group-color-red: var(--tab-group-red);
+  --tab-group-color-red-hover: var(--tab-group-red-hover);
+  --tab-group-color-red-text: var(--tab-group-red-text);
+  --tab-group-color-yellow: var(--tab-group-yellow);
+  --tab-group-color-yellow-hover: var(--tab-group-yellow-hover);
+  --tab-group-color-yellow-text: var(--tab-group-yellow-text);
 }
 
 
@@ -156,11 +181,29 @@ tab-item-substance {
   }
 }
 
-tab-item[type="group"] .caption {
-  border-radius: var(--tab-border-radius-size);
-  max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size))) +
-                  calc(0.25em * 2) /* margin-inline of tab-label (both side) */ +
-                  2px /* border */);
+tab-item[type="group"],
+tab-item[type="group"].subtree-collapsed {
+  .caption {
+    --tab-surface: var(--tab-group-color) !important;
+    --tab-border: var(--tab-group-color) !important;
+    --tab-text: var(--tab-group-color-text) !important;
+
+    border-radius: calc(var(--tab-size) / 2);
+    border-end-start-radius: calc(var(--tab-size) / 8);
+    height: calc(var(--tab-size) * 0.9);
+    margi-inline-start: 0.5em;
+    max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size))) +
+                    calc(0.25em * 2) /* margin-inline of tab-label (both side) */ +
+                    calc(0.5em * 2) /* padding-inline */ +
+                    2px /* border */);
+    padding-inline: 0.5em;
+  }
+
+  tab-item-substance:hover .caption {
+    --tab-surface: var(--tab-group-color-hover) !important;
+    --tab-border: var(--tab-group-color-hover) !important;
+    --tab-text: var(--tab-group-color-text) !important;
+  }
 }
 
 

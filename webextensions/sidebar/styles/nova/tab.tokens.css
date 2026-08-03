@@ -4,6 +4,7 @@
 /* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/browser/themes/shared/tabbrowser/tab.tokens.css */
 
 @layer
+  base-ui-colors,
   tokens-foundation, tokens-browser-theme, tokens-foundation-brand, tokens-foundation-nova, tokens-browser-theme-nova, tokens-foundation-brand-nova,
   /*tokens-prefers-contrast, tokens-prefers-contrast-nova,*/
   tokens-forced-colors, tokens-forced-colors-nova;
