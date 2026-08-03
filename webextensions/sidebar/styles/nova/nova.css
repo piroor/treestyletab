@@ -1,0 +1,351 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+@import url("/resources/ui-color.css");
+@import url("./tokens-shared.css");
+@import url("./tokens-platform.css");
+@import url("./tab.tokens.css");
+
+:root {
+  --color-animation: 0s ease-out;
+  --faviconized-tab-size: 34px;
+  --tab-vertical-padding: 0.22em; /* We should define this as a variable to reuse calculation of extra tab contents size. */
+  --text-color-inverted: light-dark(var(--color-violet-desaturated-0), var(--color-violet-desaturated-90));
+}
+
+
+
+/* root container, background */
+
+:root,
+body,
+#background {
+  background-color: var(--browser-background, var(--tabbar-bg));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+}
+:root:not(.rtl).inverted,
+:root:not(.rtl).inverted #background,
+:root.rtl.regular,
+:root.rtl.regular #background {
+  background-position: right;
+}
+
+
+/* overflow-start-indicator and overflow-end-indicator
+   ref: https://searchfox.org/mozilla-central/rev/1ef947827852125825dda93d8f4f83d1f55739eb/browser/themes/shared/tabs.css#527-563 */
+.overflow-indicator {
+  height: 1.5em;
+
+  &.start {
+    background-image: linear-gradient(to top, transparent, var(--toolbox-background-color));
+    background-position: 0 -0.3em;
+    border-block-start: 0.05em solid rgba(255, 255, 255, 0.2);
+  }
+  &.end {
+    background-image: linear-gradient(to bottom, transparent, var(--toolbox-background-color));
+    background-position: 0 0.3em;
+    border-block-end: 0.05em solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+
+/* tab bar */
+
+#tabbar:not(.scrollbar-autohide) {
+  #pinned-tabs-container,
+  #normal-tabs-container {
+    scrollbar-color: var(--browser-toolbar_text-darker, var(--theme-colors-toolbar_bottom_separator, var(--in-content-button-background-hover-mixed)))
+                     var(--theme-colors-toolbar, var(--in-content-box-background));
+  }
+}
+
+
+/* tab and tab-like items */
+
+tab-item-substance,
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-selector-anchor {
+  border: 1px solid transparent;
+  border-width: 1px 0;
+  position: relative;
+}
+
+tab-item-substance {
+  --tab-surface: transparent;
+  --tab-text: var(--toolbox-text-color);
+  --tab-text-inverted: var(--text-color-inverted);
+  --throbber-color: var(--tab-text);
+}
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
+  --tab-surface: var(--toolbar-background-color);
+  --tab-text: var(--toolbox-text-color);
+  --tab-text-inverted: var(--text-color-inverted);
+}
+tab-item-substance.split-view:hover,
+.after-tabs button,
+.after-tabs [role="button"],
+#subpanel-container,
+#dummy-tab-color-box {
+  background: var(--tab-surface);
+  color: var(--tab-text);
+  line-height: 1;
+}
+
+tab-item-substance.active,
+tab-item-substance.active:hover,
+tab-item-substance.bundled-active,
+tab-item-substance.bundled-active:hover,
+tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
+tab-item.split-view:hover tab-item-substance.split-substances-container {
+  --tab-surface: var(--tab-background-color-selected);
+}
+:root.mutiple-highlighted tab-item-substance.highlighted,
+:root.mutiple-highlighted tab-item-substance.highlighted:hover {
+  --tab-surface: var(--tab-background-color-selected);
+}
+
+tab-item-substance:not(.active):not(.bundled-active):not(.highlighted):hover,
+tab-item-substance:not(.active):not(.bundled-active):not(.highlighted).faviconized,
+tab-item.split-view.has-active-substance tab-item-substance.split-substances-container,
+tab-item.split-view:hover tab-item-substance.split-substances-container,
+.after-tabs button:hover,
+.after-tabs [role="button"]:hover,
+#subpanel-selector-anchor:hover {
+  --tab-surface: var(--tab-background-color-hover);
+}
+
+tab-item-substance {
+  border-radius: var(--tab-border-radius);
+  padding-block: var(--tab-vertical-padding);
+  padding-inline: 0.25em;
+}
+
+.after-tabs button,
+.after-tabs [role="button"] {
+  --tab-like-button-padding: 0.2em;
+  padding-block: calc(var(--tab-dropshadow-blur) + var(--tab-like-button-padding));
+  padding-inline: 0;
+}
+
+:root.regular {
+  tab-item:not(.pinned) tab-item-substance,
+  .after-tabs button:not([data-menu-ui]),
+  .after-tabs [role="button"]:not([data-menu-ui]) {
+    padding-inline-end: 0.35em;
+  }
+}
+
+:root.inverted {
+  tab-item:not(.pinned) tab-item-substance,
+  .after-tabs button:not([data-menu-ui]),
+  .after-tabs [role="button"]:not([data-menu-ui]) {
+    padding-inline-start: 0.35em;
+  }
+}
+
+tab-item[type="group"] .caption {
+  border-radius: var(--tab-border-radius-size);
+  max-width: calc(max(var(--tab-label-width), calc(var(--favicon-size))) +
+                  calc(0.25em * 2) /* margin-inline of tab-label (both side) */ +
+                  2px /* border */);
+}
+
+
+/* tab background */
+
+.after-tabs button::before,
+.after-tabs [role="button"]::before,
+#subpanel-selector-anchor::before {
+  content: " ";
+  display: inline-block;
+  position: absolute;
+}
+
+tab-item-substance .background,
+.after-tabs button:hover::before,
+.after-tabs [role="button"]:hover::before,
+#subpanel-selector-anchor:hover::before {
+  background: var(--tab-surface);
+  border-radius: var(--tab-border-radius);
+}
+
+tab-item-substance.active .background:not(.base) {
+  /* background: var(--tab-border-color-accent) border-box border-area, var(--tab-surface) padding-box; */
+  background: var(--tab-border-color-accent);
+}
+tab-item-substance.active .background:not(.base)::before {
+  --tab-border-width: 1px;
+  --tab-surface: var(--toolbar-background-color);
+  background: var(--tab-surface);
+  border-radius: var(--tab-border-radius);
+  bottom: var(--tab-border-width);
+  content: " ";
+  display: block;
+  inset-inline-start: var(--tab-border-width);
+  inset-inline-end: var(--tab-border-width);
+  position: absolute;
+  top: var(--tab-border-width);
+}
+
+tab-item-substance.faviconized .background {
+  --tab-dropshadow-padding: 0.13em;
+  --tab-border-radius: calc(var(--toolbarbutton-border-radius) * 0.6);
+}
+
+tab-item[data-next-group-color] {
+  .background,
+  tab-item-substance:hover .background {
+    --tab-surface: light-dark(var(--next-group-color-pale), var(--next-group-color)) !important;
+    --tab-border: light-dark(var(--next-group-color), var(--next-group-color-invert)) !important;
+    border: 1px solid var(--tab-border);
+    opacity: 1 !important;
+  }
+}
+
+#subpanel-selector-anchor:hover::before,
+tab-item-substance.split-substances-container .background {
+  bottom: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: 0;
+}
+
+/* extra focus ring for multiselected tabs https://bugzilla.mozilla.org/show_bug.cgi?id=1751807 */
+:root.mutiple-highlighted tab-item-substance.highlighted {
+  .background:not(.base),
+  &:hover .background:not(.base) {
+    outline: 1px solid var(--focus-outline-color);
+    outline-offset: -1px;
+  }
+}
+:root.mutiple-highlighted tab-item-substance.highlighted.active {
+  .background:not(.base),
+  &:hover .background:not(.base) {
+    outline-width: 2px;
+    outline-offset: -2px;
+  }
+}
+
+
+.sticky-tabs-container tab-item:not(.split-view) tab-item-substance:not(.active):not(.bundled-active) .background.base,
+.sticky-tabs-container tab-item.split-view tab-item-substance.split-substances-container .background.base {
+  background-color: var(--browser-background, var(--tabbar-bg, var(--bg-color, ButtonFace)));
+  background-image: var(--browser-bg-images, none);
+  background-position: var(--browser-bg-position, left);
+  background-size: var(--browser-bg-size, auto);
+  background-repeat: var(--browser-bg-repeat, none);
+  opacity: 1;
+}
+
+
+
+/* in-tab contents */
+
+tab-item {
+  * {
+    color: var(--tab-text);
+  }
+
+  tab-label {
+    margin-inline-start: 0.25em;
+    padding-block: 0.35em;
+    padding-inline: 0;
+  }
+
+  tab-favicon {
+    margin-block: 0.25em;
+  }
+
+  /* expand buttons to fill full height of tab */
+  tab-closebox,
+  &:not(.faviconized) tab-sound-button {
+    background: none transparent;
+    border: none 0 transparent;
+    margin-block: var(--in-tab-button-negative-offset);
+    margin-inline: 0;
+    padding-block: var(--in-tab-button-offset);
+    padding-inline: 0.25em;
+
+    &::before {
+      border-radius: 10%;
+      content: "";
+      display: inline-block;
+      height: calc(var(--svg-small-icon-size) + 0.2em);
+      margin-block-start: -0.1em;
+      margin-inline-start: -0.1em;
+      width: calc(var(--svg-small-icon-size) + 0.2em);
+      position: absolute;
+    }
+
+    &:hover::before {
+      background: var(--tab-text);
+      box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.2;
+    }
+
+    &::after {
+      position: relative;
+    }
+  }
+
+  tab-item-substance.active tab-closebox:hover::before {
+    background: var(--tab-text);
+  }
+
+  .burster {
+    --throbber-color: var(--tab-loading-fill);
+  }
+}
+
+/* hide active tab marker and highlighter for collapsed tree */
+.highlighter::before,
+tab-item:not(.faviconized).subtree-collapsed tab-item-substance.some-descendants-highlighted .highlighter::after,
+tab-item:not(.faviconized).subtree-collapsed tab-item-substance.all-descendants-highlighted .highlighter::after {
+  display: none;
+}
+
+/* contextual identity marker in tabs */
+
+tab-item .contextual-identity-marker {
+  :root.regular & {
+    inset-inline-end: var(--tab-highlighter-size);
+  }
+
+  :root.inverted & {
+    inset-inline-start: var(--tab-highlighter-size);
+  }
+}
+
+.after-tabs {
+  button.newtab-action-selector-anchor::after,
+  button.contextual-identities-selector-anchor::after {
+    margin-block-start: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2 + var(--tab-dropshadow-blur) + var(--tab-like-button-padding));
+  }
+}
+
+/* split view separator */
+tab-item.split-view:not(.has-active-substance) .split-tab-separator {
+  border-left: 1px solid var(--tab-text);
+  height: calc(100% - (var(--tab-vertical-padding) * 2));
+  margin-block-start: var(--tab-vertical-padding);
+  margin-inline-end: -1px;
+  width: 0px;
+
+  .sticky-tabs-container & {
+    z-index: calc(var(--tab-base-z-index) + 1);
+  }
+}

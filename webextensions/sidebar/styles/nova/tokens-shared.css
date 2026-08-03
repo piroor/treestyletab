@@ -1,0 +1,1259 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* https://searchfox.org/firefox-main/rev/1a4138fff3c97b328b33c107266a461edf83140a/toolkit/themes/shared/design-system/dist/tokens-shared.css */
+
+@layer tokens-foundation {
+  :root {
+    /** background-color **/
+    --background-color-box: light-dark(var(--color-white), var(--color-gray-80));
+    --background-color-critical: light-dark(var(--color-red-0), var(--color-red-90));
+    --background-color-dimmed: light-dark(color-mix(in srgb, currentColor 12%, transparent), color-mix(in srgb, currentColor 17%, transparent));
+    --background-color-dimmed-further: light-dark(color-mix(in srgb, currentColor 20%, transparent), color-mix(in srgb, currentColor 14%, transparent));
+    --background-color-information: light-dark(var(--color-blue-0), var(--color-blue-90));
+    --background-color-overlay: var(--color-black-alpha-50);
+    --background-color-success: light-dark(var(--color-green-0), var(--color-green-90));
+    --background-color-warning: light-dark(var(--color-yellow-0), var(--color-yellow-90));
+
+    /** border **/
+    --border-color-error: light-dark(var(--color-red-70), var(--color-red-20));
+    --border-color-interactive-hover: var(--border-color-interactive);
+    --border-color-interactive-active: var(--border-color-interactive);
+    --border-color-interactive-disabled: var(--border-color-interactive);
+    --border-color-selected: var(--color-accent-primary);
+    --border-color-transparent: transparent;
+    --border-radius-circle: 9999px;
+    --border-radius-xsmall: 2px;
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 16px;
+    --border-width: 1px;
+
+    /** box-shadow **/
+    --box-shadow-color-darker-layer-1: light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.2));
+    --box-shadow-color-darker-layer-2: light-dark(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+    --box-shadow-color-lighter-layer-1: light-dark(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.15));
+    --box-shadow-color-lighter-layer-2: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2));
+    --box-shadow-level-1: 0 0 1px var(--box-shadow-color-darker-layer-1), 0 1px 2px var(--box-shadow-color-darker-layer-2);
+    --box-shadow-level-2: 0 0.25px 0.75px var(--box-shadow-color-lighter-layer-1), 0 2px 6px var(--box-shadow-color-lighter-layer-2);
+    --box-shadow-level-3: 0 0.375px 1.5px var(--box-shadow-color-lighter-layer-1), 0 3px 12px var(--box-shadow-color-lighter-layer-2);
+    --box-shadow-level-4: 0 0.5px 2px var(--box-shadow-color-lighter-layer-1), 0 4px 16px var(--box-shadow-color-lighter-layer-2);
+
+    /** button **/
+    --button-attention-dot-color: var(--color-accent-attention);
+    --button-background-color-disabled: var(--button-background-color);
+    --button-background-color-destructive: light-dark(var(--color-red-60), var(--color-red-30));
+    --button-background-color-destructive-hover: light-dark(var(--color-red-70), var(--color-red-20));
+    --button-background-color-destructive-active: light-dark(var(--color-red-80), var(--color-red-10));
+    --button-background-color-destructive-disabled: var(--button-background-color-destructive);
+    --button-background-color-destructive-selected: var(--button-background-color-destructive-active);
+    --button-background-color-ghost: transparent;
+    --button-background-color-ghost-hover: var(--button-background-color-hover);
+    --button-background-color-ghost-active: var(--button-background-color-active);
+    --button-background-color-ghost-disabled: var(--button-background-color-ghost);
+    --button-background-color-ghost-selected: var(--button-background-color-ghost-active);
+    --button-background-color-menu: var(--button-background-color-ghost);
+    --button-background-color-menu-hover: var(--button-background-color-ghost-hover);
+    --button-background-color-menu-active: var(--button-background-color-ghost-active);
+    --button-background-color-menu-disabled: var(--button-background-color-ghost-disabled);
+    --button-background-color-menu-selected: var(--button-background-color-ghost-selected);
+    --button-background-color-muted: var(--button-background-color);
+    --button-background-color-muted-hover: var(--button-background-color-hover);
+    --button-background-color-muted-active: var(--button-background-color-active);
+    --button-background-color-muted-disabled: var(--button-background-color-disabled);
+    --button-background-color-muted-selected: var(--button-background-color-muted-active);
+    --button-background-color-primary: var(--color-accent-primary);
+    --button-background-color-primary-hover: var(--color-accent-primary-hover);
+    --button-background-color-primary-active: var(--color-accent-primary-active);
+    --button-background-color-primary-disabled: var(--button-background-color-primary);
+    --button-background-color-primary-selected: var(--button-background-color-primary-active);
+    --button-background-color-selected: var(--button-background-color-active);
+    --button-background-color-toolbar: transparent;
+    --button-background-color-toolbar-hover: var(--toolbarbutton-background-color-hover);
+    --button-background-color-toolbar-active: var(--toolbarbutton-background-color-active);
+    --button-background-color-toolbar-disabled: var(--button-background-color-ghost);
+    --button-background-color-toolbar-selected: var(--button-background-color-ghost-active);
+    --button-badge-background-color: var(--color-accent-attention);
+    --button-badge-size: 6px;
+    --button-border: var(--border-width) solid var(--button-border-color);
+    --button-border-color: transparent;
+    --button-border-color-hover: var(--button-border-color);
+    --button-border-color-active: var(--button-border-color);
+    --button-border-color-disabled: var(--button-border-color);
+    --button-border-color-destructive: transparent;
+    --button-border-color-destructive-hover: var(--button-border-color-destructive);
+    --button-border-color-destructive-active: var(--button-border-color-destructive);
+    --button-border-color-destructive-disabled: var(--button-border-color-destructive);
+    --button-border-color-destructive-selected: var(--button-border-color-destructive-active);
+    --button-border-color-ghost: var(--button-border-color);
+    --button-border-color-ghost-hover: var(--button-border-color-hover);
+    --button-border-color-ghost-active: var(--button-border-color-active);
+    --button-border-color-ghost-disabled: var(--button-border-color-disabled);
+    --button-border-color-ghost-selected: var(--button-border-color-ghost-active);
+    --button-border-color-menu: var(--button-border-color-ghost);
+    --button-border-color-menu-hover: var(--button-border-color-ghost-hover);
+    --button-border-color-menu-active: var(--button-border-color-ghost-active);
+    --button-border-color-menu-disabled: var(--button-border-color-ghost-disabled);
+    --button-border-color-menu-selected: var(--button-border-color-menu-active);
+    --button-border-color-muted: var(--button-border-color);
+    --button-border-color-muted-hover: var(--button-border-color-hover);
+    --button-border-color-muted-active: var(--button-border-color-active);
+    --button-border-color-muted-disabled: var(--button-border-color-disabled);
+    --button-border-color-muted-selected: var(--button-border-color-muted-active);
+    --button-border-color-primary: transparent;
+    --button-border-color-primary-hover: var(--button-border-color-primary);
+    --button-border-color-primary-active: var(--button-border-color-primary);
+    --button-border-color-primary-disabled: var(--button-border-color-primary);
+    --button-border-color-primary-selected: var(--button-border-color-primary-active);
+    --button-border-color-selected: var(--button-border-color-active);
+    --button-border-color-toolbar: var(--button-border-color);
+    --button-border-color-toolbar-hover: var(--button-border-color-hover);
+    --button-border-color-toolbar-active: var(--button-border-color-active);
+    --button-border-color-toolbar-disabled: var(--button-border-color-disabled);
+    --button-border-color-toolbar-selected: var(--button-border-color-ghost-active);
+    --button-border-radius: var(--border-radius-medium);
+    --button-border-width-split: var(--border-width);
+    --button-content-alignment: center;
+    --button-font-size: var(--font-size-root);
+    --button-font-size-small: var(--font-size-small);
+    --button-font-weight: var(--font-weight-semibold);
+    --button-gap-split: var(--space-xxsmall);
+    --button-icon-fill: currentColor;
+    --button-icon-stroke: var(--button-icon-fill);
+    --button-min-height: var(--size-item-large);
+    --button-min-height-small: var(--size-item-medium);
+    --button-min-height-large: 40px;
+    --button-opacity-disabled: 0.5;
+    --button-padding: var(--button-padding-block) var(--button-padding-inline);
+    --button-padding-block: var(--space-xsmall);
+    --button-padding-block-small: var(--space-xxsmall);
+    --button-padding-block-large: var(--space-small);
+    --button-padding-icon: 0;
+    --button-padding-inline: var(--space-large);
+    --button-padding-inline-small: var(--button-padding-inline);
+    --button-padding-inline-large: var(--space-xlarge);
+    --button-size-icon: var(--button-min-height);
+    --button-size-icon-small: var(--button-min-height-small);
+    --button-size-icon-large: var(--button-min-height-large);
+    --button-split-separator-background-color: transparent;
+    --button-text-color-hover: var(--button-text-color);
+    --button-text-color-active: var(--button-text-color);
+    --button-text-color-disabled: var(--button-text-color);
+    --button-text-color-destructive: light-dark(var(--color-white), var(--color-gray-100));
+    --button-text-color-destructive-hover: var(--button-text-color-destructive);
+    --button-text-color-destructive-active: var(--button-text-color-destructive);
+    --button-text-color-destructive-disabled: var(--button-text-color-destructive);
+    --button-text-color-destructive-selected: var(--button-text-color-destructive-active);
+    --button-text-color-ghost: inherit;
+    --button-text-color-ghost-hover: inherit;
+    --button-text-color-ghost-active: inherit;
+    --button-text-color-ghost-disabled: inherit;
+    --button-text-color-ghost-selected: var(--button-text-color-ghost-active);
+    --button-text-color-menu: var(--button-text-color-ghost);
+    --button-text-color-menu-hover: var(--button-text-color-ghost-hover);
+    --button-text-color-menu-active: var(--button-text-color-ghost-active);
+    --button-text-color-menu-disabled: var(--button-text-color-ghost-disabled);
+    --button-text-color-menu-selected: var(--button-text-color-ghost-selected);
+    --button-text-color-muted: var(--button-text-color);
+    --button-text-color-muted-hover: var(--button-text-color-hover);
+    --button-text-color-muted-active: var(--button-text-color-active);
+    --button-text-color-muted-disabled: var(--button-text-color-disabled);
+    --button-text-color-muted-selected: var(--button-text-color-muted-active);
+    --button-text-color-primary-hover: var(--button-text-color-primary);
+    --button-text-color-primary-active: var(--button-text-color-primary-hover);
+    --button-text-color-primary-disabled: var(--button-text-color-primary);
+    --button-text-color-primary-selected: var(--button-text-color-primary-active);
+    --button-text-color-selected: var(--button-text-color-active);
+    --button-text-color-toolbar: inherit;
+    --button-text-color-toolbar-hover: inherit;
+    --button-text-color-toolbar-active: inherit;
+    --button-text-color-toolbar-disabled: inherit;
+    --button-text-color-toolbar-selected: var(--button-text-color-ghost-active);
+
+    /** card **/
+    /* TODO Bug 2030793 - Move card tokens to be used by moz-card rather than globally */
+    --card-background-color: var(--background-color-box);
+    --card-border: var(--card-border-width) solid var(--card-border-color);
+    --card-border-color: light-dark(color-mix(in srgb, currentColor 10%, transparent), color-mix(in srgb, currentColor 6%, transparent));
+    --card-border-radius: var(--border-radius-large);
+    --card-border-radius-compact: var(--border-radius-medium);
+    --card-border-width: var(--border-width);
+    --card-box-shadow: var(--box-shadow-level-2);
+    --card-box-shadow-hover: var(--box-shadow-level-4);
+    --card-cover-image-border-radius: var(--border-radius-medium);
+    --card-cover-image-height-default: 160px;
+    --card-cover-image-object-fit-default: cover;
+    --card-cover-image-object-position-default: center;
+    --card-cover-image-padding: var(--space-small);
+    --card-cover-image-padding-compact: var(--space-xsmall);
+    --card-focus-outline: var(--focus-outline);
+    --card-font-size: var(--font-size-root);
+    --card-font-size-compact: var(--font-size-small);
+    --card-gap: var(--card-padding);
+    --card-gap-article: var(--space-small);
+    --card-gap-compact: var(--space-small);
+    --card-header-background-color: initial;
+    --card-header-background-color-hover: var(--button-background-color-hover);
+    --card-header-background-color-active: var(--button-background-color-active);
+    --card-header-border-color: transparent;
+    --card-header-border-color-hover: transparent;
+    --card-header-border-color-active: transparent;
+    --card-header-text-color: var(--button-text-color);
+    --card-header-text-color-hover: var(--button-text-color-hover);
+    --card-header-text-color-active: var(--button-text-color-active);
+    --card-padding: var(--space-large);
+    --card-padding-compact: var(--space-small);
+
+    /** checkbox **/
+    --checkbox-background-color: var(--button-background-color);
+    --checkbox-background-color-hover: var(--button-background-color-hover);
+    --checkbox-background-color-active: var(--button-background-color-active);
+    --checkbox-background-color-disabled: var(--button-background-color-disabled);
+    --checkbox-background-color-checked: var(--button-background-color-primary);
+    --checkbox-background-color-checked-hover: var(--button-background-color-primary-hover);
+    --checkbox-background-color-checked-active: var(--button-background-color-primary-active);
+    --checkbox-background-color-checked-disabled: var(--button-background-color-primary-disabled);
+    --checkbox-border-color: var(--border-color-interactive);
+    --checkbox-border-color-checked: var(--checkbox-background-color-checked);
+    --checkbox-border-color-checked-hover: var(--checkbox-background-color-checked-hover);
+    --checkbox-border-color-checked-active: var(--checkbox-background-color-checked-active);
+    --checkbox-border-color-checked-disabled: var(--checkbox-background-color-checked-disabled);
+    --checkbox-border-radius: var(--border-radius-small);
+    --checkbox-margin-inline: var(--space-small);
+    --checkbox-opacity-disabled: var(--button-opacity-disabled);
+    /* TODO Bug 1876537: Make this em-based, probably? */
+    --checkbox-size: var(--size-item-small);
+
+    /** color **/
+    --color-accent-attention: light-dark(#2ac3a2, #54ffbd);
+    --color-accent-primary: light-dark(var(--color-blue-60), var(--color-cyan-30));
+    --color-accent-primary-hover: light-dark(var(--color-blue-70), var(--color-cyan-20));
+    --color-accent-primary-active: light-dark(var(--color-blue-80), var(--color-cyan-10));
+    --color-accent-primary-selected: light-dark(var(--color-blue-60), var(--color-cyan-30));
+    --color-black: #000000;
+    --color-black-alpha-10: oklch(0 0 0 / 10%);
+    --color-black-alpha-20: oklch(0 0 0 / 20%);
+    --color-black-alpha-30: oklch(0 0 0 / 30%);
+    --color-black-alpha-40: oklch(0 0 0 / 40%);
+    --color-black-alpha-50: oklch(0 0 0 / 50%);
+    --color-black-alpha-60: oklch(0 0 0 / 60%);
+    --color-black-alpha-70: oklch(0 0 0 / 70%);
+    --color-black-alpha-80: oklch(0 0 0 / 80%);
+    --color-black-alpha-90: oklch(0 0 0 / 90%);
+    --color-blue-0: oklch(97% 0.05 260);
+    --color-blue-10: oklch(90% 0.13 260);
+    --color-blue-20: oklch(83% 0.17 260);
+    --color-blue-30: oklch(76% 0.2 260);
+    --color-blue-40: oklch(69% 0.22 260);
+    --color-blue-50: oklch(62% 0.24 260);
+    --color-blue-60: oklch(55% 0.24 260);
+    --color-blue-70: oklch(48% 0.2 260);
+    --color-blue-80: oklch(41% 0.17 260);
+    --color-blue-90: oklch(34% 0.14 260);
+    --color-blue-100: oklch(27% 0.1 260);
+    --color-blue-110: oklch(20% 0.05 260);
+    --color-cyan-0: oklch(97% 0.05 205);
+    --color-cyan-10: oklch(90% 0.07 205);
+    --color-cyan-20: oklch(83% 0.11 205);
+    --color-cyan-30: oklch(76% 0.14 205);
+    --color-cyan-40: oklch(69% 0.19 205);
+    --color-cyan-50: oklch(62% 0.21 205);
+    --color-cyan-60: oklch(55% 0.21 205);
+    --color-cyan-70: oklch(48% 0.2 205);
+    --color-cyan-80: oklch(41% 0.17 205);
+    --color-cyan-90: oklch(34% 0.14 205);
+    --color-cyan-100: oklch(27% 0.1 205);
+    --color-cyan-110: oklch(20% 0.05 205);
+    --color-gray-0: #fbfbfe;
+    --color-gray-20: #f0f0f4;
+    --color-gray-30: #bac2ca;
+    --color-gray-50: #bfbfc9;
+    --color-gray-60: #8f8f9d;
+    --color-gray-70: #5b5b66;
+    --color-gray-80: #23222b;
+    --color-gray-90: #1c1b22;
+    --color-gray-100: #15141a;
+    --color-green-0: oklch(97% 0.05 145);
+    --color-green-10: oklch(90% 0.1 145);
+    --color-green-20: oklch(83% 0.14 145);
+    --color-green-30: oklch(76% 0.17 145);
+    --color-green-40: oklch(69% 0.19 145);
+    --color-green-50: oklch(62% 0.21 145);
+    --color-green-60: oklch(55% 0.21 145);
+    --color-green-70: oklch(48% 0.2 145);
+    --color-green-80: oklch(41% 0.17 145);
+    --color-green-90: oklch(34% 0.14 145);
+    --color-green-100: oklch(27% 0.1 145);
+    --color-green-110: oklch(20% 0.05 145);
+    --color-orange-0: oklch(97% 0.05 50);
+    --color-orange-10: oklch(90% 0.1 50);
+    --color-orange-20: oklch(86% 0.14 50);
+    --color-orange-30: oklch(79% 0.17 50);
+    --color-orange-40: oklch(72% 0.19 50);
+    --color-orange-50: oklch(65% 0.21 50);
+    --color-orange-60: oklch(58% 0.21 50);
+    --color-orange-70: oklch(48% 0.2 50);
+    --color-orange-80: oklch(41% 0.17 50);
+    --color-orange-90: oklch(34% 0.14 50);
+    --color-orange-100: oklch(27% 0.1 50);
+    --color-orange-110: oklch(20% 0.05 50);
+    --color-pink-0: oklch(97% 0.05 360);
+    --color-pink-10: oklch(90% 0.1 360);
+    --color-pink-20: oklch(83% 0.14 360);
+    --color-pink-30: oklch(76% 0.17 360);
+    --color-pink-40: oklch(69% 0.19 360);
+    --color-pink-50: oklch(62% 0.21 360);
+    --color-pink-60: oklch(55% 0.21 360);
+    --color-pink-70: oklch(48% 0.2 360);
+    --color-pink-80: oklch(41% 0.17 360);
+    --color-pink-90: oklch(34% 0.14 360);
+    --color-pink-100: oklch(27% 0.1 360);
+    --color-pink-110: oklch(20% 0.05 360);
+    --color-purple-0: oklch(97% 0.05 315);
+    --color-purple-10: oklch(90% 0.1 315);
+    --color-purple-20: oklch(83% 0.14 315);
+    --color-purple-30: oklch(76% 0.17 315);
+    --color-purple-40: oklch(69% 0.19 315);
+    --color-purple-50: oklch(62% 0.21 315);
+    --color-purple-60: oklch(55% 0.21 315);
+    --color-purple-70: oklch(48% 0.2 315);
+    --color-purple-80: oklch(41% 0.17 315);
+    --color-purple-90: oklch(34% 0.14 315);
+    --color-purple-100: oklch(27% 0.1 315);
+    --color-purple-110: oklch(20% 0.05 315);
+    --color-red-0: oklch(97% 0.05 15);
+    --color-red-10: oklch(90% 0.1 15);
+    --color-red-20: oklch(83% 0.14 15);
+    --color-red-30: oklch(76% 0.17 15);
+    --color-red-40: oklch(69% 0.19 15);
+    --color-red-50: oklch(62% 0.21 15);
+    --color-red-60: oklch(55% 0.21 15);
+    --color-red-70: oklch(48% 0.2 15);
+    --color-red-80: oklch(41% 0.17 15);
+    --color-red-90: oklch(34% 0.14 15);
+    --color-red-100: oklch(27% 0.1 15);
+    --color-red-110: oklch(20% 0.05 15);
+    --color-violet-0: oklch(97% 0.05 290);
+    --color-violet-10: oklch(90% 0.13 290);
+    --color-violet-20: oklch(83% 0.17 290);
+    --color-violet-30: oklch(76% 0.2 290);
+    --color-violet-40: oklch(69% 0.22 290);
+    --color-violet-50: oklch(62% 0.24 290);
+    --color-violet-60: oklch(55% 0.24 290);
+    --color-violet-70: oklch(48% 0.2 290);
+    --color-violet-80: oklch(41% 0.17 290);
+    --color-violet-90: oklch(34% 0.14 290);
+    --color-violet-100: oklch(27% 0.1 290);
+    --color-violet-110: oklch(20% 0.05 290);
+    --color-white: #ffffff;
+    --color-white-alpha-10: oklch(1 0 0 / 10%);
+    --color-white-alpha-20: oklch(1 0 0 / 20%);
+    --color-white-alpha-30: oklch(1 0 0 / 30%);
+    --color-white-alpha-40: oklch(1 0 0 / 40%);
+    --color-white-alpha-50: oklch(1 0 0 / 50%);
+    --color-white-alpha-60: oklch(1 0 0 / 60%);
+    --color-white-alpha-70: oklch(1 0 0 / 70%);
+    --color-white-alpha-80: oklch(1 0 0 / 80%);
+    --color-white-alpha-90: oklch(1 0 0 / 90%);
+    --color-yellow-0: oklch(97% 0.05 90);
+    --color-yellow-10: oklch(93% 0.1 90);
+    --color-yellow-20: oklch(86% 0.14 90);
+    --color-yellow-30: oklch(79% 0.2 90);
+    --color-yellow-40: oklch(72% 0.22 90);
+    --color-yellow-50: oklch(65% 0.24 90);
+    --color-yellow-60: oklch(58% 0.24 90);
+    --color-yellow-70: oklch(51% 0.23 90);
+    --color-yellow-80: oklch(41% 0.2 90);
+    --color-yellow-90: oklch(34% 0.17 90);
+    --color-yellow-100: oklch(27% 0.13 90);
+    --color-yellow-110: oklch(20% 0.08 90);
+
+    /** dimension **/
+    --dimension-2: 2px;
+    --dimension-4: 4px;
+    --dimension-8: 8px;
+    --dimension-12: 12px;
+    --dimension-16: 16px;
+    --dimension-20: 20px;
+    --dimension-24: 24px;
+    --dimension-32: 32px;
+    --dimension-40: 40px;
+    --dimension-48: 48px;
+    --dimension-56: 56px;
+    --dimension-64: 64px;
+    --dimension-80: 80px;
+    --dimension-96: 96px;
+    --dimension-100: 100px;
+    --dimension-200: 200px;
+    --dimension-300: 300px;
+    --dimension-400: 400px;
+    --dimension-500: 500px;
+    --dimension-relative-025: 0.25rem;
+    --dimension-relative-050: 0.5rem;
+    --dimension-relative-075: 0.75rem;
+    --dimension-relative-100: 1rem;
+    --dimension-relative-125: 1.25rem;
+    --dimension-relative-0125: 0.125rem;
+    --dimension-relative-150: 1.5rem;
+    --dimension-relative-200: 2rem;
+    --dimension-relative-250: 2.5rem;
+    --dimension-relative-300: 3rem;
+    --dimension-relative-350: 3.5rem;
+    --dimension-relative-400: 4rem;
+    --dimension-relative-500: 5rem;
+    --dimension-relative-600: 6rem;
+
+    /** focus-outline **/
+    --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
+    --focus-outline-color: var(--color-accent-primary);
+    --focus-outline-inset: calc(-1 * var(--focus-outline-width));
+    --focus-outline-offset: 2px;
+    --focus-outline-width: 2px;
+
+    /** font-size **/
+    /* 17px (in-content) */
+    --font-size-large: 1.133rem;
+    /* 22px (in-content) */
+    --font-size-xlarge: 1.467rem;
+    /* 24px (in-content) */
+    --font-size-xxlarge: 1.6rem;
+    /* 33px (in-content) */
+    --font-size-xxxlarge: 2.2rem;
+    --font-size-heading-medium: var(--font-size-large);
+    --font-size-heading-large: var(--font-size-xlarge);
+    --font-size-heading-xlarge: var(--font-size-xxlarge);
+
+    /** font-weight **/
+    --font-weight: normal;
+    --font-weight-bold: 700;
+    --font-weight-heading: var(--font-weight-semibold);
+    --font-weight-semibold: 600;
+
+    /** icon **/
+    --icon-color: light-dark(var(--color-gray-70), var(--color-gray-0));
+    --icon-color-critical: light-dark(var(--color-red-60), var(--color-red-20));
+    --icon-color-information: light-dark(var(--color-blue-60), var(--color-blue-20));
+    --icon-color-success: light-dark(var(--color-green-60), var(--color-green-20));
+    --icon-color-warning: light-dark(var(--color-yellow-60), var(--color-yellow-20));
+    --icon-size: var(--icon-size-small);
+    --icon-size-xsmall: var(--dimension-12);
+    --icon-size-small: var(--dimension-16);
+    --icon-size-medium: var(--dimension-20);
+    --icon-size-large: var(--dimension-24);
+    --icon-size-xlarge: var(--dimension-32);
+    --icon-size-xxlarge: var(--size-item-xlarge);
+
+    /** info-bar **/
+    --info-bar-border-color: light-dark(var(--color-violet-desaturated-20), var(--color-gray-60));
+    --info-bar-margin-block-end: 4px;
+    --info-bar-margin-block-start: 4px;
+    --info-bar-margin-inline: 4px;
+
+    /** input **/
+    --input-border-color: var(--border-color-interactive);
+    --input-folder-gap: var(--space-medium);
+    --input-height: var(--size-item-small);
+    --input-search-border-radius: var(--input-text-border-radius);
+    --input-text-background-color-disabled: var(--button-background-color-disabled);
+    --input-text-border: var(--border-width) solid var(--input-text-border-color);
+    --input-text-border-color: var(--border-color);
+    --input-text-border-color-disabled: var(--border-color-interactive-disabled);
+    --input-text-border-radius: var(--border-radius-medium);
+    --input-text-color-disabled: var(--input-text-color);
+    --input-text-icon-size: var(--icon-size-xsmall);
+    --input-text-min-height: var(--button-min-height);
+    --input-text-opacity-disabled: var(--button-opacity-disabled);
+    --input-width: var(--size-item-small);
+
+    /** link **/
+    --link-color: var(--color-accent-primary);
+    --link-color-hover: var(--color-accent-primary-hover);
+    --link-color-active: var(--color-accent-primary-active);
+    --link-color-visited: var(--link-color);
+    /**
+     * Not using --force-outline-offset for links because that's intended for
+     * elements with a background, and we only want a slight offset here while
+     * not overlapping adjacent text
+     */
+    --link-focus-outline-offset: 1px;
+
+    /** opacity **/
+    --opacity-deemphasized: 0.8;
+    --opacity-deemphasized-strong: 0.6;
+
+    /** panel **/
+    --panel-background-color: light-dark(var(--color-white), rgb(66, 65, 77));
+    --panel-background-color-dimmed: var(--background-color-dimmed);
+    --panel-background-color-dimmed-further: var(--background-color-dimmed-further);
+    --panel-border-color: light-dark(rgb(240, 240, 244), rgb(82, 82, 94));
+    --panel-border-radius: var(--border-radius-medium);
+    --panel-box-shadow: 0 0 var(--panel-box-shadow-margin) hsla(0, 0%, 0%, 0.2);
+    --panel-box-shadow-margin: 4px;
+    --panel-menuitem-border-radius: var(--border-radius-small);
+    --panel-menuitem-margin: var(--panel-menuitem-margin-block) var(--panel-menuitem-margin-inline);
+    --panel-menuitem-margin-block: 0;
+    --panel-menuitem-margin-inline: 8px;
+    --panel-menuitem-padding: var(--panel-menuitem-padding-block) var(--panel-menuitem-padding-inline);
+    --panel-menuitem-padding-block: 8px;
+    --panel-menuitem-padding-inline: 8px;
+    --panel-padding: 16px;
+    --panel-padding-block: 4px;
+    --panel-separator-color: color-mix(in srgb, currentColor 25%, transparent);
+    --panel-separator-padding: var(--panel-separator-padding-block) var(--panel-separator-padding-inline);
+    --panel-separator-padding-block: 4px;
+    --panel-separator-padding-inline: 8px;
+    --panel-text-color: light-dark(var(--color-black), rgb(251, 251, 254));
+    --panel-width: initial;
+
+    /** popup **/
+    --popup-background-color: var(--background-color-box);
+    --popup-border-color: light-dark(rgb(240, 240, 244), rgb(82, 82, 94));
+    --popup-border-radius: var(--border-radius-medium);
+    --popup-box-shadow: var(--box-shadow-level-3);
+
+    /** sidebar **/
+    --sidebar-background-color: light-dark(white, rgb(28, 27, 34));
+    --sidebar-border-color: var(--card-border-color);
+    --sidebar-text-color: light-dark(rgb(21, 20, 26), rgb(249, 249, 250));
+
+    /** size **/
+    --size-image-xsmall: var(--dimension-40);
+    --size-image-small: var(--dimension-48);
+    --size-image-medium: var(--dimension-56);
+    --size-image-large: var(--dimension-64);
+    --size-image-xlarge: var(--dimension-80);
+    --size-image-xxlarge: var(--dimension-96);
+    --size-item-xsmall: var(--dimension-12);
+    --size-item-small: var(--dimension-16);
+    --size-item-medium: var(--dimension-24);
+    --size-item-large: var(--dimension-32);
+    --size-item-xlarge: var(--dimension-48);
+    --size-layout-xsmall: var(--dimension-100);
+    --size-layout-small: var(--dimension-200);
+    --size-layout-medium: var(--dimension-300);
+    --size-layout-large: var(--dimension-400);
+    --size-layout-xlarge: var(--dimension-500);
+    --size-sidebar: 280px;
+    --size-sidebar-narrow: 118px;
+
+    /** space **/
+    /* 0.125rem */
+    --space-xxsmall: var(--dimension-relative-0125);
+    /* 0.25rem */
+    --space-xsmall: var(--dimension-relative-025);
+    /* 0.5rem */
+    --space-small: var(--dimension-relative-050);
+    /* 0.75rem */
+    --space-medium: var(--dimension-relative-075);
+    /* 1rem */
+    --space-large: var(--dimension-relative-100);
+    /* 1.5rem */
+    --space-xlarge: var(--dimension-relative-150);
+    /* 2rem */
+    --space-xxlarge: var(--dimension-relative-200);
+
+    /** table **/
+    --table-background-color: light-dark(#f8f8fa, rgb(35, 34, 43));
+    --table-border-color: color-mix(in srgb, currentColor 41%, transparent);
+    --table-header-background-color: var(--color-accent-primary);
+    --table-row-background-color: var(--background-color-canvas);
+
+    /** text-color **/
+    --text-color-disabled: color-mix(in srgb, currentColor 40%, transparent);
+    --text-color-deemphasized: color-mix(in srgb, currentColor 69%, transparent);
+    --text-color-error: light-dark(var(--color-red-70), var(--color-red-20));
+    --text-color-list-item-hover: var(--text-color);
+
+    /** toolbar **/
+    --toolbar-background-color: light-dark(#f9f9fb, rgb(43, 42, 51));
+    --toolbar-field-background-color: light-dark(rgba(0, 0, 0, 0.05), var(--color-black-alpha-30));
+    --toolbar-field-background-color-focus: light-dark(var(--color-white), rgb(66, 65, 77));
+    --toolbar-field-border-color: var(--border-color-transparent);
+    --toolbar-field-border-color-focus: color-mix(in srgb, var(--focus-outline-color) 50%, transparent);
+    --toolbar-field-text-color: light-dark(var(--color-gray-100), var(--color-gray-0));
+    --toolbar-field-text-color-focus: light-dark(var(--color-black), var(--color-gray-0));
+    --toolbar-padding-inline: 8px;
+    --toolbar-text-color: light-dark(var(--color-gray-100), var(--color-gray-0));
+
+    /** toolbarbutton **/
+    --toolbarbutton-background-color-hover: color-mix(in srgb, currentColor 17%, transparent);
+    --toolbarbutton-background-color-active: color-mix(in srgb, currentColor 30%, transparent);
+    --toolbarbutton-badge-background-color: light-dark(var(--color-red-60), var(--color-red-40));
+    --toolbarbutton-badge-font-size: 10px;
+    --toolbarbutton-badge-max-width: 20px;
+    --toolbarbutton-badge-min-width: 14px;
+    --toolbarbutton-badge-padding-block-end: 1px;
+    --toolbarbutton-badge-padding-inline: 2px;
+    --toolbarbutton-border-radius: var(--button-border-radius);
+    --toolbarbutton-icon-fill: light-dark(var(--color-gray-70), var(--color-gray-0));
+    --toolbarbutton-icon-fill-attention: light-dark(var(--color-blue-60), var(--color-cyan-30));
+    --toolbarbutton-icon-fill-attention-text: light-dark(var(--color-gray-20), var(--color-gray-90));
+    --toolbarbutton-opacity-disabled: var(--button-opacity-disabled);
+    --toolbarbutton-outline: var(--border-width) solid var(--toolbarbutton-outline-color);
+    --toolbarbutton-outline-color: transparent;
+    --toolbarbutton-outline-color-hover: transparent;
+    --toolbarbutton-outline-color-active: transparent;
+    --toolbarbutton-outline-color-selected: var(--toolbarbutton-outline-color-active);
+    --toolbarbutton-outline-offset: calc(-1 * var(--border-width));
+    --toolbarbutton-padding-inner: 8px;
+    --toolbarbutton-padding-inner-compact: 6px;
+    --toolbarbutton-padding-inner-narrow: 7px;
+    --toolbarbutton-padding-inner-touch: 9px;
+    --toolbarbutton-padding-inner-touch-narrow: 8px;
+    --toolbarbutton-padding-outer: 2px;
+    --toolbarbutton-padding-outer-narrow: 1px;
+
+    /** toolbarseparator **/
+    --toolbarseparator-color: var(--text-color-deemphasized);
+
+    /** toolbox **/
+    --toolbox-background-color: light-dark(rgb(234, 234, 237), var(--color-gray-90));
+    --toolbox-background-color-inactive: var(--toolbox-background-color);
+    --toolbox-text-color: light-dark(var(--color-gray-100), var(--color-gray-0));
+    --toolbox-text-color-inactive: var(--toolbox-text-color);
+  }
+}
+
+@layer tokens-prefers-contrast {
+  @media (prefers-contrast) {
+    :root {
+      /** background-color **/
+      --background-color-box: var(--background-color-canvas);
+      --background-color-box-info: var(--background-color-canvas);
+      --background-color-canvas: Canvas;
+      --background-color-critical: var(--background-color-canvas);
+      --background-color-information: var(--background-color-canvas);
+      --background-color-list-item-hover: SelectedItem;
+      --background-color-success: var(--background-color-canvas);
+      --background-color-warning: var(--background-color-canvas);
+
+      /** border **/
+      --border-color: CanvasText;
+      --border-color-deemphasized: currentColor;
+      --border-color-error: var(--border-color);
+      --border-color-interactive: var(--text-color);
+      --border-color-transparent: CanvasText;
+
+      /** button **/
+      --button-border-color: var(--button-text-color);
+      --button-border-color-ghost: var(--button-border-color);
+      --button-text-color-ghost-hover: var(--button-text-color-hover);
+      --button-text-color-ghost-active: var(--button-text-color-active);
+      --button-text-color-toolbar-hover: var(--button-text-color-hover);
+      --button-text-color-toolbar-active: var(--button-text-color-active);
+
+      /** card **/
+      --card-border-color: color-mix(in srgb, currentColor 41%, transparent);
+      --card-header-border-color: var(--button-border-color);
+
+      /** color **/
+      --color-accent-attention: AccentColor;
+
+      /** icon **/
+      --icon-color: var(--text-color);
+      --icon-color-critical: var(--icon-color);
+      --icon-color-information: var(--icon-color);
+      --icon-color-success: var(--icon-color);
+      --icon-color-warning: var(--icon-color);
+
+      /** info-bar **/
+      --info-bar-border-color: CanvasText;
+
+      /** opacity **/
+      --opacity-deemphasized: 1;
+      --opacity-deemphasized-strong: 1;
+
+      /** panel **/
+      --panel-separator-color: currentColor;
+
+      /** sidebar **/
+      --sidebar-border-color: var(--card-border-color);
+
+      /** text-color **/
+      --text-color: CanvasText;
+      --text-color-deemphasized: inherit;
+      --text-color-error: inherit;
+      --text-color-list-item-hover: SelectedItemText;
+
+      /** toolbar **/
+      --toolbar-field-background-color: Field;
+      --toolbar-field-border-color: var(--input-border-color);
+      --toolbar-field-border-color-focus: var(--focus-outline-color);
+      --toolbar-field-text-color: FieldText;
+
+      /** toolbarbutton **/
+      --toolbarbutton-opacity-disabled: 0.3;
+      --toolbarbutton-outline-color-hover: currentColor;
+      --toolbarbutton-outline-color-active: currentColor;
+    }
+  }
+}
+
+@layer tokens-forced-colors {
+  /*@media (forced-colors) {*/
+    :root..forced-colors {
+      /** border **/
+      --border-color-deemphasized: ButtonText;
+      --border-color-interactive: ButtonText;
+      --border-color-interactive-hover: SelectedItem;
+      --border-color-interactive-active: ButtonText;
+      --border-color-interactive-disabled: GrayText;
+      --border-color-selected: SelectedItem;
+
+      /** button **/
+      /* TODO Bug 1821203 - Gray use needs to be consolidated */
+      --button-background-color: ButtonFace;
+      --button-background-color-hover: SelectedItemText;
+      --button-background-color-active: SelectedItemText;
+      --button-background-color-disabled: ButtonFace;
+      --button-background-color-destructive: var(--button-background-color-primary);
+      --button-background-color-destructive-hover: var(--button-background-color-primary-hover);
+      --button-background-color-destructive-active: var(--button-background-color-primary-active);
+      --button-background-color-destructive-disabled: var(--button-background-color-primary-disabled);
+      --button-background-color-ghost: ButtonFace;
+      --button-background-color-menu-hover: var(--button-background-color-primary);
+      --button-background-color-menu-active: var(--button-background-color-primary);
+      --button-background-color-menu-selected: var(--button-background-color-primary-selected);
+      --button-background-color-primary-disabled: var(--button-text-color-disabled);
+      --button-border-color: var(--border-color-interactive);
+      --button-border-color-hover: var(--border-color-interactive-hover);
+      --button-border-color-active: var(--border-color-interactive-active);
+      --button-border-color-disabled: var(--border-color-interactive-disabled);
+      --button-border-color-destructive: var(--button-border-color-primary);
+      --button-border-color-destructive-hover: var(--button-border-color-primary-hover);
+      --button-border-color-destructive-active: var(--button-border-color-primary-active);
+      --button-border-color-destructive-disabled: var(--button-border-color-primary-disabled);
+      --button-border-color-primary: ButtonFace;
+      --button-border-color-primary-hover: SelectedItemText;
+      --button-border-color-primary-active: ButtonText;
+      --button-opacity-disabled: 1;
+      --button-text-color: ButtonText;
+      --button-text-color-hover: SelectedItem;
+      --button-text-color-active: SelectedItem;
+      --button-text-color-disabled: GrayText;
+      --button-text-color-destructive: var(--button-text-color-primary);
+      --button-text-color-destructive-hover: var(--button-text-color-primary-hover);
+      --button-text-color-destructive-active: var(--button-text-color-primary-active);
+      --button-text-color-destructive-disabled: var(--button-text-color-primary-disabled);
+      --button-text-color-ghost-hover: var(--button-text-color-hover);
+      --button-text-color-ghost-active: var(--button-text-color-active);
+      --button-text-color-menu-hover: var(--button-text-color-primary);
+      --button-text-color-menu-active: var(--button-text-color-primary);
+      --button-text-color-menu-selected: var(--button-text-color-primary-selected);
+      --button-text-color-primary: ButtonFace;
+      --button-text-color-primary-hover: SelectedItemText;
+      --button-text-color-toolbar-hover: var(--button-text-color-hover);
+      --button-text-color-toolbar-active: var(--button-text-color-active);
+
+      /** card **/
+      --card-border-color: CanvasText;
+      --card-header-background-color: var(--button-background-color);
+      --card-header-border-color: var(--button-border-color);
+      --card-header-border-color-hover: var(--button-border-color-hover);
+      --card-header-border-color-active: var(--button-border-color-active);
+
+      /** color **/
+      --color-accent-primary: ButtonText;
+      --color-accent-primary-hover: SelectedItem;
+      --color-accent-primary-active: var(--color-accent-primary-hover);
+      --color-accent-primary-selected: SelectedItem;
+
+      /** focus-outline **/
+      --focus-outline-color: var(--text-color);
+
+      /** input **/
+      --input-text-color-disabled: GrayText;
+
+      /** link **/
+      --link-color: LinkText;
+      --link-color-hover: LinkText;
+      --link-color-active: ActiveText;
+      --link-color-visited: VisitedText;
+
+      /** panel **/
+      --panel-background-color: Menu;
+      --panel-separator-color: var(--border-color);
+      --panel-text-color: MenuText;
+
+      /** table **/
+      --table-background-color: Canvas;
+      --table-border-color: CanvasText;
+      --table-header-background-color: AccentColor;
+      --table-header-text-color: AccentColorText;
+      /* TODO Bug 1821203 - Gray use needs to be consolidated */
+      --table-row-background-color-alternate: var(--background-color-canvas);
+
+      /** text-color **/
+      --text-color-disabled: GrayText;
+      --text-color-accent-primary-selected: SelectedItemText;
+
+      /** toolbarbutton **/
+      --toolbarbutton-outline-color: ButtonText;
+      --toolbarbutton-outline-color-hover: SelectedItem;
+      --toolbarbutton-outline-color-active: ButtonText;
+      --toolbarbutton-outline-color-selected: SelectedItem;
+    }
+  /*}*/
+}
+
+@layer tokens-foundation-nova {
+  :root {
+    /** background-color **/
+    --background-color-box: light-dark(var(--color-white), var(--color-gray-70));
+    --background-color-box-info: light-dark(var(--color-gray-15), var(--color-gray-65));
+    --background-color-canvas: light-dark(var(--color-gray-05), var(--color-gray-85));
+    --background-color-critical: light-dark(var(--color-red-10), var(--color-red-70));
+    --background-color-information: light-dark(var(--color-violet-10), var(--color-violet-70));
+    --background-color-success: light-dark(var(--color-green-10), var(--color-green-70));
+    --background-color-warning: light-dark(var(--color-yellow-10), var(--color-yellow-70));
+
+    /** border **/
+    --border-color: light-dark(var(--color-gray-30), var(--color-gray-40));
+    --border-color-deemphasized: light-dark(var(--color-gray-20), var(--color-gray-50));
+    --border-color-error: light-dark(var(--color-red-50), var(--color-red-20));
+    --border-color-interactive: light-dark(var(--color-gray-35), var(--color-gray-40));
+    --border-color-interactive-hover: light-dark(var(--color-gray-45), var(--color-gray-20));
+    --border-color-interactive-active: light-dark(var(--color-gray-50), var(--color-gray-15));
+    --border-color-interactive-disabled: light-dark(var(--color-gray-25), var(--color-gray-55));
+    --border-color-transparent: transparent;
+    --border-radius-xsmall: 4px;
+    --border-radius-small: 8px;
+    --border-radius-medium: 12px;
+    --border-radius-xlarge: 24px;
+
+    /** box-shadow **/
+    --box-shadow-color-darker-layer-1: light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.2));
+    --box-shadow-color-darker-layer-2: light-dark(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+    --box-shadow-color-lighter-layer-1: light-dark(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.06));
+    --box-shadow-color-lighter-layer-2: light-dark(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.12));
+
+    /** button **/
+    /* TODO Bug 1821203 - Gray use needs to be consolidated */
+    --button-background-color: transparent;
+    --button-background-color-hover: light-dark(var(--color-violet-desaturated-20), var(--color-violet-desaturated-50));
+    --button-background-color-active: light-dark(var(--color-violet-desaturated-30), var(--color-violet-desaturated-40));
+    --button-background-color-disabled: var(--button-background-color);
+    --button-background-color-destructive: light-dark(var(--color-red-50), var(--color-red-30));
+    --button-background-color-destructive-hover: light-dark(var(--color-red-60), var(--color-red-20));
+    --button-background-color-destructive-active: light-dark(var(--color-red-70), var(--color-red-10));
+    --button-background-color-ghost: var(--button-background-color);
+    --button-background-color-ghost-disabled: var(--button-background-color-ghost);
+    --button-background-color-ghost-selected: var(--button-background-color-selected);
+    --button-background-color-menu: var(--button-background-color-ghost);
+    --button-background-color-muted: light-dark(var(--color-gray-20), var(--color-gray-55));
+    --button-background-color-muted-hover: light-dark(var(--color-gray-30), var(--color-gray-45));
+    --button-background-color-muted-active: light-dark(var(--color-gray-40), var(--color-gray-35));
+    --button-background-color-muted-disabled: var(--button-background-color-muted);
+    --button-background-color-muted-selected: var(--button-background-color-muted-active);
+    --button-background-color-primary-disabled: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-40));
+    --button-border-color: var(--color-accent-primary);
+    --button-border-color-destructive: var(--button-border-color-ghost);
+    --button-border-color-destructive-selected: var(--button-border-color-destructive);
+    --button-border-color-ghost: transparent;
+    --button-border-color-ghost-hover: var(--button-border-color-ghost);
+    --button-border-color-ghost-active: var(--button-border-color-ghost);
+    --button-border-color-ghost-disabled: var(--button-border-color-ghost);
+    --button-border-color-ghost-selected: var(--button-border-color-ghost);
+    --button-border-color-muted: var(--button-border-color-ghost);
+    --button-border-color-muted-hover: var(--button-border-color-muted);
+    --button-border-color-muted-active: var(--button-border-color-muted);
+    --button-border-color-muted-disabled: var(--button-border-color-muted);
+    --button-border-color-muted-selected: var(--button-border-color-muted);
+    --button-border-color-primary: var(--button-border-color-ghost);
+    --button-border-color-primary-selected: var(--button-border-color-primary);
+    --button-border-color-selected: var(--button-border-color);
+    --button-border-radius: var(--border-radius-xlarge);
+    --button-border-width-split: 0;
+    --button-gap-split: 0;
+    --button-opacity-disabled: 0.7;
+    --button-padding-inline-small: var(--space-medium);
+    --button-size-icon-small: var(--size-item-medium);
+    --button-split-separator-background-color: var(--button-border-color);
+    --button-text-color: light-dark(var(--color-violet-90), var(--color-gray-0));
+    --button-text-color-destructive: light-dark(var(--color-white), var(--button-text-color-primary));
+    --button-text-color-destructive-disabled: var(--button-text-color-destructive);
+    --button-text-color-destructive-selected: light-dark(var(--button-text-color-destructive), var(--button-text-color-destructive-active));
+    --button-text-color-ghost: var(--button-text-color);
+    --button-text-color-ghost-hover: var(--button-text-color-ghost);
+    --button-text-color-ghost-active: var(--button-text-color-ghost);
+    --button-text-color-ghost-disabled: var(--button-text-color-ghost);
+    --button-text-color-menu-hover: light-dark(var(--button-text-color-ghost-hover), var(--button-text-color-hover));
+    --button-text-color-menu-active: light-dark(var(--button-text-color-ghost-active), var(--button-text-color-active));
+    --button-text-color-menu-disabled: light-dark(var(--button-text-color-ghost-disabled), var(--button-text-color-disabled));
+    --button-text-color-menu-selected: light-dark(var(--button-text-color-ghost-selected), var(--button-text-color-selected));
+    --button-text-color-muted: var(--button-text-color);
+    --button-text-color-muted-hover: var(--button-text-color-muted);
+    --button-text-color-muted-active: var(--button-text-color-muted);
+    --button-text-color-muted-disabled: var(--button-text-color-muted);
+    --button-text-color-muted-selected: var(--button-text-color-muted-active);
+    --button-text-color-primary: light-dark(var(--color-white), var(--color-gray-70));
+    --button-text-color-primary-active: var(--button-text-color-primary);
+    --button-text-color-selected: var(--button-text-color);
+
+    /** card **/
+    --card-border-color: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.04));
+    --card-gap: var(--space-medium);
+    --card-header-background-color: var(--button-background-color);
+    --card-header-border-color: transparent;
+
+    /** checkbox **/
+    --checkbox-border-radius: var(--border-radius-xsmall);
+
+    /** color **/
+    --color-accent-attention: light-dark(var(--color-green-40), var(--color-green-30));
+    --color-accent-primary: light-dark(var(--color-violet-50), var(--color-violet-30));
+    --color-accent-primary-hover: light-dark(var(--color-violet-60), var(--color-violet-20));
+    --color-accent-primary-active: light-dark(var(--color-violet-70), var(--color-violet-10));
+    --color-accent-primary-selected: var(--button-background-color-primary-active);
+    --color-blue-0: #ecf3f8;
+    --color-blue-10: #c5eafe;
+    --color-blue-20: #a2d3ff;
+    --color-blue-30: #7bb2ff;
+    --color-blue-40: #5a87fd;
+    --color-blue-50: #455fe7;
+    --color-blue-60: #3246b0;
+    --color-blue-70: #23327b;
+    --color-blue-80: #17214c;
+    --color-blue-90: #111524;
+    --color-cyan-0: #ebf4f5;
+    --color-cyan-10: #c3eef8;
+    --color-cyan-20: #8fddf0;
+    --color-cyan-30: #4cc4e1;
+    --color-cyan-40: #10a4ca;
+    --color-cyan-50: #0a809f;
+    --color-cyan-60: #066077;
+    --color-cyan-70: #034554;
+    --color-cyan-80: #002d38;
+    --color-cyan-90: #011c23;
+    --color-gray-0: #fcfbff;
+    --color-gray-05: #f7f6fb;
+    --color-gray-10: #efedf2;
+    --color-gray-15: #e3e2e7;
+    --color-gray-20: #d6d5da;
+    --color-gray-25: #c7c6cb;
+    --color-gray-30: #b7b6ba;
+    --color-gray-35: #a6a4a9;
+    --color-gray-40: #949297;
+    --color-gray-45: #817f84;
+    --color-gray-50: #67666a;
+    --color-gray-55: #515054;
+    --color-gray-60: #3f3e42;
+    --color-gray-65: #312f33;
+    --color-gray-70: #252428;
+    --color-gray-75: #1d1b1f;
+    --color-gray-80: #171519;
+    --color-gray-85: #131215;
+    --color-gray-90: #121114;
+    --color-green-0: #ecf4f1;
+    --color-green-10: #c4f1e0;
+    --color-green-20: #90e3c6;
+    --color-green-30: #4acca6;
+    --color-green-40: #11ae84;
+    --color-green-50: #008865;
+    --color-green-60: #06674b;
+    --color-green-70: #004933;
+    --color-green-80: #003020;
+    --color-green-90: #001e12;
+    --color-orange-0: #f8f0ec;
+    --color-orange-10: #ffdbc5;
+    --color-orange-20: #febd99;
+    --color-orange-30: #ff9565;
+    --color-orange-40: #f4682c;
+    --color-orange-50: #cd4208;
+    --color-orange-60: #9c2c05;
+    --color-orange-70: #701c07;
+    --color-orange-80: #461209;
+    --color-orange-90: #250e0b;
+    --color-pink-0: #f7eff3;
+    --color-pink-10: #ffd5ee;
+    --color-pink-20: #ffb0e2;
+    --color-pink-30: #f585d3;
+    --color-pink-40: #db54bf;
+    --color-pink-50: #b32e9f;
+    --color-pink-60: #882078;
+    --color-pink-70: #5f1854;
+    --color-pink-80: #3c1334;
+    --color-pink-90: #1e111b;
+    --color-purple-0: #faebff;
+    --color-purple-10: #f6d7ff;
+    --color-purple-20: #e8b7ff;
+    --color-purple-30: #d490ff;
+    --color-purple-40: #b864ee;
+    --color-purple-50: #9540c8;
+    --color-purple-60: #702e98;
+    --color-purple-70: #4f216b;
+    --color-purple-80: #311842;
+    --color-purple-90: #1a1220;
+    --color-red-0: #fcf2f3;
+    --color-red-10: #ffd9df;
+    --color-red-20: #ffb6bf;
+    --color-red-30: #ff8998;
+    --color-red-40: #ed566e;
+    --color-red-50: #c52d4f;
+    --color-red-60: #961e3d;
+    --color-red-70: #69172d;
+    --color-red-80: #42121f;
+    --color-red-90: #211014;
+    --color-violet-0: #f5ecff;
+    --color-violet-10: #eaddff;
+    --color-violet-20: #d4c1ff;
+    --color-violet-30: #b89cff;
+    --color-violet-40: #9871ff;
+    --color-violet-50: #764edd;
+    --color-violet-60: #5939a8;
+    --color-violet-70: #3e2976;
+    --color-violet-80: #271c48;
+    --color-violet-90: #161423;
+    --color-violet-desaturated-0: #f2f0f8;
+    --color-violet-desaturated-10: #e7e1f8;
+    --color-violet-desaturated-20: #d2c8ec;
+    --color-violet-desaturated-30: #b6aad9;
+    --color-violet-desaturated-40: #9687c0;
+    --color-violet-desaturated-50: #75669f;
+    --color-violet-desaturated-60: #584a7d;
+    --color-violet-desaturated-70: #3e315f;
+    --color-violet-desaturated-80: #281d44;
+    --color-violet-desaturated-90: #180e30;
+    --color-yellow-0: #f9f5e6;
+    --color-yellow-10: #fde8b5;
+    --color-yellow-20: #fbcc77;
+    --color-yellow-30: #f3a81e;
+    --color-yellow-40: #db820e;
+    --color-yellow-50: #b26100;
+    --color-yellow-60: #854800;
+    --color-yellow-70: #5f3100;
+    --color-yellow-80: #3e1d00;
+    --color-yellow-90: #270f00;
+
+    /** icon **/
+    --icon-color: var(--text-color);
+    --icon-color-accent-primary-desaturated: light-dark(var(--color-violet-desaturated-60), var(--color-violet-desaturated-40));
+    --icon-color-critical: light-dark(var(--color-red-50), var(--color-red-20));
+    --icon-color-information: light-dark(var(--color-violet-50), var(--color-violet-20));
+    --icon-color-success: light-dark(var(--color-green-50), var(--color-green-20));
+    --icon-color-warning: light-dark(var(--color-yellow-50), var(--color-yellow-20));
+    --icon-size-xsmall: var(--size-item-xsmall);
+    --icon-size-small: var(--size-item-small);
+    --icon-size-medium: 20px;
+    --icon-size-large: var(--size-item-medium);
+    --icon-size-xlarge: var(--size-item-large);
+
+    /** info-bar **/
+    --info-bar-margin-block-end: 0;
+
+    /** input **/
+    --input-search-border-radius: var(--border-radius-circle);
+
+    /** page **/
+    --page-main-content-width: 664px;
+
+    /** panel **/
+    --panel-background-color: var(--popup-background-color);
+    --panel-border-color: var(--popup-border-color);
+    --panel-border-radius: var(--popup-border-radius);
+    --panel-menuitem-border-radius: var(--border-radius-large);
+    --panel-text-color: var(--text-color);
+
+    /** popup **/
+    --popup-border-color: light-dark(var(--color-gray-10), var(--color-gray-65));
+    --popup-border-radius: var(--border-radius-xlarge);
+
+    /** size **/
+    --size-item-xsmall: 12px;
+    --size-item-small: 16px;
+    --size-item-medium: 24px;
+    --size-item-large: 32px;
+    --size-item-xlarge: 48px;
+
+    /** table **/
+    --table-row-background-color: var(--background-color-canvas);
+    /* TODO Bug 1821203 - Gray use needs to be consolidated */
+    --table-row-background-color-alternate: light-dark(var(--color-gray-20), var(--color-gray-65));
+
+    /** text-color **/
+    --text-color: light-dark(var(--color-violet-desaturated-90), var(--color-violet-desaturated-0));
+    --text-color-error: light-dark(var(--color-red-50), var(--color-red-20));
+
+    /** toolbar **/
+    --toolbar-background-color: var(--background-color-box);
+    --toolbar-field-background-color: var(--toolbar-background-color);
+    --toolbar-field-background-color-focus: var(--background-color-box);
+    --toolbar-field-border-color: light-dark(var(--color-gray-20), var(--color-gray-60));
+    --toolbar-field-border-color-focus: var(--focus-outline-color);
+    --toolbar-field-text-color: light-dark(var(--color-violet-desaturated-70), var(--color-violet-desaturated-10));
+    --toolbar-field-text-color-focus: var(--toolbar-field-text-color);
+    --toolbar-padding-inline: 6px;
+
+    /** toolbarbutton **/
+    --toolbarbutton-background-color-hover: light-dark(rgba(117, 102, 159, 0.25), rgba(182, 170, 217, 0.25));
+    --toolbarbutton-background-color-active: light-dark(rgba(117, 102, 159, 0.4), rgba(182, 170, 217, 0.4));
+    --toolbarbutton-icon-fill: light-dark(var(--color-violet-desaturated-50), var(--color-violet-desaturated-10));
+    --toolbarbutton-icon-fill-attention: var(--color-accent-primary);
+    --toolbarbutton-opacity-disabled: 0.4;
+    --toolbarbutton-outline-color: transparent;
+    --toolbarbutton-outline-color-hover: transparent;
+    --toolbarbutton-outline-color-active: transparent;
+    --toolbarbutton-outline-color-selected: var(--toolbarbutton-outline-color-active);
+    --toolbarbutton-outline-offset: -1px;
+    --toolbarbutton-padding-inner-touch-narrow: 0;
+
+    /** toolbox **/
+    --toolbox-background-color-gradient-leading: light-dark(var(--color-violet-10), var(--color-violet-desaturated-70));
+    --toolbox-background-color-gradient-trailing: light-dark(var(--color-orange-10), var(--color-orange-70));
+    --toolbox-background-color-inactive: transparent;
+    /* This gradient is only used for Nova */
+    --toolbox-background-gradient: linear-gradient(
+      96deg,
+      color-mix(var(--toolbox-background-color-gradient-leading) 50%, transparent) 39.84%,
+      color-mix(var(--toolbox-background-color-gradient-trailing) 50%, transparent) 101.72%
+    );
+    --toolbox-text-color: var(--text-color);
+    --toolbox-text-color-inactive: var(--text-color-deemphasized);
+  }
+}
+
+@layer tokens-prefers-contrast-nova {
+  @media (prefers-contrast) {
+    :root {
+      /** text-color **/
+      --text-color: CanvasText;
+      --text-color-error: inherit;
+
+      /** toolbar **/
+      --toolbar-field-border-color-focus: var(--focus-outline-color);
+    }
+  }
+}
+
+@layer tokens-forced-colors-nova {
+  /*@media (forced-colors) {*/
+    :root..forced-colors {
+      /** background-color **/
+      --background-color-box: var(--background-color-canvas);
+      --background-color-box-info: var(--background-color-canvas);
+      --background-color-canvas: Canvas;
+      --background-color-critical: var(--background-color-canvas);
+      --background-color-information: var(--background-color-canvas);
+      --background-color-success: var(--background-color-canvas);
+      --background-color-warning: var(--background-color-canvas);
+
+      /** border **/
+      --border-color: CanvasText;
+      --border-color-deemphasized: CanvasText;
+      --border-color-error: var(--border-color);
+      --border-color-interactive: ButtonText;
+      --border-color-interactive-hover: SelectedItem;
+      --border-color-interactive-active: ButtonText;
+      --border-color-interactive-disabled: GrayText;
+      --border-color-transparent: CanvasText;
+
+      /** box-shadow **/
+      --box-shadow-color-darker-layer-1: transparent;
+      --box-shadow-color-darker-layer-2: transparent;
+      --box-shadow-color-lighter-layer-1: transparent;
+      --box-shadow-color-lighter-layer-2: transparent;
+
+      /** button **/
+      /* TODO Bug 1821203 - Gray use needs to be consolidated */
+      --button-background-color: ButtonFace;
+      --button-background-color-hover: SelectedItemText;
+      --button-background-color-active: SelectedItemText;
+      --button-background-color-destructive: var(--button-background-color-primary);
+      --button-background-color-destructive-hover: var(--button-background-color-primary-hover);
+      --button-background-color-destructive-active: var(--button-background-color-primary-active);
+      --button-background-color-ghost-disabled: var(--button-background-color-disabled);
+      --button-background-color-menu: var(--button-background-color);
+      --button-background-color-muted: var(--button-background-color);
+      --button-background-color-muted-hover: var(--button-background-color-hover);
+      --button-background-color-muted-active: var(--button-background-color-active);
+      --button-background-color-muted-disabled: var(--button-background-color);
+      --button-background-color-muted-selected: var(--button-background-color-ghost-active);
+      --button-background-color-primary-disabled: GrayText;
+      --button-background-color-selected: SelectedItem;
+      --button-border-color: var(--border-color-interactive);
+      --button-border-color-destructive: var(--button-border-color-primary);
+      --button-border-color-destructive-selected: var(--button-border-color-destructive-active);
+      --button-border-color-ghost: var(--button-border-color);
+      --button-border-color-ghost-hover: var(--button-border-color-hover);
+      --button-border-color-ghost-active: var(--button-border-color-active);
+      --button-border-color-ghost-disabled: var(--button-border-color-disabled);
+      --button-border-color-ghost-selected: var(--button-border-color-ghost-active);
+      --button-border-color-muted: var(--button-border-color);
+      --button-border-color-muted-hover: var(--button-border-color-hover);
+      --button-border-color-muted-active: var(--button-border-color-active);
+      --button-border-color-muted-disabled: var(--button-border-color-disabled);
+      --button-border-color-muted-selected: var(--button-border-color-ghost-active);
+      --button-border-color-primary: ButtonFace;
+      --button-border-color-primary-selected: var(--button-border-color-primary-active);
+      --button-border-color-selected: var(--button-border-color-active);
+      --button-opacity-disabled: 1;
+      --button-text-color: ButtonText;
+      --button-text-color-destructive: var(--button-text-color-primary);
+      --button-text-color-destructive-disabled: var(--button-text-color-primary);
+      --button-text-color-destructive-selected: var(--button-text-color-destructive-active);
+      --button-text-color-ghost: ButtonText;
+      --button-text-color-ghost-hover: var(--button-text-color-ghost-active);
+      --button-text-color-ghost-active: var(--button-text-color-active);
+      --button-text-color-ghost-disabled: GrayText;
+      --button-text-color-menu-hover: var(--button-text-color-primary);
+      --button-text-color-menu-active: var(--button-text-color-primary-active);
+      --button-text-color-menu-disabled: var(--button-text-color-primary-disabled);
+      --button-text-color-menu-selected: var(--button-text-color-primary-selected);
+      --button-text-color-muted: ButtonText;
+      --button-text-color-muted-hover: var(--button-text-color-ghost-active);
+      --button-text-color-muted-active: var(--button-text-color-active);
+      --button-text-color-muted-disabled: GrayText;
+      --button-text-color-muted-selected: var(--button-text-color-ghost-active);
+      --button-text-color-primary: ButtonFace;
+      --button-text-color-primary-active: var(--button-text-color-primary-hover);
+      --button-text-color-selected: SelectedItemText;
+
+      /** card **/
+      --card-border-color: CanvasText;
+      --card-header-border-color: var(--button-border-color);
+
+      /** color **/
+      --color-accent-attention: AccentColor;
+      --color-accent-primary: AccentColor;
+      --color-accent-primary-hover: SelectedItem;
+      --color-accent-primary-active: var(--color-accent-primary-hover);
+      --color-accent-primary-selected: SelectedItem;
+
+      /** icon **/
+      --icon-color-accent-primary-desaturated: CanvasText;
+      --icon-color-critical: var(--icon-color);
+      --icon-color-information: var(--icon-color);
+      --icon-color-success: var(--icon-color);
+      --icon-color-warning: var(--icon-color);
+
+      /** popup **/
+      --popup-border-color: var(--border-color);
+
+      /** table **/
+      /* TODO Bug 1821203 - Gray use needs to be consolidated */
+      --table-row-background-color-alternate: var(--background-color-canvas);
+
+      /** text-color **/
+      --text-color-accent-primary-selected: SelectedItemText;
+
+      /** toolbar **/
+      --toolbar-background-color: Canvas;
+      --toolbar-field-border-color: ButtonText;
+      --toolbar-field-text-color: var(--text-color);
+
+      /** toolbarbutton **/
+      --toolbarbutton-background-color-hover: var(--button-background-color-hover);
+      --toolbarbutton-background-color-active: var(--button-background-color-active);
+      --toolbarbutton-icon-fill: var(--button-text-color);
+      --toolbarbutton-outline-color: var(--button-border-color);
+      --toolbarbutton-outline-color-hover: var(--button-border-color-hover);
+      --toolbarbutton-outline-color-active: var(--button-border-color-active);
+
+      /** toolbox **/
+      --toolbox-background-color-gradient-leading: Canvas;
+      --toolbox-background-color-gradient-trailing: Canvas;
+      /* This gradient is only used for Nova */
+      --toolbox-background-gradient: image(transparent);
+    }
+  /*}*/
+}
