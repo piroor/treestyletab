@@ -223,19 +223,19 @@
   "syncAvailable_notification_title":   { "message": "Karty je teraz možné odosielať do iných zariadení z TST." },
   "syncAvailable_notification_message": { "message": "Karty je možné prenášať medzi vašimi zariadeniami. Kliknutím sem nastavíte rozpoznateľný názov tohto zariadenia." },
   "syncAvailable_notification_message_linux": { "message": "Karty je možné prenášať medzi vašimi zariadeniami. Kliknutím na tlačidlo nastavíte rozpoznateľný názov tohto zariadenia." },
-  "sentTabs_notification_title":            { "message": "​" },
+  "sentTabs_notification_title":            { "message": "\u200b" },
   "sentTabs_notification_message":          { "message": "Karta bola odoslaná do $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabs_notification_title_multiple":   { "message": "​" },
+  "sentTabs_notification_title_multiple":   { "message": "\u200b" },
   "sentTabs_notification_message_multiple": { "message": "Karty boli odoslané do $DEVICE$",
     "placeholders": {
       "DEVICE": { "content": "$1", "example": "Firefox on Device X" }
     }},
-  "sentTabsToAllDevices_notification_title":            { "message": "​" },
+  "sentTabsToAllDevices_notification_title":            { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message":          { "message": "Karta bola odoslaná do všetkých zariadení" },
-  "sentTabsToAllDevices_notification_title_multiple":   { "message": "​" },
+  "sentTabsToAllDevices_notification_title_multiple":   { "message": "\u200b" },
   "sentTabsToAllDevices_notification_message_multiple": { "message": "Karty boli odoslané do všetkých zariadení" },
   "receiveTabs_notification_title":            { "message": "Karta z $DEVICE$",
     "placeholders": {
@@ -448,11 +448,11 @@
   "config_animation_label": { "message": "Povoliť animačné efekty" },
   "config_animationForce_label": { "message": "Povoliť animácie bez ohľadu na systémové nastavenie \"obmedziť animácie\"" },
   "config_tabPreviewTooltip_label": { "message": "Zobrazovať náhľad karty pri prejdení myšou nad kartou namiesto klasickej bubliny (*je potrebné povoliť spúšťanie skriptov na webových stránkach)" },
-  "config_tabPreviewTooltipRenderIn_label_before": { "message": "​" },
+  "config_tabPreviewTooltipRenderIn_label_before": { "message": "\u200b" },
   "config_tabPreviewTooltipRenderIn_content": { "message": "v oblasti obsahu (a nezobrazovať nič, ak to nie je možné)" },
   "config_tabPreviewTooltipRenderIn_sidebar": { "message": "vždy v bočnom paneli" },
   "config_tabPreviewTooltipRenderIn_anywhere": { "message": "v oblasti obsahu, ak je to možné, inak v bočnom paneli" },
-  "config_tabPreviewTooltipRenderIn_label_after": { "message": "​" },
+  "config_tabPreviewTooltipRenderIn_label_after": { "message": "\u200b" },
   "config_inContentUIOffsetTop_label_before": { "message": "Posunúť náhľad karty o " },
   "config_inContentUIOffsetTop_label_after": { "message": "px vertikálne, keď výšku hlavičky bočného panela nemožno zistiť kvôli ochrane súkromia (napr. \"privacy.resistFingerprinting\"=\"true\")" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Zobrazovať zbalených potomkov v bubline na nadradenej karte" },
@@ -503,7 +503,7 @@
   "config_autoAttachOnContextNewTabCommand_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnContextNewTabCommand_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnContextNewTabCommand_nextSiblingWithInheritedContainer": { "message": "Nasledujúca súrodenecká karta, rovnaký kontajner" },
-  "config_autoAttachOnContextNewTabCommand_after": { "message": "​" },
+  "config_autoAttachOnContextNewTabCommand_after": { "message": "\u200b" },
 
 
   "config_newTabWithOwner_caption": { "message": "Karty otvorené z existujúcich kariet" },
@@ -516,7 +516,7 @@
   "config_autoAttachOnOpenedWithOwner_childEnd": { "message": "Posledná podradená karta nadradenej karty" },
   "config_autoAttachOnOpenedWithOwner_sibling": { "message": "Súrodenecká karta nadradenej karty" },
   "config_autoAttachOnOpenedWithOwner_nextSibling": { "message": "Nasledujúca súrodenecká karta nadradenej karty" },
-  "config_autoAttachOnOpenedWithOwner_after": { "message": "​" },
+  "config_autoAttachOnOpenedWithOwner_after": { "message": "\u200b" },
 
   "config_insertNewTabFromFirefoxViewAt_caption": { "message": "Pozícia vloženia nových podradených kariet z Prehľadu Firefoxu (zobrazia sa ako koreňové karty)" },
   "config_insertNewTabFromFirefoxViewAt_noControl": { "message": "Bez ovládania (rešpektovať rozhodnutie prehliadača alebo iných rozšírení pre karty)" },
@@ -544,7 +544,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "určenie, kde sa nová karta otvorí" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "výber kontajnera" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nič)" },
-  "config_longPressOnNewTabButton_after":                { "message": "​" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "Zobrazovať výberové tlačidlo na tlačidle \"Nová karta\" na určenie, kde sa nová karta otvorí, pri jeho ukázaní" },
   "config_showContextualIdentitiesSelector_label":       { "message": "Zobrazovať výberové tlačidlo kontajnera na tlačidle \"Nová karta\" pri jeho ukázaní" },
 
@@ -556,7 +556,7 @@
   "config_autoAttachOnNewTabCommand_childEnd": { "message": "Posledná podradená karta aktuálnej karty" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "​" },
+  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandTitle_before": { "message": "Považovať novo otvorenú kartu za otvorenú akciou \"Nová prázdna karta\", ak je otvorená s názvom(-ami) " },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": " alebo URL adresou(-ami) " },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "(*Viacero hodnôt môžete uviesť oddelených znakom \"|\")" },
@@ -569,7 +569,7 @@
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSiblingWithInheritedContainer": { "message": "Rovnaké ako Ctrl-klik (nasledujúca súrodenecká karta, rovnaký kontajner)" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "​" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_middleClickPasteURLOnNewTabButton_label": { "message": "Otvoriť novú kartu s URL adresou zo schránky (*simulácia vstavaného správania prehliadača pre \"browser.tabs.searchclipboardfor.middleclick\"=\"true\"; možno bude potrebné aktivovať \"dom.events.asyncClipboard.clipboardItem\")" },
 
@@ -581,7 +581,7 @@
   "config_autoAttachOnNewTabButtonAccelClick_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnNewTabButtonAccelClick_nextSiblingWithInheritedContainer": { "message": "Nasledujúca súrodenecká karta, rovnaký kontajner" },
-  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "​" },
+  "config_autoAttachOnNewTabButtonAccelClick_after": { "message": "\u200b" },
 
   "config_autoAttachWithURL_caption": { "message": "Neprázdne nové karty" },
 
@@ -594,7 +594,7 @@
   "config_autoAttachOnDuplicated_childEnd": { "message": "Posledná podradená karta aktuálnej karty" },
   "config_autoAttachOnDuplicated_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
-  "config_autoAttachOnDuplicated_after": { "message": "​" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_fromExternal_caption": { "message": "Nová karta z iných aplikácií" },
   "config_autoAttachOnOpenedFromExternal_before": { "message": "Otvoriť ako" },
@@ -604,7 +604,7 @@
   "config_autoAttachOnOpenedFromExternal_childEnd": { "message": "Posledná podradená karta aktuálnej karty" },
   "config_autoAttachOnOpenedFromExternal_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnOpenedFromExternal_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
-  "config_autoAttachOnOpenedFromExternal_after": { "message": "​" },
+  "config_autoAttachOnOpenedFromExternal_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToTabsFromExternalMode_label": { "message": "Kontajner:" },
   "config_inheritContextualIdentityToTabsFromExternalMode_default": { "message": "(bez ovládania)" },
   "config_inheritContextualIdentityToTabsFromExternalMode_parent": { "message": "Zdediť z nadradenej karty v strome" },
@@ -618,7 +618,7 @@
   "config_autoAttachSameSiteOrphan_childEnd": { "message": "Posledná podradená karta aktuálnej karty" },
   "config_autoAttachSameSiteOrphan_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
-  "config_autoAttachSameSiteOrphan_after": { "message": "​" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_label": { "message": "Kontajner:" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_default": { "message": "(bez ovládania)" },
   "config_inheritContextualIdentityToSameSiteOrphanMode_parent": { "message": "Zdediť z nadradenej karty v strome" },
@@ -632,7 +632,7 @@
   "config_autoAttachOnAnyOtherTrigger_childEnd": { "message": "Posledná podradená karta aktuálnej karty" },
   "config_autoAttachOnAnyOtherTrigger_sibling": { "message": "Súrodenecká karta aktuálnej karty" },
   "config_autoAttachOnAnyOtherTrigger_nextSibling": { "message": "Nasledujúca súrodenecká karta aktuálnej karty" },
-  "config_autoAttachOnAnyOtherTrigger_after": { "message": "​" },
+  "config_autoAttachOnAnyOtherTrigger_after": { "message": "\u200b" },
   "config_autoAttachOnAnyOtherTrigger_caution": { "message": "*UPOZORNENIE: Táto možnosť má riziko narušenia správania iných rozšírení." },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_label": { "message": "Kontajner:" },
   "config_inheritContextualIdentityToTabsFromAnyOtherTriggerMode_default": { "message": "(bez ovládania)" },
@@ -748,7 +748,7 @@
 
   "config_warnOnCloseTabs_label": { "message": "Upozorniť ma pri pokuse zavrieť viacero kariet" },
   "config_warnOnCloseTabsThreshold_before": { "message": "Neupozorňovať, ak je počet zatváraných kariet najviac " },
-  "config_warnOnCloseTabsThreshold_after": { "message": "​" },
+  "config_warnOnCloseTabsThreshold_after": { "message": "\u200b" },
   "config_warnOnCloseTabsByClosebox_label": { "message": "Upozorniť ma pri pokuse zavrieť viacero kariet bežným kliknutím na tlačidlo zatvorenia" },
   "config_warnOnCloseTabsWithListing_label": { "message": "Zobraziť zoznam zatváraných kariet v potvrdzovacom dialógovom okne" },
 
@@ -818,7 +818,7 @@
   "config_advanced_caption": { "message": "Rozšírené" },
 
   "config_bookmarkTreeFolderName_before": { "message": "Názov priečinka pre \"Vytvoriť záložku pre tento strom\":" },
-  "config_bookmarkTreeFolderName_after": { "message": "​" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "Dostupné zástupné symboly: %TITLE% (názov prvej karty), %URL% (URL adresa prvej karty), %YEAR% (rok, štyri číslice), %SHORT_YEAR% (rok, dve číslice), %MONTH% (mesiac, dve číslice), %DATE% (deň, dve číslice), %HOURS% (hodiny, dve číslice), %MINUTES% (minúty, dve číslice), %SECONDS% (sekundy, dve číslice), %MILLISECONDS% (milisekundy, tri číslice), %GROUP% (názov prvej karty, ak ide o skupinovú kartu - inak prázdne), %ANY(hodnota1, hodnota2, ...)% (prvá platná hodnota zo zadaného zoznamu)" },
 
   "config_defaultBookmarkParentId_label":  { "message": "Predvolené umiestnenie na vytváranie nových záložiek" },
@@ -828,7 +828,7 @@
   "config_tabGroupMenuPanelRenderIn_content": { "message": "v oblasti obsahu (a nezobrazovať nič, ak to nie je možné)" },
   "config_tabGroupMenuPanelRenderIn_sidebar": { "message": "vždy v bočnom paneli" },
   "config_tabGroupMenuPanelRenderIn_anywhere": { "message": "v oblasti obsahu, ak je to možné, inak v bočnom paneli" },
-  "config_tabGroupMenuPanelRenderIn_label_after": { "message": "​" },
+  "config_tabGroupMenuPanelRenderIn_label_after": { "message": "\u200b" },
 
   "config_undoMultipleTabsClose_label": { "message": "Obnoviť naposledy zatvorenú sadu kariet, keď je jedna z nich obnovená príkazom \"Znova otvoriť zatvorenú kartu\"" },
   "config_maxParallelReloadTabsCount_label_before": { "message": "Obnoviť naraz až" },
